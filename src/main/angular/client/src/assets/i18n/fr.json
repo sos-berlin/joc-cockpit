@@ -228,8 +228,8 @@
     "label.cluster": "Cluster",
     "label.registerController": "Enregister le Contrôleur ",
     "label.newController": "Enregistrer un nouveau Contrôleur",
-    "label.primaryController": "Contrôleur primaire",
-    "label.backupController": "Contrôleur secondaire",
+    "label.primaryController": "Contrôleur Primaire",
+    "label.backupController": "Contrôleur Secondaire",
     "label.jocUrlForPrimary": "URL pour le JOC Cockpit",
     "label.jocUrlForBackup": "URL pour le JOC Cockpit",
     "label.standaloneUrl": "URL pour le JOC Cockpit",
@@ -552,7 +552,7 @@
     "message.fileTransferHistorySummary": "Ce widget affiche l'historique des transferts de fichier."
   },
   "dailyPlan": {
-    "label.createPlan": "Créer un plan quotidien",
+    "label.createPlan": "Créer le plan quotidien",
     "label.schedules": "Planifications ",
     "label.workflows": "Workflows",
     "label.scheduleAndOrder": "Planification/Ordre ID",
@@ -844,8 +844,8 @@
     "tooltip.globalVariablesAndEmailSettings": "Valeurs par défaut des Ressources de tâches pour les variables globales et paramètres d'e-mail",
     "tooltip.workflowExampleForUnix": "Exemples de workflow à utiliser avec les agents s'exécutant sur Unix",
     "tooltip.workflowExampleForWindows": "Exemples de workflow à utiliser avec les agents s'exécutant sur Windows",
-    "message.line1": "Pour vous permettre de démarrer facilement, nous vous suggérons de télécharger quelques préréglages que vous pourrez importer dans JOC Cockpit à partir de la vue Configuration. Après l'importation, l'archive Defaults.zip créera un dossier du même nom qui comprendra des ressources de jobs pour créer des %variables d'environnement globales disponibles% pour vos jobs shell.",
-    "message.line2": "Les archives Demo.tar.gz et Demo.zip contiennent des exemples de workflows et de tâches pour des exécutions avec des agents sous Unix et Windows . Ces exemples peuvent être utiles pour créer vos propres workflows et dépendances de tâches, pour plus de détails voir %instructions%.",
+    "message.line1": "Pour vous permettre de démarrer facilement, nous vous suggérons de télécharger quelques préréglages que vous pourrez importer dans JOC Cockpit à partir de la vue Configuration. Après l'importation, l'archive Defaults.zip créera un dossier du même nom qui comprendra des ressources de jobs pour créer des %variables d'environnement globales% disponibles pour vos jobs shell.",
+    "message.line2": "Les archives Examples.tar.gz et Examples.zip contiennent des exemples de workflows et de tâches pour des exécutions avec des agents sous Unix et Windows . Ces exemples peuvent être utiles pour créer vos propres workflows et dépendances de tâches, pour plus de détails voir %instructions%.",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/x/mQeGAw",
       "instructions": "https://kb.sos-berlin.com/x/JoXAAw"
@@ -1243,7 +1243,7 @@
         "orderId": "Order ID",
         "job": "Tâche",
         "message": "Message",
-        "comment": "Commenter",
+        "comment": "Commentaire",
         "acknowledge": "Acquittement",
         "created": "Créé",
         "type": "Type",
@@ -1306,7 +1306,7 @@
     "label.preferences": "Préférences",
     "label.permissions": "Permissions",
     "label.keyManagement": "Gestion des Clés",
-    "label.caManagement": "CA Management",
+    "label.caManagement": "Gestion CA",
     "label.timeZone": "Fuseau Horaire",
     "label.dateTimeFormat": "Format Date et Heure",
     "label.language": "Langue",
