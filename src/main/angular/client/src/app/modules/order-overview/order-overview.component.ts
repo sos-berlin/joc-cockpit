@@ -3,6 +3,7 @@ import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {isArray} from 'underscore';
 import {OrderActionComponent} from './order-action/order-action.component';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../pipes/core.pipe';
@@ -294,6 +295,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   showPanelFuc(order): void {
     if (order.arguments && !order.arguments[0]) {
       order.arguments = Object.entries(order.arguments).map(([k, v]) => {
+        if (v && isArray(v)) {
+          v.forEach((list, index) => {
+            v[index] = Object.entries(list).map(([k1, v1]) => {
+              return {name: k1, value: v1};
+            });
+          });
+        }
         return {name: k, value: v};
       });
     }
@@ -310,6 +318,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     for (let i in this.currentData) {
       if (this.currentData[i].arguments && !this.currentData[i].arguments[0]) {
         this.currentData[i].arguments = Object.entries(this.currentData[i].arguments).map(([k, v]) => {
+          if (v && isArray(v)) {
+            v.forEach((list, index) => {
+              v[index] = Object.entries(list).map(([k1, v1]) => {
+                return {name: k1, value: v1};
+              });
+            });
+          }
           return {name: k, value: v};
         });
       }
@@ -776,6 +791,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
               this.orders[i].show = true;
               if (this.orders[i].arguments && !this.orders[i].arguments[0]) {
                 this.orders[i].arguments = Object.entries(this.orders[i].arguments).map(([k, v]) => {
+                  if (v && isArray(v)) {
+                    v.forEach((list, index) => {
+                      v[index] = Object.entries(list).map(([k1, v1]) => {
+                        return {name: k1, value: v1};
+                      });
+                    });
+                  }
                   return {name: k, value: v};
                 });
               }

@@ -15,7 +15,7 @@ import {forkJoin, of, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {OrderPipe} from 'ngx-order-pipe';
-import {isEmpty, groupBy, sortBy, clone} from 'underscore';
+import {isEmpty, groupBy, sortBy, clone, isArray} from 'underscore';
 import {Router} from '@angular/router';
 import {catchError} from 'rxjs/operators';
 import {ToasterService} from 'angular2-toaster';
@@ -288,6 +288,7 @@ export class CreatePlanModalComponent implements OnInit {
         };
         this.coreService.post('inventory/read/folder', request).subscribe((res: any) => {
           let data = res.workflows;
+          data = sortBy(data, 'name');
           for (let i = 0; i < data.length; i++) {
             const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = data[i].name;
@@ -928,6 +929,7 @@ export class SearchComponent implements OnInit {
   private loadWorkflowObjects(node, obj): void{
     this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
       let data = res.workflows;
+      data = sortBy(data, 'name');
       for (let i = 0; i < data.length; i++) {
         const path = obj.path + (obj.path === '/' ? '' : '/') + data[i].name;
         data[i].title = path;
@@ -2193,6 +2195,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       order.variables = [];
     } else {
       order.variables = Object.entries(res).map(([k, v]) => {
+        if (v && isArray(v)) {
+          v.forEach((list, index) => {
+            v[index] = Object.entries(list).map(([k1, v1]) => {
+              return {name: k1, value: v1};
+            });
+          });
+        }
         return {name: k, value: v};
       });
     }

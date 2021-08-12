@@ -1,5 +1,6 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
+import {sortBy} from 'underscore';
 import {CoreService} from '../../services/core.service';
 
 @Component({
@@ -53,14 +54,17 @@ export class TreeModalComponent implements OnInit {
 
     } else if (this.object) {
       if (this.object === 'Calendar') {
-        let obj: any = {
+        const obj: any = {
           path: e.key,
           objectTypes: [this.type]
         };
         this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
           data.calendars = res.calendars;
-          for (let i = 0; i < data.calendars.length; i++) {
-            data.calendars[i].path = e.key + (e.key === '/' ? '' : '/') + data.calendars[i].name;
+          data.calendars = sortBy(data.calendars, 'name');
+          for (const i in data.calendars) {
+            if (data.calendars[i]) {
+              data.calendars[i].path = e.key + (e.key === '/' ? '' : '/') + data.calendars[i].name;
+            }
           }
         });
       }
@@ -92,7 +96,7 @@ export class TreeModalComponent implements OnInit {
   private getJSObject(): void {
     const self = this;
 
-    function recursive(nodes) {
+    function recursive(nodes): void {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].calendars) {
           for (let j = 0; j < nodes[i].calendars.length; j++) {
@@ -104,6 +108,7 @@ export class TreeModalComponent implements OnInit {
         recursive(nodes[i].children);
       }
     }
+
     recursive(this.tree);
   }
 

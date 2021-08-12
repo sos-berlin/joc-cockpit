@@ -60,10 +60,10 @@
       </td>
       <td>
         <span class="show-in-single-line" [ngClass]="dailyPlanFilters.filter.groupBy === '' ? '' :  'p-l-sm'">
-          <i class="fa fa-caret-down cursor p-r-xs" *ngIf="!value.show"
+          <i class="fa fa-caret-down cursor fa-lg p-r-xs" *ngIf="!value.show"
              (click)="addDetailsOfOrder(value)"
              aria-hidden="true"></i>
-          <i class="fa fa-caret-up cursor p-r-xs" *ngIf="value.show"
+          <i class="fa fa-caret-up cursor fa-lg p-r-xs" *ngIf="value.show"
              (click)="addDetailsOfOrder(value)" aria-hidden="true"></i>
           <span *ngIf="value.state && (value.state._text !== 'FINISHED')"
                 [innerHtml]="value.orderId | highlight : dailyPlanFilters.searchText"></span>
@@ -583,7 +583,7 @@
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                     <th (click)="sort('orderId')" *ngIf="dailyPlanFilters.filter.groupBy === ''">
                       <a>
@@ -591,7 +591,7 @@
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'orderId' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                     <th (click)="sort('schedulePath')" *ngIf="dailyPlanFilters.filter.groupBy === ''">
                       <a>
@@ -599,7 +599,7 @@
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'schedulePath' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'schedulePath' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                     <th (click)="sort('workflowPath')">
                       <a>
@@ -608,35 +608,35 @@
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'workflowPath' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                     <th (click)="sort('status')">
                       <a><span class="p-r-xs" translate>dailyPlan.label.state</span>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'status' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                     <th (click)="sort('late')">
                       <a><span class="p-r-xs" translate>dailyPlan.label.late</span>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'late' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                     <th (click)="sort('plannedStartTime')">
                       <a><span class="p-r-xs" translate>dailyPlan.label.plannedStart</span>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'plannedStartTime' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                     <th (click)="sort('expectedEndTime')">
                       <a><span class="p-r-xs" translate>dailyPlan.label.expectedEnd</span>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'expectedEndTime' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                     <th (click)="sort('expectedDuration')">
                       <a><span class="p-r-xs" translate>dailyPlan.label.expectedDuration</span>
@@ -664,14 +664,14 @@
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'duration1' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                     <th (click)="sort('period.repeat')">
                       <a><span class="p-r-xs" translate>dailyPlan.label.repeatInterval</span>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && !dailyPlanFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="dailyPlanFilters.filter.sortBy == 'period.repeat' && dailyPlanFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
+                           class="fa fa-caret-down"></i></a>
                     </th>
                   </tr>
                   </thead>

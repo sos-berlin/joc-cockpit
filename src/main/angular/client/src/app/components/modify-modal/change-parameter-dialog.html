@@ -12,6 +12,80 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
       <div class="row">
+        <div class="col-sm-12" *ngIf="forkListVariables && forkListVariables.length > 0">
+          <div *ngFor="let listVariables of forkListVariables; let k = index">
+            <div class="m-b-sm">{{'order.label.variableList' | translate}}:
+              <b>{{listVariables.name}}</b>
+            </div>
+            <div *ngIf="listVariables.list" class="p-a-sm b-a m-b">
+              <div class="form-group row m-b-0 m-l-12">
+                <div class="col-md-5 col-sm-6 m-b-sm" translate>common.label.name</div>
+                <div class="col-md-6 col-sm-6 m-b-sm" translate>common.label.value</div>
+              </div>
+              <div class="form-group row m-b-0 m-l-12" *ngFor="let actualListArr of listVariables.actualList; let i=index" [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}">
+                <div *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)" (click)="addVariableToList(listVariables)"
+                     class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 4px;cursor: pointer">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </div>
+                <div class="col-md-12" *ngFor="let argument of actualListArr; let j=index">
+                  <div class="form-group row m-b-0" >
+                    <div class="col-md-5 col-sm-6 m-b-sm">
+                      <input readonly type="text" class="form-control" name="_name{{i}}{{j}}{{k}}" [(ngModel)]="argument.name">
+                    </div>
+                    <ng-container [ngSwitch]="argument.type">
+                      <ng-container *ngSwitchCase="'Number'">
+                        <div class="col-md-6 col-sm-6 m-b-sm"
+                             [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                          <nz-input-number [required]="true" #value="ngModel"
+                                           nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
+                                           [nzMin]="0" [nzStep]="1" name="_value{{i}}{{j}}{{k}}" [(ngModel)]="argument.value"></nz-input-number>
+                          <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="value.errors.required">
+                              <div translate>common.message.requiredError</div>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'Boolean'">
+                        <div class="col-md-6 col-sm-6 m-b-sm"
+                             [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                          <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                                     #value="ngModel" [required]="true" name="_value{{i}}{{j}}{{k}}" [(ngModel)]="argument.value">
+                            <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                            <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                          </nz-select>
+                          <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="value.errors.required">
+                              <div translate>common.message.requiredError</div>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <div class="col-md-6 col-sm-6 m-b-sm"
+                             [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                          <input #value="ngModel" [required]="true" autocomplete="off" type="text" class="form-control"
+                                 name="_value{{i}}{{j}}{{k}}" [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
+                          <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="value.errors.required">
+                              <div translate>common.message.requiredError</div>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                    <div class="col-md-1 p-l-0" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && j === actualListArr.length - 1">
+                      <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="col-sm-12 text m-b" *ngIf="variableList.length > 0">
            <div class="form-group row m-b-0 m-l-12" *ngIf="variables.length > 0">
             <div class="col-md-5 col-sm-5 m-b-sm" translate>common.label.name</div>
@@ -34,7 +108,7 @@
               </div>
               <ng-container [ngSwitch]="item.type">
                 <ng-container *ngSwitchCase="'Number'">
-                  <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                  <div class="col-md-6 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-input-number [required]="item.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}"
                                      [(ngModel)]="item.value"></nz-input-number>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -46,7 +120,7 @@
                   </div>
                 </ng-container>
                 <ng-container *ngSwitchCase="'Boolean'">
-                  <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                  <div class="col-md-6 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
                                #value="ngModel" [required]="item.isRequired" name="value{{i}}" [(ngModel)]="item.value">
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
@@ -61,7 +135,7 @@
                   </div>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
-                  <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                  <div class="col-md-6 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <input #value="ngModel" [required]="item.isRequired" autocomplete="off" type="text" class="form-control"
                            name="value{{i}}" (keypress)="onKeyPress($event)"
                            [(ngModel)]="item.value" placeholder="{{'common.placeholder.value' | translate}}">
@@ -93,7 +167,7 @@
       </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" *ngIf="variableList.length > 0" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" *ngIf="variableList.length > 0 || forkListVariables.length > 0" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

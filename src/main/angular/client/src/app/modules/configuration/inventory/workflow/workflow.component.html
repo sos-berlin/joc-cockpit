@@ -189,7 +189,12 @@
                  translate>workflow.label.children</label>
           <div class="col-md-8 col-lg-9">
             <nz-select nzShowSearch name="children" required #children="ngModel" [(ngModel)]="selectedNode.obj.children" (ngModelChange)="selectListForForkList($event)">
-              <nz-option *ngFor="let item of forkListVariables" [nzLabel]="item.name" [nzValue]="item.name"></nz-option>
+              <ng-container *ngFor="let item of forkListVariables">
+                <nz-option nzCustomContent [nzValue]="item.name" [nzLabel]="item.name">
+                  {{item.name}}<i (click)="editForkListVariables(item);$event.stopPropagation()" class="fa fa-pencil text-hover-primary p-l-sm"></i>
+                  <i (click)="deleteForkListVariables(item);$event.stopPropagation()" class="fa fa-times text-danger-hover pull-right" style="margin-top: 5px"></i>
+                </nz-option>
+              </ng-container>
             </nz-select>
             <div *ngIf="children.invalid && (children.dirty || children.touched)"
                  class="text-danger help-block">
@@ -201,12 +206,85 @@
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.childToId' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.childToId</label>
+                 translate title="{{'workflow.label.childToId' | translate}}">workflow.label.childToId</label>
           <div class="col-md-8 col-lg-9">
             <nz-select nzAllowClear name="childToId" [(ngModel)]="selectedNode.obj.childToId">
               <nz-option *ngFor="let item of listOfParams" [nzLabel]="item.name" [nzValue]="item.name"></nz-option>
             </nz-select>
           </div>
+        </div>
+        <div class="form-group row" [hidden]="forkListVariableObj && forkListVariableObj.value">
+          <div class="col-md-12">
+            <a class="text-hover-primary" (click)="createForkListVariables();"><i class="fa fa-plus p-r-sm"></i>{{'workflow.button.createForkListVariables' | translate}}</a>
+          </div>
+        </div>
+        <div class="b-a p-a m-t-md" *ngIf="forkListVariableObj && forkListVariableObj.value">
+          <div class="form-group row">
+            <div class="col-md-12 _600" *ngIf="forkListVariableObj.create" translate>workflow.label.createForkListVariable</div>
+            <div class="col-md-12 _600" *ngIf="!forkListVariableObj.create" translate>workflow.label.updateForkListVariable</div>
+          </div>
+          <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label" translate>common.label.name</label>
+              <div class="col-md-8 col-lg-9"
+                   [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                <input required identifierValidation #name="ngModel" autocomplete="off" type="text" class="form-control"
+                       name="name" [(ngModel)]="forkListVariableObj.name" placeholder="{{'common.placeholder.name' | translate}}">
+                <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
+                     class="text-danger help-block">
+                  <div *ngIf="name.errors.required">
+                    <div translate>common.message.requiredError</div>
+                  </div>
+                  <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-12 _600" translate>order.label.variables</label>
+            </div>
+            <div class="form-group row m-b-0">
+              <div class="col-md-5 col-lg-5 m-b-sm" translate>common.label.name</div>
+              <div class="col-md-7 col-lg-7 m-b-sm" translate>common.label.type</div>
+            </div>
+            <div class="row" *ngFor="let param of forkListVariableObj.value.listParameters; let j = index">
+              <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
+                   [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                <input [readonly]="isTrash" identifierValidation #name="ngModel" autocomplete="off" type="text"
+                       class="form-control" name="name{{j}}"
+                       [(ngModel)]="param.name" placeholder="{{'common.placeholder.name' | translate}}"
+                       (blur)="checkDuplicateEntries(param, j, forkListVariableObj.value.listParameters)">
+                <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
+                     class="text-danger help-block">
+                  <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-6 m-b-sm p-r-0">
+                <nz-select [nzDisabled]="isTrash" name="type{{j}}" [(ngModel)]="param.value.type"
+                           (ngModelChange)="updateOtherProperties('variable')">
+                  <nz-option [nzLabel]="'String' | translate" [nzValue]="'String'"></nz-option>
+                  <nz-option [nzLabel]="'Number' | translate" [nzValue]="'Number'"></nz-option>
+                  <nz-option [nzLabel]="'Boolean' | translate" [nzValue]="'Boolean'"></nz-option>
+                </nz-select>
+              </div>
+              <div class="col-md-1 col-lg-1" *ngIf="forkListVariableObj.value.listParameters.length > 1">
+                <a><i (click)="removeVariableFromList(forkListVariableObj.value.listParameters, j, false)"
+                      class="fa fa-times m-t-sm text-hover-color"></i></a>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <a class="text-u-l" (click)="addVariableToList(forkListVariableObj.value)" translate>order.button.addVariable</a>
+              </div>
+            </div>
+            <div class="form-group row m-b-sm">
+              <div class="col-md-12 m-t-xs">
+                <button type="submit" [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm">
+                  {{'common.button.submit' | translate}}
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="cancel()" translate>common.button.cancel</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'PostNotice' || selectedNode.type === 'ExpectNotice'">
@@ -555,16 +633,16 @@
               <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
             </div>
             <div class="row col-md-12" *ngIf="variable.value.type === 'List'">
-              <div class="col-md-5 col-lg-5 m-b-sm" translate>common.label.name</div>
-              <div class="col-md-7 col-lg-7 m-b-sm" translate>common.label.value</div>
+              <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
+              <div class="col-md-8 col-lg-8 m-b-sm" translate>common.label.type</div>
             </div>
             <ng-container class="b-b p-b-sm" *ngIf="variable.value.type === 'List'">
-              <div class="form-group col-md-12 row m-b-0 p-r-0"
+              <div class="form-group col-md-12 row p-r-0" [ngClass]="{'m-b-0': j !== variable.value.listParameters.length - 1}"
                    *ngFor="let param of variable.value.listParameters; let j = index">
                 <div *ngIf="j === variable.value.listParameters.length - 1" class="pos-abt cursor" style="margin-top: 5px;left:4px;font-size:16px" (click)="addVariableToList(variable.value)">
                   <a class="text-primary-hover"><i class="fa fa-plus"></i></a>
                 </div>
-                <div class="col-md-5 col-lg-5 m-b-sm p-r-0"
+                <div class="col-md-4 col-lg-4 m-b-sm p-r-0"
                      [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
                   <input [readonly]="isTrash" identifierValidation #name="ngModel" autocomplete="off" type="text"
                          class="form-control" name="name{{i}}{{j}}"
@@ -575,7 +653,7 @@
                     <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
                   </div>
                 </div>
-                <div class="col-md-6 col-lg-6 m-b-sm p-r-0">
+                <div class="col-md-7 col-lg-7 m-b-sm p-r-0">
                   <nz-select [nzDisabled]="isTrash" name="type{{i}}{{j}}" [(ngModel)]="param.value.type"
                              (ngModelChange)="updateOtherProperties('variable')">
                     <nz-option [nzLabel]="'String' | translate" [nzValue]="'String'"></nz-option>

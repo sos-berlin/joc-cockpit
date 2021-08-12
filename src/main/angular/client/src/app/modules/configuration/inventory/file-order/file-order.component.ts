@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {isEmpty, isEqual} from 'underscore';
+import {isEmpty, isEqual, sortBy} from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
@@ -270,6 +270,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
     this.coreService.post(URL, obj).subscribe((res: any) => {
       let data = res.workflows || res.documentations;
+      data = sortBy(data, 'name');
       for (let i = 0; i < data.length; i++) {
         const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
         data[i].title = data[i].assignReference || data[i].name;
