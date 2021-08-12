@@ -389,26 +389,13 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   createToken(controller, agent = null): void {
-    if (!controller || controller.agents) {
-      this.openWindow(controller, agent);
-    } else {
-      this.coreService.post('agents/p', {
-        controllerId: controller.controllerId
-      }).subscribe((data: any) => {
-        controller.agents = data.agents;
-        this.openWindow(controller, agent);
-      });
-    }
-  }
-
-  private openWindow(controller, agent): void{
     const modal =  this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTokenModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
         controllerId: controller ? controller.controllerId : '',
-        agents: controller ? controller.agents : this.object.mapOfCheckedId,
+        agents: this.object.mapOfCheckedId,
         agent
       },
       nzFooter: null,

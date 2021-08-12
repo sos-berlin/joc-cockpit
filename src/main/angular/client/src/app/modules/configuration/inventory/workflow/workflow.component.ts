@@ -17,7 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
-import {isEmpty, isArray, isEqual, clone, extend} from 'underscore';
+import {isEmpty, isArray, isEqual, clone, extend, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
@@ -1252,6 +1252,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   jobResourceNames: any = [];
   forkListVariables: any = [];
   listOfParams: any = [];
+  forkListVariableObj: any = {};
   orderPreparation: any = {};
   workflow: any = {};
   history = {past: [], present: {}, future: [], type: 'new'};
@@ -1944,6 +1945,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       objectTypes: [InventoryObject.JOBRESOURCE]
     }).subscribe((res: any) => {
       let map = new Map();
+      res.jobResources = sortBy(res.jobResources, 'name');
       res.jobResources.forEach((item) => {
         const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
         const obj = {
@@ -2123,7 +2125,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-
   addVariable(): void {
     const param = {
       name: '',
@@ -2165,9 +2166,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.updateOtherProperties('variable');
   }
 
-  removeVariableFromList(list, index): void{
+  removeVariableFromList(list, index, flag = true): void {
     list.splice(index, 1);
-    this.updateOtherProperties('variable');
+    if (flag) {
+      this.updateOtherProperties('variable');
+    }
   }
 
   onKeyPress($event): void {
@@ -2297,6 +2300,72 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       });
     }
+  }
+
+  createForkListVariables(): void{
+    this.forkListVariableObj = {
+      create: true,
+      name: '',
+      value: {
+        type: 'List',
+        listParameters: [
+          {
+            name: '',
+            value: {
+              type: 'String'
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  deleteForkListVariables(data): void {
+    this.forkListVariables = this.forkListVariables.filter((item) => {
+      return item.name !== data.name;
+    });
+    if (this.selectedNode.obj.children === data.name) {
+      this.selectedNode.obj.children = '';
+    }
+    this.updateOtherProperties('variable');
+  }
+
+  editForkListVariables(data): void{
+    this.forkListVariableObj = this.coreService.clone(data);
+    this.forkListVariableObj.oldName = this.coreService.clone(data.name);
+  }
+
+  onSubmit(): void {
+    let flag = true;
+    for (const i in this.forkListVariables) {
+      if (this.forkListVariableObj.create) {
+        if (this.forkListVariables[i].name === this.forkListVariableObj.name) {
+          this.forkListVariableObj.name = '';
+          flag = false;
+          break;
+        }
+      } else {
+        if (this.forkListVariableObj.oldName === this.forkListVariables[i].name) {
+          delete this.forkListVariableObj.oldName;
+          this.forkListVariables[i] = this.coreService.clone(this.forkListVariableObj);
+          this.forkListVariableObj = {};
+          this.updateOtherProperties('variable');
+          break;
+        }
+      }
+    }
+    if (flag && this.forkListVariableObj.create) {
+      delete this.forkListVariableObj.create;
+      this.forkListVariables.push(this.coreService.clone(this.forkListVariableObj));
+      this.selectedNode.obj.children = this.forkListVariableObj.name;
+      this.selectedNode.obj.childToId = '';
+      this.forkListVariableObj = {};
+      this.updateOtherProperties('variable');
+    }
+  }
+
+  cancel(): void{
+    this.forkListVariableObj = {};
   }
 
   selectListForForkList(value): void {
@@ -8191,20 +8260,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       const variableDeclarations = {parameters: []};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
-        if (value.value.type === 'List') {
+        if (value.value.type === 'List' || value.value.type === 'Final' || value.value.default === '' || !value.value.default) {
           delete value.value.default;
+        }
+        if (value.value.type === 'List') {
           delete value.value.final;
           value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
         } else if (value.value.type === 'Final') {
           delete value.value.type;
-          delete value.value.default;
         } else {
           delete value.value.final;
-          if (value.value.type !== 'String') {
-            if (value.value.default === '' || value.value.default === '') {
-              delete value.value.default;
-            }
-          } else {
+          if (value.value.type === 'String') {
             this.coreService.addSlashToString(value.value, 'default');
           }
         }

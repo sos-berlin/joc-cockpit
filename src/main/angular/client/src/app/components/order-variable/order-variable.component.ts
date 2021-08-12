@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {isEqual, object} from 'underscore';
+import {isArray, isEqual, object} from 'underscore';
 import {ToasterService} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -24,7 +24,28 @@ export class OrderVariableComponent implements OnInit {
     if (this.order && this.type) {
       if (this.order[this.type] && !this.order[this.type][0]) {
         this.order[this.type] = Object.entries(this.order[this.type]).map(([k, v]) => {
+          if (v && isArray(v)) {
+            v.forEach((list, index) => {
+              if (!isArray(list)) {
+                v[index] = Object.entries(list).map(([k1, v1]) => {
+                  return {name: k1, value: v1};
+                });
+              }
+            });
+          }
           return {name: k, value: v};
+        });
+      } else if (isArray(this.order[this.type])) {
+        this.order[this.type].forEach((item) => {
+          if (isArray(item.value)) {
+            item.value.forEach((list, index) => {
+              if (!isArray(list)) {
+                item.value[index] = Object.entries(list).map(([k1, v1]) => {
+                  return {name: k1, value: v1};
+                });
+              }
+            });
+          }
         });
       }
     }

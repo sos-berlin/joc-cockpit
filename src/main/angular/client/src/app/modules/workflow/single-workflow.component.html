@@ -88,7 +88,7 @@
                     </span>
                   </td>
                   <td>
-                    <div class="text-muted" *ngIf="workflow.versionDate">({{workflow.versionDate | stringToDate}})</div>
+                    <span [innerHtml]="workflow.versionDate | stringToDate"></span>
                   </td>
                   <td>
                     <a class="label" *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"

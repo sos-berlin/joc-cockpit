@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent} from '../../../components/modify-modal/modify.component';
@@ -142,6 +143,13 @@ export class OrderListSidebarComponent implements OnChanges{
   showPanelFuc(order): void {
     if (order.arguments && !order.arguments[0]) {
       order.arguments = Object.entries(order.arguments).map(([k, v]) => {
+        if (v && isArray(v)) {
+          v.forEach((list, index) => {
+            v[index] = Object.entries(list).map(([k1, v1]) => {
+              return {name: k1, value: v1};
+            });
+          });
+        }
         return {name: k, value: v};
       });
     }

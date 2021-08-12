@@ -100,7 +100,9 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
 
   collapseAll(): void {
     this.defaultExpandedKeys = [];
+    this.navFullTree(this.tree[0], false);
     this.defaultExpandedKeys = [...this.defaultExpandedKeys];
+    this.tree = [...this.tree];
   }
 
   expandNode(node): void {
@@ -114,6 +116,7 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
   collapseNode(node): void {
     this.navFullTree(node, false);
     this.defaultExpandedKeys = [...this.defaultExpandedKeys];
+    this.tree = [...this.tree];
   }
 
   deleteFolder(node): void{
@@ -146,6 +149,7 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
         }
         this.defaultSelectedKeys.push(value.key);
       } else {
+        value.expanded = isExpand;
         this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(value.key), 1);
       }
       this.traverseTree(value, isExpand);
@@ -159,6 +163,7 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
       }
       this.defaultSelectedKeys.push(node.key);
     } else {
+      node.expanded = false;
       this.defaultExpandedKeys.splice(this.defaultExpandedKeys.indexOf(node.key), 1);
     }
     this.traverseTree(node, isExpand);

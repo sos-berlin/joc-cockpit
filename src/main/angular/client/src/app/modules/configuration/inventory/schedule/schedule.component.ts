@@ -8,7 +8,7 @@ import {
   OnInit,
   SimpleChanges
 } from '@angular/core';
-import {isEmpty, isArray, isEqual, clone} from 'underscore';
+import {isEmpty, isArray, isEqual, clone, sortBy} from 'underscore';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
@@ -69,7 +69,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data){
+    if (changes.copyObj && !changes.data) {
       return;
     }
     if (changes.reload) {
@@ -157,7 +157,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         variableSet.variableList = this.coreService.clone(this.variableList);
         if (variableSet.variableList.length > 0) {
           for (const i in variableSet.variableList) {
-            console.log(i, '>>>>')
             let val = variableSet.variableList[i].value;
             if (!val.default && val.default !== false && val.default !== 0) {
               if (!val.final) {
@@ -167,7 +166,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       }
-      console.log(variableSet);
     }
   }
 
@@ -311,6 +309,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       } else if (type === 'DOCUMENTATION') {
         data = res.documentations;
       }
+      data = sortBy(data, 'name');
       for (let i = 0; i < data.length; i++) {
         const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
         data[i].title = data[i].assignReference || data[i].name;
@@ -347,7 +346,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   private setForkListVariables(sour, target): void {
     for (let x in target) {
       if (target[x].name === sour.name) {
-
         if (sour.value) {
           for (const i in sour.value) {
             sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
@@ -447,7 +445,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         if (this.schedule.configuration.variableSets[prop].variables && this.schedule.configuration.variableSets[prop].variables.length > 0) {
           this.schedule.configuration.variableSets[prop].variables = this.schedule.configuration.variableSets[prop].variables.filter(item => {
             if (isArray(item.value)) {
-              this.setForkListVariables(item, this.schedule.configuration.variableSets[prop].forkListVariables);
+              if (item.value.length === 0) {
+                item.value.push({name: '', type: 'String'});
+              } else {
+                this.setForkListVariables(item, this.schedule.configuration.variableSets[prop].forkListVariables);
+              }
               return false;
             } else {
               return true;
@@ -570,10 +572,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         isEmptyExist = true;
       }
       if (variableSet.variables) {
+        variableSet.variables = variableSet.variables.filter((variable) => {
+          return !!variable.name;
+        });
         variableSet.variables = variableSet.variables.map(variable => ({name: variable.name, value: variable.value}));
         variableSet.variables = this.coreService.keyValuePair(variableSet.variables);
       }
-
       if (variableSet.forkListVariables) {
         variableSet.forkListVariables.forEach((item) => {
           variableSet.variables[item.name] = [];
@@ -583,7 +587,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               item.actualList[i].forEach((data) => {
                 listObj[data.name] = data.value;
               });
-              variableSet.variables[item.name].push(listObj);
+              if (!isEmpty(listObj)) {
+                variableSet.variables[item.name].push(listObj);
+              }
             }
           }
         });
@@ -594,6 +600,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     obj.variableSets = obj.variableSets.map(variableSet => {
       return {orderName: variableSet.orderName, variables: variableSet.variables};
     });
+
     if (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj))) {
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
@@ -637,6 +644,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.history.push(JSON.stringify(this.schedule.configuration));
           this.indexOfNextAdd = this.history.length - 1;
         }
+
         this.coreService.post('inventory/store', {
           configuration: obj,
           valid: isValid,

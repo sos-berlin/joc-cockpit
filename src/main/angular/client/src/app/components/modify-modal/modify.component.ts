@@ -20,6 +20,7 @@ export class ChangeParameterModalComponent implements OnInit {
   removeVariables = [];
   variables: any = [];
   variableList = [];
+  forkListVariables = [];
   submitted = false;
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService) {
@@ -51,34 +52,128 @@ export class ChangeParameterModalComponent implements OnInit {
     if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
-        let isExist = false;
-        for (let i = 0; i < this.variables.length; i++) {
-          if (this.variables[i].name === k) {
-            this.variables[i].type = val.type;
-            if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
-              this.variables[i].isRequired = true;
+        if (val.type !== 'List') {
+          let isExist = false;
+          for (let i = 0; i < this.variables.length; i++) {
+            if (this.variables[i].name === k) {
+              this.variables[i].type = val.type;
+              if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
+                this.variables[i].isRequired = true;
+              }
+              isExist = true;
+              break;
             }
-            isExist = true;
-            break;
           }
-        }
-        if (!isExist && !this.variable) {
-          if (!val.final) {
-            if (!val.default && val.default !== false && val.default !== 0) {
-              this.variables.push({name: k, type: val.type, isRequired: true});
-            } else {
-              this.coreService.removeSlashToString(val, 'default');
-              this.variables.push({name: k, value: val.default, default: val.default});
+          if (!isExist && !this.variable) {
+            if (!val.final) {
+              if (!val.default && val.default !== false && val.default !== 0) {
+                this.variables.push({name: k, type: val.type, isRequired: true});
+              } else {
+                this.coreService.removeSlashToString(val, 'default');
+                this.variables.push({name: k, value: val.default, default: val.default});
+              }
             }
+          }
+        } else {
+          const actualList = [];
+          if (val.listParameters) {
+            if (isArray(val.listParameters)) {
+              val.listParameters.forEach((item) => {
+                actualList.push({name: item.name, type: item.value.type});
+              });
+            } else {
+              if (!isArray(val.listParameters)) {
+                val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                  const val1: any = v1;
+                  actualList.push({name: k1, type: val1.type});
+                  return {name: k1, value: val1};
+                });
+              }
+            }
+            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
           }
         }
         return {name: k, value: v};
       });
       this.variableList = this.variableList.filter((item) => {
+        if (item.value.type === 'List') {
+          return false;
+        }
         return !item.value.final;
       });
+      for (const prop in this.variables) {
+        this.variables = this.variables.filter(item => {
+          if (isArray(item.value)) {
+            this.setForkListVariables(item, this.forkListVariables);
+            return false;
+          } else {
+            return true;
+          }
+        });
+      }
     }
     this.updateSelectItems();
+  }
+
+  private setForkListVariables(sour, target): void {
+    for (let x in target) {
+      if (target[x].name === sour.name) {
+
+        if (sour.value) {
+          for (const i in sour.value) {
+            if (!isArray(sour.value[i])) {
+              sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
+                let type;
+                for (const prop in target[x].list) {
+                  if (target[x].list[prop].name === k1) {
+                    type = target[x].list[prop].value.type;
+                    break;
+                  }
+                }
+                return {name: k1, value: v1, type};
+              });
+            } else{
+              for (const j in sour.value[i]) {
+                for (const prop in target[x].list) {
+                  if (target[x].list[prop].name === sour.value[i].name) {
+                    sour.value[i].type = target[x].list[prop].value.type;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+        target[x].actualList = sour.value;
+        break;
+      }
+    }
+  }
+
+  addVariableToList(data): void {
+    const arr = [];
+    data.list.forEach(item => {
+      arr.push({name: item.name, type: item.value.type});
+    });
+    let flag = false;
+    for (const i in data.actualList) {
+      for (const j in data.actualList[i]) {
+        if (!data.actualList[i][j].value) {
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        break;
+      }
+    }
+    if (!flag) {
+      data.actualList.push(arr);
+    }
+  }
+
+  removeVariableFromList(index, list): void {
+    list.splice(index, 1);
   }
 
   checkVariableType(variable): void {
@@ -87,8 +182,12 @@ export class ChangeParameterModalComponent implements OnInit {
       variable.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         variable.isRequired = true;
-      } else{
-        variable.value = obj.default;
+      } else {
+        if (obj.type === 'Boolean') {
+          variable.value = (obj.default === true || obj.default === 'true');
+        } else {
+          variable.value = obj.default;
+        }
       }
     }
     this.updateSelectItems();
@@ -179,6 +278,23 @@ export class ChangeParameterModalComponent implements OnInit {
     }
     if (this.removeVariables.length > 0) {
       obj.removeVariables = this.coreService.keyValuePair(this.removeVariables);
+    }
+    if (this.forkListVariables && this.forkListVariables.length > 0) {
+      if (!obj.variables) {
+        obj.variables = {};
+      }
+      this.forkListVariables.forEach((item) => {
+        obj.variables[item.name] = [];
+        if (item.actualList) {
+          for (const i in item.actualList) {
+            const listObj = {};
+            item.actualList[i].forEach((data) => {
+              listObj[data.name] = data.value;
+            });
+            obj.variables[item.name].push(listObj);
+          }
+        }
+      });
     }
     if (obj.variables || obj.removeVariables) {
       this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
