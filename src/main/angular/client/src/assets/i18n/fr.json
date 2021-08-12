@@ -931,7 +931,7 @@
     "label.createWorkflow": "Créer un Workflow",
     "label.createFileOrderSource": "Créer une Source d'Ordre de Fichier",
     "label.createOrder": "Créer une Planification",
-    "label.createBoard": "Crée une Condition",
+    "label.createBoard": "Créer une Condition",
     "label.createLock": "Créer un Verrou de Ressource",
     "label.objectName": "Nom de l'Objet",
     "label.createCalendar": "Créer un Calendrier",
@@ -1097,7 +1097,7 @@
         "title": "Le titre d'un workflow.",
         "allowUndeclared": "Autoriser les variables non déclarés",
         "board": {
-          "boardName": "BoardName"
+          "boardName": "Nom de la Condition"
         },
         "fail": {
           "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",
@@ -1112,8 +1112,8 @@
           "joinVariables": "Les variables des ordres enfants dans les branches d'une instruction Fork sont ajoutées à l'ordre parent lorsqu'elles atteignent l'instruction Join."
         },
         "forkList": {
-          "children": "Variable de liste",
-          "childToId": "Mappage de l'élément de liste à l'ID ordre"
+          "children": "Variable de tableau",
+          "childToId": "Mappage de l'élément à l'ID ordre"
         },
         "if": {
           "predicate": "Un Prédicat dans une instruction If est une expression ou une comparaison qui donne la valeur 'vrai' ou 'faux'."
@@ -1782,7 +1782,7 @@
     "label.warnIfShorter": "Avertir si plus court de",
     "label.warnIfLonger": "Avertir si plus long de",
     "label.board": "Condition",
-    "label.boardPath": "Chemin de la condition",
+    "label.boardPath": "Chemin de la Condition",
     "label.predicate": "Predicat",
     "label.operation": "Opération",
     "label.message": "Message",
@@ -1846,10 +1846,10 @@
     "label.showConfiguration": "Afficher la Configuration",
     "label.allowUndeclared": "Variables non déclarés",
     "label.boardName": "Nom de la Condition",
-    "label.children": "Children",
-    "label.childToId": "Child to Id",
-    "label.createForkListVariable": "Create ForkList Variable",
-    "label.updateForkListVariable": "Update ForkList Variable",
+    "label.children": "Variable de tableau",
+    "label.childToId": "Mappage de l'élément à l'ID ordre",
+    "label.createForkListVariable": "Créer une variable de tableau",
+    "label.updateForkListVariable": "Mettre à jour la variable de tableau",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",
@@ -1871,7 +1871,7 @@
     "button.showGraphicalView": "Afficher la vue graphique",
     "button.addOrder": "Ajouter un Ordre",
     "button.exportInPng": "Exporter en format PNG",
-    "button.createForkListVariables": "Create New ForkList Variables",
+    "button.createForkListVariables": "Créer les variables de tableau",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",
@@ -1891,7 +1891,7 @@
     "message.duplicateLabel": "Même Label trouvé dans plus d'une Taĉhe",
     "message.predicateIsMissing": "Predicat est manquant, mais est obligatoire",
     "message.lockNameIsMissing": "Le nom du Verrou de ressource est manquant, mais est obligatoire",
-    "message.childrenIsMissing": "ForkList children is missing, but is required",
+    "message.childrenIsMissing": "La variable de tableau (ForkList) est manquant, mais ests obligatoire",
     "message.invalidIfInstruction": "L'instruction If ne peut être vide",
     "message.invalidTryInstruction": "L'instruction Try ne peut pas être vide",
     "message.invalidRetryInstruction": "L'instruction Retry ne peut pas être vide",
