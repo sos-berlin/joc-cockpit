@@ -54,14 +54,28 @@
                   <i (click)="showPanel[id] = true;getAgents(controller, null)" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
                   <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
                      class="cursor fa fa-caret-down m-l-xs"></i>
-                  <span class="text-sm pull-right m-r-sm" *ngIf="controller.token">
+                  <span class="text-sm pull-right m-r-sm" *ngIf="controller.token && controller.token.validUntil">
                       <span translate>agent.label.validityDate</span>:
                     <i class="text-muted p-l-xs">{{controller.token.validUntil | stringToDate}}</i>
                     <a nz-popover nzPopoverTrigger="click"
                        [nzPopoverContent]="contentTemplate" class="primary-text-hover-color p-l-sm"><i class="fa fa-key"></i></a>
                     <ng-template #contentTemplate>
-                      <b translate>agent.label.token</b> :
-                      <span>{{controller.token.UUID}} <i ngxClipboard [cbContent]="controller.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                      <div>
+                        <b translate>agent.label.url</b> :
+                        <span>{{controller.token.URI}}</span>
+                      </div>
+                      <div>
+                        <b translate>agent.label.token</b> :
+                        <span>{{controller.token.UUID}} <i ngxClipboard [cbContent]="controller.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                      </div>
+                      <div class="m-t-sm" *ngIf="controller.token.URI2">
+                        <b translate>agent.label.url</b> :
+                        <span>{{controller.token.URI2}}</span>
+                      </div>
+                      <div *ngIf="controller.token.URI2">
+                        <b translate>agent.label.token</b> :
+                        <span>{{controller.token.UUID2}} <i ngxClipboard [cbContent]="controller.token.UUID2" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                      </div>
                     </ng-template>
                   </span>
                 </h5>

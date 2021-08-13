@@ -166,6 +166,13 @@ export class BoardComponent implements OnChanges, OnDestroy {
     const obj = clone(json);
     obj.path = this.data.path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
+      this.board.valid = res.valid;
+      if (this.board.id === this.data.id) {
+        if (this.data.valid !== res.valid) {
+          this.saveJSON(false, true);
+        }
+        this.data.valid = res.valid;
+      }
       this.setErrorMessage(res);
     }, () => {
     });
@@ -421,7 +428,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
     }
   }
 
-  saveJSON(flag = false): void {
+  saveJSON(flag = false, skip = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
@@ -431,7 +438,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
     } else {
       delete this.board.configuration.endOfLife;
     }
-    if (!isEqual(this.board.actual, JSON.stringify(this.board.configuration))) {
+    if (skip || !isEqual(this.board.actual, JSON.stringify(this.board.configuration))) {
       if (flag) {
         if (this.history.length === 20) {
           this.history.shift();

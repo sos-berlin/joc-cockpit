@@ -558,7 +558,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  saveJSON(flag = false): void {
+  saveJSON(flag = false, skip = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
@@ -601,7 +601,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       return {orderName: variableSet.orderName, variables: variableSet.variables};
     });
 
-    if (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj))) {
+    if (skip || (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj)))) {
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
           delete obj.calendars[i].type;
@@ -636,7 +636,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       }
-      if (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj))) {
+      if (skip || !isEqual(this.schedule.actual, JSON.stringify(obj))) {
         if (!flag) {
           if (this.history.length === 20) {
             this.history.shift();
@@ -860,6 +860,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     const obj = clone(json);
     obj.path = this.data.path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
+      this.schedule.valid = res.valid;
+      if (this.schedule.id === this.data.id) {
+        if (this.data.valid !== res.valid) {
+          this.saveJSON(true, true);
+        }
+        this.data.valid = res.valid;
+      }
       this.setErrorMessage(res);
     }, () => {
     });

@@ -2348,6 +2348,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (this.forkListVariableObj.oldName === this.forkListVariables[i].name) {
           delete this.forkListVariableObj.oldName;
           this.forkListVariables[i] = this.coreService.clone(this.forkListVariableObj);
+          for (const j in this.variableDeclarations.parameters) {
+            if (this.forkListVariables[i].name === this.variableDeclarations.parameters[j].name) {
+              this.variableDeclarations.parameters[j] = this.coreService.clone(this.forkListVariableObj);
+              break;
+            }
+          }
           this.forkListVariableObj = {};
           this.updateOtherProperties('variable');
           break;
@@ -2357,11 +2363,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (flag && this.forkListVariableObj.create) {
       delete this.forkListVariableObj.create;
       this.forkListVariables.push(this.coreService.clone(this.forkListVariableObj));
+      this.variableDeclarations.parameters.push(this.coreService.clone(this.forkListVariableObj));
       this.selectedNode.obj.children = this.forkListVariableObj.name;
       this.selectedNode.obj.childToId = '';
       this.forkListVariableObj = {};
       this.updateOtherProperties('variable');
     }
+
   }
 
   cancel(): void{
@@ -8160,6 +8168,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.invalidMsg = res.invalidMsg;
       }
       this.workflow.valid = res.valid;
+      if (this.workflow.id === this.data.id) {
+        if (this.data.valid !== res.valid) {
+          const data = JSON.parse(this.workflow.actual);
+          this.storeData(data, true);
+        }
+        this.data.valid = res.valid;
+      }
       this.ref.detectChanges();
     }, () => {
     });
@@ -8170,6 +8185,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (res.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
         this.workflow.valid = false;
+        if (this.workflow.id === this.data.id) {
+          this.data.valid = false;
+        }
         if (isOpen) {
           this.openSideBar(id);
         }
@@ -8308,24 +8326,26 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     return newObj;
   }
 
-  private storeData(data): void {
+  private storeData(data, onlyStore = false): void {
     if (this.isTrash || !this.workflow || !this.workflow.id || !this.permission.joc.inventory.manage) {
       return;
     }
     const newObj = this.extendJsonObj(data);
-    if (this.history.past.length === 20) {
-      this.history.past.shift();
-    }
-    if (this.history.type === 'new') {
-      this.history = {
-        // push previous present into past for undo
-        past: [this.history.present, ...this.history.past],
-        present: JSON.stringify(newObj),
-        future: [], // clear future
-        type: 'new'
-      };
-    } else {
-      this.history.type = 'new';
+    if (!onlyStore) {
+      if (this.history.past.length === 20) {
+        this.history.past.shift();
+      }
+      if (this.history.type === 'new') {
+        this.history = {
+          // push previous present into past for undo
+          past: [this.history.present, ...this.history.past],
+          present: JSON.stringify(newObj),
+          future: [], // clear future
+          type: 'new'
+        };
+      } else {
+        this.history.type = 'new';
+      }
     }
     this.coreService.post('inventory/store', {
       configuration: newObj,
@@ -8350,7 +8370,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }, (err) => {
       this.isStore = false;
-      console.error(err);
     });
   }
 }
