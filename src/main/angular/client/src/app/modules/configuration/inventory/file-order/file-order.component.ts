@@ -155,6 +155,13 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     const obj = this.coreService.clone(json);
     obj.path = this.data.path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
+      this.fileOrder.valid = res.valid;
+      if (this.fileOrder.id === this.data.id) {
+        if (this.data.valid !== res.valid) {
+          this.saveJSON(true, true);
+        }
+        this.data.valid = res.valid;
+      }
       this.setErrorMessage(res);
     }, () => {
     });
@@ -343,11 +350,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.saveJSON();
   }
 
-  saveJSON(flag = false): void {
+  saveJSON(flag = false, skip = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
-    if (this.fileOrder.actual && !isEqual(this.fileOrder.actual, JSON.stringify(this.fileOrder.configuration))) {
+    if (skip || (this.fileOrder.actual && !isEqual(this.fileOrder.actual, JSON.stringify(this.fileOrder.configuration)))) {
       let isValid = false;
       if (this.fileOrder.configuration.workflowName && this.fileOrder.configuration.agentName) {
         isValid = true;

@@ -259,8 +259,7 @@
                 </div>
               </div>
               <div class="col-md-6 col-lg-6 m-b-sm p-r-0">
-                <nz-select [nzDisabled]="isTrash" name="type{{j}}" [(ngModel)]="param.value.type"
-                           (ngModelChange)="updateOtherProperties('variable')">
+                <nz-select [nzDisabled]="isTrash" name="type{{j}}" [(ngModel)]="param.value.type">
                   <nz-option [nzLabel]="'String' | translate" [nzValue]="'String'"></nz-option>
                   <nz-option [nzLabel]="'Number' | translate" [nzValue]="'Number'"></nz-option>
                   <nz-option [nzLabel]="'Boolean' | translate" [nzValue]="'Boolean'"></nz-option>
@@ -634,7 +633,7 @@
             </div>
             <div class="row col-md-12" *ngIf="variable.value.type === 'List'">
               <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
-              <div class="col-md-8 col-lg-8 m-b-sm" translate>common.label.type</div>
+              <div class="col-md-8 col-lg-8 m-b-sm" style="padding-left: 16px" translate>common.label.type</div>
             </div>
             <ng-container class="b-b p-b-sm" *ngIf="variable.value.type === 'List'">
               <div class="form-group col-md-12 row p-r-0" [ngClass]="{'m-b-0': j !== variable.value.listParameters.length - 1}"

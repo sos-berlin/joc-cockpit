@@ -975,6 +975,14 @@ export class WorkflowService {
           className = 'show-block';
         }
         return '<div class="workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>' + truncate(cell.getAttribute('jobName')) + '</div>';
+      } else if (cell.value.tagName === 'PostNotice' || cell.value.tagName === 'ExpectNotice') {
+        const boardName = cell.getAttribute('boardName');
+        if (boardName) {
+          const edge = graph.getOutgoingEdges(cell)[0];
+          if (edge) {
+            edge.setAttribute('boardName', boardName);
+          }
+        }
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
@@ -1009,7 +1017,7 @@ export class WorkflowService {
         const count = cell.getAttribute('count');
         return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
-        const x = cell.getAttribute('label');
+        const x = cell.getAttribute('label') || cell.getAttribute('boardName');
         if (x) {
           if (cell.value.tagName === 'Connection') {
             if (x === 'then' || x === 'else') {
@@ -1020,6 +1028,8 @@ export class WorkflowService {
               str = x;
             } else if ((cell.source.value.tagName === 'Job' && cell.source.getAttribute('label'))) {
               str = cell.source.getAttribute('label');
+            } else if (((cell.source.value.tagName === 'PostNotice' || cell.source.value.tagName === 'ExpectNotice'))) {
+              str = x;
             }
           } else {
             this.translate.get('workflow.label.' + x).subscribe(translatedValue => {

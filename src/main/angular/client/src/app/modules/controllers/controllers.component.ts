@@ -19,7 +19,9 @@ export class CreateTokenModalComponent implements OnInit {
   @Input() agent: any;
   @Input() data: any;
   @Input() controllerId: any;
-  token: any = {};
+  token: any = {
+    at: 'date'
+  };
   dateFormat: string;
   submitted = false;
   comments: any = {};
@@ -59,7 +61,9 @@ export class CreateTokenModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    const obj: any = this.coreService.clone(this.token);
+    const obj: any = {
+      timezone: this.token.timezone
+    };
     if (this.agent) {
       obj.agentIds = [this.agent.agentId];
     } else if (this.agents && this.agents.size > 0) {
@@ -79,7 +83,11 @@ export class CreateTokenModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-    obj.validUntil = moment(obj.validUntil).format('YYYY-MM-DDTHH:mm:ss') + '.000Z';
+    if (this.token.validUntil && this.token.at === 'date') {
+      obj.validUntil = moment(this.token.validUntil).format('YYYY-MM-DDTHH:mm:ss') + '.000Z';
+    } else {
+      obj.validUntil = this.token.atTime;
+    }
     this.coreService.post('token/create', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(res);
@@ -604,11 +612,16 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   private mergeTokenData(controllerId, agentId, obj): void {
+    delete obj.token;
     for (const tk in this.tokens) {
       if ((controllerId && this.tokens[tk].controllerId === controllerId)
         || (agentId && this.tokens[tk].agentId === agentId)) {
-        obj.token = this.tokens[tk];
-        break;
+        if (obj.token && obj.token.validUntil === this.tokens[tk].validUntil) {
+          obj.token.URI2 = this.tokens[tk].URI;
+          obj.token.UUID2 = this.tokens[tk].UUID;
+        } else {
+          obj.token = this.tokens[tk];
+        }
       }
     }
   }
