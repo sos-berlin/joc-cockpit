@@ -282,6 +282,10 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
           }
         }
         for (const j in controller.agents[i].entries) {
+          if (controller.agents[i].entries[j].readyTime === controller.agents[i].entries[j].lastKnownTime) {
+            const d = new Date(controller.agents[i].entries[j].readyTime);
+            controller.agents[i].entries[j].lastKnownTime = d.setMinutes(d.getSeconds() + 20);
+          }
           const obj = {
             controllerId: controller.controllerId,
             agentId: controller.agents[i].agentId,
@@ -424,7 +428,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
             }
           }
           if (length === 0) {
-            tempArr[i].value = prev;
+            tempArr[i].value = this.coreService.clone(prev);
             tempArr[i].value.forEach(item => {
               item.date = tempArr[i].key;
               if (item.lastKnownTime) {
