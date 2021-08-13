@@ -1,13 +1,13 @@
 import {Component, OnInit, OnDestroy, Input, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
 import * as moment from 'moment-timezone';
+import {TranslateService} from '@ngx-translate/core';
 import {sortBy} from 'underscore';
 import {differenceInCalendarDays, differenceInMilliseconds} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {GroupByPipe} from '../../../pipes/core.pipe';
-import {TranslateService} from '@ngx-translate/core';
 
 declare let self;
 
@@ -146,6 +146,10 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
           }
         }
         for (const i in controller.entries) {
+          if (controller.entries[i].readyTime === controller.entries[i].lastKnownTime) {
+            const d = new Date(controller.entries[i].readyTime);
+            controller.entries[i].lastKnownTime = d.setMinutes(d.getSeconds() + 20);
+          }
           const obj = {
             controllerId: controller.controllerId,
             date: this.coreService.getDateByFormat(controller.entries[i].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
@@ -466,7 +470,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             }
           }
           if (length === 0) {
-            tempArr[i].value = prev;
+            tempArr[i].value = this.coreService.clone(prev);
             tempArr[i].value.forEach(item => {
               item.date = tempArr[i].key;
               if (item.lastKnownTime) {
