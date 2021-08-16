@@ -33,6 +33,7 @@ import {CalendarComponent, FrequencyModalComponent} from './calendar/calendar.co
 import {FileOrderComponent} from './file-order/file-order.component';
 import {JobResourceComponent} from './job-resource/job-resource.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from './runtime/runtime.component';
+import {JobWizardComponent} from './job-wizard/job-wizard.component';
 import {EnvVariableValidator, LabelValidator} from '../../../directives/core.directive';
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent,
@@ -68,7 +69,8 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     TableComponent,
     LabelValidator,
     EnvVariableValidator,
-    ...COMPONENTS
+    ...COMPONENTS,
+    JobWizardComponent
   ]
 })
 export class InventoryModule {

@@ -1,13 +1,50 @@
-import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {SearchPipe} from '../../../pipes/core.pipe';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
 declare const $: any;
+
+// Role Actions
+@Component({
+  selector: 'app-post-notice-modal',
+  templateUrl: './post-notice-dialog.html'
+})
+export class PostModalComponent implements OnInit {
+  @Input() controllerId: string;
+  @Input() preferences: any;
+  @Input() board: any;
+  submitted = false;
+  postObj: any = {};
+  dateFormat: any;
+  zones = [];
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.zones = this.coreService.getTimeZoneList();
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.postObj.controllerId = this.controllerId;
+    this.postObj.noticeBoardPath = this.board.path;
+    this.coreService.post('notice/post', this.postObj).subscribe(() => {
+      this.submitted = false;
+      this.activeModal.close('>>');
+    }, () => {
+      this.submitted = false;
+    });
+  }
+}
 
 @Component({
   selector: 'app-single-board',
@@ -23,7 +60,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-              private dataService: DataService, private route: ActivatedRoute) {
+              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -56,11 +93,47 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   }
 
   post(board): void {
-    // notice/post
+    this.modal.create({
+      nzTitle: null,
+      nzContent: PostModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        board,
+        controllerId: this.controllerId,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
-  delete(board): void {
-    // notice/delete
+  delete(board, notice): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        type: 'Delete',
+        title: 'delete',
+        message: 'deleteNotice',
+        objectName: notice.id
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        console.log(result);
+        this.coreService.post('notice/delete', {
+          controllerId : this.controllerId,
+          noticeBoardPath : board.path,
+          noticeId : notice.id
+        }).subscribe(() => {
+
+        });
+      }
+    });
   }
 
   private refresh(args): void {
@@ -104,7 +177,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   @ViewChild(TreeComponent, {static: false}) child;
 
-  constructor(private authService: AuthService, public coreService: CoreService,
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
               private searchPipe: SearchPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -256,6 +329,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       res.noticeBoards.forEach((value) => {
         value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
+        value.numOfNotices = value.notices.length;
         if (this.boardsFilters.expandedObjects && this.boardsFilters.expandedObjects.length > 0) {
           const index = this.boardsFilters.expandedObjects.indexOf(value.path);
           if (index > -1) {
@@ -292,11 +366,47 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   post(board): void {
-    // notice/post
+    this.modal.create({
+      nzTitle: null,
+      nzContent: PostModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        board,
+        controllerId: this.schedulerIds.selected,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
-  delete(board): void {
-    // notice/delete
+  delete(board, notice): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        type: 'Delete',
+        title: 'delete',
+        message: 'deleteNotice',
+        objectName: notice.id
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        console.log(result);
+        this.coreService.post('notice/delete', {
+          controllerId : this.schedulerIds.selected,
+          noticeBoardPath : board.path,
+          noticeId : notice.id
+        }).subscribe(() => {
+
+        });
+      }
+    });
   }
 }
 

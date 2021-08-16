@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="permission.currentController">
     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
       <li class="nav-item" *ngIf="permission.currentController.agents.view">
         <a class="nav-link" [routerLink]="['/resources/agents']" [routerLinkActive]="['active']">

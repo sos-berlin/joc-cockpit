@@ -435,6 +435,7 @@
     "message.deleteDocument": "本当にこのドキュメントを削除しますか？",
     "message.deleteDocumentFolder": "本当にこのフォルダーを削除しますか？",
     "message.deleteAllDocument": "本当に全てのドキュメントを削除しますか?",
+    "message.deleteNotice": "Are you sure you want to delete the selected notice?",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xls形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",
@@ -1572,15 +1573,21 @@
       "label.lockFound": "ロックがあります"
     },
     "board": {
+      "label.id": "ID",
       "label.name": "Name",
       "label.postOrderToNoticeId": "Notice ID for posting order",
       "label.expectOrderToNoticeId": "Notice ID for expecting order",
-      "label.endOfLife": "End of Life of Notice",
+      "label.endOfLifeOfNotices": "End of Life of Notices",
       "label.deploymentDate": "Deployment Date",
       "label.boardsFound": "Notice Boards found",
       "label.boardFound": "Notice Board found",
+      "label.numOfNotices": "No. of Notices",
+      "label.noticeId": "Notice Id",
+      "label.endOfLife": "End of Life",
+      "label.expectingOrders": "Expecting Orders",
       "button.post": "Post Notice",
-      "button.delete": "Delete Notice"
+      "button.delete": "Delete Notice",
+      "placeholder.enterNoticeId": "Enter Notice ID"
     },
     "calendar": {
       "label.validity": "有効期間",

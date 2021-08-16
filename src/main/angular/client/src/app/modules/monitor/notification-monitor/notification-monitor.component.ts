@@ -89,7 +89,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'MONITORINGNOTIFICATION') {
+        if (args.eventSnapshots[j].objectType === 'MONITORINGNOTIFICATION') {
           this.getData();
           break;
         }

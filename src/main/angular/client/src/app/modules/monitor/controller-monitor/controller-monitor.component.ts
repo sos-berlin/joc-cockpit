@@ -148,7 +148,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         for (const i in controller.entries) {
           if (controller.entries[i].readyTime === controller.entries[i].lastKnownTime) {
             const d = new Date(controller.entries[i].readyTime);
-            controller.entries[i].lastKnownTime = d.setMinutes(d.getSeconds() + 20);
+            controller.entries[i].lastKnownTime = d.setSeconds(d.getSeconds() + 20);
           }
           const obj = {
             controllerId: controller.controllerId,

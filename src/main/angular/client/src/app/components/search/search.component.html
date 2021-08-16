@@ -254,7 +254,7 @@
             </thead>
             <tbody>
             <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
-              <tr class="cursor" (click)="navToObject(data)">
+              <tr class="cursor" (click)="navToObject(data)" [ngClass]="{'disabled-row' : !data.permitted}">
                 <td *ngIf="isControllerId">{{data.controllerId}}</td>
                 <td>
                   <span *ngIf="!isWorkflow" class="fa fa-check-circle-o orange text-xs w-11"
@@ -266,7 +266,7 @@
                 </td>
                 <td>
                   <span class="show-in-single-line">
-                    <i *ngIf="isWorkflow" (click)="coreService.navToInventoryTab(data.path, 'WORKFLOW');$event.stopPropagation();"
+                    <i *ngIf="isWorkflow && data.permitted" (click)="coreService.navToInventoryTab(data.path, 'WORKFLOW');$event.stopPropagation();"
                        class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                     <span> {{data.path.substring(0, data.path.lastIndexOf('/')) || '/'}}</span>
                   </span>

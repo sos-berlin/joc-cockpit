@@ -284,7 +284,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         for (const j in controller.agents[i].entries) {
           if (controller.agents[i].entries[j].readyTime === controller.agents[i].entries[j].lastKnownTime) {
             const d = new Date(controller.agents[i].entries[j].readyTime);
-            controller.agents[i].entries[j].lastKnownTime = d.setMinutes(d.getSeconds() + 20);
+            controller.agents[i].entries[j].lastKnownTime = d.setSeconds(d.getSeconds() + 20);
           }
           const obj = {
             controllerId: controller.controllerId,

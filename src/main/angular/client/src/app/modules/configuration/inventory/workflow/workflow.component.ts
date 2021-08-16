@@ -26,6 +26,7 @@ import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {InventoryObject} from '../../../../models/enums';
+import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -197,6 +198,34 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   focusChange(): void {
     this.obj.script = false;
+  }
+
+  openJobWizard(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: JobWizardComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        jobs: this.jobs
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.selectedNode.job.executable.TYPE = 'InternalExecutable';
+        this.selectedNode.job.executable.className = result.executable.className;
+        if (this.selectedNode.job.executable.arguments && this.selectedNode.job.executable.arguments.length > 0) {
+          this.selectedNode.job.executable.arguments = result.executable.arguments.concat(this.selectedNode.job.executable.arguments);
+        } else {
+          this.selectedNode.job.executable.arguments = result.executable.arguments;
+        }
+        this.selectedNode.job.title = result.title;
+        this.selectedNode.job.documentationName = result.documentationName;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   showEditor(): void {
