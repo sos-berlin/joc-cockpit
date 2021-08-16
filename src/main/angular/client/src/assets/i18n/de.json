@@ -195,8 +195,8 @@
     "label.resources": "Ressourcen",
     "label.locks": "Ressourcen-Sperren",
     "label.lock": "Ressourcen-Sperre",
-    "label.boards": "Notice Boards",
-    "label.board": "Notice Board",
+    "label.boards": "Notizbretter",
+    "label.board": "Notizbrett",
     "label.calendars": "Kalender",
     "label.calendar": "Kalender",
     "label.agents": "Agenten",
@@ -943,7 +943,7 @@
     "label.replace": "Ersetzen",
     "label.deploymentDate": "Ausrolldatum",
     "label.documentation": "Dokumentation",
-    "label.toNotice": "Notizkennung des ausstellenden Auftrags",
+    "label.toNotice": "Notizkennung des notfizierenden Auftrags",
     "label.endOfLife": "Verfallsfrist der Notiz",
     "label.readingOrderToNoticeId": "Notizkennung des notifizierten Auftrags",
     "label.matchingDailyPlanDate": "Passendes Datum des Tagesplans",
@@ -1355,7 +1355,7 @@
       "label.job": "Job",
       "label.workflow": "Arbeitsablauf",
       "label.lock": "Ressourcen-Sperre",
-      "label.board": "Notice Board",
+      "label.board": "Notizbrett",
       "label.cluster": "Cluster",
       "label.agent": "Agent",
       "label.dailyPlan": "Tagesplan",
@@ -1541,7 +1541,7 @@
     "tab.every": "Wiederkehrende Tage"
   },
   "resource": {
-    "label.boards": "Notice Boards",
+    "label.boards": "Notizbretter",
     "label.locks": "Ressourcen-Sperren",
     "label.agentView": "Agenten",
     "label.agentJobExecution": "Agent Job-Ausführungen",
@@ -1588,6 +1588,14 @@
       "button.post": "Post Notice",
       "button.delete": "Delete Notice",
       "placeholder.enterNoticeId": "Enter Notice ID"
+      "label.postOrderToNoticeId": "Notiz für sendenden Auftrag",
+      "label.expectOrderToNoticeId": "Notic für wartenden Auftrag",
+      "label.endOfLife": "Verfallsfrist der Notiz",
+      "label.deploymentDate": "Ausrolldatum",
+      "label.boardsFound": "Notizbrett gefunden",
+      "label.boardFound": "Notizbrett gefunden",
+      "button.post": "Notiz senden",
+      "button.delete": "Notiz löschen"
     },
     "calendar": {
       "label.validity": "Gültigkeit",

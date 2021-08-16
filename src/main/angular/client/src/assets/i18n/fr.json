@@ -1355,7 +1355,7 @@
       "label.job": "Tâche",
       "label.workflow": "Workflow",
       "label.lock": "Verrou de ressource",
-      "label.board": "Notice Board",
+      "label.board": "Tableau de Condition",
       "label.cluster": "Cluster",
       "label.agent": "Agent",
       "label.dailyPlan": "Plan Quotidien",
@@ -1585,6 +1585,8 @@
       "label.noticeId": "Notice Id",
       "label.endOfLife": "End of Life",
       "label.expectingOrders": "Expecting Orders",
+      "label.boardsFound": "Tableaux de Condition found",
+      "label.boardFound": "Tableau de Condition found",
       "button.post": "Post Notice",
       "button.delete": "Delete Notice",
       "placeholder.enterNoticeId": "Enter Notice ID"
