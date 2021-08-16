@@ -22,7 +22,15 @@
           <span class="nav-text text-dark p-b-sm"><span translate>resource.label.locks</span></span>
         </a>
       </li>
-
+      <li class="nav-item dropdown-separator"
+          *ngIf="permission.currentController.noticeBoards.view && permission.currentController.noticeBoards.view">
+        <span class="separator"></span>
+      </li>
+      <li class="nav-item" *ngIf="permission.currentController.noticeBoards.view">
+        <a class="nav-link" [routerLink]="['/resources/boards']" [routerLinkActive]="['active']">
+          <span class="nav-text text-dark p-b-sm"><span translate>resource.label.boards</span></span>
+        </a>
+      </li>
       <li class="nav-item dropdown-separator" *ngIf="permission.joc.calendars.view && (permission.currentController.locks.view || permission.currentController.agents.view)">
         <span class="separator"></span>
       </li>

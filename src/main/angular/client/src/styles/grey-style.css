@@ -1359,6 +1359,11 @@ div.jsoneditor-value.jsoneditor-invalid {
 .highlighted {
   color: yellow;
 }
+
+.highlight-yellow-bg {
+  background: #959eaa;
+}
+
 /* coloring of JSON in tree mode */
 tr.jsoneditor-highlight,
 tr.jsoneditor-selected {

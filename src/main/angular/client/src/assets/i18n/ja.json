@@ -97,7 +97,7 @@
   "FILEORDERSOURCE": "ファイルオーダーソース",
   "JOBCLASS": "ジョブクラス",
   "JOBRESOURCE": "ジョブリソース",
-  "BOARD": "ボード",
+  "NOTICEBOARD": "ボード",
   "LOCK": "ロック",
   "WORKINGDAYSCALENDAR": "営業日カレンダー",
   "NONWORKINGDAYSCALENDAR": "休業日カレンダー",
@@ -195,6 +195,8 @@
     "label.resources": "リソース",
     "label.locks": "ロック",
     "label.lock": "ロック",
+    "label.boards": "Notice Boards",
+    "label.board": "Notice Board",
     "label.calendars": "カレンダー",
     "label.calendar": "カレンダー",
     "label.agents": "エージェント",
@@ -822,7 +824,7 @@
     "button.js7News": "JS7ニューズ",
     "button.js7Documentation": "JS7ドキュメント",
     "button.releaseNotes": "リリースノート",
-    "button.tutorials": "チュートリアル",
+    "button.gettingStarted": "Getting Started",
     "button.documentation": "ドキュメント",
     "button.resources": "リソース",
     "button.announcements": "アナウンス",
@@ -1352,6 +1354,7 @@
       "label.job": "ジョブ",
       "label.workflow": "ワークフロー",
       "label.lock": "ロック",
+      "label.board": "Notice Board",
       "label.cluster": "クラスター",
       "label.agent": "エージェント",
       "label.dailyPlan": "実行計画",
@@ -1372,6 +1375,7 @@
       "label.manage": "管理",
       "label.delete": "削除",
       "label.deploy": "配置",
+      "label.post": "post",
       "label.share": "共有",
       "label.view": "ビュー",
       "label.terminate": "終了",
@@ -1536,6 +1540,7 @@
     "tab.every": "繰返し日数"
   },
   "resource": {
+    "label.boards": "Notice Boards",
     "label.locks": "ロック",
     "label.agentView": "エージェント",
     "label.agentJobExecution": "エージェント実行ジョブ",
@@ -1565,6 +1570,17 @@
       "label.limit": "制限",
       "label.locksFound": "ロックがあります",
       "label.lockFound": "ロックがあります"
+    },
+    "board": {
+      "label.name": "Name",
+      "label.postOrderToNoticeId": "Notice ID for posting order",
+      "label.expectOrderToNoticeId": "Notice ID for expecting order",
+      "label.endOfLife": "End of Life of Notice",
+      "label.deploymentDate": "Deployment Date",
+      "label.boardsFound": "Notice Boards found",
+      "label.boardFound": "Notice Board found",
+      "button.post": "Post Notice",
+      "button.delete": "Delete Notice"
     },
     "calendar": {
       "label.validity": "有効期間",
@@ -1872,6 +1888,7 @@
     "button.addOrder": "オーダー追加",
     "button.exportInPng": "Pngエキスポート",
     "button.createForkListVariables": "Create New ForkList Variables",
+    "button.wizard": "ウイザード",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",
@@ -1913,7 +1930,19 @@
     "placeholder.className": "クラス名を入力",
     "placeholder.selectJobResources": "ジョブリソースを選択",
     "placeholder.enterCredentialKey": "Windows資格マネージャーから認証キーを入力",
-    "placeholder.final": "Final"
+    "placeholder.final": "Final",
+    "wizard": {
+      "label.new": "New",
+      "label.job": "Job",
+      "label.name": "Name",
+      "label.title": "Title",
+      "label.class": "Class",
+      "label.jobName": "Job Name",
+      "button.next": "Next",
+      "button.showDocumentation": "Show Documentation",
+      "button.addAnotherParameter": "Add Another Parameter",
+      "placeholder.enterJobName": "Enter Job Name"
+    }
   },
   "xml": {
     "label.assignedSchema": "適用スキーマ",

@@ -26,7 +26,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
     units : 'Milliseconds'
   };
   invalidMsg: string;
-  objectType = InventoryObject.BOARD;
+  objectType = InventoryObject.NOTICEBOARD;
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];

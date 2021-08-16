@@ -2563,6 +2563,10 @@ pre.log {
   width: 380px !important;
 }
 
+.w-620{
+  width: 620px !important;
+}
+
 .w-full {
   width: 100%;
 }
@@ -5806,6 +5810,11 @@ div.mxTooltip {
 
 #innertext span.highlight, #innertext .highlight {
   color: var(--gold) !important;
+}
+
+.highlight-yellow-bg {
+  background: #ffffe0;
+  width: 100%;
 }
 
 .plan-variables {

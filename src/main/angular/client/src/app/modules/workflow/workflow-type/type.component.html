@@ -113,8 +113,8 @@
         <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
         <span *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
-          <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice') && instruction.boardName">
-            ({{instruction.boardName}})
+          <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice') && instruction.noticeBoardName">
+            ({{instruction.noticeBoardName}})
           </span>
         </span>
         <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">

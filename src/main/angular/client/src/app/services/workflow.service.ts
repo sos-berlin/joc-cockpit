@@ -119,7 +119,7 @@ export class WorkflowService {
       obj.directory = node._directory;
       obj.regex = node._regex;
     } else if (type === 'PostNotice' || type === 'ExpectNotice') {
-      obj.boardName = node._boardName;
+      obj.noticeBoardName = node._noticeBoardName;
     } else if (type === 'Prompt') {
       obj.question = node._question;
     }
@@ -194,7 +194,7 @@ export class WorkflowService {
         }
       }
       if (type === 'ExpectNotice' || type === 'PostNotice') {
-        if (!value.boardName) {
+        if (!value.noticeBoardName) {
           return false;
         }
       }
@@ -529,8 +529,8 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'PostNotice') {
             _node.setAttribute('label', 'postNotice');
-            if (json.instructions[x].boardName !== undefined) {
-              _node.setAttribute('boardName', json.instructions[x].boardName);
+            if (json.instructions[x].noticeBoardName !== undefined) {
+              _node.setAttribute('noticeBoardName', json.instructions[x].noticeBoardName);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, self.postNotice);
@@ -556,8 +556,8 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'ExpectNotice') {
             _node.setAttribute('label', 'expectNotice');
-            if (json.instructions[x].boardName !== undefined) {
-              _node.setAttribute('boardName', json.instructions[x].boardName);
+            if (json.instructions[x].noticeBoardName !== undefined) {
+              _node.setAttribute('noticeBoardName', json.instructions[x].noticeBoardName);
             }
 
             _node.setAttribute('uuid', json.instructions[x].uuid);
@@ -976,11 +976,11 @@ export class WorkflowService {
         }
         return '<div class="workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>' + truncate(cell.getAttribute('jobName')) + '</div>';
       } else if (cell.value.tagName === 'PostNotice' || cell.value.tagName === 'ExpectNotice') {
-        const boardName = cell.getAttribute('boardName');
-        if (boardName) {
+        const noticeBoardName = cell.getAttribute('noticeBoardName');
+        if (noticeBoardName) {
           const edge = graph.getOutgoingEdges(cell)[0];
           if (edge) {
-            edge.setAttribute('boardName', boardName);
+            edge.setAttribute('noticeBoardName', noticeBoardName);
           }
         }
       } else if (cell.value.tagName === 'Order') {
@@ -1017,7 +1017,7 @@ export class WorkflowService {
         const count = cell.getAttribute('count');
         return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
-        const x = cell.getAttribute('label') || cell.getAttribute('boardName');
+        const x = cell.getAttribute('label') || cell.getAttribute('noticeBoardName');
         if (x) {
           if (cell.value.tagName === 'Connection') {
             if (x === 'then' || x === 'else') {

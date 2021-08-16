@@ -198,7 +198,8 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   private getOverviewData(groupByData): void {
     this.agents = [];
     let count = 0;
-    groupByData.forEach((item) => {
+    const reverseData = groupByData.reverse();
+    reverseData.forEach((item) => {
       const parentObj: any = {
         id: ++count,
         isParent: true,
@@ -237,7 +238,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.agents = this.agents.reverse();
   }
 
   private isAlreadyExist(value, data): boolean {
@@ -323,10 +323,8 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
             lastDate = this.viewDate;
             dur1 = (86400000 - moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asMilliseconds());
           }
-
           obj.total = ((differenceInMilliseconds(lastDate,
             this.filters.filter.startDate) + (1000 * 60 * 60 * 24)) - (dur1));
-          console.log('lastDate agent', lastDate, obj.total)
           obj.time = lastEntry.totalRunningTime;
           obj.value = Math.round((obj.time * 100) / obj.total);
           obj.hours = ((obj.total) / (1000 * 60 * 60 * 24)).toFixed(2);

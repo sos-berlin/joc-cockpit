@@ -1,0 +1,124 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht2">
+  <div class="padding p-b-0">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="box p-a m-t-xs">
+          <div class="table-responsive">
+            <nz-table
+              #ajaxTable
+              [nzSize]="'small'"
+              [nzBordered]="true"
+              [nzShowPagination]="false"
+              [nzData]="boards"
+              [nzLoading]="loading"
+              [nzShowSizeChanger]="false"
+            >
+              <thead>
+              <tr>
+                <th nzWidth="55px"><span translate>common.label.action</span></th>
+                <th><span translate>resource.board.label.name</span></th>
+                <th><span translate>common.label.path</span></th>
+                <th><span translate>resource.board.label.deploymentDate</span></th>
+                <th><span translate>common.label.status</span></th>
+                <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
+                <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
+                <th><span translate>resource.board.label.endOfLife</span></th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-template ngFor let-board [ngForOf]="ajaxTable.data">
+                <tr [ngClass]="{'light-bg':board.show}">
+                  <td *ngIf="permission.currentController && (permission.currentController.noticeBoards.post || permission.currentController.noticeBoards.delete)">
+                    <div class="btn-group dropdown">
+                      <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
+                        <i class="fa fa-ellipsis-h"></i>
+                      </button>
+                      <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
+                        <ul nz-menu>
+                          <li nz-menu-item *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
+                            <a (click)="post(board)" translate>resource.board.button.post</a>
+                          </li>
+                          <li nz-menu-item *ngIf="permission.currentController && permission.currentController.noticeBoards.delete">
+                            <a (click)="delete(board)" translate>resource.board.button.delete</a>
+                          </li>
+                        </ul>
+                      </nz-dropdown-menu>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="show-in-single-line w-full">
+                      <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                         *ngIf="!board.show" (click)="board.show = true;"></i>
+                      <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                         *ngIf="board.show" (click)="board.show = false;"></i>
+                      <i *ngIf="board.documentationName" (click)="coreService.showDocumentation(board.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                      <span [innerHtml]="board.name"></span>
+                      <i *ngIf="board.title"> - </i>
+                      <i class="text-muted" [innerHtml]="board.title"></i>
+                    </span>
+                  </td>
+                  <td><span [innerHtml]="board.path"></span></td>
+                  <td>
+                    <span [innerHtml]="board.versionDate | stringToDate"></span>
+                  </td>
+                  <td>
+                    <a class="label" *ngIf="board.state" [ngClass]="coreService.getColor(board.state.severity, 'bg')"
+                       [innerHtml]="board.state._text | translate"></a>
+                  </td>
+                  <td>{{board.postOrderToNoticeId}}</td>
+                  <td>{{board.expectOrderToNoticeId}}</td>
+                  <td>{{board.endOfLife}}</td>
+                </tr>
+                <tr *ngIf="board.show">
+                  <td colspan="8" style="padding:0 !important;" class="order-history-template0">
+                    <nz-table class="m-a-0 inner-table" #nestedWorkflowsTable [nzSize]="'small'"
+                              [nzData]="board.workflows" [nzShowPagination]="false">
+              <thead>
+              <tr>
+                <th colspan="8" class="text-left"><span translate>order.label.workflow</span></th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-template ngFor let-workflow
+                           [ngForOf]="nestedWorkflowsTable.data">
+                <tr>
+                  <td colspan="8">
+                    <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                       *ngIf="!workflow.show"
+                       (click)="workflow.show = true;"></i>
+                    <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                       *ngIf="workflow.show"
+                       (click)="workflow.show = false;"></i>
+                    <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                       class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                    <a class="text-hover-primary"
+                       (click)="coreService.showWorkflow(workflow.path, workflow.versionId);">{{workflow.path}} </a>
+                  </td>
+                </tr>
+              </ng-template>
+              </tbody>
+            </nz-table>
+            </td>
+            </tr>
+            </ng-template>
+            </tbody>
+            </nz-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

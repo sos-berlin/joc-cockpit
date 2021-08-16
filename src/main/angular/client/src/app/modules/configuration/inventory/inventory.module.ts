@@ -9,9 +9,9 @@ import {DatePipe} from '@angular/common';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NzDrawerModule} from 'ng-zorro-antd/drawer';
 import {InventoryRoutingModule} from './inventory-routing.module';
+import {InventoryService} from './inventory.service';
 import {SharedModule} from '../../shared/shared.module';
 import {WorkflowService} from '../../../services/workflow.service';
-import {InventoryService} from './inventory.service';
 import {CalendarService} from '../../../services/calendar.service';
 import {
   CreateFolderModalComponent, CreateObjectModalComponent,

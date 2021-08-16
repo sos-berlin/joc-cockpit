@@ -118,7 +118,8 @@
             </span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="((showViews && showViews.resources != undefined) ? showViews.resources : (permission.currentController && (permission.currentController.agents.view || permission.currentController.locks.view ||
+        <li class="nav-item" *ngIf="((showViews && showViews.resources != undefined) ? showViews.resources :
+        (permission.currentController && (permission.currentController.agents.view || permission.currentController.locks.view || permission.currentController.noticeBoards.view ||
                     permission.joc.documentations.view  || permission.joc.calendars.view)))">
           <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']" (click)="navigateToResource()">
             <span class="nav-text">

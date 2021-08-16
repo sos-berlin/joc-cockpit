@@ -88,7 +88,7 @@
   "FILEORDERSOURCE": "File Order Source",
   "JOBCLASS": "Job Class",
   "JOBRESOURCE": "Job Resource",
-  "BOARD": "Notice Board",
+  "NOTICEBOARD": "Notice Board",
   "LOCK": "Resource Lock",
   "WORKINGDAYSCALENDAR": "working day calendar",
   "NONWORKINGDAYSCALENDAR": "non-working day calendar",
@@ -195,6 +195,8 @@
     "label.resources": "Resources",
     "label.locks": "Resource Locks",
     "label.lock": "Resource Lock",
+    "label.boards": "Notice Boards",
+    "label.board": "Notice Board",
     "label.calendars": "Calendars",
     "label.calendar": "Calendar",
     "label.agents": "Agents",
@@ -1352,6 +1354,7 @@
       "label.job": "Job",
       "label.workflow": "Workflow",
       "label.lock": "Resource Lock",
+      "label.board": "Notice Board",
       "label.cluster": "Cluster",
       "label.agent": "Agent",
       "label.dailyPlan": "Daily Plan",
@@ -1372,6 +1375,7 @@
       "label.manage": "manage",
       "label.delete": "delete",
       "label.deploy": "deploy",
+      "label.post": "post",
       "label.share": "share",
       "label.view": "view",
       "label.terminate": "terminate",
@@ -1536,6 +1540,7 @@
     "tab.every": "Recurring Days"
   },
   "resource": {
+    "label.boards": "Notice Boards",
     "label.locks": "Resource Locks",
     "label.agentView": "Agents",
     "label.agentJobExecution": "Agent Job Executions",
@@ -1565,6 +1570,17 @@
       "label.limit": "Capacity",
       "label.locksFound": "Resource Locks found",
       "label.lockFound": "Resource Lock found"
+    },
+    "board": {
+      "label.name": "Name",
+      "label.postOrderToNoticeId": "Notice ID for posting order",
+      "label.expectOrderToNoticeId": "Notice ID for expecting order",
+      "label.endOfLife": "End of Life of Notice",
+      "label.deploymentDate": "Deployment Date",
+      "label.boardsFound": "Notice Boards found",
+      "label.boardFound": "Notice Board found",
+      "button.post": "Post Notice",
+      "button.delete": "Delete Notice"
     },
     "calendar": {
       "label.validity": "Validity",
@@ -1872,6 +1888,7 @@
     "button.addOrder": "Add Order",
     "button.exportInPng": "Export to PNG format",
     "button.createForkListVariables": "Create New ForkList Variables",
+    "button.wizard": "Wizard",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",
@@ -1913,7 +1930,19 @@
     "placeholder.className": "Enter Class Name",
     "placeholder.selectJobResources": "Select Job Resources",
     "placeholder.enterCredentialKey": "Enter credential key for Windows Credential Manager",
-    "placeholder.final": "Final"
+    "placeholder.final": "Final",
+    "wizard": {
+      "label.new": "New",
+      "label.job": "Job",
+      "label.name": "Name",
+      "label.title": "Title",
+      "label.class": "Class",
+      "label.jobName": "Job Name",
+      "button.next": "Next",
+      "button.showDocumentation": "Show Documentation",
+      "button.addAnotherParameter": "Add Another Parameter",
+      "placeholder.enterJobName": "Enter Job Name"
+    }
   },
   "xml": {
     "label.assignedSchema": "Assigned Schema",

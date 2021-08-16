@@ -620,6 +620,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: StepGuideComponent,
+        nzClassName: 'w-620',
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false

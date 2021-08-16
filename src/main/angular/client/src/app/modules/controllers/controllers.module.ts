@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
-import { NzPopoverModule } from 'ng-zorro-antd/popover';
-import { ClipboardModule } from 'ngx-clipboard';
+import {NzPopoverModule} from 'ng-zorro-antd/popover';
+import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../shared/shared.module';
 import {RouterModule, Routes} from '@angular/router';
 import {StartUpModalComponent} from '../start-up/start-up.component';

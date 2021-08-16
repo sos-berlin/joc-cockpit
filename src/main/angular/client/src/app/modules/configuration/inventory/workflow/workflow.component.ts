@@ -1734,7 +1734,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
         this.coreService.post(URL, obj).subscribe((res: any) => {
-          let data = type === InventoryObject.LOCK ? res.locks : res.boards || res.documentations;
+          let data = type === InventoryObject.LOCK ? res.locks : res.noticeBoards || res.documentations;
           for (let i = 0; i < data.length; i++) {
             const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = data[i].assignReference || data[i].name;
@@ -1755,7 +1755,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             this.lockTree = [...this.lockTree];
           } else if (type === 'DOCUMENTATION') {
             this.documentationTree = [...this.documentationTree];
-          } else if (type === InventoryObject.BOARD) {
+          } else if (type === InventoryObject.NOTICEBOARD) {
             this.boardTree = [...this.boardTree];
           }
           this.ref.detectChanges();
@@ -1774,14 +1774,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             this.getLimit();
           }
         }
-      } else if (type === InventoryObject.BOARD) {
-        if (this.selectedNode.obj.boardName1) {
-          if (this.selectedNode.obj.boardName !== this.selectedNode.obj.boardName1) {
-            this.selectedNode.obj.boardName = this.selectedNode.obj.boardName1;
+      } else if (type === InventoryObject.NOTICEBOARD) {
+        if (this.selectedNode.obj.noticeBoardName1) {
+          if (this.selectedNode.obj.noticeBoardName !== this.selectedNode.obj.noticeBoardName1) {
+            this.selectedNode.obj.noticeBoardName = this.selectedNode.obj.noticeBoardName1;
           }
         } else if (node.key && !node.key.match('/')) {
-          if (this.selectedNode.obj.boardName !== node.key) {
-            this.selectedNode.obj.boardName = node.key;
+          if (this.selectedNode.obj.noticeBoardName !== node.key) {
+            this.selectedNode.obj.noticeBoardName = node.key;
           }
         }
       } else if (type === 'DOCUMENTATION') {
@@ -1917,7 +1917,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.coreService.post('tree', {
           controllerId: this.schedulerId,
           forInventory: true,
-          types: [InventoryObject.BOARD]
+          types: [InventoryObject.NOTICEBOARD]
         }).subscribe((res) => {
           this.boardTree = this.coreService.prepareTree(res, false);
         });
@@ -6006,7 +6006,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'ExpectNotice' || self.selectedNode.type === 'PostNotice') {
             const edit1 = new mxCellAttributeChange(
-              obj.cell, 'boardName', self.selectedNode.newObj.boardName);
+              obj.cell, 'noticeBoardName', self.selectedNode.newObj.noticeBoardName);
             graph.getModel().execute(edit1);
             let timeout;
             if (self.selectedNode.newObj.timeout1) {
@@ -6207,7 +6207,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           obj.directory = cell.getAttribute('directory');
           obj.regex = cell.getAttribute('regex');
         } else if (cell.value.tagName === 'ExpectNotice' || cell.value.tagName === 'PostNotice') {
-          obj.boardName = cell.getAttribute('boardName');
+          obj.noticeBoardName = cell.getAttribute('noticeBoardName');
           const timeout = cell.getAttribute('timeout');
           if (timeout && timeout != 'null' && timeout != 'undefined') {
             obj.timeout1 = self.workflowService.convertDurationToString(timeout);

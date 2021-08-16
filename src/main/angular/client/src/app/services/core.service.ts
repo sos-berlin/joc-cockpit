@@ -23,6 +23,7 @@ export class CoreService {
     job: {width: 270, show: true},
     orderOverview: {show: true},
     lock: {width: 270, show: true},
+    board: {width: 270, show: true},
     calendar: {width: 270, show: true},
     documentation: {width: 270, show: true},
     inventory: {width: 300, show: true},
@@ -193,6 +194,14 @@ export class CoreService {
     this.tabs._resource.locks.currentPage = '1';
     this.tabs._resource.locks.expandedKeys = ['/'];
     this.tabs._resource.locks.selectedkeys = ['/'];
+    this.tabs._resource.boards = {};
+    this.tabs._resource.boards.filter = {};
+    this.tabs._resource.boards.filter.state = 'ALL';
+    this.tabs._resource.boards.filter.sortBy = 'id';
+    this.tabs._resource.boards.reverse = false;
+    this.tabs._resource.boards.currentPage = '1';
+    this.tabs._resource.boards.expandedKeys = ['/'];
+    this.tabs._resource.boards.selectedkeys = ['/'];
     this.tabs._resource.calendars = {};
     this.tabs._resource.calendars.filter = {};
     this.tabs._resource.calendars.filter.type = 'ALL';
@@ -377,6 +386,14 @@ export class CoreService {
     this.tempTabs._resource.locks.currentPage = '1';
     this.tempTabs._resource.locks.expandedKeys = ['/'];
     this.tempTabs._resource.locks.selectedkeys = ['/'];
+    this.tempTabs._resource.boards = {};
+    this.tempTabs._resource.boards.filter = {};
+    this.tempTabs._resource.boards.filter.state = 'ALL';
+    this.tempTabs._resource.boards.filter.sortBy = 'id';
+    this.tempTabs._resource.boards.reverse = false;
+    this.tempTabs._resource.boards.currentPage = '1';
+    this.tempTabs._resource.boards.expandedKeys = ['/'];
+    this.tempTabs._resource.boards.selectedkeys = ['/'];
     this.tempTabs._resource.calendars = {};
     this.tempTabs._resource.calendars.filter = {};
     this.tempTabs._resource.calendars.filter.type = 'ALL';
@@ -845,6 +862,8 @@ export class CoreService {
       link = host + 'history/order?orderId=' + encodeURIComponent(name) + '&workflow=' + encodeURIComponent(workflow);
     } else if (objType === 'lock' && name) {
       link = host + 'resources/locks/lock?name=' + encodeURIComponent(name);
+    } else if (objType === 'board' && name) {
+      link = host + 'resources/boards/board?name=' + encodeURIComponent(name);
     } else if (objType === 'fileTransfer' && name) {
       link = host + 'file_transfer/file_transfer?id=' + name;
     } else if (objType === 'calendar' && name) {

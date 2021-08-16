@@ -293,10 +293,10 @@
                  [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.boardName</label>
           <div class="col-md-8 col-lg-9 select-input-both"
-               [ngClass]="{'has-error' : ((boardName.dirty || boardName.touched) && boardName.invalid)}">
+               [ngClass]="{'has-error' : ((noticeBoardName.dirty || noticeBoardName.touched) && noticeBoardName.invalid)}">
             <input autocomplete="off" type="text" class="form-control" required
                    placeholder="{{'workflow.placeholder.selectBoard' | translate}}"
-                   name="boardName" #boardName="ngModel" [(ngModel)]="selectedNode.obj.boardName">
+                   name="noticeBoardName" #noticeBoardName="ngModel" [(ngModel)]="selectedNode.obj.noticeBoardName">
             <nz-tree-select
               name="lockNameSelect"
               nzNoAnimation
@@ -305,13 +305,13 @@
               [nzDropdownStyle]="{ 'max-height': '300px' }"
               nzShowSearch
               [nzAllowClear]="false"
-              [(ngModel)]="selectedNode.obj.boardName1"
-              (nzExpandChange)="onExpand($event, 'BOARD')"
+              [(ngModel)]="selectedNode.obj.noticeBoardName1"
+              (nzExpandChange)="onExpand($event, 'NOTICEBOARD')"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'BOARD', $event);">
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'NOTICEBOARD', $event);">
                   <div class="node-content-wrapper"
-                       [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.boardName">
+                       [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.noticeBoardName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                        class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -320,15 +320,15 @@
                 </div>
               </ng-template>
             </nz-tree-select>
-            <div *ngIf="(error && !boardName.touched) || boardName.invalid && (boardName.dirty || boardName.touched)"
+            <div *ngIf="(error && !noticeBoardName.touched) || noticeBoardName.invalid && (noticeBoardName.dirty || noticeBoardName.touched)"
                  class="text-danger help-block">
-              <div *ngIf="error || (boardName.errors && boardName.errors.required)">
+              <div *ngIf="error || (noticeBoardName.errors && noticeBoardName.errors.required)">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
           </div>
-          <div *ngIf="selectedNode.obj.boardName" class="pos-abt" style="margin-top: 3px; right: 5px">
-            <i (click)="navToObj(selectedNode.obj.boardName, 'BOARD')" class="fa fa-pencil cursor"></i>
+          <div *ngIf="selectedNode.obj.noticeBoardName" class="pos-abt" style="margin-top: 3px; right: 5px">
+            <i (click)="navToObj(selectedNode.obj.noticeBoardName, 'NOTICEBOARD')" class="fa fa-pencil cursor"></i>
           </div>
         </div>
       </div>

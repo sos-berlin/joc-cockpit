@@ -20,7 +20,13 @@ const routes: Routes = [
       {
         path: 'locks',
         loadChildren: () => import('./lock/lock.module').then(m => m.LockModule),
-        data: {breadcrumb: 'breadcrumb.label.locks'}},
+        data: {breadcrumb: 'breadcrumb.label.locks'}
+      },
+      {
+        path: 'boards',
+        loadChildren: () => import('./board/board.module').then(m => m.BoardModule),
+        data: {breadcrumb: 'breadcrumb.label.boards'}
+      },
       {
         path: 'calendars',
         loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarModule),

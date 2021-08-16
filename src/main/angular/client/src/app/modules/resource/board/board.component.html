@@ -1,0 +1,315 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right ">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+          <div class="inline">
+            <div class="btn-group dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
+                <span translate>common.label.sortBy</span>
+                <span class="text-primary">
+                  <span *ngIf="boardsFilters.filter.sortBy =='name'">
+                    {{'resource.board.label.name' | translate}}
+                    <i *ngIf="!boardsFilters.reverse" class="fa fa-caret-up"></i>
+                    <i *ngIf="boardsFilters.reverse" class="fa fa-caret-down"></i>
+                  </span>
+                  <span *ngIf="boardsFilters.filter.sortBy =='path'">
+                    {{'common.label.path' | translate}}
+                    <i *ngIf="!boardsFilters.reverse" class="fa fa-caret-up"></i>
+                    <i *ngIf="boardsFilters.reverse" class="fa fa-caret-down"></i>
+                  </span>
+                </span>
+              </button>
+              <nz-dropdown-menu #sortBy="nzDropdownMenu" >
+                <ul nz-menu>
+                  <li nz-menu-item  >
+                    <a (click)="sort('name')" translate>resource.board.label.name</a>
+                  </li>
+                  <li nz-menu-item  >
+                    <a (click)="sort('path')" translate>common.label.path</a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="sub-link">
+    <div class="row">
+      <div class="col-md-8">
+        <app-links></app-links>
+      </div>
+      <div class="col-md-4 text-right">
+        <button class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':boards.length>0 && pageView!='grid'}" (click)="collapseDetails()">
+          <i class="fa fa-compress text"></i>
+        </button>
+        <button class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':boards.length>0 && pageView!='grid'}" (click)="expandDetails()" >
+          <i class="fa fa-expand text" ></i>
+        </button>
+        <div class="search-box-field pull-right">
+          <label>
+            <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
+                   [(ngModel)]="boardsFilters.searchText">
+          </label>
+          <i [hidden]="!boardsFilters.searchText" class="fa fa-times search-close"
+             (click)="boardsFilters.searchText = '';searchInResult()"></i>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="scroll-y max-ht2">
+  <div class="padding p-b-0 p-l-0">
+    <div class="row">
+      <div class="col-sm-12">
+        <div appResizable [sideView]="sideView.board" id="leftPanel" class="sticky leftPanel resource">
+          <div *ngIf="tree.length>0">
+            <app-tree-nagivation [tree]="tree" [sideView]="sideView.board" [defaultSelectedKeys]="boardsFilters.selectedkeys" [defaultExpandedKeys]="boardsFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+           </div>
+        </div>
+        <div id="rightPanel">
+          <div class="hide" [ngClass]="{'show': isLoading}">
+            <div class="row " *ngIf="pageView=='grid' && data.length > 0" [hidden]="loading">
+              <div class="w-full" *ngFor="let item of data  | groupBy: 'path1'">
+                <div class="col-sm-12" style="margin-bottom: 10px">
+                  <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
+                </div>
+                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
+                     *ngFor="let board of item.value | orderBy: boardsFilters.filter.sortBy:boardsFilters.reverse">
+                  <div class="box card">
+                    <div class="box-body">
+                      <div class="text-left block-ellipsis">
+                        <span class="text-left">
+                          <i nz-icon nzType="gateway" class="text-sm"
+                              nzTheme="outline"></i>&nbsp;
+                          <i *ngIf="board.documentationName" (click)="coreService.showDocumentation(board.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                          <span [innerHtml]="board.name | highlight : boardsFilters.searchText"></span>
+                        </span>
+                      </div>
+                      <div class="btn-group dropdown pull-right abt-dropdown ">
+                        <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2" nzPlacement="bottomRight">
+                          <i class="text fa fa-ellipsis-h"></i></a>
+                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
+                          <ul nz-menu>
+                            <li nz-menu-item *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
+                              <a (click)="post(board)" translate>resource.board.button.post</a>
+                            </li>
+                            <li nz-menu-item *ngIf="permission.currentController && permission.currentController.noticeBoards.delete">
+                              <a (click)="delete(board)" translate>resource.board.button.delete</a>
+                            </li>
+                            <li nz-menu-item >
+                              <a (click)="coreService.copyLink('board',board.name)" translate>common.button.copyLinkToObject</a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                      <div class="text-sm text-left text-muted p-t-sm block-ellipsis" style="width: 99%">
+                        <span translate>resource.board.label.deploymentDate </span>:
+                        <span class="text-black-dk" [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"></span>
+                      </div>
+                      <div class="text-sm text-left text-muted p-t-xs">
+                        <span translate>common.label.status </span>:
+                        <span [ngClass]="coreService.getColor(board.state.severity, 'text')" [innerHtml]="board.state._text | translate | highlight : boardsFilters.searchText"></span>
+                      </div>
+                      <div class="text-sm text-left text-muted p-t-sm">
+                        <span translate>resource.board.label.postOrderToNoticeId </span>:
+                        <span class="text-black-dk" [innerHtml]="board.postOrderToNoticeId | highlight : boardsFilters.searchText"></span>
+                      </div>
+                      <div class="text-sm text-left text-muted p-t-sm">
+                        <span translate>resource.board.label.expectOrderToNoticeId </span>:
+                        <span class="text-black-dk" [innerHtml]="board.expectOrderToNoticeId | highlight : boardsFilters.searchText"></span>
+                      </div>
+                      <div class="text-sm text-left text-muted p-t-sm">
+                        <span translate>resource.board.label.endOfLife </span>:
+                        <span class="text-black-dk" [innerHtml]="board.endOfLife | highlight : boardsFilters.searchText"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="box p-a" *ngIf="pageView=='list' && tree.length > 0">
+              <div class="table-responsive">
+                <nz-table
+                  #ajaxTable
+                  [nzSize]="'small'"
+                  [nzPageSize]="boardsFilters.entryPerPage ||  preferences.entryPerPage"
+                  [nzPageIndex]="boardsFilters.currentPage"
+                  [nzBordered]="true"
+                  [nzShowPagination]="data.length > 0"
+                  [nzData]="data | orderBy: boardsFilters.filter.sortBy:boardsFilters.reverse"
+                  [nzLoading]="loading"
+                  [nzShowSizeChanger]="true"
+                  (nzPageIndexChange)="pageIndexChange($event)"
+                  (nzPageSizeChange)="pageSizeChange($event)"
+                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+                >
+                  <thead>
+                  <tr>
+                    <th nzWidth="55px"><span translate>common.label.action</span></th>
+                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.board.label.name</span>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'name' && !boardsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'name' && boardsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>common.label.path</span>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'path' && !boardsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'path' && boardsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                     <th (click)="sort('versionDate')" rowspan="2">
+                      <a><span class="p-r-xs" translate>resource.board.label.deploymentDate</span>
+                        <i *ngIf="boardsFilters.filter.sortBy == 'versionDate' && !boardsFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="boardsFilters.filter.sortBy == 'versionDate' && boardsFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('state._text')" rowspan="2">
+                      <a><span class="p-r-xs" translate>common.label.status</span>
+                        <i *ngIf="boardsFilters.filter.sortBy == 'state._text' && !boardsFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="boardsFilters.filter.sortBy == 'state._text' && boardsFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('postOrderToNoticeId')"><a><span class="p-r-xs" translate>resource.board.label.postOrderToNoticeId</span>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'postOrderToNoticeId' && !boardsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'postOrderToNoticeId' && boardsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('expectOrderToNoticeId')"><a><span class="p-r-xs" translate>resource.board.label.expectOrderToNoticeId</span>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'expectOrderToNoticeId' && !boardsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'expectOrderToNoticeId' && boardsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th (click)="sort('endOfLife')"><a><span class="p-r-xs" translate>resource.board.label.endOfLife</span>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'endOfLife' && !boardsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'endOfLife' && boardsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <ng-template ngFor let-board
+                               [ngForOf]="ajaxTable.data">
+                    <tr [ngClass]="{'light-bg':board.show}">
+                      <td>
+                        <div class="btn-group dropdown">
+                          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
+                            <i class="fa fa-ellipsis-h"></i>
+                          </button>
+                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
+                            <ul nz-menu>
+                              <li nz-menu-item *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
+                                <a (click)="post(board)" translate>resource.board.button.post</a>
+                              </li>
+                              <li nz-menu-item *ngIf="permission.currentController && permission.currentController.noticeBoards.delete">
+                                <a (click)="delete(board)" translate>resource.board.button.delete</a>
+                              </li>
+                              <li nz-menu-item >
+                                <a (click)="coreService.copyLink('board',board.name)" translate>common.button.copyLinkToObject</a>
+                              </li>
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="show-in-single-line w-full">
+                          <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                             *ngIf="!board.show"
+                             (click)="board.show = true;"></i>
+                          <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                             *ngIf="board.show"
+                             (click)="board.show = false;"></i>
+                          <i *ngIf="board.documentationName" (click)="coreService.showDocumentation(board.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                          <span [innerHtml]="board.name | highlight : boardsFilters.searchText"></span>
+                          <i *ngIf="board.title"> - </i>
+                          <i class="text-muted" [innerHtml]="board.title | highlight : boardsFilters.searchText"></i>
+                        </span>
+                      </td>
+                      <td><span [innerHtml]="board.path | highlight : boardsFilters.searchText"></span></td>
+                       <td>
+                        <span [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"></span>
+                      </td>
+                      <td>
+                        <span class="label" *ngIf="board.state" [ngClass]="coreService.getColor(board.state.severity, 'bg')"
+                           [innerHtml]="board.state._text | translate | highlight : boardsFilters.searchText"></span>
+                      </td>
+                      <td>
+                        <span [innerHtml]="board.postOrderToNoticeId | highlight : boardsFilters.searchText"></span>
+                      </td>
+                      <td>
+                        <span [innerHtml]="board.expectOrderToNoticeId | highlight : boardsFilters.searchText"></span>
+                      </td>
+                      <td>
+                        <span [innerHtml]="board.endOfLife | highlight : boardsFilters.searchText"></span>
+                      </td>
+                    </tr>
+                    <tr *ngIf="board.show">
+                      <td colspan="9" style="padding:0 !important;" class="order-history-template0">
+                        <nz-table class="m-a-0 inner-table" #nestedWorkflowsTable [nzSize]="'small'"
+                                  [nzData]="board.workflows" [nzShowPagination]="false">
+                          <thead>
+                          <tr>
+                            <th colspan="9" class="text-left"><span translate>order.label.workflow</span></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            <ng-template ngFor let-workflow
+                                         [ngForOf]="nestedWorkflowsTable.data">
+                              <tr>
+                                <td colspan="9">
+                                  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+                                     *ngIf="!workflow.show"
+                                     (click)="workflow.show = true;"></i>
+                                  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+                                     *ngIf="workflow.show"
+                                     (click)="workflow.show = false;"></i>
+                                  <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                                  <a class="text-hover-primary" (click)="coreService.showWorkflow(workflow.path, workflow.versionId);">{{workflow.path}} </a>
+                                </td>
+                              </tr>
+                            </ng-template>
+                          </tbody>
+                        </nz-table>
+                      </td>
+                    </tr>
+                  </ng-template>
+                  </tbody>
+                </nz-table>
+                <div class="w-half label-top"
+                     *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
+                  <span translate *ngIf="ajaxTable.data.length >1">resource.board.label.boardsFound</span>
+                  <span translate *ngIf="ajaxTable.data.length ==1">resource.board.label.boardFound</span>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="pageView=='grid' &&  isLoading && !loading  && data.length==0 && tree.length>0"
+                 class="text-center m-t h6">
+              <app-empty-data></app-empty-data>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t">
+          <app-empty-data></app-empty-data>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="spinner" *ngIf="loading || !isLoading">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>

@@ -187,7 +187,7 @@
                     <!--<i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color"
                        nzTheme="outline"></i>-->
                     <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
-                    <i *ngIf="node.origin.object == 'BOARD'" nz-icon nzType="gateway" class="icon-color"
+                    <i *ngIf="node.origin.object == 'NOTICEBOARD'" nz-icon nzType="gateway" class="icon-color"
                        nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color"
                        nzTheme="outline"></i>
@@ -232,7 +232,7 @@
           <app-job-resource [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
                          [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-job-resource>
         </div>
-        <div *ngIf="type == 'BOARD'">
+        <div *ngIf="type == 'NOTICEBOARD'">
           <app-board [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
                         [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-board>
         </div>
@@ -270,7 +270,7 @@
           <a (click)="newObject(node, 'JOBRESOURCE')" translate>inventory.button.newJobResource</a>
         </li>
         <li nz-menu-item *ngIf="!node.origin.dailyPlan">
-          <a (click)="newObject(node, 'BOARD')" translate>inventory.button.newBoard</a>
+          <a (click)="newObject(node, 'NOTICEBOARD')" translate>inventory.button.newBoard</a>
         </li>
         <li nz-menu-item *ngIf="!node.origin.dailyPlan">
           <a (click)="newObject(node, 'LOCK')" translate>inventory.button.newLock</a></li>

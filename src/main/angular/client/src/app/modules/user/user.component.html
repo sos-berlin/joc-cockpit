@@ -551,6 +551,20 @@
                   </div>
                 </div>
                 <div class="row m-t">
+                  <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.permission.label.board</span></div>
+                  <div class="row col-md-8 col-lg-9">
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.noticeBoards.view}"></i>&nbsp; <span
+                      translate>profile.permission.label.view</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.noticeBoards.post}"></i>&nbsp; <span
+                      translate>profile.permission.label.post</span></span>
+                    <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
+                                                            [ngClass]="{'fa-times text-black-lt': !permission.currentController.noticeBoards.delete}"></i>&nbsp; <span
+                      translate>profile.permission.label.delete</span></span>
+                  </div>
+                </div>
+                <div class="row m-t">
                   <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.permission.label.notification</span>
                   </div>
                   <div class="row col-md-8 col-lg-9">

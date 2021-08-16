@@ -1149,6 +1149,10 @@ span.cm-variable {
   color: yellow;
 }
 
+.highlight-yellow-bg{
+  background: #5c6774
+}
+
 /* coloring of JSON in tree mode */
 tr.jsoneditor-highlight,
 tr.jsoneditor-selected {

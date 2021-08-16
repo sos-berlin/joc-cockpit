@@ -132,6 +132,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.router.navigate(['/resources/locks']);
         return;
       } else {
+        resourceFilters.state = 'boards';
+      }
+    }
+    if (resourceFilters.state === 'boards') {
+      if (this.permission.currentController.noticeBoards.view) {
+        this.router.navigate(['/resources/boards']);
+        return;
+      } else {
         resourceFilters.state = 'calendars';
       }
     }

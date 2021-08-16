@@ -1167,6 +1167,11 @@ span.cm-variable-3, span.cm-type {
 .highlighted {
   color: yellow;
 }
+
+.highlight-yellow-bg{
+  background: #485d6f
+}
+
 tr.jsoneditor-highlight,
 tr.jsoneditor-selected {
   background-color: rgba(35, 52, 70, .35);

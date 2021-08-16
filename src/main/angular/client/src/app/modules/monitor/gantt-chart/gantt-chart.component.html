@@ -16,14 +16,14 @@
         [hidden]="task.isHidden">
         <td *ngIf="groupBy === 'DATE'">
           <span class="show-in-single-line">
-          <i class="fa fa-angle-down cursor fa-lg p-r-xs" [ngClass]="{ 'fa-angle-right': task.active }" *ngIf="task.isParent"
+          <i class="fa cursor fa-lg p-r-xs" [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }" *ngIf="task.isParent"
              (click)="onTaskClick(task)" aria-hidden="true"></i>
             {{ task.date}}
           </span>
         </td>
         <td *ngIf="groupBy === 'CONTROLLERID'">
           <span class="show-in-single-line">
-          <i class="fa fa-angle-down cursor fa-lg p-r-xs" [ngClass]="{ 'fa-angle-right': task.active }" *ngIf="task.isParent"
+          <i class="fa cursor fa-lg p-r-xs" [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }" *ngIf="task.isParent"
              (click)="onTaskClick(task)" aria-hidden="true"></i>
             {{ task.controllerId}}
           </span>

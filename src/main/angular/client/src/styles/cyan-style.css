@@ -1191,6 +1191,11 @@ span.cm-link {
 .highlighted {
   color: yellow;
 }
+
+.highlight-yellow-bg {
+  background: #004d69;
+}
+
 /* coloring of JSON in tree mode */
 tr.jsoneditor-highlight,
 tr.jsoneditor-selected {

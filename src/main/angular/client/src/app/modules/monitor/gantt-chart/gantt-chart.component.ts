@@ -52,11 +52,11 @@ export class GanttChartComponent implements OnChanges {
   }
 
   onTaskClick(clickedTask): void {
+    clickedTask.active = !clickedTask.active;
     if (clickedTask.isParent) {
       this.tasks.filter((task) => {
         if (task.parentID === clickedTask.id) {
           task.isHidden = !task.isHidden;
-          clickedTask.active = !clickedTask.active;
         }
       });
     }

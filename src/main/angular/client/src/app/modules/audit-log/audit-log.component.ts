@@ -81,7 +81,7 @@ export class SearchComponent implements OnInit {
   objectTypes = ['WORKFLOW',
     'FILEORDERSOURCE',
     'JOBRESOURCE',
-    'BOARD',
+    'NOTICEBOARD',
     'LOCK',
     'SCHEDULE',
     'WORKINGDAYSCALENDAR',

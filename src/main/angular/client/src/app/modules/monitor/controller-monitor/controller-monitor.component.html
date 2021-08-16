@@ -125,7 +125,7 @@
           <span translate>monitor.label.overview</span>
         </h3>
       </div>
-      <div class="box-body p-a overview" [hidden]="!isLoaded && ganttData.length === 0">
+      <div class="box-body p-a overview" *ngIf="isLoaded && ganttData.length > 0">
         <app-gantt-chart
           [dayStart]="'00:00'"
           [dayEnd]="'23:00'"
@@ -136,7 +136,7 @@
            [ngClass]="{'show': !isLoaded}">
         <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
       </div>
-      <div *ngIf="ganttData.length==0 && isLoaded" class="p-b">
+      <div *ngIf="ganttData.length==0 && isLoaded" class="p-b-lg p-t-lg">
         <div>
           <app-empty-data></app-empty-data>
         </div>

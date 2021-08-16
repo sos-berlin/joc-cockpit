@@ -1214,6 +1214,11 @@ div.CodeMirror-selected {
 .highlighted {
   color: yellow;
 }
+
+.highlight-yellow-bg {
+  background: #333;
+}
+
 /* dark styling of the editor */
 
 table.jsoneditor-search div.jsoneditor-frame {

@@ -2449,7 +2449,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: data.path,
           key: (KEY + 'Job_Resources$')
         },
-        {name: 'Boards', title: 'Boards', object: InventoryObject.BOARD, children: [], path: data.path, key: (KEY + 'Boards$')},
+        {name: 'Boards', title: 'Boards', object: InventoryObject.NOTICEBOARD, children: [], path: data.path, key: (KEY + 'Boards$')},
         {name: 'Locks', title: 'Locks', object: InventoryObject.LOCK, children: [], path: data.path, key: (KEY + 'Locks$')}
       ];
       dailyPlanObj.dailyPlanArr = [
@@ -2470,8 +2470,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           resObject = res.fileOrderSources;
         } else if (controllerObj.controllerArr[i].object === InventoryObject.JOBRESOURCE) {
           resObject = res.jobResources;
-        } else if (controllerObj.controllerArr[i].object === InventoryObject.BOARD) {
-          resObject = res.boards;
+        } else if (controllerObj.controllerArr[i].object === InventoryObject.NOTICEBOARD) {
+          resObject = res.noticeBoards;
         } else if (controllerObj.controllerArr[i].object === InventoryObject.LOCK) {
           resObject = res.locks;
         }
@@ -3698,7 +3698,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeObject(obj, list, configuration): void {
-    const valid = !(obj.type.match(/CALENDAR/) || obj.type === InventoryObject.SCHEDULE || obj.type === InventoryObject.BOARD
+    const valid = !(obj.type.match(/CALENDAR/) || obj.type === InventoryObject.SCHEDULE || obj.type === InventoryObject.NOTICEBOARD
       || obj.type === InventoryObject.WORKFLOW || obj.type === InventoryObject.FILEORDERSOURCE || obj.type === InventoryObject.JOBRESOURCE);
     const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (PATH && obj.type) {

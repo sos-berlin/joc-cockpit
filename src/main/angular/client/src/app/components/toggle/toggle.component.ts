@@ -27,8 +27,10 @@ export class ToggleComponent implements OnInit {
     this.views = {
       dailyPlan: this.view,
       workflow: this.view,
+      inventory: this.view,
       orderOverview: this.view,
       lock: this.view,
+      board: this.view,
       agent: this.view,
       documentation: this.view,
       calendar: this.view,
@@ -47,8 +49,7 @@ export class ToggleComponent implements OnInit {
     if (this.router.url === '/daily_plan') {
       this.pageView = this.views.dailyPlan;
     } else if (this.router.url === '/configuration/inventory') {
-      // this.pageView = this.views.inventory;
-      this.pageView = 'grid';
+      this.pageView = this.views.inventory;
     } else if (this.router.url === '/workflows') {
       this.pageView = this.views.workflow;
     } else if (this.router.url.match(/orders_overview/)) {
@@ -57,6 +58,8 @@ export class ToggleComponent implements OnInit {
       this.pageView = this.views.agent;
     } else if (this.router.url === '/resources/locks') {
       this.pageView = this.views.lock;
+    } else if (this.router.url === '/resources/boards') {
+      this.pageView = this.views.board;
     } else if (this.router.url === '/resources/calendars') {
       this.pageView = this.views.calendar;
     } else if (this.router.url === '/resources/documentations') {
@@ -73,7 +76,7 @@ export class ToggleComponent implements OnInit {
     if (this.router.url === '/daily_plan') {
       this.views.dailyPlan = view;
     } else if (this.router.url === '/inventory') {
-      this.views.joe = view;
+      this.views.inventory = view;
     } else if (this.router.url === '/workflows') {
       this.views.workflow = view;
     } else if (this.router.url.match(/orders_overview/)) {
@@ -82,6 +85,8 @@ export class ToggleComponent implements OnInit {
       this.views.agent = view;
     } else if (this.router.url === '/resources/locks') {
       this.views.lock = view;
+    } else if (this.router.url === '/resources/boards') {
+      this.views.board = view;
     } else if (this.router.url === '/resources/calendars') {
       this.views.calendar = view;
     } else if (this.router.url === '/resources/documentations') {
