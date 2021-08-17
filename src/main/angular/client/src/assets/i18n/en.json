@@ -1938,6 +1938,14 @@
     "placeholder.selectJobResources": "Select Job Resources",
     "placeholder.enterCredentialKey": "Enter credential key for Windows Credential Manager",
     "placeholder.final": "Final",
+    "findAndReplace": {
+      "label.find": "Find",
+      "label.replace": "Replace",
+      "label.findAndReplace": "Find and Replace Agents in the Workflow",
+      "button.findAndReplace": "Find and Replace",
+      "placeholder.selectFind": "Select  one or more Agents",
+      "placeholder.selectReplace": "select an Agent as a replacement for the assignment"
+    },
     "wizard": {
       "label.new": "New",
       "label.job": "Job",

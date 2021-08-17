@@ -39,24 +39,9 @@ export class CreateTokenModalComponent implements OnInit {
     }
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
-    this.dateFormat = this.getDateFormat(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
     this.token.timezone = this.preferences.zone;
     this.comments.radio = 'predefined';
-  }
-
-  private getDateFormat(dateFormat: string): string {
-    if (!dateFormat) {
-      return 'dd-MM-yyyy HH:mm:ss';
-    }
-    dateFormat = dateFormat.replace('YY', 'yy');
-    dateFormat = dateFormat.replace('YY', 'yy');
-    dateFormat = dateFormat.replace('D', 'd');
-    dateFormat = dateFormat.replace('D', 'd');
-    if (dateFormat.match('A')) {
-      dateFormat = dateFormat.replace('A', 'a');
-    }
-    dateFormat = dateFormat.trim();
-    return dateFormat;
   }
 
   onSubmit(): void {

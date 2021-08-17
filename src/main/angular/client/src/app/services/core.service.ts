@@ -587,6 +587,21 @@ export class CoreService {
     }
   }
 
+  getDateFormatWithTime(dateFormat: string): string {
+    if (!dateFormat) {
+      return 'dd-MM-yyyy HH:mm:ss';
+    }
+    dateFormat = dateFormat.replace('YY', 'yy');
+    dateFormat = dateFormat.replace('YY', 'yy');
+    dateFormat = dateFormat.replace('D', 'd');
+    dateFormat = dateFormat.replace('D', 'd');
+    if (dateFormat.match('A')) {
+      dateFormat = dateFormat.replace('A', 'a');
+    }
+    dateFormat = dateFormat.trim();
+    return dateFormat;
+  }
+
   getDateFormat(dateFormat: string): string {
     if (!dateFormat) {
       return '';
@@ -886,6 +901,39 @@ export class CoreService {
       type
     };
     this.router.navigate(['/configuration/inventory']);
+  }
+
+  showBoard(boardName): void{
+    this.post('inventory/path', {
+      objectType: 'NOTICEBOARD',
+      name: boardName
+    }).subscribe((res: any) => {
+      const pathArr = [];
+      const arr = res.path.split('/');
+      const workflowFilters = this.getResourceTab().boards;
+      workflowFilters.selectedkeys = [];
+      const len = arr.length - 1;
+      if (len > 1) {
+        for (let i = 0; i < len; i++) {
+          if (arr[i]) {
+            if (i > 0 && pathArr[i - 1]) {
+              pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+            } else {
+              pathArr.push('/' + arr[i]);
+            }
+          } else {
+            pathArr.push('/');
+          }
+        }
+      }
+      if (pathArr.length === 0) {
+        pathArr.push('/');
+      }
+      workflowFilters.expandedKeys = pathArr;
+      workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+      workflowFilters.expandedObjects = [res.path];
+      this.router.navigate(['/resources/boards']);
+    });
   }
 
   showWorkflow(workflow, versionId = null): void {

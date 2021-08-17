@@ -1,7 +1,7 @@
 <div *ngFor="let variable of order[type]"
      class="plan-variables">
   <span class="btn-group dropdown" *ngIf="order.state">
-    <button class="btn-drop more-option-h" nz-dropdown [nzDisabled]="!(order.state._text === 'PLANNED' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')"
+    <button class="btn-drop more-option-h" nz-dropdown [nzDisabled]="!(order.state._text === 'PLANNED' || order.state._text === 'SCHEDULED' || order.state._text === 'SUBMITTED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')"
             nzTrigger="click" [nzDropdownMenu]="export3"
             type="button">
       <i class="fa fa-ellipsis-h"></i>

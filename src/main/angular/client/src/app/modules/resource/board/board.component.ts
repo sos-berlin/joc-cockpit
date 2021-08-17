@@ -1,6 +1,8 @@
 import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
+import * as moment from 'moment';
+import {differenceInCalendarDays} from 'date-fns';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -20,6 +22,8 @@ export class PostModalComponent implements OnInit {
   @Input() controllerId: string;
   @Input() preferences: any;
   @Input() board: any;
+
+  viewDate = new Date();
   submitted = false;
   postObj: any = {};
   dateFormat: any;
@@ -29,17 +33,39 @@ export class PostModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
+    this.postObj.timeZone = this.coreService.getTimeZone();
+    this.postObj.at = 'now';
+  }
+
+  disabledDate = (current: Date): boolean => {
+    // Can not select days before today and today
+    return differenceInCalendarDays(current, this.viewDate) < 0;
   }
 
   onSubmit(): void {
     this.submitted = true;
-    this.postObj.controllerId = this.controllerId;
-    this.postObj.noticeBoardPath = this.board.path;
-    this.coreService.post('notice/post', this.postObj).subscribe(() => {
+    const obj: any = {
+      controllerId: this.controllerId,
+      noticeBoardPath: this.board.path,
+      noticeId: this.postObj.noticeId,
+      timeZone : this.postObj.timeZone
+    };
+    if (this.postObj.at === 'date') {
+      if (this.postObj.fromDate) {
+        obj.endOfLife = moment(this.postObj.fromDate).format('YYYY-MM-DD HH:mm:ss');
+      }
+    } else if (this.postObj.at === 'now') {
+      obj.endOfLife = 'now';
+    } else if (this.postObj.at === 'never') {
+      obj.endOfLife = 'never';
+    } else if (this.postObj.at === 'later') {
+      obj.endOfLife = 'now + ' + this.postObj.atTime;
+    }
+    this.coreService.post('notice/post', obj).subscribe((res) => {
       this.submitted = false;
-      this.activeModal.close('>>');
+      this.activeModal.close(res);
     }, () => {
       this.submitted = false;
     });
@@ -93,7 +119,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   }
 
   post(board): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: null,
       nzContent: PostModalComponent,
       nzClassName: 'lg',
@@ -105,6 +131,20 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        setTimeout(() => {
+          if (this.controllerId) {
+            this.coreService.post('notice/board', {
+              controllerId: this.controllerId,
+              noticeBoardPath: board.path
+            }).subscribe((res: any) => {
+              board.notices = res.noticeBoard.notices;
+            });
+          }
+        }, 500);
+      }
     });
   }
 
@@ -124,13 +164,18 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
-        console.log(result);
         this.coreService.post('notice/delete', {
-          controllerId : this.controllerId,
-          noticeBoardPath : board.path,
-          noticeId : notice.id
+          controllerId: this.controllerId,
+          noticeBoardPath: board.path,
+          noticeId: notice.id
         }).subscribe(() => {
-
+          for (let i = 0; i < board.notices.length; i++) {
+            if (board.notices[i].id === notice.id) {
+              board.notices.splice(i, 1);
+              break;
+            }
+          }
+          board.notices = [...board.notices];
         });
       }
     });
@@ -145,7 +190,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
             noticeBoardPath : this.name
           };
           this.coreService.post('notice/board', obj).subscribe((res: any) => {
-            this.boards[0] = res.noticeBoard;
+            this.boards[0].notices = res.noticeBoard.notices;
           });
           break;
         }
@@ -283,27 +328,37 @@ export class BoardComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       let flag = false;
+      const noticeBoardPaths = [];
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'BoardStateChanged' && args.eventSnapshots[j].path) {
           if (this.boards.length > 0) {
             for (let x = 0; x < this.boards.length; x++) {
               if (this.boards[x].path === args.eventSnapshots[j].path) {
-                const obj = {
-                  controllerId: this.schedulerIds.selected,
-                  noticeBoardPath: this.boards[x].path
-                };
-                this.coreService.post('notice/board', obj).subscribe((res: any) => {
-                  const board = res.noticeBoard;
-                  if (board) {
-                    this.boards[x].workflows = board.workflows;
-                  }
-                });
+                noticeBoardPaths.push(this.boards[x].path);
               }
             }
           }
         } else if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType === 'NOTICEBOARD') {
           flag = true;
         }
+      }
+      if (noticeBoardPaths && noticeBoardPaths.length) {
+        this.coreService.post('notice/boards', {
+          controllerId: this.schedulerIds.selected,
+          noticeBoardPaths
+        }).subscribe((res: any) => {
+          res.noticeBoards.forEach((value) => {
+            for (let x = 0; x < this.boards.length; x++) {
+              if (this.boards[x].path === value.path) {
+                this.boards[x].notices = value.notices;
+                break;
+              }
+            }
+          });
+          this.boards = [...this.boards];
+        }, () => {
+          this.loading = false;
+        });
       }
       if (flag) {
         this.initTree();
@@ -353,9 +408,6 @@ export class BoardComponent implements OnInit, OnDestroy {
   expandDetails(): void {
     this.data.forEach((value) => {
       value.show = true;
-/*      value.workflows.forEach((item) => {
-        item.show = true;
-      });*/
     });
   }
 
@@ -366,7 +418,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   post(board): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: null,
       nzContent: PostModalComponent,
       nzClassName: 'lg',
@@ -378,6 +430,20 @@ export class BoardComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        setTimeout(() => {
+          if (this.schedulerIds && this.schedulerIds.selected) {
+            this.coreService.post('notice/board', {
+              controllerId: this.schedulerIds.selected,
+              noticeBoardPath: board.path
+            }).subscribe((res: any) => {
+              board.notices = res.noticeBoard.notices;
+            });
+          }
+        }, 500);
+      }
     });
   }
 
@@ -397,13 +463,18 @@ export class BoardComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
-        console.log(result);
         this.coreService.post('notice/delete', {
-          controllerId : this.schedulerIds.selected,
-          noticeBoardPath : board.path,
-          noticeId : notice.id
+          controllerId: this.schedulerIds.selected,
+          noticeBoardPath: board.path,
+          noticeId: notice.id
         }).subscribe(() => {
-
+          for (let i = 0; i < board.notices.length; i++) {
+            if (board.notices[i].id === notice.id) {
+              board.notices.splice(i, 1);
+              break;
+            }
+          }
+          board.notices = [...board.notices];
         });
       }
     });

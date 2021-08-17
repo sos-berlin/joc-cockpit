@@ -13,19 +13,16 @@
       <div class="row">
         <div class="col-md-12" *ngIf="wizard.step === 1">
           <div class="form-group row"
-               [ngClass]="{ 'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique }">
+               [ngClass]="{ 'has-error' : ((name.dirty || name.touched) && name.invalid) }">
             <label class="col-sm-3 form-control-label" translate>workflow.wizard.label.jobName</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" name="name" #name="ngModel" required (blur)="checkJobName(null);"
+              <input type="text" class="form-control" name="name" #name="ngModel" required
                      placeholder="{{'workflow.wizard.placeholder.enterJobName' | translate}}" [(ngModel)]="job.newName">
               <div *ngIf="name.invalid && (name.dirty || name.touched)"
                    class="text-danger help-block">
                 <div *ngIf="(name.errors && name.errors.required)">
                   <div translate>common.message.requiredError</div>
                 </div>
-              </div>
-              <div class="help-block text-danger" *ngIf="!isUnique">
-                <div translate>common.message.uniqueError</div>
               </div>
             </div>
           </div>
@@ -150,9 +147,9 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary btn-sm"
-            [disabled]="!myForm.form.valid && !job.docName || !isUnique" (click)="ok()" translate>common.button.submit
+            [disabled]="!myForm.form.valid || !job.javaClass" (click)="ok()" translate>common.button.submit
     </button>
-    <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 1" [disabled]="!job.docName || !isUnique"
+    <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 1" [disabled]="!job.javaClass"
             (click)="next()" translate>workflow.wizard.button.next
     </button>
     <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 2"

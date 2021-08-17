@@ -9,8 +9,6 @@ import {CoreService} from '../../../../services/core.service';
   styleUrls: ['./job-wizard.component.scss']
 })
 export class JobWizardComponent implements OnInit {
-  @Input() jobs: any = [];
-
   preferences: any;
   wizard = {
     step: 1,
@@ -23,10 +21,8 @@ export class JobWizardComponent implements OnInit {
     sortBy: 'name',
     reverse: false
   };
-  childrens = [];
   jobList: any;
   job: any;
-  isUnique = true;
   loading = true;
 
   constructor(private coreService: CoreService, private activeModal: NzModalRef) {
@@ -103,51 +99,34 @@ export class JobWizardComponent implements OnInit {
   }
 
   ok(): void {
-    if (this.isUnique) {
-      const obj = {
-        name: this.job.newName,
-        title: this.job.title,
-        executable: {
-          TYPE: 'InternalExecutable',
-          className: this.job.javaClass,
-          arguments: []
-        },
-        documentationName: this.job.assignReference,
-      };
-      this.job.params.forEach(item => {
-        if (this.wizard.setOfCheckedValue.has(item.name)) {
-          obj.executable.arguments.push({name: item.name, value: item.newValue});
-        }
-      });
-      if (this.job.paramList && this.job.paramList.length > 0) {
-        for (const i in this.job.paramList) {
-          if (this.job.paramList[i].name) {
-            obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
-          }
+
+    const obj = {
+      name: this.job.newName,
+      title: this.job.title,
+      executable: {
+        TYPE: 'InternalExecutable',
+        className: this.job.javaClass,
+        arguments: []
+      },
+      documentationName: this.job.assignReference,
+    };
+    this.job.params.forEach(item => {
+      if (this.wizard.setOfCheckedValue.has(item.name)) {
+        obj.executable.arguments.push({name: item.name, value: item.newValue});
+      }
+    });
+    if (this.job.paramList && this.job.paramList.length > 0) {
+      for (const i in this.job.paramList) {
+        if (this.job.paramList[i].name) {
+          obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
         }
       }
-      this.activeModal.close(obj);
-    } else {
-      this.wizard.step = 1;
     }
+    this.activeModal.close(obj);
   }
 
   cancel(): void {
     this.activeModal.destroy();
-  }
-
-  checkJobName(): void {
-    this.isUnique = true;
-    if (!this.job.newName || this.job.newName === '') {
-      this.isUnique = false;
-      return;
-    }
-    for (const i in this.jobs) {
-      if (this.jobs[i].name === this.job.newName) {
-        this.isUnique = false;
-        break;
-      }
-    }
   }
 
   /*--------------- Checkbox functions -------------*/

@@ -204,8 +204,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <ng-template ngFor let-lock
-                               [ngForOf]="ajaxTable.data">
+                  <ng-template ngFor let-lock [ngForOf]="ajaxTable.data">
                     <tr [ngClass]="{'light-bg':lock.show}">
                       <td>
                         <div class="btn-group dropdown">
@@ -235,7 +234,12 @@
                           <i class="text-muted" [innerHtml]="lock.title | highlight : locksFilters.searchText"></i>
                         </span>
                       </td>
-                      <td><span [innerHtml]="lock.path | highlight : locksFilters.searchText"></span></td>
+                      <td>
+                        <span class="show-in-single-line">
+                          <i (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
+                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                          <span [innerHtml]="lock.path | highlight : locksFilters.searchText"></span>
+                        </span>
                        <td>
                         <span [innerHtml]="lock.versionDate | stringToDate | highlight : locksFilters.searchText"></span>
                       </td>

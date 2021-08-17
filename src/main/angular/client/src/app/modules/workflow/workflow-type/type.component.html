@@ -113,8 +113,11 @@
         <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
         <span *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
+          <span *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice')">: </span>
           <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice') && instruction.noticeBoardName">
-            ({{instruction.noticeBoardName}})
+            <i (click)="coreService.navToInventoryTab(instruction.noticeBoardName, 'NOTICEBOARD');"
+                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+            <a class="text-hover-primary" (click)="coreService.showBoard(instruction.noticeBoardName);" >{{instruction.noticeBoardName}}</a>
           </span>
         </span>
         <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">

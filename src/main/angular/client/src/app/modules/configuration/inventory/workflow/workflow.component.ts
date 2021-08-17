@@ -59,6 +59,26 @@ declare const $;
 const x2js = new X2JS();
 
 @Component({
+  selector: 'app-find-replace-modal',
+  templateUrl: './find-replace-dialog.html'
+})
+export class FindAndReplaceComponent {
+  @Input() agents: any = [];
+
+  object = {
+    replace: '',
+    finds: []
+  };
+
+  constructor(public activeModal: NzModalRef) {
+  }
+
+  onSubmit(): void {
+    this.activeModal.close(this.object)
+  }
+}
+
+@Component({
   selector: 'app-job-content',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-text-editor.html'
@@ -205,9 +225,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: JobWizardComponent,
       nzClassName: 'lg',
-      nzComponentParams: {
-        jobs: this.jobs
-      },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
@@ -222,6 +239,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           this.selectedNode.job.executable.arguments = result.executable.arguments;
         }
         this.selectedNode.job.title = result.title;
+        if (result.name) {
+          this.selectedNode.obj.jobName = result.name;
+          this.checkJobInfo();
+        }
         this.selectedNode.job.documentationName = result.documentationName;
         this.ref.detectChanges();
       }
@@ -1896,7 +1917,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       delete variable.value.final;
       variable.value.listParameters = [];
       this.addVariableToList(variable.value);
-    } else{
+    } else {
       variable.value.default = '';
       variable.value.final = '';
     }
@@ -2331,7 +2352,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  createForkListVariables(): void{
+  createForkListVariables(): void {
     this.forkListVariableObj = {
       create: true,
       name: '',
@@ -2359,7 +2380,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.updateOtherProperties('variable');
   }
 
-  editForkListVariables(data): void{
+  editForkListVariables(data): void {
     this.forkListVariableObj = this.coreService.clone(data);
     this.forkListVariableObj.oldName = this.coreService.clone(data.name);
   }
@@ -2401,7 +2422,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   }
 
-  cancel(): void{
+  cancel(): void {
     this.forkListVariableObj = {};
   }
 
@@ -3264,7 +3285,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 instructionArr = arr;
               }
             }
-          } if (connection[i]._type === 'endForkList') {
+          }
+          if (connection[i]._type === 'endForkList') {
             const endForkListInstructions = objects.EndForkList;
             let _node: any = {};
             if (endForkListInstructions) {
@@ -7207,7 +7229,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (cell.edges) {
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target.value.tagName === checkLabel) {
-              const _label = checkLabel === 'Join' ? 'join' :  checkLabel === 'EndForkList' ? 'endForkList' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
+              const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndForkList' ? 'endForkList' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
                 ? 'endRetry' : checkLabel === 'EndLock' ? 'endLock' : 'endTry';
               if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry' && cell.value.tagName !== 'Lock' && cell.value.tagName !== 'ForkList' && cell.value.tagName !== 'Catch') {
                 cell.edges[i].value.attributes[0].nodeValue = _label;
@@ -8270,7 +8292,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       data = noValidate;
     }
     this.checkJobInstruction(data);
-
     if (this.workflow.actual && !isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
       this.isStore = true;
       this.storeData(data);
@@ -8399,6 +8420,39 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }, (err) => {
       this.isStore = false;
+    });
+  }
+
+  findAndReplace(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: FindAndReplaceComponent,
+      nzComponentParams: {
+        agents: this.agents
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.jobs.forEach((job) => {
+          if (result.finds.length === 0 && !job.value.agentName) {
+            job.value.agentName = result.replace;
+          } else if (result.finds.length > 0 && job.value.agentName) {
+            if (result.finds.includes(job.value.agentName)) {
+              job.value.agentName = result.replace;
+            }
+          }
+          console.log(job.value.agentName, job.name);
+        });
+        const data = this.coreService.clone(this.workflow.configuration);
+        this.workflow.valid = this.modifyJSON(data, false, false);
+        if (!isEqual(this.workflow.actual, JSON.stringify(data))) {
+          this.isStore = true;
+          this.storeData(data);
+        }
+      }
     });
   }
 }

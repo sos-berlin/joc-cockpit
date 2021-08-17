@@ -242,7 +242,7 @@ export class LockComponent implements OnInit, OnDestroy {
           flag = true;
         }
       }
-      if(flag){
+      if (flag) {
         this.initTree();
       }
     }

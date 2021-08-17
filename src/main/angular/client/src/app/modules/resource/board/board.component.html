@@ -181,13 +181,13 @@
                         <i *ngIf="boardsFilters.filter.sortBy == 'state._text' && boardsFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('postOrderToNoticeId')"><a><span class="p-r-xs" translate>resource.board.label.postOrderToNoticeId</span>
+                    <th nzWidth="15%" (click)="sort('postOrderToNoticeId')"><a><span class="p-r-xs" translate>resource.board.label.postOrderToNoticeId</span>
                       <i *ngIf="boardsFilters.filter.sortBy == 'postOrderToNoticeId' && !boardsFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="boardsFilters.filter.sortBy == 'postOrderToNoticeId' && boardsFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('expectOrderToNoticeId')"><a><span class="p-r-xs" translate>resource.board.label.expectOrderToNoticeId</span>
+                    <th nzWidth="15%" (click)="sort('expectOrderToNoticeId')"><a><span class="p-r-xs" translate>resource.board.label.expectOrderToNoticeId</span>
                       <i *ngIf="boardsFilters.filter.sortBy == 'expectOrderToNoticeId' && !boardsFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="boardsFilters.filter.sortBy == 'expectOrderToNoticeId' && boardsFilters.reverse"
@@ -199,7 +199,7 @@
                       <i *ngIf="boardsFilters.filter.sortBy == 'endOfLife' && boardsFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('numOfNotices')"><a><span class="p-r-xs" translate>resource.board.label.numOfNotices</span>
+                    <th nzWidth="100px" (click)="sort('numOfNotices')"><a><span class="p-r-xs" translate>resource.board.label.numOfNotices</span>
                       <i *ngIf="boardsFilters.filter.sortBy == 'numOfNotices' && !boardsFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="boardsFilters.filter.sortBy == 'numOfNotices' && boardsFilters.reverse"
@@ -242,7 +242,12 @@
                           <i class="text-muted" [innerHtml]="board.title | highlight : boardsFilters.searchText"></i>
                         </span>
                       </td>
-                      <td><span [innerHtml]="board.path | highlight : boardsFilters.searchText"></span></td>
+                      <td>
+                        <span class="show-in-single-line">
+                          <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
+                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                          <span [innerHtml]="board.path | highlight : boardsFilters.searchText"></span>
+                        </span>
                        <td>
                         <span [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"></span>
                       </td>
@@ -295,7 +300,7 @@
                                   </div>
                                 </td>
                                 <td>{{notice.id}}</td>
-                                <td>{{notice.endOfLife}}</td>
+                                <td>{{notice.endOfLife | stringToDate}}</td>
                                 <td>{{notice.expectingOrders.length}}</td>
                               </tr>
                               <ng-container *ngIf="notice.expectingOrders.length > 0">

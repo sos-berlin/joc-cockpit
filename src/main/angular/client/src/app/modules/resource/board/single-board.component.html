@@ -33,10 +33,10 @@
                 <th><span translate>common.label.path</span></th>
                 <th><span translate>resource.board.label.deploymentDate</span></th>
                 <th><span translate>common.label.status</span></th>
-                <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
-                <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
+                <th nzWidth="15%"><span translate>resource.board.label.postOrderToNoticeId</span></th>
+                <th nzWidth="15%"><span translate>resource.board.label.expectOrderToNoticeId</span></th>
                 <th><span translate>resource.board.label.endOfLifeOfNotices</span></th>
-                <th><span translate>resource.board.label.numOfNotices</span></th>
+                <th nzWidth="100px"><span translate>resource.board.label.numOfNotices</span></th>
               </tr>
               </thead>
               <tbody>
@@ -68,7 +68,13 @@
                       <i class="text-muted" [innerHtml]="board.title"></i>
                     </span>
                   </td>
-                  <td><span [innerHtml]="board.path"></span></td>
+                  <td>
+                    <span class="show-in-single-line">
+                      <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
+                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                      <span [innerHtml]="board.path"></span>
+                    </span>
+                  </td>
                   <td>
                     <span [innerHtml]="board.versionDate | stringToDate"></span>
                   </td>
@@ -113,7 +119,7 @@
                             </div>
                           </td>
                           <td>{{notice.id}}</td>
-                          <td>{{notice.endOfLife}}</td>
+                          <td>{{notice.endOfLife | stringToDate}}</td>
                           <td>{{notice.expectingOrders.length}}</td>
                         </tr>
                         <ng-container *ngIf="notice.expectingOrders.length > 0">

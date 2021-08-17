@@ -24,7 +24,7 @@ import {
 import {TableComponent} from './table-data/table.component';
 import {
   ExpressionComponent, ImportComponent, JobComponent, ScriptEditorComponent,
-  WorkflowComponent
+  FindAndReplaceComponent, WorkflowComponent
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
@@ -39,7 +39,7 @@ import {EnvVariableValidator, LabelValidator} from '../../../directives/core.dir
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent,
   DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent,
   ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent,
-  PeriodComponent, AddRestrictionComponent, RunTimeComponent];
+  FindAndReplaceComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
 
 @NgModule({
   imports: [
@@ -69,8 +69,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     TableComponent,
     LabelValidator,
     EnvVariableValidator,
-    ...COMPONENTS,
-    JobWizardComponent
+    ...COMPONENTS
   ]
 })
 export class InventoryModule {

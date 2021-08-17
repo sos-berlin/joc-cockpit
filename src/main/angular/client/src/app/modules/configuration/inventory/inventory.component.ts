@@ -8,16 +8,16 @@ import {TranslateService} from '@ngx-translate/core';
 import {isEmpty, sortBy, groupBy, isArray, clone, extend, isEqual} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
+import {catchError} from 'rxjs/operators';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {InventoryService} from './inventory.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-import {catchError} from 'rxjs/operators';
-import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {InventoryObject} from '../../../models/enums';
 
 declare const $: any;

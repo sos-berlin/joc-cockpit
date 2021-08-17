@@ -385,7 +385,7 @@
                           <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="workflow.path | highlight : workflowFilters.searchText"></span>
-                       </span>
+                        </span>
                       </td>
                       <td>
                         <span [innerHtml]="workflow.versionDate | stringToDate | highlight : workflowFilters.searchText"></span>

@@ -1579,14 +1579,12 @@
       "label.expectOrderToNoticeId": "ID Annonce pour les Ordres en attente des affichages",
       "label.endOfLifeOfNotices": "Fin de vie de l'Annonce",
       "label.deploymentDate": "Date de Déploiement",
-      "label.boardsFound": "Conditions trouvées",
-      "label.boardFound": Condition trouvé",
+      "label.boardsFound": "Tableaux de Condition trouvés",
+      "label.boardFound": "Tableau de Condition trouvé",
       "label.numOfNotices": "Nombre des Conditions",
       "label.noticeId": "ID Affichage",
       "label.endOfLife": "fin de vie",
       "label.expectingOrders": "Ordres en attente",
-      "label.boardsFound": "Tableaux de Condition trouvés",
-      "label.boardFound": "Tableau de Condition trouvé",
       "button.post": "Afficher une Annonce",
       "button.delete": "Supprimer l'Annonce",
       "placeholder.enterNoticeId": "Entrer L'ID Annonce"
@@ -1940,6 +1938,14 @@
     "placeholder.selectJobResources": "Sélectionnez les Ressources de la taĉhe",
     "placeholder.enterCredentialKey": "Entrer la clé d'identification à partir du gestionnaire d'identification Windows",
     "placeholder.final": "Final",
+    "findAndReplace": {
+      "label.find": "Find",
+      "label.replace": "Replace",
+      "label.findAndReplace": "Find and Replace Agents in the Workflow",
+      "button.findAndReplace": "Find and Replace",
+      "placeholder.selectFind": "Select  one or more Agents",
+      "placeholder.selectReplace": "select an Agent as a replacement for the assignment"
+    },
     "wizard": {
       "label.new": "Nouvelle",
       "label.job": "Tâche",

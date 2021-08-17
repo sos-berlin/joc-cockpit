@@ -469,6 +469,12 @@
     </div>
     <div class="m-l-xs m-r-xs text-left" *ngIf="workflow.id && !selectedNode">
       <div class="box-body">
+        <div class="pos-abt" style="top: 8px; right: 22px" *ngIf="jobs && jobs.length > 0">
+          <button class="btn btn-default btn-sm" (click)="findAndReplace()">
+            <i class="fa fa-search-plus" aria-hidden="true"></i>
+            {{'workflow.findAndReplace.button.findAndReplace' | translate}}
+          </button>
+        </div>
         <div class="form-group row"
              [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'hide': fullScreen}">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.name' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"

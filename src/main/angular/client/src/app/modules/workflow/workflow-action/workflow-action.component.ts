@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {isEmpty, isArray} from 'underscore';
 import * as moment from 'moment';
+import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
 
@@ -17,6 +18,7 @@ export class AddOrderModalComponent implements OnInit {
   @Input() preferences: any;
   @Input() workflow: any;
 
+  viewDate = new Date();
   order: any = {};
   arguments: any = [];
   forkListVariables: any = [];
@@ -32,7 +34,7 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
@@ -83,6 +85,11 @@ export class AddOrderModalComponent implements OnInit {
     this.updateSelectItems();
   }
 
+  disabledDate = (current: Date): boolean => {
+    // Can not select days before today and today
+    return differenceInCalendarDays(current, this.viewDate) < 0;
+  }
+
   checkVariableType(argument): void {
     const obj = this.workflow.orderPreparation.parameters[argument.name];
     if (obj) {
@@ -122,12 +129,7 @@ export class AddOrderModalComponent implements OnInit {
       controllerId: this.schedulerId,
       orders: []
     };
-    if (this.order.fromDate && this.order.fromTime) {
-      this.order.fromDate.setHours(moment(this.order.fromTime).hours());
-      this.order.fromDate.setMinutes(moment(this.order.fromTime).minutes());
-      this.order.fromDate.setSeconds(moment(this.order.fromTime).seconds());
-      this.order.fromDate.setMilliseconds(0);
-    }
+
     const order: any = {workflowPath: this.workflow.path, orderName: this.order.orderId};
     if (this.order.at === 'now') {
       order.scheduledFor = 'now';

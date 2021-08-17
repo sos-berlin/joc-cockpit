@@ -564,6 +564,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
     const obj = this.coreService.clone(this.schedule.configuration);
     let isEmptyExist = false;
+    let isValid = true;
     obj.variableSets = obj.variableSets.filter(variableSet => {
       if (variableSet.orderName === '' || !variableSet.orderName) {
         if (isEmptyExist) {
@@ -586,6 +587,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               const listObj = {};
               item.actualList[i].forEach((data) => {
                 listObj[data.name] = data.value;
+                if (!data.value) {
+                  isValid = false;
+                }
               });
               if (!isEmpty(listObj)) {
                 variableSet.variables[item.name].push(listObj);
@@ -621,17 +625,19 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           delete obj.nonWorkingCalendars[i].type;
         }
       }
-      let isValid = false;
-      if (obj.workflowName && obj.calendars.length > 0) {
-        isValid = true;
+     
+      if (!(obj.workflowName && obj.calendars.length > 0)) {
+        isValid = false;
       }
-      for (const i in this.schedule.configuration.variableSets) {
-        for (let j = 0; j < this.schedule.configuration.variableSets[i].length; j++) {
-          const argu = this.schedule.configuration.variableSets[i].variables[j];
-          if (argu.isRequired) {
-            if (!argu.value && argu.value !== false && argu.value !== 0) {
-              isValid = false;
-              break;
+      if (isValid) {
+        for (const i in this.schedule.configuration.variableSets) {
+          for (let j = 0; j < this.schedule.configuration.variableSets[i].length; j++) {
+            const argu = this.schedule.configuration.variableSets[i].variables[j];
+            if (argu.isRequired) {
+              if (!argu.value && argu.value !== false && argu.value !== 0) {
+                isValid = false;
+                break;
+              }
             }
           }
         }
@@ -644,6 +650,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.history.push(JSON.stringify(this.schedule.configuration));
           this.indexOfNextAdd = this.history.length - 1;
         }
+        delete obj.workflowName1;
 
         this.coreService.post('inventory/store', {
           configuration: obj,
@@ -676,6 +683,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.schedule.configuration.variableSets = [];
       }
       this.updateVariableList();
+      this.saveJSON();
     });
   }
 
