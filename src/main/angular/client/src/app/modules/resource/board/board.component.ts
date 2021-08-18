@@ -36,7 +36,8 @@ export class PostModalComponent implements OnInit {
     this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
-    this.postObj.at = 'now';
+    this.postObj.at = 'date';
+    this.postObj.noticeId = this.coreService.getStringDate(null);
   }
 
   disabledDate = (current: Date): boolean => {
@@ -56,10 +57,6 @@ export class PostModalComponent implements OnInit {
       if (this.postObj.fromDate) {
         obj.endOfLife = moment(this.postObj.fromDate).format('YYYY-MM-DD HH:mm:ss');
       }
-    } else if (this.postObj.at === 'now') {
-      obj.endOfLife = 'now';
-    } else if (this.postObj.at === 'never') {
-      obj.endOfLife = 'never';
     } else if (this.postObj.at === 'later') {
       obj.endOfLife = 'now + ' + this.postObj.atTime;
     }

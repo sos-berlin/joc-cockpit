@@ -13,7 +13,7 @@
         <label class="col-sm-4 form-control-label" translate>resource.board.label.noticeId</label>
         <div class="col-sm-6">
           <input type="text" class="form-control" name="noticeId" placeholder="{{'resource.board.placeholder.enterNoticeId' | translate}}"
-                 [(ngModel)]="postObj.noticeId" required autofocus autocomplete="off" #noticeId="ngModel"/>
+                 [(ngModel)]="postObj.noticeId" required [appAutofocus]="true" autocomplete="off" #noticeId="ngModel"/>
           <div *ngIf="noticeId.invalid && (noticeId.dirty || noticeId.touched)" class="text-danger help-block">
             <div *ngIf="noticeId.errors.required" translate>
               common.message.requiredError
@@ -25,10 +25,8 @@
         <label class="col-sm-4 " translate>resource.board.label.endOfLife</label>
         <div class="col-md-8">
           <nz-radio-group name="at" [(ngModel)]="postObj.at">
-            <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
             <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
             <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
-            <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
           </nz-radio-group>
         </div>
       </div>
@@ -39,13 +37,22 @@
                  name="atTime" [(ngModel)]="postObj.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
           <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
             <div translate *ngIf="!time.valid">common.message.invalid</div>
+            <div *ngIf="time.errors.required" translate>
+              common.message.requiredError
+            </div>
           </div>
         </div>
       </div>
       <div class="form-group row" *ngIf="postObj.at == 'date'">
         <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime</label>
-        <div class="col-sm-6">
-          <nz-date-picker [nzDisabledDate]="disabledDate" nzShowTime [nzFormat]="dateFormat" name="date" [(ngModel)]="postObj.fromDate"></nz-date-picker>
+        <div class="col-sm-6" [ngClass]="{ 'has-error' : (date.dirty || date.touched) && date.invalid}">
+          <nz-date-picker required="" [nzDisabledDate]="disabledDate" nzShowTime [nzFormat]="dateFormat" name="date"
+                          #date="ngModel" [(ngModel)]="postObj.fromDate"></nz-date-picker>
+          <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
+            <div *ngIf="date.errors.required" translate>
+              common.message.requiredError
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group row">

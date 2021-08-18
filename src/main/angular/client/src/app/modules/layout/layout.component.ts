@@ -607,29 +607,58 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (this.router.url && !(this.router.url.match(/dashboard/) || this.router.url.match(/configuration\/inventory/))) {
         return;
       }
-      this.isPopupOpen = true;
-      if (localStorage.getItem('$SOS$GUIDESTEP') && localStorage.getItem('$SOS$GUIDESTEP') !== 'REMINDMELATER') {
-        return;
-      }
-      const date = localStorage.getItem('$SOS$REMINDMEAFTER');
-      if (date) {
-        if (parseInt(date, 10) > new Date().getTime()) {
+      let configuration: any = {};
+      this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe((res) => {
+        if (res.configurations[0]) {
+          configuration = res.configurations[0];
+          configuration.configurationItem = JSON.parse(res.configurations[0].configurationItem);
+        } else {
+          configuration.configurationItem = JSON.parse(res.defaultGlobals);
+        }
+        this.isPopupOpen = true;
+        if ((configuration.configurationItem.joc.welcome_got_it && configuration.configurationItem.joc.welcome_got_it.value)
+          || (configuration.configurationItem.joc.welcome_do_not_remind_me && configuration.configurationItem.joc.welcome_do_not_remind_me.value)) {
           return;
         }
-      }
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: StepGuideComponent,
-        nzClassName: 'w-620',
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        localStorage.setItem('$SOS$GUIDESTEP', result);
-        if (result === 'REMINDMELATER') {
-          localStorage.setItem('$SOS$REMINDMEAFTER', (new Date().setDate(new Date().getDate() + 1)).toString());
+        const date = localStorage.getItem('$SOS$REMINDMEAFTER');
+        if (date) {
+          if (parseInt(date, 10) > new Date().getTime()) {
+            return;
+          }
         }
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: StepGuideComponent,
+          nzClassName: 'w-620',
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result === 'REMINDMELATER') {
+            localStorage.setItem('$SOS$REMINDMEAFTER', (new Date().setDate(new Date().getDate() + 1)).toString());
+          } else {
+            localStorage.removeItem('$SOS$REMINDMEAFTER');
+            if (!configuration.configurationItem.joc.welcome_got_it) {
+              configuration.configurationItem.joc.welcome_got_it = {};
+              configuration.configurationItem.joc.welcome_do_not_remind_me = {};
+            }
+            configuration.configurationItem.joc.welcome_got_it.value = true;
+            configuration.configurationItem.joc.welcome_do_not_remind_me.value = true;
+            this.storeGlobalConfig(configuration);
+          }
+        });
+      });
+    }
+  }
+
+  private storeGlobalConfig(configuration): void {
+    if (this.permission.joc && this.permission.joc.administration.settings.manage) {
+      this.coreService.post('configuration/save', {
+        id: configuration.id || 0,
+        configurationType: 'GLOBALS',
+        configurationItem: JSON.stringify(configuration.configurationItem)
+      }).subscribe(() => {
       });
     }
   }

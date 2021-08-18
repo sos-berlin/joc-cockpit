@@ -45,13 +45,11 @@ export class JobWizardComponent implements OnInit {
   }
 
   selectJob(job): void {
-    const name = clone(this.job.newName);
     this.coreService.post('inventory/wizard/job', {
       assignReference: job.assignReference
     }).subscribe((res) => {
       this.job = res;
       this.job.paramList = [];
-      this.job.newName = name;
       this.wizard.setOfCheckedValue = new Set<string>();
       this.wizard.checked = false;
       this.wizard.indeterminate = false;
@@ -78,9 +76,6 @@ export class JobWizardComponent implements OnInit {
     if (!this.jobList) {
       this.getJitlJobs();
     }
-    if (!this.job.newName && this.job.docName) {
-      this.job.newName = clone(this.job.docName);
-    }
   }
 
   back(): void {
@@ -99,9 +94,7 @@ export class JobWizardComponent implements OnInit {
   }
 
   ok(): void {
-
     const obj = {
-      name: this.job.newName,
       title: this.job.title,
       executable: {
         TYPE: 'InternalExecutable',

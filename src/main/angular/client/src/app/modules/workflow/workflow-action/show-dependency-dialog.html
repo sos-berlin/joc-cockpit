@@ -7,9 +7,9 @@
   </button>
 </div>
 <div class="modal-body p-a">
-  <div class="form-group row">
-    <div class="col-md-12">
-      <div *ngFor="let expectedNotices of workflow.expectedNoticeBoards">
+  <div class="row">
+    <div class="col-md-12" *ngFor="let expectedNotices of workflow.expectedNoticeBoards">
+      <div class="p-l-sm m-b">
         <i nz-icon nzType="gateway" class="p-r-xs"
            nzTheme="outline"></i>
         <i (click)="navToInventoryTab(expectedNotices.name, 'NOTICEBOARD');"

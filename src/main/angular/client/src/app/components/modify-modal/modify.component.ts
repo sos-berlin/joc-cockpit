@@ -43,7 +43,7 @@ export class ChangeParameterModalComponent implements OnInit {
       }
     }
     this.updateVariableList();
-    if (this.variables.length === 0) {
+    if (this.variables.length === 0 && !this.variable) {
       this.addVariable();
     }
   }
@@ -74,7 +74,7 @@ export class ChangeParameterModalComponent implements OnInit {
               }
             }
           }
-        } else {
+        } else if (!this.variable || (this.variable && isArray(this.variable.value))){
           const actualList = [];
           if (val.listParameters) {
             if (isArray(val.listParameters)) {

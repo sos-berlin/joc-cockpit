@@ -1681,7 +1681,9 @@
       "show_view_resources": "Specifies that independently from user permissions the RESOURCES view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
       "show_view_history": "Specifies that independently from user permissions the HISTORY view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
       "show_view_auditlog": "Specifies that independently from user permissions the AUDIT LOG view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
-      "show_view_configuration": "Specifies that independently from user permissions the CONFIGURATION view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed."
+      "show_view_configuration": "Specifies that independently from user permissions the CONFIGURATION view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
+      "welcome_got_it": "Got it.",
+      "welcome_do_not_remind_me": "Do not remind me."
     }
   },
   "user": {

@@ -1681,7 +1681,9 @@
       "show_view_resources": "Spécifie qu'indépendamment des permissions de l'utilisateur, la vue Ressources est disponible (=true) ou est masquée (=false). Une valeur vide pour ce paramètre spécifie que les autorisations utilisateur déterminent si la vue est affichée.",
       "show_view_history": "Spécifie qu'indépendamment des droits de l'utilisateur, la vue Historique est disponible (=true) ou est masquée (=false). Une valeur vide pour ce paramètre spécifie que les autorisations utilisateur déterminent si la vue est affichée.",
       "show_view_auditlog": "Spécifie qu'indépendamment des droits de l'utilisateur, la vue Journal d'Audit est disponible (=true) ou est masquée (=false). Une valeur vide pour ce paramètre spécifie que les autorisations utilisateur déterminent si la vue est affichée.",
-      "show_view_configuration": "Spécifie qu'indépendamment des droits de l'utilisateur, la vue Configuration est disponible (=true) ou est masquée (=false). Une valeur vide pour ce paramètre spécifie que les autorisations utilisateur déterminent si la vue est affichée."
+      "show_view_configuration": "Spécifie qu'indépendamment des droits de l'utilisateur, la vue Configuration est disponible (=true) ou est masquée (=false). Une valeur vide pour ce paramètre spécifie que les autorisations utilisateur déterminent si la vue est affichée.",
+      "welcome_got_it": "Got it.",
+      "welcome_do_not_remind_me": "Do not remind me."
     }
   },
   "user": {

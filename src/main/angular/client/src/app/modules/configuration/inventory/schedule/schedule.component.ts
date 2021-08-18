@@ -445,6 +445,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         if (this.schedule.configuration.variableSets[prop].variables && this.schedule.configuration.variableSets[prop].variables.length > 0) {
           this.schedule.configuration.variableSets[prop].variables = this.schedule.configuration.variableSets[prop].variables.filter(item => {
             if (isArray(item.value)) {
+              if (item.value.length > 0) {
+                item.value = item.value.filter((k) => {
+                  return k.name;
+                });
+              }
               if (item.value.length === 0) {
                 item.value.push({name: '', type: 'String'});
               } else {
@@ -625,7 +630,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           delete obj.nonWorkingCalendars[i].type;
         }
       }
-     
       if (!(obj.workflowName && obj.calendars.length > 0)) {
         isValid = false;
       }

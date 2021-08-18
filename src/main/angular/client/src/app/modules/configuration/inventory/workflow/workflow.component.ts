@@ -239,10 +239,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           this.selectedNode.job.executable.arguments = result.executable.arguments;
         }
         this.selectedNode.job.title = result.title;
-        if (result.name) {
-          this.selectedNode.obj.jobName = result.name;
-          this.checkJobInfo();
-        }
         this.selectedNode.job.documentationName = result.documentationName;
         this.ref.detectChanges();
       }

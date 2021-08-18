@@ -12,20 +12,6 @@
   <div class="modal-body p-a">
       <div class="row">
         <div class="col-md-12" *ngIf="wizard.step === 1">
-          <div class="form-group row"
-               [ngClass]="{ 'has-error' : ((name.dirty || name.touched) && name.invalid) }">
-            <label class="col-sm-3 form-control-label" translate>workflow.wizard.label.jobName</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" name="name" #name="ngModel" required
-                     placeholder="{{'workflow.wizard.placeholder.enterJobName' | translate}}" [(ngModel)]="job.newName">
-              <div *ngIf="name.invalid && (name.dirty || name.touched)"
-                   class="text-danger help-block">
-                <div *ngIf="(name.errors && name.errors.required)">
-                  <div translate>common.message.requiredError</div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="form-group row">
             <label class="col-sm-3 form-control-label" translate>workflow.wizard.label.title</label>
             <div class="col-sm-9">
