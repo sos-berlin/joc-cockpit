@@ -1575,8 +1575,8 @@
     "board": {
       "label.id": "ID",
       "label.name": "Name",
-      "label.postOrderToNoticeId": "Notizkennung für sendende Auftrag",
-      "label.expectOrderToNoticeId": "Notizkennung für wartende Auftrag",
+      "label.postOrderToNoticeId": "Notizkennung für sendenden Auftrag",
+      "label.expectOrderToNoticeId": "Notizkennung für wartenden Auftrag",
       "label.endOfLifeOfNotices": "Verfallsfrist der Notiz",
       "label.deploymentDate": "Ausrollldatum",
       "label.boardsFound": "Notizbrett gefunden",
