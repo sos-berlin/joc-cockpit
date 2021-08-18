@@ -133,7 +133,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary btn-sm"
-            [disabled]="!myForm.form.valid || !job.javaClass" (click)="ok()" translate>common.button.submit
+            [disabled]="!job.javaClass" (click)="ok()" translate>common.button.submit
     </button>
     <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 1" [disabled]="!job.javaClass"
             (click)="next()" translate>workflow.wizard.button.next

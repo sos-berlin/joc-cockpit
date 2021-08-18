@@ -9,6 +9,8 @@ import {CoreService} from '../../../../services/core.service';
   styleUrls: ['./job-wizard.component.scss']
 })
 export class JobWizardComponent implements OnInit {
+  @Input() existingJob: any;
+
   preferences: any;
   wizard = {
     step: 1,
@@ -152,11 +154,23 @@ export class JobWizardComponent implements OnInit {
   }
 
   checkRequiredParam(): void {
+    let existingArguments = [];
+    if (this.existingJob.executable.arguments && this.existingJob.executable.arguments.length > 0) {
+      existingArguments = this.coreService.clone(this.existingJob.executable.arguments);
+    }
     const arr2 = [];
     if (this.job.params.length > 0) {
       let arr = [];
       for (let i = 0; i < this.job.params.length; i++) {
-        if (this.job.params[i].defaultValue) {
+        for (let j = 0; j < existingArguments.length; j++) {
+          if (existingArguments[j].name === this.job.params[i].name) {
+            this.job.params[i].newValue = existingArguments[j].value;
+            this.wizard.setOfCheckedValue.add(existingArguments[j].name);
+            existingArguments.splice(j, 1);
+            break;
+          }
+        }
+        if (this.job.params[i].defaultValue && !this.job.params[i].newValue) {
           this.job.params[i].newValue = this.job.params[i].defaultValue;
         }
         if (this.job.params[i].required) {
@@ -166,6 +180,14 @@ export class JobWizardComponent implements OnInit {
         }
       }
       this.job.params = arr2.concat(arr);
+    }
+    if (existingArguments.length > 0) {
+      for (const j in existingArguments) {
+        this.job.paramList.push({
+          name: existingArguments[j].name,
+          newValue: existingArguments[j].value
+        });
+      }
     }
   }
 }

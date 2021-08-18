@@ -1956,11 +1956,9 @@
       "label.name": "Nom",
       "label.title": "Titre",
       "label.class": "Classe",
-      "label.jobName": "Nom de la Tâche",
       "button.next": "Suivant",
       "button.showDocumentation": "Afficher la Documentation",
-      "button.addAnotherParameter": "Ajouter un autre paramètre",
-      "placeholder.enterJobName": "Entrez le nom de la tâche"
+      "button.addAnotherParameter": "Ajouter un autre paramètre"
     }
   },
   "xml": {

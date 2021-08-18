@@ -161,6 +161,29 @@ export class RelativeDateValidator implements Validator {
 }
 
 @Directive({
+  selector: '[relativeDateValidatorRegex]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => RelativeDateRegexValidator), multi: true}
+  ]
+})
+export class RelativeDateRegexValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if ((!v || /^\s*$/i.test(v) || /^\s*[+]*(\d+)(s|m|h|d|w|M|y)\s*$/.test(v)
+      )) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      validateRelativeDateRegex: true
+    };
+  }
+}
+
+@Directive({
   selector: '[validateNumberArrayReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => NumberArrayRegexValidator), multi: true}
@@ -414,7 +437,7 @@ export class AutofocusDirective implements AfterViewInit {
           $('.ant-input-number input').focus();
         }
         this.el.nativeElement.focus();
-      }, 0);
+      }, 10);
     }
   }
 }

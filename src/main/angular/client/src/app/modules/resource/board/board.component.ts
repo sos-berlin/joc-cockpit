@@ -58,7 +58,7 @@ export class PostModalComponent implements OnInit {
         obj.endOfLife = moment(this.postObj.fromDate).format('YYYY-MM-DD HH:mm:ss');
       }
     } else if (this.postObj.at === 'later') {
-      obj.endOfLife = 'now + ' + this.postObj.atTime;
+      obj.endOfLife = this.postObj.atTime;
     }
     this.coreService.post('notice/post', obj).subscribe((res) => {
       this.submitted = false;

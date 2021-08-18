@@ -1956,11 +1956,9 @@
       "label.name": "Name",
       "label.title": "Title",
       "label.class": "Class",
-      "label.jobName": "Job Name",
       "button.next": "Next",
       "button.showDocumentation": "Show Documentation",
-      "button.addAnotherParameter": "Add another Variable",
-      "placeholder.enterJobName": "Enter Job Name"
+      "button.addAnotherParameter": "Add another Variable"
     }
   },
   "xml": {

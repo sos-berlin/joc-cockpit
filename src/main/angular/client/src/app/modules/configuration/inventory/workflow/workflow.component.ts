@@ -225,6 +225,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: JobWizardComponent,
       nzClassName: 'lg',
+      nzComponentParams: {
+        existingJob: this.selectedNode.job
+      },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
@@ -233,11 +236,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       if (result) {
         this.selectedNode.job.executable.TYPE = 'InternalExecutable';
         this.selectedNode.job.executable.className = result.executable.className;
-        if (this.selectedNode.job.executable.arguments && this.selectedNode.job.executable.arguments.length > 0) {
-          this.selectedNode.job.executable.arguments = result.executable.arguments.concat(this.selectedNode.job.executable.arguments);
-        } else {
-          this.selectedNode.job.executable.arguments = result.executable.arguments;
-        }
+        this.selectedNode.job.executable.arguments = result.executable.arguments;
         this.selectedNode.job.title = result.title;
         this.selectedNode.job.documentationName = result.documentationName;
         this.ref.detectChanges();
