@@ -1023,7 +1023,7 @@
     "placeholder.valueReplaceBy": "Zu ersetzenden Wert angeben",
     "placeholder.toNotice": "Notizkennung des ausstellenden Auftrags angeben",
     "placeholder.endOfLife": "Verfallsfrist der Notiz angeben",
-    "placeholder.readingOrderToNoticeId": "Notizkennung des notifizierten Auftrags angeben",
+    "placeholder.readingOrderToNoticeId": "Notizkennung des wartenden Auftrags angeben",
     "placeholder.selectPredefinedExpression": "Vordefinierten Ausdruck auswählen",
     "message.workflowIsMissing": "Arbeitsablauf ist erforderlich",
     "message.directoryIsMissing": "Verzeichnis ist erforderlich",
@@ -1033,7 +1033,7 @@
     "message.includesIsMissing": "Einschließende Startzeitregel ist erforderlich",
     "message.uriIsMissing": "URL ist erforderlich",
     "message.toNoticeIsMissing": "Notiz des Ausstellers wird benötigt",
-    "message.readingOrderToNoticeIdIsMissing": "Notizkennung für notifizierten Auftrag muss angegeben werden",
+    "message.readingOrderToNoticeIdIsMissing": "Notizkennung für wartenden Auftrag muss angegeben werden",
     "message.nameIsNotValid": "Ungültiger Name",
     "message.invalidFile": "Keine gültige {{objectType}} Datei",
     "export": {
@@ -1190,7 +1190,7 @@
         "search": "Suche"
       },
       "placeholder": {
-        "search" : "Name oder Titel, z.B. '%search%'",
+        "search" : "Name oder Titel, z.B. '%suchtext%'",
         "selectFromTree": "Auswahl aus Ordner"
       }
     }
@@ -1229,7 +1229,7 @@
       "overview": "Übersicht",
       "statistics": "Statistik",
       "runningTime": "Laufzeit",
-      "inHours": "In Hours",
+      "inHours": "In Stunden",
       "totalDays": "{{count}} Tage",
       "date": "Datum",
       "shutdown": "außer Betrieb"
@@ -1804,8 +1804,8 @@
     "label.graceTimeout": "Toleranzfrist",
     "label.warnIfShorter": "Warnen bei kürzerer Dauer",
     "label.warnIfLonger": "Warnen bei längerer Dauer",
-    "label.board": "Board",
-    "label.boardPath": "Board Path",
+    "label.board": "Notizbrett",
+    "label.boardPath": "Pfad des Notizbretts",
     "label.predicate": "Prädikat",
     "label.operation": "Operation",
     "label.message": "Nachricht",
@@ -1873,7 +1873,7 @@
     "label.childToId": "Element der Listenvariable für Kennung des Zweigs",
     "label.createForkListVariable": "Listenvariable erstellen",
     "label.updateForkListVariable": "Listenvariable aktualisieren",
-    "label.showDependency": "Show dependency",
+    "label.showDependency": "Abhängigkeiten anzeigen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
     "button.actual": "Voreinstellung",
@@ -1893,7 +1893,7 @@
     "button.addArgument": "Argument hinzufügen",
     "button.showTabularView": "Tabellarische Ansicht zeigen",
     "button.showGraphicalView": "Graphische Ansicht zeigen",
-    "button.showDependency": "Show dependency",
+    "button.showDependency": "Abhängigkeiten anzeigen",
     "button.addOrder": "Auftrag hinzufügen",
     "button.exportInPng": "Exportieren in PNG Format",
     "button.createForkListVariables": "Listenvariablen erstellen",
@@ -1927,11 +1927,11 @@
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.emptyWorkflow": "Arbeitsablauf ist leer, mindestens eine Instruktion ist erforderlich",
     "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",
-    "message.invalidForkListInstruction": "ForkList Instruction can't be empty",
+    "message.invalidForkListInstruction": "ForkList-Instruktion darf nicht leer sein",
     "placeholder.selectAgentName": "Agentennamen auswählen",
     "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
     "placeholder.selectLock": "Kennung der Ressourcen-Sperre auswählen",
-    "placeholder.selectBoard": "Select Board",
+    "placeholder.selectBoard": "Notizbrett auswählen",
     "placeholder.duration": "Wert im Format eingeben: d/w/m/y/h oder hh:mm:ss oder Sekunden",
     "placeholder.enterPositiveNumber": "Nur positive Zahlen durch Komma getrennt angeben",
     "placeholder.expression": "Ausdruck angeben",
@@ -1941,24 +1941,24 @@
     "placeholder.enterCredentialKey": "Name des Schlüssels in der Windows Anmeldeinformationsverwaltung",
     "placeholder.final": "Final",
     "findAndReplace": {
-      "label.find": "Find",
-      "label.replace": "Replace",
-      "label.findAndReplace": "Find and Replace Agents in the Workflow",
-      "button.findAndReplace": "Find and Replace",
-      "placeholder.selectFind": "Select  one or more Agents",
-      "placeholder.selectReplace": "select an Agent as a replacement for the assignment"
+      "label.find": "Suchen",
+      "label.replace": "Ersetzen",
+      "label.findAndReplace": "Suchen und Ersetzen von Agenten im Arbeitsablauf",
+      "button.findAndReplace": "Suchen und Ersetzen",
+      "placeholder.selectFind": "Einen oder mehrere Agenten auswählen",
+      "placeholder.selectReplace": "Agenten als Ersatz für die Zuordnung auswählen"
     },
     "wizard": {
-      "label.new": "New",
+      "label.new": "Neu",
       "label.job": "Job",
       "label.name": "Name",
-      "label.title": "Title",
-      "label.class": "Class",
-      "label.jobName": "Job Name",
-      "button.next": "Next",
-      "button.showDocumentation": "Show Documentation",
-      "button.addAnotherParameter": "Add Another Parameter",
-      "placeholder.enterJobName": "Enter Job Name"
+      "label.title": "Titel",
+      "label.class": "Klasse",
+      "label.jobName": "Job-Name",
+      "button.next": "Weiter",
+      "button.showDocumentation": "Dokumentation anzeigen",
+      "button.addAnotherParameter": "Variable hinzufügen",
+      "placeholder.enterJobName": "Job-Namen angegeben"
     }
   },
   "xml": {

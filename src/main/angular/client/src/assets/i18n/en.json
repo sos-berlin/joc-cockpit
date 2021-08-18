@@ -1873,7 +1873,7 @@
     "label.childToId": "Element of list variable for branch ID",
     "label.createForkListVariable": "Create ForkList Variable",
     "label.updateForkListVariable": "Update ForkList Variable",
-    "label.showDependency": "Show dependency",
+    "label.showDependency": "Show dependencies",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
     "button.actual": "Default",
@@ -1893,7 +1893,7 @@
     "button.addArgument": "Add Argument",
     "button.showTabularView": "Show tabular view",
     "button.showGraphicalView": "Show graphical view",
-    "button.showDependency": "Show dependency",
+    "button.showDependency": "Show dependencies",
     "button.addOrder": "Add Order",
     "button.exportInPng": "Export to PNG format",
     "button.createForkListVariables": "Create New ForkList Variables",
@@ -1945,7 +1945,7 @@
       "label.replace": "Replace",
       "label.findAndReplace": "Find and Replace Agents in the Workflow",
       "button.findAndReplace": "Find and Replace",
-      "placeholder.selectFind": "Select  one or more Agents",
+      "placeholder.selectFind": "Select one or more Agents",
       "placeholder.selectReplace": "select an Agent as a replacement for the assignment"
     },
     "wizard": {
@@ -1957,7 +1957,7 @@
       "label.jobName": "Job Name",
       "button.next": "Next",
       "button.showDocumentation": "Show Documentation",
-      "button.addAnotherParameter": "Add Another Parameter",
+      "button.addAnotherParameter": "Add another Variable",
       "placeholder.enterJobName": "Enter Job Name"
     }
   },

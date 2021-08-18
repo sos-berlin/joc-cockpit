@@ -1541,7 +1541,7 @@
     "tab.every": "Jours Récurrents"
   },
   "resource": {
-    "label.boards": "Tablaux de Condition",
+    "label.boards": "Tableaux de Condition",
     "label.locks": "Verrous de ressource",
     "label.agentView": "Agents",
     "label.agentJobExecution": "Agent Exécution des Jobs",
