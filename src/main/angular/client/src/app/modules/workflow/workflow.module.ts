@@ -6,7 +6,7 @@ import {SingleWorkflowComponent, WorkflowComponent} from './workflow.component';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowRoutingModule} from './workflow-routing.module';
 import {WorkflowService} from '../../services/workflow.service';
-import {AddOrderModalComponent, WorkflowActionComponent} from './workflow-action/workflow-action.component';
+import {AddOrderModalComponent, ShowDependencyComponent, WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {WorkflowDetailComponent} from './workflow-detail/workflow-detail.component';
 import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-history/workflow-history.component';
 import {OrderListSidebarComponent} from './order-list-sidebar/order-list-sidebar.component';
@@ -32,6 +32,7 @@ import {InventoryService} from '../configuration/inventory/inventory.service';
     AddOrderModalComponent,
     WorkflowActionComponent,
     OrderListSidebarComponent,
+    ShowDependencyComponent,
     ScriptModalComponent,
     TypeComponent
   ],

@@ -7,7 +7,7 @@ import {Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
-import {AddOrderModalComponent} from '../workflow-action/workflow-action.component';
+import {AddOrderModalComponent, ShowDependencyComponent} from '../workflow-action/workflow-action.component';
 import {DataService} from '../../../services/data.service';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -267,6 +267,37 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.actual();
       }, 10);
     }
+  }
+
+  showDependency(): void {
+    if (!this.workFlowJson.expectedNoticeBoards) {
+      this.coreService.post('workflow/dependencies', {
+        controllerId: this.schedulerIds.selected,
+        workflowId: {
+          path: this.workFlowJson.path,
+          version: this.workFlowJson.versionId
+        }
+      }).subscribe((res) => {
+        this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
+        this.openModal(this.workFlowJson);
+      });
+    } else {
+      this.openModal(this.workFlowJson);
+    }
+  }
+
+  private openModal(workflow): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowDependencyComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        workflow
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   addOrder(): void {
