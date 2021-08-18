@@ -57,6 +57,10 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="showDependency()" *ngIf="workflow.hasExpectedNoticeBoards">
+              <i class="fa fa-codepen"></i>
+              &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDependency</span>
+            </button>
             <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="addOrder()" [disabled]="!workflow.isCurrentVersion"
                     *ngIf="permission.currentController && permission.currentController.orders.create"><i class="fa fa-plus-square"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>

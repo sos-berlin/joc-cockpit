@@ -73,8 +73,8 @@ export class CoreService {
         startMonth: this.tabs._monitor.currentDate.getMonth(),
         currentYear: this.tabs._monitor.currentDate.getFullYear(),
         currentMonth: this.tabs._monitor.currentDate.getMonth(),
-        startDate: new Date(),
-        endDate: new Date()
+        startDate: new Date().setHours(0, 0, 0, 0),
+        endDate: new Date().setHours(0, 0, 0, 0),
       }
     };
     this.tabs._monitor.agent = {
@@ -85,12 +85,12 @@ export class CoreService {
         startMonth: this.tabs._monitor.currentDate.getMonth(),
         currentYear: this.tabs._monitor.currentDate.getFullYear(),
         currentMonth: this.tabs._monitor.currentDate.getMonth(),
-        startDate: new Date(),
-        endDate: new Date()
+        startDate: new Date().setHours(0, 0, 0, 0),
+        endDate: new Date().setHours(0, 0, 0, 0),
       }
     };
     this.tabs._monitor.notification = {
-      filter : {
+      filter: {
         types: ['ERROR', 'WARNING', 'RECOVERED'],
         date: '0d',
         sortBy: 'created',
@@ -258,15 +258,14 @@ export class CoreService {
     this.tempTabs._monitor.tabIndex = 0;
     this.tempTabs._monitor.currentDate = new Date();
     this.tempTabs._monitor.controller = {
-
       filter: {
         view: 'Week',
         startYear: this.tempTabs._monitor.currentDate.getFullYear(),
         startMonth: this.tempTabs._monitor.currentDate.getMonth(),
         currentYear: this.tempTabs._monitor.currentDate.getFullYear(),
         currentMonth: this.tempTabs._monitor.currentDate.getMonth(),
-        startDate: new Date(),
-        endDate: new Date()
+        startDate: new Date().setHours(0, 0, 0, 0),
+        endDate: new Date().setHours(0, 0, 0, 0),
       }
     };
     this.tempTabs._monitor.agent = {
@@ -277,12 +276,12 @@ export class CoreService {
         startMonth: this.tabs._monitor.currentDate.getMonth(),
         currentYear: this.tabs._monitor.currentDate.getFullYear(),
         currentMonth: this.tabs._monitor.currentDate.getMonth(),
-        startDate: new Date(),
-        endDate: new Date()
+        startDate: new Date().setHours(0, 0, 0, 0),
+        endDate: new Date().setHours(0, 0, 0, 0)
       }
     };
     this.tempTabs._monitor.notification = {
-      filter : {
+      filter: {
         types: ['ERROR', 'WARNING', 'RECOVERED'],
         date: '0d',
         sortBy: 'created',
@@ -903,7 +902,7 @@ export class CoreService {
     this.router.navigate(['/configuration/inventory']);
   }
 
-  showBoard(boardName): void{
+  showBoard(boardName): void {
     this.post('inventory/path', {
       objectType: 'NOTICEBOARD',
       name: boardName

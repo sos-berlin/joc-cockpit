@@ -9,6 +9,36 @@ import {CoreService} from '../../../services/core.service';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
 
 @Component({
+  selector: 'app-show-dependency',
+  templateUrl: './show-dependency-dialog.html'
+})
+export class ShowDependencyComponent {
+  @Input() workflow: any;
+
+  constructor(private coreService: CoreService, private activeModal: NzModalRef) {
+  }
+
+  close(): void {
+    this.activeModal.destroy();
+  }
+
+  showWorkflow(workflow): void {
+    this.coreService.showWorkflow(workflow);
+    this.close();
+  }
+
+  showBoard(board): void{
+    this.coreService.showBoard(board);
+    this.close();
+  }
+
+  navToInventoryTab(data, type): void {
+    this.coreService.navToInventoryTab(data, type);
+    this.close();
+  }
+}
+
+@Component({
   selector: 'app-add-order',
   templateUrl: './add-order-dialog.html',
 })
@@ -304,11 +334,42 @@ export class WorkflowActionComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.isChanged.emit({flag: true, isOrderAdded : workflow});
+        this.isChanged.emit({flag: true, isOrderAdded: workflow});
         setTimeout(() => {
           this.isChanged.emit({flag: false});
         }, 5000);
       }
+    });
+  }
+
+  showDependency(workflow): void {
+    if (!workflow.expectedNoticeBoards) {
+      this.coreService.post('workflow/dependencies', {
+        controllerId: this.schedulerId,
+        workflowId: {
+          path: workflow.path,
+          version: workflow.versionId
+        }
+      }).subscribe((res) => {
+        workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
+        this.openModal(workflow);
+      });
+    } else {
+      this.openModal(workflow);
+    }
+  }
+
+  private openModal(workflow): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowDependencyComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        workflow
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 }

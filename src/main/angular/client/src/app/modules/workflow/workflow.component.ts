@@ -94,7 +94,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   hidePanelFuc(workflow): void {
     workflow.show = false;
     $('#workflowTableId').css('height', 150);
-    delete workflow['configuration'];
+    delete workflow.configuration;
   }
 
   viewOrders(workflow): void {
@@ -104,6 +104,14 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   navToDetailView(view, workflow): void {
     this.coreService.getWorkflowDetailTab().pageView = view;
     this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]);
+  }
+
+  addOrder(workflow): void {
+    this.actionChild.addOrder(workflow);
+  }
+
+  showDependency(workflow): void {
+    this.actionChild.showDependency(workflow);
   }
 
   private refresh(args): void {
@@ -328,6 +336,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.actionChild.addOrder(workflow);
   }
 
+  showDependency(workflow): void {
+    this.actionChild.showDependency(workflow);
+  }
+
   loadOrders(date): void {
     this.workflowFilters.filter.date = date;
     const request = {
@@ -411,10 +423,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   hidePanelFuc(workflow): void {
     workflow.show = false;
-    delete workflow['configuration'];
+    delete workflow.configuration;
     this.updatePanelHeight();
   }
-
 
   /* ---------------------------- Action ----------------------------------*/
   sort(key): void {
