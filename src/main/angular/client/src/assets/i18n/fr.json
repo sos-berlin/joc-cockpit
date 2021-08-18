@@ -821,7 +821,7 @@
     "button.js7Download": "JS7 Télécharger",
     "button.js7FAQ": "JS7 FAQ",
     "button.js7Forum": "JS7 Forum",
-    "button.js7Features": "JS7 Features",
+    "button.js7Features": "JS7 Fonctionnalités",
     "button.js7News": "JS7 Actualités",
     "button.js7Documentation": "JS7 Documentation",
     "button.releaseNotes": "Notes de Version",
@@ -907,7 +907,7 @@
     "label.locks": "Verrous de ressource",
     "label.calendars": "Calendriers",
     "label.lifetime": "Durée de Vie",
-    "label.fileName": "Nom de Fichier",
+    "label.fileName": "Nom du Fichier",
     "label.limit": "Limite",
     "label.maxProcesses": "Processus max.",
     "label.priority": "Priorité",
@@ -1286,7 +1286,7 @@
     "label.orderFound": "Ordre trouvé",
     "label.ordersFound": "Ordres trouvés",
     "label.lastOutcome": "Dernier résultat",
-    "label.variableList": "Variable List",
+    "label.variableList": "Liste des variables",
     "button.allOrders": "Tous les Ordres",
     "button.cancel": "Annuler",
     "button.startNow": "Démarrer Maintenant",
@@ -1397,7 +1397,7 @@
       "label.ecdsa": "ECDSA",
       "label.date": "Date",
       "label.distinguishedName": "Distinguished Name",
-      "label.caCertificate": "CA Certificat",
+      "label.caCertificate": "Autorité de Certification",
       "label.showCertificate": "Visualiser le Certificat",
       "label.x509Certificate": "X.509 Certificat",
       "label.keyAlgorithm": "Algorithme de Clé",
@@ -1682,8 +1682,8 @@
       "show_view_history": "Spécifie qu'indépendamment des droits de l'utilisateur, la vue Historique est disponible (=true) ou est masquée (=false). Une valeur vide pour ce paramètre spécifie que les autorisations utilisateur déterminent si la vue est affichée.",
       "show_view_auditlog": "Spécifie qu'indépendamment des droits de l'utilisateur, la vue Journal d'Audit est disponible (=true) ou est masquée (=false). Une valeur vide pour ce paramètre spécifie que les autorisations utilisateur déterminent si la vue est affichée.",
       "show_view_configuration": "Spécifie qu'indépendamment des droits de l'utilisateur, la vue Configuration est disponible (=true) ou est masquée (=false). Une valeur vide pour ce paramètre spécifie que les autorisations utilisateur déterminent si la vue est affichée.",
-      "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",
-      "welcome_do_not_remind_me": "Specifies that for the welcome window that offers defaults and examples for download no reminders should be active."
+      "welcome_got_it": "Spécifie que la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger ne doit plus être affichée.",
+      "welcome_do_not_remind_me": "Spécifie que pour la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger, aucun rappel ne doit être actif."
     }
   },
   "user": {
@@ -1895,7 +1895,7 @@
     "button.addArgument": "Ajouter un Argument",
     "button.showTabularView": "Afficher la vue tabulaire",
     "button.showGraphicalView": "Afficher la vue graphique",
-    "button.showDependency": "Show dependency",
+    "button.showDependency": "Afficher la dépendance",
     "button.addOrder": "Ajouter un Ordre",
     "button.exportInPng": "Exporter en format PNG",
     "button.createForkListVariables": "Créer les variables de tableau",
@@ -1943,12 +1943,12 @@
     "placeholder.enterCredentialKey": "Entrer la clé d'identification à partir du gestionnaire d'identification Windows",
     "placeholder.final": "Final",
     "findAndReplace": {
-      "label.find": "Find",
-      "label.replace": "Replace",
-      "label.findAndReplace": "Find and Replace Agents in the Workflow",
-      "button.findAndReplace": "Find and Replace",
-      "placeholder.selectFind": "Select  one or more Agents",
-      "placeholder.selectReplace": "select an Agent as a replacement for the assignment"
+      "label.find": "Trouver",
+      "label.replace": "Remplacer",
+      "label.findAndReplace": "Rechercher et Remplacer des Agents dans le workflow",
+      "button.findAndReplace": "Trouver et remplacer",
+      "placeholder.selectFind": "Sélectionnez un ou plusieurs Agents",
+      "placeholder.selectReplace": "sélectionner un Agent pour remplacer l'affectation"
     },
     "wizard": {
       "label.new": "Nouvelle",
