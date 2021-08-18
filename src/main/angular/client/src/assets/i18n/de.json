@@ -1682,8 +1682,8 @@
       "show_view_history": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht HISTORIE sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
       "show_view_auditlog": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht PRÜFPROTOKOLL sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
       "show_view_configuration": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht KONFIGURATION sichtbar ist (=true) oder nicht sichtbar ist (=false). Ein leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "welcome_got_it": "Got it.",
-      "welcome_do_not_remind_me": "Do not remind me."
+      "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
+      "welcome_do_not_remind_me": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht erneut zur Erinnerung angezeigt wird."
     }
   },
   "user": {
