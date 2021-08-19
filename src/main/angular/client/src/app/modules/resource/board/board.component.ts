@@ -116,7 +116,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   }
 
   post(board): void {
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: null,
       nzContent: PostModalComponent,
       nzClassName: 'lg',
@@ -128,20 +128,6 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        setTimeout(() => {
-          if (this.controllerId) {
-            this.coreService.post('notice/board', {
-              controllerId: this.controllerId,
-              noticeBoardPath: board.path
-            }).subscribe((res: any) => {
-              board.notices = res.noticeBoard.notices;
-            });
-          }
-        }, 500);
-      }
     });
   }
 
@@ -181,7 +167,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'BoardStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) {
+        if (args.eventSnapshots[j].eventType === 'NoticeBoardStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) {
           const obj = {
             controllerId: this.controllerId,
             noticeBoardPath : this.name
@@ -327,7 +313,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       let flag = false;
       const noticeBoardPaths = [];
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'BoardStateChanged' && args.eventSnapshots[j].path) {
+        if (args.eventSnapshots[j].eventType === 'NoticeBoardStateChanged' && args.eventSnapshots[j].path) {
           if (this.boards.length > 0) {
             for (let x = 0; x < this.boards.length; x++) {
               if (this.boards[x].path === args.eventSnapshots[j].path) {
@@ -372,6 +358,13 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).board;
     }
+    if (!this.pageView) {
+      if (sessionStorage.preferences) {
+        if (JSON.parse(sessionStorage.preferences).pageView) {
+          this.pageView = JSON.parse(sessionStorage.preferences).pageView;
+        }
+      }
+    }
     this.initTree();
   }
 
@@ -415,7 +408,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   post(board): void {
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: null,
       nzContent: PostModalComponent,
       nzClassName: 'lg',
@@ -427,20 +420,6 @@ export class BoardComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        setTimeout(() => {
-          if (this.schedulerIds && this.schedulerIds.selected) {
-            this.coreService.post('notice/board', {
-              controllerId: this.schedulerIds.selected,
-              noticeBoardPath: board.path
-            }).subscribe((res: any) => {
-              board.notices = res.noticeBoard.notices;
-            });
-          }
-        }, 500);
-      }
     });
   }
 

@@ -47,25 +47,25 @@ export class ToggleComponent implements OnInit {
       this.views = JSON.parse(localStorage.views);
     }
     if (this.router.url === '/daily_plan') {
-      this.pageView = this.views.dailyPlan;
+      this.pageView = this.views.dailyPlan || this.view;
     } else if (this.router.url === '/configuration/inventory') {
-      this.pageView = this.views.inventory;
+      this.pageView = this.views.inventory || this.view;
     } else if (this.router.url === '/workflows') {
-      this.pageView = this.views.workflow;
+      this.pageView = this.views.workflow || this.view;
     } else if (this.router.url.match(/orders_overview/)) {
-      this.pageView = this.views.orderOverview;
+      this.pageView = this.views.orderOverview || this.view;
     } else if (this.router.url === '/resources/agents') {
-      this.pageView = this.views.agent;
+      this.pageView = this.views.agent || this.view;
     } else if (this.router.url === '/resources/locks') {
-      this.pageView = this.views.lock;
+      this.pageView = this.views.lock || this.view;
     } else if (this.router.url === '/resources/boards') {
-      this.pageView = this.views.board;
+      this.pageView = this.views.board || this.view;
     } else if (this.router.url === '/resources/calendars') {
-      this.pageView = this.views.calendar;
+      this.pageView = this.views.calendar || this.view;
     } else if (this.router.url === '/resources/documentations') {
-      this.pageView = this.views.documentation;
+      this.pageView = this.views.documentation || this.view;
     } else if (this.router.url.match('/users/')) {
-      this.pageView = this.views.permission;
+      this.pageView = this.views.permission || this.view;
     } else {
       this.pageView = this.view;
     }

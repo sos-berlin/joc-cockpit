@@ -448,7 +448,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       }
       this.coreService.post('inventory/store', {
         configuration: this.board.configuration,
-        valid: !!(this.board.configuration.postOrderToNoticeId && this.board.configuration.expectOrderToNoticeId),
+        valid: !!(this.board.configuration.postOrderToNoticeId && this.board.configuration.expectOrderToNoticeId && this.board.configuration.endOfLife),
         id: this.board.id,
         objectType: this.objectType
       }).subscribe((res: any) => {
