@@ -764,6 +764,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               if (this.workflows[i].path === obj.workflowIds[j].path && this.workflows[i].versionId === obj.workflowIds[j].versionId) {
                 this.workflows[i].numOfOrders = 0;
                 this.workflows[i].orders = [];
+                this.workflows[i].orderReload = false;
                 this.workflows[i].ordersSummary = {};
                 obj.workflowIds.splice(j, 1);
                 break;
@@ -788,6 +789,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               } else {
                 this.workflows[i].ordersSummary[state] = 1;
               }
+              this.workflows[i].orderReload = true;
             }
           }
           if (this.sideBar.isVisible && this.workflows[i].path === this.sideBar.workflow &&

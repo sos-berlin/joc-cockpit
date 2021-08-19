@@ -148,7 +148,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         for (const i in controller.entries) {
           if (controller.entries[i].readyTime === controller.entries[i].lastKnownTime) {
             const d = new Date(controller.entries[i].readyTime);
-            controller.entries[i].lastKnownTime = d.setSeconds(d.getSeconds() + 20);
+            controller.entries[i].lastKnownTime = d.setSeconds(d.getSeconds() + 1);
           }
           const obj = {
             controllerId: controller.controllerId,
@@ -182,7 +182,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         let dur1 = 0;
         if (new Date(this.viewDate).getTime() < new Date(lastDate).getTime()) {
           lastDate = this.viewDate;
-          dur1 = (86400000 - moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asMilliseconds());
+          dur1 = (86400000 - moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
         }
 
         obj.total = ((differenceInMilliseconds(lastDate,
@@ -213,15 +213,15 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         };
         let dur = 0;
         values[i].value.forEach((time) => {
-          const startTimeInSec = time.isShutdown ? 86399 : moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+          const startTimeInSec = time.isShutdown ? 86399 : moment.duration(this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:ss')).asSeconds();
           let endTimeInSec = 86400;
           if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
-            endTimeInSec = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+            endTimeInSec = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:ss')).asSeconds();
           }
           if (time.lastKnownTime) {
             const shutdownDate = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD');
             if (this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD') === shutdownDate) {
-              endTimeInSec = moment.duration(this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+              endTimeInSec = moment.duration(this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:ss')).asSeconds();
             }
           }
           dur += (endTimeInSec - startTimeInSec);
@@ -233,7 +233,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
         let dur1;
         if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === item.key) {
-          dur1 = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS')).asSeconds();
+          dur1 = moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:ss')).asSeconds();
         }
         statusObj.value2 = (dur / (60 * 60));
         statusObj.value = ((dur1 ? (dur1 / (60 * 60)) : 24) - statusObj.value2);
@@ -279,18 +279,19 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         values[i].value.forEach((time) => {
           if (!time.isShutdown) {
             const statusObj = {
-              start: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:SS'),
+              start: this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'HH:mm:ss'),
               end: '25:00',
               color: 'rgb(122,185,122)'
             };
+
             const readyTimeDate = this.coreService.getDateByFormat(time.readyTime, this.preferences.zone, 'YYYY-MM-DD');
             if (time.lastKnownTime) {
               if (readyTimeDate === this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'YYYY-MM-DD')) {
-                statusObj.end = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:SS');
+                statusObj.end = this.coreService.getDateByFormat(time.lastKnownTime, this.preferences.zone, 'HH:mm:ss');
               }
             } else {
               if (this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD') === readyTimeDate) {
-                statusObj.end = this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:SS');
+                statusObj.end = this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:ss');
               }
             }
             obj.statusList.push(statusObj);

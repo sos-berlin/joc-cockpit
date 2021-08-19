@@ -16,6 +16,7 @@ export class TypeComponent implements OnChanges {
   @Input() permission: any;
   @Input() schedulerId: any;
   @Input() orderPreparation: any;
+  @Input() orderReload: boolean;
   @Output() update: EventEmitter<any> = new EventEmitter();
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
 
@@ -42,7 +43,7 @@ export class TypeComponent implements OnChanges {
         }
       }
     }
-    if (changes.orders) {
+    if (changes.orders || changes.orderReload) {
       this.updateOrder();
     }
   }
