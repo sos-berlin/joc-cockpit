@@ -1943,10 +1943,10 @@
     "placeholder.enterCredentialKey": "Enter credential key for Windows Credential Manager",
     "placeholder.final": "Final",
     "findAndReplace": {
-      "label.find": "Find",
+      "label.find": "Search",
       "label.replace": "Replace",
-      "label.findAndReplace": "Find and Replace Agents in the Workflow",
-      "button.findAndReplace": "Find and Replace",
+      "label.findAndReplace": "Search and Replace Agents in the Workflow",
+      "button.findAndReplace": "Search and Replace",
       "placeholder.selectFind": "Select one or more Agents",
       "placeholder.selectReplace": "select an Agent as a replacement for the assignment"
     },
