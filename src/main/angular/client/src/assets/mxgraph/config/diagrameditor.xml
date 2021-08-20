@@ -105,14 +105,6 @@
         <add as="perimeter" value="ellipsePerimeter"/>
         <add as="fillColor" value="transparent"/>
       </add>
-      <add as="order">
-        <add as="shape" value="ellipse"/>
-        <add as="perimeter" value="ellipsePerimeter"/>
-        <add as="fillColor" value="#ff944b"/>
-        <add as="strokeColor" value="#ff944b"/>
-        <add as="gradientColor" value="white"/>
-        <add as="rounded" value="1"/>
-      </add>
       <add as="if">
         <add as="shape" value="rhombus"/>
         <add as="perimeter" value="rhombusPerimeter"/>

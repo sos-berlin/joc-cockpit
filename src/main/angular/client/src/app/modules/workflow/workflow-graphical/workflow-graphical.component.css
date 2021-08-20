@@ -37,7 +37,7 @@
   display: none;
 }
 
-#outlineContainer {
+.outlineContainer {
   z-index: 9;
   position: absolute;
   overflow: hidden;
@@ -46,4 +46,8 @@
   width: 170px;
   height: 150px;
   border: 1px solid var(--border-color);
+}
+#outlineContainerM{
+  top: 16px;
+  right: 16px;
 }

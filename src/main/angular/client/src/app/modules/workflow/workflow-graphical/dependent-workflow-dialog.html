@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>workflow.label.showDependency</span> {{workflow.path}}
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<div class="modal-body p-a" style="min-height: calc(100vh - 120px); overflow: hidden">
+  <div class="text-center m-t-lg m-b-md" *ngIf="loading">
+    <nz-spin nzSimple></nz-spin>
+  </div>
+  <div *ngIf="!loading">
+    <app-workflow-graphical [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs" [isModal]="true"
+                            [controllerId]="controllerId" [orders]="workflow.orders" [orderPreparation]="workflow.orderPreparation"></app-workflow-graphical>
+  </div>
+</div>
+
+

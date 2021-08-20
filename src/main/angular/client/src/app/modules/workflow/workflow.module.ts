@@ -8,6 +8,7 @@ import {WorkflowRoutingModule} from './workflow-routing.module';
 import {WorkflowService} from '../../services/workflow.service';
 import {AddOrderModalComponent, ShowDependencyComponent, WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {WorkflowDetailComponent} from './workflow-detail/workflow-detail.component';
+import {DependentWorkflowComponent, WorkflowGraphicalComponent} from './workflow-graphical/workflow-graphical.component';
 import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-history/workflow-history.component';
 import {OrderListSidebarComponent} from './order-list-sidebar/order-list-sidebar.component';
 import {TypeComponent} from './workflow-type/type.component';
@@ -26,6 +27,8 @@ import {InventoryService} from '../configuration/inventory/inventory.service';
   declarations: [
     WorkflowComponent,
     WorkflowDetailComponent,
+    WorkflowGraphicalComponent,
+    DependentWorkflowComponent,
     WorkflowHistoryComponent,
     WorkflowTemplateComponent,
     SingleWorkflowComponent,

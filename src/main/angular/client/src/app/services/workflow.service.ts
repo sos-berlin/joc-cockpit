@@ -942,9 +942,9 @@ export class WorkflowService {
   }
 
   public convertValueToString(cell: any, graph: any): string {
-    function truncate(input: string): string {
-      if (input.length > 22) {
-        return input.substring(0, 22) + '...';
+    function truncate(input: string, num: number): string {
+      if (input.length > num) {
+        return input.substring(0, num) + '...';
       } else {
         return input;
       }
@@ -974,7 +974,7 @@ export class WorkflowService {
         if (docName) {
           className = 'show-block';
         }
-        return '<div class="workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>' + truncate(cell.getAttribute('jobName')) + '</div>';
+        return '<div class="workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>' + truncate(cell.getAttribute('jobName'), 22) + '</div>';
       } else if (cell.value.tagName === 'PostNotice' || cell.value.tagName === 'ExpectNotice') {
         const noticeBoardName = cell.getAttribute('noticeBoardName');
         if (noticeBoardName) {
@@ -983,6 +983,8 @@ export class WorkflowService {
             edge.setAttribute('noticeBoardName', noticeBoardName);
           }
         }
+      } else if (cell.value.tagName === 'Workflow') {
+        return '<div class="text-dark m-t-n-6"><i class="icon-workflows-icon p-r-xs"></i>' + truncate(cell.getAttribute('workflowName'), 16) + '</div>';
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
@@ -1058,6 +1060,12 @@ export class WorkflowService {
         });
         return '<b>' + name + '</b> : ' + (cell.getAttribute('jobName') || '-') + '</br>' +
           '<b>' + label + '</b> : ' + (cell.getAttribute('label') || '-');
+      } else if (cell.value.tagName === 'Workflow') {
+        let name = '', label = '';
+        this.translate.get('workflow.label.name').subscribe(translatedValue => {
+          name = translatedValue;
+        });
+        return '<b>' + name + '</b> : ' + (cell.getAttribute('workflowName') || '-');
       } else if (cell.value.tagName === 'Retry') {
         let maxTries = '', delay = '';
         this.translate.get('workflow.label.maxTries').subscribe(translatedValue => {
@@ -1262,8 +1270,8 @@ export class WorkflowService {
       || tagName === 'Lock' || tagName === 'Try');
   }
 
-  exportInPng(name): void {
-    const dom = $('#graph');
+  exportInPng(name, isModal = false): void {
+    const dom = isModal ? $('.graph2 #graph') : $('#graph');
     let ht = $(document).height();
     let wt = $(document).width();
     if (wt < dom.first()[0].scrollWidth) {
