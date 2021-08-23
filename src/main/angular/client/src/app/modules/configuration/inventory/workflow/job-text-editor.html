@@ -354,7 +354,7 @@
                         </div>
                       </div>
                       <div class="col-md-6 col-lg-6 m-b-sm">
-                        <nz-mention [nzSuggestions]="mentionValueList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
+                        <nz-mention [nzSuggestions]="mentionValueList" [nzNotFoundContent]="'common.message.noDataAvailable' | translate" [nzValueWith]="valueWith" [nzPrefix]="['$']">
                           <label class="w-full">
                             <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}"
                                    placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
@@ -679,7 +679,7 @@
                   </div>
                 </div>
                 <div class="col-md-6 col-lg-6 m-b-sm">
-                  <nz-mention [nzSuggestions]="variableList" [nzNotFoundContent]="'No data found'" [nzValueWith]="valueWith" [nzPrefix]="['$']">
+                  <nz-mention [nzSuggestions]="variableList" [nzNotFoundContent]="'common.message.noDataAvailable' | translate" [nzValueWith]="valueWith" [nzPrefix]="['$']">
                     <label class="w-full">
                       <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="argument.value" name="value{{i}}" (keypress)="onKeyPress($event, 'node')"
                              placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />

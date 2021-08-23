@@ -1463,6 +1463,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       objectTypes: ['JOBRESOURCE']
     }).subscribe((res: any) => {
       let map = new Map();
+      res.jobResources = sortBy(res.jobResources, 'name');
       res.jobResources.forEach((item) => {
         const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
         const obj = {

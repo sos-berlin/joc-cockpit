@@ -29,19 +29,13 @@
     <div class="form-group row" *ngIf="filter.radio == 'current'">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.from</label>
       <div class="col-sm-6">
-        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.from" name="from"></nz-date-picker>
-        <nz-time-picker [nzDisabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
-               class="input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime"
-               [nzPlaceHolder]="('common.placeholder.startTime' | translate)+' (HH:MM:SS)'" ></nz-time-picker>
+        <nz-date-picker nzShowTime [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat" [(ngModel)]="filter.from" name="from"></nz-date-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'current'">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.to</label>
       <div class="col-sm-6">
-        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [(ngModel)]="filter.to" [nzFormat]="dateFormat" name="to"></nz-date-picker>
-        <nz-time-picker [nzDisabled]="!filter.to" #toTime="ngModel" [nzFormat]="'HH:mm:ss'"
-               class="input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime"
-               [nzPlaceHolder]="('common.placeholder.endTime' | translate)+' (HH:MM:SS)'" ></nz-time-picker>
+        <nz-date-picker nzShowTime [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [(ngModel)]="filter.to" [nzFormat]="dateFormat" name="to"></nz-date-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">

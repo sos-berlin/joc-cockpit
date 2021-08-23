@@ -57,7 +57,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="showDependency()" *ngIf="workflow.hasExpectedNoticeBoards">
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="showDependency()" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards">
               <i class="fa fa-codepen"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDependency</span>
             </button>

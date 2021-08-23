@@ -13,7 +13,8 @@ import {
 import {ActivatedRoute} from '@angular/router';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {isEmpty, sortBy} from 'underscore';
+import {sortBy} from 'underscore';
+import {Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
@@ -22,7 +23,6 @@ import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
-import {Subscription} from 'rxjs';
 
 declare const mxUtils: any;
 declare const mxEvent: any;
@@ -51,9 +51,10 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
   @Input() controllerId: any;
   @Input() workflowFilters: any = {};
 
-  subscription: Subscription;
   workFlowJson: any = {};
   loading = true;
+
+  subscription: Subscription;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dataService: DataService,
               private workflowService: WorkflowService) {
@@ -63,14 +64,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.workFlowJson = this.coreService.clone(this.workflow);
-    this.workflowService.convertTryToRetry(this.workFlowJson, null, this.workflow.jobs);
-    this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
-    if (this.workflow.hasExpectedNoticeBoards) {
-      this.getDependency();
-    } else {
-      this.getOrders(this.workFlowJson);
-    }
+    this.getDependency();
   }
 
   ngOnDestroy(): void {
@@ -88,21 +82,23 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       }
     }
   }
-
+  
   private getDependency(): void {
-    if (!this.workFlowJson.expectedNoticeBoards) {
-      this.coreService.post('workflow/dependencies', {
-        controllerId: this.controllerId,
-        workflowId: {
-          path: this.workFlowJson.path,
-          version: this.workFlowJson.versionId
-        }
-      }).subscribe((res) => {
-        this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
-        this.getOrders(this.workflow);
-
-      });
-    }
+    this.coreService.post('workflow/dependencies', {
+      controllerId: this.controllerId,
+      workflowId: {
+        path: this.workflow.path,
+        version: this.workflow.versionId
+      }
+    }).subscribe((res) => {
+      this.workflow = res.workflow;
+      this.workFlowJson = this.coreService.clone(this.workflow);
+      this.workflowService.convertTryToRetry(this.workFlowJson, null, this.workflow.jobs);
+      this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
+      this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
+      this.workFlowJson.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
+      this.getOrders(this.workflow);
+    });
   }
 
   private getOrders(workflow): void {
@@ -570,8 +566,10 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
     // Enables snapping waypoints to terminals
     mxEdgeHandler.prototype.snapToTerminals = true;
 
+    mxConstants.CURSOR_MOVABLE_VERTEX = 'pointer';
     graph.setConnectable(false);
     graph.setHtmlLabels(true);
+    graph.setTooltips(true);
     graph.setDisconnectOnMove(false);
     graph.collapseToPreferredSize = false;
     graph.constrainChildren = false;
@@ -815,15 +813,21 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
 
   private updatePositions(mainJson): void {
     const self = this;
+    const doc = mxUtils.createXmlDocument();
     this.orderCountMap = new Map();
     const graph = this.graph;
 
-    function createWorkflowNode(worlflow, cell, doc): void {
+    function createWorkflowNode(worlflow, cell, type): void {
       const node = doc.createElement('Workflow');
       node.setAttribute('workflowName', worlflow.path.substring(worlflow.path.lastIndexOf('/') + 1));
       node.setAttribute('data', JSON.stringify(worlflow));
-      const w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, 'expect');
-      graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
+      node.setAttribute('type', type);
+      const w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, type);
+      if (type === 'expect') {
+        graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
+      } else {
+        graph.insertEdge(cell.parent, null, doc.createElement('Connection'), cell, w1);
+      }
     }
 
     function recursive(json) {
@@ -852,7 +856,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
             recursive(json.instructions[x]);
           }
           if (json.instructions[x].TYPE === 'ExpectNotice') {
-            const doc = mxUtils.createXmlDocument();
             const cell = self.vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
               if (self.workFlowJson.expectedNoticeBoards) {
@@ -868,7 +871,32 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
                       }
                     }
                     self.workFlowJson.expectedNoticeBoards[prop].value.forEach((workflow) => {
-                      createWorkflowNode(workflow, cell, doc);
+                      createWorkflowNode(workflow, cell, 'expect');
+                    });
+                    break;
+                  }
+                }
+              }
+            }
+          }
+
+          if (json.instructions[x].TYPE === 'PostNotice') {
+            const cell = self.vertixMap.get(JSON.stringify(json.instructions[x].position));
+            if (cell) {
+              if (self.workFlowJson.postNoticeBoards) {
+                for (const prop in self.workFlowJson.postNoticeBoards) {
+                  if (self.workFlowJson.postNoticeBoards[prop].name === json.instructions[x].noticeBoardName) {
+                    const outgoingEdges = graph.getOutgoingEdges(cell);
+                    if (outgoingEdges && outgoingEdges.length > 0) {
+                      for (const edge in outgoingEdges) {
+                        if (outgoingEdges[edge].target && outgoingEdges[edge].target.value && outgoingEdges[edge].target.value.tagName === 'ImplicitEnd') {
+                          graph.removeCells([outgoingEdges[edge].target], true);
+                          break;
+                        }
+                      }
+                    }
+                    self.workFlowJson.postNoticeBoards[prop].value.forEach((workflow) => {
+                      createWorkflowNode(workflow, cell, 'post');
                     });
                     break;
                   }

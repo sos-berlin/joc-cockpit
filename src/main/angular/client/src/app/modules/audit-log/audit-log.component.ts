@@ -99,7 +99,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
   }
 
   checkFilterName(): void {
@@ -512,37 +512,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   private parseDate(auditSearch, filter): any {
-
     if (auditSearch.from) {
-      const fromDate = new Date(auditSearch.from);
-      if (auditSearch.fromTime) {
-        const fromTime = new Date(auditSearch.fromTime);
-        fromDate.setHours(fromTime.getHours());
-        fromDate.setMinutes(fromTime.getMinutes());
-        fromDate.setSeconds(fromTime.getSeconds());
-      } else {
-        fromDate.setHours(0);
-        fromDate.setMinutes(0);
-        fromDate.setSeconds(0);
-      }
-      fromDate.setMilliseconds(0);
-      filter.dateFrom = fromDate;
+      filter.dateFrom = new Date(auditSearch.from);
     }
     if (auditSearch.to) {
-      const toDate = new Date(auditSearch.to);
-      if (auditSearch.toTime) {
-        const toTime = new Date(auditSearch.toTime);
-        toDate.setHours(toTime.getHours());
-        toDate.setMinutes(toTime.getMinutes());
-        toDate.setSeconds(toTime.getSeconds());
-
-      } else {
-        toDate.setHours(0);
-        toDate.setMinutes(0);
-        toDate.setSeconds(0);
-      }
-      toDate.setMilliseconds(0);
-      filter.dateTo = toDate;
+      filter.dateTo = new Date(auditSearch.to);
     }
     return filter;
   }
@@ -690,9 +664,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
-      from: new Date(),
-      to: new Date(),
-      toTime: new Date()
+      from: new Date().setHours(0, 0, 0, 0),
+      to: new Date()
     };
   }
 

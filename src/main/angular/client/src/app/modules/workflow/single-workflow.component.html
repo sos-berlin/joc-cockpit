@@ -76,7 +76,7 @@
                           [nz-tooltip]="'workflow.button.addOrder' | translate" (click)="addOrder(workflow)"></i>
                       <i class="cursor fa fa-list p-l-xs" [nz-tooltip]="'workflow.button.showTabularView' | translate" (click)="navToDetailView('list', workflow)"></i>
                       <i class="cursor fa fa-th p-l-xs p-r-xs" [nz-tooltip]="'workflow.button.showGraphicalView' | translate" (click)="navToDetailView('grid', workflow)"></i>
-                      <i *ngIf="workflow.hasExpectedNoticeBoards" class="cursor fa fa-codepen p-l-xs p-r-xs"
+                      <i *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards" class="cursor fa fa-codepen p-l-xs p-r-xs"
                              [nz-tooltip]="'workflow.button.showDependency' | translate" (click)="showDependency(workflow)"></i>
                       <i *ngIf="workflow.documentationName" (click)="coreService.showDocumentation(workflow.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                       <span class="text-dark">{{workflow.name}}</span>

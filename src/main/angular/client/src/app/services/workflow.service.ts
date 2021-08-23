@@ -974,7 +974,8 @@ export class WorkflowService {
         if (docName) {
           className = 'show-block';
         }
-        return '<div class="workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>' + truncate(cell.getAttribute('jobName'), 22) + '</div>';
+        return '<div class="workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
+          + truncate(cell.getAttribute('jobName'), 22) + '</div>';
       } else if (cell.value.tagName === 'PostNotice' || cell.value.tagName === 'ExpectNotice') {
         const noticeBoardName = cell.getAttribute('noticeBoardName');
         if (noticeBoardName) {
@@ -984,7 +985,9 @@ export class WorkflowService {
           }
         }
       } else if (cell.value.tagName === 'Workflow') {
-        return '<div class="text-dark m-t-n-6"><i class="icon-workflows-icon p-r-xs"></i>' + truncate(cell.getAttribute('workflowName'), 16) + '</div>';
+        const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : 'm-t-sm';
+        return '<div class="text-dark ' + cls + '"><i class="icon-workflows-icon p-r-xs"></i>'
+          + truncate(cell.getAttribute('workflowName'), 16) + '</div>';
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
@@ -997,7 +1000,8 @@ export class WorkflowService {
         str = '<div class="vertex-text"><div class="block-ellipsis-job">' +
           '<i style="position: absolute;margin-top: -2px;margin-left: -10px;" class="fa fa-repeat ' + className + '" aria-hidden="true"></i>';
         if (data.marked) {
-          str = str + '<span class="half-circle half-circle-left ' + class1 + '"></span><span class="half-circle half-circle-right m-r-xs ' + class2 + '"></span>';
+          str = str + '<span class="half-circle half-circle-left ' + class1 + '"></span>' +
+            '<span class="half-circle half-circle-right m-r-xs ' + class2 + '"></span>';
         } else {
           str = str + '<i class="fa fa-circle text-xs p-r-xs ' + class1 + '"></i>';
         }

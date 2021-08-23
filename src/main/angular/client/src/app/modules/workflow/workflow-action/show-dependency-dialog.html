@@ -24,6 +24,22 @@
         </div>
       </div>
     </div>
+    <div class="col-md-12" *ngFor="let postNotices of workflow.postNoticeBoards">
+      <div class="p-l-sm m-b">
+        <i nz-icon nzType="gateway" class="p-r-xs"
+           nzTheme="outline"></i>
+        <i (click)="navToInventoryTab(postNotices.name, 'NOTICEBOARD');"
+           class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+        <a (click)="showBoard(postNotices.name)" class="text-hover-primary">{{postNotices.name}}</a> <i class="fa fa-long-arrow-right p-l-xs" aria-hidden="true"></i>
+        <div class="text-muted m-l-md" *ngFor="let workflow of postNotices.value">
+          <i nz-icon nzType="apartment" class="p-r-xs"
+             nzTheme="outline"></i>
+          <i (click)="navToInventoryTab(workflow.path, 'WORKFLOW');"
+             class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+          <a (click)="showWorkflow(workflow.path)" class="text-hover-primary"> {{workflow.path}}</a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <div class="modal-footer">

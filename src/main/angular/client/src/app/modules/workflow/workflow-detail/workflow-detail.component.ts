@@ -126,10 +126,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       }).subscribe((res) => {
         if (isEmpty(this.workFlowJson)) {
           workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
+          workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
         } else {
           this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
+          this.workFlowJson.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
         }
-        console.log(this.loading, 'loading')
         if (!workflow) {
           this.openModal(this.workFlowJson);
         } else {
@@ -209,7 +210,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.workFlowJson = res.workflow;
       this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs);
       this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
-      if (res.workflow.hasExpectedNoticeBoards) {
+      if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards) {
         this.showDependency(res.workflow);
       } else {
         this.getOrders(res.workflow);
@@ -245,6 +246,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             this.workflow.ordersSummary[state] = 1;
           }
         }
+      }
+      if (this.sideBar.isVisible) {
+        this.sideBar.orders = this.workflow.orders;
       }
       this.loading = true;
     }, () => {

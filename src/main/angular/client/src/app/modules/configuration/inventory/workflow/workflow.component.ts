@@ -3978,6 +3978,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         mxGraph.prototype.foldingEnabled = true;
         mxGraph.prototype.cellsCloneable = false;
         mxConstants.DROP_TARGET_COLOR = 'green';
+        mxConstants.CURSOR_MOVABLE_VERTEX = 'move';
         mxConstants.VERTEX_SELECTION_DASHED = false;
         mxConstants.VERTEX_SELECTION_COLOR = '#0099ff';
         mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;

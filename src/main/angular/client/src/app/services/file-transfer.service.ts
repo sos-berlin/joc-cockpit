@@ -130,7 +130,7 @@ export class FileTransferService {
     return arr;
   }
 
-  getRequestForSearch(data, filter, preferences): void{
+  getRequestForSearch(data, filter, preferences): void {
     if (data.states && data.states.length > 0) {
       filter.states = data.states;
     }
@@ -188,40 +188,20 @@ export class FileTransferService {
       }
       filter.targets = this.mergeHostAndProtocol(hosts, protocols);
     }
-    if(data.radio) {
-      if (data.radio == 'planned') {
+    if (data.radio) {
+      if (data.radio === 'planned') {
         filter = this.parseProcessExecuted(data.planned, filter);
       } else {
-        if (data.radio == 'current' && data.from) {
-          const fromDate = new Date(data.from);
-          if (data.fromTime) {
-            fromDate.setHours(data.fromTime.getHours());
-            fromDate.setMinutes(data.fromTime.getMinutes());
-            fromDate.setSeconds(data.fromTime.getSeconds());
-          } else {
-            fromDate.setHours(0);
-            fromDate.setMinutes(0);
-            fromDate.setSeconds(0);
+        if (data.radio === 'current') {
+          if (data.from) {
+            filter.dateFrom = new Date(data.from);
           }
-          fromDate.setMilliseconds(0);
-          filter.dateFrom = fromDate;
-        }
-        if (data.radio == 'current' && data.to) {
-          const toDate = new Date(data.to);
-          if (data.toTime) {
-            toDate.setHours(data.toTime.getHours());
-            toDate.setMinutes(data.toTime.getMinutes());
-            toDate.setSeconds(data.toTime.getSeconds());
-          } else {
-            toDate.setHours(0);
-            toDate.setMinutes(0);
-            toDate.setSeconds(0);
+          if (data.to) {
+            filter.dateTo = new Date(data.to);
           }
-          toDate.setMilliseconds(0);
-          filter.dateTo = toDate;
         }
       }
-    } else if(data.planned){
+    } else if (data.planned) {
       filter = this.parseProcessExecuted(data.planned, filter);
     }
 

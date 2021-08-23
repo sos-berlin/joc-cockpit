@@ -1,13 +1,13 @@
 import {Component, OnInit, OnDestroy, Input, Output, EventEmitter} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {clone, isEmpty} from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {SearchPipe} from '../../../pipes/core.pipe';
-import {TranslateService} from '@ngx-translate/core';
 import {ExcelService} from '../../../services/excel.service';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {clone, isEmpty} from 'underscore';
 import {EditFilterModalComponent} from '../../../components/filter-modal/filter.component';
 import {SaveService} from '../../../services/save.service';
 
@@ -83,7 +83,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
     this.getAgentIds();
   }
 
@@ -421,39 +421,12 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   }
 
   private parseDate(agentSearch, filter): any {
-
     if (agentSearch.from) {
-      const fromDate = new Date(agentSearch.from);
-      if (agentSearch.fromTime) {
-        const fromTime = new Date(agentSearch.fromTime);
-        fromDate.setHours(fromTime.getHours());
-        fromDate.setMinutes(fromTime.getMinutes());
-        fromDate.setSeconds(fromTime.getSeconds());
-      } else {
-        fromDate.setHours(0);
-        fromDate.setMinutes(0);
-        fromDate.setSeconds(0);
-      }
-      fromDate.setMilliseconds(0);
-      filter.dateFrom = fromDate;
+      filter.dateFrom = new Date(agentSearch.from);
     }
     if (agentSearch.to) {
-      const toDate = new Date(agentSearch.to);
-      if (agentSearch.toTime) {
-        const toTime = new Date(agentSearch.toTime);
-        toDate.setHours(toTime.getHours());
-        toDate.setMinutes(toTime.getMinutes());
-        toDate.setSeconds(toTime.getSeconds());
-
-      } else {
-        toDate.setHours(0);
-        toDate.setMinutes(0);
-        toDate.setSeconds(0);
-      }
-      toDate.setMilliseconds(0);
-      filter.dateTo = toDate;
+      filter.dateTo = new Date(agentSearch.to);
     }
-
     return filter;
   }
 
@@ -517,9 +490,8 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
-      from: new Date(),
-      to: new Date(),
-      toTime: new Date()
+      from: new Date().setHours(0, 0, 0, 0),
+      to: new Date()
     };
   }
 

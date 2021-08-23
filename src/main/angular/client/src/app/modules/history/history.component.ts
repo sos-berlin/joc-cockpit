@@ -145,7 +145,7 @@ export class OrderSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
         return {
@@ -308,7 +308,7 @@ export class TaskSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
         return {
@@ -473,7 +473,7 @@ export class DeploymentSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
     this.deployTypes = Object.keys(InventoryForHistory).filter(key => isNaN(+key));
   }
 
@@ -1452,32 +1452,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
         if (obj.from) {
-          fromDate = new Date(obj.from);
-          if (obj.fromTime) {
-            fromDate.setHours(obj.fromTime.getHours());
-            fromDate.setMinutes(obj.fromTime.getMinutes());
-            fromDate.setSeconds(obj.fromTime.getSeconds());
-          } else {
-            fromDate.setHours(0);
-            fromDate.setMinutes(0);
-            fromDate.setSeconds(0);
-          }
-          fromDate.setMilliseconds(0);
-          filter.dateFrom = fromDate;
+          filter.dateFrom = new Date(obj.from);
         }
         if (obj.to) {
-          toDate = new Date(obj.to);
-          if (obj.toTime) {
-            toDate.setHours(obj.toTime.getHours());
-            toDate.setMinutes(obj.toTime.getMinutes());
-            toDate.setSeconds(obj.toTime.getSeconds());
-          } else {
-            toDate.setHours(0);
-            toDate.setMinutes(0);
-            toDate.setSeconds(0);
-          }
-          toDate.setMilliseconds(0);
-          filter.dateTo = toDate;
+          filter.dateTo = new Date(obj.to);
         }
       }
 
@@ -1523,32 +1501,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
         if (obj.from) {
-          fromDate = new Date(obj.from);
-          if (obj.fromTime) {
-            fromDate.setHours(obj.fromTime.getHours());
-            fromDate.setMinutes(obj.fromTime.getMinutes());
-            fromDate.setSeconds(obj.fromTime.getSeconds());
-          } else {
-            fromDate.setHours(0);
-            fromDate.setMinutes(0);
-            fromDate.setSeconds(0);
-          }
-          fromDate.setMilliseconds(0);
-          filter.dateFrom = fromDate;
+          filter.dateFrom = new Date(obj.from);
         }
         if (obj.to) {
-          toDate = new Date(obj.to);
-          if (obj.toTime) {
-            toDate.setHours(obj.toTime.getHours());
-            toDate.setMinutes(obj.toTime.getMinutes());
-            toDate.setSeconds(obj.toTime.getSeconds());
-          } else {
-            toDate.setHours(0);
-            toDate.setMinutes(0);
-            toDate.setSeconds(0);
-          }
-          toDate.setMilliseconds(0);
-          filter.dateTo = toDate;
+          filter.dateTo = new Date(obj.to);
         }
       }
 
@@ -1588,32 +1544,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       filter = this.deploymentParseDate(filter, obj, (obj.radio === 'planned'));
       if (obj.radio !== 'planned') {
         if (obj.from) {
-          fromDate = new Date(obj.from);
-          if (obj.fromTime) {
-            fromDate.setHours(obj.fromTime.getHours());
-            fromDate.setMinutes(obj.fromTime.getMinutes());
-            fromDate.setSeconds(obj.fromTime.getSeconds());
-          } else {
-            fromDate.setHours(0);
-            fromDate.setMinutes(0);
-            fromDate.setSeconds(0);
-          }
-          fromDate.setMilliseconds(0);
-          filter.from = fromDate;
+          filter.from = new Date(obj.from);
         }
         if (obj.to) {
-          toDate = new Date(obj.to);
-          if (obj.toTime) {
-            toDate.setHours(obj.toTime.getHours());
-            toDate.setMinutes(obj.toTime.getMinutes());
-            toDate.setSeconds(obj.toTime.getSeconds());
-          } else {
-            toDate.setHours(0);
-            toDate.setMinutes(0);
-            toDate.setSeconds(0);
-          }
-          toDate.setMilliseconds(0);
-          filter.to = toDate;
+          filter.to = new Date(obj.to);
         }
       }
 
@@ -1702,9 +1636,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.orderSearch = {
       radio: 'current',
       planned: 'today',
-      from: new Date(),
-      to: new Date(),
-      toTime: new Date()
+      from: new Date().setHours(0, 0, 0, 0),
+      to: new Date()
     };
 
     this.jobSearch = {
@@ -1712,25 +1645,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
       planned: 'today',
       operation: 'ALL',
       state: 'ALL',
-      from: new Date(),
-      to: new Date(),
-      toTime: new Date()
+      from: new Date().setHours(0, 0, 0, 0),
+      to: new Date()
     };
 
     this.yadeSearch = {
       radio: 'current',
       planned: 'today',
-      from: new Date(),
-      to: new Date(),
-      toTime: new Date()
+      from: new Date().setHours(0, 0, 0, 0),
+      to: new Date()
     };
 
     this.deploymentSearch = {
       radio: 'current',
       planned: 'today',
-      from: new Date(),
-      to: new Date(),
-      toTime: new Date()
+      from: new Date().setHours(0, 0, 0, 0),
+      to: new Date()
     };
 
     this.submissionSearch = {
@@ -1745,7 +1675,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.loadHistory(null, null);
   }
 
-  loadHistory(type, value) {
+  loadHistory(type, value): void {
     this.showSearchPanel = false;
     if (!this.order.filter.historyStates) {
       this.order.filter.historyStates = 'ALL';

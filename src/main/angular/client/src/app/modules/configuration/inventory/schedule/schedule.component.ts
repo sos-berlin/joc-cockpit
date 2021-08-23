@@ -284,9 +284,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.getWorkflowInfo(this.schedule.configuration.workflowName, true);
         }
       }
-      setTimeout(() => {
-        this.saveJSON();
-      }, 10);
     }
   }
 
@@ -347,17 +344,25 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     for (let x in target) {
       if (target[x].name === sour.name) {
         if (sour.value) {
-          for (const i in sour.value) {
-            sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
-              let type;
-              for (const prop in target[x].list) {
-                if (target[x].list[prop].name === k1) {
-                  type = target[x].list[prop].value.type;
-                  break;
+          if (sour.value.length > 0) {
+            for (const i in sour.value) {
+              sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
+                let type;
+                for (const prop in target[x].list) {
+                  if (target[x].list[prop].name === k1) {
+                    type = target[x].list[prop].value.type;
+                    break;
+                  }
                 }
-              }
-              return {name: k1, value: v1, type};
-            });
+                return {name: k1, value: v1, type};
+              });
+            }
+          } else {
+            const tempArr = [];
+            for (const prop in target[x].list) {
+              tempArr.push({name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type});
+            }
+            sour.value.push(tempArr);
           }
         }
         target[x].actualList = sour.value;
@@ -425,7 +430,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
         return {name: k, value: v};
       });
-      if (this.workflow.orderPreparation.allowUndeclared) {
+/*      if (this.workflow.orderPreparation.allowUndeclared) {
         for (const prop in this.schedule.configuration.variableSets) {
           for (let i = 0; i < this.schedule.configuration.variableSets[prop].length; i++) {
             if (!this.schedule.configuration.variableSets[prop][i].type) {
@@ -433,28 +438,21 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             }
           }
         }
-      }
+      }*/
       this.variableList = this.variableList.filter((item) => {
         if (item.value.type === 'List') {
           return false;
         }
         return !item.value.final;
       });
+
+
       for (const prop in this.schedule.configuration.variableSets) {
         this.schedule.configuration.variableSets[prop].forkListVariables = this.coreService.clone(this.forkListVariables);
         if (this.schedule.configuration.variableSets[prop].variables && this.schedule.configuration.variableSets[prop].variables.length > 0) {
           this.schedule.configuration.variableSets[prop].variables = this.schedule.configuration.variableSets[prop].variables.filter(item => {
             if (isArray(item.value)) {
-              if (item.value.length > 0) {
-                item.value = item.value.filter((k) => {
-                  return k.name;
-                });
-              }
-              if (item.value.length === 0) {
-                item.value.push({name: '', type: 'String'});
-              } else {
-                this.setForkListVariables(item, this.schedule.configuration.variableSets[prop].forkListVariables);
-              }
+              this.setForkListVariables(item, this.schedule.configuration.variableSets[prop].forkListVariables);
               return false;
             } else {
               return true;
@@ -499,12 +497,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
     }
+
     this.ref.detectChanges();
   }
 
   rename(inValid): void {
     if (this.data.id === this.schedule.id && this.data.name !== this.schedule.name) {
-
       if (!inValid) {
         const data = this.coreService.clone(this.data);
         const name = this.schedule.name;
@@ -591,9 +589,10 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             for (const i in item.actualList) {
               const listObj = {};
               item.actualList[i].forEach((data) => {
-                listObj[data.name] = data.value;
                 if (!data.value) {
                   isValid = false;
+                } else{
+                  listObj[data.name] = data.value;
                 }
               });
               if (!isEmpty(listObj)) {

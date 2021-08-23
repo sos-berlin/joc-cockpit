@@ -29,22 +29,15 @@
     <div class="form-group row" *ngIf="filter.radio == 'current'">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.from</label>
       <div class="col-sm-6">
-        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+        <nz-date-picker nzShowTime [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
                         [(ngModel)]="filter.from" [nzFormat]="dateFormat" name="from"></nz-date-picker>
-        <nz-time-picker [disabled]="!filter.from" #fromTime="ngModel" [nzFormat]="'HH:mm:ss'"
-               class="input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime"
-               [nzPlaceHolder]="('common.placeholder.startTime' | translate)+ ' (HH:MM:SS)'"></nz-time-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'current'">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.to</label>
       <div class="col-sm-6">
-        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+        <nz-date-picker nzShowTime [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
                         [(ngModel)]="filter.to" [nzFormat]="dateFormat" name="to"></nz-date-picker>
-        <nz-time-picker [nzFormat]="'HH:mm:ss'"
-               [disabled]="!filter.to" #toTime="ngModel"
-               class="input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime"
-               [nzPlaceHolder]="('common.placeholder.endTime' | translate)+ ' (HH:MM:SS)'"></nz-time-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'planned'"
