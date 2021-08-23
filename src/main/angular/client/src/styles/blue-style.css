@@ -679,7 +679,7 @@ input[readonly] {
   background-color: rgba(50, 70, 90, 0.61) !important;
 }
 
-#outlineContainer, .outlineContainer {
+#outlineContainer {
   background: rgba(50, 70, 90, 0.91) !important;
 }
 

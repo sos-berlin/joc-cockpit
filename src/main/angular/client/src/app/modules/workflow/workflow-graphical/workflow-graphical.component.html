@@ -67,8 +67,7 @@
         </div>
         <div #graph id="graph"></div>
         <!-- Creates a container for the outline -->
-        <div *ngIf="!isModal" class="outlineContainer" id="outlineContainer"></div>
-        <div *ngIf="isModal" class="outlineContainer" id="outlineContainerM"></div>
+        <div #outlineContainer id="outlineContainer"></div>
       </div>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu *ngIf="order">

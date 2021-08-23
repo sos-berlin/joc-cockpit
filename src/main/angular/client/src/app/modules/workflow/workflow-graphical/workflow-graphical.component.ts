@@ -167,6 +167,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   isProcessing = false;
 
   @ViewChild('graph', {static: true}) graphContainer: ElementRef;
+  @ViewChild('outlineContainer', {static: true}) outlineContainer: ElementRef;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
@@ -276,13 +277,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
         this.graph = new mxGraph(this.graphContainer.nativeElement);
-        let outln;
-        if (this.isModal) {
-          outln = document.getElementById('outlineContainerM');
-        } else {
-          outln = document.getElementById('outlineContainer');
-        }
-        new mxOutline(this.graph, outln);
+        new mxOutline(this.graph, this.outlineContainer.nativeElement);
         this.createWorkflowGraph();
       }
     } catch (e) {

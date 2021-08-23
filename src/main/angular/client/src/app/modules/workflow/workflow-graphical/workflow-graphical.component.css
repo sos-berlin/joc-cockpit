@@ -37,7 +37,7 @@
   display: none;
 }
 
-.outlineContainer {
+#outlineContainer {
   z-index: 9;
   position: absolute;
   overflow: hidden;
@@ -47,7 +47,7 @@
   height: 150px;
   border: 1px solid var(--border-color);
 }
-#outlineContainerM{
+.graph2 #outlineContainer{
   top: 16px;
   right: 16px;
 }
