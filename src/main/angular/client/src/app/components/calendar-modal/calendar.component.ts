@@ -71,7 +71,7 @@ export class CalendarModalComponent implements OnInit {
   }
 
   changeDate(): void {
-    let newDate = new Date();
+    const newDate = new Date();
     newDate.setHours(0, 0, 0, 0);
     let toDate: any;
     if (new Date(this.toDate).getTime() < new Date(this.calendarTitle + '-12-31').getTime()) {
@@ -81,7 +81,7 @@ export class CalendarModalComponent implements OnInit {
     }
 
     if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
-      let obj: any = {
+      const obj: any = {
         dateFrom: this.calendarTitle + '-01-01',
         dateTo: toDate,
       };
@@ -91,7 +91,7 @@ export class CalendarModalComponent implements OnInit {
         this.getDates(obj);
       }
     } else if (newDate.getFullYear() === this.calendarTitle) {
-      let obj: any = {
+      const obj: any = {
         dateFrom: this.coreService.getStringDate(null),
         dateTo: toDate,
       };
@@ -138,8 +138,8 @@ export class CalendarModalComponent implements OnInit {
   private filterDates(result) {
     if (result.dates) {
       for (let i = 0; i < result.dates.length; i++) {
-        let x = result.dates[i];
-        let obj = {
+        const x = result.dates[i];
+        const obj = {
           startDate: this.coreService.getDate(x),
           endDate: this.coreService.getDate(x),
           color: '#007da6'
@@ -150,7 +150,7 @@ export class CalendarModalComponent implements OnInit {
     }
     if (result.withExcludes) {
       for (let i = 0; i < result.withExcludes.length; i++) {
-        let x = result.withExcludes[i];
+        const x = result.withExcludes[i];
         this.planItems.push({
           startDate: this.coreService.getDate(x),
           endDate: this.coreService.getDate(x),

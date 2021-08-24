@@ -3201,6 +3201,15 @@ div.order-panel div {
   background: var(--bg-mangenta);
 }
 
+.left-sidebar {
+  .box{
+    border-left: 3px solid transparent;
+  }
+  .active {
+    border-left-color: var(--primary);
+  }
+}
+
 .order-panel {
   .planned {
     color: var(--dimgrey);

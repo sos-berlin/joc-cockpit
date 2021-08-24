@@ -114,10 +114,10 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   groupBy(data): any {
-    let results = [];
-    if (!(data)) return;
+    const results = [];
+    if (!(data)) { return; }
     data.forEach((value) => {
-      let result = {count: 1, _text: '', color: '', hoverColor: ''};
+      const result = {count: 1, _text: '', color: '', hoverColor: ''};
       let label: string;
       if (value.state._text === 'COUPLED') {
         label = 'agent.label.coupled';

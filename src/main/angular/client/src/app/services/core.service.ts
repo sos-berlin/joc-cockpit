@@ -679,7 +679,7 @@ export class CoreService {
 
   prepareTree(actualData: any, isLeaf: boolean): any {
     if (actualData.folders && actualData.folders.length > 0) {
-      let output = [{
+      const output = [{
         name: actualData.folders[0].path,
         path: actualData.folders[0].path,
         title: actualData.folders[0].path,
@@ -1068,7 +1068,7 @@ export class CoreService {
             window.localStorage.log_window_y = this.newWindow.screenY;
           }
           if (this.newWindow.sessionStorage.changedPreferences) {
-            let preferences = JSON.parse(sessionStorage.preferences);
+            const preferences = JSON.parse(sessionStorage.preferences);
             preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
             window.sessionStorage.preferences = JSON.stringify(preferences);
           }
@@ -1090,7 +1090,7 @@ export class CoreService {
     if (list.length === 0) {
       return name;
     } else {
-      let arr = [];
+      const arr = [];
       list.forEach((element) => {
         if (element[key] && element[key].split(/(\d+)(?!.*\d)/)[1]) {
           arr.push(element[key].split(/(\d+)(?!.*\d)/)[1]);
@@ -1168,7 +1168,7 @@ export class CoreService {
     r = moment(r);
     const i = moment(r).diff(n);
     if (i >= 1e3) {
-      let a = parseInt((i / 1e3 % 60).toString(), 10), s = parseInt((i / 6e4 % 60).toString(), 10),
+      const a = parseInt((i / 1e3 % 60).toString(), 10), s = parseInt((i / 6e4 % 60).toString(), 10),
         f = parseInt((i / 36e5 % 24).toString(), 10), u = parseInt((i / 864e5).toString(), 10);
       if (u > 0) {
         if (u === 1 && f === 0) {
@@ -1202,7 +1202,7 @@ export class CoreService {
 
   calRowWidth(currentView: boolean): void {
     setTimeout(() => {
-      let arr = currentView != null ? [53] : [];
+      const arr = currentView != null ? [53] : [];
       if (!currentView) {
         $('#orderTable').find('thead th.dynamic-thead-o').each(function() {
           const w = $(this).outerWidth();
@@ -1289,9 +1289,9 @@ export class CoreService {
     if (typeof endDate !== 'number') {
       endDate = new Date(endDate).setHours(0, 0, 0, 0);
     }
-    let dates = [];
+    const dates = [];
     let currentDate = startDate;
-    let addDays = function(days) {
+    const addDays = function(days) {
       const date = new Date(this.valueOf());
       date.setDate(date.getDate() + days);
       return date.setHours(0, 0, 0, 0);

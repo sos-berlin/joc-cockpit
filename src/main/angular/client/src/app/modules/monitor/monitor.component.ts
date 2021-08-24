@@ -13,18 +13,24 @@ export class MonitorComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   monitorFilters: any = {};
+  loading = false;
   index: number;
   subscription: any;
 
   constructor(private authService: AuthService, public coreService: CoreService,
               private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
+      this.loading = false;
       this.init();
+      setTimeout(() => {
+        this.loading = true;
+      }, 10);
     });
   }
 
   ngOnInit(): void {
     this.init();
+    this.loading = true;
   }
 
   ngOnDestroy(): void {
@@ -38,6 +44,15 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.monitorFilters = this.coreService.getMonitorTab();
     if (!this.monitorFilters.notification.mapOfCheckedId) {
       this.monitorFilters.notification.mapOfCheckedId = new Set();
+    }
+    if (!(this.monitorFilters.controller.current || this.monitorFilters.controller.current === false)) {
+      this.monitorFilters.controller.current = this.preferences.currentController;
+    }
+    if (!(this.monitorFilters.agent.current || this.monitorFilters.agent.current === false)) {
+      this.monitorFilters.agent.current = this.preferences.currentController;
+    }
+    if (!(this.monitorFilters.notification.current || this.monitorFilters.notification.current === false)) {
+      this.monitorFilters.notification.current = this.preferences.currentController;
     }
     this.index = this.monitorFilters.tabIndex;
   }

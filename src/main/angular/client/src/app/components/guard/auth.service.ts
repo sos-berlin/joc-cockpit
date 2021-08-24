@@ -16,14 +16,14 @@ export class AuthService {
 
   constructor() {
     const self = this;
-    for (let prop of this.props) {
+    for (const prop of this.props) {
       self[prop] = this.load(prop);
     }
   }
 
   save(): void {
     const self = this;
-    for (let prop of this.props) {
+    for (const prop of this.props) {
       this._save(sessionStorage, prop, self[prop]);
     }
   }
@@ -52,7 +52,7 @@ export class AuthService {
   }
 
   clearStorage(): void {
-    for (let prop of this.props) {
+    for (const prop of this.props) {
       this._save(sessionStorage, prop, null);
       this._save(localStorage, prop, null);
     }
@@ -67,7 +67,7 @@ export class AuthService {
       showViews = JSON.parse(window.sessionStorage.showViews);
     }
     const permission = JSON.parse(this.permission);
-    if(!permission){
+    if (!permission){
       return false;
     }
     let ifPermissionPassed = false;

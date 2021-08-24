@@ -119,6 +119,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: null,
       nzContent: PostModalComponent,
+      nzAutofocus: null,
       nzClassName: 'lg',
       nzComponentParams: {
         board,
@@ -412,6 +413,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       nzTitle: null,
       nzContent: PostModalComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         board,
         controllerId: this.schedulerIds.selected,

@@ -79,7 +79,7 @@ export class ActionComponent implements OnInit {
       auditLog: {}
     };
     if (this.preferences.auditLog && (action !== 'downloadLog')) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         name: obj.controllerId + ' (' + obj.url + ')',
         operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : 'Abort'

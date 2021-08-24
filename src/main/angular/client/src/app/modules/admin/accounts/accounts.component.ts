@@ -62,7 +62,7 @@ export class AccountModalComponent implements OnInit {
     }
 
     if (this.newUser || this.copy) {
-      let data = {
+      const data = {
         user: obj.user,
         password: obj.password,
         roles: obj.roles
@@ -113,7 +113,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   subscription3: Subscription;
 
-  constructor(private router: Router, private authService: AuthService, private coreService: CoreService, private modal: NzModalService, private dataService: DataService) {
+  constructor(private router: Router, private authService: AuthService, private coreService: CoreService,
+              private modal: NzModalService, private dataService: DataService) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
     });
@@ -152,7 +153,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   saveInfo(): void {
-    let obj = {
+    const obj = {
       users: this.users,
       roles: this.userDetail.roles,
       main: this.userDetail.main

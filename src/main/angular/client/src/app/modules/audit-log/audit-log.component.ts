@@ -151,7 +151,7 @@ export class SearchComponent implements OnInit {
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
       if (result.id) {
-        for (let i in this.allFilter) {
+        for (const i in this.allFilter) {
           if (this.allFilter[i].id === result.id) {
             this.allFilter[i] = configObj;
             break;
@@ -365,7 +365,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (!(this.adtLog.current || this.adtLog.current === false)) {
       this.adtLog.current = this.preferences.currentController;
     }
-    if(!this.adtLog.filter.date){
+    if (!this.adtLog.filter.date){
       this.adtLog.filter.date = 'today';
     }
     this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
@@ -399,13 +399,13 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (object.controllerId) {
       filter.controllerId = object.controllerId;
     }
-    if(object.radio) {
+    if (object.radio) {
       if (object.radio == 'planned') {
         filter = this.parseProcessExecuted(object.planned, filter);
       } else {
         filter = this.parseDate(object, filter);
       }
-    } else if(object.planned){
+    } else if (object.planned){
       filter = this.parseProcessExecuted(object.planned, filter);
     }
     return filter;
@@ -691,7 +691,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   search(flag = false): void {
-    if(!flag) {
+    if (!flag) {
       this.isLoaded = false;
     }
     let filter: any = {

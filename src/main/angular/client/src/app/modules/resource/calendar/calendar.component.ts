@@ -55,7 +55,7 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   /* ---------------------------- Action ----------------------------------*/
 
   showUsage(calendar): void {
-    let cal = clone(calendar);
+    const cal = clone(calendar);
     this.coreService.post('calendar/used', {
       id: calendar.id,
       controllerId: this.controllerId
@@ -185,7 +185,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (status && status !== 'remove') {
       this.calendarFilters.filter.type = status;
     }
-    let obj = {
+    const obj = {
       folders: [],
       type: this.calendarFilters.filter.type !== 'ALL' ? this.calendarFilters.filter.type : undefined,
       controllerId: this.schedulerIds.selected,
@@ -207,7 +207,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   getCalendars(data, recursive): void {
     this.loading = true;
-    let obj = {
+    const obj = {
       folders: [{folder: data.path, recursive}],
       type: this.calendarFilters.filter.type !== 'ALL' ? this.calendarFilters.filter.type : undefined,
       controllerId: this.schedulerIds.selected,
@@ -244,7 +244,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   showUsage(calendar): void {
-    let cal = clone(calendar);
+    const cal = clone(calendar);
     this.coreService.post('calendar/used', {
       id: calendar.id,
       controllerId: this.schedulerIds.selected

@@ -1,8 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title">
+    <a (click)="activeModal.destroy()" *ngIf="recursiveCals.length > 1"><i nz-tooltip="{{'inventory.button.backToObject' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
     <span translate>workflow.label.showDependency</span> {{workflow.path}}
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button type="button" class="close" aria-label="Close" (click)="closeAll();">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -11,7 +12,7 @@
     <nz-spin nzSimple></nz-spin>
   </div>
   <div *ngIf="!loading">
-    <app-workflow-graphical [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs" [isModal]="true"
+    <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs" [isModal]="true"
                             [controllerId]="controllerId" [orders]="workflow.orders" [orderPreparation]="workflow.orderPreparation"></app-workflow-graphical>
   </div>
 </div>

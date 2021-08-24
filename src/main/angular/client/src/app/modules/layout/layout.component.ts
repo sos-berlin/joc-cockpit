@@ -253,6 +253,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
           sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
           sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
+          sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
+          sessionStorage.welcomeGotIt = result.welcomeGotIt;
 
           if (!this.loading) {
             this.init();
@@ -607,59 +609,64 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (this.router.url && !(this.router.url.match(/dashboard/) || this.router.url.match(/configuration\/inventory/))) {
         return;
       }
-      let configuration: any = {};
-      this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe((res) => {
-        if (res.configurations[0]) {
-          configuration = res.configurations[0];
-          configuration.configurationItem = JSON.parse(res.configurations[0].configurationItem);
-        } else {
-          configuration.configurationItem = JSON.parse(res.defaultGlobals);
-        }
-        this.isPopupOpen = true;
-        if ((configuration.configurationItem.joc.welcome_got_it && configuration.configurationItem.joc.welcome_got_it.value)
-          || (configuration.configurationItem.joc.welcome_do_not_remind_me && configuration.configurationItem.joc.welcome_do_not_remind_me.value)) {
+      this.isPopupOpen = true;
+      if ((sessionStorage.welcomeDoNotRemindMe && sessionStorage.welcomeDoNotRemindMe == 'true')
+        || (sessionStorage.welcomeGotIt && sessionStorage.welcomeGotIt == 'true')) {
+        return;
+      }
+      const date = localStorage.getItem('$SOS$REMINDMEAFTER');
+      if (date) {
+        if (parseInt(date, 10) > new Date().getTime()) {
           return;
         }
-        const date = localStorage.getItem('$SOS$REMINDMEAFTER');
-        if (date) {
-          if (parseInt(date, 10) > new Date().getTime()) {
-            return;
+      }
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: StepGuideComponent,
+        nzClassName: 'w-620',
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result === 'REMINDMELATER') {
+          localStorage.setItem('$SOS$REMINDMEAFTER', (new Date().setDate(new Date().getDate() + 1)).toString());
+        } else {
+          localStorage.removeItem('$SOS$REMINDMEAFTER');
+          if (this.permission.joc && this.permission.joc.administration.settings.manage) {
+            this.storeGlobalConfig();
           }
         }
-        const modal = this.modal.create({
-          nzTitle: undefined,
-          nzContent: StepGuideComponent,
-          nzClassName: 'w-620',
-          nzFooter: null,
-          nzClosable: false,
-          nzMaskClosable: false
-        });
-        modal.afterClose.subscribe(result => {
-          if (result === 'REMINDMELATER') {
-            localStorage.setItem('$SOS$REMINDMEAFTER', (new Date().setDate(new Date().getDate() + 1)).toString());
-          } else {
-            localStorage.removeItem('$SOS$REMINDMEAFTER');
-            if (!configuration.configurationItem.joc.welcome_got_it) {
-              configuration.configurationItem.joc.welcome_got_it = {};
-              configuration.configurationItem.joc.welcome_do_not_remind_me = {};
-            }
-            configuration.configurationItem.joc.welcome_got_it.value = true;
-            configuration.configurationItem.joc.welcome_do_not_remind_me.value = true;
-            this.storeGlobalConfig(configuration);
-          }
-        });
       });
     }
   }
 
-  private storeGlobalConfig(configuration): void {
-    if (this.permission.joc && this.permission.joc.administration.settings.manage) {
+  private storeGlobalConfig(): void {
+    this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe((res) => {
+      let configuration: any = {};
+      if (res.configurations[0]) {
+        configuration = res.configurations[0];
+        configuration.configurationItem = JSON.parse(res.configurations[0].configurationItem);
+      } else {
+        configuration.configurationItem = JSON.parse(res.defaultGlobals);
+      }
+      if (!configuration.configurationItem.user) {
+        configuration.configurationItem.user = {};
+      }
+      if (!configuration.configurationItem.user.welcome_got_it) {
+        configuration.configurationItem.user.welcome_got_it = {type: 'BOOLEAN'};
+        configuration.configurationItem.user.welcome_do_not_remind_me = {type: 'BOOLEAN'};
+      }
+      configuration.configurationItem.user.welcome_got_it.value = true;
+      configuration.configurationItem.user.welcome_do_not_remind_me.value = true;
       this.coreService.post('configuration/save', {
         id: configuration.id || 0,
         configurationType: 'GLOBALS',
         configurationItem: JSON.stringify(configuration.configurationItem)
       }).subscribe(() => {
+        sessionStorage.welcomeDoNotRemindMe = true;
+        sessionStorage.welcomeGotIt = true;
       });
-    }
+    });
   }
 }

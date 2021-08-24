@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {groupBy, isArray, toArray} from 'underscore';
 import * as moment from 'moment';
@@ -179,7 +179,7 @@ export class CalendarService {
   }
 
   freqToStr(data: any, dataFormat: string): string {
-    let self = this;
+    const self = this;
     let str = '';
     if (data.months && isArray(data.months)) {
       str = self.getMonths(data.months);
@@ -255,12 +255,13 @@ export class CalendarService {
 
   generateCalendarObj(data, obj): any {
     const self = this;
-    let arr = [];
+    const arr = [];
     let from, to;
     const type = (!data.type || data.type === 'INCLUDE') ? 'includes' : 'excludes';
     if (data.months && isArray(data.months) && data.months.length > 0) {
-      if (!obj[type].months)
+      if (!obj[type].months) {
         obj[type].months = [];
+      }
 
       if (data.tab === 'weekDays') {
         if (data.startingWithW) {
@@ -296,7 +297,7 @@ export class CalendarService {
           day: self.getDay(data.specificWeekDay),
           weekOfMonth: Math.abs(data.which)
         });
-        let arrObj = [];
+        const arrObj = [];
         arrObj.push({weeklyDays: arr, from, to});
         if (data.which > 0) {
           obj[type].months.push({months: data.months.map(Number), monthdays: arrObj});
@@ -306,8 +307,9 @@ export class CalendarService {
       }
     } else {
       if (data.tab === 'weekDays') {
-        if (!obj[type].weekdays)
+        if (!obj[type].weekdays) {
           obj[type].weekdays = [];
+        }
         if (data.startingWithW) {
           from = moment(data.startingWithW).format('YYYY-MM-DD');
         }
@@ -329,8 +331,9 @@ export class CalendarService {
           }
           obj[type].monthdays.push({days: data.selectedMonths.map(Number), from, to});
         } else {
-          if (!obj[type].ultimos)
+          if (!obj[type].ultimos) {
             obj[type].ultimos = [];
+          }
 
           if (data.startingWithM) {
             from = moment(data.startingWithM).format('YYYY-MM-DD');
@@ -358,21 +361,24 @@ export class CalendarService {
           }
           obj[type].monthdays.push({weeklyDays: arr, from, to});
         } else {
-          if (!obj[type].ultimos)
+          if (!obj[type].ultimos) {
             obj[type].ultimos = [];
+          }
           obj[type].ultimos.push({weeklyDays: arr, from, to});
         }
       } else if (data.tab === 'specificDays') {
-        if (!obj[type].dates)
+        if (!obj[type].dates) {
           obj[type].dates = [];
+        }
         data.dates.forEach((value) => {
           obj[type].dates.push(moment(value).format('YYYY-MM-DD'));
         });
 
       } else if (data.tab === 'every') {
-        if (!obj[type].repetitions)
+        if (!obj[type].repetitions) {
           obj[type].repetitions = [];
-        let obj1: any = {
+        }
+        const obj1: any = {
           repetition: data.dateEntity,
           step: data.interval || 1,
         };
@@ -385,9 +391,10 @@ export class CalendarService {
         obj[type].repetitions.push(obj1);
 
       } else if (data.tab === 'nationalHoliday') {
-        if (!obj[type].holidays)
+        if (!obj[type].holidays) {
           obj[type].holidays = [];
-        let dates = [];
+        }
+        const dates = [];
         data.nationalHoliday.forEach((value) => {
           dates.push(moment(value).format('YYYY-MM-DD'));
         });
@@ -422,10 +429,10 @@ export class CalendarService {
   }
 
   getTimeFromDate(t): string {
-    let tf = this.preferences.dateFormat;
+    const tf = this.preferences.dateFormat;
     let x = 'HH:mm:ss';
     if ((tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) != null) {
-      let result = (tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) + '';
+      const result = (tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) + '';
       if (result.match(/hh/g)) {
         x = result + ' a';
       } else {

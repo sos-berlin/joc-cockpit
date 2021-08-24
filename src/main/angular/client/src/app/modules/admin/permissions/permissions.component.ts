@@ -56,7 +56,7 @@ export class PermissionModalComponent {
       }
     }
 
-    this.coreService.post('authentication/shiro/store', obj = {
+    this.coreService.post('authentication/shiro/store', {
       users: this.userDetail.users,
       roles: this.userDetail.roles,
       main: this.userDetail.main

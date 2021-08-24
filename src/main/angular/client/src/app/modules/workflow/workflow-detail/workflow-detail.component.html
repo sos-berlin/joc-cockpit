@@ -227,14 +227,27 @@
               </ng-template>
               </tbody>
             </nz-table>
-
           </div>
         </div>
       </div>
       <div class="col-lg-12">
         <div *ngIf="loading">
           <div *ngIf="pageView === 'grid' && workflow.instructions">
-            <app-workflow-graphical [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs"
+            <div class="left-sidebar" *ngIf="recursiveCals.length > 0">
+              <div class="m-t">
+                <div class="box p-a-sm" *ngFor="let item of recursiveCals;let i = index" [ngClass]="{'active': i === recursiveCals.length-1 }">
+                  <div class="block-ellipsis" style="width: 90%">
+                    <a title="{{item.workflow.path}}" class="text-hover-primary" (click)="openWorkflowDependency(item)">
+                      <i nz-icon nzType="gateway" class="p-r-xs"
+                         nzTheme="outline"></i>
+                      <b>{{item.workflow.path}}</b>
+                    </a>
+                  </div>
+                  <i class="fa fa-times pull-right cursor" style="margin-top: -15px" (click)="item.modalInstance.destroy()"></i>
+                </div>
+              </div>
+            </div>
+            <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs"
                                     [controllerId]="schedulerIds.selected" [orders]="workflow.orders" [workflowFilters]="workflowFilters" [orderPreparation]="orderPreparation"></app-workflow-graphical>
           </div>
           <div *ngIf="pageView !== 'grid' && workFlowJson.instructions">

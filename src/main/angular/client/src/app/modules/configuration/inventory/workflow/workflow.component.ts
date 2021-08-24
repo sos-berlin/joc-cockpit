@@ -8414,7 +8414,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         this.ref.detectChanges();
       }
-    }, (err) => {
+    }, () => {
       this.isStore = false;
     });
   }

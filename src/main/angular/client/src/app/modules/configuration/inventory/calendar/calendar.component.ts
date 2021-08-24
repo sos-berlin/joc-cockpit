@@ -102,7 +102,7 @@ export class FrequencyModalComponent implements OnInit {
     }
     this.frequency.nationalHoliday = [];
 
-    for (let x in countryList) {
+    for (const x in countryList) {
       if (countryList[x]) {
         this.countryListArr.push({code: x, name: countryList[x]});
       }
@@ -345,7 +345,7 @@ export class FrequencyModalComponent implements OnInit {
 
   selectAllHolidays(): void {
     if (this.holidayDays.checked && this.holidayList.length > 0) {
-      let temp = [];
+      const temp = [];
       for (let m = 0; m < this.holidayList.length; m++) {
         if (this.frequency.nationalHoliday.indexOf(this.holidayList[m].date) == -1) {
           temp.push(this.holidayList[m].date);
@@ -355,7 +355,7 @@ export class FrequencyModalComponent implements OnInit {
       this.frequency.nationalHoliday = this.frequency.nationalHoliday.concat(temp);
     } else {
       if (this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0) {
-        let temp = clone(this.frequency.nationalHoliday);
+        const temp = clone(this.frequency.nationalHoliday);
         for (let m = 0; m < this.holidayList.length; m++) {
           for (let x = 0; x < temp.length; x++) {
             if (temp[x] == this.holidayList[m].date) {
@@ -374,7 +374,7 @@ export class FrequencyModalComponent implements OnInit {
     if (!data) {
       data = 'all';
     }
-    let obj = {};
+    const obj = {};
     this.freqObj(data, obj);
   }
 
@@ -683,7 +683,7 @@ export class FrequencyModalComponent implements OnInit {
       }
       if (_dates && _dates.length > 0) {
         for (let i = 0; i < _dates.length; i++) {
-          let obj = clone(this.frequency);
+          const obj = clone(this.frequency);
           obj.type = this.editor.frequencyType;
           obj.nationalHoliday = _dates[i];
           obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
@@ -703,7 +703,7 @@ export class FrequencyModalComponent implements OnInit {
     } else {
       if (this.frequency.tab == 'nationalHoliday') {
         for (let i = 0; i < datesArr.length; i++) {
-          let obj = clone(this.frequency);
+          const obj = clone(this.frequency);
           obj.type = this.editor.frequencyType;
           obj.nationalHoliday = datesArr[i];
           obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
@@ -799,7 +799,7 @@ export class FrequencyModalComponent implements OnInit {
       }
     }
     if (this.frequencyList.length === 0) {
-      let temp = clone(this.frequency);
+      const temp = clone(this.frequency);
       this.frequency = {};
       this.frequency.tab = temp.tab;
       this.frequency.isUltimos = temp.isUltimos;
@@ -811,7 +811,7 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   changeDate(): void {
-    let newDate = new Date();
+    const newDate = new Date();
     newDate.setHours(0, 0, 0, 0);
     let toDate: any;
     if (new Date(this.toDate).getTime() < new Date(this.calendarTitle + '-12-31').getTime()) {
@@ -821,7 +821,7 @@ export class FrequencyModalComponent implements OnInit {
     }
     if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
       this.planItems = [];
-      let obj = {
+      const obj = {
         dateFrom: this.calendarTitle + '-01-01',
         dateTo: toDate,
         calendar: this.frequencyObj
@@ -834,18 +834,16 @@ export class FrequencyModalComponent implements OnInit {
           color = 'orange';
         }
         for (let i = 0; i < result.dates.length; i++) {
-          let x = result.dates[i];
-          let obj = {
+          const x = result.dates[i];
+          this.planItems.push({
             startDate: moment(x),
             endDate: moment(x),
             color
-          };
-
-          this.planItems.push(obj);
+          });
         }
         if (result.withExcludes) {
           for (let i = 0; i < result.withExcludes.length; i++) {
-            let x = result.withExcludes[i];
+            const x = result.withExcludes[i];
             this.planItems.push({
               startDate: moment(x),
               endDate: moment(x),
@@ -934,7 +932,7 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   private checkExclude(dates): void {
-    let obj = {
+    const obj = {
       tab: 'specificDays',
       type: 'EXCLUDE',
       exclude: false,
@@ -976,7 +974,7 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   private checkInclude(dates): void {
-    let obj = {
+    const obj = {
       tab: 'specificDays',
       type: 'INCLUDE',
       exclude: false,
@@ -1018,7 +1016,7 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   private checkDate(date): void {
-    let planData = {
+    const planData = {
       startDate: date,
       endDate: date,
       color: 'blue'
@@ -1142,7 +1140,7 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   private selectDate(e): void {
-    let obj = {
+    const obj = {
       startDate: e.date,
       endDate: e.date,
       color: 'blue'
@@ -1214,11 +1212,11 @@ export class FrequencyModalComponent implements OnInit {
     if (data && !isEmpty(data) && data != 'all') {
       this.editor.showYearView = true;
       this.calObj.frequency = JSON.stringify(data);
-      let obj1 = {
+      const obj1 = {
         includes: {}
       };
 
-      let data1 = clone(data);
+      const data1 = clone(data);
       data1.type = 'INCLUDE';
 
       this.frequencyObj = this.calendarService.generateCalendarObj(data1, obj1);
@@ -1227,10 +1225,10 @@ export class FrequencyModalComponent implements OnInit {
       this.frequencyObj = this.generateCalendarAllObj();
     }
     if (this.frequencyObj.includes && isEmpty(this.frequencyObj.includes)) {
-      delete this.frequencyObj['includes'];
+      delete this.frequencyObj.includes;
     }
     if (this.frequencyObj.excludes && isEmpty(this.frequencyObj.excludes)) {
-      delete this.frequencyObj['excludes'];
+      delete this.frequencyObj.excludes;
     }
     obj.calendar = this.frequencyObj;
     if (!obj.dateTo) {
@@ -1246,11 +1244,11 @@ export class FrequencyModalComponent implements OnInit {
       }
       this.planItems = [];
       for (let m = 0; m < result.dates.length; m++) {
-        let x = result.dates[m];
+        const x = result.dates[m];
         this.planItems.push({
           startDate: moment(x),
           endDate: moment(x),
-          color: color
+          color
         });
       }
       if (result.withExcludes) {
@@ -1281,7 +1279,7 @@ export class FrequencyModalComponent implements OnInit {
       }
       this.tempList = [];
       this.tempList = clone(this.planItems);
-      let a = Object.assign(this.tempList);
+      const a = Object.assign(this.tempList);
       $('#full-calendar').data('calendar').setDataSource(a);
       this.isCalendarLoading = false;
       setTimeout(() => {
@@ -1294,7 +1292,7 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   private generateCalendarAllObj(): any {
-    let obj = {includes: {}, excludes: {}};
+    const obj = {includes: {}, excludes: {}};
     if (this.calendar.configuration.includesFrequency.length > 0) {
       for (let i = 0; i < this.calendar.configuration.includesFrequency.length; i++) {
         this.calendarService.generateCalendarObj(this.calendar.configuration.includesFrequency[i], obj);
@@ -1583,7 +1581,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
-    let obj: any = this.generateCalendarAllObj();
+    const obj: any = this.generateCalendarAllObj();
     obj.title = this.calendar.configuration.title;
     obj.type = this.calendar.configuration.type;
     obj.documentationName = this.calendar.configuration.documentationName;
@@ -1751,7 +1749,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private convertObjToArr(data): void {
-    let obj = {};
+    const obj = {};
     if (data.includes && !isEmpty(data.includes)) {
       this._convertObjToArr(data, 'includes', obj);
     }
@@ -1844,7 +1842,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       }
     }
     if (data[type].holidays && data[type].holidays.length > 0) {
-      let arr = this.calendarService.groupByDates(data[type].holidays[0].dates);
+      const arr = this.calendarService.groupByDates(data[type].holidays[0].dates);
       for (let x = 0; x < arr.length; x++) {
         obj = {};
         this.iterateData(obj, arr[x], null, 'nationalHoliday', TYPE, null, null);
@@ -1926,7 +1924,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private generateCalendarAllObj(): any {
-    let obj = {includes: {}, excludes: {}};
+    const obj = {includes: {}, excludes: {}};
     if (this.calendar.configuration.includesFrequency.length > 0) {
       for (let x = 0; x < this.calendar.configuration.includesFrequency.length; x++) {
         this.calendarService.generateCalendarObj(this.calendar.configuration.includesFrequency[x], obj);

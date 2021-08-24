@@ -49,6 +49,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
   @Input() permission: any = {};
   @Input() preferences: any = {};
   @Input() controllerId: any;
+  @Input() recursiveCals: any;
   @Input() workflowFilters: any = {};
 
   workFlowJson: any = {};
@@ -57,17 +58,44 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dataService: DataService,
-              private workflowService: WorkflowService) {
+              private workflowService: WorkflowService, private modal: NzModalService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
   }
 
   ngOnInit(): void {
+    let flag = false;
+    for (let i = 0; i < this.recursiveCals.length; i++) {
+      if (this.recursiveCals[i].workflow.path === this.workflow.path) {
+        flag = true;
+        this.recursiveCals[i].modalInstance.destroy();
+        this.recursiveCals.splice(i, 1);
+        break;
+      }
+    }
+    const obj: any = {
+      workflow: this.workflow,
+      modalInstance: this.activeModal
+    };
+    if (flag) {
+      obj.isCheck = flag;
+    }
+    this.recursiveCals.push(obj);
     this.getDependency();
   }
 
   ngOnDestroy(): void {
+    for (let i = 0; i < this.recursiveCals.length; i++) {
+      if (this.recursiveCals[i].workflow.path === this.workflow.path) {
+        if (this.recursiveCals[i].isCheck) {
+          delete this.recursiveCals[i].isCheck;
+        } else {
+          this.recursiveCals.splice(i, 1);
+        }
+        break;
+      }
+    }
     this.subscription.unsubscribe();
   }
 
@@ -82,7 +110,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       }
     }
   }
-  
+
   private getDependency(): void {
     this.coreService.post('workflow/dependencies', {
       controllerId: this.controllerId,
@@ -98,6 +126,9 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
       this.workFlowJson.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
       this.getOrders(this.workflow);
+      setTimeout(() => {
+        $('.mxTooltip').remove();
+      }, 500);
     });
   }
 
@@ -130,6 +161,13 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  closeAll(): void {
+    this.modal.closeAll();
+    for (let i = 0; i < this.recursiveCals.length; i++) {
+      this.recursiveCals.splice(i, 1);
+    }
+  }
 }
 
 @Component({
@@ -148,6 +186,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   @Input() jobs: any = {};
   @Input() orders: any = [];
   @Input() isModal: boolean;
+  @Input() recursiveCals: any;
 
   loading: boolean;
   order: any;
@@ -159,7 +198,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   orderCountMap = new Map();
   countArr = [];
   sideBar: any = {};
-  hideWorkflow = false;
   isProcessing = false;
 
   @ViewChild('graph', {static: true}) graphContainer: ElementRef;
@@ -327,7 +365,12 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
     this.job = null;
   }
 
+  hideTooltip(): void {
+    $('.mxTooltip').hide();
+  }
+
   modifyOrder(): void {
+    this.hideTooltip();
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
@@ -362,6 +405,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   }
 
   resumeOrder(): void {
+    this.hideTooltip();
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
@@ -481,7 +525,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
     const postStyle: any = {};
     postStyle.shape = 'offPageConnector';
     postStyle.strokeColor = '#999';
-    postStyle.fillColor = '#e0ffe0';
+    postStyle.fillColor = '#ffffe0';
     postStyle.gradientColor = '#fff';
     postStyle.direction = 'west';
 
@@ -514,7 +558,9 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
       tryStyle.gradientColor = '#333';
       catchStyle.gradientColor = '#333';
       expectStyle.gradientColor = '#333';
+      expectStyle.strokeColor = '#e0ffe0';
       postStyle.gradientColor = '#333';
+      postStyle.strokeColor = '#ffffe0';
       orderStyle.gradientColor = '#333';
     } else{
       style.fontColor = '#3d464d';
@@ -701,24 +747,22 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
         } else if (cell.value.tagName === 'If') {
           self.showConfiguration({predicate: cell.value.getAttribute('predicate')});
         } else if (cell.value.tagName === 'Workflow') {
-          self.hideWorkflow = true;
-          const modal = self.modal.create({
+          const workflow = JSON.parse(cell.value.getAttribute('data'));
+          self.modal.create({
             nzTitle: undefined,
             nzContent: DependentWorkflowComponent,
             nzClassName: 'x-lg',
             nzComponentParams: {
-              workflow: JSON.parse(cell.value.getAttribute('data')),
+              workflow,
               permission: self.permission,
               preferences: self.preferences,
               controllerId: self.controllerId,
+              recursiveCals: self.recursiveCals,
               workflowFilters: self.workflowFilters
             },
             nzFooter: null,
             nzClosable: false,
             nzMaskClosable: false
-          });
-          modal.afterClose.subscribe((res) => {
-            self.hideWorkflow = false;
           });
         }
         evt.consume();
@@ -1120,6 +1164,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   }
 
   private openModel(order: any): void {
+    this.hideTooltip();
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
@@ -1158,6 +1203,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
         operation: type,
         name: order.orderId
       };
+      this.hideTooltip();
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
@@ -1211,6 +1257,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
       };
     }
     if (nzComponentParams) {
+      this.hideTooltip();
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,

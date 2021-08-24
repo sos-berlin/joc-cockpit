@@ -77,7 +77,13 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.filters.mapOfCheckedId.clear();
+    if (this.filters.mapOfCheckedId) {
+      if (this.filters.mapOfCheckedId instanceof Set) {
+        this.filters.mapOfCheckedId.clear();
+      } else {
+        this.filters.mapOfCheckedId = new Set();
+      }
+    }
     this.getData();
   }
 
@@ -106,7 +112,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
       }
     });
     let obj: any = {
-      controllerId: this.filters.filter.current == true ? this.schedulerIds.selected : '',
+      controllerId: this.filters.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000,
       timeZone: this.preferences.timeZone
     };

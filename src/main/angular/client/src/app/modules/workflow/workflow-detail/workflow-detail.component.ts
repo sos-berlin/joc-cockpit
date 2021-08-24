@@ -8,17 +8,32 @@ import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
 import {AddOrderModalComponent, ShowDependencyComponent} from '../workflow-action/workflow-action.component';
 import {DataService} from '../../../services/data.service';
+import {DependentWorkflowComponent} from '../workflow-graphical/workflow-graphical.component';
 
 declare const $;
 
 @Component({
   selector: 'app-workflow-detail',
-  templateUrl: './workflow-detail.component.html'
+  templateUrl: './workflow-detail.component.html',
+  styles: [`.left-sidebar {
+    height: calc(100vh - 260px);
+    width: 180px;
+    position: fixed;
+    z-index: 10099;
+    top: 130px;
+    left: 0;
+    right: auto !important;
+    overflow-x: hidden;
+    transition: 0.3s;
+    background: var(--bg-box);
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+  }`]
 })
 export class WorkflowDetailComponent implements OnInit, OnDestroy {
   path: string;
   versionId: string;
   workFlowJson: any = {};
+  recursiveCals: any = [];
   orderPreparation: any = {};
   loading: boolean;
   schedulerIds: any = {};
@@ -113,6 +128,26 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   setView($event): void {
     this.pageView = $event;
+  }
+
+  openWorkflowDependency(obj): void {
+    obj.modalInstance.destroy();
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: DependentWorkflowComponent,
+      nzClassName: 'x-lg',
+      nzComponentParams: {
+        workflow: obj.workflow,
+        permission: this.permission,
+        preferences: this.preferences,
+        controllerId: this.schedulerIds.selected,
+        recursiveCals: this.recursiveCals,
+        workflowFilters: this.workflowFilters
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   showDependency(workflow = null): void {

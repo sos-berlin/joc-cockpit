@@ -205,10 +205,10 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
      * Function: handle a click event
      */
     graph.addListener(mxEvent.CLICK, (sender, evt) => {
-      let event = evt.getProperty('event');
+      const event = evt.getProperty('event');
       if (event.target.className && /cluster-action-menu/.test(event.target.className)) {
         $('[data-toggle="popover"]').popover('hide');
-        let cell = evt.getProperty('cell'); // cell may be null
+        const cell = evt.getProperty('cell'); // cell may be null
         if (cell != null) {
           self.cluster = null;
           self.controller = null;
@@ -237,7 +237,6 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
 
     /**
      * Overrides method to provide a cell label in the display
-     * @param cell
      */
     graph.convertValueToString = (cell) => {
       if (!self.preferences.zone) {
@@ -274,7 +273,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       }
 
       let colorClass = self.coreService.getColor(data.componentState.severity, 'text');
-      let clusterColorClass = data.clusterNodeState ? self.coreService.getColor(data.clusterNodeState.severity, 'text') : '';
+      const clusterColorClass = data.clusterNodeState ? self.coreService.getColor(data.clusterNodeState.severity, 'text') : '';
 
       let className = 'cluster-rect';
       if (cell.value.tagName === 'Connection') {
@@ -292,7 +291,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         return '<div class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm"> ' + data.dbms +
-          '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm block-ellipsis-cluster" title="'+ data.version +'">' +
+          '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm block-ellipsis-cluster" title="' + data.version + '">' +
           '<span>' + data.version + '</span></div></div>';
       } else if (cell.value.tagName === 'JOCCockpit') {
         className += ' joc';
@@ -377,7 +376,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-tasks"></i><span class="p-l-sm _600">' + data.title + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>';
         if (data.os) {
-          let name = data.os.name ? data.os.name.toLowerCase() : '';
+          const name = data.os.name ? data.os.name.toLowerCase() : '';
           controllerTemplate = controllerTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + name + '"></i><span class="p-l-sm text-sm" title="' + data.url + '">' + data.url +
             '</span></div>';
         } else {
@@ -694,7 +693,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   clusterAction(action, controller, isFailOver): void {
     this.controller = null;
     this.cluster = null;
-    let obj = {
+    const obj = {
       controllerId: this.schedulerIds.selected,
       url: controller.url,
       withSwitchover: isFailOver,
@@ -702,7 +701,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     };
 
     if (this.preferences.auditLog && (action !== 'download')) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         name: obj.controllerId + ' (' + obj.url + ')',
         operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'abort' ? 'Abort' : 'Switch Over'
@@ -744,7 +743,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
       this.postCall('controller/restart', obj);
     } else if (action === 'switchover') {
       const obj1 = obj;
-      delete obj1['withSwitchover'];
+      delete obj1.withSwitchover;
       this.postCall('controller/cluster/switchover', obj1);
     } else if (action === 'download') {
       this.coreService.download('controller/log', {

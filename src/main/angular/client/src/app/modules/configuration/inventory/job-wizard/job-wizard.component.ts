@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
-import {clone} from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 
 @Component({

@@ -13,7 +13,7 @@ import {WorkflowService} from '../../services/workflow.service';
 export class SearchComponent implements OnInit {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onNavigate: EventEmitter<any> = new EventEmitter();
-  @Input() controllerId: string;
+  @Input() controllerId: any;
   @Input() isWorkflow: boolean;
   submitted = false;
   isControllerId = false;

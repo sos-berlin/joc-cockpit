@@ -140,7 +140,7 @@ export class AgentModalComponent implements OnInit {
       const x = this.agents.filter((agent) => {
         return agent.disabled;
       });
-      let flag = x.length >= this.agents.length - 1;
+      const flag = x.length >= this.agents.length - 1;
       if (flag) {
         setTimeout(() => {
           this.agent.disabled = false;
