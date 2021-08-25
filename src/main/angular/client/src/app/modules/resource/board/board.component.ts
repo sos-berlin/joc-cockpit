@@ -110,6 +110,9 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
     this.coreService.post('notice/boards', obj).subscribe((res: any) => {
       this.loading = false;
       this.boards = res.noticeBoards;
+      this.boards.forEach((value) => {
+        value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
+      });
     }, () => {
       this.loading = false;
     });

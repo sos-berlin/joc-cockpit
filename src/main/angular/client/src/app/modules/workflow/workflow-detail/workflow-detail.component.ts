@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty, sortBy} from 'underscore';
@@ -105,6 +105,21 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   /* ---------------------------- Broadcast messages ----------------------------------*/
+
+  @HostListener('window:scroll', ['$event'])
+  scrollHandler(): void {
+    this.showAndHideBtn();
+  }
+
+  private showAndHideBtn(): void {
+    if (window.scrollY > 50) {
+      $('.scrollBottom-btn').hide();
+      $('.scrolltop-btn').show();
+    } else {
+      $('.scrollBottom-btn').show();
+      $('.scrolltop-btn').hide();
+    }
+  }
 
   expandAll(): void {
     if (this.pageView === 'list') {
@@ -250,6 +265,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       } else {
         this.getOrders(res.workflow);
       }
+      this.showAndHideBtn();
     }, () => {
       this.loading = true;
     });

@@ -240,7 +240,7 @@
                     <a title="{{item.workflow.path}}" class="text-hover-primary" (click)="openWorkflowDependency(item)">
                       <i nz-icon nzType="gateway" class="p-r-xs"
                          nzTheme="outline"></i>
-                      <b>{{item.workflow.path}}</b>
+                      <b>{{item.workflow.path.substring(item.workflow.path.lastIndexOf('/') + 1)}}</b>
                     </a>
                   </div>
                   <i class="fa fa-times pull-right cursor" style="margin-top: -15px" (click)="item.modalInstance.destroy()"></i>

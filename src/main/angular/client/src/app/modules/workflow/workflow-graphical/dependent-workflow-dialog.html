@@ -12,8 +12,29 @@
     <nz-spin nzSimple></nz-spin>
   </div>
   <div *ngIf="!loading">
-    <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs" [isModal]="true"
-                            [controllerId]="controllerId" [orders]="workflow.orders" [orderPreparation]="workflow.orderPreparation"></app-workflow-graphical>
+    <div class="m-b-12 text-center w-full">
+      <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="pageView = 'grid'"><i
+        class="fa fa-sitemap"></i>
+      </button>
+      <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='list'}" (click)="pageView = 'list'">
+        <i class="fa fa-bars"></i>
+      </button>
+    </div>
+    <div *ngIf="pageView === 'grid'">
+      <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs" [isModal]="true"
+                              [controllerId]="controllerId" [orders]="workflow.orders" [orderPreparation]="workflow.orderPreparation"></app-workflow-graphical>
+    </div>
+    <div class="p-a overflow-y" style="height: 100%" *ngIf="pageView === 'list'">
+      <div class="hover" >
+        <a class="text-primary" translate >workflow.label.start</a>
+        <span class="expand-collapse-btn">
+          <i class="cursor fa fa-lg fa-angle-double-down" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="expandAll()"></i>
+          <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll()"></i>
+        </span>
+      </div>
+      <app-type [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderPreparation]="workflow.orderPreparation" [permission]="permission" [preferences]="preferences"
+                [schedulerId]="controllerId" [expandAll]="isExpandAll" [orders]="workflow.orders"></app-type>
+    </div>
   </div>
 </div>
 

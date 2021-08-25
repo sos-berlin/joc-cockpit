@@ -31,11 +31,9 @@
                 <th *ngIf="permission.currentController && permission.currentController.noticeBoards.post" nzWidth="55px"><span translate>common.label.action</span></th>
                 <th><span translate>resource.board.label.name</span></th>
                 <th><span translate>common.label.path</span></th>
-                <th><span translate>resource.board.label.deploymentDate</span></th>
-                <th><span translate>common.label.status</span></th>
-                <th nzWidth="15%"><span translate>resource.board.label.postOrderToNoticeId</span></th>
-                <th nzWidth="15%"><span translate>resource.board.label.expectOrderToNoticeId</span></th>
-                <th><span translate>resource.board.label.endOfLifeOfNotices</span></th>
+                <th nzWidth="130px"><span translate>resource.board.label.deploymentDate</span></th>
+                <th nzWidth="100px"><span translate>common.label.status</span></th>
+                <th nzWidth="10%"><span translate>resource.board.label.endOfLifeOfNotices</span></th>
                 <th nzWidth="100px"><span translate>resource.board.label.numOfNotices</span></th>
               </tr>
               </thead>
@@ -82,71 +80,95 @@
                     <a class="label" *ngIf="board.state" [ngClass]="coreService.getColor(board.state.severity, 'bg')"
                        [innerHtml]="board.state._text | translate"></a>
                   </td>
-                  <td>{{board.postOrderToNoticeId}}</td>
-                  <td>{{board.expectOrderToNoticeId}}</td>
                   <td>{{board.endOfLife}}</td>
                   <td>{{board.notices.length}}</td>
                 </tr>
-                <tr *ngIf="board.show">
-                  <td class="menu"></td>
-                  <td colspan="8" style="padding:0 !important;" class="order-history-template0">
-                    <nz-table class="m-a-0 inner-table" #nestedTable [nzSize]="'small'"
-                              [nzData]="board.workflows" [nzShowPagination]="false">
-                      <thead>
-                      <tr>
-                        <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" nzWidth="55px"><span translate>common.label.action</span></th>
-                        <th><span translate>resource.board.label.id</span></th>
-                        <th><span translate>resource.board.label.endOfLife</span></th>
-                        <th><span translate>resource.board.label.expectingOrders</span></th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <ng-template ngFor let-notice
-                                   [ngForOf]="nestedTable.data">
+                <ng-container *ngIf="board.show">
+                  <tr>
+                    <td class="menu"></td>
+                    <td colspan="8" style="padding:0 !important;">
+                      <nz-table class="m-a-0 inner-table" #innerTable [nzSize]="'small'"
+                                [nzData]="['']" [nzShowPagination]="false">
+                        <thead>
                         <tr>
-                          <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete">
-                            <div class="btn-group dropdown">
-                              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
-                                <i class="fa fa-ellipsis-h"></i>
-                              </button>
-                              <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
-                                <ul nz-menu>
-                                  <li nz-menu-item (click)="delete(board, notice)">
-                                    <a translate>resource.board.button.delete</a>
-                                  </li>
-                                </ul>
-                              </nz-dropdown-menu>
-                            </div>
-                          </td>
-                          <td>{{notice.id}}</td>
-                          <td>{{notice.endOfLife | stringToDate}}</td>
-                          <td>{{notice.expectingOrders.length}}</td>
+                          <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
+                          <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
                         </tr>
-                        <ng-container *ngIf="notice.expectingOrders.length > 0">
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <td>
+                            <span [innerHtml]="board.postOrderToNoticeId"></span>
+                          </td>
+                          <td>
+                            <span [innerHtml]="board.expectOrderToNoticeId"></span>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </nz-table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="menu"></td>
+                    <td colspan="8" style="padding:0 !important;" class="order-history-template0">
+                      <nz-table class="m-a-0 inner-table" #nestedTable [nzSize]="'small'"
+                                [nzData]="board.workflows" [nzShowPagination]="false">
+                        <thead>
+                        <tr>
+                          <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" nzWidth="55px"><span translate>common.label.action</span></th>
+                          <th><span translate>resource.board.label.id</span></th>
+                          <th><span translate>resource.board.label.endOfLife</span></th>
+                          <th><span translate>resource.board.label.expectingOrders</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ng-template ngFor let-notice
+                                     [ngForOf]="nestedTable.data">
                           <tr>
-                            <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
-                            <td class="custom-th"><span translate>order.label.workflow</span></td>
-                            <td class="custom-th"><span translate>order.label.position</span></td>
-                            <td class="custom-th"><span translate>order.label.state</span></td>
-                            <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
-                          </tr>
-                          <tr *ngFor="let order of notice.expectingOrders">
-                            <td><span class="p-l">{{order.orderId}}</span></td>
-                            <td><span>{{order.workflowId}}</span></td>
-                            <td>
-                                      <span>
-                                        {{order.positionString}}
-                                      </span>
+                            <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete">
+                              <div class="btn-group dropdown">
+                                <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
+                                  <i class="fa fa-ellipsis-h"></i>
+                                </button>
+                                <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
+                                  <ul nz-menu>
+                                    <li nz-menu-item (click)="delete(board, notice)">
+                                      <a translate>resource.board.button.delete</a>
+                                    </li>
+                                  </ul>
+                                </nz-dropdown-menu>
+                              </div>
                             </td>
-                            <td><span class="label" [ngClass]="coreService.getColor(order.state.severity,'bg')">{{order.state._text | translate}}</span></td>
-                            <td>{{order.scheduledFor | stringToDate}}</td>
+                            <td>{{notice.id}}</td>
+                            <td>{{notice.endOfLife | stringToDate}}</td>
+                            <td>{{notice.expectingOrders.length}}</td>
                           </tr>
-                        </ng-container>
-                      </ng-template>
-                      </tbody>
-                    </nz-table>
-                  </td>
-                </tr>
+                          <ng-container *ngIf="notice.expectingOrders.length > 0">
+                            <tr>
+                              <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                              <td class="custom-th"><span translate>order.label.workflow</span></td>
+                              <td class="custom-th"><span translate>order.label.position</span></td>
+                              <td class="custom-th"><span translate>order.label.state</span></td>
+                              <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                            </tr>
+                            <tr *ngFor="let order of notice.expectingOrders">
+                              <td><span class="p-l">{{order.orderId}}</span></td>
+                              <td><span>{{order.workflowId}}</span></td>
+                              <td>
+                                        <span>
+                                          {{order.positionString}}
+                                        </span>
+                              </td>
+                              <td><span class="label" [ngClass]="coreService.getColor(order.state.severity,'bg')">{{order.state._text | translate}}</span></td>
+                              <td>{{order.scheduledFor | stringToDate}}</td>
+                            </tr>
+                          </ng-container>
+                        </ng-template>
+                        </tbody>
+                      </nz-table>
+                    </td>
+                  </tr>
+                </ng-container>
               </ng-template>
             </tbody>
             </nz-table>

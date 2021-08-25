@@ -1030,11 +1030,12 @@ export class WorkflowService {
               this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
                 str = translatedValue.toLowerCase();
               });
-            } else if (cell.source.value.tagName === 'Fork') {
-              str = x;
             } else if ((cell.source.value.tagName === 'Job' && cell.source.getAttribute('label'))) {
               str = cell.source.getAttribute('label');
-            } else if (((cell.source.value.tagName === 'PostNotice' || cell.source.value.tagName === 'ExpectNotice'))) {
+            } else if (cell.source.value.tagName === 'Fork') {
+              str = x;
+            }
+            if (((cell.source.value.tagName === 'PostNotice' || cell.source.value.tagName === 'ExpectNotice'))) {
               str = x;
             }
           } else {

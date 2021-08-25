@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  HostListener,
   Input,
   OnChanges,
   OnDestroy,
@@ -53,6 +52,8 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
   @Input() workflowFilters: any = {};
 
   workFlowJson: any = {};
+  pageView = 'grid';
+  isExpandAll: boolean;
   loading = true;
 
   subscription: Subscription;
@@ -162,6 +163,18 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
+  expandAll(): void {
+    if (this.pageView === 'list') {
+      this.isExpandAll = true;
+    }
+  }
+
+  collapseAll(): void {
+    if (this.pageView === 'list') {
+      this.isExpandAll = false;
+    }
+  }
+
   closeAll(): void {
     this.modal.closeAll();
     for (let i = 0; i < this.recursiveCals.length; i++) {
@@ -187,6 +200,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   @Input() orders: any = [];
   @Input() isModal: boolean;
   @Input() recursiveCals: any;
+  @Input() workflowObjects: any;
 
   loading: boolean;
   order: any;
@@ -242,18 +256,12 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
         }
       }
     });
-    this.showAndHideBtn();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.orders) {
       this.updateOrder();
     }
-  }
-
-  @HostListener('window:scroll', ['$event'])
-  scrollHandler(): void {
-    this.showAndHideBtn();
   }
 
   updateOrder(): void {
@@ -445,16 +453,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
 
   removeWhenTerminated(): void {
     this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
-  }
-
-  private showAndHideBtn(): void {
-    if (window.scrollY > 50) {
-      $('.scrollBottom-btn').hide();
-      $('.scrolltop-btn').show();
-    } else {
-      $('.scrollBottom-btn').show();
-      $('.scrolltop-btn').hide();
-    }
   }
 
   private initEditorConf(): void {
@@ -684,14 +682,14 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
           }
         }
       },
-      mouseUp: function(sender, me) {
+      mouseUp: function() {
       },
-      dragEnter: function(evt, state, cell) {
+      dragEnter: function(evt, state) {
         if (this.currentIconSet == null) {
           this.currentIconSet = new mxIconSet(state);
         }
       },
-      dragLeave: function(evt, state) {
+      dragLeave: function() {
         if (this.currentIconSet != null) {
           this.currentIconSet.destroy();
           this.currentIconSet = null;
@@ -703,7 +701,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
     /**
      * Function: foldCells to collapse/expand
      */
-    mxGraph.prototype.foldCells = function(collapse, recurse, cells, checkFoldable, evt) {
+    mxGraph.prototype.foldCells = function(collapse, recurse, cells, checkFoldable) {
       recurse = (recurse != null) ? recurse : true;
       if (cells == null) {
         cells = this.getFoldableCells(this.getSelectionCells(), collapse);
