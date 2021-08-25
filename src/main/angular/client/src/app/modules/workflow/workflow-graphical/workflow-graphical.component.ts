@@ -49,6 +49,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
   @Input() preferences: any = {};
   @Input() controllerId: any;
   @Input() recursiveCals: any;
+  @Input() view: any;
   @Input() workflowFilters: any = {};
 
   workFlowJson: any = {};
@@ -67,6 +68,9 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     let flag = false;
+    if(this.view){
+      this.pageView = this.view;
+    }
     for (let i = 0; i < this.recursiveCals.length; i++) {
       if (this.recursiveCals[i].workflow.path === this.workflow.path) {
         flag = true;
@@ -231,7 +235,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
     }
     this.createEditor();
     const dom = this.isModal ? $('.graph2 #graph') : $('#graph');
-    let ht = this.isModal ? 'calc(100vh - 150px)' : 'calc(100vh - 322px)';
+    let ht = this.isModal ? 'calc(100vh - 182px)' : 'calc(100vh - 322px)';
     if (this.workflowFilters && this.workflowFilters.panelSize > 0) {
       ht = this.workflowFilters.panelSize + 'px';
     }
@@ -853,7 +857,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
     };
   }
 
-  private updatePositions(mainJson): void {
+  private updatePositions(mainJson, vertixMap): void {
     const self = this;
     const doc = mxUtils.createXmlDocument();
     this.orderCountMap = new Map();
@@ -898,11 +902,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
             recursive(json.instructions[x]);
           }
           if (json.instructions[x].TYPE === 'ExpectNotice') {
-            const cell = self.vertixMap.get(JSON.stringify(json.instructions[x].position));
+            const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
-              if (self.workFlowJson.expectedNoticeBoards) {
-                for (const prop in self.workFlowJson.expectedNoticeBoards) {
-                  if (self.workFlowJson.expectedNoticeBoards[prop].name === json.instructions[x].noticeBoardName) {
+              if (mainJson.expectedNoticeBoards) {
+                for (const prop in mainJson.expectedNoticeBoards) {
+                  if (mainJson.expectedNoticeBoards[prop].name === json.instructions[x].noticeBoardName) {
                     const incomingEdges = graph.getIncomingEdges(cell);
                     if (incomingEdges && incomingEdges.length > 0) {
                       for (const edge in incomingEdges) {
@@ -912,7 +916,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
                         }
                       }
                     }
-                    self.workFlowJson.expectedNoticeBoards[prop].value.forEach((workflow) => {
+                    mainJson.expectedNoticeBoards[prop].value.forEach((workflow) => {
                       createWorkflowNode(workflow, cell, 'expect');
                     });
                     break;
@@ -923,11 +927,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
           }
 
           if (json.instructions[x].TYPE === 'PostNotice') {
-            const cell = self.vertixMap.get(JSON.stringify(json.instructions[x].position));
+            const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
-              if (self.workFlowJson.postNoticeBoards) {
-                for (const prop in self.workFlowJson.postNoticeBoards) {
-                  if (self.workFlowJson.postNoticeBoards[prop].name === json.instructions[x].noticeBoardName) {
+              if (mainJson.postNoticeBoards) {
+                for (const prop in mainJson.postNoticeBoards) {
+                  if (mainJson.postNoticeBoards[prop].name === json.instructions[x].noticeBoardName) {
                     const outgoingEdges = graph.getOutgoingEdges(cell);
                     if (outgoingEdges && outgoingEdges.length > 0) {
                       for (const edge in outgoingEdges) {
@@ -937,7 +941,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
                         }
                       }
                     }
-                    self.workFlowJson.postNoticeBoards[prop].value.forEach((workflow) => {
+                    mainJson.postNoticeBoards[prop].value.forEach((workflow) => {
                       createWorkflowNode(workflow, cell, 'post');
                     });
                     break;
@@ -1152,7 +1156,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
       this.workflowService.createWorkflow(this.workFlowJson, {graph: this.graph}, mapObj);
       this.nodeMap = mapObj.nodeMap;
       this.vertixMap = mapObj.vertixMap;
-      this.updatePositions(this.workFlowJson);
+      this.updatePositions(this.workFlowJson, this.vertixMap);
     } finally {
       // Updates the display
       this.graph.getModel().endUpdate();

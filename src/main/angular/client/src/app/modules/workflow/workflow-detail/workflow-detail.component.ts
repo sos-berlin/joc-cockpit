@@ -47,6 +47,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   sideBar: any = {};
   isProcessing = false;
   subscription: Subscription;
+  workflowObjects = new Map();
 
   filterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -55,7 +56,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     {date: '12h', text: 'next12'},
     {date: '24h', text: 'next24'}
   ];
-
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
               public workflowService: WorkflowService, public modal: NzModalService, private dataService: DataService) {
@@ -86,6 +86,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.modal.closeAll();
   }
 
   changedHandler(flag: boolean): void {
@@ -165,42 +166,54 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  showDependency(workflow = null): void {
-    if (!this.workFlowJson.expectedNoticeBoards) {
-      this.coreService.post('workflow/dependencies', {
-        controllerId: this.schedulerIds.selected,
-        workflowId: {
-          path: workflow ? workflow.path : this.workFlowJson.path,
-          version: workflow ? workflow.versionId : this.workFlowJson.versionId
-        }
-      }).subscribe((res) => {
-        if (isEmpty(this.workFlowJson)) {
-          workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
-          workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
-        } else {
-          this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
-          this.workFlowJson.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
-        }
-        if (!workflow) {
-          this.openModal(this.workFlowJson);
-        } else {
-          this.getOrders(workflow);
+  private recursivelyUpdateWorkflow(noticeBoards): void{
+    noticeBoards.forEach((board) => {
+      board.value.forEach((item) => {
+        if (!this.workflowObjects.has(item.path)) {
+          this.workflowObjects.set(item.path, JSON.stringify(item));
+          this.showDependency(item, false);
         }
       });
-    } else {
-      if (!workflow) {
-        this.openModal(this.workFlowJson);
-      }
-    }
+    });
   }
 
-  private openModal(workflow): void {
+  showDependency(workflow, isFirst = true): void {
+    this.coreService.post('workflow/dependencies', {
+      controllerId: this.schedulerIds.selected,
+      workflowId: {
+        path: workflow.path,
+        version: workflow.versionId
+      }
+    }).subscribe((res) => {
+      if (!workflow.instructions) {
+        workflow.instructions = res.workflow.instructions;
+        workflow.jobs = res.workflow.jobs;
+        this.workflowService.convertTryToRetry(workflow, null, res.workflow.jobs);
+      }
+      workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
+      workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
+      this.workflowObjects.set(workflow.path, JSON.stringify(workflow));
+/*      //if (isFirst) {
+        if (workflow.expectedNoticeBoards.length > 0) {
+          this.recursivelyUpdateWorkflow(workflow.expectedNoticeBoards);
+        }
+        if (workflow.postNoticeBoards.length > 0) {
+          this.recursivelyUpdateWorkflow(workflow.postNoticeBoards);
+        }
+     // }*/
+      if (isFirst) {
+        this.getOrders(workflow);
+      }
+    });
+  }
+
+  openModal(): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ShowDependencyComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        workflow
+        workflow: this.workFlowJson
       },
       nzFooter: null,
       nzClosable: false,

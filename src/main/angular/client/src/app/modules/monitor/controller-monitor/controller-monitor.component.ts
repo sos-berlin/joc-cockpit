@@ -79,19 +79,25 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   init(): void {
-    this.renderTimeSheetHeader();
+    if (this.filters.filter.view !== 'Custom') {
+      this.renderTimeSheetHeader();
+    } else{
+      this.getData();
+    }
   }
 
-  setViewSize(): void {
-    this.view = this.statisticsData.length > 15 ? [(100 * this.statisticsData.length), 260] :
+  setViewSize(len): void {
+    
+    const barWidth = len === 1 ? 60 : 32;
+    this.view = this.statisticsData.length > 10 ? [(barWidth * len * this.statisticsData.length), 260] :
       (this.chartArea.nativeElement.offsetWidth && this.chartArea.nativeElement.offsetWidth > 500)
         ? [(this.chartArea.nativeElement.offsetWidth - 34), 260] : null;
     if (!this.view && this.chartArea.nativeElement.offsetWidth === 0) {
       setTimeout(() => {
-        this.setViewSize();
+        this.setViewSize(len);
       }, 100);
     }
-    this.groupPadding = this.statisticsData.length > 15 ? 4 : 16;
+    this.groupPadding = this.statisticsData.length > 10 ? 4 : 16;
   }
 
   refresh(args): void {
@@ -160,7 +166,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         }
       });
       groupData = this.groupByPipe.transform(groupData, 'date');
-      this.getRunningTime();
       this.checkMissingDates(groupData, map);
     }, () => {
       this.isLoaded = true;
@@ -187,6 +192,13 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
         obj.total = ((differenceInMilliseconds(lastDate,
           this.filters.filter.startDate) + (1000 * 60 * 60 * 24)) - (dur1));
+        if (this.coreService.getDateByFormat(this.filters.filter.startDate, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
+          obj.total -= (1000 * 60 * 60 * 24);
+        }
+        if (!lastEntry.lastKnownTime && this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
+          lastEntry.totalRunningTime += (moment.duration(this.coreService.getDateByFormat(new Date(), this.preferences.zone, 'HH:mm:ss')).asMilliseconds() -
+           moment.duration(this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
+        }
         obj.time = lastEntry.totalRunningTime;
         obj.value = Math.round((obj.time * 100) / obj.total);
         obj.hours = ((obj.total) / (1000 * 60 * 60 * 24)).toFixed(2);
@@ -200,8 +212,12 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   private getStatisticsData(tempArr): void {
     this.statisticsData = [];
+    let len = 1;
     tempArr.forEach((item) => {
       const values = this.groupByPipe.transform(item.value, 'controllerId');
+      if (len < values.length) {
+        len = values.length;
+      }
       const obj = {
         name: item.key,
         series: []
@@ -259,7 +275,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       this.statisticsData.push(obj);
     });
 
-    this.setViewSize();
+    this.setViewSize(len);
   }
 
   private getOverviewData(tempArr): void {
@@ -305,7 +321,19 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
   setView(view): void {
     this.filters.filter.view = view;
-    this.renderTimeSheetHeader();
+    if (view !== 'Custom') {
+      this.renderTimeSheetHeader();
+    } else {
+      this.filters.filter.dateRange = [this.filters.filter.startDate, this.filters.filter.endDate];
+    }
+  }
+
+  onChangeDate(): void {
+    if (this.filters.filter.dateRange) {
+      this.filters.filter.startDate = this.filters.filter.dateRange[0];
+      this.filters.filter.endDate = this.filters.filter.dateRange[1];
+      this.getData();
+    }
   }
 
   prev(): void {
@@ -338,7 +366,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       this.filters.filter.endDate = new Date(date);
     }
     this.renderTimeSheetHeader();
-  };
+  }
 
   renderTimeSheetHeader(): void {
     const headerDates = [];
@@ -400,20 +428,20 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         for (const j in groupData) {
           if (date === groupData[j].key) {
             flag = true;
-            groupData[j].value = sortBy(groupData[j].value, (i: any) => {
-              return i.readyTime;
+            groupData[j].value = sortBy(groupData[j].value, (x: any) => {
+              return x.readyTime;
             });
             tempArr.push(this.coreService.clone(groupData[j]));
             break;
           }
         }
         if (!flag) {
-          let mainObj = {
+          const mainObj = {
             key: date,
             value: []
           };
           if (i > 0) {
-            let x = tempArr[i - 1].value;
+            const x = tempArr[i - 1].value;
             if (x.length > 0) {
               x.forEach((data) => {
                 if (data.isShutdown) {
@@ -496,12 +524,13 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
     this.getOverviewData(tempArr);
     this.getStatisticsData(tempArr);
+    this.getRunningTime();
   }
 
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
     return differenceInCalendarDays(current, this.viewDate) > 0;
-  };
+  }
 
   getValue(val): string {
     return val + ' %';

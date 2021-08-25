@@ -2,6 +2,7 @@ import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
+import {DependentWorkflowComponent} from '../workflow-graphical/workflow-graphical.component';
 
 @Component({
   selector: 'app-type',
@@ -16,6 +17,10 @@ export class TypeComponent implements OnChanges {
   @Input() permission: any;
   @Input() schedulerId: any;
   @Input() orderPreparation: any;
+  @Input() recursiveCals: any;
+  @Input() workflowFilters: any;
+  @Input() expectedNoticeBoards: any;
+  @Input() postNoticeBoards: any;
   @Input() orderReload: boolean;
   @Output() update: EventEmitter<any> = new EventEmitter();
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
@@ -69,6 +74,7 @@ export class TypeComponent implements OnChanges {
 
   recursiveUpdate(node, flag): void {
     const self = this;
+
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -344,7 +350,44 @@ export class TypeComponent implements OnChanges {
   getDocumentationInfo(instruction): void {
     if (instruction.TYPE === 'Job' && !instruction.documentationName) {
       const job = this.jobs[instruction.jobName];
-      instruction.documentationName =  job ? job.documentationName : null;
+      instruction.documentationName = job ? job.documentationName : null;
+    }
+  }
+
+  openWorkflowDependency(obj): void {
+    if (obj.TYPE === 'ExpectNotice' || obj.TYPE === 'PostNotice') {
+      let workflow;
+      const list = obj.TYPE === 'ExpectNotice' ? this.expectedNoticeBoards : this.postNoticeBoards;
+      for (const prop in list) {
+        if (list[prop]) {
+          if (list[prop].name === obj.noticeBoardName) {
+            list[prop].value.forEach((item) => {
+              workflow = item;
+            });
+            break;
+          }
+        }
+      }
+
+      if (workflow) {
+        this.modal.create({
+          nzTitle: undefined,
+          nzContent: DependentWorkflowComponent,
+          nzClassName: 'x-lg',
+          nzComponentParams: {
+            workflow,
+            permission: this.permission,
+            preferences: this.preferences,
+            controllerId: this.schedulerId,
+            recursiveCals: this.recursiveCals,
+            view: 'list',
+            workflowFilters: this.workflowFilters
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+      }
     }
   }
 }

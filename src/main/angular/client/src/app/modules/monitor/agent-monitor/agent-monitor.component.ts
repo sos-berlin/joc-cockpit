@@ -76,12 +76,20 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       this.yAxisLabel = translatedValue;
     });
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.renderTimeSheetHeader();
+    this.init();
   }
 
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+  }
+
+  init(): void {
+    if (this.filters.filter.view !== 'Custom') {
+      this.renderTimeSheetHeader();
+    } else{
+      this.getData();
+    }
   }
 
   private getData(): void {
@@ -117,13 +125,31 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
 
   setView(view): void {
     this.filters.filter.view = view;
-    this.renderTimeSheetHeader();
+    if (view !== 'Custom') {
+      this.renderTimeSheetHeader();
+    } else {
+      this.filters.filter.dateRange = [this.filters.filter.startDate, this.filters.filter.endDate];
+    }
+  }
+
+  onChangeDate(): void {
+    if (this.filters.filter.dateRange) {
+      this.filters.filter.startDate = this.filters.filter.dateRange[0];
+      this.filters.filter.endDate = this.filters.filter.dateRange[1];
+      this.getData();
+    }
   }
 
   setViewSize(len): void {
-    this.view = this.statisticsData.length > 15 ? [(32 * len * this.statisticsData.length), 260] : (this.chartArea.nativeElement.offsetWidth && this.chartArea.nativeElement.offsetWidth > 500)
+    this.view = this.statisticsData.length > 10 ? [(32 * len * this.statisticsData.length), 260] :
+      (this.chartArea.nativeElement.offsetWidth && this.chartArea.nativeElement.offsetWidth > 500)
       ? [(this.chartArea.nativeElement.offsetWidth - 34), 260] : null;
-    this.groupPadding = this.statisticsData.length > 15 ? 4 : 16;
+    if (!this.view && this.chartArea.nativeElement.offsetWidth === 0) {
+      setTimeout(() => {
+        this.setViewSize(len);
+      }, 100);
+    }
+    this.groupPadding = this.statisticsData.length > 10 ? 4 : 16;
   }
 
   customColors(): any {
@@ -214,16 +240,18 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         if (this.filters.filter.groupBy === 'CONTROLLERID') {
           const agents = this.groupByPipe.transform(values[i].value, 'agentId');
           for (const a in agents) {
-            const obj: any = {
-              id: ++count,
-              parentID: parentObj.id,
-              date: values[i].key,
-              agentId: agents[a].key,
-              start: '00:15',
-              end: '25:00',
-              statusList: []
-            };
-            this.updateStatusList(agents[a], obj);
+            if (agents[a]) {
+              const obj: any = {
+                id: ++count,
+                parentID: parentObj.id,
+                date: values[i].key,
+                agentId: agents[a].key,
+                start: '00:15',
+                end: '25:00',
+                statusList: []
+              };
+              this.updateStatusList(agents[a], obj);
+            }
           }
         } else {
           const obj: any = {
@@ -256,46 +284,48 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     const map = new Map();
     this.data.forEach((controller) => {
       for (const i in controller.agents) {
-        if (controller.agents[i].previousEntry) {
-          const startDate = new Date(this.filters.filter.startDate).setHours(0, 0, 0, 0);
-          if (startDate > new Date(controller.agents[i].previousEntry.readyTime).getTime()) {
+        if (controller.agents[i]) {
+          if (controller.agents[i].previousEntry) {
+            const startDate = new Date(this.filters.filter.startDate).setHours(0, 0, 0, 0);
+            if (startDate > new Date(controller.agents[i].previousEntry.readyTime).getTime()) {
+              const obj = {
+                controllerId: controller.controllerId,
+                agentId: controller.agents[i].agentId,
+                url: controller.agents[i].url,
+                date: this.coreService.getDateByFormat(startDate, this.preferences.zone, 'YYYY-MM-DD'),
+                readyTime: new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59),
+                lastKnownTime: null,
+                isShutdown: false
+              };
+              if (startDate < new Date(controller.agents[i].previousEntry.lastKnownTime).getTime()) {
+                obj.lastKnownTime = controller.agents[i].previousEntry.lastKnownTime;
+              } else {
+                obj.readyTime = new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59);
+                obj.isShutdown = true;
+              }
+              let arr = [obj];
+              if (map.has(obj.date)) {
+                arr = arr.concat(JSON.parse(map.get(obj.date)));
+              }
+              map.set(obj.date, JSON.stringify(arr));
+            }
+          }
+          for (const j in controller.agents[i].entries) {
+            if (controller.agents[i].entries[j].readyTime === controller.agents[i].entries[j].lastKnownTime) {
+              const d = new Date(controller.agents[i].entries[j].readyTime);
+              controller.agents[i].entries[j].lastKnownTime = d.setSeconds(d.getSeconds() + 1);
+            }
             const obj = {
               controllerId: controller.controllerId,
               agentId: controller.agents[i].agentId,
               url: controller.agents[i].url,
-              date: this.coreService.getDateByFormat(startDate, this.preferences.zone, 'YYYY-MM-DD'),
-              readyTime: new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59),
-              lastKnownTime: null,
-              isShutdown: false
+              date: this.coreService.getDateByFormat(controller.agents[i].entries[j].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
+              totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+              readyTime: controller.agents[i].entries[j].readyTime,
+              lastKnownTime: controller.agents[i].entries[j].lastKnownTime
             };
-            if (startDate < new Date(controller.agents[i].previousEntry.lastKnownTime).getTime()) {
-              obj.lastKnownTime = controller.agents[i].previousEntry.lastKnownTime;
-            } else {
-              obj.readyTime = new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59);
-              obj.isShutdown = true;
-            }
-            let arr = [obj];
-            if (map.has(obj.date)) {
-              arr = arr.concat(JSON.parse(map.get(obj.date)));
-            }
-            map.set(obj.date, JSON.stringify(arr));
+            this.groupByData.push(obj);
           }
-        }
-        for (const j in controller.agents[i].entries) {
-          if (controller.agents[i].entries[j].readyTime === controller.agents[i].entries[j].lastKnownTime) {
-            const d = new Date(controller.agents[i].entries[j].readyTime);
-            controller.agents[i].entries[j].lastKnownTime = d.setSeconds(d.getSeconds() + 1);
-          }
-          const obj = {
-            controllerId: controller.controllerId,
-            agentId: controller.agents[i].agentId,
-            url: controller.agents[i].url,
-            date: this.coreService.getDateByFormat(controller.agents[i].entries[j].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
-            totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
-            readyTime: controller.agents[i].entries[j].readyTime,
-            lastKnownTime: controller.agents[i].entries[j].lastKnownTime
-          };
-          this.groupByData.push(obj);
         }
       }
     });
@@ -325,6 +355,13 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
           }
           obj.total = ((differenceInMilliseconds(lastDate,
             this.filters.filter.startDate) + (1000 * 60 * 60 * 24)) - (dur1));
+          if (this.coreService.getDateByFormat(this.filters.filter.startDate, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
+            obj.total -= (1000 * 60 * 60 * 24);
+          }
+          if (!lastEntry.lastKnownTime && this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
+            lastEntry.totalRunningTime += (moment.duration(this.coreService.getDateByFormat(new Date(), this.preferences.zone, 'HH:mm:ss')).asMilliseconds() -
+              moment.duration(this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
+          }
           obj.time = lastEntry.totalRunningTime;
           obj.value = Math.round((obj.time * 100) / obj.total);
           obj.hours = ((obj.total) / (1000 * 60 * 60 * 24)).toFixed(2);
@@ -352,8 +389,8 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         for (const j in this.groupByData) {
           if (date === this.groupByData[j].key) {
             flag = true;
-            this.groupByData[j].value = sortBy(this.groupByData[j].value, (i: any) => {
-              return i.readyTime;
+            this.groupByData[j].value = sortBy(this.groupByData[j].value, (x: any) => {
+              return x.readyTime;
             });
             tempArr.push(this.groupByData[j]);
             if (len < this.groupByData[j].value.length) {
@@ -363,12 +400,12 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
           }
         }
         if (!flag) {
-          let mainObj = {
+          const mainObj = {
             key: date,
             value: []
           };
           if (i > 0) {
-            let x = tempArr[i - 1].value;
+            const x = tempArr[i - 1].value;
             if (x.length > 0) {
               x.forEach((data) => {
                 if (data.isShutdown) {

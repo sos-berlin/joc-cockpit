@@ -57,7 +57,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="showDependency()" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards">
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="openModal()" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards">
               <i class="fa fa-codepen"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDependency</span>
             </button>
@@ -232,23 +232,24 @@
       </div>
       <div class="col-lg-12">
         <div *ngIf="loading">
-          <div *ngIf="pageView === 'grid' && workflow.instructions">
-            <div class="left-sidebar" *ngIf="recursiveCals.length > 0">
-              <div class="m-t">
-                <div class="box p-a-sm" *ngFor="let item of recursiveCals;let i = index" [ngClass]="{'active': i === recursiveCals.length-1 }">
-                  <div class="block-ellipsis" style="width: 90%">
-                    <a title="{{item.workflow.path}}" class="text-hover-primary" (click)="openWorkflowDependency(item)">
-                      <i nz-icon nzType="gateway" class="p-r-xs"
-                         nzTheme="outline"></i>
-                      <b>{{item.workflow.path.substring(item.workflow.path.lastIndexOf('/') + 1)}}</b>
-                    </a>
-                  </div>
-                  <i class="fa fa-times pull-right cursor" style="margin-top: -15px" (click)="item.modalInstance.destroy()"></i>
+          <div class="left-sidebar" *ngIf="recursiveCals.length > 0">
+            <div class="m-t">
+              <div class="box p-a-sm" *ngFor="let item of recursiveCals;let i = index" [ngClass]="{'active': i === recursiveCals.length-1 }">
+                <div class="block-ellipsis" style="width: 90%">
+                  <a title="{{item.workflow.path}}" class="text-hover-primary" (click)="openWorkflowDependency(item)">
+                    <i nz-icon nzType="gateway" class="p-r-xs"
+                       nzTheme="outline"></i>
+                    <b>{{item.workflow.path.substring(item.workflow.path.lastIndexOf('/') + 1)}}</b>
+                  </a>
                 </div>
+                <i class="fa fa-times pull-right cursor" style="margin-top: -15px" (click)="item.modalInstance.destroy()"></i>
               </div>
             </div>
-            <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences" [jobs]="workflow.jobs"
-                                    [controllerId]="schedulerIds.selected" [orders]="workflow.orders" [workflowFilters]="workflowFilters" [orderPreparation]="orderPreparation"></app-workflow-graphical>
+          </div>
+          <div *ngIf="pageView === 'grid' && workflow.instructions">
+            <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences"
+                                    [jobs]="workflow.jobs" [controllerId]="schedulerIds.selected" [orders]="workflow.orders" [workflowObjects]="workflowObjects"
+                                    [workflowFilters]="workflowFilters" [orderPreparation]="orderPreparation"></app-workflow-graphical>
           </div>
           <div *ngIf="pageView !== 'grid' && workFlowJson.instructions">
             <div class="box m-b-0 p-a-0 resizable" appResizable [height]="workflowFilters.panelSize2" [workflowTab]="workflowFilters" id="workflowTextId">
@@ -260,9 +261,9 @@
                     <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll()"></i>
                   </span>
                 </div>
-                <app-type [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderPreparation]="orderPreparation" [permission]="permission" [preferences]="preferences"
-                          [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll" (isChanged)="changedHandler($event)"
-                          [orders]="workflow.orders"></app-type>
+                <app-type [recursiveCals]="recursiveCals" [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderPreparation]="orderPreparation" [permission]="permission" [preferences]="preferences"
+                          [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll" (isChanged)="changedHandler($event)" [orders]="workflow.orders"
+                          [workflowFilters]="workflowFilters" [expectedNoticeBoards]="workFlowJson.expectedNoticeBoards" [postNoticeBoards]="workFlowJson.postNoticeBoards"></app-type>
                 <div class="rg-bottom"><span></span></div>
               </div>
             </div>

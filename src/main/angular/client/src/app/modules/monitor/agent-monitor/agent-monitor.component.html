@@ -12,8 +12,14 @@
              [class.primary]="filters.filter.view === 'Month'" translate>
           monitor.button.month
         </div>
+        <div class="btn btn-default btn-sm"
+             (click)="setView('Custom')"
+             [class.primary]="filters.filter.view === 'Custom'" translate>
+          monitor.button.custom
+        </div>
       </div>
-      <div class="timeline-header pull-right inline m-l-12">
+      <nz-range-picker [nzAllowClear]="false" class="pull-right m-r-12" *ngIf="filters.filter.view === 'Custom'" [nzDisabledDate]="disabledDate" [(ngModel)]="filters.filter.dateRange" (ngModelChange)="onChangeDate()"></nz-range-picker>
+      <div class="timeline-header pull-right inline m-l-12" *ngIf="filters.filter.view !== 'Custom'">
         <div class="btn-group">
           <div class="btn btn-default btn-sm" (click)="prev()">
             <i class="fa fa-angle-left text-md"></i>
