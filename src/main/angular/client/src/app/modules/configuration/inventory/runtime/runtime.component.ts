@@ -691,7 +691,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   editor: any = {};
   viewCalObj: any = {calendarView: 'year'};
   calendars: any = [];
-  nonWorkingCalendars: any = [];
+  nonWorkingDayCalendars: any = [];
   zones = [];
   calendar: any;
   toDate: any;
@@ -742,8 +742,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.nonWorkingCalendars = this.nonWorkingCalendars.concat(result);
-        unique(this.nonWorkingCalendars);
+        this.nonWorkingDayCalendars = this.nonWorkingDayCalendars.concat(result);
+        unique(this.nonWorkingDayCalendars);
         this.ref.detectChanges();
       }
     });
@@ -909,7 +909,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         obj.path = this.calendar.calendarName;
       } else {
         obj.calendars = this.getCalendarObj(this.calendars);
-        obj.nonWorkingCalendars = this.nonWorkingCalendars;
+        obj.nonWorkingDayCalendars = this.nonWorkingDayCalendars;
         obj.timeZone = this.timeZone;
       }
       this.toDate = obj.dateTo;
@@ -937,7 +937,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         obj.path = this.calendar.calendarName;
       } else {
         obj.calendars = this.getCalendarObj(this.calendars);
-        obj.nonWorkingCalendars = this.nonWorkingCalendars;
+        obj.nonWorkingDayCalendars = this.nonWorkingDayCalendars;
         obj.timeZone = this.timeZone;
       }
       this.getDates(obj, false);
@@ -959,7 +959,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   removeNonWorkingCal(index): void {
-    this.nonWorkingCalendars.splice(index, 1);
+    this.nonWorkingDayCalendars.splice(index, 1);
   }
 
   /* --------- Begin Restriction  ----------------*/
@@ -1028,7 +1028,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         }
       }
       this.schedule.configuration.calendars = this.calendars;
-      this.schedule.configuration.nonWorkingCalendars = this.nonWorkingCalendars;
+      this.schedule.configuration.nonWorkingDayCalendars = this.nonWorkingDayCalendars;
     }
   }
 
@@ -1040,7 +1040,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
     if (this.schedule.configuration) {
       this.calendars = this.schedule.configuration.calendars;
-      this.nonWorkingCalendars = this.schedule.configuration.nonWorkingCalendars;
+      this.nonWorkingDayCalendars = this.schedule.configuration.nonWorkingDayCalendars;
     }
     if (this.calendars.length > 0) {
       this.timeZone = this.calendars[0].timeZone;

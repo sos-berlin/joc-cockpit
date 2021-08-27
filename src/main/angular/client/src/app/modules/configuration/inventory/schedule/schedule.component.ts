@@ -591,7 +591,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               item.actualList[i].forEach((data) => {
                 if (!data.value) {
                   isValid = false;
-                } else{
+                } else {
                   listObj[data.name] = data.value;
                 }
               });
@@ -624,9 +624,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       }
-      if (obj.nonWorkingCalendars.length > 0) {
-        for (let i = 0; i < obj.nonWorkingCalendars.length; i++) {
-          delete obj.nonWorkingCalendars[i].type;
+      if (obj.nonWorkingDayCalendars.length > 0) {
+        for (let i = 0; i < obj.nonWorkingDayCalendars.length; i++) {
+          delete obj.nonWorkingDayCalendars[i].type;
         }
       }
       if (!(obj.workflowName && obj.calendars.length > 0)) {
@@ -655,6 +655,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
         delete obj.workflowName1;
 
+        if (obj.nonWorkingDayCalendars.length === 0) {
+          delete obj.nonWorkingDayCalendars;
+        }
         this.coreService.post('inventory/store', {
           configuration: obj,
           valid: isValid,
@@ -662,6 +665,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           objectType: this.objectType
         }).subscribe((res: any) => {
           if (res.id === this.data.id && this.schedule.id === this.data.id) {
+            obj.nonWorkingDayCalendars = [];
             this.schedule.actual = JSON.stringify(obj);
             this.schedule.valid = res.valid;
             this.data.valid = res.valid;
@@ -669,7 +673,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             this.data.released = false;
             this.setErrorMessage(res);
           }
-        }, (err) => {
+        }, () => {
           this.ref.detectChanges();
         });
       }
@@ -837,8 +841,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.convertObjToArr(this.schedule.configuration.calendars[i]);
         }
       }
-      if (!this.schedule.configuration.nonWorkingCalendars) {
-        this.schedule.configuration.nonWorkingCalendars = [];
+      if (!this.schedule.configuration.nonWorkingDayCalendars) {
+        this.schedule.configuration.nonWorkingDayCalendars = [];
       }
       if (this.schedule.configuration.workflowName) {
         this.getWorkflowInfo(this.schedule.configuration.workflowName);

@@ -417,13 +417,13 @@
     <button *ngIf="!editor.showYearView" type="submit" class="btn btn-default btn-secondary btn-sm">
       <span translate>common.button.close</span>
     </button>
-    <button *ngIf="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()"
+    <button *ngIf="!editor.showYearView" type="button" class="btn btn-grey btn-sm" (click)="cancel()"
             translate>common.button.cancel
     </button>
-    <button *ngIf="editor.showYearView" type="button" class="btn btn-default btn-secondary btn-sm" (click)="addCalendarDates()">
+<!--    <button *ngIf="editor.showYearView" type="button" class="btn btn-default btn-secondary btn-sm" (click)="addCalendarDates()">
       <span translate>common.button.close</span>
-    </button>
-    <button *ngIf="editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" (click)="back()"
+    </button>-->
+    <button *ngIf="editor.showYearView" type="button" class="btn btn-grey btn-sm" (click)="back()"
             translate>common.button.cancel
     </button>
   </div>

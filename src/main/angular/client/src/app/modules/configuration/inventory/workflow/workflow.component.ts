@@ -62,19 +62,47 @@ const x2js = new X2JS();
   selector: 'app-find-replace-modal',
   templateUrl: './find-replace-dialog.html'
 })
-export class FindAndReplaceComponent {
+export class FindAndReplaceComponent implements OnInit {
   @Input() agents: any = [];
 
+  listOfAgents = [];
   object = {
     replace: '',
     finds: []
   };
 
-  constructor(public activeModal: NzModalRef) {
+  @ViewChild('selectBox', {static: true}) sb;
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.listOfAgents = this.coreService.clone(this.agents);
+    this.listOfAgents.push('*');
+  }
+
+  onKeyPress($event): void {
+    if ($event.which === '13' || $event.which === 13 || $event.which === '32' || $event.which === 32) {
+      const input = $event.target.value;
+      $event.target.value = '';
+      this.listOfAgents.push(input);
+      this.object.finds.push(input);
+      $event.preventDefault();
+    }
+  }
+
+  focusOut(): void {
+    if (this.sb.searchValue === '*') {
+      this.object.finds = ['*'];
+    } else if (this.object.finds.length > 1) {
+      this.object.finds = this.object.finds.filter((val) => {
+        return val !== '*';
+      });
+    }
   }
 
   onSubmit(): void {
-    this.activeModal.close(this.object)
+    this.activeModal.close(this.object);
   }
 }
 

@@ -13,9 +13,9 @@
       <label class="col-md-4 col-lg-3 form-control-label"
              translate>workflow.findAndReplace.label.find</label>
       <div class="col-md-8 col-lg-9">
-        <nz-select nzMode="multiple" nzAllowClear nzShowSearch name="find" nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
-                   [(ngModel)]="object.finds">
-          <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
+        <nz-select #selectBox nzMode="multiple" nzAllowClear nzShowSearch name="find" nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
+                   [(ngModel)]="object.finds" (keypress)="onKeyPress($event)" (nzBlur)="focusOut()">
+          <nz-option [nzHide]="agent === '*'" *ngFor="let agent of listOfAgents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
         </nz-select>
       </div>
     </div>

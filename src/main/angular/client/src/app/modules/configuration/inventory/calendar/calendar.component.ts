@@ -138,9 +138,6 @@ export class FrequencyModalComponent implements OnInit {
     if (this.frequency.tab !== 'specificDays' && this.editor.showYearView) {
       $('#full-calendar').calendar({
         language: localStorage.$SOS$LANG,
-        clickDay: (e) => {
-          this.checkDate(e.date);
-        },
         renderEnd: (e) => {
           this.calendarTitle = e.currentYear;
           if (this.isCalendarDisplay) {
@@ -1236,6 +1233,9 @@ export class FrequencyModalComponent implements OnInit {
     }
     this.toDate = clone(obj.dateTo);
     let result: any;
+    if (!obj.dateFrom || obj.dateFrom === 'Invalid date') {
+      obj.dateFrom = moment().format('YYYY-MM-DD');
+    }
     this.coreService.post('inventory/calendar/dates', obj).subscribe((res) => {
       result = res;
       let color = 'blue';
@@ -1266,9 +1266,6 @@ export class FrequencyModalComponent implements OnInit {
       } else {
         $('#full-calendar').calendar({
           language: localStorage.$SOS$LANG,
-          clickDay: (e) => {
-            this.checkDate(e.date);
-          },
           renderEnd: (e) => {
             this.calendarTitle = e.currentYear;
             if (this.isCalendarDisplay) {

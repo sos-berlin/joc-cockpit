@@ -72,7 +72,7 @@
                         </div>
                       </td>
                     </tr>
-                    <tr *ngFor="let holiday of nonWorkingCalendars; let i =index" [ngClass]="{'disable-link' : isTrash}">
+                    <tr *ngFor="let holiday of nonWorkingDayCalendars; let i =index" [ngClass]="{'disable-link' : isTrash}">
                       <td>
                         <a (click)="previewCalendar(holiday, 'NONWORKINGDAYSCALENDAR');">
                           <i class="fa fa-calendar text-danger"></i>&nbsp;
@@ -88,7 +88,7 @@
                     </tbody>
                   </table>
                 </div>
-                <div *ngIf="calendars.length==0 && nonWorkingCalendars.length==0" class="text-center">
+                <div *ngIf="calendars.length==0 && nonWorkingDayCalendars.length==0" class="text-center">
                   <app-empty-data title="runtime.message.noFrequencyCalendarFound"></app-empty-data>
                 </div>
               </div>
