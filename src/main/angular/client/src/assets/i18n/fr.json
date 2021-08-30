@@ -437,7 +437,7 @@
     "message.deleteAllDocument": "Êtes-vous sûr de vouloir supprimer toutes les documentations ?",
     "message.deleteNotice": "Êtes-vous sûr de vouloir supprimer toutes les Conditions de tableaux ?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
-    "tooltip.exportInXLS": "Exporter au format xls",
+    "tooltip.exportInXLS": "Exporter au format xlsx",
     "tooltip.expandDetails": "Développer les Détails",
     "tooltip.collapseDetails": "Réduire les Détails",
     "tooltip.collapseAll": "Réduire tout",

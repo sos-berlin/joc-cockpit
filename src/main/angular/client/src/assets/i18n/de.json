@@ -437,7 +437,7 @@
     "message.deleteAllDocument": "Sind Sie sicher, dass Sie alle Dokumentationen löschen wollen?",
     "message.deleteNotice": "Are you sure you want to delete the selected notice?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
-    "tooltip.exportInXLS": "Exportieren im XLS Format",
+    "tooltip.exportInXLS": "Exportieren im XLSX Format",
     "tooltip.expandDetails": "Details aufklappen",
     "tooltip.collapseDetails": "Details einklappen",
     "tooltip.collapseAll": "Ansicht einklappen",

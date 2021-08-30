@@ -437,7 +437,7 @@
     "message.deleteAllDocument": "本当に全てのドキュメントを削除しますか?",
     "message.deleteNotice": "本当にこの通知を削除しますか？",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
-    "tooltip.exportInXLS": "xls形式でエキスポート",
+    "tooltip.exportInXLS": "xlsx形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",
     "tooltip.collapseDetails": "詳細非表示",
     "tooltip.collapseAll": "全て閉じる",
