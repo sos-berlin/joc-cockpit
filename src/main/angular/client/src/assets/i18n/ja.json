@@ -1112,11 +1112,11 @@
           "regex": "監視する受信ファイル名の正規表現"
         },
         "fork": {
-          "joinVariables": "Fork命令で分岐した子オーダーの変数は、Join命令に到達したときに親オーダーに追加されます。"
+          "joinVariables": "Fork命令で分岐したオーダー変数は、Join命令に到達したときに親オーダーに追加されます。"
         },
         "forkList": {
-          "children": "子オーダー",
-          "childToId": "子オーダーID"
+          "children": "オーダー変数",
+          "childToId": "オーダーID"
         },
         "if": {
           "predicate": "If命令の述部は、「true」または「false」と評価される条件式です。"
@@ -1237,7 +1237,7 @@
     "button": {
       "week": "週",
       "month": "月",
-      "custom": "Custom",
+      "custom": "カスタム",
       "filterBy": "フィルター",
       "groupBy": "グルーピング"
     },
@@ -1576,8 +1576,8 @@
     "board": {
       "label.id": "ID",
       "label.name": "名称",
-      "label.postOrderToNoticeId": "ポスト順通知ID",
-      "label.expectOrderToNoticeId": "待受順通知ID",
+      "label.postOrderToNoticeId": "PostNoticeID",
+      "label.expectOrderToNoticeId": "ExpectNoticeID",
       "label.endOfLifeOfNotices": "通知終了期限",
       "label.deploymentDate": "配置日時",
       "label.boardsFound": "通知ボードがあります",
@@ -1585,8 +1585,8 @@
       "label.numOfNotices": "通知数",
       "label.noticeId": "通知ID",
       "label.endOfLife": "通知期限終了",
-      "label.expectingOrders": "待受オーダー",
-      "button.post": "通知ポスト",
+      "label.expectingOrders": "Expectオーダー",
+      "button.post": "PostNotice",
       "button.delete": "通知削除",
       "placeholder.enterNoticeId": "通知ID入力"
     },
@@ -1685,8 +1685,8 @@
       "show_view_configuration": "ユーザーの権限とは無関係に、ジョブ定義表示が利用可能（＝true）か、非表示（＝false）かを指定します。この設定を空にすると、ユーザーの権限によって表示されるかどうかが決まります。"
     },
     "user": {
-      "welcome_got_it": "確認",
-      "welcome_do_not_remind_me": "確認不要"
+      "welcome_got_it": "了解",
+      "welcome_do_not_remind_me": "後で通知しない"
     }
   },
   "user": {
@@ -1843,7 +1843,7 @@
     "label.count": "Count",
     "label.exclusive": "排他",
     "label.shared": "共有",
-    "label.postNotice": "通知ポスト",
+    "label.postNotice": "PostNotice",
     "label.prompt": "指示待ち",
     "label.question": "質問",
     "label.if": "If",
@@ -1874,8 +1874,8 @@
     "label.showConfiguration": "ジョブ定義表示",
     "label.allowUndeclared": "未宣言を許可",
     "label.boardName": "通知ボード名",
-    "label.children": "子オーダー",
-    "label.childToId": "子オーダーId",
+    "label.children": "オーダー変数",
+    "label.childToId": "オーダーId",
     "label.createForkListVariable": "ForkList変数作成",
     "label.updateForkListVariable": "ForkList変数更新",
     "label.showDependency": "依存表示",
@@ -1922,7 +1922,7 @@
     "message.duplicateLabel": "他のジョブで同じラベルがあります",
     "message.predicateIsMissing": "述部が必要です",
     "message.lockNameIsMissing": "必要なロック名がありません",
-    "message.childrenIsMissing": "ForkList子オーダーがありません",
+    "message.childrenIsMissing": "ForkListオーダー変数がありません",
     "message.invalidIfInstruction": "If命令が必要です",
     "message.invalidTryInstruction": "Try命令が必要です",
     "message.invalidRetryInstruction": "Retry命令が必要です",
