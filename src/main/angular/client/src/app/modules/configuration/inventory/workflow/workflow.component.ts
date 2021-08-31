@@ -1434,6 +1434,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         editor = new mxEditor(node);
         this.editor = editor;
         this.initEditorConf(editor, false, false);
+        this.workflowService.init(!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme) ? 'dark' : 'light', editor.graph);
         const outln = document.getElementById('outlineContainer');
         outln.innerHTML = '';
         new mxOutline(this.editor.graph, outln);
@@ -2626,9 +2627,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private loadConfig(): void {
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
-      this.workflowService.init('dark');
-    } else {
-      this.workflowService.init('light');
     }
   }
 
@@ -5087,15 +5085,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                       }
                     }
                     if (cells[0].value.tagName === 'Fork') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, self.workflowService.merge);
+                      v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
                     } else if (cells[0].value.tagName === 'ForkList') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', null), 0, 0, 68, 68, self.workflowService.endForkList);
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', null), 0, 0, 68, 68, 'closeForkList');
                     } else if (cells[0].value.tagName === 'If') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
                     } else if (cells[0].value.tagName === 'Retry') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
                     } else if (cells[0].value.tagName === 'Lock') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.closeLock);
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, 'closeLock');
                     } else {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
                       v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
@@ -5423,7 +5421,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       let v2, v3, _sour, _tar, _middle;
       if (cellName === 'Fork') {
-        v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 68, 68, self.workflowService.merge);
+        v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 68, 68, 'join');
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
@@ -5610,7 +5608,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         graph.insertEdge(parent, null, getConnectionNode('retry'), parentCell, cell);
         graph.insertEdge(parent, null, getConnectionNode('endRetry'), _middle, v2);
       } else if (cellName === 'Lock') {
-        v2 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', parentCell.id), 0, 0, 68, 68, self.workflowService.lock);
+        v2 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', parentCell.id), 0, 0, 68, 68, 'lock');
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
@@ -5656,7 +5654,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         graph.insertEdge(parent, null, getConnectionNode('lock'), parentCell, cell);
         graph.insertEdge(parent, null, getConnectionNode('endLock'), _middle, v2);
       } else if (cellName === 'ForkList') {
-        v2 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', parentCell.id), 0, 0, 68, 68, self.workflowService.endForkList);
+        v2 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', parentCell.id), 0, 0, 68, 68, 'closeForkList');
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
@@ -6680,22 +6678,22 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node = doc.createElement('Finish');
           _node.setAttribute('label', 'finish');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.finish);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'finish');
         } else if (title.match('fail')) {
           _node = doc.createElement('Fail');
           _node.setAttribute('label', 'fail');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.fail);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fail');
         } else if (title.match('fork-list')) {
           _node = doc.createElement('ForkList');
           _node.setAttribute('label', 'forkList');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.forkList);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'forkList');
         } else if (title.match('fork')) {
           _node = doc.createElement('Fork');
           _node.setAttribute('label', 'fork');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.fork);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fork');
         } else if (title.match('if')) {
           _node = doc.createElement('If');
           _node.setAttribute('label', 'if');
@@ -6713,7 +6711,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node = doc.createElement('Lock');
           _node.setAttribute('label', 'lock');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.lock);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'lock');
         } else if (title.match('try')) {
           _node = doc.createElement('Try');
           _node.setAttribute('label', 'try');
@@ -6723,17 +6721,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node = doc.createElement('ExpectNotice');
           _node.setAttribute('label', 'expectNotice');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.expectNotice);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'expectNotice');
         } else if (title.match('publish')) {
           _node = doc.createElement('PostNotice');
           _node.setAttribute('label', 'postNotice');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.postNotice);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'postNotice');
         } else if (title.match('prompt')) {
           _node = doc.createElement('Prompt');
           _node.setAttribute('label', 'prompt');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, self.workflowService.prompt);
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'prompt');
         } else if (title.match('fileWatcher')) {
           _node = doc.createElement('FileWatcher');
           _node.setAttribute('label', 'fileWatcher');
@@ -6776,15 +6774,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (self.workflowService.isInstructionCollapsible(clickedCell.value.tagName)) {
             const parent = targetCell.getParent() || graph.getDefaultParent();
             if (clickedCell.value.tagName === 'Fork') {
-              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, self.workflowService.merge);
+              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
             } else if (clickedCell.value.tagName === 'If') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 75, 75, 'if');
             } else if (clickedCell.value.tagName === 'Retry') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 75, 75, 'retry');
             } else if (clickedCell.value.tagName === 'Lock') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, self.workflowService.closeLock);
+              v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, 'closeLock');
             } else if (clickedCell.value.tagName === 'ForkList') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', null), 0, 0, 68, 68, self.workflowService.endForkList);
+              v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', null), 0, 0, 68, 68, 'closeForkList');
             } else {
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 75, 75, 'try');
               v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
@@ -7068,7 +7066,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
         let v1, v2, _label;
         if (cell.value.tagName === 'Fork') {
-          v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, self.workflowService.merge);
+          v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, 'join');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'If') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 75, 75, 'if');
@@ -7077,10 +7075,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 75, 75, 'retry');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Lock') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', cell.id), 0, 0, 68, 68, self.workflowService.closeLock);
+          v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', cell.id), 0, 0, 68, 68, 'closeLock');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'ForkList') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', cell.id), 0, 0, 68, 68, self.workflowService.endForkList);
+          v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', cell.id), 0, 0, 68, 68, 'closeForkList');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Try') {
           v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
@@ -8463,12 +8461,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.jobs.forEach((job) => {
           if (result.finds.length === 0 && !job.value.agentName) {
             job.value.agentName = result.replace;
+          } else if (result.finds.length > 0 && result.finds[0] === '*') {
+            job.value.agentName = result.replace;
           } else if (result.finds.length > 0 && job.value.agentName) {
-            if (result.finds.includes(job.value.agentName)) {
-              job.value.agentName = result.replace;
+            for (const i in result.finds) {
+              if (result.finds[i]) {
+                if (result.finds[i].toLowerCase() === job.value.agentName.toLowerCase()) {
+                  job.value.agentName = result.replace;
+                  break;
+                }
+              }
             }
           }
-          console.log(job.value.agentName, job.name);
         });
         const data = this.coreService.clone(this.workflow.configuration);
         this.workflow.valid = this.modifyJSON(data, false, false);

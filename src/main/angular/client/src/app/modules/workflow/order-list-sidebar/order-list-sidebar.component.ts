@@ -167,7 +167,8 @@ export class OrderListSidebarComponent implements OnChanges{
         orderIds: Array.from(this.setOfCheckedId)
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 

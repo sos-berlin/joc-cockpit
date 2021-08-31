@@ -64,7 +64,8 @@ export class OrderVariableComponent implements OnInit {
           orderPreparation: order.requirements
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -73,6 +74,13 @@ export class OrderVariableComponent implements OnInit {
             controllerId: this.schedulerId
           }).subscribe((res: any) => {
             order.variables = Object.entries(res.variables).map(([k, v]) => {
+              if (v && isArray(v)) {
+                v.forEach((list, index) => {
+                  v[index] = Object.entries(list).map(([k1, v1]) => {
+                    return {name: k1, value: v1};
+                  });
+                });
+              }
               return {name: k, value: v};
             });
           });

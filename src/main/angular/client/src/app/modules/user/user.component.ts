@@ -495,7 +495,8 @@ export class UserComponent implements OnInit, OnDestroy {
         objectName: this.username
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -559,7 +560,8 @@ export class UserComponent implements OnInit, OnDestroy {
         data: {}
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -577,7 +579,8 @@ export class UserComponent implements OnInit, OnDestroy {
         type
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -597,7 +600,8 @@ export class UserComponent implements OnInit, OnDestroy {
         type
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {
@@ -616,7 +620,8 @@ export class UserComponent implements OnInit, OnDestroy {
         data: type === 'key' ? this.keys : type === 'certificate' ? this.caCertificates : this.certificates
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 }

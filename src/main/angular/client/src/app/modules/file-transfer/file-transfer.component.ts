@@ -703,7 +703,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         new: true
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -720,7 +721,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         self: this
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(obj => {
       if (obj) {
@@ -872,7 +874,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
           edit: !isCopy
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(obj => {
         if (obj && this.savedFilter.selected && filterObj.id == this.savedFilter.selected) {
