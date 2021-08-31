@@ -317,8 +317,8 @@
                             </td>
                             <td><span>{{order.scheduledFor | stringToDate}}</span></td>
                             <td>
-                              <span class="label bg-dark-blue" *ngIf="order.submitted" translate>{{'submitted' | translate}}</span>
-                              <span class="label bg-orange" *ngIf="!order.submitted" translate>{{'notSubmitted' | translate}}</span>
+                              <span class="label bg-orange" *ngIf="order.submitted" translate>{{'submitted' | translate}}</span>
+                              <span class="label bg-red" *ngIf="!order.submitted" translate>{{'notSubmitted' | translate}}</span>
                             </td>
                           </tr>
                           <tr *ngIf="(child.orderIds).length === 0">

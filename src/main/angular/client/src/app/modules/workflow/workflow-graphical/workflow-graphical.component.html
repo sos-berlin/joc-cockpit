@@ -65,7 +65,7 @@
             </li>
           </ul>
         </div>
-        <div class="pos-abt m-l-sm" style="margin-top: 52px;z-index: 99" *ngIf="workflowArr.length > 0">
+        <div class="pos-abt box p-a-sm" style="margin-top: 48px;z-index: 99" *ngIf="workflowArr.length > 0">
           <div class="text-dark p-b-sm text-sm" *ngFor="let item of workflowArr;">
             <i class="fa fa-circle p-r-xs" [ngStyle]="{'color': item.color}"></i>
             <span>{{item.path.substring(item.path.lastIndexOf('/') + 1)}}</span>
