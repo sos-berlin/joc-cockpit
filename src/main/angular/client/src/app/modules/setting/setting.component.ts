@@ -201,7 +201,8 @@ export class SettingComponent implements OnInit {
         defaultGlobals: this.defaultGlobals
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(section => {
       if (section) {
@@ -225,7 +226,8 @@ export class SettingComponent implements OnInit {
         objectName: section.name
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
@@ -247,7 +249,8 @@ export class SettingComponent implements OnInit {
       nzContent: ImportSettingComponent,
       nzClassName: 'lg',
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(result => {
       if (result) {

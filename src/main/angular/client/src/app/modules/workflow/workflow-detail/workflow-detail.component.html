@@ -66,6 +66,9 @@
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
             </button>
             <div class="btn-group m-l-12">
+              <button class="btn btn-grey btn-sm" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards"
+                      [ngClass]="{'btn-primary': pageView=='graph'}" (click)="setView('graph')"><i class="fa fa-codepen"></i>
+              </button>
               <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
                 class="fa fa-sitemap"></i>
               </button>
@@ -246,12 +249,24 @@
               </div>
             </div>
           </div>
+          <div *ngIf="pageView === 'graph' && workflow.instructions">
+            <div *ngIf="isLoading">
+              <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences"
+                                      [jobs]="workflow.jobs" [controllerId]="schedulerIds.selected" [workflowObjects]="workflowObjects"
+                                      [workflowFilters]="workflowFilters"></app-workflow-graphical>
+            </div>
+            <div *ngIf="!isLoading" class="box m-b-0" style="height: calc(100vh - 322px);display: flex;align-items: center">
+              <div class="text-center vert-middle">
+                <nz-spin nzSimple></nz-spin>
+              </div>
+            </div>
+          </div>
           <div *ngIf="pageView === 'grid' && workflow.instructions">
             <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences"
-                                    [jobs]="workflow.jobs" [controllerId]="schedulerIds.selected" [orders]="workflow.orders" [workflowObjects]="workflowObjects"
+                                    [jobs]="workflow.jobs" [controllerId]="schedulerIds.selected" [orders]="workflow.orders"
                                     [workflowFilters]="workflowFilters" [orderPreparation]="orderPreparation"></app-workflow-graphical>
           </div>
-          <div *ngIf="pageView !== 'grid' && workFlowJson.instructions">
+          <div *ngIf="pageView === 'list' && workFlowJson.instructions">
             <div class="box m-b-0 p-a-0 resizable" appResizable [height]="workflowFilters.panelSize2" [workflowTab]="workflowFilters" id="workflowTextId">
               <div class="p-a overflow-y" style="height: 100%">
                 <div class="hover" >

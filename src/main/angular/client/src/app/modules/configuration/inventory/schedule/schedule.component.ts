@@ -609,6 +609,10 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       return {orderName: variableSet.orderName, variables: variableSet.variables};
     });
 
+    if (obj.nonWorkingDayCalendars.length === 0) {
+      delete obj.nonWorkingDayCalendars;
+    }
+
     if (skip || (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj)))) {
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
@@ -624,8 +628,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       }
-      if (obj.nonWorkingDayCalendars.length > 0) {
-        for (let i = 0; i < obj.nonWorkingDayCalendars.length; i++) {
+      if (obj.nonWorkingDayCalendars && obj.nonWorkingDayCalendars.length > 0) {
+        for (const i in obj.nonWorkingDayCalendars) {
+          delete obj.nonWorkingDayCalendars[i].periods;
           delete obj.nonWorkingDayCalendars[i].type;
         }
       }
@@ -655,9 +660,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
         delete obj.workflowName1;
 
-        if (obj.nonWorkingDayCalendars.length === 0) {
-          delete obj.nonWorkingDayCalendars;
-        }
         this.coreService.post('inventory/store', {
           configuration: obj,
           valid: isValid,
@@ -665,7 +667,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           objectType: this.objectType
         }).subscribe((res: any) => {
           if (res.id === this.data.id && this.schedule.id === this.data.id) {
-            obj.nonWorkingDayCalendars = [];
             this.schedule.actual = JSON.stringify(obj);
             this.schedule.valid = res.valid;
             this.data.valid = res.valid;

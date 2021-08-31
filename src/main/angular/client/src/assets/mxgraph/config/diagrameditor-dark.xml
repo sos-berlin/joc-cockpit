@@ -33,120 +33,13 @@
         <add as="strokeColor" value="#fafafa"/>
         <add as="fontColor" value="#fafafa"/>
       </add>
-      <add as="group">
-        <add as="shape" value="rectangle"/>
-        <add as="perimeter" value="rectanglePerimeter"/>
-        <add as="fontSize" value="12"/>
-        <add as="align" value="center"/>
-        <add as="verticalAlign" value="middle"/>
-        <add as="strokeColor" value="#fafafa"/>
-        <add as="dashed" value="1"/>
-      </add>
-      <add as="defaultEdge">
-        <add as="shape" value="connector"/>
-        <add as="fontSize" value="10"/>
-        <add as="align" value="center"/>
-        <add as="verticalAlign" value="center"/>
-        <add as="rounded" value="1"/>
-        <add as="labelBackgroundColor" value="#333"/>
-        <add as="strokeColor" value="#fafafa"/>
-        <add as="edgeStyle" value="elbowEdgeStyle"/>
-        <add as="endArrow" value="classic"/>
-      </add>
-       <add as="swimlane">
-        <add as="shape" value="swimlane"/>
-        <add as="shadow" value="0"/>
-        <add as="startSize" value="23"/>
-        <add as="align" value="center"/>
-        <add as="verticalAlign" value="top"/>
-        <add as="spacingTop" value="8"/>
-				<add as="fontColor" value="white"/>
-				<add as="separatorColor" value="#c0c0c0"/>
-      </add>
       <add as="verticalEdge">
 				<add as="elbow" value="vertical"/>
-			</add>
-      <add as="job">
-        <add as="rounded" value="1"/>
-        <add as="shape" value="label"/>
-        <add as="image" value="./assets/mxgraph/images/symbols/job-white.svg"/>
-        <add as="imageWidth" value="20"/>
-        <add as="imageHeight" value="20"/>
-	      <add as="strokeColor" value="#90C7F5"/>
-				<add as="fillColor" value="#90C7F5"/>
-        <add as="gradientColor" value="#333"/>
-        <add as="whiteSpace" value="wrap"/>
-      </add>
-      <add as="rectangle" extend="rhombus">
-				<add as="shape" value="rectangle"/>
-				<add as="perimeter" value="rectanglePerimeter"/>
-				<add as="align" value="center"/>
-			</add>
-      <add as="dashRectangle" extend="rhombus">
-				<add as="shape" value="rectangle"/>
-				<add as="perimeter" value="rectanglePerimeter"/>
-				<add as="align" value="center"/>
-				<add as="dashed" value="1"/>
-				<add as="shadow" value="0"/>
-				<add as="opacity" value="70"/>
-        <add as="strokeColor" value="#FFCF8c"/>
-				<add as="fillColor" value="#FFCF8c"/>
-        <add as="gradientColor" value="#333"/>
-			</add>
-      <add as="catch" extend="rhombus">
-				<add as="shape" value="rectangle"/>
-				<add as="perimeter" value="rectanglePerimeter"/>
-				<add as="align" value="center"/>
-        <add as="strokeColor" value="#FFCF8c"/>
-				<add as="fillColor" value="#FFCF8c"/>
-        <add as="gradientColor" value="#333"/>
 			</add>
       <add as="ellipse">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
         <add as="fillColor" value="transparent"/>
-      </add>
-      <add as="if">
-        <add as="shape" value="rhombus"/>
-        <add as="perimeter" value="rhombusPerimeter"/>
-        <add as="strokeColor" value="#CDEB8B"/>
-				<add as="fillColor" value="#CDEB8B"/>
-        <add as="rounded" value="1"/>
-        <add as="gradientColor" value="#333"/>
-      </add>
-      <add as="retry">
-        <add as="shape" value="rhombus"/>
-        <add as="perimeter" value="rhombusPerimeter"/>
-	      <add as="strokeColor" value="#FFC7C7"/>
-				<add as="fillColor" value="#FFC7C7"/>
-        <add as="rounded" value="1"/>
-        <add as="gradientColor" value="#333"/>
-      </add>
-      <add as="try">
-        <add as="shape" value="rhombus"/>
-        <add as="perimeter" value="rhombusPerimeter"/>
-        <add as="strokeColor" value="#FFCF8A"/>
-				<add as="fillColor" value="#FFCF8A"/>
-        <add as="rounded" value="1"/>
-        <add as="gradientColor" value="#333"/>
-      </add>
-      <add as="fileWatcher">
-        <add as="shape" value="ellipse"/>
-        <add as="perimeter" value="ellipsePerimeter"/>
-        <add as="strokeColor" value="#8B8BB4"/>
-				<add as="fillColor" value="#8B8BB4"/>
-        <add as="rounded" value="1"/>
-        <add as="gradientColor" value="#333"/>
-      </add>
-      <add as="symbol">
-        <add as="shape" value="image"/>
-        <add as="perimeter" value="rectanglePerimeter"/>
-        <add as="fontSize" value="12"/>
-        <add as="align" value="center"/>
-        <add as="verticalAlign" value="top"/>
-        <add as="verticalLabelPosition" value="bottom"/>
-        <add as="fontColor" value="#fafafa"/>
-        <add as="labelBackgroundColor" value="transparent"/>
       </add>
     </mxStylesheet>
     <mxGraphModel as="model">

@@ -29,14 +29,12 @@ declare const mxClient: any;
 declare const mxEdgeHandler: any;
 declare const mxGraphHandler: any;
 declare const mxGraph: any;
-declare const mxImage: any;
 declare const mxOutline: any;
 declare const mxConstants: any;
 declare const mxEventObject: any;
 declare const mxActor: any;
 declare const mxPoint: any;
 declare const mxCellRenderer: any;
-
 declare const $;
 
 @Component({
@@ -192,7 +190,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
   templateUrl: './workflow-graphical.component.html',
   styleUrls: ['./workflow-graphical.component.css']
 })
-export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
+export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() workFlowJson: any = {};
   @Input() permission: any = {};
   @Input() preferences: any = {};
@@ -218,6 +216,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   sideBar: any = {};
   isProcessing = false;
 
+  workflowArr = [];
+
+  colors = ['#90C7F5', '#C2b280', '#Eedc82', '#Aaf0d1', '#B38b6d', '#Fbceb1', '#8c92ac', '#E7DADA', '#FFCF8c',
+    '#CDEB8B', '#FFC7C7', '#8B8BB4', '#B87333', '#97B0FF', '#FFEE73', '#00ffff', '#D4af37', '#E6e6fa', '#B2beb5', '#856088', '#9966cc'];
+
   @ViewChild('graph', {static: true}) graphContainer: ElementRef;
   @ViewChild('outlineContainer', {static: true}) outlineContainer: ElementRef;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
@@ -228,11 +231,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
-      this.workflowService.init('dark');
-    } else {
-      this.workflowService.init('light');
-    }
     this.createEditor();
     const dom = this.isModal ? $('.graph2 #graph') : $('#graph');
     let ht = this.isModal ? 'calc(100vh - 182px)' : 'calc(100vh - 322px)';
@@ -265,6 +263,12 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.orders) {
       this.updateOrder();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (!this.isModal) {
+      $('#workflowGraphId').remove();
     }
   }
 
@@ -307,6 +311,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   /* ---------------------------- Broadcast messages ----------------------------------*/
 
   createWorkflowGraph(): void {
+    this.workflowArr = [];
     this.initEditorConf();
     this.updateWorkflow();
     setTimeout(() => {
@@ -323,6 +328,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
         this.graph = new mxGraph(this.graphContainer.nativeElement);
+        this.workflowService.init(!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme) ? 'dark' : 'light', this.graph);
         new mxOutline(this.graph, this.outlineContainer.nativeElement);
         this.createWorkflowGraph();
       }
@@ -470,146 +476,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
     mxGraph.prototype.cellsLocked = true;
     mxGraph.prototype.foldingEnabled = true;
     mxConstants.VERTEX_SELECTION_COLOR = null;
-
-    const style = graph.getStylesheet().getDefaultVertexStyle();
-    style[mxConstants.STYLE_PERIMETER] = 'rectanglePerimeter';
-    style[mxConstants.STYLE_SHAPE] = 'rectangle';
-    style.fontSize = '12';
-    graph.getStylesheet().putDefaultVertexStyle(style);
-
-    const jobStyle: any = {};
-    jobStyle[mxConstants.STYLE_ROUNDED] = true;
-    jobStyle.image = './assets/mxgraph/images/symbols/job.svg';
-    jobStyle.shape = 'label';
-    jobStyle.strokeColor = '#90C7F5';
-    jobStyle.fillColor = '#90C7F5';
-    jobStyle.gradientColor = '#fff';
-    jobStyle.imageWidth = '20';
-    jobStyle.imageHeight = '20';
-
-    const ifStyle: any = {};
-    ifStyle[mxConstants.STYLE_ROUNDED] = true;
-    ifStyle.shape = 'rhombus';
-    ifStyle.perimeter = 'rhombusPerimeter';
-    ifStyle.strokeColor = '#CDEB8B';
-    ifStyle.fillColor = '#CDEB8B';
-    ifStyle.gradientColor = '#fff';
-
-    const retryStyle: any = {};
-    retryStyle[mxConstants.STYLE_ROUNDED] = true;
-    retryStyle.shape = 'rhombus';
-    retryStyle.perimeter = 'rhombusPerimeter';
-    retryStyle.strokeColor = '#FFC7C7';
-    retryStyle.fillColor = '#FFC7C7';
-    retryStyle.gradientColor = '#fff';
-
-    const tryStyle: any = {};
-    tryStyle[mxConstants.STYLE_ROUNDED] = true;
-    tryStyle.shape = 'rhombus';
-    tryStyle.perimeter = 'rhombusPerimeter';
-    tryStyle.strokeColor = '#FFCF8A';
-    tryStyle.fillColor = '#FFCF8A';
-    tryStyle.gradientColor = '#fff';
-
-    const catchStyle: any = {};
-    catchStyle.shape = 'rectangle';
-    catchStyle.perimeter = 'rectanglePerimeter';
-    catchStyle.strokeColor = '#FFCF8c';
-    catchStyle.fillColor = '#FFCF8c';
-    catchStyle.gradientColor = '#fff';
-
-    const expectStyle: any = {};
-    expectStyle.shape = 'offPageConnector';
-    expectStyle.strokeColor = '#999';
-    expectStyle.fillColor = '#e0ffe0';
-    expectStyle.gradientColor = '#fff';
-
-    const postStyle: any = {};
-    postStyle.shape = 'offPageConnector';
-    postStyle.strokeColor = '#999';
-    postStyle.fillColor = '#ffffe0';
-    postStyle.gradientColor = '#fff';
-    postStyle.direction = 'west';
-
-    const symbolStyle: any = {};
-    symbolStyle.shape = 'image';
-    symbolStyle.perimeter = 'rhombusPerimeter';
-    symbolStyle.verticalAlign = 'top';
-    symbolStyle.verticalLabelPosition = 'bottom';
-
-    const ellipseStyle: any = {};
-    ellipseStyle.shape = 'ellipse';
-    ellipseStyle.perimeter = 'ellipsePerimeter';
-    ellipseStyle.fillColor = 'transparent';
-
-    const orderStyle: any = {};
-    orderStyle.shape = 'ellipse';
-    orderStyle.perimeter = 'ellipsePerimeter';
-    orderStyle[mxConstants.STYLE_ROUNDED] = true;
-    orderStyle.strokeColor = '#ff944b';
-    orderStyle.fillColor = '#ff944b';
-    orderStyle.gradientColor = '#fff';
-
-    if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
-      style.fontColor = '#fafafa';
-      style.strokeColor = '#fafafa';
-      symbolStyle.fontColor = '#fafafa';
-      jobStyle.gradientColor = '#333';
-      ifStyle.gradientColor = '#333';
-      retryStyle.gradientColor = '#333';
-      tryStyle.gradientColor = '#333';
-      catchStyle.gradientColor = '#333';
-      expectStyle.gradientColor = '#333';
-      expectStyle.strokeColor = '#e0ffe0';
-      postStyle.gradientColor = '#333';
-      postStyle.strokeColor = '#ffffe0';
-      orderStyle.gradientColor = '#333';
-    } else{
-      style.fontColor = '#3d464d';
-      symbolStyle.fontColor = '#3d464d';
-    }
-
-    graph.getStylesheet().putCellStyle('job', jobStyle);
-    graph.getStylesheet().putCellStyle('if', ifStyle);
-    graph.getStylesheet().putCellStyle('retry', retryStyle);
-    graph.getStylesheet().putCellStyle('try', tryStyle);
-    graph.getStylesheet().putCellStyle('catch', catchStyle);
-    graph.getStylesheet().putCellStyle('expect', expectStyle);
-    graph.getStylesheet().putCellStyle('post', postStyle);
-    graph.getStylesheet().putCellStyle('symbol', symbolStyle);
-    graph.getStylesheet().putCellStyle('ellipse', ellipseStyle);
-    graph.getStylesheet().putCellStyle('order', orderStyle);
-
-    const style2 = graph.getStylesheet().getDefaultEdgeStyle();
-    style2[mxConstants.STYLE_ROUNDED] = true;
-    style2.shape = 'connector';
-    style2.fontSize = '10';
-    style2.verticalAlign = 'center';
-    style2.edgeStyle = 'elbowEdgeStyle';
-    style2.endArrow = 'classic';
-    if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
-      style2[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
-      style2.strokeColor = '#ffffff';
-      if (this.preferences.theme === 'blue-lt') {
-        style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(70, 82, 95, 0.6)';
-      } else if (this.preferences.theme === 'blue') {
-        style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(50, 70, 90, 0.61)';
-      } else if (this.preferences.theme === 'cyan') {
-        style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(29, 29, 28, 0.5)';
-      } else if (this.preferences.theme === 'grey') {
-        style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(78, 84, 92, 0.62)';
-      } else {
-        style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(29, 29, 28, 0.5)';
-      }
-      mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 12, 12);
-      mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded-white.png', 12, 12);
-    } else {
-      style2.strokeColor = 'grey';
-      style2[mxConstants.STYLE_FONTCOLOR] = '#3d464d';
-      style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = '#fff';
-      mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed.png', 12, 12);
-      mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded.png', 12, 12);
-    }
 
     // Enables snapping waypoints to terminals
     mxEdgeHandler.prototype.snapToTerminals = true;
@@ -862,17 +728,42 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
     const doc = mxUtils.createXmlDocument();
     this.orderCountMap = new Map();
     const graph = this.graph;
-
-    function createWorkflowNode(worlflow, cell, type): void {
-      const node = doc.createElement('Workflow');
-      node.setAttribute('workflowName', worlflow.path.substring(worlflow.path.lastIndexOf('/') + 1));
-      node.setAttribute('data', JSON.stringify(worlflow));
-      node.setAttribute('type', type);
-      const w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, type);
-      if (type === 'expect') {
-        graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
+    function createWorkflowNode(workflow, cell, type): void {
+      if (!self.workflowObjects) {
+        const node = doc.createElement('Workflow');
+        node.setAttribute('workflowName', workflow.path.substring(workflow.path.lastIndexOf('/') + 1));
+        node.setAttribute('data', JSON.stringify(workflow));
+        node.setAttribute('type', type);
+        const w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, type);
+        if (type === 'expect') {
+          graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
+        } else {
+          graph.insertEdge(cell.parent, null, doc.createElement('Connection'), cell, w1);
+        }
       } else {
-        graph.insertEdge(cell.parent, null, doc.createElement('Connection'), cell, w1);
+        if (self.workflowObjects.has(workflow.path)) {
+          const jsonObject = self.workflowObjects.get(workflow.path);
+          if (jsonObject) {
+            workflow = JSON.parse(jsonObject);
+          }
+        }
+        let flag = true;
+        for (const i in self.workflowArr) {
+          if (self.workflowArr[i].path === workflow.path) {
+            flag = false;
+            break;
+          }
+        }
+        if (flag) {
+          const obj = {
+            path: workflow.path,
+            color: self.colors[self.workflowArr.length + 1]
+          };
+          self.workflowArr.push(obj);
+          const mapObj = {vertixMap: new Map(), cell, graphView: !!self.workflowObjects, colorCode: obj.color};
+          self.workflowService.createWorkflow(workflow, {graph}, mapObj);
+          self.updatePositions(workflow, mapObj.vertixMap);
+        }
       }
     }
 
@@ -1030,6 +921,9 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   }
 
   private updateOrdersInGraph(isCollapse): void {
+    if (this.workflowObjects) {
+      return;
+    }
     this.closeMenu();
     if (this.graph) {
       const graph = this.graph;
@@ -1152,7 +1046,14 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges {
   private updateWorkflow(): void {
     this.graph.getModel().beginUpdate();
     try {
-      const mapObj = {nodeMap: this.nodeMap, vertixMap: this.vertixMap};
+      const mapObj: any = {nodeMap: this.nodeMap, vertixMap: this.vertixMap, graphView: !!this.workflowObjects};
+      if (mapObj.graphView) {
+        mapObj.colorCode = this.colors[0];
+        this.workflowArr.push({
+          path: this.workFlowJson.path,
+          color: mapObj.colorCode
+        });
+      }
       this.workflowService.createWorkflow(this.workFlowJson, {graph: this.graph}, mapObj);
       this.nodeMap = mapObj.nodeMap;
       this.vertixMap = mapObj.vertixMap;
