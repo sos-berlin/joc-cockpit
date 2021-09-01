@@ -18,6 +18,7 @@ export class CoreService {
   tabs: any = {};
   tempTabs: any = {};
   dashboard: any = {};
+  locales = [];
   sideView = {
     workflow: {width: 270, show: true},
     job: {width: 270, show: true},
@@ -504,6 +505,21 @@ export class CoreService {
 
   getYadeTab(): any {
     return this.tabs._yade;
+  }
+
+  setLocales(locale): void{
+    this.locales = locale;
+  }
+
+  getLocale(): any {
+    const arr = this.locales.filter((item) => {
+      return localStorage.$SOS$LANG === item.lang;
+    });
+    if (arr.length > 0) {
+      return arr[0];
+    } else {
+      return this.locales[0];
+    }
   }
 
   get(url: string): Observable<any> {

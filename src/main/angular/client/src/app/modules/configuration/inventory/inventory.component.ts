@@ -1481,8 +1481,9 @@ export class JsonEditorModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.coreService.get('assets/i18n/json-editor-text.json').subscribe((data) => {
-      this.options.languages = data;
+    this.coreService.get('assets/i18n/json-editor-text_' + this.preferences.locale + '.json').subscribe((data) => {
+      this.options.languages = {};
+      this.options.languages[this.preferences.locale] = data;
       this.options.language = this.preferences.locale;
       this.editor.setOptions(this.options);
     });

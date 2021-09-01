@@ -37,14 +37,13 @@
         selectedDate: opt.selectedDate ? new Date(opt.selectedDate) : null,
         minDate: opt.minDate instanceof Date ? opt.minDate : null,
         maxDate: opt.maxDate instanceof Date ? opt.maxDate : null,
-        language: (opt.language != null && dates[opt.language] != null) ? opt.language : 'en',
+        language: opt.language,
         allowOverlap: opt.allowOverlap != null ? opt.allowOverlap : true,
         displayWeekNumber: opt.displayWeekNumber != null ? opt.displayWeekNumber : false,
         disabledDays: opt.disabledDays instanceof Array ? opt.disabledDays : [],
         dataSource: opt.dataSource instanceof Array != null ? opt.dataSource : [],
         customDayRenderer: $.isFunction(opt.customDayRenderer) ? opt.customDayRenderer : null
       };
-
     },
     _initializeEvents: function (opt) {
       if (opt == null) {
@@ -175,7 +174,7 @@
         headerDiv.append(prevIcon);
         let titleCell = $(document.createElement('span'));
         titleCell.addClass('month-title');
-        titleCell.text(dates[this.options.language].months[this.options.startMonth] + ' ' + this.options.startYear);
+        titleCell.text(this.options.language.months[this.options.startMonth] + ' ' + this.options.startYear);
         headerDiv.append(titleCell);
         let nextDiv = $(document.createElement('i'));
         nextDiv.addClass('fa fa-angle-right');
@@ -217,7 +216,7 @@
         titleCell.addClass('month-title');
         titleCell.attr('id', m);
         titleCell.attr('colspan', this.options.displayWeekNumber ? 8 : 7);
-        titleCell.text(dates[this.options.language].months[m]);
+        titleCell.text(this.options.language.months[m]);
         titleRow.append(titleCell);
         thead.append(titleRow);
       } else if (this.options.dateFrom && this.options.dateTo) {
@@ -259,25 +258,25 @@
       if (this.options.displayWeekNumber) {
         let weekNumberCell = $(document.createElement('th'));
         weekNumberCell.addClass('week-number');
-        weekNumberCell.text(dates[this.options.language].weekShort);
+        weekNumberCell.text(this.options.language.weekShort);
         headerRow.append(weekNumberCell);
       }
 
-      let d = dates[this.options.language].weekStart;
+      let d = this.options.language.weekStart;
       do {
         let headerCell = $(document.createElement('th'));
         headerCell.addClass('day-header');
         if (this.options.view === 'year') {
-          headerCell.text(dates[this.options.language].daysMin[d]);
+          headerCell.text(this.options.language.daysMin[d]);
         } else {
-          headerCell.text(dates[this.options.language].daysShort[d]);
+          headerCell.text(this.options.language.daysShort[d]);
         }
         headerRow.append(headerCell);
         d++;
         if (d >= 7)
           d = 0;
       }
-      while (d != dates[this.options.language].weekStart)
+      while (d != this.options.language.weekStart)
 
       thead.append(headerRow);
       table.append(thead);
@@ -285,7 +284,7 @@
       /* Days */
       let currentDate = new Date(firstDate.getTime());
       let lastDate = new Date(this.options.startYear, m + 1, 0);
-      let weekStart = dates[this.options.language].weekStart;
+      let weekStart = this.options.language.weekStart;
 
       while (currentDate.getDay() != weekStart) {
         currentDate.setDate(currentDate.getDate() - 1);
@@ -759,15 +758,7 @@
       this.options.disabledDays = disabledDays instanceof Array ? disabledDays : [];
       this._render();
     },
-    getLanguage: function () {
-      return this.options.language;
-    },
-    setLanguage: function (language) {
-      if (language != null && dates[language] != null) {
-        this.options.language = language;
-        this._render();
-      }
-    },
+
     setView: function (view) {
       this.options.view = view;
     },
@@ -812,42 +803,6 @@
   };
   $.fn.selectRange = function (fct) {
     $(this).bind('selectRange', fct);
-  };
-
-  let dates = $.fn.calendar.dates = {
-    en: {
-      daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-      months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-      monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      weekShort: 'W',
-      weekStart: 1
-    },
-    fr: {
-      days: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
-      daysShort: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
-      daysMin: ["D", "L", "Ma", "Me", "J", "V", "S", "D"],
-      months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-      monthsShort: ["Jan", "Fév", "Mar", "Avr", "Mai", "Jui", "Jul", "Aou", "Sep", "Oct", "Nov", "Déc"],
-      weekShort: 'S',
-      weekStart: 1
-    }, ja: {
-      days: ["日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜"],
-      daysShort: ["日", "月", "火", "水", "木", "金", "土"],
-      daysMin: ["日", "月", "火", "水", "木", "金", "土"],
-      months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-      monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-      weekShort: '週',
-      weekStart: 1
-    }, de: {
-      days: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
-      daysShort: ["Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam"],
-      daysMin: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
-      months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
-      monthsShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
-      weekShort: 'W',
-      weekStart: 1
-    }
   };
 
   $(function () {

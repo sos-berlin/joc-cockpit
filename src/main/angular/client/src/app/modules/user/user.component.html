@@ -47,7 +47,7 @@
                   <div class="col-md-8 col-lg-9">
                     <nz-select name="language" class="w-xl"
                                [(ngModel)]="preferences.locale" (ngModelChange)="setLocale()">
-                      <nz-option *ngFor="let option of locales" [nzLabel]="option.name"
+                      <nz-option *ngFor="let option of coreService.locales" [nzLabel]="option.name"
                                  [nzValue]="option.lang"></nz-option>
                     </nz-select>
                   </div>

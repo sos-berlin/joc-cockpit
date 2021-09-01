@@ -5697,8 +5697,8 @@ var JSGantt = function () {
     t.exports = function (t) {
       var e = {
         init: function () {
-          for (var e = t.locale, i = e.date.shortMonth, n = e.date.shortMonthHash = {}, r = 0; r < i.length; r++) n[i[r]] = r;
-          for (i = e.date.fullMonth, n = e.date.fullMonthHash = {}, r = 0; r < i.length; r++) n[i[r]] = r
+          for (var e = t.locale, i = e.date.monthsShort, n = e.date.shortMonthHash = {}, r = 0; r < i.length; r++) n[i[r]] = r;
+          for (i = e.date.months, n = e.date.fullMonthHash = {}, r = 0; r < i.length; r++) n[i[r]] = r
         }, date_part: function (t) {
           var e = new Date(t);
           return t.setHours(0), this.hour_start(t), t.getHours() && (t.getDate() < e.getDate() || t.getMonth() < e.getMonth() || t.getFullYear() < e.getFullYear()) && t.setTime(t.getTime() + 36e5 * (24 - t.getHours())), t
@@ -5771,13 +5771,13 @@ var JSGantt = function () {
               case"%Y":
                 return '"+date.getFullYear()+"';
               case"%D":
-                return '"+locale.date.shortDay[date.getDay()]+"';
+                return '"+locale.date.daysShort[date.getDay()]+"';
               case"%l":
-                return '"+locale.date.fullDay[date.getDay()]+"';
+                return '"+locale.date.days[date.getDay()]+"';
               case"%M":
-                return '"+locale.date.shortMonth[date.getMonth()]+"';
+                return '"+locale.date.monthsShort[date.getMonth()]+"';
               case"%F":
-                return '"+locale.date.fullMonth[date.getMonth()]+"';
+                return '"+locale.date.months[date.getMonth()]+"';
               case"%h":
                 return '"+to_fixed((date.getHours()+11)%12+1)+"';
               case"%g":

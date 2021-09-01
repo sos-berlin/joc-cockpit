@@ -2,7 +2,8 @@ import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty, sortBy} from 'underscore';
-import {Subscription} from 'rxjs';
+import {forkJoin, of, Subscription} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
@@ -149,12 +150,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if ($event === 'graph') {
       this.isAllLoaded = false;
       if (!this.isLoading) {
-        if (this.workFlowJson.expectedNoticeBoards.length > 0) {
-          this.recursivelyUpdateWorkflow(this.workFlowJson.expectedNoticeBoards);
-        }
-        if (this.workFlowJson.postNoticeBoards.length > 0) {
-          this.recursivelyUpdateWorkflow(this.workFlowJson.postNoticeBoards);
-        }
+        this.recursivelyUpdateWorkflow(this.workFlowJson);
       }
     }
   }
@@ -179,25 +175,74 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  private recursivelyUpdateWorkflow(noticeBoards): void {
-    noticeBoards.forEach((board) => {
-      board.value.forEach((item) => {
-        if (!this.workflowObjects.has(item.path)) {
-          this.isAllLoaded = false;
-          this.workflowObjects.set(item.path, '');
-          this.showDependency(item, false);
-        }
+  private callAPI(APIs, cb): void {
+    if (APIs.length) {
+      forkJoin(APIs).subscribe((res: any) => {
+        res.forEach((item: any) => {
+          if (item && item.workflow && this.workflowObjects.has(item.workflow.path)) {
+            item.workflow.compressData = [];
+            this.workflowService.convertTryToRetry(item.workflow, null, item.workflow.jobs);
+            item.workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'expectedNoticeBoards');
+            item.workflow.postNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'postNoticeBoards');
+            this.workflowObjects.set(item.workflow.path, JSON.stringify(item.workflow));
+            this.isAllLoaded = true;
+            
+            this.recursivelyUpdateWorkflow(item.workflow);
+            if (cb) {
+              cb();
+            }
+          }
+        });
       });
-    });
-    setTimeout(() => {
-      if (this.isAllLoaded) {
-        this.isLoading = true;
-      }
-    }, 1000);
+    }
   }
 
-  showDependency(workflow, isFirst = true): void {
-    this.isAllLoaded = false;
+  private recursivelyUpdateWorkflow(workflow): void {
+    const self = this;
+    const APIs = [];
+
+    function addWorkflowInArrays(noticeBoards): void {
+      noticeBoards.forEach((board) => {
+        board.value.forEach((item) => {
+          if (!self.workflowObjects.has(item.path)) {
+            setTimeout(() => {
+              self.isAllLoaded = false;
+            }, 50);
+            if (self.workflowObjects.size < 15) {
+              APIs.push(self.coreService.post('workflow/dependencies', {
+                controllerId: self.schedulerIds.selected,
+                workflowId: {
+                  path: item.path,
+                  version: item.versionId
+                }
+              }).pipe(
+                catchError(error => of(error))
+              ));
+              self.workflowObjects.set(item.path, '');
+            }
+          }
+        });
+      });
+    }
+
+    if (workflow.expectedNoticeBoards.length > 0) {
+      addWorkflowInArrays(workflow.expectedNoticeBoards);
+    }
+    if (workflow.postNoticeBoards.length > 0) {
+      addWorkflowInArrays(workflow.postNoticeBoards);
+    }
+
+    this.callAPI(APIs, () => {
+      setTimeout(() => {
+        if (this.isAllLoaded) {
+          this.isLoading = true;
+          
+        }
+      }, 1000);
+    });
+  }
+
+  showDependency(workflow): void {
     this.coreService.post('workflow/dependencies', {
       controllerId: this.schedulerIds.selected,
       workflowId: {
@@ -213,20 +258,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
       workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
       this.workflowObjects.set(workflow.path, JSON.stringify(workflow));
-      if (isFirst) {
-        this.getOrders(workflow);
-      } else {
-        if (workflow.expectedNoticeBoards.length > 0) {
-          this.recursivelyUpdateWorkflow(workflow.expectedNoticeBoards);
-        }
-        if (workflow.postNoticeBoards.length > 0) {
-          this.recursivelyUpdateWorkflow(workflow.postNoticeBoards);
-        }
-        setTimeout(() => {
-          this.isLoading = false;
-          this.isAllLoaded = true;
-        }, 150);
-      }
+      this.getOrders(workflow);
     });
   }
 

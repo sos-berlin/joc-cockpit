@@ -218,8 +218,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
 
   workflowArr = [];
 
-  colors = ['#90C7F5', '#C2b280', '#Eedc82', '#Aaf0d1', '#B38b6d', '#Fbceb1', '#8c92ac', '#E7DADA', '#FFCF8c',
-    '#CDEB8B', '#FFC7C7', '#8B8BB4', '#B87333', '#97B0FF', '#FFEE73', '#00ffff', '#D4af37', '#E6e6fa', '#B2beb5', '#856088', '#9966cc'];
+  colors = ['#90C7F5', '#C2b280', '#Aaf0d1', '#B38b6d', '#B2beb5', '#D4af37', '#8c92ac',
+    '#FFCF8c', '#CDEB8B', '#FFC7C7', '#8B8BB4', '#Eedc82', '#B87333', '#97B0FF', '#D4af37', '#856088'];
 
   @ViewChild('graph', {static: true}) graphContainer: ElementRef;
   @ViewChild('outlineContainer', {static: true}) outlineContainer: ElementRef;
@@ -365,16 +365,42 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   }
 
   expandAll(): void {
-    if (this.graph.isEnabled()) {
-      const cells = this.graph.getChildVertices();
-      this.graph.foldCells(false, true, cells, null, null);
+    if (this.graph) {
+      if (!this.workflowObjects) {
+        const cells = this.graph.getChildVertices();
+        this.graph.foldCells(false, true, cells, null, null);
+      } else{
+       
+        this.expandCollapseWorkflow(true);
+      }
     }
   }
 
   collapseAll(): void {
-    if (this.graph.isEnabled()) {
-      const cells = this.graph.getChildVertices();
-      this.graph.foldCells(true, true, cells, null, null);
+    if (this.graph) {
+      if (!this.workflowObjects) {
+        const cells = this.graph.getChildVertices();
+        this.graph.foldCells(true, true, cells, null, null);
+      } else {
+        
+        this.expandCollapseWorkflow(false);
+      }
+    }
+  }
+
+  private expandCollapseWorkflow(isExpand): void {
+    let isChange = false;
+    this.workflowObjects.forEach((value, key) => {
+      value = JSON.parse(value);
+      if (value.isExpanded !== isExpand) {
+        isChange = true;
+      }
+      value.isExpanded = isExpand;
+      this.workflowObjects.set(key, JSON.stringify(value));
+      this.workflowArr = [];
+    });
+    if (isChange) {
+      this.updateWorkflow(true);
     }
   }
 
@@ -485,6 +511,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     graph.setHtmlLabels(true);
     graph.setTooltips(true);
     graph.setDisconnectOnMove(false);
+    graph.setCellsSelectable(false);
     graph.collapseToPreferredSize = false;
     graph.constrainChildren = false;
     graph.extendParentsOnAdd = false;
@@ -615,23 +642,42 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         } else if (cell.value.tagName === 'If') {
           self.showConfiguration({predicate: cell.value.getAttribute('predicate')});
         } else if (cell.value.tagName === 'Workflow') {
-          const workflow = JSON.parse(cell.value.getAttribute('data'));
-          self.modal.create({
-            nzTitle: undefined,
-            nzContent: DependentWorkflowComponent,
-            nzClassName: 'x-lg',
-            nzComponentParams: {
-              workflow,
-              permission: self.permission,
-              preferences: self.preferences,
-              controllerId: self.controllerId,
-              recursiveCals: self.recursiveCals,
-              workflowFilters: self.workflowFilters
-            },
-            nzFooter: null,
-            nzClosable: false,
-            nzMaskClosable: false
-          });
+          const data = cell.value.getAttribute('data');
+          if (data) {
+            const workflow = JSON.parse(data);
+            self.modal.create({
+              nzTitle: undefined,
+              nzContent: DependentWorkflowComponent,
+              nzClassName: 'x-lg',
+              nzComponentParams: {
+                workflow,
+                permission: self.permission,
+                preferences: self.preferences,
+                controllerId: self.controllerId,
+                recursiveCals: self.recursiveCals,
+                workflowFilters: self.workflowFilters
+              },
+              nzFooter: null,
+              nzClosable: false,
+              nzMaskClosable: false
+            });
+          } else if (self.workflowObjects) {
+            const path = cell.value.getAttribute('path');
+            console.log(path);
+            let jsonObject = self.workflowObjects.get(path);
+            if (jsonObject) {
+              jsonObject = JSON.parse(jsonObject);
+              jsonObject.isExpanded = !jsonObject.isExpanded;
+              self.workflowObjects.set(path, JSON.stringify(jsonObject));
+              self.workflowArr = [];
+              self.updateWorkflow(true);
+            }
+          }
+        } else if (cell.value.tagName === 'Connection') {
+          const data = cell.value.getAttribute('noticeBoardName');
+          if (data) {
+            self.coreService.showBoard(data);
+          }
         }
         evt.consume();
       }
@@ -753,6 +799,9 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             flag = false;
             break;
           }
+        }
+        if (self.workflowArr && self.workflowArr.length === 15) {
+          return;
         }
         if (flag) {
           const obj = {
@@ -1043,7 +1092,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     return edge;
   }
 
-  private updateWorkflow(): void {
+  private updateWorkflow(isRemove = false): void {
     this.graph.getModel().beginUpdate();
     try {
       const mapObj: any = {nodeMap: this.nodeMap, vertixMap: this.vertixMap, graphView: !!this.workflowObjects};
@@ -1053,6 +1102,9 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           path: this.workFlowJson.path,
           color: mapObj.colorCode
         });
+      }
+      if (isRemove) {
+        this.graph.removeCells(this.graph.getChildCells(this.graph.getDefaultParent()), true);
       }
       this.workflowService.createWorkflow(this.workFlowJson, {graph: this.graph}, mapObj);
       this.nodeMap = mapObj.nodeMap;

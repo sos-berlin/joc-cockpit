@@ -140,6 +140,12 @@ export class WorkflowService {
       vertexStyle.dashed = '1';
       vertexStyle.shadow = '0';
       vertexStyle.opacity = '70';
+    } else {
+      vertexStyle[mxConstants.STYLE_ROUNDED] = false;
+      vertexStyle.shape = 'rectangle';
+      vertexStyle.perimeter = 'rectanglePerimeter';
+      vertexStyle.strokeColor = colorCode;
+      vertexStyle.fillColor = colorCode;
     }
 
     if (theme === 'dark') {
@@ -151,8 +157,13 @@ export class WorkflowService {
     if (graph) {
       graph.getStylesheet().putCellStyle(name, vertexStyle);
     } else {
-      return vertexStyle.shape + ';whiteSpace=wrap;html=1;rounded=1;fillColor=' + vertexStyle.fillColor
-        + ';strokeColor=' + vertexStyle.strokeColor + ';gradientColor=' + vertexStyle.gradientColor + ';';
+      if (name === 'job') {
+        return 'shape=label;whiteSpace=wrap;html=1;rounded=1;fillColor=' + vertexStyle.fillColor + ';strokeColor='
+          + vertexStyle.strokeColor + ';gradientColor=' + vertexStyle.gradientColor + ';image=' + vertexStyle.image + ';imageWidth=20;imageHeight=20;';
+      } else {
+        return vertexStyle.shape + ';whiteSpace=wrap;html=1;rounded=1;fillColor=' + vertexStyle.fillColor
+          + ';strokeColor=' + vertexStyle.strokeColor + ';gradientColor=' + vertexStyle.gradientColor + ';rounded=' + vertexStyle[mxConstants.STYLE_ROUNDED] + ';';
+      }
     }
   }
 
@@ -604,8 +615,18 @@ export class WorkflowService {
               delete json.instructions[x].workflow;
             }
           }
-          if (mainJson.compressData && (json.instructions[x].TYPE === 'PostNotice' || json.instructions[x].TYPE === 'ExpectNotice')){
-            mainJson.compressData.push(json.instructions[x]);
+          if (mainJson.compressData && (json.instructions[x].TYPE === 'PostNotice' || json.instructions[x].TYPE === 'ExpectNotice')) {
+            let isChecked = false;
+            for (const key in mainJson.compressData) {
+              if (mainJson.compressData[key].name === json.instructions[x].noticeBoardName) {
+                isChecked = true;
+                mainJson.compressData[key].instructions.push(json.instructions[x]);
+                break;
+              }
+            }
+            if (!isChecked) {
+              mainJson.compressData.push({name: json.instructions[x].noticeBoardName, instructions: [json.instructions[x]]});
+            }
           }
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
@@ -669,9 +690,22 @@ export class WorkflowService {
         _node.setAttribute('title', 'start');
         const v1 = graph.insertVertex(defaultParent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
 
+        let wf;
+        if (isGraphView && colorCode !== '#90C7F5') {
+          const node1 = doc.createElement('Workflow');
+          node1.setAttribute('workflowName', mainJson.path.substring(mainJson.path.lastIndexOf('/') + 1));
+          node1.setAttribute('path', mainJson.path);
+          wf = graph.insertVertex(defaultParent, null, node1, 0, 0, 160, 40, WorkflowService.setStyleToVertex('', colorCode, self.theme, null));
+          connectInstruction(v1, wf, '', '', defaultParent);
+        }
+
         const start = vertexMap.get(json.instructions[0].uuid);
         const last = json.instructions[json.instructions.length - 1];
-        connectInstruction(v1, start, '', '', defaultParent);
+        if(wf){
+          connectInstruction(wf, start, '', '', defaultParent);
+        } else {
+          connectInstruction(v1, start, '', '', defaultParent);
+        }
         if (last.TYPE !== 'ImplicitEnd') {
           let end = vertexMap.get(last.uuid);
           if (self.isInstructionCollapsible(last.TYPE)) {
@@ -748,7 +782,7 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-            if (boardType === 'ExpectNotice' && boardName === json.instructions[x].noticeBoardName){
+            if (boardType === 'ExpectNotice' && boardName === json.instructions[x].noticeBoardName) {
               connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
             }
           } else if (json.instructions[x].TYPE === 'Prompt') {
@@ -779,7 +813,7 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
 
-            if (boardType === 'PostNotice' && boardName === json.instructions[x].noticeBoardName){
+            if (boardType === 'PostNotice' && boardName === json.instructions[x].noticeBoardName) {
               connectInstruction(mapObj.cell, v1, boardName, '', mapObj.cell.parent);
             }
           } else if (json.instructions[x].TYPE === 'Fork') {
@@ -957,6 +991,69 @@ export class WorkflowService {
       }
     }
 
+    function createCollapsedObjects(json: any, parent: any): void {
+      const node1 = doc.createElement('Workflow');
+      node1.setAttribute('workflowName', json.path.substring(json.path.lastIndexOf('/') + 1));
+      node1.setAttribute('path', json.path);
+      const w1 = graph.insertVertex(parent, null, node1, 0, 0, 160, 40, WorkflowService.setStyleToVertex('', colorCode, self.theme, null));
+      let boardNode;
+      for (let i = 0; i < json.compressData.length; i++) {
+        const node = doc.createElement('Board');
+        node.setAttribute('label', json.compressData[i].name);
+        const b1 = graph.insertVertex(parent, null, node, 0, 0, 130, 36, 'order;fillColor=' + colorCode + ';strokeColor=' + colorCode);
+        for (let x = 0; x < json.compressData[i].instructions.length; x++) {
+          const _node = doc.createElement(json.compressData[i].instructions[x].TYPE);
+          let v1;
+          if (json.compressData[i].instructions[x].TYPE === 'PostNotice') {
+            _node.setAttribute('label', 'postNotice');
+            if (json.compressData[i].instructions[x].noticeBoardName !== undefined) {
+              _node.setAttribute('noticeBoardName', json.compressData[i].instructions[x].noticeBoardName);
+            }
+            _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
+            if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
+            }
+            if (boardType === 'ExpectNotice' && boardName === json.compressData[i].instructions[x].noticeBoardName) {
+              connectInstruction(v1, mapObj.cell, boardName, '', parent);
+            }
+          } else if (json.compressData[i].instructions[x].TYPE === 'ExpectNotice') {
+            _node.setAttribute('label', 'expectNotice');
+            if (json.compressData[i].instructions[x].noticeBoardName !== undefined) {
+              _node.setAttribute('noticeBoardName', json.compressData[i].instructions[x].noticeBoardName);
+            }
+            _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
+            if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
+            }
+
+            if (boardType === 'PostNotice' && boardName === json.compressData[i].instructions[x].noticeBoardName) {
+              connectInstruction(mapObj.cell, v1, boardName, '', parent);
+            }
+          }
+
+          if (!vertexMap.has(json.compressData[i].instructions[x].uuid)) {
+            vertexMap.set(json.compressData[i].instructions[x].uuid, v1);
+          }
+          if (v1) {
+            json.compressData[i].instructions[x].id = v1.id;
+            if (json.compressData[i].instructions[x].TYPE === 'ExpectNotice') {
+              connectInstruction(b1, v1, '', '', parent);
+            } else {
+              connectInstruction(v1, b1, '', '', parent);
+            }
+          }
+        }
+        if (boardNode) {
+          connectInstruction(boardNode, b1, '', '', parent);
+        } else {
+          connectInstruction(w1, b1, '', '', parent);
+        }
+        boardNode = b1;
+      }
+    }
+
     function connectInstruction(source: any, target: any, label: any, type: any, parent: any): void {
       // Create new Connection object
       const connNode = doc.createElement('Connection');
@@ -979,7 +1076,7 @@ export class WorkflowService {
       const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('join', colorCode, self.theme) : 'join');
       mapObj.nodeMap.set(target.id.toString(), v1.id.toString());
       if (isArray(branches)) {
-        if(branches.length === 0){
+        if (branches.length === 0) {
           connectInstruction(target, v1, '', '', parent);
         } else {
           for (let i = 0; i < branches.length; i++) {
@@ -1153,9 +1250,12 @@ export class WorkflowService {
         return endNode;
       }
     }
-
-    recursive(mainJson, '', defaultParent);
-    connectWithDummyNodes(mainJson);
+    if (!mainJson.isExpanded && isGraphView && mainJson.compressData) {
+      createCollapsedObjects(mainJson, defaultParent);
+    } else {
+      recursive(mainJson, '', defaultParent);
+      connectWithDummyNodes(mainJson);
+    }
   }
 
   public convertValueToString(cell: any, graph: any): string {
@@ -1191,7 +1291,7 @@ export class WorkflowService {
         if (docName) {
           className = 'show-block';
         }
-        return '<div class="workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
+        return '<div class="cursor workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
           + truncate(cell.getAttribute('jobName'), 22) + '</div>';
       } else if (cell.value.tagName === 'PostNotice' || cell.value.tagName === 'ExpectNotice') {
         const noticeBoardName = cell.getAttribute('noticeBoardName');
@@ -1202,9 +1302,12 @@ export class WorkflowService {
           }
         }
       } else if (cell.value.tagName === 'Workflow') {
-        const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : 'm-t-sm';
-        return '<div class="text-dark ' + cls + '"><i class="icon-workflows-icon p-r-xs"></i>'
-          + truncate(cell.getAttribute('workflowName'), 16) + '</div>';
+        const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : cell.getAttribute('type') === 'post' ? 'm-t-sm' : '';
+        return '<div class="cursor text-dark ' + cls + '"><i class="icon-workflows-icon p-r-xs"></i>'
+          + truncate(cell.getAttribute('workflowName'), cls ? 16 : 20) + '</div>';
+      } else if (cell.value.tagName === 'Board') {
+        return '<div class="text-dark">'
+          + truncate(cell.getAttribute('label'), 18) + '</div>';
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
@@ -1253,7 +1356,7 @@ export class WorkflowService {
               str = x;
             }
             if (((cell.source.value.tagName === 'PostNotice' || cell.source.value.tagName === 'ExpectNotice'))) {
-              str = x;
+              str = '<a class="text-primary cursor">' + x + '</a>';
             }
           } else {
             this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
@@ -1283,11 +1386,17 @@ export class WorkflowService {
         return '<b>' + name + '</b> : ' + (cell.getAttribute('jobName') || '-') + '</br>' +
           '<b>' + label + '</b> : ' + (cell.getAttribute('label') || '-');
       } else if (cell.value.tagName === 'Workflow') {
-        let name = '', label = '';
+        let name = '';
         this.translate.get('workflow.label.name').subscribe(translatedValue => {
           name = translatedValue;
         });
         return '<b>' + name + '</b> : ' + (cell.getAttribute('workflowName') || '-');
+      } else if (cell.value.tagName === 'Board') {
+        let name = '';
+        this.translate.get('workflow.label.name').subscribe(translatedValue => {
+          name = translatedValue;
+        });
+        return '<b>' + name + '</b> : ' + (cell.getAttribute('label') || '-');
       } else if (cell.value.tagName === 'Retry') {
         let maxTries = '', delay = '';
         this.translate.get('workflow.label.maxTries').subscribe(translatedValue => {

@@ -284,7 +284,6 @@ export class UserComponent implements OnInit, OnDestroy {
   certificates: any;
   configObj: any = {};
   timeZone: any = {};
-  locales: any = [];
   forceLoging = false;
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
@@ -306,12 +305,6 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.locales = [
-      {lang: 'en', country: 'US', name: 'English'},
-      {lang: 'fr', country: 'FR', name: 'French'},
-      {lang: 'de', country: 'DE', name: 'German'},
-      {lang: 'ja', country: 'JA', name: 'Japanese'}];
-
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.forceLoging = true;
       this.preferences.auditLog = true;
@@ -395,11 +388,13 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   changeView(): void {
-    let views = {
+    const views = {
       dailyPlan: this.preferences.pageView,
       workflow: this.preferences.pageView,
+      inventory: this.preferences.pageView,
       orderOverview: this.preferences.pageView,
       lock: this.preferences.pageView,
+      board: this.preferences.pageView,
       documentation: this.preferences.pageView,
       agent: this.preferences.pageView,
       calendar: this.preferences.pageView,
@@ -424,9 +419,9 @@ export class UserComponent implements OnInit, OnDestroy {
 
   changeMenuTheme(theme): void {
     const headerDom = $('#headerColor');
-    const avatarrDom = $('#avatarBg');
+    const avatarDom = $('#avatarBg');
     for (let i = 0; i < headerDom[0].classList.length; i++) {
-      let temp = headerDom[0].classList[i].split('-');
+      const temp = headerDom[0].classList[i].split('-');
       if (temp[0] === 'header') {
         this.prevMenuTheme = headerDom[0].classList[i];
         break;
@@ -435,51 +430,35 @@ export class UserComponent implements OnInit, OnDestroy {
     headerDom.removeClass(this.prevMenuTheme);
     headerDom.addClass(theme);
 
-    for (let i = 0; i < avatarrDom[0].classList.length; i++) {
-      let temp = avatarrDom[0].classList[i].split('-');
+    for (let i = 0; i < avatarDom[0].classList.length; i++) {
+      const temp = avatarDom[0].classList[i].split('-');
       if (temp[0] === 'avatarbg') {
-        this.prevMenuAvatorColor = avatarrDom[0].classList[i];
+        this.prevMenuAvatorColor = avatarDom[0].classList[i];
         break;
       }
     }
-    avatarrDom.removeClass(this.prevMenuAvatorColor);
+    avatarDom.removeClass(this.prevMenuAvatorColor);
     if (headerDom.hasClass('header-prussian-blue')) {
-      avatarrDom.addClass('avatarbg-prussian-blue');
-      localStorage.$SOS$AVATARTHEME = 'avatarbg-prussian-blue';
       this.preferences.avatarColor = 'avatarbg-prussian-blue';
     } else if (headerDom.hasClass('header-eggplant')) {
-      avatarrDom.addClass('avatarbg-eggplant');
-      localStorage.$SOS$AVATARTHEME = 'avatarbg-eggplant';
       this.preferences.avatarColor = 'avatarbg-eggplant';
     } else if (headerDom.hasClass('header-blackcurrant')) {
-      avatarrDom.addClass('avatarbg-blackcurrant');
-      localStorage.$SOS$AVATARTHEME = 'avatarbg-blackcurrant';
       this.preferences.avatarColor = 'avatarbg-blackcurrant';
     } else if (headerDom.hasClass('header-Dodger-Blue')) {
-      avatarrDom.addClass('avatarbg-Dodger-Blue');
-      localStorage.$SOS$AVATARTHEME = 'avatarbg-Dodger-Blue';
       this.preferences.avatarColor = 'avatarbg-Dodger-Blue';
     } else if (headerDom.hasClass('header-nordic')) {
-      avatarrDom.addClass('avatarbg-nordic');
-      localStorage.$SOS$AVATARTHEME = 'avatarbg-nordic';
       this.preferences.avatarColor = 'avatarbg-nordic';
     } else if (headerDom.hasClass('header-light-sea-green')) {
-      avatarrDom.addClass('avatarbg-light-sea-green');
-      localStorage.$SOS$AVATARTHEME = 'avatarbg-light-sea-green';
       this.preferences.avatarColor = 'avatarbg-light-sea-green';
     } else if (headerDom.hasClass('header-toledo')) {
-      avatarrDom.addClass('avatarbg-toledo');
-      localStorage.$SOS$AVATARTHEME = 'avatarbg-toledo';
       this.preferences.avatarColor = 'avatarbg-toledo';
     } else if (headerDom.hasClass('header-Pine-Green')) {
-      avatarrDom.addClass('avatarbg-Pine-Green');
-      localStorage.$SOS$AVATARTHEME = 'avatarbg-Pine-Green';
       this.preferences.avatarColor = 'avatarbg-Pine-Green';
     } else if (headerDom.hasClass('header-radical-red')) {
-      avatarrDom.addClass('avatarbg-radical-red');
-      localStorage.$SOS$AVATARTHEME = 'avatarbg-radical-red';
       this.preferences.avatarColor = 'avatarbg-radical-red';
     }
+    avatarDom.addClass(this.preferences.avatarColor);
+    localStorage.$SOS$AVATARTHEME = this.preferences.avatarColor;
     localStorage.$SOS$MENUTHEME = theme;
     this.savePreferences();
   }

@@ -1,0 +1,50 @@
+{
+  "en": {
+    "lang": "en",
+    "country": "US",
+    "name": "English",
+    "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "daysShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "daysMin": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+    "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "monthsShort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "weekShort": "W",
+    "weekStart": 1
+  },
+  "fr": {
+    "lang": "fr",
+    "country": "FR",
+    "name": "French",
+    "days": ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+    "daysShort": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
+    "daysMin": ["D", "L", "Ma", "Me", "J", "V", "S", "D"],
+    "months": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+    "monthsShort":  ["Jan", "Fév", "Mar", "Avr", "Mai", "Jui", "Jul", "Aou", "Sep", "Oct", "Nov", "Déc"],
+    "weekShort": "S",
+    "weekStart": 1
+  },
+  "de": {
+    "lang": "de",
+    "country": "DE",
+    "name": "German",
+    "days": ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+    "daysShort": ["Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam"],
+    "daysMin": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+    "months": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+    "monthsShort": ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+    "weekShort": "W",
+    "weekStart": 1
+  },
+  "ja": {
+    "lang": "ja",
+    "country": "JA",
+    "name": "Japanese",
+    "days": ["日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜"],
+    "daysShort": ["日", "月", "火", "水", "木", "金", "土"],
+    "daysMin": ["日", "月", "火", "水", "木", "金", "土"],
+    "months": ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+    "monthsShort": ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+    "weekShort": "週",
+    "weekStart": 1
+  }
+}

@@ -137,7 +137,7 @@ export class FrequencyModalComponent implements OnInit {
     }
     if (this.frequency.tab !== 'specificDays' && this.editor.showYearView) {
       $('#full-calendar').calendar({
-        language: localStorage.$SOS$LANG,
+        language: this.coreService.getLocale(),
         renderEnd: (e) => {
           this.calendarTitle = e.currentYear;
           if (this.isCalendarDisplay) {
@@ -239,7 +239,7 @@ export class FrequencyModalComponent implements OnInit {
     }
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
-        language: localStorage.$SOS$LANG,
+        language: this.coreService.getLocale(),
         clickDay: (e) => {
           this.selectDate(e);
         }
@@ -379,7 +379,7 @@ export class FrequencyModalComponent implements OnInit {
     this.onFrequencyChange();
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
-        language: localStorage.$SOS$LANG,
+        language: this.coreService.getLocale(),
         clickDay: (e) => {
           this.selectDate(e);
         }
@@ -1265,7 +1265,7 @@ export class FrequencyModalComponent implements OnInit {
 
       } else {
         $('#full-calendar').calendar({
-          language: localStorage.$SOS$LANG,
+          language: this.coreService.getLocale(),
           renderEnd: (e) => {
             this.calendarTitle = e.currentYear;
             if (this.isCalendarDisplay) {

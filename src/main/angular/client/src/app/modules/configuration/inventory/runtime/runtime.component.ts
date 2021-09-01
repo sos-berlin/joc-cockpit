@@ -183,7 +183,7 @@ export class AddRestrictionComponent implements OnInit {
     }
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
-        language: localStorage.$SOS$LANG,
+        language: this.coreService.getLocale(),
         clickDay: (e) => {
           this.selectDate(e);
         }
@@ -255,7 +255,7 @@ export class AddRestrictionComponent implements OnInit {
     this.onFrequencyChange();
     if (this.frequency.tab === 'specificDays') {
       $('#calendar').calendar({
-        language: localStorage.$SOS$LANG,
+        language: this.coreService.getLocale(),
         clickDay: (e) => {
           this.selectDate(e);
         }
@@ -893,7 +893,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   showCalendar(): void {
     setTimeout(() => {
       $('#full-calendar').calendar({
-        language: localStorage.$SOS$LANG,
+        language: this.coreService.getLocale(),
         renderEnd: (e) => {
           this.calendarTitle = e.currentYear;
           if (this.toDate) {

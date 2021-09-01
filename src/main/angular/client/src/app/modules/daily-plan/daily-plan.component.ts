@@ -632,36 +632,7 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     jsgantt.config.cyclicOrder = cyclicOrder;
     jsgantt.config.begin = begin;
     jsgantt.config.end = endText;
-
-    if (lang === 'fr') {
-      jsgantt.locale.date = {
-        fullMonth: ['Janvier', 'FÃ©vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'AoÃ»t', 'Septembre', 'Octobre', 'Novembre', 'DÃ©cembre'],
-        shortMonth: ['Jan', 'FÃ©v', 'Mar', 'Avr', 'Mai', 'Jui', 'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'DÃ©c'],
-        fullDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        shortDay: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
-      };
-    } else if (lang === 'ja') {
-      jsgantt.locale.date = {
-        fullMonth: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-        shortMonth: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-        fullDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        shortDay: ['日', '月', '火', '水', '木', '金', '土']
-      };
-    } else if (lang === 'de') {
-      jsgantt.locale.date = {
-        fullMonth: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
-        shortMonth: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
-        fullDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        shortDay: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam']
-      };
-    } else {
-      jsgantt.locale.date = {
-        fullMonth: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        shortMonth: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        fullDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        shortDay: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-      };
-    }
+    jsgantt.locale.date = this.coreService.getLocale();
     jsgantt.templates.task_class = function (start, end, task) {
       return task.class;
     };
@@ -2341,7 +2312,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     $('#full-calendar').calendar({
       view: 'month',
       rangeSelection: true,
-      language: localStorage.$SOS$LANG,
+      language: this.coreService.getLocale(),
       selectedDate: this.selectedDate,
       clickDay: (e) => {
         this.selectedDate = e.date;
