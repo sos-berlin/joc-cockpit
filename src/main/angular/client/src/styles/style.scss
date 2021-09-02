@@ -4520,7 +4520,7 @@ a[href]:hover span.text-white {
 }
 
 .text-muted {
-  color: var(--text-muted);
+  color: var(--text-muted) !important;
 }
 
 .success-color {

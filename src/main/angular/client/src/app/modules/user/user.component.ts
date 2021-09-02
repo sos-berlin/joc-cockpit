@@ -5,7 +5,8 @@ import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import { en_US, fr_FR, ja_JP, de_DE, NzI18nService } from 'ng-zorro-antd/i18n';
+import {NzI18nService} from 'ng-zorro-antd/i18n';
+import {registerLocaleData} from '@angular/common';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
@@ -309,7 +310,6 @@ export class UserComponent implements OnInit, OnDestroy {
       this.forceLoging = true;
       this.preferences.auditLog = true;
     }
-
     this.setIds();
     this.setPreferences();
     this.zones = this.coreService.getTimeZoneList();
@@ -405,9 +405,25 @@ export class UserComponent implements OnInit, OnDestroy {
 
   setLocale(): void {
     localStorage.$SOS$LANG = this.preferences.locale;
-    this.translate.use(this.preferences.locale);
-  
-    this.i18n.setLocale(this.preferences.locale === 'en' ? en_US : this.preferences.locale === 'fr' ? fr_FR : this.preferences.locale === 'de' ? de_DE : ja_JP);
+    import(`@angular/common/locales/${this.preferences.locale}.js`).then(locale => {
+      registerLocaleData(locale.default);
+    });
+    this.translate.use(this.preferences.locale).subscribe((res) => {
+      const data = res.extra;
+      data.DatePicker.lang.monthBeforeYear = true;
+      data.Calendar.lang.monthBeforeYear = true;
+      data.locale = this.preferences.locale;
+      for (const i in this.coreService.locales) {
+        if (this.preferences.locale === this.coreService.locales[i].lang) {
+          this.coreService.locales[i] = {
+            ...this.coreService.locales[i],
+            ...res.calendar
+          };
+          break;
+        }
+      }
+      this.i18n.setLocale(data);
+    });
     this.savePreferences();
   }
 

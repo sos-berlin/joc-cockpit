@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ToasterConfig} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
+import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {DataService} from './services/data.service';
 import {CoreService} from './services/core.service';
-import { en_US, fr_FR, ja_JP, de_DE, NzI18nService } from 'ng-zorro-antd/i18n';
+
 declare const $: any;
 
 @Component({
@@ -53,11 +54,23 @@ export class AppComponent implements OnInit {
       lang = 'en';
     }
     localStorage.$SOS$LANG = lang;
-
-
-    this.i18n.setLocale(lang === 'en' ? en_US : lang === 'fr' ? fr_FR : lang === 'de' ? de_DE : ja_JP);
     this.translate.setDefaultLang(lang);
-    this.translate.use(lang);
+    this.translate.use(lang).subscribe((res) => {
+      const data = res.extra;
+      data.locale = lang;
+      data.DatePicker.lang.monthBeforeYear = true;
+      data.Calendar.lang.monthBeforeYear = true;
+      for (const i in this.coreService.locales) {
+        if (lang === this.coreService.locales[i].lang) {
+          this.coreService.locales[i] = {
+            ...this.coreService.locales[i],
+            ...res.calendar
+          };
+          break;
+        }
+      }
+      this.i18n.setLocale(data);
+    });
   }
 
   gotoErrorLocation(): void {

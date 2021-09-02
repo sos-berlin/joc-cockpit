@@ -12,7 +12,7 @@
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
   --placholder-color: rgba(255, 255, 255, .5);
-  --text-muted: rgba(255, 255, 255, .67);
+  --text-muted: rgba(255, 255, 255, .6);
   --menu-hover: rgba(70, 82, 95, .7);
   --blue: #1690d4;
   --black: #ffffff;
@@ -631,10 +631,6 @@ input[readonly] {
 
 .calendar .calendar-header table th:hover {
   background-color: #151a24 !important;
-}
-
-.text-muted {
-  color: white !important;
 }
 
 .remaining-order-count {

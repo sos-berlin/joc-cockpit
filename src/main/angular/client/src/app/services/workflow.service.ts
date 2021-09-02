@@ -669,7 +669,6 @@ export class WorkflowService {
     if (mapObj.vertixMap) {
       mapObj.vertixMap = new Map();
     }
-
     const isGraphView = mapObj.graphView;
     const colorCode = mapObj.colorCode;
     let boardType;
@@ -996,11 +995,16 @@ export class WorkflowService {
       node1.setAttribute('workflowName', json.path.substring(json.path.lastIndexOf('/') + 1));
       node1.setAttribute('path', json.path);
       const w1 = graph.insertVertex(parent, null, node1, 0, 0, 160, 40, WorkflowService.setStyleToVertex('', colorCode, self.theme, null));
-      let boardNode;
       for (let i = 0; i < json.compressData.length; i++) {
-        const node = doc.createElement('Board');
-        node.setAttribute('label', json.compressData[i].name);
-        const b1 = graph.insertVertex(parent, null, node, 0, 0, 130, 36, 'order;fillColor=' + colorCode + ';strokeColor=' + colorCode);
+        let b1;
+        if (mapObj.boardMap.has(json.compressData[i].name)){
+          b1 = mapObj.boardMap.get(json.compressData[i].name);
+        } else {
+          const node = doc.createElement('Board');
+          node.setAttribute('label', json.compressData[i].name);
+          b1 = graph.insertVertex(parent, null, node, 0, 0, 130, 36, 'order;fillColor=#856088;strokeColor=#856088;');
+          mapObj.boardMap.set(json.compressData[i].name, b1);
+        }
         for (let x = 0; x < json.compressData[i].instructions.length; x++) {
           const _node = doc.createElement(json.compressData[i].instructions[x].TYPE);
           let v1;
@@ -1038,19 +1042,10 @@ export class WorkflowService {
           }
           if (v1) {
             json.compressData[i].instructions[x].id = v1.id;
-            if (json.compressData[i].instructions[x].TYPE === 'ExpectNotice') {
-              connectInstruction(b1, v1, '', '', parent);
-            } else {
-              connectInstruction(v1, b1, '', '', parent);
-            }
+            connectInstruction(w1, v1, '', '', parent);
+            connectInstruction(v1, b1, '', '', parent);
           }
         }
-        if (boardNode) {
-          connectInstruction(boardNode, b1, '', '', parent);
-        } else {
-          connectInstruction(w1, b1, '', '', parent);
-        }
-        boardNode = b1;
       }
     }
 
@@ -1306,7 +1301,7 @@ export class WorkflowService {
         return '<div class="cursor text-dark ' + cls + '"><i class="icon-workflows-icon p-r-xs"></i>'
           + truncate(cell.getAttribute('workflowName'), cls ? 16 : 20) + '</div>';
       } else if (cell.value.tagName === 'Board') {
-        return '<div class="text-dark">'
+        return '<div class="cursor text-dark"><i class="fa fa-thumb-tack p-r-xs"></i>'
           + truncate(cell.getAttribute('label'), 18) + '</div>';
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');

@@ -12,7 +12,7 @@
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
   --placholder-color: rgba(255, 255, 255, .5);
-  --text-muted: rgba(255, 255, 255, .67);
+  --text-muted: rgba(255, 255, 255, .6);
   --box-shadow: rgba(0, 0, 0, .1);
   --border-color: rgba(255, 255, 255, .3);
   --dark-border-color: rgba(0, 0, 0, .2);
@@ -740,10 +740,6 @@ input[readonly] {
 .calendar {
   color: var(--text-color) !important;
   direction: ltr;
-}
-
-.text-muted {
-  color: rgba(255, 255, 255, 0.83) !important;
 }
 
 #graph {

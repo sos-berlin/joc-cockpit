@@ -1457,6 +1457,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.editor.destroy();
         mxOutline.prototype.destroy();
         this.editor = null;
+        $('.mxTooltip').remove();
       }
     } catch (e) {
       console.error(e);

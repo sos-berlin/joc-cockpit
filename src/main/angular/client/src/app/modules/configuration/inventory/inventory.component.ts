@@ -2143,23 +2143,25 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   recursivelyExpandTree(): void {
-    this.coreService.post('inventory/read/configuration', {
-      objectType: this.selectedObj.type,
-      path: this.selectedObj.name
-    }).subscribe((res) => {
-      this.selectedObj.id = res.id;
-      this.findObjectByPath(res.path);
-    }, () => {
-      this.updateObjects(this.tree[0], this.isTrash, (children) => {
-        this.isLoading = false;
-        if (children.length > 0) {
-          this.tree[0].children.splice(0, 0, children[0]);
-          this.tree[0].children.splice(1, 0, children[1]);
-          this.tree[0].expanded = true;
-        }
-        this.updateTree(this.isTrash);
-      }, false);
-    });
+    if (this.selectedObj.type) {
+      this.coreService.post('inventory/read/configuration', {
+        objectType: this.selectedObj.type,
+        path: this.selectedObj.name
+      }).subscribe((res) => {
+        this.selectedObj.id = res.id;
+        this.findObjectByPath(res.path);
+      }, () => {
+        this.updateObjects(this.tree[0], this.isTrash, (children) => {
+          this.isLoading = false;
+          if (children.length > 0) {
+            this.tree[0].children.splice(0, 0, children[0]);
+            this.tree[0].children.splice(1, 0, children[1]);
+            this.tree[0].expanded = true;
+          }
+          this.updateTree(this.isTrash);
+        }, false);
+      });
+    }
   }
 
   private findObjectByPath(path): void {
@@ -2975,16 +2977,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   exportJSON(obj): void {
-    this.coreService.post('inventory/read/configuration', {
-      id: obj.id,
-    }).subscribe((res: any) => {
-      const name = obj.name + (obj.type ? '.' + obj.type.toLowerCase() : '') + '.json';
-      const fileType = 'application/octet-stream';
-      delete res.configuration.TYPE;
-      const data = JSON.stringify(res.configuration, undefined, 2);
-      const blob = new Blob([data], {type: fileType});
-      saveAs(blob, name);
-    });
+    if (obj.id) {
+      this.coreService.post('inventory/read/configuration', {
+        id: obj.id,
+      }).subscribe((res: any) => {
+        const name = obj.name + (obj.type ? '.' + obj.type.toLowerCase() : '') + '.json';
+        const fileType = 'application/octet-stream';
+        delete res.configuration.TYPE;
+        const data = JSON.stringify(res.configuration, undefined, 2);
+        const blob = new Blob([data], {type: fileType});
+        saveAs(blob, name);
+      });
+    }
   }
 
   renameObject(node: any): void {

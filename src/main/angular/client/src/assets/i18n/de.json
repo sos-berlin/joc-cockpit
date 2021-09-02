@@ -2032,5 +2032,156 @@
     "message.removeXML": "Sind Sie sicher, dass Sie diese Konfiguraton entfernen möchten?",
     "message.deleteAllDraft": "Sind Sie sicher, dass Sie alle Entwürfe für XML Dokumente löschen möchten?",
     "message.noConfigurationFound": "Keine Konfiguration gefunden"
+  },
+  "calendar": {
+    "days": ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+    "daysShort": ["Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam"],
+    "daysMin": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+    "months": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+    "monthsShort": ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+    "weekShort": "W",
+    "weekStart": 1
+  },
+  "extra": {
+    "Pagination": {
+      "items_per_page": "/ Seite",
+      "jump_to": "Gehe zu",
+      "jump_to_confirm": "bestätigen",
+      "page": "",
+      "prev_page": "Vorherige Seite",
+      "next_page": "Nächste Seite",
+      "prev_5": "5 Seiten zurück",
+      "next_5": "5 Seiten vor",
+      "prev_3": "3 Seiten zurück",
+      "next_3": "3 Seiten vor"
+    },
+    "DatePicker": {
+      "lang": {
+        "placeholder": "Datum auswählen",
+        "yearPlaceholder": "Jahr auswählen",
+        "quarterPlaceholder": "Quartal auswählen",
+        "monthPlaceholder": "Monat auswählen",
+        "weekPlaceholder": "Woche auswählen",
+        "rangePlaceholder": [
+          "Startdatum",
+          "Enddatum"
+        ],
+        "rangeYearPlaceholder": [
+          "Startjahr",
+          "Endjahr"
+        ],
+        "rangeMonthPlaceholder": [
+          "Startmonat",
+          "Endmonat"
+        ],
+        "rangeWeekPlaceholder": [
+          "Startwoche",
+          "Endwoche"
+        ],
+        "today": "Heute",
+        "now": "Jetzt",
+        "backToToday": "Zurück zu Heute",
+        "ok": "OK",
+        "clear": "Zurücksetzen",
+        "month": "Monat",
+        "year": "Jahr",
+        "timeSelect": "Zeit wählen",
+        "dateSelect": "Datum wählen",
+        "weekSelect": "Woche wählen",
+        "monthSelect": "Wähle einen Monat",
+        "yearSelect": "Wähle ein Jahr",
+        "decadeSelect": "Wähle ein Jahrzehnt",
+        "yearFormat": "YYYY",
+        "dateFormat": "D.M.YYYY",
+        "dayFormat": "D",
+        "dateTimeFormat": "D.M.YYYY HH:mm:ss",
+        "previousMonth": "Vorheriger Monat (PageUp)",
+        "nextMonth": "Nächster Monat (PageDown)",
+        "previousYear": "Vorheriges Jahr (Ctrl + left)",
+        "nextYear": "Nächstes Jahr (Ctrl + right)",
+        "previousDecade": "Vorheriges Jahrzehnt",
+        "nextDecade": "Nächstes Jahrzehnt",
+        "previousCentury": "Vorheriges Jahrhundert",
+        "nextCentury": "Nächstes Jahrhundert"
+      },
+      "timePickerLocale": {
+        "placeholder": "Zeit auswählen",
+        "rangePlaceholder": [
+          "Startzeit",
+          "Endzeit"
+        ]
+      }
+    },
+    "TimePicker": {
+      "placeholder": "Zeit auswählen",
+      "rangePlaceholder": [
+        "Start time",
+        "End time"
+      ]
+    },
+    "Calendar": {
+      "lang": {
+        "placeholder": "Datum auswählen",
+        "yearPlaceholder": "Jahr auswählen",
+        "quarterPlaceholder": "Quartal auswählen",
+        "monthPlaceholder": "Monat auswählen",
+        "weekPlaceholder": "Woche auswählen",
+        "rangePlaceholder": [
+          "Startdatum",
+          "Enddatum"
+        ],
+        "rangeYearPlaceholder": [
+          "Startjahr",
+          "Endjahr"
+        ],
+        "rangeMonthPlaceholder": [
+          "Startmonat",
+          "Endmonat"
+        ],
+        "rangeWeekPlaceholder": [
+          "Startwoche",
+          "Endwoche"
+        ],
+        "locale": "de_DE",
+        "today": "Heute",
+        "now": "Jetzt",
+        "backToToday": "Zurück zu Heute",
+        "ok": "OK",
+        "clear": "Zurücksetzen",
+        "month": "Monat",
+        "year": "Jahr",
+        "timeSelect": "Zeit wählen",
+        "dateSelect": "Datum wählen",
+        "weekSelect": "Woche wählen",
+        "monthSelect": "Wähle einen Monat",
+        "yearSelect": "Wähle ein Jahr",
+        "decadeSelect": "Wähle ein Jahrzehnt",
+        "yearFormat": "YYYY",
+        "dateFormat": "D.M.YYYY",
+        "dayFormat": "D",
+        "dateTimeFormat": "D.M.YYYY HH:mm:ss",
+        "previousMonth": "Vorheriger Monat (PageUp)",
+        "nextMonth": "Nächster Monat (PageDown)",
+        "previousYear": "Vorheriges Jahr (Ctrl + left)",
+        "nextYear": "Nächstes Jahr (Ctrl + right)",
+        "previousDecade": "Vorheriges Jahrzehnt",
+        "nextDecade": "Nächstes Jahrzehnt",
+        "previousCentury": "Vorheriges Jahrhundert",
+        "nextCentury": "Nächstes Jahrhundert"
+      },
+      "timePickerLocale": {
+        "placeholder": "Zeit auswählen",
+        "rangePlaceholder": [
+          "Startzeit",
+          "Endzeit"
+        ]
+      }
+    },
+    "global": {
+      "placeholder": "Bitte auswählen"
+    },
+    "Empty": {
+      "description": "Keine Daten"
+    }
   }
 }

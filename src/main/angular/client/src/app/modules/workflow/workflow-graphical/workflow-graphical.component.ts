@@ -212,6 +212,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   mapObj = new Map();
   nodeMap = new Map();
   orderCountMap = new Map();
+  boardMap = new Map();
   countArr = [];
   sideBar: any = {};
   isProcessing = false;
@@ -269,6 +270,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   ngOnDestroy(): void {
     if (!this.isModal) {
       $('#workflowGraphId').remove();
+      $('.mxTooltip').remove();
     }
   }
 
@@ -370,7 +372,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         const cells = this.graph.getChildVertices();
         this.graph.foldCells(false, true, cells, null, null);
       } else{
-       
         this.expandCollapseWorkflow(true);
       }
     }
@@ -382,7 +383,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         const cells = this.graph.getChildVertices();
         this.graph.foldCells(true, true, cells, null, null);
       } else {
-        
         this.expandCollapseWorkflow(false);
       }
     }
@@ -663,7 +663,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             });
           } else if (self.workflowObjects) {
             const path = cell.value.getAttribute('path');
-            console.log(path);
             let jsonObject = self.workflowObjects.get(path);
             if (jsonObject) {
               jsonObject = JSON.parse(jsonObject);
@@ -673,8 +672,13 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               self.updateWorkflow(true);
             }
           }
-        } else if (cell.value.tagName === 'Connection') {
-          const data = cell.value.getAttribute('noticeBoardName');
+        } else if (cell.value.tagName === 'Connection' || cell.value.tagName === 'Board') {
+          let data;
+          if (cell.value.tagName === 'Board') {
+            data = cell.value.getAttribute('label');
+          } else{
+            data = cell.value.getAttribute('noticeBoardName');
+          }
           if (data) {
             self.coreService.showBoard(data);
           }
@@ -809,7 +813,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             color: self.colors[self.workflowArr.length + 1]
           };
           self.workflowArr.push(obj);
-          const mapObj = {vertixMap: new Map(), cell, graphView: !!self.workflowObjects, colorCode: obj.color};
+          const mapObj = {vertixMap: new Map(), cell, graphView: !!self.workflowObjects, colorCode: obj.color, boardMap : self.boardMap};
           self.workflowService.createWorkflow(workflow, {graph}, mapObj);
           self.updatePositions(workflow, mapObj.vertixMap);
         }
@@ -1106,6 +1110,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       if (isRemove) {
         this.graph.removeCells(this.graph.getChildCells(this.graph.getDefaultParent()), true);
       }
+      this.boardMap = new Map();
       this.workflowService.createWorkflow(this.workFlowJson, {graph: this.graph}, mapObj);
       this.nodeMap = mapObj.nodeMap;
       this.vertixMap = mapObj.vertixMap;

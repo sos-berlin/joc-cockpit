@@ -151,6 +151,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.isAllLoaded = false;
       if (!this.isLoading) {
         this.recursivelyUpdateWorkflow(this.workFlowJson);
+      } else {
+        setTimeout(() => {
+          this.isLoading = true;
+        }, 7000);
       }
     }
   }
@@ -186,7 +190,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             item.workflow.postNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'postNoticeBoards');
             this.workflowObjects.set(item.workflow.path, JSON.stringify(item.workflow));
             this.isAllLoaded = true;
-            
             this.recursivelyUpdateWorkflow(item.workflow);
             if (cb) {
               cb();
@@ -236,10 +239,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         if (this.isAllLoaded) {
           this.isLoading = true;
-          
         }
       }, 1000);
     });
+
   }
 
   showDependency(workflow): void {

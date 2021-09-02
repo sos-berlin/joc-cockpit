@@ -2032,5 +2032,156 @@
     "message.removeXML": "本当にこのコンフィグレーションを削除しますか?",
     "message.deleteAllDraft": "本当に全てのXML下書きを削除しますか?",
     "message.noConfigurationFound": "ジョブ定義はありません"
+  },
+  "calendar": {
+    "days": ["日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜"],
+    "daysShort": ["日", "月", "火", "水", "木", "金", "土"],
+    "daysMin": ["日", "月", "火", "水", "木", "金", "土"],
+    "months": ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+    "monthsShort": ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+    "weekShort": "週",
+    "weekStart": 1
+  },
+  "extra": {
+    "Pagination": {
+      "items_per_page": "/ ページ",
+      "jump_to": "移動",
+      "jump_to_confirm": "確認する",
+      "page": "ページ",
+      "prev_page": "前のページ",
+      "next_page": "次のページ",
+      "prev_5": "前 5ページ",
+      "next_5": "次 5ページ",
+      "prev_3": "前 3ページ",
+      "next_3": "次 3ページ"
+    },
+    "DatePicker": {
+      "lang": {
+        "placeholder": "日付を選択",
+        "yearPlaceholder": "Select year",
+        "quarterPlaceholder": "Select quarter",
+        "monthPlaceholder": "Select month",
+        "weekPlaceholder": "Select week",
+        "rangePlaceholder": [
+          "開始日付",
+          "終了日付"
+        ],
+        "rangeYearPlaceholder": [
+          "Start year",
+          "End year"
+        ],
+        "rangeMonthPlaceholder": [
+          "Start month",
+          "End month"
+        ],
+        "rangeWeekPlaceholder": [
+          "Start week",
+          "End week"
+        ],
+        "today": "今日",
+        "now": "現在時刻",
+        "backToToday": "今日に戻る",
+        "ok": "決定",
+        "clear": "クリア",
+        "month": "月",
+        "year": "年",
+        "timeSelect": "時間を選択",
+        "dateSelect": "日時を選択",
+        "weekSelect": "週を選択",
+        "monthSelect": "月を選択",
+        "yearSelect": "年を選択",
+        "decadeSelect": "年代を選択",
+        "yearFormat": "YYYY年",
+        "dayFormat": "D日",
+        "dateFormat": "YYYY年M月D日",
+        "dateTimeFormat": "YYYY年M月D日 HH時mm分ss秒",
+        "previousMonth": "前月 (ページアップキー)",
+        "nextMonth": "翌月 (ページダウンキー)",
+        "previousYear": "前年 (Controlを押しながら左キー)",
+        "nextYear": "翌年 (Controlを押しながら右キー)",
+        "previousDecade": "前の年代",
+        "nextDecade": "次の年代",
+        "previousCentury": "前の世紀",
+        "nextCentury": "次の世紀"
+      },
+      "timePickerLocale": {
+        "placeholder": "時刻を選択",
+        "rangePlaceholder": [
+          "Start time",
+          "End time"
+        ]
+      }
+    },
+    "TimePicker": {
+      "placeholder": "時刻を選択",
+      "rangePlaceholder": [
+        "Start time",
+        "End time"
+      ]
+    },
+    "Calendar": {
+      "lang": {
+        "placeholder": "日付を選択",
+        "yearPlaceholder": "Select year",
+        "quarterPlaceholder": "Select quarter",
+        "monthPlaceholder": "Select month",
+        "weekPlaceholder": "Select week",
+        "rangePlaceholder": [
+          "開始日付",
+          "終了日付"
+        ],
+        "rangeYearPlaceholder": [
+          "Start year",
+          "End year"
+        ],
+        "rangeMonthPlaceholder": [
+          "Start month",
+          "End month"
+        ],
+        "rangeWeekPlaceholder": [
+          "Start week",
+          "End week"
+        ],
+        "locale": "ja_JP",
+        "today": "今日",
+        "now": "現在時刻",
+        "backToToday": "今日に戻る",
+        "ok": "決定",
+        "timeSelect": "時間を選択",
+        "dateSelect": "日時を選択",
+        "weekSelect": "週を選択",
+        "clear": "クリア",
+        "month": "月",
+        "year": "年",
+        "monthSelect": "月を選択",
+        "yearSelect": "年を選択",
+        "decadeSelect": "年代を選択",
+        "yearFormat": "YYYY年",
+        "dayFormat": "D日",
+        "dateFormat": "YYYY年M月D日",
+        "dateTimeFormat": "YYYY年M月D日 HH時mm分ss秒",
+        "previousMonth": "前月 (ページアップキー)",
+        "nextMonth": "翌月 (ページダウンキー)",
+        "previousYear": "前年 (Controlを押しながら左キー)",
+        "nextYear": "翌年 (Controlを押しながら右キー)",
+        "previousDecade": "前の年代",
+        "nextDecade": "次の年代",
+        "previousCentury": "前の世紀",
+        "nextCentury": "次の世紀"
+      },
+      "timePickerLocale": {
+        "placeholder": "時刻を選択",
+        "rangePlaceholder": [
+          "Start time",
+          "End time"
+        ]
+      }
+    },
+    "global": {
+      "placeholder": "Please select"
+    },
+    "Empty": {
+      "description": "データがありません"
+    }
   }
 }

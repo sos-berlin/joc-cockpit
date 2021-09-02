@@ -12,8 +12,8 @@
   --bg-footer: #3f5669;
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
-  --text-muted: rgba(255, 255, 255, .67);
   --placholder-color: rgba(255, 255, 255, .5);
+  --text-muted: rgba(255, 255, 255, .6);
   --menu-hover: #4e6d8c;
   --box-shadow: rgba(0, 0, 0, .2);
   --border-color: rgba(255, 255, 255, .3);
@@ -669,10 +669,6 @@ input[readonly] {
 
 .calendar .calendar-header table th:hover {
   background-color: #233446 !important;
-}
-
-.text-muted {
-  color: white !important;
 }
 
 #graph {
