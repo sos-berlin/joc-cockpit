@@ -5,6 +5,7 @@ import {isEmpty} from 'underscore';
 import {CoreService} from '../../services/core.service';
 import {InventoryService} from '../../modules/configuration/inventory/inventory.service';
 import {WorkflowService} from '../../services/workflow.service';
+import {UpdateJobComponent} from '../../modules/configuration/inventory/update-job/update-job.component';
 
 @Component({
   selector: 'app-inventory-search',
@@ -17,6 +18,7 @@ export class SearchComponent implements OnInit {
   @Input() isWorkflow: boolean;
   submitted = false;
   isControllerId = false;
+  isJobSearch = false;
   deployTypes: Array<string> = [];
   results: any;
   folders = [];
@@ -27,6 +29,11 @@ export class SearchComponent implements OnInit {
   ENUM: any;
   panel = {
     active: false
+  };
+  object = {
+    mapOfCheckedId: new Set(),
+    checked: false,
+    indeterminate: false
   };
 
   constructor(public coreService: CoreService, public modal: NzModalService,
@@ -78,7 +85,33 @@ export class SearchComponent implements OnInit {
     this.onNavigate.emit(data);
   }
 
+  checkAll(value: boolean): void {
+    if (value && this.results.length > 0) {
+      this.results.forEach(item => {
+        this.object.mapOfCheckedId.add(item.name);
+      });
+    } else {
+      this.object.mapOfCheckedId.clear();
+    }
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+  }
+
+  onItemChecked(data: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId.add(data.name);
+    } else {
+      this.object.mapOfCheckedId.delete(data.name);
+    }
+    this.object.checked = this.object.mapOfCheckedId.size === this.results.length;
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+  }
+
   search(): void {
+    this.object = {
+      mapOfCheckedId: new Set(),
+      checked: false,
+      indeterminate: false
+    };
     this.submitted = true;
     const obj: any = {
       deployedOrReleased: this.searchObj.deployedOrReleased,
@@ -122,9 +155,10 @@ export class SearchComponent implements OnInit {
         if (this.results.length > 0 && this.results[0].controllerId) {
           this.isControllerId = true;
         }
-      } else{
+      } else {
         this.workflowService.setSearchResult(this.results);
       }
+      this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
       this.submitted = false;
     }, () => {
       this.submitted = false;
@@ -135,9 +169,31 @@ export class SearchComponent implements OnInit {
     this.results = [];
     if (!this.isWorkflow) {
       this.inventoryService.setSearchResult(this.results);
-    } else{
+    } else {
       this.workflowService.setSearchResult(this.results);
     }
   }
 
+  updateJob(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: UpdateJobComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        controllerId: this.controllerId,
+        data: {
+          jobName: this.searchObj.advanced.jobName,
+          workflows: this.results.filter((item) => {
+            return this.object.mapOfCheckedId.has(item.name);
+          })
+        }
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(() => {
+      this.onCancel.emit();
+    });
+  }
 }

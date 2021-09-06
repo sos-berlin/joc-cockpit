@@ -1,4 +1,4 @@
-<div class="pos-abt" style="top: 8px; right: 22px">
+<div class="pos-abt" style="top: 8px; right: 22px" *ngIf="!isModal">
   <button class="btn btn-default btn-sm"
           (click)="openJobWizard()">
     <i class="fa fa-magic"></i>
@@ -34,7 +34,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group row" >
+      <div class="form-group row" *ngIf="!isModal">
         <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                translate>workflow.label.label</label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
@@ -230,7 +230,7 @@
             </nz-tab>
             <nz-tab  [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && selectedNode.job.executable.v1Compatible">
               <div [ngClass]="{'fullScreen': fullScreen}">
-              <div class="text-right m-t-n-6">
+              <div class="text-right m-t-n-6" *ngIf="!isModal">
                 <a class="anchor-with-icon"
                    nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
                   <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
@@ -302,7 +302,7 @@
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'">
               <div [ngClass]="{'fullScreen': fullScreen}">
-              <div class="text-right m-t-n-6">
+              <div class="text-right m-t-n-6" *ngIf="!isModal">
                 <a class="anchor-with-icon"
                         nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
                   <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
@@ -382,7 +382,7 @@
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.arguments' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
               <div [ngClass]="{'fullScreen': fullScreen}">
-              <div class="text-right m-t-n-6">
+              <div class="text-right m-t-n-6" *ngIf="!isModal">
                 <a class="anchor-with-icon"
                    nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
                   <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
@@ -457,7 +457,7 @@
             </nz-tab>
             <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate" *ngIf="selectedNode.job.executable && (selectedNode.job.executable.TYPE === 'InternalExecutable')">
               <div [ngClass]="{'fullScreen': fullScreen}">
-              <div class="text-right m-t-n-6">
+              <div class="text-right m-t-n-6" *ngIf="!isModal">
                 <a class="anchor-with-icon"
                    nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" (click)="fitToScreen()" translate>
                   <i class="fa fa-arrows-alt" *ngIf="!fullScreen"></i>
@@ -633,7 +633,7 @@
       </div>
     </div>
   </nz-tab>
-  <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
+  <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate" *ngIf="!isModal">
     <div class="job-property-editor">
       <div class="text-right m-t-n-6">
         <a class="anchor-with-icon" [ngClass]="{'disabled-link':object.setOfCheckedNodeArgu.size === 0}"

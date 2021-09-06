@@ -121,6 +121,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() orderPreparation;
   @Input() agents = [];
   @Input() isTooltipVisible: boolean;
+  @Input() isModal: boolean;
   history = [];
   indexOfNextAdd = 0;
   error: boolean;
@@ -183,7 +184,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.index = 0;
-    this.updateVariableList();
+    
+    if (!this.isModal) {
+      this.updateVariableList();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -669,16 +673,18 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getJobInfo(): void {
-    let flag = false;
-    for (let i = 0; i < this.jobs.length; i++) {
-      if (this.jobs[i].name === this.selectedNode.obj.jobName) {
-        this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(this.jobs[i].value)};
-        flag = true;
-        break;
+    if (!this.isModal) {
+      let flag = false;
+      for (let i = 0; i < this.jobs.length; i++) {
+        if (this.jobs[i].name === this.selectedNode.obj.jobName) {
+          this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(this.jobs[i].value)};
+          flag = true;
+          break;
+        }
       }
-    }
-    if (!flag) {
-      this.selectedNode.job = {jobName: this.selectedNode.obj.jobName};
+      if (!flag) {
+        this.selectedNode.job = {jobName: this.selectedNode.obj.jobName};
+      }
     }
     this.setJobProperties();
   }

@@ -216,7 +216,7 @@
         </nz-collapse-panel>
       </nz-collapse>
     </div>
-    <div class="modal-footer border-top-0 text-left m-t-n-8">
+    <div class="modal-footer border-top-0 text-left m-t-n-8" *ngIf="object.mapOfCheckedId.size === 0">
       <button class="btn btn-primary btn-sm" type="submit" [disabled]="submitted">
         <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
         {{'common.button.search' | translate}}
@@ -227,7 +227,11 @@
   </form>
   <div class="p-a p-t-sm" *ngIf="results">
     <div class="form-group row">
-      <div class="col-sm-12" >
+      <div class="col-sm-12 m-b-sm" *ngIf="object.mapOfCheckedId.size > 0">
+        <button class="btn btn-grey btn-sm" translate type="button" (click)="updateJob()">inventory.search.button.update</button>
+        <span class="p-l-sm" translate [translateParams]="{jobName: searchObj.advanced.jobName,workflowsCount: object.mapOfCheckedId.size}">inventory.search.message.updateJobForSelectedWorkflows</span>
+      </div>
+      <div class="col-sm-12">
         <span class="text-muted" translate>inventory.search.label.searchResult</span>:
         <b *ngIf="results.length > 0">{{results.length}}
           <span *ngIf="results.length > 1">{{'inventory.search.label.recordsFound' | translate}}</span>
@@ -235,7 +239,7 @@
         </b>
       </div>
       <div class="col-sm-12">
-        <div class="table-responsive" style="overflow: auto" [ngStyle]="{'max-height': panel.active ? '200px' : 'calc(100vh - 440px)'}">
+        <div class="table-responsive" style="overflow: auto" [ngStyle]="{'max-height': panel.active ? '200px' : 'calc(100vh - 410px)'}">
           <nz-table
             #ajaxTable
             [nzSize]="'small'"
@@ -247,6 +251,12 @@
             [nzShowSizeChanger]="false">
             <thead>
             <tr>
+              <th *ngIf="isJobSearch" class="chk"
+                  [nzShowCheckbox]="true"
+                  [(nzChecked)]="object.checked"
+                  [nzIndeterminate]="object.indeterminate"
+                  (nzCheckedChange)="checkAll($event)"
+              ></th>
               <th nowrap *ngIf="isControllerId"><span translate>common.label.controllerId</span></th>
               <th><span translate>common.label.name</span></th>
               <th><span translate>common.label.path</span></th>
@@ -254,9 +264,10 @@
             </thead>
             <tbody>
             <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
-              <tr class="cursor" (click)="navToObject(data)" [ngClass]="{'disabled-row' : !data.permitted}">
-                <td *ngIf="isControllerId">{{data.controllerId}}</td>
-                <td>
+              <tr class="cursor" [ngClass]="{'disabled-row' : !data.permitted}">
+                <td *ngIf="isJobSearch" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
+                <td (click)="navToObject(data)" *ngIf="isControllerId">{{data.controllerId}}</td>
+                <td (click)="navToObject(data)">
                   <span *ngIf="!isWorkflow" class="fa fa-check-circle-o orange text-xs w-11"
                         [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"
                         style="margin-top: 4px"></span>
