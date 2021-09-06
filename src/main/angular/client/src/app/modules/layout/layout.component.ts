@@ -242,30 +242,34 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.isProfileLoaded = true;
         this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, false);
       }
-      if (!this.isPropertiesLoaded) {
-        this.isPropertiesLoaded = true;
-        this.coreService.post('joc/properties', {}).subscribe((result: any) => {
-          sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
-          sessionStorage.comments = JSON.stringify(result.comments);
-          sessionStorage.showViews = JSON.stringify(result.showViews);
-          sessionStorage.securityLevel = result.securityLevel;
-          sessionStorage.defaultProfile = result.defaultProfileAccount;
-          sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
-          sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-          sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
-          sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
-          sessionStorage.welcomeGotIt = result.welcomeGotIt;
-
-          if (!this.loading) {
-            this.init();
-          }
-          this.isPropertiesLoaded = false;
-        }, () => {
-          this.ngOnInit();
-        });
-      }
+      this.loadJocProperties();
     } else {
       this.schedulerIds = {};
+      this.loadJocProperties();
+    }
+  }
+
+  private loadJocProperties(): void {
+    if (!this.isPropertiesLoaded) {
+      this.isPropertiesLoaded = true;
+      this.coreService.post('joc/properties', {}).subscribe((result: any) => {
+        sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
+        sessionStorage.comments = JSON.stringify(result.comments);
+        sessionStorage.showViews = JSON.stringify(result.showViews);
+        sessionStorage.securityLevel = result.securityLevel;
+        sessionStorage.defaultProfile = result.defaultProfileAccount;
+        sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
+        sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
+        sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
+        sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
+        sessionStorage.welcomeGotIt = result.welcomeGotIt;
+        if (!this.loading) {
+          this.init();
+        }
+        this.isPropertiesLoaded = false;
+      }, () => {
+        this.ngOnInit();
+      });
     }
   }
 

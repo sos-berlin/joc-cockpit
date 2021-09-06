@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span class="drag-text" translate>inventory.updateJob.label.updateJob</span>:
+    {{data.jobName}}
+  </h4>
+  <button type="button" class="close" aria-label="Close"
+          (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a" style="min-height: 400px">
+    <div class="row">
+      <div class="col-md-12" *ngIf="step === 1">
+        <div class="m-l font14 _600" translate>
+          inventory.updateJob.message.selectWorkflowToOpenJobEditor
+        </div>
+        <div class="m-t">
+          <ul>
+            <li *ngFor="let item of data.workflows">
+              <a class="text-hover-primary" (click)="getObject(item.id)"><i class="icon-workflows-icon p-r-xs"></i> {{item.path}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="step === 2">
+        <app-job-content [selectedNode]="selectedNode" [isModal]="true" [isTooltipVisible]="!preferences.showTooltipInfo" [agents]="agents"
+                         [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [schedulerId]="controllerId"></app-job-content>
+      </div>
+      <div class="col-md-12" *ngIf="step === 3" style="min-height: 400px">
+        <div style="display: flex;justify-content: center;align-items: center;height: 100%">
+          <div class="text-md">
+            <span class="_600" translate [translateParams]="{workflowsCount: data.workflows.length}">inventory.updateJob.message.updateSuccessfully</span>
+            <a class="text-primary p-l-xs" (click)="step = 4;" translate>inventory.updateJob.button.clickHereToDeploy</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="step === 4">
+        <div *ngIf="preferences.auditLog">
+          <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.label.controllers</label>
+          </label>
+          <div class="col-md-8">
+            <nz-select
+              nzMode="multiple"
+              nzShowSearch
+              name="schedulerIds"
+              [(ngModel)]="selectedSchedulerIds">
+              <ng-container *ngFor="let id of schedulerIds.controllerIds">
+                <nz-option [nzValue]="id" [nzLabel]="id"></nz-option>
+              </ng-container>
+            </nz-select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" *ngIf="step === 2" translate>
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" (click)="deploy()" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" *ngIf="step === 4" translate>
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'inventory.button.deploy' | translate}}
+    </button>
+    <button type="button" class="btn btn-secondary btn-sm" (click)="step = 1" *ngIf="step == 2" translate>
+      common.button.back
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" *ngIf="step === 3" (click)="activeModal.destroy()" translate>
+      common.button.close
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" [disabled]="submitted" *ngIf="step !== 3"
+            (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

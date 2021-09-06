@@ -1187,11 +1187,27 @@
         "environmentValue": "Environment Variable Value"
       },
       "button": {
-        "search": "Search"
+        "search": "Search",
+        "update": "Update Job"
       },
       "placeholder": {
-        "search" : "name or title like '%search%'",
+        "search": "name or title like '%search%'",
         "selectFromTree": "Select from tree"
+      },
+      "message": {
+        "updateJobForSelectedWorkflows": "Update {{jobName}} in all {{workflowsCount}} selected workflows"
+      }
+    },
+    "updateJob": {
+      "label": {
+        "updateJob": "Update Job"
+      },
+      "button": {
+        "clickHereToDeploy": "Click here to deploy!"
+      },
+      "message": {
+        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully.",
+        "selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
       }
     }
   },
