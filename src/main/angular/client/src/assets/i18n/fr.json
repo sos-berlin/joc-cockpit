@@ -1098,6 +1098,7 @@
         "jobResourceNames": "Les ressources de tâche contiennent des variables partagées qui peuvent être utilisées par un certain nombre de tâches et de workflows.",
         "documentation": "Documentation",
         "title": "Le titre d'un workflow.",
+        "timeZone": "Time Zone",
         "allowUndeclared": "Autoriser les variables non déclarés",
         "board": {
           "boardName": "Le nom d'une Condition est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin."
@@ -1140,7 +1141,8 @@
           "className": "Le nom d'une Classe Java implémentant une tâche. JS7 est livré avec un certain nombre de classes Java JITL prédéfinies, par exemple pour l'accès aux bases de données, pour l'envoi d'e-mails, etc.",
           "parallelism": "La valeur max. Parallélisme spécifie le nombre d'ordres dans un workflow qui peuvent exécuter de tâche en parallèle. Si le maximum est dépassé, les ordres doivent attendre que la valeur soit redescendue en dessous du max. Parallelisme",
           "criticality": "La Criticité des tâches peut être utilisée dans les notifications pour mieux distinguer l'urgence d'un incident..",
-          "failOnOutputErr": "Si une tâche écrit une sortie sur le canal stderr, cela est considéré comme une erreur et l'ordre passe à l'état ECHEC."
+          "failOnOutputErr": "Si une tâche écrit une sortie sur le canal stderr, cela est considéré comme une erreur et l'ordre passe à l'état ECHEC.",
+          "admissionTime": "Admission Time"
         },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
@@ -1188,7 +1190,8 @@
       },
       "button": {
         "search": "Chercher",
-        "update": "Update Job"
+        "updateJob": "Update Job",
+        "propagateJob": "Propagate Job"
       },
       "placeholder": {
         "search" : "nom ou titre come '%search%'",
@@ -1206,8 +1209,7 @@
         "clickHereToDeploy": "Click here to deploy!"
       },
       "message": {
-        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully.",
-        "selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
+        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully."
       }
     }
   },
@@ -1895,6 +1897,7 @@
     "label.createForkListVariable": "Créer une Variable de Tableau",
     "label.updateForkListVariable": "Mettre à jour la Variable de Tableau",
     "label.showDependency": "Afficher les Dépendances",
+    "label.admissionTime": "Admission Time",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",

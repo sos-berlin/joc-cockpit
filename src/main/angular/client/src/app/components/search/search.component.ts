@@ -174,7 +174,11 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  updateJob(): void {
+  propagateJob(): void {
+    this.updateJob(false);
+  }
+
+  updateJob(onlyUpdate = true): void {
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: UpdateJobComponent,
@@ -182,6 +186,7 @@ export class SearchComponent implements OnInit {
       nzComponentParams: {
         controllerId: this.controllerId,
         data: {
+          onlyUpdate,
           jobName: this.searchObj.advanced.jobName,
           workflows: this.results.filter((item) => {
             return this.object.mapOfCheckedId.has(item.name);
@@ -192,8 +197,10 @@ export class SearchComponent implements OnInit {
       nzClosable: false,
       nzMaskClosable: false
     });
-    modal.afterClose.subscribe(() => {
-      this.onCancel.emit();
+    modal.afterClose.subscribe((res) => {
+      if (res) {
+        this.onCancel.emit();
+      }
     });
   }
 }

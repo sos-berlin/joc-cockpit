@@ -12,15 +12,8 @@
   <div class="modal-body p-a" style="min-height: 400px">
     <div class="row">
       <div class="col-md-12" *ngIf="step === 1">
-        <div class="m-l font14 _600" translate>
-          inventory.updateJob.message.selectWorkflowToOpenJobEditor
-        </div>
-        <div class="m-t">
-          <ul>
-            <li *ngFor="let item of data.workflows">
-              <a class="text-hover-primary" (click)="getObject(item.id)"><i class="icon-workflows-icon p-r-xs"></i> {{item.path}}</a>
-            </li>
-          </ul>
+        <div class="text-center m-t-lg">
+          <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
         </div>
       </div>
       <div class="col-md-12" *ngIf="step === 2">
@@ -67,10 +60,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'inventory.button.deploy' | translate}}
     </button>
-    <button type="button" class="btn btn-secondary btn-sm" (click)="step = 1" *ngIf="step == 2" translate>
-      common.button.back
-    </button>
-    <button type="button" class="btn btn-grey btn-sm" *ngIf="step === 3" (click)="activeModal.destroy()" translate>
+    <button type="button" class="btn btn-grey btn-sm" *ngIf="step === 3" (click)="activeModal.close('Close')" translate>
       common.button.close
     </button>
     <button type="button" class="btn btn-grey btn-sm" [disabled]="submitted" *ngIf="step !== 3"

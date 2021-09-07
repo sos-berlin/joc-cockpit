@@ -1098,6 +1098,7 @@
         "jobResourceNames": "References to Job Resources can be added that hold shared variables for use by a number of jobs and workflows. Any variables from the selected Job Resources can be used by any jobs in the Workflow.",
         "documentation": "A workflow or job can be assigned a Documentation that is displayed with the WORKFLOWS view. Documentations are managed with the RESOURCES view.",
         "title": "The Title of the workflow is displayed with the WORKFLOWS view.",
+        "timeZone": "Time Zone",
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
         "board": {
           "boardName": "BoardName"
@@ -1140,7 +1141,8 @@
           "className": "The name of a Java class implementing a job. JS7 ships with a number of predefined JITL Java classes, e.g. for database access, to send e-mail etc.",
           "parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the max. Parallelism is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
           "criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
-          "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state."
+          "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state.",
+          "admissionTime": "Admission Time"
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
@@ -1188,7 +1190,8 @@
       },
       "button": {
         "search": "Search",
-        "update": "Update Job"
+        "updateJob": "Update Job",
+        "propagateJob": "Propagate Job"
       },
       "placeholder": {
         "search": "name or title like '%search%'",
@@ -1206,8 +1209,7 @@
         "clickHereToDeploy": "Click here to deploy!"
       },
       "message": {
-        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully.",
-        "selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
+        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully."
       }
     }
   },
@@ -1895,6 +1897,7 @@
     "label.createForkListVariable": "Create ForkList Variable",
     "label.updateForkListVariable": "Update ForkList Variable",
     "label.showDependency": "Show dependencies",
+    "label.admissionTime": "Admission Time",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
     "button.actual": "Default",

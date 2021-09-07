@@ -42,6 +42,7 @@ export class UpdateJobComponent implements OnInit {
   }
 
   private init(): void {
+    this.getObject(this.data.workflows[0].id);
     if (this.jobResourcesTree.length === 0) {
       this.coreService.post('tree', {
         controllerId: this.controllerId,
@@ -110,14 +111,21 @@ export class UpdateJobComponent implements OnInit {
   }
 
   getObject(id): void {
-    this.coreService.post('inventory/read/configuration', {
-      id
-    }).subscribe((res: any) => {
-      this.selectedNode.job = res.configuration.jobs[this.data.jobName];
-      if (this.selectedNode.job) {
+    if (this.data.onlyUpdate) {
+      setTimeout(() => {
+        this.selectedNode.job = {};
         this.step = 2;
-      }
-    });
+      }, 100);
+    } else {
+      this.coreService.post('inventory/read/configuration', {
+        id
+      }).subscribe((res: any) => {
+        this.selectedNode.job = res.configuration.jobs[this.data.jobName];
+        if (this.selectedNode.job) {
+          this.step = 2;
+        }
+      });
+    }
   }
 
   deploy(): void {
@@ -162,14 +170,91 @@ export class UpdateJobComponent implements OnInit {
     });
   }
 
-  findAndUpdate(job, cb): void {
-    console.log(job);
+  private updateProperties(obj, job): any {
+    if (job.title) {
+      obj.title = job.title;
+    }
+    if (job.documentationName) {
+      obj.documentationName = job.documentationName;
+    }
+    if (job.agentName) {
+      obj.agentName = job.agentName;
+    }
+    if (job.jobResourceNames) {
+      obj.jobResourceNames = job.jobResourceNames;
+    }
+    if (job.timeout > -1) {
+      obj.timeout = job.timeout;
+    }
+    if (job.graceTimeout > -1) {
+      obj.graceTimeout = job.graceTimeout;
+    }
+    if (job.warnIfShorter > -1) {
+      obj.warnIfShorter = job.warnIfShorter;
+    }
+    if (job.warnIfLonger > -1) {
+      obj.warnIfLonger = job.warnIfLonger;
+    }
+    if (job.defaultArguments) {
+      obj.defaultArguments = job.defaultArguments;
+    }
+    if (job.admissionTimeScheme && job.admissionTimeScheme.periods) {
+      obj.admissionTimeScheme = job.admissionTimeScheme;
+    }
+    if (job.executable) {
+      if (job.executable.TYPE !== obj.executable.TYPE) {
+        obj.executable.TYPE = job.executable.TYPE;
+      }
+      if (job.executable.className) {
+        obj.executable.className = job.executable.className;
+      }
+      if (job.executable.script) {
+        obj.executable.script = job.executable.script;
+      }
+      if (job.executable.login) {
+        obj.executable.login = job.executable.login;
+      }
+      if (job.executable.v1Compatible || job.executable.v1Compatible === false) {
+        obj.executable.v1Compatible = job.executable.v1Compatible;
+      }
+      if (job.executable.returnCodeMeaning) {
+        obj.executable.returnCodeMeaning = job.executable.returnCodeMeaning;
+      }
+      if (job.executable.env) {
+        obj.executable.env = job.executable.env;
+      }
+      if (job.executable.arguments) {
+        obj.executable.arguments = job.executable.arguments;
+      }
+      if (obj.executable.TYPE === 'InternalExecutable') {
+        delete obj.executable.script;
+        delete obj.executable.login;
+        delete obj.executable.env;
+      } else if (obj.executable.TYPE === 'ShellScriptExecutable') {
+        delete obj.executable.className;
+        delete obj.executable.arguments;
+      }
+    }
+    if (job.failOnErrWritten || job.failOnErrWritten === false) {
+      obj.failOnErrWritten = job.failOnErrWritten;
+    }
+    return obj;
+  }
+
+  private findAndUpdate(job, cb): void {
     this.data.workflows.forEach((workflow, index) => {
       this.coreService.post('inventory/read/configuration', {
         id: workflow.id
       }).subscribe((res: any) => {
-        res.configuration.jobs[this.data.jobName] = job;
+        if (this.data.onlyUpdate) {
+          res.configuration.jobs[this.data.jobName] = this.updateProperties(res.configuration.jobs[this.data.jobName], job);
+        } else {
+          res.configuration.jobs[this.data.jobName] = job;
+        }
         this.updateWorkflow(res, index === this.data.workflows.length - 1 ? cb : null);
+        if (index === this.data.workflows.length - 1) {
+          cb();
+        }
       });
     });
   }
@@ -304,6 +389,11 @@ export class UpdateJobComponent implements OnInit {
     if (job.executable.returnCodeMeaning) {
       if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0') {
         delete job.executable.returnCodeMeaning;
+      }
+    }
+    if (job.admissionTimeScheme && job.admissionTimeScheme.periods) {
+      if (job.admissionTimeScheme.periods.length === 0) {
+        delete job.admissionTimeScheme;
       }
     }
     return job;

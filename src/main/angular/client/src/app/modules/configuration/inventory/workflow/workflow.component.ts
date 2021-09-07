@@ -1325,8 +1325,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   selectedNode: any;
   node: any;
   title = '';
+  timeZone = '';
   documentationName = '';
   extraConfiguration: any = {};
+  zones: any = [];
   jobs: any = [];
   jobResourceNames: any = [];
   forkListVariables: any = [];
@@ -1366,6 +1368,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     });
+    this.zones = coreService.getTimeZoneList();
   }
 
   private static parseWorkflowJSON(result): void {
@@ -1578,6 +1581,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     this.extraConfiguration = {
       title: data.title,
+      timeZone: data.timeZone,
       documentationName: data.documentationName,
       jobResourceNames: data.jobResourceNames,
     };
@@ -2149,6 +2153,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
     this.extraConfiguration = {
       title: this.title,
+      timeZone: this.timeZone,
       documentationName: this.documentationName,
       jobResourceNames: this.jobResourceNames,
     };
@@ -8341,11 +8346,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (!this.title) {
         this.title = '';
       }
+      if (!this.timeZone) {
+        this.timeZone = '';
+      }
       if (!this.extraConfiguration.title) {
         this.extraConfiguration.title = '';
       }
+      if (!this.extraConfiguration.timeZone) {
+        this.extraConfiguration.timeZone = '';
+      }
       if (this.title !== this.extraConfiguration.title) {
         this.title = this.extraConfiguration.title;
+        flag = true;
+      }
+      if (this.timeZone !== this.extraConfiguration.timeZone) {
+        this.timeZone = this.extraConfiguration.timeZone;
         flag = true;
       }
     } else if (type === 'documentation') {

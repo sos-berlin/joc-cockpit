@@ -1098,6 +1098,7 @@
         "jobResourceNames": "ジョブリソースは、複数のジョブやワークフローで使用できる共有変数を保持します。",
         "documentation": "ドキュメント",
         "title": "ワークフローのタイトル",
+        "timeZone": "Time Zone",
         "allowUndeclared": "未宣言を許可",
         "board": {
           "boardName": "ボード名"
@@ -1140,7 +1141,8 @@
           "className": "ジョブを実装するJavaクラス名です。JS7には、データベース・アクセス用やメール送信用など、多数の定義済みのJITL Javaクラスが同梱されています。",
           "parallelism": "ジョブを並列に実行できるワークフロー内の最大オーダー数を指定します。最大値を超えた場合は、ジョブの最大タスク実行数以下に下がるまで、オーダーは待機しなければなりません。",
           "criticality": "ジョブの重要度を通知に使用することで、インシデントの緊急性をより明確に区別することができます。",
-          "failOnOutputErr": "ジョブがstderrに出力を書き込んだ場合、これはエラーとみなされ、オーダーは失敗ステートになります。"
+          "failOnOutputErr": "ジョブがstderrに出力を書き込んだ場合、これはエラーとみなされ、オーダーは失敗ステートになります。",
+          "admissionTime": "Admission Time"
         },
         "lock": {
           "name": "リソースロック名前はインベントリー内で一意です。リソースロックを使用することで、ワークフローのセクションの並列処理を制限できます。",
@@ -1188,7 +1190,8 @@
       },
       "button": {
         "search": "検索",
-        "update": "Update Job"
+        "updateJob": "Update Job",
+        "propagateJob": "Propagate Job"
       },
       "placeholder": {
         "search" : "名称またはタイトル入力 '%search%'",
@@ -1206,8 +1209,7 @@
         "clickHereToDeploy": "Click here to deploy!"
       },
       "message": {
-        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully.",
-        "selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
+        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully."
       }
     }
   },
@@ -1895,6 +1897,7 @@
     "label.createForkListVariable": "ForkList変数作成",
     "label.updateForkListVariable": "ForkList変数更新",
     "label.showDependency": "依存表示",
+    "label.admissionTime": "Admission Time",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
     "button.actual": "デフォルト",
