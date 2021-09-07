@@ -1190,26 +1190,26 @@
       },
       "button": {
         "search": "Suche",
-        "updateJob": "Update Job",
-        "propagateJob": "Propagate Job"
+        "updateJob": "Job aktualisieren",
+        "propagateJob": "Job propagieren"
       },
       "placeholder": {
         "search" : "Name oder Titel, z.B. '%suchtext%'",
         "selectFromTree": "Auswahl aus Ordner"
       },
       "message": {
-        "updateJobForSelectedWorkflows": "Update {{jobName}} in all {{workflowsCount}} selected workflows"
+        "updateJobForSelectedWorkflows": "Job {{jobName}} in {{workflowsCount}} ausgewählten Arbeitsabläufen aktualisieren"
       }
     },
     "updateJob": {
       "label": {
-        "updateJob": "Update Job"
+        "updateJob": "Job aktualisieren"
       },
       "button": {
-        "clickHereToDeploy": "Click here to deploy!"
+        "clickHereToDeploy": "Hier klicken zum Ausrollen!"
       },
       "message": {
-        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully."
+        "updateSuccessfully": "{{workflowsCount}} Arbeitsabläufe erfolgreich aktualisiert."
       }
     }
   },

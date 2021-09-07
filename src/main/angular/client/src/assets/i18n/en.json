@@ -1198,7 +1198,7 @@
         "selectFromTree": "Select from tree"
       },
       "message": {
-        "updateJobForSelectedWorkflows": "Update {{jobName}} in all {{workflowsCount}} selected workflows"
+        "updateJobForSelectedWorkflows": "Update job '{{jobName}}' in {{workflowsCount}} selected workflows"
       }
     },
     "updateJob": {
@@ -1209,7 +1209,7 @@
         "clickHereToDeploy": "Click here to deploy!"
       },
       "message": {
-        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully."
+        "updateSuccessfully": "{{workflowsCount}} workflows updated successfully."
       }
     }
   },
