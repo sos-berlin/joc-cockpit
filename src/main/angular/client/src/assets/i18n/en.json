@@ -1210,7 +1210,7 @@
       },
       "message": {
         "updateSuccessfully": "{{workflowsCount}} workflows updated successfully.",
-	"selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
+	    "selectWorkflowToOpenJobEditor": "Select workflow to open job in Job Editor"
       }
     }
   },

@@ -1210,7 +1210,7 @@
       },
       "message": {
         "updateSuccessfully": "{{workflowsCount}} Arbeitsabläufe erfolgreich aktualisiert.",
-	"selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
+	    "selectWorkflowToOpenJobEditor": "Arbeitsablauf mit Job für den Job Editor auswählen"
       }
     }
   },

@@ -35,9 +35,9 @@
   "typeTitle": "Den Feldtyp ändern",
   "openUrl": "Ctrl+Click oder Ctrl+Enter verwenden, um URL in neuem Fenster zu öffnen",
   "undo": "Letze Aktion rückgängig machen (Ctrl+Z)",
-  "validationCannotMove": "Ein Feld kann nicht in sein eigenes Kindelement verschoben werdene",
+  "validationCannotMove": "Ein Feld kann nicht in sein eigenes Kindelement verschoben werden",
   "autoType": "Feld-Typ \"auto\". Der Typ des Felds wird automatisch bestimmt aus dem zugewiesenen Wert: Zeichenkette, Zahl, Wahrheitswert oder Null.",
-  "objectType": "Feld Typ \"object\". Ein Objekt enthätl eine unsortierte List von Name/Wert Paaren.",
-  "arrayType": "Feld-Typ \"array\". Ein Array enthält eines sortierte liste von Werten.",
+  "objectType": "Feld Typ \"object\". Ein Objekt enthätl eine unsortierte Liste von Name/Wert Paaren.",
+  "arrayType": "Feld-Typ \"array\". Ein Array enthält eines sortierte Liste von Werten.",
   "stringType": "Feld-Typ \"string\". Der Feld-Typ wird nicht aus dem Wert bestimmt, es wird immmer eine Zeichenfolge zurükgeliefert."
 }
