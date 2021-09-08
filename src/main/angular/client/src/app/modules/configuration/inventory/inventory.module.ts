@@ -24,7 +24,7 @@ import {
 import {TableComponent} from './table-data/table.component';
 import {
   ExpressionComponent, ImportComponent, JobComponent, ScriptEditorComponent,
-  FindAndReplaceComponent, WorkflowComponent
+  FindAndReplaceComponent, WorkflowComponent, AdmissionTimeComponent, TimeEditorComponent
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
@@ -37,10 +37,10 @@ import {JobWizardComponent} from './job-wizard/job-wizard.component';
 import {EnvVariableValidator, LabelValidator} from '../../../directives/core.directive';
 import {UpdateJobComponent} from './update-job/update-job.component';
 
-const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent,
-  DeployComponent, ExportComponent, SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent,
-  ImportWorkflowModalComponent, JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, UpdateJobComponent,
-  FindAndReplaceComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
+const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent,
+  SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent,
+  JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, FindAndReplaceComponent,
+  AdmissionTimeComponent, TimeEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
 
 @NgModule({
   imports: [

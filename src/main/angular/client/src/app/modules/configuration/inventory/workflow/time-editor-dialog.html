@@ -1,0 +1,44 @@
+<div style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="!period" translate>runtime.label.addPeriod</span>
+    <span *ngIf="period" translate>runtime.label.editPeriod</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<div class="modal-body p-a">
+  <div class="row">
+    <div class="col-sm-12">
+      <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+        <div>
+          <div class="form-group row">
+            <label class="col-sm-3 form-control-label" translate>runtime.label.startTime</label>
+            <div class="col-sm-6">
+              <nz-time-picker required [(ngModel)]="object.startTime" name="startTime" [nzDefaultOpenValue]="defaultOpenValue"
+              nzPlaceHolder="HH:MM:SS"></nz-time-picker>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 form-control-label" translate>common.label.duration</label>
+            <div class="col-sm-6" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
+              <input validateDurtionReqex required maxlength="8" class="form-control" name="duration" #duration="ngModel"
+                     [(ngModel)]="object.duration"
+                     placeholder="{{'workflow.placeholder.duration' | translate}}" type="text">
+            </div>
+          </div>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid">
+            <span translate>common.button.save</span>
+          </button>
+          <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
+            common.button.cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>

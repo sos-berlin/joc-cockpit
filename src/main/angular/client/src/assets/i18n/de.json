@@ -1209,7 +1209,8 @@
         "clickHereToDeploy": "Hier klicken zum Ausrollen!"
       },
       "message": {
-        "updateSuccessfully": "{{workflowsCount}} Arbeitsabläufe erfolgreich aktualisiert."
+        "updateSuccessfully": "{{workflowsCount}} Arbeitsabläufe erfolgreich aktualisiert.",
+	"selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
       }
     }
   },

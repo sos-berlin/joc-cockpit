@@ -2715,6 +2715,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ExportComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         schedulerIds: this.schedulerIds,
         preferences: this.preferences,
@@ -2732,6 +2733,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ImportWorkflowModalComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         display: this.preferences.auditLog
       },
@@ -2755,6 +2757,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ImportWorkflowModalComponent,
       nzClassName: 'lg',
+      nzAutofocus: null,
       nzComponentParams: {
         schedulerIds: this.schedulerIds,
         display: this.preferences.auditLog,

@@ -59,6 +59,235 @@ declare const $;
 const x2js = new X2JS();
 
 @Component({
+  selector: 'app-time-editor-modal',
+  templateUrl: './time-editor-dialog.html'
+})
+export class TimeEditorComponent implements OnInit {
+  @Input() data;
+  @Input() period;
+  isNew: boolean;
+
+  defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
+  object: any = {};
+
+  constructor(public activeModal: NzModalRef, private workflowService: WorkflowService) {
+  }
+
+  ngOnInit(): void {
+    if (this.period) {
+      const h = Math.floor(((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
+      const m = Math.floor((((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
+      const s = Math.floor(((((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
+      this.object.startTime = new Date(new Date().setHours(h, m, s));
+      this.object.duration = this.workflowService.convertDurationToHour(this.period.duration);
+    }
+  }
+
+  onSubmit(): void {
+    this.object.duration = this.workflowService.convertStringToDuration(this.object.duration);
+    this.activeModal.close(this.object);
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
+
+@Component({
+  selector: 'app-admission-time',
+  templateUrl: './admission-time-dialog.html'
+})
+export class AdmissionTimeComponent implements OnInit, OnDestroy {
+  @Input() job: any;
+  periodList = [];
+  frequency: any = {
+    days: [],
+    all: false
+  };
+  days = [];
+  daysOptions = [
+    {label: 'monday', value: '1', checked: false},
+    {label: 'tuesday', value: '2', checked: false},
+    {label: 'wednesday', value: '3', checked: false},
+    {label: 'thursday', value: '4', checked: false},
+    {label: 'friday', value: '5', checked: false},
+    {label: 'saturday', value: '6', checked: false},
+    {label: 'sunday', value: '7', checked: false}
+  ];
+
+  constructor(private coreService: CoreService, private modal: NzModalService,
+              private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
+  }
+
+  ngOnInit(): void {
+    if (!this.job.admissionTimeScheme) {
+      this.job.admissionTimeScheme = {};
+    }
+    this.days = this.coreService.getLocale().days;
+
+    if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
+      this.convertSecondIntoWeek();
+    }
+  }
+
+  ngOnDestroy(): void {
+    console.log(this.periodList);
+    const arr = [];
+    this.periodList.forEach((item) => {
+      if (item.periods) {
+        item.periods.forEach((period) => {
+          arr.push({
+            secondOfWeek: period.secondOfWeek,
+            duration: period.duration
+          });
+        });
+      }
+    });
+    console.log(arr);
+  }
+
+  private getText(startTime, duration): string {
+    const time = this.workflowService.convertSecondToTime(startTime);
+    const dur = this.workflowService.convertDurationToHour(duration);
+    return 'starting at ' + time + ' for ' + dur;
+  }
+
+
+  convertSecondIntoWeek(): void {
+    const hour = 3600;
+    this.job.admissionTimeScheme.periods.forEach((period) => {
+      const hours = period.secondOfWeek / hour;
+      const day = Math.floor(hours / 24) + 1;
+      this.frequency.days.push(day.toString());
+      const d = day - 1;
+      const obj: any = {
+        day,
+        secondOfWeek: (d * 24 * 3600) || 3600,
+        frequency: this.days[day],
+        periods: []
+      };
+      const startTime = period.secondOfWeek - obj.secondOfWeek;
+      const p: any = {
+        startTime: startTime > 3600 ? startTime : startTime + 3600,
+        duration: period.duration
+      };
+      p.text = this.getText(p.startTime, p.duration);
+      obj.periods.push(p);
+      this.periodList.push(obj);
+    });
+    this.checkDays();
+  }
+
+  dayChange(value: string[]): void {
+    this.frequency.days = value;
+    this.onChangeDays();
+  }
+
+  onChangeDays(): void {
+    if (this.frequency.days) {
+      this.frequency.all = this.frequency.days.length === 7;
+      this.frequency.days.sort();
+    }
+  }
+
+  selectAllWeek(): void {
+    if (this.frequency.all) {
+      this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
+    } else {
+      this.frequency.days = [];
+    }
+    this.checkDays();
+  }
+
+  checkDays(): void {
+    this.daysOptions = this.daysOptions.map(item => {
+      return {
+        ...item,
+        checked: (this.frequency.days ? this.frequency.days.indexOf(item.value) > -1 : false)
+      };
+    });
+  }
+
+  addFrequency(): void {
+    const temp = this.coreService.clone(this.periodList);
+    this.periodList = [];
+    this.frequency.days.forEach((day) => {
+      const d = parseInt(day, 10) - 1;
+      const obj: any = {
+        day,
+        secondOfWeek: (d * 24 * 3600) || 3600,
+        frequency: this.days[parseInt(day, 10)],
+        periods: []
+      };
+      if (temp.length > 0) {
+        for (const i in temp) {
+          if (temp[i] && temp[i].day == day) {
+            console.log(temp[i]);
+            obj.periods = temp[i].periods;
+            break;
+          }
+        }
+      }
+      this.periodList.push(obj);
+    });
+  }
+
+  removeFrequency(data): void {
+    this.periodList = this.periodList.filter((item) => {
+      return item.day !== data.day;
+    });
+  }
+
+  addPeriod(data): void {
+    this.editPeriod(null, data);
+  }
+
+  editPeriod(period, data): void {
+    console.log(period)
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: TimeEditorComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        data,
+        period
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((res) => {
+      if (res) {
+        if (period) {
+          console.log(period)
+          data.periods = data.periods.filter((item) => {
+            return item.text !== period.text;
+          });
+        }
+        const h = res.startTime.getHours();
+        const m = res.startTime.getMinutes();
+        const s = res.startTime.getSeconds();
+        const time = (h * 60 * 60) + (m * 60) + s;
+        const p: any = {
+          startTime: time,
+          duration: res.duration
+        };
+        p.text = this.getText(p.startTime, p.duration);
+        console.log(p);
+        data.periods.push(p);
+        this.ref.detectChanges();
+      }
+    });
+  }
+
+  removePeriod(data, period): void {
+    data.periods = data.periods.filter((item) => {
+      return item !== period;
+    });
+  }
+}
+
+@Component({
   selector: 'app-find-replace-modal',
   templateUrl: './find-replace-dialog.html'
 })
@@ -128,6 +357,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   errorMsg: string;
   obj: any = {};
   isDisplay = false;
+  isRuntimeVisible = false;
   fullScreen = false;
   index = 0;
   presentObj: any = {};
@@ -176,6 +406,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(res.change.current.value)};
           this.setJobProperties();
           this.ref.detectChanges();
+          this.isRuntimeVisible = false;
           this.fullScreen = false;
         }
       }
@@ -184,7 +415,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.index = 0;
-    
     if (!this.isModal) {
       this.updateVariableList();
     }
@@ -295,6 +525,14 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         this.saveToHistory();
       }
     });
+  }
+
+  showRuntime(): void{
+    this.isRuntimeVisible = true;
+  }
+
+  closeRuntime(): void{
+    this.isRuntimeVisible = false;
   }
 
   drop(event: CdkDragDrop<string[]>, list: Array<any>): void {
@@ -2146,6 +2384,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     this.documentationName = res.configuration.documentationName;
     this.title = res.configuration.title;
+    this.timeZone = res.configuration.timeZone;
+    if (!this.timeZone) {
+      this.timeZone = this.preferences.zone;
+    }
     delete res.configuration.orderPreparation;
     delete res.configuration.jobResourceNames;
     delete res.configuration.documentationName;
@@ -7712,6 +7954,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const job = this.coreService.clone(data.job);
     if (!job.executable) {
       return false;
+    }
+    if (isEmpty(job.admissionTimeScheme)) {
+      delete job.admissionTimeScheme;
     }
     if (isEmpty(job.executable.login)) {
       delete job.executable.login;

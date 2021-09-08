@@ -42,7 +42,12 @@ export class UpdateJobComponent implements OnInit {
   }
 
   private init(): void {
-    this.getObject(this.data.workflows[0].id);
+    if (this.data.onlyUpdate) {
+      setTimeout(() => {
+        this.selectedNode.job = {};
+        this.step = 2;
+      }, 100);
+    }
     if (this.jobResourcesTree.length === 0) {
       this.coreService.post('tree', {
         controllerId: this.controllerId,
@@ -111,21 +116,14 @@ export class UpdateJobComponent implements OnInit {
   }
 
   getObject(id): void {
-    if (this.data.onlyUpdate) {
-      setTimeout(() => {
-        this.selectedNode.job = {};
+    this.coreService.post('inventory/read/configuration', {
+      id
+    }).subscribe((res: any) => {
+      this.selectedNode.job = res.configuration.jobs[this.data.jobName];
+      if (this.selectedNode.job) {
         this.step = 2;
-      }, 100);
-    } else {
-      this.coreService.post('inventory/read/configuration', {
-        id
-      }).subscribe((res: any) => {
-        this.selectedNode.job = res.configuration.jobs[this.data.jobName];
-        if (this.selectedNode.job) {
-          this.step = 2;
-        }
-      });
-    }
+      }
+    });
   }
 
   deploy(): void {

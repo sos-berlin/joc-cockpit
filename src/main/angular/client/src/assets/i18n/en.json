@@ -1209,7 +1209,8 @@
         "clickHereToDeploy": "Click here to deploy!"
       },
       "message": {
-        "updateSuccessfully": "{{workflowsCount}} workflows updated successfully."
+        "updateSuccessfully": "{{workflowsCount}} workflows updated successfully.",
+	"selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
       }
     }
   },
