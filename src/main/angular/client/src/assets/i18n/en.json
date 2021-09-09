@@ -1991,7 +1991,7 @@
       "label.frequency": "Frequency",
       "label.period": "Period",
       "button.add": "Add",
-      "message.duplicatePeriod": "Same entries are already exist"
+      "message.duplicatePeriod": "Same period for selected days"
     }
   },
   "xml": {

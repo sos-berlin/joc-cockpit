@@ -1098,7 +1098,7 @@
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen. Die Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
         "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs wird in der Sicht ARBEITSABLÄUFE angezeigt.",
-        "timeZone": "Admission Time Zone",
+        "timeZone": "Zeitzone Eintrittszeit",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
           "boardName": "Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen."
@@ -1142,7 +1142,7 @@
           "parallelism": "Die max. Parallelität eines Jobs bestimmt wie viele Aufträge gleichzeitig in einem Arbeitsablauf diesen Job ausführen können. Wird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
           "criticality": "Die Kritikalität eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
           "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
-          "admissionTime": "Admission Time"
+          "admissionTime": "Eintrittszeit"
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
@@ -1887,7 +1887,7 @@
     "label.criticality": "Kritikalität",
     "label.workflowFound": "Arbeitsablauf gefunden",
     "label.workflowsFound": "Arbeitsabläufe gefunden",
-    "label.enterDateAndTime": "Datum und UhrZeit angeben",
+    "label.enterDateAndTime": "Datum und Uhrzeit angeben",
     "label.logLevel": "Protokollierungsstufe",
     "label.failOnOutputErr": "Scheitern bei Ausgaben in stderr",
     "label.showConfiguration": "Konfiguration anzeigen",
@@ -1898,9 +1898,9 @@
     "label.createForkListVariable": "Listenvariable erstellen",
     "label.updateForkListVariable": "Listenvariable aktualisieren",
     "label.showDependency": "Abhängigkeiten anzeigen",
-    "label.admissionTime": "Admission Time",
-    "label.showPeriods": "Show Periods",
-    "label.timeZone": "Admission Time Zone",
+    "label.admissionTime": "Eintrittszeit",
+    "label.showPeriods": "Periode anzeigen",
+    "label.timeZone": "Zeitzone der Eintrittszeit",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
     "button.actual": "Voreinstellung",
@@ -1986,12 +1986,12 @@
       "button.addAnotherParameter": "Variable hinzufügen"
     },
     "admissionTime": {
-      "label.weekDays": "Weekdays",
-      "label.everyDay": "Every Day",
-      "label.frequency": "Frequency",
-      "label.period": "Period",
-      "button.add": "Add",
-      "message.duplicatePeriod": "Same entries are already exist"
+      "label.weekDays": "Wochentage",
+      "label.everyDay": "Jeder Tag",
+      "label.frequency": "Häufigkeit",
+      "label.period": "Periode",
+      "button.add": "Hinzufügen",
+      "message.duplicatePeriod": "Gleiche Periode für ausgewählte Tage"
     }
   },
   "xml": {
