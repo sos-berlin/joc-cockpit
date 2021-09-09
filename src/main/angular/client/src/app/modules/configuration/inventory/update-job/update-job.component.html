@@ -33,10 +33,16 @@
                          [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [schedulerId]="controllerId"></app-job-content>
       </div>
       <div class="col-md-12" *ngIf="step === 3" style="min-height: 400px">
-        <div style="display: flex;justify-content: center;align-items: center;height: 100%">
+        <div style="display: flex;justify-content: center;align-items: center;" [ngStyle]="{'height': renameFailedJobs.length > 0 ? '100px' : '100%'}">
           <div class="text-md">
             <span class="_600" translate [translateParams]="{workflowsCount: data.workflows.length}">inventory.updateJob.message.updateSuccessfully</span>
             <a class="text-primary p-l-xs" (click)="step = 4;" translate>inventory.updateJob.button.clickHereToDeploy</a>
+          </div>
+        </div>
+        <div class="font14 m-t text-center" *ngIf="renameFailedJobs.length > 0">
+          <span class="_600" translate>Renaming of job '{{data.jobName}}' to '{{selectedNode.obj.jobName}}' is failed in {{renameFailedJobs.length}} workflows</span>
+          <div *ngFor="let workflow of renameFailedJobs">
+            <i class="icon-workflows-icon p-r-xs"></i> {{workflow}}
           </div>
         </div>
       </div>

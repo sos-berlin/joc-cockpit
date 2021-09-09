@@ -1098,7 +1098,7 @@
         "jobResourceNames": "Les ressources de tâche contiennent des variables partagées qui peuvent être utilisées par un certain nombre de tâches et de workflows.",
         "documentation": "Documentation",
         "title": "Le titre d'un workflow.",
-        "timeZone": "Time Zone",
+        "timeZone": "Admission Time Zone",
         "allowUndeclared": "Autoriser les variables non déclarés",
         "board": {
           "boardName": "Le nom d'une Condition est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin."
@@ -1899,6 +1899,8 @@
     "label.updateForkListVariable": "Mettre à jour la Variable de Tableau",
     "label.showDependency": "Afficher les Dépendances",
     "label.admissionTime": "Admission Time",
+    "label.showPeriods": "Show Periods",
+    "label.timeZone": "Admission Time Zone",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",
@@ -1982,6 +1984,14 @@
       "button.next": "Suivant",
       "button.showDocumentation": "Afficher la Documentation",
       "button.addAnotherParameter": "Ajouter un autre paramètre"
+    },
+    "admissionTime": {
+      "label.weekDays": "Weekdays",
+      "label.everyDay": "Every Day",
+      "label.frequency": "Frequency",
+      "label.period": "Period",
+      "button.add": "Add",
+      "message.duplicatePeriod": "Same entries are already exist"
     }
   },
   "xml": {

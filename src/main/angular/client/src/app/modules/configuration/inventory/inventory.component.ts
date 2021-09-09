@@ -3343,6 +3343,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    if(!this.permission.joc) {
+      setTimeout(() => {
+        this.initConf(isReload);
+      }, 50);
+      return;
+    }
     this.securityLevel = sessionStorage.securityLevel;
     if (isReload) {
       this.sideView = this.coreService.getSideView();

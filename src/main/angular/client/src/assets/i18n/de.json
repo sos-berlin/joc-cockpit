@@ -1098,7 +1098,7 @@
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen. Die Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
         "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs wird in der Sicht ARBEITSABLÄUFE angezeigt.",
-        "timeZone": "Time Zone",
+        "timeZone": "Admission Time Zone",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
           "boardName": "Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen."
@@ -1210,7 +1210,7 @@
       },
       "message": {
         "updateSuccessfully": "{{workflowsCount}} Arbeitsabläufe erfolgreich aktualisiert.",
-	    "selectWorkflowToOpenJobEditor": "Arbeitsablauf mit Job für den Job Editor auswählen"
+        "selectWorkflowToOpenJobEditor": "Arbeitsablauf mit Job für den Job Editor auswählen"
       }
     }
   },
@@ -1899,6 +1899,8 @@
     "label.updateForkListVariable": "Listenvariable aktualisieren",
     "label.showDependency": "Abhängigkeiten anzeigen",
     "label.admissionTime": "Admission Time",
+    "label.showPeriods": "Show Periods",
+    "label.timeZone": "Admission Time Zone",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
     "button.actual": "Voreinstellung",
@@ -1982,6 +1984,14 @@
       "button.next": "Weiter",
       "button.showDocumentation": "Dokumentation anzeigen",
       "button.addAnotherParameter": "Variable hinzufügen"
+    },
+    "admissionTime": {
+      "label.weekDays": "Weekdays",
+      "label.everyDay": "Every Day",
+      "label.frequency": "Frequency",
+      "label.period": "Period",
+      "button.add": "Add",
+      "message.duplicatePeriod": "Same entries are already exist"
     }
   },
   "xml": {

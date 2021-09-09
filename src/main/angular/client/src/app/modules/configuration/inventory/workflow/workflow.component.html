@@ -567,7 +567,7 @@
           </div>
         </div>
         <div class="form-group row" [ngClass]="{'hide': fullScreen}">
-          <div class="col-md-4 col-lg-3 form-control-label"  [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.timeZone' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5" translate>common.label.timeZone</div>
+          <div class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.timeZone' | translate}}" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.timeZone' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.timeZone</div>
           <div class="col-md-8 col-lg-9">
             <nz-select nzShowSearch name="timeZone" nzAllowClear [(ngModel)]="extraConfiguration.timeZone">
               <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>

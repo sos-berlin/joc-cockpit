@@ -1098,7 +1098,7 @@
         "jobResourceNames": "ジョブリソースは、複数のジョブやワークフローで使用できる共有変数を保持します。",
         "documentation": "ドキュメント",
         "title": "ワークフローのタイトル",
-        "timeZone": "Time Zone",
+        "timeZone": "Admission Time Zone",
         "allowUndeclared": "未宣言を許可",
         "board": {
           "boardName": "ボード名"
@@ -1899,6 +1899,8 @@
     "label.updateForkListVariable": "ForkList変数更新",
     "label.showDependency": "依存表示",
     "label.admissionTime": "Admission Time",
+    "label.showPeriods": "Show Periods",
+    "label.timeZone": "Admission Time Zone",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
     "button.actual": "デフォルト",
@@ -1982,6 +1984,14 @@
       "button.next": "次",
       "button.showDocumentation": "ドキュメント表示",
       "button.addAnotherParameter": "他のパラメーター追加"
+    },
+    "admissionTime": {
+      "label.weekDays": "Weekdays",
+      "label.everyDay": "Every Day",
+      "label.frequency": "Frequency",
+      "label.period": "Period",
+      "button.add": "Add",
+      "message.duplicatePeriod": "Same entries are already exist"
     }
   },
   "xml": {

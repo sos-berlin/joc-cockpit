@@ -1,11 +1,11 @@
+<form #myForm="ngForm" novalidate>
 <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b">
   <div class="form-group row">
-    <label class="col-sm-3" translate>runtime.label.weekDays</label>
-
+    <label class="col-sm-3" translate>workflow.admissionTime.label.weekDays</label>
     <div class="col-sm-9">
       <label class="w" nz-checkbox [(ngModel)]="frequency.all" name="week"
              (nzCheckedChange)="selectAllWeek()">
-        <span translate>runtime.label.everyDay</span>
+        <span translate>workflow.admissionTime.label.everyDay</span>
       </label><br>
       <nz-checkbox-wrapper (nzOnChange)="dayChange($event)">
         <ng-container *ngFor="let option of daysOptions">
@@ -16,14 +16,39 @@
     </div>
   </div>
 </div>
-<div class="row m-t">
+<div class="row">
+  <div class="col-sm-12">
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>runtime.label.startTime</label>
+      <div class="col-sm-6">
+        <nz-time-picker [(ngModel)]="object.startTime" name="startTime" [nzDefaultOpenValue]="defaultOpenValue"
+                        nzPlaceHolder="HH:MM:SS"></nz-time-picker>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>common.label.duration</label>
+      <div class="col-sm-6" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
+        <input validateDurtionReqex [required]="!!object.startTime" class="form-control" name="duration" #duration="ngModel"
+               [(ngModel)]="object.duration"
+               placeholder="{{'workflow.placeholder.duration' | translate}}" type="text">
+        <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">
+          <div *ngIf="duration.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+          <div *ngIf="duration.errors.invalidDuration" translate>common.message.invalid</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row m-t-xs">
   <div class="col-sm-12" style="max-height: 600px; overflow: auto">
     <div class="table-responsive">
       <table class="table table-hover table-bordered ">
         <thead>
         <tr>
-          <th><span translate>runtime.label.frequency</span></th>
-          <th><span translate>runtime.label.period</span></th>
+          <th><span translate>workflow.admissionTime.label.frequency</span></th>
+          <th><span translate>workflow.admissionTime.label.period</span></th>
         </tr>
         </thead>
         <tbody>
@@ -56,7 +81,7 @@
 </div>
 <div class="form-group row p-b b-b">
   <div class="col-sm-12">
-    <button class="btn btn-sm btn-primary" [disabled]="frequency.days.length === 0" (click)="addFrequency()">Add</button>
+    <button class="btn btn-sm btn-primary" [disabled]="frequency.days.length === 0 || !myForm.form.valid" (click)="addFrequency()" translate>workflow.admissionTime.button.add</button>
   </div>
 </div>
-
+</form>

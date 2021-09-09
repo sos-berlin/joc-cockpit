@@ -21,6 +21,7 @@ export class UpdateJobComponent implements OnInit {
   agents = [];
   jobResourcesTree = [];
   documentationTree = [];
+  renameFailedJobs = [];
   step = 1;
   submitted = false;
   selectedNode: any = {
@@ -181,21 +182,25 @@ export class UpdateJobComponent implements OnInit {
     if (job.jobResourceNames) {
       obj.jobResourceNames = job.jobResourceNames;
     }
-    if (job.timeout > -1) {
+    if (job.timeout || job.timeout > -1) {
       obj.timeout = job.timeout;
     }
-    if (job.graceTimeout > -1) {
+    if (job.graceTimeout || job.graceTimeout > -1) {
       obj.graceTimeout = job.graceTimeout;
     }
-    if (job.warnIfShorter > -1) {
+    if (job.warnIfShorter || job.warnIfShorter > -1) {
       obj.warnIfShorter = job.warnIfShorter;
     }
-    if (job.warnIfLonger > -1) {
+    if (job.warnIfLonge || job.warnIfLonger > -1) {
       obj.warnIfLonger = job.warnIfLonger;
     }
     if (job.defaultArguments) {
       obj.defaultArguments = job.defaultArguments;
     }
+    if (job.criticality) {
+      obj.criticality = job.criticality;
+    }
+
     if (job.admissionTimeScheme && job.admissionTimeScheme.periods) {
       obj.admissionTimeScheme = job.admissionTimeScheme;
     }
@@ -239,6 +244,44 @@ export class UpdateJobComponent implements OnInit {
     return obj;
   }
 
+  private recursivelyUpdateJobInstruction(mainJson): void {
+    const self = this;
+    function recursive(json: any) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].TYPE === 'Execute.Named') {
+            if (json.instructions[x].jobName === self.data.jobName) {
+              json.instructions[x].jobName = self.selectedNode.obj.jobName;
+            }
+          }
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x]);
+          }
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursive(json.instructions[x].catch);
+            }
+          }
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            recursive(json.instructions[x].then);
+          }
+          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+            recursive(json.instructions[x].else);
+          }
+          if (json.instructions[x].branches) {
+            for (let i = 0; i < json.instructions[x].branches.length; i++) {
+              if (json.instructions[x].branches[i]) {
+                recursive(json.instructions[x].branches[i].workflow);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    recursive(mainJson);
+  }
+
   private findAndUpdate(job, cb): void {
     this.data.workflows.forEach((workflow, index) => {
       this.coreService.post('inventory/read/configuration', {
@@ -249,10 +292,16 @@ export class UpdateJobComponent implements OnInit {
         } else {
           res.configuration.jobs[this.data.jobName] = job;
         }
-        this.updateWorkflow(res, index === this.data.workflows.length - 1 ? cb : null);
-        if (index === this.data.workflows.length - 1) {
-          cb();
+        if (this.data.jobName !== this.selectedNode.obj.jobName) {
+          if (res.configuration.jobs[this.selectedNode.obj.jobName]) {
+            this.renameFailedJobs.push(workflow.path);
+          } else{
+            res.configuration.jobs[this.selectedNode.obj.jobName] = res.configuration.jobs[this.data.jobName];
+            delete res.configuration.jobs[this.data.jobName];
+            this.recursivelyUpdateJobInstruction(res.configuration);
+          }
         }
+        this.updateWorkflow(res, index === this.data.workflows.length - 1 ? cb : null);
       });
     });
   }

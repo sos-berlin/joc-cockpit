@@ -66,6 +66,7 @@ export class TimeEditorComponent implements OnInit {
   @Input() data;
   @Input() period;
   isNew: boolean;
+  isExist: boolean;
 
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
   object: any = {};
@@ -84,8 +85,24 @@ export class TimeEditorComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.object.duration = this.workflowService.convertStringToDuration(this.object.duration);
-    this.activeModal.close(this.object);
+    const obj: any = {};
+    const h = this.object.startTime.getHours();
+    const m = this.object.startTime.getMinutes();
+    const s = this.object.startTime.getSeconds();
+    obj.startTime = (h * 60 * 60) + (m * 60) + s;
+    obj.duration = this.workflowService.convertStringToDuration(this.object.duration);
+    this.isExist = false;
+    if (this.data.periods.length > 0) {
+      for (const i in this.data.periods) {
+        if (this.data.periods[i].startTime === obj.startTime && this.data.periods[i].duration === obj.duration) {
+          this.isExist = true;
+          break;
+        }
+      }
+    }
+    if (!this.isExist) {
+      this.activeModal.close(obj);
+    }
   }
 
   cancel(): void {
@@ -105,6 +122,8 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     all: false
   };
   days = [];
+  defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
+  object: any = {};
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
     {label: 'tuesday', value: '2', checked: false},
@@ -124,26 +143,26 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       this.job.admissionTimeScheme = {};
     }
     this.days = this.coreService.getLocale().days;
-
+    this.days.push(this.days[0]);
     if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
       this.convertSecondIntoWeek();
     }
   }
 
   ngOnDestroy(): void {
-    console.log(this.periodList);
     const arr = [];
     this.periodList.forEach((item) => {
       if (item.periods) {
         item.periods.forEach((period) => {
           arr.push({
-            secondOfWeek: period.secondOfWeek,
+            TYPE: 'WeekdayPeriod',
+            secondOfWeek: (item.secondOfWeek + period.startTime),
             duration: period.duration
           });
         });
       }
     });
-    console.log(arr);
+    this.job.admissionTimeScheme.periods = arr;
   }
 
   private getText(startTime, duration): string {
@@ -152,28 +171,41 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     return 'starting at ' + time + ' for ' + dur;
   }
 
-
   convertSecondIntoWeek(): void {
     const hour = 3600;
     this.job.admissionTimeScheme.periods.forEach((period) => {
       const hours = period.secondOfWeek / hour;
       const day = Math.floor(hours / 24) + 1;
-      this.frequency.days.push(day.toString());
+      if (this.frequency.days.indexOf(day.toString()) === -1) {
+        this.frequency.days.push(day.toString());
+      }
       const d = day - 1;
       const obj: any = {
         day,
-        secondOfWeek: (d * 24 * 3600) || 3600,
+        secondOfWeek: (d * 24 * 3600),
         frequency: this.days[day],
         periods: []
       };
       const startTime = period.secondOfWeek - obj.secondOfWeek;
       const p: any = {
-        startTime: startTime > 3600 ? startTime : startTime + 3600,
+        startTime,
         duration: period.duration
       };
       p.text = this.getText(p.startTime, p.duration);
-      obj.periods.push(p);
-      this.periodList.push(obj);
+      let flag = true;
+      if (this.periodList.length > 0) {
+        for (const i in this.periodList) {
+          if (this.periodList[i].day == day) {
+            flag = false;
+            this.periodList[i].periods.push(p);
+            break;
+          }
+        }
+      }
+      if (flag) {
+        obj.periods.push(p);
+        this.periodList.push(obj);
+      }
     });
     this.checkDays();
   }
@@ -209,27 +241,50 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   }
 
   addFrequency(): void {
+    let p: any;
+    if (this.object.startTime || this.object.duration) {
+      p = {};
+      const h = this.object.startTime.getHours();
+      const m = this.object.startTime.getMinutes();
+      const s = this.object.startTime.getSeconds();
+      p.startTime = (h * 60 * 60) + (m * 60) + s;
+      p.duration = this.workflowService.convertStringToDuration(this.object.duration);
+      p.text = this.getText(p.startTime, p.duration);
+    }
     const temp = this.coreService.clone(this.periodList);
     this.periodList = [];
     this.frequency.days.forEach((day) => {
       const d = parseInt(day, 10) - 1;
       const obj: any = {
         day,
-        secondOfWeek: (d * 24 * 3600) || 3600,
+        secondOfWeek: (d * 24 * 3600),
         frequency: this.days[parseInt(day, 10)],
         periods: []
       };
       if (temp.length > 0) {
         for (const i in temp) {
           if (temp[i] && temp[i].day == day) {
-            console.log(temp[i]);
             obj.periods = temp[i].periods;
             break;
           }
         }
       }
+      if (p) {
+        let isCheck = true;
+        if (obj.periods.length > 0) {
+          obj.periods.forEach((per) => {
+            if (per.text === p.text) {
+              isCheck = false;
+            }
+          });
+        }
+        if (isCheck) {
+          obj.periods.push(p);
+        }
+      }
       this.periodList.push(obj);
     });
+    this.object = {};
   }
 
   removeFrequency(data): void {
@@ -243,7 +298,6 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   }
 
   editPeriod(period, data): void {
-    console.log(period)
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: TimeEditorComponent,
@@ -259,21 +313,15 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe((res) => {
       if (res) {
         if (period) {
-          console.log(period)
           data.periods = data.periods.filter((item) => {
             return item.text !== period.text;
           });
         }
-        const h = res.startTime.getHours();
-        const m = res.startTime.getMinutes();
-        const s = res.startTime.getSeconds();
-        const time = (h * 60 * 60) + (m * 60) + s;
         const p: any = {
-          startTime: time,
+          startTime: res.startTime,
           duration: res.duration
         };
         p.text = this.getText(p.startTime, p.duration);
-        console.log(p);
         data.periods.push(p);
         this.ref.detectChanges();
       }
@@ -527,11 +575,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  showRuntime(): void{
+  showRuntime(): void {
     this.isRuntimeVisible = true;
   }
 
-  closeRuntime(): void{
+  closeRuntime(): void {
     this.isRuntimeVisible = false;
   }
 
@@ -1622,13 +1670,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           defaultArguments: v.defaultArguments,
           jobResourceNames: v.jobResourceNames,
           title: v.title,
+          admissionTimeScheme: v.admissionTimeScheme,
           logLevel: v.logLevel,
           criticality: v.criticality,
           timeout: v.timeout,
           graceTimeout: v.graceTimeout,
           warnIfShorter: v.warnIfShorter,
           warnIfLonger: v.warnIfLonger,
-          parallelism: v.parallelism || v.taskLimit
+          parallelism: v.parallelism
         };
       }
     }
@@ -1659,6 +1708,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.workflow = {};
         this.jobs = [];
         this.title = '';
+        this.timeZone = '';
         this.documentationName = '';
         this.jobResourceNames = [];
         this.orderPreparation = {};
@@ -1824,6 +1874,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       jobResourceNames: data.jobResourceNames,
     };
     delete data.title;
+    delete data.timeZone;
     delete data.orderPreparation;
     delete data.documentationName;
     delete data.jobResourceNames;
@@ -1973,6 +2024,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (this.title) {
           newData.title = this.title;
         }
+        if (this.timeZone) {
+          newData.timeZone = this.timeZone;
+        }
         if (this.documentationName) {
           newData.documentationName = this.documentationName;
         }
@@ -2005,6 +2059,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (result.title) {
           this.title = this.coreService.clone(result.title);
         }
+        if (result.timeZone) {
+          this.timeZone = this.coreService.clone(result.timeZone);
+        }
         if (result.documentationName) {
           this.documentationName = this.coreService.clone(result.documentationName);
         }
@@ -2020,6 +2077,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         delete this.workflow.configuration.orderPreparation;
         delete this.workflow.configuration.jobResourceNames;
         delete this.workflow.configuration.title;
+        delete this.workflow.configuration.timeZone;
         delete this.workflow.configuration.documentationName;
         this.history = {past: [], present: {}, future: [], type: 'new'};
         this.updateXMLJSON(false);
@@ -2392,6 +2450,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     delete res.configuration.jobResourceNames;
     delete res.configuration.documentationName;
     delete res.configuration.title;
+    delete res.configuration.timeZone;
 
     this.extraConfiguration = {
       title: this.title,
@@ -6392,7 +6451,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
      * Updates the properties panel
      */
     function selectionChanged(): void {
-      if (self.selectedNode && self.permission.joc.inventory.manage) {
+      if (self.selectedNode && self.permission.joc && self.permission.joc.inventory.manage) {
         self.cutOperation();
         self.error = false;
         self.dataService.reloadWorkflowError.next({error: self.error});
@@ -8658,6 +8717,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (this.title) {
       newObj.title = this.title;
+    }
+    if (this.timeZone) {
+      newObj.timeZone = this.timeZone;
     }
     if (this.documentationName) {
       newObj.documentationName = this.documentationName;
