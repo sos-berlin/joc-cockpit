@@ -3712,6 +3712,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeObject(obj, list, configuration): void {
+    if (obj.type === InventoryObject.WORKFLOW && !configuration.timeZone) {
+      configuration.timeZone = this.preferences.zone;
+    }
     const valid = !(obj.type.match(/CALENDAR/) || obj.type === InventoryObject.SCHEDULE || obj.type === InventoryObject.NOTICEBOARD
       || obj.type === InventoryObject.WORKFLOW || obj.type === InventoryObject.FILEORDERSOURCE || obj.type === InventoryObject.JOBRESOURCE);
     const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;

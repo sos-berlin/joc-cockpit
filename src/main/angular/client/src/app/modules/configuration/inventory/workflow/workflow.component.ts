@@ -5606,10 +5606,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 iterateJson(json.instructions[x].branches[i], cell, '');
                 if (!json.instructions[x].branches[i].instructions) {
                   json.instructions[x].branches.splice(i, 1);
-                  /*                  if (json.instructions[x].branches.length === 0) {
-                                      delete json.instructions[x].branches;
-                                      break;
-                                    }*/
                 }
               }
             }
@@ -8650,18 +8646,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (!this.title) {
         this.title = '';
       }
-      if (!this.timeZone) {
-        this.timeZone = '';
-      }
       if (!this.extraConfiguration.title) {
         this.extraConfiguration.title = '';
-      }
-      if (!this.extraConfiguration.timeZone) {
-        this.extraConfiguration.timeZone = '';
       }
       if (this.title !== this.extraConfiguration.title) {
         this.title = this.extraConfiguration.title;
         flag = true;
+      }
+    } else if (type === 'timeZone') {
+      if (!this.timeZone) {
+        this.timeZone = '';
+      }
+      if (!this.extraConfiguration.timeZone) {
+        this.extraConfiguration.timeZone = '';
       }
       if (this.timeZone !== this.extraConfiguration.timeZone) {
         this.timeZone = this.extraConfiguration.timeZone;

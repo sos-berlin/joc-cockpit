@@ -7,6 +7,7 @@ import {Subscription} from 'rxjs';
 import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confirm.component';
 import {CreateObjectModalComponent} from '../inventory.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {InventoryObject} from '../../../../models/enums';
 
 @Component({
   selector: 'app-table',
@@ -290,9 +291,13 @@ export class TableComponent implements OnDestroy{
   }
 
   private store(obj, path, configuration): void {
-    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE' || this.objectType === 'WORKFLOW' || this.objectType === 'FILEORDERSOURCE' || this.objectType === 'JOBRESOURCE');
+    if (this.objectType === InventoryObject.WORKFLOW && !configuration.timeZone) {
+      configuration.timeZone = this.preferences.zone;
+    }
+    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.WORKFLOW
+      || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType ===  InventoryObject.JOBRESOURCE);
     this.coreService.post('inventory/store', {
-      objectType: this.objectType === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : this.objectType,
+      objectType: this.objectType === 'CALENDAR' ? InventoryObject.WORKINGDAYSCALENDAR : this.objectType,
       path,
       valid,
       configuration
@@ -300,7 +305,7 @@ export class TableComponent implements OnDestroy{
       obj.id = res.id;
       if (this.objectType.match(/CALENDAR/)) {
         obj.type = 'CALENDAR';
-        obj.objectType = 'WORKINGDAYSCALENDAR';
+        obj.objectType = InventoryObject.WORKINGDAYSCALENDAR;
       }
       obj.valid = valid;
       this.dataObj.children.push(obj);
