@@ -1144,6 +1144,12 @@
           "failOnOutputErr": "Si une tâche écrit une sortie sur le canal stderr, cela est considéré comme une erreur et l'ordre passe à l'état ECHEC.",
           "admissionTime": "Admission Time"
         },
+        "addOrder": {
+          "orderId": "Order Id",
+          "workflowPath": "Workflow Path",
+          "arguments": "Arguments",
+          "deleteWhenTerminated": "Delete WhenT erminated"
+        },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
           "count": "Le poids pour l'utilisation d'un verrou de ressource est calculé en fonction de sa capacité. Si la capacité est dépassée, l'ordre doit attendre jusqu'à ce qu'une capacité soit disponible qui correspond ou dépasse le poids actuel."
@@ -1901,6 +1907,9 @@
     "label.admissionTime": "Admission Time",
     "label.showPeriods": "Show Periods",
     "label.timeZone": "Admission Time Zone",
+    "label.addOrder": "Add Order",
+    "label.workflowPath": "Workflow Path",
+    "label.deleteWhenTerminated": "Delete When Terminated",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",
@@ -1953,6 +1962,8 @@
     "message.invalidPostNoticeInstruction": "L'instruction PostNotice n'est pas valide",
     "message.invalidExpectNoticeInstruction": "L'instruction ExpectNotice n'est pas valide",
     "message.agentIsMissing": "L'Agent est absent, mais il est nécessaire",
+    "message.orderIdIsMissing": "Order ID is missing, but is required",
+    "message.workflowPathIsNotValid": "Workflow Path is missing, but is required",
     "message.emptyWorkflow": "Workflow est vide, une instruction au minimum est requise.",
     "message.invalidForkInstruction": "L'instruction Fork doit avoir un minimum de deux branches",
     "placeholder.selectAgentName": "Sélectionnez le nom de l'Agent",

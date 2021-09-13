@@ -1144,6 +1144,12 @@
           "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
           "admissionTime": "Eintrittszeit"
         },
+        "addOrder": {
+          "orderId": "Order Id",
+          "workflowPath": "Workflow Path",
+          "arguments": "Arguments",
+          "deleteWhenTerminated": "Delete WhenT erminated"
+        },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
           "count": "Das Gewicht für die Nutzung einer Ressourcen-Sperre wird auf deren Kapazität angerechnet. Wird die Kapazität überschritten, dann wartet der Auftrag bis die Kapazität für das angegebene Gewicht verfügbar ist."
@@ -1901,6 +1907,9 @@
     "label.admissionTime": "Eintrittszeit",
     "label.showPeriods": "Periode anzeigen",
     "label.timeZone": "Zeitzone der Eintrittszeit",
+    "label.addOrder": "Add Order",
+    "label.workflowPath": "Workflow Path",
+    "label.deleteWhenTerminated": "Delete When Terminated",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
     "button.actual": "Voreinstellung",
@@ -1952,6 +1961,8 @@
     "message.invalidPostNoticeInstruction": "PostNotice-Instruktion ist nicht gültig",
     "message.invalidExpectNoticeInstruction": "ExpectNotice-Instruktion ist nicht gültig",
     "message.agentIsMissing": "Agent ist erforderlich",
+    "message.orderIdIsMissing": "Order ID is missing, but is required",
+    "message.workflowPathIsNotValid": "Workflow Path is missing, but is required",
     "message.emptyWorkflow": "Arbeitsablauf ist leer, mindestens eine Instruktion ist erforderlich",
     "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",
     "message.invalidForkListInstruction": "ForkList-Instruktion darf nicht leer sein",

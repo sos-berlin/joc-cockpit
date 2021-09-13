@@ -1596,6 +1596,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   agents = [];
   jobResourcesTree = [];
   documentationTree = [];
+  workflowTree = [];
   lockTree = [];
   boardTree = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
@@ -1637,6 +1638,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   inventoryConf: any;
   allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
   variableDeclarations = {parameters: []};
+  forkListArguments = [];
   document = {name: ''};
   fullScreen = false;
   subscription: Subscription;
@@ -1946,7 +1948,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private updateToolbar(operation, cell, name = ''): void {
     $('#toolbar').find('img').each(function(index) {
-      if (index === 13) {
+      if (index === 14) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
           $(this).attr('title', '');
@@ -2115,7 +2117,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
         this.coreService.post(URL, obj).subscribe((res: any) => {
-          let data = type === InventoryObject.LOCK ? res.locks : res.noticeBoards || res.documentations;
+          let data = type === InventoryObject.LOCK ? res.locks : type === InventoryObject.WORKFLOW ? res.workflows : res.noticeBoards || res.documentations;
           for (let i = 0; i < data.length; i++) {
             const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = data[i].assignReference || data[i].name;
@@ -2134,6 +2136,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           node.origin.children = data;
           if (type === InventoryObject.LOCK) {
             this.lockTree = [...this.lockTree];
+          } else if (type === InventoryObject.WORKFLOW) {
+            this.workflowTree = [...this.workflowTree];
           } else if (type === 'DOCUMENTATION') {
             this.documentationTree = [...this.documentationTree];
           } else if (type === InventoryObject.NOTICEBOARD) {
@@ -2153,6 +2157,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (this.selectedNode.obj.lockName !== node.key) {
             this.selectedNode.obj.lockName = node.key;
             this.getLimit();
+          }
+        }
+      } else if (type === InventoryObject.WORKFLOW) {
+        if (this.selectedNode.obj.workflowPath1) {
+          if (this.selectedNode.obj.workflowPath !== this.selectedNode.obj.workflowPath1) {
+            this.selectedNode.obj.workflowPath = this.selectedNode.obj.workflowPath1;
+            this.getWorkflow();
+          }
+        } else if (node.key && !node.key.match('/')) {
+          if (this.selectedNode.obj.workflowPath !== node.key) {
+            this.selectedNode.obj.workflowPath = node.key;
+            this.getWorkflow();
           }
         }
       } else if (type === InventoryObject.NOTICEBOARD) {
@@ -2292,6 +2308,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           types: [InventoryObject.LOCK]
         }).subscribe((res) => {
           this.lockTree = this.coreService.prepareTree(res, false);
+        });
+      }
+      if (this.workflowTree.length === 0) {
+        this.coreService.post('tree', {
+          controllerId: this.schedulerId,
+          forInventory: true,
+          types: ['WORKFLOW']
+        }).subscribe((res) => {
+          this.workflowTree = this.coreService.prepareTree(res, true);
         });
       }
       if (this.boardTree.length === 0) {
@@ -2512,6 +2537,113 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
+  updateArgumentList(): void {
+    this.selectedNode.obj.argumentList = [];
+    this.forkListVariables = [];
+    if (this.selectedNode.obj.workflow.orderPreparation && this.selectedNode.obj.workflow.orderPreparation.parameters && !isEmpty(this.selectedNode.obj.workflow.orderPreparation.parameters)) {
+      this.selectedNode.obj.argumentList = Object.entries(this.selectedNode.obj.workflow.orderPreparation.parameters).map(([k, v]) => {
+        const val: any = v;
+        if (val.type === 'List') {
+          const actualList = [];
+          if (val.listParameters) {
+            if (isArray(val.listParameters)) {
+              val.listParameters.forEach((item) => {
+                actualList.push({name: item.name, type: item.value.type});
+              });
+            } else {
+              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                const val1: any = v1;
+                actualList.push({name: k1, type: val1.type});
+                return {name: k1, value: val1};
+              });
+            }
+            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
+          }
+        } else {
+          console.log(val);
+          console.log(this.selectedNode.obj.arguments);
+          let isExist = false;
+          for (let i = 0; i < this.selectedNode.obj.arguments.length; i++) {
+            if (this.selectedNode.obj.arguments[i].name === k) {
+              this.selectedNode.obj.arguments[i].type = val.type;
+              if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
+                this.selectedNode.obj.arguments[i].isRequired = true;
+              }
+              isExist = true;
+              break;
+            }
+          }
+          if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
+            if (!val.final) {
+              this.selectedNode.obj.arguments.push({name: k, type: val.type, isRequired: true});
+            }
+          }
+        }
+        return {name: k, value: v};
+      });
+
+      this.selectedNode.obj.argumentList = this.selectedNode.obj.argumentList.filter((item) => {
+        if (item.value.type === 'List') {
+          return false;
+        }
+        return !item.value.final;
+      });
+
+    }
+    this.updateSelectItems();
+  }
+
+  checkVariableType(argument): void {
+    let obj = this.selectedNode.obj.workflow.orderPreparation.parameters[argument.name];
+    if (obj) {
+      argument.type = obj.type;
+      if (!obj.default && obj.default !== false && obj.default !== 0) {
+        argument.isRequired = true;
+      } else {
+        this.coreService.removeSlashToString(obj, 'default');
+        if (obj.type === 'Boolean') {
+          argument.value = (obj.default === true || obj.default === 'true');
+        } else {
+          argument.value = obj.default;
+        }
+      }
+    }
+    this.updateSelectItems();
+  }
+
+  updateSelectItems(): void {
+    for (let i = 0; i < this.selectedNode.obj.argumentList.length; i++) {
+      this.selectedNode.obj.argumentList[i].isSelected = false;
+      for (let j = 0; j < this.selectedNode.obj.arguments.length; j++) {
+        if (this.selectedNode.obj.argumentList[i].name === this.selectedNode.obj.arguments[j].name) {
+          this.selectedNode.obj.argumentList[i].isSelected = true;
+          break;
+        }
+      }
+    }
+
+    this.ref.detectChanges();
+  }
+
+  addArgument(isNew = false): void {
+    const param: any = {
+      name: '',
+      value: ''
+    };
+    if (this.selectedNode.obj.arguments) {
+      if (!this.coreService.isLastEntryEmpty(this.selectedNode.obj.arguments, 'name', '')) {
+        if (isNew) {
+          param.isTextField = true;
+        }
+        this.selectedNode.obj.arguments.push(param);
+      }
+    }
+  }
+
+  removeArgument(index): void {
+    this.selectedNode.obj.arguments.splice(index, 1);
+  }
+
   addVariable(): void {
     const param = {
       name: '',
@@ -2560,10 +2692,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  onKeyPress($event): void {
+  onKeyPress($event, isOrder = false): void {
     if ($event.which === '13' || $event.which === 13) {
       $event.preventDefault();
-      this.addVariable();
+      if (!isOrder) {
+        this.addVariable();
+      } else{
+        this.addArgument();
+      }
     }
   }
 
@@ -2588,16 +2724,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     });
-  }
-
-  private loadResources(path): void {
-    if (this.treeSelectCtrl) {
-      const node = this.treeSelectCtrl.getTreeNodeByKey(path);
-      if (node) {
-        node.isExpanded = true;
-        this.loadData(node, InventoryObject.JOBRESOURCE, null);
-      }
-    }
   }
 
   rename(inValid): void {
@@ -2684,6 +2810,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }).subscribe((conf: any) => {
         if (this.selectedNode && this.selectedNode.obj) {
           this.selectedNode.obj.limit = conf.configuration.limit || 1;
+        }
+      });
+    }
+  }
+
+  private getWorkflow(): void {
+    this.error = false;
+    if (this.selectedNode.obj.workflowPath) {
+      this.coreService.post('inventory/read/configuration', {
+        path: this.selectedNode.obj.workflowPath,
+        objectType: InventoryObject.WORKFLOW
+      }).subscribe((conf: any) => {
+        if (this.selectedNode && this.selectedNode.type === 'AddOrder') {
+          this.selectedNode.obj.workflow = {orderPreparation: conf.configuration.orderPreparation};
+          this.updateArgumentList();
         }
       });
     }
@@ -3005,6 +3146,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let _promptInstructions = clone(objects.Prompt);
         let _fileWatcherInstructions = clone(objects.FileWatcher);
         let _failInstructions = clone(objects.Fail);
+        let _addOrderInstructions = clone(objects.AddOrder);
         let _finishInstructions = clone(objects.Finish);
         const dummyNodesId = [];
         for (let i in objects.Process) {
@@ -3168,6 +3310,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               if (connection[i].mxCell._target === _ifInstructions._id) {
                 _ifInstructions = [];
+              }
+            }
+          }
+          if (_addOrderInstructions) {
+            if (isArray(_addOrderInstructions)) {
+              for (let j = 0; j < _addOrderInstructions.length; j++) {
+                if (connection[i].mxCell._target === _addOrderInstructions[j]._id) {
+                  _addOrderInstructions.splice(j, 1);
+                  break;
+                }
+              }
+            } else {
+              if (connection[i].mxCell._target === _addOrderInstructions._id) {
+                _addOrderInstructions = [];
               }
             }
           }
@@ -3354,6 +3510,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
+          if (_addOrderInstructions) {
+            if (isArray(_addOrderInstructions) && _addOrderInstructions.length > 0) {
+              startNode = _addOrderInstructions[0];
+            } else {
+              startNode = _addOrderInstructions;
+            }
+          }
+        }
+
+        if (!isEmpty(startNode)) {
+          jsonObj.instructions.push(this.workflowService.createObject('AddOrder', startNode));
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
+          startNode = null;
+        } else {
           if (_finishInstructions) {
             if (isArray(_finishInstructions) && _finishInstructions.length > 0) {
               startNode = _finishInstructions[0];
@@ -3381,6 +3551,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const promptIns = objects.Prompt;
         const fileWatcherIns = objects.FileWatcher;
         const fail = objects.Fail;
+        const addOrder = objects.AddOrder;
         const finish = objects.Finish;
         if (job) {
           if (isArray(job)) {
@@ -3479,6 +3650,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           } else {
             jsonObj.instructions.push(this.workflowService.createObject('FileWatcher', fileWatcherIns));
+          }
+        }
+        if (addOrder) {
+          if (isArray(addOrder)) {
+            for (let i = 0; i < addOrder.length; i++) {
+              jsonObj.instructions.push(this.workflowService.createObject('AddOrder', addOrder[i]));
+            }
+          } else {
+            jsonObj.instructions.push(this.workflowService.createObject('AddOrder', addOrder));
           }
         }
         if (fail) {
@@ -3856,6 +4036,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const postNoticeInstructions = objects.PostNotice;
     const promptInstructions = objects.Prompt;
     const failInstructions = objects.Fail;
+    const addOrderInstructions = objects.AddOrder;
     const finishInstructions = objects.Finish;
     const fileWatcherInstructions = objects.FileWatcher;
 
@@ -4173,6 +4354,27 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
+      if (addOrderInstructions) {
+        if (isArray(addOrderInstructions)) {
+          for (let i = 0; i < addOrderInstructions.length; i++) {
+            if (addOrderInstructions[i]._id === id) {
+              nextNode = addOrderInstructions[i];
+              break;
+            }
+          }
+        } else {
+          if (addOrderInstructions._id === id) {
+            nextNode = addOrderInstructions;
+          }
+        }
+      }
+    }
+
+    if (nextNode && !isEmpty(nextNode)) {
+      instructionsArr.push(this.workflowService.createObject('AddOrder', nextNode));
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
+      nextNode = null;
+    } else {
       if (failInstructions) {
         if (isArray(failInstructions)) {
           for (let i = 0; i < failInstructions.length; i++) {
@@ -4298,7 +4500,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const doc = mxUtils.createXmlDocument();
     if (!callFun) {
       $('#toolbar').find('img').each(function(index) {
-        if (index === 13) {
+        if (index === 14) {
           $(this).addClass('disable-link');
         }
       });
@@ -4559,7 +4761,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           self.cutCell = null;
           $('#toolbar').find('img').each(function(index) {
-            if (index === 13) {
+            if (index === 14) {
               $(this).addClass('disable-link');
             }
           });
@@ -4569,7 +4771,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         function mxIconSet(state) {
           this.images = [];
           let img;
-          if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
+          if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'AddOrder' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
             state.cell.value.tagName === 'ExpectNotice' || state.cell.value.tagName === 'PostNotice' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
             img = mxUtils.createImage('./assets/images/menu.svg');
             let x = state.x - (20 * state.shape.scale);
@@ -4818,7 +5020,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
           // Handles the event if it has not been consumed
           if (cell) {
-            if (cell.value.tagName === 'Job' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
+            if (cell.value.tagName === 'Job' || cell.value.tagName === 'AddOrder' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
               cell.value.tagName === 'ExpectNotice' || cell.value.tagName === 'PostNotice' || cell.value.tagName === 'Prompt') {
               graph.setSelectionCell(cell);
             } else {
@@ -4998,7 +5200,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
             if (!check) {
               if (drpTargt.value.tagName !== 'Connection') {
-                if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail'
+                if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'AddOrder' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail'
                   || drpTargt.value.tagName === 'ExpectNotice' || drpTargt.value.tagName === 'PostNotice' || drpTargt.value.tagName === 'Prompt') {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {
@@ -5422,8 +5624,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                       if (cell.source.edges[x].id === cell.id) {
                         const _sourCellName = cell.source.value.tagName;
                         const _tarCellName = cell.target.value.tagName;
-                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotice') &&
-                          (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotice')))) {
+                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'AddOrder' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotice') &&
+                          (_tarCellName === 'Job' || _tarCellName === 'AddOrder' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotice')))) {
                           graph.getModel().remove(cell.source.edges[x]);
                         } else {
                           cell.source.removeEdge(cell.source.edges[x], true);
@@ -6345,6 +6547,26 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'defaultArguments', JSON.stringify(self.selectedNode.newObj.defaultArguments));
             graph.getModel().execute(edit3);
+          } else if (self.selectedNode.type === 'AddOrder') {
+            const argu = {
+              arguments : {}
+            };
+            if (self.selectedNode.newObj.arguments && self.selectedNode.newObj.arguments.length > 0) {
+              argu.arguments = self.coreService.clone(self.selectedNode.newObj.arguments);
+              self.coreService.convertArrayToObject(argu, 'arguments', true);
+            }
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'arguments', JSON.stringify(argu.arguments));
+            graph.getModel().execute(edit);
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'orderId', self.selectedNode.newObj.orderId);
+            graph.getModel().execute(edit2);
+            const edit3 = new mxCellAttributeChange(
+              obj.cell, 'workflowPath', self.selectedNode.newObj.workflowPath);
+            graph.getModel().execute(edit3);
+            const edit4 = new mxCellAttributeChange(
+              obj.cell, 'deleteWhenTerminated', self.selectedNode.newObj.deleteWhenTerminated);
+            graph.getModel().execute(edit4);
           } else if (self.selectedNode.type === 'If') {
             const predicate = self.selectedNode.newObj.predicate;
             self.validatePredicate(predicate, null, false);
@@ -6557,6 +6779,20 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           job = {
             jobName: obj.jobName
           };
+        } else if (cell.value.tagName === 'AddOrder') {
+          let argument = cell.getAttribute('arguments');
+          if (!argument) {
+            argument = [];
+          } else {
+            argument = JSON.parse(argument);
+            argument = self.coreService.convertObjectToArray({argument}, 'argument');
+          }
+          obj.arguments = argument;
+          obj.argumentList = [];
+          obj.orderId = cell.getAttribute('orderId');
+          obj.workflowPath = cell.getAttribute('workflowPath');
+          const val1 = cell.getAttribute('deleteWhenTerminated');
+          obj.deleteWhenTerminated = val1 == 'true';
         } else if (cell.value.tagName === 'If') {
           obj.predicate = cell.getAttribute('predicate');
         } else if (cell.value.tagName === 'Retry') {
@@ -6621,6 +6857,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         };
         if (cell.value.tagName === 'Lock') {
           self.getLimit();
+        } else if (cell.value.tagName === 'AddOrder') {
+          self.getWorkflow();
         } else if (cell.value.tagName === 'ForkList') {
           self.getListOfVariables(obj);
         }
@@ -6993,6 +7231,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node.setAttribute('label', 'fail');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fail');
+        } else if (title.match('addOrder')) {
+          _node = doc.createElement('AddOrder');
+          _node.setAttribute('label', 'addOrder');
+          _node.setAttribute('uuid', self.workflowService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 120, 36, 'addOrder');
         } else if (title.match('fork-list')) {
           _node = doc.createElement('ForkList');
           _node.setAttribute('label', 'forkList');
@@ -7109,8 +7352,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               if (targetCell.source.edges[x].id === targetCell.id) {
                 const _sourCellName = targetCell.source.value.tagName;
                 const _tarCellName = targetCell.target.value.tagName;
-                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotice') &&
-                  (_tarCellName === 'Job' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotice')))) {
+                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'AddOrder' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotice') &&
+                  (_tarCellName === 'Job' || _tarCellName === 'AddOrder' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotice')))) {
                   graph.getModel().remove(targetCell.source.edges[x]);
                 } else {
                   targetCell.source.removeEdge(targetCell.source.edges[x], true);
@@ -7197,7 +7440,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       if (!flg) {
         if (tagName !== 'Connection') {
-          if (tagName === 'Job' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'ExpectNotice' || tagName === 'PostNotice' || tagName === 'Prompt') {
+          if (tagName === 'Job' || tagName === 'AddOrder' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'ExpectNotice' || tagName === 'PostNotice' || tagName === 'Prompt') {
             for (let i = 0; i < targetCell.edges.length; i++) {
               if (targetCell.edges[i].target.id !== targetCell.id) {
                 return 'inValid';
@@ -8201,7 +8444,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   private clearCopyObj(): void {
     this.copyId = null;
     $('#toolbar').find('img').each(function(index) {
-      if (index === 13) {
+      if (index === 14) {
         $(this).addClass('disable-link');
       }
     });
@@ -8381,6 +8624,24 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   return;
                 }
               }
+            }
+          }
+
+          if (json.instructions[x].TYPE === 'AddOrder') {
+            flag = self.workflowService.validateFields(json.instructions[x], 'AddOrder');
+            if (isEmpty(json.instructions[x].arguments)) {
+              delete json.instructions[x].arguments;
+            }
+            if (!flag) {
+              self.invalidMsg = !json.instructions[x].orderId ? 'workflow.message.orderIdIsMissing' :
+                !json.instructions[x].workflowPath ? 'workflow.message.workflowPathIsNotValid' : '';
+              checkErr = true;
+            }
+            if (!flag && isValidate) {
+              if (isOpen) {
+                self.openSideBar(json.instructions[x].id);
+              }
+              return;
             }
           }
 

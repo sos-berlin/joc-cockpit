@@ -1144,6 +1144,12 @@
           "failOnOutputErr": "ジョブがstderrに出力を書き込んだ場合、これはエラーとみなされ、オーダーは失敗ステートになります。",
           "admissionTime": "Admission Time"
         },
+        "addOrder": {
+          "orderId": "Order Id",
+          "workflowPath": "Workflow Path",
+          "arguments": "Arguments",
+          "deleteWhenTerminated": "Delete WhenT erminated"
+        },
         "lock": {
           "name": "リソースロック名前はインベントリー内で一意です。リソースロックを使用することで、ワークフローのセクションの並列処理を制限できます。",
           "count": "リソースロックを使用するためのウェイトは、そのキャパシティに対して計算されます。もし容量を超えている場合は、現在のウェイトと同じかそれ以上の容量が利用可能になるまで、オーダーは待たなければなりません。"
@@ -1901,6 +1907,9 @@
     "label.admissionTime": "Admission Time",
     "label.showPeriods": "Show Periods",
     "label.timeZone": "Admission Time Zone",
+    "label.addOrder": "Add Order",
+    "label.workflowPath": "Workflow Path",
+    "label.deleteWhenTerminated": "Delete When Terminated",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
     "button.actual": "デフォルト",
@@ -1953,6 +1962,8 @@
     "message.invalidPostNoticeInstruction": "PostNotice命令が無効です",
     "message.invalidExpectNoticeInstruction": "ExpectNoticeが無効です",
     "message.agentIsMissing": "エージェントが必要です",
+    "message.orderIdIsMissing": "Order ID is missing, but is required",
+    "message.workflowPathIsNotValid": "Workflow Path is missing, but is required",
     "message.emptyWorkflow": "ワークフローには最低一つの命令が必要です",
     "message.invalidForkInstruction": "Fork命令には最低２つの分岐が必要です",
     "placeholder.selectAgentName": "参照エージェント入力",

@@ -65,10 +65,10 @@
     <hr/>-->
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/job.png"/>
     <hr/>
-    <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.svg"
+    <add as="Fork" template="Fork" style="fork"
          icon="./assets/mxgraph/images/fork.png"/>
     <hr/>
-    <add as="ForkList" template="ForkList" style="symbol;image=./assets/mxgraph/images/symbols/fork-list.svg"
+    <add as="ForkList" template="ForkList" style="forkList"
          icon="./assets/mxgraph/images/fork-list.png"/>
     <hr/>
     <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/retry.png"/>
@@ -77,21 +77,24 @@
     <hr/>
     <add as="If" template="If" style="if" icon="./assets/mxgraph/images/if.png"/>
     <hr/>
-    <add as="Finish" template="Finish" style="symbol;image=./assets/mxgraph/images/symbols/finish.svg"
+    <add as="Finish" template="Finish" style="finish"
          icon="./assets/mxgraph/images/finish.png"/>
     <hr/>
-    <add as="Fail" template="Fail" style="symbol;image=./assets/mxgraph/images/symbols/fail.svg"
+    <add as="Fail" template="Fail" style="fail"
          icon="./assets/mxgraph/images/fail.png"/>
     <hr/>
-    <add as="Prompt" template="Prompt" style="symbol;image=./assets/mxgraph/images/symbols/prompt.svg" icon="./assets/mxgraph/images/prompt.png"/>
+    <add as="Prompt" template="Prompt" style="prompt" icon="./assets/mxgraph/images/prompt.png"/>
     <hr/>
-    <add as="PostNotice" template="PostNotice" style="symbol;image=./assets/mxgraph/images/symbols/publish.svg" icon="./assets/mxgraph/images/publish.png"/>
+    <add as="PostNotice" template="PostNotice" style="postNotice" icon="./assets/mxgraph/images/publish.png"/>
     <hr/>
-    <add as="ExpectNotice" template="ExpectNotice" style="symbol;image=./assets/mxgraph/images/symbols/await.svg"
+    <add as="ExpectNotice" template="ExpectNotice" style="expectNotice"
          icon="./assets/mxgraph/images/await.png"/>
     <hr/>
-    <add as="Lock" template="Lock" style="symbol;image=./assets/mxgraph/images/symbols/lock.svg"
+    <add as="Lock" template="Lock" style="lock"
          icon="./assets/mxgraph/images/lock.png"/>
+    <hr/>
+    <add as="AddOrder" template="AddOrder" style="order"
+         icon="./assets/mxgraph/images/addOrder.png"/>
     <hr/>
 <!--    <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/fileWatcher.png"/>
     <hr/>-->

@@ -1144,6 +1144,12 @@
           "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state.",
           "admissionTime": "Admission Time"
         },
+        "addOrder": {
+          "orderId": "Order Id",
+          "workflowPath": "Workflow Path",
+          "arguments": "Arguments",
+          "deleteWhenTerminated": "Delete WhenT erminated"
+        },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
           "count": "The Weight for use of a Resource Lock is calculated towards its capacity. If the capacity is exceeded then the order has to wait until a capacity is available that matches or exceeds the current weight."
@@ -1901,6 +1907,9 @@
     "label.admissionTime": "Admission Time",
     "label.showPeriods": "Show Periods",
     "label.timeZone": "Admission Time Zone",
+    "label.addOrder": "Add Order",
+    "label.workflowPath": "Workflow Path",
+    "label.deleteWhenTerminated": "Delete When Terminated",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
     "button.actual": "Default",
@@ -1953,6 +1962,8 @@
     "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
     "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
     "message.agentIsMissing": "Agent is missing, but is required",
+    "message.orderIdIsMissing": "Order ID is missing, but is required",
+    "message.workflowPathIsNotValid": "Workflow Path is missing, but is required",
     "message.emptyWorkflow": "Workflow is empty, minimum one instruction is required",
     "message.invalidForkInstruction": "Fork Instruction must have minimum of two branches",
     "placeholder.selectAgentName": "Select Agent Name",

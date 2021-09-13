@@ -121,6 +121,11 @@ export class WorkflowService {
     } else if (name === 'if') {
       vertexStyle.strokeColor = colorCode || '#CDEB8B';
       vertexStyle.fillColor = colorCode || '#CDEB8B';
+    } else if (name === 'addOrder') {
+      vertexStyle.shape = 'ellipse';
+      vertexStyle.perimeter = 'ellipsePerimeter';
+      vertexStyle.strokeColor = colorCode || '#ffb481';
+      vertexStyle.fillColor = colorCode || '#ffb481';
     } else if (name === 'retry') {
       vertexStyle.strokeColor = colorCode || '#FFC7C7';
       vertexStyle.fillColor = colorCode || '#FFC7C7';
@@ -188,6 +193,7 @@ export class WorkflowService {
     WorkflowService.setStyleToVertex('if', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('retry', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('try', colorCode, theme, graph);
+    WorkflowService.setStyleToVertex('addOrder', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('catch', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('dashRectangle', colorCode, theme, graph);
 
@@ -333,6 +339,18 @@ export class WorkflowService {
       obj.noticeBoardName = node._noticeBoardName;
     } else if (type === 'Prompt') {
       obj.question = node._question;
+    } else if (type === 'AddOrder') {
+      obj.orderId = node._orderId;
+      obj.workflowPath = node._workflowPath;
+      let argu = node._arguments;
+      if (!argu) {
+        argu = {};
+      } else {
+        argu = JSON.parse(argu);
+      }
+      obj.arguments = argu;
+      const val1 = node._deleteWhenTerminated;
+      obj.deleteWhenTerminated = val1 == 'true';
     }
     if (this.isInstructionCollapsible(type)) {
       obj.isCollapsed = node.mxCell._collapsed;
@@ -406,6 +424,14 @@ export class WorkflowService {
       }
       if (type === 'ExpectNotice' || type === 'PostNotice') {
         if (!value.noticeBoardName) {
+          return false;
+        }
+      }
+      if (type === 'AddOrder') {
+        if (!value.orderId) {
+          return false;
+        }
+        if (!value.workflowPath) {
           return false;
         }
       }
@@ -768,6 +794,25 @@ export class WorkflowService {
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('fail', colorCode, self.theme) : 'fail');
+            if (mapObj.vertixMap && json.instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+            }
+          } else if (json.instructions[x].TYPE === 'AddOrder') {
+            _node.setAttribute('label', 'addOrder');
+            if (json.instructions[x].arguments !== undefined) {
+              _node.setAttribute('arguments', JSON.stringify(json.instructions[x].arguments));
+            }
+            if (json.instructions[x].orderId !== undefined) {
+              _node.setAttribute('orderId', json.instructions[x].orderId);
+            }
+            if (json.instructions[x].workflowPath !== undefined) {
+              _node.setAttribute('workflowPath', json.instructions[x].workflowPath);
+            }
+            if (json.instructions[x].deleteWhenTerminated !== undefined) {
+              _node.setAttribute('deleteWhenTerminated', json.instructions[x].deleteWhenTerminated);
+            }
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 120, 36, isGraphView ? WorkflowService.setStyleToSymbol('addOrder', colorCode, self.theme) : 'addOrder');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1439,7 +1484,8 @@ export class WorkflowService {
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('lockName') || '-') + '</br>' +
           '<b>' + limit + '</b> : ' + (cell.getAttribute('count') || '-');
       } else if (cell.value.tagName === 'Fail') {
-        let msg = '', returnCode = '';
+        let msg = '';
+        let returnCode = '';
         this.translate.get('workflow.label.message').subscribe(translatedValue => {
           msg = translatedValue;
         });
@@ -1449,6 +1495,18 @@ export class WorkflowService {
         const outcome = cell.getAttribute('outcome') ? JSON.parse(cell.getAttribute('outcome')) : {};
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-') + '</br>' +
           '<b>' + returnCode + '</b> : ' + (outcome.returnCode || '-');
+      } else if (cell.value.tagName === 'AddOrder') {
+        let orderId = '';
+        let workflowPath = '';
+        this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
+          orderId = translatedValue;
+        });
+        this.translate.get('workflow.label.workflowPath').subscribe(translatedValue => {
+          workflowPath = translatedValue;
+        });
+        const outcome = cell.getAttribute('outcome') ? JSON.parse(cell.getAttribute('outcome')) : {};
+        return '<b>' + orderId + '</b> : ' + (cell.getAttribute('orderId') || '-') + '</br>' +
+          '<b>' + workflowPath + '</b> : ' + (cell.getAttribute('workflowPath') || '-');
       } else if (cell.value.tagName === 'Prompt') {
         let question = '';
         this.translate.get('workflow.label.question').subscribe(translatedValue => {
@@ -1458,8 +1516,11 @@ export class WorkflowService {
       } else if (cell.value.tagName === 'Order') {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
-        let state = '', orderId = '', _text = '', _markedText = '', scheduledFor = '',
-          cyclicOrder = '', begin = '', end = '', orders = '';
+        let state = '';
+        let orderId = '';
+        let _text = '';
+        let _markedText = '';
+        let scheduledFor = '', cyclicOrder = '', begin = '', end = '', orders = '';
         this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
           orderId = translatedValue;
         });
