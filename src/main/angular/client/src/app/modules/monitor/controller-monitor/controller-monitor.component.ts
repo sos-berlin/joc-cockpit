@@ -87,7 +87,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   setViewSize(len): void {
-    
+
     const barWidth = len === 1 ? 60 : 32;
     this.view = this.statisticsData.length > 10 ? [(barWidth * len * this.statisticsData.length), 260] :
       (this.chartArea.nativeElement.offsetWidth && this.chartArea.nativeElement.offsetWidth > 500)

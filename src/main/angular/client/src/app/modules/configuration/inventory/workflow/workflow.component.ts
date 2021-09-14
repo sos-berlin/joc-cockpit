@@ -2587,6 +2587,28 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
+  addArgumentToList(data): void {
+    const arr = [];
+    data.list.forEach(item => {
+      arr.push({name: item.name, type: item.value.type});
+    });
+    let flag = false;
+    for (const i in data.actualList) {
+      for (const j in data.actualList[i]) {
+        if (!data.actualList[i][j].value) {
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        break;
+      }
+    }
+    if (!flag) {
+      data.actualList.push(arr);
+    }
+  }
+
   updateArgumentList(): void {
     this.selectedNode.obj.argumentList = [];
     this.selectedNode.obj.forkListArguments = [];
@@ -2638,7 +2660,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (this.selectedNode.obj.arguments && this.selectedNode.obj.arguments.length > 0) {
         this.selectedNode.obj.arguments = this.selectedNode.obj.arguments.filter(item => {
           if (isArray(item.value)) {
-            this.setForkListVariables(item, this.selectedNode.obj.arguments.forkListArguments);
+            this.setForkListVariables(item, this.selectedNode.obj.forkListArguments);
             return false;
           } else {
             return true;
@@ -2914,7 +2936,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private getWorkflow(flag = false): void {
     this.error = false;
-    if (this.selectedNode.obj.workflowPath && !this.selectedNode.obj.workflow) {
+    if (this.selectedNode.obj.workflowPath) {
       this.coreService.post('inventory/read/configuration', {
         path: this.selectedNode.obj.workflowPath,
         objectType: InventoryObject.WORKFLOW
@@ -2924,7 +2946,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (flag) {
             this.selectedNode.obj.arguments = [];
           }
-          console.log('arguments', this.selectedNode.obj.arguments);
           this.updateArgumentList();
         }
       });

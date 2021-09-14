@@ -548,7 +548,7 @@
                   <div class="col-md-6 col-lg-6 m-b-sm" style="margin-left: -23px" translate>common.label.value</div>
                 </div>
                 <div class="form-group row m-b-0 m-l-12" *ngFor="let actualListArr of listVariables.actualList; let i = index" [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}">
-                  <div *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)" (click)="addVariableToList(listVariables)"
+                  <div *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)" (click)="addArgumentToList(listVariables)"
                        class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </div>
@@ -571,7 +571,7 @@
                               </div>
                             </div>
                             <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
-                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                              <a><i (click)="removeVariableFromList(i, listVariables.actualList, false)" class="fa fa-times m-t-sm text-muted"></i></a>
                             </div>
                           </div>
                         </ng-container>
@@ -590,7 +590,7 @@
                               </div>
                             </div>
                             <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
-                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                              <a><i (click)="removeVariableFromList(i, listVariables.actualList, false)" class="fa fa-times m-t-sm text-muted"></i></a>
                             </div>
                           </div>
                         </ng-container>
@@ -607,7 +607,7 @@
                               </div>
                             </div>
                             <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
-                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                              <a><i (click)="removeVariableFromList(i, listVariables.actualList, false)" class="fa fa-times m-t-sm text-muted"></i></a>
                             </div>
                           </div>
                         </ng-container>
