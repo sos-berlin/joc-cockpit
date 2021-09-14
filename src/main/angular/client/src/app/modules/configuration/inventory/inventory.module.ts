@@ -24,7 +24,7 @@ import {
 import {TableComponent} from './table-data/table.component';
 import {
   ExpressionComponent, ImportComponent, JobComponent, ScriptEditorComponent,
-  FindAndReplaceComponent, WorkflowComponent, AdmissionTimeComponent, TimeEditorComponent
+  FindAndReplaceComponent, WorkflowComponent, AdmissionTimeComponent, TimeEditorComponent, DurationValidator
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
@@ -70,7 +70,8 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     TableComponent,
     LabelValidator,
     EnvVariableValidator,
-    ...COMPONENTS
+    ...COMPONENTS,
+    DurationValidator
   ]
 })
 export class InventoryModule {

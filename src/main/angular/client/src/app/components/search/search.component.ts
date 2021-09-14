@@ -158,7 +158,7 @@ export class SearchComponent implements OnInit {
       } else {
         this.workflowService.setSearchResult(this.results);
       }
-      this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
+      this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName && obj.advanced.jobNameExactMatch);
       this.submitted = false;
     }, () => {
       this.submitted = false;

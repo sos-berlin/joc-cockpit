@@ -77,24 +77,19 @@
     <hr/>
     <add as="If" template="If" style="if" icon="./assets/mxgraph/images/if.png"/>
     <hr/>
-    <add as="Finish" template="Finish" style="finish"
-         icon="./assets/mxgraph/images/finish.png"/>
+    <add as="Finish" template="Finish" style="finish" icon="./assets/mxgraph/images/finish.png"/>
     <hr/>
-    <add as="Fail" template="Fail" style="fail"
-         icon="./assets/mxgraph/images/fail.png"/>
+    <add as="Fail" template="Fail" style="fail" icon="./assets/mxgraph/images/fail.png"/>
     <hr/>
     <add as="Prompt" template="Prompt" style="prompt" icon="./assets/mxgraph/images/prompt.png"/>
     <hr/>
     <add as="PostNotice" template="PostNotice" style="postNotice" icon="./assets/mxgraph/images/publish.png"/>
     <hr/>
-    <add as="ExpectNotice" template="ExpectNotice" style="expectNotice"
-         icon="./assets/mxgraph/images/await.png"/>
+    <add as="ExpectNotice" template="ExpectNotice" style="expectNotice" icon="./assets/mxgraph/images/await.png"/>
     <hr/>
-    <add as="Lock" template="Lock" style="lock"
-         icon="./assets/mxgraph/images/lock.png"/>
+    <add as="Lock" template="Lock" style="lock" icon="./assets/mxgraph/images/lock.png"/>
     <hr/>
-    <add as="AddOrder" template="AddOrder" style="order"
-         icon="./assets/mxgraph/images/addOrder.png"/>
+    <add as="AddOrder" template="AddOrder" style="addOrder" icon="./assets/mxgraph/images/addOrder.png"/>
     <hr/>
 <!--    <add as="FileWatcher" template="FileWatcher" style="fileWatcher" icon="./assets/mxgraph/images/fileWatcher.png"/>
     <hr/>-->

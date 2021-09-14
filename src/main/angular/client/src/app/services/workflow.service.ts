@@ -75,6 +75,9 @@ export class WorkflowService {
     } else if (name === 'closeLock') {
       const fillColor = colorCode || '#d4baff';
       svg = '<svg width="50px" height="50px" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1"><stop stop-color="' + fillColor + '" offset="0%"></stop><stop stop-color="' + color2 + '" offset="100%"></stop></linearGradient></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><g transform="translate(25.000000, 25.000000) rotate(90.000000) translate(-25.000000, -25.000000) "><rect stroke="' + fillColor + '" fill="url(#linearGradient-1)" transform="translate(24.955844, 25.044156) rotate(45.000000) translate(-24.955844, -25.044156) " x="7.45584417" y="7.544156" width="35" height="35" rx="4"></rect><g transform="translate(25.000000, 25.000000) rotate(-90.000000) translate(-25.000000, -25.000000) translate(13.000000, 13.000000)" fill="' + color + '"><path d="M17.7272727,8.57 L17.7272727,6.4 C17.7272727,3.69380473 15.1630854,1.5 12,1.5 C8.83691464,1.5 6.27272733,3.69380473 6.27272733,6.4 L6.27272733,8.57 C4.36772903,8.90268801 2.99960326,10.3365598 3,12 L3,19 C3,20.9329966 4.83156246,22.5 7.09090914,22.5 L16.9090909,22.5 C19.1684375,22.5 21,20.9329966 21,19 L21,12 C21.0003967,10.3365598 19.632271,8.90268801 17.7272727,8.57 Z M7.90909095,6.4 C7.90909095,4.46700338 9.74065332,2.9 12,2.9 C14.2593467,2.9 16.0909091,4.46700338 16.0909091,6.4 L16.0909091,8.5 L7.90909095,8.5 L7.90909095,6.4 Z M19.3636363,19 C19.3636363,20.159798 18.2646989,21.1 16.9090909,21.1 L7.09090914,21.1 C5.73530113,21.1 4.63636371,20.159798 4.63636371,19 L4.63636371,12 C4.63636371,10.840202 5.73530113,9.9 7.09090914,9.9 L16.9090909,9.9 C18.2646989,9.9 19.3636363,10.840202 19.3636363,12 L19.3636363,19 Z M13.6363775,14.1 C13.6334866,14.7011593 13.1823449,15.2336383 12.5154545,15.423 L13.1209091,16.97 C13.2780182,17.3852102 13.1049688,17.8397604 12.6921755,18.096158 C12.2793823,18.3525555 11.7206177,18.3525555 11.3078245,18.096158 C10.8950312,17.8397604 10.7219818,17.3852102 10.8790909,16.97 L11.4845455,15.423 C10.690102,15.1974066 10.2227376,14.4952412 10.4013274,13.7955801 C10.5799172,13.095919 11.3468739,12.6243718 12.1789153,12.7026676 C13.0109567,12.7809635 13.6397863,13.3838555 13.6363775,14.1 Z" id="Shape"></path></g></g></g></g></svg>';
+    } else if (name === 'addOrder') {
+      const fillColor = colorCode || '#ffb481';
+      svg = '<svg width="52px" height="52px" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1"><stop stop-color="' + fillColor + '" offset="0%"></stop><stop stop-color="' + color2 + '" offset="100%"></stop></linearGradient></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(1.000000, 1.000000)"><g id="noun_fork_60030" transform="translate(24.748737, 24.748737) rotate(90.000000) translate(-24.748737, -24.748737) " fill="url(#linearGradient-1)" fill-rule="nonzero" stroke="' + fillColor + '"><rect id="Rectangle-33" transform="translate(24.748737, 24.748737) rotate(45.000000) translate(-24.748737, -24.748737) " x="7.24873734" y="7.24873734" width="35" height="35" rx="4"></rect></g><g id="noun_Add-Receipt_783557" transform="translate(13.000000, 14.000000)" fill="' + color + '"><path d="M15.9560181,14.9122362 L12.4359743,14.9122362 L12.4359743,13.6516532 L15.9560181,13.6516532 L15.9560181,10.0879853 L17.2011698,10.0879853 L17.2011698,13.6516532 L20.7212136,13.6516532 L20.7212136,14.9122362 L17.2011698,14.9122362 L17.2011698,18.4759041 L15.9560181,18.4759041 L15.9560181,14.9122362 Z M4.5,9.26058293 L15.5,9.26058293 L15.5,8 L4.5,8 L4.5,9.26058293 Z M4.5,6.26058293 L17.2,6.26058293 L17.2,5 L4.5,5 L4.5,6.26058293 Z M4.5,12.2605829 L13.7085193,12.2605829 L13.7085193,11 L4.5,11 L4.5,12.2605829 Z M4.5,14.9105829 L10.9959564,14.9105829 L10.9959564,13.65 L4.5,13.65 L4.5,14.9105829 Z" id="Shape"></path></g></g></g></svg>';
     } else if (name === 'expectNotice') {
       svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><rect width="16.8" height="16.8" x="4" y="4" fill="none" fill-rule="nonzero" stroke="' + (colorCode || color) + '" stroke-width=".5" rx="1.92" transform="rotate(45 12.4 12.4)"/><g stroke="' + (colorCode || color) + '" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.212" transform="translate(8 8)"><polyline points="4.762 4.762 7.619 7.619 4.762 10.476"/><path d="M5.71428571,4.26325641e-14 L3.80952381,4.26325641e-14 C1.70571429,4.26325641e-14 -3.3158661e-14,1.70571429 -3.3158661e-14,3.80952381 L-3.3158661e-14,3.80952381 C-3.3158661e-14,5.91333333 1.70571429,7.61904762 3.80952381,7.61904762 L7.61904762,7.61904762"/></g></g></svg>';
     } else if (name === 'postNotice') {
@@ -121,11 +124,6 @@ export class WorkflowService {
     } else if (name === 'if') {
       vertexStyle.strokeColor = colorCode || '#CDEB8B';
       vertexStyle.fillColor = colorCode || '#CDEB8B';
-    } else if (name === 'addOrder') {
-      vertexStyle.shape = 'ellipse';
-      vertexStyle.perimeter = 'ellipsePerimeter';
-      vertexStyle.strokeColor = colorCode || '#ffb481';
-      vertexStyle.fillColor = colorCode || '#ffb481';
     } else if (name === 'retry') {
       vertexStyle.strokeColor = colorCode || '#FFC7C7';
       vertexStyle.fillColor = colorCode || '#FFC7C7';
@@ -188,12 +186,12 @@ export class WorkflowService {
     WorkflowService.setStyleToSymbol('finish', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('fail', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('prompt', colorCode, theme, graph);
+    WorkflowService.setStyleToSymbol('addOrder', colorCode, theme, graph);
 
     WorkflowService.setStyleToVertex('job', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('if', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('retry', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('try', colorCode, theme, graph);
-    WorkflowService.setStyleToVertex('addOrder', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('catch', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('dashRectangle', colorCode, theme, graph);
 
@@ -812,7 +810,7 @@ export class WorkflowService {
               _node.setAttribute('deleteWhenTerminated', json.instructions[x].deleteWhenTerminated);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 120, 36, isGraphView ? WorkflowService.setStyleToSymbol('addOrder', colorCode, self.theme) : 'addOrder');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('addOrder', colorCode, self.theme) : 'addOrder');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1629,7 +1627,7 @@ export class WorkflowService {
     return (h != 0 ? h + 'h ' : '') + (M != 0 ? M + 'M ' : '') + (s != 0 ? s + 's ' : '');
   }
 
-  convertStringToDuration(str: string): number {
+  convertStringToDuration(str: string, isDuration = false): number {
     if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {
       let seconds = 0;
       const a = str.split(' ');
@@ -1639,23 +1637,17 @@ export class WorkflowService {
         if (frmt && val) {
           if (frmt === 'y') {
             seconds += val * 365 * 24 * 3600;
-          }
-          if (frmt === 'm') {
+          } else if (!isDuration && frmt === 'm') {
             seconds += val * 30 * 24 * 3600;
-          }
-          if (frmt === 'w') {
+          } else if (frmt === 'w') {
             seconds += val * 7 * 24 * 3600;
-          }
-          if (frmt === 'd') {
+          } else if (frmt === 'd') {
             seconds += val * 24 * 3600;
-          }
-          if (frmt === 'h') {
+          } else if (frmt === 'h') {
             seconds += val * 3600;
-          }
-          if (frmt === 'M') {
+          } else if (frmt === 'M' || (isDuration || frmt === 'm') ) {
             seconds += val * 60;
-          }
-          if (frmt === 's') {
+          } else if (frmt === 's') {
             seconds += Number(val);
           }
         }

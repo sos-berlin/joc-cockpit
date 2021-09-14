@@ -717,6 +717,5 @@
 </div>
 
 <div *ngIf="isRuntimeVisible">
-  <app-admission-time [job]="selectedNode.job"></app-admission-time>
-  <button (click)="closeRuntime()" class="btn btn-sm" translate>common.button.close</button>
+  <app-admission-time [job]="selectedNode.job" [data]="selectedNode" (close)="closeRuntime()"></app-admission-time>
 </div>

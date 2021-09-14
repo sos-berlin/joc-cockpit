@@ -537,15 +537,94 @@
               </div>
             </div>
           </div>
-          <div class="col-md-12" *ngIf="selectedNode.obj.arguments && selectedNode.obj.arguments.length > 0">
-            <div class="form-group row m-b-0">
-              <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
-              <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
+          <div class="col-md-12" *ngIf="selectedNode.obj.forkListArguments && selectedNode.obj.forkListArguments.length > 0">
+            <div *ngFor="let listVariables of selectedNode.obj.forkListArguments; let x = index;">
+              <div class="m-b-sm">{{'order.label.variableList' | translate}}:
+                <b>{{listVariables.name}}</b>
+              </div>
+              <div *ngIf="listVariables.list" class="p-a-sm b-a m-b">
+                <div class="form-group row m-b-0 m-l-12">
+                  <div class="col-md-6 col-lg-6 m-b-sm" translate>common.label.name</div>
+                  <div class="col-md-6 col-lg-6 m-b-sm" style="margin-left: -23px" translate>common.label.value</div>
+                </div>
+                <div class="form-group row m-b-0 m-l-12" *ngFor="let actualListArr of listVariables.actualList; let i = index" [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}">
+                  <div *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)" (click)="addVariableToList(listVariables)"
+                       class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </div>
+                  <div class="col-md-12" *ngFor="let argument of actualListArr; let k = index">
+                    <div class="form-group row m-b-0" >
+                      <div class="col-md-6 col-lg-6 m-b-sm" style="padding-right: 34px">
+                        <input readonly type="text" class="form-control" name="_name{{i}}{{k}}{{x}}" [(ngModel)]="argument.name">
+                      </div>
+                      <ng-container [ngSwitch]="argument.type">
+                        <ng-container *ngSwitchCase="'Number'">
+                          <div class="col-md-6 col-lg-6 m-b-sm"
+                               [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                            <nz-input-number [required]="true" #value="ngModel" style="margin-left: -23px;width: 103%"
+                                             nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
+                                             [nzMin]="0" [nzStep]="1" name="_value{{i}}{{k}}{{x}}" [(ngModel)]="argument.value"></nz-input-number>
+                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                                 class="text-danger help-block" style="margin-left: -23px;">
+                              <div *ngIf="value.errors.required">
+                                <div translate>common.message.requiredError</div>
+                              </div>
+                            </div>
+                            <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
+                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                            </div>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'Boolean'">
+                          <div class="col-md-6 col-lg-6 m-b-sm"
+                               [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                            <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" style="margin-left: -23px;width: 103%"
+                                       #value="ngModel" [required]="true" name="_value{{i}}{{k}}{{x}}" [(ngModel)]="argument.value">
+                              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                            </nz-select>
+                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                                 class="text-danger help-block" style="margin-left: -23px;">
+                              <div *ngIf="value.errors.required">
+                                <div translate>common.message.requiredError</div>
+                              </div>
+                            </div>
+                            <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
+                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                            </div>
+                          </div>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                          <div class="col-md-6 col-lg-6 m-b-sm"
+                               [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                            <input #value="ngModel" [required]="true" autocomplete="off" type="text" class="form-control" style="margin-left: -23px;width: 103%"
+                                   name="_value{{i}}{{k}}{{x}}"
+                                   [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
+                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                                 class="text-danger help-block" style="margin-left: -23px;">
+                              <div *ngIf="value.errors.required">
+                                <div translate>common.message.requiredError</div>
+                              </div>
+                            </div>
+                            <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
+                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-md-12" style="max-height: calc(100vh - 332px); overflow: auto;">
+          <div class="col-md-12">
+            <div class="form-group row m-b-0" *ngIf="selectedNode.obj.arguments && selectedNode.obj.arguments.length > 0" style="width: 101.3%;">
+              <div class="col-md-6 col-lg-6 m-b-sm" translate>common.label.name</div>
+              <div class="col-md-6 col-lg-6 m-b-sm" translate>common.label.value</div>
+            </div>
             <div class="form-group row m-b-0" *ngFor="let variable of selectedNode.obj.arguments; let i = index" style="width: 101.3%;">
-              <div class="col-md-5 col-lg-5 m-b-sm" *ngIf="variable.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+              <div class="col-md-6 col-lg-6 m-b-sm" *ngIf="variable.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
                 <input #name="ngModel" required autocomplete="off" type="text" class="form-control"
                        name="name_{{i}}" [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}}">
               </div>
@@ -558,7 +637,7 @@
               </div>
               <ng-container [ngSwitch]="variable.type">
                 <ng-container *ngSwitchCase="'Number'">
-                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                  <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1"
                                      name="value{{i}}" [(ngModel)]="variable.value" (keypress)="onKeyPress($event, true)"></nz-input-number>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -573,7 +652,7 @@
                   </div>
                 </ng-container>
                 <ng-container *ngSwitchCase="'Boolean'">
-                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                  <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
                                #value="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" name="value{{i}}{{j}}" [(ngModel)]="variable.value">
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
@@ -591,7 +670,7 @@
                   </div>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
-                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                  <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <input #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event, true)"
                            name="value{{i}}" [(ngModel)]="variable.value" placeholder="{{'common.placeholder.value' | translate}}">
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"

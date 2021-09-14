@@ -28,7 +28,7 @@
     <add as="AddOrder">
       <AddOrder label="addOrder">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="120" height="36"/>
+          <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
       </AddOrder>
     </add>

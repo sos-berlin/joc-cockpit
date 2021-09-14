@@ -1218,6 +1218,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (result) {
         this.isProcessing = true;
         this.resetAction(5000);
+        $('#full-calendar').data('calendar').clearRange();
       }
     });
   }
@@ -2351,7 +2352,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/)) {
-          this.load(args.eventSnapshots[j].message ? new Date(args.eventSnapshots[j].message) : this.selectedDate);
+          //this.load(args.eventSnapshots[j].message ? new Date(args.eventSnapshots[j].message) : this.selectedDate);
+          this.updateList();
           if (!args.eventSnapshots[j].message
             || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) {
             this.refreshView();

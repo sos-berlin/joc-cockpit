@@ -2,12 +2,12 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, Directive, EventEmitter, forwardRef,
   HostListener,
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
+  OnInit, Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -17,7 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
-import {isEmpty, isArray, isEqual, clone, extend, sortBy} from 'underscore';
+import {isEmpty, isArray, isEqual, clone, extend, sortBy, object} from 'underscore';
 import {saveAs} from 'file-saver';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
@@ -27,6 +27,7 @@ import {CoreService} from '../../../../services/core.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
+import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -57,6 +58,34 @@ declare const X2JS;
 declare const $;
 
 const x2js = new X2JS();
+
+@Directive({
+  selector: '[appValidateDuration]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationValidator), multi: true}
+  ]
+})
+export class DurationValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (v == '') {
+        return null;
+      }
+
+      if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0-9]+\s*$/i.test(v) ||
+        /^((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(v)
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      invalidDuration: true
+    };
+  }
+}
 
 @Component({
   selector: 'app-time-editor-modal',
@@ -90,12 +119,14 @@ export class TimeEditorComponent implements OnInit {
     const m = this.object.startTime.getMinutes();
     const s = this.object.startTime.getSeconds();
     obj.startTime = (h * 60 * 60) + (m * 60) + s;
-    obj.duration = this.workflowService.convertStringToDuration(this.object.duration);
+    obj.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
     this.isExist = false;
     if (this.data.periods.length > 0) {
       for (const i in this.data.periods) {
         if (this.data.periods[i].startTime === obj.startTime && this.data.periods[i].duration === obj.duration) {
-          this.isExist = true;
+          if (!(this.period && this.period.startTime === this.data.periods[i].startTime && this.period.duration === this.data.periods[i].duration)) {
+            this.isExist = true;
+          }
           break;
         }
       }
@@ -116,7 +147,7 @@ export class TimeEditorComponent implements OnInit {
 })
 export class AdmissionTimeComponent implements OnInit, OnDestroy {
   @Input() job: any;
-  periodList = [];
+  @Input() data: any;
   frequency: any = {
     days: [],
     all: false
@@ -133,6 +164,8 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     {label: 'saturday', value: '6', checked: false},
     {label: 'sunday', value: '7', checked: false}
   ];
+
+  @Output() close: EventEmitter<any> = new EventEmitter();
 
   constructor(private coreService: CoreService, private modal: NzModalService,
               private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
@@ -151,7 +184,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     const arr = [];
-    this.periodList.forEach((item) => {
+    this.data.periodList.forEach((item) => {
       if (item.periods) {
         item.periods.forEach((period) => {
           arr.push({
@@ -162,7 +195,11 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
         });
       }
     });
+    if (!this.job.admissionTimeScheme) {
+      this.job.admissionTimeScheme = {};
+    }
     this.job.admissionTimeScheme.periods = arr;
+    this.data.periodList = null;
   }
 
   private getText(startTime, duration): string {
@@ -193,18 +230,18 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       };
       p.text = this.getText(p.startTime, p.duration);
       let flag = true;
-      if (this.periodList.length > 0) {
-        for (const i in this.periodList) {
-          if (this.periodList[i].day == day) {
+      if (this.data.periodList.length > 0) {
+        for (const i in this.data.periodList) {
+          if (this.data.periodList[i].day == day) {
             flag = false;
-            this.periodList[i].periods.push(p);
+            this.data.periodList[i].periods.push(p);
             break;
           }
         }
       }
       if (flag) {
         obj.periods.push(p);
-        this.periodList.push(obj);
+        this.data.periodList.push(obj);
       }
     });
     this.checkDays();
@@ -248,11 +285,11 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       const m = this.object.startTime.getMinutes();
       const s = this.object.startTime.getSeconds();
       p.startTime = (h * 60 * 60) + (m * 60) + s;
-      p.duration = this.workflowService.convertStringToDuration(this.object.duration);
+      p.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
       p.text = this.getText(p.startTime, p.duration);
     }
-    const temp = this.coreService.clone(this.periodList);
-    this.periodList = [];
+    const temp = this.coreService.clone(this.data.periodList);
+    this.data.periodList = [];
     this.frequency.days.forEach((day) => {
       const d = parseInt(day, 10) - 1;
       const obj: any = {
@@ -282,13 +319,17 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
           obj.periods.push(p);
         }
       }
-      this.periodList.push(obj);
+      this.data.periodList.push(obj);
     });
     this.object = {};
   }
 
+  closeRuntime(): void{
+    this.close.emit();
+  }
+
   removeFrequency(data): void {
-    this.periodList = this.periodList.filter((item) => {
+    this.data.periodList = this.data.periodList.filter((item) => {
       return item.day !== data.day;
     });
   }
@@ -472,6 +513,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (changes.selectedNode) {
       this.history = [];
       this.indexOfNextAdd = 0;
+      this.isRuntimeVisible = false;
       this.reset();
       this.init();
       this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
@@ -576,6 +618,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   showRuntime(): void {
+    this.selectedNode.periodList = [];
     this.isRuntimeVisible = true;
   }
 
@@ -1638,7 +1681,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   inventoryConf: any;
   allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
   variableDeclarations = {parameters: []};
-  forkListArguments = [];
   document = {name: ''};
   fullScreen = false;
   subscription: Subscription;
@@ -2126,6 +2168,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             data[i].type = type;
             data[i].isLeaf = true;
           }
+          if (type === InventoryObject.WORKFLOW) {
+            for (let i = 0; i < data.length; i++) {
+              if (data[i].key === this.workflow.name) {
+                data.splice(i, 1);
+                break;
+              }
+            }
+          }
           if (node.origin.children && node.origin.children.length > 0) {
             data = data.concat(node.origin.children);
           }
@@ -2163,12 +2213,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (this.selectedNode.obj.workflowPath1) {
           if (this.selectedNode.obj.workflowPath !== this.selectedNode.obj.workflowPath1) {
             this.selectedNode.obj.workflowPath = this.selectedNode.obj.workflowPath1;
-            this.getWorkflow();
+            this.getWorkflow(true);
           }
         } else if (node.key && !node.key.match('/')) {
           if (this.selectedNode.obj.workflowPath !== node.key) {
             this.selectedNode.obj.workflowPath = node.key;
-            this.getWorkflow();
+            this.getWorkflow(true);
           }
         }
       } else if (type === InventoryObject.NOTICEBOARD) {
@@ -2539,7 +2589,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   updateArgumentList(): void {
     this.selectedNode.obj.argumentList = [];
-    this.forkListVariables = [];
+    this.selectedNode.obj.forkListArguments = [];
     if (this.selectedNode.obj.workflow.orderPreparation && this.selectedNode.obj.workflow.orderPreparation.parameters && !isEmpty(this.selectedNode.obj.workflow.orderPreparation.parameters)) {
       this.selectedNode.obj.argumentList = Object.entries(this.selectedNode.obj.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
@@ -2557,11 +2607,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 return {name: k1, value: val1};
               });
             }
-            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
+            this.selectedNode.obj.forkListArguments.push({name: k, list: val.listParameters, actualList: [actualList]});
           }
         } else {
-          console.log(val);
-          console.log(this.selectedNode.obj.arguments);
           let isExist = false;
           for (let i = 0; i < this.selectedNode.obj.arguments.length; i++) {
             if (this.selectedNode.obj.arguments[i].name === k) {
@@ -2581,16 +2629,55 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         return {name: k, value: v};
       });
-
       this.selectedNode.obj.argumentList = this.selectedNode.obj.argumentList.filter((item) => {
         if (item.value.type === 'List') {
           return false;
         }
         return !item.value.final;
       });
-
+      if (this.selectedNode.obj.arguments && this.selectedNode.obj.arguments.length > 0) {
+        this.selectedNode.obj.arguments = this.selectedNode.obj.arguments.filter(item => {
+          if (isArray(item.value)) {
+            this.setForkListVariables(item, this.selectedNode.obj.arguments.forkListArguments);
+            return false;
+          } else {
+            return true;
+          }
+        });
+      }
     }
     this.updateSelectItems();
+  }
+
+  private setForkListVariables(sour, target): void {
+    for (let x in target) {
+      if (target[x].name === sour.name) {
+        if (sour.value) {
+          if (sour.value.length > 0) {
+            for (const i in sour.value) {
+              sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
+                let type;
+                for (const prop in target[x].list) {
+                  if (target[x].list[prop].name === k1) {
+                    type = target[x].list[prop].value.type;
+                    break;
+                  }
+                }
+                return {name: k1, value: v1, type};
+              });
+            }
+          } else {
+            const tempArr = [];
+            for (const prop in target[x].list) {
+              tempArr.push({name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type});
+            }
+            sour.value.push(tempArr);
+          }
+        }
+        target[x].actualList = sour.value;
+        break;
+      }
+    }
   }
 
   checkVariableType(argument): void {
@@ -2642,6 +2729,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   removeArgument(index): void {
     this.selectedNode.obj.arguments.splice(index, 1);
+  }
+
+  copyArgument(): void {
+    if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
+      const arr = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
+        return {name: k, value: v};
+      });
+      console.log(arr, 'arr');
+      console.log(this.selectedNode.obj.arguments);
+    }
   }
 
   addVariable(): void {
@@ -2815,15 +2912,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private getWorkflow(): void {
+  private getWorkflow(flag = false): void {
     this.error = false;
-    if (this.selectedNode.obj.workflowPath) {
+    if (this.selectedNode.obj.workflowPath && !this.selectedNode.obj.workflow) {
       this.coreService.post('inventory/read/configuration', {
         path: this.selectedNode.obj.workflowPath,
         objectType: InventoryObject.WORKFLOW
       }).subscribe((conf: any) => {
         if (this.selectedNode && this.selectedNode.type === 'AddOrder') {
           this.selectedNode.obj.workflow = {orderPreparation: conf.configuration.orderPreparation};
+          if (flag) {
+            this.selectedNode.obj.arguments = [];
+          }
+          console.log('arguments', this.selectedNode.obj.arguments);
           this.updateArgumentList();
         }
       });
@@ -6531,7 +6632,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
-    function updateProperties(obj) {
+    function updateProperties(obj): void {
       if (self.selectedNode && self.selectedNode.cell) {
         graph.getModel().beginUpdate();
         let flag = true;
@@ -6553,7 +6654,27 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             };
             if (self.selectedNode.newObj.arguments && self.selectedNode.newObj.arguments.length > 0) {
               argu.arguments = self.coreService.clone(self.selectedNode.newObj.arguments);
+
               self.coreService.convertArrayToObject(argu, 'arguments', true);
+              if (self.selectedNode.newObj.forkListArguments) {
+                self.selectedNode.newObj.forkListArguments.forEach((item) => {
+                  argu.arguments[item.name] = [];
+                  if (item.actualList) {
+                    for (const i in item.actualList) {
+                      const listObj = {};
+                      item.actualList[i].forEach((data) => {
+                        if (!data.value) {
+                        } else {
+                          listObj[data.name] = data.value;
+                        }
+                      });
+                      if (!isEmpty(listObj)) {
+                        argu.arguments[item.name].push(listObj);
+                      }
+                    }
+                  }
+                });
+              }
             }
             const edit = new mxCellAttributeChange(
               obj.cell, 'arguments', JSON.stringify(argu.arguments));
@@ -6670,6 +6791,24 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
      */
     function selectionChanged(): void {
       if (self.selectedNode && self.permission.joc && self.permission.joc.inventory.manage) {
+        if (self.selectedNode.type === 'Job' && self.selectedNode.periodList) {
+          if (!self.selectedNode.job.admissionTimeScheme) {
+            self.selectedNode.job.admissionTimeScheme = {};
+          }
+          const arr = [];
+          self.selectedNode.periodList.forEach((item) => {
+            if (item.periods) {
+              item.periods.forEach((period) => {
+                arr.push({
+                  TYPE: 'WeekdayPeriod',
+                  secondOfWeek: (item.secondOfWeek + period.startTime),
+                  duration: period.duration
+                });
+              });
+            }
+          });
+          self.selectedNode.job.admissionTimeScheme.periods = arr;
+        }
         self.cutOperation();
         self.error = false;
         self.dataService.reloadWorkflowError.next({error: self.error});
@@ -7108,7 +7247,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
-    function customizedChangeEvent() {
+    function customizedChangeEvent(): void {
       const cell = graph.getSelectionCell();
       const cells = graph.getSelectionCells();
       if (cells.length > 0) {
@@ -7235,7 +7374,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           _node = doc.createElement('AddOrder');
           _node.setAttribute('label', 'addOrder');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 120, 36, 'addOrder');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'addOrder');
         } else if (title.match('fork-list')) {
           _node = doc.createElement('ForkList');
           _node.setAttribute('label', 'forkList');

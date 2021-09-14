@@ -156,9 +156,16 @@
                        translate>inventory.search.label.jobName</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
-                    <input type="text" autocomplete="off" class="form-control"
+                    <input type="text" autocomplete="off" (change)="isJobSearch = false" class="form-control"
                            name="jobName" [(ngModel)]="searchObj.advanced.jobName">
                   </label>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 col-lg-3"
+                       translate>inventory.search.label.jobNameExactMatch</label>
+                <div class="col-md-8 col-lg-9">
+                  <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch" (nzCheckedChange)="isJobSearch = false" name="jobNameExactMatch"></label>
                 </div>
               </div>
               <div class="form-group row">
