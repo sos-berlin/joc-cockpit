@@ -21,8 +21,7 @@
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" translate>runtime.label.startTime</label>
         <div class="col-sm-6">
-          <nz-time-picker [(ngModel)]="object.startTime" name="startTime" [nzDefaultOpenValue]="defaultOpenValue"
-                          nzPlaceHolder="HH:MM:SS"></nz-time-picker>
+          <nz-time-picker [(ngModel)]="object.startTime" name="startTime" (keydown.Tab)="onTab($event)" [nzDefaultOpenValue]="defaultOpenValue"                         nzPlaceHolder="HH:MM:SS"></nz-time-picker>
         </div>
       </div>
       <div class="form-group row">
@@ -44,9 +43,9 @@
   <div class="form-group row ">
     <div class="col-sm-12 b-b p-t p-b">
       <button class="btn btn-sm btn-primary" [disabled]="frequency.days.length === 0 || !myForm.form.valid"
-              (click)="addFrequency()" translate>workflow.admissionTime.button.add
+              (click)="addFrequency()" translate>workflow.admissionTime.button.update
       </button>
-      <button (click)="closeRuntime()" type="button" class="btn btn-grey m-l-12 btn-sm" translate>common.button.close</button>
+      <button (click)="closeRuntime()" [disabled]="!isValid" type="button" class="btn btn-grey m-l-12 btn-sm" translate>workflow.admissionTime.button.back</button>
     </div>
   </div>
   <div class="row m-t">

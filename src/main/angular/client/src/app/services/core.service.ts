@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
-import {isEmpty, sortBy, isNumber, object} from 'underscore';
+import {isEmpty, sortBy, isNumber, object, isArray} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 
@@ -1321,32 +1321,36 @@ export class CoreService {
 
   removeSlashToString(data: any, type: string): void {
     if (data[type]) {
-      if (data[type] === 'true' || data[type] === 'false') {
-      } else if (/^\d+$/.test(data[type])) {
+      if (isArray(data[type])) {
+        this.removeSlashToString(data[type], type);
       } else {
-        const startChar = data[type].substring(0, 1);
-        if (startChar !== '$') {
-          const endChar = data[type].substring(data[type].length - 1);
-          let mainStr = data[type].substring(1, data[type].length - 1);
-          if ((startChar === '"' && endChar === '"')) {
-            if (/^\d+$/.test(mainStr)) {
-              return;
-            } else if (mainStr === 'true' || mainStr === 'false') {
-              return;
-            } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(scheduledOrEmpty\()/g.test(mainStr)) {
-              return;
-            } else if (mainStr.substring(0, 1) === '$') {
-              mainStr = mainStr.substring(1, data[type].length);
-              if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr) && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
+        if (data[type] === 'true' || data[type] === 'false') {
+        } else if (/^\d+$/.test(data[type])) {
+        } else {
+          const startChar = data[type].substring(0, 1);
+          if (startChar !== '$') {
+            const endChar = data[type].substring(data[type].length - 1);
+            let mainStr = data[type].substring(1, data[type].length - 1);
+            if ((startChar === '"' && endChar === '"')) {
+              if (/^\d+$/.test(mainStr)) {
                 return;
+              } else if (mainStr === 'true' || mainStr === 'false') {
+                return;
+              } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(scheduledOrEmpty\()/g.test(mainStr)) {
+                return;
+              } else if (mainStr.substring(0, 1) === '$') {
+                mainStr = mainStr.substring(1, data[type].length);
+                if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr) && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
+                  return;
+                }
               }
             }
-          }
-          try {
-            data[type] = JSON.parse(data[type]);
-          } catch (e) {
-            if ((startChar === '"' && endChar === '"') || (startChar === "'" && endChar === "'" && (type === 'final' || type === 'default'))) {
-              data[type] = mainStr;
+            try {
+              data[type] = JSON.parse(data[type]);
+            } catch (e) {
+              if ((startChar === '"' && endChar === '"') || (startChar === "'" && endChar === "'" && (type === 'final' || type === 'default'))) {
+                data[type] = mainStr;
+              }
             }
           }
         }

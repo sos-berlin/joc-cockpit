@@ -143,6 +143,9 @@ export class SearchComponent implements OnInit {
     }
     if (!isEmpty(this.searchObj.advanced)) {
       obj.advanced = this.searchObj.advanced;
+      if (!obj.advanced.jobNameExactMatch) {
+        delete obj.advanced.jobNameExactMatch;
+      }
     }
     if (this.searchObj.deployedOrReleased && this.searchObj.currentController) {
       obj.controllerId = this.controllerId;

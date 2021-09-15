@@ -295,7 +295,10 @@ export class TableComponent implements OnDestroy{
       configuration.timeZone = this.preferences.zone;
     }
     const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.WORKFLOW
-      || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType ===  InventoryObject.JOBRESOURCE);
+      || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
+    if (!path) {
+      return;
+    }
     this.coreService.post('inventory/store', {
       objectType: this.objectType === 'CALENDAR' ? InventoryObject.WORKINGDAYSCALENDAR : this.objectType,
       path,

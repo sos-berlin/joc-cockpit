@@ -1145,8 +1145,8 @@
           "admissionTime": "Eintrittszeit"
         },
         "addOrder": {
-          "orderId": "Order Id",
-          "workflowPath": "Workflow Path",
+          "orderName": "Order Name",
+          "workflowName": "Workflow Name",
           "arguments": "Arguments",
           "deleteWhenTerminated": "Delete WhenT erminated"
         },
@@ -1799,6 +1799,7 @@
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",
     "label.order": "Auftrag",
     "label.orderId": "Auftragskennung",
+    "label.orderName": "Auftragsname",
     "label.noOfOrders": "Anzahl Aufträge",
     "label.workflowName": "Name Arbeitsablauf",
     "label.updateWorkflow": "Arbeitsablauf aktualisieren",
@@ -1973,7 +1974,7 @@
     "placeholder.selectLock": "Kennung der Ressourcen-Sperre auswählen",
     "placeholder.selectBoard": "Notizbrett auswählen",
     "placeholder.duration": "Wert im Format eingeben: d/w/m/y/h oder hh:mm:ss oder Sekunden",
-    "placeholder.durationPeriod": "Wert im Format eingeben: h/m oder hh:mm:ss oder Sekunden",
+    "placeholder.durationPeriod": "Wert im Format eingeben: w/d/h/m oder hh:mm:ss oder Sekunden",
     "placeholder.enterPositiveNumber": "Nur positive Zahlen durch Komma getrennt angeben",
     "placeholder.expression": "Ausdruck angeben",
     "placeholder.orderId": "Auftragskennung angeben",
@@ -2004,7 +2005,8 @@
       "label.everyDay": "Jeder Tag",
       "label.frequency": "Häufigkeit",
       "label.period": "Periode",
-      "button.add": "Hinzufügen",
+      "button.update": "Update",
+      "button.back": "Back",
       "message.duplicatePeriod": "Gleiche Periode für ausgewählte Tage"
     }
   },

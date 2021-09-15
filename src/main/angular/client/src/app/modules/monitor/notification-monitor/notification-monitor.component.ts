@@ -1,11 +1,11 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {SearchPipe} from '../../../pipes/core.pipe';
-import {Router} from '@angular/router';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-acknowledge-modal',

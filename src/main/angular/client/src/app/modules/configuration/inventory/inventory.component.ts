@@ -772,8 +772,7 @@ export class ExportComponent implements OnInit {
   expandAll(): void {
     this.isExpandAll = true;
     const self = this;
-
-    function recursive(node) {
+    function recursive(node): void {
       for (let i = 0; i < node.length; i++) {
         if (node[i].children && node[i].children.length > 0) {
           if (!node[i].isCall) {
@@ -783,7 +782,6 @@ export class ExportComponent implements OnInit {
         }
       }
     }
-
     recursive(this.nodes);
   }
 
@@ -3441,6 +3439,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeData(obj, result, reload): void {
+    if(!obj.id){
+      return;
+    }
     this.coreService.post('inventory/store', {
       configuration: result,
       valid: true,
@@ -3718,7 +3719,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const valid = !(obj.type.match(/CALENDAR/) || obj.type === InventoryObject.SCHEDULE || obj.type === InventoryObject.NOTICEBOARD
       || obj.type === InventoryObject.WORKFLOW || obj.type === InventoryObject.FILEORDERSOURCE || obj.type === InventoryObject.JOBRESOURCE);
     const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
-    if (PATH && obj.type) {
+    if (PATH && obj.type && obj.name) {
       this.coreService.post('inventory/store', {
         objectType: obj.type,
         path: PATH,

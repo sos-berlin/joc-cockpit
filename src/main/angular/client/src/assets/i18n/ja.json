@@ -1145,8 +1145,8 @@
           "admissionTime": "Admission Time"
         },
         "addOrder": {
-          "orderId": "Order Id",
-          "workflowPath": "Workflow Path",
+          "orderName": "Order Name",
+          "workflowName": "Workflow Name",
           "arguments": "Arguments",
           "deleteWhenTerminated": "Delete WhenT erminated"
         },
@@ -1799,6 +1799,7 @@
     "--------COMMENT BOX BEGIN------------": "ジョブ定義 > インベントリー表示 > ワークフロー",
     "label.order": "オーダー",
     "label.orderId": "オーダーID",
+    "label.orderName": "オーダー名",
     "label.noOfOrders": "オーダー数",
     "label.workflowName": "ワークフロー名",
     "label.updateWorkflow": "ワークフロー更新",
@@ -1973,7 +1974,7 @@
     "placeholder.selectLock": "ロックID選択",
     "placeholder.selectBoard": "通知ボード選択",
     "placeholder.duration": "d/w/m/y/hか、hh:mm:ss、secondsで入力してください",
-    "placeholder.durationPeriod": "h/mか、hh:mm:ss、secondsで入力してください",
+    "placeholder.durationPeriod": "w/d/h/mか、hh:mm:ss、secondsで入力してください",
     "placeholder.enterPositiveNumber": "コンマ区切りで正数を入力",
     "placeholder.expression": "条件式を入力",
     "placeholder.orderId": "オーダーID編集",
@@ -2004,7 +2005,8 @@
       "label.everyDay": "Every Day",
       "label.frequency": "Frequency",
       "label.period": "Period",
-      "button.add": "Add",
+      "button.update": "Update",
+      "button.back": "Back",
       "message.duplicatePeriod": "Same entries are already exist"
     }
   },

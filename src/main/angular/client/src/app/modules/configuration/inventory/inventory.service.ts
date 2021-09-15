@@ -61,14 +61,14 @@ export class InventoryService {
       arr = this.createTempArray(data);
     }
 
-    function recursive(path, nodes) {
+    function recursive(path, nodes): void {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type && !nodes[i].object) {
           if (nodes[i].path === path) {
             nodes[i].isLeaf = false;
             if (!nodes[i].children || nodes[i].children.length === 0) {
               for (let j = 0; j < arr.length; j++) {
-                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path) {
+                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path && arr[j].key === nodes[i].key) {
                   nodes[i].key = arr[j].key;
                   nodes[i].deleted = arr[j].deleted;
                   nodes[i].isFolder = true;
@@ -76,6 +76,7 @@ export class InventoryService {
                   break;
                 }
               }
+
               nodes[i].children = arr;
             } else {
               nodes[i].children = nodes[i].children.concat(arr);

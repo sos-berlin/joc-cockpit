@@ -1617,7 +1617,7 @@ export class WorkflowService {
     const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
     const m = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
     const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-    return (h > 9 ? h : '0' + h) + ':' + (m > 9 ? m : '0' + m) + (s > 0 ? (':' + (s > 9 ? s : '0' + s)) : '');
+    return (h > 9 ? h : '0' + h) + ':' + (m > 9 ? m : '0' + m) + (s > 0 ? (':' + (s > 9 ? s : '0' + s)) : '00');
   }
 
   convertDurationToHour(seconds: number): string {

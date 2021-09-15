@@ -16,7 +16,7 @@
           <div class="form-group row">
             <label class="col-sm-3 form-control-label" translate>runtime.label.startTime</label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
-              <nz-time-picker required [(ngModel)]="object.startTime" name="startTime"  #startTime="ngModel" [nzDefaultOpenValue]="defaultOpenValue"
+              <nz-time-picker required [(ngModel)]="object.startTime" (keydown.Tab)="onTab($event)" name="startTime"  #startTime="ngModel" [nzDefaultOpenValue]="defaultOpenValue"
               nzPlaceHolder="HH:MM:SS"></nz-time-picker>
               <div *ngIf="startTime.invalid && (startTime.dirty || startTime.touched)" class="text-danger help-block">
                 <div *ngIf="startTime.errors.required">
@@ -28,9 +28,9 @@
           <div class="form-group row">
             <label class="col-sm-3 form-control-label" translate>common.label.duration</label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
-              <input validateDurtionReqex required class="form-control" name="duration" #duration="ngModel"
+              <input appValidateDuration required class="form-control" name="duration" #duration="ngModel"
                      [(ngModel)]="object.duration"
-                     placeholder="{{'workflow.placeholder.duration' | translate}}" type="text">
+                     placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
               <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">
                 <div *ngIf="duration.errors.required">
                   <div translate>common.message.requiredError</div>

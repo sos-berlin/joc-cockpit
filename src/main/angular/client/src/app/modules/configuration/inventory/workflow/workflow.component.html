@@ -468,11 +468,11 @@
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'AddOrder'">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.orderId' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.orderId</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.orderName' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>workflow.label.orderName</label>
           <div class="col-md-8 col-lg-9"
                [ngClass]="{'has-error' : (error && !selectedNode.obj.orderId) || ((orderId.dirty || orderId.touched) && orderId.invalid)}">
-            <input type="text" class="form-control" required #orderId="ngModel"
+            <input type="text" identifierValidation maxlength="30" [appAutofocus]="true" class="form-control" required #orderId="ngModel"
                    name="orderId" [(ngModel)]="selectedNode.obj.orderId">
             <div *ngIf="(error && !selectedNode.obj.orderId) || orderId.invalid && (orderId.dirty || orderId.touched)"
                  class="text-danger help-block">
@@ -483,8 +483,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.workflowPath' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.workflowPath</label>
+          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.workflowName' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>workflow.label.workflowName</label>
           <div class="col-md-8 col-lg-9 select-input-both"
                [ngClass]="{'has-error' : (error && !selectedNode.obj.workflowPath) || ((workflowName.dirty || workflowName.touched) && workflowName.invalid)}">
               <input autocomplete="off" type="text" class="form-control"
@@ -529,7 +529,7 @@
             <label nz-checkbox [(ngModel)]="selectedNode.obj.deleteWhenTerminated" name="deleteWhenTerminated"></label>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" *ngIf="selectedNode.obj.workflow">
           <div class="col-md-12">
             <div class="form-group row">
               <div class="col-md-12">
@@ -570,7 +570,7 @@
                                 <div translate>common.message.requiredError</div>
                               </div>
                             </div>
-                            <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
+                            <div class="pos-abt" style="right: 7px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
                               <a><i (click)="removeVariableFromList(i, listVariables.actualList, false)" class="fa fa-times m-t-sm text-muted"></i></a>
                             </div>
                           </div>
@@ -589,7 +589,7 @@
                                 <div translate>common.message.requiredError</div>
                               </div>
                             </div>
-                            <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
+                            <div class="pos-abt" style="right: 7px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
                               <a><i (click)="removeVariableFromList(i, listVariables.actualList, false)" class="fa fa-times m-t-sm text-muted"></i></a>
                             </div>
                           </div>
@@ -606,7 +606,7 @@
                                 <div translate>common.message.requiredError</div>
                               </div>
                             </div>
-                            <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
+                            <div class="pos-abt" style="right: 7px; margin-top: -28px" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
                               <a><i (click)="removeVariableFromList(i, listVariables.actualList, false)" class="fa fa-times m-t-sm text-muted"></i></a>
                             </div>
                           </div>

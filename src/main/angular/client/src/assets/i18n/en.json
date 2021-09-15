@@ -1145,8 +1145,8 @@
           "admissionTime": "Admission Time"
         },
         "addOrder": {
-          "orderId": "Order Id",
-          "workflowPath": "Workflow Path",
+          "orderName": "Order Name",
+          "workflowName": "Workflow Name",
           "arguments": "Arguments",
           "deleteWhenTerminated": "Delete WhenT erminated"
         },
@@ -1799,6 +1799,7 @@
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",
     "label.order": "Order",
     "label.orderId": "Order ID",
+    "label.orderName": "Order Name",
     "label.noOfOrders": "No. of Orders",
     "label.workflowName": "Workflow Name",
     "label.updateWorkflow": "Update Workflow",
@@ -1973,7 +1974,7 @@
     "placeholder.selectLock": "Select Resource Lock ID",
     "placeholder.selectBoard": "Select Board",
     "placeholder.duration": "Enter value as d/w/m/y/h or hh:mm:ss or seconds",
-    "placeholder.durationPeriod": "Enter value as h/m or hh:mm:ss or seconds",
+    "placeholder.durationPeriod": "Enter value as w/d/h/m or hh:mm:ss or seconds",
     "placeholder.enterPositiveNumber": "Enter positive numbers separated by comma",
     "placeholder.expression": "Enter expression",
     "placeholder.orderId": "Enter Order ID",
@@ -2004,7 +2005,8 @@
       "label.everyDay": "Every Day",
       "label.frequency": "Frequency",
       "label.period": "Period",
-      "button.add": "Add",
+      "button.update": "Update",
+      "button.back": "Back",
       "message.duplicatePeriod": "Same period for selected days"
     }
   },

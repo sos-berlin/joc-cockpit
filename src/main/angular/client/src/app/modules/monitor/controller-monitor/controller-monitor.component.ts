@@ -446,6 +446,11 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         for (const j in groupData) {
           if (date === groupData[j].key) {
             flag = true;
+            if (map && map.size > 0) {
+              if (map.has(date)) {
+                groupData[j].value = groupData[j].value.concat(JSON.parse(map.get(date)));
+              }
+            }
             groupData[j].value = sortBy(groupData[j].value, (x: any) => {
               return x.readyTime;
             });
