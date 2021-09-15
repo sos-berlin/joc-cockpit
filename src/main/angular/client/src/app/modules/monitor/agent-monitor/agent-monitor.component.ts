@@ -1,13 +1,13 @@
 import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {differenceInCalendarDays, differenceInMilliseconds} from 'date-fns';
+import * as moment from 'moment-timezone';
+import {sortBy} from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {GroupByPipe} from '../../../pipes/core.pipe';
-import * as moment from 'moment-timezone';
-import {sortBy} from 'underscore';
-import {TranslateService} from '@ngx-translate/core';
 
 declare let self;
 
@@ -293,15 +293,17 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
                 agentId: controller.agents[i].agentId,
                 url: controller.agents[i].url,
                 date: this.coreService.getDateByFormat(startDate, this.preferences.zone, 'YYYY-MM-DD'),
-                readyTime: new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59),
+                readyTime: startDate,
                 lastKnownTime: null,
                 isShutdown: false
               };
-              if (startDate < new Date(controller.agents[i].previousEntry.lastKnownTime).getTime()) {
-                obj.lastKnownTime = controller.agents[i].previousEntry.lastKnownTime;
-              } else {
-                obj.readyTime = new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59);
-                obj.isShutdown = true;
+              if (controller.agents[i].previousEntry.lastKnownTime) {
+                if (startDate < new Date(controller.agents[i].previousEntry.lastKnownTime).getTime()) {
+                  obj.lastKnownTime = controller.agents[i].previousEntry.lastKnownTime;
+                } else {
+                  obj.readyTime = new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59);
+                  obj.isShutdown = true;
+                }
               }
               let arr = [obj];
               if (map.has(obj.date)) {
@@ -329,13 +331,24 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.getRunningTime(this.coreService.clone(this.groupByPipe.transform(this.groupByData, 'agentId')));
+
+    const groupByAgent = this.coreService.clone(this.groupByPipe.transform(this.groupByData, 'agentId'));
     this.groupByData = this.groupByPipe.transform(this.groupByData, 'date');
     this.getStatisticsData(map);
     this.groupBy();
+    this.getRunningTime(groupByAgent);
   }
 
   getRunningTime(data): void {
+    if (data.length === 0) {
+      let arr = [];
+      this.groupByData.forEach((date) => {
+        arr = arr.concat(date.value);
+      });
+      if (arr.length > 0) {
+        data = this.groupByPipe.transform(arr, 'agentId');
+      }
+    }
     this.runningTime = [];
     data.forEach((agent) => {
       agent.value = sortBy(agent.value, (i: any) => {
@@ -348,19 +361,27 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         const lastEntry = agent.value[agent.value.length - 1];
         if (lastEntry) {
           let lastDate = this.filters.filter.endDate;
-          let dur1 = 0;
+          let dur1 = 86400000;
           if (new Date(this.viewDate).getTime() < new Date(lastDate).getTime()) {
             lastDate = this.viewDate;
-            dur1 = (86400000 - moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
+            dur1 = 0;
           }
-          obj.total = ((differenceInMilliseconds(lastDate,
-            this.filters.filter.startDate) + (1000 * 60 * 60 * 24)) - (dur1));
+          obj.total = (differenceInMilliseconds(lastDate,
+            this.filters.filter.startDate) + (dur1));
           if (this.coreService.getDateByFormat(this.filters.filter.startDate, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
             obj.total -= (1000 * 60 * 60 * 24);
           }
           if (!lastEntry.lastKnownTime && this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
             lastEntry.totalRunningTime += (moment.duration(this.coreService.getDateByFormat(new Date(), this.preferences.zone, 'HH:mm:ss')).asMilliseconds() -
               moment.duration(this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
+          }
+          if (isNaN(lastEntry.totalRunningTime)) {
+            if (lastEntry.isShutdown) {
+              lastEntry.totalRunningTime = 0;
+            } else {
+              lastEntry.totalRunningTime = ((this.groupByData.length - 1) * 24 * 60 * 60 * 1000) +
+                moment.duration(this.coreService.getDateByFormat(new Date(), this.preferences.zone, 'HH:mm:ss')).asMilliseconds();
+            }
           }
           obj.time = lastEntry.totalRunningTime;
           obj.value = Math.round((obj.time * 100) / obj.total);
@@ -521,6 +542,9 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       });
       if (dur > 86400) {
         dur = dur - 86400;
+      }
+      if (dur < 0){
+        dur = 0;
       }
 
       let dur1;

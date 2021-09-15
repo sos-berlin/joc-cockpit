@@ -28,7 +28,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   statisticsData: any = [];
   data = [];
   ganttData = [];
-// options
+  // options
   showXAxis = true;
   showYAxis = true;
   gradient = true;
@@ -138,11 +138,13 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
               lastKnownTime: null,
               isShutdown: false
             };
-            if (startDate < new Date(controller.previousEntry.lastKnownTime).getTime()) {
-              obj.lastKnownTime = controller.previousEntry.lastKnownTime;
-            } else {
-              obj.readyTime = new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59);
-              obj.isShutdown = true;
+            if (controller.previousEntry.lastKnownTime) {
+              if (startDate < new Date(controller.previousEntry.lastKnownTime).getTime()) {
+                obj.lastKnownTime = controller.previousEntry.lastKnownTime;
+              } else {
+                obj.readyTime = new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59);
+                obj.isShutdown = true;
+              }
             }
             let arr = [obj];
             if (map.has(obj.date)) {
@@ -172,7 +174,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
     });
   }
 
-  getRunningTime(): void {
+  getRunningTime(arr): void {
     this.runningTime = [];
     this.data.forEach((controller) => {
       const obj: any = {
@@ -182,22 +184,35 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         return i.readyTime;
       });
       const lastEntry = sortedData[sortedData.length - 1];
+      let lastDate = this.filters.filter.endDate;
+      let dur1 = 86400000;
+      if (new Date(this.viewDate).getTime() < new Date(lastDate).getTime()) {
+        lastDate = this.viewDate;
+        dur1 = 0;
+      }
+      obj.total = ((differenceInMilliseconds(lastDate,
+        this.filters.filter.startDate)) + dur1);
+      if (this.coreService.getDateByFormat(this.filters.filter.startDate, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
+        obj.total -= (1000 * 60 * 60 * 24);
+      }
+      if (!lastEntry && controller.previousEntry) {
+        if (controller.previousEntry.lastKnownTime) {
+          obj.time = 0;
+        } else {
+          obj.time = ((arr.length - 1) * 24 * 60 * 60 * 1000) +
+            moment.duration(this.coreService.getDateByFormat(new Date(), this.preferences.zone, 'HH:mm:ss')).asMilliseconds();
+        }
+        obj.value = Math.round((obj.time * 100) / obj.total);
+        obj.hours = ((obj.total) / (1000 * 60 * 60 * 24)).toFixed(2);
+        if (isNaN(obj.value)) {
+          obj.value = 0;
+        }
+        this.runningTime.push(obj);
+      }
       if (lastEntry) {
-        let lastDate = this.filters.filter.endDate;
-        let dur1 = 0;
-        if (new Date(this.viewDate).getTime() < new Date(lastDate).getTime()) {
-          lastDate = this.viewDate;
-          dur1 = (86400000 - moment.duration(this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
-        }
-
-        obj.total = ((differenceInMilliseconds(lastDate,
-          this.filters.filter.startDate) + (1000 * 60 * 60 * 24)) - (dur1));
-        if (this.coreService.getDateByFormat(this.filters.filter.startDate, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
-          obj.total -= (1000 * 60 * 60 * 24);
-        }
         if (!lastEntry.lastKnownTime && this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
           lastEntry.totalRunningTime += (moment.duration(this.coreService.getDateByFormat(new Date(), this.preferences.zone, 'HH:mm:ss')).asMilliseconds() -
-           moment.duration(this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
+            moment.duration(this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
         }
         obj.time = lastEntry.totalRunningTime;
         obj.value = Math.round((obj.time * 100) / obj.total);
@@ -245,6 +260,9 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
         if (dur > 86400) {
           dur = dur - 86400;
+        }
+        if(dur < 0){
+          dur = 0;
         }
 
         let dur1;
@@ -524,7 +542,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
 
     this.getOverviewData(tempArr);
     this.getStatisticsData(tempArr);
-    this.getRunningTime();
+    this.getRunningTime(tempArr);
   }
 
   disabledDate = (current: Date): boolean => {
