@@ -471,12 +471,12 @@
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.orderName' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.orderName</label>
           <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : (error && !selectedNode.obj.orderId) || ((orderId.dirty || orderId.touched) && orderId.invalid)}">
-            <input type="text" identifierValidation maxlength="30" [appAutofocus]="true" class="form-control" required #orderId="ngModel"
-                   name="orderId" [(ngModel)]="selectedNode.obj.orderId">
-            <div *ngIf="(error && !selectedNode.obj.orderId) || orderId.invalid && (orderId.dirty || orderId.touched)"
+               [ngClass]="{'has-error' : (error && !selectedNode.obj.orderName) || ((orderName.dirty || orderName.touched) && orderName.invalid)}">
+            <input type="text" identifierValidation maxlength="30" [appAutofocus]="true" class="form-control" required #orderName="ngModel"
+                   name="orderName" [(ngModel)]="selectedNode.obj.orderName">
+            <div *ngIf="(error && !selectedNode.obj.orderName) || orderName.invalid && (orderName.dirty || orderName.touched)"
                  class="text-danger help-block">
-              <div *ngIf="(error && !selectedNode.obj.orderId) || (orderId.errors && orderId.errors.required)">
+              <div *ngIf="(error && !selectedNode.obj.orderName) || (orderName.errors && orderName.errors.required)">
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
@@ -486,10 +486,10 @@
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.workflowName' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.workflowName</label>
           <div class="col-md-8 col-lg-9 select-input-both"
-               [ngClass]="{'has-error' : (error && !selectedNode.obj.workflowPath) || ((workflowName.dirty || workflowName.touched) && workflowName.invalid)}">
+               [ngClass]="{'has-error' : (error && !selectedNode.obj.workflowName) || ((workflowName.dirty || workflowName.touched) && workflowName.invalid)}">
               <input autocomplete="off" type="text" class="form-control"
                      placeholder="{{'inventory.placeholder.workflowName' | translate}}"
-                     name="workflowName" #workflowName="ngModel" [(ngModel)]="selectedNode.obj.workflowPath">
+                     name="workflowName" #workflowName="ngModel" [(ngModel)]="selectedNode.obj.workflowName">
               <nz-tree-select
                 name="workflowName1"
                 nzNoAnimation
@@ -499,12 +499,12 @@
                 [nzHideUnMatched]="true"
                 [nzDropdownStyle]="{ 'max-height': '300px' }"
                 nzShowSearch
-                [(ngModel)]="selectedNode.obj.workflowPath1"
+                [(ngModel)]="selectedNode.obj.workflowName1"
                 (nzExpandChange)="onExpand($event, 'WORKFLOW')"
               >
                 <ng-template #nzTreeTemplate let-node>
                   <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
-                    <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.workflowPath">
+                    <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.workflowName">
                       <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                       <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
                       {{node.origin.name}}
@@ -512,13 +512,13 @@
                   </div>
                 </ng-template>
               </nz-tree-select>
-              <div *ngIf="(error && !selectedNode.obj.workflowPath) || (workflowName.invalid && (workflowName.dirty || workflowName.touched))" class="text-danger help-block">
-                <div *ngIf="(error && !selectedNode.obj.workflowPath) || (workflowName.errors && workflowName.errors.required)">
+              <div *ngIf="(error && !selectedNode.obj.workflowName) || (workflowName.invalid && (workflowName.dirty || workflowName.touched))" class="text-danger help-block">
+                <div *ngIf="(error && !selectedNode.obj.workflowName) || (workflowName.errors && workflowName.errors.required)">
                   <div translate>common.message.requiredError</div>
                 </div>
               </div>
-              <div *ngIf="selectedNode.obj.workflowPath" class="pos-abt" style="right: -8px;margin-top: -25px">
-                <i (click)="navToObj(selectedNode.obj.workflowPath, 'WORKFLOW')" class="fa fa-pencil cursor"></i>
+              <div *ngIf="selectedNode.obj.workflowName" class="pos-abt" style="right: -8px;margin-top: -25px">
+                <i (click)="navToObj(selectedNode.obj.workflowName, 'WORKFLOW')" class="fa fa-pencil cursor"></i>
               </div>
           </div>
         </div>

@@ -338,8 +338,8 @@ export class WorkflowService {
     } else if (type === 'Prompt') {
       obj.question = node._question;
     } else if (type === 'AddOrder') {
-      obj.orderId = node._orderId;
-      obj.workflowPath = node._workflowPath;
+      obj.orderName = node._orderName;
+      obj.workflowName = node._workflowName;
       let argu = node._arguments;
       if (!argu) {
         argu = {};
@@ -426,10 +426,10 @@ export class WorkflowService {
         }
       }
       if (type === 'AddOrder') {
-        if (!value.orderId) {
+        if (!value.orderName) {
           return false;
         }
-        if (!value.workflowPath) {
+        if (!value.workflowName) {
           return false;
         }
       }
@@ -800,11 +800,11 @@ export class WorkflowService {
             if (json.instructions[x].arguments !== undefined) {
               _node.setAttribute('arguments', JSON.stringify(json.instructions[x].arguments));
             }
-            if (json.instructions[x].orderId !== undefined) {
-              _node.setAttribute('orderId', json.instructions[x].orderId);
+            if (json.instructions[x].orderName !== undefined) {
+              _node.setAttribute('orderName', json.instructions[x].orderName);
             }
-            if (json.instructions[x].workflowPath !== undefined) {
-              _node.setAttribute('workflowPath', json.instructions[x].workflowPath);
+            if (json.instructions[x].workflowName !== undefined) {
+              _node.setAttribute('workflowName', json.instructions[x].workflowName);
             }
             if (json.instructions[x].deleteWhenTerminated !== undefined) {
               _node.setAttribute('deleteWhenTerminated', json.instructions[x].deleteWhenTerminated);
@@ -1494,17 +1494,17 @@ export class WorkflowService {
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-') + '</br>' +
           '<b>' + returnCode + '</b> : ' + (outcome.returnCode || '-');
       } else if (cell.value.tagName === 'AddOrder') {
-        let orderId = '';
-        let workflowPath = '';
-        this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
-          orderId = translatedValue;
+        let orderName = '';
+        let workflowName = '';
+        this.translate.get('workflow.label.orderName').subscribe(translatedValue => {
+          orderName = translatedValue;
         });
-        this.translate.get('workflow.label.workflowPath').subscribe(translatedValue => {
-          workflowPath = translatedValue;
+        this.translate.get('workflow.label.workflowName').subscribe(translatedValue => {
+          workflowName = translatedValue;
         });
         const outcome = cell.getAttribute('outcome') ? JSON.parse(cell.getAttribute('outcome')) : {};
-        return '<b>' + orderId + '</b> : ' + (cell.getAttribute('orderId') || '-') + '</br>' +
-          '<b>' + workflowPath + '</b> : ' + (cell.getAttribute('workflowPath') || '-');
+        return '<b>' + orderName + '</b> : ' + (cell.getAttribute('orderName') || '-') + '</br>' +
+          '<b>' + workflowName + '</b> : ' + (cell.getAttribute('workflowName') || '-');
       } else if (cell.value.tagName === 'Prompt') {
         let question = '';
         this.translate.get('workflow.label.question').subscribe(translatedValue => {

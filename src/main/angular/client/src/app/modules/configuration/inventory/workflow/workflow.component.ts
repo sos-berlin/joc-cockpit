@@ -2233,14 +2233,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         }
       } else if (type === InventoryObject.WORKFLOW) {
-        if (this.selectedNode.obj.workflowPath1) {
-          if (this.selectedNode.obj.workflowPath !== this.selectedNode.obj.workflowPath1) {
-            this.selectedNode.obj.workflowPath = this.selectedNode.obj.workflowPath1;
+        if (this.selectedNode.obj.workflowName1) {
+          if (this.selectedNode.obj.workflowName !== this.selectedNode.obj.workflowName1) {
+            this.selectedNode.obj.workflowName = this.selectedNode.obj.workflowName1;
             this.getWorkflow(true);
           }
         } else if (node.key && !node.key.match('/')) {
-          if (this.selectedNode.obj.workflowPath !== node.key) {
-            this.selectedNode.obj.workflowPath = node.key;
+          if (this.selectedNode.obj.workflowName !== node.key) {
+            this.selectedNode.obj.workflowName = node.key;
             this.getWorkflow(true);
           }
         }
@@ -2959,9 +2959,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private getWorkflow(flag = false): void {
     this.error = false;
-    if (this.selectedNode.obj.workflowPath) {
+    if (this.selectedNode.obj.workflowName) {
       this.coreService.post('inventory/read/configuration', {
-        path: this.selectedNode.obj.workflowPath,
+        path: this.selectedNode.obj.workflowName,
         objectType: InventoryObject.WORKFLOW
       }).subscribe((conf: any) => {
         if (this.selectedNode && this.selectedNode.type === 'AddOrder') {
@@ -6729,10 +6729,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               graph.getModel().execute(edit);
             }
             const edit2 = new mxCellAttributeChange(
-              obj.cell, 'orderId', self.selectedNode.newObj.orderId);
+              obj.cell, 'orderName', self.selectedNode.newObj.orderName);
             graph.getModel().execute(edit2);
             const edit3 = new mxCellAttributeChange(
-              obj.cell, 'workflowPath', self.selectedNode.newObj.workflowPath);
+              obj.cell, 'workflowName', self.selectedNode.newObj.workflowName);
             graph.getModel().execute(edit3);
             const edit4 = new mxCellAttributeChange(
               obj.cell, 'deleteWhenTerminated', self.selectedNode.newObj.deleteWhenTerminated);
@@ -6981,8 +6981,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           obj.arguments = argument;
           obj.argumentList = [];
-          obj.orderId = cell.getAttribute('orderId');
-          obj.workflowPath = cell.getAttribute('workflowPath');
+          obj.orderName = cell.getAttribute('orderName');
+          obj.workflowName = cell.getAttribute('workflowName');
           const val1 = cell.getAttribute('deleteWhenTerminated');
           obj.deleteWhenTerminated = val1 == 'true';
         } else if (cell.value.tagName === 'If') {
@@ -8825,8 +8825,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               delete json.instructions[x].arguments;
             }
             if (!flag) {
-              self.invalidMsg = !json.instructions[x].orderId ? 'workflow.message.orderIdIsMissing' :
-                !json.instructions[x].workflowPath ? 'workflow.message.workflowPathIsNotValid' : '';
+              self.invalidMsg = !json.instructions[x].orderName ? 'workflow.message.orderIdIsMissing' :
+                !json.instructions[x].workflowName ? 'workflow.message.workflowPathIsNotValid' : '';
               checkErr = true;
             }
             if (!flag && isValidate) {
