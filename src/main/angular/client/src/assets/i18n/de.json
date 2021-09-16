@@ -1911,7 +1911,7 @@
     "label.timeZone": "Zeitzone der Eintrittszeit",
     "label.addOrder": "Add Order",
     "label.workflowPath": "Name des Arbeitsablaufs",
-    "label.deleteWhenTerminated": "Löschen bei Auftragsende,
+    "label.deleteWhenTerminated": "Löschen bei Auftragsende",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
     "button.actual": "Voreinstellung",
