@@ -1187,7 +1187,7 @@
         "from": "Von",
         "to": "Bis",
         "jobName": "Job-Name",
-        "jobNameExactMatch": "Job Name Exact Match",
+        "jobNameExactMatch": "Exakte Übereinstimmung des Job-Namen",
         "jobCriticality": "Job-Kritikalität",
         "jobScript": "Job-Skript",
         "argumentName": "Name des Arguments",
