@@ -1339,6 +1339,14 @@ export class WorkflowService {
             edge.setAttribute('noticeBoardName', noticeBoardName);
           }
         }
+      } else if (cell.value.tagName === 'AddOrder') {
+        const orderName = cell.getAttribute('orderName');
+        if (orderName) {
+          const edge = graph.getOutgoingEdges(cell)[0];
+          if (edge) {
+            edge.setAttribute('label', orderName);
+          }
+        }
       } else if (cell.value.tagName === 'Workflow') {
         const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : cell.getAttribute('type') === 'post' ? 'm-t-sm' : '';
         return '<div class="cursor text-dark ' + cls + '"><i class="icon-workflows-icon p-r-xs"></i>'
@@ -1395,6 +1403,8 @@ export class WorkflowService {
             }
             if (((cell.source.value.tagName === 'PostNotice' || cell.source.value.tagName === 'ExpectNotice'))) {
               str = '<a class="text-primary cursor">' + x + '</a>';
+            } else if (((cell.source.value.tagName === 'AddOrder'))) {
+              str = x;
             }
           } else {
             this.translate.get('workflow.label.' + x).subscribe(translatedValue => {

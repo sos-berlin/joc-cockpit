@@ -344,7 +344,7 @@
                         </div>
                         <div class="col-md-5 col-lg-5 m-b-sm p-r-0" [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
                           <label class="w-full">
-                            <input nz-input envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name" #ename="ngModel" (blur)="isStringValid(env, ename, selectedNode.job.executable.env);upperCase(env)"
+                            <input autocomplete="off" nz-input envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name" #ename="ngModel" (blur)="isStringValid(env, ename, selectedNode.job.executable.env);upperCase(env)"
                                    placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" [nzAutocomplete]="auto" (ngModelChange)="onChange($event)">
                           </label>
                           <nz-autocomplete #auto>

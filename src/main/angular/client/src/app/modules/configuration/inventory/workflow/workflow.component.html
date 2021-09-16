@@ -472,7 +472,7 @@
                  translate>workflow.label.orderName</label>
           <div class="col-md-8 col-lg-9"
                [ngClass]="{'has-error' : (error && !selectedNode.obj.orderName) || ((orderName.dirty || orderName.touched) && orderName.invalid)}">
-            <input type="text" identifierValidation maxlength="30" [appAutofocus]="true" class="form-control" required #orderName="ngModel"
+            <input type="text" identifierValidation maxlength="30" [appAutofocus]="!error" class="form-control" required #orderName="ngModel"
                    name="orderName" [(ngModel)]="selectedNode.obj.orderName">
             <div *ngIf="(error && !selectedNode.obj.orderName) || orderName.invalid && (orderName.dirty || orderName.touched)"
                  class="text-danger help-block">
@@ -487,11 +487,12 @@
                  translate>workflow.label.workflowName</label>
           <div class="col-md-8 col-lg-9 select-input-both"
                [ngClass]="{'has-error' : (error && !selectedNode.obj.workflowName) || ((workflowName.dirty || workflowName.touched) && workflowName.invalid)}">
-              <input autocomplete="off" type="text" class="form-control"
+              <input autocomplete="off" type="text" class="form-control" required
                      placeholder="{{'inventory.placeholder.workflowName' | translate}}"
                      name="workflowName" #workflowName="ngModel" [(ngModel)]="selectedNode.obj.workflowName">
               <nz-tree-select
                 name="workflowName1"
+                required
                 nzNoAnimation
                 #treeSelectCtrl
                 [nzAllowClear]="false"
@@ -693,8 +694,10 @@
               <div class="col-sm-12" *ngIf="selectedNode.obj.argumentList.length <= selectedNode.obj.arguments.length && (selectedNode.obj.workflow && selectedNode.obj.workflow.orderPreparation && selectedNode.obj.workflow.orderPreparation.allowUndeclared)">
                 <a class="text-u-l" (click)="addArgument(true)" translate>order.button.addVariable</a>
               </div>
+              <div class="col-sm-12 m-t-sm" *ngIf="orderPreparation && orderPreparation.parameters">
+                <a class="text-u-l" (click)="addAllArguments()" translate>workflow.button.addAllArguments</a>
+              </div>
             </div>
-
           </div>
         </div>
       </div>

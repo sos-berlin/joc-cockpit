@@ -99,6 +99,8 @@ export class TimeEditorComponent implements OnInit {
   defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
   object: any = {};
 
+  @ViewChild('timePicker', {static: true}) tp;
+
   constructor(public activeModal: NzModalRef, private workflowService: WorkflowService) {
   }
 
@@ -112,8 +114,8 @@ export class TimeEditorComponent implements OnInit {
     }
   }
 
-  onTab(event): void {
-    $('.ant-picker-dropdown').remove();
+  onTab(): void {
+    this.tp.close();
   }
 
   onSubmit(): void {
@@ -171,6 +173,8 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
 
   @Output() close: EventEmitter<any> = new EventEmitter();
 
+  @ViewChild('timePicker', {static: true}) tp;
+
   constructor(private coreService: CoreService, private modal: NzModalService,
               private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
   }
@@ -212,8 +216,8 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     return 'starting at ' + time + ' for ' + dur;
   }
 
-  onTab(event): void {
-    $('.ant-picker-dropdown').remove();
+  onTab(): void {
+    this.tp.close();
   }
 
   convertSecondIntoWeek(): void {
@@ -560,8 +564,18 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   updateSelectItems(): void {
     const arr = this.selectedNode.obj.defaultArguments.filter(option => option.name);
-    this.mentionValueList = [...this.variableList, ...arr];
-    this.filteredOptions = [...this.variableList, ...arr];
+    const x = [];
+    this.variableList.forEach((item) => {
+      if (item.value.listParameters) {
+        Object.entries(item.value.listParameters).map(([k1, v1]) => {
+          x.push({name: k1, value: v1});
+        });
+      } else {
+        x.push(item);
+      }
+    });
+    this.mentionValueList = [...x, ...arr];
+    this.filteredOptions = [...x, ...arr];
     this.ref.detectChanges();
   }
 
@@ -1176,8 +1190,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onChange(value: string): void {
-    this.filteredOptions = [...this.variableList.filter(option => option.name.toLowerCase().indexOf(value.toLowerCase()) !== -1),
-      ...this.selectedNode.obj.defaultArguments.filter(option => option.name.toLowerCase().indexOf(value.toLowerCase()) !== -1)];
+    this.filteredOptions = [...this.filteredOptions.filter(option => option.name.toLowerCase().indexOf(value.toLowerCase()) === -1)];
   }
 
   valueWith = (data: { name: string }) => data.name;
@@ -2689,6 +2702,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             return true;
           }
         });
+        this.selectedNode.obj.arguments.filter(item => {
+          if (!item.type) {
+            item.isTextField = true;
+          }
+        });
       }
     }
     this.updateSelectItems();
@@ -2776,13 +2794,37 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.selectedNode.obj.arguments.splice(index, 1);
   }
 
-  copyArgument(): void {
+  addAllArguments(): void {
     if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
       const arr = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
-        return {name: k, value: v};
+        const val: any = v;
+        return {name: k, value: val};
       });
-      console.log(arr, 'arr');
-      console.log(this.selectedNode.obj.arguments);
+
+      for (let i = 0; i < arr.length; i++) {
+        let flag = true;
+        for (const j in this.selectedNode.obj.arguments) {
+          if (this.selectedNode.obj.arguments[j].name === arr[i].name) {
+            flag = false;
+            break;
+          }
+        }
+        if (flag) {
+          if (!isArray(arr[i].value)) {
+            const obj: any = {
+              name: arr[i].name,
+              isTextField: true,
+              type: arr[i].value.type,
+              value: arr[i].value.default,
+              isRequired: false
+            };
+            if (!arr[i].value.default && arr[i].value.default !== false && arr[i].value.default !== 0) {
+              obj.isRequired = true;
+            }
+            this.selectedNode.obj.arguments.push(obj);
+          }
+        }
+      }
     }
   }
 
@@ -2958,7 +3000,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private getWorkflow(flag = false): void {
-    this.error = false;
     if (this.selectedNode.obj.workflowName) {
       this.coreService.post('inventory/read/configuration', {
         path: this.selectedNode.obj.workflowName,
@@ -6697,9 +6738,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               const argu: any = {};
               if (self.selectedNode.newObj.arguments && self.selectedNode.newObj.arguments.length > 0) {
                 argu.arguments = self.coreService.clone(self.selectedNode.newObj.arguments);
-                argu.arguments.forEach((item) => {
-                  self.coreService.addSlashToString(item, 'value');
-                });
                 self.coreService.convertArrayToObject(argu, 'arguments', true);
                 if (self.selectedNode.newObj.forkListArguments) {
                   self.selectedNode.newObj.forkListArguments.forEach((item) => {
@@ -6710,7 +6748,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                         item.actualList[i].forEach((data) => {
                           if (!data.value) {
                           } else {
-                            self.coreService.addSlashToString(data, 'value');
                             listObj[data.name] = data.value;
                           }
                         });
@@ -7050,7 +7087,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         if (cell.value.tagName === 'Lock') {
           self.getLimit();
         } else if (cell.value.tagName === 'AddOrder') {
-          self.getWorkflow(self.selectedNode);
+          self.getWorkflow();
         } else if (cell.value.tagName === 'ForkList') {
           self.getListOfVariables(obj);
         }
@@ -8626,7 +8663,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (isFirst) {
       const _temp = JSON.parse(this.workflow.actual);
-      _temp.jobs = this.coreService.keyValuePair(this.jobs);
+      const jobs = this.coreService.keyValuePair(this.jobs);
+      if (!isEmpty(jobs)){
+        _temp.jobs = jobs;
+      }
       this.workflow.actual = JSON.stringify(_temp);
     } else {
       this.storeJSON();
@@ -8825,8 +8865,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               delete json.instructions[x].arguments;
             }
             if (!flag) {
-              self.invalidMsg = !json.instructions[x].orderName ? 'workflow.message.orderIdIsMissing' :
-                !json.instructions[x].workflowName ? 'workflow.message.workflowPathIsNotValid' : '';
+              self.invalidMsg = !json.instructions[x].orderName ? 'workflow.message.orderNameIsMissing' :
+                !json.instructions[x].workflowName ? 'workflow.message.workflowNameIsNotValid' : '';
               checkErr = true;
             }
             if (!flag && isValidate) {
@@ -9066,7 +9106,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private saveJSON(noValidate): void {
     if (this.selectedNode) {
-      this.initEditorConf(this.editor, false, true);
+      if (noValidate === 'false' || noValidate === false) {
+        this.initEditorConf(this.editor, false, true);
+      }
       this.xmlToJsonParser(null);
     } else if (this.selectedNode === undefined) {
       return;
@@ -9201,6 +9243,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (!this.workflow.id){
       return;
     }
+
     this.coreService.post('inventory/store', {
       configuration: newObj,
       id: this.workflow.id,
