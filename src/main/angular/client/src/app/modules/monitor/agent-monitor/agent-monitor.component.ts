@@ -96,7 +96,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     this.coreService.post('monitoring/agents', {
       controllerId: this.filters.current ? this.schedulerIds.selected : '',
       dateFrom: this.filters.filter.startDate,
-      dateTo: this.filters.filter.endDate,
+      dateTo: new Date(this.filters.filter.endDate.setDate(this.filters.filter.endDate.getDate() + 1)),
       timeZone: this.preferences.zone
     }).subscribe((res: any) => {
       this.data = res.controllers;

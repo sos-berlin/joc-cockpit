@@ -3131,7 +3131,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
               ticketLink: result.ticketLink
             };
             this.coreService.post('inventory/remove', obj).subscribe(() => {
-
+              if (this.selectedData.id === object.id) {
+                this.clearSelection();
+              }
             });
           }
         }
@@ -3158,7 +3160,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.deleteObject(path, object, node, undefined);
           } else {
             this.coreService.post('inventory/remove', obj).subscribe(() => {
-
+              if (this.selectedData.id === object.id) {
+                this.clearSelection();
+              }
             });
           }
         }

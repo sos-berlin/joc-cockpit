@@ -93,7 +93,7 @@
           </div>
         </span>
       </div>
-      <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
+      <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
        || instruction.TYPE === 'PostNotice' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotice'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd', 'drop-area': instruction.enabled}">
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'Job'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
@@ -113,9 +113,12 @@
         <span class="cursor inst-text" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
         <span class="inst-text" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
-          <span *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice')">: </span>
+          <span *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice' || instruction.TYPE === 'AddOrder')">: </span>
           <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice') && instruction.noticeBoardName">
             {{instruction.noticeBoardName}}
+          </span>
+          <span class="text-muted" *ngIf="(instruction.TYPE === 'AddOrder')">
+            {{instruction.orderName}}
           </span>
         </span>
         <span class="m-l-md" *ngIf="instruction.order">
