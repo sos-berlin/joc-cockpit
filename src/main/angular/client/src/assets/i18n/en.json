@@ -1148,7 +1148,7 @@
           "orderName": "Order Name",
           "workflowName": "Workflow Name",
           "arguments": "Arguments",
-          "deleteWhenTerminated": "Delete WhenT erminated"
+          "deleteWhenTerminated": "Delete When Terminated"
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",

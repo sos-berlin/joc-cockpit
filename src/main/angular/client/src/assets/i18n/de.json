@@ -87,7 +87,7 @@
   "True": "wahr",
   "False": "falsch",
   "String": "Zeichenkette",
-  "List": "List",
+  "List": "Liste",
   "Number": "Zahl",
   "Boolean": "Wahrheitswert",
   "Final": "Final",
@@ -274,8 +274,8 @@
     "label.processExecuted": "Prozess ausgeführt",
     "label.selectController": "Controller auswählen",
     "label.regexAndChooseTree": "Regulärer Ausdruck oder Ordner",
-    "placeholder.setEndDate": "Endzeit setzen",
-    "placeholder.setStartDate": "Startzeit setzen",
+    "placeholder.setEndDate": "Ende Zeit setzen",
+    "placeholder.setStartDate": "Start Zeit setzen",
     "placeholder.regexAndChooseTree": "Regulärer Ausdruck oder Auswahl eines Ordners",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "Used in all the popup window whit audit log is enable",
@@ -387,12 +387,12 @@
     "placeholder.selectVariable": "Variable auswählen",
     "placeholder.selectValue": "Wert auswählen",
     "placeholder.selectFromTree": "Auswahl aus Ordnern",
-    "placeholder.startDate": "Startdatum",
-    "placeholder.endDate": "Enddatum",
+    "placeholder.startDate": "Start Datum",
+    "placeholder.endDate": "Ende Datum",
     "placeholder.setDate": "Datum setzen",
     "placeholder.setTime": "Zeit setzen",
-    "placeholder.startTime": "Startzeit",
-    "placeholder.endTime": "Endzeit",
+    "placeholder.startTime": "Start Zeit",
+    "placeholder.endTime": "Ende Zeit",
     "placeholder.enterComment": "Begründung eingeben",
     "placeholder.title": "Titel eingeben",
     "placeholder.enterSecond": "HH:MM:[SS] + SEKUNDEN",
@@ -435,7 +435,7 @@
     "message.deleteDocument": "Sind Sie sicher, dass Sie diese Dokumentation löschen wollen?",
     "message.deleteDocumentFolder": "Sind Sie sicher, dass Sie diesen Ordner löschen wollen?",
     "message.deleteAllDocument": "Sind Sie sicher, dass Sie alle Dokumentationen löschen wollen?",
-    "message.deleteNotice": "Are you sure you want to delete the selected notice?",
+    "message.deleteNotice": "Sind Sie sicher, dass Sie die ausgewählten Notizen löschen wollen?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exportieren im XLSX Format",
     "tooltip.expandDetails": "Details aufklappen",
@@ -584,8 +584,8 @@
     "label.repeatEvery": "Wiederholen alle",
     "label.workflow": "Arbeitsablauf",
     "label.state": "Zustand",
-    "label.endTime": "Endzeit",
-    "label.startTime": "Startzeit",
+    "label.endTime": "Ende Zeit",
+    "label.startTime": "Start Zeit",
     "label.plannedStart": "Geplanter Start",
     "label.expectedDuration": "Erwartete Dauer",
     "label.expectedEnd": "Erwartetes Ende",
@@ -661,8 +661,8 @@
     "label.port": "Port",
     "label.account": "Konto",
     "label.protocol": "Protokoll",
-    "label.startTime": "Startzeit",
-    "label.endTime": "Endzeit",
+    "label.startTime": "Start Zeit",
+    "label.endTime": "Ende Zeit",
     "label.total": "Gesamt",
     "label.workflow": "Arbeitsablauf",
     "label.order": "Auftragskennung",
@@ -770,8 +770,8 @@
     "label.position": "Position",
     "label.status": "Status",
     "label.orderState": "Auftragszustand",
-    "label.endTime": "Endzeit",
-    "label.startTime": "Startzeit",
+    "label.endTime": "Ende Zeit",
+    "label.startTime": "Start Zeit",
     "label.duration": "Dauer",
     "label.plannedTime": "Geplante Zeit",
     "label.orderHistory": "Auftragshistorie",
@@ -825,7 +825,7 @@
     "button.js7News": "JS7 Neuigkeiten",
     "button.js7Documentation": "JS7 Dokumentation",
     "button.releaseNotes": "Freigabemitteilungen",
-    "button.gettingStarted": "Getting Started",
+    "button.gettingStarted": "Erste Schritte",
     "button.documentation": "Dokumentation",
     "button.resources": "Ressourcen",
     "button.announcements": "Ankündigugngen",
@@ -1002,7 +1002,7 @@
     "placeholder.enterCalendarName": "Kalendernamen angeben",
     "placeholder.enterOrSelectCategory": "Eingabe oder Auswahl der Kategorie",
     "placeholder.enterOrSelectFromTree": "Eingabe oder Auswahl Ordner",
-    "placeholder.enterMainSection": "Main Sektion eingeben",
+    "placeholder.enterMainSection": "Main-Sektion eingeben",
     "placeholder.enterLimit": "Limit angeben",
     "placeholder.selectPriority": "Priorität auswählen",
     "placeholder.maximumProcesses": "Max. Anzahl Prozesse angeben",
@@ -1101,7 +1101,7 @@
         "timeZone": "Zeitzone Eintrittszeit",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
-          "boardName": "Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen."
+          "boardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen."
         },
         "fail": {
           "message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
@@ -1145,10 +1145,10 @@
           "admissionTime": "Eintrittszeit"
         },
         "addOrder": {
-          "orderName": "Order Name",
-          "workflowName": "Workflow Name",
-          "arguments": "Arguments",
-          "deleteWhenTerminated": "Delete WhenT erminated"
+          "orderName": "Name des Auftrags",
+          "workflowName": "Name des Arbeitsablaufs",
+          "arguments": "Argumente",
+          "deleteWhenTerminated": "Löschen bei Auftragsende"
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
@@ -1600,7 +1600,7 @@
       "label.lockFound": "Ressourcen-Sperre gefunden"
     },
     "board": {
-      "label.id": "ID",
+      "label.id": "Kennung",
       "label.name": "Name",
       "label.postOrderToNoticeId": "Notizkennung für sendenden Auftrag",
       "label.expectOrderToNoticeId": "Notizkennung für wartenden Auftrag",
@@ -1755,7 +1755,7 @@
     "label.manageRoles": "Rollen verwalten",
     "label.copyRole": "Rolle kopieren",
     "label.copyUser": "Konto kopieren",
-    "label.mainSetting": "Main Sektion",
+    "label.mainSetting": "Main-Sektion",
     "label.profileFound": "Profil gefunden",
     "label.profilesFound": "Profile gefunden",
     "label.js7Controller": "JS7 Controller",
@@ -1910,8 +1910,8 @@
     "label.showPeriods": "Periode anzeigen",
     "label.timeZone": "Zeitzone der Eintrittszeit",
     "label.addOrder": "Add Order",
-    "label.workflowPath": "Workflow Path",
-    "label.deleteWhenTerminated": "Delete When Terminated",
+    "label.workflowPath": "Name des Arbeitsablaufs",
+    "label.deleteWhenTerminated": "Löschen bei Auftragsende,
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
     "button.actual": "Voreinstellung",
@@ -1936,7 +1936,7 @@
     "button.exportInPng": "Exportieren in PNG Format",
     "button.createForkListVariables": "Listenvariablen erstellen",
     "button.wizard": "Assistent",
-    "button.addAllArguments": "Add All Arguments",
+    "button.addAllArguments": "Alle Argumente hinzufügen",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",
@@ -1988,7 +1988,7 @@
       "label.findAndReplace": "Suchen und Ersetzen von Agenten im Arbeitsablauf",
       "button.findAndReplace": "Suchen und Ersetzen",
       "placeholder.selectFind": "Einen oder mehrere Agenten auswählen",
-      "placeholder.selectReplace": "Agenten als Ersatz für die Zuordnung auswählen"
+      "placeholder.selectReplace": "Agenten zur Ersetzung der Zuordnung auswählen"
     },
     "wizard": {
       "label.new": "Neu",
@@ -2005,8 +2005,8 @@
       "label.everyDay": "Jeder Tag",
       "label.frequency": "Häufigkeit",
       "label.period": "Periode",
-      "button.update": "Update",
-      "button.back": "Back",
+      "button.update": "Speichern",
+      "button.back": "Zurück",
       "message.duplicatePeriod": "Gleiche Periode für ausgewählte Tage"
     }
   },
@@ -2109,20 +2109,20 @@
         "monthPlaceholder": "Monat auswählen",
         "weekPlaceholder": "Woche auswählen",
         "rangePlaceholder": [
-          "Startdatum",
-          "Enddatum"
+          "Start Datum",
+          "Ende Datum"
         ],
         "rangeYearPlaceholder": [
-          "Startjahr",
-          "Endjahr"
+          "Start Jahr",
+          "Ende Jahr"
         ],
         "rangeMonthPlaceholder": [
-          "Startmonat",
-          "Endmonat"
+          "Start Monat",
+          "Ende Monat"
         ],
         "rangeWeekPlaceholder": [
-          "Startwoche",
-          "Endwoche"
+          "Start Woche",
+          "Ende Woche"
         ],
         "today": "Heute",
         "now": "Jetzt",
@@ -2153,16 +2153,16 @@
       "timePickerLocale": {
         "placeholder": "Zeit auswählen",
         "rangePlaceholder": [
-          "Startzeit",
-          "Endzeit"
+          "Start Zeit",
+          "Ende Zeit"
         ]
       }
     },
     "TimePicker": {
       "placeholder": "Zeit auswählen",
       "rangePlaceholder": [
-        "Start time",
-        "End time"
+        "Start Zeit",
+        "Ende Zeit"
       ]
     },
     "Calendar": {
@@ -2173,20 +2173,20 @@
         "monthPlaceholder": "Monat auswählen",
         "weekPlaceholder": "Woche auswählen",
         "rangePlaceholder": [
-          "Startdatum",
-          "Enddatum"
+          "Start Datum",
+          "Ende Datum"
         ],
         "rangeYearPlaceholder": [
-          "Startjahr",
-          "Endjahr"
+          "Start Jahr",
+          "Ende Jahr"
         ],
         "rangeMonthPlaceholder": [
-          "Startmonat",
-          "Endmonat"
+          "Start Monat",
+          "Ende Monat"
         ],
         "rangeWeekPlaceholder": [
-          "Startwoche",
-          "Endwoche"
+          "Start Woche",
+          "Ende Woche"
         ],
         "locale": "de_DE",
         "today": "Heute",
@@ -2218,8 +2218,8 @@
       "timePickerLocale": {
         "placeholder": "Zeit auswählen",
         "rangePlaceholder": [
-          "Startzeit",
-          "Endzeit"
+          "Start Zeit",
+          "Ende Zeit"
         ]
       }
     },

@@ -1098,7 +1098,7 @@
         "jobResourceNames": "ジョブリソースは、複数のジョブやワークフローで使用できる共有変数を保持します。",
         "documentation": "ドキュメント",
         "title": "ワークフローのタイトル",
-        "timeZone": "Admission Time Zone",
+        "timeZone": "許可時間タイムゾーン",
         "allowUndeclared": "未宣言を許可",
         "board": {
           "boardName": "ボード名"
@@ -1142,13 +1142,13 @@
           "parallelism": "ジョブを並列に実行できるワークフロー内の最大オーダー数を指定します。最大値を超えた場合は、ジョブの最大タスク実行数以下に下がるまで、オーダーは待機しなければなりません。",
           "criticality": "ジョブの重要度を通知に使用することで、インシデントの緊急性をより明確に区別することができます。",
           "failOnOutputErr": "ジョブがstderrに出力を書き込んだ場合、これはエラーとみなされ、オーダーは失敗ステートになります。",
-          "admissionTime": "Admission Time"
+          "admissionTime": "許可時間"
         },
         "addOrder": {
-          "orderName": "Order Name",
-          "workflowName": "Workflow Name",
-          "arguments": "Arguments",
-          "deleteWhenTerminated": "Delete WhenT erminated"
+          "orderName": "オーダー名",
+          "workflowName": "ワークフロー名",
+          "arguments": "引数",
+          "deleteWhenTerminated": "終了後削除"
         },
         "lock": {
           "name": "リソースロック名前はインベントリー内で一意です。リソースロックを使用することで、ワークフローのセクションの並列処理を制限できます。",
@@ -1187,7 +1187,7 @@
         "from": "From",
         "to": "To",
         "jobName": "ジョブ名",
-        "jobNameExactMatch": "Job Name Exact Match",
+        "jobNameExactMatch": "ジョブ名完全一致",
         "jobCriticality": "ジョブ重大度",
         "jobScript": "ジョブスクリプト",
         "argumentName": "引数名",
@@ -1197,27 +1197,27 @@
       },
       "button": {
         "search": "検索",
-        "updateJob": "Update Job",
-        "propagateJob": "Propagate Job"
+        "updateJob": "ジョブ更新",
+        "propagateJob": "ジョブ展開"
       },
       "placeholder": {
         "search" : "名称またはタイトル入力 '%search%'",
         "selectFromTree": "フォルダーから選択"
       },
       "message": {
-        "updateJobForSelectedWorkflows": "Update {{jobName}} in all {{workflowsCount}} selected workflows"
+        "updateJobForSelectedWorkflows": "選択した{{workflowsCount}}ワークフローに含まれる {{jobName}}ジョブを更新"
       }
     },
     "updateJob": {
       "label": {
-        "updateJob": "Update Job"
+        "updateJob": "ジョブ更新"
       },
       "button": {
-        "clickHereToDeploy": "Click here to deploy!"
+        "clickHereToDeploy": "クリックで配置"
       },
       "message": {
-        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully.",
-        "selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
+        "updateSuccessfully": "全ワークフロー{{workflowsCount}}が更新されました",
+        "selectWorkflowToOpenJobEditor": "ワークフローを選択してジョブエディターを開く"
       }
     }
   },
@@ -1906,12 +1906,12 @@
     "label.createForkListVariable": "ForkList変数作成",
     "label.updateForkListVariable": "ForkList変数更新",
     "label.showDependency": "依存表示",
-    "label.admissionTime": "Admission Time",
-    "label.showPeriods": "Show Periods",
-    "label.timeZone": "Admission Time Zone",
-    "label.addOrder": "Add Order",
-    "label.workflowPath": "Workflow Path",
-    "label.deleteWhenTerminated": "Delete When Terminated",
+    "label.admissionTime": "許可時間",
+    "label.showPeriods": "期間表示",
+    "label.timeZone": "許可時間タイムゾーン",
+    "label.addOrder": "オーダー追加",
+    "label.workflowPath": "ワークフローパス",
+    "label.deleteWhenTerminated": "終了後削除",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
     "button.actual": "デフォルト",
@@ -2001,13 +2001,13 @@
       "button.addAnotherParameter": "他のパラメーター追加"
     },
     "admissionTime": {
-      "label.weekDays": "Weekdays",
-      "label.everyDay": "Every Day",
-      "label.frequency": "Frequency",
-      "label.period": "Period",
-      "button.update": "Update",
-      "button.back": "Back",
-      "message.duplicatePeriod": "Same entries are already exist"
+      "label.weekDays": "曜日",
+      "label.everyDay": "毎日",
+      "label.frequency": "周期",
+      "label.period": "期間",
+      "button.update": "更新",
+      "button.back": "戻る",
+      "message.duplicatePeriod": "既に同じ期間があります"
     }
   },
   "xml": {
@@ -2104,10 +2104,10 @@
     "DatePicker": {
       "lang": {
         "placeholder": "日付を選択",
-        "yearPlaceholder": "Select year",
-        "quarterPlaceholder": "Select quarter",
-        "monthPlaceholder": "Select month",
-        "weekPlaceholder": "Select week",
+        "yearPlaceholder": "年を選択",
+        "quarterPlaceholder": "四半期を選択",
+        "monthPlaceholder": "月を選択",
+        "weekPlaceholder": "週を選択",
         "rangePlaceholder": [
           "開始日付",
           "終了日付"
@@ -2168,10 +2168,10 @@
     "Calendar": {
       "lang": {
         "placeholder": "日付を選択",
-        "yearPlaceholder": "Select year",
-        "quarterPlaceholder": "Select quarter",
-        "monthPlaceholder": "Select month",
-        "weekPlaceholder": "Select week",
+        "yearPlaceholder": "年を選択",
+        "quarterPlaceholder": "四半期を選択",
+        "monthPlaceholder": "月を選択",
+        "weekPlaceholder": "週を選択",
         "rangePlaceholder": [
           "開始日付",
           "終了日付"
@@ -2224,7 +2224,7 @@
       }
     },
     "global": {
-      "placeholder": "Please select"
+      "placeholder": "選択してください"
     },
     "Empty": {
       "description": "データがありません"
