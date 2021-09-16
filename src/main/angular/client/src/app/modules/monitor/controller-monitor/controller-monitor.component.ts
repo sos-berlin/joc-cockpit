@@ -117,12 +117,14 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   private getData(): void {
+    const d = new Date(this.filters.filter.endDate).setDate(this.filters.filter.endDate.getDate() + 1);
     this.coreService.post('monitoring/controllers', {
       controllerId: this.filters.current ? this.schedulerIds.selected : '',
       dateFrom: this.filters.filter.startDate,
-      dateTo: new Date(this.filters.filter.endDate.setDate(this.filters.filter.endDate.getDate() + 1)),
+      dateTo: new Date(d),
       timeZone: this.preferences.zone
     }).subscribe((res: any) => {
+      res = {"deliveryDate":"2021-09-16T14:43:01.868+0000","controllers":[{"controllerId":"js7.x","url":"http://localhost:5444","previousEntry":{"totalRunningTime":514229000,"readyTime":"2021-09-09T17:17:17.000+0000","lastKnownTime":"2021-09-15T16:07:46.000+0000"},"entries":[{"totalRunningTime":239546000,"readyTime":"2021-09-15T16:30:45.000+0000","lastKnownTime":"2021-09-15T16:55:25.000+0000"},{"totalRunningTime":244832000,"readyTime":"2021-09-15T17:02:19.000+0000","lastKnownTime":"2021-09-15T18:30:25.000+0000"},{"totalRunningTime":270799870,"readyTime":"2021-09-16T07:30:14.000+0000"}]}]};
       this.data = res.controllers;
       let groupData = [];
       this.isLoaded = true;
@@ -195,6 +197,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       if (this.coreService.getDateByFormat(this.filters.filter.startDate, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
         obj.total -= (1000 * 60 * 60 * 24);
       }
+
       if (!lastEntry && controller.previousEntry) {
         if (controller.previousEntry.lastKnownTime) {
           obj.time = 0;
@@ -210,10 +213,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         this.runningTime.push(obj);
       }
       if (lastEntry) {
-        if (!lastEntry.lastKnownTime && this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
-          lastEntry.totalRunningTime += (moment.duration(this.coreService.getDateByFormat(new Date(), this.preferences.zone, 'HH:mm:ss')).asMilliseconds() -
-            moment.duration(this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
-        }
         obj.time = lastEntry.totalRunningTime;
         obj.value = Math.round((obj.time * 100) / obj.total);
         obj.hours = ((obj.total) / (1000 * 60 * 60 * 24)).toFixed(2);
