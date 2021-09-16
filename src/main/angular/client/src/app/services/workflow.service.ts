@@ -415,6 +415,9 @@ export class WorkflowService {
         delete value.defaultArguments;
       }
       if (type === 'Job') {
+        if (isEmpty(value.admissionTimeScheme) || value.admissionTimeScheme.periods.length === 0) {
+          delete value.admissionTimeScheme;
+        }
         if (!value.executable || (!value.executable.className && value.executable.TYPE === 'InternalExecutable')
           || (!value.executable.script && value.executable.TYPE === 'ShellScriptExecutable') || !value.agentName) {
           return false;
@@ -1627,17 +1630,32 @@ export class WorkflowService {
     const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
     const m = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
     const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-    return (h > 9 ? h : '0' + h) + ':' + (m > 9 ? m : '0' + m) + (s > 0 ? (':' + (s > 9 ? s : '0' + s)) : '00');
+    return (h > 9 ? h : '0' + h) + ':' + (m > 9 ? m : '0' + m) + (s > 0 ? (':' + (s > 9 ? s : '0' + s)) : ':00');
   }
 
   convertDurationToHour(seconds: number): string {
     const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
-    const M = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
+    const m = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
     const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-    return (h != 0 ? h + 'h ' : '') + (M != 0 ? M + 'M ' : '') + (s != 0 ? s + 's ' : '');
+    return (h != 0 ? h + 'h ' : '') + (m != 0 ? m + 'm ' : '') + (s != 0 ? s + 's' : '').trim();
   }
 
   convertStringToDuration(str: string, isDuration = false): number {
+    function durationSeconds(timeExpr) {
+      let units = {'h': 3600, 'm': 60, 's': 1};
+      let regex = /(\d+)([hms])/g;
+      let seconds = 0;
+      let match;
+      while ((match = regex.exec(timeExpr))) {
+        seconds += parseInt(match[1], 10) * units[match[2]];
+      }
+      return seconds;
+    }
+
+    if (isDuration && (/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(str))) {
+      return durationSeconds(str);
+    }
+
     if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {
       let seconds = 0;
       const a = str.split(' ');
@@ -1655,7 +1673,7 @@ export class WorkflowService {
             seconds += val * 24 * 3600;
           } else if (frmt === 'h') {
             seconds += val * 3600;
-          } else if (frmt === 'M' || (isDuration || frmt === 'm') ) {
+          } else if (frmt === 'M' || (isDuration || frmt === 'm')) {
             seconds += val * 60;
           } else if (frmt === 's') {
             seconds += Number(val);

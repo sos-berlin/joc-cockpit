@@ -93,10 +93,11 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   private getData(): void {
+    const d = new Date(this.filters.filter.endDate).setDate(this.filters.filter.endDate.getDate() + 1);
     this.coreService.post('monitoring/agents', {
       controllerId: this.filters.current ? this.schedulerIds.selected : '',
       dateFrom: this.filters.filter.startDate,
-      dateTo: new Date(this.filters.filter.endDate.setDate(this.filters.filter.endDate.getDate() + 1)),
+      dateTo: new Date(d),
       timeZone: this.preferences.zone
     }).subscribe((res: any) => {
       this.data = res.controllers;
@@ -370,10 +371,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
             this.filters.filter.startDate) + (dur1));
           if (this.coreService.getDateByFormat(this.filters.filter.startDate, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
             obj.total -= (1000 * 60 * 60 * 24);
-          }
-          if (!lastEntry.lastKnownTime && this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
-            lastEntry.totalRunningTime += (moment.duration(this.coreService.getDateByFormat(new Date(), this.preferences.zone, 'HH:mm:ss')).asMilliseconds() -
-              moment.duration(this.coreService.getDateByFormat(lastEntry.readyTime, this.preferences.zone, 'HH:mm:ss')).asMilliseconds());
           }
           if (isNaN(lastEntry.totalRunningTime)) {
             if (lastEntry.isShutdown) {

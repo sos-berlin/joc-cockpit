@@ -72,6 +72,10 @@ export class DurationValidator implements Validator {
       if (v == '') {
         return null;
       }
+      if (/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(v)) {
+        return null;
+      }
+
       if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0-9]+\s*$/i.test(v) ||
         /^((1+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(v)
       ) {
@@ -294,10 +298,14 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     let p: any;
     if (this.object.startTime || this.object.duration) {
       p = {};
-      const h = this.object.startTime.getHours();
-      const m = this.object.startTime.getMinutes();
-      const s = this.object.startTime.getSeconds();
-      p.startTime = (h * 60 * 60) + (m * 60) + s;
+      if (this.object.startTime) {
+        const h = this.object.startTime.getHours();
+        const m = this.object.startTime.getMinutes();
+        const s = this.object.startTime.getSeconds();
+        p.startTime = (h * 60 * 60) + (m * 60) + s;
+      } else{
+        p.startTime = 0;
+      }
       p.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
       p.text = this.getText(p.startTime, p.duration);
     }
@@ -2810,7 +2818,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         }
         if (flag) {
-          if (!isArray(arr[i].value)) {
+          if (!isArray(arr[i].value) && arr[i].value.type !== 'List') {
             const obj: any = {
               name: arr[i].name,
               isTextField: true,
