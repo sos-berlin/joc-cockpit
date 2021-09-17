@@ -206,7 +206,7 @@
     "label.documentation": "Documentation",
     "label.history": "Historique",
     "label.order": "Ordre",
-    "label.task": "Task",
+    "label.task": "Tâche",
     "label.deployment": "Deploiement",
     "label.auditLog": "Journal d'Audit",
     "label.configuration": "Configuration",
@@ -532,7 +532,7 @@
     "button.withSwitchover": "Avec bascule manuelle ",
     "button.withFailover": "Avec bascule automatique ",
     "button.withOutSwitchover": "Sans bascule manuelle",
-    "button.downloadLog": "Télécharger le log",
+    "button.downloadLog": "Télécharger le journal",
     "button.restartCluster": "Redémarrer le Cluster",
     "button.restartService": "Redémarrer le Service",
     "button.dailyPlanService": "Daily Plan Service",
@@ -686,7 +686,7 @@
       "label.copy": "Copier",
       "label.getList": "Obtenir la liste",
       "label.rename": "Renomer",
-      "label.profileNames": "Profile Names",
+      "label.profileNames": "Noms des profils",
       "label.operations": "Opérations",
       "label.sourceHost": "Hôte source",
       "label.targetHost": "Hôte cible",
@@ -826,7 +826,7 @@
     "button.js7News": "JS7 Actualités",
     "button.js7Documentation": "JS7 Documentation",
     "button.releaseNotes": "Notes de Version",
-    "button.gettingStarted": "Getting Started",
+    "button.gettingStarted": "Prise en main",
     "button.documentation": "Documentation",
     "button.resources": "Resources",
     "button.announcements": "Annonces",
@@ -994,8 +994,8 @@
     "button.importAndDeploy": "Importer et Déployer",
     "button.backToObject": "Retour à l'objet précédent",
     "button.backToList": "Retour à la liste",
-    "button.convert": "Convert",
-    "button.cron": "Cron",
+    "button.convert": "Convertir",
+    "button.cron": "Crontab",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -1036,7 +1036,7 @@
     "message.includesIsMissing": "La fréquence incluse est manquante, mais elle est nécessaire",
     "message.uriIsMissing": "L'URL est manquant, mais il est nécessaire",
     "message.toNoticeIsMissing": "A noter, mais est nécessaire",
-    "message.readingOrderToNoticeIdIsMissing": "L'Ordre attendu manque la règle pour créer l'Annonce",
+    "message.readingOrderToNoticeIdIsMissing": "L'ID Condition pour l'ordre en attente est manquant, mais est requis",
     "message.nameIsNotValid": "Nom invalide",
     "message.invalidFile": "Pas un fichier {{objectType}} valide",
     "export": {
@@ -1101,7 +1101,7 @@
         "jobResourceNames": "Les ressources de tâche contiennent des variables partagées qui peuvent être utilisées par un certain nombre de tâches et de workflows.",
         "documentation": "Documentation",
         "title": "Le titre d'un workflow.",
-        "timeZone": "Admission Time Zone",
+        "timeZone": "Fuseau horaire d'admission",
         "allowUndeclared": "Autoriser les variables non déclarés",
         "board": {
           "boardName": "Le nom d'une Condition est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin."
@@ -1151,8 +1151,8 @@
           "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
         },
         "addOrder": {
-          "orderName": "Order Name",
-          "workflowName": "Workflow Name",
+          "orderName": "Nom de l'Ordre",
+          "workflowName": "Nom du Workflow",
           "arguments": "Arguments",
           "remainWhenTerminated": "Remain When Terminated"
         },
@@ -1203,27 +1203,27 @@
       },
       "button": {
         "search": "Chercher",
-        "updateJob": "Update Job",
-        "propagateJob": "Propagate Job"
+        "updateJob": "Mise à jour de la Tâche",
+        "propagateJob": "Propager la Tâche"
       },
       "placeholder": {
         "search" : "nom ou titre come '%search%'",
         "selectFromTree": "Sélectionner dans l'arborescence"
       },
       "message": {
-        "updateJobForSelectedWorkflows": "Update {{jobName}} in all {{workflowsCount}} selected workflows"
+        "updateJobForSelectedWorkflows": "Mise à jour {{jobName}} dans les {{workflowsCount}} workflows sélectionnés"
       }
     },
     "updateJob": {
       "label": {
-        "updateJob": "Update Job"
+        "updateJob": "Mise à jour de la tâche"
       },
       "button": {
-        "clickHereToDeploy": "Click here to deploy!"
+        "clickHereToDeploy": "Cliquez ici pour déployer!"
       },
       "message": {
-        "updateSuccessfully": "All {{workflowsCount}} workflows are update successfully.",
-        "selectWorkflowToOpenJobEditor": "Select any one of the Workflow to open Job editor"
+        "updateSuccessfully": "Les {{workflowsCount}} workflows sont mis à jour avec succès.",
+        "selectWorkflowToOpenJobEditor": "Sélectionnez l'un des Workflow pour ouvrir l'éditeur de Tâche"
       }
     }
   },
@@ -1258,7 +1258,7 @@
       "agentAvailability": "Moniteur Agent",
       "controllerAvailability": "Moniteur Contrôleur",
       "notification": "Notification",
-      "overview": "Overview",
+      "overview": "Aperçu",
       "statistics": "Statistiques",
       "runningTime": "Temps d'exécution",
       "inHours": "En heures",
@@ -1288,7 +1288,7 @@
         "errorText": "Texte d'erreur",
         "jobReturnCode": "Code de retour de la tâche",
         "notificationsFound": "Entrées de Notification trouvées",
-        "notificationFound": "Entrée de notification trouvée"
+        "notificationFound": "Entrée de Notification trouvée"
       },
       "button": {
         "success": "Succès",
@@ -1417,7 +1417,7 @@
       "label.create": "créer",
       "label.modify": "modifier",
       "label.cancel": "annuler",
-      "label.switchOver": "bascule manuelle ",
+      "label.switchOver": "bascule manuelle",
       "label.downloadLog": "télécharger le journal",
       "label.jocCockpit": "JOC Cockpit",
       "label.suspendResume": "suspendre et reprendre"
@@ -1912,11 +1912,11 @@
     "label.createForkListVariable": "Créer une Variable de Tableau",
     "label.updateForkListVariable": "Mettre à jour la Variable de Tableau",
     "label.showDependency": "Afficher les Dépendances",
-    "label.admissionTime": "Admission Time",
-    "label.showPeriods": "Show Periods",
-    "label.timeZone": "Admission Time Zone",
-    "label.addOrder": "Add Order",
-    "label.workflowPath": "Workflow Path",
+    "label.admissionTime": "Heure d'Admission",
+    "label.showPeriods": "Afficher les Périodes",
+    "label.timeZone": "Fuseau horaire d'admission",
+    "label.addOrder": "Ajouter un Ordre",
+    "label.workflowPath": "Chemin du Workflow",
     "label.remainWhenTerminated": "Remain When Terminated",
     "label.joinIfFailed": "Join If Failed",
     "label.skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day",
@@ -1973,8 +1973,8 @@
     "message.invalidPostNoticeInstruction": "L'instruction PostNotice n'est pas valide",
     "message.invalidExpectNoticeInstruction": "L'instruction ExpectNotice n'est pas valide",
     "message.agentIsMissing": "L'Agent est absent, mais il est nécessaire",
-    "message.orderNameIsMissing": "Order Name is missing, but is required",
-    "message.workflowNameIsNotValid": "Workflow Name is missing, but is required",
+    "message.orderNameIsMissing": "Le nom de l'Ordre est manquant, mais est requis",
+    "message.workflowNameIsNotValid": "Le nom du Workflow est manquant, mais est requis",
     "message.emptyWorkflow": "Workflow est vide, une instruction au minimum est requise.",
     "message.invalidForkInstruction": "L'instruction Fork doit avoir un minimum de deux branches",
     "placeholder.selectAgentName": "Sélectionnez le nom de l'Agent",
@@ -1982,7 +1982,7 @@
     "placeholder.selectLock": "Sélectionner l'ID du Verrou de ressource",
     "placeholder.selectBoard": "Sélectionner la Condition",
     "placeholder.duration": "Entrer une valeur comme d/w/m/y/h our hh:mm:ss or seconds",
-    "placeholder.durationPeriod": "Entrer une valeur comme w/d/h/m our hh:mm:ss or hh:mm:ss-hh:mm:ss or seconds",
+    "placeholder.durationPeriod": "Entrer une valeur comme w/d/h/m our hh:mm:ss or seconds",
     "placeholder.enterPositiveNumber": "Entrer uniquement un nombre positif séparé par une virgule",
     "placeholder.expression": "Entrer l'expression",
     "placeholder.orderId": "Entrer l'ID de l'Ordre",
@@ -2009,13 +2009,13 @@
       "button.addAnotherParameter": "Ajouter un autre paramètre"
     },
     "admissionTime": {
-      "label.weekDays": "Weekdays",
-      "label.everyDay": "Every Day",
-      "label.frequency": "Frequency",
+      "label.weekDays": "Jours de la semaine",
+      "label.everyDay": "Tous les jours",
+      "label.frequency": "Fréquence",
       "label.period": "Period",
-      "button.update": "Update",
-      "button.back": "Back",
-      "message.duplicatePeriod": "Same entries are already exist"
+      "button.update": "Mettre à jour",
+      "button.back": "Retour",
+      "message.duplicatePeriod": "Les mêmes entrées existent déjà"
     }
   },
   "xml": {
@@ -2232,7 +2232,7 @@
       }
     },
     "global": {
-      "placeholder": "Please select"
+      "placeholder": "Veuillez sélectionner"
     },
     "Empty": {
       "description": "Aucune donnée"

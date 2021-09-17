@@ -995,7 +995,7 @@
     "button.backToObject": "前のオブジェクトに戻る",
     "button.backToList": "一覧に戻る",
     "button.convert": "Convert",
-    "button.cron": "Cron",
+    "button.cron": "Crontab",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
     "placeholder.enterFileName": "ファイル名を入力",

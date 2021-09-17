@@ -994,8 +994,8 @@
     "button.importAndDeploy": "Importieren und ausrollen",
     "button.backToObject": "Zurück zum vorigen Objekt",
     "button.backToList": "Zurück zur Liste",
-    "button.convert": "Convert",
-    "button.cron": "Cron",
+    "button.convert": "Konvertieren",
+    "button.cron": "Crontab",
     "tooltip.setVersion": "Version setzen",
     "placeholder.enterUniqueName": "Eindeutigen Objektnamen angeben",
     "placeholder.enterFileName": "Dateinamen angeben",
@@ -1148,13 +1148,13 @@
           "criticality": "Die Kritikalität eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
           "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
           "admissionTime": "Eintrittszeit",
-          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
+          "skipIfNoAdmissionForOrderDay": "Überspringen falls keine Zutrittszeiten für Tagesplandatum des Auftrags"
         },
         "addOrder": {
           "orderName": "Name des Auftrags",
           "workflowName": "Name des Arbeitsablaufs",
           "arguments": "Argumente",
-          "remainWhenTerminated": "Remain When Terminated"
+          "remainWhenTerminated": "Nach Terminierung im Arbeitsablauf verbleiben"
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",

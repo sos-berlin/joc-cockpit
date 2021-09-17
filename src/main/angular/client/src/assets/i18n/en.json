@@ -995,7 +995,7 @@
     "button.backToObject": "Back to previous object",
     "button.backToList": "Back to list",
     "button.convert": "Convert",
-    "button.cron": "Cron",
+    "button.cron": "Crontab",
     "tooltip.setVersion": "Set Version",
     "placeholder.enterUniqueName": "Enter unique object name",
     "placeholder.enterFileName": "Enter file name",
