@@ -25,6 +25,7 @@
   "INCOMPLETE": "処理中",
   "INITIALIZED": "初期化されました",
   "COUPLED": "接続",
+  "SHUTDOWN": "shutdown",
   "RESET": "リセット",
   "RESETTING": "リセット中",
   "COUPLINGFAILED": "接続失敗",
@@ -993,6 +994,8 @@
     "button.importAndDeploy": "インポートして配置",
     "button.backToObject": "前のオブジェクトに戻る",
     "button.backToList": "一覧に戻る",
+    "button.convert": "Convert",
+    "button.cron": "Cron",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
     "placeholder.enterFileName": "ファイル名を入力",
@@ -1113,11 +1116,13 @@
           "regex": "監視する受信ファイル名の正規表現"
         },
         "fork": {
-          "joinVariables": "Fork命令で分岐したオーダー変数は、Join命令に到達したときに親オーダーに追加されます。"
+          "joinVariables": "Fork命令で分岐したオーダー変数は、Join命令に到達したときに親オーダーに追加されます。",
+          "joinIfFailed": "Join If Failed"
         },
         "forkList": {
           "children": "オーダー変数",
-          "childToId": "オーダーID"
+          "childToId": "オーダーID",
+          "joinIfFailed": "Join If Failed"
         },
         "if": {
           "predicate": "If命令の述部は、「true」または「false」と評価される条件式です。"
@@ -1142,13 +1147,14 @@
           "parallelism": "ジョブを並列に実行できるワークフロー内の最大オーダー数を指定します。最大値を超えた場合は、ジョブの最大タスク実行数以下に下がるまで、オーダーは待機しなければなりません。",
           "criticality": "ジョブの重要度を通知に使用することで、インシデントの緊急性をより明確に区別することができます。",
           "failOnOutputErr": "ジョブがstderrに出力を書き込んだ場合、これはエラーとみなされ、オーダーは失敗ステートになります。",
-          "admissionTime": "許可時間"
+          "admissionTime": "許可時間",
+          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
         },
         "addOrder": {
           "orderName": "オーダー名",
           "workflowName": "ワークフロー名",
           "arguments": "引数",
-          "deleteWhenTerminated": "終了後削除"
+          "remainWhenTerminated": "Remain When Terminated"
         },
         "lock": {
           "name": "リソースロック名前はインベントリー内で一意です。リソースロックを使用することで、ワークフローのセクションの並列処理を制限できます。",
@@ -1911,7 +1917,9 @@
     "label.timeZone": "許可時間タイムゾーン",
     "label.addOrder": "オーダー追加",
     "label.workflowPath": "ワークフローパス",
-    "label.deleteWhenTerminated": "終了後削除",
+    "label.remainWhenTerminated": "Remain When Terminated",
+    "label.joinIfFailed": "Join If Failed",
+    "label.skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
     "button.actual": "デフォルト",

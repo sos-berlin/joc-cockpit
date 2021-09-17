@@ -25,6 +25,7 @@
   "INCOMPLETE": "in progress",
   "INITIALIZED": "initialized",
   "COUPLED": "coupled",
+  "SHUTDOWN": "shutdown",
   "RESET": "reset",
   "RESETTING": "resetting",
   "COUPLINGFAILED": "coupling failed",
@@ -993,6 +994,8 @@
     "button.importAndDeploy": "Import And Deploy",
     "button.backToObject": "Back to previous object",
     "button.backToList": "Back to list",
+    "button.convert": "Convert",
+    "button.cron": "Cron",
     "tooltip.setVersion": "Set Version",
     "placeholder.enterUniqueName": "Enter unique object name",
     "placeholder.enterFileName": "Enter file name",
@@ -1113,11 +1116,13 @@
           "regex": "A regular expression specifies the Pattern for the names of incoming files that a directory is watched for. For example .* means any files, .*\\.txt$ means any files with a .txt extension."
         },
         "fork": {
-          "joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction."
+          "joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction.",
+          "joinIfFailed": "Join If Failed"
         },
         "forkList": {
           "children": "List variable for dynamic forking: expects the name of the order variable that holds a list of elements. For each element of the list variable a branch is created dynamically from the assigned ForkList instruction. The number of list variable elements determines the number of parallel branches of the ForkList instruction that are executed in parallel by child orders.",
-          "childToId": "List element for branch mapping: expects the name of an element within the selected list variable that holds a unique identifier for the branch that should be created dynamically."
+          "childToId": "List element for branch mapping: expects the name of an element within the selected list variable that holds a unique identifier for the branch that should be created dynamically.",
+          "joinIfFailed": "Join If Failed"
         },
         "if": {
           "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
@@ -1142,13 +1147,14 @@
           "parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the max. Parallelism is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
           "criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
           "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state.",
-          "admissionTime": "Admission Time"
+          "admissionTime": "Admission Time",
+          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
         },
         "addOrder": {
           "orderName": "Order Name",
           "workflowName": "Workflow Name",
           "arguments": "Arguments",
-          "deleteWhenTerminated": "Delete When Terminated"
+          "remainWhenTerminated": "Remain When Terminated"
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",
@@ -1911,7 +1917,9 @@
     "label.timeZone": "Admission Time Zone",
     "label.addOrder": "Add Order",
     "label.workflowPath": "Workflow Path",
-    "label.deleteWhenTerminated": "Delete When Terminated",
+    "label.remainWhenTerminated": "Remain When Terminated",
+    "label.joinIfFailed": "Join If Failed",
+    "label.skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
     "button.actual": "Default",

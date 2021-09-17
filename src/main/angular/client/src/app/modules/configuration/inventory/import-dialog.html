@@ -40,7 +40,25 @@
             <label translate>inventory.label.folder</label>
           </label>
           <div class="col-md-9">
-            <input type="text" name="folder" class="form-control" [(ngModel)]="requestObj.targetFolder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
+            <input autocomplete="off" type="text" name="folder" class="form-control pos-abt" style="border: none; width: 90%; z-index: 99" [(ngModel)]="requestObj.targetFolder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
+            <nz-tree-select
+              name="path1"
+              class="custom-select-box"
+              [nzAllowClear]="false"
+              [nzNodes]="nodes"
+              [nzDisplayWith]="displayWith"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              [(ngModel)]="requestObj.targetFolder1"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div class="node-wrapper" (click)="selectPath(node);">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    {{node.title}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
           </div>
         </div>
         <div class="form-group row">

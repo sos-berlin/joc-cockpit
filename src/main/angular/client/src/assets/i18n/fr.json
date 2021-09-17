@@ -25,6 +25,7 @@
   "INCOMPLETE": "en cours",
   "INITIALIZED": "initialisé",
   "COUPLED": "couplé",
+  "SHUTDOWN": "shutdown",
   "RESET": "réinitialiser",
   "RESETTING": "réinitialisation",
   "COUPLINGFAILED": "couplage échoué",
@@ -993,6 +994,8 @@
     "button.importAndDeploy": "Importer et Déployer",
     "button.backToObject": "Retour à l'objet précédent",
     "button.backToList": "Retour à la liste",
+    "button.convert": "Convert",
+    "button.cron": "Cron",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -1113,11 +1116,13 @@
           "regex": "Une Expression Régulière spécifie le pattern des noms de fichiers entrants du répertoire surveillé."
         },
         "fork": {
-          "joinVariables": "Les variables des ordres enfants dans les branches d'une instruction Fork sont ajoutées à l'ordre parent lorsqu'elles atteignent l'instruction Join."
+          "joinVariables": "Les variables des ordres enfants dans les branches d'une instruction Fork sont ajoutées à l'ordre parent lorsqu'elles atteignent l'instruction Join.",
+          "joinIfFailed": "Join If Failed"
         },
         "forkList": {
           "children": "Variable de Tableau",
-          "childToId": "Mappage de l'élément à l'ID ordre"
+          "childToId": "Mappage de l'élément à l'ID ordre",
+          "joinIfFailed": "Join If Failed"
         },
         "if": {
           "predicate": "Un Prédicat dans une instruction If est une expression ou une comparaison qui donne la valeur 'vrai' ou 'faux'."
@@ -1142,13 +1147,14 @@
           "parallelism": "La valeur max. Parallélisme spécifie le nombre d'ordres dans un workflow qui peuvent exécuter de tâche en parallèle. Si le maximum est dépassé, les ordres doivent attendre que la valeur soit redescendue en dessous du max. Parallelisme",
           "criticality": "La Criticité des tâches peut être utilisée dans les notifications pour mieux distinguer l'urgence d'un incident..",
           "failOnOutputErr": "Si une tâche écrit une sortie sur le canal stderr, cela est considéré comme une erreur et l'ordre passe à l'état ECHEC.",
-          "admissionTime": "Admission Time"
+          "admissionTime": "Admission Time",
+          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
         },
         "addOrder": {
           "orderName": "Order Name",
           "workflowName": "Workflow Name",
           "arguments": "Arguments",
-          "deleteWhenTerminated": "Delete WhenT erminated"
+          "remainWhenTerminated": "Remain When Terminated"
         },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
@@ -1911,7 +1917,9 @@
     "label.timeZone": "Admission Time Zone",
     "label.addOrder": "Add Order",
     "label.workflowPath": "Workflow Path",
-    "label.deleteWhenTerminated": "Delete When Terminated",
+    "label.remainWhenTerminated": "Remain When Terminated",
+    "label.joinIfFailed": "Join If Failed",
+    "label.skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",

@@ -2830,7 +2830,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           }
         } else {
-          if (this.selectedNode.obj.forkListArguments) {
+/*          if (this.selectedNode.obj.forkListArguments) {
             for (const j in this.selectedNode.obj.forkListArguments) {
               console.log(this.selectedNode.obj.forkListArguments[j]);
               if (this.selectedNode.obj.forkListArguments[j].name === arr[i].name) {
@@ -2838,7 +2838,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 break;
               }
             }
-          }
+          }*/
         }
       }
     }
@@ -6792,7 +6792,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.cell, 'workflowName', self.selectedNode.newObj.workflowName);
             graph.getModel().execute(edit3);
             const edit4 = new mxCellAttributeChange(
-              obj.cell, 'deleteWhenTerminated', self.selectedNode.newObj.deleteWhenTerminated);
+              obj.cell, 'remainWhenTerminated', self.selectedNode.newObj.remainWhenTerminated);
             graph.getModel().execute(edit4);
           } else if (self.selectedNode.type === 'If') {
             const predicate = self.selectedNode.newObj.predicate;
@@ -6814,6 +6814,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'childToId', self.selectedNode.newObj.childToId);
             graph.getModel().execute(edit2);
+            const edit3 = new mxCellAttributeChange(
+              obj.cell, 'joinIfFailed', self.selectedNode.newObj.joinIfFailed);
+            graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'Lock') {
             let count = '';
             if (self.selectedNode.newObj.countProperty === 'shared') {
@@ -6868,9 +6871,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.cell, 'regex', self.selectedNode.newObj.regex);
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Fork') {
-            const edit2 = new mxCellAttributeChange(
+            const editJ = new mxCellAttributeChange(
               obj.cell, 'joinVariables', self.selectedNode.newObj.joinVariables);
-            graph.getModel().execute(edit2);
+            graph.getModel().execute(editJ);
+            const editJoin = new mxCellAttributeChange(
+              obj.cell, 'joinIfFailed', self.selectedNode.newObj.joinIfFailed);
+            graph.getModel().execute(editJoin);
             const edges = graph.getOutgoingEdges(obj.cell);
             for (let i = 0; i < edges.length; i++) {
               for (let j = 0; j < self.selectedNode.newObj.branches.length; j++) {
@@ -7047,8 +7053,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           obj.argumentList = [];
           obj.orderName = cell.getAttribute('orderName');
           obj.workflowName = cell.getAttribute('workflowName');
-          const val1 = cell.getAttribute('deleteWhenTerminated');
-          obj.deleteWhenTerminated = val1 == 'true';
+          const val1 = cell.getAttribute('remainWhenTerminated');
+          obj.remainWhenTerminated = val1 == 'true';
         } else if (cell.value.tagName === 'If') {
           obj.predicate = cell.getAttribute('predicate');
         } else if (cell.value.tagName === 'Retry') {
@@ -7057,6 +7063,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (cell.value.tagName === 'ForkList') {
           obj.children = cell.getAttribute('children');
           obj.childToId = cell.getAttribute('childToId');
+          obj.joinIfFailed = cell.getAttribute('joinIfFailed');
+          obj.joinIfFailed = obj.joinIfFailed == 'true';
         } else if (cell.value.tagName === 'Lock') {
           obj.count = cell.getAttribute('count');
           if (obj.count) {
@@ -7096,6 +7104,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (cell.value.tagName === 'Fork') {
           obj.joinVariables = cell.getAttribute('joinVariables');
           obj.joinVariables = obj.joinVariables == 'true';
+          obj.joinIfFailed = cell.getAttribute('joinIfFailed');
+          obj.joinIfFailed = obj.joinIfFailed == 'true';
           const edges = graph.getOutgoingEdges(cell);
           obj.branches = [];
           for (let i = 0; i < edges.length; i++) {

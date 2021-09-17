@@ -25,6 +25,7 @@
   "INCOMPLETE": "in Arbeit",
   "INITIALIZED": "initialisiert",
   "COUPLED": "gekoppelt",
+  "SHUTDOWN": "shutdown",
   "RESET": "zurückgesetzt",
   "RESETTING": "beim Zurücksetzen",
   "COUPLINGFAILED": "Kopplung fehlgeschlagen",
@@ -993,6 +994,8 @@
     "button.importAndDeploy": "Importieren und ausrollen",
     "button.backToObject": "Zurück zum vorigen Objekt",
     "button.backToList": "Zurück zur Liste",
+    "button.convert": "Convert",
+    "button.cron": "Cron",
     "tooltip.setVersion": "Version setzen",
     "placeholder.enterUniqueName": "Eindeutigen Objektnamen angeben",
     "placeholder.enterFileName": "Dateinamen angeben",
@@ -1113,11 +1116,13 @@
           "regex": "Ein regulärer Ausdruck beschreibt das Muster der Namen von Dateien, die im Verzeichnis überwacht werden."
         },
         "fork": {
-          "joinVariables": "Auftragsvariablen aus Zweigen einer Fork-Instruktion werden in der entsprechenden Join-Instruktion dem Elternauftrag übergeben."
+          "joinVariables": "Auftragsvariablen aus Zweigen einer Fork-Instruktion werden in der entsprechenden Join-Instruktion dem Elternauftrag übergeben.",
+          "joinIfFailed": "Join If Failed"
         },
         "forkList": {
           "children": "Listenvariable für dynamische Verzweigung: Wird eine ForkList Instruktion im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ForkList Instruktion erzeugt und durchlaufen wird: pro Listenelement werden die Instruktionen und Jobs der ForkList Instruktion in einem jeweils eigenen Zwei parallel durchlaufen.",
-          "childToId": "Listenelement für Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable. Der Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird."
+          "childToId": "Listenelement für Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable. Der Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird.",
+          "joinIfFailed": "Join If Failed"
         },
         "if": {
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
@@ -1142,13 +1147,14 @@
           "parallelism": "Die max. Parallelität eines Jobs bestimmt wie viele Aufträge gleichzeitig in einem Arbeitsablauf diesen Job ausführen können. Wird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
           "criticality": "Die Kritikalität eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
           "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
-          "admissionTime": "Eintrittszeit"
+          "admissionTime": "Eintrittszeit",
+          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
         },
         "addOrder": {
           "orderName": "Name des Auftrags",
           "workflowName": "Name des Arbeitsablaufs",
           "arguments": "Argumente",
-          "deleteWhenTerminated": "Löschen bei Auftragsende"
+          "remainWhenTerminated": "Remain When Terminated"
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
@@ -1911,7 +1917,9 @@
     "label.timeZone": "Zeitzone der Eintrittszeit",
     "label.addOrder": "Add Order",
     "label.workflowPath": "Name des Arbeitsablaufs",
-    "label.deleteWhenTerminated": "Löschen bei Auftragsende",
+    "label.remainWhenTerminated": "Remain When Terminated",
+    "label.joinIfFailed": "Join If Failed",
+    "label.skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
     "button.actual": "Voreinstellung",

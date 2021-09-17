@@ -174,7 +174,11 @@
         headerDiv.append(prevIcon);
         let titleCell = $(document.createElement('span'));
         titleCell.addClass('month-title');
-        titleCell.text(this.options.language.months[this.options.startMonth] + ' ' + this.options.startYear);
+        if(this.options.language.months) {
+          titleCell.text(this.options.language.months[this.options.startMonth] + ' ' + this.options.startYear);
+        } else{
+          titleCell.text(dates['en'].months[this.options.startMonth] + ' ' + this.options.startYear);
+        }
         headerDiv.append(titleCell);
         let nextDiv = $(document.createElement('i'));
         nextDiv.addClass('fa fa-angle-right');
@@ -216,7 +220,11 @@
         titleCell.addClass('month-title');
         titleCell.attr('id', m);
         titleCell.attr('colspan', this.options.displayWeekNumber ? 8 : 7);
-        titleCell.text(this.options.language.months[m]);
+        if(this.options.language.months) {
+          titleCell.text(this.options.language.months[m]);
+        } else{
+          titleCell.text(dates['en'].months[m]);
+        }
         titleRow.append(titleCell);
         thead.append(titleRow);
       } else if (this.options.dateFrom && this.options.dateTo) {
@@ -258,25 +266,42 @@
       if (this.options.displayWeekNumber) {
         let weekNumberCell = $(document.createElement('th'));
         weekNumberCell.addClass('week-number');
-        weekNumberCell.text(this.options.language.weekShort);
+        if(this.options.language.weekShort) {
+          weekNumberCell.text(this.options.language.weekShort);
+        } else{
+          weekNumberCell.text(dates['en'].weekShort);
+        }
+
         headerRow.append(weekNumberCell);
       }
-
-      let d = this.options.language.weekStart;
+      let d;
+      if(this.options.language.weekStart) {
+        d = this.options.language.weekStart;
+      } else{
+        d =  dates['en'].weekStart;
+      }
       do {
         let headerCell = $(document.createElement('th'));
         headerCell.addClass('day-header');
-        if (this.options.view === 'year') {
-          headerCell.text(this.options.language.daysMin[d]);
-        } else {
-          headerCell.text(this.options.language.daysShort[d]);
+        if(this.options.language.daysMin) {
+          if (this.options.view === 'year') {
+            headerCell.text(this.options.language.daysMin[d]);
+          } else {
+            headerCell.text(this.options.language.daysShort[d]);
+          }
+        } else{
+          if (this.options.view === 'year') {
+            headerCell.text(dates['en'].daysMin[d]);
+          } else {
+            headerCell.text(dates['en'].daysShort[d]);
+          }
         }
         headerRow.append(headerCell);
         d++;
         if (d >= 7)
           d = 0;
       }
-      while (d != this.options.language.weekStart)
+      while (d != (this.options.language.weekStart || dates['en'].weekStart))
 
       thead.append(headerRow);
       table.append(thead);
@@ -284,7 +309,7 @@
       /* Days */
       let currentDate = new Date(firstDate.getTime());
       let lastDate = new Date(this.options.startYear, m + 1, 0);
-      let weekStart = this.options.language.weekStart;
+      let weekStart = this.options.language.weekStart || dates['en'].weekStart;
 
       while (currentDate.getDay() != weekStart) {
         currentDate.setDate(currentDate.getDate() - 1);
@@ -804,6 +829,18 @@
   $.fn.selectRange = function (fct) {
     $(this).bind('selectRange', fct);
   };
+
+  let dates = $.fn.calendar.dates = {
+    en: {
+      daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+      months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+      monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      weekShort: 'W',
+      weekStart: 1
+    }
+  };
+
 
   $(function () {
     $('[data-provide="calendar"]').each(function () {

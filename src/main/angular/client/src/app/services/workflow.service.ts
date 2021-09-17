@@ -314,6 +314,7 @@ export class WorkflowService {
     } else if (type === 'ForkList') {
       obj.children = node._children;
       obj.childToId = node._childToId;
+      obj.joinIfFailed = node._joinIfFailed;
     } else if (type === 'Lock') {
       obj.lockName = node._lockName;
       obj.count = node._count;
@@ -347,8 +348,8 @@ export class WorkflowService {
         argu = JSON.parse(argu);
       }
       obj.arguments = argu;
-      const val1 = node._deleteWhenTerminated;
-      obj.deleteWhenTerminated = val1 == 'true';
+      const val1 = node._remainWhenTerminated;
+      obj.remainWhenTerminated = val1 == 'true';
     }
     if (this.isInstructionCollapsible(type)) {
       obj.isCollapsed = node.mxCell._collapsed;
@@ -809,8 +810,8 @@ export class WorkflowService {
             if (json.instructions[x].workflowName !== undefined) {
               _node.setAttribute('workflowName', json.instructions[x].workflowName);
             }
-            if (json.instructions[x].deleteWhenTerminated !== undefined) {
-              _node.setAttribute('deleteWhenTerminated', json.instructions[x].deleteWhenTerminated);
+            if (json.instructions[x].remainWhenTerminated !== undefined) {
+              _node.setAttribute('remainWhenTerminated', json.instructions[x].remainWhenTerminated);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('addOrder', colorCode, self.theme) : 'addOrder');
@@ -887,6 +888,9 @@ export class WorkflowService {
             _node.setAttribute('label', 'forkList');
             if (json.instructions[x].childToId !== undefined) {
               _node.setAttribute('childToId', json.instructions[x].childToId);
+            }
+            if (json.instructions[x].joinIfFailed !== undefined) {
+              _node.setAttribute('joinIfFailed', json.instructions[x].joinIfFailed);
             }
             if (json.instructions[x].children !== undefined) {
               _node.setAttribute('children', json.instructions[x].children);

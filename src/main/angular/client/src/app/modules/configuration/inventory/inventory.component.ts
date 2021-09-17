@@ -1327,7 +1327,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   @Input() display: any;
   @Input() isDeploy: any;
   @Input() schedulerIds;
-
+  nodes: any = [];
   uploader: FileUploader;
   signatureAlgorithm: string;
   comments: any = {};
@@ -1341,10 +1341,11 @@ export class ImportWorkflowModalComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
-              public toasterService: ToasterService, private authService: AuthService) {
+              public toasterService: ToasterService, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
+    this.getTree();
     this.uploader = new FileUploader({
       url: this.isDeploy ? './api/inventory/deployment/import_deploy' : './api/inventory/import',
       queueLimit: 1,
@@ -1412,6 +1413,18 @@ export class ImportWorkflowModalComponent implements OnInit {
     };
   }
 
+  private getTree(): void{
+    this.coreService.post('tree', {
+      forInventory: true,
+      types: ['INVENTORY']
+    }).subscribe((res: any) => {
+      if (res.folders.length === 0) {
+        res.folders.push({name: '', path: '/'});
+      }
+      this.nodes = this.coreService.prepareTree(res, false);
+    });
+  }
+
   fileOverBase(e: any): void {
     this.hasBaseDropZoneOver = e;
   }
@@ -1433,6 +1446,19 @@ export class ImportWorkflowModalComponent implements OnInit {
 
   import(): void {
     this.uploader.queue[0].upload();
+  }
+
+  displayWith(data): string {
+    return data.key;
+  }
+
+  selectPath(node): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (this.requestObj.targetFolder !== node.key) {
+      this.requestObj.targetFolder = node.key;
+    }
   }
 
   cancel(): void {
