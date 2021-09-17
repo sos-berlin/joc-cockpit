@@ -1974,7 +1974,7 @@
     "placeholder.selectLock": "ロックID選択",
     "placeholder.selectBoard": "通知ボード選択",
     "placeholder.duration": "d/w/m/y/hか、hh:mm:ss、secondsで入力してください",
-    "placeholder.durationPeriod": "w/d/h/mか、hh:mm:ss、secondsで入力してください",
+    "placeholder.durationPeriod": "w/d/h/mか、hh:mm:ss、hh:mm:ss-hh:mm:ss、secondsで入力してください",
     "placeholder.enterPositiveNumber": "コンマ区切りで正数を入力",
     "placeholder.expression": "条件式を入力",
     "placeholder.orderId": "オーダーID編集",

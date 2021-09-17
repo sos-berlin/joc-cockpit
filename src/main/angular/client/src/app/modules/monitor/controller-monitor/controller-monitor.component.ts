@@ -124,7 +124,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       dateTo: new Date(d),
       timeZone: this.preferences.zone
     }).subscribe((res: any) => {
-      res = {"deliveryDate":"2021-09-16T14:43:01.868+0000","controllers":[{"controllerId":"js7.x","url":"http://localhost:5444","previousEntry":{"totalRunningTime":514229000,"readyTime":"2021-09-09T17:17:17.000+0000","lastKnownTime":"2021-09-15T16:07:46.000+0000"},"entries":[{"totalRunningTime":239546000,"readyTime":"2021-09-15T16:30:45.000+0000","lastKnownTime":"2021-09-15T16:55:25.000+0000"},{"totalRunningTime":244832000,"readyTime":"2021-09-15T17:02:19.000+0000","lastKnownTime":"2021-09-15T18:30:25.000+0000"},{"totalRunningTime":270799870,"readyTime":"2021-09-16T07:30:14.000+0000"}]}]};
       this.data = res.controllers;
       let groupData = [];
       this.isLoaded = true;

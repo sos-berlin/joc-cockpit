@@ -75,6 +75,20 @@ export class DurationValidator implements Validator {
       if (/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(v)) {
         return null;
       }
+      if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*-\s*([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/.test(v)) {
+        const interval = v.split('-');
+        const a = interval[0].split(':');
+        const b = interval[1].split(':');
+        const s1 = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+        const s2 = (+b[0]) * 60 * 60 + (+b[1]) * 60 + (+b[2]);
+        if (s1 > s2) {
+          return {
+            invalidDuration: true
+          };
+        } else {
+          return null;
+        }
+      }
 
       if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0-9]+\s*$/i.test(v) ||
         /^((1+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(v)
@@ -2710,11 +2724,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             return true;
           }
         });
-        this.selectedNode.obj.arguments.filter(item => {
-          if (!item.type) {
-            item.isTextField = true;
-          }
-        });
       }
     }
     this.updateSelectItems();
@@ -2810,26 +2819,25 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       });
 
       for (let i = 0; i < arr.length; i++) {
-        let flag = true;
-        for (const j in this.selectedNode.obj.arguments) {
-          if (this.selectedNode.obj.arguments[j].name === arr[i].name) {
-            flag = false;
-            break;
-          }
-        }
-        if (flag) {
-          if (!isArray(arr[i].value) && arr[i].value.type !== 'List') {
-            const obj: any = {
-              name: arr[i].name,
-              isTextField: true,
-              type: arr[i].value.type,
-              value: arr[i].value.default,
-              isRequired: false
-            };
-            if (!arr[i].value.default && arr[i].value.default !== false && arr[i].value.default !== 0) {
-              obj.isRequired = true;
+        if (arr[i].value && arr[i].value.type !== 'List') {
+          for (const j in this.selectedNode.obj.arguments) {
+            if (this.selectedNode.obj.arguments[j].name === arr[i].name) {
+              if (arr[i].value.default) {
+                this.coreService.removeSlashToString(arr[i].value, 'default');
+                this.selectedNode.obj.arguments[j].value = arr[i].value.default;
+              }
+              break;
             }
-            this.selectedNode.obj.arguments.push(obj);
+          }
+        } else {
+          if (this.selectedNode.obj.forkListArguments) {
+            for (const j in this.selectedNode.obj.forkListArguments) {
+              console.log(this.selectedNode.obj.forkListArguments[j]);
+              if (this.selectedNode.obj.forkListArguments[j].name === arr[i].name) {
+                console.log(this.selectedNode.obj.forkListArguments[j]);
+                break;
+              }
+            }
           }
         }
       }
@@ -6746,6 +6754,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               const argu: any = {};
               if (self.selectedNode.newObj.arguments && self.selectedNode.newObj.arguments.length > 0) {
                 argu.arguments = self.coreService.clone(self.selectedNode.newObj.arguments);
+                argu.arguments.forEach((item) => {
+                  self.coreService.addSlashToString(item, 'value');
+                });
                 self.coreService.convertArrayToObject(argu, 'arguments', true);
                 if (self.selectedNode.newObj.forkListArguments) {
                   self.selectedNode.newObj.forkListArguments.forEach((item) => {
@@ -6756,6 +6767,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                         item.actualList[i].forEach((data) => {
                           if (!data.value) {
                           } else {
+                            self.coreService.addSlashToString(data, 'value');
                             listObj[data.name] = data.value;
                           }
                         });
@@ -7021,7 +7033,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             argument = JSON.parse(argument);
             argument = self.coreService.convertObjectToArray({argument}, 'argument');
             argument.filter((arg) => {
-              self.coreService.removeSlashToString(arg, 'value');
+              if (isArray(arg.value)) {
+                arg.value.forEach((item, index) => {
+                  for (const prop in arg.value[index]) {
+                    self.coreService.removeSlashToString(arg.value[index], prop, true);
+                  }
+                });
+              }
+              self.coreService.removeSlashToString(arg, 'value', true);
             });
           }
           obj.arguments = argument;

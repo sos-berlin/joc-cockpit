@@ -765,7 +765,6 @@ export class CoreService {
   }
 
   showDocumentation(document: string, preferences: any): void {
-    console.log(document);
     const link = './api/documentation/show?documentation=' + encodeURIComponent(document) + '&accessToken=' + this.authService.accessTokenId;
     if (preferences.isDocNewWindow === 'newWindow') {
       window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
@@ -1319,10 +1318,10 @@ export class CoreService {
     return dates;
   }
 
-  removeSlashToString(data: any, type: string): void {
+  removeSlashToString(data: any, type: string, flag = false): void {
     if (data[type]) {
       if (isArray(data[type])) {
-        this.removeSlashToString(data[type], type);
+
       } else {
         if (data[type] === 'true' || data[type] === 'false') {
         } else if (/^\d+$/.test(data[type])) {
@@ -1334,7 +1333,7 @@ export class CoreService {
             if ((startChar === '"' && endChar === '"')) {
               if (/^\d+$/.test(mainStr)) {
                 return;
-              } else if (mainStr === 'true' || mainStr === 'false') {
+             } else if (mainStr === 'true' || mainStr === 'false') {
                 return;
               } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(scheduledOrEmpty\()/g.test(mainStr)) {
                 return;
@@ -1348,7 +1347,7 @@ export class CoreService {
             try {
               data[type] = JSON.parse(data[type]);
             } catch (e) {
-              if ((startChar === '"' && endChar === '"') || (startChar === "'" && endChar === "'" && (type === 'final' || type === 'default'))) {
+              if ((startChar === '"' && endChar === '"') || (startChar === "'" && endChar === "'" && (type === 'final' || type === 'default' || flag))) {
                 data[type] = mainStr;
               }
             }

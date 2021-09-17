@@ -1642,8 +1642,8 @@ export class WorkflowService {
 
   convertStringToDuration(str: string, isDuration = false): number {
     function durationSeconds(timeExpr) {
-      let units = {'h': 3600, 'm': 60, 's': 1};
-      let regex = /(\d+)([hms])/g;
+      const units = {h: 3600, m: 60, s: 1};
+      const regex = /(\d+)([hms])/g;
       let seconds = 0;
       let match;
       while ((match = regex.exec(timeExpr))) {
@@ -1654,6 +1654,15 @@ export class WorkflowService {
 
     if (isDuration && (/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(str))) {
       return durationSeconds(str);
+    }
+
+    if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*-\s*([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/.test(str)) {
+      const interval = str.split('-');
+      const a = interval[0].split(':');
+      const b = interval[1].split(':');
+      const s1 = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+      const s2 = (+b[0]) * 60 * 60 + (+b[1]) * 60 + (+b[2]);
+      return s2 - s1;
     }
 
     if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {

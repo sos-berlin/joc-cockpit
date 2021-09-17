@@ -1974,7 +1974,7 @@
     "placeholder.selectLock": "Sélectionner l'ID du Verrou de ressource",
     "placeholder.selectBoard": "Sélectionner la Condition",
     "placeholder.duration": "Entrer une valeur comme d/w/m/y/h our hh:mm:ss or seconds",
-    "placeholder.durationPeriod": "Entrer une valeur comme w/d/h/m our hh:mm:ss or seconds",
+    "placeholder.durationPeriod": "Entrer une valeur comme w/d/h/m our hh:mm:ss or hh:mm:ss-hh:mm:ss or seconds",
     "placeholder.enterPositiveNumber": "Entrer uniquement un nombre positif séparé par une virgule",
     "placeholder.expression": "Entrer l'expression",
     "placeholder.orderId": "Entrer l'ID de l'Ordre",
