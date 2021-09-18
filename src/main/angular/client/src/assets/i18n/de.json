@@ -1148,7 +1148,7 @@
           "criticality": "Die Kritikalität eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
           "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
           "admissionTime": "Eintrittszeit",
-          "skipIfNoAdmissionForOrderDay": "Überspringen falls keine Zutrittszeiten für Tagesplandatum des Auftrags"
+          "skipIfNoAdmissionForOrderDay": "Überspringen falls keine Zutrittszeiten für Tagesplandatum vorliegen"
         },
         "addOrder": {
           "orderName": "Name des Auftrags",

@@ -1148,7 +1148,7 @@
           "criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
           "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state.",
           "admissionTime": "Admission Time",
-          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
+          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Daily Plan Date"
         },
         "addOrder": {
           "orderName": "Order Name",
