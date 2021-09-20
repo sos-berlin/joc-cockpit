@@ -25,7 +25,7 @@
   "INCOMPLETE": "en cours",
   "INITIALIZED": "initialisé",
   "COUPLED": "couplé",
-  "SHUTDOWN": "shutdown",
+  "SHUTDOWN": "arrêté",
   "RESET": "réinitialiser",
   "RESETTING": "réinitialisation",
   "COUPLINGFAILED": "couplage échoué",
@@ -79,8 +79,8 @@
   "NOT_DEPLOYED": "non deployé",
   "UPDATE": "enregistrer",
   "DELETE": "supprimer",
-  "EXPECTED": "expected",
-  "POSTED": "posted",
+  "EXPECTED": "attendu",
+  "POSTED": "posté",
   "minor": "mineur",
   "major": "majeur",
   "normal": "normal",
@@ -134,7 +134,7 @@
     "label.reset": "réinitialiser",
     "label.resetting": "réinitialisation",
     "label.couplingFailed": "Couplage échoué",
-    "label.shutdown": "Shutdown",
+    "label.shutdown": "Arrêter",
     "label.unknown": "non connu",
     "label.runningTasks": "Tâches en cours d'exécution",
     "label.agentFound": "Entrée d'Agent trouvée",
@@ -148,7 +148,7 @@
     "button.allAgent": "Tous les Agents",
     "button.coupled": "Couplé",
     "button.couplingFailed": "Couplage échoué",
-    "button.shutdown": "Shutdown",
+    "button.shutdown": "Arrêter",
     "button.unknown": "non connu",
     "button.enable": "Activer",
     "button.disable": "Désactiver",
@@ -620,9 +620,9 @@
     "button.groupByOrder": "Regrouper par Ordre",
     "button.groupByScheduleTemplate": "Regrouper par Planification",
     "placeholder.selectOrderTemplate": "Sélectionner les Planifications",
-    "placeholder.selectSubmissionHistory": "Sélectionnez Historique des Soumissions",
+    "placeholder.selectSubmissionHistory": "Sélectionner Historique des Soumissions",
     "placeholder.timeRange": "now, (+/-)(d), today",
-    "placeholder.workflowPath": "Selectionnez Workflow",
+    "placeholder.workflowPath": "Selectionner le Workflow",
     "popup.removeSelectedOrder": "Êtes-vous sûr de vouloir supprimer cet Ordre ?",
     "popup.removeSelectedOrderForDateRange": "Êtes-vous sûr de vouloir supprimer les Ordres pour la plage de dates sélectionnée ?",
     "popup.removeAllOrders": "Êtes-vous sûr de vouloir supprimer tous les Ordres ?",
@@ -1047,9 +1047,9 @@
       "label.convertCron": "Convertir crontab",
       "label.folder": "Dossier",
       "label.calendarName": "Nom du Calendrier",
-      "label.agentName": "Nom d'Agent",
-      "label.systemCrontab": "System crontab",
-      "tooltip.systemCrontab": "fichier crontab inclut le compte d'utilisateur",
+      "label.agentName ": "Nom de l'agent",
+      "label.systemCrontab ": "Système crontab ",
+      "tooltip.systemCrontab": "Le fichier crontab contient l'utilisateur",
       "button.convert": "Convertir"
     },
     "export": {
@@ -1130,12 +1130,12 @@
         },
         "fork": {
           "joinVariables": "Les variables des ordres enfants dans les branches d'une instruction Fork sont ajoutées à l'ordre parent lorsqu'elles atteignent l'instruction Join.",
-          "joinIfFailed": "Join If Failed"
+          "joinIfFailed": "Join en Échec"
         },
         "forkList": {
           "children": "Variable de Tableau",
           "childToId": "Mappage de l'élément à l'ID ordre",
-          "joinIfFailed": "Join If Failed"
+          "joinIfFailed": "Join en Échec"
         },
         "if": {
           "predicate": "Un Prédicat dans une instruction If est une expression ou une comparaison qui donne la valeur 'vrai' ou 'faux'."
@@ -1161,12 +1161,12 @@
           "criticality": "La Criticité des tâches peut être utilisée dans les notifications pour mieux distinguer l'urgence d'un incident..",
           "failOnOutputErr": "Si une tâche écrit une sortie sur le canal stderr, cela est considéré comme une erreur et l'ordre passe à l'état ECHEC.",
           "admissionTime": "Admission Time",
-          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
+          "skipIfNoAdmissionForOrderDay": "Ignorée si la période d'admission ne correspond pas à la date de l'ordre"
         },
         "addOrder": {
           "workflowName": "Nom du Workflow",
           "arguments": "Arguments",
-          "remainWhenTerminated": "Remain When Terminated"
+          "remainWhenTerminated": "Validation requise pour sortir"
         },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
@@ -1205,12 +1205,12 @@
         "from": "De",
         "to": "à",
         "jobName": "Nom de la Tâche",
-        "jobNameExactMatch": "Job Name Exact Match",
+        "jobNameExactMatch": "Correspondance exacte du nom de la Tâche",
         "jobCriticality": "Criticité de la tâche",
         "jobScript": "Script de la Tâche",
         "argumentName": "Nom de l'Argument",
         "argumentValue": "Valeur de l'Argument",
-        "environmentName": "Nom de la Varaiable d'Environnement",
+        "environmentName": "Nom de la Variable d'Environnement",
         "environmentValue": "Valeur de la Variable d'Environnement"
       },
       "button": {
@@ -1782,9 +1782,9 @@
     "label.folder": "Dossier",
     "label.folders": "Dossiers",
     "button.addPermission": "Ajouter une Permission",
-    "button.addRole": "Create Role",
+    "button.addRole": "Créer un Rôle",
     "button.addFolder": "Ajouter un Dossier",
-    "button.addUser": "Créer un compte",
+    "button.addUser": "Créer un Compte",
     "button.enableJOCCluster": "Activer le JOC Cockpit Cluster",
     "button.addLdapRealm": "Ajouter un LDAP Realm",
     "button.updateSection": "Editer la section Main",
@@ -1928,9 +1928,9 @@
     "label.timeZone": "Fuseau horaire d'admission",
     "label.addOrder": "Ajouter un Ordre",
     "label.workflowPath": "Chemin du Workflow",
-    "label.remainWhenTerminated": "Remain When Terminated",
-    "label.joinIfFailed": "Join If Failed",
-    "label.skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day",
+    "label.remainWhenTerminated": "Validation requise pour sortir",
+    "label.joinIfFailed": "Join en Échec",
+    "label.skipIfNoAdmissionForOrderDay": "Ignorée si la période d'admission ne correspond pas à la date de l'ordre",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
     "button.actual": "Défaut",

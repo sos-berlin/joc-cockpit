@@ -1047,8 +1047,8 @@
       "label.convertCron": "crontab konvertieren",
       "label.folder": "Ordner",
       "label.calendarName": "Name des Kalenders",
-      "label.agentName ": "Name Agent",
-      "label.systemCrontab ": "System crontab",
+      "label.agentName": "Name Agent",
+      "label.systemCrontab": "System crontab",
       "tooltip.systemCrontab": "crontab Datei enthält Feld für Benutzerkennung",
       "button.convert": "Konvertieren"
     },
