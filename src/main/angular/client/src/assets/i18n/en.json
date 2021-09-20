@@ -1043,6 +1043,15 @@
     "message.readingOrderToNoticeIdIsMissing": "Notice ID for expecting order is missing, but is required",
     "message.nameIsNotValid": "Invalid name",
     "message.invalidFile": "Not a valid {{objectType}} file",
+    "cronTab": {
+      "label.convertCron": "Convert Cron tab",
+      "label.folder": "Folder",
+      "label.calendarName": "Calendar Name",
+      "label.agentName ": "Agent Name",
+      "label.systemCrontab ": "System Cron tab ",
+      "tooltip.systemCrontab": "Crontab file contains user",
+      "button.convert": "Convert"
+    },
     "export": {
       "label.filter": "Filter",
       "label.filterType": "Filter Type",

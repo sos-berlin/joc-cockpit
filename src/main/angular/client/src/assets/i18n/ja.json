@@ -1043,6 +1043,15 @@
     "message.readingOrderToNoticeIdIsMissing": "読取順の通知IDが必要です",
     "message.nameIsNotValid": "無効な名称です",
     "message.invalidFile": "無効な{{objectType}}ファイルです",
+    "cronTab": {
+      "label.convertCron": "Convert Cron tab",
+      "label.folder": "Folder",
+      "label.calendarName": "Calendar Name",
+      "label.agentName ": "Agent Name",
+      "label.systemCrontab ": "System Cron tab ",
+      "tooltip.systemCrontab": "Crontab file contains user",
+      "button.convert": "Convert"
+    },
     "export": {
       "label.filter": "フィルター",
       "label.filterType": "フィルタータイプ",

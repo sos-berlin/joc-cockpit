@@ -1043,6 +1043,15 @@
     "message.readingOrderToNoticeIdIsMissing": "L'ID Condition pour l'ordre en attente est manquant, mais est requis",
     "message.nameIsNotValid": "Nom invalide",
     "message.invalidFile": "Pas un fichier {{objectType}} valide",
+    "cronTab": {
+      "label.convertCron": "Convert Cron tab",
+      "label.folder": "Folder",
+      "label.calendarName": "Calendar Name",
+      "label.agentName ": "Agent Name",
+      "label.systemCrontab ": "System Cron tab ",
+      "tooltip.systemCrontab": "Crontab file contains user",
+      "button.convert": "Convert"
+    },
     "export": {
       "label.filter": "Filtre",
       "label.filterType": "Type de Filtre",
