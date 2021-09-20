@@ -1160,13 +1160,13 @@
           "parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the max. Parallelism is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
           "criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
           "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state.",
-          "admissionTime": "Admission Time",
-          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Daily Plan Date"
+          "admissionTime": "Admission Times rule access to jobs based on weekdays and hours. An order waits in front of a job node until the admission time is reached or can be configured to skip the job if admission times do not meet the order date.",
+          "skipIfNoAdmissionForOrderDay": "The job is skipped if admission periods have been configured that do not match the order's date. For example, if admission periods are configured for Monday and Tuesday, but the order is scheduled for Wednesday then the job will be skipped. On Monday and Tuesday the order will wait with the job node until the admission time is reached."
         },
         "addOrder": {
-          "workflowName": "Workflow Name",
-          "arguments": "Arguments",
-          "remainWhenTerminated": "Remain When Terminated"
+          "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
+          "arguments": "Arguments have to be added to the Order if required by the target workflow. Optional arguments can be omitted.",
+          "remainWhenTerminated": "After termination the Order remains with the workflow. This requires to manually perform the operation 'Leave Workflow' that is available from the WORKFLOWS view."
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in workflows can be limited in parllelism by using Resource Locks.",

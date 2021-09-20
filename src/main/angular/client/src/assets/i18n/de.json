@@ -1130,12 +1130,12 @@
         },
         "fork": {
           "joinVariables": "Auftragsvariablen aus Zweigen einer Fork-Instruktion werden in der entsprechenden Join-Instruktion dem Elternauftrag übergeben.",
-          "joinIfFailed": "Join If Failed"
+          "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags."
         },
         "forkList": {
           "children": "Listenvariable für dynamische Verzweigung: Wird eine ForkList Instruktion im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ForkList Instruktion erzeugt und durchlaufen wird: pro Listenelement werden die Instruktionen und Jobs der ForkList Instruktion in einem jeweils eigenen Zwei parallel durchlaufen.",
           "childToId": "Listenelement für Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable. Der Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird.",
-          "joinIfFailed": "Join If Failed"
+          "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags."
         },
         "if": {
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
@@ -1161,12 +1161,12 @@
           "criticality": "Die Kritikalität eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
           "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
           "admissionTime": "Eintrittszeit",
-          "skipIfNoAdmissionForOrderDay": "Überspringen falls keine Zutrittszeiten für Tagesplandatum vorliegen"
+          "skipIfNoAdmissionForOrderDay": "Der Job wird übersprungen falls keine Zutrittszeiten für das Auftragsdatum konfiguriert sind. Zum Beispiel, sind Zutrittszeiten für Montag und Dienstag konfiguiert und der Auftrag wird für Mittwoch übermittelt, dann wird der Job übersprungen. Wird ein Auftrag für Montag übermittelt, dann wartet der Auftrag am Job bis die nächste Zutrittszeit erreicht ist."
         },
         "addOrder": {
-          "workflowName": "Name des Arbeitsablaufs",
-          "arguments": "Argumente",
-          "remainWhenTerminated": "Nach Terminierung im Arbeitsablauf verbleiben"
+          "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
+          "arguments": "Argumente müssen dem Auftrag hinzugefügt werden sofern diese vom Arbeisablauf verlangt werden. Optionale Argumente können entfallen.",
+          "remainWhenTerminated": "Nach Terminierung soll der Auftrag im Arbeitsablauf verbleiben. Dies erfordert die manuelle Ausführung der Funktion 'Arbeitsablauf verlassen', die z.B. in der Sicht ARBEITSABLAUF verfügbar ist."
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung limitiert werden.",
