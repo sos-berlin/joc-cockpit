@@ -999,7 +999,7 @@
     "button.backToObject": "Back to previous object",
     "button.backToList": "Back to list",
     "button.convert": "Convert",
-    "button.cron": "Crontab",
+    "button.cron": "Cron",
     "tooltip.setVersion": "Set Version",
     "placeholder.enterUniqueName": "Enter unique object name",
     "placeholder.enterFileName": "Enter file name",
@@ -1044,12 +1044,12 @@
     "message.nameIsNotValid": "Invalid name",
     "message.invalidFile": "Not a valid {{objectType}} file",
     "cronTab": {
-      "label.convertCron": "Convert Cron tab",
+      "label.convertCron": "Convert crontab",
       "label.folder": "Folder",
       "label.calendarName": "Calendar Name",
       "label.agentName": "Agent Name",
-      "label.systemCrontab": "System Cron tab ",
-      "tooltip.systemCrontab": "Crontab file contains user",
+      "label.systemCrontab": "System crontab",
+      "tooltip.systemCrontab": "crontab file contains user",
       "button.convert": "Convert"
     },
     "export": {
@@ -1117,7 +1117,7 @@
         "timeZone": "Admission Time Zone",
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
         "board": {
-          "boardName": "BoardName"
+          "boardName": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens."
         },
         "fail": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
@@ -1130,12 +1130,12 @@
         },
         "fork": {
           "joinVariables": "Variables of child orders in the branches of a Fork Instruction are added to the parent order when reaching the Join Instruction.",
-          "joinIfFailed": "Join If Failed"
+          "joinIfFailed": "A child order is terminated in case of failure. The parent order will be put to the FAILED state."
         },
         "forkList": {
           "children": "List variable for dynamic forking: expects the name of the order variable that holds a list of elements. For each element of the list variable a branch is created dynamically from the assigned ForkList instruction. The number of list variable elements determines the number of parallel branches of the ForkList instruction that are executed in parallel by child orders.",
           "childToId": "List element for branch mapping: expects the name of an element within the selected list variable that holds a unique identifier for the branch that should be created dynamically.",
-          "joinIfFailed": "Join If Failed"
+          "joinIfFailed": "A child order is terminated in case of failure. The parent order will be put to the FAILED state."
         },
         "if": {
           "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
@@ -1578,8 +1578,8 @@
     "button.showPreview": "Show Preview",
     "placeholder.startDate": "Start Date",
     "placeholder.endDate": "End Date",
-    "message.noFrequencyFound": "No frequency found",
-    "message.noFrequencyCalendarFound": "No calendar/frequency found",
+    "message.noFrequencyFound": "No Frequency found",
+    "message.noFrequencyCalendarFound": "No Calendar/Frequency found",
     "tab.specificDays": "Specific Days",
     "tab.specificWeekDays": "Specific Weekdays",
     "tab.nationalHoliday": "National Holidays",

@@ -999,7 +999,7 @@
     "button.backToObject": "前のオブジェクトに戻る",
     "button.backToList": "一覧に戻る",
     "button.convert": "Convert",
-    "button.cron": "Crontab",
+    "button.cron": "Cron",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
     "placeholder.enterFileName": "ファイル名を入力",
@@ -1044,12 +1044,12 @@
     "message.nameIsNotValid": "無効な名称です",
     "message.invalidFile": "無効な{{objectType}}ファイルです",
     "cronTab": {
-      "label.convertCron": "Convert Cron tab",
+      "label.convertCron": "Convert crontab",
       "label.folder": "Folder",
       "label.calendarName": "Calendar Name",
       "label.agentName": "Agent Name",
-      "label.systemCrontab": "System Cron tab ",
-      "tooltip.systemCrontab": "Crontab file contains user",
+      "label.systemCrontab": "System crontab",
+      "tooltip.systemCrontab": "crontab file contains user",
       "button.convert": "Convert"
     },
     "export": {
