@@ -1044,11 +1044,11 @@
     "message.nameIsNotValid": "Ungültiger Name",
     "message.invalidFile": "Keine gültige {{objectType}} Datei",
     "cronTab": {
-      "label.convertCron": "Convert Cron tab",
-      "label.folder": "Folder",
-      "label.calendarName": "Calendar Name",
-      "label.agentName ": "Agent Name",
-      "label.systemCrontab ": "System crontab ",
+      "label.convertCron": "crontab konvertieren",
+      "label.folder": "Ordner",
+      "label.calendarName": "Name des Kalenders",
+      "label.agentName ": "Name Agent",
+      "label.systemCrontab ": "System crontab",
       "tooltip.systemCrontab": "crontab Datei enthält Feld für Benutzerkennung",
       "button.convert": "Konvertieren"
     },
