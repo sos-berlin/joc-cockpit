@@ -1930,7 +1930,7 @@
     "label.workflowPath": "Workflow Path",
     "label.remainWhenTerminated": "Remain When Terminated",
     "label.joinIfFailed": "Join If Failed",
-    "label.skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day",
+    "label.skipIfNoAdmissionForOrderDay": "Skip Job if no admission for Order day",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
     "button.actual": "Default",
