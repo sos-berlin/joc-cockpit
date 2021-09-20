@@ -79,6 +79,8 @@
   "NOT_DEPLOYED": "not deployed",
   "UPDATE": "store",
   "DELETE": "delete",
+  "EXPECTED": "expected",
+  "POSTED": "posted",
   "minor": "minor",
   "major": "major",
   "normal": "normal",
@@ -132,6 +134,7 @@
     "label.reset": "reset",
     "label.resetting": "resetting",
     "label.couplingFailed": "Coupling Failed",
+    "label.shutdown": "Shutdown",
     "label.unknown": "Unknown",
     "label.runningTasks": "Running Tasks",
     "label.agentFound": "Agent entry found",
@@ -145,6 +148,7 @@
     "button.allAgent": "All Agent",
     "button.coupled": "Coupled",
     "button.couplingFailed": "Coupling Failed",
+    "button.shutdown": "Shutdown",
     "button.unknown": "Unknown",
     "button.enable": "Enable",
     "button.disable": "Disable",
@@ -1151,7 +1155,6 @@
           "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Daily Plan Date"
         },
         "addOrder": {
-          "orderName": "Order Name",
           "workflowName": "Workflow Name",
           "arguments": "Arguments",
           "remainWhenTerminated": "Remain When Terminated"
@@ -1805,7 +1808,6 @@
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",
     "label.order": "Order",
     "label.orderId": "Order ID",
-    "label.orderName": "Order Name",
     "label.noOfOrders": "No. of Orders",
     "label.workflowName": "Workflow Name",
     "label.updateWorkflow": "Update Workflow",
@@ -1944,6 +1946,7 @@
     "button.exportInPng": "Export to PNG format",
     "button.createForkListVariables": "Create New ForkList Variables",
     "button.wizard": "Wizard",
+    "button.addRequiredArguments": "Add Required Arguments",
     "button.addAllArguments": "Add All Arguments",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",

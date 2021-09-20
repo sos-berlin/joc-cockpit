@@ -125,6 +125,8 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
         label = 'agent.label.resetting';
       } else if (value.state._text === 'RESET') {
         label = 'agent.label.reset';
+      } else if (value.state._text === 'SHUTDOWN') {
+        label = 'agent.label.shutdown';
       } else if (value.state._text === 'UNKNOWN') {
         label = 'agent.label.unknown';
       } else {

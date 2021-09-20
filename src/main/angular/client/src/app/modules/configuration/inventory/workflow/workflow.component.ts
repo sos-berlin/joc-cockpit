@@ -76,18 +76,7 @@ export class DurationValidator implements Validator {
         return null;
       }
       if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*-\s*([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/.test(v)) {
-        const interval = v.split('-');
-        const a = interval[0].split(':');
-        const b = interval[1].split(':');
-        const s1 = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
-        const s2 = (+b[0]) * 60 * 60 + (+b[1]) * 60 + (+b[2]);
-        if (s1 > s2) {
-          return {
-            invalidDuration: true
-          };
-        } else {
-          return null;
-        }
+        return null;
       }
 
       if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0-9]+\s*$/i.test(v) ||
@@ -2047,7 +2036,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private updateToolbar(operation, cell, name = ''): void {
-    $('#toolbar').find('img').each(function(index) {
+    $('#toolbar').find('img').each(function (index) {
       if (index === 14) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
@@ -2812,33 +2801,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   addAllArguments(): void {
-    if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
-      const arr = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
-        const val: any = v;
-        return {name: k, value: val};
-      });
-
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i].value && arr[i].value.type !== 'List') {
-          for (const j in this.selectedNode.obj.arguments) {
-            if (this.selectedNode.obj.arguments[j].name === arr[i].name) {
-              if (arr[i].value.default) {
-                this.coreService.removeSlashToString(arr[i].value, 'default');
-                this.selectedNode.obj.arguments[j].value = arr[i].value.default;
-              }
-              break;
-            }
+    for (let i = 0; i < this.selectedNode.obj.argumentList.length; i++) {
+      console.log(this.selectedNode.obj.argumentList)
+      if (this.selectedNode.obj.argumentList[i].value && this.selectedNode.obj.argumentList[i].value.type !== 'List') {
+        let flag = false;
+        for (const j in this.selectedNode.obj.arguments) {
+          if (this.selectedNode.obj.arguments[j].name === this.selectedNode.obj.argumentList[i].name) {
+            flag = true;
+            break;
           }
-        } else {
-/*          if (this.selectedNode.obj.forkListArguments) {
-            for (const j in this.selectedNode.obj.forkListArguments) {
-              console.log(this.selectedNode.obj.forkListArguments[j]);
-              if (this.selectedNode.obj.forkListArguments[j].name === arr[i].name) {
-                console.log(this.selectedNode.obj.forkListArguments[j]);
-                break;
-              }
-            }
-          }*/
+        }
+        if (!flag) {
+          this.selectedNode.obj.arguments.push({
+            name: this.selectedNode.obj.argumentList[i].name,
+            type: this.selectedNode.obj.argumentList[i].value.type
+          });
         }
       }
     }
@@ -3192,7 +3169,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
    * Reload dummy xml
    */
   private reloadDummyXml(graph, xml): void {
-    this.clearCopyObj();
     this.jobs = [];
     graph.getModel().beginUpdate();
     try {
@@ -4701,7 +4677,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     let _iterateId = 0;
     const doc = mxUtils.createXmlDocument();
     if (!callFun) {
-      $('#toolbar').find('img').each(function(index) {
+      $('#toolbar').find('img').each(function (index) {
         if (index === 14) {
           $(this).addClass('disable-link');
         }
@@ -4873,12 +4849,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           const originalShape = graph.getView().getState(this.cell).shape;
           this.pBounds = originalShape.bounds;
           if (this.cell.value.tagName === 'Job') {
-            shape = new mxLabel(originalShape.bounds, originalShape.fill, originalShape.stroke, originalShape.strokewidth);
+            shape = new mxLabel(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
             shape.image = originalShape.image;
           } else if (this.cell.value.tagName === 'If' || this.cell.value.tagName.match(/try/)) {
-            shape = new mxRhombus(originalShape.bounds, originalShape.fill, originalShape.stroke, originalShape.strokewidth);
+            shape = new mxRhombus(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
           } else {
-            shape = new mxImageShape(originalShape.bounds, originalShape.image, originalShape.fill, originalShape.stroke);
+            shape = new mxImageShape(originalShape.bounds, self.workflowService.getStyleOfSymbol(this.cell.value.tagName, originalShape.image), null, originalShape.stroke + 1);
           }
           shape.isRounded = originalShape.isRounded;
           shape.gradient = originalShape.gradient;
@@ -4957,7 +4933,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         });
 
 
-        function clearClipboard() {
+        function clearClipboard(): void {
           if (self.cutCell) {
             self.changeCellStyle(self.editor.graph, self.cutCell, false);
           }
@@ -6785,9 +6761,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 obj.cell, 'arguments', JSON.stringify(argu.arguments));
               graph.getModel().execute(edit);
             }
-            const edit2 = new mxCellAttributeChange(
-              obj.cell, 'orderName', self.selectedNode.newObj.orderName);
-            graph.getModel().execute(edit2);
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'workflowName', self.selectedNode.newObj.workflowName);
             graph.getModel().execute(edit3);
@@ -7051,7 +7024,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           obj.arguments = argument;
           obj.argumentList = [];
-          obj.orderName = cell.getAttribute('orderName');
           obj.workflowName = cell.getAttribute('workflowName');
           const val1 = cell.getAttribute('remainWhenTerminated');
           obj.remainWhenTerminated = val1 == 'true';
@@ -7137,6 +7109,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
      */
     function pasteInstruction(target): void {
       let source = target.id;
+
       if (target.value.tagName === 'Connection') {
         if (checkClosingCell(target.source)) {
           source = target.source.value.getAttribute('targetId');
@@ -7149,6 +7122,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (!self.copyId) {
         copyObject = self.coreService.clone(self.inventoryConf.copiedInstuctionObject);
         delete copyObject.jobObject;
+      }
+      if (target.value.tagName === 'Process') {
+        if (self.workflow.configuration && !self.workflow.configuration.instructions) {
+          self.workflow.configuration.instructions = [];
+        }
       }
 
       function getObject(json) {
@@ -7234,17 +7212,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
           targetObj.catch.instructions.push(copyObject);
         }
-
       }
 
-      getObject(self.workflow.configuration);
+      if(self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
+        getObject(self.workflow.configuration);
+      }
+
       if (!targetObject) {
         targetIndex = -1;
         targetObject = self.workflow.configuration;
       }
       if (copyObject) {
         generateCopyObject(copyObject);
-        if (target.value.tagName !== 'Connection' && copyObject) {
+        if (target.value.tagName !== 'Connection' && copyObject && targetIndex > -1) {
           _dropOnObject();
         } else {
           if (targetObject && targetObject.instructions && copyObject) {
@@ -8902,8 +8882,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               delete json.instructions[x].arguments;
             }
             if (!flag) {
-              self.invalidMsg = !json.instructions[x].orderName ? 'workflow.message.orderNameIsMissing' :
-                !json.instructions[x].workflowName ? 'workflow.message.workflowNameIsNotValid' : '';
+              self.invalidMsg = !json.instructions[x].workflowName ? 'workflow.message.workflowNameIsNotValid' : '';
               checkErr = true;
             }
             if (!flag && isValidate) {

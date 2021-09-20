@@ -79,6 +79,8 @@
   "NOT_DEPLOYED": "未配置",
   "UPDATE": "保存",
   "DELETE": "削除",
+  "EXPECTED": "expected",
+  "POSTED": "posted",
   "minor": "マイナー",
   "major": "メジャー",
   "normal": "ノーマル",
@@ -132,6 +134,7 @@
     "label.reset": "リセット",
     "label.resetting": "リセット中",
     "label.couplingFailed": "接続失敗",
+    "label.shutdown": "Shutdown",
     "label.unknown": "不明",
     "label.runningTasks": "実行中タスク",
     "label.agentFound": "エージェントがあります",
@@ -145,6 +148,7 @@
     "button.allAgent": "全エージェント",
     "button.coupled": "接続",
     "button.couplingFailed": "接続失敗",
+    "button.shutdown": "Shutdown",
     "button.unknown": "不明",
     "button.enable": "有効化",
     "button.disable": "無効化",
@@ -1151,7 +1155,6 @@
           "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
         },
         "addOrder": {
-          "orderName": "オーダー名",
           "workflowName": "ワークフロー名",
           "arguments": "引数",
           "remainWhenTerminated": "Remain When Terminated"
@@ -1805,7 +1808,6 @@
     "--------COMMENT BOX BEGIN------------": "ジョブ定義 > インベントリー表示 > ワークフロー",
     "label.order": "オーダー",
     "label.orderId": "オーダーID",
-    "label.orderName": "オーダー名",
     "label.noOfOrders": "オーダー数",
     "label.workflowName": "ワークフロー名",
     "label.updateWorkflow": "ワークフロー更新",
@@ -1944,6 +1946,7 @@
     "button.exportInPng": "Pngエキスポート",
     "button.createForkListVariables": "新規ForkList変数作成",
     "button.wizard": "ウイザード",
+    "button.addRequiredArguments": "Add Required Arguments",
     "button.addAllArguments": "Add All Arguments",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",

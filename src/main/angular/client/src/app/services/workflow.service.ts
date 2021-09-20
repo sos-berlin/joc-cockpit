@@ -170,6 +170,37 @@ export class WorkflowService {
     }
   }
 
+  getStyleOfSymbol(name, image): any {
+    let svg;
+    let color = '#333333';
+    if (this.theme === 'dark') {
+      color = '#ffffff';
+    }
+    if (name === 'Fork') {
+      let path = '<path d="M32.54,30.5 L32,30.5 C29.63,30.5 28.46,29.36 26.99,27.92 C26.33,27.29 25.64,26.6 24.83,26.03 C25.73,25.43 26.45,24.71 27.11,24.05 C28.55,22.64 29.69,21.5 32,21.5 L32.54,21.5 L32.54,23.15 L38,20 L32.54,16.85 L32.54,18.5 L32,18.5 C28.46,18.5 26.63,20.3 25.01,21.92 C23.54,23.36 22.37,24.5 20,24.5 L19.61,24.5 L14.15,24.5 L14.15,27.5 L19.61,27.5 L20,27.5 C22.31,27.5 23.45,28.64 24.89,30.05 C26.45,31.58 28.4,33.5 32,33.5 L32.54,33.5 L32.54,35.15 L38,32 L32.54,28.85 L32.54,30.5 Z" id="Shape" fill="#fafafa" fill-rule="nonzero"></path>';
+      if (this.theme !== 'dark') {
+        path = '<path d="M32.54,30.5 L32,30.5 C29.63,30.5 28.46,29.36 26.99,27.92 C26.33,27.29 25.64,26.6 24.83,26.03 C25.73,25.43 26.45,24.71 27.11,24.05 C28.55,22.64 29.69,21.5 32,21.5 L32.54,21.5 L32.54,23.15 L38,20 L32.54,16.85 L32.54,18.5 L32,18.5 C28.46,18.5 26.63,20.3 25.01,21.92 C23.54,23.36 22.37,24.5 20,24.5 L19.61,24.5 L14.15,24.5 L14.15,27.5 L19.61,27.5 L20,27.5 C22.31,27.5 23.45,28.64 24.89,30.05 C26.45,31.58 28.4,33.5 32,33.5 L32.54,33.5 L32.54,35.15 L38,32 L32.54,28.85 L32.54,30.5 Z" id="Shape" fill="#50514f" fill-rule="nonzero"></path>';
+      }
+      const fillColor = '#FFEE73';
+      svg = '<svg width="48px" height="48px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><linearGradient id="grad2" y1="100%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:transparent;stop-opacity:1" /><stop offset="100%" style="stop-color:transparent;stop-opacity:1" /></linearGradient></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="noun_fork_60030" transform="translate(24.000000, 24.000000) rotate(90.000000) translate(-24.000000, -24.000000) translate(-2.000000, -2.000000)"><rect id="Rectangle-33" stroke="' + fillColor + '" fill="url(#grad2)" transform="translate(25.955844, 26.044156) rotate(45.000000) translate(-25.955844, -26.044156) " x="8.45584412" y="8.54415588" width="35" height="35" rx="4"></rect>' + path + '</g></g></svg>';
+    } else if (name === 'ForkList') {
+      const fillColor = '#97B0FF';
+      svg = '<svg width="52px" height="52px" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1"><stop stop-color="transparent" offset="0%"></stop><stop stop-color="transparent" offset="100%"></stop></linearGradient></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="fork" transform="translate(1.000000, 1.000000)" fill-rule="nonzero"><g id="noun_fork_60030" transform="translate(24.748737, 24.748737) rotate(90.000000) translate(-24.748737, -24.748737) "><rect id="Rectangle-33" stroke="' + fillColor + '" fill="url(#linearGradient-1)" transform="translate(24.748737, 24.748737) rotate(45.000000) translate(-24.748737, -24.748737) " x="7.24873734" y="7.24873734" width="35" height="35" rx="4"></rect><g id="noun_fork_60030-copy-2" transform="translate(13.000000, 12.497475)" fill="' + color + '"><path d="M18.54,2.85 L24,6 L18.54,9.15 L18.54,7.5 L18,7.5 C15.69,7.5 14.55,8.64 13.11,10.05 C12.45,10.71 11.73,11.43 10.83,12.03 C11.64,12.6 12.33,13.29 12.99,13.92 C14.39875,15.3 15.5319792,16.4044792 17.7098915,16.4941233 L18,16.5 L18.54,16.5 L18.54,14.85 L24,18 L18.54,21.15 L18.54,19.5 L18,19.5 C14.4,19.5 12.45,17.58 10.89,16.05 C10.0856923,15.2624487 9.37497704,14.5591306 8.50170293,14.0916454 L8.50081732,9.93957451 C9.4262588,9.4694162 10.1690375,8.7438 11.01,7.92 C12.576,6.354 14.3382333,4.6198 17.6516444,4.50592667 L18,4.5 L18.54,4.5 L18.54,2.85 Z M6.75,4 C7.16421356,4 7.5,4.33578644 7.5,4.75 L7.5,19.25 C7.5,19.6642136 7.16421356,20 6.75,20 C6.33578644,20 6,19.6642136 6,19.25 L6,4.75 C6,4.33578644 6.33578644,4 6.75,4 Z M3.75,4 C4.16421356,4 4.5,4.33578644 4.5,4.75 L4.5,19.25 C4.5,19.6642136 4.16421356,20 3.75,20 C3.33578644,20 3,19.6642136 3,19.25 L3,4.75 C3,4.33578644 3.33578644,4 3.75,4 Z M0.75,4 C1.16421356,4 1.5,4.33578644 1.5,4.75 L1.5,19.25 C1.5,19.6642136 1.16421356,20 0.75,20 C0.335786438,20 -3.47438424e-16,19.6642136 -3.98164955e-16,19.25 L4.89703974e-16,4.75 C4.38977443e-16,4.33578644 0.335786438,4 0.75,4 Z" id="Combined-Shape"></path></g></g></g></g></svg>';
+    } else if (name === 'lock') {
+      const fillColor = '#d4baff';
+      svg = '<svg width="50px" height="50px" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1"><stop stop-color="transparent" offset="0%"></stop><stop stop-color="transparent" offset="100%"></stop></linearGradient></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><g transform="translate(25.000000, 25.000000) rotate(90.000000) translate(-25.000000, -25.000000) "><rect stroke="' + fillColor + '" fill="url(#linearGradient-1)" transform="translate(24.955844, 25.044156) rotate(45.000000) translate(-24.955844, -25.044156) " x="7.45584417" y="7.544156" width="35" height="35" rx="4"></rect><g transform="translate(25.000000, 25.000000) rotate(-90.000000) translate(-25.000000, -25.000000) translate(13.000000, 13.000000)" fill="' + color + '"><path d="M12,1.5 C14.7273287,1.5 17.0094053,3.13098933 17.5864163,5.31512764 C17.08783,5.60061864 16.4844995,5.65550598 15.9379167,5.45512365 C15.4565605,3.98001796 13.8757001,2.9 12,2.9 C9.74065332,2.9 7.90909095,4.46700338 7.90909095,6.4 L7.90909095,6.4 L7.90909095,8.5 L14.9999999,8.499 L15,8.5 L17.7269999,8.561 C19.5642353,8.89080629 20.9019887,10.235545 20.9948437,11.8226924 L21,12 L21,19 C21,20.9329966 19.1684375,22.5 16.9090909,22.5 L16.9090909,22.5 L7.09090914,22.5 C4.83156246,22.5 3,20.9329966 3,19 L3,19 L3,12 C2.99960326,10.3365598 4.36772903,8.90268801 6.27272733,8.57 L6.27272733,8.57 L6.27272733,6.4 C6.27272733,3.69380473 8.83691464,1.5 12,1.5 Z M16.9090909,9.9 L7.09090914,9.9 C5.73530113,9.9 4.63636371,10.840202 4.63636371,12 L4.63636371,12 L4.63636371,19 C4.63636371,20.159798 5.73530113,21.1 7.09090914,21.1 L7.09090914,21.1 L16.9090909,21.1 C18.2646989,21.1 19.3636363,20.159798 19.3636363,19 L19.3636363,19 L19.3636363,12 C19.3636363,10.840202 18.2646989,9.9 16.9090909,9.9 L16.9090909,9.9 Z M12.1789153,12.7026676 C13.0109567,12.7809635 13.6397863,13.3838555 13.6363775,14.1 C13.6334866,14.7011593 13.1823449,15.2336383 12.5154545,15.423 L13.1209091,16.97 C13.2780182,17.3852102 13.1049688,17.8397604 12.6921755,18.096158 C12.2793823,18.3525555 11.7206177,18.3525555 11.3078245,18.096158 C10.8950312,17.8397604 10.7219818,17.3852102 10.8790909,16.97 L11.4845455,15.423 C10.690102,15.1974066 10.2227376,14.4952412 10.4013274,13.7955801 C10.5799172,13.095919 11.3468739,12.6243718 12.1789153,12.7026676 Z" id="Combined-Shape"></path></g></g></g></g></svg>';
+    } else if (name === 'AddOrder') {
+      const fillColor = '#ffb481';
+      svg = '<svg width="52px" height="52px" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1"><stop stop-color="transparent" offset="0%"></stop><stop stop-color="transparent" offset="100%"></stop></linearGradient></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(1.000000, 1.000000)"><g id="noun_fork_60030" transform="translate(24.748737, 24.748737) rotate(90.000000) translate(-24.748737, -24.748737) " fill="url(#linearGradient-1)" fill-rule="nonzero" stroke="' + fillColor + '"><rect id="Rectangle-33" transform="translate(24.748737, 24.748737) rotate(45.000000) translate(-24.748737, -24.748737) " x="7.24873734" y="7.24873734" width="35" height="35" rx="4"></rect></g><g id="noun_Add-Receipt_783557" transform="translate(13.000000, 14.000000)" fill="' + color + '"><path d="M15.9560181,14.9122362 L12.4359743,14.9122362 L12.4359743,13.6516532 L15.9560181,13.6516532 L15.9560181,10.0879853 L17.2011698,10.0879853 L17.2011698,13.6516532 L20.7212136,13.6516532 L20.7212136,14.9122362 L17.2011698,14.9122362 L17.2011698,18.4759041 L15.9560181,18.4759041 L15.9560181,14.9122362 Z M4.5,9.26058293 L15.5,9.26058293 L15.5,8 L4.5,8 L4.5,9.26058293 Z M4.5,6.26058293 L17.2,6.26058293 L17.2,5 L4.5,5 L4.5,6.26058293 Z M4.5,12.2605829 L13.7085193,12.2605829 L13.7085193,11 L4.5,11 L4.5,12.2605829 Z M4.5,14.9105829 L10.9959564,14.9105829 L10.9959564,13.65 L4.5,13.65 L4.5,14.9105829 Z" id="Shape"></path></g></g></g></svg>';
+    }
+
+    if (!svg) {
+      return image;
+    } else {
+      return  WorkflowService.svgToImageURL(svg);
+    }
+  }
+
   init(theme: string, graph, colorCode = null): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -339,7 +370,6 @@ export class WorkflowService {
     } else if (type === 'Prompt') {
       obj.question = node._question;
     } else if (type === 'AddOrder') {
-      obj.orderName = node._orderName;
       obj.workflowName = node._workflowName;
       let argu = node._arguments;
       if (!argu) {
@@ -430,9 +460,6 @@ export class WorkflowService {
         }
       }
       if (type === 'AddOrder') {
-        if (!value.orderName) {
-          return false;
-        }
         if (!value.workflowName) {
           return false;
         }
@@ -803,9 +830,6 @@ export class WorkflowService {
             _node.setAttribute('label', 'addOrder');
             if (json.instructions[x].arguments !== undefined) {
               _node.setAttribute('arguments', JSON.stringify(json.instructions[x].arguments));
-            }
-            if (json.instructions[x].orderName !== undefined) {
-              _node.setAttribute('orderName', json.instructions[x].orderName);
             }
             if (json.instructions[x].workflowName !== undefined) {
               _node.setAttribute('workflowName', json.instructions[x].workflowName);
@@ -1346,14 +1370,6 @@ export class WorkflowService {
             edge.setAttribute('noticeBoardName', noticeBoardName);
           }
         }
-      } else if (cell.value.tagName === 'AddOrder') {
-        const orderName = cell.getAttribute('orderName');
-        if (orderName) {
-          const edge = graph.getOutgoingEdges(cell)[0];
-          if (edge) {
-            edge.setAttribute('label', orderName);
-          }
-        }
       } else if (cell.value.tagName === 'Workflow') {
         const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : cell.getAttribute('type') === 'post' ? 'm-t-sm' : '';
         return '<div class="cursor text-dark ' + cls + '"><i class="icon-workflows-icon p-r-xs"></i>'
@@ -1511,17 +1527,12 @@ export class WorkflowService {
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-') + '</br>' +
           '<b>' + returnCode + '</b> : ' + (outcome.returnCode || '-');
       } else if (cell.value.tagName === 'AddOrder') {
-        let orderName = '';
         let workflowName = '';
-        this.translate.get('workflow.label.orderName').subscribe(translatedValue => {
-          orderName = translatedValue;
-        });
         this.translate.get('workflow.label.workflowName').subscribe(translatedValue => {
           workflowName = translatedValue;
         });
         const outcome = cell.getAttribute('outcome') ? JSON.parse(cell.getAttribute('outcome')) : {};
-        return '<b>' + orderName + '</b> : ' + (cell.getAttribute('orderName') || '-') + '</br>' +
-          '<b>' + workflowName + '</b> : ' + (cell.getAttribute('workflowName') || '-');
+        return '<b>' + workflowName + '</b> : ' + (cell.getAttribute('workflowName') || '-');
       } else if (cell.value.tagName === 'Prompt') {
         let question = '';
         this.translate.get('workflow.label.question').subscribe(translatedValue => {
@@ -1638,10 +1649,12 @@ export class WorkflowService {
   }
 
   convertDurationToHour(seconds: number): string {
+    const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
+    const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
     const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
     const m = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
     const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-    return (h != 0 ? h + 'h ' : '') + (m != 0 ? m + 'm ' : '') + (s != 0 ? s + 's' : '').trim();
+    return (w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (m != 0 ? m + 'm ' : '') + (s != 0 ? s + 's' : '').trim();
   }
 
   convertStringToDuration(str: string, isDuration = false): number {
@@ -1656,7 +1669,7 @@ export class WorkflowService {
       return seconds;
     }
 
-    if (isDuration && (/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(str))) {
+    if (isDuration && (/^\s*(?:(?:\d+)h\s*)?(?:\d+m\s*)?(?:\d+s)?\s*$/.test(str))) {
       return durationSeconds(str);
     }
 
@@ -1666,7 +1679,7 @@ export class WorkflowService {
       const b = interval[1].split(':');
       const s1 = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
       const s2 = (+b[0]) * 60 * 60 + (+b[1]) * 60 + (+b[2]);
-      return s2 - s1;
+      return s2 > s1 ? (s2 - s1) : (86400 - (s1 - s2));
     }
 
     if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {

@@ -482,21 +482,6 @@
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'AddOrder'">
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.orderName' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.orderName</label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : (error && !selectedNode.obj.orderName) || ((orderName.dirty || orderName.touched) && orderName.invalid)}">
-            <input type="text" identifierValidation maxlength="30" [appAutofocus]="!error" class="form-control" required #orderName="ngModel"
-                   name="orderName" [(ngModel)]="selectedNode.obj.orderName">
-            <div *ngIf="(error && !selectedNode.obj.orderName) || orderName.invalid && (orderName.dirty || orderName.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="(error && !selectedNode.obj.orderName) || (orderName.errors && orderName.errors.required)">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.workflowName' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.workflowName</label>
           <div class="col-md-8 col-lg-9 select-input-both"
@@ -703,12 +688,12 @@
             </div>
             <div class="form-group row">
               <div class="col-sm-12" *ngIf="selectedNode.obj.argumentList.length > selectedNode.obj.arguments.length">
-                <a class="text-u-l" (click)="addArgument(false)" translate>order.button.modifyVariable</a>
+                <a class="text-u-l" (click)="addArgument(false)" translate>workflow.button.addRequiredArguments</a>
               </div>
               <div class="col-sm-12" *ngIf="selectedNode.obj.argumentList.length <= selectedNode.obj.arguments.length && (selectedNode.obj.workflow && selectedNode.obj.workflow.orderPreparation && selectedNode.obj.workflow.orderPreparation.allowUndeclared)">
-                <a class="text-u-l" (click)="addArgument(true)" translate>order.button.addVariable</a>
+                <a class="text-u-l" (click)="addArgument(true)" translate>workflow.button.addRequiredArguments</a>
               </div>
-              <div class="col-sm-12 m-t-sm" *ngIf="orderPreparation && orderPreparation.parameters">
+              <div class="col-sm-12 m-t-sm" *ngIf="selectedNode.obj.argumentList.length || (selectedNode.obj.forkListArguments && selectedNode.obj.forkListArguments.length > 0)">
                 <a class="text-u-l" (click)="addAllArguments()" translate>workflow.button.addAllArguments</a>
               </div>
             </div>

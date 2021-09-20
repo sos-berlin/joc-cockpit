@@ -25,6 +25,9 @@
                         [ngClass]="{'btn-primary': agentsFilters.filter.state=='COUPLINGFAILED'}"
                         (click)="loadAgents('COUPLINGFAILED')" translate>agent.button.couplingFailed
                 </button>
+                <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='SHUTDOWN'}"
+                        (click)="loadAgents('SHUTDOWN')" translate>agent.button.shutdown
+                </button>
                 <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='UNKNOWN'}"
                         (click)="loadAgents('UNKNOWN')" translate>agent.button.unknown
                 </button>

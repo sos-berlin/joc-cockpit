@@ -66,7 +66,7 @@
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
             </button>
             <div class="btn-group m-l-12">
-              <button class="btn btn-grey btn-sm" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards"
+              <button class="btn btn-grey btn-sm" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
                       [ngClass]="{'btn-primary': pageView=='graph'}" (click)="setView('graph')"><i class="fa fa-codepen"></i>
               </button>
               <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i

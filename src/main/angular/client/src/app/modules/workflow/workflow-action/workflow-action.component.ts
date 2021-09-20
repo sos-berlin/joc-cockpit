@@ -353,6 +353,8 @@ export class WorkflowActionComponent {
       }).subscribe((res) => {
         workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
         workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
+        workflow.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
+        workflow.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
         this.openModal(workflow);
       });
     } else {

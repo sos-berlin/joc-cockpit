@@ -52,6 +52,7 @@
     "replace-in-file": "^6.2.0",
     "rxjs": "~6.6.0",
     "save-svg-as-png": "^1.4.17",
+    "set-value": "^4.1.0",
     "stream": "0.0.2",
     "tslib": "^2.0.0",
     "underscore": "^1.13.1",

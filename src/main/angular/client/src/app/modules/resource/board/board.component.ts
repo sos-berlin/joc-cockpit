@@ -22,6 +22,7 @@ export class PostModalComponent implements OnInit {
   @Input() controllerId: string;
   @Input() preferences: any;
   @Input() board: any;
+  @Input() notice: any;
 
   viewDate = new Date();
   submitted = false;
@@ -37,7 +38,11 @@ export class PostModalComponent implements OnInit {
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
     this.postObj.at = 'date';
-    this.postObj.noticeId = this.coreService.getStringDate(null);
+    if (this.notice) {
+      this.postObj.noticeId = this.notice.id;
+    } else {
+      this.postObj.noticeId = this.coreService.getStringDate(null);
+    }
   }
 
   disabledDate = (current: Date): boolean => {
@@ -118,7 +123,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  post(board): void {
+  post(board, notice = null): void {
     this.modal.create({
       nzTitle: null,
       nzContent: PostModalComponent,
@@ -126,6 +131,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
       nzClassName: 'lg',
       nzComponentParams: {
         board,
+        notice,
         controllerId: this.controllerId,
         preferences: this.preferences
       },
@@ -378,7 +384,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       res.noticeBoards.forEach((value) => {
         value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
-        value.numOfNotices = value.notices.length;
+        value.numOfNotices = value.notices ? value.notices.length : 0;
         if (this.boardsFilters.expandedObjects && this.boardsFilters.expandedObjects.length > 0) {
           const index = this.boardsFilters.expandedObjects.indexOf(value.path);
           if (index > -1) {
@@ -411,7 +417,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  post(board): void {
+  post(board, notice = null): void {
     this.modal.create({
       nzTitle: null,
       nzContent: PostModalComponent,
@@ -419,6 +425,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         board,
+        notice,
         controllerId: this.schedulerIds.selected,
         preferences: this.preferences
       },

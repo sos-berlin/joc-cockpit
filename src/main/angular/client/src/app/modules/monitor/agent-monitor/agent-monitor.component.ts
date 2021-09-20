@@ -370,7 +370,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
           obj.total = (differenceInMilliseconds(lastDate,
             this.filters.filter.startDate) + (dur1));
           if (this.coreService.getDateByFormat(this.filters.filter.startDate, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
-            obj.total -= (1000 * 60 * 60 * 24);
+            //obj.total -= (1000 * 60 * 60 * 24);
           }
           if (isNaN(lastEntry.totalRunningTime)) {
             if (lastEntry.isShutdown) {

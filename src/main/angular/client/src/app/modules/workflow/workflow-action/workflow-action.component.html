@@ -14,7 +14,7 @@
       <li nz-menu-item *ngIf="permission.currentController.orders.create" [nzDisabled]="!workflow.isCurrentVersion" (click)="addOrder(workflow);" >
         <a>{{'workflow.button.addOrder' | translate}} ..</a>
       </li>
-      <li nz-menu-item *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards" (click)="showDependency(workflow);" >
+      <li nz-menu-item *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies" (click)="showDependency(workflow);" >
         <a>{{'workflow.button.showDependency' | translate}} ..</a>
       </li>
       <li nz-menu-item (click)="coreService.copyLink('workflow',workflow.name)" >

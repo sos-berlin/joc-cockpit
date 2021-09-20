@@ -204,35 +204,44 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     const self = this;
     const APIs = [];
 
-    function addWorkflowInArrays(noticeBoards): void {
-      noticeBoards.forEach((board) => {
-        board.value.forEach((item) => {
-          if (!self.workflowObjects.has(item.path)) {
-            setTimeout(() => {
-              self.isAllLoaded = false;
-            }, 50);
-            if (self.workflowObjects.size < 15) {
-              APIs.push(self.coreService.post('workflow/dependencies', {
-                controllerId: self.schedulerIds.selected,
-                workflowId: {
-                  path: item.path,
-                  version: item.versionId
-                }
-              }).pipe(
-                catchError(error => of(error))
-              ));
-              self.workflowObjects.set(item.path, '');
-            }
+    function addWorkflowInArrays(list): void {
+      list.forEach((item) => {
+        if (!self.workflowObjects.has(item.path)) {
+          setTimeout(() => {
+            self.isAllLoaded = false;
+          }, 50);
+          if (self.workflowObjects.size < 15) {
+            APIs.push(self.coreService.post('workflow/dependencies', {
+              controllerId: self.schedulerIds.selected,
+              workflowId: {
+                path: item.path,
+                version: item.versionId
+              }
+            }).pipe(
+              catchError(error => of(error))
+            ));
+            self.workflowObjects.set(item.path, '');
           }
-        });
+        }
       });
     }
 
     if (workflow.expectedNoticeBoards.length > 0) {
-      addWorkflowInArrays(workflow.expectedNoticeBoards);
+      workflow.expectedNoticeBoards.forEach((board) => {
+        addWorkflowInArrays(board.value);
+      });
     }
     if (workflow.postNoticeBoards.length > 0) {
-      addWorkflowInArrays(workflow.postNoticeBoards);
+      workflow.postNoticeBoards.forEach((board) => {
+        addWorkflowInArrays(board.value);
+      });
+    }
+    console.log(workflow)
+    if (workflow.addOrderToWorkflows.length > 0) {
+      addWorkflowInArrays(workflow.addOrderToWorkflows);
+    }
+    if (workflow.addOrderFromWorkflows.length > 0) {
+      addWorkflowInArrays(workflow.addOrderFromWorkflows);
     }
 
     this.callAPI(APIs, () => {
@@ -260,6 +269,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       }
       workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
       workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
+      workflow.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
+      workflow.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
       this.workflowObjects.set(workflow.path, JSON.stringify(workflow));
       this.getOrders(workflow);
     });
@@ -331,7 +342,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.workFlowJson = res.workflow;
       this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs);
       this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
-      if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards) {
+      if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
         this.showDependency(res.workflow);
       } else {
         this.getOrders(res.workflow);

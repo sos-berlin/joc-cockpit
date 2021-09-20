@@ -93,12 +93,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
       this.agentClusterRunningTaskGraph(res);
       this.isLoaded = true;
     }, (err) => {
-      console.log(err);
       this.isLoaded = true;
     });
-  }
-
-  onSelect(event): void {
-    console.log(event);
   }
 }

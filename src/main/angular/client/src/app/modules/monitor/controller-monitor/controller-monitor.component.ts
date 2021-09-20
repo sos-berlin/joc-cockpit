@@ -194,12 +194,12 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       obj.total = ((differenceInMilliseconds(lastDate,
         this.filters.filter.startDate)) + dur1);
       if (this.coreService.getDateByFormat(this.filters.filter.startDate, this.preferences.zone, 'YYYY-MM-DD') === this.coreService.getDateByFormat(this.viewDate, this.preferences.zone, 'YYYY-MM-DD')) {
-        obj.total -= (1000 * 60 * 60 * 24);
+        //obj.total -= (1000 * 60 * 60 * 24);
       }
 
       if (!lastEntry && controller.previousEntry) {
         if (controller.previousEntry.lastKnownTime) {
-          obj.time = 0;
+          obj.time = controller.previousEntry.totalRunningTime;
         } else {
           obj.time = ((arr.length - 1) * 24 * 60 * 60 * 1000) +
             moment.duration(this.coreService.getDateByFormat(new Date(), this.preferences.zone, 'HH:mm:ss')).asMilliseconds();
@@ -446,7 +446,13 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
             flag = true;
             if (map && map.size > 0) {
               if (map.has(date)) {
-                groupData[j].value = groupData[j].value.concat(JSON.parse(map.get(date)));
+                let val = JSON.parse(map.get(date));
+                if(groupData[j].value.length > 0){
+                  val = val.filter((item) => {
+                    return item.lastKnownTime;
+                  });
+                }
+                groupData[j].value = groupData[j].value.concat(val);
               }
             }
             groupData[j].value = sortBy(groupData[j].value, (x: any) => {

@@ -79,6 +79,8 @@
   "NOT_DEPLOYED": "nicht ausgerollt",
   "UPDATE": "speichern",
   "DELETE": "löschen",
+  "EXPECTED": "expected",
+  "POSTED": "posted",
   "minor": "gering",
   "major": "hoch",
   "normal": "normal",
@@ -132,6 +134,7 @@
     "label.reset": "zurücksetzen",
     "label.resetting": "im Zurücksetzen",
     "label.couplingFailed": "Kopplung fehlgeschlagen",
+    "label.shutdown": "Shutdown",
     "label.unknown": "unbekannt",
     "label.runningTasks": "Prozesse in Ausführung",
     "label.agentFound": "Eintrag für Agent gefunden",
@@ -145,6 +148,7 @@
     "button.allAgent": "Alle Agenten",
     "button.coupled": "gekoppelt",
     "button.couplingFailed": "Kopplung fehlgeschlagen",
+    "button.shutdown": "Shutdown",
     "button.unknown": "unbekannt",
     "button.enable": "Aktivieren",
     "button.disable": "Deaktivieren",
@@ -1151,7 +1155,6 @@
           "skipIfNoAdmissionForOrderDay": "Überspringen falls keine Zutrittszeiten für Tagesplandatum vorliegen"
         },
         "addOrder": {
-          "orderName": "Name des Auftrags",
           "workflowName": "Name des Arbeitsablaufs",
           "arguments": "Argumente",
           "remainWhenTerminated": "Nach Terminierung im Arbeitsablauf verbleiben"
@@ -1805,7 +1808,6 @@
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",
     "label.order": "Auftrag",
     "label.orderId": "Auftragskennung",
-    "label.orderName": "Auftragsname",
     "label.noOfOrders": "Anzahl Aufträge",
     "label.workflowName": "Name Arbeitsablauf",
     "label.updateWorkflow": "Arbeitsablauf aktualisieren",
@@ -1944,6 +1946,7 @@
     "button.exportInPng": "Exportieren in PNG Format",
     "button.createForkListVariables": "Listenvariablen erstellen",
     "button.wizard": "Assistent",
+    "button.addRequiredArguments": "Add Required Arguments",
     "button.addAllArguments": "Alle Argumente hinzufügen",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",

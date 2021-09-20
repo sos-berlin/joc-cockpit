@@ -12,7 +12,7 @@
       <div class="form-group row" [ngClass]="{'has-error' : ((noticeId.dirty || noticeId.touched) && noticeId.invalid)}">
         <label class="col-sm-4 form-control-label" translate>resource.board.label.noticeId</label>
         <div class="col-sm-6">
-          <input type="text" class="form-control" name="noticeId" placeholder="{{'resource.board.placeholder.enterNoticeId' | translate}}"
+          <input type="text" class="form-control" [readOnly]="notice" name="noticeId" placeholder="{{'resource.board.placeholder.enterNoticeId' | translate}}"
                  [(ngModel)]="postObj.noticeId" required [appAutofocus]="true" autocomplete="off" #noticeId="ngModel"/>
           <div *ngIf="noticeId.invalid && (noticeId.dirty || noticeId.touched)" class="text-danger help-block">
             <div *ngIf="noticeId.errors.required" translate>
