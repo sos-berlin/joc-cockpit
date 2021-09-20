@@ -409,7 +409,13 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
             flag = true;
             if (map && map.size > 0) {
               if (map.has(date)) {
-                this.groupByData[j].value = this.groupByData[j].value.concat(JSON.parse(map.get(date)));
+                let val = JSON.parse(map.get(date));
+                if (this.groupByData[j].value.length > 0) {
+                  val = val.filter((item) => {
+                    return item.lastKnownTime;
+                  });
+                }
+                this.groupByData[j].value = this.groupByData[j].value.concat(val);
               }
             }
             this.groupByData[j].value = sortBy(this.groupByData[j].value, (x: any) => {

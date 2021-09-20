@@ -1047,8 +1047,8 @@
       "label.convertCron": "Convert Cron tab",
       "label.folder": "Folder",
       "label.calendarName": "Calendar Name",
-      "label.agentName ": "Agent Name",
-      "label.systemCrontab ": "System Cron tab ",
+      "label.agentName": "Agent Name",
+      "label.systemCrontab": "System Cron tab ",
       "tooltip.systemCrontab": "Crontab file contains user",
       "button.convert": "Convert"
     },

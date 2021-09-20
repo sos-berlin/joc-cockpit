@@ -1,0 +1,166 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>inventory.cronTab.label.convertCron</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="import()">
+  <div class="modal-body p-a" style="min-height: 300px">
+    <div class="row">
+      <div class="col-md-12 hide" [ngClass]="{'show': display}">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.cronTab.label.folder</label>
+          </label>
+          <div class="col-md-9">
+            <input autocomplete="off" type="text" name="folder" class="form-control pos-abt" style="border: none; width: 90%; z-index: 99" [(ngModel)]="requestObj.folder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
+            <nz-tree-select
+              name="path1"
+              class="custom-select-box"
+              [nzAllowClear]="false"
+              [nzNodes]="nodes"
+              [nzDisplayWith]="displayWith"
+              [nzDropdownStyle]="{ 'max-height': '260px' }"
+              [(ngModel)]="requestObj.folder1"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div class="node-wrapper" (click)="selectPath(node);">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    {{node.title}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.cronTab.label.calendarName</label>
+          </label>
+          <div class="col-md-9" [ngClass]="{'has-error' : ((calendarName.dirty || calendarName.touched) && calendarName.invalid)}">
+            <nz-tree-select
+              name="calendarName"
+              required
+              #calendarName="ngModel"
+              nzNoAnimation
+              [nzAllowClear]="false"
+              [nzNodes]="calendarTree"
+              [nzHideUnMatched]="true"
+              [nzDropdownStyle]="{ 'max-height': '300px' }"
+              nzShowSearch
+              [(ngModel)]="requestObj.calendarName"
+              (nzExpandChange)="onExpand($event)"
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+                  <div class="node-content-wrapper"
+                       [class.node-content-wrapper-active]="node.origin.path == requestObj.calendarName">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                       class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.key}}
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+            <div *ngIf="calendarName.invalid && calendarName.errors && (calendarName.dirty || calendarName.touched)" class="text-danger help-block">
+              <div *ngIf="calendarName.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.cronTab.label.agentName</label>
+          </label>
+          <div class="col-md-9" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
+            <nz-select nzShowSearch name="agentName" required nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
+                       [(ngModel)]="requestObj.agentName" #agentName="ngModel">
+              <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
+            </nz-select>
+            <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="(agentName.errors && agentName.errors.required)">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3">
+            <label [nz-tooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate" translate>inventory.cronTab.label.systemCrontab</label>
+          </label>
+          <div class="col-md-9">
+            <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.systemCrontab"></label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="uploader.queue.length === 0">
+          <div ng2FileDrop [uploader]="uploader" class="drop-box-full"
+               [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)">
+            <div><i class="icon-upload-icon"></i></div>
+            <div translate>common.button.dragAndDropFileToUpload</div>
+          </div>
+          <div class="p-t-sm" [hidden]="uploader.queue.length>0">
+            <div class="upload-btn-wrapper">
+              <button type="button" class="btn btn-grey btn-sm" >
+                <span translate>common.button.chooseFileToUpload</span>
+              </button>
+              <input type="file" ng2FileSelect [uploader]="uploader">
+            </div>
+          </div>
+      </div>
+      <div class="col-md-12" *ngIf="uploader.queue.length>0">
+        <div class="table-responsive"
+             style="min-height: 250px; max-height: 600px; overflow: auto">
+          <table class="table table-hover table-bordered  ">
+            <thead>
+            <tr>
+              <th><span translate>common.label.name</span></th>
+              <th><span translate>common.label.size</span></th>
+              <th><span translate>common.label.progress</span></th>
+              <th><span translate>common.label.status</span></th>
+              <th *ngIf="uploader.queue[0].isError"><span translate>common.label.action</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of uploader.queue">
+              <td><strong>{{item.file.name }}</strong></td>
+              <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
+              <td nowrap>
+                <div class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                </div>
+              </td>
+              <td>
+                <span class="text-success" *ngIf="item.isSuccess"><i class="fa fa-check"></i></span>
+                <span class="text-warn" *ngIf="item.isCancel"><i class="fa fa-ban"></i></span>
+                <span class="text-danger" *ngIf="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
+              </td>
+              <td *ngIf="item.isError">
+                <a class="text-hover-color" (click)="item.remove();uploader.isUploading = false;"><i class="fa fa-remove"></i></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || uploader.isUploading">
+      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
+       <span translate>inventory.cronTab.button.convert</span>
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

@@ -306,7 +306,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
         const m = this.object.startTime.getMinutes();
         const s = this.object.startTime.getSeconds();
         p.startTime = (h * 60 * 60) + (m * 60) + s;
-      } else{
+      } else {
         p.startTime = 0;
       }
       p.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
@@ -351,7 +351,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.object = {};
   }
 
-  closeRuntime(): void{
+  closeRuntime(): void {
     this.close.emit();
   }
 
@@ -2755,16 +2755,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       argument.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         argument.isRequired = true;
-      } else {
-        this.coreService.removeSlashToString(obj, 'default');
-        if (obj.type === 'Boolean') {
-          argument.value = (obj.default === true || obj.default === 'true');
-        } else {
-          argument.value = obj.default;
-        }
       }
     }
     this.updateSelectItems();
+    this.matchWithExistingArguments();
   }
 
   updateSelectItems(): void {
@@ -2796,13 +2790,23 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  removeArgument(index): void {
-    this.selectedNode.obj.arguments.splice(index, 1);
+  removeArgument(data): void {
+    for (let i = 0; i < this.selectedNode.obj.argumentList.length; i++) {
+      if (this.selectedNode.obj.argumentList[i].name === data.name) {
+        this.selectedNode.obj.argumentList[i].isSelected = false;
+        break;
+      }
+    }
+    for (let j = 0; j < this.selectedNode.obj.arguments.length; j++) {
+      if (this.selectedNode.obj.arguments[j].name === data.name) {
+        this.selectedNode.obj.arguments.splice(j, 1);
+        break;
+      }
+    }
   }
 
   addAllArguments(): void {
     for (let i = 0; i < this.selectedNode.obj.argumentList.length; i++) {
-      console.log(this.selectedNode.obj.argumentList)
       if (this.selectedNode.obj.argumentList[i].value && this.selectedNode.obj.argumentList[i].value.type !== 'List') {
         let flag = false;
         for (const j in this.selectedNode.obj.arguments) {
@@ -2812,10 +2816,39 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
         }
         if (!flag) {
-          this.selectedNode.obj.arguments.push({
+          this.selectedNode.obj.argumentList[i].isSelected = true;
+          const obj = {
             name: this.selectedNode.obj.argumentList[i].name,
-            type: this.selectedNode.obj.argumentList[i].value.type
-          });
+            type: this.selectedNode.obj.argumentList[i].value.type,
+            isRequired: false
+          };
+          if (!this.selectedNode.obj.argumentList[i].value.default && this.selectedNode.obj.argumentList[i].value.default !== false && this.selectedNode.obj.argumentList[i].value.default !== 0) {
+            obj.isRequired = true;
+          }
+          this.selectedNode.obj.arguments.push(obj);
+        }
+      }
+    }
+    this.matchWithExistingArguments();
+  }
+
+  private matchWithExistingArguments(): void {
+    if (this.orderPreparation && this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {
+      const arr = Object.entries(this.orderPreparation.parameters).map(([k, v]) => {
+        const val: any = v;
+        return {name: k, value: val};
+      });
+
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].value && arr[i].value.type !== 'List') {
+          for (const j in this.selectedNode.obj.arguments) {
+            if (this.selectedNode.obj.arguments[j].name === arr[i].name) {
+              if (!this.selectedNode.obj.arguments[j].value) {
+                this.selectedNode.obj.arguments[j].value = '$' + this.selectedNode.obj.arguments[j].name;
+              }
+              break;
+            }
+          }
         }
       }
     }
@@ -2874,7 +2907,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       $event.preventDefault();
       if (!isOrder) {
         this.addVariable();
-      } else{
+      } else {
         this.addArgument();
       }
     }
@@ -8690,15 +8723,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  private clearCopyObj(): void {
-    this.copyId = null;
-    $('#toolbar').find('img').each(function(index) {
-      if (index === 14) {
-        $(this).addClass('disable-link');
-      }
-    });
-  }
-
   private storeJSON(): void {
     setTimeout(() => {
       if (this.editor && this.editor.graph && !this.implicitSave) {
@@ -8732,10 +8756,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const ids = new Map();
     const labels = new Map();
 
-    function recursive(json) {
+    function recursive(json): void {
       if (json.instructions && (flag || !isValidate)) {
         for (let x = 0; x < json.instructions.length; x++) {
-
           if (json.instructions[x].TYPE === 'Job') {
             isJobExist = true;
             json.instructions[x].TYPE = 'Execute.Named';
@@ -9256,7 +9279,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.history.type = 'new';
       }
     }
-    if (!this.workflow.id){
+    if (!this.workflow.id) {
       return;
     }
 

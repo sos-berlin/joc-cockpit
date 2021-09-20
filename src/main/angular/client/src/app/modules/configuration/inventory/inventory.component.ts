@@ -628,6 +628,181 @@ export class DeployComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-cron-import-modal-content',
+  templateUrl: './cron-import-dialog.html'
+})
+export class CronImportModalComponent implements OnInit {
+  @Input() display: any;
+  @Input() controllerId;
+  nodes: any = [];
+  agents: any = [];
+  calendarTree: any = [];
+  uploader: FileUploader;
+  comments: any = {};
+  hasBaseDropZoneOver: any;
+  requestObj: any = {
+    systemCrontab: false,
+    folder: '/'
+  };
+
+  constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
+              public toasterService: ToasterService, private coreService: CoreService, private authService: AuthService) {
+  }
+
+  ngOnInit(): void {
+    this.getTree();
+    this.getAgents();
+    this.getCalendars();
+    this.uploader = new FileUploader({
+      url: './api/inventory/convert/cron',
+      queueLimit: 1,
+      headers: [{
+        name: 'X-Access-Token',
+        value: this.authService.accessTokenId
+      }]
+    });
+    this.comments.radio = 'predefined';
+
+    this.uploader.onBeforeUploadItem = (item: any) => {
+      const obj: any = {};
+      if (this.comments.comment) {
+        obj.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.ticketLink = this.comments.ticketLink;
+      }
+
+      if (this.requestObj.folder && this.requestObj.folder.substring(0, 1) !== '/') {
+        this.requestObj.folder = '/' + this.requestObj.folder;
+      }
+      obj.folder = this.requestObj.folder || '/';
+      obj.systemCrontab = this.requestObj.systemCrontab;
+      obj.agentName = this.requestObj.agentName;
+      obj.calendarName = this.requestObj.calendarName;
+      item.file.name = encodeURIComponent(item.file.name);
+      this.uploader.options.additionalParameter = obj;
+    };
+
+    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
+      if (status === 200) {
+        this.activeModal.close(this.requestObj.folder || '/');
+      }
+    };
+
+    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.pop('error', res.error.code, res.error.message);
+      }
+    };
+  }
+
+  private getTree(): void{
+    this.coreService.post('tree', {
+      forInventory: true,
+      types: ['INVENTORY']
+    }).subscribe((res: any) => {
+      if (res.folders.length === 0) {
+        res.folders.push({name: '', path: '/'});
+      }
+      this.nodes = this.coreService.prepareTree(res, true);
+    });
+  }
+
+  private getAgents(): void{
+    this.coreService.post('agents/names', {controllerId: this.controllerId}).subscribe((res: any) => {
+      this.agents = res.agentNames ? res.agentNames.sort() : [];
+    });
+  }
+
+  private getCalendars(): void{
+    this.coreService.post('tree', {
+      forInventory: true,
+      types: ['WORKINGDAYSCALENDAR']
+    }).subscribe((res: any) => {
+      this.calendarTree = this.coreService.prepareTree(res, false);
+    });
+  }
+
+  loadData(node, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        const request: any = {
+          path: node.key,
+          objectTypes: ['WORKINGDAYSCALENDAR']
+        };
+        const URL = 'inventory/read/folder';
+        this.coreService.post(URL, request).subscribe((res: any) => {
+          let data = res.calendars;
+          for (let i = 0; i < data.length; i++) {
+            const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
+            data[i].title = data[i].name;
+            data[i].path = path;
+            data[i].key = data[i].name;
+            data[i].type = 'WORKINGDAYSCALENDAR';
+            data[i].isLeaf = true;
+          }
+          if (node.origin.children && node.origin.children.length > 0) {
+            data = data.concat(node.origin.children);
+          }
+          if (node.origin.isLeaf) {
+            node.origin.expanded = true;
+          }
+          node.origin.isLeaf = false;
+          node.origin.children = data;
+          this.calendarTree = [...this.calendarTree];
+        });
+      }
+    } else {
+
+    }
+  }
+
+  onExpand(e): void {
+    this.loadData(e.node, null);
+  }
+
+  fileOverBase(e: any): void {
+    this.hasBaseDropZoneOver = e;
+  }
+
+  import(): void {
+    this.uploader.queue[0].upload();
+  }
+
+  displayWith(data): string {
+    return data.key;
+  }
+
+  selectPath(node): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (this.requestObj.folder !== node.key) {
+      this.requestObj.folder = node.key;
+    }
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
+
+@Component({
   selector: 'app-export-modal',
   templateUrl: './export-dialog.html'
 })
@@ -1421,7 +1596,7 @@ export class ImportWorkflowModalComponent implements OnInit {
       if (res.folders.length === 0) {
         res.folders.push({name: '', path: '/'});
       }
-      this.nodes = this.coreService.prepareTree(res, false);
+      this.nodes = this.coreService.prepareTree(res, true);
     });
   }
 
@@ -2084,7 +2259,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         this.updateFolders(path, false, (response) => {
           this.updateTree(false);
           if (redirect) {
-            response.expanded = true;
+            if (response) {
+              response.expanded = true;
+            }
             this.clearSelection();
           }
         }, redirect);
@@ -2818,6 +2995,31 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(path => {
 
+    });
+  }
+
+  convertJob(type: string): void{
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: CronImportModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzComponentParams: {
+        display: this.preferences.auditLog,
+        controllerId: this.schedulerIds.selected
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(path => {
+      if (path) {
+        setTimeout(() => {
+          if (this.tree && this.tree.length > 0) {
+            this.initTree(path, null, true);
+          }
+        }, 700);
+      }
     });
   }
 

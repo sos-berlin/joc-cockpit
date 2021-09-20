@@ -128,6 +128,8 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
       this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
       this.workFlowJson.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
+      this.workFlowJson.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
+      this.workFlowJson.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
       this.getOrders(this.workflow);
       setTimeout(() => {
         $('.mxTooltip').remove();
@@ -895,6 +897,26 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             }
           }
 
+          if (json.instructions[x].TYPE === 'AddOrder') {
+            const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
+            if (cell) {
+              mainJson.addOrderToWorkflows.forEach((workflow) => {
+                if (workflow.path.substring(workflow.path.lastIndexOf('/') + 1) === json.instructions[x].workflowName) {
+                  const outgoingEdges = graph.getOutgoingEdges(cell);
+                  if (outgoingEdges && outgoingEdges.length > 0) {
+                    for (const edge in outgoingEdges) {
+                      if (outgoingEdges[edge].target && outgoingEdges[edge].target.value && outgoingEdges[edge].target.value.tagName === 'ImplicitEnd') {
+                        graph.removeCells([outgoingEdges[edge].target], true);
+                        break;
+                      }
+                    }
+                  }
+                  createWorkflowNode(workflow, cell, 'post');
+                }
+              });
+            }
+          }
+
           if (json.instructions[x].catch) {
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
               recursive(json.instructions[x].catch);
@@ -968,6 +990,22 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           }
         }
       }
+    }
+
+    if (mainJson.addOrderFromWorkflows && mainJson.addOrderFromWorkflows.length > 0) {
+      const cell = graph.getChildCells(graph.getDefaultParent())[0];
+      const incomingEdges = graph.getIncomingEdges(cell);
+      if (incomingEdges && incomingEdges.length > 0) {
+        for (const edge in incomingEdges) {
+          if (incomingEdges[edge].source && incomingEdges[edge].source.value && incomingEdges[edge].source.value.tagName === 'Process') {
+            graph.removeCells([incomingEdges[edge].source], true);
+            break;
+          }
+        }
+      }
+      mainJson.addOrderFromWorkflows.forEach((workflow) => {
+        createWorkflowNode(workflow, cell, 'expect');
+      });
     }
 
     recursive(mainJson);

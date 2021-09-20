@@ -647,7 +647,7 @@
                       </div>
                     </div>
                     <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="!variable.isRequired">
-                      <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                      <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeArgument(variable)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                     </div>
                   </div>
                 </ng-container>
@@ -665,7 +665,7 @@
                       </div>
                     </div>
                     <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="!variable.isRequired">
-                      <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                      <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeArgument(variable)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                     </div>
                   </div>
                 </ng-container>
@@ -680,7 +680,7 @@
                       </div>
                     </div>
                     <div class="pos-abt" style="right: -6px; margin-top: -28px" *ngIf="!variable.isRequired">
-                      <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                      <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeArgument(variable)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                     </div>
                   </div>
                 </ng-container>
@@ -688,10 +688,10 @@
             </div>
             <div class="form-group row">
               <div class="col-sm-12" *ngIf="selectedNode.obj.argumentList.length > selectedNode.obj.arguments.length">
-                <a class="text-u-l" (click)="addArgument(false)" translate>workflow.button.addRequiredArguments</a>
+                <a class="text-u-l" (click)="addArgument(false)" translate>workflow.button.addArgument</a>
               </div>
               <div class="col-sm-12" *ngIf="selectedNode.obj.argumentList.length <= selectedNode.obj.arguments.length && (selectedNode.obj.workflow && selectedNode.obj.workflow.orderPreparation && selectedNode.obj.workflow.orderPreparation.allowUndeclared)">
-                <a class="text-u-l" (click)="addArgument(true)" translate>workflow.button.addRequiredArguments</a>
+                <a class="text-u-l" (click)="addArgument(true)" translate>workflow.button.addArgument</a>
               </div>
               <div class="col-sm-12 m-t-sm" *ngIf="selectedNode.obj.argumentList.length || (selectedNode.obj.forkListArguments && selectedNode.obj.forkListArguments.length > 0)">
                 <a class="text-u-l" (click)="addAllArguments()" translate>workflow.button.addAllArguments</a>

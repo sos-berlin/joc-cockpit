@@ -7,6 +7,22 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" *ngIf="permission.joc">
+            <div class="btn-group">
+              <div class="btn-group dropdown ">
+                <button class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
+                  <i nz-icon nzType="sync" nzTheme="outline"></i>&nbsp;
+                  <span translate>inventory.button.convert </span>
+                  <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+                </button>
+                <nz-dropdown-menu #order="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="convertJob('CRON');">
+                      <a translate>inventory.button.cron</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </div>
             <button class="btn btn-sm btn-grey m-l-12"
                     (click)="search()">
               <i class="fa fa-search"></i>&nbsp;

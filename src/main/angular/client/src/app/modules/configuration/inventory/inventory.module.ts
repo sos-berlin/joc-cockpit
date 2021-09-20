@@ -14,7 +14,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {WorkflowService} from '../../../services/workflow.service';
 import {CalendarService} from '../../../services/calendar.service';
 import {
-  CreateFolderModalComponent, CreateObjectModalComponent,
+  CreateFolderModalComponent, CreateObjectModalComponent, CronImportModalComponent,
   DeployComponent,
   ExportComponent, ImportWorkflowModalComponent,
   InventoryComponent, JsonEditorModalComponent,
@@ -38,7 +38,7 @@ import {EnvVariableValidator, LabelValidator} from '../../../directives/core.dir
 import {UpdateJobComponent} from './update-job/update-job.component';
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent,
-  SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent,
+  SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent, CronImportModalComponent,
   JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, FindAndReplaceComponent,
   AdmissionTimeComponent, TimeEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
 
