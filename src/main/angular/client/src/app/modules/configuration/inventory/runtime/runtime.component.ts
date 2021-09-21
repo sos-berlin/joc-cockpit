@@ -149,36 +149,36 @@ export class AddRestrictionComponent implements OnInit {
         });
       }
       if (this.calendar.frequencyList[i].startingWithS) {
-        this.frequency.startingWithS = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWithS, null, this.dateFormatM);
+        this.frequency.startingWithS = new Date(this.calendar.frequencyList[i].startingWithS);
       }
       if (this.calendar.frequencyList[i].endOnS) {
-        this.frequency.endOnS = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOnS, null, this.dateFormatM);
+        this.frequency.endOnS = new Date(this.calendar.frequencyList[i].endOnS);
       }
     }
     if (this.calendar.frequencyList[i].tab === 'weekDays') {
       this.frequency.days = this.coreService.clone(this.calendar.frequencyList[i].days);
       this.frequency.all = this.calendar.frequencyList[i].days.length === 7;
       if (this.calendar.frequencyList[i].startingWithW) {
-        this.frequency.startingWithW = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWithW, null, this.dateFormatM);
+        this.frequency.startingWithW = new Date(this.calendar.frequencyList[i].startingWithW);
       }
       if (this.calendar.frequencyList[i].endOnW) {
-        this.frequency.endOnW = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOnW, null, this.dateFormatM);
+        this.frequency.endOnW = new Date(this.calendar.frequencyList[i].endOnW);
       }
     }
-    if (this.calendar.frequencyList[i].tab == 'every') {
+    if (this.calendar.frequencyList[i].tab === 'every') {
       if (this.calendar.frequencyList[i].startingWith) {
-        this.frequency.startingWith = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWith, null, this.dateFormatM);
+        this.frequency.startingWith = new Date(this.calendar.frequencyList[i].startingWith);
       }
       if (this.calendar.frequencyList[i].endOn) {
-        this.frequency.endOn = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOn, null, this.dateFormatM);
+        this.frequency.endOn = new Date(this.calendar.frequencyList[i].endOn);
       }
     }
-    if (this.calendar.frequencyList[i].tab == 'specificWeekDays') {
+    if (this.calendar.frequencyList[i].tab === 'specificWeekDays') {
       if (this.calendar.frequencyList[i].startingWithS) {
-        this.frequency.startingWithS = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWithS, null, this.dateFormatM);
+        this.frequency.startingWithS = new Date(this.calendar.frequencyList[i].startingWithS);
       }
       if (this.calendar.frequencyList[i].endOnS) {
-        this.frequency.endOnS = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOnS, null, this.dateFormatM);
+        this.frequency.endOnS = new Date(this.calendar.frequencyList[i].endOnS);
       }
     }
     if (this.frequency.tab === 'specificDays') {

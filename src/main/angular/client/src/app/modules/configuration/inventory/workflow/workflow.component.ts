@@ -2775,21 +2775,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.ref.detectChanges();
   }
 
-  addArgument(isNew = false): void {
-    const param: any = {
-      name: '',
-      value: ''
-    };
-    if (this.selectedNode.obj.arguments) {
-      if (!this.coreService.isLastEntryEmpty(this.selectedNode.obj.arguments, 'name', '')) {
-        if (isNew) {
-          param.isTextField = true;
-        }
-        this.selectedNode.obj.arguments.push(param);
-      }
-    }
-  }
-
   removeArgument(data): void {
     for (let i = 0; i < this.selectedNode.obj.argumentList.length; i++) {
       if (this.selectedNode.obj.argumentList[i].name === data.name) {
@@ -2820,8 +2805,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           const obj = {
             name: this.selectedNode.obj.argumentList[i].name,
             type: this.selectedNode.obj.argumentList[i].value.type,
+            value: '',
             isRequired: false
           };
+          if (this.selectedNode.obj.argumentList[i].value.default) {
+            this.coreService.removeSlashToString(this.selectedNode.obj.argumentList[i].value, 'default');
+            if (this.selectedNode.obj.argumentList[i].value.type === 'Boolean') {
+              this.selectedNode.obj.argumentList[i].value.default = (this.selectedNode.obj.argumentList[i].value.default === true || this.selectedNode.obj.argumentList[i].value.default === 'true');
+            }
+            obj.value = this.selectedNode.obj.argumentList[i].value.default;
+          }
           if (!this.selectedNode.obj.argumentList[i].value.default && this.selectedNode.obj.argumentList[i].value.default !== false && this.selectedNode.obj.argumentList[i].value.default !== 0) {
             obj.isRequired = true;
           }
@@ -2907,8 +2900,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       $event.preventDefault();
       if (!isOrder) {
         this.addVariable();
-      } else {
-        this.addArgument();
       }
     }
   }
@@ -6848,22 +6839,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit1 = new mxCellAttributeChange(
               obj.cell, 'noticeBoardName', self.selectedNode.newObj.noticeBoardName);
             graph.getModel().execute(edit1);
-            let timeout;
-            if (self.selectedNode.newObj.timeout1) {
-              timeout = self.workflowService.convertStringToDuration(self.selectedNode.newObj.timeout1);
-            }
-            const edit2 = new mxCellAttributeChange(
-              obj.cell, 'timeout', timeout);
-            graph.getModel().execute(edit2);
-            const edit3 = new mxCellAttributeChange(
-              obj.cell, 'joinVariables', self.selectedNode.newObj.joinVariables);
-            graph.getModel().execute(edit3);
-            const edit4 = new mxCellAttributeChange(
-              obj.cell, 'predicate', self.selectedNode.newObj.predicate);
-            graph.getModel().execute(edit4);
-            const edit5 = new mxCellAttributeChange(
-              obj.cell, 'match', self.selectedNode.newObj.match);
-            graph.getModel().execute(edit5);
           } else if (self.selectedNode.type === 'Prompt') {
             self.coreService.addSlashToString(self.selectedNode.newObj, 'question');
             const edit = new mxCellAttributeChange(
@@ -6877,9 +6852,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.cell, 'regex', self.selectedNode.newObj.regex);
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Fork') {
-            const editJ = new mxCellAttributeChange(
+       /*     const editJ = new mxCellAttributeChange(
               obj.cell, 'joinVariables', self.selectedNode.newObj.joinVariables);
-            graph.getModel().execute(editJ);
+            graph.getModel().execute(editJ);*/
             const editJoin = new mxCellAttributeChange(
               obj.cell, 'joinIfFailed', self.selectedNode.newObj.joinIfFailed);
             graph.getModel().execute(editJoin);
@@ -7095,20 +7070,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           obj.regex = cell.getAttribute('regex');
         } else if (cell.value.tagName === 'ExpectNotice' || cell.value.tagName === 'PostNotice') {
           obj.noticeBoardName = cell.getAttribute('noticeBoardName');
-          const timeout = cell.getAttribute('timeout');
-          if (timeout && timeout != 'null' && timeout != 'undefined') {
-            obj.timeout1 = self.workflowService.convertDurationToString(timeout);
-          }
-          obj.joinVariables = cell.getAttribute('joinVariables');
-          obj.joinVariables = obj.joinVariables == 'true';
-          obj.predicate = cell.getAttribute('predicate');
-          obj.match = cell.getAttribute('match');
         } else if (cell.value.tagName === 'Prompt') {
           obj.question = cell.getAttribute('question');
           self.coreService.removeSlashToString(obj, 'question');
         } else if (cell.value.tagName === 'Fork') {
-          obj.joinVariables = cell.getAttribute('joinVariables');
-          obj.joinVariables = obj.joinVariables == 'true';
+  /*        obj.joinVariables = cell.getAttribute('joinVariables');
+          obj.joinVariables = obj.joinVariables == 'true';*/
           obj.joinIfFailed = cell.getAttribute('joinIfFailed');
           obj.joinIfFailed = obj.joinIfFailed == 'true';
           const edges = graph.getOutgoingEdges(cell);
@@ -8874,6 +8841,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
 
           if (json.instructions[x].TYPE === 'ForkList') {
+            const joinIfFailed = json.instructions[x].joinIfFailed == 'true';
+            delete json.instructions[x].joinIfFailed;
             if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].children) {
 
             } else {
@@ -8897,6 +8866,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 }
               }
             }
+            json.instructions[x].joinIfFailed = joinIfFailed || false;
           }
 
           if (json.instructions[x].TYPE === 'AddOrder') {
@@ -8945,6 +8915,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
 
           if (json.instructions[x].TYPE === 'Fork') {
+            const joinIfFailed = json.instructions[x].joinIfFailed == 'true';
+            delete json.instructions[x].joinIfFailed;
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag) {
               checkErr = true;
@@ -8980,6 +8952,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               json.instructions[x].branches = [];
             }
+            json.instructions[x].joinIfFailed = joinIfFailed || false;
           }
 
           json.instructions[x].id = undefined;
@@ -9207,7 +9180,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       const variableDeclarations = {parameters: []};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
-        if (value.value.type === 'List' || value.value.type === 'Final' || value.value.default === '' || !value.value.default) {
+        if (value.value.type === 'List' || value.value.type === 'Final') {
+          delete value.value.default;
+        }
+        if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
           delete value.value.default;
         }
         if (value.value.type === 'List') {

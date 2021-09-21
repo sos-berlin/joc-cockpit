@@ -64,8 +64,6 @@ export class ResumeOrderModalComponent implements OnInit {
           this.variables = this.coreService.convertObjectToArray(res, 'variables');
         }
         this.positions = res.positions.map((pos) => pos.positionString);
-      } else {
-        console.log(res);
       }
     }, () => {
       this.positions = [];

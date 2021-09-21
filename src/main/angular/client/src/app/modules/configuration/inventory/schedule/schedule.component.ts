@@ -701,6 +701,15 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       calendar.frequencyList = [];
     }
     if (calendar.includes && !isEmpty(calendar.includes)) {
+      if (calendar.includes.dates && calendar.includes.dates.length > 0) {
+        obj = {
+          tab: 'specificDays',
+          type: 'INCLUDE',
+          dates: calendar.includes.dates
+        };
+        obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
+        calendar.frequencyList.push(obj);
+      }
       if (calendar.includes.weekdays && calendar.includes.weekdays.length > 0) {
         calendar.includes.weekdays.forEach(weekday => {
           obj = {
@@ -797,15 +806,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           calendar.frequencyList.push(obj);
         });
       }
-      if (calendar.includes.dates && calendar.includes.dates.length > 0) {
-        obj = {
-          tab: 'specificDays',
-          type: 'INCLUDE',
-          dates: calendar.includes.dates
-        };
-        obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
-        calendar.frequencyList.push(obj);
-      }
     }
   }
 
@@ -832,6 +832,10 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.data.valid = res.valid;
       }
       this.schedule = this.coreService.clone(res);
+
+      if (!this.schedule.configuration.variableSets) {
+        this.schedule.configuration.variableSets = [];
+      }
       this.schedule.actual = JSON.stringify(this.schedule.configuration);
       this.schedule.path1 = this.data.path;
       this.schedule.name = this.data.name;
@@ -852,9 +856,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.schedule.configuration.variableSets.forEach((variableSet) => {
           variableSet.variables = this.coreService.convertObjectToArray(variableSet, 'variables');
         });
-
-      } else {
-        this.schedule.configuration.variableSets = [];
       }
       this.history.push(this.schedule.actual);
       if (!res.valid) {

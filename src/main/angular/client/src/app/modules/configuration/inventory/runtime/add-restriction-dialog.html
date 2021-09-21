@@ -35,7 +35,7 @@
 
           <div class="col-sm-9">
             <label class="w" nz-checkbox [(ngModel)]="frequency.all" name="week"
-                     (change)="selectAllWeek()">
+                     (ngModelChange)="selectAllWeek()">
               <span translate>runtime.label.everyDay</span>
             </label><br>
             <nz-checkbox-wrapper (nzOnChange)="dayChange($event)">

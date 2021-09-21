@@ -164,8 +164,8 @@ export class WorkflowService {
         return 'shape=label;whiteSpace=wrap;html=1;rounded=1;fillColor=' + vertexStyle.fillColor + ';strokeColor='
           + vertexStyle.strokeColor + ';gradientColor=' + vertexStyle.gradientColor + ';image=' + vertexStyle.image + ';imageWidth=20;imageHeight=20;';
       } else {
-        return vertexStyle.shape + ';whiteSpace=wrap;html=1;rounded=1;fillColor=' + vertexStyle.fillColor
-          + ';strokeColor=' + vertexStyle.strokeColor + ';gradientColor=' + vertexStyle.gradientColor + ';rounded=' + vertexStyle[mxConstants.STYLE_ROUNDED] + ';';
+        return 'shape=' + vertexStyle.shape + ';whiteSpace=wrap;html=1;rounded=1;fillColor=' + vertexStyle.fillColor
+          + ';strokeColor=' + vertexStyle.strokeColor + ';gradientColor=' + vertexStyle.gradientColor + ';';
       }
     }
   }
@@ -340,6 +340,9 @@ export class WorkflowService {
       } else {
         obj.defaultArguments = JSON.parse(node._defaultArguments);
       }
+    } else if (type === 'Fork') {
+      /*obj.joinVariables = node._joinVariables;*/
+      obj.joinIfFailed = node._joinIfFailed;
     } else if (type === 'If') {
       obj.predicate = node._predicate;
     } else if (type === 'ForkList') {
@@ -383,9 +386,6 @@ export class WorkflowService {
     }
     if (this.isInstructionCollapsible(type)) {
       obj.isCollapsed = node.mxCell._collapsed;
-      if (type === 'Fork') {
-        obj.joinVariables = node._joinVariables;
-      }
     }
     return obj;
   }
@@ -472,11 +472,7 @@ export class WorkflowService {
           return false;
         }
       }
-      if (type === 'ForkList') {
-        if (!value.children) {
-          return false;
-        }
-      }
+
       if (type === 'Node') {
         if (!value.label || value.label === '' || value.label == 'null' || value.label == 'undefined') {
           return false;
@@ -488,6 +484,21 @@ export class WorkflowService {
           return false;
         }
       }
+
+      if (type === 'Fail') {
+        if (value.uncatchable && value.uncatchable != 'null' && value.uncatchable != 'undefined' && typeof value.uncatchable === 'string') {
+          value.uncatchable = value.uncatchable == 'true';
+        } else {
+          delete value.uncatchable;
+        }
+      }
+
+      if (type === 'ForkList') {
+        if (!value.children) {
+          return false;
+        }
+      }
+
       if (type === 'Fork') {
         if (!value.branches || value.branches.length < 2) {
           return false;
@@ -502,6 +513,7 @@ export class WorkflowService {
           }
         }
       }
+
       if (value.executable && value.executable.returnCodeMeaning) {
         if (value.executable.returnCodeMeaning.success && typeof value.executable.returnCodeMeaning.success === 'string') {
           value.executable.returnCodeMeaning.success = value.executable.returnCodeMeaning.success.split(',').map(Number);
@@ -527,18 +539,6 @@ export class WorkflowService {
         }
       } else {
         delete value.returnCode;
-      }
-
-      if (value.joinVariables && value.joinVariables != 'null' && value.joinVariables != 'undefined' && typeof value.joinVariables === 'string') {
-        value.joinVariables = value.joinVariables == 'true';
-      } else {
-        delete value.joinVariables;
-      }
-
-      if (value.uncatchable && value.uncatchable != 'null' && value.uncatchable != 'undefined' && typeof value.uncatchable === 'string') {
-        value.uncatchable = value.uncatchable == 'true';
-      } else {
-        delete value.uncatchable;
       }
 
       if (value.timeout1) {
@@ -730,7 +730,7 @@ export class WorkflowService {
     let boardName;
     if (mapObj.cell) {
       boardType = mapObj.cell.value.tagName;
-      boardName = mapObj.cell.getAttribute('noticeBoardName');
+      boardName = mapObj.cell.getAttribute('noticeBoardName') || mapObj.cell.getAttribute('workflowName');
     }
     const graph = editor.graph;
     const self = this;
@@ -755,7 +755,7 @@ export class WorkflowService {
 
         const start = vertexMap.get(json.instructions[0].uuid);
         const last = json.instructions[json.instructions.length - 1];
-        if(wf){
+        if (wf){
           connectInstruction(wf, start, '', '', defaultParent);
         } else {
           connectInstruction(v1, start, '', '', defaultParent);
@@ -842,6 +842,18 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
+            if (mapObj.addOrderdMap) {
+              let arr = [];
+              if (mapObj.addOrderdMap.has(json.instructions[x].workflowName)) {
+                arr = arr.concat(JSON.parse(mapObj.addOrderdMap.get(json.instructions[x].workflowName)));
+              } else{
+                arr.push(v1.id);
+              }
+              mapObj.addOrderdMap.set(json.instructions[x].workflowName, JSON.stringify(arr));
+            }
+            if (boardType === 'AddOrder' && boardName === json.instructions[x].workflowName) {
+              connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
+            }
           } else if (json.instructions[x].TYPE === 'PostNotice') {
             _node.setAttribute('label', 'postNotice');
             if (json.instructions[x].noticeBoardName !== undefined) {
@@ -888,8 +900,8 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Fork') {
             _node.setAttribute('label', 'fork');
-            if (json.instructions[x].joinVariables !== undefined) {
-              _node.setAttribute('joinVariables', json.instructions[x].joinVariables);
+            if (json.instructions[x].joinIfFailed !== undefined) {
+              _node.setAttribute('joinIfFailed', json.instructions[x].joinIfFailed);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('fork', colorCode, self.theme) : 'fork');
@@ -1069,56 +1081,66 @@ export class WorkflowService {
       node1.setAttribute('workflowName', json.path.substring(json.path.lastIndexOf('/') + 1));
       node1.setAttribute('path', json.path);
       const w1 = graph.insertVertex(parent, null, node1, 0, 0, 160, 40, WorkflowService.setStyleToVertex('', colorCode, self.theme, null));
-      for (let i = 0; i < json.compressData.length; i++) {
-        let b1;
-        if (mapObj.boardMap.has(json.compressData[i].name)){
-          b1 = mapObj.boardMap.get(json.compressData[i].name);
-        } else {
-          const node = doc.createElement('Board');
-          node.setAttribute('label', json.compressData[i].name);
-          b1 = graph.insertVertex(parent, null, node, 0, 0, 130, 36, 'order;fillColor=#856088;strokeColor=#856088;');
-          mapObj.boardMap.set(json.compressData[i].name, b1);
+      if (json.compressData && json.compressData.length > 0) {
+        for (let i = 0; i < json.compressData.length; i++) {
+          let b1;
+          if (mapObj.boardMap.has(json.compressData[i].name)) {
+            b1 = mapObj.boardMap.get(json.compressData[i].name);
+          } else {
+            const node = doc.createElement('Board');
+            node.setAttribute('label', json.compressData[i].name);
+            b1 = graph.insertVertex(parent, null, node, 0, 0, 130, 36, 'order;fillColor=#856088;strokeColor=#856088;');
+            mapObj.boardMap.set(json.compressData[i].name, b1);
+          }
+          for (let x = 0; x < json.compressData[i].instructions.length; x++) {
+            const _node = doc.createElement(json.compressData[i].instructions[x].TYPE);
+            let v1;
+            if (json.compressData[i].instructions[x].TYPE === 'PostNotice') {
+              _node.setAttribute('label', 'postNotice');
+              if (json.compressData[i].instructions[x].noticeBoardName !== undefined) {
+                _node.setAttribute('noticeBoardName', json.compressData[i].instructions[x].noticeBoardName);
+              }
+              _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
+              v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
+              if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
+                mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
+              }
+              if (boardType === 'ExpectNotice' && boardName === json.compressData[i].instructions[x].noticeBoardName) {
+                connectInstruction(v1, mapObj.cell, boardName, '', parent);
+              }
+            } else if (json.compressData[i].instructions[x].TYPE === 'ExpectNotice') {
+              _node.setAttribute('label', 'expectNotice');
+              if (json.compressData[i].instructions[x].noticeBoardName !== undefined) {
+                _node.setAttribute('noticeBoardName', json.compressData[i].instructions[x].noticeBoardName);
+              }
+              _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
+              v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
+              if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
+                mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
+              }
+
+              if (boardType === 'PostNotice' && boardName === json.compressData[i].instructions[x].noticeBoardName) {
+                connectInstruction(mapObj.cell, v1, boardName, '', parent);
+              }
+            }
+
+            if (!vertexMap.has(json.compressData[i].instructions[x].uuid)) {
+              vertexMap.set(json.compressData[i].instructions[x].uuid, v1);
+            }
+            if (v1) {
+              json.compressData[i].instructions[x].id = v1.id;
+              connectInstruction(w1, v1, '', '', parent);
+              connectInstruction(v1, b1, '', '', parent);
+            }
+          }
         }
-        for (let x = 0; x < json.compressData[i].instructions.length; x++) {
-          const _node = doc.createElement(json.compressData[i].instructions[x].TYPE);
-          let v1;
-          if (json.compressData[i].instructions[x].TYPE === 'PostNotice') {
-            _node.setAttribute('label', 'postNotice');
-            if (json.compressData[i].instructions[x].noticeBoardName !== undefined) {
-              _node.setAttribute('noticeBoardName', json.compressData[i].instructions[x].noticeBoardName);
-            }
-            _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
-            if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
-              mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
-            }
-            if (boardType === 'ExpectNotice' && boardName === json.compressData[i].instructions[x].noticeBoardName) {
-              connectInstruction(v1, mapObj.cell, boardName, '', parent);
-            }
-          } else if (json.compressData[i].instructions[x].TYPE === 'ExpectNotice') {
-            _node.setAttribute('label', 'expectNotice');
-            if (json.compressData[i].instructions[x].noticeBoardName !== undefined) {
-              _node.setAttribute('noticeBoardName', json.compressData[i].instructions[x].noticeBoardName);
-            }
-            _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
-            if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
-              mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
-            }
-
-            if (boardType === 'PostNotice' && boardName === json.compressData[i].instructions[x].noticeBoardName) {
-              connectInstruction(mapObj.cell, v1, boardName, '', parent);
-            }
-          }
-
-          if (!vertexMap.has(json.compressData[i].instructions[x].uuid)) {
-            vertexMap.set(json.compressData[i].instructions[x].uuid, v1);
-          }
-          if (v1) {
-            json.compressData[i].instructions[x].id = v1.id;
-            connectInstruction(w1, v1, '', '', parent);
-            connectInstruction(v1, b1, '', '', parent);
-          }
+      } else {
+        if (mapObj.addOrderdMap.has(json.path.substring(json.path.lastIndexOf('/') + 1))) {
+          let arr = mapObj.addOrderdMap.get(json.path.substring(json.path.lastIndexOf('/') + 1));
+          arr = JSON.parse(arr);
+          arr.forEach(id => {
+            connectInstruction(graph.getModel().getCell(id), w1, '', '', parent);
+          });
         }
       }
     }
@@ -1319,6 +1341,7 @@ export class WorkflowService {
         return endNode;
       }
     }
+
     if (!mainJson.isExpanded && isGraphView && mainJson.compressData) {
       createCollapsedObjects(mainJson, defaultParent);
     } else {

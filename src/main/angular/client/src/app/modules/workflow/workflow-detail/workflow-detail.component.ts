@@ -236,7 +236,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         addWorkflowInArrays(board.value);
       });
     }
-    console.log(workflow)
     if (workflow.addOrderToWorkflows.length > 0) {
       addWorkflowInArrays(workflow.addOrderToWorkflows);
     }

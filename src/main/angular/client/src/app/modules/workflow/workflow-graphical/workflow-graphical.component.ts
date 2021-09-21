@@ -215,6 +215,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   nodeMap = new Map();
   orderCountMap = new Map();
   boardMap = new Map();
+  addOrderdMap = new Map();
   countArr = [];
   sideBar: any = {};
   isProcessing = false;
@@ -780,6 +781,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     const doc = mxUtils.createXmlDocument();
     this.orderCountMap = new Map();
     const graph = this.graph;
+
     function createWorkflowNode(workflow, cell, type): void {
       if (!self.workflowObjects) {
         const node = doc.createElement('Workflow');
@@ -815,7 +817,14 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             color: self.colors[self.workflowArr.length + 1]
           };
           self.workflowArr.push(obj);
-          const mapObj = {vertixMap: new Map(), cell, graphView: !!self.workflowObjects, colorCode: obj.color, boardMap : self.boardMap};
+          const mapObj = {
+            vertixMap: new Map(),
+            cell,
+            graphView: !!self.workflowObjects,
+            colorCode: obj.color,
+            boardMap: self.boardMap,
+            addOrderdMap: self.addOrderdMap
+          };
           self.workflowService.createWorkflow(workflow, {graph}, mapObj);
           self.updatePositions(workflow, mapObj.vertixMap);
         }
@@ -994,18 +1003,24 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
 
     if (mainJson.addOrderFromWorkflows && mainJson.addOrderFromWorkflows.length > 0) {
       const cell = graph.getChildCells(graph.getDefaultParent())[0];
-      const incomingEdges = graph.getIncomingEdges(cell);
-      if (incomingEdges && incomingEdges.length > 0) {
-        for (const edge in incomingEdges) {
-          if (incomingEdges[edge].source && incomingEdges[edge].source.value && incomingEdges[edge].source.value.tagName === 'Process') {
-            graph.removeCells([incomingEdges[edge].source], true);
-            break;
+      let remove = true;
+      mainJson.addOrderFromWorkflows.forEach((workflow) => {
+        if (workflow.path !== mainJson.path) {
+          createWorkflowNode(workflow, cell, 'expect');
+          remove = false;
+        }
+      });
+      if (remove) {
+        const incomingEdges = graph.getIncomingEdges(cell);
+        if (incomingEdges && incomingEdges.length > 0) {
+          for (const edge in incomingEdges) {
+            if (incomingEdges[edge].source && incomingEdges[edge].source.value && incomingEdges[edge].source.value.tagName === 'Process') {
+              graph.removeCells([incomingEdges[edge].source], true);
+              break;
+            }
           }
         }
       }
-      mainJson.addOrderFromWorkflows.forEach((workflow) => {
-        createWorkflowNode(workflow, cell, 'expect');
-      });
     }
 
     recursive(mainJson);
@@ -1137,7 +1152,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   private updateWorkflow(isRemove = false): void {
     this.graph.getModel().beginUpdate();
     try {
-      const mapObj: any = {nodeMap: this.nodeMap, vertixMap: this.vertixMap, graphView: !!this.workflowObjects};
+      this.addOrderdMap = new Map();
+      const mapObj: any = {nodeMap: this.nodeMap, vertixMap: this.vertixMap, graphView: !!this.workflowObjects, addOrderdMap: this.addOrderdMap};
       if (mapObj.graphView) {
         mapObj.colorCode = this.colors[0];
         this.workflowArr.push({

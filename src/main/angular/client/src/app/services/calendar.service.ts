@@ -184,7 +184,18 @@ export class CalendarService {
     if (data.months && isArray(data.months)) {
       str = self.getMonths(data.months);
     }
-    if (data.tab === 'weekDays') {
+    if (data.tab === 'specificDays') {
+      str = 'On ';
+      if (data.dates) {
+        data.dates.forEach((date, index) => {
+          str = str + moment(date).format(dataFormat.toUpperCase());
+          if (index != data.dates.length - 1) {
+            str = str + ', ';
+          }
+        });
+      }
+      return str;
+    } else if (data.tab === 'weekDays') {
       if (str) {
         return self.getWeekDays(data.days) + ' on ' + str;
       } else {
@@ -196,17 +207,6 @@ export class CalendarService {
       } else {
         return self.getSpecificDay(data.which) + ' ' + data.specificWeekDay + ' of month';
       }
-    } else if (data.tab === 'specificDays') {
-      str = 'On ';
-      if (data.dates) {
-        data.dates.forEach((date, index) => {
-          str = str + moment(date).format(dataFormat.toUpperCase());
-          if (index != data.dates.length - 1) {
-            str = str + ', ';
-          }
-        });
-      }
-      return str;
     } else if (data.tab === 'monthDays') {
       if (data.isUltimos != 'months') {
         if (str) {
@@ -270,7 +270,7 @@ export class CalendarService {
         if (data.endOnW) {
           to = moment(data.endOnW).format('YYYY-MM-DD');
         }
-        arr.push({days: data.days.map(Number), from, to});
+        arr.push({from, to, days: data.days.map(Number)});
         obj[type].months.push({months: data.months.map(Number), weekdays: arr});
       } else if (data.tab === 'monthDays') {
         if (data.startingWithM) {
@@ -306,7 +306,15 @@ export class CalendarService {
         }
       }
     } else {
-      if (data.tab === 'weekDays') {
+      if (data.tab === 'specificDays') {
+        if (!obj[type].dates) {
+          obj[type].dates = [];
+        }
+        data.dates.forEach((value) => {
+          obj[type].dates.push(moment(value).format('YYYY-MM-DD'));
+        });
+
+      } else if (data.tab === 'weekDays') {
         if (!obj[type].weekdays) {
           obj[type].weekdays = [];
         }
@@ -316,7 +324,7 @@ export class CalendarService {
         if (data.endOnW) {
           to = moment(data.endOnW).format('YYYY-MM-DD');
         }
-        obj[type].weekdays.push({days: data.days.map(Number), from, to});
+        obj[type].weekdays.push({from, to, days: data.days.map(Number)});
       } else if (data.tab === 'monthDays') {
         if (data.isUltimos === 'months') {
           if (!obj[type].monthdays) {
@@ -329,7 +337,7 @@ export class CalendarService {
           if (data.endOnM) {
             to = moment(data.endOnM).format('YYYY-MM-DD');
           }
-          obj[type].monthdays.push({days: data.selectedMonths.map(Number), from, to});
+          obj[type].monthdays.push({from, to, days: data.selectedMonths.map(Number)});
         } else {
           if (!obj[type].ultimos) {
             obj[type].ultimos = [];
@@ -341,7 +349,7 @@ export class CalendarService {
           if (data.endOnM) {
             to = moment(data.endOnM).format('YYYY-MM-DD');
           }
-          obj[type].ultimos.push({days: data.selectedMonthsU.map(Number), from, to});
+          obj[type].ultimos.push({from, to, days: data.selectedMonthsU.map(Number)});
         }
       } else if (data.tab === 'specificWeekDays') {
         arr.push({
@@ -359,37 +367,13 @@ export class CalendarService {
           if (!obj[type].monthdays) {
             obj[type].monthdays = [];
           }
-          obj[type].monthdays.push({weeklyDays: arr, from, to});
+          obj[type].monthdays.push({from, to, weeklyDays: arr});
         } else {
           if (!obj[type].ultimos) {
             obj[type].ultimos = [];
           }
-          obj[type].ultimos.push({weeklyDays: arr, from, to});
+          obj[type].ultimos.push({from, to, weeklyDays: arr});
         }
-      } else if (data.tab === 'specificDays') {
-        if (!obj[type].dates) {
-          obj[type].dates = [];
-        }
-        data.dates.forEach((value) => {
-          obj[type].dates.push(moment(value).format('YYYY-MM-DD'));
-        });
-
-      } else if (data.tab === 'every') {
-        if (!obj[type].repetitions) {
-          obj[type].repetitions = [];
-        }
-        const obj1: any = {
-          repetition: data.dateEntity,
-          step: data.interval || 1,
-        };
-        if (data.startingWith) {
-          obj1.from = moment(data.startingWith).format('YYYY-MM-DD');
-        }
-        if (data.endOn) {
-          obj1.to = moment(data.endOn).format('YYYY-MM-DD');
-        }
-        obj[type].repetitions.push(obj1);
-
       } else if (data.tab === 'nationalHoliday') {
         if (!obj[type].holidays) {
           obj[type].holidays = [];
@@ -403,9 +387,23 @@ export class CalendarService {
         } else {
           obj[type].holidays.push({dates});
         }
+      } else if (data.tab === 'every') {
+        if (!obj[type].repetitions) {
+          obj[type].repetitions = [];
+        }
+        const obj1: any = {};
+        if (data.startingWith) {
+          obj1.from = moment(data.startingWith).format('YYYY-MM-DD');
+        }
+        if (data.endOn) {
+          obj1.to = moment(data.endOn).format('YYYY-MM-DD');
+        }
+        obj1.repetition = data.dateEntity;
+        obj1.step = data.interval || 1;
+        obj[type].repetitions.push(obj1);
+
       }
     }
-
     return obj;
   }
 
