@@ -153,7 +153,7 @@
     "button.enable": "有効化",
     "button.disable": "無効化",
     "button.reset": "リセット",
-    "button.resetForced": "Reset forced",
+    "button.resetForced": "強制リセット",
     "button.resetting": "リセット中",
     "placeholder.enterAgentId": "エージェントIDを入力",
     "placeholder.enterAgentName": "エージェント名を入力",
