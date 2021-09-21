@@ -1089,7 +1089,8 @@
       },
       "board": {
         "name": "Un tableau de condition représente les dépendances entre les workflows. Les instructions PostNotice et les instructions ExpectNotice respectives dans les workflows font référence au tableau de conditon. Pour le nom du tableau de condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
-        "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le tableau de condition. La vue RESSOURCES permet de gérer la documentation.",        "title": "Le Titre de la Condition.",
+        "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le tableau de condition. La vue RESSOURCES permet de gérer la documentation.",
+        "title": "Le Titre de la Condition.",
         "toNotice": "Entrer la Condition",
         "endOfLife": "Entrer la fin de vie",
         "readingOrderToNoticeId": "Entrer la règle pour créer l'ID Annonce pour 'Ordre attendu"
@@ -1121,19 +1122,19 @@
         "fail": {
           "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",
           "uncatchable": "Une erreur Intraitable ne peut pas être gérée avec une instruction Try/Catch.",
-          "returnCode": "Code Retour"
+          "returnCode": "L'instruction FAIL peut se voir attribuer un code de retour positif non nul qui devient visible avec l'historique des ordres."
         },
         "fileWatch": {
           "directory": "Le répertoire qui est surveillé pour les fichiers entrants.",
-          "regex": "Une Expression Régulière spécifie le pattern des noms de fichiers entrants du répertoire surveillé."
+          "regex": "Une expression régulière spécifie le pattern des noms de fichiers entrants qu'un répertoire doit surveiller. Par exemple, .* signifie tous les fichiers, .*\.txt$ signifie tous les fichiers avec une extension .txt."
         },
         "fork": {
           "joinVariables": "Les variables des ordres enfants dans les branches d'une instruction Fork sont ajoutées à l'ordre parent lorsqu'elles atteignent l'instruction Join.",
           "joinIfFailed": "Join en Échec"
         },
         "forkList": {
-          "children": "Variable de Tableau",
-          "childToId": "Mappage de l'élément à l'ID ordre",
+          "children": "Variable de Tableau pour la bifurcation dynamique : attend le nom de la variable d'ordre qui contient une liste d'éléments. Pour chaque élément de la variable du tableau, une branche est créée dynamiquement à partir de l'instruction ForkList assignée. Le nombre d'éléments de la variable de tableau détermine le nombre de branches parallèles de l'instruction ForkList qui sont exécutées en parallèle par les ordres enfants."
+          "childToId": "Élément de tableau pour le mappage des branches : attend le nom d'un élément dans la variable de tableau sélectionnée qui contient un identifiant unique pour la branche qui doit être créée dynamiquement.",
           "joinIfFailed": "Join en Échec"
         },
         "if": {
@@ -1141,8 +1142,8 @@
         },
         "job": {
           "name": "Un nom de tâche est unique dans un workflow. Un travail portant le même nom peut être associé à un certain nombre d'instructions dans le même workflow si des labels de tâche individuelle sont utilisées. Le nom d'une tâche peut contenir la plupart des caractères unicode, des points et des traits d'union, mais pas de points ni de traits d'union au début ou à la fin.",
-          "label": "Un label de tâche est utilisé pour distinguer plusieurs occurrences d'une tche portant le même nom dans un workflow.",
-          "title": "Le Titre d'une tâche",
+          "label": "Un label de tâche est utilisé pour distinguer plusieurs occurrences d'une tâche portant le même nom dans un workflow.",
+          "title": "Le titre d'une tâche devient visible dans la vue WORKFLOWS",
           "compatibleMode": "La compatibilité avec les versions précédentes de JobScheduler inclut par ex. pour que les tâches shell créent automatiquement des variables d'environnement préfixées par 'SCHEDULER_PARAM_' pour toutes les variables d'ordre comme dans JS1.",
           "credentialKey": "Une Clé d'Identification peut être ajoutée au gestionnaire d'identification Windows, contenant les informations d'identification utilisées pour basculer vers un compte utilisateur cible pour cette tâche.",
           "loadUserProfile": "Chargez le profil utilisateur Windows. Un profil comprend par exemple les variables d'environnement et les paramètres du registre Windows.",
@@ -1159,20 +1160,20 @@
           "parallelism": "La valeur max. Parallélisme spécifie le nombre d'ordres dans un workflow qui peuvent exécuter de tâche en parallèle. Si le maximum est dépassé, les ordres doivent attendre que la valeur soit redescendue en dessous du max. Parallelisme",
           "criticality": "La Criticité des tâches peut être utilisée dans les notifications pour mieux distinguer l'urgence d'un incident..",
           "failOnOutputErr": "Si une tâche écrit une sortie sur le canal stderr, cela est considéré comme une erreur et l'ordre passe à l'état ECHEC.",
-          "admissionTime": "Admission Time",
-          "skipIfNoAdmissionForOrderDay": "Ignorée si la période d'admission ne correspond pas à la date de l'ordre"
+          "admissionTime": "Les heures d'admission règlent l'accès aux tâches en fonction des jours et des heures de la semaine. Un ordre attend devant un nœud de tâche jusqu'à ce que l'heure d'admission soit atteinte ou peut être configurée pour ignorer la tâche si les heures d'admission ne correspondent pas à la date de l'ordre.",
+          "skipIfNoAdmissionForOrderDay": "La tâche est ignorée si des périodes d'admission ont été configurées qui ne correspondent pas à la date de l'ordre. Par exemple, si les périodes d'admission sont configurées pour le lundi et le mardi, mais que l'ordre est prévu pour le mercredi, la tâche sera ignorée. Le lundi et le mardi, l'ordre attendra avec le nœud de travail jusqu'à ce que l'heure d'admission soit atteinte."
         },
         "addOrder": {
-          "workflowName": "Nom du Workflow",
-          "arguments": "Arguments",
-          "remainWhenTerminated": "Validation requise pour sortir"
+          "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
+          "arguments": "Des arguments doivent être ajoutés à l'ordre si le workflow cible l'exige. Les arguments facultatifs peuvent être omis.",
+          "remainWhenTerminated": "Après la fin des exécutions des tâches, l'ordre reste dans le workflow. Pour cela, il faut effectuer manuellement l'opération 'Quitter le Workflow 'qui est disponible dans la vue WORKFLOW"
         },
         "lock": {
           "name": "Les noms des Verrous de Ressources sont uniques dans l'inventaire. Les sections des workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressources.",
-          "count": "Le poids pour l'utilisation d'un verrou de ressource est calculé en fonction de sa capacité. Si la capacité est dépassée, l'ordre doit attendre jusqu'à ce qu'une capacité soit disponible qui correspond ou dépasse le poids actuel."
+          "count": "Le nombre pour l'utilisation d'un verrou de ressource est calculé en fonction de sa capacité. Si la capacité est dépassée, l'ordre doit attendre jusqu'à ce qu'une capacité soit disponible qui correspond ou dépasse le nombre actuel."
         },
         "prompt": {
-          "question": "Message"
+          "question": "Une instruction Prompt indique que l'exécution du workflow sera temporairement arrêtée. L'ordre est mise à l'état 'À confirmer'. L'utilisateur peut vérifier le message associé à l'instruction Prompt et peut confirmer l'exécution du workflow. L'ordre sera alors mise à l'état 'En exécution'."
         },
         "retry": {
           "maxTries": "Lorsque le nombre maximal de tentatives est atteint, l'instruction Try se termine et l'ordre passe à l'état ECHEC.",
