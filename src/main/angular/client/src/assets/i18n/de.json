@@ -153,6 +153,7 @@
     "button.enable": "Aktivieren",
     "button.disable": "Deaktivieren",
     "button.reset": "Zurücksetzen",
+    "button.resetForced": "Reset forced",
     "button.resetting": "beim Zurücksetzen",
     "placeholder.enterAgentId": "Kennung des Agenten angeben",
     "placeholder.enterAgentName": "Name des Agenten angeben",

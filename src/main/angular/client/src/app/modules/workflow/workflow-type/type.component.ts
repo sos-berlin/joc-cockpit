@@ -21,6 +21,7 @@ export class TypeComponent implements OnChanges {
   @Input() workflowFilters: any;
   @Input() expectedNoticeBoards: any;
   @Input() postNoticeBoards: any;
+  @Input() addOrderToWorkflows: any;
   @Input() orderReload: boolean;
   @Output() update: EventEmitter<any> = new EventEmitter();
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
@@ -355,9 +356,9 @@ export class TypeComponent implements OnChanges {
   }
 
   openWorkflowDependency(obj): void {
-    if (obj.TYPE === 'ExpectNotice' || obj.TYPE === 'PostNotice') {
+    if (obj.TYPE === 'ExpectNotice' || obj.TYPE === 'PostNotice' || obj.TYPE === 'AddOrder') {
       let workflow;
-      const list = obj.TYPE === 'ExpectNotice' ? this.expectedNoticeBoards : this.postNoticeBoards;
+      const list = obj.TYPE === 'ExpectNotice' ? this.expectedNoticeBoards : obj.TYPE === 'PostNotice' ? this.postNoticeBoards : [];
       for (const prop in list) {
         if (list[prop]) {
           if (list[prop].name === obj.noticeBoardName) {
@@ -365,6 +366,13 @@ export class TypeComponent implements OnChanges {
               workflow = item;
             });
             break;
+          }
+        }
+      }
+      if (obj.TYPE === 'AddOrder') {
+        for (const i in this.addOrderToWorkflows) {
+          if (obj.workflowName === this.addOrderToWorkflows[i].path.substring(this.addOrderToWorkflows[i].path.lastIndexOf('/') + 1)) {
+            workflow = this.addOrderToWorkflows[i];
           }
         }
       }

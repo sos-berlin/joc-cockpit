@@ -8841,8 +8841,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
 
           if (json.instructions[x].TYPE === 'ForkList') {
-            const joinIfFailed = json.instructions[x].joinIfFailed == 'true';
-            delete json.instructions[x].joinIfFailed;
             if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].children) {
 
             } else {
@@ -8866,7 +8864,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 }
               }
             }
-            json.instructions[x].joinIfFailed = joinIfFailed || false;
           }
 
           if (json.instructions[x].TYPE === 'AddOrder') {
@@ -8915,8 +8912,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
 
           if (json.instructions[x].TYPE === 'Fork') {
-            const joinIfFailed = json.instructions[x].joinIfFailed == 'true';
-            delete json.instructions[x].joinIfFailed;
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag) {
               checkErr = true;
@@ -8952,7 +8947,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               json.instructions[x].branches = [];
             }
-            json.instructions[x].joinIfFailed = joinIfFailed || false;
           }
 
           json.instructions[x].id = undefined;
@@ -8980,14 +8974,27 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (json.instructions[x].TYPE === 'ForkList') {
             const childrenObj = clone(json.instructions[x].children);
             const childToIdObj = clone(json.instructions[x].childToId);
+            let joinIfFailed = clone(json.instructions[x].joinIfFailed);
+            joinIfFailed = joinIfFailed == 'true' || joinIfFailed === true;
             delete json.instructions[x].children;
             delete json.instructions[x].childToId;
+            delete json.instructions[x].joinIfFailed;
             json.instructions[x].children = childrenObj;
             json.instructions[x].childToId = childToIdObj;
             json.instructions[x].workflow = {
               instructions: json.instructions[x].instructions
             };
+            json.instructions[x].joinIfFailed = joinIfFailed;
             delete json.instructions[x].instructions;
+          }
+          if (json.instructions[x].TYPE === 'Fork') {
+            const branchObj = clone(json.instructions[x].branches);
+            let joinIfFailed = clone(json.instructions[x].joinIfFailed);
+            joinIfFailed = joinIfFailed == 'true' || joinIfFailed === true;
+            delete json.instructions[x].branches;
+            delete json.instructions[x].joinIfFailed;
+            json.instructions[x].branches = branchObj;
+            json.instructions[x].joinIfFailed = joinIfFailed;
           }
           if (json.instructions[x].catch) {
             json.instructions[x].catch.id = undefined;
@@ -9177,7 +9184,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         flag = true;
       }
     } else if (type === 'variable') {
-      const variableDeclarations = {parameters: []};
+      const variableDeclarations = {parameters: [], allowUndeclared : false};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         if (value.value.type === 'List' || value.value.type === 'Final') {
@@ -9203,9 +9210,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       if (variableDeclarations.parameters && isEmpty(variableDeclarations.parameters)) {
         delete variableDeclarations.parameters;
       }
-      this.orderPreparation = variableDeclarations;
+
+      if(!isEqual(JSON.stringify(this.orderPreparation), JSON.stringify(variableDeclarations))) {
+        this.orderPreparation = variableDeclarations;
+        flag = true;
+      }
       //this.orderPreparation.allowUndeclared = this.variableDeclarations.allowUndeclared;
-      flag = true;
     }
     if (flag) {
       const data = JSON.parse(this.workflow.actual);

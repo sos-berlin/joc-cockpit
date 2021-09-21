@@ -730,7 +730,7 @@ export class WorkflowService {
     let boardName;
     if (mapObj.cell) {
       boardType = mapObj.cell.value.tagName;
-      boardName = mapObj.cell.getAttribute('noticeBoardName') || mapObj.cell.getAttribute('workflowName');
+      boardName = mapObj.cell.getAttribute('noticeBoardName') || mapObj.workflowName;
     }
     const graph = editor.graph;
     const self = this;
@@ -747,10 +747,29 @@ export class WorkflowService {
         let wf;
         if (isGraphView && colorCode !== '#90C7F5') {
           const node1 = doc.createElement('Workflow');
-          node1.setAttribute('workflowName', mainJson.path.substring(mainJson.path.lastIndexOf('/') + 1));
+          const workflowName = mainJson.path.substring(mainJson.path.lastIndexOf('/') + 1);
+          node1.setAttribute('workflowName', workflowName);
           node1.setAttribute('path', mainJson.path);
           wf = graph.insertVertex(defaultParent, null, node1, 0, 0, 160, 40, WorkflowService.setStyleToVertex('', colorCode, self.theme, null));
-          connectInstruction(v1, wf, '', '', defaultParent);
+          let isConnect = true;
+          if (mapObj.addOrderdMap.has(workflowName)) {
+            let arr = mapObj.addOrderdMap.get(workflowName);
+            arr = JSON.parse(arr);
+            arr.forEach(id => {
+              const vert = graph.getModel().getCell(id);
+              if (vert && vert.value.tagName === 'AddOrder') {
+                connectInstruction(vert, wf, '', '', defaultParent);
+                isConnect = false;
+              }
+            });
+          }
+
+
+          if (isConnect) {
+            connectInstruction(v1, wf, '', '', defaultParent);
+          } else {
+            graph.removeCells([v1]);
+          }
         }
 
         const start = vertexMap.get(json.instructions[0].uuid);
@@ -760,6 +779,7 @@ export class WorkflowService {
         } else {
           connectInstruction(v1, start, '', '', defaultParent);
         }
+
         if (last.TYPE !== 'ImplicitEnd') {
           let end = vertexMap.get(last.uuid);
           if (self.isInstructionCollapsible(last.TYPE)) {
@@ -851,7 +871,7 @@ export class WorkflowService {
               }
               mapObj.addOrderdMap.set(json.instructions[x].workflowName, JSON.stringify(arr));
             }
-            if (boardType === 'AddOrder' && boardName === json.instructions[x].workflowName) {
+            if (boardName === json.instructions[x].workflowName) {
               connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
             }
           } else if (json.instructions[x].TYPE === 'PostNotice') {
@@ -1078,7 +1098,8 @@ export class WorkflowService {
 
     function createCollapsedObjects(json: any, parent: any): void {
       const node1 = doc.createElement('Workflow');
-      node1.setAttribute('workflowName', json.path.substring(json.path.lastIndexOf('/') + 1));
+      const workflowName = json.path.substring(json.path.lastIndexOf('/') + 1);
+      node1.setAttribute('workflowName', workflowName);
       node1.setAttribute('path', json.path);
       const w1 = graph.insertVertex(parent, null, node1, 0, 0, 160, 40, WorkflowService.setStyleToVertex('', colorCode, self.theme, null));
       if (json.compressData && json.compressData.length > 0) {
@@ -1134,14 +1155,15 @@ export class WorkflowService {
             }
           }
         }
-      } else {
-        if (mapObj.addOrderdMap.has(json.path.substring(json.path.lastIndexOf('/') + 1))) {
-          let arr = mapObj.addOrderdMap.get(json.path.substring(json.path.lastIndexOf('/') + 1));
-          arr = JSON.parse(arr);
-          arr.forEach(id => {
-            connectInstruction(graph.getModel().getCell(id), w1, '', '', parent);
-          });
-        }
+      }
+      if (mapObj.addOrderdMap.has(workflowName)) {
+        let arr = mapObj.addOrderdMap.get(workflowName);
+        arr = JSON.parse(arr);
+        arr.forEach(id => {
+          connectInstruction(graph.getModel().getCell(id), w1, '', '', parent);
+        });
+      } else if (mapObj.cell && mapObj.cell.value.tagName !== 'ExpectNotice' && mapObj.cell.value.tagName !== 'PostNotice') {
+        connectInstruction(w1, mapObj.cell, '', '', parent);
       }
     }
 

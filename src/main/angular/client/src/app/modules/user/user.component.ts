@@ -100,7 +100,7 @@ export class ImportKeyModalComponent implements OnInit {
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
               public translate: TranslateService, public toasterService: ToasterService) {
     this.uploader = new FileUploader({
-      url: this.type === 'key' ? './api/profile/key/import' : this.type === 'certificate' ? './api/profile/key/ca/import' :  './api/profile/ca/import',
+      url: '',
       queueLimit: 2
     });
     let uo: FileUploaderOptions = {};
@@ -109,6 +109,7 @@ export class ImportKeyModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.uploader.options.url = this.type === 'key' ? './api/profile/key/import' : this.type === 'certificate' ? './api/profile/key/ca/import' : './api/profile/ca/import';
     this.comments.radio = 'predefined';
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';

@@ -495,10 +495,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  resetAgent(agent, controller): void {
+  resetAgent(agent, controller, force = false): void {
     const obj = {
       controllerId: controller.controllerId,
-      agentId: agent.agentId
+      agentId: agent.agentId,
+      force
     };
     if (this.preferences.auditLog) {
       const comments = {

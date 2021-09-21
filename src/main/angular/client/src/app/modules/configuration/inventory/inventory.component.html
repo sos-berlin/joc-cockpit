@@ -7,9 +7,14 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" *ngIf="permission.joc">
+            <button class="btn btn-sm btn-grey m-l-12"
+                    (click)="search()">
+              <i class="fa fa-search"></i>&nbsp;
+              <span translate>common.button.search</span>
+            </button>
             <div class="btn-group">
               <div class="btn-group dropdown ">
-                <button class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
+                <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
                   <i nz-icon nzType="sync" nzTheme="outline"></i>&nbsp;
                   <span translate>inventory.button.convert </span>
                   <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
@@ -23,11 +28,6 @@
                 </nz-dropdown-menu>
               </div>
             </div>
-            <button class="btn btn-sm btn-grey m-l-12"
-                    (click)="search()">
-              <i class="fa fa-search"></i>&nbsp;
-              <span translate>common.button.search</span>
-            </button>
 <!--            <button *ngIf="permission.joc.inventory.manage" class="btn btn-sm btn-grey m-l-12"
                     (click)="setVersion()">
               <i class="fa fa-code-fork"></i>&nbsp;

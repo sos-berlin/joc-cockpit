@@ -820,6 +820,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           const mapObj = {
             vertixMap: new Map(),
             cell,
+            workflowName : self.workFlowJson.name || self.workFlowJson.path,
             graphView: !!self.workflowObjects,
             colorCode: obj.color,
             boardMap: self.boardMap,
@@ -1003,11 +1004,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
 
     if (mainJson.addOrderFromWorkflows && mainJson.addOrderFromWorkflows.length > 0) {
       const cell = graph.getChildCells(graph.getDefaultParent())[0];
-      let remove = true;
+      let remove = false;
       mainJson.addOrderFromWorkflows.forEach((workflow) => {
-        if (workflow.path !== mainJson.path) {
+        if (workflow.path !== self.workFlowJson.path) {
           createWorkflowNode(workflow, cell, 'expect');
-          remove = false;
+          remove = true;
         }
       });
       if (remove) {

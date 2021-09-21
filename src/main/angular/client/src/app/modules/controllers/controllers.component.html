@@ -123,6 +123,9 @@
                               <li (click)="resetAgent(agent, controller)" nz-menu-item >
                                 <a translate>agent.button.reset</a>
                               </li>
+                              <li (click)="resetAgent(agent, controller, true)" nz-menu-item >
+                                <a translate>agent.button.resetForced</a>
+                              </li>
                               <li (click)="disableAgent(agent, controller)" nz-menu-item *ngIf="!agent.disabled">
                                 <a translate>agent.button.disable</a>
                               </li>
