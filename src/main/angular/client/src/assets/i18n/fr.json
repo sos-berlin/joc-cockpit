@@ -1047,8 +1047,8 @@
       "label.convertCron": "Convertir crontab",
       "label.folder": "Dossier",
       "label.calendarName": "Nom du Calendrier",
-      "label.agentName ": "Nom de l'agent",
-      "label.systemCrontab ": "Système crontab ",
+      "label.agentName": "Nom de l'agent",
+      "label.systemCrontab": "Système crontab",
       "tooltip.systemCrontab": "Le fichier crontab contient l'utilisateur",
       "button.convert": "Convertir"
     },
@@ -1064,58 +1064,57 @@
     },
     "tooltips": {
       "calendar": {
-        "name": "Nom du calendrier",
-        "documentation": "Documentation",
+        "name": "Les calendriers sont utilisés par les Planification pour créent des Ordres des jours spécifiés par le calendrier.",
+        "documentation": "Une référence à une Documentation peut être ajoutée qui sera affichée avec le Calendrier. La vue RESSOURCES permet de gérer la documentation",
         "title": "Titre du calendrier.",
-        "type": "Type",
-        "validFrom": "Valide à partir du",
-        "validTo": "Valide jusqu'au"
+        "type": "TLes calendriers sont créés pour les jours ouvrables ou pour les jours non ouvrables. Lorsque vous attribuez un calendrier à une planification, en plus d'un calendrier pour les jours ouvrables, un calendrier pour les jours non ouvrables peut être attribué afin de limiter davantage les jours d'exécution d'un workflow.",
+        "validFrom": "En option, le début de la période de validité du Calendrier peut être spécifié. Aucun Ordre ne sera créée par un Calendrier avant cette date.",
+        "validTo": "En option, la fin de la période de validité du Calendrier peut être spécifiée. Aucun Ordre ne sera créée par un Calendrier au-delà de cette date."
       },
       "fileOrderSource": {
-        "name": "Nom de la source d'ordre de fichiers",
-        "documentation": "Documentation",
+        "name": "Une source d'ordre de fichiers est utilisée pour surveiller un répertoire pour les fichiers entrants afin de créer un ordre pour chaque fichier individuellement. Cela permet de démarrer automatiquement les workflows à l'arrivée des fichiers. Pour le nom de la source d'ordre de fichiers, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucun point ni tiret au début ou à la fin dooit être utilisé.",
+        "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec la source d'ordre de fichier. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Titre de la source d'ordre de fichiers.",
-        "workflowName": "Nom du Workflow",
-        "agent": "Agent",
-        "directory": "Répertoire",
-        "pattern": "Pattern",
-        "timeZone": "Fuseau horaire",
-        "delay": "Délai"
+        "workflowName": "Une référence à un Workflow doit être ajoutée. Un ordre pour ce workflow sera créée à l'arrivée d'un fichier entrant dans le Répertoire qui est surveillé.",
+        "agent": "L'Agent doit être spécifié pour effectuer la surveillance des fichiers sur l'hôte respectif sur lequel l'Agent est installé.",
+        "directory": "Le répertoire est spécifié pour la surveillance des les fichiers entrants. Le répertoire doit être accessible pour l'hôte et le compte de l'agent.",
+        "pattern": "Un pattern d'expression régulière spécifie les fichiers pour lesquels le répertoire est surveillé. Par exemple, .* signifie tous les fichiers, .*\\.txt$ signifie tous les fichiers avec une extension .txt.",
+        "timeZone": "Lorsqu'un fichier arrive, l'Agent crée un ordre qui inclut la date du jour avec son ID Ordre. Cet élément spécifie le fuseau horaire utilisé pour la date dans l'ID Ordre.",
+        "delay": "Un délai est appliqué pendant lequel l'agent attend qu'un fichier entrant reste inchangé. Les modifications sont détectées à partir de la taille du fichier et de l'horodatage du fichier. Si le fichier change, par exemple si le fichier est écrit par un processus, le délai sera à nouveau appliqué et la vérification sera répétée jusqu'à ce qu'aucun autre changement ne se produise."
       },
       "jobResource": {
-        "name": "Nom du job resource",
-        "documentation": "Documentation",
+        "name": "Une ressource de tâche est un ensemble de variables qui peuvent être utilisées par un certain nombre de worklows ou de tâches. Il existe deux types : les variables sont affectées aux travaux JITL et aux tâches Java, les variables d'environnement deviennent automatiquement disponibles avec les travaux Shell. Pour le nom de la ressource de tâche, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec la ressource de tâche. La vue RESSOURCES permet de gérer la Documentation.",
         "title": "Le Titre d'une job resource."
       },
       "board": {
-        "name": "Nom de la Condition",
-        "documentation": "Documentation",
-        "title": "Le Titre de la Condition.",
+        "name": "Un tableau de condition représente les dépendances entre les workflows. Les instructions PostNotice et les instructions ExpectNotice respectives dans les workflows font référence au tableau de conditon. Pour le nom du tableau de condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le tableau de condition. La vue RESSOURCES permet de gérer la documentation.",        "title": "Le Titre de la Condition.",
         "toNotice": "Entrer la Condition",
         "endOfLife": "Entrer la fin de vie",
         "readingOrderToNoticeId": "Entrer la règle pour créer l'ID Annonce pour 'Ordre attendu"
       },
       "lock": {
-        "name": "Nom du verrou",
-        "documentation": "Documentation",
+        "name": "Les verrous de ressources sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de tâche. Ils peuvent être utilisés dans tous les workflows et limitent le parallélisme des tâches. Pour le nom du verrou de ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le verrou de ressource. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre d'un verrou",
-        "limit": "Capacité"
+        "limit": "Si un verrou de ressource est acquis en mode partagé, chaque consommateur de verrou de ressource spécifie un nombre en fonction de la capacité du verrou de ressource. Si la capacité est dépassée, les tâches doivent attendre que leur nombre corresponde à la capacité disponible du verrou de ressource."
       },
       "schedule": {
-        "name": "Nom de la planification",
-        "documentation": "Documentation",
+        "name": "Une Planification est utilisé pour créer automatiquement des ordres pour un workflow donné en fonction du calendrier attribué. Pour le nom de la Planification, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec la Planification. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre d'une planification.",
-        "workflowName": "Nom du workflow",
-        "planOrderAutomatically": "Ordre planifié automatiquement",
-        "submitOrderToControllerWhenPlanned": "Soumettre l'ordre au contrôleur lorsque cela est planifié"
+        "workflowName": "Il faut ajouter une référence à un workflow pour lequel des ordres sont crées.",
+        "planOrderAutomatically": "Les ordres sont planifiées automatiquement, c'est-à-dire qu'en fonction des paramètres du service du plan quotidien, les ordres sont créées pour les prochains jours à l'avance.",
+        "submitOrderToControllerWhenPlanned": "Les ordres sont automatiquement soumis à un contrôleur au moment prévu. Sur la base des paramètres des ordres du Daily Plan service sont soumis un certain nombre de jours à l'avance."
       },
       "workflow": {
         "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
-        "jobResourceNames": "Les ressources de tâche contiennent des variables partagées qui peuvent être utilisées par un certain nombre de tâches et de workflows.",
-        "documentation": "Documentation",
-        "title": "Le titre d'un workflow.",
-        "timeZone": "Fuseau horaire d'admission",
-        "allowUndeclared": "Autoriser les variables non déclarés",
+        "jobResourceNames": "Il est possible d'ajouter des références aux ressources de tâches qui contiennent des variables partagées à utiliser par un certain nombre de tâche et de workflow. Toutes les variables des ressources de tâche sélectionnées peuvent être utilisées par n'importe quel tâche dans le workflow.",
+        "documentation": "Un worklow ou une tâche peut se voir attribuer une documentation qui s'affiche avec la vue WORKFLOWS. Les documentations sont gérées avec la vue RESSOURCES.",
+        "title": "Le titre du workflow est affiché dans la vue WORKFLOWS.",
+        "timeZone": "Les heures d'admission sont calculées pour le fuseau horaire spécifié. Par défaut, le fuseau horaire spécifié dans le profil de l'utilisateur est utilisé.",
+        "allowUndeclared": "Autoriser les variables non déclarées des Ordres. Cela signifie qu'un ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les tâches échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un ordre.",
         "board": {
           "boardName": "Le nom d'une Condition est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin."
         },
