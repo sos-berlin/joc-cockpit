@@ -25,7 +25,7 @@
   "INCOMPLETE": "処理中",
   "INITIALIZED": "初期化されました",
   "COUPLED": "接続",
-  "SHUTDOWN": "shutdown",
+  "SHUTDOWN": "シャットダウン",
   "RESET": "リセット",
   "RESETTING": "リセット中",
   "COUPLINGFAILED": "接続失敗",
@@ -134,7 +134,7 @@
     "label.reset": "リセット",
     "label.resetting": "リセット中",
     "label.couplingFailed": "接続失敗",
-    "label.shutdown": "Shutdown",
+    "label.shutdown": "シャットダウン",
     "label.unknown": "不明",
     "label.runningTasks": "実行中タスク",
     "label.agentFound": "エージェントがあります",
@@ -148,7 +148,7 @@
     "button.allAgent": "全エージェント",
     "button.coupled": "接続",
     "button.couplingFailed": "接続失敗",
-    "button.shutdown": "Shutdown",
+    "button.shutdown": "シャットダウン",
     "button.unknown": "不明",
     "button.enable": "有効化",
     "button.disable": "無効化",
@@ -998,7 +998,7 @@
     "button.importAndDeploy": "インポートして配置",
     "button.backToObject": "前のオブジェクトに戻る",
     "button.backToList": "一覧に戻る",
-    "button.convert": "Convert",
+    "button.convert": "変換",
     "button.cron": "Cron",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
@@ -1044,13 +1044,13 @@
     "message.nameIsNotValid": "無効な名称です",
     "message.invalidFile": "無効な{{objectType}}ファイルです",
     "cronTab": {
-      "label.convertCron": "Convert crontab",
-      "label.folder": "Folder",
-      "label.calendarName": "Calendar Name",
-      "label.agentName": "Agent Name",
-      "label.systemCrontab": "System crontab",
-      "tooltip.systemCrontab": "crontab file contains user",
-      "button.convert": "Convert"
+      "label.convertCron": "crontab変換",
+      "label.folder": "フォルダー",
+      "label.calendarName": "カレンダー名",
+      "label.agentName": "エージェント名",
+      "label.systemCrontab": "システムcrontab",
+      "tooltip.systemCrontab": "userを含むcrontabファイルです",
+      "button.convert": "変換"
     },
     "export": {
       "label.filter": "フィルター",
@@ -1130,12 +1130,12 @@
         },
         "fork": {
           "joinVariables": "Fork命令で分岐したオーダー変数は、Join命令に到達したときに親オーダーに追加されます。",
-          "joinIfFailed": "Join If Failed"
+          "joinIfFailed": "失敗時Join"
         },
         "forkList": {
           "children": "オーダー変数",
           "childToId": "オーダーID",
-          "joinIfFailed": "Join If Failed"
+          "joinIfFailed": "失敗時Join"
         },
         "if": {
           "predicate": "If命令の述部は、「true」または「false」と評価される条件式です。"
@@ -1161,12 +1161,12 @@
           "criticality": "ジョブの重要度を通知に使用することで、インシデントの緊急性をより明確に区別することができます。",
           "failOnOutputErr": "ジョブがstderrに出力を書き込んだ場合、これはエラーとみなされ、オーダーは失敗ステートになります。",
           "admissionTime": "許可時間",
-          "skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day"
+          "skipIfNoAdmissionForOrderDay": "許可時間ではないときはスキップ"
         },
         "addOrder": {
           "workflowName": "ワークフロー名",
           "arguments": "引数",
-          "remainWhenTerminated": "Remain When Terminated"
+          "remainWhenTerminated": "終了時は留まる"
         },
         "lock": {
           "name": "リソースロック名前はインベントリー内で一意です。リソースロックを使用することで、ワークフローのセクションの並列処理を制限できます。",
@@ -1928,9 +1928,9 @@
     "label.timeZone": "許可時間タイムゾーン",
     "label.addOrder": "オーダー追加",
     "label.workflowPath": "ワークフローパス",
-    "label.remainWhenTerminated": "Remain When Terminated",
-    "label.joinIfFailed": "Join If Failed",
-    "label.skipIfNoAdmissionForOrderDay": "Skip If No Admission For Order Day",
+    "label.remainWhenTerminated": "終了時は留まる",
+    "label.joinIfFailed": "失敗時Join",
+    "label.skipIfNoAdmissionForOrderDay": "許可時間ではないときスキップ",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
     "button.actual": "デフォルト",
@@ -1955,8 +1955,8 @@
     "button.exportInPng": "Pngエキスポート",
     "button.createForkListVariables": "新規ForkList変数作成",
     "button.wizard": "ウイザード",
-    "button.addRequiredArguments": "Add Required Arguments",
-    "button.addAllArguments": "Add All Arguments",
+    "button.addRequiredArguments": "必要な引数を追加",
+    "button.addAllArguments": "全引数を追加",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",
@@ -1984,9 +1984,9 @@
     "message.invalidForkListInstruction": "ForkList命令が必要です",
     "message.invalidPostNoticeInstruction": "PostNotice命令が無効です",
     "message.invalidExpectNoticeInstruction": "ExpectNoticeが無効です",
-    "message.agentIsMissing": "エージェントが必要です",
-    "message.orderNameIsMissing": "Order Name is missing, but is required",
-    "message.workflowNameIsNotValid": "Workflow Name is missing, but is required",
+    "message.agentIsMissing": "エージェント名が必要です",
+    "message.orderNameIsMissing": "オーダー名が必要です",
+    "message.workflowNameIsNotValid": "ワークフロー名が必要です",
     "message.emptyWorkflow": "ワークフローには最低一つの命令が必要です",
     "message.invalidForkInstruction": "Fork命令には最低２つの分岐が必要です",
     "placeholder.selectAgentName": "参照エージェント入力",
@@ -2133,16 +2133,16 @@
           "終了日付"
         ],
         "rangeYearPlaceholder": [
-          "Start year",
-          "End year"
+          "開始年",
+          "終了年"
         ],
         "rangeMonthPlaceholder": [
-          "Start month",
-          "End month"
+          "開始月",
+          "終了月"
         ],
         "rangeWeekPlaceholder": [
-          "Start week",
-          "End week"
+          "開始週",
+          "終了週"
         ],
         "today": "今日",
         "now": "現在時刻",
@@ -2173,16 +2173,16 @@
       "timePickerLocale": {
         "placeholder": "時刻を選択",
         "rangePlaceholder": [
-          "Start time",
-          "End time"
+          "開始時刻",
+          "終了時刻"
         ]
       }
     },
     "TimePicker": {
       "placeholder": "時刻を選択",
       "rangePlaceholder": [
-        "Start time",
-        "End time"
+        "開始時刻",
+        "終了時刻"
       ]
     },
     "Calendar": {
@@ -2197,16 +2197,16 @@
           "終了日付"
         ],
         "rangeYearPlaceholder": [
-          "Start year",
-          "End year"
+          "開始年",
+          "終了年"
         ],
         "rangeMonthPlaceholder": [
-          "Start month",
-          "End month"
+          "開始月",
+          "終了月"
         ],
         "rangeWeekPlaceholder": [
-          "Start week",
-          "End week"
+          "開始週",
+          "終了週"
         ],
         "locale": "ja_JP",
         "today": "今日",
@@ -2238,8 +2238,8 @@
       "timePickerLocale": {
         "placeholder": "時刻を選択",
         "rangePlaceholder": [
-          "Start time",
-          "End time"
+          "開始時刻",
+          "終了時刻"
         ]
       }
     },
