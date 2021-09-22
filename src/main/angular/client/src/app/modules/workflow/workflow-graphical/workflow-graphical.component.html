@@ -102,7 +102,7 @@
                translate>dailyPlan.button.setParameters</a>
           </li>
           <li nz-menu-item
-              *ngIf="permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED')">
+              *ngIf="permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') && (order.positionString && !order.positionString.match('/fork'))">
             <a (click)="removeWhenTerminated()"
                translate>order.button.leaveWorkflow</a>
           </li>

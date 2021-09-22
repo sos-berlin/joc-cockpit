@@ -619,11 +619,26 @@ export class WorkflowService {
 
   convertTryToRetry(mainJson: any, cb: any, jobs = {}): void {
     let count = 1;
-    function recursive(json: any) {
+    function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           if (!cb) {
             json.instructions[x].id = ++count;
+            if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
+              if (json.TYPE === 'ForkList') {
+                json.instructions[x].TYPE = 'ForkListEnd';
+              } else if (parent) {
+                let positions = [];
+                if (!parent.join) {
+                  parent.join = {};
+                } else{
+                  positions = clone(parent.join.positionStrings);
+                }
+                positions.push(json.instructions[x].position);
+                parent.join.positionStrings = positions;
+                json.instructions[x].TYPE = 'Join';
+              }
+            }
           }
           if (json.instructions[x].TYPE === 'Execute.Named') {
             json.instructions[x].TYPE = 'Job';
@@ -705,7 +720,7 @@ export class WorkflowService {
             });
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
               if (json.instructions[x].branches[i]) {
-                recursive(json.instructions[x].branches[i]);
+                recursive(json.instructions[x].branches[i], json.instructions[x]);
               }
             }
           }
@@ -897,7 +912,7 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-          } else if (json.instructions[x].TYPE === 'ImplicitEnd') {
+          } else if (json.instructions[x].TYPE === 'ImplicitEnd' || json.instructions[x].TYPE === 'ForkListEnd' || json.instructions[x].TYPE === 'Join') {
             _node.setAttribute('label', 'end');
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
@@ -1194,7 +1209,16 @@ export class WorkflowService {
         } else {
           for (let i = 0; i < branches.length; i++) {
             if (branches[i].instructions && branches[i].instructions.length > 0) {
-              const x = branches[i].instructions[branches[i].instructions.length - 1];
+              let x = branches[i].instructions[branches[i].instructions.length - 1];
+              if ((x.TYPE === 'ImplicitEnd' || x.TYPE === 'ForkListEnd' || x.TYPE === 'Join') && branches[i].instructions.length > 1) {
+                if (mapObj.vertixMap.has(JSON.stringify(x.position))) {
+                  mapObj.vertixMap.set(JSON.stringify(x.position), v1);
+                  const cell = vertexMap.get(x.uuid);
+                  graph.removeCells([cell], true);
+                  vertexMap.delete(x.uuid);
+                }
+                x = branches[i].instructions[branches[i].instructions.length - 2];
+              }
               if (x) {
                 let endNode;
                 if (self.isInstructionCollapsible(x.TYPE)) {
@@ -1293,7 +1317,16 @@ export class WorkflowService {
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
       if (branches.instructions && branches.instructions.length > 0) {
-        const x = branches.instructions[branches.instructions.length - 1];
+        let x = branches.instructions[branches.instructions.length - 1];
+        if ((x.TYPE === 'ImplicitEnd' || x.TYPE === 'ForkListEnd' || x.TYPE === 'Join') && branches.instructions.length > 1) {
+          if (mapObj.vertixMap.has(JSON.stringify(x.position))) {
+            mapObj.vertixMap.set(JSON.stringify(x.position), v1);
+            const cell = vertexMap.get(x.uuid);
+            graph.removeCells([cell], true);
+            vertexMap.delete(x.uuid);
+          }
+          x = branches.instructions[branches.instructions.length - 2];
+        }
         if (x) {
           let endNode;
           if (self.isInstructionCollapsible(x.TYPE)) {

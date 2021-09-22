@@ -95,10 +95,36 @@ export class ResumeOrderModalComponent implements OnInit {
   convertTryToRetry(mainJson: any): void {
     const self = this;
     let flag = false;
+    const map = new Map();
 
-    function recursive(json: any) {
+    function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
+            if (json.TYPE === 'ForkList') {
+              json.instructions[x].TYPE = 'ForkListEnd';
+            } else if (parent) {
+              let arr = [];
+              if (map.has(parent.positionString)) {
+                arr = JSON.parse(map.get(parent.positionString));
+              }
+              arr.push(json.instructions[x].positionString);
+              map.set(parent.positionString, JSON.stringify(arr));
+              let positions = [];
+              if (!parent.join) {
+                parent.join = {};
+              } else{
+                positions = self.coreService.clone(parent.join.positionStrings);
+              }
+              positions.push(json.instructions[x].position);
+              parent.join.positionStrings = positions;
+              parent.join.unique = arr.join('$');
+              if (self.positions.indexOf(json.instructions[x].positionString) > -1) {
+                parent.join.enabled = true;
+              }
+              json.instructions[x].TYPE = 'Join';
+            }
+          }
           if (json.instructions[x].TYPE === 'Execute.Named') {
             json.instructions[x].TYPE = 'Job';
           }
@@ -205,7 +231,7 @@ export class ResumeOrderModalComponent implements OnInit {
                 if (!flag) {
                   json.instructions[x].branches[i].show = true;
                 }
-                recursive(json.instructions[x].branches[i]);
+                recursive(json.instructions[x].branches[i], json.instructions[x]);
                 if (json.instructions[x].branches[i].positionString) {
                   if (self.order.positionString && self.order.positionString == json.instructions[x].branches[i].positionString) {
                     flag = true;
@@ -266,8 +292,25 @@ export class ResumeOrderModalComponent implements OnInit {
     this.activeModal.destroy();
   }
 
-  onDrop(postion): void {
-    this.updateOrder(postion);
+  onDrop(position): void {
+    let index;
+    if (position && position.match('$')) {
+      const positionArr = position.split('$');
+      for (const i in this.positions) {
+        let flag = false;
+        for (const j in positionArr) {
+          if (this.positions[i] === positionArr[j]) {
+            index = j;
+            flag = true;
+            break;
+          }
+        }
+        if (flag) {
+          break;
+        }
+      }
+    }
+    this.updateOrder(position, index);
   }
 
   openEditor(data): void {
@@ -312,7 +355,7 @@ export class ResumeOrderModalComponent implements OnInit {
     }
   }
 
-  private updateOrder(position): void {
+  private updateOrder(position, index = -1): void {
     const self = this;
 
     function recursive(json) {
@@ -334,6 +377,15 @@ export class ResumeOrderModalComponent implements OnInit {
                   }
                   recursive(json.instructions[x].branches[i]);
                 }
+              }
+            }
+            if (index > -1) {
+              if (json.instructions[x].join && json.instructions[x].join.order) {
+                delete json.instructions[x].join.order;
+              }
+              if (json.instructions[x].join && json.instructions[x].join.unique === position) {
+                json.instructions[x].join.order = self.order;
+                self.position = json.instructions[x].join.positionStrings[index];
               }
             }
           }

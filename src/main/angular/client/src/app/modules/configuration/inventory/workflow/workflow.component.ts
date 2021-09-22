@@ -1793,6 +1793,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (changes.data) {
       if (this.data.type) {
+        this.workflowTree = [];
         this.init();
       } else {
         this.isLoading = false;

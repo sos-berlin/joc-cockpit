@@ -136,6 +136,20 @@
           </span>
         </span>
       </div>
+      <div *ngIf="instruction.TYPE === 'ForkListEnd'" class="m-l-n-40">
+        <span>
+          <span class="_600" *ngIf="instruction.TYPE === 'ForkListEnd'">{{'workflow.label.forkListEnd' | translate}}</span>
+        </span>
+        <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">
+         <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">
+            <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
+          </ng-template>
+          <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.orders.length > 3">
+            <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
+            <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
+          </span>
+        </span>
+      </div>
       <div *ngIf="instruction.TYPE === 'Fork' && (instruction.show)">
         <div *ngFor="let branch of instruction.branches">
           <div class="p-l-md">
@@ -215,6 +229,20 @@
           <app-type [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                     [workflowFilters]="workflowFilters" [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
+      </div>
+      <div *ngIf="instruction.join">
+        <span>
+          <span class="_600">{{'workflow.label.join' | translate}}</span>
+        </span>
+        <span class="m-l-md" *ngIf="instruction.join.orders && instruction.join.orders.length> 0">
+         <ng-template ngFor let-order [ngForOf]="instruction.join.orders | orderBy : 'scheduledFor': true | slice:0:3">
+            <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
+          </ng-template>
+          <span class="remaining-order-count" (click)="showOrders(instruction)" *ngIf="instruction.join.orders.length > 3">
+            <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
+            <span class="remaining-order-count-span">{{instruction.join.orders.length - 3}}</span>
+          </span>
+        </span>
       </div>
     </li>
   </ul>

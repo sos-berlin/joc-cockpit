@@ -476,7 +476,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         if (order.state._text !== 'SUSPENDED' && order.state._text !== 'FAILED') {
           this.object.isResume = false;
         }
-        if (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') {
+        if ((order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') || (order.positionString && order.positionString.match('/fork'))) {
           this.object.isTerminate = false;
         }
         if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING' && order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED') {

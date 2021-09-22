@@ -29,7 +29,8 @@
       <li (click)="changeParameter(order)" nz-menu-item *ngIf="permission && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')">
         <a>{{'dailyPlan.button.setParameters' | translate}} ..</a>
       </li>
-      <li (click)="removeWhenTerminated()" nz-menu-item *ngIf="permission && permission.controllerDefaults.orders.cancel && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED')">
+      <li (click)="removeWhenTerminated()" nz-menu-item *ngIf="permission && permission.controllerDefaults.orders.cancel
+       && order.state && (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') && (order.positionString && !order.positionString.match('/fork'))">
         <a translate>order.button.leaveWorkflow</a>
       </li>
       <li (click)="confirmOrder()" nz-menu-item *ngIf="permission && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'PROMPTING')">

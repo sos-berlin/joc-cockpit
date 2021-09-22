@@ -112,7 +112,7 @@ export class OrderListSidebarComponent implements OnChanges{
           if (item.state._text !== 'SUSPENDED' && item.state._text !== 'FAILED') {
             this.object.isResume = false;
           }
-          if (item.state._text !== 'FINISHED' && item.state._text !== 'CANCELLED') {
+          if ((item.state._text !== 'FINISHED' && item.state._text !== 'CANCELLED') || (item.positionString && item.positionString.match('/fork'))) {
             this.object.isTerminate = false;
           }
           if (item.state._text !== 'RUNNING' && item.state._text !== 'INPROGRESS' && item.state._text !== 'WAITING' && item.state._text !== 'PENDING' && item.state._text !== 'SCHEDULED') {
