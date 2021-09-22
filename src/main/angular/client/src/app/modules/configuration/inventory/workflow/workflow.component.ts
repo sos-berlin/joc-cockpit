@@ -1040,7 +1040,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   checkString(data, type): void {
-    if (data[type]) {
+    if (data[type] && typeof data[type] == 'string') {
       const startChar = data[type].substring(0, 1);
       const endChar = data[type].substring(data[type].length - 1);
       if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {

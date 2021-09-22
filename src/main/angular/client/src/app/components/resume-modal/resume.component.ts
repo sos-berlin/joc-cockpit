@@ -147,6 +147,12 @@ export class ResumeOrderModalComponent implements OnInit {
               delete json.instructions[x].lockedWorkflow;
             }
           }
+          if (json.instructions[x].TYPE === 'ForkList') {
+            if (json.instructions[x].workflow) {
+              json.instructions[x].instructions = json.instructions[x].workflow.instructions;
+              delete json.instructions[x].workflow;
+            }
+          }
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
           }

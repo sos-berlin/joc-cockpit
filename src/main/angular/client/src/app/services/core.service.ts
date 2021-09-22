@@ -1325,7 +1325,7 @@ export class CoreService {
       } else {
         if (data[type] === 'true' || data[type] === 'false') {
         } else if (/^\d+$/.test(data[type])) {
-        } else {
+        } else if (typeof data[type] == 'string'){
           const startChar = data[type].substring(0, 1);
           if (startChar !== '$') {
             const endChar = data[type].substring(data[type].length - 1);
@@ -1362,7 +1362,7 @@ export class CoreService {
       if (data[type] === 'true' || data[type] === 'false') {
       } else if (/^\d+$/.test(data[type])) {
       } else if (/^(now\()/i.test(data[type]) || /^(env\()/i.test(data[type]) || /^(scheduledOrEmpty\()/g.test(data[type])) {
-      } else {
+      } else if (typeof data[type] == 'string') {
         const startChar = data[type].substring(0, 1);
         if (startChar !== '$') {
           const endChar = data[type].substring(data[type].length - 1);
