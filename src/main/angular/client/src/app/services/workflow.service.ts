@@ -1210,9 +1210,11 @@ export class WorkflowService {
           for (let i = 0; i < branches.length; i++) {
             if (branches[i].instructions && branches[i].instructions.length > 0) {
               let x = branches[i].instructions[branches[i].instructions.length - 1];
+              let pos;
               if ((x.TYPE === 'ImplicitEnd' || x.TYPE === 'ForkListEnd' || x.TYPE === 'Join') && branches[i].instructions.length > 1) {
-                if (mapObj.vertixMap.has(JSON.stringify(x.position))) {
-                  mapObj.vertixMap.set(JSON.stringify(x.position), v1);
+                pos = JSON.stringify(x.position);
+                if (mapObj.vertixMap.has(pos)) {
+                  mapObj.vertixMap.set(pos, v1);
                   const cell = vertexMap.get(x.uuid);
                   graph.removeCells([cell], true);
                   vertexMap.delete(x.uuid);
@@ -1226,6 +1228,13 @@ export class WorkflowService {
                 } else {
                   endNode = vertexMap.get(x.uuid);
                 }
+                let arr = [];
+                const prevVal = v1.value.getAttribute('positions');
+                if (prevVal) {
+                  arr = JSON.parse(prevVal);
+                }
+                arr.push(pos);
+                v1.value.setAttribute('positions', JSON.stringify(arr));
                 connectInstruction(endNode, v1, 'join', 'join', parent);
               }
             } else {
@@ -1318,9 +1327,11 @@ export class WorkflowService {
 
       if (branches.instructions && branches.instructions.length > 0) {
         let x = branches.instructions[branches.instructions.length - 1];
+        let pos;
         if ((x.TYPE === 'ImplicitEnd' || x.TYPE === 'ForkListEnd' || x.TYPE === 'Join') && branches.instructions.length > 1) {
-          if (mapObj.vertixMap.has(JSON.stringify(x.position))) {
-            mapObj.vertixMap.set(JSON.stringify(x.position), v1);
+          pos = JSON.stringify(x.position);
+          if (mapObj.vertixMap.has(pos)) {
+            mapObj.vertixMap.set(pos, v1);
             const cell = vertexMap.get(x.uuid);
             graph.removeCells([cell], true);
             vertexMap.delete(x.uuid);
@@ -1334,6 +1345,12 @@ export class WorkflowService {
           } else {
             endNode = vertexMap.get(x.uuid);
           }
+          const arr = [pos];
+          const prevVal = v1.value.getAttribute('positions')
+          if (prevVal) {
+            arr.push(prevVal)
+          }
+          v1.value.setAttribute('positions', JSON.stringify(arr));
           connectInstruction(endNode, v1, 'endForkList', 'endForkList', parent);
         }
       } else {

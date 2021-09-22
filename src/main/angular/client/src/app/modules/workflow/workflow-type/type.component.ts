@@ -296,6 +296,7 @@ export class TypeComponent implements OnChanges {
 
   private checkOrders(instruction, mapObj): void {
     if (instruction.join && instruction.join.positionStrings) {
+      delete instruction.join.orders;
       let isFound = false;
       instruction.join.positionStrings.forEach((pos) => {
         if (mapObj.has(JSON.stringify(pos))) {

@@ -1055,7 +1055,17 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                 }
               }
               if (!isCollapse) {
-                const edge = this.createOrder(graph, doc, parent, node);
+                let edge;
+                const position = node.getAttribute('position');
+                if (!position && node.getAttribute('positions')) {
+                  const positions = JSON.parse(node.getAttribute('positions'));
+                  positions.forEach((pos) => {
+                    edge = this.createOrder(graph, doc, parent, node, pos);
+                  });
+                } else{
+                  edge = this.createOrder(graph, doc, parent, node, position);
+                }
+
                 if (edge) {
                   edges.push(edge);
                 }
@@ -1115,8 +1125,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     }
   }
 
-  private createOrder(graph, doc, parent, node): any {
-    const position = node.getAttribute('position');
+  private createOrder(graph, doc, parent, node, position): any {
     let edge = null;
     if (position) {
       if (this.mapObj.get(position)) {
