@@ -362,10 +362,14 @@ export class ResizableDirective implements OnInit {
               const rsHt = JSON.parse(this.saveService.resizerHeight) || {};
               if (rsHt[this.type] && typeof rsHt[this.type] === 'object') {
                 rsHt[this.type][this.path] = x.size.height;
-              } else {
+              } else if (this.path) {
                 rsHt[this.type] = {};
               }
-              rsHt[this.type][this.path] = x.size.height;
+              if (this.path) {
+                rsHt[this.type][this.path] = x.size.height;
+              } else {
+                rsHt[this.type] = x.size.height;
+              }
               this.saveService.setResizerHeight(rsHt);
               this.saveService.save();
             } else if (this.workflowTab) {

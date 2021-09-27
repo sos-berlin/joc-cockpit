@@ -1793,7 +1793,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (changes.data) {
       if (this.data.type) {
-        this.workflowTree = [];
+        if(this.workflowTree.length > 0) {
+          this.recursiveTreeUpdate(this.workflowTree);
+        }
         this.init();
       } else {
         this.isLoading = false;
@@ -1808,6 +1810,22 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         this.ref.detectChanges();
       }
     }
+  }
+
+  recursiveTreeUpdate(scr): void {
+    function recursive(data) {
+      data.expanded = false;
+      if (data.children && data.children.length > 0) {
+        data.children = data.children.filter((item) => {
+          if (item.children && item.children.length > 0) {
+            recursive(item);
+          }
+          return !item.id;
+        });
+      }
+    }
+
+    recursive(scr[0]);
   }
 
   /**

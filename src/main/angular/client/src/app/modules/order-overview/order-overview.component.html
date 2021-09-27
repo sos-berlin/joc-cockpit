@@ -231,12 +231,11 @@
                   [nzPageIndex]="orderFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="data.length > 0"
-                  [nzData]="data | orderBy: orderFilters.filter.sortBy:orderFilters.reverse"
+                  [nzData]="data"
                   [nzLoading]="!loading"
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
-                  (nzCurrentPageDataChange)="currentPageDataChange($event)"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                 >
                   <thead>
@@ -499,4 +498,10 @@
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
+</div>
+<div *ngIf="!loading || reloadState == 'yes'">
+  <div class="bottom-btn" (click)="reload()" style="padding: 3px 10px; font-size: 24px; bottom: 16px">
+    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
+    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
+  </div>
 </div>

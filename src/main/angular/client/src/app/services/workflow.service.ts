@@ -753,6 +753,8 @@ export class WorkflowService {
     const vertexMap = new Map();
     const defaultParent = graph.getDefaultParent();
 
+    let isFound = false;
+
     function connectWithDummyNodes(json: any): void {
       if (json.instructions && json.instructions.length > 0) {
         const _node = doc.createElement('Process');
@@ -767,6 +769,7 @@ export class WorkflowService {
           node1.setAttribute('path', mainJson.path);
           wf = graph.insertVertex(defaultParent, null, node1, 0, 0, 160, 40, WorkflowService.setStyleToVertex('', colorCode, self.theme, null));
           let isConnect = true;
+
           if (mapObj.addOrderdMap.has(workflowName)) {
             let arr = mapObj.addOrderdMap.get(workflowName);
             arr = JSON.parse(arr);
@@ -778,7 +781,6 @@ export class WorkflowService {
               }
             });
           }
-
 
           if (isConnect) {
             connectInstruction(v1, wf, '', '', defaultParent);
@@ -793,6 +795,10 @@ export class WorkflowService {
           connectInstruction(wf, start, '', '', defaultParent);
         } else {
           connectInstruction(v1, start, '', '', defaultParent);
+        }
+
+        if (mapObj.cell && !isFound && wf && boardType !== 'AddOrder' && boardType !== 'PostNotice' && boardType !== 'ExpectNotice') {
+          connectInstruction(wf, mapObj.cell, '', '', defaultParent);
         }
 
         if (last.TYPE !== 'ImplicitEnd') {
@@ -887,6 +893,7 @@ export class WorkflowService {
               mapObj.addOrderdMap.set(json.instructions[x].workflowName, JSON.stringify(arr));
             }
             if (boardName === json.instructions[x].workflowName) {
+              isFound = true;
               connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
             }
           } else if (json.instructions[x].TYPE === 'PostNotice') {
@@ -1080,13 +1087,14 @@ export class WorkflowService {
                 connectInstruction(v1, cv1, 'try', 'try', v1);
               }
             }
-
             v2 = endTry(_id, v1.id, parent);
           }
+
           if (endNode) {
             connectInstruction(endNode, v1, type, type, parent);
             endNode = null;
           }
+
           if (json.instructions.length > (x + 1) && v2) {
             endNode = v2;
           }

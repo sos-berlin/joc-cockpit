@@ -1137,6 +1137,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   selectSubmissionHistory(id): void {
     this.selectedSubmissionId = id;
+    this.isLoaded = false;
     this.loadOrderPlan();
   }
 
@@ -1148,6 +1149,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (status) {
       this.dailyPlanFilters.filter.status = status;
     }
+    this.isLoaded = false;
     this.loadOrderPlan();
   }
 
@@ -1158,6 +1160,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.dailyPlanFilters.filter.status = '';
       }
     }
+    this.isLoaded = false;
     this.loadOrderPlan();
   }
 
@@ -1682,7 +1685,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   search(): void {
     this.isSearchHit = true;
-    let obj: any = {
+    const obj: any = {
       controllerId: this.schedulerIds.selected,
       filter: {}
     };
@@ -1789,6 +1792,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.searchFilter = {};
     if (this.isSearchHit) {
       this.isSearchHit = false;
+      this.isLoaded = false;
       this.loadOrderPlan();
     }
     if (!this.dailyPlanFilters.filter.status) {
@@ -1819,6 +1823,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         });
         modal.afterClose.subscribe(result => {
           if (result) {
+            this.isLoaded = false;
             this.loadOrderPlan();
           }
         });
@@ -2308,6 +2313,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();
     } else {
+      this.isLoaded = false;
       this.loadOrderPlan();
     }
     $('#full-calendar').calendar({
@@ -2327,6 +2333,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         if (this.selectedFiltered) {
           this.changeFilter(null);
         } else {
+          this.isLoaded = false;
           this.loadOrderPlan();
         }
       },
@@ -2608,6 +2615,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }).subscribe((conf: any) => {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
+        this.isLoaded = false;
         this.loadOrderPlan();
       });
     } else {
@@ -2615,6 +2623,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.savedFilter.selected = filter;
       this.dailyPlanFilters.selectedView = false;
       this.selectedFiltered = {};
+      this.isLoaded = false;
       this.loadOrderPlan();
     }
 

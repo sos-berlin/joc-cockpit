@@ -4686,7 +4686,7 @@ svg text {
 }
 
 mwl-gauge {
-  width: 240px;
+  width: 210px;
   height: 200px;
   display: block;
   padding: 2px;
@@ -5726,6 +5726,9 @@ body tr.mxPopupMenuItemHover {
   }
 }
 
+.tab-ht{
+  min-height: 70px !important;
+}
 
 .property-panel .sidebar-open, .property-panel .sidebar-close {
   z-index: 999;
@@ -7649,6 +7652,14 @@ div.jsoneditor-navigation-bar {
   .error-input {
     border-color: #a94442 !important;
   }
+}
+
+.login-box {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: calc(100vh - 56px);
+  margin-top: -15px;
 }
 
 div.ace_tooltip {

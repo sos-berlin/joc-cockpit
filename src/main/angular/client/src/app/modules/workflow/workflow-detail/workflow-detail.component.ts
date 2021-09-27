@@ -239,8 +239,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if (workflow.addOrderToWorkflows.length > 0) {
       addWorkflowInArrays(workflow.addOrderToWorkflows);
     }
-    if (workflow.addOrderFromWorkflows.length > 0) {
-      addWorkflowInArrays(workflow.addOrderFromWorkflows);
+    if (this.workFlowJson.path === workflow.path) {
+      if (workflow.addOrderFromWorkflows.length > 0) {
+        addWorkflowInArrays(workflow.addOrderFromWorkflows);
+      }
     }
 
     this.callAPI(APIs, () => {
