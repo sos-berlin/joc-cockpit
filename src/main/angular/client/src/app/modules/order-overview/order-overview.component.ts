@@ -1,9 +1,11 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
+import {OrderPipe} from 'ngx-order-pipe';
+import {takeUntil} from 'rxjs/operators';
 import {OrderActionComponent} from './order-action/order-action.component';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../pipes/core.pipe';
@@ -164,13 +166,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   selectedIndex = 0;
   showPanelObj: any;
   pageView: any;
-  subscription1: Subscription;
-  subscription2: Subscription;
   orders = [];
   history = [];
   auditLogs = [];
   data = [];
-  currentData = [];
+  reloadState = 'no';
   isProcessing = false;
   searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
   object = {
@@ -209,12 +209,16 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {date: '7d', text: 'nextWeak'}
   ];
 
+  subscription1: Subscription;
+  subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
+
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
               private translate: TranslateService, private excelService: ExcelService,
-              public modal: NzModalService) {
+              public modal: NzModalService, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -232,6 +236,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
   }
 
   changedHandler(flag: boolean): void {
@@ -315,9 +321,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   expandDetails(): void {
-    for (let i in this.currentData) {
-      if (this.currentData[i].arguments && !this.currentData[i].arguments[0]) {
-        this.currentData[i].arguments = Object.entries(this.currentData[i].arguments).map(([k, v]) => {
+    const orders = this.getCurrentData(this.data, this.orderFilters);
+    for (let i in orders) {
+      if (orders[i].arguments && !orders[i].arguments[0]) {
+        orders[i].arguments = Object.entries(orders[i].arguments).map(([k, v]) => {
           if (v && isArray(v)) {
             v.forEach((list, index) => {
               v[index] = Object.entries(list).map(([k1, v1]) => {
@@ -328,13 +335,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           return {name: k, value: v};
         });
       }
-      this.currentData[i].show = true;
+      orders[i].show = true;
     }
     this.updatePanelHeight();
   }
 
   collapseDetails(): void {
-    this.currentData.forEach((order) => {
+    const orders = this.getCurrentData(this.data, this.orderFilters);
+    orders.forEach((order) => {
       order.show = false;
     });
     this.updatePanelHeight();
@@ -342,11 +350,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   changeStatus(state): void {
     this.orderFilters.filter.state = state;
+    this.loading = false;
     this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
   }
 
   changeDate(date): void {
     this.orderFilters.filter.date = date;
+    this.loading = false;
     this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
   }
 
@@ -355,6 +365,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   sort(key): void {
     this.orderFilters.reverse = !this.orderFilters.reverse;
     this.orderFilters.filter.sortBy = key;
+    this.data = this.orderPipe.transform(this.data, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
     this.resetCheckBox();
   }
 
@@ -370,8 +381,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  currentPageDataChange($event): void {
-    this.currentData = $event;
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
 
   searchInResult(): void {
@@ -430,7 +442,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   updatePanelHeight(): void {
     const rsHt = this.saveService.resizerHeight ? JSON.parse(this.saveService.resizerHeight) || {} : {};
     if (rsHt.orderOverview) {
-      $('#orderTableId').css('height', this.resizerHeight);
+      $('#orderTableId').css('height', rsHt.orderOverview);
     } else {
       this._updatePanelHeight();
     }
@@ -442,8 +454,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   checkAll(value: boolean): void {
-    if (value && this.orders.length > 0) {
-      this.currentData.forEach(item => {
+    if (value && this.data.length > 0) {
+      const orders = this.getCurrentData(this.data, this.orderFilters);
+      orders.forEach(item => {
         this.object.mapOfCheckedId.set(item.orderId, item);
       });
     } else {
@@ -462,7 +475,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   refreshCheckedStatus(): void {
-    this.object.checked = this.object.mapOfCheckedId.size === this.currentData.length;
+    const orders = this.getCurrentData(this.data, this.orderFilters);
+    this.object.checked = this.object.mapOfCheckedId.size === orders.length;
     this.object.isCancel = false;
     this.object.isCancelWithKill = false;
     this.object.isModify = true;
@@ -565,7 +579,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     } else {
       const obj: any = {
         controllerId: this.schedulerIds.selected,
-        orderIds : []
+        orderIds: []
       };
       this.object.mapOfCheckedId.forEach((order) => {
         obj.orderIds.push(order.orderId);
@@ -773,7 +787,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getOrders(obj): void {
-    let tempOrder = this.orders.filter((order) => {
+    this.reloadState = 'no';
+    const tempOrder = this.orders.filter((order) => {
       return order.show;
     });
     if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'SCHEDULED') {
@@ -781,8 +796,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       obj.timeZone = this.preferences.zone;
     }
 
-    this.coreService.post('orders', obj).subscribe((res: any) => {
+    this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.isLoaded = true;
+      res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
       this.orders = res.orders;
       if (tempOrder.length > 0) {
         for (let i = 0; i < this.orders.length; i++) {
@@ -850,7 +866,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   private _updatePanelHeight(): void {
     setTimeout(() => {
-      let ht = (parseInt($('#orderTableId table').height(), 10) + 90);
+      let ht = (parseInt($('#orderTableId table').height(), 10) + 76);
       if (ht > 140 && ht < 150) {
         ht += 40;
       }
@@ -858,8 +874,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       if (el && el.scrollWidth > el.clientWidth) {
         ht = ht + 11;
       }
-      if (ht > 450) {
-        ht = 450;
+      if (ht > 650) {
+        ht = 650;
       }
       if (ht < 140) {
         ht = 142;
@@ -876,6 +892,20 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         this.isProcessing = false;
       }, time);
+    }
+  }
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.orders = [];
+      this.data = [];
+      this.reloadState = 'yes';
+      this.loading = true;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.reloadState = 'no';
+      this.loading = false;
+      this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
     }
   }
 }

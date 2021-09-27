@@ -60,9 +60,9 @@
               "src/assets/js/slimscroll.js",
               "src/assets/js/d3.min.js",
               "src/assets/js/xml2json.min.js",
-              "src/assets/js/holiday.js",
               "src/assets/js/jsgantt.js",
               "src/assets/js/full-year-calendar.js",
+              "node_modules/date-holidays/dist/umd.min.js",
               "node_modules/mxgraph/javascript/mxClient.min.js",
               "node_modules/save-svg-as-png/lib/saveSvgAsPng.js"
             ],
