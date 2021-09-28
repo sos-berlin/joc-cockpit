@@ -264,7 +264,7 @@
                                    [(ngModel)]="frequency.year" (ngModelChange)="loadHolidayList()"></nz-input-number>
                 </div>
               </div>
-              <div class="row" *ngIf="holidayList.length">
+              <div class="row m-b-sm" *ngIf="holidayList.length">
                 <label class="col-sm-3" translate>runtime.label.selectAll</label>
                 <div class="col-sm-6">
                   <label nz-checkbox [(ngModel)]="holidayDays.checked" name="holiday"

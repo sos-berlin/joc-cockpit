@@ -507,7 +507,7 @@ export class CoreService {
     return this.tabs._yade;
   }
 
-  setLocales(locale): void{
+  setLocales(locale): void {
     this.locales = locale;
   }
 

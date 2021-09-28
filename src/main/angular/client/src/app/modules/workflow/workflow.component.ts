@@ -1,10 +1,12 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {isEmpty} from 'underscore';
+import {takeUntil} from 'rxjs/operators';
+import {OrderPipe} from 'ngx-order-pipe';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {AuthService} from '../../components/guard';
@@ -213,10 +215,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   isSearchVisible = false;
   sideView: any = {};
   data = [];
-  currentData = [];
   sideBar: any = {};
+  reloadState = 'no';
+
   subscription1: Subscription;
   subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
+
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
 
   filterBtn: any = [
@@ -233,7 +238,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private workflowService: WorkflowService,
               private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService,
-              private toasterService: ToasterService, private router: Router) {
+              private toasterService: ToasterService, private router: Router, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -249,19 +254,22 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.coreService.setSideView(this.sideView);
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
     this.workflowFilters.expandedObjects = [];
-    for (const i in this.currentData) {
-      if (this.currentData[i].show) {
-        this.workflowFilters.expandedObjects.push(this.currentData[i].path);
+    const workflows = this.getCurrentData(this.data, this.workflowFilters);
+    for (const i in workflows) {
+      if (workflows[i].show) {
+        this.workflowFilters.expandedObjects.push(workflows[i].path);
       }
     }
     if (this.child) {
       this.workflowFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
+    this.coreService.setSideView(this.sideView);
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
   }
 
@@ -366,6 +374,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   loadWorkflow(): void {
+    this.reloadState = 'no';
     const obj = {
       folders: [],
       controllerId: this.schedulerIds.selected
@@ -431,6 +440,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   sort(key): void {
     this.workflowFilters.reverse = !this.workflowFilters.reverse;
     this.workflowFilters.filter.sortBy = key;
+    this.data = this.orderPipe.transform(this.data, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
   }
 
   pageIndexChange($event): void {
@@ -441,8 +451,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.workflowFilters.entryPerPage = $event;
   }
 
-  currentPageDataChange($event): void {
-    this.currentData = $event;
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
 
   searchInResult(): void {
@@ -539,7 +550,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   expandDetails(): void {
-    this.currentData.forEach((workflow) => {
+    const workflows = this.getCurrentData(this.data, this.workflowFilters);
+    workflows.forEach((workflow) => {
       workflow.show = true;
       workflow.configuration = this.coreService.clone(workflow);
       this.workflowService.convertTryToRetry(workflow.configuration, null);
@@ -548,9 +560,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   collapseDetails(): void {
-    this.currentData.forEach((workflow) => {
+    const workflows = this.getCurrentData(this.data, this.workflowFilters);
+    workflows.forEach((workflow) => {
       workflow.show = false;
-      delete workflow['configuration'];
+      delete workflow.configuration;
     });
     this.updatePanelHeight();
   }
@@ -692,7 +705,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (obj.folders && obj.folders.length === 1) {
       this.currentPath = obj.folders[0].folder;
     }
-    this.coreService.post('workflows', obj).subscribe((res: any) => {
+    this.coreService.post('workflows', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.loading = false;
       const request = {
         compact: true,
@@ -700,21 +713,22 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         workflowIds: []
       };
       let flag = true;
-      for (let i in res.workflows) {
+      res.workflows = this.orderPipe.transform(res.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
+      for (const i in res.workflows) {
         const path = res.workflows[i].path;
         res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
         res.workflows[i].path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
         if (!res.workflows[i].ordersSummary) {
           res.workflows[i].ordersSummary = {};
         }
-        let flag = true;
-        for (let j in request.workflowIds) {
+        let flag1 = true;
+        for (const j in request.workflowIds) {
           if (request.workflowIds[j].path === path && request.workflowIds[j].versionId === res.workflows[i].versionId) {
-            flag = false;
+            flag1 = false;
             break;
           }
         }
-        if (flag) {
+        if (flag1) {
           request.workflowIds.push({path, versionId: res.workflows[i].versionId});
         }
         if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
@@ -861,5 +875,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.coreService.post('configuration/save', configObj).subscribe((res) => {
 
     });
+  }
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.workflows = [];
+      this.data = [];
+      this.reloadState = 'yes';
+      this.loading = true;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.loading = false;
+      this.loadWorkflow();
+    }
   }
 }

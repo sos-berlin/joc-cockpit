@@ -2383,7 +2383,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } else {
       variable.value.default = '';
       variable.value.final = '';
+      delete variable.value.listParameters;
     }
+    this.updateOtherProperties('variable');
   }
 
   private init(): void {
@@ -2624,9 +2626,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               this.addVariableToList(val);
             }
           } else if (val.final) {
+            delete val.listParameters;
             val.type = 'Final';
             this.coreService.removeSlashToString(val, 'final');
           } else if (val.default) {
+            delete val.listParameters;
             this.coreService.removeSlashToString(val, 'default');
             if (val.type === 'Boolean') {
               val.default = (val.default === true || val.default === 'true');

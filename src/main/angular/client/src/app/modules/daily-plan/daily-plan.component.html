@@ -705,3 +705,9 @@
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
+<div *ngIf="!isLoaded || reloadState == 'yes'">
+  <div class="bottom-btn" (click)="reload()" style="padding: 3px 10px; font-size: 24px; bottom: 16px">
+    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
+    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
+  </div>
+</div>

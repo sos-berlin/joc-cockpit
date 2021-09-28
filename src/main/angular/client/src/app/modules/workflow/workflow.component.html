@@ -133,7 +133,7 @@
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                     *ngFor="let workflow of item.value | orderBy: workflowFilters.filter.sortBy:workflowFilters.reverse">
+                     *ngFor="let workflow of item.value">
                   <div class="box card">
                     <div class="box-body">
                       <div>
@@ -228,12 +228,11 @@
                   [nzPageIndex]="workflowFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="data.length > 0"
-                  [nzData]="data | orderBy: workflowFilters.filter.sortBy:workflowFilters.reverse"
+                  [nzData]="data"
                   [nzLoading]="loading"
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
-                  (nzCurrentPageDataChange)="currentPageDataChange($event)"
                   [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                 >
                   <thead>
@@ -561,4 +560,10 @@
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
+</div>
+<div *ngIf="loading || reloadState == 'yes'">
+  <div class="bottom-btn" (click)="reload()" style="padding: 3px 10px; font-size: 24px; bottom: 16px">
+    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
+    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
+  </div>
 </div>

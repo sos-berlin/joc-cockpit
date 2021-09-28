@@ -903,7 +903,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.pendingHTTPRequests$.next();
     } else if (this.reloadState === 'yes') {
-      this.reloadState = 'no';
       this.loading = false;
       this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
     }
