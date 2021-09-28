@@ -11,13 +11,13 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import {forkJoin, of, Subscription} from 'rxjs';
+import {forkJoin, of, Subject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {OrderPipe} from 'ngx-order-pipe';
 import {isEmpty, groupBy, sortBy, clone, isArray} from 'underscore';
 import {Router} from '@angular/router';
-import {catchError} from 'rxjs/operators';
+import {catchError, takeUntil} from 'rxjs/operators';
 import {ToasterService} from 'angular2-toaster';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {GroupByPipe, SearchPipe} from '../../pipes/core.pipe';
@@ -1018,6 +1018,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   isCalendarClick = false;
   selectedDate: Date;
   submissionHistory: any = [];
+  reloadState = 'no';
   searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime'];
   expandedPaths = new Set();
   dateRanges = [];
@@ -1043,6 +1044,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   subscription1: Subscription;
   subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private groupByPipe: GroupByPipe, private toasterService: ToasterService,
@@ -1068,10 +1070,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.dailyPlanFilters.selectedDate = this.selectedDate;
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
   }
 
   loadOrderPlan(): void {
+    this.reloadState = 'no';
     if (this.searchFilter && !isEmpty(this.searchFilter)) {
       this.search();
       return;
@@ -1100,7 +1105,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (this.dailyPlanFilters.filter.late) {
         obj.filter.late = true;
       }
-      this.coreService.post('daily_plan/orders', obj).subscribe((res: any) => {
+      this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
         this.filterData(res.plannedOrderItems);
         this.isLoaded = true;
         this.isRefreshed = false;
@@ -2674,4 +2679,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   /* ---- End Customization ------ */
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.planOrders = [];
+      this.plans = [];
+      this.reloadState = 'yes';
+      this.isLoaded = true;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.isLoaded = false;
+      this.loadOrderPlan();
+    }
+  }
 }

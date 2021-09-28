@@ -22,7 +22,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
 
   board: any = {};
   boardObj: any = {
-    endOfLifeMsg : '$epochMilli + ',
+    endOfLifeMsg : '$js7EpochMilli + ',
     units : 'Milliseconds'
   };
   invalidMsg: string;
@@ -106,7 +106,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       this.board.path1 = this.data.path;
       this.board.name = this.data.name;
       this.boardObj = {
-        endOfLifeMsg : '$epochMilli + '
+        endOfLifeMsg : '$js7EpochMilli + '
       };
       if (res.configuration.endOfLife) {
         this.boardObj.endOfLife = this.convertIntoUnit(res.configuration.endOfLife.replace(this.boardObj.endOfLifeMsg, ''));

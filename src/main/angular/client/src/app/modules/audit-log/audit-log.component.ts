@@ -1,9 +1,11 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty, clone} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
+import {takeUntil} from 'rxjs/operators';
+import {OrderPipe} from 'ngx-order-pipe';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {ExcelService} from '../../services/excel.service';
 import {CoreService} from '../../services/core.service';
@@ -193,6 +195,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   adtLog: any = {};
   auditLogs: any = [];
   isLoaded = false;
+  reloadState = 'no';
   showSearchPanel = false;
   searchFilter: any = {};
   temp_filter: any = {};
@@ -200,15 +203,16 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   savedFilter: any = {};
   filterList: any = [];
   data = [];
-  currentData = [];
   searchableProperties = ['controllerId', 'category', 'account', 'request', 'created', 'comment', 'ticketLink'];
 
   subscription1: Subscription;
   subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService, private router: Router) {
+              private translate: TranslateService, private excelService: ExcelService, private router: Router,
+              private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -224,6 +228,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
   }
 
   checkSharedFilters(): void {
@@ -322,6 +328,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       this.adtLog.filter.date = date;
       this.isLoaded = false;
     }
+    this.reloadState = 'no';
     let obj: any = {
       controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000
@@ -333,7 +340,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       obj = this.setDateRange(obj);
       obj.timeZone = this.preferences.zone;
     }
-    this.coreService.post('audit_log', obj).subscribe((res: any) => {
+    this.coreService.post('audit_log', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
+      res.auditLog = this.orderPipe.transform(res.auditLog, this.adtLog.filter.sortBy, this.adtLog.reverse);
       this.auditLogs = res.auditLog;
       if (!date) {
         this.data.forEach((item) => {
@@ -365,7 +373,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (!(this.adtLog.current || this.adtLog.current === false)) {
       this.adtLog.current = this.preferences.currentController;
     }
-    if (!this.adtLog.filter.date){
+    if (!this.adtLog.filter.date) {
       this.adtLog.filter.date = 'today';
     }
     this.savedFilter = JSON.parse(this.saveService.auditLogFilters) || {};
@@ -405,7 +413,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       } else {
         filter = this.parseDate(object, filter);
       }
-    } else if (object.planned){
+    } else if (object.planned) {
       filter = this.parseProcessExecuted(object.planned, filter);
     }
     return filter;
@@ -566,7 +574,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           controllerId: (!auditLog.controllerId || auditLog.controllerId === '-') ? this.schedulerIds.selected : auditLog.controllerId
         }
       });
-    } else{
+    } else {
       this.router.navigate(['/history/daily_plan'], {
         queryParams: {
           auditLogId: auditLog.id,
@@ -593,6 +601,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   sort(propertyName): void {
     this.adtLog.reverse = !this.adtLog.reverse;
     this.adtLog.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.adtLog.filter.sortBy, this.adtLog.reverse);
   }
 
   pageIndexChange($event): void {
@@ -603,8 +612,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.adtLog.entryPerPage = $event;
   }
 
-  currentPageDataChange($event): void {
-    this.currentData = $event;
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
 
   searchInResult(): void {
@@ -678,14 +688,16 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.load(null);
   }
 
-  expandDetails(): void{
-    this.currentData.forEach((value) => {
+  expandDetails(): void {
+    const logs = this.getCurrentData(this.data, this.adtLog);
+    logs.forEach((value) => {
       this.showDetail(value);
     });
   }
 
   collapseDetails(): void {
-    this.currentData.forEach((value: any) => {
+    const logs = this.getCurrentData(this.data, this.adtLog);
+    logs.forEach((value: any) => {
       value.show = false;
     });
   }
@@ -710,6 +722,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo)._d;
     }
     this.coreService.post('audit_log', filter).subscribe((res: any) => {
+      res.auditLog = this.orderPipe.transform(res.auditLog, this.adtLog.filter.sortBy, this.adtLog.reverse);
       this.auditLogs = res.auditLog;
       this.searchInResult();
       this.isLoaded = true;
@@ -808,7 +821,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         } else {
           filterObj.id = filter.id;
         }
-        const modal =  this.modal.create({
+        const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: FilterModalComponent,
           nzClassName: 'lg',
@@ -828,6 +841,19 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           }
         });
       });
+    }
+  }
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.auditLogs = [];
+      this.data = [];
+      this.reloadState = 'yes';
+      this.isLoaded = true;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.isLoaded = false;
+      this.load(null);
     }
   }
 }

@@ -69,6 +69,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
             recursive(json.instructions[x].then);
           }
           if (json.instructions[x].else && json.instructions[x].else.instructions) {
+            json.instructions[x].else.show = flag;
             recursive(json.instructions[x].else);
           }
         }

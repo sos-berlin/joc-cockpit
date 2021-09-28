@@ -229,12 +229,25 @@ export class LockComponent implements OnInit, OnDestroy {
                 this.coreService.post('lock', obj).subscribe((res: any) => {
                   const lock = res.lock;
                   if (lock) {
+                    if (this.locks[x].workflows.length > 0 && lock.workflows.length > 0) {
+                      this.locks[x].workflows.forEach((workflow) => {
+                        if (workflow.show) {
+                          for (let m = 0; lock.workflows.length > 0; m++) {
+                            if (lock.workflows[m].path === workflow.path) {
+                              lock.workflows[m].show = true;
+                              break;
+                            }
+                          }
+                        }
+                      });
+                    }
                     this.locks[x].acquiredLockCount = lock.acquiredLockCount;
                     this.locks[x].ordersHoldingLocksCount = lock.ordersHoldingLocksCount;
                     this.locks[x].ordersWaitingForLocksCount = lock.ordersWaitingForLocksCount;
                     this.locks[x].workflows = lock.workflows;
                   }
                 });
+                break;
               }
             }
           }
