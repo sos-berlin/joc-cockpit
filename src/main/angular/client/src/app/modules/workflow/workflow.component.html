@@ -49,7 +49,7 @@
                     <i *ngIf="!workflowFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="workflowFilters.reverse" class="fa fa-caret-down"></i>
                   </span>
-                  <span *ngIf="workflowFilters.filter.sortBy ==='path'">
+                  <span *ngIf="workflowFilters.filter.sortBy ==='path1'">
                     {{'common.label.path' | translate}}
                     <i *ngIf="!workflowFilters.reverse" class="fa fa-caret-up"></i>
                     <i *ngIf="workflowFilters.reverse" class="fa fa-caret-down"></i>
@@ -62,7 +62,7 @@
                     <a (click)="sort('name')" translate>common.label.name</a>
                   </li>
                   <li nz-menu-item>
-                    <a (click)="sort('path')" translate>common.label.path</a>
+                    <a (click)="sort('path1')" translate>common.label.path</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -245,11 +245,11 @@
                         <i *ngIf="workflowFilters.filter.sortBy == 'name' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path')" rowspan="2">
+                    <th (click)="sort('path1')" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.path</span>
-                        <i *ngIf="workflowFilters.filter.sortBy == 'path' && !workflowFilters.reverse"
+                        <i *ngIf="workflowFilters.filter.sortBy == 'path1' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
-                        <i *ngIf="workflowFilters.filter.sortBy == 'path' && workflowFilters.reverse"
+                        <i *ngIf="workflowFilters.filter.sortBy == 'path1' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('versionDate')" rowspan="2">
@@ -556,13 +556,13 @@
     </div>
   </ng-container>
 </nz-drawer>
-<div class="spinner" *ngIf="loading || !isLoading">
+<div class="spinner" *ngIf="(loading && pageView === 'grid') || !isLoading">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
 <div *ngIf="loading || reloadState == 'yes'">
-  <div class="bottom-btn" (click)="reload()" style="padding: 3px 10px; font-size: 24px; bottom: 16px">
+  <div class="bottom-btn" (click)="reload()">
     <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
     <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>

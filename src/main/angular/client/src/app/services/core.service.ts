@@ -198,7 +198,7 @@ export class CoreService {
     this.tabs._resource.boards = {};
     this.tabs._resource.boards.filter = {};
     this.tabs._resource.boards.filter.state = 'ALL';
-    this.tabs._resource.boards.filter.sortBy = 'id';
+    this.tabs._resource.boards.filter.sortBy = 'name';
     this.tabs._resource.boards.reverse = false;
     this.tabs._resource.boards.currentPage = '1';
     this.tabs._resource.boards.expandedKeys = ['/'];
@@ -389,7 +389,7 @@ export class CoreService {
     this.tempTabs._resource.boards = {};
     this.tempTabs._resource.boards.filter = {};
     this.tempTabs._resource.boards.filter.state = 'ALL';
-    this.tempTabs._resource.boards.filter.sortBy = 'id';
+    this.tempTabs._resource.boards.filter.sortBy = 'name';
     this.tempTabs._resource.boards.reverse = false;
     this.tempTabs._resource.boards.currentPage = '1';
     this.tempTabs._resource.boards.expandedKeys = ['/'];

@@ -478,6 +478,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() agents = [];
   @Input() isTooltipVisible: boolean;
   @Input() isModal: boolean;
+  @Input() exactMatch: boolean;
   history = [];
   indexOfNextAdd = 0;
   error: boolean;
@@ -2631,8 +2632,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             this.coreService.removeSlashToString(val, 'final');
           } else if (val.default) {
             delete val.listParameters;
-            this.coreService.removeSlashToString(val, 'default');
-            if (val.type === 'Boolean') {
+            if (val.type === 'String') {
+              this.coreService.removeSlashToString(val, 'default');
+            } else if (val.type === 'Boolean') {
               val.default = (val.default === true || val.default === 'true');
             }
           }

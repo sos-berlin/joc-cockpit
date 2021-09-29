@@ -1,6 +1,7 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
+import {OrderPipe} from 'ngx-order-pipe';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
@@ -46,7 +47,6 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   isLoaded = false;
   notifications = [];
   data = [];
-  currentData = [];
   object = {
     checked: false,
     indeterminate: false
@@ -57,7 +57,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
+  constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
               private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
@@ -68,6 +68,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     this.subscription2 = dataService.functionAnnounced$.subscribe((res: any) => {
       if (res) {
         if (res.filter) {
+          this.isLoaded = false;
           this.getData();
         } else if (res.action) {
           this.acknowledge(null);
@@ -113,7 +114,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     });
     let obj: any = {
       controllerId: this.filters.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000,
+      limit: parseInt(this.preferences.maxNotificationRecords, 10) || 5000,
       timeZone: this.preferences.timeZone
     };
     obj.types = this.filters.filter.types;
@@ -121,7 +122,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
       obj.dateFrom = this.filters.filter.date;
     }
     this.coreService.post('monitoring/notifications', obj).subscribe((res: any) => {
-      this.notifications = res.notifications;
+      res.notifications = this.orderPipe.transform(res.notifications, this.filters.filter.sortBy, this.filters.reverse);
       if (notificationIds && notificationIds.size > 0) {
         res.notifications.forEach((value) => {
           if (notificationIds.has(value.notificationId)) {
@@ -131,6 +132,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
           }
         });
       }
+      this.notifications = res.notifications;
       this.searchInResult();
       this.isLoaded = true;
     }, () => {
@@ -141,16 +143,19 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   sort(propertyName): void {
     this.filters.filter.reverse = !this.filters.filter.reverse;
     this.filters.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.filters.filter.sortBy, this.filters.reverse);
   }
 
   expandDetails(): void {
-    this.currentData.forEach((value) => {
+    const notifications = this.getCurrentData(this.data, this.filters);
+    notifications.forEach((value) => {
       this.showDetail(value);
     });
   }
 
   collapseDetails(): void {
-    this.currentData.forEach((value: any) => {
+    const notifications = this.getCurrentData(this.data, this.filters);
+    notifications.forEach((value) => {
       value.show = false;
     });
   }
@@ -170,16 +175,17 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     }
   }
 
-  currentPageDataChange($event): void {
-    this.currentData = $event;
-  }
-
   pageIndexChange($event): void {
     this.filters.filter.currentPage = $event;
   }
 
   pageSizeChange($event): void {
     this.filters.filter.entryPerPage = $event;
+  }
+
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.filter.currentPage - 1)), (entryPerPage * filter.filter.currentPage));
   }
 
   searchInResult(): void {
@@ -209,8 +215,8 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
 
   checkAll(value: boolean): void {
     if (value && this.notifications.length > 0) {
-      this.notifications.slice((this.preferences.entryPerPage * (this.filters.filter.currentPage - 1)), (this.preferences.entryPerPage * this.filters.filter.currentPage))
-        .forEach(item => {
+      const notifications = this.getCurrentData(this.data, this.filters);
+      notifications.forEach(item => {
           if (item.type === 'ERROR') {
             this.filters.mapOfCheckedId.add(item.notificationId);
           }
@@ -227,7 +233,8 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     } else {
       this.filters.mapOfCheckedId.delete(item.notificationId);
     }
-    this.object.checked = this.filters.mapOfCheckedId.size === this.notifications.slice((this.preferences.entryPerPage * (this.filters.filter.currentPage - 1)), (this.preferences.entryPerPage * this.filters.filter.currentPage)).filter((val) => val.type === 'ERROR').length;
+    const notifications = this.getCurrentData(this.data, this.filters);
+    this.object.checked = this.filters.mapOfCheckedId.size === notifications.length;
     this.refreshCheckedStatus();
   }
 

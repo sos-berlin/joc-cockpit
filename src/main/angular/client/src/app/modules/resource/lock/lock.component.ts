@@ -1,6 +1,8 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
+import {OrderPipe} from 'ngx-order-pipe';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -86,7 +88,6 @@ export class SingleLockComponent implements OnInit, OnDestroy {
       }
     }
   }
-
 }
 
 @Component({
@@ -106,13 +107,16 @@ export class LockComponent implements OnInit, OnDestroy {
   locksFilters: any = {};
   sideView: any = {};
   searchableProperties = ['id', 'path', 'limit', 'title', 'state', '_text', 'versionDate'];
+  reloadState = 'no';
+
   subscription1: Subscription;
   subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(TreeComponent, {static: false}) child;
 
-  constructor(private authService: AuthService, public coreService: CoreService,
-              private searchPipe: SearchPipe, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe,
+              private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -127,8 +131,6 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.locksFilters.expandedKeys = this.child.defaultExpandedKeys;
@@ -140,6 +142,10 @@ export class LockComponent implements OnInit, OnDestroy {
       }
       return ids;
     }, []);
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
   }
 
@@ -163,6 +169,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   loadLocks(): void {
+    this.reloadState = 'no';
     const obj = {
       folders: [],
       controllerId: this.schedulerIds.selected
@@ -208,6 +215,12 @@ export class LockComponent implements OnInit, OnDestroy {
   sort(propertyName): void {
     this.locksFilters.reverse = !this.locksFilters.reverse;
     this.locksFilters.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.locksFilters.filter.sortBy, this.locksFilters.reverse);
+  }
+
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
 
   receiveMessage($event): void {
@@ -274,8 +287,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private getLocksList(obj): void {
-    this.coreService.post('locks', obj).subscribe((res: any) => {
-      this.loading = false;
+    this.coreService.post('locks', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       res.locks.forEach((value) => {
         value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
         value.state = value.lock.state;
@@ -295,6 +307,8 @@ export class LockComponent implements OnInit, OnDestroy {
           }
         }
       });
+      res.locks = this.orderPipe.transform(res.locks, this.locksFilters.filter.sortBy, this.locksFilters.reverse);
+      this.loading = false;
       this.locks = res.locks;
       this.searchInResult();
     }, () => {
@@ -308,7 +322,8 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   expandDetails(): void {
-    this.data.forEach((value) => {
+    const locks = this.getCurrentData(this.data, this.locksFilters);
+    locks.forEach((value) => {
       value.show = true;
       value.workflows.forEach((item) => {
         item.show = true;
@@ -317,9 +332,23 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   collapseDetails(): void {
-    this.data.forEach((value) => {
+    const locks = this.getCurrentData(this.data, this.locksFilters);
+    locks.forEach((value) => {
       value.show = false;
     });
+  }
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.locks = [];
+      this.data = [];
+      this.reloadState = 'yes';
+      this.loading = false;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.loading = true;
+      this.loadLocks();
+    }
   }
 }
 

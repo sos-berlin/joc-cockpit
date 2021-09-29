@@ -882,10 +882,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.workflows = [];
       this.data = [];
       this.reloadState = 'yes';
-      this.loading = true;
+      this.loading = false;
       this.pendingHTTPRequests$.next();
     } else if (this.reloadState === 'yes') {
-      this.loading = false;
+      this.loading = true;
       this.loadWorkflow();
     }
   }

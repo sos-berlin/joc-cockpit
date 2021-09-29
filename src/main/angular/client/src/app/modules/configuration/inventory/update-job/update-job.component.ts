@@ -288,14 +288,22 @@ export class UpdateJobComponent implements OnInit {
         id: workflow.id
       }).subscribe((res: any) => {
         if (this.data.onlyUpdate) {
-          res.configuration.jobs[this.data.jobName] = this.updateProperties(res.configuration.jobs[this.data.jobName], job);
+          if (!this.data.exactMatch) {
+            for (const prop in res.configuration.jobs) {
+              if (this.data.jobName === '*' || new RegExp(this.data.jobName).test(prop)) {
+                res.configuration.jobs[prop] = this.updateProperties(res.configuration.jobs[prop], job);
+              }
+            }
+          } else{
+            res.configuration.jobs[this.data.jobName] = this.updateProperties(res.configuration.jobs[this.data.jobName], job);
+          }
         } else {
           res.configuration.jobs[this.data.jobName] = job;
         }
         if (this.data.jobName !== this.selectedNode.obj.jobName) {
           if (res.configuration.jobs[this.selectedNode.obj.jobName]) {
             this.renameFailedJobs.push(workflow.path);
-          } else{
+          } else {
             res.configuration.jobs[this.selectedNode.obj.jobName] = res.configuration.jobs[this.data.jobName];
             delete res.configuration.jobs[this.data.jobName];
             this.recursivelyUpdateJobInstruction(res.configuration);

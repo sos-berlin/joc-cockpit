@@ -467,14 +467,15 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   checkVariableType(argument): void {
-    let obj = this.workflow.orderPreparation.parameters[argument.name];
+    const obj = this.workflow.orderPreparation.parameters[argument.name];
     if (obj) {
       argument.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         argument.isRequired = true;
       } else {
-        this.coreService.removeSlashToString(obj, 'default');
-        if (obj.type === 'Boolean') {
+        if (obj.type === 'String') {
+          this.coreService.removeSlashToString(obj, 'default');
+        } else if (obj.type === 'Boolean') {
           argument.value = (obj.default === true || obj.default === 'true');
         } else {
           argument.value = obj.default;

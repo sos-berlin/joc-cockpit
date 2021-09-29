@@ -187,6 +187,15 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
+                       translate>profile.label.maxNumberOfNotificationEntries
+                  </div>
+                  <div class="col-sm-6">
+                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxNotificationRecords"
+                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfHistoryEntriesPerOrder
                   </div>
                   <div class="col-sm-6">

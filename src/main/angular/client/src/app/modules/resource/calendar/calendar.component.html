@@ -35,7 +35,7 @@
                            <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
                         <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
                       </span>
-                      <span *ngIf="calendarFilters.filter.sortBy ==='path'">
+                      <span *ngIf="calendarFilters.filter.sortBy ==='path1'">
                         {{'common.label.path' | translate}}
                         <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
                         <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
@@ -53,7 +53,7 @@
                         <a (click)="sort('name')" translate>common.label.name</a>
                       </li>
                       <li nz-menu-item >
-                        <a (click)="sort('path')" translate>common.label.path</a>
+                        <a (click)="sort('path1')" translate>common.label.path</a>
                       </li>
                       <li nz-menu-item  >
                         <a (click)="sort('type')" translate>common.label.type</a>
@@ -167,7 +167,7 @@
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
-                  [nzPageSize]="calendarFilters.entryPerPage || preferences.entryPerPage || 25"
+                  [nzPageSize]="calendarFilters.entryPerPage || preferences.entryPerPage"
                   [nzPageIndex]="calendarFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="data.length > 0"
@@ -176,7 +176,7 @@
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
-                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 50]"
+                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                 >
                   <thead>
                   <tr>
@@ -187,10 +187,10 @@
                       <i *ngIf="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path')"><a><span class="p-r-xs" translate>common.label.path</span>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'path' && !calendarFilters.reverse"
+                    <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                      <i *ngIf="calendarFilters.filter.sortBy == 'path1' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'path' && calendarFilters.reverse"
+                      <i *ngIf="calendarFilters.filter.sortBy == 'path1' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
@@ -272,8 +272,14 @@
     </div>
   </div>
 </div>
-  <div class="spinner" *ngIf="loading || !isLoading">
-    <div class="cssload-inner cssload-one"></div>
-    <div class="cssload-inner cssload-two"></div>
-    <div class="cssload-inner cssload-three"></div>
+<div class="spinner" *ngIf="(loading && pageView === 'grid') || !isLoading">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>
+<div *ngIf="loading || reloadState == 'yes'">
+  <div class="bottom-btn" (click)="reload()">
+    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
+    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>
+</div>

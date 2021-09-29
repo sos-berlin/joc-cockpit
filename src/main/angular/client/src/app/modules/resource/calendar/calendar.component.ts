@@ -1,8 +1,9 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {clone} from 'underscore';
+import {takeUntil} from 'rxjs/operators';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -135,8 +136,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
   calendarFilters: any = {};
   sideView: any = {};
   searchableProperties = ['name', 'path', 'title', 'type'];
+  reloadState = 'no';
+
   subscription1: Subscription;
   subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(TreeComponent, {static: false}) child;
 
@@ -156,13 +160,15 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.calendarFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.calendarFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
   }
 
@@ -182,6 +188,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   loadCalendar(status): void {
+    this.reloadState = 'no';
     if (status && status !== 'remove') {
       this.calendarFilters.filter.type = status;
     }
@@ -293,7 +300,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   private getCalendarsList(obj): void {
-    this.coreService.post('calendars', obj).subscribe((res: any) => {
+    this.coreService.post('calendars', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.loading = false;
       if (res.calendars) {
         for (let i = 0; i < res.calendars.length; i++) {
@@ -340,6 +347,19 @@ export class CalendarComponent implements OnInit, OnDestroy {
           }
         }
       });
+    }
+  }
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.calendars = [];
+      this.data = [];
+      this.reloadState = 'yes';
+      this.loading = false;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.loading = true;
+      this.loadCalendar(null);
     }
   }
 }

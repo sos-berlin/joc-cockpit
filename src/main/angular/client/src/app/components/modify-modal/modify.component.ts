@@ -60,6 +60,9 @@ export class ChangeParameterModalComponent implements OnInit {
               if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
                 this.variables[i].isRequired = true;
               }
+              if (val.final) {
+                this.variables.splice(i, 1);
+              }
               isExist = true;
               break;
             }
@@ -69,7 +72,11 @@ export class ChangeParameterModalComponent implements OnInit {
               if (!val.default && val.default !== false && val.default !== 0) {
                 this.variables.push({name: k, type: val.type, isRequired: true});
               } else {
-                this.coreService.removeSlashToString(val, 'default');
+                if (val.type === 'String') {
+                  this.coreService.removeSlashToString(val, 'default');
+                } else if (val.type === 'Boolean') {
+                  val.default = (val.default === 'true' || val.default === true);
+                }
                 this.variables.push({name: k, value: val.default, default: val.default});
               }
             }

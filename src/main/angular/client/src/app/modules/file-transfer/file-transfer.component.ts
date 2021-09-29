@@ -352,7 +352,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   selectedFiltered: any = {};
   filterList: any = [];
   fileTransfers: any = [];
-  currentData = [];
   data = [];
   widthArr = [];
   dateFormat: any;
@@ -398,11 +397,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   pageSizeChange($event): void {
     this.yadeFilters.entryPerPage = $event;
-  }
-
-
-  currentPageDataChange($event): void {
-    this.currentData = $event;
   }
 
   searchInResult(): void {

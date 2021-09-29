@@ -484,6 +484,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
       preferences.maxRecords = 5000;
       preferences.maxAuditLogRecords = 5000;
+      preferences.maxNotificationRecords = 5000;
       preferences.maxHistoryPerOrder = 10;
       preferences.maxHistoryPerTask = 10;
       preferences.maxAuditLogPerObject = 10;
