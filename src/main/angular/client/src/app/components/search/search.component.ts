@@ -143,7 +143,7 @@ export class SearchComponent implements OnInit {
     }
     if (!isEmpty(this.searchObj.advanced)) {
       obj.advanced = this.searchObj.advanced;
-      if (!obj.advanced.jobNameExactMatch) {
+      if (!obj.advanced.jobNameExactMatch || (obj.advanced.jobNameExactMatch && !obj.advanced.jobName)) {
         delete obj.advanced.jobNameExactMatch;
       }
     }
@@ -161,7 +161,9 @@ export class SearchComponent implements OnInit {
       } else {
         this.workflowService.setSearchResult(this.results);
       }
-      this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName && obj.advanced.jobNameExactMatch);
+      if (!this.isWorkflow) {
+        this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
+      }
       this.submitted = false;
     }, () => {
       this.submitted = false;
@@ -190,6 +192,7 @@ export class SearchComponent implements OnInit {
         controllerId: this.controllerId,
         data: {
           onlyUpdate,
+          exactMatch : this.searchObj.advanced.jobNameExactMatch,
           jobName: this.searchObj.advanced.jobName,
           workflows: this.results.filter((item) => {
             return this.object.mapOfCheckedId.has(item.name);

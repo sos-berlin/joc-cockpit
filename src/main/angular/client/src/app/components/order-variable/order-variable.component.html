@@ -19,7 +19,7 @@
       </ul>
     </nz-dropdown-menu>
   </span>
-  <span *ngIf="variable.value && (!variable.value[0] || !variable.value[0][0] || !variable.value[0][0].name)">{{variable.name}} : {{variable.value}}</span>
+  <span *ngIf="(variable.value || variable.value === false || variable.value === 0) && (!variable.value[0] || !variable.value[0][0] || !variable.value[0][0].name)">{{variable.name}} : {{variable.value}}</span>
   <span *ngIf="variable.value && variable.value[0] && variable.value[0][0] && variable.value[0][0].name">
     <b *ngIf="variable.name">{{variable.name.trimStart()}}</b>
     <div style="margin-left: 20px" *ngFor="let list of variable.value; let i = index" [ngClass]="{'b-b': i !== variable.value.length - 1}">

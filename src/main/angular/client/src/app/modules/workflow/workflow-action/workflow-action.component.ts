@@ -82,8 +82,12 @@ export class AddOrderModalComponent implements OnInit {
           if (!val.final) {
             if (!val.default && val.default !== false && val.default !== 0) {
               this.arguments.push({name: k, type: val.type, isRequired: true});
-            } else {
-              this.coreService.removeSlashToString(val, 'default');
+            } else if (val.default) {
+              if (val.type === 'String') {
+                this.coreService.removeSlashToString(val, 'default');
+              } else if (val.type === 'Boolean') {
+                val.default = (val.default === 'true' || val.default === true);
+              }
             }
           }
         } else {

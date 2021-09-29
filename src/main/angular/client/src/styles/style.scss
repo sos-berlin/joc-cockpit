@@ -5289,15 +5289,15 @@ General CSS
 }
 
 .bottom-btn {
-  position: absolute;
+  position: fixed;
   right: 22px;
-  bottom: 8px;
+  bottom: 14px;
   transition: all .3s;
   border-radius: 50%;
   box-shadow: 2px 2px 5px var(--text-color);
   cursor: pointer;
-  padding: 0 14px;
-  font-size: 28px;
+  padding: 3px 10px;
+  font-size: 24px;
   z-index: 99999;
   float: right;
 }

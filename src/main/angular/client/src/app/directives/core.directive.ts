@@ -393,7 +393,6 @@ export class ResizableDirective implements OnInit {
             const wt = x.size.width;
             $('#outlineContainer').css({right: wt + 10 + 'px'});
             $('.graph-container').css({'margin-right': wt + 'px'});
-            $('.bottom-btn').css({right: wt + 22 + 'px'});
             $('.toolbar').css({'margin-right': (wt - 12) + 'px'});
             $('.sidebar-close').css({right: wt + 'px'});
             localStorage.propertyPanelWidth = wt;

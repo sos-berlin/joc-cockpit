@@ -4,7 +4,9 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {OrderPipe} from 'ngx-order-pipe';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -346,17 +348,19 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   documentFilters: any = {};
   sideView: any = {};
   documentTypes = ['PDF', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
+  reloadState = 'no';
   selectedPath: string;
   isProcessing = false;
   searchableProperties = ['name', 'type', 'assignReference', 'path'];
 
   subscription1: Subscription;
   subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(TreeComponent, {static: false}) child;
 
-  constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private searchPipe: SearchPipe, private modal: NzModalService, private dataService: DataService) {
+  constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe,
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -374,13 +378,15 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.documentFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.documentFilters.selectedkeys = this.child.defaultSelectedKeys;
     }
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
   }
 
@@ -540,7 +546,13 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   sort(propertyName): void {
     this.documentFilters.reverse = !this.documentFilters.reverse;
     this.documentFilters.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.documentFilters.filter.sortBy, this.documentFilters.reverse);
     this.reset();
+  }
+
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
 
   searchInResult(): void {
@@ -554,8 +566,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   checkAll(value: boolean): void {
     if (value && this.documents.length > 0) {
-      this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage))
-        .forEach(item => {
+      const documents = this.getCurrentData(this.data, this.documentFilters);
+      documents.forEach(item => {
           this.object.mapOfCheckedId.add(item.path);
         });
     } else {
@@ -570,7 +582,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     } else {
       this.object.mapOfCheckedId.delete(document.path);
     }
-    this.object.checked = this.object.mapOfCheckedId.size === this.documents.slice((this.preferences.entryPerPage * (this.documentFilters.currentPage - 1)), (this.preferences.entryPerPage * this.documentFilters.currentPage)).length;
+    const documents = this.getCurrentData(this.data, this.documentFilters);
+    this.object.checked = this.object.mapOfCheckedId.size === documents.length;
     this.refreshCheckedStatus();
   }
 
@@ -752,11 +765,12 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   private getDocumentationsList(obj): void {
     this.reset();
-    this.coreService.post('documentations', obj).subscribe((res: any) => {
+    this.coreService.post('documentations', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.loading = false;
       res.documentations.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
+      res.documentations = this.orderPipe.transform(res.documentations, this.documentFilters.filter.sortBy, this.documentFilters.reverse);
       this.documents = res.documentations;
       this.searchInResult();
     }, () => {
@@ -819,6 +833,19 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           this.deleteDocument(obj, document);
         }
       });
+    }
+  }
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.documents = [];
+      this.data = [];
+      this.reloadState = 'yes';
+      this.loading = false;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.loading = true;
+      this.loadDocument();
     }
   }
 }

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -16,6 +16,7 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
 import {SearchPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {InventoryForHistory} from '../../models/enums';
+import {takeUntil} from 'rxjs/operators';
 
 declare const $;
 
@@ -914,7 +915,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentSearch: any = {};
   submissionSearch: any = {};
   data = [];
-  currentData = [];
   order: any = {};
   task: any = {};
   yade: any = {};
@@ -937,10 +937,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
   yadeSearchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
+  reloadState = 'no';
   object: any = {};
   ignoreListConfigId = 0;
   subscription1: Subscription;
   subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
 
   filterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -979,6 +981,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
   }
 
   changeController(): void {
@@ -1046,6 +1050,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   orderHistory(obj, flag): void {
+    if (!obj && !flag){
+      this.pendingHTTPRequests$.next();
+    }
+    this.reloadState = 'no';
     this.historyFilters.type = 'ORDER';
     if (!obj) {
       if (!this.orderHistoryFilterList && this.schedulerIds.selected) {
@@ -1073,7 +1081,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     }
     this.convertRequestBody(obj);
-    this.coreService.post('orders/history', obj).subscribe((res: any) => {
+    this.coreService.post('orders/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.historys = this.setDuration(res);
       if (flag) {
         this.mergeOldData();
@@ -1142,6 +1150,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   taskHistory(obj, flag): void {
+    if (!obj && !flag){
+      this.pendingHTTPRequests$.next();
+    }
+    this.reloadState = 'no';
     this.historyFilters.type = 'TASK';
     if (!obj) {
       if (!this.jobHistoryFilterList && this.schedulerIds.selected) {
@@ -1168,7 +1180,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     }
     this.convertRequestBody(obj);
-    this.coreService.post('tasks/history', obj).subscribe((res) => {
+    this.coreService.post('tasks/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res) => {
       this.taskHistorys = this.setDuration(res);
       if (flag) {
         this.mergeOldTaskData();
@@ -1199,7 +1211,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  setYadeDateRange(filter) {
+  setYadeDateRange(filter): any {
     if (this.yade.filter.date == 'today') {
       filter.dateFrom = '0d';
       filter.dateTo = '0d';
@@ -1209,7 +1221,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  yadeHistory(obj, flag) {
+  yadeHistory(obj, flag): void {
+    if (!obj && !flag){
+      this.pendingHTTPRequests$.next();
+    }
+    this.reloadState = 'no';
     this.historyFilters.type = 'YADE';
     if (!obj) {
       if (!this.yadeHistoryFilterList && this.schedulerIds.selected) {
@@ -1235,7 +1251,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     obj.compact = true;
 
-    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+    this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.yadeHistorys = res.transfers || [];
       if (flag) {
         this.mergeOldYadeData();
@@ -1285,7 +1301,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  setDeploymentDateRange(filter) {
+  setDeploymentDateRange(filter): any {
     if (this.deployment.filter.date == 'today') {
       filter.from = '0d';
       filter.to = '0d';
@@ -1295,7 +1311,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  deploymentHistory(obj, flag) {
+  deploymentHistory(obj, flag): void {
+    if (!obj && !flag){
+      this.pendingHTTPRequests$.next();
+    }
+    this.reloadState = 'no';
     this.historyFilters.type = 'DEPLOYMENT';
     if (!obj) {
       if (!this.deploymentHistoryFilterList && this.schedulerIds.selected) {
@@ -1323,7 +1343,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj.state = (this.deployment.filter.state && this.deployment.filter.state !== 'ALL') ? this.deployment.filter.state : undefined;
     }
     this.convertDeployRequestBody(obj);
-    this.coreService.post('inventory/deployment/history', {compactFilter: obj}).subscribe((res: any) => {
+    this.coreService.post('inventory/deployment/history', {compactFilter: obj}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.deploymentHistorys = res.depHistory;
       if (flag) {
         this.mergeDepData();
@@ -1354,7 +1374,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  setSubmissionDateRange(filter) {
+  setSubmissionDateRange(filter): any {
     if (this.submission.filter.date === 'today') {
       filter.dateFrom = '0d';
       filter.dateTo = '0d';
@@ -1373,7 +1393,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     return filter;
   }
 
-  submissionHistory(obj, flag) {
+  submissionHistory(obj, flag): void {
+    if (!obj && !flag){
+      this.pendingHTTPRequests$.next();
+    }
+    this.reloadState = 'no';
     this.historyFilters.type = 'SUBMISSION';
     if (!obj) {
       if (!this.submissionHistoryFilterList && this.schedulerIds.selected) {
@@ -1406,7 +1430,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj = this.setSubmissionDateRange(obj);
     }
     this.convertRequestBody(obj);
-    this.coreService.post('daily_plan/history', {filter: obj, controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
+    this.coreService.post('daily_plan/history', {filter: obj, controllerId: this.schedulerIds.selected})
+      .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.submissionHistorys = res.dailyPlans;
       if (flag) {
         this.mergeSubData();
@@ -1420,7 +1445,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  expandDailyPlan(history) {
+  expandDailyPlan(history): void {
     history.show = true;
     if (history.controllers && history.controllers.length > 0) {
       history.controllers.forEach((controller) => {
@@ -1473,7 +1498,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.folders.push({folder: value, recursive: true});
         });
       }
-      if (obj.workflowPath){
+      if (obj.workflowPath) {
         filter.workflowPath = obj.workflowPath;
       }
       this.convertRequestBody(filter);
@@ -1522,7 +1547,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.folders.push({folder: value, recursive: true});
         });
       }
-      if (obj.workflowPath){
+      if (obj.workflowPath) {
         filter.workflowPath = obj.workflowPath;
       }
       this.convertRequestBody(filter);
@@ -1824,8 +1849,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  currentPageDataChange($event): void {
-    this.currentData = $event;
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
 
   searchInResult(): void {
@@ -1844,8 +1870,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   expandDetails(): void {
+    const currentData = this.getCurrentData(this.data, this.historyFilters.type === 'ORDER' ?
+      this.order : this.historyFilters.type === 'TASK' ? this.task : this.historyFilters.type === 'YADE' ? 'yade' :
+        this.historyFilters.type === 'DEPLOYMENT' ? this.deployment : this.submission);
     if (this.historyFilters.type !== 'YADE') {
-      this.currentData.forEach((value: any) => {
+      currentData.forEach((value: any) => {
         value.show = true;
         if (this.historyFilters.type === 'DEPLOYMENT') {
           this.showChildHistory(value);
@@ -1858,14 +1887,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      this.currentData.forEach((value) => {
+      currentData.forEach((value) => {
         this.showTransferFuc(value);
       });
     }
   }
 
   collapseDetails(): void {
-    this.currentData.forEach((value: any) => {
+    const currentData = this.getCurrentData(this.data, this.historyFilters.type === 'ORDER' ?
+      this.order : this.historyFilters.type === 'TASK' ? this.task : this.historyFilters.type === 'YADE' ? 'yade' :
+        this.historyFilters.type === 'DEPLOYMENT' ? this.deployment : this.submission);
+    currentData.forEach((value: any) => {
       value.show = false;
     });
   }
@@ -3533,9 +3565,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private openFilterModal(filter, isEdit): void {
     let filterObj: any = JSON.parse(filter.configurationItem);
     filterObj.shared = filter.shared;
-    if(isEdit){
+    if (isEdit) {
       filterObj.id = filter.id;
-    }else {
+    } else {
       if (this.historyFilters.type === 'ORDER') {
         filterObj.name = this.coreService.checkCopyName(this.orderHistoryFilterList, filter.name);
       } else if (this.historyFilters.type === 'TASK') {
@@ -3588,7 +3620,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           this.changeFilter(filterObj);
         } else if (this.historyFilters.type === 'DEPLOYMENT' && this.savedDeploymentHistoryFilter.selected && this.savedDeploymentHistoryFilter.selected === filterObj.id) {
           this.changeFilter(filterObj);
-        }else if (this.historyFilters.type === 'SUBMISSION' && this.savedSubmissionHistoryFilter.selected && this.savedSubmissionHistoryFilter.selected === filterObj.id) {
+        } else if (this.historyFilters.type === 'SUBMISSION' && this.savedSubmissionHistoryFilter.selected && this.savedSubmissionHistoryFilter.selected === filterObj.id) {
           this.changeFilter(filterObj);
         }
       }
@@ -3596,4 +3628,21 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   /* --------------------------Customizations End-----------------------*/
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.historys = [];
+      this.taskHistorys = [];
+      this.yadeHistorys = [];
+      this.deploymentHistorys = [];
+      this.submissionHistorys = [];
+      this.data = [];
+      this.reloadState = 'yes';
+      this.isLoading = true;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.isLoading = false;
+      this.init(false);
+    }
+  }
 }

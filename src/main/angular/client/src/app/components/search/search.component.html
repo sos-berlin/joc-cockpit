@@ -156,7 +156,7 @@
                        translate>inventory.search.label.jobName</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
-                    <input type="text" autocomplete="off" (change)="isJobSearch = false" class="form-control"
+                    <input type="text" autocomplete="off" (change)="isJobSearch = false;object.mapOfCheckedId.clear()" class="form-control"
                            name="jobName" [(ngModel)]="searchObj.advanced.jobName">
                   </label>
                 </div>
@@ -165,7 +165,7 @@
                 <label class="col-md-4 col-lg-3"
                        translate>inventory.search.label.jobNameExactMatch</label>
                 <div class="col-md-8 col-lg-9">
-                  <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch" (nzCheckedChange)="isJobSearch = false" name="jobNameExactMatch"></label>
+                  <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch" (nzCheckedChange)="isJobSearch = false;object.mapOfCheckedId.clear()" name="jobNameExactMatch"></label>
                 </div>
               </div>
               <div class="form-group row">
@@ -235,8 +235,8 @@
   <div class="p-a p-t-sm" *ngIf="results">
     <div class="form-group row">
       <div class="col-sm-12 m-b-sm" *ngIf="object.mapOfCheckedId.size > 0">
-        <button class="btn btn-grey btn-sm" translate type="button" (click)="propagateJob()">inventory.search.button.propagateJob</button>
-        <button class="btn btn-grey btn-sm m-l-12" translate type="button" (click)="updateJob()">inventory.search.button.updateJob</button>
+        <button class="btn btn-grey btn-sm" *ngIf="searchObj.advanced.jobNameExactMatch" translate type="button" (click)="propagateJob()">inventory.search.button.propagateJob</button>
+        <button class="btn btn-grey btn-sm" [ngClass]="{'m-l-12' : searchObj.advanced.jobNameExactMatch}" translate type="button" (click)="updateJob()">inventory.search.button.updateJob</button>
         <span class="p-l-sm" translate [translateParams]="{jobName: searchObj.advanced.jobName,workflowsCount: object.mapOfCheckedId.size}">inventory.search.message.updateJobForSelectedWorkflows</span>
       </div>
       <div class="col-sm-12">

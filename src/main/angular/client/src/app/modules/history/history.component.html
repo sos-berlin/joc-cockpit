@@ -742,7 +742,6 @@
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
-          (nzCurrentPageDataChange)="currentPageDataChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
@@ -935,7 +934,6 @@
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
-          (nzCurrentPageDataChange)="currentPageDataChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
@@ -1111,7 +1109,6 @@
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
-          (nzCurrentPageDataChange)="currentPageDataChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
@@ -1349,7 +1346,6 @@
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
-          (nzCurrentPageDataChange)="currentPageDataChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
@@ -1473,7 +1469,6 @@
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
-          (nzCurrentPageDataChange)="currentPageDataChange($event)"
           [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
@@ -1590,5 +1585,11 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+<div *ngIf="!isLoading || reloadState == 'yes'">
+  <div class="bottom-btn" (click)="reload()">
+    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
+    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>
 </div>

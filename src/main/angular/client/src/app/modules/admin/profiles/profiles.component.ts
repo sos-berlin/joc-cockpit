@@ -152,7 +152,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private deleteProfile(profile) {
+  private deleteProfile(profile): void {
     let obj = {accounts: []};
     if (profile) {
       obj.accounts.push(profile.account);

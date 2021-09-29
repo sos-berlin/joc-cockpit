@@ -559,7 +559,7 @@
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"
-                  [nzPageSize]="dailyPlanFilters.entryPerPage || preferences.entryPerPage || 25"
+                  [nzPageSize]="dailyPlanFilters.entryPerPage || preferences.entryPerPage"
                   [nzPageIndex]="dailyPlanFilters.currentPage"
                   [nzBordered]="true"
                   [nzShowPagination]="planOrders.length > 0"
@@ -568,7 +568,7 @@
                   [nzShowSizeChanger]="true"
                   (nzPageIndexChange)="pageIndexChange($event)"
                   (nzPageSizeChange)="pageSizeChange($event)"
-                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 500]"
+                  [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
                 >
                   <thead>
                   <tr>
@@ -706,7 +706,7 @@
   <div class="cssload-inner cssload-three"></div>
 </div>
 <div *ngIf="!isLoaded || reloadState == 'yes'">
-  <div class="bottom-btn" (click)="reload()" style="padding: 3px 10px; font-size: 24px; bottom: 16px">
+  <div class="bottom-btn" (click)="reload()">
     <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
     <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>

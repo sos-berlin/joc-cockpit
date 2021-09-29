@@ -1,7 +1,9 @@
 import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import * as moment from 'moment';
+import {takeUntil} from 'rxjs/operators';
+import {OrderPipe} from 'ngx-order-pipe';
 import {differenceInCalendarDays} from 'date-fns';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
@@ -210,13 +212,16 @@ export class BoardComponent implements OnInit, OnDestroy {
   boardsFilters: any = {};
   sideView: any = {};
   searchableProperties = ['name', 'path', 'postOrderToNoticeId', 'expectOrderToNoticeId', 'endOfLife', 'title', 'state', '_text', 'versionDate'];
+  reloadState = 'no';
+
   subscription1: Subscription;
   subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private searchPipe: SearchPipe, private dataService: DataService) {
+              private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -231,8 +236,6 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.child) {
       this.boardsFilters.expandedKeys = this.child.defaultExpandedKeys;
@@ -244,6 +247,10 @@ export class BoardComponent implements OnInit, OnDestroy {
       }
       return ids;
     }, []);
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
   }
 
@@ -267,6 +274,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   loadBoards(): void {
+    this.reloadState = 'no';
     const obj = {
       folders: [],
       controllerId: this.schedulerIds.selected
@@ -309,9 +317,15 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.boardsFilters.entryPerPage = $event;
   }
 
-  sort(propertyName): void {
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
+  }
+
+  sort(key): void {
     this.boardsFilters.reverse = !this.boardsFilters.reverse;
-    this.boardsFilters.filter.sortBy = propertyName;
+    this.boardsFilters.filter.sortBy = key;
+    this.data = this.orderPipe.transform(this.data, this.boardsFilters.filter.sortBy, this.boardsFilters.reverse);
   }
 
   receiveMessage($event): void {
@@ -379,8 +393,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   private getBoardsList(obj): void {
-    this.coreService.post('notice/boards', obj).subscribe((res: any) => {
-      this.loading = false;
+    this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       res.noticeBoards.forEach((value) => {
         value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
@@ -393,6 +406,8 @@ export class BoardComponent implements OnInit, OnDestroy {
           }
         }
       });
+      res.noticeBoards = this.orderPipe.transform(res.noticeBoards, this.boardsFilters.filter.sortBy, this.boardsFilters.reverse);
+      this.loading = false;
       this.boards = res.noticeBoards;
       this.searchInResult();
     }, () => {
@@ -406,13 +421,15 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   expandDetails(): void {
-    this.data.forEach((value) => {
+    const boards = this.getCurrentData(this.data, this.boardsFilters);
+    boards.forEach((value) => {
       value.show = true;
     });
   }
 
   collapseDetails(): void {
-    this.data.forEach((value) => {
+    const boards = this.getCurrentData(this.data, this.boardsFilters);
+    boards.forEach((value) => {
       value.show = false;
     });
   }
@@ -466,6 +483,19 @@ export class BoardComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.boards = [];
+      this.data = [];
+      this.reloadState = 'yes';
+      this.loading = false;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.loading = true;
+      this.loadBoards();
+    }
   }
 }
 

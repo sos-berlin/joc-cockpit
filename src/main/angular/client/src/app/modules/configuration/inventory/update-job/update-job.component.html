@@ -4,7 +4,7 @@
     {{data.jobName}}
   </h4>
   <button type="button" class="close" aria-label="Close"
-          (click)="activeModal.destroy()">
+          (click)="step === 3 ? activeModal.close('Close') : activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="col-md-12" *ngIf="step === 2">
-        <app-job-content [selectedNode]="selectedNode" [isModal]="true" [isTooltipVisible]="!preferences.showTooltipInfo" [agents]="agents"
+        <app-job-content [selectedNode]="selectedNode" [isModal]="true" [exactMatch]="data.exactMatch" [isTooltipVisible]="!preferences.showTooltipInfo" [agents]="agents"
                          [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [schedulerId]="controllerId"></app-job-content>
       </div>
       <div class="col-md-12" *ngIf="step === 3" style="min-height: 400px">

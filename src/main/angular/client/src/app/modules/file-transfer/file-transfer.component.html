@@ -207,7 +207,7 @@
         <nz-table
           #ajaxTable
           [nzSize]="'small'"
-          [nzPageSize]="yadeFilters.entryPerPage || preferences.entryPerPage || 25"
+          [nzPageSize]="yadeFilters.entryPerPage || preferences.entryPerPage"
           [nzPageIndex]="yadeFilters.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
@@ -216,8 +216,7 @@
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
           (nzPageSizeChange)="pageSizeChange($event)"
-          (nzCurrentPageDataChange)="currentPageDataChange($event)"
-          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 500]"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
         >
           <thead>
           <tr class="main-header-row">

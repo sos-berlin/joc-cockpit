@@ -370,6 +370,9 @@ export class UserComponent implements OnInit, OnDestroy {
     if (isNaN(parseInt(this.preferences.maxAuditLogRecords, 10))) {
       this.preferences.maxAuditLogRecords = parseInt(Object.assign({}, this.preferences).maxAuditLogRecords, 10);
     }
+    if (isNaN(parseInt(this.preferences.maxNotificationRecords, 10))) {
+      this.preferences.maxNotificationRecords = parseInt(Object.assign({}, this.preferences).maxNotificationRecords, 10);
+    }
     if (isNaN(parseInt(this.preferences.maxHistoryPerOrder, 10))) {
       this.preferences.maxHistoryPerOrder = parseInt(Object.assign({}, this.preferences).maxHistoryPerOrder, 10);
     }
