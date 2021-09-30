@@ -924,8 +924,8 @@ export class CoreService {
     }).subscribe((res: any) => {
       const pathArr = [];
       const arr = res.path.split('/');
-      const workflowFilters = this.getResourceTab().boards;
-      workflowFilters.selectedkeys = [];
+      const boardFilters = this.getResourceTab().boards;
+      boardFilters.selectedkeys = [];
       const len = arr.length - 1;
       if (len > 1) {
         for (let i = 0; i < len; i++) {
@@ -943,9 +943,9 @@ export class CoreService {
       if (pathArr.length === 0) {
         pathArr.push('/');
       }
-      workflowFilters.expandedKeys = pathArr;
-      workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
-      workflowFilters.expandedObjects = [res.path];
+      boardFilters.expandedKeys = pathArr;
+      boardFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+      boardFilters.expandedObjects = [res.path];
       this.router.navigate(['/resources/boards']);
     });
   }
@@ -957,6 +957,39 @@ export class CoreService {
         versionId,
         controllerId: JSON.parse(this.authService.scheduleIds).selected
       }
+    });
+  }
+
+  showLock(lockName): void {
+    this.post('inventory/path', {
+      objectType: 'LOCK',
+      name: lockName
+    }).subscribe((res: any) => {
+      const pathArr = [];
+      const arr = res.path.split('/');
+      const lockFilters = this.getResourceTab().locks;
+      lockFilters.selectedkeys = [];
+      const len = arr.length - 1;
+      if (len > 1) {
+        for (let i = 0; i < len; i++) {
+          if (arr[i]) {
+            if (i > 0 && pathArr[i - 1]) {
+              pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+            } else {
+              pathArr.push('/' + arr[i]);
+            }
+          } else {
+            pathArr.push('/');
+          }
+        }
+      }
+      if (pathArr.length === 0) {
+        pathArr.push('/');
+      }
+      lockFilters.expandedKeys = pathArr;
+      lockFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+      lockFilters.expandedObjects = [lockName];
+      this.router.navigate(['/resources/locks']);
     });
   }
 
@@ -1325,7 +1358,7 @@ export class CoreService {
       } else {
         if (data[type] === 'true' || data[type] === 'false') {
         } else if (/^\d+$/.test(data[type])) {
-        } else if (typeof data[type] == 'string'){
+        } else if (typeof data[type] == 'string') {
           const startChar = data[type].substring(0, 1);
           if (startChar !== '$') {
             const endChar = data[type].substring(data[type].length - 1);
@@ -1333,7 +1366,7 @@ export class CoreService {
             if ((startChar === '"' && endChar === '"')) {
               if (/^\d+$/.test(mainStr)) {
                 return;
-             } else if (mainStr === 'true' || mainStr === 'false') {
+              } else if (mainStr === 'true' || mainStr === 'false') {
                 return;
               } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(scheduledOrEmpty\()/g.test(mainStr)) {
                 return;

@@ -1463,7 +1463,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.isLoading = false;
     }
     let filter: any = {
-      limit: parseInt(this.preferences.maxRecords, 10) || 5000
+      limit: parseInt(this.preferences.maxRecords, 10)
     };
     let fromDate;
     let toDate;
@@ -1966,7 +1966,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     const obj = {
       detailFilter: {
         controllerId: data.controllerId || this.schedulerIds.selected,
-        commitId: data.commitId
+        commitId: data.commitId,
+        limit: parseInt(this.preferences.maxRecords, 10)
       }
     };
     this.coreService.post('inventory/deployment/history', obj).subscribe((res: any) => {
@@ -2384,7 +2385,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private convertDeployRequestBody(obj): void {
-    obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
+    obj.limit = parseInt(this.preferences.maxRecords, 10);
     obj.timeZone = this.preferences.zone;
     if ((obj.from && typeof obj.from.getMonth === 'function')) {
       obj.from = this.coreService.convertTimeToLocalTZ(this.preferences, obj.from)._d;

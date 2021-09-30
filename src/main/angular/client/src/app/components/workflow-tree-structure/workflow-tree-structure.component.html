@@ -66,14 +66,15 @@
           </nz-dropdown-menu>
         </div>
         <i (click)="collapse(instruction)" class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show)}"></i>
-        <i *ngIf="instruction.TYPE !== 'Lock'" class="_600">{{instruction.TYPE}}</i>
-        <i *ngIf="instruction.TYPE === 'Lock'" class="_600" [nz-tooltip]="lockItemTemplate">{{instruction.TYPE}}</i>
+        <span class="_600" >
+          {{instruction.TYPE}}
+          <span *ngIf="instruction.TYPE === 'Lock'">: </span>
+          <span [nz-tooltip]="lockItemTemplate" class="text-muted" *ngIf="(instruction.TYPE === 'Lock')">
+            {{instruction.lockName}}
+          </span>
+        </span>
         <ng-template #lockItemTemplate>
           <div>
-            <div class="p-l-sm">
-              <span translate> workflow.label.name </span>:
-              <span class="_600"> {{instruction.lockName |  translate}}</span>
-            </div>
             <div class="p-l-sm">
               <span translate> workflow.label.count </span>:
               <span class="_600" >{{instruction.count}}</span>
@@ -113,12 +114,9 @@
         <span class="cursor inst-text" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
         <span class="inst-text" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
-          <span *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice' || instruction.TYPE === 'AddOrder')">: </span>
+          <span *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice')">: </span>
           <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice') && instruction.noticeBoardName">
             {{instruction.noticeBoardName}}
-          </span>
-          <span class="text-muted" *ngIf="(instruction.TYPE === 'AddOrder')">
-            {{instruction.orderName}}
           </span>
         </span>
         <span class="m-l-md" *ngIf="instruction.order">
@@ -172,7 +170,7 @@
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show)}"></i>
-              <i class="_600 inst-text">Else</i>
+              <span class="_600 inst-text">Else</span>
             </a>
             <span class="m-l-md" *ngIf="instruction.else && instruction.else.order">
               <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
@@ -195,7 +193,7 @@
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.catch.show)}"></i>
-              <i class="_600 inst-text">Catch</i>
+              <span class="_600 inst-text" translate>workflow.label.catch</span>
             </a>
             <span class="m-l-md" *ngIf="instruction.catch && instruction.catch.order">
               <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">

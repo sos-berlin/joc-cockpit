@@ -58,14 +58,16 @@
           </nz-dropdown-menu>
         </div>
         <i (click)="collapse(instruction)" class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show)}"></i>
-        <i *ngIf="instruction.TYPE !== 'Lock'" class="_600">{{instruction.TYPE}}</i>
-        <i *ngIf="instruction.TYPE === 'Lock'" class="_600" [nz-tooltip]="lockItemTemplate">{{instruction.TYPE}}</i>
+        <span class="_600">
+          {{instruction.TYPE}}<span *ngIf="instruction.TYPE === 'Lock'">:</span>
+          <span class="text-muted" *ngIf="instruction.TYPE === 'Lock'">
+              <i (click)="coreService.navToInventoryTab(instruction.lockName, 'LOCK');$event.stopPropagation();"
+                 class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
+              <a class="text-hover-primary" [nz-tooltip]="lockItemTemplate" (click)="coreService.showLock(instruction.lockName);$event.stopPropagation();" >{{instruction.lockName}}</a>
+            </span>
+        </span>
         <ng-template #lockItemTemplate>
           <div>
-            <div class="p-l-sm">
-              <span translate> workflow.label.name </span>:
-              <span class="_600"> {{instruction.lockName |  translate}}</span>
-            </div>
             <div class="p-l-sm">
               <span translate> workflow.label.count </span>:
               <span class="_600" >{{instruction.count}}</span>
@@ -116,13 +118,12 @@
           <span *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice' || instruction.TYPE === 'AddOrder')">: </span>
           <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice') && instruction.noticeBoardName">
             <i (click)="coreService.navToInventoryTab(instruction.noticeBoardName, 'NOTICEBOARD');$event.stopPropagation();"
-                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                 class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
             <a class="text-hover-primary" (click)="coreService.showBoard(instruction.noticeBoardName);$event.stopPropagation();" >{{instruction.noticeBoardName}}</a>
           </span>
           <span class="text-muted" *ngIf="instruction.TYPE === 'AddOrder'">
-            <span class="p-r-sm">{{instruction.orderName}}</span>
             <i (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"
-               class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+               class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
             <a class="text-hover-primary" (click)="coreService.showWorkflow(instruction.workflowName);$event.stopPropagation();" >{{instruction.workflowName}}</a>
           </span>
         </span>
@@ -181,7 +182,7 @@
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.else.show)}"></i>
-              <i class="_600">Else</i>
+              <span class="_600">Else</span>
             </a>
             <span class="m-l-md" *ngIf="instruction.else && instruction.else.orders && instruction.else.orders.length>0">
               <ng-template ngFor let-order [ngForOf]="instruction.else.orders | orderBy : 'scheduledFor': true | slice:0:3">
@@ -206,7 +207,7 @@
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.catch.show)}"></i>
-              <i class="_600">Catch</i>
+              <span class="_600" translate>workflow.label.catch</span>
             </a>
             <span class="m-l-md" *ngIf="instruction.catch && instruction.catch.orders && instruction.catch.orders.length>0">
               <ng-template ngFor let-order [ngForOf]="instruction.catch.orders | orderBy  : 'scheduledFor': true | slice:0:3">

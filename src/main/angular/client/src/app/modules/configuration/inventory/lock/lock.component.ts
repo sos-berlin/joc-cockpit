@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import {isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
@@ -28,7 +29,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   subscription2: Subscription;
 
   constructor(private coreService: CoreService, private dataService: DataService,
-              private ref: ChangeDetectorRef) {
+              private ref: ChangeDetectorRef, private router: Router) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.lock.actual) {
@@ -211,6 +212,38 @@ export class LockComponent implements OnChanges, OnDestroy {
 
   backToListView(): void {
     this.dataService.reloadTree.next({back: this.lock});
+  }
+
+  navToLockTab(): void {
+    if (this.lock.hasDeployments || this.data.deployed) {
+      const PATH = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+      const pathArr = [];
+      const arr = PATH.split('/');
+      const resourceFilters = this.coreService.getResourceTab().locks;
+      resourceFilters.selectedkeys = [];
+      const len = arr.length - 1;
+      if (len > 1) {
+        for (let i = 0; i < len; i++) {
+          if (arr[i]) {
+            if (i > 0 && pathArr[i - 1]) {
+              pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+            } else {
+              pathArr.push('/' + arr[i]);
+            }
+          } else {
+            pathArr.push('/');
+          }
+        }
+      }
+      if (pathArr.length === 0) {
+        pathArr.push('/');
+      }
+
+      resourceFilters.expandedKeys = pathArr;
+      resourceFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+      resourceFilters.expandedObjects = [this.data.name];
+      this.router.navigate(['/resources/locks']);
+    }
   }
 
   /**

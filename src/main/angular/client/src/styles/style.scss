@@ -3398,6 +3398,9 @@ pre.log {
   font-family: Lucida Console, monospace !important;
   font-size: 12px;
   background: 0 0;
+  .success {
+    background-color: transparent;
+  }
 }
 
 .log_error, .log_stderr {
@@ -3421,7 +3424,7 @@ pre.log {
 }
 
 .log_success {
-  color: green;
+  color: green !important;
 }
 
 .log_debug {

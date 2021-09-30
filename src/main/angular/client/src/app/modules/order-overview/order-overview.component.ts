@@ -795,7 +795,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       obj.dateTo = this.orderFilters.filter.date;
       obj.timeZone = this.preferences.zone;
     }
-
+    obj.limit = this.preferences.maxOrderRecords;
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.isLoaded = true;
       res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);

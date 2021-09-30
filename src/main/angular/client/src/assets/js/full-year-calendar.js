@@ -253,6 +253,7 @@
       cells.click((e) => {
         e.stopPropagation();
         let date = _this._getDate($(this));
+        this.options.selectedDate = date;
         _this._triggerEvent('clickDay', {
           element: $(this),
           which: e.which,
@@ -610,6 +611,7 @@
               }
             }
           }
+          _this.options.selectedDate = date;
           _this._triggerEvent('clickDay', {
             element: $(this),
             which: e.which,

@@ -246,7 +246,7 @@
               <i *ngIf="yadeFilters.filter.sortBy == 'profile' && yadeFilters.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th width="90px" (click)="sort('operation')"><a>
+            <th nzWidth="90px" (click)="sort('operation')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.operation</span>
               <i *ngIf="yadeFilters.filter.sortBy == 'operation' && !yadeFilters.reverse"
                  class="fa fa-caret-up "></i>
@@ -267,7 +267,7 @@
               <i *ngIf="yadeFilters.filter.sortBy == 'orderId' && yadeFilters.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th width="65px" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" (click)="sort('numOfFiles')"><a>
+            <th nzWidth="65px" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" (click)="sort('numOfFiles')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.total</span>
               <i *ngIf="yadeFilters.filter.sortBy == 'numOfFiles' && !yadeFilters.reverse"
                  class="fa fa-caret-up "></i>
@@ -275,7 +275,7 @@
                  class="fa fa-caret-down "></i></a>
 
             </th>
-            <th width="20%" (click)="sort('error.message')"><a>
+            <th nzWidth="20%" (click)="sort('error.message')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.lastErrorMessage</span>
               <i *ngIf="yadeFilters.filter.sortBy == 'error.message' && !yadeFilters.reverse"
                  class="fa fa-caret-up "></i>
@@ -296,7 +296,7 @@
               <i *ngIf="yadeFilters.filter.sortBy == 'end' && yadeFilters.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th width="100px" (click)="sort('duration')"><a>
+            <th nzWidth="100px" (click)="sort('duration')"><a>
               <span class="p-r-xs" translate>common.label.duration</span>
               <i *ngIf="yadeFilters.filter.sortBy == 'duration' && !yadeFilters.reverse"
                  class="fa fa-caret-up "></i>
@@ -449,5 +449,11 @@
         <span *ngIf="ajaxTable.data.length ==1" translate>fileTransfer.label.fileTransferFound</span>
       </div>
     </div>
+  </div>
+</div>
+<div *ngIf="!isLoaded || reloadState == 'yes'">
+  <div class="bottom-btn" (click)="reload()">
+    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
+    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>
 </div>

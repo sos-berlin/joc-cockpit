@@ -198,7 +198,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .log_success {
-  color: #7bd67b
+  color: #7bd67b !important;
 }
 
 .log_detail {

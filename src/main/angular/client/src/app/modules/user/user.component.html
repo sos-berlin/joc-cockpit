@@ -196,6 +196,42 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
+                       translate>profile.label.maxNumberOfOverviewEntries
+                  </div>
+                  <div class="col-sm-6">
+                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxOrderRecords"
+                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
+                       translate>profile.label.maxNumberOfDailyPlanEntries
+                  </div>
+                  <div class="col-sm-6">
+                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxDailyPlanRecords"
+                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
+                       translate>profile.label.maxNumberOfWorkflowEntries
+                  </div>
+                  <div class="col-sm-6">
+                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxWorkflowRecords"
+                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
+                       translate>profile.label.maxNumberOfFileTransferEntries
+                  </div>
+                  <div class="col-sm-6">
+                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxFileTransferRecords"
+                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfHistoryEntriesPerOrder
                   </div>
                   <div class="col-sm-6">
