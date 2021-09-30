@@ -4,7 +4,7 @@
             <div class="padding">
                 <div class="text-right">
                     <div class="pull-left">
-                        <span class="text-md _600 p-t-xs" translate>
+                        <span class="text-md _600" translate style="position: relative;top:4px">
                           log.label.logs
                         </span>
                     </div>
@@ -48,6 +48,8 @@
             <i class="fa fa-angle-double-up fa-lg"></i>
           </a>
         </span>
+        <label nz-checkbox class="m-r" [(ngModel)]="object.checkBoxs.main" (ngModelChange)="checkLogLevel('MAIN')"><span translate>log.label.main</span></label>
+        <label nz-checkbox class="m-r" [(ngModel)]="object.checkBoxs.success" (ngModelChange)="checkLogLevel('SUCCESS')"><span translate>log.label.success</span></label>
         <label nz-checkbox class="m-r" [(ngModel)]="object.checkBoxs.stdout" (ngModelChange)="checkLogLevel('STDOUT')"><span translate>log.label.stdout</span></label>
         <label *ngIf="isStdErrLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.stderr" (ngModelChange)="checkLogLevel('STDERR')"><span translate>log.label.stderr</span></label>
         <label *ngIf="isInfoLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.info" (ngModelChange)="checkLogLevel('INFO')"><span translate>log.label.info</span></label>

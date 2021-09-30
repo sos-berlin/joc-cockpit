@@ -245,7 +245,13 @@
                           <span [innerHTML]="calendar.title | highlight : calendarFilters.searchText"></span>
                         </i>
                     </td>
-                    <td [innerHtml]="calendar.path | highlight : calendarFilters.searchText"></td>
+                    <td>
+                        <span class="show-in-single-line">
+                          <i (click)="coreService.navToInventoryTab(calendar.path, calendar.type);"
+                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                          <span [innerHtml]="calendar.path | highlight : calendarFilters.searchText"></span>
+                        </span>
+                    </td>
                     <td><span class="label " [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
                               [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"></span></td>
                     <td [innerHtml]="calendar.from | stringToDate1"></td>

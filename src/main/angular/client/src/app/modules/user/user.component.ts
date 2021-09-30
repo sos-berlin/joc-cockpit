@@ -364,25 +364,6 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   changeConfiguration(): void {
-    if (isNaN(parseInt(this.preferences.maxRecords, 10))) {
-      this.preferences.maxRecords = parseInt(Object.assign({}, this.preferences, 10).maxRecords, 10);
-    }
-    if (isNaN(parseInt(this.preferences.maxAuditLogRecords, 10))) {
-      this.preferences.maxAuditLogRecords = parseInt(Object.assign({}, this.preferences).maxAuditLogRecords, 10);
-    }
-    if (isNaN(parseInt(this.preferences.maxNotificationRecords, 10))) {
-      this.preferences.maxNotificationRecords = parseInt(Object.assign({}, this.preferences).maxNotificationRecords, 10);
-    }
-    if (isNaN(parseInt(this.preferences.maxHistoryPerOrder, 10))) {
-      this.preferences.maxHistoryPerOrder = parseInt(Object.assign({}, this.preferences).maxHistoryPerOrder, 10);
-    }
-    if (isNaN(parseInt(this.preferences.maxHistoryPerTask, 10))) {
-      this.preferences.maxHistoryPerTask = parseInt(Object.assign({}, this.preferences).maxHistoryPerTask, 10);
-    }
-    if (isNaN(parseInt(this.preferences.maxAuditLogPerObject, 10))) {
-      this.preferences.maxAuditLogPerObject = parseInt(Object.assign({}, this.preferences).maxAuditLogPerObject, 10);
-    }
-
     if (this.preferences.entryPerPage > 100) {
       this.preferences.entryPerPage = this.preferences.maxEntryPerPage;
     }

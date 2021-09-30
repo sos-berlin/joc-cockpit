@@ -204,7 +204,7 @@ pre.log {
 }
 
 .log_success {
-  color: #90ee90;
+  color: #90ee90 !important;
 }
 
 .log_debug2 {

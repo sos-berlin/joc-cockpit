@@ -364,7 +364,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}],
       dateTo: this.workflowFilters.date !== 'ALL' ? this.workflowFilters.date : undefined,
-      timeZone: this.preferences.zone
+      timeZone: this.preferences.zone,
+      limit: this.preferences.maxOrderRecords
     };
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.workflow.orders = res.orders;

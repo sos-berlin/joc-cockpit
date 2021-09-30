@@ -2349,6 +2349,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         objectType: this.selectedObj.type,
         path: this.selectedObj.name
       }).subscribe((res) => {
+        if (this.selectedObj.type.match(/CALENDAR/)) {
+          this.selectedObj.type = 'CALENDAR';
+        }
         this.selectedObj.id = res.id;
         this.findObjectByPath(res.path);
       }, () => {

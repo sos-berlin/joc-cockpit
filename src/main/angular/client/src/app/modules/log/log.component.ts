@@ -128,6 +128,8 @@ export class LogComponent implements OnInit, OnDestroy {
     if (!this.preferences.logFilter || this.preferences.logFilter.length === 0) {
       this.preferences.logFilter = {
         scheduler: true,
+        main: true,
+        success: true,
         stdout: true,
         stderr: true,
         info: true,
@@ -138,6 +140,11 @@ export class LogComponent implements OnInit, OnDestroy {
         trace: true,
         detail: false
       };
+    } else if (this.preferences.logFilter) {
+      if (!(this.preferences.logFilter.main === false && this.preferences.logFilter.main === true)) {
+        this.preferences.logFilter.main = true;
+        this.preferences.logFilter.success = true;
+      }
     }
     this.loading = true;
     this.object.checkBoxs = this.preferences.logFilter;
@@ -352,6 +359,18 @@ export class LogComponent implements OnInit, OnDestroy {
         if (!this.object.checkBoxs.info) {
           div.className += ' hide-block';
         }
+      } else if (dt[i].logLevel === 'MAIN') {
+        div.className += ' log_main';
+        div.className += ' main';
+        if (!this.object.checkBoxs.main) {
+          div.className += ' hide-block';
+        }
+      } else if (dt[i].logLevel === 'SUCCESS') {
+        div.className += ' log_success';
+        div.className += ' success';
+        if (!this.object.checkBoxs.success) {
+          div.className += ' hide-block';
+        }
       } else if (dt[i].logLevel === 'STDOUT') {
         div.className += ' log_stdout';
         div.className += ' stdout';
@@ -506,7 +525,7 @@ export class LogComponent implements OnInit, OnDestroy {
     this.loading = false;
     LogComponent.calculateHeight();
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
-    ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
+    ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       const div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
       if (timestampRegex.test(match)) {
         const arr = match.split(/\s+\[/);
@@ -523,7 +542,17 @@ export class LogComponent implements OnInit, OnDestroy {
       if (level !== 'info') {
         div.className = 'log_' + level;
       }
-      if (level === 'stdout') {
+      if (level === 'main') {
+        div.className += ' main';
+        if (!this.object.checkBoxs.main) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'success') {
+        div.className += ' success';
+        if (!this.object.checkBoxs.success) {
+          div.className += ' hide-block';
+        }
+      } else if (level === 'stdout') {
         div.className += ' stdout';
         if (!this.object.checkBoxs.stdout) {
           div.className += ' hide-block';
@@ -686,7 +715,19 @@ export class LogComponent implements OnInit, OnDestroy {
 
   checkLogLevel(type): void {
     this.sheetContent = '';
-    if (type === 'STDOUT') {
+    if (type === 'MAIN') {
+      if (!this.object.checkBoxs.main) {
+        this.sheetContent += 'div.main {display: none;}\n';
+      } else {
+        this.sheetContent += 'div.main {display: block;}\n';
+      }
+    } else if (type === 'SUCCESS') {
+      if (!this.object.checkBoxs.success) {
+        this.sheetContent += 'div.success {display: none;}\n';
+      } else {
+        this.sheetContent += 'div.success {display: block;}\n';
+      }
+    } else if (type === 'STDOUT') {
       if (!this.object.checkBoxs.stdout) {
         this.sheetContent += 'div.stdout {display: none;}\n';
       } else {

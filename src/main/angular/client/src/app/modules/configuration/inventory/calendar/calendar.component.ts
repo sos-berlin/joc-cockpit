@@ -4,6 +4,7 @@ import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
 import {isEmpty, isEqual, clone} from 'underscore';
 import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
@@ -1334,7 +1335,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService,
-              private dataService: DataService, private ref: ChangeDetectorRef) {
+              private dataService: DataService, private ref: ChangeDetectorRef, private router: Router) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.calendar.actual) {
@@ -1572,6 +1573,36 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
   backToListView(): void {
     this.dataService.reloadTree.next({back: this.calendar});
+  }
+
+  navToCalendarTab(): void {
+    if (this.data.released) {
+      const PATH = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+      const pathArr = [];
+      const arr = PATH.split('/');
+      const resourceFilters = this.coreService.getResourceTab().calendars;
+      resourceFilters.selectedkeys = [];
+      const len = arr.length - 1;
+      if (len > 1) {
+        for (let i = 0; i < len; i++) {
+          if (arr[i]) {
+            if (i > 0 && pathArr[i - 1]) {
+              pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+            } else {
+              pathArr.push('/' + arr[i]);
+            }
+          } else {
+            pathArr.push('/');
+          }
+        }
+      }
+      if (pathArr.length === 0) {
+        pathArr.push('/');
+      }
+      resourceFilters.expandedKeys = pathArr;
+      resourceFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+      this.router.navigate(['/resources/calendars']);
+    }
   }
 
   saveJSON(flag = false): void {

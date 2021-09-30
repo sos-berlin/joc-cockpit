@@ -1105,6 +1105,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (this.dailyPlanFilters.filter.late) {
         obj.filter.late = true;
       }
+      obj.limit = this.preferences.maxDailyPlanRecords;
       this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
         this.filterData(res.plannedOrderItems);
         this.isLoaded = true;
@@ -1692,7 +1693,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.isSearchHit = true;
     const obj: any = {
       controllerId: this.schedulerIds.selected,
-      filter: {}
+      filter: {},
+      limit: this.preferences.maxDailyPlanRecords
     };
     if (this.dailyPlanFilters.filter.status) {
       this.dailyPlanFilters.filter.status = '';
@@ -2355,6 +2357,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.isCalendarClick = false;
         if (this.dateRanges && this.dateRanges.length > 0) {
           this.resetCheckBox(true);
+          this.isPastDate = new Date(this.dateRanges[0]).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
+        } else{
+          this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
         }
       }
     });

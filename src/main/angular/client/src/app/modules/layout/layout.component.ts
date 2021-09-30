@@ -485,6 +485,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.maxRecords = 5000;
       preferences.maxAuditLogRecords = 5000;
       preferences.maxNotificationRecords = 5000;
+      preferences.maxOrderRecords = 5000;
+      preferences.maxDailyPlanRecords = 5000;
+      preferences.maxWorkflowRecords = 5000;
+      preferences.maxFileTransferRecords = 5000;
       preferences.maxHistoryPerOrder = 10;
       preferences.maxHistoryPerTask = 10;
       preferences.maxAuditLogPerObject = 10;
@@ -527,6 +531,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
       const data = JSON.parse(conf.configurationItem);
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
         data.auditLog = true;
+      }
+      if (!data.maxNotificationRecords){
+        data.maxNotificationRecords = 5000;
+      }
+      if (!data.maxOrderRecords){
+        data.maxOrderRecords = 5000;
+      }
+      if (!data.maxDailyPlanRecords){
+        data.maxDailyPlanRecords = 5000;
+      }
+      if (!data.maxWorkflowRecords){
+        data.maxWorkflowRecords = 5000;
+      }
+      if (!data.maxFileTransferRecords){
+        data.maxFileTransferRecords = 5000;
       }
       sessionStorage.preferences = JSON.stringify(data);
       this.reloadThemeAndLang(preferences);

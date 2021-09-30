@@ -1,14 +1,16 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {isEmpty, extend, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {ActivatedRoute, Router} from '@angular/router';
+import {takeUntil} from 'rxjs/operators';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../pipes/core.pipe';
-import {ActivatedRoute, Router} from '@angular/router';
+
 import {FileTransferService} from '../../services/file-transfer.service';
 
 declare const $;
@@ -358,12 +360,14 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   temp_filter: any = {};
   searchKey: string;
   showFiles = false;
-  isLoading = false;
   isLoaded = false;
   loadConfig = false;
   showSearchPanel = false;
+  reloadState = 'no';
+
   subscription1: Subscription;
   subscription2: Subscription;
+  private pendingHTTPRequests$ = new Subject<void>();
 
   searchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
@@ -384,6 +388,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
   }
 
   sort(propertyName): void {
@@ -426,13 +432,13 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   load(): void {
-    this.isLoaded = true;
+    this.reloadState = 'no';
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       this.isCustomizationSelected(true);
     }
     let obj: any = {
       controllerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
-      limit : parseInt(this.preferences.maxRecords, 10),
+      limit: parseInt(this.preferences.maxFileTransferRecords, 10),
       compact: true
     };
     if (this.showFiles) {
@@ -454,7 +460,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       obj.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateTo)._d;
     }
-    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+    this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.fileTransfers = res.transfers || [];
       if (this.showFiles) {
         this.fileTransfers.forEach((transfer) => {
@@ -463,10 +469,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         });
       }
       this.searchInResult();
-      this.isLoading = true;
+      this.isLoaded = true;
       this.setHeaderWidth();
 
-    }, () => this.isLoading = true);
+    }, () => this.isLoaded = true);
   }
 
   getTransfer(transfer): void {
@@ -530,8 +536,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.isLoaded = false;
     let filter: any = {
       controllerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxRecords, 10),
-      compact : true
+      limit: parseInt(this.preferences.maxFileTransferRecords, 10),
+      compact: true
     };
 
     this.yadeFilters.filter.states = '';
@@ -933,6 +939,19 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         this.yadeFilters.filter.states = 'ALL';
         this.yadeFilters.filter.date = 'today';
       }
+    }
+  }
+
+  reload(): void {
+    if (this.reloadState === 'no') {
+      this.fileTransfers = [];
+      this.data = [];
+      this.reloadState = 'yes';
+      this.isLoaded = true;
+      this.pendingHTTPRequests$.next();
+    } else if (this.reloadState === 'yes') {
+      this.isLoaded = false;
+      this.load();
     }
   }
 
