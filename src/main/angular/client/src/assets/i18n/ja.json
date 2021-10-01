@@ -1371,6 +1371,9 @@
     "label.maxNumberOfDailyPlanEntries": "Max. number of Daily Plan entries",
     "label.maxNumberOfWorkflowEntries": "Max. number of Workflow entries",
     "label.maxNumberOfFileTransferEntries": "Max. number of File Transfer entries",
+    "label.maxNumberOfResourceLockEntries": "Max. number of Resource Lock entries",
+    "label.maxNumberOfNoticeBoardEntries": "Max. number of Notice Board entries",
+    "label.maxNumberOfDocumentationEntries": "Max. number of Documentation entries",
     "label.maxNumberOfHistoryEntriesPerOrder": "最大オーダー履歴表示数",
     "label.maxNumberOfHistoryEntriesPerTask": "最大タスク履歴表示数",
     "label.showSubFolderAndFolderContents": "サブフォルダー/コンテンツ表示",
@@ -1403,6 +1406,7 @@
     "label.dark": "Dark",
     "label.download": "ダウンロード",
     "button.resetProfile": "リセットプロファイル",
+    "button.groupLimit": "Group Limit",
     "permission": {
       "label.order": "オーダー",
       "label.job": "ジョブ",

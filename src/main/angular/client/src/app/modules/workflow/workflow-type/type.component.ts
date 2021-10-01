@@ -298,26 +298,25 @@ export class TypeComponent implements OnChanges {
   private checkOrders(instruction, mapObj): void {
     if (instruction.join && instruction.join.positionStrings) {
       delete instruction.join.orders;
-      let isFound = false;
       instruction.join.positionStrings.forEach((pos) => {
         if (mapObj.has(JSON.stringify(pos))) {
-          instruction.join.orders = mapObj.get(JSON.stringify(pos));
-          isFound = true;
+          if (instruction.join.orders) {
+            instruction.join.orders = instruction.join.orders.concat(mapObj.get(JSON.stringify(pos)));
+          } else {
+            instruction.join.orders = mapObj.get(JSON.stringify(pos));
+          }
         }
       });
-      if (isFound) {
-        return;
-      }
     }
     if (instruction.position) {
-      delete instruction['orders'];
-      let _order = mapObj.get(JSON.stringify(instruction.position));
-      if (_order) {
-        instruction.orders = _order;
+      delete instruction.orders;
+      const order = mapObj.get(JSON.stringify(instruction.position));
+      if (order) {
+        instruction.orders = order;
         if (!instruction.orderCount) {
           instruction.orderCount = 0;
         }
-        instruction.orderCount = _order.length;
+        instruction.orderCount = order.length;
       } else {
         instruction.orderCount = 0;
       }

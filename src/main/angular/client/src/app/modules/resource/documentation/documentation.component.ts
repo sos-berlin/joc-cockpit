@@ -268,6 +268,7 @@ export class SingleDocumentationComponent implements OnInit {
   }
 
   private getDocumentationsList(obj): void {
+    obj.limit = this.preferences.maxDocumentRecords;
     this.coreService.post('documentations', obj).subscribe((res: any) => {
       this.loading = false;
       this.documents = res.documentations;
@@ -765,6 +766,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   private getDocumentationsList(obj): void {
     this.reset();
+    obj.limit = this.preferences.maxDocumentRecords;
     this.coreService.post('documentations', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.loading = false;
       res.documentations.forEach((value) => {

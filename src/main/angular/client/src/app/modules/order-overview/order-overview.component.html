@@ -14,7 +14,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
-            <div class="btn-group dropdown" *ngIf="orderFilters.filter.state==='SCHEDULED'">
+            <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
                 <span>  {{ 'filters.button.'+orderFilters.filter.dateLabel | translate}} </span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>

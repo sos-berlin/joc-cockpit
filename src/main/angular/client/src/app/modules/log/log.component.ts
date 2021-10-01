@@ -141,7 +141,7 @@ export class LogComponent implements OnInit, OnDestroy {
         detail: false
       };
     } else if (this.preferences.logFilter) {
-      if (!(this.preferences.logFilter.main === false && this.preferences.logFilter.main === true)) {
+      if (!(this.preferences.logFilter.main === false || this.preferences.logFilter.main === true)) {
         this.preferences.logFilter.main = true;
         this.preferences.logFilter.success = true;
       }
@@ -360,10 +360,12 @@ export class LogComponent implements OnInit, OnDestroy {
           div.className += ' hide-block';
         }
       } else if (dt[i].logLevel === 'MAIN') {
-        div.className += ' log_main';
-        div.className += ' main';
-        if (!this.object.checkBoxs.main) {
-          div.className += ' hide-block';
+        if (dt[i].logEvent !== 'OrderProcessingStarted') {
+          div.className += ' log_main';
+          div.className += ' main';
+          if (!this.object.checkBoxs.main) {
+            div.className += ' hide-block';
+          }
         }
       } else if (dt[i].logLevel === 'SUCCESS') {
         div.className += ' log_success';
@@ -597,6 +599,11 @@ export class LogComponent implements OnInit, OnDestroy {
         if (!this.object.checkBoxs.debug) {
           div.className += ' hide-block';
         }
+      } else if (prefix.search(/\[main\]/i) > -1) {
+        div.className += ' main log_main';
+        if (!this.object.checkBoxs.main) {
+          div.className += ' hide-block';
+        }
       } else {
         div.className += ' scheduler scheduler_' + level;
         if (!this.object.checkBoxs.scheduler) {
@@ -607,9 +614,7 @@ export class LogComponent implements OnInit, OnDestroy {
       if (level.match('^debug') && !this.object.checkBoxs.debug) {
         div.className += ' hide-block';
       }
-
       div.textContent = match.replace(/^\r?\n/, '');
-
       if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
         div.className += ' log_success';
       } else if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Error\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Error\])/)) {
@@ -619,7 +624,6 @@ export class LogComponent implements OnInit, OnDestroy {
       if (!this.isDeBugLevel) {
         this.isDeBugLevel = !!level.match('^debug') || prefix.search(/\[debug\]/i) > -1;
       }
-
       if (!this.isStdErrLevel) {
         this.isStdErrLevel = div.className.indexOf('stderr') > -1;
       }

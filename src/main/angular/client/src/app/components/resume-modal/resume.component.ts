@@ -116,6 +116,9 @@ export class ResumeOrderModalComponent implements OnInit {
               } else{
                 positions = self.coreService.clone(parent.join.positionStrings);
               }
+              if (self.order.positionString && self.order.positionString == json.instructions[x].positionString) {
+                parent.join.order = self.order;
+              }
               positions.push(json.instructions[x].position);
               parent.join.positionStrings = positions;
               parent.join.unique = arr.join('$');

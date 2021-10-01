@@ -791,10 +791,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     const tempOrder = this.orders.filter((order) => {
       return order.show;
     });
-    if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'SCHEDULED') {
+   // if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'SCHEDULED') {
       obj.dateTo = this.orderFilters.filter.date;
       obj.timeZone = this.preferences.zone;
-    }
+   // }
     obj.limit = this.preferences.maxOrderRecords;
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.isLoaded = true;
