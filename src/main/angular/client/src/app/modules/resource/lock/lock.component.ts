@@ -287,6 +287,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private getLocksList(obj): void {
+    obj.limit = this.preferences.maxLockRecords;
     this.coreService.post('locks', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       res.locks.forEach((value) => {
         value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);

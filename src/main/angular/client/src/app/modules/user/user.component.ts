@@ -287,6 +287,7 @@ export class UserComponent implements OnInit, OnDestroy {
   configObj: any = {};
   timeZone: any = {};
   forceLoging = false;
+  isGroupBtnActive = false;
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
   securityLevel: string;
@@ -349,6 +350,10 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
+  groupLimit(): void{
+    this.isGroupBtnActive = true;
+  }
+
   setIds(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
   }
@@ -363,9 +368,21 @@ export class UserComponent implements OnInit, OnDestroy {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
   }
 
-  changeConfiguration(): void {
+  changeConfiguration(isGroupBtnActive = false): void {
     if (this.preferences.entryPerPage > 100) {
       this.preferences.entryPerPage = this.preferences.maxEntryPerPage;
+    }
+    if (isGroupBtnActive) {
+      this.preferences.maxAuditLogRecords = this.preferences.maxRecords;
+      this.preferences.maxNotificationRecords = this.preferences.maxRecords;
+      this.preferences.maxOrderRecords = this.preferences.maxRecords;
+      this.preferences.maxDailyPlanRecords = this.preferences.maxRecords;
+      this.preferences.maxWorkflowRecords = this.preferences.maxRecords;
+      this.preferences.maxFileTransferRecords = this.preferences.maxRecords;
+      this.preferences.maxLockRecords = this.preferences.maxRecords;
+      this.preferences.maxBoardRecords = this.preferences.maxRecords;
+      this.preferences.maxDocumentRecords = this.preferences.maxRecords;
+      this.isGroupBtnActive = false;
     }
     sessionStorage.preferences = JSON.stringify(this.preferences);
     this.dataService.resetProfileSetting.next(true);

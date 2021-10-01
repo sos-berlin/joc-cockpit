@@ -393,6 +393,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   private getBoardsList(obj): void {
+    obj.limit = this.preferences.maxBoardRecords;
     this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       res.noticeBoards.forEach((value) => {
         value.name = value.path.substring(value.path.lastIndexOf('/') + 1);

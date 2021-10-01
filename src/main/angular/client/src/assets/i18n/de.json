@@ -1371,6 +1371,9 @@
     "label.maxNumberOfDailyPlanEntries": "Max. number of Daily Plan entries",
     "label.maxNumberOfWorkflowEntries": "Max. number of Workflow entries",
     "label.maxNumberOfFileTransferEntries": "Max. number of File Transfer entries",
+    "label.maxNumberOfResourceLockEntries": "Max. number of Resource Lock entries",
+    "label.maxNumberOfNoticeBoardEntries": "Max. number of Notice Board entries",
+    "label.maxNumberOfDocumentationEntries": "Max. number of Documentation entries",
     "label.maxNumberOfHistoryEntriesPerOrder": "Max. Anzahl Einträge der Auftragshistorie pro Arbeitsablauf",
     "label.maxNumberOfHistoryEntriesPerTask": "Max. Anzahl Einträge der Job-Historie pro Arbeitsablauf",
     "label.showSubFolderAndFolderContents": "Ordner und Inhalt der Unterordner anzeigen",
@@ -1403,6 +1406,7 @@
     "label.dark": "Dunkel",
     "label.download": "Herunterladen",
     "button.resetProfile": "Profil zurücksetzen",
+    "button.groupLimit": "Group Limit",
     "permission": {
       "label.order": "Auftrag",
       "label.job": "Job",

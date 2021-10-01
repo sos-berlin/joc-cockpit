@@ -1056,19 +1056,26 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                 }
               }
               if (!isCollapse) {
-                let edge;
                 const position = node.getAttribute('position');
                 if (!position && node.getAttribute('positions')) {
                   const positions = JSON.parse(node.getAttribute('positions'));
-                  positions.forEach((pos) => {
-                    edge = this.createOrder(graph, doc, parent, node, pos);
+                  let orders = [];
+                  positions.forEach((pos, index) => {
+                    if (this.mapObj.get(pos)) {
+                      orders = orders.concat(this.mapObj.get(pos));
+                    }
                   });
-                } else{
-                  edge = this.createOrder(graph, doc, parent, node, position);
-                }
-
-                if (edge) {
-                  edges.push(edge);
+                  positions.forEach((pos, index) => {
+                    const edge = this.createOrder(graph, doc, parent, node, pos, index, (positions.length - 1 === index) ? orders : null);
+                    if (edge) {
+                      edges.push(edge);
+                    }
+                  });
+                } else {
+                  const edge = this.createOrder(graph, doc, parent, node, position);
+                  if (edge) {
+                    edges.push(edge);
+                  }
                 }
               }
             });
@@ -1126,23 +1133,27 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     }
   }
 
-  private createOrder(graph, doc, parent, node, position): any {
+  private createOrder(graph, doc, parent, node, position, count = -1, branchOrders = null): any {
     let edge = null;
     if (position) {
       if (this.mapObj.get(position)) {
-        let orders = this.mapObj.get(position);
+        const orders = this.mapObj.get(position);
         const len = orders.length < 4 ? orders.length : 3;
         for (let i = 0; i < len; i++) {
           const _node = doc.createElement('Order');
           _node.setAttribute('order', JSON.stringify(orders[i]));
           let x = node.geometry.x + node.geometry.width + 50 + (i * 5);
           let y = node.geometry.y - 40 + (i * 5);
+          if (count > 0 && (count * len) < 3) {
+            x = x + (count * 5);
+            y = y + (count * 5);
+          }
           const v1 = graph.insertVertex(parent, null, _node, x, y, 120, 36, 'order');
           // Create badge to show total orders count
-          if (orders.length > 1 && (i === 2 || i === orders.length - 1)) {
+          if ((orders.length > 1 && count === -1 && (i === 2 || i === orders.length - 1)) || (branchOrders && branchOrders.length > 0 && (i === 2 || i === orders.length - 1))) {
             const _nodeCount = doc.createElement('Count');
-            _nodeCount.setAttribute('count', orders.length);
-            _nodeCount.setAttribute('orders', JSON.stringify(orders));
+            _nodeCount.setAttribute('count', (branchOrders && branchOrders.length > 0) ? branchOrders.length : orders.length);
+            _nodeCount.setAttribute('orders', (branchOrders && branchOrders.length > 0) ? JSON.stringify(branchOrders) : JSON.stringify(orders));
             let color = '#0E8A8B';
             if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
               color = '#d87600';

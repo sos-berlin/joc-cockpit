@@ -2337,7 +2337,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.isCalendarClick = false;
         this.searchFilter = {};
         this.isSearchHit = false;
-        if (this.selectedFiltered) {
+        if (this.selectedFiltered && this.selectedFiltered.name) {
           this.changeFilter(null);
         } else {
           this.isLoaded = false;

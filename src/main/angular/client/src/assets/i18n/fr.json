@@ -1371,6 +1371,9 @@
     "label.maxNumberOfDailyPlanEntries": "Max. number of Daily Plan entries",
     "label.maxNumberOfWorkflowEntries": "Max. number of Workflow entries",
     "label.maxNumberOfFileTransferEntries": "Max. number of File Transfer entries",
+    "label.maxNumberOfResourceLockEntries": "Max. number of Resource Lock entries",
+    "label.maxNumberOfNoticeBoardEntries": "Max. number of Notice Board entries",
+    "label.maxNumberOfDocumentationEntries": "Max. number of Documentation entries",
     "label.maxNumberOfHistoryEntriesPerOrder": "Nombre max. d'entrées d'Historique par Ordre",
     "label.maxNumberOfHistoryEntriesPerTask": "Nombre max. d'entrées d'Historique par Tâche",
     "label.showSubFolderAndFolderContents": "Afficher les sous-dossiers et le contenu des dossiers",
@@ -1403,6 +1406,7 @@
     "label.dark": "Foncé",
     "label.download": "Télécharger",
     "button.resetProfile": "Rétablir le profil par défaut",
+    "button.groupLimit": "Group Limit",
     "permission": {
       "label.order": "Ordre",
       "label.job": "Tâche",

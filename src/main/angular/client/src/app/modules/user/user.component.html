@@ -171,70 +171,117 @@
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
                     profile.label.maxNumberOfHistoryEntries
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                                     (nzBlur)="changeConfiguration(isGroupBtnActive)"></nz-input-number>
+                    <i *ngIf="isGroupBtnActive" (click)="isGroupBtnActive = false" class="fa fa-times p-l-sm"></i>
+                    <a class="text-hover-primary p-l-sm" *ngIf="!isGroupBtnActive" (click)="groupLimit()" translate>profile.button.groupLimit</a>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfAuditLogEntries
                   </div>
-                  <div class="col-sm-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxAuditLogRecords"
+                  <div class="col-md-6">
+                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxAuditLogRecords"
                                      (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
+                                     ></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfNotificationEntries
                   </div>
-                  <div class="col-sm-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxNotificationRecords"
+                  <div class="col-md-6">
+                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxNotificationRecords"
                                      (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
+                    ></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfOverviewEntries
                   </div>
-                  <div class="col-sm-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxOrderRecords"
+                  <div class="col-md-6">
+                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxOrderRecords"
                                      (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
+                    ></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfDailyPlanEntries
                   </div>
-                  <div class="col-sm-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxDailyPlanRecords"
+                  <div class="col-md-6">
+                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxDailyPlanRecords"
                                      (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
+                    ></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfWorkflowEntries
                   </div>
-                  <div class="col-sm-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxWorkflowRecords"
+                  <div class="col-md-6">
+                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxWorkflowRecords"
                                      (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
+                    ></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfFileTransferEntries
                   </div>
-                  <div class="col-sm-6">
-                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxFileTransferRecords"
+                  <div class="col-md-6">
+                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxFileTransferRecords"
                                      (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
+                    ></nz-input-number>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
+                       translate>profile.label.maxNumberOfResourceLockEntries
+                  </div>
+                  <div class="col-md-6">
+                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxLockRecords"
+                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
+                    ></nz-input-number>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
+                       translate>profile.label.maxNumberOfNoticeBoardEntries
+                  </div>
+                  <div class="col-md-6">
+                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxBoardRecords"
+                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
+                    ></nz-input-number>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
+                       translate>profile.label.maxNumberOfDocumentationEntries
+                  </div>
+                  <div class="col-md-6">
+                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxDocumentRecords"
+                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
+                    ></nz-input-number>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfHistoryEntriesPerOrder
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxHistoryPerOrder"
                                      (nzBlur)="changeConfiguration()"></nz-input-number>
                   </div>
@@ -243,7 +290,7 @@
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfHistoryEntriesPerTask
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxHistoryPerTask"
                                      (nzBlur)="changeConfiguration()"></nz-input-number>
                   </div>
@@ -252,7 +299,7 @@
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfAuditLogPerObject
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
                                      [(ngModel)]="preferences.maxAuditLogPerObject"
                                      (nzBlur)="changeConfiguration()"></nz-input-number>
@@ -261,7 +308,7 @@
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxEntryPerPage
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.maxEntryPerPage"
                                (ngModelChange)="changeConfiguration()">
                       <nz-option nzValue="500" nzLabel="500"></nz-option>
@@ -279,7 +326,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.entryPerPage</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-select class="w-xl" [(ngModel)]="preferences.entryPerPage"
                                (ngModelChange)="changeConfiguration()">
                       <nz-option nzValue="10" nzLabel="10"></nz-option>
@@ -293,7 +340,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.theme</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-select class="w-xl" [(ngModel)]="preferences.theme"
                                (ngModelChange)="changeTheme(preferences.theme)">
                       <nz-option [nzValue]="'lighter'" [nzLabel]="'profile.label.white' | translate"></nz-option>
@@ -308,7 +355,7 @@
                 </div>
                 <div class="row m-t" *ngIf="this.preferences.theme === 'light'">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.menuBarTheme</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-select nzShowSearch class="w-xl" [(ngModel)]="preferences.headerColor"
                                (ngModelChange)="changeMenuTheme(preferences.headerColor)">
                       <nz-option nzValue="" nzLabel="Default"></nz-option>
@@ -326,14 +373,14 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.themeTitle</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <input type="text" class="form-control w-xl" [(ngModel)]="preferences.themeTitle"
                            (blur)="changeConfiguration()">
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showLogs</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()">
                       <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
                       <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
@@ -343,7 +390,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showDocumentations</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()">
                       <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
                       <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
@@ -352,7 +399,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showSubFolderAndFolderContents</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()">
                       <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
                       <label nz-radio nzValue="both"><span translate>profile.label.subFolderAndFolderContents</span></label>
@@ -361,19 +408,19 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFilesImmediately</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.showFiles" (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableCommentsForAuditLog</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.auditLog" [disabled]="forceLoging" (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.useTimezoneForLog</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.logTimezone" (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
@@ -381,7 +428,7 @@
                   <div class="col-md-4 col-lg-3 text-dark" translate>
                     profile.label.currentController
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.currentController" (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
@@ -389,13 +436,13 @@
                   <div class="col-md-4 col-lg-3 text-dark" translate>
                     profile.label.showTooltipInfo
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.showTooltipInfo" (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showView</div>
-                  <div class="col-sm-6">
+                  <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
                       <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
                       <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>

@@ -137,7 +137,7 @@ export class Log2Component implements OnInit, OnDestroy {
         detail: false
       };
     } else if (this.preferences.logFilter) {
-      if (!(this.preferences.logFilter.main === false && this.preferences.logFilter.main === true)) {
+      if (!(this.preferences.logFilter.main === false || this.preferences.logFilter.main === true)) {
         this.preferences.logFilter.main = true;
         this.preferences.logFilter.success = true;
       }
@@ -356,10 +356,12 @@ export class Log2Component implements OnInit, OnDestroy {
           div.className += ' hide-block';
         }
       } else if (dt[i].logLevel === 'MAIN') {
-        div.className += ' log_main';
-        div.className += ' main';
-        if (!this.object.checkBoxs.main) {
-          div.className += ' hide-block';
+        if (dt[i].logEvent !== 'OrderProcessingStarted') {
+          div.className += ' log_main';
+          div.className += ' main';
+          if (!this.object.checkBoxs.main) {
+            div.className += ' hide-block';
+          }
         }
       } else if (dt[i].logLevel === 'SUCCESS') {
         div.className += ' log_success';
@@ -592,6 +594,11 @@ export class Log2Component implements OnInit, OnDestroy {
         if (!this.object.checkBoxs.debug) {
           div.className += ' hide-block';
         }
+      } else if (prefix.search(/\[main\]/i) > -1) {
+        div.className += ' main log_main';
+        if (!this.object.checkBoxs.main) {
+          div.className += ' hide-block';
+        }
       } else {
         div.className += ' scheduler scheduler_' + level;
         if (!this.object.checkBoxs.scheduler) {
@@ -609,7 +616,6 @@ export class Log2Component implements OnInit, OnDestroy {
       } else if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Error\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Error\])/)) {
         div.className += ' log_error';
       }
-
       if (!this.isDeBugLevel) {
         this.isDeBugLevel = !!level.match('^debug') || prefix.search(/\[debug\]/i) > -1;
       }
