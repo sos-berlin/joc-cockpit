@@ -25,7 +25,7 @@
       {{order.cyclicOrder.count}}
     </div>
   </ng-template>
-  <span [nz-tooltip]="contentTemplate">
+  <span [nz-tooltip]="contentTemplate" nzTooltipPlacement="right">
     <i class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
     {{order.orderId}} <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
     <i class="text-sm text-muted" *ngIf="order.scheduledFor && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</i>

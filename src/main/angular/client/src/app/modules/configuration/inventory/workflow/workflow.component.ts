@@ -8842,6 +8842,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               if (json.instructions[x].count === '' || json.instructions[x].count === 'undefined') {
                 delete json.instructions[x].count;
+              } else{
+                if (typeof json.instructions[x].count === 'string') {
+                  json.instructions[x].count = parseInt(json.instructions[x].count, 10);
+                }
               }
               if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
                 flag = false;
