@@ -1142,11 +1142,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         for (let i = 0; i < len; i++) {
           const _node = doc.createElement('Order');
           _node.setAttribute('order', JSON.stringify(orders[i]));
-          let x = node.geometry.x + node.geometry.width + 50 + (i * 5);
-          let y = node.geometry.y - 40 + (i * 5);
+          let x = node.geometry.x + node.geometry.width + 50 + (i * 8);
+          let y = node.geometry.y - 40 + (i * 8);
           if (count > 0 && (count * len) < 3) {
-            x = x + (count * 5);
-            y = y + (count * 5);
+            x = x + (count * 8);
+            y = y + (count * 8);
           }
           const v1 = graph.insertVertex(parent, null, _node, x, y, 120, 36, 'order');
           // Create badge to show total orders count

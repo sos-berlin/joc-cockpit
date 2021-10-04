@@ -792,6 +792,7 @@
     "label.workflowAndOrder": "Arbeitsabläufe/Aufträge",
     "label.workflowAndJob": "Arbeitsablauf/Jobs",
     "label.submission": "Übermittlung",
+    "label.numberOfItems": "Number Of Items",
     "label.historiesFound": "Einträge in der Historie gefunden",
     "label.historyFound": "Eintrag in der Historie gefunden",
     "button.resetIgnoreList": "Ausschlussliste zurücksetzen",

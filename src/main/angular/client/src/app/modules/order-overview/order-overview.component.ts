@@ -91,7 +91,7 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
 
   private init(): void {
     const obj: any = {controllerId: this.schedulerId};
-    if (this.state === 'SCHEDULED' && this.date !== 'ALL') {
+    if (this.date !== 'ALL') {
       obj.dateTo = this.date;
       obj.timeZone = this.timeZone;
     }
@@ -791,10 +791,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     const tempOrder = this.orders.filter((order) => {
       return order.show;
     });
-   // if (this.orderFilters.filter.date !== 'ALL' && this.orderFilters.filter.state === 'SCHEDULED') {
+    if (this.orderFilters.filter.date !== 'ALL') {
       obj.dateTo = this.orderFilters.filter.date;
       obj.timeZone = this.preferences.zone;
-   // }
+    }
     obj.limit = this.preferences.maxOrderRecords;
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.isLoaded = true;

@@ -792,6 +792,7 @@
     "label.workflowAndOrder": "ワークフロー/オーダー",
     "label.workflowAndJob": "ワークフロー/ジョブ",
     "label.submission": "登録",
+    "label.numberOfItems": "Number Of Items",
     "label.historiesFound": "履歴があります",
     "label.historyFound": "履歴があります",
     "button.resetIgnoreList": "無視リストをリセット",

@@ -792,6 +792,7 @@
     "label.workflowAndOrder": "Workflow/Ordres",
     "label.workflowAndJob": "Workflow/Tâches",
     "label.submission": "Soumission",
+    "label.numberOfItems": "Number Of Items",
     "label.historiesFound": "Entrées d'Historique trouvées",
     "label.historyFound": "Entrée historique trouvée",
     "button.resetIgnoreList": "Réinitialiser la Liste des Ignorés",

@@ -1155,7 +1155,7 @@
               <i *ngIf="yade.filter.sortBy == 'orderId' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th width="65px" (click)="sort2('numOfFiles')"><a>
+            <th nzWidth="65px" (click)="sort2('numOfFiles')"><a>
               <span class="p-r-xs" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" translate>fileTransfer.label.total</span>
               <i *ngIf="yade.filter.sortBy == 'numOfFiles' && !yade.reverse"
                  class="fa fa-caret-up "></i>
@@ -1163,7 +1163,7 @@
                  class="fa fa-caret-down "></i></a>
 
             </th>
-            <th width="20%" style="width: 20% !important;" (click)="sort2('error.message')"><a>
+            <th nzWidth="20%" style="width: 20% !important;" (click)="sort2('error.message')"><a>
               <span class="p-r-xs" translate>fileTransfer.label.lastErrorMessage</span>
               <i *ngIf="yade.filter.sortBy == 'error.message' && !yade.reverse"
                  class="fa fa-caret-up "></i>
@@ -1184,7 +1184,7 @@
               <i *ngIf="yade.filter.sortBy == 'end' && yade.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th width="100px" (click)="sort2('duration')"><a>
+            <th nzWidth="100px" (click)="sort2('duration')"><a>
               <span class="p-r-xs" translate>common.label.duration</span>
               <i *ngIf="yade.filter.sortBy == 'duration' && !yade.reverse"
                  class="fa fa-caret-up "></i>
@@ -1237,7 +1237,7 @@
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
                   [innerHtml]="transfer.numOfFiles | highlight : yade.searchText"></td>
-              <td style="width: 20% !important;" (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)" class="text-danger">
+              <td style="nzWidth: 20% !important;" (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)" class="text-danger">
                 <span *ngIf="transfer.error" [innerHtml]="transfer.error.message"></span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
@@ -1350,33 +1350,36 @@
         >
           <thead>
           <tr>
-            <th width="25%" *ngIf="!historyFilters.current" (click)="sort3('controllerId')">
+            <th nzWidth="20%" *ngIf="!historyFilters.current" (click)="sort3('controllerId')">
               <a><span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="deployment.filter.sortBy == 'controllerId' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'controllerId' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-            <th [width]="historyFilters.current ? '50%' : '25%'" (click)="sort3('deploymentDate')">
+            <th nzWidth="20%" (click)="sort3('deploymentDate')">
               <a><span class="p-r-xs" translate>history.label.deploymentDate</span>
                 <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'deploymentDate' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-            <th width="25%" (click)="sort3('account')">
+            <th nzWidth="20%" (click)="sort3('account')">
               <a><span class="p-r-xs" translate>common.label.account</span>
                 <i *ngIf="deployment.filter.sortBy == 'account' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'account' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
-            <th width="25%" (click)="sort3('state')">
+            <th nzWidth="20%" (click)="sort3('state')">
               <a><span class="p-r-xs" translate>history.label.state</span>
                 <i *ngIf="deployment.filter.sortBy == 'state' && !deployment.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="deployment.filter.sortBy == 'state' && deployment.reverse"
                    class="fa fa-caret-down "></i></a>
+            </th>
+            <th [nzWidth]="historyFilters.current ? '40%' : '20%'">
+              <span translate>history.label.numberOfItems</span>
             </th>
           </tr>
           </thead>
@@ -1407,20 +1410,42 @@
               </td>
               <td><span [innerHtml]="depHistory.account | highlight : deployment.searchText"></span></td>
               <td><span class="label" [ngClass]="{'bg-dark-blue' : depHistory.state=== 'DEPLOYED', 'bg-orange' : depHistory.state=== 'NOT_DEPLOYED'}" [innerHtml]="depHistory.state | translate | highlight : deployment.searchText"></span></td>
+              <td>
+                <span class="p-r-sm" *ngIf="depHistory.workflowCount">
+                  <span translate>Workflows</span>:
+                  {{depHistory.workflowCount}}
+                </span>
+                <span class="p-r-sm" *ngIf="depHistory.fileOrderSourceCount">
+                  <span translate>File Order Sources</span>:
+                  {{depHistory.fileOrderSourceCount}}
+                </span>
+                <span class="p-r-sm" *ngIf="depHistory.jobResourceCount">
+                  <span translate>Job Resources</span>:
+                  {{depHistory.jobResourceCount}}
+                </span>
+                <span class="p-r-sm" *ngIf="depHistory.boardCount">
+                  <span translate>Boards</span>:
+                  {{depHistory.boardCount}}
+                </span>
+                <span *ngIf="depHistory.lockCount">
+                  <span translate>Locks</span>:
+                  {{depHistory.lockCount}}
+                </span>
+              </td>
             </tr>
             <tr *ngIf="depHistory.errorMessage && depHistory.show">
-              <td colspan="4"><span class="text-danger">{{depHistory.errorMessage}}</span></td>
+              <td colspan="5"><span class="text-danger">{{depHistory.errorMessage}}</span></td>
             </tr>
             <tr *ngIf="depHistory.show">
-              <td colspan="4" style="padding:0 !important;" class="order-history-template0">
+              <td colspan="5" style="padding:0 !important;" class="order-history-template0">
                 <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small" [nzLoading]="depHistory.loading"
                           [nzData]="depHistory.children" [nzShowPagination]="false" [nzFrontPagination]="false">
                   <thead>
                   <tr>
-                    <th width="24.95%"><span translate>history.label.deployType</span></th>
-                    <th width="24.97%"><span translate>common.label.path</span></th>
-                    <th width="24.95%"><span translate>history.label.operation</span></th>
-                    <th width="24.95%"><span translate>history.label.date</span></th>
+                    <th nzWidth="19.95%"><span translate>history.label.deployType</span></th>
+                    <th nzWidth="39.97%"><span translate>common.label.path</span></th>
+                    <th nzWidth="19.95%"><span translate>history.label.operation</span></th>
+                    <th nzWidth="19.95%"><span translate>history.label.date</span></th>
                   </tr>
                   </thead>
                   <tbody>

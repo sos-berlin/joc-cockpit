@@ -1280,7 +1280,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (result) {
         this.isProcessing = true;
         this.resetAction(5000);
-        this.updateList();
+        setTimeout(() => {
+          this.updateList();
+        }, 750);
       }
     });
   }

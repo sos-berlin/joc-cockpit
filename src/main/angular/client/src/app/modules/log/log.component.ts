@@ -24,6 +24,7 @@ export class LogComponent implements OnInit, OnDestroy {
   object: any = {
     checkBoxs: [],
   };
+  isStdSuccessLevel = false;
   isDeBugLevel = false;
   isFatalLevel = false;
   isErrorLevel = false;
@@ -351,7 +352,6 @@ export class LogComponent implements OnInit, OnDestroy {
     }
     const dt = json.logEvents;
     let col = '';
-    this.isInfoLevel = true;
     for (let i = 0; i < dt.length; i++) {
       const div = window.document.createElement('div');
       if (dt[i].logLevel === 'INFO') {
@@ -425,7 +425,12 @@ export class LogComponent implements OnInit, OnDestroy {
       } else if (dt[i].logLevel === 'ERROR') {
         div.className += ' log_error';
       }
-
+      if (!this.isInfoLevel && dt[i].logLevel === 'INFO') {
+        this.isInfoLevel = true;
+      }
+      if (!this.isStdSuccessLevel && dt[i].logLevel === 'SUCCESS') {
+        this.isStdSuccessLevel = true;
+      }
       if (!this.isDeBugLevel && dt[i].logLevel === 'DEBUG') {
         this.isDeBugLevel = true;
       }
@@ -509,11 +514,12 @@ export class LogComponent implements OnInit, OnDestroy {
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {
-        const x = `<span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i><span>` + col + `<div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;
+        const cls = !this.object.checkBoxs.main ? ' hide-block' : '';
+        const x = `<div class="main log_main${cls}"><span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i></span>` + col + `</div><div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;
         this.taskCount++;
         div.innerHTML = x;
       } else {
-        div.innerHTML = `<span style="margin-left: 13px"><span>` + col;
+        div.innerHTML = `<span style="margin-left: 13px">` + col;
       }
       window.document.getElementById('logs').appendChild(div);
     }
@@ -526,6 +532,7 @@ export class LogComponent implements OnInit, OnDestroy {
   renderData(res, orderTaskFlag): void {
     this.loading = false;
     LogComponent.calculateHeight();
+    let lastLevel = '';
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       const div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
@@ -538,6 +545,21 @@ export class LogComponent implements OnInit, OnDestroy {
         if (date) {
           const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(date, this.preferences.zone) : date;
           match = match.replace(timestampRegex, datetime);
+        }
+      }
+      if (level){
+        lastLevel = level;
+      } else {
+        if (prefix.search(/\[stdout\]/i) > -1) {
+          lastLevel = 'stdout';
+        } else if (prefix.search(/\[stderr\]/i) > -1) {
+          lastLevel = 'stderr';
+        } else if (prefix.search(/\[debug\]/i) > -1) {
+          lastLevel = 'debug';
+        } else if (prefix.search(/\[main\]/i) > -1) {
+          lastLevel = 'main';
+        } else if (lastLevel) {
+          level = lastLevel;
         }
       }
       level = (level) ? level.trim().toLowerCase() : 'info';
@@ -614,13 +636,20 @@ export class LogComponent implements OnInit, OnDestroy {
       if (level.match('^debug') && !this.object.checkBoxs.debug) {
         div.className += ' hide-block';
       }
-      div.textContent = match.replace(/^\r?\n/, '');
+      const text = match.replace(/^\r?\n/, '');
+      div.textContent = text.trim();
       if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
         div.className += ' log_success';
       } else if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Error\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Error\])/)) {
         div.className += ' log_error';
       }
 
+      if (!this.isInfoLevel) {
+        this.isInfoLevel = div.className.indexOf('info') > -1;
+      }
+      if (!this.isStdSuccessLevel) {
+        this.isStdSuccessLevel = div.className.indexOf('success') > -1;
+      }
       if (!this.isDeBugLevel) {
         this.isDeBugLevel = !!level.match('^debug') || prefix.search(/\[debug\]/i) > -1;
       }
@@ -646,7 +675,6 @@ export class LogComponent implements OnInit, OnDestroy {
       }
       return '';
     });
-
   }
 
   expandAll(): void {
