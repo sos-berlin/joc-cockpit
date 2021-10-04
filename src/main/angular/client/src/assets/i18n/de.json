@@ -819,7 +819,7 @@
     "tab.tasks": "Prozesse",
     "tab.fileTransfers": "Dateiübertragungen",
     "tab.deployments": "Ausrollen",
-    "tab.dailyPlan": "Tagesplan"
+    "tab.dailyPlan": "Tagesplan Übermittlungen"
   },
   "info": {
     "label.welcome": "Willkommen",
