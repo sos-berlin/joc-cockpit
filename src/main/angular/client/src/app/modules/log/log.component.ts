@@ -533,6 +533,7 @@ export class LogComponent implements OnInit, OnDestroy {
     this.loading = false;
     LogComponent.calculateHeight();
     let lastLevel = '';
+    let lastClass = '';
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       const div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
@@ -640,34 +641,16 @@ export class LogComponent implements OnInit, OnDestroy {
       div.textContent = text.trim();
       if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
         div.className += ' log_success';
+        lastClass = 'log_success';
       } else if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Error\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Error\])/)) {
         div.className += ' log_error';
+        lastClass = 'log_error';
+      } else if (lastLevel && lastClass){
+        div.className += ' ' + lastClass;
+      } else if (!lastLevel){
+        lastClass = '';
       }
 
-      if (!this.isInfoLevel) {
-        this.isInfoLevel = div.className.indexOf('info') > -1;
-      }
-      if (!this.isStdSuccessLevel) {
-        this.isStdSuccessLevel = div.className.indexOf('success') > -1;
-      }
-      if (!this.isDeBugLevel) {
-        this.isDeBugLevel = !!level.match('^debug') || prefix.search(/\[debug\]/i) > -1;
-      }
-      if (!this.isStdErrLevel) {
-        this.isStdErrLevel = div.className.indexOf('stderr') > -1;
-      }
-      if (!this.isFatalLevel) {
-        this.isFatalLevel = div.className.indexOf('fatal') > -1;
-      }
-      if (!this.isErrorLevel) {
-        this.isErrorLevel = div.className.indexOf('error') > -1;
-      }
-      if (!this.isWarnLevel) {
-        this.isWarnLevel = div.className.indexOf('warn') > -1;
-      }
-      if (!this.isTraceLevel) {
-        this.isTraceLevel = div.className.indexOf('trace') > -1;
-      }
       if (!orderTaskFlag) {
         window.document.getElementById('logs').appendChild(div);
       } else {

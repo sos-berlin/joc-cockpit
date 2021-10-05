@@ -1401,7 +1401,7 @@ export class CoreService {
           const endChar = data[type].substring(data[type].length - 1);
           if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
           } else {
-            data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2');
+            data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
             data[type] = '"' + data[type] + '"';
           }
         } else {
@@ -1411,13 +1411,13 @@ export class CoreService {
             if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr)
               && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
             } else {
-              data[type] = '"' + data[type] + '"';
+              data[type] = '"' + data[type].trim() + '"';
             }
           }
         }
       }
     } else if (data[type] === '') {
-      data[type] = '"' + data[type] + '"';
+      data[type] = '"' + data[type].trim() + '"';
     }
   }
 

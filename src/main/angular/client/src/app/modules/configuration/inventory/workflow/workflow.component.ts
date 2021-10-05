@@ -1207,6 +1207,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   valueWith = (data: { name: string }) => data.name;
 
+  checkValue(argu): void {
+    if (argu && argu.value && /\s+$/.test(argu.value)) {
+      argu.value = argu.value.trim();
+    }
+  }
+
   onKeyPress($event, type): void {
     if (type === 'jobArgument') {
       if ($event.key === '$') {
