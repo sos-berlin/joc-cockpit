@@ -17,6 +17,7 @@ export class OrderListSidebarComponent implements OnChanges{
   @Input() permission: any;
   @Input() schedulerId: any;
   @Input() orderPreparation: any;
+  @Input() loading: boolean;
   data = [];
   checked = false;
   indeterminate = false;

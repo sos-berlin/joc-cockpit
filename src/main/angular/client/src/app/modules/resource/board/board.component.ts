@@ -342,6 +342,7 @@ export class BoardComponent implements OnInit, OnDestroy {
             for (let x = 0; x < this.boards.length; x++) {
               if (this.boards[x].path === args.eventSnapshots[j].path) {
                 noticeBoardPaths.push(this.boards[x].path);
+                break;
               }
             }
           }
@@ -394,6 +395,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   private getBoardsList(obj): void {
     obj.limit = this.preferences.maxBoardRecords;
+    obj.compact = true;
     this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       res.noticeBoards.forEach((value) => {
         value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
@@ -421,10 +423,55 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
+  private getNoticeBoards(obj, cb): void {
+    this.coreService.post('notice/boards', obj).subscribe((res: any) => {
+      cb(res.noticeBoards);
+    }, () => {
+      cb();
+    });
+  }
+
+  showDetail(board): void {
+    board.show = true;
+    const obj = {
+      noticeBoardPaths: [board.path],
+      controllerId: this.schedulerIds.selected
+    };
+    this.getNoticeBoards(obj, (data) => {
+      if (data && data.length > 0) {
+        for (const i in data) {
+          if (board.path === data[i].path) {
+            board.notices = data[i].notices;
+            break;
+          }
+        }
+      }
+    });
+  }
+
   expandDetails(): void {
+    const obj = {
+      noticeBoardPaths: [],
+      controllerId: this.schedulerIds.selected
+    };
     const boards = this.getCurrentData(this.data, this.boardsFilters);
     boards.forEach((value) => {
       value.show = true;
+      obj.noticeBoardPaths.push(value.path);
+    });
+    this.getNoticeBoards(obj, (data) => {
+      if (data && data.length > 0) {
+        boards.forEach((board) => {
+          for (let i = 0; i < data.length; i++) {
+            if (board.path === data[i].path) {
+              board.notices = data[i].notices;
+              data.splice(i, 1);
+              break;
+            }
+          }
+        });
+        this.boards = [...this.boards];
+      }
     });
   }
 

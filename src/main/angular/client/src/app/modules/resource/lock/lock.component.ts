@@ -230,36 +230,13 @@ export class LockComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       let flag = false;
+      const lockPaths = [];
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path) {
           if (this.locks.length > 0) {
             for (let x = 0; x < this.locks.length; x++) {
               if (this.locks[x].path === args.eventSnapshots[j].path) {
-                const obj = {
-                  controllerId: this.schedulerIds.selected,
-                  lockPath: this.locks[x].path
-                };
-                this.coreService.post('lock', obj).subscribe((res: any) => {
-                  const lock = res.lock;
-                  if (lock) {
-                    if (this.locks[x].workflows.length > 0 && lock.workflows.length > 0) {
-                      this.locks[x].workflows.forEach((workflow) => {
-                        if (workflow.show) {
-                          for (let m = 0; lock.workflows.length > 0; m++) {
-                            if (lock.workflows[m].path === workflow.path) {
-                              lock.workflows[m].show = true;
-                              break;
-                            }
-                          }
-                        }
-                      });
-                    }
-                    this.locks[x].acquiredLockCount = lock.acquiredLockCount;
-                    this.locks[x].ordersHoldingLocksCount = lock.ordersHoldingLocksCount;
-                    this.locks[x].ordersWaitingForLocksCount = lock.ordersWaitingForLocksCount;
-                    this.locks[x].workflows = lock.workflows;
-                  }
-                });
+                lockPaths.push(this.locks[x].path);
                 break;
               }
             }
@@ -267,6 +244,38 @@ export class LockComponent implements OnInit, OnDestroy {
         } else if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType === 'LOCK') {
           flag = true;
         }
+      }
+      if (lockPaths && lockPaths.length) {
+        this.coreService.post('locks', {
+          controllerId: this.schedulerIds.selected,
+          lockPaths
+        }).subscribe((res: any) => {
+          res.locks.forEach((value) => {
+            for (let x = 0; x < this.locks.length; x++) {
+              if (this.locks[x].path === value.path) {
+                if (this.locks[x].workflows.length > 0 && value.workflows.length > 0) {
+                  this.locks[x].workflows.forEach((workflow) => {
+                    if (workflow.show) {
+                      for (let m = 0; value.workflows.length > 0; m++) {
+                        if (value.workflows[m].path === workflow.path) {
+                          value.workflows[m].show = true;
+                          break;
+                        }
+                      }
+                    }
+                  });
+                }
+                this.locks[x].acquiredLockCount = value.acquiredLockCount;
+                this.locks[x].ordersHoldingLocksCount = value.ordersHoldingLocksCount;
+                this.locks[x].ordersWaitingForLocksCount = value.ordersWaitingForLocksCount;
+                this.locks[x].workflows = value.workflows;
+                break;
+              }
+            }
+          });
+        }, () => {
+          this.loading = false;
+        });
       }
       if (flag) {
         this.initTree();
@@ -288,6 +297,8 @@ export class LockComponent implements OnInit, OnDestroy {
 
   private getLocksList(obj): void {
     obj.limit = this.preferences.maxLockRecords;
+    obj.compact = true;
+    const locks = [];
     this.coreService.post('locks', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       res.locks.forEach((value) => {
         value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
@@ -303,7 +314,7 @@ export class LockComponent implements OnInit, OnDestroy {
         if (this.locksFilters.expandedObjects && this.locksFilters.expandedObjects.length > 0) {
           const index = this.locksFilters.expandedObjects.indexOf(value.id);
           if (index > -1) {
-            value.show = true;
+            locks.push(value);
             this.locksFilters.expandedObjects.slice(index, 1);
           }
         }
@@ -312,6 +323,7 @@ export class LockComponent implements OnInit, OnDestroy {
       this.loading = false;
       this.locks = res.locks;
       this.searchInResult();
+      this.updateLocksDetail(locks);
     }, () => {
       this.loading = false;
     });
@@ -322,14 +334,69 @@ export class LockComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
-  expandDetails(): void {
-    const locks = this.getCurrentData(this.data, this.locksFilters);
+  private updateLocksDetail(locks): void {
+    const obj = {
+      lockPaths: [],
+      controllerId: this.schedulerIds.selected
+    };
     locks.forEach((value) => {
       value.show = true;
+      obj.lockPaths.push(value.path);
       value.workflows.forEach((item) => {
         item.show = true;
       });
     });
+    this.getLocksDetail(obj, (data) => {
+      if (data && data.length > 0) {
+        locks.forEach((lock) => {
+          for (let i = 0; i < data.length; i++) {
+            if (lock.path === data[i].lock.path) {
+              lock.acquiredLockCount = data[i].acquiredLockCount;
+              lock.ordersHoldingLocksCount = data[i].ordersHoldingLocksCount;
+              lock.ordersWaitingForLocksCount = data[i].ordersWaitingForLocksCount;
+              lock.workflows = data[i].workflows;
+              data.splice(i, 1);
+              break;
+            }
+          }
+        });
+        this.locks = [...this.locks];
+      }
+    });
+  }
+
+  private getLocksDetail(obj, cb): void {
+    this.coreService.post('locks', obj).subscribe((res: any) => {
+      cb(res.locks);
+    }, () => {
+      cb();
+    });
+  }
+
+  showDetail(lock): void {
+    lock.show = true;
+    const obj = {
+      lockPaths: [lock.path],
+      controllerId: this.schedulerIds.selected
+    };
+    this.getLocksDetail(obj, (data) => {
+      if (data && data.length > 0) {
+        for (const i in data) {
+          if (lock.path === data[i].lock.path) {
+            lock.acquiredLockCount = data[i].acquiredLockCount;
+            lock.ordersHoldingLocksCount = data[i].ordersHoldingLocksCount;
+            lock.ordersWaitingForLocksCount = data[i].ordersWaitingForLocksCount;
+            lock.workflows = data[i].workflows;
+            break;
+          }
+        }
+      }
+    });
+  }
+
+  expandDetails(): void {
+    const locks = this.getCurrentData(this.data, this.locksFilters);
+    this.updateLocksDetail(locks);
   }
 
   collapseDetails(): void {

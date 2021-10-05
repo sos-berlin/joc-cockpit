@@ -356,21 +356,22 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       workflowIds: []
     };
+    const request2 = {
+      controllerId: this.schedulerIds.selected,
+      workflowIds: []
+    };
     for (const i in this.workflows) {
-      const path = this.workflows[i].path;
-      let flag = true;
-      for (const j in request.workflowIds) {
-        if (request.workflowIds[j].path === path && request.workflowIds[j].versionId === this.workflows[i].versionId) {
-          flag = false;
-          break;
-        }
-      }
-      if (flag) {
-        request.workflowIds.push({path, versionId: this.workflows[i].versionId});
+      if (this.workflows[i].show) {
+        request.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
+      } else{
+        request2.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
       }
     }
     if (request.workflowIds.length > 0) {
       this.getOrders(request);
+    }
+    if (request2.workflowIds.length > 0) {
+      this.getOrderCounts(request2);
     }
   }
 
@@ -424,7 +425,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.loadWorkflow();
   }
 
-  showPanelFuc(workflow): void {
+  showPanelFuc(workflow, flag = true): void {
+    if (flag && workflow.numOfOrders > 0) {
+      this.getOrders({
+        compact: true,
+        controllerId: this.schedulerIds.selected,
+        workflowIds: [{path: workflow.path, versionId: workflow.versionId}]
+      });
+    }
     workflow.show = true;
     workflow.configuration = this.coreService.clone(workflow);
     this.workflowService.convertTryToRetry(workflow.configuration, null);
@@ -552,12 +560,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   expandDetails(): void {
     const workflows = this.getCurrentData(this.data, this.workflowFilters);
+    const workflowIds = [];
     workflows.forEach((workflow) => {
       workflow.show = true;
       workflow.configuration = this.coreService.clone(workflow);
       this.workflowService.convertTryToRetry(workflow.configuration, null);
+      if (workflow.numOfOrders > 0) {
+        workflowIds.push({path: workflow.path, versionId: workflow.versionId});
+      }
     });
     this.updatePanelHeight();
+    this.getOrders({
+      compact: true,
+      controllerId: this.schedulerIds.selected,
+      workflowIds
+    });
   }
 
   collapseDetails(): void {
@@ -598,18 +615,27 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   viewOrders(workflow): void {
     this.sideBar = {
       isVisible: true,
+      loading: true,
       orders: workflow.orders,
       workflow: workflow.path,
       versionId: workflow.versionId,
       orderPreparation: workflow.orderPreparation
     };
+    if (!workflow.show && workflow.numOfOrders > 0) {
+      this.getOrders({
+        compact: true,
+        controllerId: this.schedulerIds.selected,
+        workflowIds: [{path: workflow.path, versionId: workflow.versionId}]
+      }, () => {
+        this.sideBar.loading = false;
+      });
+    } else {
+      this.sideBar.loading = false;
+    }
   }
 
   toggleCompactView(): void {
     this.workflowFilters.isCompact = !this.workflowFilters.isCompact;
-    if (!this.workflowFilters.isCompact) {
-      this.changeStatus();
-    }
     this.preferences.isWorkflowCompact = this.workflowFilters.isCompact;
     this.saveProfileSettings(this.preferences);
   }
@@ -617,21 +643,36 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       const request = [];
+      const request2 = [];
       let flag = false;
       let reload = true;
       for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow) {
           for (const i in this.workflows) {
             if (this.workflows[i].path === args.eventSnapshots[j].workflow.path && this.workflows[i].versionId === args.eventSnapshots[j].workflow.versionId) {
-              let flag = true;
+              let flg = true;
               for (const x in request) {
                 if (request[x].path === args.eventSnapshots[j].workflow.path && request[x].versionId === args.eventSnapshots[j].workflow.versionId) {
-                  flag = false;
+                  flg = false;
                   break;
                 }
               }
-              if (flag) {
-                request.push(args.eventSnapshots[j].workflow);
+              if (flg) {
+                if (this.workflows[i].show || (this.sideBar.workflow === this.workflows[i].path && this.sideBar.versionId === this.workflows[i].versionId)) {
+                  request.push(args.eventSnapshots[j].workflow);
+                }
+              }
+              let flg2 = true;
+              for (const x in request2) {
+                if (request2[x].path === args.eventSnapshots[j].workflow.path && request2[x].versionId === args.eventSnapshots[j].workflow.versionId) {
+                  flg2 = false;
+                  break;
+                }
+              }
+              if (flg2) {
+                if (!this.workflows[i].show) {
+                  request2.push(args.eventSnapshots[j].workflow);
+                }
               }
               break;
             }
@@ -664,7 +705,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.initTree(reload);
       }
       if (request && request.length > 0) {
-        this.updateWorkflow(request);
+        this.getOrders({
+          compact: true,
+          controllerId: this.schedulerIds.selected,
+          workflowIds: request
+        });
+      }
+      if (request2 && request2.length > 0) {
+        this.getOrderCounts({
+          controllerId: this.schedulerIds.selected,
+          workflowIds: request2
+        });
       }
     }
   }
@@ -714,6 +765,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         controllerId: this.schedulerIds.selected,
         workflowIds: []
       };
+      const request2 = {
+        controllerId: this.schedulerIds.selected,
+        workflowIds: []
+      };
       let flag = true;
       res.workflows = this.orderPipe.transform(res.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
       for (const i in res.workflows) {
@@ -723,19 +778,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (!res.workflows[i].ordersSummary) {
           res.workflows[i].ordersSummary = {};
         }
-        let flag1 = true;
-        for (const j in request.workflowIds) {
-          if (request.workflowIds[j].path === path && request.workflowIds[j].versionId === res.workflows[i].versionId) {
-            flag1 = false;
-            break;
-          }
-        }
-        if (flag1) {
-          request.workflowIds.push({path, versionId: res.workflows[i].versionId});
-        }
         if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
           this.workflowFilters.expandedObjects.indexOf(path) > -1) {
-          this.showPanelFuc(res.workflows[i]);
+          this.showPanelFuc(res.workflows[i], false);
+          request.workflowIds.push({path, versionId: res.workflows[i].versionId});
+        } else{
+          request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
         }
         if (this.showPanel && this.showPanel.path === path) {
           flag = false;
@@ -749,23 +797,40 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (request.workflowIds.length > 0) {
         this.getOrders(request);
       }
+      if (request2.workflowIds.length > 0) {
+        this.getOrderCounts(request2);
+      }
       this.updatePanelHeight();
     }, () => {
       this.loading = false;
     });
   }
 
-  private updateWorkflow(workflows): void {
-    const request = {
-      compact: true,
-      controllerId: this.schedulerIds.selected,
-      workflowIds: workflows
-    };
-    this.getOrders(request);
+  private getOrderCounts(obj): void {
+    if (!obj.workflowIds || obj.workflowIds.length === 0 || (this.permission && !this.permission.currentController.orders.view)) {
+      return;
+    }
+    if (this.workflowFilters.filter.date !== 'ALL') {
+      obj.dateTo = this.workflowFilters.filter.date;
+      obj.timeZone = this.preferences.zone;
+    }
+    this.coreService.post('workflows/order_count', obj).subscribe((res: any) => {
+      for (let i in this.workflows) {
+        for (let j in res.workflows) {
+          if ((this.workflows[i].path === res.workflows[j].path || this.workflows[i].name === res.workflows[j].path)
+            && this.workflows[i].versionId === res.workflows[j].versionId) {
+            this.workflows[i].numOfOrders = res.workflows[j].numOfOrders;
+            this.workflows[i].ordersSummary = {};
+            res.workflows.splice(j, 1);
+            break;
+          }
+        }
+      }
+    });
   }
 
-  private getOrders(obj): void {
-    if (!obj.workflowIds || obj.workflowIds.length === 0 || (this.permission && !this.permission.currentController.orders.view)){
+  private getOrders(obj, cb = null): void {
+    if (!obj.workflowIds || obj.workflowIds.length === 0 || (this.permission && !this.permission.currentController.orders.view)) {
       return;
     }
     if (this.workflowFilters.filter.date !== 'ALL') {
@@ -815,8 +880,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
       }
+      if (cb) {
+        cb();
+      }
       this.resetAction();
     }, () => {
+      if (cb) {
+        cb();
+      }
       this.resetAction();
     });
   }
@@ -824,26 +895,25 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private getMatchPath(path): boolean {
     let flag = false;
 
-    function traverseTree1(data) {
+    function traverseTree(data): void {
       if (!flag) {
-        for (let i in data.children) {
+        for (const i in data.children) {
           if (data.children[i].path === path) {
             flag = true;
             break;
           }
           if (data.children[i].children && data.children[i].children.length > 0) {
-            traverseTree1(data.children[i]);
+            traverseTree(data.children[i]);
           }
         }
       }
     }
 
-    for (let i in this.tree) {
-      traverseTree1(this.tree[i]);
+    for (const x in this.tree) {
+      traverseTree(this.tree[x]);
     }
     return flag;
   }
-
 
   private _updatePanelHeight(): void {
     setTimeout(() => {
@@ -863,7 +933,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
       this.resizerHeight = ht + 'px';
       $('#workflowTableId').css('height', this.resizerHeight);
-    }, 5);
+    }, 10);
   }
 
   private saveProfileSettings(preferences): void {
