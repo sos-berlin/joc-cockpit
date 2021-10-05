@@ -40,6 +40,7 @@
     <nz-table
       #ajaxTable
       [nzSize]="'small'"
+      [nzLoading]="loading"
       [nzBordered]="true"
       [nzShowPagination]="false"
       [nzData]="data | orderBy: 'scheduledFor': true"

@@ -24,8 +24,7 @@
                   <ng-container *ngFor="let btn of dateFilterBtn">
                     <li nz-menu-item (click)="changeDate(btn.date);orderFilters.filter.dateLabel = btn.text;"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.date=== btn.date}">
-                      <a
-                         translate>filters.button.{{btn.text}}</a>
+                      <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>

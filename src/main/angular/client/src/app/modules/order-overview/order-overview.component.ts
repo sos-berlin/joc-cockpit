@@ -842,7 +842,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       }
       this.searchInResult();
       this.loading = true;
-      this.updatePanelHeight();
       if (this.object.mapOfCheckedId.size > 0) {
         const tempObject = new Map();
         this.data.forEach((order) => {
@@ -856,6 +855,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         this.resetCheckBox();
       }
       this.resetAction();
+      this.updatePanelHeight();
     }, () => {
       this.isLoaded = true;
       this.loading = true;
@@ -882,7 +882,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       }
       this.resizerHeight = ht + 'px';
       $('#orderTableId').css('height', this.resizerHeight);
-    }, 5);
+    }, 10);
   }
 
   /* ================================= End Action ============================*/
