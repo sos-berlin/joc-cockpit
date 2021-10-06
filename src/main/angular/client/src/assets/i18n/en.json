@@ -1640,6 +1640,7 @@
       "label.boardsFound": "Notice Boards found",
       "label.boardFound": "Notice Board found",
       "label.numOfNotices": "Number of Notices",
+      "label.numOfExpectingOrders": "Number of Expecting Orders",
       "label.noticeId": "Notice ID",
       "label.endOfLife": "End of Life",
       "label.expectingOrders": "Expecting Orders",

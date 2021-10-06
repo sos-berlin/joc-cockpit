@@ -18,6 +18,10 @@ export class OrderListSidebarComponent implements OnChanges{
   @Input() schedulerId: any;
   @Input() orderPreparation: any;
   @Input() loading: boolean;
+  filter = {
+    sortBy: 'scheduledFor',
+    reverse: true
+  };
   data = [];
   checked = false;
   indeterminate = false;
@@ -43,6 +47,11 @@ export class OrderListSidebarComponent implements OnChanges{
       this.refreshView();
       this.resetAction();
     }
+  }
+
+  sort(key): void {
+    this.filter.reverse = !this.filter.reverse;
+    this.filter.sortBy = key;
   }
 
   private refreshView(): void {

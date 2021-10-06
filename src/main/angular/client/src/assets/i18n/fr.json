@@ -1640,6 +1640,7 @@
       "label.boardsFound": "Tableaux de Condition trouvés",
       "label.boardFound": "Tableau de Condition trouvé",
       "label.numOfNotices": "Nombre des Conditions",
+      "label.numOfExpectingOrders": "Number of Expecting Orders",
       "label.noticeId": "ID Affichage",
       "label.endOfLife": "fin de vie",
       "label.expectingOrders": "Ordres en attente",

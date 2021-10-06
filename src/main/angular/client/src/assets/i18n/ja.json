@@ -1640,6 +1640,7 @@
       "label.boardsFound": "通知ボードがあります",
       "label.boardFound": "通知ボードがあります",
       "label.numOfNotices": "通知数",
+      "label.numOfExpectingOrders": "Number of Expecting Orders",
       "label.noticeId": "通知ID",
       "label.endOfLife": "通知期限終了",
       "label.expectingOrders": "Expectオーダー",

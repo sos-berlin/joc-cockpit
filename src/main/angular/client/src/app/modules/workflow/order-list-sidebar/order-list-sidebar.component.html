@@ -43,7 +43,7 @@
       [nzLoading]="loading"
       [nzBordered]="true"
       [nzShowPagination]="false"
-      [nzData]="data | orderBy: 'scheduledFor': true"
+      [nzData]="data | orderBy: filter.sortBy: filter.reverse"
       [nzPageSize]="data.length"
     >
       <thead>
@@ -55,11 +55,41 @@
           (nzCheckedChange)="onAllChecked($event)"
         ></th>
         <th class="menu"><span translate>common.label.action</span></th>
-        <th><span translate>order.label.orderId</span></th>
-        <th><span translate>order.label.position</span></th>
-        <th><span translate>order.label.state</span></th>
-        <th><span translate>order.label.scheduledFor</span></th>
-        <th><span translate>order.label.lastOutcome</span></th>
+        <th (click)="sort('orderId')">
+          <a><span class="p-r-xs" translate>order.label.orderId</span>
+            <i *ngIf="filter.sortBy == 'orderId' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'orderId' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th (click)="sort('position')">
+          <a><span class="p-r-xs" translate>order.label.position</span>
+            <i *ngIf="filter.sortBy == 'position' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'position' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th (click)="sort('state._text')">
+          <a><span class="p-r-xs" translate>order.label.state</span>
+            <i *ngIf="filter.sortBy == 'state._text' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'state._text' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th (click)="sort('scheduledFor')">
+          <a><span class="p-r-xs" translate>order.label.scheduledFor</span>
+            <i *ngIf="filter.sortBy == 'scheduledFor' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'scheduledFor' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th (click)="sort('lastOutcome.TYPE')">
+          <a><span class="p-r-xs" translate>order.label.lastOutcome</span>
+            <i *ngIf="filter.sortBy == 'lastOutcome.TYPE' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'lastOutcome.TYPE' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
       </tr>
       </thead>
       <tbody (click)="$event.preventDefault()">

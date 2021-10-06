@@ -1640,6 +1640,7 @@
       "label.boardsFound": "Notizbrett gefunden",
       "label.boardFound": "Notizbrett gefunden",
       "label.numOfNotices": "Anzahl Notizen",
+      "label.numOfExpectingOrders": "Number of Expecting Orders",
       "label.noticeId": "Notizkennung",
       "label.endOfLife": "Verfallsfrist",
       "label.expectingOrders": "Wartende Aufträge",

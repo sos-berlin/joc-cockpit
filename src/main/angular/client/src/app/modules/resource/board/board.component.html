@@ -131,6 +131,10 @@
                         <span translate>resource.board.label.numOfNotices </span>:
                         <span class="text-black-dk" [innerHtml]="board.numOfNotices"></span>
                       </div>
+                      <div class="text-sm text-left text-muted p-t-sm">
+                        <span translate>resource.board.label.numOfExpectingOrders </span>:
+                        <span class="text-black-dk" [innerHtml]="board.numOfExpectingOrders"></span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -193,6 +197,12 @@
                       <i *ngIf="boardsFilters.filter.sortBy == 'numOfNotices' && boardsFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
+                    <th nzWidth="120px" (click)="sort('numOfExpectingOrders')"><a><span class="p-r-xs" translate>resource.board.label.numOfExpectingOrders</span>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'numOfExpectingOrders' && !boardsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="boardsFilters.filter.sortBy == 'numOfExpectingOrders' && boardsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                    </th>
                   </tr>
                   </thead>
                   <tbody>
@@ -217,7 +227,7 @@
                         </div>
                       </td>
                       <td>
-                        <span class="show-in-single-line w-full">
+                        <span class="w-full">
                           <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                              *ngIf="!board.show"
                              (click)="showDetail(board)"></i>
@@ -246,9 +256,8 @@
                       <td>
                         <span [innerHtml]="board.endOfLife | highlight : boardsFilters.searchText"></span>
                       </td>
-                      <td>
-                        <span [innerHtml]="board.numOfNotices"></span>
-                      </td>
+                      <td><span [innerHtml]="board.numOfNotices"></span></td>
+                      <td><span [innerHtml]="board.numOfExpectingOrders"></span></td>
                     </tr>
                     <ng-container *ngIf="board.show">
                       <tr>
@@ -279,7 +288,7 @@
                         <td class="menu"></td>
                         <td colspan="8" style="padding:0 !important;" class="order-history-template0">
                           <nz-table class="m-a-0 inner-table" #nestedTable [nzSize]="'small'"
-                                    [nzData]="board.notices" [nzShowPagination]="false">
+                                    [nzData]="board.notices" [nzLoading]="board.loading" [nzShowPagination]="false">
                             <thead>
                             <tr>
                               <th *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)" nzWidth="55px"><span translate>common.label.action</span></th>
@@ -330,11 +339,7 @@
                                       <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                                       <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">{{order.workflowId.path}} </a>
                                     </td>
-                                    <td>
-                                        <span>
-                                          {{order.positionString}}
-                                        </span>
-                                    </td>
+                                    <td><span>{{order.positionString}}</span></td>
                                   </tr>
                                 </ng-container>
                               </ng-template>

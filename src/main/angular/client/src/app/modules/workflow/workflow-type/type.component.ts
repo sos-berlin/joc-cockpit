@@ -335,6 +335,7 @@ export class TypeComponent implements OnChanges {
       if (job && job.executable) {
         nzComponentParams = {
           data,
+          admissionTime: job.admissionTimeScheme,
           jobName: instruction.jobName,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
           readonly: true
