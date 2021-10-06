@@ -221,7 +221,7 @@
                         </div>
                       </td>
                       <td>
-                        <span class="show-in-single-line w-full">
+                        <span class="w-full">
                           <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                              *ngIf="!lock.show"
                              (click)="showDetail(lock)"></i>
@@ -255,7 +255,7 @@
                     <tr *ngIf="lock.show">
                       <td colspan="9" style="padding:0 !important;" class="order-history-template0">
                         <nz-table class="m-a-0 inner-table" #nestedWorkflowsTable [nzSize]="'small'"
-                                  [nzData]="lock.workflows" [nzShowPagination]="false">
+                                  [nzData]="lock.workflows" [nzLoading]="lock.loading" [nzShowPagination]="false">
                           <thead>
                           <tr>
                             <th colspan="9" class="text-left"><span translate>order.label.workflow</span></th>

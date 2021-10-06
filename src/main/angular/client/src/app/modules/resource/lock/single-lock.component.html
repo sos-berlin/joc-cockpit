@@ -42,7 +42,7 @@
               <ng-template ngFor let-lock [ngForOf]="ajaxTable.data">
                 <tr [ngClass]="{'light-bg':lock.show}">
                   <td>
-                    <span class="show-in-single-line w-full">
+                    <span class="w-full">
                       <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                          *ngIf="!lock.show" (click)="lock.show = true;"></i>
                       <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
@@ -68,8 +68,8 @@
                        [innerHtml]="lock.state._text | translate"></a>
                   </td>
                   <td>{{lock.acquiredLockCount || '0'}}</td>
-                  <td>{{lock.ordersHoldingLocks || '0'}}</td>
-                  <td>{{lock.ordersWaitingForLocks || '0'}}</td>
+                  <td>{{lock.ordersHoldingLocksCount || '0'}}</td>
+                  <td>{{lock.ordersWaitingForLocksCount || '0'}}</td>
                   <td [innerHtml]="lock.limit"></td>
                 </tr>
                 <tr *ngIf="lock.show">

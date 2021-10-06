@@ -819,8 +819,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         for (let j in res.workflows) {
           if ((this.workflows[i].path === res.workflows[j].path || this.workflows[i].name === res.workflows[j].path)
             && this.workflows[i].versionId === res.workflows[j].versionId) {
-            this.workflows[i].numOfOrders = res.workflows[j].numOfOrders;
-            this.workflows[i].ordersSummary = {};
+            this.workflows[i].numOfOrders = res.workflows[j].numOfOrders.blocked + res.workflows[j].numOfOrders.failed + res.workflows[j].numOfOrders.inProgress
+            + res.workflows[j].numOfOrders.pending + res.workflows[j].numOfOrders.prompting + res.workflows[j].numOfOrders.running + res.workflows[j].numOfOrders.suspended
+            + res.workflows[j].numOfOrders.scheduled + res.workflows[j].numOfOrders.terminated + res.workflows[j].numOfOrders.waiting;
+            this.workflows[i].ordersSummary = res.workflows[j].numOfOrders || {};
+            this.workflows[i].ordersSummary.inprogress = this.workflows[i].ordersSummary.inProgress;
             res.workflows.splice(j, 1);
             break;
           }

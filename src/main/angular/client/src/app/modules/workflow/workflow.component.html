@@ -187,9 +187,9 @@
                         <span [innerHtml]="'common.label.suspended' | translate"></span>
                         <span class="text-black _600 m-l p-r-xs"
                               [innerHtml]="workflow.ordersSummary.prompting || 0"></span>
-                        <span [innerHtml]="'common.label.suspended' | translate"></span>
+                        <span [innerHtml]="'common.label.prompting' | translate"></span>
                         <span class="text-black _600 m-l p-r-xs"
-                           [innerHtml]="workflow.ordersSummary.prompting || 0"></span>
+                           [innerHtml]="workflow.ordersSummary.waiting || 0"></span>
                         <span [innerHtml]="'common.label.waiting' | translate"></span>
                         <span class="text-black _600 m-l p-r-xs"
                                  [innerHtml]="workflow.ordersSummary.blocked || 0"></span>
@@ -198,10 +198,10 @@
                       <div class="text-sm text-left text-muted m-l p-t-xs" *ngIf="!workflowFilters.isCompact">
                         <span class="text-black _600 p-r-xs"
                               [innerHtml]="workflow.ordersSummary.failed || 0"></span>
-                        <span [innerHtml]="'common.label.completed' | translate"></span>
+                        <span [innerHtml]="'common.label.failed' | translate"></span>
                         <span class="text-black _600 m-l p-r-xs"
                               [innerHtml]="workflow.ordersSummary.terminated || 0"></span>
-                        <span [innerHtml]="'common.label.failed' | translate"></span>
+                        <span [innerHtml]="'common.label.completed' | translate"></span>
                       </div>
                     </div>
                     <div class="box-footer b-t">

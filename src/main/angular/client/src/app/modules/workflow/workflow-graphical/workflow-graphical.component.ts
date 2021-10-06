@@ -1280,6 +1280,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         nzComponentParams = {
           data,
           jobName: argu.jobName,
+          admissionTime: job.admissionTimeScheme,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
           readonly: true
         };

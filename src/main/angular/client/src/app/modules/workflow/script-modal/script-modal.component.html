@@ -15,6 +15,7 @@
   <div class="modal-body p-a" style="min-height: 112px">
     <div class="row">
       <div class="col-md-12" *ngIf="isScript">
+        <label class="_600 m-b-xs" translate>workflow.label.script</label>
         <div class="b-a" style="pointer-events: none">
           <ngx-codemirror name="cm" [(ngModel)]="data" [options]="cmOption"></ngx-codemirror>
         </div>
@@ -25,6 +26,29 @@
           <div class=" col-sm-8">
             <input nz-input name="data" [(ngModel)]="data" readonly>
           </div>
+        </div>
+      </div>
+      <div class="col-md-12 m-t" *ngIf="periodList.length > 0">
+        <label class="_600 m-b-xs" translate>workflow.label.admissionTime</label>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+              <th><span translate>workflow.admissionTime.label.frequency</span></th>
+              <th><span translate>workflow.admissionTime.label.period</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of periodList;">
+              <td><span>On {{item.frequency}}</span></td>
+              <td>
+                <div *ngFor="let p of item.periods;">
+                  <span>{{p.text}}</span>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -185,6 +185,8 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
             noticeBoardPath : this.name
           };
           this.coreService.post('notice/board', obj).subscribe((res: any) => {
+            this.boards[0].numOfNotices = res.noticeBoard.numOfNotices;
+            this.boards[0].numOfExpectingOrders = res.noticeBoard.numOfExpectingOrders;
             this.boards[0].notices = res.noticeBoard.notices;
           });
           break;
@@ -336,12 +338,19 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       let flag = false;
       const noticeBoardPaths = [];
+      const noticeBoardPaths2 = [];
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'NoticeBoardStateChanged' && args.eventSnapshots[j].path) {
           if (this.boards.length > 0) {
             for (let x = 0; x < this.boards.length; x++) {
               if (this.boards[x].path === args.eventSnapshots[j].path) {
-                noticeBoardPaths.push(this.boards[x].path);
+                if (!this.boards[x].show) {
+                  if (noticeBoardPaths.indexOf(this.boards[x].path) === -1) {
+                    noticeBoardPaths.push(this.boards[x].path);
+                  }
+                } else if (noticeBoardPaths2.indexOf(this.boards[x].path) === -1) {
+                  noticeBoardPaths2.push(this.boards[x].path);
+                }
                 break;
               }
             }
@@ -351,27 +360,37 @@ export class BoardComponent implements OnInit, OnDestroy {
         }
       }
       if (noticeBoardPaths && noticeBoardPaths.length) {
-        this.coreService.post('notice/boards', {
-          controllerId: this.schedulerIds.selected,
-          noticeBoardPaths
-        }).subscribe((res: any) => {
-          res.noticeBoards.forEach((value) => {
-            for (let x = 0; x < this.boards.length; x++) {
-              if (this.boards[x].path === value.path) {
-                this.boards[x].notices = value.notices;
-                break;
-              }
-            }
-          });
-          this.boards = [...this.boards];
-        }, () => {
-          this.loading = false;
-        });
+        this.updateListOnEvent(noticeBoardPaths, true);
+      }
+      if (noticeBoardPaths2 && noticeBoardPaths2.length) {
+        this.updateListOnEvent(noticeBoardPaths2, false);
       }
       if (flag) {
         this.initTree();
       }
     }
+  }
+
+  private updateListOnEvent(paths, compact): void{
+    this.coreService.post('notice/boards', {
+      controllerId: this.schedulerIds.selected,
+      compact,
+      paths
+    }).subscribe((res: any) => {
+      res.noticeBoards.forEach((value) => {
+        for (let x = 0; x < this.boards.length; x++) {
+          if (this.boards[x].path === value.path) {
+            this.boards[x].numOfNotices = value.numOfNotices;
+            this.boards[x].numOfExpectingOrders = value.numOfExpectingOrders;
+            this.boards[x].notices = value.notices;
+            break;
+          }
+        }
+      });
+      this.boards = [...this.boards];
+    }, () => {
+      this.loading = false;
+    });
   }
 
   private init(): void {
@@ -396,15 +415,15 @@ export class BoardComponent implements OnInit, OnDestroy {
   private getBoardsList(obj): void {
     obj.limit = this.preferences.maxBoardRecords;
     obj.compact = true;
+    const boards = [];
     this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       res.noticeBoards.forEach((value) => {
         value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
-        value.numOfNotices = value.notices ? value.notices.length : 0;
         if (this.boardsFilters.expandedObjects && this.boardsFilters.expandedObjects.length > 0) {
           const index = this.boardsFilters.expandedObjects.indexOf(value.path);
           if (index > -1) {
-            value.show = true;
+            boards.push(value);
             this.boardsFilters.expandedObjects.slice(index, 1);
           }
         }
@@ -413,6 +432,9 @@ export class BoardComponent implements OnInit, OnDestroy {
       this.loading = false;
       this.boards = res.noticeBoards;
       this.searchInResult();
+      if (boards && boards.length > 0) {
+        this.updateBoardsDetail(boards);
+      }
     }, () => {
       this.loading = false;
     });
@@ -421,6 +443,35 @@ export class BoardComponent implements OnInit, OnDestroy {
   searchInResult(): void {
     this.data = this.boardsFilters.searchText ? this.searchPipe.transform(this.boards, this.boardsFilters.searchText, this.searchableProperties) : this.boards;
     this.data = [...this.data];
+  }
+
+  private updateBoardsDetail(boards): void {
+    const obj = {
+      noticeBoardPaths: [],
+      controllerId: this.schedulerIds.selected
+    };
+    boards.forEach((value) => {
+      value.show = true;
+      value.loading = true;
+      obj.noticeBoardPaths.push(value.path);
+    });
+    this.getNoticeBoards(obj, (data) => {
+      if (data && data.length > 0) {
+        boards.forEach((board) => {
+          for (let i = 0; i < data.length; i++) {
+            if (board.path === data[i].path) {
+              board.notices = data[i].notices;
+              board.numOfNotices = data[i].numOfNotices;
+              board.numOfExpectingOrders = data[i].numOfExpectingOrders;
+              data.splice(i, 1);
+              break;
+            }
+          }
+          board.loading = false;
+        });
+        this.boards = [...this.boards];
+      }
+    });
   }
 
   private getNoticeBoards(obj, cb): void {
@@ -433,6 +484,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   showDetail(board): void {
     board.show = true;
+    board.loading = true;
     const obj = {
       noticeBoardPaths: [board.path],
       controllerId: this.schedulerIds.selected
@@ -442,37 +494,21 @@ export class BoardComponent implements OnInit, OnDestroy {
         for (const i in data) {
           if (board.path === data[i].path) {
             board.notices = data[i].notices;
+            board.numOfNotices = data[i].numOfNotices;
+            board.numOfExpectingOrders = data[i].numOfExpectingOrders;
             break;
           }
         }
       }
+      board.loading = false;
     });
   }
 
   expandDetails(): void {
-    const obj = {
-      noticeBoardPaths: [],
-      controllerId: this.schedulerIds.selected
-    };
     const boards = this.getCurrentData(this.data, this.boardsFilters);
-    boards.forEach((value) => {
-      value.show = true;
-      obj.noticeBoardPaths.push(value.path);
-    });
-    this.getNoticeBoards(obj, (data) => {
-      if (data && data.length > 0) {
-        boards.forEach((board) => {
-          for (let i = 0; i < data.length; i++) {
-            if (board.path === data[i].path) {
-              board.notices = data[i].notices;
-              data.splice(i, 1);
-              break;
-            }
-          }
-        });
-        this.boards = [...this.boards];
-      }
-    });
+    if (boards && boards.length > 0) {
+      this.updateBoardsDetail(boards);
+    }
   }
 
   collapseDetails(): void {

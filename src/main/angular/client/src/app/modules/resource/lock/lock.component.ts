@@ -231,12 +231,20 @@ export class LockComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       let flag = false;
       const lockPaths = [];
+      const lockPaths2 = [];
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path) {
           if (this.locks.length > 0) {
             for (let x = 0; x < this.locks.length; x++) {
               if (this.locks[x].path === args.eventSnapshots[j].path) {
                 lockPaths.push(this.locks[x].path);
+                if (!this.locks[x].show) {
+                  if (lockPaths.indexOf(this.locks[x].path) === -1) {
+                    lockPaths.push(this.locks[x].path);
+                  }
+                } else if (lockPaths2.indexOf(this.locks[x].path) === -1) {
+                  lockPaths2.push(this.locks[x].path);
+                }
                 break;
               }
             }
@@ -246,41 +254,49 @@ export class LockComponent implements OnInit, OnDestroy {
         }
       }
       if (lockPaths && lockPaths.length) {
-        this.coreService.post('locks', {
-          controllerId: this.schedulerIds.selected,
-          lockPaths
-        }).subscribe((res: any) => {
-          res.locks.forEach((value) => {
-            for (let x = 0; x < this.locks.length; x++) {
-              if (this.locks[x].path === value.path) {
-                if (this.locks[x].workflows.length > 0 && value.workflows.length > 0) {
-                  this.locks[x].workflows.forEach((workflow) => {
-                    if (workflow.show) {
-                      for (let m = 0; value.workflows.length > 0; m++) {
-                        if (value.workflows[m].path === workflow.path) {
-                          value.workflows[m].show = true;
-                          break;
-                        }
-                      }
-                    }
-                  });
-                }
-                this.locks[x].acquiredLockCount = value.acquiredLockCount;
-                this.locks[x].ordersHoldingLocksCount = value.ordersHoldingLocksCount;
-                this.locks[x].ordersWaitingForLocksCount = value.ordersWaitingForLocksCount;
-                this.locks[x].workflows = value.workflows;
-                break;
-              }
-            }
-          });
-        }, () => {
-          this.loading = false;
-        });
+        this.updateListOnEvent(lockPaths, true);
+      }
+      if (lockPaths2 && lockPaths2.length) {
+        this.updateListOnEvent(lockPaths2, false);
       }
       if (flag) {
         this.initTree();
       }
     }
+  }
+
+  private updateListOnEvent(paths, compact): void{
+    this.coreService.post('locks', {
+      controllerId: this.schedulerIds.selected,
+      compact,
+      paths
+    }).subscribe((res: any) => {
+      res.locks.forEach((value) => {
+        for (let x = 0; x < this.locks.length; x++) {
+          if (this.locks[x].path === value.path) {
+            if (this.locks[x].workflows.length > 0 && value.workflows.length > 0) {
+              this.locks[x].workflows.forEach((workflow) => {
+                if (workflow.show) {
+                  for (let m = 0; value.workflows.length > 0; m++) {
+                    if (value.workflows[m].path === workflow.path) {
+                      value.workflows[m].show = true;
+                      break;
+                    }
+                  }
+                }
+              });
+            }
+            this.locks[x].acquiredLockCount = value.acquiredLockCount;
+            this.locks[x].ordersHoldingLocksCount = value.ordersHoldingLocksCount;
+            this.locks[x].ordersWaitingForLocksCount = value.ordersWaitingForLocksCount;
+            this.locks[x].workflows = value.workflows;
+            break;
+          }
+        }
+      });
+    }, () => {
+      this.loading = false;
+    });
   }
 
   private init(): void {
@@ -323,7 +339,9 @@ export class LockComponent implements OnInit, OnDestroy {
       this.loading = false;
       this.locks = res.locks;
       this.searchInResult();
-      this.updateLocksDetail(locks);
+      if (locks && locks.length > 0) {
+        this.updateLocksDetail(locks);
+      }
     }, () => {
       this.loading = false;
     });
@@ -341,6 +359,7 @@ export class LockComponent implements OnInit, OnDestroy {
     };
     locks.forEach((value) => {
       value.show = true;
+      value.loading = true;
       obj.lockPaths.push(value.path);
       value.workflows.forEach((item) => {
         item.show = true;
@@ -359,6 +378,7 @@ export class LockComponent implements OnInit, OnDestroy {
               break;
             }
           }
+          lock.loading = false;
         });
         this.locks = [...this.locks];
       }
@@ -375,6 +395,7 @@ export class LockComponent implements OnInit, OnDestroy {
 
   showDetail(lock): void {
     lock.show = true;
+    lock.loading = true;
     const obj = {
       lockPaths: [lock.path],
       controllerId: this.schedulerIds.selected
@@ -391,12 +412,15 @@ export class LockComponent implements OnInit, OnDestroy {
           }
         }
       }
+      lock.loading = false;
     });
   }
 
   expandDetails(): void {
     const locks = this.getCurrentData(this.data, this.locksFilters);
-    this.updateLocksDetail(locks);
+    if (locks && locks.length > 0) {
+      this.updateLocksDetail(locks);
+    }
   }
 
   collapseDetails(): void {
