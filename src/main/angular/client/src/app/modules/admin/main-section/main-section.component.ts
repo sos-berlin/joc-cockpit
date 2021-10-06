@@ -9,7 +9,7 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 
 // Add and Edit main Section
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-main-modal-content',
   templateUrl: 'main-dialog.html'
 })
 export class MainSectionModalComponent implements OnInit {
@@ -268,7 +268,7 @@ export class MainSectionModalComponent implements OnInit {
 
 // Edit Single Section
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-edit-modal-content',
   templateUrl: 'edit-main-dialog.html'
 })
 export class EditMainSectionModalComponent implements OnInit {
@@ -371,7 +371,7 @@ export class EditMainSectionModalComponent implements OnInit {
 
 // Ldap
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-ldap-modal-content',
   templateUrl: 'ldap-section-dialog.html'
 })
 export class LdapSectionModalComponent implements OnInit {

@@ -166,7 +166,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
       obj.dateTo = this.date;
       obj.timeZone = this.preferences.zone;
     }
-    obj.limit = this.preferences.maxOrderRecords;
+    obj.limit = this.preferences.maxWorkflowRecords;
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.workflows[0].orders = res.orders;
       this.workflows[0].ordersSummary = {};
@@ -757,7 +757,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (obj.folders && obj.folders.length === 1) {
       this.currentPath = obj.folders[0].folder;
     }
-    obj.limit = this.preferences.maxWorkflowRecords;
     this.coreService.post('workflows', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.loading = false;
       const request = {
@@ -840,7 +839,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       obj.dateTo = this.workflowFilters.filter.date;
       obj.timeZone = this.preferences.zone;
     }
-    obj.limit = this.preferences.maxOrderRecords;
+    obj.limit = this.preferences.maxWorkflowRecords;
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {
         for (let i in this.workflows) {

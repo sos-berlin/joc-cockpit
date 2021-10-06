@@ -21,7 +21,7 @@
                 <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" >
                   <span translate>common.label.type</span>&nbsp;
                   <span class="text-primary" *ngIf="documentFilters.filter.type === 'ALL'" translate>common.label.all</span>
-                  <span class="text-primary" *ngIf="documentFilters.filter.type !== 'ALL'" [innerHTML]="documentFilters.filter.type"></span>
+                  <span class="text-primary" *ngIf="documentFilters.filter.type !== 'ALL'" [innerHTML]="documentFilters.filter.type"></span>&nbsp;
                   <span>
                     <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
                   </span>

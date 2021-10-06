@@ -5,6 +5,10 @@
       <span class="_600" [ngClass]="coreService.getColor(order.state.severity, 'text')"> {{order.state._text |  translate}}</span>
       <span class="_600" *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')">/{{order.marked._text | translate}}</span>
     </div>
+    <div class="p-l-sm" *ngIf="order.state._reason">
+      <span translate> common.label.comment </span>:
+      <span class="_600"> {{order.state._reason}}</span>
+    </div>
     <div class="p-l-sm" *ngIf="order.lastOutcome">
       <span translate> order.label.lastOutcome </span>:
       <span class="_600" >{{order.lastOutcome.TYPE}}</span>
