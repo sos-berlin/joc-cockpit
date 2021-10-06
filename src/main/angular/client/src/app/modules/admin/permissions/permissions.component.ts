@@ -60,10 +60,10 @@ export class PermissionModalComponent {
       users: this.userDetail.users,
       roles: this.userDetail.roles,
       main: this.userDetail.main
-    }).subscribe(res => {
+    }).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.rolePermissions);
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -71,7 +71,7 @@ export class PermissionModalComponent {
 
 // Folder Modal
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-folder-modal-content',
   templateUrl: 'folder-modal.html'
 })
 export class FolderModalComponent implements OnInit {
@@ -186,7 +186,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   roleName;
   roles: any = [];
   permissionsObj: any;
-  permissionToEdit: any;
+
   permissions;
   rolePermissions: any = [];
   permissionOptions = [];
@@ -541,29 +541,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectPermissionObj(permissionNodes, permission, excluded): void {
-    if (permissionNodes._parents) {
-      for (let i = 0; i < permissionNodes._parents.length; i++) {
-        if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
-          permissionNodes._parents[i].selected = true;
-          permissionNodes._parents[i].excluded = excluded;
-          if (permissionNodes._parents[i].excluded) {
-            permissionNodes._parents[i].greyedBtn = false;
-          }
-          this.selectedNode(permissionNodes._parents[i], excluded);
-          break;
-        }
-        this.selectPermissionObj(permissionNodes._parents[i], permission, excluded);
-      }
-    } else {
-      if ((permissionNodes.path + permissionNodes.name) == permission) {
-        permissionNodes.selected = true;
-        permissionNodes.excluded = excluded;
-        permissionNodes.greyedBtn = false;
-      }
-    }
-  }
-
   selectedNode(permission_node, flag): void {
     if (permission_node && permission_node._parents) {
       for (let j = 0; j < permission_node._parents.length; j++) {
@@ -694,7 +671,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       users: this.userDetail.users,
       roles: this.roles,
       main: this.userDetail.main
-    }).subscribe(res => {
+    }).subscribe(() => {
       this.dataService.announceFunction('RELOAD');
     });
   }
@@ -745,7 +722,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   updateDiagramData(json): void {
-    this.drawTree(this.permissionNodes[0][0], 'UPDATEDDIAGRAM');
+    this.drawTree(json, 'UPDATEDDIAGRAM');
   }
 
   drawTree(json, type): void {

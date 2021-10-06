@@ -1646,13 +1646,19 @@ export class WorkflowService {
         let data = cell.getAttribute('order');
         data = JSON.parse(data);
         let state = '';
-        let orderId = '';
+        let orderId;
+        let _reason = '';
         let _text = '';
         let _markedText = '';
         let scheduledFor = '', cyclicOrder = '', begin = '', end = '', orders = '';
         this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
           orderId = translatedValue;
         });
+        if (data.state._reason) {
+          this.translate.get('common.label.comment').subscribe(translatedValue => {
+            _reason = translatedValue;
+          });
+        }
         this.translate.get('order.label.state').subscribe(translatedValue => {
           state = translatedValue;
         });
@@ -1685,6 +1691,9 @@ export class WorkflowService {
         const class2 = data.marked ? this.coreService.getColor(data.marked.severity, 'text') : '';
         let div = '<div><b>' + orderId + '</b> : ' + (data.orderId || '-') + '</br>' +
           '<b>' + state + '</b> : <span class="' + class1 + '">' + _text + '</span><span class="' + class2 + '">' + (_markedText ? '/' + _markedText : '') + '</span>' + '</br>';
+        if (_reason) {
+          div = div + '<b>' + _reason + '</b> : ' + (data.state._reason || '-') + '</br>';
+        }
         if (data.cyclicOrder) {
           div = div + '<b class="m-b-xs">' + cyclicOrder + '</b></br>';
           div = div + '<b class="p-l-sm">' + begin + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.firstStart) + '</br>';
