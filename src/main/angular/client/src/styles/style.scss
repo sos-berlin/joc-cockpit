@@ -2092,6 +2092,10 @@ button.close {
   padding: 16px;
 }
 
+.p-a-10 {
+  padding: 10px;
+}
+
 .p-t {
   padding-top: 16px !important;
 }
@@ -3076,8 +3080,7 @@ div.order-panel div {
 }
 
 .bg-late{
-  background: var(--background-color);
-  color: var(--text-color) !important;
+  background: #ff7700;
 }
 
 .light-yellow {

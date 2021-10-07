@@ -349,6 +349,7 @@ export class BoardComponent implements OnInit, OnDestroy {
                     noticeBoardPaths.push(this.boards[x].path);
                   }
                 } else if (noticeBoardPaths2.indexOf(this.boards[x].path) === -1) {
+                  this.boards[x].loading = true;
                   noticeBoardPaths2.push(this.boards[x].path);
                 }
                 break;
@@ -359,6 +360,7 @@ export class BoardComponent implements OnInit, OnDestroy {
           flag = true;
         }
       }
+
       if (noticeBoardPaths && noticeBoardPaths.length) {
         this.updateListOnEvent(noticeBoardPaths, true);
       }
@@ -375,11 +377,12 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.coreService.post('notice/boards', {
       controllerId: this.schedulerIds.selected,
       compact,
-      paths
+      noticeBoardPaths: paths
     }).subscribe((res: any) => {
       res.noticeBoards.forEach((value) => {
         for (let x = 0; x < this.boards.length; x++) {
           if (this.boards[x].path === value.path) {
+            this.boards[x].loading = false;
             this.boards[x].numOfNotices = value.numOfNotices;
             this.boards[x].numOfExpectingOrders = value.numOfExpectingOrders;
             this.boards[x].notices = value.notices;

@@ -371,13 +371,17 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   pageIndexChange($event): void {
     this.orderFilters.currentPage = $event;
-    this.resetCheckBox();
+    if (this.object.mapOfCheckedId.size !== this.data.length) {
+      this.resetCheckBox();
+    }
   }
 
   pageSizeChange($event): void {
     this.orderFilters.entryPerPage = $event;
-    if (this.object.checked) {
-      this.checkAll(true);
+    if (this.object.mapOfCheckedId.size !== this.data.length) {
+      if (this.object.checked) {
+        this.checkAll(true);
+      }
     }
   }
 
@@ -453,6 +457,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.showLeftPanel();
   }
 
+  selectAll(): void{
+    this.data.forEach(item => {
+      this.object.mapOfCheckedId.set(item.orderId, item);
+    });
+    this.refreshCheckedStatus(true);
+  }
+
   checkAll(value: boolean): void {
     if (value && this.data.length > 0) {
       const orders = this.getCurrentData(this.data, this.orderFilters);
@@ -466,6 +477,15 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   onItemChecked(order: any, checked: boolean): void {
+    if (!checked && this.object.mapOfCheckedId.size > (this.orderFilters.entryPerPage || this.preferences.entryPerPage)) {
+      const orders = this.getCurrentData(this.data, this.orderFilters);
+      if (orders.length < this.data.length) {
+        this.object.mapOfCheckedId.clear();
+        orders.forEach(item => {
+          this.object.mapOfCheckedId.set(item.orderId, item);
+        });
+      }
+    }
     if (checked) {
       this.object.mapOfCheckedId.set(order.orderId, order);
     } else {
@@ -474,8 +494,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.refreshCheckedStatus();
   }
 
-  refreshCheckedStatus(): void {
-    const orders = this.getCurrentData(this.data, this.orderFilters);
+  refreshCheckedStatus(allOrder = false): void {
+    const orders = allOrder ? this.data : this.getCurrentData(this.data, this.orderFilters);
     this.object.checked = this.object.mapOfCheckedId.size === orders.length;
     this.object.isCancel = false;
     this.object.isCancelWithKill = false;
@@ -796,6 +816,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       obj.timeZone = this.preferences.zone;
     }
     obj.limit = this.preferences.maxOrderRecords;
+    obj.compact = true;
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.isLoaded = true;
       res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);

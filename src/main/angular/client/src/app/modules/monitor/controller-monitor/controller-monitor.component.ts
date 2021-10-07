@@ -87,7 +87,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   }
 
   setViewSize(len): void {
-
     const barWidth = len === 1 ? 60 : 32;
     this.view = this.statisticsData.length > 10 ? [(barWidth * len * this.statisticsData.length), 260] :
       (this.chartArea.nativeElement.offsetWidth && this.chartArea.nativeElement.offsetWidth > 500)
@@ -156,8 +155,8 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         }
         for (const i in controller.entries) {
           if (controller.entries[i].readyTime === controller.entries[i].lastKnownTime) {
-            const d = new Date(controller.entries[i].readyTime);
-            controller.entries[i].lastKnownTime = d.setSeconds(d.getSeconds() + 1);
+            const date = new Date(controller.entries[i].readyTime);
+            controller.entries[i].lastKnownTime = date.setSeconds(date.getSeconds() + 1);
           }
           const obj = {
             controllerId: controller.controllerId,

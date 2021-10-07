@@ -381,7 +381,6 @@ export class UserComponent implements OnInit, OnDestroy {
       this.preferences.maxFileTransferRecords = this.preferences.maxRecords;
       this.preferences.maxLockRecords = this.preferences.maxRecords;
       this.preferences.maxBoardRecords = this.preferences.maxRecords;
-      this.preferences.maxDocumentRecords = this.preferences.maxRecords;
       this.isGroupBtnActive = false;
     }
     sessionStorage.preferences = JSON.stringify(this.preferences);
