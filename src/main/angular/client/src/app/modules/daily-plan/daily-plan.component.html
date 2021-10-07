@@ -483,7 +483,7 @@
         </div>
         <div id="rightPanel">
           <div>
-            <div class="row m-b-12">
+            <div class="row m-b-12" *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))">
               <div class="col-lg-12">
                 <button class="btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}"
                         [disabled]="planOrders.length === 0" (click)="expandCollapseDetails(true)">
@@ -532,7 +532,7 @@
                 </div>
               </div>
             </div>
-            <div class="row" *ngIf="showSearchPanel">
+            <div class="row" *ngIf="showSearchPanel && !(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))">
               <div class="col-md-12">
                 <div class="box p-a m-b p-t-md">
                   <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
@@ -553,6 +553,12 @@
             </div>
             <div class=" text-center m-t text-uppercase" *ngIf="pageView =='grid' && planOrders.length==0 && isLoaded">
               <app-empty-data></app-empty-data>
+            </div>
+            <div class="text-center font14 box p-a-sm m-b-12" *ngIf="object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage)">
+              <span translate *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders)" [translateParams]="{count: object.mapOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
+              <span translate *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)" [translateParams]="{count: (totalOrders - totalFinishedOrders)}">common.label.allEntriesSelected</span>
+              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders)" (click)="selectAll()" translate [translateParams]="{count: (totalOrders - totalFinishedOrders)}">common.label.selectAllEntries</a>
+              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)" (click)="isAllSelected = false;resetCheckBox()" translate>common.label.clearSelection</a>
             </div>
             <div class="box p-a" *ngIf="pageView !=='grid'">
               <div class="table-responsive" id="dailyPlanTableId">
@@ -687,9 +693,9 @@
               </div>
               <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
                 <span translate *ngIf="dailyPlanFilters.filter.groupBy === 'ORDER'"
-                      [translateParams]="{total: planOrders.length, orderCount: (plans | filter: dailyPlanFilters.searchText: searchableProperties).length}">dailyPlan.label.totalEntry</span>
+                      [translateParams]="{total: planOrders.length, orderCount: totalOrders}">dailyPlan.label.totalEntry</span>
                 <span translate *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'"
-                      [translateParams]="{total: planOrders.length, orderCount: (plans | filter: dailyPlanFilters.searchText: searchableProperties).length}">dailyPlan.label.totalWorkflowEntry</span>
+                      [translateParams]="{total: planOrders.length, orderCount: totalOrders}">dailyPlan.label.totalWorkflowEntry</span>
                 <span translate *ngIf="dailyPlanFilters.filter.groupBy === ''"
                       [translateParams]="{total: planOrders.length}">dailyPlan.label.totalOrderEntry</span>
               </div>

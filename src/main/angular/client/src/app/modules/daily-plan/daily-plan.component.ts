@@ -1024,6 +1024,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   dateRanges = [];
   isProcessing = false;
   isVisible: boolean;
+  isAllSelected: boolean;
+  totalOrders: number;
+  totalFinishedOrders: number;
 
   object = {
     mapOfCheckedId: new Map(),
@@ -1712,7 +1715,30 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
+  selectAll(): void {
+    this.isAllSelected = true;
+    if (this.dailyPlanFilters.filter.groupBy) {
+      for (let i = 0; i < this.planOrders.length; i++) {
+        if (!this.planOrders[i].isFinished) {
+          this.planOrders[i].value.forEach(item => {
+            if (item.state._text !== 'FINISHED') {
+              this.object.mapOfCheckedId.set(item.orderId, item);
+            }
+          });
+        }
+      }
+    } else {
+      this.planOrders.forEach(item => {
+        if (item.state._text !== 'FINISHED') {
+          this.object.mapOfCheckedId.set(item.orderId, item);
+        }
+      });
+    }
+    this.checkState(this.object, this.object.mapOfCheckedId);
+  }
+
   checkAll(): void {
+    this.isAllSelected = false;
     let flag = false;
     if (this.planOrders.length > 0) {
       this.object.mapOfCheckedId.clear();
@@ -1761,8 +1787,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   checkOrderTemplate(template): void {
+    const isChecked = template.checked;
+    if (this.isAllSelected) {
+      this.checkSelected();
+    }
+    this.isAllSelected = false;
     template.indeterminate = false;
-    if (template.checked) {
+    if (isChecked) {
       for (let i = 0; i < template.value.length; i++) {
         if (!this.object.mapOfCheckedId.has(template.value[i].orderId)) {
           this.object.mapOfCheckedId.set(template.value[i].orderId, template.value[i]);
@@ -1778,7 +1809,39 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.updateMainCheckbox();
   }
 
+  private checkSelected(): void {
+    const entryPerPage = this.dailyPlanFilters.entryPerPage || this.preferences.entryPerPage;
+    const orders = this.planOrders.slice((entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (entryPerPage * this.dailyPlanFilters.currentPage));
+    this.object.mapOfCheckedId.clear();
+    if (this.dailyPlanFilters.filter.groupBy) {
+      for (let i = 0; i < orders.length; i++) {
+        if (!orders[i].isFinished) {
+          let count = 0;
+          orders[i].value.forEach(item => {
+            if (item.state._text !== 'FINISHED') {
+              this.object.mapOfCheckedId.set(item.orderId, item);
+              ++count;
+            }
+          });
+          orders[i].checked = count === orders[i].value.length;
+          orders[i].indeterminate = count > 0 && !orders[i].checked;
+        }
+      }
+    } else {
+      orders.forEach(item => {
+        if (item.state._text !== 'FINISHED') {
+          this.object.mapOfCheckedId.set(item.orderId, item);
+        }
+      });
+    }
+    console.log(this.object.mapOfCheckedId.size, 'size')
+  }
+
   onItemChecked(order: any, plan: any, checked: boolean): void {
+    if (this.isAllSelected) {
+      this.checkSelected();
+    }
+    this.isAllSelected = false;
     if (checked) {
       this.object.mapOfCheckedId.set(order.orderId, order);
     } else {
@@ -1896,13 +1959,17 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   pageIndexChange($event): void {
     this.dailyPlanFilters.currentPage = $event;
-    this.resetCheckBox();
+    if (this.object.mapOfCheckedId.size !== this.planOrders.length) {
+      this.resetCheckBox();
+    }
   }
 
   pageSizeChange($event): void {
     this.dailyPlanFilters.entryPerPage = $event;
-    if (this.object.checked) {
-      this.checkAll();
+    if (this.object.mapOfCheckedId.size !== this.planOrders.length) {
+      if (this.object.checked) {
+        this.checkAll();
+      }
     }
   }
 
@@ -2065,10 +2132,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.planOrders = filterData;
     }
+    this.totalOrders = 0;
+    this.totalFinishedOrders = 0;
     if (this.planOrders && this.planOrders.length > 0 && this.dailyPlanFilters.filter.groupBy !== '') {
       for (let i = 0; i < this.planOrders.length; i++) {
         let lastDate = null;
         for (let j = 0; j < this.planOrders[i].value.length; j++) {
+          ++this.totalOrders;
+          if (this.planOrders[i].value[j].state._text === 'FINISHED') {
+            ++this.totalFinishedOrders;
+          }
           this.planOrders[i].value[j].seperate = false;
           if (lastDate) {
             let d = new Date(this.planOrders[i].value[j].plannedDate).setHours(0, 0, 0, 0);
@@ -2267,7 +2340,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  private resetCheckBox(flag = false): void {
+  resetCheckBox(flag = false): void {
     if (this.object.mapOfCheckedId.size > 0) {
       this.planOrders.forEach((item) => {
         item.checked = false;

@@ -268,17 +268,6 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfDocumentationEntries
-                  </div>
-                  <div class="col-md-6">
-                    <nz-input-number *ngIf="!isGroupBtnActive" class="w-xl" [nzMin]="1" [nzStep]="5" [(ngModel)]="preferences.maxDocumentRecords"
-                                     (nzBlur)="changeConfiguration()"></nz-input-number>
-                    <nz-input-number *ngIf="isGroupBtnActive" class="w-xl" nzDisabled [(ngModel)]="preferences.maxRecords"
-                    ></nz-input-number>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
                        translate>profile.label.maxNumberOfHistoryEntriesPerOrder
                   </div>
                   <div class="col-md-6">

@@ -187,6 +187,12 @@
                 </div>
               </div>
             </div>
+            <div class="text-center font14 box p-a-10 m-b-12" *ngIf="object.checked && object.mapOfCheckedId.size > 0 && data.length > (documentFilters.entryPerPage || preferences.entryPerPage)">
+              <span translate *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: object.mapOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
+              <span translate *ngIf="object.mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}">common.label.allEntriesSelected</span>
+              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size !== data.length" (click)="selectAll()" translate [translateParams]="{count: data.length}">common.label.selectAllEntries</a>
+              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size === data.length" (click)="reset()" translate>common.label.clearSelection</a>
+            </div>
             <div class="box p-a" *ngIf="pageView=='list' && tree.length > 0">
               <div class="table-responsive" id="documentDivId">
                 <nz-table

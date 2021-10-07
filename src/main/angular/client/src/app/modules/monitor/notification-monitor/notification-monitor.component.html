@@ -1,4 +1,4 @@
-<div class="row m-b-12 m-t-n-xs">
+<div class="row m-b-12 m-t-n-xs" *ngIf="!(object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage))">
   <div class="col-lg-12">
     <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}"
             (click)="collapseDetails()">
@@ -17,6 +17,12 @@
          (click)="filters.filter.searchText = '';searchInResult()"></i>
     </div>
   </div>
+</div>
+<div class="text-center font14 box p-a-sm m-b-12" *ngIf="object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage)">
+  <span translate *ngIf="filters.mapOfCheckedId.size !== totalNotification" [translateParams]="{count: filters.mapOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
+  <span translate *ngIf="filters.mapOfCheckedId.size === totalNotification" [translateParams]="{count: totalNotification}">common.label.allEntriesSelected</span>
+  <a class="text-primary p-l-xs" *ngIf="filters.mapOfCheckedId.size !== totalNotification" (click)="selectAll()" translate [translateParams]="{count: totalNotification}">common.label.selectAllEntries</a>
+  <a class="text-primary p-l-xs" *ngIf="filters.mapOfCheckedId.size === totalNotification" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
 </div>
 <div>
   <div class="m-t-sm box p-a">
@@ -45,8 +51,8 @@
           ></th>
           <th class="menu"><span translate>common.label.action</span></th>
           <th nzWidth="35px"><span translate>#</span></th>
-          <th *ngIf="!filters.current" (click)="sort('controllerId')"><a><span class="p-r-xs"
-                                                                                                    translate>common.label.controllerId</span>
+          <th *ngIf="!filters.current" (click)="sort('controllerId')">
+            <a><span class="p-r-xs" translate>common.label.controllerId</span>
             <i *ngIf="filters.filter.sortBy == 'controllerId' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'controllerId' && filters.filter.reverse"
@@ -82,13 +88,13 @@
             <i *ngIf="filters.filter.sortBy == 'job.exitCode' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th  width="20%" (click)="sort('message')"><a><span class="p-r-xs" translate>monitor.notification.label.message</span>
+          <th nzWidth="20%" (click)="sort('message')"><a><span class="p-r-xs" translate>monitor.notification.label.message</span>
             <i *ngIf="filters.filter.sortBy == 'message' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'message' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
-          <th width="150px" (click)="sort('created')"><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
+          <th nzWidth="150px" (click)="sort('created')"><a><span class="p-r-xs" translate>monitor.notification.label.created</span>
           <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
              class="fa fa-caret-up "></i>
           <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
@@ -185,12 +191,12 @@
                           [nzData]="notify.monitors" [nzShowPagination]="false">
                   <thead>
                   <tr>
-                    <th width="89px"><span translate>monitor.notification.label.type</span></th>
-                    <th width="150px"><span translate>monitor.notification.label.name</span></th>
+                    <th nzWidth="89px"><span translate>monitor.notification.label.type</span></th>
+                    <th nzWidth="150px"><span translate>monitor.notification.label.name</span></th>
                     <th><span translate>monitor.notification.label.message</span></th>
                     <th><span translate>monitor.notification.label.configuration</span></th>
-                    <th width="20%"><span translate>monitor.notification.label.errorText</span></th>
-                    <th width="150px"><span translate>monitor.notification.label.created</span></th>
+                    <th nzWidth="20%"><span translate>monitor.notification.label.errorText</span></th>
+                    <th nzWidth="150px"><span translate>monitor.notification.label.created</span></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -225,5 +231,11 @@
       <span *ngIf="ajaxTable.data.length >1" translate>monitor.notification.label.notificationsFound</span>
       <span *ngIf="ajaxTable.data.length ==1" translate>monitor.notification.label.notificationFound</span>
     </div>
+  </div>
+</div>
+<div *ngIf="!isLoaded || reloadState == 'yes'">
+  <div class="bottom-btn" (click)="reload()">
+    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
+    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
   </div>
 </div>

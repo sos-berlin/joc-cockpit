@@ -33,37 +33,37 @@
   <div class="box-body p-a" [ngClass]="{'p-t-sm': totalPlanData == 0 && isLoaded}">
     <div class="hide m-t-sm" [ngClass]="{'show': totalPlanData > 0}">
       <div class="plan-overview bg-planned hide" [ngStyle]="{'width': arrayWidth[0]+'%'}" [ngClass]="{'show-block': planned > 0}">
-        <label [nz-tooltip]="(planned*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(1)">
-            <span class="block-ellipsis-job" translate>dashboard.label.planned</span> - {{planned | number : '1.1-1'}} %
+        <label  class="w-full" [nz-tooltip]="(planned*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+          <a class="nav-link w-full" (click)="navigate(1)">
+            <div class="block-ellipsis-job" translate>dashboard.label.planned</div> - {{planned | number : '1.1-1'}} %
           </a>
         </label>
       </div>
       <div class="plan-overview bg-gold hide" [ngStyle]="{width: arrayWidth[1]+'%'}" [ngClass]="{'show-block': plannedLate > 0}">
-        <label [nz-tooltip]="(plannedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(2)">
-            <span class="block-ellipsis-job" translate>dashboard.label.plannedLate</span> - {{plannedLate | number : '1.1-1' }} %
+        <label  class="w-full" [nz-tooltip]="(plannedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+          <a class="nav-link w-full" (click)="navigate(2)">
+            <div class="block-ellipsis-job" translate>dashboard.label.plannedLate</div> - {{plannedLate | number : '1.1-1' }} %
           </a>
         </label>
       </div>
       <div class="plan-overview bg-orange hide" [ngStyle]="{width: arrayWidth[2]+'%'}" [ngClass]="{'show-block': submitted > 0}">
-        <label [nz-tooltip]="(submitted*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(4)">
-            <span class="block-ellipsis-job" translate>dashboard.label.submitted</span> - {{submitted | number : '1.1-1' }} %
+        <label  class="w-full" [nz-tooltip]="(submitted*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+          <a class="nav-link w-full" (click)="navigate(4)">
+            <div class="block-ellipsis-job" translate>dashboard.label.submitted</div> - {{submitted | number : '1.1-1' }} %
           </a>
         </label>
       </div>
       <div class="plan-overview bg-late hide" [ngStyle]="{width: arrayWidth[3]+'%'}" [ngClass]="{'show-block': submittedLate > 0}">
-        <label [nz-tooltip]="(submittedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(5)">
-            <span class="block-ellipsis-job" translate>dashboard.label.submittedLate</span> - {{submittedLate | number : '1.1-1' }} %
+        <label class="w-full" [nz-tooltip]="(submittedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+          <a class="nav-link w-full" (click)="navigate(5)">
+            <div class="block-ellipsis-job" translate>dashboard.label.submittedLate</div> - {{submittedLate | number : '1.1-1' }} %
           </a>
         </label>
       </div>
       <div class="plan-overview bg-dark-blue hide" [ngStyle]="{width: arrayWidth[4]+'%'}" [ngClass]="{'show-block': finished > 0}">
-        <label [nz-tooltip]="(finished*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
-          <a class="nav-link" (click)="navigate(6)">
-            <span class="block-ellipsis-job" translate>dashboard.label.finished</span> - {{finished | number : '1.1-1'}} %
+        <label  class="w-full" [nz-tooltip]="(finished*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+          <a class="nav-link w-full" (click)="navigate(6)">
+            <div class="block-ellipsis-job" translate>dashboard.label.finished</div> - {{finished | number : '1.1-1'}} %
           </a>
         </label>
       </div>

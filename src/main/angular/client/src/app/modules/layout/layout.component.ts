@@ -491,7 +491,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.maxFileTransferRecords = 5000;
       preferences.maxLockRecords = 5000;
       preferences.maxBoardRecords = 5000;
-      preferences.maxDocumentRecords = 5000;
       preferences.maxHistoryPerOrder = 10;
       preferences.maxHistoryPerTask = 10;
       preferences.maxAuditLogPerObject = 10;
@@ -555,9 +554,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
       if (!data.maxBoardRecords){
         data.maxBoardRecords = 5000;
-      }
-      if (!data.maxDocumentRecords){
-        data.maxDocumentRecords = 5000;
       }
       sessionStorage.preferences = JSON.stringify(data);
       this.reloadThemeAndLang(preferences);

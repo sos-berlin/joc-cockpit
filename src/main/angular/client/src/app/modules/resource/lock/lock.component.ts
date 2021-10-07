@@ -237,12 +237,12 @@ export class LockComponent implements OnInit, OnDestroy {
           if (this.locks.length > 0) {
             for (let x = 0; x < this.locks.length; x++) {
               if (this.locks[x].path === args.eventSnapshots[j].path) {
-                lockPaths.push(this.locks[x].path);
                 if (!this.locks[x].show) {
                   if (lockPaths.indexOf(this.locks[x].path) === -1) {
                     lockPaths.push(this.locks[x].path);
                   }
                 } else if (lockPaths2.indexOf(this.locks[x].path) === -1) {
+                  this.locks[x].loading = true;
                   lockPaths2.push(this.locks[x].path);
                 }
                 break;
@@ -269,11 +269,12 @@ export class LockComponent implements OnInit, OnDestroy {
     this.coreService.post('locks', {
       controllerId: this.schedulerIds.selected,
       compact,
-      paths
+      lockPaths: paths
     }).subscribe((res: any) => {
       res.locks.forEach((value) => {
         for (let x = 0; x < this.locks.length; x++) {
-          if (this.locks[x].path === value.path) {
+          if (this.locks[x].path === value.lock.path) {
+            this.locks[x].loading = false;
             if (this.locks[x].workflows.length > 0 && value.workflows.length > 0) {
               this.locks[x].workflows.forEach((workflow) => {
                 if (workflow.show) {

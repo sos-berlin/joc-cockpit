@@ -166,6 +166,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
       obj.dateTo = this.date;
       obj.timeZone = this.preferences.zone;
     }
+    obj.compact = true;
     obj.limit = this.preferences.maxWorkflowRecords;
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.workflows[0].orders = res.orders;
@@ -839,6 +840,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       obj.dateTo = this.workflowFilters.filter.date;
       obj.timeZone = this.preferences.zone;
     }
+    obj.compact = true;
     obj.limit = this.preferences.maxWorkflowRecords;
     this.coreService.post('orders', obj).subscribe((res: any) => {
       if (res.orders) {

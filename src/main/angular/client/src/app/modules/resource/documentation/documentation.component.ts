@@ -268,7 +268,6 @@ export class SingleDocumentationComponent implements OnInit {
   }
 
   private getDocumentationsList(obj): void {
-    obj.limit = this.preferences.maxDocumentRecords;
     this.coreService.post('documentations', obj).subscribe((res: any) => {
       this.loading = false;
       this.documents = res.documentations;
@@ -534,13 +533,17 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   pageIndexChange($event): void {
     this.documentFilters.currentPage = $event;
-    this.reset();
+    if (this.object.mapOfCheckedId.size !== this.data.length) {
+      this.reset();
+    }
   }
 
   pageSizeChange($event): void {
     this.documentFilters.entryPerPage = $event;
-    if (this.object.checked) {
-      this.checkAll(true);
+    if (this.object.mapOfCheckedId.size !== this.data.length) {
+      if (this.object.checked) {
+        this.checkAll(true);
+      }
     }
   }
 
@@ -565,6 +568,12 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
+  selectAll(): void{
+    this.data.forEach(item => {
+      this.object.mapOfCheckedId.add(item.path);
+    });
+  }
+
   checkAll(value: boolean): void {
     if (value && this.documents.length > 0) {
       const documents = this.getCurrentData(this.data, this.documentFilters);
@@ -578,6 +587,15 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   onItemChecked(document: any, checked: boolean): void {
+    if (!checked && this.object.mapOfCheckedId.size > (this.documentFilters.entryPerPage || this.preferences.entryPerPage)) {
+      const orders = this.getCurrentData(this.data, this.documentFilters);
+      if (orders.length < this.data.length) {
+        this.object.mapOfCheckedId.clear();
+        orders.forEach(item => {
+          this.object.mapOfCheckedId.add(item.path);
+        });
+      }
+    }
     if (checked) {
       this.object.mapOfCheckedId.add(document.path);
     } else {
@@ -744,7 +762,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  private reset(): void{
+  reset(): void{
     this.object = {
       mapOfCheckedId: new Set(),
       checked: false,
@@ -766,7 +784,6 @@ export class DocumentationComponent implements OnInit, OnDestroy {
 
   private getDocumentationsList(obj): void {
     this.reset();
-    obj.limit = this.preferences.maxDocumentRecords;
     this.coreService.post('documentations', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.loading = false;
       res.documentations.forEach((value) => {
