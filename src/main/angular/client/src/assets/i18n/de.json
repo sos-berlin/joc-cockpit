@@ -1357,12 +1357,12 @@
     "treeView": {
       "label": {
         "state": "Zustand",
-        "numberOfOrders": "Number Of Orders",
-        "allowedTransaction": "Allowed Transaction",
+        "numberOfOrders": "Anzahl Aufträge",
+        "allowedTransaction": "Zugelassene Transitionen",
         "action": "Aktion"
       },
       "placeholder": {
-        "selectTransaction": "Select Transaction"
+        "selectTransaction": "Transition wählen"
       }
     }
   },
