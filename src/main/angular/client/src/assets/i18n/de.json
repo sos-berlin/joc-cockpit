@@ -1353,7 +1353,18 @@
     "button.addVariable": "Variable hinzufügen",
     "button.modifyVariable": "Variable ändern",
     "message.noVariableAvailable": "keine Variablen vorhanden",
-    "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung"
+    "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung",
+    "treeView": {
+      "label": {
+        "state": "Zustand",
+        "numberOfOrders": "Number Of Orders",
+        "allowedTransaction": "Allowed Transaction",
+        "action": "Aktion"
+      },
+      "placeholder": {
+        "selectTransaction": "Select Transaction"
+      }
+    }
   },
   "profile": {
     "label.userDetails": "Anwenderinformationen",

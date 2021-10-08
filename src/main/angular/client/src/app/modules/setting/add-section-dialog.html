@@ -14,7 +14,7 @@
         <nz-select [(ngModel)]="setting.name" name="name" required #name="ngModel">
           <nz-option *ngFor="let list of settingArr" [nzDisabled]="list.isExist" [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
         </nz-select>
-                <div *ngIf="name.invalid && (name.dirty || name.touched)"
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
              class="text-danger help-block">
           <div *ngIf="(name.errors && name.errors.required)">
             <div translate>common.message.requiredError</div>

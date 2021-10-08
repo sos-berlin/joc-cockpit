@@ -1353,7 +1353,18 @@
     "button.addVariable": "変数追加",
     "button.modifyVariable": "変数編集",
     "message.noVariableAvailable": "変数はありません",
-    "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません"
+    "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
+    "treeView": {
+      "label": {
+        "state": "ステート",
+        "numberOfOrders": "Number Of Orders",
+        "allowedTransaction": "Allowed Transaction",
+        "action": "アクション"
+      },
+      "placeholder": {
+        "selectTransaction": "Select Transaction"
+      }
+    }
   },
   "profile": {
     "label.userDetails": "アカウント詳細",

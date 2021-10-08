@@ -1790,6 +1790,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const isChecked = template.checked;
     if (this.isAllSelected) {
       this.checkSelected();
+      template.checked = isChecked;
+      if (!isChecked) {
+        this.object.checked = false;
+      }
     }
     this.isAllSelected = false;
     template.indeterminate = false;
@@ -1834,12 +1838,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         }
       });
     }
-    console.log(this.object.mapOfCheckedId.size, 'size')
   }
 
   onItemChecked(order: any, plan: any, checked: boolean): void {
     if (this.isAllSelected) {
       this.checkSelected();
+      if (!checked) {
+        this.object.checked = false;
+      }
     }
     this.isAllSelected = false;
     if (checked) {

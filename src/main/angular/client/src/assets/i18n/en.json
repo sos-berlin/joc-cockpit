@@ -1353,7 +1353,18 @@
     "button.addVariable": "Add Variable",
     "button.modifyVariable": "Modify Variable",
     "message.noVariableAvailable": "no variable available",
-    "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification"
+    "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification",
+    "treeView": {
+      "label": {
+        "state": "State",
+        "numberOfOrders": "Number Of Orders",
+        "allowedTransaction": "Allowed Transaction",
+        "action": "Action"
+      },
+      "placeholder": {
+        "selectTransaction": "Select Transaction"
+      }
+    }
   },
   "profile": {
     "label.userDetails": "User Details",

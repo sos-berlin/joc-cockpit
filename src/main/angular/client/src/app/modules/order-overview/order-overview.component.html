@@ -19,7 +19,7 @@
                 <span>  {{ 'filters.button.'+orderFilters.filter.dateLabel | translate}} </span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
-              <nz-dropdown-menu #anyDate="nzDropdownMenu" >
+              <nz-dropdown-menu #anyDate="nzDropdownMenu">
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of dateFilterBtn">
                     <li nz-menu-item (click)="changeDate(btn.date);orderFilters.filter.dateLabel = btn.text;"
@@ -56,8 +56,8 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
-            <div class="btn-group dropdown">
+          <div class="inline" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
+            <div class="btn-group dropdown" [ngClass]="{'hide': (pageView === 'tree')}">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'">
                 <span translate>common.label.sortBy</span>
                 <span class="text-primary">
@@ -91,13 +91,9 @@
             <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                     [disabled]="pageView=='grid' || data.length===0"
                     (click)="exportToExcel()"><i class="fa fa-share-square-o"></i></button>
-            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+            <app-toggle [type]="'ORDER'" (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
           <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}">
- <!--           <button class="hide btn btn-grey btn-sm m-l-12"
-                    [ngClass]="{'show-block':permission.currentController.orders.start}"
-                    [disabled]="object.runningSelected" (click)="startAllOrder()"><i class="fa fa-play p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.startOrderNow</span></button>-->
             <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isModify" (click)="modifyAllOrder()"><i
               class="fa fa-edit"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
@@ -133,25 +129,241 @@
   <div class="padding p-b-0 p-l-0">
     <div class="row m-t-sm">
       <div class="col-lg-12">
-        <div *ngIf="sideView.orderOverview.show" class="pos-abt p-a-0 resize-cursor" style="left: 270px"><i style="font-size: 18px" class="fa fa-angle-double-left p-l-sm" (click)="hidePanel()"></i></div>
-        <aside id="leftPanel" class="w-full">
+        <div *ngIf="sideView.orderOverview.show && pageView !== 'tree'" class="pos-abt p-a-0 resize-cursor" style="left: 270px"><i style="font-size: 18px" class="fa fa-angle-double-left p-l-sm" (click)="hidePanel()"></i></div>
+        <aside id="leftPanel1" class="w-full" *ngIf="pageView !== 'tree'">
           <a class="text resize-cursor a-2" style="position: absolute; right: 5px !important; top: 22px">
             <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
           </a>
-          <app-pie-chart [schedulerId]="schedulerIds.selected" [state]="orderFilters.filter.state" [date]="orderFilters.filter.date"
-                         [timeZone]="preferences.zone"
-          (setState)="changeStatus($event)" ></app-pie-chart>
+          <div>
+            <app-pie-chart [schedulerId]="schedulerIds.selected" [state]="orderFilters.filter.state" [date]="orderFilters.filter.date"
+                           [timeZone]="preferences.zone"
+            (setState)="changeStatus($event)" ></app-pie-chart>
+          </div>
         </aside>
-        <div id="rightPanel">
+        <div appResizable [sideView]="sideView.orderOverview" id="leftPanel" class="sticky leftPanel" *ngIf="pageView === 'tree' && tree.length>0">
+          <app-tree-nagivation [tree]="tree" [sideView]="sideView.workflow"
+                               [defaultSelectedKeys]="orderFilters.selectedkeys"
+                               [defaultExpandedKeys]="orderFilters.expandedKeys"
+                               (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+        </div>
+        <div id="rightPanel" *ngIf="pageView === 'tree'">
+          <div class="box p-a m-t-xs" *ngIf="orderOverview">
+            <div class="table-responsive status-table">
+              <table class="w-full order-table-panel table-hover">
+                <thead>
+                <tr>
+                  <th style="width: 20%"><span translate>order.treeView.label.state</span></th>
+                  <th></th>
+                  <th style="width: 20%"><span translate>order.treeView.label.numberOfOrders</span></th>
+                  <th></th>
+                  <th style="width: 20%"><span translate>order.treeView.label.allowedTransaction</span></th>
+                  <th style="width: 10%"><span translate>order.treeView.label.action</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="all">
+                  <td><span class="_400" translate>order.label.allOrders</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td><span class="_600">{{(orderOverview.pending || 0) + (orderOverview.inProgress || 0) + (orderOverview.running || 0) + (orderOverview.suspended || 0) + (orderOverview.calling || 0)
+                      + (orderOverview.waiting || 0) + (orderOverview.scheduled || 0) + (orderOverview.prompting || 0) + (orderOverview.blocked || 0) + (orderOverview.failed || 0)
+                  + (orderOverview.terminated || 0)}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select style="width: 75%" nzDisabled nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.all" name="all">
+                      <nz-option [nzLabel]="''" [nzValue]="''"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr class="pending">
+                  <td><span class="_400" translate>common.label.pending</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td class="count"><span class="_600">{{orderOverview.pending}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.pending == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.pending" name="pending">
+                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate" [nzValue]="'cancelWithKill'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate" [nzValue]="'SuspendKillTask'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('pending', 'PENDING')" [disabled]="!orderOverviewAction.pending" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+                <tr class="scheduled">
+                  <td><span class="_400" translate>common.label.scheduled</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td class="count"><span class="_600">{{orderOverview.scheduled}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.scheduled == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.scheduled" name="scheduled">
+                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate" [nzValue]="'CancelWithKill'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate" [nzValue]="'SuspendKillTask'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('scheduled', 'SCHEDULED')" [disabled]="!orderOverviewAction.scheduled" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+                <tr class="in-progress">
+                  <td><span class="_400" translate>common.label.incomplete</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td class="count"><span class="_600">{{orderOverview.inProgress}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.inProgress == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.inProgress" name="inProgress">
+                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate" [nzValue]="'CancelWithKill'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate" [nzValue]="'SuspendKillTask'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('inProgress', 'INPROGRESS')" [disabled]="!orderOverviewAction.inProgress" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+                <tr class="running">
+                  <td><span class="_400" translate>common.label.running</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td class="count"><span class="_600">{{orderOverview.running}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.running == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.running" name="running">
+                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate" [nzValue]="'CancelWithKill'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate" [nzValue]="'SuspendKillTask'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('running', 'RUNNING')" [disabled]="!orderOverviewAction.running" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+                <tr class="suspend">
+                  <td><span class="_400" translate>common.label.suspended</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td class="count"><span class="_600">{{orderOverview.suspended}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.suspended == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.suspended" name="suspended">
+                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate" [nzValue]="'CancelWithKill'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.resume' | translate" [nzValue]="'Resume'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('suspended', 'SUSPENDED')" [disabled]="!orderOverviewAction.suspended" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+                <tr class="prompting">
+                  <td><span class="_400" translate>common.label.prompting</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td class="count"><span class="_600">{{orderOverview.prompting}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.prompting == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.prompting" name="prompting">
+                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate" [nzValue]="'CancelWithKill'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.confirm' | translate" [nzValue]="'Confirm'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('prompting', 'PROMPTING')" [disabled]="!orderOverviewAction.prompting" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+                <tr class="waiting">
+                  <td><span class="_400" translate>common.label.waiting</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td class="count"><span class="_600">{{orderOverview.waiting}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.waiting == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.waiting" name="waiting">
+                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate" [nzValue]="'CancelWithKill'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate" [nzValue]="'SuspendKillTask'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('waiting', 'WAITING')" [disabled]="!orderOverviewAction.waiting" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+                <tr class="blocked">
+                  <td><span class="_400" translate>common.label.blocked</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td><span class="_600">{{orderOverview.blocked}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.blocked == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.blocked" name="blocked">
+                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate" [nzValue]="'CancelWithKill'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspend' | translate" [nzValue]="'Suspend'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.suspendAndKillTask' | translate" [nzValue]="'SuspendKillTask'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('blocked', 'BLOCKED')" [disabled]="!orderOverviewAction.blocked" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+                <tr class="failed">
+                  <td><span class="_400" translate>common.label.failed</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td class="count"><span class="_600">{{orderOverview.failed}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.failed == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.failed" name="failed">
+                      <nz-option [nzLabel]="'order.button.cancel' | translate" [nzValue]="'Cancel'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.cancelAndKillTask' | translate" [nzValue]="'CancelWithKill'"></nz-option>
+                      <nz-option [nzLabel]="'order.button.resume' | translate" [nzValue]="'Resume'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('failed', 'FAILED')" [disabled]="!orderOverviewAction.failed" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+                <tr class="terminate">
+                  <td><span class="_400" translate>common.label.completed</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td class="count"><span class="_600">{{orderOverview.terminated}}</span></td>
+                  <td><span class="fa fa-long-arrow-right"></span></td>
+                  <td>
+                    <nz-select [disabled]="orderOverview.terminated == 0" style="width: 75%" nzAllowClear nzPlaceHolder="{{'order.treeView.placeholder.selectTransaction' | translate}}"
+                               [(ngModel)]="orderOverviewAction.completed" name="completed">
+                      <nz-option [nzLabel]="'order.button.leaveWorkflow' | translate" [nzValue]="'Terminate'"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td>
+                    <button type="button" (click)="submitTransaction('completed', 'COMPLETED')" [disabled]="!orderOverviewAction.completed" class="btn btn-sm btn-primary m-t-xs m-b-xs" translate>common.button.submit</button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="rightPanel1" *ngIf="pageView !== 'tree'">
           <div class="row m-b m-t-xs" *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage))">
             <div class="col-lg-12">
-              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="expandDetails()" >
+              <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView=='list'}" (click)="expandDetails()" >
                 <i class="fa fa-expand text" ></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="collapseDetails()">
+              <button class="hide btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView==='list'}" (click)="collapseDetails()">
                 <i class="fa fa-compress text"></i>
               </button>
-              <button class="hide btn btn-sm btn-grey m-l-12 m-r-12" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}" (click)="resetPanel()">
+              <button class="hide btn btn-sm btn-grey m-l-12 m-r-12" nz-tooltip="{{'common.button.resetPanel' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView==='list'}" (click)="resetPanel()">
                 <i class="fa fa-repeat text"></i>
               </button>
               <div class="search-box-field pull-right">
@@ -227,7 +439,7 @@
               <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size !== data.length" (click)="selectAll()" translate [translateParams]="{count: data.length}">common.label.selectAllEntries</a>
               <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size === data.length" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
             </div>
-            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView !== 'grid'">
+            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView === 'list'">
               <perfect-scrollbar appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
                 <nz-table
                   #ajaxTable
@@ -365,7 +577,7 @@
             <div *ngIf="pageView=='grid' && loading && data.length==0" class="text-center m-t h6">
               <app-empty-data></app-empty-data>
             </div>
-            <div class="row m-t hide" *ngIf="showPanelObj" [ngClass]="{'show': pageView!=='grid'}">
+            <div class="row m-t hide" *ngIf="showPanelObj" [ngClass]="{'show': pageView==='list'}">
               <div class="col-md-12">
                 <div class="box white">
                   <div class="box-header">
@@ -499,7 +711,7 @@
   </div>
 </div>
 
-<div class="spinner" *ngIf="!loading && pageView === 'grid'">
+<div class="spinner" *ngIf="!loading && pageView !== 'list'">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
