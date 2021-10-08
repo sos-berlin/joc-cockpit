@@ -114,6 +114,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   }
 
   private getBoardsList(obj): void {
+    obj.limit = this.preferences.maxBoardRecords;
     this.coreService.post('notice/boards', obj).subscribe((res: any) => {
       this.loading = false;
       this.boards = res.noticeBoards;
@@ -182,6 +183,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].eventType === 'NoticeBoardStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) {
           const obj = {
             controllerId: this.controllerId,
+            limit: this.preferences.maxBoardRecords,
             noticeBoardPath : this.name
           };
           this.coreService.post('notice/board', obj).subscribe((res: any) => {
@@ -377,6 +379,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.coreService.post('notice/boards', {
       controllerId: this.schedulerIds.selected,
       compact,
+      limit: this.preferences.maxBoardRecords,
       noticeBoardPaths: paths
     }).subscribe((res: any) => {
       res.noticeBoards.forEach((value) => {
@@ -478,6 +481,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   private getNoticeBoards(obj, cb): void {
+    obj.limit = this.preferences.maxBoardRecords;
     this.coreService.post('notice/boards', obj).subscribe((res: any) => {
       cb(res.noticeBoards);
     }, () => {
