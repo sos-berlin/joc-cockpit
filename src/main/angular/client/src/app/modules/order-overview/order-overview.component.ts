@@ -16,6 +16,8 @@ import {AuthService} from '../../components/guard';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent} from '../../components/modify-modal/modify.component';
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
+import {TreeComponent} from '../../components/tree-navigation/tree.component';
+import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 
 declare const $;
 
@@ -166,10 +168,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   selectedIndex = 0;
   showPanelObj: any;
   pageView: any;
+  tree = [];
   orders = [];
   history = [];
   auditLogs = [];
   data = [];
+  orderOverview: any;
+  orderOverviewAction: any = {};
   reloadState = 'no';
   isProcessing = false;
   searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
@@ -213,6 +218,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
+  @ViewChild(TreeComponent, {static: false}) child;
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
@@ -233,6 +239,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.child) {
+      this.orderFilters.expandedKeys = this.child.defaultExpandedKeys;
+      this.orderFilters.selectedkeys = this.child.defaultSelectedKeys;
+    }
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
@@ -244,10 +254,285 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.isProcessing = flag;
   }
 
+  private init(): void {
+    this.orderFilters = this.coreService.getOrderOverviewTab();
+    this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).orderOverview;
+    }
+    if (this.authService.permission) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.sideView = this.coreService.getSideView();
+    if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
+      this.hidePanel();
+    }
+
+    if (this.pageView !== 'tree') {
+      this.getOrders({
+        controllerId: this.schedulerIds.selected,
+        states: this.getState()
+      });
+    } else{
+      this.initTree();
+    }
+  }
+
+  private initTree(): void {
+    this.loading = false;
+    if (this.schedulerIds.selected) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerIds.selected,
+        types: ['WORKFLOW']
+      }).subscribe(res => {
+        this.tree = this.coreService.prepareTree(res, true);
+        if (this.tree.length) {
+          this.loadOrder();
+        }
+        this.loading = true;
+      }, () => {
+        this.loading = true;
+      });
+    } else {
+      this.loading = true;
+    }
+  }
+
+  receiveAction($event): void {
+    this.loading = true;
+    const obj: any = {
+      folders: [{folder: $event.path, recursive: $event.action !== 'NODE'}],
+      controllerId: this.schedulerIds.selected
+    };
+    this.getOrderState(obj);
+  }
+
+  loadOrder(): void {
+    this.reloadState = 'no';
+    const obj: any = {
+      folders: [],
+      controllerId: this.schedulerIds.selected
+    };
+    let paths = [];
+    if (this.child) {
+      if (this.child.defaultSelectedKeys.length === 0) {
+        this.child.defaultSelectedKeys = ['/'];
+      }
+      paths = this.child.defaultSelectedKeys;
+    } else {
+      paths = this.orderFilters.selectedkeys;
+    }
+    for (let x in paths) {
+      obj.folders.push({folder: paths[x], recursive: false});
+    }
+    this.getOrderState(obj);
+  }
+
+  getOrderState(obj): void {
+    if (this.orderFilters.filter.date !== 'ALL') {
+      obj.dateTo = this.orderFilters.filter.date;
+      obj.timeZone = this.preferences.zone;
+    }
+    this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
+      this.orderOverview = res.orders;
+      this.loading = true;
+      this.isLoaded = true;
+    }, () => {
+      this.orderOverview = {};
+      this.loading = true;
+      this.isLoaded = true;
+    });
+  }
+
+  private getState(): string {
+    let state;
+    if (this.orderFilters.filter.state !== 'ALL') {
+      if (this.orderFilters.filter.state === 'COMPLETED') {
+        state = ['FINISHED', 'CANCELLED'];
+      } else {
+        state = [this.orderFilters.filter.state];
+      }
+    }
+
+    return state;
+  }
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      let flag = false;
+      let flag1 = false;
+      let flag2 = false;
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent') && args.eventSnapshots[j].message) {
+          this.resetAction();
+        }
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
+          flag = true;
+          if (!this.showPanelObj) {
+            break;
+          }
+        }
+        if (this.showPanelObj) {
+          if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.selectedIndex === 0) {
+            if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.showPanelObj.workflowId.path) {
+              flag1 = true;
+            }
+          } else if (args.eventSnapshots[j].eventType === 'AuditLogChanged' && this.selectedIndex === 2) {
+            flag2 = true;
+          }
+        }
+      }
+      if (flag && this.isLoaded) {
+        this.isLoaded = false;
+        if (this.pageView === 'tree') {
+          this.loadOrder();
+        } else {
+          this.refreshView();
+        }
+      }
+      if (flag1) {
+        this.loadOrderHistory();
+      } else if (flag2) {
+        this.loadAuditLogs();
+      }
+    }
+  }
+
+  private refreshView(): void {
+    if ( (!this.actionChild || (!this.actionChild.isVisible && this.object.mapOfCheckedId.size === 0))) {
+      this.getOrders({
+        controllerId: this.schedulerIds.selected,
+        states: this.getState()
+      });
+    } else {
+      setTimeout(() => {
+        this.refreshView();
+      }, 750);
+    }
+  }
+
+  private getOrders(obj): void {
+    this.reloadState = 'no';
+    const tempOrder = this.orders.filter((order) => {
+      return order.show;
+    });
+    if (this.orderFilters.filter.date !== 'ALL') {
+      obj.dateTo = this.orderFilters.filter.date;
+      obj.timeZone = this.preferences.zone;
+    }
+    obj.limit = this.preferences.maxOrderRecords;
+    obj.compact = true;
+    this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
+      this.isLoaded = true;
+      res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
+      this.orders = res.orders;
+      if (tempOrder.length > 0) {
+        for (let i = 0; i < this.orders.length; i++) {
+          for (let j = 0; j < tempOrder.length; j++) {
+            if (this.orders[i].orderId === tempOrder[j].orderId) {
+              this.orders[i].show = true;
+              if (this.orders[i].arguments && !this.orders[i].arguments[0]) {
+                this.orders[i].arguments = Object.entries(this.orders[i].arguments).map(([k, v]) => {
+                  if (v && isArray(v)) {
+                    v.forEach((list, index) => {
+                      v[index] = Object.entries(list).map(([k1, v1]) => {
+                        return {name: k1, value: v1};
+                      });
+                    });
+                  }
+                  return {name: k, value: v};
+                });
+              }
+              tempOrder.slice(j, 1);
+              break;
+            }
+          }
+          if (tempOrder.length === 0) {
+            break;
+          }
+        }
+      }
+      if (this.showPanelObj && this.showPanelObj.orderId) {
+        let flag = true;
+        if (this.orders.length > 0) {
+          for (let i = 0; i < this.orders.length; i++) {
+            if (this.orders[i].orderId === this.showPanelObj.orderId) {
+              flag = false;
+              break;
+            }
+          }
+        }
+        if (flag) {
+          this.hideAuditPanel();
+        }
+      }
+      this.searchInResult();
+      this.loading = true;
+      if (this.object.mapOfCheckedId.size > 0) {
+        const tempObject = new Map();
+        this.data.forEach((order) => {
+          if (this.object.mapOfCheckedId.has(order.orderId)) {
+            tempObject.set(order.orderId, order);
+          }
+        });
+        this.object.mapOfCheckedId = tempObject;
+        this.object.mapOfCheckedId.size > 0 ? this.refreshCheckedStatus() : this.resetCheckBox();
+      } else {
+        this.resetCheckBox();
+      }
+      this.resetAction();
+      this.updatePanelHeight();
+    }, () => {
+      this.isLoaded = true;
+      this.loading = true;
+      this.resetCheckBox();
+      this.resetAction();
+    });
+  }
+
+  private _updatePanelHeight(): void {
+    setTimeout(() => {
+      let ht = (parseInt($('#orderTableId table').height(), 10) + 76);
+      if (ht > 140 && ht < 150) {
+        ht += 40;
+      }
+      const el = document.getElementById('orderTableId');
+      if (el && el.scrollWidth > el.clientWidth) {
+        ht = ht + 11;
+      }
+      if (ht > 650) {
+        ht = 650;
+      }
+      if (ht < 140) {
+        ht = 142;
+      }
+      this.resizerHeight = ht + 'px';
+      $('#orderTableId').css('height', this.resizerHeight);
+    }, 10);
+  }
+
   /* ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
+    if ($event === 'tree') {
+      if (this.tree.length === 0) {
+        this.initTree();
+      } else {
+        this.loadOrder();
+      }
+    } else {
+      if (this.pageView === 'tree' && $event !== this.pageView) {
+        this.getOrders({
+          controllerId: this.schedulerIds.selected,
+          states: this.getState()
+        });
+      }
+      this.resetCheckBox();
+    }
     this.pageView = $event;
-    this.resetCheckBox();
   }
 
   showPanelFunc(value: any): void {
@@ -350,6 +635,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   changeStatus(state): void {
     this.orderFilters.filter.state = state;
+    if (this.pageView === 'tree') {
+      return;
+    }
     this.loading = false;
     this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
   }
@@ -357,9 +645,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   changeDate(date): void {
     this.orderFilters.filter.date = date;
     this.loading = false;
-    this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
+    if (this.pageView === 'tree') {
+      this.loadOrder();
+    } else {
+      this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
+    }
   }
-
   /* ----------------------------Begin Action ----------------------------------*/
 
   sort(key): void {
@@ -395,42 +686,20 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
-  exportToExcel(): void {
-    let workflow = '', order = '', status = '', position = '', scheduledFor = '';
-    this.translate.get('order.label.workflow').subscribe(translatedValue => {
-      workflow = translatedValue;
-    });
-    this.translate.get('order.label.orderId').subscribe(translatedValue => {
-      order = translatedValue;
-    });
-    this.translate.get('order.label.state').subscribe(translatedValue => {
-      status = translatedValue;
-    });
-    this.translate.get('order.label.position').subscribe(translatedValue => {
-      position = translatedValue;
-    });
-    this.translate.get('order.label.scheduledFor').subscribe(translatedValue => {
-      scheduledFor = translatedValue;
-    });
-
-    let data = [];
-    for (let i = 0; i < this.data.length; i++) {
-      let obj: any = {};
-      obj[order] = this.data[i].orderId;
-      obj[workflow] = this.data[i].workflowId.path;
-      obj[position] = this.data[i].position && this.data[i].position.length > 0 ? this.data[i].position[0] : '';
-      this.translate.get(this.data[i].state._text).subscribe(translatedValue => {
-        obj[status] = translatedValue;
-      });
-      obj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.data[i].scheduledFor);
-      data.push(obj);
-    }
-    this.excelService.exportAsExcelFile(data, 'JS7-orders');
+  showPanel(): void {
+    this.sideView.orderOverview.show = true;
+    const dom = $('#rightPanel1');
+    dom.removeClass('fade-in m-l-xs');
+    dom.find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
+    $('#leftPanel1').removeClass('sidebar-hover-effect');
   }
 
   hidePanel(): void {
     this.sideView.orderOverview.show = false;
-    this.coreService.hidePanel();
+    const dom = $('#rightPanel1');
+    dom.addClass('m-l-xs fade-in');
+    dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
+    $('#leftPanel1').addClass('sidebar-hover-effect');
   }
 
   resetPanel(): void {
@@ -452,9 +721,40 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  showPanel(): void {
-    this.sideView.orderOverview.show = true;
-    this.coreService.showLeftPanel();
+  submitTransaction(type, state): void {
+    const obj: any = {
+      controllerId: this.schedulerIds.selected,
+      folders: [],
+      states: state === 'COMPLETED' ? ['FINISHED', 'CANCELLED'] : [state]
+    };
+    let paths;
+    if (this.child) {
+      if (this.child.defaultSelectedKeys.length === 0) {
+        this.child.defaultSelectedKeys = ['/'];
+      }
+      paths = this.child.defaultSelectedKeys;
+    } else {
+      paths = this.orderFilters.selectedkeys;
+    }
+    for (let x in paths) {
+      obj.folders.push({folder: paths[x], recursive: false});
+    }
+    let operation = this.orderOverviewAction[type];
+    if (operation && operation.match(/killTask/)) {
+      obj.kill = true;
+      operation = operation.match(/cancel/) ? 'cancel' : 'suspend';
+    }
+    let url = this.orderOverviewAction[type].toLowerCase();
+    if (operation.match(/Terminate/)) {
+      url = 'remove_when_terminated';
+    }
+    if (this.orderFilters.filter.date !== 'ALL') {
+      obj.dateTo = this.orderFilters.filter.date;
+      obj.timeZone = this.preferences.zone;
+    }
+    this.preformAction(operation, url, obj, () => {
+      delete this.orderOverviewAction[type];
+    });
   }
 
   selectAll(): void{
@@ -666,8 +966,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         obj.orders.push({workflowPath: order.workflowId.path, orderId: order.orderId, scheduledFor: 'now'});
       }
     });
+    this.preformAction(operation, url, obj);
+  }
+
+  private preformAction(operation, url, obj, cb = null): void {
     if (this.preferences.auditLog) {
-      let comments = {
+      const comments = {
         radio: 'predefined',
         type: 'Order',
         operation,
@@ -688,6 +992,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
+          if (cb) {
+            cb();
+          }
           this.isProcessing = true;
           this.resetAction(5000);
           this.resetCheckBox();
@@ -696,6 +1003,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     } else {
       this.isProcessing = true;
       this.coreService.post('orders/' + url, obj).subscribe(() => {
+        if (cb) {
+          cb();
+        }
         this.resetCheckBox();
         this.resetAction(5000);
       }, () => {
@@ -719,191 +1029,37 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     };
   }
 
-  private init(): void {
-    this.orderFilters = this.coreService.getOrderOverviewTab();
-    this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).orderOverview;
-    }
-    if (this.authService.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.sideView = this.coreService.getSideView();
-    if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
-      this.hidePanel();
-    }
-
-    this.getOrders({
-      controllerId: this.schedulerIds.selected,
-      states: this.getState()
+  exportToExcel(): void {
+    let workflow = '', order = '', status = '', position = '', scheduledFor = '';
+    this.translate.get('order.label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
     });
-  }
+    this.translate.get('order.label.orderId').subscribe(translatedValue => {
+      order = translatedValue;
+    });
+    this.translate.get('order.label.state').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('order.label.position').subscribe(translatedValue => {
+      position = translatedValue;
+    });
+    this.translate.get('order.label.scheduledFor').subscribe(translatedValue => {
+      scheduledFor = translatedValue;
+    });
 
-  private getState(): string {
-    let state;
-    if (this.orderFilters.filter.state !== 'ALL') {
-      if (this.orderFilters.filter.state === 'COMPLETED') {
-        state = ['FINISHED', 'CANCELLED'];
-      } else {
-        state = [this.orderFilters.filter.state];
-      }
-    }
-
-    return state;
-  }
-
-  private refresh(args): void {
-    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      let flag = false;
-      let flag1 = false;
-      let flag2 = false;
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent') && args.eventSnapshots[j].message) {
-          this.resetAction();
-        }
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
-          flag = true;
-          if (!this.showPanelObj) {
-            break;
-          }
-        }
-        if (this.showPanelObj) {
-          if ((args.eventSnapshots[j].eventType === 'HistoryOrderTerminated' || args.eventSnapshots[j].eventType === 'HistoryOrderStarted') && this.selectedIndex === 0) {
-            if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.showPanelObj.workflowId.path) {
-              flag1 = true;
-            }
-          } else if (args.eventSnapshots[j].eventType === 'AuditLogChanged' && this.selectedIndex === 2) {
-            flag2 = true;
-          }
-        }
-      }
-      if (flag && this.isLoaded) {
-        this.isLoaded = false;
-        this.refreshView();
-      }
-      if (flag1) {
-        this.loadOrderHistory();
-      } else if (flag2) {
-        this.loadAuditLogs();
-      }
-    }
-  }
-
-  private refreshView(): void {
-    if (!this.actionChild || (!this.actionChild.isVisible && this.object.mapOfCheckedId.size === 0)) {
-      this.getOrders({
-        controllerId: this.schedulerIds.selected,
-        states: this.getState()
+    let data = [];
+    for (let i = 0; i < this.data.length; i++) {
+      let obj: any = {};
+      obj[order] = this.data[i].orderId;
+      obj[workflow] = this.data[i].workflowId.path;
+      obj[position] = this.data[i].position && this.data[i].position.length > 0 ? this.data[i].position[0] : '';
+      this.translate.get(this.data[i].state._text).subscribe(translatedValue => {
+        obj[status] = translatedValue;
       });
-    } else {
-      setTimeout(() => {
-        this.refreshView();
-      }, 750);
+      obj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.data[i].scheduledFor);
+      data.push(obj);
     }
-  }
-
-  private getOrders(obj): void {
-    this.reloadState = 'no';
-    const tempOrder = this.orders.filter((order) => {
-      return order.show;
-    });
-    if (this.orderFilters.filter.date !== 'ALL') {
-      obj.dateTo = this.orderFilters.filter.date;
-      obj.timeZone = this.preferences.zone;
-    }
-    obj.limit = this.preferences.maxOrderRecords;
-    obj.compact = true;
-    this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      this.isLoaded = true;
-      res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
-      this.orders = res.orders;
-      if (tempOrder.length > 0) {
-        for (let i = 0; i < this.orders.length; i++) {
-          for (let j = 0; j < tempOrder.length; j++) {
-            if (this.orders[i].orderId === tempOrder[j].orderId) {
-              this.orders[i].show = true;
-              if (this.orders[i].arguments && !this.orders[i].arguments[0]) {
-                this.orders[i].arguments = Object.entries(this.orders[i].arguments).map(([k, v]) => {
-                  if (v && isArray(v)) {
-                    v.forEach((list, index) => {
-                      v[index] = Object.entries(list).map(([k1, v1]) => {
-                        return {name: k1, value: v1};
-                      });
-                    });
-                  }
-                  return {name: k, value: v};
-                });
-              }
-              tempOrder.slice(j, 1);
-              break;
-            }
-          }
-          if (tempOrder.length === 0) {
-            break;
-          }
-        }
-      }
-      if (this.showPanelObj && this.showPanelObj.orderId) {
-        let flag = true;
-        if (this.orders.length > 0) {
-          for (let i = 0; i < this.orders.length; i++) {
-            if (this.orders[i].orderId === this.showPanelObj.orderId) {
-              flag = false;
-              break;
-            }
-          }
-        }
-        if (flag) {
-          this.hideAuditPanel();
-        }
-      }
-      this.searchInResult();
-      this.loading = true;
-      if (this.object.mapOfCheckedId.size > 0) {
-        const tempObject = new Map();
-        this.data.forEach((order) => {
-          if (this.object.mapOfCheckedId.has(order.orderId)) {
-            tempObject.set(order.orderId, order);
-          }
-        });
-        this.object.mapOfCheckedId = tempObject;
-        this.object.mapOfCheckedId.size > 0 ? this.refreshCheckedStatus() : this.resetCheckBox();
-      } else {
-        this.resetCheckBox();
-      }
-      this.resetAction();
-      this.updatePanelHeight();
-    }, () => {
-      this.isLoaded = true;
-      this.loading = true;
-      this.resetCheckBox();
-      this.resetAction();
-    });
-  }
-
-  private _updatePanelHeight(): void {
-    setTimeout(() => {
-      let ht = (parseInt($('#orderTableId table').height(), 10) + 76);
-      if (ht > 140 && ht < 150) {
-        ht += 40;
-      }
-      const el = document.getElementById('orderTableId');
-      if (el && el.scrollWidth > el.clientWidth) {
-        ht = ht + 11;
-      }
-      if (ht > 650) {
-        ht = 650;
-      }
-      if (ht < 140) {
-        ht = 142;
-      }
-      this.resizerHeight = ht + 'px';
-      $('#orderTableId').css('height', this.resizerHeight);
-    }, 10);
+    this.excelService.exportAsExcelFile(data, 'JS7-orders');
   }
 
   /* ================================= End Action ============================*/

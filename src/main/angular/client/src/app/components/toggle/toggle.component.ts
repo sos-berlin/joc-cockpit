@@ -1,10 +1,13 @@
-import {Component, OnInit, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
 import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-toggle',
   template: `
     <div class="btn-group m-l-12">
+      <button *ngIf="type === 'ORDER'" class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='tree'}" (click)="setView('tree')"><i
+        class="fa fa-sitemap"></i>
+      </button>
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
         class="fa fa-th-large" [ngClass]="{'fa-sitemap' : this.router.url.match('workflow_detail'), 'fa-sliders' : this.router.url.match('daily_plan') }"></i>
       </button>
@@ -15,6 +18,7 @@ import {Router} from '@angular/router';
   `
 })
 export class ToggleComponent implements OnInit {
+  @Input() type: string;
   view = 'list';
   pageView: string;
   views: any = {};

@@ -22,7 +22,7 @@ export class CoreService {
   sideView = {
     workflow: {width: 270, show: true},
     job: {width: 270, show: true},
-    orderOverview: {show: true},
+    orderOverview: {width: 270, show: true},
     lock: {width: 270, show: true},
     board: {width: 270, show: true},
     calendar: {width: 270, show: true},
@@ -109,6 +109,8 @@ export class CoreService {
     this.tabs._orderOverview.reverse = false;
     this.tabs._orderOverview.currentPage = '1';
     this.tabs._orderOverview.pageView = 'grid';
+    this.tabs._orderOverview.expandedKeys = ['/'];
+    this.tabs._orderOverview.selectedkeys = ['/'];
     this.tabs._orderOverview.showErrorNodes = true;
     this.tabs._orderOverview.isNodePanelVisible = true;
     this.tabs._orderOverview.showLogPanel = undefined;
@@ -300,6 +302,8 @@ export class CoreService {
     this.tempTabs._orderOverview.reverse = false;
     this.tempTabs._orderOverview.currentPage = '1';
     this.tempTabs._orderOverview.pageView = 'grid';
+    this.tempTabs._orderOverview.expandedKeys = ['/'];
+    this.tempTabs._orderOverview.selectedkeys = ['/'];
     this.tempTabs._orderOverview.showErrorNodes = true;
     this.tempTabs._orderOverview.isNodePanelVisible = true;
     this.tempTabs._orderOverview.showLogPanel = undefined;

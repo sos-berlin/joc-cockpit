@@ -335,10 +335,10 @@
     "label.all": "全て",
     "label.redeploy": "再配置",
     "label.confirm": "確認",
-    "label.selectAllEntriesOfCurrentPage": "All {{count}} items on this page are selected.",
-    "label.allEntriesSelected": "All {{count}} items are selected.",
-    "label.selectAllEntries": "Select all {{count}} entries",
-    "label.clearSelection": "Clear selection",
+    "label.selectAllEntriesOfCurrentPage": "このページの全{{count}}アイテムが選択されました",
+    "label.allEntriesSelected": "全{{count}}アイテムが選択されました",
+    "label.selectAllEntries": "全{{count}}アイテムを選択",
+    "label.clearSelection": "選択解除",
     "button.all": "全て",
     "button.save": "保存",
     "button.apply": "適用",
@@ -796,7 +796,7 @@
     "label.workflowAndOrder": "ワークフロー/オーダー",
     "label.workflowAndJob": "ワークフロー/ジョブ",
     "label.submission": "登録",
-    "label.numberOfItems": "Number Of Items",
+    "label.numberOfItems": "アイテム数",
     "label.historiesFound": "履歴があります",
     "label.historyFound": "履歴があります",
     "button.resetIgnoreList": "無視リストをリセット",
@@ -1353,7 +1353,18 @@
     "button.addVariable": "変数追加",
     "button.modifyVariable": "変数編集",
     "message.noVariableAvailable": "変数はありません",
-    "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません"
+    "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
+    "treeView": {
+      "label": {
+        "state": "ステート",
+        "numberOfOrders": "Number Of Orders",
+        "allowedTransaction": "Allowed Transaction",
+        "action": "アクション"
+      },
+      "placeholder": {
+        "selectTransaction": "Select Transaction"
+      }
+    }
   },
   "profile": {
     "label.userDetails": "アカウント詳細",
@@ -1371,13 +1382,13 @@
     "label.maxNumberOfAuditLogEntries": "最大操作ログ表示数",
     "label.maxNumberOfAuditLogPerObject": "対象あたり最大操作ログ行数",
     "label.maxNumberOfHistoryEntries": "最大履歴表示数",
-    "label.maxNumberOfNotificationEntries": "Max. number of Notification entries",
-    "label.maxNumberOfOverviewEntries": "Max. number of Order Overview entries",
-    "label.maxNumberOfDailyPlanEntries": "Max. number of Daily Plan entries",
-    "label.maxNumberOfWorkflowEntries": "Max. number of orders per Workflow",
-    "label.maxNumberOfFileTransferEntries": "Max. number of File Transfer entries",
-    "label.maxNumberOfResourceLockEntries": "Max. number of orders per Resource Lock",
-    "label.maxNumberOfNoticeBoardEntries": "Max. number of orders per Notice Board",
+    "label.maxNumberOfNotificationEntries": "最大通知表示数",
+    "label.maxNumberOfOverviewEntries": "最大オーダー表示数",
+    "label.maxNumberOfDailyPlanEntries": "最大実行計画表示数",
+    "label.maxNumberOfWorkflowEntries": "最大ワークフローあたりオーダー表示数",
+    "label.maxNumberOfFileTransferEntries": "最大ファイル転送表示数",
+    "label.maxNumberOfResourceLockEntries": "最大リソースロックあたりオーダー表示数",
+    "label.maxNumberOfNoticeBoardEntries": "最大通知ボードあたりオーダー表示数",
     "label.maxNumberOfHistoryEntriesPerOrder": "最大オーダー履歴表示数",
     "label.maxNumberOfHistoryEntriesPerTask": "最大タスク履歴表示数",
     "label.showSubFolderAndFolderContents": "サブフォルダー/コンテンツ表示",
@@ -1410,7 +1421,7 @@
     "label.dark": "Dark",
     "label.download": "ダウンロード",
     "button.resetProfile": "リセットプロファイル",
-    "button.groupLimit": "Group Limit",
+    "button.groupLimit": "グループリミット",
     "permission": {
       "label.order": "オーダー",
       "label.job": "ジョブ",
@@ -1643,7 +1654,7 @@
       "label.boardsFound": "通知ボードがあります",
       "label.boardFound": "通知ボードがあります",
       "label.numOfNotices": "通知数",
-      "label.numOfExpectingOrders": "Number of Expecting Orders",
+      "label.numOfExpectingOrders": "Expectオーダー数",
       "label.noticeId": "通知ID",
       "label.endOfLife": "通知期限終了",
       "label.expectingOrders": "Expectオーダー",
