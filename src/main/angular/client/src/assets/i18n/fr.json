@@ -1357,12 +1357,12 @@
     "treeView": {
       "label": {
         "state": "Étape",
-        "numberOfOrders": "Number Of Orders",
-        "allowedTransaction": "Allowed Transaction",
+        "numberOfOrders": "Nombre d'Ordres",
+        "allowedTransaction": "Transitions possibles",
         "action": "Action"
       },
       "placeholder": {
-        "selectTransaction": "Select Transaction"
+        "selectTransaction": "Sélectionner la Transition"
       }
     }
   },
