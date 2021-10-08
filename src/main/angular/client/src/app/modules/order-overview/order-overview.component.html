@@ -478,11 +478,11 @@
                         <i *ngIf="orderFilters.filter.sortBy == 'workflowId.path' && orderFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('position')">
+                    <th (click)="sort('positionString')">
                       <a><span class="p-r-xs" translate>order.label.position</span>
-                        <i *ngIf="orderFilters.filter.sortBy == 'position' && !orderFilters.reverse"
+                        <i *ngIf="orderFilters.filter.sortBy == 'positionString' && !orderFilters.reverse"
                            class="fa fa-caret-up "></i>
-                        <i *ngIf="orderFilters.filter.sortBy == 'position' && orderFilters.reverse"
+                        <i *ngIf="orderFilters.filter.sortBy == 'positionString' && orderFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
                     <th (click)="sort('state._text')">

@@ -348,7 +348,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   yadeFilters: any = {};
-  yadeView: any = {current: false};
   searchFilter: any = {};
   savedFilter: any = {};
   selectedFiltered: any = {};
@@ -437,7 +436,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.isCustomizationSelected(true);
     }
     let obj: any = {
-      controllerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
+      controllerId: this.yadeFilters.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxFileTransferRecords, 10),
       compact: true
     };
@@ -535,7 +534,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   search(): void {
     this.isLoaded = false;
     let filter: any = {
-      controllerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
+      controllerId: this.yadeFilters.current == true ? this.schedulerIds.selected : '',
       limit: parseInt(this.preferences.maxFileTransferRecords, 10),
       compact: true
     };
@@ -818,7 +817,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.yadeFilters = this.coreService.getYadeTab();
-    this.yadeView.current = this.preferences.fileTransfer == 'current';
+    if (!(this.yadeFilters.current || this.yadeFilters.current === false)) {
+      this.yadeFilters.current = this.preferences.currentController;
+    }
     this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     if (this.yadeFilters.showFiles != undefined) {

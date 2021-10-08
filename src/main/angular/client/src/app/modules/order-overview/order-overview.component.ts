@@ -740,11 +740,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       obj.folders.push({folder: paths[x], recursive: false});
     }
     let operation = this.orderOverviewAction[type];
-    if (operation && operation.match(/killTask/)) {
-      obj.kill = true;
-      operation = operation.match(/cancel/) ? 'cancel' : 'suspend';
-    }
     let url = this.orderOverviewAction[type].toLowerCase();
+    if (operation && operation.match(/WithKill/)) {
+      obj.kill = true;
+      operation = operation.match(/Cancel/) ? 'Cancel' : 'Suspend';
+      url = operation === 'Cancel' ? 'cancel' : 'suspend';
+    }
     if (operation.match(/Terminate/)) {
       url = 'remove_when_terminated';
     }
@@ -1052,11 +1053,17 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       let obj: any = {};
       obj[order] = this.data[i].orderId;
       obj[workflow] = this.data[i].workflowId.path;
-      obj[position] = this.data[i].position && this.data[i].position.length > 0 ? this.data[i].position[0] : '';
+      obj[position] = this.data[i].positionString;
       this.translate.get(this.data[i].state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });
-      obj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.data[i].scheduledFor);
+      if (!this.data[i].scheduledNever) {
+        obj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.data[i].scheduledFor);
+      } else {
+        this.translate.get('common.label.never').subscribe(translatedValue => {
+          obj[scheduledFor] = translatedValue;
+        });
+      }
       data.push(obj);
     }
     this.excelService.exportAsExcelFile(data, 'JS7-orders');
