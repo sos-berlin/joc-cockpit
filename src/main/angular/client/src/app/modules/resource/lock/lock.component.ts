@@ -49,6 +49,7 @@ export class SingleLockComponent implements OnInit, OnDestroy {
   }
 
   private getLocksList(obj): void {
+    obj.limit = this.preferences.maxLockRecords;
     this.coreService.post('locks', obj).subscribe((res: any) => {
       this.loading = false;
       res.locks.forEach((value) => {
@@ -72,6 +73,7 @@ export class SingleLockComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) {
           const obj = {
             controllerId: this.controllerId,
+            limit: this.preferences.maxLockRecords,
             lockPath: this.name
           };
           this.coreService.post('lock', obj).subscribe((res: any) => {
@@ -269,7 +271,8 @@ export class LockComponent implements OnInit, OnDestroy {
     this.coreService.post('locks', {
       controllerId: this.schedulerIds.selected,
       compact,
-      lockPaths: paths
+      lockPaths: paths,
+      limit: this.preferences.maxLockRecords
     }).subscribe((res: any) => {
       res.locks.forEach((value) => {
         for (let x = 0; x < this.locks.length; x++) {
@@ -387,6 +390,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private getLocksDetail(obj, cb): void {
+    obj.limit = this.preferences.maxLockRecords;
     this.coreService.post('locks', obj).subscribe((res: any) => {
       cb(res.locks);
     }, () => {

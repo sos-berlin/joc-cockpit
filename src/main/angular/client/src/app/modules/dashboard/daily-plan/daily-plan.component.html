@@ -33,39 +33,59 @@
   <div class="box-body p-a" [ngClass]="{'p-t-sm': totalPlanData == 0 && isLoaded}">
     <div class="hide m-t-sm" [ngClass]="{'show': totalPlanData > 0}">
       <div class="plan-overview bg-planned hide" [ngStyle]="{'width': arrayWidth[0]+'%'}" [ngClass]="{'show-block': planned > 0}">
-        <label  class="w-full" [nz-tooltip]="(planned*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+        <label  class="w-full" [nz-tooltip]="tooltipTemplate1">
           <a class="nav-link w-full" (click)="navigate(1)">
             <div class="block-ellipsis-job" translate>dashboard.label.planned</div> - {{planned | number : '1.1-1'}} %
           </a>
         </label>
+        <ng-template #tooltipTemplate1>
+          <div translate>dashboard.label.planned</div>
+          <div>{{(planned*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData}}</div>
+        </ng-template>
       </div>
       <div class="plan-overview bg-gold hide" [ngStyle]="{width: arrayWidth[1]+'%'}" [ngClass]="{'show-block': plannedLate > 0}">
-        <label  class="w-full" [nz-tooltip]="(plannedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+        <label  class="w-full" [nz-tooltip]="tooltipTemplate2">
           <a class="nav-link w-full" (click)="navigate(2)">
             <div class="block-ellipsis-job" translate>dashboard.label.plannedLate</div> - {{plannedLate | number : '1.1-1' }} %
           </a>
         </label>
+        <ng-template #tooltipTemplate2>
+          <div translate>dashboard.label.plannedLate</div>
+          <div>{{(plannedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData}}</div>
+        </ng-template>
       </div>
       <div class="plan-overview bg-orange hide" [ngStyle]="{width: arrayWidth[2]+'%'}" [ngClass]="{'show-block': submitted > 0}">
-        <label  class="w-full" [nz-tooltip]="(submitted*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+        <label  class="w-full" [nz-tooltip]="tooltipTemplate3">
           <a class="nav-link w-full" (click)="navigate(4)">
             <div class="block-ellipsis-job" translate>dashboard.label.submitted</div> - {{submitted | number : '1.1-1' }} %
           </a>
         </label>
+        <ng-template #tooltipTemplate3>
+          <div translate>dashboard.label.submitted</div>
+          <div>{{(submitted*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData}}</div>
+        </ng-template>
       </div>
       <div class="plan-overview bg-late hide" [ngStyle]="{width: arrayWidth[3]+'%'}" [ngClass]="{'show-block': submittedLate > 0}">
-        <label class="w-full" [nz-tooltip]="(submittedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+        <label class="w-full" [nz-tooltip]="tooltipTemplate4">
           <a class="nav-link w-full" (click)="navigate(5)">
             <div class="block-ellipsis-job" translate>dashboard.label.submittedLate</div> - {{submittedLate | number : '1.1-1' }} %
           </a>
         </label>
+        <ng-template #tooltipTemplate4>
+          <div translate>dashboard.label.submittedLate</div>
+          <div>{{(submittedLate*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData}}</div>
+        </ng-template>
       </div>
       <div class="plan-overview bg-dark-blue hide" [ngStyle]="{width: arrayWidth[4]+'%'}" [ngClass]="{'show-block': finished > 0}">
-        <label  class="w-full" [nz-tooltip]="(finished*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData">
+        <label  class="w-full" [nz-tooltip]="tooltipTemplate5">
           <a class="nav-link w-full" (click)="navigate(6)">
             <div class="block-ellipsis-job" translate>dashboard.label.finished</div> - {{finished | number : '1.1-1'}} %
           </a>
         </label>
+        <ng-template #tooltipTemplate5>
+          <div translate>dashboard.label.finished</div>
+          <div>{{(finished*totalPlanData/100 | number:'1.0') +' out of '+ totalPlanData}}</div>
+        </ng-template>
       </div>
     </div>
     <div class="hide text-center text-primary text m-t-md m-b" [ngClass]="{'show': !isLoaded}">
