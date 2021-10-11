@@ -657,7 +657,8 @@
     "message.noControllerFound": "Keinen Controller gefunden",
     "message.errorInLoadingScheduleIds": "Fehler beim Lesen der Controller-Kennungen",
     "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners.",
-    "message.invalidJSON": "Ungültige JSON Datei"
+    "message.invalidJSON": "Ungültige JSON Datei",
+    "message.cannotModifyStartTime": "Cannot modify start time of two different order"
   },
   "fileTransfer": {
     "label.transfer": "Übertragung",
@@ -1412,6 +1413,8 @@
     "label.current": "Aktuell",
     "label.asCard": "Als Karte",
     "label.asList": "Als Liste",
+    "label.asBulk": "As Bulk",
+    "label.orderOverviewPageView": "Show Orders Overview",
     "label.blueGrey": "Blau-grau",
     "label.white": "Weiß",
     "label.light": "Hell",
@@ -1985,6 +1988,7 @@
     "button.wizard": "Assistent",
     "button.addRequiredArguments": "Add Required Arguments",
     "button.addAllArguments": "Alle Argumente hinzufügen",
+    "button.convertAdmissionTime": "Show Convert Time",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

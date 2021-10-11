@@ -657,7 +657,8 @@
     "message.noControllerFound": "Aucun Contrôleur trouvé",
     "message.errorInLoadingScheduleIds": "Erreur lors de la récupération des ID du contrôleur",
     "message.pasteInSubFolderNotAllowed": "Le dossier de destination est un sous-dossier du dossier source.",
-    "message.invalidJSON": "Fichier JSON invalide"
+    "message.invalidJSON": "Fichier JSON invalide",
+    "message.cannotModifyStartTime": "Cannot modify start time of two different order"
   },
   "fileTransfer": {
     "label.transfer": "Transfert",
@@ -1412,6 +1413,8 @@
     "label.current": "Actuel",
     "label.asCard": "Vue Carte",
     "label.asList": "Vue Liste",
+    "label.asBulk": "As Bulk",
+    "label.orderOverviewPageView": "Show Orders Overview",
     "label.blueGrey": "Bleu-gris",
     "label.white": "Blanc",
     "label.light": "Clair",
@@ -1985,6 +1988,7 @@
     "button.wizard": "Wizard",
     "button.addRequiredArguments": "Add Required Arguments",
     "button.addAllArguments": "Add All Arguments",
+    "button.convertAdmissionTime": "Show Convert Time",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

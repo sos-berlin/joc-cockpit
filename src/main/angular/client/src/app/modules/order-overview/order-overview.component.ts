@@ -162,7 +162,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   orderFilters: any = {};
-  isSizeChange: boolean;
   resizerHeight: any = 200;
   sideView: any = {};
   selectedIndex = 0;
@@ -257,9 +256,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   private init(): void {
     this.orderFilters = this.coreService.getOrderOverviewTab();
     this.orderFilters.filter.state = this.route.snapshot.paramMap.get('state');
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).orderOverview;
-    }
     if (this.authService.permission) {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
@@ -271,8 +267,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
       this.hidePanel();
     }
-
-    if (this.pageView !== 'tree') {
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).order || this.preferences.orderOverviewPageView;
+    } else {
+      this.pageView = this.preferences.orderOverviewPageView;
+    }
+    if (this.pageView !== 'bulk') {
       this.getOrders({
         controllerId: this.schedulerIds.selected,
         states: this.getState()
@@ -388,7 +388,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       }
       if (flag && this.isLoaded) {
         this.isLoaded = false;
-        if (this.pageView === 'tree') {
+        if (this.pageView === 'bulk') {
           this.loadOrder();
         } else {
           this.refreshView();
@@ -524,7 +524,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         this.loadOrder();
       }
     } else {
-      if (this.pageView === 'tree' && $event !== this.pageView) {
+      if (this.pageView === 'bulk' && $event !== this.pageView) {
         this.getOrders({
           controllerId: this.schedulerIds.selected,
           states: this.getState()
@@ -635,7 +635,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   changeStatus(state): void {
     this.orderFilters.filter.state = state;
-    if (this.pageView === 'tree') {
+    if (this.pageView === 'bulk') {
       return;
     }
     this.loading = false;
@@ -645,7 +645,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   changeDate(date): void {
     this.orderFilters.filter.date = date;
     this.loading = false;
-    if (this.pageView === 'tree') {
+    if (this.pageView === 'bulk') {
       this.loadOrder();
     } else {
       this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});

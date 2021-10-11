@@ -28,7 +28,11 @@
           </div>
         </div>
       </div>
-      <div class="col-md-12 m-t" *ngIf="periodList.length > 0">
+      <div class="col-sm-3 m-t" *ngIf="periodList.length > 0" translate>workflow.label.timeZone</div>
+      <div class="col-sm-8 m-t" *ngIf="periodList.length > 0">
+        {{timezone}}
+      </div>
+      <div class="col-md-12 m-t-sm" *ngIf="periodList.length > 0">
         <label class="_600 m-b-xs" translate>workflow.label.admissionTime</label>
         <div class="table-responsive">
           <table class="table table-hover table-bordered">
@@ -51,12 +55,20 @@
           </table>
         </div>
       </div>
+      <div class="col-md-12 m-t-xs">
+        <button type="button" class="btn btn-default btn-sm"
+                (click)="convertTime()" translate>workflow.button.convertAdmissionTime
+        </button>
+      </div>
     </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-grey btn-sm"
             (click)="activeModal.destroy()" translate>
       common.button.close
+    </button>
+    <button type="button" class="btn btn-default btn-sm"
+            (click)="copyToClipboard()" translate>log.button.copyToClipboard
     </button>
   </div>
 </form>

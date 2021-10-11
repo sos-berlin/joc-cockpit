@@ -16,6 +16,7 @@ export class TypeComponent implements OnChanges {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
+  @Input() timezone: string;
   @Input() orderPreparation: any;
   @Input() recursiveCals: any;
   @Input() workflowFilters: any;
@@ -336,6 +337,7 @@ export class TypeComponent implements OnChanges {
         nzComponentParams = {
           data,
           admissionTime: job.admissionTimeScheme,
+          timezone: this.timezone,
           jobName: instruction.jobName,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
           readonly: true

@@ -500,6 +500,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.isDocNewWindow = 'newWindow';
       preferences.isXSDNewWindow = 'newWindow';
       preferences.pageView = 'list';
+      preferences.orderOverviewPageView = 'list';
       preferences.theme = 'light';
       preferences.headerColor = '';
       preferences.historyTab = 'order';
@@ -534,26 +535,29 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
         data.auditLog = true;
       }
-      if (!data.maxNotificationRecords){
+      if (!data.maxNotificationRecords) {
         data.maxNotificationRecords = 5000;
       }
-      if (!data.maxOrderRecords){
+      if (!data.maxOrderRecords) {
         data.maxOrderRecords = 5000;
       }
-      if (!data.maxDailyPlanRecords){
+      if (!data.maxDailyPlanRecords) {
         data.maxDailyPlanRecords = 5000;
       }
-      if (!data.maxWorkflowRecords){
+      if (!data.maxWorkflowRecords) {
         data.maxWorkflowRecords = 5000;
       }
-      if (!data.maxFileTransferRecords){
+      if (!data.maxFileTransferRecords) {
         data.maxFileTransferRecords = 5000;
       }
-      if (!data.maxLockRecords){
+      if (!data.maxLockRecords) {
         data.maxLockRecords = 5000;
       }
-      if (!data.maxBoardRecords){
+      if (!data.maxBoardRecords) {
         data.maxBoardRecords = 5000;
+      }
+      if (!data.orderOverviewPageView) {
+        data.orderOverviewPageView = 'list';
       }
       sessionStorage.preferences = JSON.stringify(data);
       this.reloadThemeAndLang(preferences);

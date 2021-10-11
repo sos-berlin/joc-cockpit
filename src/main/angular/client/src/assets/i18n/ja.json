@@ -657,7 +657,8 @@
     "message.noControllerFound": "コントローラーはありません",
     "message.errorInLoadingScheduleIds": "コントローラーID取得エラー",
     "message.pasteInSubFolderNotAllowed": "宛先フォルダーはソースフォルダーの下にあります",
-    "message.invalidJSON": "無効なJSONファイルです"
+    "message.invalidJSON": "無効なJSONファイルです",
+    "message.cannotModifyStartTime": "Cannot modify start time of two different order"
   },
   "fileTransfer": {
     "label.transfer": "送信",
@@ -1357,12 +1358,12 @@
     "treeView": {
       "label": {
         "state": "ステート",
-        "numberOfOrders": "Number Of Orders",
-        "allowedTransaction": "Allowed Transaction",
+        "numberOfOrders": "Number of Orders",
+        "allowedTransaction": "Allowed Transition",
         "action": "アクション"
       },
       "placeholder": {
-        "selectTransaction": "Select Transaction"
+        "selectTransaction": "Select Transition"
       }
     }
   },
@@ -1412,6 +1413,8 @@
     "label.current": "現在",
     "label.asCard": "カード表示",
     "label.asList": "リスト表示",
+    "label.asBulk": "As Bulk",
+    "label.orderOverviewPageView": "Show Orders Overview",
     "label.blueGrey": "Blue-gray",
     "label.white": "White",
     "label.light": "Light",
@@ -1985,6 +1988,7 @@
     "button.wizard": "ウイザード",
     "button.addRequiredArguments": "必要な引数を追加",
     "button.addAllArguments": "全引数を追加",
+    "button.convertAdmissionTime": "Show Convert Time",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",

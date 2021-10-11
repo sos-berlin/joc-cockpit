@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
   selector: 'app-toggle',
   template: `
     <div class="btn-group m-l-12">
-      <button *ngIf="type === 'ORDER'" class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='tree'}" (click)="setView('tree')"><i
+      <button *ngIf="type === 'ORDER'" class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='bulk'}" (click)="setView('bulk')"><i
         class="fa fa-sitemap"></i>
       </button>
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
@@ -19,6 +19,7 @@ import {Router} from '@angular/router';
 })
 export class ToggleComponent implements OnInit {
   @Input() type: string;
+  orderView = 'list';
   view = 'list';
   pageView: string;
   views: any = {};
@@ -28,11 +29,20 @@ export class ToggleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (sessionStorage.preferences) {
+      const preferences = JSON.parse(sessionStorage.preferences);
+      if (preferences.pageView) {
+        this.view = preferences.pageView;
+      }
+      if (preferences.orderOverviewPageView) {
+        this.orderView = preferences.orderOverviewPageView;
+      }
+    }
     this.views = {
       dailyPlan: this.view,
       workflow: this.view,
       inventory: this.view,
-      orderOverview: this.view,
+      order: this.orderView,
       lock: this.view,
       board: this.view,
       agent: this.view,
@@ -40,15 +50,13 @@ export class ToggleComponent implements OnInit {
       calendar: this.view,
       permission: this.view
     };
-    if (sessionStorage.preferences) {
-      if (JSON.parse(sessionStorage.preferences).pageView) {
-        this.view = JSON.parse(sessionStorage.preferences).pageView;
-      }
-    }
     if (!localStorage.views) {
       localStorage.views = JSON.stringify(this.views);
     } else {
       this.views = JSON.parse(localStorage.views);
+      if (!this.views.order) {
+        this.views.order = this.orderView;
+      }
     }
     if (this.router.url === '/daily_plan') {
       this.pageView = this.views.dailyPlan || this.view;
@@ -57,7 +65,7 @@ export class ToggleComponent implements OnInit {
     } else if (this.router.url === '/workflows') {
       this.pageView = this.views.workflow || this.view;
     } else if (this.router.url.match(/orders_overview/)) {
-      this.pageView = this.views.orderOverview || this.view;
+      this.pageView = this.views.order || this.orderView;
     } else if (this.router.url === '/resources/agents') {
       this.pageView = this.views.agent || this.view;
     } else if (this.router.url === '/resources/locks') {
@@ -84,7 +92,7 @@ export class ToggleComponent implements OnInit {
     } else if (this.router.url === '/workflows') {
       this.views.workflow = view;
     } else if (this.router.url.match(/orders_overview/)) {
-      this.views.orderOverview = this.pageView;
+      this.views.order = view;
     } else if (this.router.url === '/resources/agents') {
       this.views.agent = view;
     } else if (this.router.url === '/resources/locks') {

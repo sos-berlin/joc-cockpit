@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>dailyPlan.label.setStartTime</span>
-    <i class="text-muted p-l-xs text">{{order.orderId}}</i>
+    <i class="text-muted p-l-xs text" *ngIf="order">{{order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="cancel()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -11,14 +11,14 @@
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-sm-12">
-        <div class="form-group row">
+        <div class="form-group row" *ngIf="order && order.orderId">
           <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
           <div class="col-md-9">
             <span *ngIf="order.plannedStartTime">{{order.plannedStartTime}}</span>
             <span *ngIf="!order.plannedStartTime">{{order.scheduledFor | stringToDate}}</span>
           </div>
         </div>
-        <ng-container *ngIf="!order.cyclicOrder">
+        <ng-container *ngIf="order && !order.cyclicOrder">
           <div class="form-group row">
             <label class="col-md-3" translate>common.label.startTime</label>
             <div class="col-md-9">
@@ -43,15 +43,12 @@
           <div class="form-group row" *ngIf="dateType.at == 'date'">
             <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime</label>
             <div class="col-sm-6">
-              <nz-date-picker [nzDisabledDate]="disabledDate" [required]="true" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.from"
+              <nz-date-picker nzShowTime [nzDisabledDate]="disabledDate" [required]="true" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.from"
                               name="from"></nz-date-picker>
-              <nz-time-picker [nzDisabled]="!order.from" [nzFormat]="'HH:mm:ss'"
-                              class="input-time m-l time-picker" [(ngModel)]="order.time" name="fromTime"
-                              nzPlaceHolder="HH:MM:SS"></nz-time-picker>
             </div>
           </div>
         </ng-container>
-        <ng-container *ngIf="order.cyclicOrder">
+        <ng-container *ngIf="order && order.cyclicOrder">
           <div class="form-group row">
             <label class="col-md-3 form-control-label" translate>runtime.label.repeatTime</label>
             <div class="col-md-2" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
@@ -75,6 +72,11 @@
             </div>
           </div>
         </ng-container>
+        <div class="form-group row" *ngIf="errorMsg">
+          <div class="col-md-12 text-center p-a" translate>
+            error.message.cannotModifyStartTime
+          </div>
+        </div>
         <div class="form-group row" [hidden]="!(dateType.at =='date')">
           <div class="col-md-3 form-control-label" translate>common.label.timeZone</div>
           <div class="col-sm-6">
@@ -87,7 +89,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+    <button type="submit" *ngIf="order" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
