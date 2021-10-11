@@ -8,7 +8,7 @@
           </div>
           <div class="inline">
             <div class="inline valign">
-              <label nz-checkbox [(ngModel)]="yadeView.current" name="current" (ngModelChange)="changeController()">
+              <label nz-checkbox [(ngModel)]="yadeFilters.current" name="current" (ngModelChange)="changeController()">
                 {{'common.label.currentController' | translate}}
               </label>
             </div>
@@ -223,7 +223,7 @@
             <th class="menu">
               <span translate>common.label.action</span>
             </th>
-            <th *ngIf="!yadeView.current" (click)="sort('controllerId')">
+            <th *ngIf="!yadeFilters.current" (click)="sort('controllerId')">
               <a>
                 <span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="yadeFilters.filter.sortBy == 'controllerId' && !yadeFilters.reverse"
@@ -324,7 +324,7 @@
                   </nz-dropdown-menu>
                 </div>
               </td>
-              <td *ngIf="!yadeView.current">
+              <td *ngIf="!yadeFilters.current">
                 <span class="show-in-single-line">
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                      *ngIf="!transfer.show" (click)="showTransferFuc(transfer);"></i>
@@ -337,9 +337,9 @@
               <td noWrap>
                 <span>
                   <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                     *ngIf="!transfer.show && yadeView.current" (click)="showTransferFuc(transfer);"></i>
+                     *ngIf="!transfer.show && yadeFilters.current" (click)="showTransferFuc(transfer);"></i>
                   <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                     *ngIf="transfer.show && yadeView.current" (click)="transfer.show = false;"></i>
+                     *ngIf="transfer.show && yadeFilters.current" (click)="transfer.show = false;"></i>
                   <span class="label cursor p-l-xs"
                         (click)="coreService.showLogWindow(null, transfer, null, transfer.controllerId, null);$event.stopPropagation()"
                         [ngClass]="coreService.getColor(transfer.state.severity,'bg')"

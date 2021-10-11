@@ -2643,18 +2643,21 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private exportToExcelDeployment(): any {
-    let controllerId = '', state = '', deploymentDate = '', account = '';
+    let controllerId = '', state = '', deploymentDate = '', account = '', numberOfItems = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
     this.translate.get('history.label.deploymentDate').subscribe(translatedValue => {
       deploymentDate = translatedValue;
     });
-    this.translate.get('history.label.account').subscribe(translatedValue => {
+    this.translate.get('common.label.account').subscribe(translatedValue => {
       account = translatedValue;
     });
     this.translate.get('history.label.state').subscribe(translatedValue => {
       state = translatedValue;
+    });
+    this.translate.get('history.label.numberOfItems').subscribe(translatedValue => {
+      numberOfItems = translatedValue;
     });
     const data = [];
     for (let i = 0; i < this.deploymentHistorys.length; i++) {
@@ -2663,10 +2666,27 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj[controllerId] = this.deploymentHistorys[i].controllerId;
       }
       obj[deploymentDate] = this.coreService.stringToDate(this.preferences, this.deploymentHistorys[i].deploymentDate);
-      obj[account] = this.coreService.stringToDate(this.preferences, this.deploymentHistorys[i].account);
+      obj[account] = this.deploymentHistorys[i].account;
       this.translate.get(this.deploymentHistorys[i].state).subscribe(translatedValue => {
         obj[state] = translatedValue;
       });
+      let str = '';
+      if (this.deploymentHistorys[i].workflowCount) {
+        str += 'Workflows: ' + this.deploymentHistorys[i].workflowCount + '  ';
+      }
+      if (this.deploymentHistorys[i].fileOrderSourceCount) {
+        str += 'File Order Source: ' + this.deploymentHistorys[i].fileOrderSourceCount + '  ';
+      }
+      if (this.deploymentHistorys[i].jobResourceCount) {
+        str += 'Job Resources: ' + this.deploymentHistorys[i].jobResourceCount + '  ';
+      }
+      if (this.deploymentHistorys[i].boardCount) {
+        str += 'Notice Boards: ' + this.deploymentHistorys[i].boardCount + '  ';
+      }
+      if (this.deploymentHistorys[i].lockCount) {
+        str += 'Resource Locks: ' + this.deploymentHistorys[i].lockCount;
+      }
+      obj[numberOfItems] = str;
       data.push(obj);
     }
     return data;

@@ -62,11 +62,11 @@
             <i *ngIf="filter.sortBy == 'orderId' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-        <th (click)="sort('position')">
+        <th (click)="sort('positionString')">
           <a><span class="p-r-xs" translate>order.label.position</span>
-            <i *ngIf="filter.sortBy == 'position' && !filter.reverse"
+            <i *ngIf="filter.sortBy == 'positionString' && !filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="filter.sortBy == 'position' && filter.reverse"
+            <i *ngIf="filter.sortBy == 'positionString' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('state._text')">
