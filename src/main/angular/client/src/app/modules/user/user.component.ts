@@ -393,7 +393,7 @@ export class UserComponent implements OnInit, OnDestroy {
       dailyPlan: this.preferences.pageView,
       workflow: this.preferences.pageView,
       inventory: this.preferences.pageView,
-      orderOverview: this.preferences.pageView,
+      order: this.preferences.orderOverviewPageView,
       lock: this.preferences.pageView,
       board: this.preferences.pageView,
       documentation: this.preferences.pageView,

@@ -657,7 +657,8 @@
     "message.noControllerFound": "No Controller Found",
     "message.errorInLoadingScheduleIds": "Error in fetching Controller IDs",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
-    "message.invalidJSON": "Invalid JSON file"
+    "message.invalidJSON": "Invalid JSON file",
+    "message.cannotModifyStartTime": "Cannot modify start time of two different order"
   },
   "fileTransfer": {
     "label.transfer": "Transfer",
@@ -1412,6 +1413,8 @@
     "label.current": "Current",
     "label.asCard": "As Card",
     "label.asList": "As List",
+    "label.asBulk": "As Bulk",
+    "label.orderOverviewPageView": "Show Orders Overview",
     "label.blueGrey": "Blue-grey",
     "label.white": "White",
     "label.light": "Light",
@@ -1985,6 +1988,7 @@
     "button.wizard": "Wizard",
     "button.addRequiredArguments": "Add Required Arguments",
     "button.addAllArguments": "Add All Arguments",
+    "button.convertAdmissionTime": "Show Convert Time",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",

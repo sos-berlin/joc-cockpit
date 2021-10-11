@@ -1135,6 +1135,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (ids.length > 0) {
       this.coreService.post('orders', {
         controllerId: this.schedulerIds.selected,
+        compact: true,
         orderIds: ids
       }).subscribe((res: any) => {
         cb(res.orders);
@@ -1878,13 +1879,18 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  modifyOrder(order): void {
-    this.getOrder(order, (orders) => {
-      let state = '';
-      if (orders && orders[0]) {
-        state = orders[0].state._text;
+  modifyOrder(order, plan): void {
+    this.getOrder(order || plan, (orders) => {
+      let state;
+      if (orders && orders.length > 0) {
+        for (let i in orders) {
+          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING' && orders[i].state._text !== 'BLOCKED') {
+            state = orders[i].state._text;
+            break;
+          }
+        }
       }
-      if (state === '' || state === 'SCHEDULED' || state === 'PENDING' || state === 'BLOCKED') {
+      if (!state) {
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: ModifyStartTimeModalComponent,
@@ -1892,6 +1898,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           nzComponentParams: {
             schedulerId: this.schedulerIds.selected,
             order,
+            plan,
             isDailyPlan: true,
             preferences: this.preferences
           },
@@ -1905,7 +1912,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             this.loadOrderPlan();
           }
         });
-      } else if(state){
+      } else if (state){
         this.showInfoMsg(state);
       }
     });

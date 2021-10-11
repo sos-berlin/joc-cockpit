@@ -161,7 +161,7 @@
               </div>
             </span>
             <div class="p-l" *ngIf="branch.instructions && (branch.show)">
-              <app-workflow-tree-structure [disabledDrag]="disabledDrag"
+              <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
                         [configuration]="branch" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll"></app-workflow-tree-structure>
             </div>
           </div>
@@ -169,7 +169,7 @@
       </div>
       <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'If' && (instruction.show)">
         <div *ngIf="instruction.then && instruction.then.instructions">
-          <app-workflow-tree-structure [disabledDrag]="disabledDrag"
+          <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
                     [configuration]="instruction.then" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll"></app-workflow-tree-structure>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
@@ -185,14 +185,14 @@
               </div>
             </span>
             <div class="p-l" *ngIf="instruction.else && (instruction.else.show)">
-              <app-workflow-tree-structure [disabledDrag]="disabledDrag"
+              <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
                         [configuration]="instruction.else" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-workflow-tree-structure>
             </div>
           </div>
         </div>
       </div>
       <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
-          <app-workflow-tree-structure [disabledDrag]="disabledDrag"
+          <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
                     [configuration]="instruction" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-workflow-tree-structure>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
@@ -208,14 +208,14 @@
               </div>
             </span>
             <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show)">
-              <app-workflow-tree-structure [disabledDrag]="disabledDrag"
+              <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
                         [configuration]="instruction.catch" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-workflow-tree-structure>
             </div>
           </div>
       </div>
       <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}" *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Lock' || instruction.TYPE === 'ForkList') && (instruction.show)">
         <div>
-          <app-workflow-tree-structure [disabledDrag]="disabledDrag"
+          <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
                     [configuration]="instruction" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-workflow-tree-structure>
         </div>
       </div>

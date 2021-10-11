@@ -327,10 +327,12 @@ export class ChangeParameterModalComponent implements OnInit {
 export class ModifyStartTimeModalComponent implements OnInit {
   @Input() schedulerId;
   @Input() order: any;
+  @Input() plan: any;
   @Input() preferences: any;
   @Input() isDailyPlan: boolean;
   submitted = false;
   dateFormat: any;
+  errorMsg: boolean;
   dateType: any = {at: 'date'};
   zones = [];
   period: any = {};
@@ -339,7 +341,30 @@ export class ModifyStartTimeModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if (!this.order) {
+      this.order = {};
+    } else if (this.plan) {
+      let isCyclic = false;
+      let isStandalone = false;
+      this.plan.value.forEach((order) => {
+        console.log(order.orderId);
+        if (order.cyclicOrder && !isCyclic) {
+          isCyclic = true;
+        }
+        if (!order.cyclicOrder && !isStandalone) {
+          isStandalone = true;
+        }
+      });
+
+      if (isCyclic && isStandalone) {
+        this.order = null;
+        this.errorMsg = true;
+      } else if (isCyclic) {
+        this.order.cyclicOrder = {};
+      }
+    }
+
+    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.dateType.timeZone = this.preferences.zone;
   }
@@ -374,8 +399,15 @@ export class ModifyStartTimeModalComponent implements OnInit {
   onSubmit(): void {
     let obj: any = {
       controllerId: this.schedulerId,
-      orderIds: [this.order.orderId]
+      orderIds: []
     };
+    if (this.plan) {
+      this.plan.value.forEach((order) => {
+        obj.orderIds.push(order.orderId);
+      });
+    } else {
+      obj.orderIds.push(this.order.orderId);
+    }
     if (isEmpty(this.period)) {
       if (this.dateType.at === 'now') {
         obj.scheduledFor = 'now';
@@ -384,20 +416,14 @@ export class ModifyStartTimeModalComponent implements OnInit {
       } else if (this.dateType.at === 'later') {
         obj.scheduledFor = 'now + ' + this.order.atTime;
       } else {
-        if (this.order.from && this.order.time) {
-          this.order.from.setHours(moment(this.order.time).hours());
-          this.order.from.setMinutes(moment(this.order.time).minutes());
-          this.order.from.setSeconds(moment(this.order.time).seconds());
-          this.order.from.setMilliseconds(0);
-        }
         obj.scheduledFor = moment(this.order.from).format('YYYY-MM-DD HH:mm:ss');
         obj.timeZone = this.dateType.timeZone;
       }
     } else {
       obj.cycle = {
-        repeat : this.checkTime(this.period.repeat),
-        begin : this.checkTime(this.period.begin),
-        end : this.checkTime(this.period.end),
+        repeat: this.checkTime(this.period.repeat),
+        begin: this.checkTime(this.period.begin),
+        end: this.checkTime(this.period.end),
       };
       obj.timeZone = this.dateType.timeZone;
     }

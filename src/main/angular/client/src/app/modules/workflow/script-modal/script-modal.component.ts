@@ -1,19 +1,23 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
+import {ClipboardService} from 'ngx-clipboard';
 import {WorkflowService} from '../../../services/workflow.service';
 import {CoreService} from '../../../services/core.service';
+import {TranslateService} from '@ngx-translate/core';
+import {NzMessageService} from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-script-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-modal.component.html'
 })
-export class ScriptModalComponent implements OnInit{
+export class ScriptModalComponent implements OnInit {
   @Input() jobName: string;
   @Input() isScript: boolean;
   @Input() data: any;
   @Input() predicate: any;
   @Input() admissionTime: any;
+  @Input() timezone: string;
   @Input() readonly: boolean;
 
   days = [];
@@ -24,11 +28,11 @@ export class ScriptModalComponent implements OnInit{
     mode: 'shell'
   };
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private workflowService: WorkflowService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private message: NzMessageService,
+              private clipboardService: ClipboardService, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
-    
     this.cmOption.readonly = this.readonly;
     if (this.admissionTime && this.admissionTime.periods) {
       this.days = this.coreService.getLocale().days;
@@ -76,6 +80,24 @@ export class ScriptModalComponent implements OnInit{
     const time = this.workflowService.convertSecondToTime(startTime);
     const dur = this.workflowService.convertDurationToHour(duration);
     return 'starting at ' + time + ' for ' + dur;
+  }
+
+  private showMsg(): void {
+    let msg = '';
+    this.translate.get('common.message.copied').subscribe(translatedValue => {
+      msg = translatedValue;
+    });
+    this.message.success(msg);
+  }
+
+  convertTime(): void {
+    console.log(this.timezone);
+
+  }
+
+  copyToClipboard(): void {
+    this.clipboardService.copyFromContent(this.data);
+    this.showMsg();
   }
 
 }

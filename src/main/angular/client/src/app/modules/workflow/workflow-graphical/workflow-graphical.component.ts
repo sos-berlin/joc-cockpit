@@ -1281,6 +1281,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           data,
           jobName: argu.jobName,
           admissionTime: job.admissionTimeScheme,
+          timezone: this.workFlowJson.timeZone,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
           readonly: true
         };

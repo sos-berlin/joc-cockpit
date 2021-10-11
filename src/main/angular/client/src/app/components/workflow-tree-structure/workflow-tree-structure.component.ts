@@ -11,6 +11,7 @@ import {ScriptModalComponent} from '../../modules/workflow/script-modal/script-m
 export class WorkflowTreeStructureComponent implements OnChanges {
   @Input() configuration;
   @Input() jobs;
+  @Input() timezone;
   @Input() orders;
   @Input() expandAll;
   @Input() disabledDrag: boolean;
@@ -124,6 +125,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
           data,
           jobName: instruction.jobName,
           admissionTime: job.admissionTimeScheme,
+          timezone: this.timezone,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
           readonly: true
         };
