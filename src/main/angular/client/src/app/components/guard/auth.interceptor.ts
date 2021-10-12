@@ -84,7 +84,7 @@ export class AuthInterceptor implements HttpInterceptor {
               }
             }
           }
-          let errorMessage = '';
+          let errorMessage: string;
           if (err.error instanceof ErrorEvent) {
             // client-side error
             errorMessage = `${err.error.message}`;
