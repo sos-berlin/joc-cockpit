@@ -1989,6 +1989,7 @@
     "button.addRequiredArguments": "Add Required Arguments",
     "button.addAllArguments": "Add All Arguments",
     "button.convertAdmissionTime": "Show Convert Time",
+    "button.originalAdmissionTime": "Show Original Time",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

@@ -1989,6 +1989,7 @@
     "button.addRequiredArguments": "必要な引数を追加",
     "button.addAllArguments": "全引数を追加",
     "button.convertAdmissionTime": "Show Convert Time",
+    "button.originalAdmissionTime": "Show Original Time",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",

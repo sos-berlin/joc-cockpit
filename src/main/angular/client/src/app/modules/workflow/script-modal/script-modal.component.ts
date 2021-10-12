@@ -1,10 +1,11 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {ClipboardService} from 'ngx-clipboard';
-import {WorkflowService} from '../../../services/workflow.service';
-import {CoreService} from '../../../services/core.service';
+import * as moment from 'moment-timezone';
 import {TranslateService} from '@ngx-translate/core';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import {WorkflowService} from '../../../services/workflow.service';
+import {CoreService} from '../../../services/core.service';
 
 @Component({
   selector: 'app-script-modal',
@@ -22,14 +23,15 @@ export class ScriptModalComponent implements OnInit {
 
   days = [];
   periodList = [];
+  tempPeriodList = [];
   cmOption: any = {
     lineNumbers: true,
     viewportMargin: Infinity,
     mode: 'shell'
   };
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private message: NzMessageService,
-              private clipboardService: ClipboardService, private workflowService: WorkflowService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService,
+              private message: NzMessageService, private clipboardService: ClipboardService, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
@@ -90,15 +92,50 @@ export class ScriptModalComponent implements OnInit {
     this.message.success(msg);
   }
 
-  convertTime(): void {
-    console.log(this.timezone);
+  showConvertTime(): void {
+    this.tempPeriodList = this.coreService.clone(this.periodList);
+    const convertTedList = [];
+    this.periodList.forEach((item) => {
+      item.periods.forEach((period) => {
+        const obj: any = {
+          periods: []
+        };
+        const originalTime = this.workflowService.convertSecondToTime(period.startTime);
+        const convertedTime = moment(moment.utc(originalTime, 'HH:mm:ss')).tz(this.timezone).format('HH:mm:ss');
+        if (moment(convertedTime, 'HH:mm:ss').diff(moment(originalTime, 'HH:mm:ss')) < 0) {
+          obj.day = item.day + 1;
+        } else {
+          obj.day = item.day;
+        }
+        obj.frequency = this.days[obj.day];
+        const dur = this.workflowService.convertDurationToHour(period.duration);
+        obj.periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
+        let flag = true;
+        if (convertTedList.length > 0) {
+          for (let i = 0; i < convertTedList.length; i++) {
+            if (convertTedList[i].day === obj.day) {
+              flag = false;
+              convertTedList[i].periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
+              break;
+            }
+          }
+        }
+        if (flag) {
+          convertTedList.push(obj);
+        }
+      });
+    });
+    this.periodList = convertTedList;
+  }
 
+  showOriginalTime(): void{
+    this.periodList = this.coreService.clone(this.tempPeriodList);
+    this.tempPeriodList = [];
   }
 
   copyToClipboard(): void {
     this.clipboardService.copyFromContent(this.data);
     this.showMsg();
   }
-
 }
 

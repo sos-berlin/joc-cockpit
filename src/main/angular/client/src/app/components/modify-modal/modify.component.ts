@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import * as moment from 'moment';
+import {differenceInCalendarDays} from 'date-fns';
 import {isEmpty, isArray, object} from 'underscore';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
@@ -347,7 +348,6 @@ export class ModifyStartTimeModalComponent implements OnInit {
       let isCyclic = false;
       let isStandalone = false;
       this.plan.value.forEach((order) => {
-        console.log(order.orderId);
         if (order.cyclicOrder && !isCyclic) {
           isCyclic = true;
         }
@@ -371,7 +371,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
 
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
-    return moment(current.setHours(0, 0, 0, 0)).diff(new Date().setHours(0, 0, 0, 0)) < 0;
+    return differenceInCalendarDays(current, new Date()) < 0;;
   }
 
   private checkTime(time): string {

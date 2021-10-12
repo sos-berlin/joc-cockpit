@@ -55,9 +55,12 @@
           </table>
         </div>
       </div>
-      <div class="col-md-12 m-t-xs">
-        <button type="button" class="btn btn-default btn-sm"
-                (click)="convertTime()" translate>workflow.button.convertAdmissionTime
+      <div class="col-md-12" *ngIf="periodList.length > 0">
+        <button type="button" class="btn btn-default btn-sm" *ngIf="tempPeriodList.length === 0"
+                (click)="showConvertTime()" translate>workflow.button.convertAdmissionTime
+        </button>
+        <button type="button" class="btn btn-default btn-sm" *ngIf="tempPeriodList.length > 0"
+                (click)="showOriginalTime()" translate>workflow.button.originalAdmissionTime
         </button>
       </div>
     </div>
