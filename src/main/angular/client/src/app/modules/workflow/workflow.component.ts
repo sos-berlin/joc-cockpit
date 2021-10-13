@@ -42,7 +42,9 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
-    {date: '24h', text: 'next24'}
+    {date: '24h', text: 'next24'},
+    {date: '2d', text: 'nextDay'},
+    {date: '7d', text: 'nextWeak'}
   ];
 
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
@@ -164,6 +166,9 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.date !== 'ALL') {
       obj.dateTo = this.date;
+      if (this.date === '2d') {
+        obj.dateFrom = '1d';
+      }
       obj.timeZone = this.preferences.zone;
     }
     obj.compact = true;
@@ -231,7 +236,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
-    {date: '24h', text: 'next24'}
+    {date: '24h', text: 'next24'},
+    {date: '2d', text: 'nextDay'},
+    {date: '7d', text: 'nextWeak'}
   ];
 
   @ViewChild(TreeComponent, {static: false}) child;
@@ -812,6 +819,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.workflowFilters.filter.date !== 'ALL') {
       obj.dateTo = this.workflowFilters.filter.date;
+      if (this.workflowFilters.filter.date === '2d') {
+        obj.dateFrom = '1d';
+      }
       obj.timeZone = this.preferences.zone;
     }
     this.coreService.post('workflows/order_count', obj).subscribe((res: any) => {
@@ -838,6 +848,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     if (this.workflowFilters.filter.date !== 'ALL') {
       obj.dateTo = this.workflowFilters.filter.date;
+      if (this.workflowFilters.filter.date === '2d') {
+        obj.dateFrom = '1d';
+      }
       obj.timeZone = this.preferences.zone;
     }
     obj.compact = true;

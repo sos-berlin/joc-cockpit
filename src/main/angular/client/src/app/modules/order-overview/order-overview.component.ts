@@ -95,6 +95,9 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
     const obj: any = {controllerId: this.schedulerId};
     if (this.date !== 'ALL') {
       obj.dateTo = this.date;
+      if (this.date === '2d') {
+        obj.dateFrom = '1d';
+      }
       obj.timeZone = this.timeZone;
     }
     this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
@@ -210,6 +213,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
     {date: '24h', text: 'next24'},
+    {date: '2d', text: 'nextDay'},
     {date: '7d', text: 'nextWeak'}
   ];
 
@@ -335,6 +339,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   getOrderState(obj): void {
     if (this.orderFilters.filter.date !== 'ALL') {
       obj.dateTo = this.orderFilters.filter.date;
+      if (this.orderFilters.filter.date === '2d') {
+        obj.dateFrom = '1d';
+      }
       obj.timeZone = this.preferences.zone;
     }
     this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
@@ -422,6 +429,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
     if (this.orderFilters.filter.date !== 'ALL') {
       obj.dateTo = this.orderFilters.filter.date;
+      if (this.orderFilters.filter.date === '2d') {
+        obj.dateFrom = '1d';
+      }
       obj.timeZone = this.preferences.zone;
     }
     obj.limit = this.preferences.maxOrderRecords;
@@ -751,6 +761,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
     if (this.orderFilters.filter.date !== 'ALL') {
       obj.dateTo = this.orderFilters.filter.date;
+      if (this.orderFilters.filter.date === '2d') {
+        obj.dateFrom = '1d';
+      }
       obj.timeZone = this.preferences.zone;
     }
     this.preformAction(operation, url, obj, () => {

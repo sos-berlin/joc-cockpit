@@ -4949,6 +4949,10 @@ mwl-gauge > .gauge > .value {
       padding: 3px 6px;
     }
   }
+  table.order-table-panel > tbody > tr {
+    background: transparent;
+    border-bottom: 6px solid var(--background-color);
+  }
 }
 
 .cluster-dropdown {

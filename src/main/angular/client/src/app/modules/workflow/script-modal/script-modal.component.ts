@@ -21,6 +21,7 @@ export class ScriptModalComponent implements OnInit {
   @Input() timezone: string;
   @Input() readonly: boolean;
 
+  preferences: any = {};
   days = [];
   periodList = [];
   tempPeriodList = [];
@@ -36,6 +37,10 @@ export class ScriptModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.cmOption.readonly = this.readonly;
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    if (this.preferences.zone === 'Asia/Calcutta') {
+      this.preferences.zone = 'Asia/Kolkata';
+    }
     if (this.admissionTime && this.admissionTime.periods) {
       this.days = this.coreService.getLocale().days;
       this.days.push(this.days[0]);
@@ -94,38 +99,41 @@ export class ScriptModalComponent implements OnInit {
 
   showConvertTime(): void {
     this.tempPeriodList = this.coreService.clone(this.periodList);
-    const convertTedList = [];
-    this.periodList.forEach((item) => {
-      item.periods.forEach((period) => {
-        const obj: any = {
-          periods: []
-        };
-        const originalTime = this.workflowService.convertSecondToTime(period.startTime);
-        const convertedTime = moment(moment.utc(originalTime, 'HH:mm:ss')).tz(this.timezone).format('HH:mm:ss');
-        if (moment(convertedTime, 'HH:mm:ss').diff(moment(originalTime, 'HH:mm:ss')) < 0) {
-          obj.day = item.day + 1;
-        } else {
-          obj.day = item.day;
-        }
-        obj.frequency = this.days[obj.day];
-        const dur = this.workflowService.convertDurationToHour(period.duration);
-        obj.periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
-        let flag = true;
-        if (convertTedList.length > 0) {
-          for (let i = 0; i < convertTedList.length; i++) {
-            if (convertTedList[i].day === obj.day) {
-              flag = false;
-              convertTedList[i].periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
-              break;
+    if (this.preferences.zone !== this.timezone) {
+      const convertTedList = [];
+      this.periodList.forEach((item) => {
+        item.periods.forEach((period) => {
+          const obj: any = {
+            periods: []
+          };
+          const originalTime = this.workflowService.convertSecondToTime(period.startTime);
+          const day = parseInt(moment('1970-01-02 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('DD'), 10);
+          const convertedTime = moment('1970-01-01 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
+          if (day != 2) {
+            obj.day = (day > 2) ? (item.day + 1) : (item.day - 1);
+          } else {
+            obj.day = item.day;
+          }
+          obj.frequency = this.days[obj.day];
+          const dur = this.workflowService.convertDurationToHour(period.duration);
+          obj.periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
+          let flag = true;
+          if (convertTedList.length > 0) {
+            for (let i = 0; i < convertTedList.length; i++) {
+              if (convertTedList[i].day === obj.day) {
+                flag = false;
+                convertTedList[i].periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
+                break;
+              }
             }
           }
-        }
-        if (flag) {
-          convertTedList.push(obj);
-        }
+          if (flag) {
+            convertTedList.push(obj);
+          }
+        });
       });
-    });
-    this.periodList = convertTedList;
+      this.periodList = convertTedList;
+    }
   }
 
   showOriginalTime(): void{
