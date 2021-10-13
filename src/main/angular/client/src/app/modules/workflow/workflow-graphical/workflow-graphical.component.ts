@@ -142,7 +142,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
     if (this.permission && this.permission.currentController && !this.permission.currentController.orders.view) {
       return;
     }
-    const obj = {
+    const obj: any = {
       compact: true,
       controllerId: this.controllerId,
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}],
@@ -150,6 +150,9 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone,
       limit: this.preferences.maxOrderRecords
     };
+    if (this.workflowFilters.date === '2d'){
+      obj.dateFrom = '1d';
+    }
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.workflow.orders = res.orders;
       this.workflow.numOfOrders = res.orders.length;

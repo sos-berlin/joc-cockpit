@@ -26,6 +26,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
     {date: '24h', text: 'next24'},
+    {date: '2d', text: 'nextDay'},
     {date: '7d', text: 'nextWeak'}
   ];
 
@@ -71,6 +72,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     };
     if (this.filters.date !== 'ALL') {
       obj.dateTo = this.filters.date;
+      if (this.filters.date === '2d') {
+        obj.dateFrom = '1d';
+      }
       obj.timeZone = this.preferences.zone;
     }
     this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {

@@ -57,7 +57,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     {date: '1d', text: 'today'},
     {date: '1h', text: 'next1'},
     {date: '12h', text: 'next12'},
-    {date: '24h', text: 'next24'}
+    {date: '24h', text: 'next24'},
+    {date: '2d', text: 'nextDay'},
+    {date: '7d', text: 'nextWeak'}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
@@ -359,7 +361,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.loading = true;
       return;
     }
-    const obj = {
+    const obj: any = {
       compact: true,
       controllerId: this.schedulerIds.selected,
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}],
@@ -367,6 +369,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone,
       limit: this.preferences.maxOrderRecords
     };
+    if (this.workflowFilters.date === '2d'){
+      obj.dateFrom = '1d';
+    }
     this.coreService.post('orders', obj).subscribe((res: any) => {
       this.workflow.orders = res.orders;
       this.workflow.numOfOrders = res.orders.length;
