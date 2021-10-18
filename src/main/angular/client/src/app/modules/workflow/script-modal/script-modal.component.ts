@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {ClipboardService} from 'ngx-clipboard';
 import * as moment from 'moment-timezone';
@@ -21,6 +21,8 @@ export class ScriptModalComponent implements OnInit {
   @Input() timezone: string;
   @Input() readonly: boolean;
 
+  @ViewChild('codeMirror', {static: false}) cm;
+
   preferences: any = {};
   days = [];
   periodList = [];
@@ -38,12 +40,16 @@ export class ScriptModalComponent implements OnInit {
   ngOnInit(): void {
     this.cmOption.readonly = this.readonly;
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    if (this.preferences.zone === 'Asia/Calcutta') {
+    if (this.preferences && this.preferences.zone === 'Asia/Calcutta') {
       this.preferences.zone = 'Asia/Kolkata';
     }
-    if (this.admissionTime && this.admissionTime.periods) {
+    if (this.admissionTime && this.admissionTime.periods && this.admissionTime.periods.length > 0) {
       this.days = this.coreService.getLocale().days;
-      this.days.push(this.days[0]);
+      if (this.days) {
+        this.days.push(this.days[0]);
+      } else {
+        this.days = [];
+      }
       this.convertSecondIntoWeek();
     }
   }
@@ -142,7 +148,8 @@ export class ScriptModalComponent implements OnInit {
   }
 
   copyToClipboard(): void {
-    this.clipboardService.copyFromContent(this.data);
+    const selectedText = window.getSelection().toString();
+    this.clipboardService.copyFromContent(selectedText || this.data);
     this.showMsg();
   }
 }
