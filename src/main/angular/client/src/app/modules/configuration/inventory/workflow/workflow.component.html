@@ -151,13 +151,6 @@
         <app-expression-content [selectedNode]="selectedNode" [isTooltipVisible]="!preferences.showTooltipInfo" [error]="error"></app-expression-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'Fork'">
-<!--        <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.joinVariables' | translate}}" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fork.joinVariables' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.joinVariables</label>
-          <div class="col-md-8 col-lg-9">
-            <label nz-checkbox [(ngModel)]="selectedNode.obj.joinVariables" name="joinVariables"></label>
-          </div>
-        </div>-->
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.joinIfFailed' | translate}}" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fork.joinIfFailed' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.joinIfFailed</label>
@@ -168,22 +161,64 @@
         <div class="row">
           <label class="col-md-12 _600 m-b-sm" translate>workflow.label.branches</label>
         </div>
-        <div class="form-group row" *ngFor="let branch of selectedNode.obj.branches; let i = index;">
-          <label class="col-md-4 col-lg-3 form-control-label" nz-tooltip="{{'workflow.label.branchId' | translate}}({{i + 1}})">
-            <span translate>workflow.label.branchId</span> ({{i + 1}})
-          </label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((branchs.dirty || branchs.touched) && branchs.invalid)}">
-            <input type="text" identifierValidation required class="form-control" [maxLength]="10" [appAutofocus]="i == 0"
-                   name="branchs{{i}}" #branchs="ngModel" [(ngModel)]="branch.label">
-            <div *ngIf="branchs.invalid && branchs.errors && (branchs.dirty || branchs.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="branchs.errors.required">
-                <div translate>common.message.requiredError</div>
+        <nz-tabset [nzType]="'line'" [nzAnimated]="false">
+          <nz-tab [nzForceRender]="true" *ngFor="let branch of selectedNode.obj.branches; let index = index" [nzTitle]="titleTemplate">
+            <ng-template #titleTemplate>
+              <div>
+                <span translate>workflow.label.branch</span>{{index + 1}}
               </div>
-              <div *ngIf="branchs.errors.invalidIdentifier" translate>common.message.invalid</div>
+            </ng-template>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label" nz-tooltip="{{'workflow.label.branchId' | translate}}({{index + 1}})">
+                <span translate>workflow.label.branchId</span> ({{index + 1}})
+              </label>
+              <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((branchs.dirty || branchs.touched) && branchs.invalid)}">
+                <input type="text" identifierValidation required class="form-control" [maxLength]="10" [appAutofocus]="true"
+                       name="branchs{{index}}" #branchs="ngModel" [(ngModel)]="branch.label">
+                <div *ngIf="branchs.invalid && branchs.errors && (branchs.dirty || branchs.touched)"
+                     class="text-danger help-block">
+                  <div *ngIf="branchs.errors.required">
+                    <div translate>common.message.requiredError</div>
+                  </div>
+                  <div *ngIf="branchs.errors.invalidIdentifier" translate>common.message.invalid</div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+            <div class="form-group row">
+              <div class="col-md-12" *ngIf="branch.result && branch.result.length > 0">
+                <div class="form-group row m-b-0">
+                  <div class="col-md-4 col-lg-5 m-b-sm" translate>common.label.name</div>
+                  <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
+                </div>
+              </div>
+              <div class="col-md-12" style="max-height: calc(100vh - 332px); overflow: auto;min-height: 200px">
+                <div class="form-group row m-b-0" *ngFor="let argument of branch.result; let i = index">
+                    <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
+                      <label class="w-full">
+                        <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == branch.result.length -1"
+                               [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname, branch.result)">
+                      </label>
+                      <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
+                        <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 m-b-sm">
+                      <input type="text" autocomplete="off" class="form-control" [(ngModel)]="argument.value" name="value{{i}}"
+                             placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                    </div>
+                    <div class="col-md-1 col-lg-1 p-l-0">
+                      <a><i (click)="removeResult(i, branch)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                    </div>
+                  </div>
+                <div class="form-group row" >
+                  <div class="col-sm-12" *ngIf="branch.result">
+                    <a class="text-u-l" (click)="addResult(branch);" translate>workflow.button.addResult</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nz-tab>
+        </nz-tabset>
         <div class="row" *ngIf="selectedNode.obj.branches.length === 0">
           <div class="col-md-12">
             <app-empty-data [title]="'workflow.message.noBranchFound'"></app-empty-data>

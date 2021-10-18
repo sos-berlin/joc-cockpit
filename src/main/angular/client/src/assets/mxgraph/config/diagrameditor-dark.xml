@@ -67,6 +67,8 @@
     <hr/>
     <add as="If" template="If" style="if" icon="./assets/mxgraph/images/white-if.png"/>
     <hr/>
+    <add as="Cycle" template="Cycle" style="cycle" icon="./assets/mxgraph/images/white-cycle.png"/>
+    <hr/>
     <add as="Finish" template="Finish" style="finish" icon="./assets/mxgraph/images/white-finish.png"/>
     <hr/>
     <add as="Fail" template="Fail" style="fail" icon="./assets/mxgraph/images/white-fail.png"/>

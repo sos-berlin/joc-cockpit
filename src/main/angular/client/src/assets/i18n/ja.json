@@ -1901,6 +1901,7 @@
     "label.forkListEnd": "ForkList-End",
     "label.branches": "分岐",
     "label.branchId": "分岐ID",
+    "label.branch": "分岐",
     "label.expectNotice": "ExpectNotice",
     "label.fail": "失敗",
     "label.finish": "終了",

@@ -17,7 +17,6 @@ import {CommentModalComponent} from '../../components/comment-modal/comment.comp
 import {ChangeParameterModalComponent} from '../../components/modify-modal/modify.component';
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
-import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 
 declare const $;
 
@@ -527,7 +526,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   /* ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
-    if ($event === 'tree') {
+    if ($event === 'bulk') {
       if (this.tree.length === 0) {
         this.initTree();
       } else {

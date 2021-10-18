@@ -1901,6 +1901,7 @@
     "label.forkListEnd": "ForkList-End",
     "label.branches": "Branches",
     "label.branchId": "ID Branche",
+    "label.branch": "Branche",
     "label.expectNotice": "ExpectNotice",
     "label.fail": "Fail",
     "label.finish": "Finish",

@@ -108,7 +108,7 @@ export class WorkflowService {
   static setStyleToVertex(name, colorCode, theme, graph = null): any {
     const vertexStyle: any = {};
     vertexStyle[mxConstants.STYLE_ROUNDED] = true;
-    if (name === 'if' || name.match('try')) {
+    if (name === 'if' || name === 'cycle' || name.match('try')) {
       vertexStyle.shape = 'rhombus';
       vertexStyle.perimeter = 'rhombusPerimeter';
     }
@@ -124,6 +124,9 @@ export class WorkflowService {
     } else if (name === 'if') {
       vertexStyle.strokeColor = colorCode || '#CDEB8B';
       vertexStyle.fillColor = colorCode || '#CDEB8B';
+    } else if (name === 'cycle') {
+      vertexStyle.strokeColor = colorCode || '#C2b280';
+      vertexStyle.fillColor = colorCode || '#C2b280';
     } else if (name === 'retry') {
       vertexStyle.strokeColor = colorCode || '#FFC7C7';
       vertexStyle.fillColor = colorCode || '#FFC7C7';
@@ -221,6 +224,7 @@ export class WorkflowService {
 
     WorkflowService.setStyleToVertex('job', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('if', colorCode, theme, graph);
+    WorkflowService.setStyleToVertex('cycle', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('retry', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('try', colorCode, theme, graph);
     WorkflowService.setStyleToVertex('catch', colorCode, theme, graph);
@@ -341,7 +345,6 @@ export class WorkflowService {
         obj.defaultArguments = JSON.parse(node._defaultArguments);
       }
     } else if (type === 'Fork') {
-      /*obj.joinVariables = node._joinVariables;*/
       obj.joinIfFailed = node._joinIfFailed;
     } else if (type === 'If') {
       obj.predicate = node._predicate;
@@ -352,6 +355,8 @@ export class WorkflowService {
     } else if (type === 'Lock') {
       obj.lockName = node._lockName;
       obj.count = node._count;
+    } else if (type === 'Cycle') {
+      obj.schedule = node._schedule;
     } else if (type === 'Retry') {
       obj.maxTries = node._maxTries;
       obj.retryDelays = node._retryDelays;
@@ -365,9 +370,6 @@ export class WorkflowService {
       obj.outcome = outcome;
       obj.message = node._message;
       obj.uncatchable = node._uncatchable;
-    } else if (type === 'FileWatcher') {
-      obj.directory = node._directory;
-      obj.regex = node._regex;
     } else if (type === 'PostNotice' || type === 'ExpectNotice') {
       obj.noticeBoardName = node._noticeBoardName;
     } else if (type === 'Prompt') {
@@ -679,6 +681,12 @@ export class WorkflowService {
               delete json.instructions[x].lockedWorkflow;
             }
           }
+          if (json.instructions[x].TYPE === 'Cycle') {
+            if (json.instructions[x].cycleWorkflow) {
+              json.instructions[x].instructions = json.instructions[x].cycleWorkflow.instructions;
+              delete json.instructions[x].cycleWorkflow;
+            }
+          }
           if (json.instructions[x].TYPE === 'ForkList') {
             if (json.instructions[x].workflow) {
               json.instructions[x].instructions = json.instructions[x].workflow.instructions;
@@ -956,7 +964,7 @@ export class WorkflowService {
               });
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
                 recursive(json.instructions[x].branches[i], 'branch', v1);
-                connectInstruction(v1, vertexMap.get(json.instructions[x].branches[i].instructions[0].uuid), json.instructions[x].branches[i].id, 'branch', v1);
+                connectInstruction(v1, vertexMap.get(json.instructions[x].branches[i].instructions[0].uuid), json.instructions[x].branches[i].id, 'branch', v1, json.instructions[x].branches[i].result);
               }
               v2 = joinFork(json.instructions[x].branches, v1, parent);
             } else {
@@ -1014,9 +1022,9 @@ export class WorkflowService {
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
               recursive(json.instructions[x], '', v1);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'retry', 'retry', v1);
-              v2 = endRetry(json.instructions[x], v1.id, parent);
+              v2 = closingNode(json.instructions[x], v1.id, parent, 'Retry');
             } else {
-              v2 = endRetry(v1, v1.id, parent);
+              v2 = closingNode(v1, v1.id, parent, 'Retry');
             }
           } else if (json.instructions[x].TYPE === 'Lock') {
             _node.setAttribute('label', 'lock');
@@ -1034,9 +1042,26 @@ export class WorkflowService {
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
               recursive(json.instructions[x], '', v1);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'lock', 'lock', v1);
-              v2 = endLock(json.instructions[x], v1.id, parent);
+              v2 = closingNode(json.instructions[x], v1.id, parent, 'Lock');
             } else {
-              v2 = endLock(v1, v1.id, parent);
+              v2 = closingNode(v1, v1.id, parent, 'Lock');
+            }
+          } else if (json.instructions[x].TYPE === 'Cycle') {
+            _node.setAttribute('label', 'cycle');
+            if (json.instructions[x].schedule) {
+              _node.setAttribute('schedule', JSON.stringify(json.instructions[x].schedule));
+            }
+            _node.setAttribute('uuid', json.instructions[x].uuid);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
+            if (mapObj.vertixMap && json.instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+            }
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'cycle', 'cycle', v1);
+              v2 = closingNode(json.instructions[x], v1.id, parent, 'Cycle');
+            } else {
+              v2 = closingNode(v1, v1.id, parent, 'Cycle');
             }
           } else if (json.instructions[x].TYPE === 'Try') {
             _node.setAttribute('label', 'try');
@@ -1111,7 +1136,7 @@ export class WorkflowService {
 
           if (x > 0) {
             const prev = json.instructions[x - 1];
-            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'ForkList' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && vertexMap.get(prev.uuid)) {
+            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'ForkList' && prev.TYPE !== 'If' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && prev.TYPE !== 'Cycle' && vertexMap.get(prev.uuid)) {
               connectInstruction(vertexMap.get(prev.uuid), v1, type, type, parent);
             }
           }
@@ -1190,13 +1215,16 @@ export class WorkflowService {
       }
     }
 
-    function connectInstruction(source: any, target: any, label: any, type: any, parent: any): void {
+    function connectInstruction(source: any, target: any, label: any, type: any, parent: any, result = null): void {
       // Create new Connection object
       const connNode = doc.createElement('Connection');
       let str = label;
       if (label.substring(0, 6) === '$TYPE$') {
         type = 'branch';
         str = label.substring(6);
+      }
+      if (result) {
+        connNode.setAttribute('result', JSON.stringify(result));
       }
       connNode.setAttribute('label', str);
       connNode.setAttribute('type', type);
@@ -1298,13 +1326,20 @@ export class WorkflowService {
       return v1;
     }
 
-    function endLock(branches: any, targetId: any, parent: any): any {
-      const _node = doc.createElement('EndLock');
-      _node.setAttribute('label', 'lockEnd');
+    function closingNode(branches: any, targetId: any, parent: any, type): any {
+      const _node = doc.createElement(type === 'Lock' ? 'EndLock' : type === 'Retry' ? 'EndRetry' : 'EndCycle');
+      _node.setAttribute('label', type === 'Lock' ? 'lockEnd' : type === 'Retry' ? 'retryEnd' : 'cycleEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeLock', colorCode, self.theme) : 'closeLock');
+      let v1;
+      if (type === 'Lock') {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeLock', colorCode, self.theme) : 'closeLock');
+      } else if (type === 'Retry') {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
+      } else {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('closeCycle', colorCode, self.theme) : 'closeCycle');
+      }
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
       if (branches.instructions && branches.instructions.length > 0) {
@@ -1316,7 +1351,8 @@ export class WorkflowService {
           } else {
             endNode = vertexMap.get(x.uuid);
           }
-          connectInstruction(endNode, v1, 'endLock', 'endLock', parent);
+          connectInstruction(endNode, v1, type === 'Lock' ? 'endLock' : type === 'Retry' ? 'endRetry' : 'endCycle',
+            type === 'Lock' ? 'endLock' : type === 'Retry' ? 'endRetry' : 'endCycle', parent);
         }
       } else {
         connectInstruction(branches, v1, '', '', parent);
@@ -1360,32 +1396,6 @@ export class WorkflowService {
           }
           v1.value.setAttribute('positions', JSON.stringify(arr));
           connectInstruction(endNode, v1, 'endForkList', 'endForkList', parent);
-        }
-      } else {
-        connectInstruction(branches, v1, '', '', parent);
-      }
-      return v1;
-    }
-
-    function endRetry(branches: any, targetId: any, parent: any): any {
-      const _node = doc.createElement('EndRetry');
-      _node.setAttribute('label', 'retryEnd');
-      if (targetId) {
-        _node.setAttribute('targetId', targetId);
-      }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
-      mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
-
-      if (branches.instructions && branches.instructions.length > 0) {
-        const x = branches.instructions[branches.instructions.length - 1];
-        if (x) {
-          let endNode;
-          if (self.isInstructionCollapsible(x.TYPE)) {
-            endNode = graph.getModel().getCell(mapObj.nodeMap.get(x.id));
-          } else {
-            endNode = vertexMap.get(x.uuid);
-          }
-          connectInstruction(endNode, v1, 'endRetry', 'endRetry', parent);
         }
       } else {
         connectInstruction(branches, v1, '', '', parent);
@@ -1829,7 +1839,7 @@ export class WorkflowService {
 
   isInstructionCollapsible(tagName: string): boolean {
     return (tagName === 'Fork' || tagName === 'ForkList' || tagName === 'If' || tagName === 'Retry'
-      || tagName === 'Lock' || tagName === 'Try');
+      || tagName === 'Lock' || tagName === 'Cycle' || tagName === 'Try');
   }
 
   exportInPng(name, isModal = false): void {
