@@ -59,6 +59,13 @@
         </mxCell>
       </Lock>
     </add>
+    <add as="Cycle" >
+      <Cycle label="cycle">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="75" height="75"/>
+        </mxCell>
+      </Cycle>
+    </add>
     <add as="Try">
       <Try label="try">
         <mxCell vertex="1">

@@ -1711,7 +1711,6 @@ export class JsonEditorModalComponent implements OnInit {
       this.submitted = false;
       this.ref.detectChanges();
     });
-
   }
 
   private parseErrorMsg(res, cb): void {

@@ -45,7 +45,7 @@
   <ul style="margin-bottom: 0">
     <li >
       <a class="hover"
-        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Lock'">
+        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock'">
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
@@ -229,7 +229,7 @@
             </div>
           </div>
       </div>
-      <div *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Lock' || instruction.TYPE === 'ForkList') && (instruction.show)">
+      <div *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'ForkList') && (instruction.show)">
         <div>
           <app-type [timezone]="timezone" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                     [workflowFilters]="workflowFilters" [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>

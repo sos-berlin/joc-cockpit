@@ -1901,6 +1901,7 @@
     "label.forkListEnd": "ForkList-End",
     "label.branches": "Zweig",
     "label.branchId": "Kennung des Zweigs",
+    "label.branch": "Zweigs",
     "label.expectNotice": "ExpectNotice",
     "label.fail": "Fail",
     "label.finish": "Finish",

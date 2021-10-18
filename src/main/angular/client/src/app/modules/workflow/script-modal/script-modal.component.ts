@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {ClipboardService} from 'ngx-clipboard';
 import * as moment from 'moment-timezone';
@@ -21,14 +21,13 @@ export class ScriptModalComponent implements OnInit {
   @Input() timezone: string;
   @Input() readonly: boolean;
 
-  @ViewChild('codeMirror', {static: false}) cm;
-
   preferences: any = {};
   days = [];
   periodList = [];
   tempPeriodList = [];
   cmOption: any = {
     lineNumbers: true,
+    readonly: true,
     viewportMargin: Infinity,
     mode: 'shell'
   };
@@ -38,7 +37,6 @@ export class ScriptModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.cmOption.readonly = this.readonly;
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     if (this.preferences && this.preferences.zone === 'Asia/Calcutta') {
       this.preferences.zone = 'Asia/Kolkata';
