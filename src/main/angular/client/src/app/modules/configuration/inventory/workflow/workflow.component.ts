@@ -160,6 +160,7 @@ export class TimeEditorComponent implements OnInit {
 export class AdmissionTimeComponent implements OnInit, OnDestroy {
   @Input() job: any;
   @Input() data: any;
+  @Input() type: any;
   frequency: any = {
     days: [],
     all: false
@@ -2952,23 +2953,25 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     branch.result.splice(i, 1);
   }
 
-  isStringValid(data, form, list): void {
+  isStringValid(data, form): void {
+    delete data.invalid;
     if (form.invalid) {
       data.name = '';
       data.value = '';
     } else {
       let count = 0;
-      if (list.length > 1) {
-        for (let i in list) {
-          if (list[i].name === data.name) {
+      this.selectedNode.obj.branches.forEach((item) => {
+        for (let i in item.result) {
+          if (item.result[i].name === data.name) {
             ++count;
           }
           if (count > 1) {
+            data.invalid = true;
             form.control.setErrors({incorrect: true});
             break;
           }
         }
-      }
+      });
     }
   }
 
@@ -4036,6 +4039,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                 for (let x = 0; x < instructions[j].branches.length; x++) {
                   if (!instructions[j].branches[x].id) {
                     instructions[j].branches[x].id = connection[i]._label;
+                    instructions[j].branches[x].result = connection[i]._result;
+                    if (instructions[j].branches[x].result) {
+                      instructions[j].branches[x].result = JSON.parse(instructions[j].branches[x].result);
+                    }
                     instructionArr = instructions[j].branches[x].instructions;
                     break;
                   }
@@ -6871,9 +6878,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.cell, 'retryDelays', self.selectedNode.newObj.retryDelays);
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Cycle') {
-            const edit = new mxCellAttributeChange(
-              obj.cell, 'schedule', self.selectedNode.newObj.schedule);
-            graph.getModel().execute(edit);
+            if (self.selectedNode.obj.periodList && self.selectedNode.obj.periodList.length > 0) {
+              if (!self.selectedNode.newObj.schedule.admissionTimeScheme) {
+                self.selectedNode.newObj.schedule.admissionTimeScheme = {};
+              }
+              self.selectedNode.newObj.schedule.admissionTimeScheme.periods = convertListToAdmissionTime(self.selectedNode.obj.periodList, 'DailyPeriod');
+            }
+            if (self.selectedNode.newObj.schedule) {
+              const edit = new mxCellAttributeChange(
+                obj.cell, 'schedule', JSON.stringify(self.selectedNode.newObj.schedule));
+              graph.getModel().execute(edit);
+            }
           } else if (self.selectedNode.type === 'ForkList') {
             const edit = new mxCellAttributeChange(
               obj.cell, 'children', self.selectedNode.newObj.children);
@@ -6928,14 +6943,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edges = graph.getOutgoingEdges(obj.cell);
             for (let i = 0; i < edges.length; i++) {
               for (let j = 0; j < self.selectedNode.newObj.branches.length; j++) {
-                if (self.selectedNode.newObj.branches[j].id && edges[i].id) {
+                if (self.selectedNode.newObj.branches[i].id && edges[i].id) {
                   const edit = new mxCellAttributeChange(
                     edges[i], 'label', self.selectedNode.newObj.branches[i].label || self.selectedNode.obj.branches[i].label);
                   graph.getModel().execute(edit);
                   if (self.selectedNode.newObj.branches[i].result && self.selectedNode.newObj.branches[i].result.length > 0) {
-                    self.coreService.convertArrayToObject(self.selectedNode.newObj.branches[i], 'result', false);
+                    self.selectedNode.newObj.branches[i].result = self.selectedNode.newObj.branches[i].result.filter((argu) => {
+                      self.coreService.addSlashToString(argu, 'value');
+                      return !argu.invalid;
+                    });
+                    self.coreService.convertArrayToObject(self.selectedNode.newObj.branches[i], 'result', true);
                     if (self.selectedNode.newObj.branches[i].result) {
-                      console.log(self.selectedNode.newObj.branches[i].result , edges[i].id);
                       const edit2 = new mxCellAttributeChange(
                         edges[i], 'result', JSON.stringify(self.selectedNode.newObj.branches[i].result));
                       graph.getModel().execute(edit2);
@@ -6955,6 +6973,23 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
+    function convertListToAdmissionTime(list, type): Array<any> {
+      const arr = [];
+      list.forEach((item) => {
+        if (item.periods) {
+          item.periods.forEach((period) => {
+            arr.push({
+              TYPE: type,
+              secondOfWeek: (item.secondOfWeek + period.startTime),
+              duration: period.duration
+            });
+          });
+        }
+      });
+
+      return arr;
+    }
+
     /**
      * Updates the properties panel
      */
@@ -6964,19 +6999,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (!self.selectedNode.job.admissionTimeScheme) {
             self.selectedNode.job.admissionTimeScheme = {};
           }
-          const arr = [];
-          self.selectedNode.periodList.forEach((item) => {
-            if (item.periods) {
-              item.periods.forEach((period) => {
-                arr.push({
-                  TYPE: 'WeekdayPeriod',
-                  secondOfWeek: (item.secondOfWeek + period.startTime),
-                  duration: period.duration
-                });
-              });
-            }
-          });
-          self.selectedNode.job.admissionTimeScheme.periods = arr;
+          self.selectedNode.job.admissionTimeScheme.periods = convertListToAdmissionTime(self.selectedNode.periodList, 'WeekdayPeriod');
         }
         self.cutOperation();
         self.error = false;
@@ -7121,8 +7144,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (!obj.schedule || isEmpty(obj.schedule) || typeof obj.schedule !== 'string') {
             obj.schedule = {};
           } else {
-            obj.schedule = JSON.parse(obj.schedule);
+            try {
+              obj.schedule = JSON.parse(obj.schedule);
+            } catch (e){
+              obj.schedule = {};
+            }
           }
+          obj.periodList = [];
         } else if (cell.value.tagName === 'ForkList') {
           obj.children = cell.getAttribute('children');
           obj.childToId = cell.getAttribute('childToId');
@@ -7160,15 +7188,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           obj.branches = [];
           for (let i = 0; i < edges.length; i++) {
             if (edges[i].target.value.tagName !== 'Join') {
-              let result = edges[i].getAttribute('result');
-              if (result) {
-                result = JSON.parse(result);
-                result = self.coreService.convertObjectToArray({obj : {result}}, 'result');
-                console.log(result);
+              let resultObj = edges[i].getAttribute('result');
+              if (resultObj) {
+                resultObj = JSON.parse(resultObj);
+                resultObj = self.coreService.convertObjectToArray( {result: resultObj}, 'result');
               } else {
-                result = [];
+                resultObj = [];
               }
-              obj.branches.push({id: edges[i].id, label: edges[i].getAttribute('label'), result});
+              obj.branches.push({id: edges[i].id, label: edges[i].getAttribute('label'), result : resultObj});
             }
           }
         }
@@ -9019,9 +9046,11 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (json.instructions[x].branches) {
               json.instructions[x].branches = json.instructions[x].branches.filter((branch) => {
                 branch.workflow = {
-                  instructions: branch.instructions
+                  instructions: branch.instructions,
+                  result: branch.result
                 };
                 delete branch.instructions;
+                delete branch.result;
                 return (branch.workflow.instructions && branch.workflow.instructions.length > 0);
               });
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
@@ -9063,8 +9092,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const scheduleObj = json.instructions[x].schedule ? clone(json.instructions[x].schedule) : null;
             delete json.instructions[x].instructions;
             delete json.instructions[x].schedule;
-            if (scheduleObj) {
-              json.instructions[x].schedule = scheduleObj;
+            if (scheduleObj && typeof scheduleObj === 'string') {
+              json.instructions[x].schedule = JSON.parse(scheduleObj);
+          
             }
           }
           if (json.instructions[x].TYPE === 'ForkList') {
