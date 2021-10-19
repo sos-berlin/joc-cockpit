@@ -192,18 +192,18 @@
                 </div>
               </div>
               <div class="col-md-12" style="max-height: calc(100vh - 332px); overflow: auto;min-height: 200px">
-                <div class="form-group row m-b-0" *ngFor="let argument of branch.result; let i = index">
+                <div class="form-group row m-b-0" *ngFor="let item of branch.result; let i = index">
                     <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
                       <label class="w-full">
                         <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == branch.result.length -1"
-                               [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname, branch.result)">
+                               [(ngModel)]="item.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(item, aname)">
                       </label>
                       <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
                         <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
                       </div>
                     </div>
                     <div class="col-md-6 col-lg-6 m-b-sm">
-                      <input type="text" autocomplete="off" class="form-control" [(ngModel)]="argument.value" name="value{{i}}"
+                      <input type="text" autocomplete="off" class="form-control" [(ngModel)]="item.value" name="value{{i}}"
                              placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
                     </div>
                     <div class="col-md-1 col-lg-1 p-l-0">

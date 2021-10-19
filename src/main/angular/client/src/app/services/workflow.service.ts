@@ -723,6 +723,7 @@ export class WorkflowService {
           if (json.instructions[x].branches) {
             json.instructions[x].branches = json.instructions[x].branches.filter((branch: any) => {
               branch.instructions = branch.workflow.instructions;
+              branch.result = branch.workflow.result;
               delete branch.workflow;
               return (branch.instructions && branch.instructions.length > 0);
             });
