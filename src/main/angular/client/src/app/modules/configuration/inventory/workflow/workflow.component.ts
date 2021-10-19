@@ -94,6 +94,67 @@ export class DurationValidator implements Validator {
 }
 
 @Component({
+  selector: 'app-repeat-editor-modal',
+  templateUrl: './repeat-editor-dialog.html'
+})
+export class RepeatEditorComponent implements OnInit {
+  @Input() data;
+  @Input() period;
+  isNew: boolean;
+  isExist: boolean;
+
+  defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
+  object: any = {};
+
+  @ViewChild('timePicker', {static: true}) tp;
+
+  constructor(public activeModal: NzModalRef, private workflowService: WorkflowService) {
+  }
+
+  ngOnInit(): void {
+    console.log(this.data)
+    if (this.period) {
+      const h = Math.floor(((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
+      const m = Math.floor((((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
+      const s = Math.floor(((((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
+      this.object.startTime = new Date(new Date().setHours(h, m, s));
+      this.object.duration = this.workflowService.convertDurationToHour(this.period.duration);
+    }
+  }
+
+  onTab(): void {
+    this.tp.close();
+  }
+
+  onSubmit(): void {
+    const obj: any = {};
+    const h = this.object.startTime.getHours();
+    const m = this.object.startTime.getMinutes();
+    const s = this.object.startTime.getSeconds();
+    obj.startTime = (h * 60 * 60) + (m * 60) + s;
+    obj.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
+    this.isExist = false;
+    if (this.data.periods.length > 0) {
+      for (const i in this.data.periods) {
+        if (this.data.periods[i].startTime === obj.startTime && this.data.periods[i].duration === obj.duration) {
+          if (!(this.period && this.period.startTime === this.data.periods[i].startTime && this.period.duration === this.data.periods[i].duration)) {
+            this.isExist = true;
+          }
+          break;
+        }
+      }
+    }
+    if (!this.isExist) {
+      this.activeModal.close(obj);
+    }
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
+
+@Component({
   selector: 'app-time-editor-modal',
   templateUrl: './time-editor-dialog.html'
 })
@@ -154,6 +215,109 @@ export class TimeEditorComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-cycle-instruction',
+  templateUrl: './cycle-instruction-editor.html'
+})
+export class CycleInstructionComponent implements OnInit {
+  @Input() selectedNode: any;
+  schemeList = [];
+  data: any = {};
+  days = [];
+
+  constructor(private coreService: CoreService, private modal: NzModalService,
+              private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
+  }
+
+  ngOnInit(): void {
+    if (!this.selectedNode.obj.schedule.schemes) {
+      this.selectedNode.obj.schedule.schemes = [];
+    }
+    this.days = this.coreService.getLocale().days;
+    this.days.push(this.days[0]);
+    if (this.selectedNode.obj.schedule.schemes.length > 0) {
+      this.convertSchemeList();
+    }
+  }
+
+  private convertSchemeList(): void {
+    this.selectedNode.obj.schedule.schemes.forEach((item) => {
+      console.log(item);
+      const obj = {
+        periodList: [],
+        repeat: {}
+      };
+      this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {});
+      this.schemeList.push(obj);
+    });
+    this.ref.detectChanges();
+  }
+
+  addFrequency(): void {
+
+  }
+
+  removeFrequency(data): void {
+
+  }
+
+  addPeriod(data): void {
+    this.editPeriod(null, data);
+  }
+
+  editPeriod(period, data): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: TimeEditorComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        data,
+        period
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((res) => {
+      if (res) {
+        if (period) {
+          data.periods = data.periods.filter((item) => {
+            return item.text !== period.text;
+          });
+        }
+        const p: any = {
+          startTime: res.startTime,
+          duration: res.duration
+        };
+        p.text = this.workflowService.getText(p.startTime, p.duration);
+        data.periods.push(p);
+      }
+    });
+  }
+
+  removePeriod(data, period): void {
+    data.periods = data.periods.filter((item) => {
+      return item !== period;
+    });
+  }
+
+  addScheme(scheme): void {
+    scheme.show = true;
+    this.data.schedule = [];
+    this.data.periodList = [];
+  }
+
+  closeScheme(scheme): void {
+    scheme.show = false;
+    setTimeout(() => {
+      this.selectedNode.obj.schedule.schemes.push({
+        admissionTimeScheme: this.data.schedule.admissionTimeScheme
+      });
+      this.convertSchemeList();
+    }, 100);
+  }
+}
+
+@Component({
   selector: 'app-admission-time',
   templateUrl: './admission-time-dialog.html'
 })
@@ -194,7 +358,8 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.days = this.coreService.getLocale().days;
     this.days.push(this.days[0]);
     if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
-      this.convertSecondIntoWeek();
+      this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
+      this.checkDays();
     }
   }
 
@@ -216,55 +381,11 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     }
     this.job.admissionTimeScheme.periods = arr;
     this.data.periodList = null;
-  }
-
-  private getText(startTime, duration): string {
-    const time = this.workflowService.convertSecondToTime(startTime);
-    const dur = this.workflowService.convertDurationToHour(duration);
-    return 'starting at ' + time + ' for ' + dur;
+ 
   }
 
   onTab(): void {
     this.tp.close();
-  }
-
-  convertSecondIntoWeek(): void {
-    const hour = 3600;
-    this.job.admissionTimeScheme.periods.forEach((period) => {
-      const hours = period.secondOfWeek / hour;
-      const day = Math.floor(hours / 24) + 1;
-      if (this.frequency.days.indexOf(day.toString()) === -1) {
-        this.frequency.days.push(day.toString());
-      }
-      const d = day - 1;
-      const obj: any = {
-        day,
-        secondOfWeek: (d * 24 * 3600),
-        frequency: this.days[day],
-        periods: []
-      };
-      const startTime = period.secondOfWeek - obj.secondOfWeek;
-      const p: any = {
-        startTime,
-        duration: period.duration
-      };
-      p.text = this.getText(p.startTime, p.duration);
-      let flag = true;
-      if (this.data.periodList.length > 0) {
-        for (const i in this.data.periodList) {
-          if (this.data.periodList[i].day == day) {
-            flag = false;
-            this.data.periodList[i].periods.push(p);
-            break;
-          }
-        }
-      }
-      if (flag) {
-        obj.periods.push(p);
-        this.data.periodList.push(obj);
-      }
-    });
-    this.checkDays();
   }
 
   dayChange(value: string[]): void {
@@ -311,7 +432,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
         p.startTime = 0;
       }
       p.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
-      p.text = this.getText(p.startTime, p.duration);
+      p.text = this.workflowService.getText(p.startTime, p.duration);
     }
     const temp = this.coreService.clone(this.data.periodList);
     this.data.periodList = [];
@@ -394,7 +515,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
           startTime: res.startTime,
           duration: res.duration
         };
-        p.text = this.getText(p.startTime, p.duration);
+        p.text = this.workflowService.getText(p.startTime, p.duration);
         data.periods.push(p);
         this.ref.detectChanges();
         this.isValid = true;
@@ -7150,7 +7271,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.schedule = {};
             }
           }
-          obj.periodList = [];
         } else if (cell.value.tagName === 'ForkList') {
           obj.children = cell.getAttribute('children');
           obj.childToId = cell.getAttribute('childToId');
@@ -7688,7 +7808,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else if (clickedCell.value.tagName === 'Lock') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', null), 0, 0, 68, 68, 'closeLock');
             } else if (clickedCell.value.tagName === 'Cycle') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 75, 75, 'closeCycle');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 75, 75, 'cycle');
             } else if (clickedCell.value.tagName === 'ForkList') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', null), 0, 0, 68, 68, 'closeForkList');
             } else {

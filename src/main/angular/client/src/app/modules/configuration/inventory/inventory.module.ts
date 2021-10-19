@@ -23,8 +23,17 @@ import {
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
 import {
-  ExpressionComponent, ImportComponent, JobComponent, ScriptEditorComponent,
-  FindAndReplaceComponent, WorkflowComponent, AdmissionTimeComponent, TimeEditorComponent, DurationValidator
+  ExpressionComponent,
+  ImportComponent,
+  JobComponent,
+  ScriptEditorComponent,
+  FindAndReplaceComponent,
+  WorkflowComponent,
+  AdmissionTimeComponent,
+  TimeEditorComponent,
+  DurationValidator,
+  CycleInstructionComponent,
+  RepeatEditorComponent
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
@@ -39,8 +48,8 @@ import {UpdateJobComponent} from './update-job/update-job.component';
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent,
   SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent, CronImportModalComponent,
-  JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, FindAndReplaceComponent,
-  AdmissionTimeComponent, TimeEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
+  JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, FindAndReplaceComponent, CycleInstructionComponent,
+  AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
 
 @NgModule({
   imports: [
@@ -70,8 +79,8 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     TableComponent,
     LabelValidator,
     EnvVariableValidator,
-    ...COMPONENTS,
-    DurationValidator
+    DurationValidator,
+    ...COMPONENTS
   ]
 })
 export class InventoryModule {

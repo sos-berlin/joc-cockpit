@@ -1339,7 +1339,7 @@ export class WorkflowService {
       } else if (type === 'Retry') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
       } else {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('closeCycle', colorCode, self.theme) : 'closeCycle');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 75, 75, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
       }
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
@@ -1870,5 +1870,50 @@ export class WorkflowService {
 
   getSearchResult(): any {
     return this.searchResult;
+  }
+
+  convertSecondIntoWeek(data, periodList, days, frequency): void {
+    console.log(data);
+    const hour = 3600;
+    data.periods.forEach((period) => {
+      const hours = period.secondOfWeek / hour;
+      const day = Math.floor(hours / 24) + 1;
+      if (frequency.days && frequency.days.indexOf(day.toString()) === -1) {
+        frequency.days.push(day.toString());
+      }
+      const d = day - 1;
+      const obj: any = {
+        day,
+        secondOfWeek: (d * 24 * 3600),
+        frequency: days[day],
+        periods: []
+      };
+      const startTime = period.secondOfWeek - obj.secondOfWeek;
+      const p: any = {
+        startTime,
+        duration: period.duration
+      };
+      p.text = this.getText(p.startTime, p.duration);
+      let flag = true;
+      if (periodList.length > 0) {
+        for (const i in periodList) {
+          if (periodList[i].day == day) {
+            flag = false;
+            periodList[i].periods.push(p);
+            break;
+          }
+        }
+      }
+      if (flag) {
+        obj.periods.push(p);
+        periodList.push(obj);
+      }
+    });
+  }
+
+  getText(startTime, duration): string {
+    const time = this.convertSecondToTime(startTime);
+    const dur = this.convertDurationToHour(duration);
+    return 'starting at ' + time + ' for ' + dur;
   }
 }
