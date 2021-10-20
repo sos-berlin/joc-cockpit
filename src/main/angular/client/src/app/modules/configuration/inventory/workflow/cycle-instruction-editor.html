@@ -7,34 +7,61 @@
       <table class="table table-hover table-bordered ">
         <thead>
         <tr>
-          <th colSpan="2" style="text-align: center;"><span translate>workflow.label.listOfPeriods</span></th>
-          <th rowspan="2" style="text-align: center;vertical-align: middle"><span translate>workflow.label.repeat</span></th>
-        </tr>
-        <tr>
-          <th><span translate>workflow.admissionTime.label.frequency</span></th>
-          <th><span translate>workflow.admissionTime.label.period</span></th>
+          <th><span translate>common.label.action</span></th>
+          <th style="border-right: none"><span translate>workflow.admissionTime.label.frequency</span></th>
+          <th style="border-left: none"><span translate>workflow.admissionTime.label.period</span></th>
+          <th><span translate>workflow.label.repeat</span></th>
         </tr>
         </thead>
-        <tbody *ngFor="let list of schemeList;">
-        <tr *ngFor="let item of list.periodList;">
-          <td>
-            <span>On {{item.frequency}}</span>
-            <a class="text-xs text-hover-color m-l-sm"
-               (click)="removeFrequency(item)"><i class="fa fa-times"></i></a>
+        <tbody >
+        <tr *ngFor="let list of schemeList;let i = index">
+          <td class="menu">
+            <div class="btn-group dropdown">
+              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
+                      type="button">
+                <i class="fa fa-ellipsis-h"></i>
+              </button>
+              <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
+                <ul nz-menu>
+                  <li nz-menu-item><a (click)="editFrequency(list, i);" translate>common.button.edit</a></li>
+                  <li nz-menu-item><a (click)="removeRepeat(i)" translate>inventory.button.delete</a></li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </td>
+          <td colspan="2">
+            <div *ngFor="let item of list.periodList; let j = index">
+              <div class="row">
+                <div class="col-sm-5">
+                  <span>On {{item.frequency}}</span>
+                  <a class="text-xs text-hover-color m-l-sm"
+                     (click)="removeFrequency(j , list.periodList)"><i class="fa fa-times"></i></a>
+                </div>
+                <div class="col-sm-7">
+                  <div *ngFor="let p of item.periods;">
+                    <a (click)="editPeriod(p, item, i)">{{p.text}}</a>
+                    <a (click)="editPeriod(p, item, i)" class="text-xs text-hover-primary m-l-sm">
+                      <i class="fa fa-pencil"></i></a>
+                    <a (click)="removePeriod(item, p, i)" class="text-xs text-hover-color m-l-sm">
+                      <i class="fa fa-times text-hover-color"></i></a>
+                  </div>
+                  <div class="text-xs cursor text-hover-primary">
+                    <i (click)="addPeriod(item, i)" class="fa fa-plus"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
           </td>
           <td>
-            <div *ngFor="let p of item.periods;">
-              <a (click)="editPeriod(p, item)">{{p.text}}</a>
-              <a (click)="editPeriod(p, item)" class="text-xs text-hover-primary m-l-sm">
+            <div *ngIf="list.repeat.TYPE">
+              <a (click)="editRepeat(list, i)">{{list.repeat.text}}</a>
+              <a (click)="editRepeat(list, i)" class="text-xs text-hover-primary m-l-sm">
                 <i class="fa fa-pencil"></i></a>
-              <a (click)="removePeriod(item, p)" class="text-xs text-hover-color m-l-sm">
-                <i class="fa fa-times text-hover-color"></i></a>
             </div>
-            <div class="text-xs cursor text-hover-primary">
-              <i (click)="addPeriod(item)" class="fa fa-plus"></i>
+            <div *ngIf="!list.repeat.TYPE" class="text-xs cursor text-hover-primary">
+              <i (click)="addRepeat(list, i)" class="fa fa-plus"></i>
             </div>
           </td>
-          <td></td>
         </tr>
         </tbody>
       </table>
@@ -51,5 +78,5 @@
     </div>
   </div>
 </div>
-<app-admission-time *ngIf="selectedNode.obj.show" [type]="'Cycle'" [job]="data.schedule" [data]="data"
+<app-admission-time *ngIf="selectedNode.obj.show" [repeatObject]="repeatObject" [job]="data.schedule" [data]="data"
                     (close)="closeScheme(selectedNode.obj)"></app-admission-time>
