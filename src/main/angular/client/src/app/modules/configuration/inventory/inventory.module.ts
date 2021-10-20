@@ -33,7 +33,7 @@ import {
   TimeEditorComponent,
   DurationValidator,
   CycleInstructionComponent,
-  RepeatEditorComponent
+  RepeatEditorComponent, OffsetValidator
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
@@ -80,6 +80,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     LabelValidator,
     EnvVariableValidator,
     DurationValidator,
+    OffsetValidator,
     ...COMPONENTS
   ]
 })

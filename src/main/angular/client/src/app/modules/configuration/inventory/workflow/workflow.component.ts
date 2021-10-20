@@ -93,60 +93,80 @@ export class DurationValidator implements Validator {
   }
 }
 
+@Directive({
+  selector: '[appValidateOffset]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => OffsetValidator), multi: true}
+  ]
+})
+export class OffsetValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (v == '') {
+        return null;
+      }
+      if (/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(v) ||
+        /^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0-9]+\s*$/i.test(v) ||
+        /^((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(v) || /^(\d+)\s*$/.test(v)
+      ) {
+        return null;
+      } else if (/,?$/.test(v)) {
+        const arr = v.split(',');
+        let flag = true;
+        if (arr.length > 0) {
+          arr.forEach(val => {
+            if (!val) {
+              flag = false;
+              return;
+            } else {
+              if (!(/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(val) ||
+                /^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(val) || /^[0-9]+\s*$/i.test(val) ||
+                /^((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(val) || /^(\d+)\s*$/.test(val))) {
+                flag = false;
+              }
+            }
+          });
+        }
+        return flag ? null : {
+          invalidOffset: true
+        };
+      }
+    } else {
+      return null;
+    }
+    return {
+      invalidOffset: true
+    };
+  }
+}
+
 @Component({
   selector: 'app-repeat-editor-modal',
   templateUrl: './repeat-editor-dialog.html'
 })
 export class RepeatEditorComponent implements OnInit {
   @Input() data;
-  @Input() period;
   isNew: boolean;
-  isExist: boolean;
-
-  defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
   object: any = {};
-
-  @ViewChild('timePicker', {static: true}) tp;
 
   constructor(public activeModal: NzModalRef, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
-    console.log(this.data)
-    if (this.period) {
-      const h = Math.floor(((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
-      const m = Math.floor((((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
-      const s = Math.floor(((((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-      this.object.startTime = new Date(new Date().setHours(h, m, s));
-      this.object.duration = this.workflowService.convertDurationToHour(this.period.duration);
+    if (!this.data.TYPE) {
+      this.isNew = true;
+      this.object.TYPE = 'Periodic';
+    } else {
+      this.object = clone(this.data);
     }
-  }
-
-  onTab(): void {
-    this.tp.close();
   }
 
   onSubmit(): void {
-    const obj: any = {};
-    const h = this.object.startTime.getHours();
-    const m = this.object.startTime.getMinutes();
-    const s = this.object.startTime.getSeconds();
-    obj.startTime = (h * 60 * 60) + (m * 60) + s;
-    obj.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
-    this.isExist = false;
-    if (this.data.periods.length > 0) {
-      for (const i in this.data.periods) {
-        if (this.data.periods[i].startTime === obj.startTime && this.data.periods[i].duration === obj.duration) {
-          if (!(this.period && this.period.startTime === this.data.periods[i].startTime && this.period.duration === this.data.periods[i].duration)) {
-            this.isExist = true;
-          }
-          break;
-        }
-      }
+    if (this.object) {
+      this.data = this.object;
     }
-    if (!this.isExist) {
-      this.activeModal.close(obj);
-    }
+    this.activeModal.close(this.data);
   }
 
   cancel(): void {
@@ -222,7 +242,9 @@ export class CycleInstructionComponent implements OnInit {
   @Input() selectedNode: any;
   schemeList = [];
   data: any = {};
+  repeatObject: any = {};
   days = [];
+  isEdit = false;
 
   constructor(private coreService: CoreService, private modal: NzModalService,
               private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
@@ -239,12 +261,54 @@ export class CycleInstructionComponent implements OnInit {
     }
   }
 
+  private getTextOfRepeatObject(obj): any {
+    let str = '';
+    const returnObj: any = {
+      TYPE: obj.TYPE
+    };
+    if (obj.TYPE === 'Periodic') {
+      str = 'Repeat every ';
+      if (obj.period) {
+        returnObj.period = this.workflowService.convertDurationToHour(obj.period);
+        str += returnObj.period;
+      }
+      if (obj.offsets) {
+        str += ' at the ';
+        returnObj.offsets = '';
+        obj.offsets.forEach((offset, index) => {
+          returnObj.offsets += this.workflowService.convertDurationToHour(offset);
+          if (index !== obj.offsets.length - 1) {
+            returnObj.offsets += ', ';
+          }
+        });
+        str += returnObj.offsets;
+      }
+    } else if (obj.TYPE === 'Continuous') {
+      if (obj.pause) {
+        returnObj.pause = this.workflowService.convertDurationToHour(obj.pause);
+        str = returnObj.pause + ' break between repeated execution of the cycle';
+        if (obj.limit) {
+          returnObj.limit = this.workflowService.convertDurationToHour(obj.limit);
+          str += ' and limit is ' + returnObj.limit;
+        }
+      }
+    } else if (obj.TYPE === 'Ticking') {
+      str = 'Execute every ';
+      if (obj.interval) {
+        returnObj.interval = this.workflowService.convertDurationToHour(obj.interval);
+        str += returnObj.interval;
+      }
+    }
+    returnObj.text = str;
+    return returnObj;
+  }
+
   private convertSchemeList(): void {
+    this.schemeList = [];
     this.selectedNode.obj.schedule.schemes.forEach((item) => {
-      console.log(item);
       const obj = {
         periodList: [],
-        repeat: {}
+        repeat: this.getTextOfRepeatObject(item.repeat)
       };
       this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {});
       this.schemeList.push(obj);
@@ -252,19 +316,62 @@ export class CycleInstructionComponent implements OnInit {
     this.ref.detectChanges();
   }
 
-  addFrequency(): void {
-
+  addScheme(scheme): void {
+    scheme.show = true;
+    this.isEdit = false;
+    this.repeatObject = {};
+    this.data.schedule = {};
+    this.data.periodList = [];
   }
 
-  removeFrequency(data): void {
-
+  editFrequency(data, index): void {
+    this.isEdit = true;
+    this.selectedNode.obj.show = true;
+    this.repeatObject = data.repeat;
+    this.repeatObject.index = index;
+    this.data.schedule = this.selectedNode.obj.schedule.schemes[index];
+    this.data.periodList = [];
   }
 
-  addPeriod(data): void {
-    this.editPeriod(null, data);
+  removeFrequency(index, list): void {
+    list.splice(index, 1);
   }
 
-  editPeriod(period, data): void {
+  addRepeat(data, index): void {
+    this.editRepeat(data, index);
+  }
+
+  editRepeat(data, index): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: RepeatEditorComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        data: data.repeat
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((res) => {
+      if (res) {
+        this.selectedNode.obj.schedule.schemes[index].repeat = this.convertRepeatObject(res);
+        data.repeat = this.getTextOfRepeatObject(this.selectedNode.obj.schedule.schemes[index].repeat);
+        this.ref.detectChanges();
+      }
+    });
+  }
+
+  removeRepeat(index): void {
+    this.schemeList.splice(index, 1);
+    this.selectedNode.obj.schedule.schemes.splice(index, 1);
+  }
+
+  addPeriod(data, index): void {
+    this.editPeriod(null, data, index);
+  }
+
+  editPeriod(period, data, index): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: TimeEditorComponent,
@@ -290,28 +397,82 @@ export class CycleInstructionComponent implements OnInit {
         };
         p.text = this.workflowService.getText(p.startTime, p.duration);
         data.periods.push(p);
+        this.ref.detectChanges();
+        const arr = [];
+        if (data.periods) {
+          data.periods.forEach((x) => {
+            const obj: any = {
+              TYPE: 'DailyPeriod',
+              duration: x.duration
+            };
+            obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek) + x.startTime);
+            arr.push(obj);
+          });
+        }
+        this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = arr;
       }
     });
   }
 
-  removePeriod(data, period): void {
+  removePeriod(data, period, index): void {
+    const arr = [];
     data.periods = data.periods.filter((item) => {
+      if (item !== period) {
+        const obj: any = {
+          TYPE: 'DailyPeriod',
+          duration: item.duration
+        };
+        obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek) + item.startTime);
+        arr.push(obj);
+      }
       return item !== period;
     });
+    this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = arr;
   }
 
-  addScheme(scheme): void {
-    scheme.show = true;
-    this.data.schedule = [];
-    this.data.periodList = [];
+  private convertRepeatObject(data): any {
+    const obj: any = {
+      TYPE: data.TYPE
+    };
+    if (data.TYPE === 'Periodic') {
+      if (data.offsets) {
+        const arr = data.offsets.split(',');
+        obj.offsets = [];
+        arr.forEach(val => {
+          obj.offsets.push(this.workflowService.convertStringToDuration(val, true));
+        });
+      }
+      if (data.period) {
+        obj.period = this.workflowService.convertStringToDuration(data.period, true);
+      }
+    } else if (data.TYPE === 'Continuous') {
+      if (data.pause) {
+        obj.pause = this.workflowService.convertStringToDuration(data.pause, true);
+      }
+      if (data.limit) {
+        obj.limit = this.workflowService.convertStringToDuration(data.limit, true);
+      }
+    } else if (data.TYPE === 'Ticking') {
+      if (data.interval) {
+        obj.interval = this.workflowService.convertStringToDuration(data.interval, true);
+      }
+    }
+    return obj;
   }
 
   closeScheme(scheme): void {
     scheme.show = false;
     setTimeout(() => {
-      this.selectedNode.obj.schedule.schemes.push({
-        admissionTimeScheme: this.data.schedule.admissionTimeScheme
-      });
+      if (!this.isEdit) {
+        this.selectedNode.obj.schedule.schemes.push({
+          repeat: this.convertRepeatObject(this.repeatObject),
+          admissionTimeScheme: this.data.schedule.admissionTimeScheme
+        });
+      } else {
+        if (this.repeatObject.index || this.repeatObject.index === 0) {
+          this.selectedNode.obj.schedule.schemes[this.repeatObject.index].repeat = this.convertRepeatObject(this.repeatObject);
+        }
+      }
       this.convertSchemeList();
     }, 100);
   }
@@ -324,7 +485,7 @@ export class CycleInstructionComponent implements OnInit {
 export class AdmissionTimeComponent implements OnInit, OnDestroy {
   @Input() job: any;
   @Input() data: any;
-  @Input() type: any;
+  @Input() repeatObject: any;
   frequency: any = {
     days: [],
     all: false
@@ -355,6 +516,9 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     if (!this.job.admissionTimeScheme) {
       this.job.admissionTimeScheme = {};
     }
+    if (this.repeatObject && !this.repeatObject.TYPE) {
+      this.repeatObject.TYPE = 'Periodic';
+    }
     this.days = this.coreService.getLocale().days;
     this.days.push(this.days[0]);
     if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
@@ -368,11 +532,16 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.data.periodList.forEach((item) => {
       if (item.periods) {
         item.periods.forEach((period) => {
-          arr.push({
-            TYPE: 'WeekdayPeriod',
-            secondOfWeek: (item.secondOfWeek + period.startTime),
+          const obj: any = {
+            TYPE: this.repeatObject ? 'DailyPeriod' : 'WeekdayPeriod',
             duration: period.duration
-          });
+          };
+          if (this.repeatObject) {
+            obj.secondOfDay = ((item.secondOfDay || item.secondOfWeek) + period.startTime);
+          } else {
+            obj.secondOfWeek = (item.secondOfWeek + period.startTime);
+          }
+          arr.push(obj);
         });
       }
     });
@@ -381,7 +550,6 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     }
     this.job.admissionTimeScheme.periods = arr;
     this.data.periodList = null;
- 
   }
 
   onTab(): void {
@@ -3539,7 +3707,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         let _expectNoticeInstructions = clone(objects.ExpectNotice);
         let _postNoticeInstructions = clone(objects.PostNotice);
         let _promptInstructions = clone(objects.Prompt);
-        let _fileWatcherInstructions = clone(objects.FileWatcher);
         let _failInstructions = clone(objects.Fail);
         let _addOrderInstructions = clone(objects.AddOrder);
         let _finishInstructions = clone(objects.Finish);
@@ -3549,7 +3716,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         for (let i in connection) {
           if (dummyNodesId.indexOf(connection[i].mxCell._source) > -1) {
-
             continue;
           } else if (dummyNodesId.indexOf(connection[i].mxCell._target) > -1) {
             continue;
@@ -3691,20 +3857,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               if (connection[i].mxCell._target === _promptInstructions._id) {
                 _promptInstructions = [];
-              }
-            }
-          }
-          if (_fileWatcherInstructions) {
-            if (isArray(_fileWatcherInstructions)) {
-              for (let j = 0; j < _fileWatcherInstructions.length; j++) {
-                if (connection[i].mxCell._target === _fileWatcherInstructions[j]._id) {
-                  _fileWatcherInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _fileWatcherInstructions._id) {
-                _fileWatcherInstructions = [];
               }
             }
           }
@@ -3973,7 +4125,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         const expectNoticeIns = objects.ExpectNotice;
         const postNoticeIns = objects.PostNotice;
         const promptIns = objects.Prompt;
-        const fileWatcherIns = objects.FileWatcher;
         const fail = objects.Fail;
         const addOrder = objects.AddOrder;
         const finish = objects.Finish;
@@ -4076,15 +4227,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             jsonObj.instructions.push(this.workflowService.createObject('Prompt', promptIns));
           }
         }
-        if (fileWatcherIns) {
-          if (isArray(fileWatcherIns)) {
-            for (let i = 0; i < fileWatcherIns.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('FileWatcher', fileWatcherIns[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('FileWatcher', fileWatcherIns));
-          }
-        }
+
         if (addOrder) {
           if (isArray(addOrder)) {
             for (let i = 0; i < addOrder.length; i++) {
@@ -4193,7 +4336,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             }
           } else if (connection[i]._type === 'cycle') {
             for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE === 'cycle' && instructions[j].id === id) {
+              if (instructions[j].TYPE === 'Cycle' && instructions[j].id === id) {
                 if (!instructions[j].instructions) {
                   instructions[j].instructions = [];
                   instructionArr = instructions[j].instructions;
@@ -4510,7 +4653,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     const failInstructions = objects.Fail;
     const addOrderInstructions = objects.AddOrder;
     const finishInstructions = objects.Finish;
-    const fileWatcherInstructions = objects.FileWatcher;
 
     let nextNode: any = {};
 
@@ -4969,27 +5111,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
     if (nextNode && !isEmpty(nextNode)) {
       instructionsArr.push(this.workflowService.createObject('Prompt', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (fileWatcherInstructions) {
-        if (isArray(fileWatcherInstructions)) {
-          for (let i = 0; i < fileWatcherInstructions.length; i++) {
-            if (fileWatcherInstructions[i]._id === id) {
-              nextNode = fileWatcherInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (fileWatcherInstructions._id === id) {
-            nextNode = fileWatcherInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('FileWatcher', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
@@ -6442,9 +6563,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
     /**
      * Function: Check closing cell
-     * @param cell
      */
-    function checkClosingCell(cell) {
+    function checkClosingCell(cell): boolean {
       return cell.value.tagName === 'Join' || cell.value.tagName === 'EndIf' || cell.value.tagName === 'EndForkList' ||
         cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndRetry' || cell.value.tagName === 'EndCycle' ||  cell.value.tagName === 'EndLock';
     }
@@ -6999,12 +7119,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.cell, 'retryDelays', self.selectedNode.newObj.retryDelays);
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Cycle') {
-            if (self.selectedNode.obj.periodList && self.selectedNode.obj.periodList.length > 0) {
-              if (!self.selectedNode.newObj.schedule.admissionTimeScheme) {
-                self.selectedNode.newObj.schedule.admissionTimeScheme = {};
-              }
-              self.selectedNode.newObj.schedule.admissionTimeScheme.periods = convertListToAdmissionTime(self.selectedNode.obj.periodList, 'DailyPeriod');
-            }
             if (self.selectedNode.newObj.schedule) {
               const edit = new mxCellAttributeChange(
                 obj.cell, 'schedule', JSON.stringify(self.selectedNode.newObj.schedule));
@@ -7050,13 +7164,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit = new mxCellAttributeChange(
               obj.cell, 'question', self.selectedNode.newObj.question);
             graph.getModel().execute(edit);
-          } else if (self.selectedNode.type === 'FileWatcher') {
-            const edit1 = new mxCellAttributeChange(
-              obj.cell, 'directory', self.selectedNode.newObj.directory);
-            graph.getModel().execute(edit1);
-            const edit2 = new mxCellAttributeChange(
-              obj.cell, 'regex', self.selectedNode.newObj.regex);
-            graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Fork') {
             const editJoin = new mxCellAttributeChange(
               obj.cell, 'joinIfFailed', self.selectedNode.newObj.joinIfFailed);
@@ -9018,9 +9125,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
 
           if (json.instructions[x].TYPE === 'Retry') {
-            if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].maxTries) {
-
-            } else {
+            if (!(!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].maxTries)) {
               if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
                 flag = false;
                 checkErr = true;
@@ -9032,6 +9137,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                   });
                   self.toasterService.pop('error', msg);
                 }
+                if (isValidate) {
+                  return;
+                }
+              }
+            }
+          }
+
+          if (json.instructions[x].TYPE === 'Cycle') {
+            if (!(!json.instructions[x].id && !json.instructions[x].instructions)) {
+              if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
+                flag = false;
+                checkErr = true;
+                self.invalidMsg = 'workflow.message.invalidCycleInstruction';
                 if (isValidate) {
                   return;
                 }
@@ -9209,12 +9327,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
             };
-            const scheduleObj = json.instructions[x].schedule ? clone(json.instructions[x].schedule) : null;
+            let scheduleObj = json.instructions[x].schedule ? clone(json.instructions[x].schedule) : null;
             delete json.instructions[x].instructions;
             delete json.instructions[x].schedule;
             if (scheduleObj && typeof scheduleObj === 'string') {
-              json.instructions[x].schedule = JSON.parse(scheduleObj);
-          
+              scheduleObj = JSON.parse(scheduleObj);
+              if (scheduleObj.schemes && scheduleObj.schemes.length > 0) {
+                json.instructions[x].schedule = scheduleObj;
+              }
             }
           }
           if (json.instructions[x].TYPE === 'ForkList') {

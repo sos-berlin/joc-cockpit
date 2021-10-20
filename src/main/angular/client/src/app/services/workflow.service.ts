@@ -1873,10 +1873,9 @@ export class WorkflowService {
   }
 
   convertSecondIntoWeek(data, periodList, days, frequency): void {
-    console.log(data);
     const hour = 3600;
     data.periods.forEach((period) => {
-      const hours = period.secondOfWeek / hour;
+      const hours = (period.secondOfWeek || period.secondOfDay) / hour;
       const day = Math.floor(hours / 24) + 1;
       if (frequency.days && frequency.days.indexOf(day.toString()) === -1) {
         frequency.days.push(day.toString());
@@ -1888,7 +1887,7 @@ export class WorkflowService {
         frequency: days[day],
         periods: []
       };
-      const startTime = period.secondOfWeek - obj.secondOfWeek;
+      const startTime = (period.secondOfWeek || period.secondOfDay) - obj.secondOfWeek;
       const p: any = {
         startTime,
         duration: period.duration
