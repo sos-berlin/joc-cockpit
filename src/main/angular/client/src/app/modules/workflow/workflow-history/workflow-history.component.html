@@ -57,17 +57,19 @@
             <td [innerHtml]="history.endTime | stringToDate"></td>
             <td [innerHtml]="history.startTime | duration:history.endTime"></td>
           </tr>
-          <tr *ngIf="history.show && history.arguments">
-            <td colspan="8">
-              <app-order-variable [order]="history" [type]="'arguments'" [schedulerId]="schedulerIds.selected"></app-order-variable>
-            </td>
-          </tr>
-          <tr *ngIf="history.show">
-            <td colspan="8" style="padding:0 !important;">
-              <app-order-history-template class="order-history-template0" style="display: block" [history]="history"
-                                          [schedulerId]="schedulerIds.selected"></app-order-history-template>
-            </td>
-          </tr>
+          <ng-container *ngIf="history.show">
+            <tr *ngIf="history.arguments">
+              <td colspan="8">
+                <app-order-variable [order]="history" [type]="'arguments'" [schedulerId]="schedulerIds.selected"></app-order-variable>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="8" style="padding:0 !important;">
+                <app-order-history-template class="order-history-template0" style="display: block" [history]="history"
+                                            [schedulerId]="schedulerIds.selected"></app-order-history-template>
+              </td>
+            </tr>
+          </ng-container>
         </ng-template>
         </tbody>
       </nz-table>

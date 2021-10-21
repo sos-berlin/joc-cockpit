@@ -153,23 +153,23 @@
                         <tbody>
                         <tr *ngFor="let order of innerChildTable.data">
                           <td>
-                                      <span class="show-in-single-line m-l-sm">
-                                        <i *ngIf="order.documentationName" (click)="coreService.showDocumentation(order.documentationName, preferences)" class="cursor fa fa-book p-r-xs"></i>
-                                        <span class="text-dark">
-                                          <i (click)="coreService.navToInventoryTab(order.path, 'FILEORDERSOURCE')"
-                                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                                          <span [innerHtml]="order.path"></span>
-                                          <i *ngIf="order.title"> - </i>
-                                          <i class="text-muted">{{order.title}}</i>
-                                        </span>
-                                      </span>
+                            <span class="show-in-single-line m-l-sm">
+                              <i *ngIf="order.documentationName" (click)="coreService.showDocumentation(order.documentationName, preferences)" class="cursor fa fa-book p-r-xs"></i>
+                              <span class="text-dark">
+                                <i (click)="coreService.navToInventoryTab(order.path, 'FILEORDERSOURCE')"
+                                   class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                                <span [innerHtml]="order.path"></span>
+                                <i *ngIf="order.title"> - </i>
+                                <i class="text-muted">{{order.title}}</i>
+                              </span>
+                            </span>
                           </td>
                           <td>
                             <span [innerHtml]="order.versionDate | stringToDate"></span>
                           </td>
                           <td>
-                                      <span class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
-                                            [innerHtml]="order.state._text | translate"></span>
+                            <span class="label" *ngIf="order.state" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
+                                  [innerHtml]="order.state._text | translate"></span>
                           </td>
                           <td>{{order.agentName}}</td>
                           <td>{{order.directory}}</td>

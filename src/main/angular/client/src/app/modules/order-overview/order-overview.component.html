@@ -136,7 +136,7 @@
             (setState)="changeStatus($event)" ></app-pie-chart>
           </div>
         </aside>
-        <div appResizable [sideView]="sideView.orderOverview" id="leftPanel" class="sticky leftPanel" *ngIf="pageView === 'bulk' && tree.length>0">
+        <div appResizable [sideView]="sideView.orderOverview" id="leftPanel" class="sticky leftPanel" *ngIf="pageView === 'bulk'">
           <app-tree-nagivation [tree]="tree" [sideView]="sideView.workflow"
                                [defaultSelectedKeys]="orderFilters.selectedkeys"
                                [defaultExpandedKeys]="orderFilters.expandedKeys"
