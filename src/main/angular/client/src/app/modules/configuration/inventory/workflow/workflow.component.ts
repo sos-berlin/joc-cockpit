@@ -241,16 +241,16 @@ export class TimeEditorComponent implements OnInit {
 export class CycleInstructionComponent implements OnInit {
   @Input() selectedNode: any;
   schemeList = [];
-  data: any = {};
-  repeatObject: any = {};
   days = [];
-  isEdit = false;
 
   constructor(private coreService: CoreService, private modal: NzModalService,
               private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
+    this.selectedNode.repeatObject = {};
+    this.selectedNode.data = {};
+    this.selectedNode.isEdit = false;
     if (!this.selectedNode.obj.schedule.schemes) {
       this.selectedNode.obj.schedule.schemes = [];
     }
@@ -310,7 +310,9 @@ export class CycleInstructionComponent implements OnInit {
         periodList: [],
         repeat: this.getTextOfRepeatObject(item.repeat)
       };
-      this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {});
+      if (item.admissionTimeScheme && item.admissionTimeScheme.periods) {
+        this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {});
+      }
       this.schemeList.push(obj);
     });
     this.ref.detectChanges();
@@ -318,19 +320,19 @@ export class CycleInstructionComponent implements OnInit {
 
   addScheme(scheme): void {
     scheme.show = true;
-    this.isEdit = false;
-    this.repeatObject = {};
-    this.data.schedule = {};
-    this.data.periodList = [];
+    this.selectedNode.isEdit = false;
+    this.selectedNode.repeatObject = {};
+    this.selectedNode.data.schedule = {};
+    this.selectedNode.data.periodList = [];
   }
 
   editFrequency(data, index): void {
-    this.isEdit = true;
+    this.selectedNode.isEdit = true;
     this.selectedNode.obj.show = true;
-    this.repeatObject = data.repeat;
-    this.repeatObject.index = index;
-    this.data.schedule = this.selectedNode.obj.schedule.schemes[index];
-    this.data.periodList = [];
+    this.selectedNode.repeatObject = data.repeat;
+    this.selectedNode.repeatObject.index = index;
+    this.selectedNode.data.schedule = this.selectedNode.obj.schedule.schemes[index];
+    this.selectedNode.data.periodList = [];
   }
 
   removeFrequency(index, list): void {
@@ -355,7 +357,7 @@ export class CycleInstructionComponent implements OnInit {
     });
     modal.afterClose.subscribe((res) => {
       if (res) {
-        this.selectedNode.obj.schedule.schemes[index].repeat = this.convertRepeatObject(res);
+        this.selectedNode.obj.schedule.schemes[index].repeat = this.workflowService.convertRepeatObject(res);
         data.repeat = this.getTextOfRepeatObject(this.selectedNode.obj.schedule.schemes[index].repeat);
         this.ref.detectChanges();
       }
@@ -430,49 +432,22 @@ export class CycleInstructionComponent implements OnInit {
     this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = arr;
   }
 
-  private convertRepeatObject(data): any {
-    const obj: any = {
-      TYPE: data.TYPE
-    };
-    if (data.TYPE === 'Periodic') {
-      if (data.offsets) {
-        const arr = data.offsets.split(',');
-        obj.offsets = [];
-        arr.forEach(val => {
-          obj.offsets.push(this.workflowService.convertStringToDuration(val, true));
-        });
-      }
-      if (data.period) {
-        obj.period = this.workflowService.convertStringToDuration(data.period, true);
-      }
-    } else if (data.TYPE === 'Continuous') {
-      if (data.pause) {
-        obj.pause = this.workflowService.convertStringToDuration(data.pause, true);
-      }
-      if (data.limit) {
-        obj.limit = this.workflowService.convertStringToDuration(data.limit, true);
-      }
-    } else if (data.TYPE === 'Ticking') {
-      if (data.interval) {
-        obj.interval = this.workflowService.convertStringToDuration(data.interval, true);
-      }
-    }
-    return obj;
-  }
 
   closeScheme(scheme): void {
     scheme.show = false;
     setTimeout(() => {
-      if (!this.isEdit) {
+      if (!this.selectedNode.isEdit) {
         this.selectedNode.obj.schedule.schemes.push({
-          repeat: this.convertRepeatObject(this.repeatObject),
-          admissionTimeScheme: this.data.schedule.admissionTimeScheme
+          repeat: this.workflowService.convertRepeatObject(this.selectedNode.repeatObject),
+          admissionTimeScheme: this.selectedNode.data.schedule.admissionTimeScheme
         });
       } else {
-        if (this.repeatObject.index || this.repeatObject.index === 0) {
-          this.selectedNode.obj.schedule.schemes[this.repeatObject.index].repeat = this.convertRepeatObject(this.repeatObject);
+        if (this.selectedNode.repeatObject.index || this.selectedNode.repeatObject.index === 0) {
+          this.selectedNode.obj.schedule.schemes[this.selectedNode.repeatObject.index].repeat = this.workflowService.convertRepeatObject(this.selectedNode.repeatObject);
         }
       }
+      this.selectedNode.repeatObject = {};
+      this.selectedNode.data = {};
       this.convertSchemeList();
     }, 100);
   }
@@ -523,6 +498,11 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.days.push(this.days[0]);
     if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
       this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
+      if (this.data.periodList.length > 0) {
+        if (!this.data.periodList[0].frequency) {
+          this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
+        }
+      }
       this.checkDays();
     }
   }
@@ -533,13 +513,13 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       if (item.periods) {
         item.periods.forEach((period) => {
           const obj: any = {
-            TYPE: this.repeatObject ? 'DailyPeriod' : 'WeekdayPeriod',
+            TYPE: !item.frequency ? 'DailyPeriod' : 'WeekdayPeriod',
             duration: period.duration
           };
-          if (this.repeatObject) {
-            obj.secondOfDay = ((item.secondOfDay || item.secondOfWeek) + period.startTime);
+          if (!item.frequency) {
+            obj.secondOfDay = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
           } else {
-            obj.secondOfWeek = (item.secondOfWeek + period.startTime);
+            obj.secondOfWeek = (item.secondOfWeek + period.startTime || 0);
           }
           arr.push(obj);
         });
@@ -604,41 +584,49 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     }
     const temp = this.coreService.clone(this.data.periodList);
     this.data.periodList = [];
-    this.frequency.days.forEach((day) => {
-      const d = parseInt(day, 10) - 1;
-      const obj: any = {
-        day,
-        secondOfWeek: (d * 24 * 3600),
-        frequency: this.days[parseInt(day, 10)],
-        periods: []
-      };
-      if (temp.length > 0) {
-        for (const i in temp) {
-          if (temp[i] && temp[i].day == day) {
-            obj.periods = temp[i].periods;
-            break;
-          }
-        }
-      }
-      if (p) {
-        let isCheck = true;
-        if (obj.periods.length > 0) {
-          obj.periods.forEach((per) => {
-            if (per.text === p.text) {
-              isCheck = false;
-            }
-          });
-        }
-        if (isCheck) {
-          obj.periods.push(p);
-        }
-      }
-      if (obj.periods.length === 0) {
-        this.isValid = false;
-      }
-      this.data.periodList.push(obj);
-    });
+    if (this.frequency.days.length === 7 && this.repeatObject) {
+      this.addFrequencyAndPeriod('1', temp, p, true);
+    } else {
+      this.frequency.days.forEach((day) => {
+        this.addFrequencyAndPeriod(day, temp, p, false);
+      });
+    }
     this.object = {};
+  }
+
+  private addFrequencyAndPeriod(day, temp, p, isDaily): void{
+    const d = parseInt(day, 10) - 1;
+    const obj: any = {
+      day,
+      secondOfWeek: (d * 24 * 3600),
+      frequency: isDaily ? '' : this.days[parseInt(day, 10)],
+      periods: []
+    };
+    if (temp.length > 0) {
+      for (const i in temp) {
+        if (temp[i] && temp[i].day == day) {
+          obj.periods = temp[i].periods;
+          break;
+        }
+      }
+    }
+    if (p) {
+      let isCheck = true;
+      if (obj.periods.length > 0) {
+        obj.periods.forEach((per) => {
+          if (per.text === p.text) {
+            isCheck = false;
+          }
+        });
+      }
+      if (isCheck) {
+        obj.periods.push(p);
+      }
+    }
+    if (obj.periods.length === 0) {
+      this.isValid = false;
+    }
+    this.data.periodList.push(obj);
   }
 
   closeRuntime(): void {
@@ -7119,9 +7107,41 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               obj.cell, 'retryDelays', self.selectedNode.newObj.retryDelays);
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Cycle') {
-            if (self.selectedNode.newObj.schedule) {
+            if (self.selectedNode.obj.schedule) {
+              if (self.selectedNode.data.schedule && self.selectedNode.data.schedule.admissionTimeScheme) {
+                let flag = true;
+                if (self.selectedNode.repeatObject.TYPE === 'Periodic') {
+                  if (!self.selectedNode.repeatObject.period) {
+                    flag = false;
+                  }
+                } else if (self.selectedNode.repeatObject.TYPE === 'Continuous') {
+                  if (!self.selectedNode.repeatObject.pause) {
+                    flag = false;
+                  }
+
+                } else if (self.selectedNode.repeatObject.TYPE === 'Ticking') {
+                  if (!self.selectedNode.repeatObject.interval) {
+                    flag = false;
+                  }
+                }
+                if (flag) {
+                  if (self.selectedNode.data.periodList) {
+                    self.selectedNode.data.schedule.admissionTimeScheme.periods = convertListToAdmissionTime(self.selectedNode.data.periodList);
+                  }
+                  if (!self.selectedNode.isEdit) {
+                    self.selectedNode.obj.schedule.schemes.push({
+                      repeat: self.workflowService.convertRepeatObject(self.selectedNode.repeatObject),
+                      admissionTimeScheme: self.selectedNode.data.schedule.admissionTimeScheme
+                    });
+                  } else {
+                    if (self.selectedNode.repeatObject.index || self.selectedNode.repeatObject.index === 0) {
+                      self.selectedNode.obj.schedule.schemes[self.selectedNode.repeatObject.index].repeat = self.workflowService.convertRepeatObject(self.selectedNode.repeatObject);
+                    }
+                  }
+                }
+              }
               const edit = new mxCellAttributeChange(
-                obj.cell, 'schedule', JSON.stringify(self.selectedNode.newObj.schedule));
+                obj.cell, 'schedule', JSON.stringify(self.selectedNode.obj.schedule));
               graph.getModel().execute(edit);
             }
           } else if (self.selectedNode.type === 'ForkList') {
@@ -7201,16 +7221,21 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
     }
 
-    function convertListToAdmissionTime(list, type): Array<any> {
+    function convertListToAdmissionTime(list): Array<any> {
       const arr = [];
       list.forEach((item) => {
         if (item.periods) {
           item.periods.forEach((period) => {
-            arr.push({
-              TYPE: type,
-              secondOfWeek: (item.secondOfWeek + period.startTime),
+            const obj: any = {
+              TYPE: item.frequency ? 'WeekdayPeriod' : 'DailyPeriod',
               duration: period.duration
-            });
+            };
+            if (obj.TYPE === 'DailyPeriod') {
+              obj.secondOfDay = ((item.secondOfWeek || item.secondOfDay || 0) + period.startTime);
+            } else {
+              obj.secondOfWeek = ((item.secondOfWeek || 0) + period.startTime);
+            }
+            arr.push(obj);
           });
         }
       });
@@ -7227,7 +7252,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           if (!self.selectedNode.job.admissionTimeScheme) {
             self.selectedNode.job.admissionTimeScheme = {};
           }
-          self.selectedNode.job.admissionTimeScheme.periods = convertListToAdmissionTime(self.selectedNode.periodList, 'WeekdayPeriod');
+          self.selectedNode.job.admissionTimeScheme.periods = convertListToAdmissionTime(self.selectedNode.periodList);
         }
         self.cutOperation();
         self.error = false;

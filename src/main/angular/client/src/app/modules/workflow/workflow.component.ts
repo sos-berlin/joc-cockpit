@@ -122,11 +122,11 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (const j in args.eventSnapshots) {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow
-          && this.path === args.eventSnapshots[j].workflow.path && args.eventSnapshots[j].workflow === this.versionId) {
+          && this.path === args.eventSnapshots[j].workflow.path && args.eventSnapshots[j].workflow.versionId === this.versionId) {
           this.getOrders({
             compact: true,
             controllerId: this.controllerId,
-            workflowIds: args.eventSnapshots[j].workflow
+            workflowIds: [args.eventSnapshots[j].workflow]
           });
           break;
         }
@@ -155,6 +155,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
       if (this.permission && this.permission.joc && (this.permission.currentController.orders.view || this.permission.joc.auditLog.view)) {
         this.showPanel = this.workflows[0];
       }
+      this.showPanelFuc(this.workflows[0]);
     }, () => {
       this.loading = false;
     });

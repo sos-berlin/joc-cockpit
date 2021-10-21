@@ -1284,9 +1284,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (result) {
         this.isProcessing = true;
         this.resetAction(5000);
-        setTimeout(() => {
-          this.updateList();
-        }, 750);
       }
     });
   }
@@ -2457,8 +2454,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/)) {
-          //this.load(args.eventSnapshots[j].message ? new Date(args.eventSnapshots[j].message) : this.selectedDate);
-          this.updateList();
+          this.load(args.eventSnapshots[j].message ? new Date(args.eventSnapshots[j].message) : this.selectedDate);
           if (!args.eventSnapshots[j].message
             || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) {
             this.refreshView();

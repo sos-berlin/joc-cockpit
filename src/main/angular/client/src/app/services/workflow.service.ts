@@ -1875,10 +1875,13 @@ export class WorkflowService {
   convertSecondIntoWeek(data, periodList, days, frequency): void {
     const hour = 3600;
     data.periods.forEach((period) => {
-      const hours = (period.secondOfWeek || period.secondOfDay) / hour;
+      let hours = (period.secondOfWeek || period.secondOfDay) / hour;
       const day = Math.floor(hours / 24) + 1;
       if (frequency.days && frequency.days.indexOf(day.toString()) === -1) {
         frequency.days.push(day.toString());
+      }
+      if (isNaN(hours)){
+        hours = 0;
       }
       const d = day - 1;
       const obj: any = {
@@ -1887,7 +1890,11 @@ export class WorkflowService {
         frequency: days[day],
         periods: []
       };
-      const startTime = (period.secondOfWeek || period.secondOfDay) - obj.secondOfWeek;
+
+      if (period.TYPE === 'DailyPeriod'){
+        obj.frequency = '';
+      }
+      const startTime = (period.secondOfWeek || period.secondOfDay || 0) - obj.secondOfWeek;
       const p: any = {
         startTime,
         duration: period.duration
@@ -1908,6 +1915,36 @@ export class WorkflowService {
         periodList.push(obj);
       }
     });
+  }
+
+  convertRepeatObject(data): any {
+    const obj: any = {
+      TYPE: data.TYPE
+    };
+    if (data.TYPE === 'Periodic') {
+      if (data.offsets) {
+        const arr = data.offsets.split(',');
+        obj.offsets = [];
+        arr.forEach(val => {
+          obj.offsets.push(this.convertStringToDuration(val, true));
+        });
+      }
+      if (data.period) {
+        obj.period = this.convertStringToDuration(data.period, true);
+      }
+    } else if (data.TYPE === 'Continuous') {
+      if (data.pause) {
+        obj.pause = this.convertStringToDuration(data.pause, true);
+      }
+      if (data.limit) {
+        obj.limit = this.convertStringToDuration(data.limit, true);
+      }
+    } else if (data.TYPE === 'Ticking') {
+      if (data.interval) {
+        obj.interval = this.convertStringToDuration(data.interval, true);
+      }
+    }
+    return obj;
   }
 
   getText(startTime, duration): string {

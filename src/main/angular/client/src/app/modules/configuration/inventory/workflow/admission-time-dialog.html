@@ -97,7 +97,7 @@
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" translate>runtime.label.startTime</label>
         <div class="col-sm-6">
-          <nz-time-picker #timePicker nzFormat="HH:mm:ss" [(ngModel)]="object.startTime" name="startTime" (keydown.Tab)="onTab()" nzPlaceHolder="HH:MM:SS"></nz-time-picker>
+          <nz-time-picker #timePicker [nzDefaultOpenValue]="defaultOpenValue" [(ngModel)]="object.startTime" name="startTime" (keydown.Tab)="onTab()" nzPlaceHolder="HH:MM:SS"></nz-time-picker>
         </div>
       </div>
       <div class="form-group row">
@@ -137,7 +137,8 @@
           <tbody>
           <tr *ngFor="let item of data.periodList;">
             <td>
-              <span>On {{item.frequency}}</span>
+              <span *ngIf="item.frequency">On {{item.frequency}}</span>
+              <span *ngIf="!item.frequency">Every day</span>
               <a class="text-xs text-hover-color m-l-sm"
                  (click)="removeFrequency(item)"><i class="fa fa-times"></i></a>
             </td>
