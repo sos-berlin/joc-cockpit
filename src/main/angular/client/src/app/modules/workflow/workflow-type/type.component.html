@@ -35,6 +35,23 @@
       <span class="_600 p-l-sm" translate>order.label.orders</span>:
       {{order.cyclicOrder.count}}
     </div>
+    <div class="m-a-sm m-t-0" *ngIf="order.cycleState">
+      <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
+      <span class="_600 p-l-sm" translate>order.cycleState.label.end</span>:
+      {{order.cycleState.end | stringToDate}}
+      <br>
+      <span *ngIf="order.cycleState.since">
+        <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+        {{order.cycleState.since | stringToDate}}
+      </span>
+      <span *ngIf="order.cycleState.next">
+        <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+        {{order.cycleState.next | stringToDate}}
+      </span>
+      <br>
+      <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
+      {{order.cycleState.index}}
+    </div>
   </ng-template>
   <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)"
                     [preferences]="preferences"></app-order-action>

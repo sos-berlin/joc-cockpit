@@ -1662,6 +1662,7 @@ export class WorkflowService {
         let _text = '';
         let _markedText = '';
         let scheduledFor = '', cyclicOrder = '', begin = '', end = '', orders = '';
+        let cycleState = '', since = '', next = '', end1 = '', index = '';
         this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
           orderId = translatedValue;
         });
@@ -1698,6 +1699,23 @@ export class WorkflowService {
             orders = translatedValue;
           });
         }
+        if (data.cycleState) {
+          this.translate.get('order.cycleState.label.cycleState').subscribe(translatedValue => {
+            cycleState = translatedValue;
+          });
+          this.translate.get('order.cycleState.label.end').subscribe(translatedValue => {
+            end1 = translatedValue;
+          });
+          this.translate.get('order.cycleState.label.since').subscribe(translatedValue => {
+            since = translatedValue;
+          });
+          this.translate.get('order.cycleState.label.next').subscribe(translatedValue => {
+            next = translatedValue;
+          });
+          this.translate.get('order.cycleState.label.index').subscribe(translatedValue => {
+            index = translatedValue;
+          });
+        }
         const class1 = this.coreService.getColor(data.state.severity, 'text');
         const class2 = data.marked ? this.coreService.getColor(data.marked.severity, 'text') : '';
         let div = '<div><b>' + orderId + '</b> : ' + (data.orderId || '-') + '</br>' +
@@ -1705,7 +1723,7 @@ export class WorkflowService {
         if (_reason) {
           div = div + '<b>' + _reason + '</b> : ' + (data.state._reason || '-') + '</br>';
         }
-        if(data.obstacles && data.obstacles.length > 0) {
+        if (data.obstacles && data.obstacles.length > 0) {
           for (let i = 0; i < data.obstacles.length; i++) {
             this.translate.get(data.obstacles[i].type).subscribe(translatedValue => {
               div = div + '<b>' + translatedValue + '</b> : ' + this.stringDatePipe.transform(data.obstacles[i].until) + '</br>';
@@ -1717,6 +1735,17 @@ export class WorkflowService {
           div = div + '<b class="p-l-sm">' + begin + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.firstStart) + '</br>';
           div = div + '<b class="p-l-sm">' + end + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.lastStart) + '</br>';
           div = div + '<b class="p-l-sm">' + orders + '</b> : ' + data.cyclicOrder.count;
+        }
+        if (data.cycleState) {
+          div = div + '<b class="m-b-xs">' + cycleState + '</b></br>';
+          div = div + '<b class="p-l-sm">' + end1 + '</b> : ' + this.stringDatePipe.transform(data.cycleState.end) + '</br>';
+          if (data.cycleState.since) {
+            div = div + '<b class="p-l-sm">' + since + '</b> : ' + this.stringDatePipe.transform(data.cycleState.since) + '</br>';
+          }
+          if (data.cycleState.next) {
+            div = div + '<b class="p-l-sm">' + next + '</b> : ' + this.stringDatePipe.transform(data.cycleState.next) + '</br>';
+          }
+          div = div + '<b class="p-l-sm">' + index + '</b> : ' + data.cycleState.index;
         } else {
           if (data.scheduledFor) {
             if (!data.scheduledNever) {

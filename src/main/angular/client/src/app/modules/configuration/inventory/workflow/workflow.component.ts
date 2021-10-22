@@ -7068,22 +7068,22 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           } else if (self.selectedNode.type === 'Cycle') {
             if (self.selectedNode.obj.schedule) {
               if (self.selectedNode.data.schedule && self.selectedNode.data.schedule.admissionTimeScheme) {
-                let flag = true;
+                let flag1 = true;
                 if (self.selectedNode.repeatObject.TYPE === 'Periodic') {
                   if (!self.selectedNode.repeatObject.period) {
-                    flag = false;
+                    flag1 = false;
                   }
                 } else if (self.selectedNode.repeatObject.TYPE === 'Continuous') {
                   if (!self.selectedNode.repeatObject.pause) {
-                    flag = false;
+                    flag1 = false;
                   }
 
                 } else if (self.selectedNode.repeatObject.TYPE === 'Ticking') {
                   if (!self.selectedNode.repeatObject.interval) {
-                    flag = false;
+                    flag1 = false;
                   }
                 }
-                if (flag) {
+                if (flag1) {
                   if (self.selectedNode.data.periodList) {
                     self.selectedNode.data.schedule.admissionTimeScheme.periods = convertListToAdmissionTime(self.selectedNode.data.periodList);
                   }
@@ -9316,9 +9316,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             delete json.instructions[x].schedule;
             if (scheduleObj && typeof scheduleObj === 'string') {
               scheduleObj = JSON.parse(scheduleObj);
-              if (scheduleObj.schemes && scheduleObj.schemes.length > 0) {
-                json.instructions[x].schedule = scheduleObj;
-              }
+            }
+            if (scheduleObj.schemes && scheduleObj.schemes.length > 0) {
+              json.instructions[x].schedule = scheduleObj;
             }
           }
           if (json.instructions[x].TYPE === 'ForkList') {
