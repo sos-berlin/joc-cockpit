@@ -367,7 +367,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}],
       dateTo: this.workflowFilters.date !== 'ALL' ? this.workflowFilters.date : undefined,
       timeZone: this.preferences.zone,
-      limit: this.preferences.maxOrderRecords
+      limit: this.preferences.maxWorkflowRecords
     };
     if (this.workflowFilters.date === '2d'){
       obj.dateFrom = '1d';

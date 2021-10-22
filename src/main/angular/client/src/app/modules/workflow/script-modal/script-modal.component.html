@@ -3,7 +3,7 @@
     <span translate>workflow.label.showConfiguration</span>
     <i class="text-muted p-l-xs text">{{jobName}}</i>
   </h4>
-  <h4 class="modal-title" *ngIf="predicate">
+  <h4 class="modal-title" *ngIf="!jobName">
     <span translate>workflow.label.showConfiguration</span>
   </h4>
   <button type="button" class="close" aria-label="Close"
@@ -20,7 +20,7 @@
           <ngx-codemirror name="cm" [(ngModel)]="data" [options]="cmOption"></ngx-codemirror>
         </div>
       </div>
-      <div class="col-md-12" *ngIf="!isScript">
+      <div class="col-md-12" *ngIf="!isScript && data">
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" translate>workflow.label.className</label>
           <div class=" col-sm-8">
@@ -28,9 +28,45 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-3 m-t" *ngIf="periodList.length > 0" translate>workflow.label.timeZone</div>
-      <div class="col-sm-8 m-t" *ngIf="periodList.length > 0">
+      <div class="col-sm-3" [ngClass]="{'m-t' : data}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.label.timeZone</div>
+      <div class="col-sm-8" [ngClass]="{'m-t' : data}" *ngIf="periodList.length > 0 || schemeList.length > 0">
         {{timezone}}
+      </div>
+      <div class="col-md-12 m-t-sm" *ngIf="schedule">
+        <label class="_600 m-b-xs" translate>workflow.label.listOfSchemes</label>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered ">
+            <thead>
+            <tr>
+              <th style="border-right: none"><span translate>workflow.admissionTime.label.frequency</span></th>
+              <th style="border-left: none"><span translate>workflow.admissionTime.label.period</span></th>
+              <th><span translate>workflow.label.repeat</span></th>
+            </tr>
+            </thead>
+            <tbody >
+            <tr *ngFor="let list of schemeList">
+              <td colspan="2">
+                <div *ngFor="let item of list.periodList">
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <span *ngIf="item.frequency">On {{item.frequency}}</span>
+                      <span *ngIf="!item.frequency">Every day</span>
+                    </div>
+                    <div class="col-sm-7">
+                      <div *ngFor="let p of item.periods;">
+                        <span>{{p.text}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span>{{list.repeat.text}}</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <div class="col-md-12 m-t-sm" *ngIf="periodList.length > 0">
         <label class="_600 m-b-xs" translate>workflow.label.admissionTime</label>
@@ -55,7 +91,7 @@
           </table>
         </div>
       </div>
-      <div class="col-md-12" *ngIf="periodList.length > 0">
+      <div class="col-md-12" *ngIf="periodList.length > 0 || schemeList.length > 0">
         <button type="button" class="btn btn-default btn-sm" *ngIf="tempPeriodList.length === 0"
                 (click)="showConvertTime()" translate>workflow.button.convertAdmissionTime
         </button>
@@ -70,7 +106,7 @@
             (click)="activeModal.destroy()" translate>
       common.button.close
     </button>
-    <button type="button" class="btn btn-default btn-sm"
+    <button type="button" class="btn btn-default btn-sm" *ngIf="data"
             (click)="copyToClipboard()" translate>log.button.copyToClipboard
     </button>
   </div>

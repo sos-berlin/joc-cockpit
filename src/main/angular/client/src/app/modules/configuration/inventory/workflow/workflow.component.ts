@@ -261,54 +261,12 @@ export class CycleInstructionComponent implements OnInit {
     }
   }
 
-  private getTextOfRepeatObject(obj): any {
-    let str = '';
-    const returnObj: any = {
-      TYPE: obj.TYPE
-    };
-    if (obj.TYPE === 'Periodic') {
-      str = 'Repeat every ';
-      if (obj.period) {
-        returnObj.period = this.workflowService.convertDurationToHour(obj.period);
-        str += returnObj.period;
-      }
-      if (obj.offsets) {
-        str += ' at the ';
-        returnObj.offsets = '';
-        obj.offsets.forEach((offset, index) => {
-          returnObj.offsets += this.workflowService.convertDurationToHour(offset);
-          if (index !== obj.offsets.length - 1) {
-            returnObj.offsets += ', ';
-          }
-        });
-        str += returnObj.offsets;
-      }
-    } else if (obj.TYPE === 'Continuous') {
-      if (obj.pause) {
-        returnObj.pause = this.workflowService.convertDurationToHour(obj.pause);
-        str = returnObj.pause + ' break between repeated execution of the cycle';
-        if (obj.limit) {
-          returnObj.limit = this.workflowService.convertDurationToHour(obj.limit);
-          str += ' and limit is ' + returnObj.limit;
-        }
-      }
-    } else if (obj.TYPE === 'Ticking') {
-      str = 'Execute every ';
-      if (obj.interval) {
-        returnObj.interval = this.workflowService.convertDurationToHour(obj.interval);
-        str += returnObj.interval;
-      }
-    }
-    returnObj.text = str;
-    return returnObj;
-  }
-
   private convertSchemeList(): void {
     this.schemeList = [];
     this.selectedNode.obj.schedule.schemes.forEach((item) => {
       const obj = {
         periodList: [],
-        repeat: this.getTextOfRepeatObject(item.repeat)
+        repeat: this.workflowService.getTextOfRepeatObject(item.repeat)
       };
       if (item.admissionTimeScheme && item.admissionTimeScheme.periods) {
         this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {});
@@ -358,7 +316,7 @@ export class CycleInstructionComponent implements OnInit {
     modal.afterClose.subscribe((res) => {
       if (res) {
         this.selectedNode.obj.schedule.schemes[index].repeat = this.workflowService.convertRepeatObject(res);
-        data.repeat = this.getTextOfRepeatObject(this.selectedNode.obj.schedule.schemes[index].repeat);
+        data.repeat = this.workflowService.getTextOfRepeatObject(this.selectedNode.obj.schedule.schemes[index].repeat);
         this.ref.detectChanges();
       }
     });
@@ -501,6 +459,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       if (this.data.periodList.length > 0) {
         if (!this.data.periodList[0].frequency) {
           this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
+          this.frequency.all = true;
         }
       }
       this.checkDays();

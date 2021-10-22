@@ -137,6 +137,11 @@ export class WorkflowTreeStructureComponent implements OnChanges {
         isScript: true,
         readonly: true
       };
+    } else if (instruction.TYPE === 'Cycle') {
+      nzComponentParams = {
+        schedule: instruction.schedule,
+        timezone: this.timezone
+      };
     }
     if (nzComponentParams) {
       this.modal.create({

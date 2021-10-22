@@ -1705,6 +1705,13 @@ export class WorkflowService {
         if (_reason) {
           div = div + '<b>' + _reason + '</b> : ' + (data.state._reason || '-') + '</br>';
         }
+        if(data.obstacles && data.obstacles.length > 0) {
+          for (let i = 0; i < data.obstacles.length; i++) {
+            this.translate.get(data.obstacles[i].type).subscribe(translatedValue => {
+              div = div + '<b>' + translatedValue + '</b> : ' + this.stringDatePipe.transform(data.obstacles[i].until) + '</br>';
+            });
+          }
+        }
         if (data.cyclicOrder) {
           div = div + '<b class="m-b-xs">' + cyclicOrder + '</b></br>';
           div = div + '<b class="p-l-sm">' + begin + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.firstStart) + '</br>';
@@ -1772,12 +1779,15 @@ export class WorkflowService {
   }
 
   convertDurationToHour(seconds: number): string {
+    if (seconds === 0) {
+      return '0';
+    }
     const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
     const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
     const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
     const m = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
     const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-    return (w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (m != 0 ? m + 'm ' : '') + (s != 0 ? s + 's' : '').trim();
+    return ((w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (m != 0 ? m + 'm ' : '') + (s != 0 ? s + 's' : '')).trim();
   }
 
   convertStringToDuration(str: string, isDuration = false): number {
@@ -1945,6 +1955,49 @@ export class WorkflowService {
       }
     }
     return obj;
+  }
+
+  getTextOfRepeatObject(obj): any {
+    let str = '';
+    const returnObj: any = {
+      TYPE: obj.TYPE
+    };
+    if (obj.TYPE === 'Periodic') {
+      str = 'Repeat every ';
+      if (obj.period) {
+        returnObj.period = this.convertDurationToHour(obj.period);
+        str += returnObj.period;
+      }
+      if (obj.offsets) {
+        str += ' at the ';
+        returnObj.offsets = '';
+        console.log(obj.offsets)
+        obj.offsets.forEach((offset, index) => {
+          returnObj.offsets += this.convertDurationToHour(offset);
+          if (index !== obj.offsets.length - 1) {
+            returnObj.offsets += ', ';
+          }
+        });
+        str += returnObj.offsets;
+      }
+    } else if (obj.TYPE === 'Continuous') {
+      if (obj.pause) {
+        returnObj.pause = this.convertDurationToHour(obj.pause);
+        str = returnObj.pause + ' break between repeated execution of the cycle';
+        if (obj.limit) {
+          returnObj.limit = this.convertDurationToHour(obj.limit);
+          str += ' and limit is ' + returnObj.limit;
+        }
+      }
+    } else if (obj.TYPE === 'Ticking') {
+      str = 'Execute every ';
+      if (obj.interval) {
+        returnObj.interval = this.convertDurationToHour(obj.interval);
+        str += returnObj.interval;
+      }
+    }
+    returnObj.text = str;
+    return returnObj;
   }
 
   getText(startTime, duration): string {

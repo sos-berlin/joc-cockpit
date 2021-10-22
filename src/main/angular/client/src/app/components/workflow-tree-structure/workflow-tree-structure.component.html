@@ -54,7 +54,7 @@
     <li (dragover)="drag($event);" (dragend)="dragend($event)">
       <div class="hover" [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}"
         *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock'">
-        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If'">
+        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
             <i class="fa fa-ellipsis-h"></i>
