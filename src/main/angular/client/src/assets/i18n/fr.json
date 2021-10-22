@@ -1367,6 +1367,15 @@
       "placeholder": {
         "selectTransaction": "Sélectionner la Transition"
       }
+    },
+    "cycleState": {
+      "label": {
+        "cycleState": "Cycle State",
+        "end": "End",
+        "since": "Since",
+        "next": "Next",
+        "index": "Index"
+      }
     }
   },
   "profile": {
