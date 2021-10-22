@@ -86,6 +86,8 @@
   "normal": "ノーマル",
   "submitted": "登録",
   "notSubmitted": "未登録",
+  "WaitingForAdmission" : "Waiting for Admission",
+  "JobParallelismLimitReached" : "Job Parallelism Limit Reached",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "true",
   "False": "false",

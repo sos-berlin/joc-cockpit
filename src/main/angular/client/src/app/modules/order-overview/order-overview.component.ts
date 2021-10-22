@@ -354,6 +354,18 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
+  getObstacles(order): void {
+    if (order.state._text === 'INPROGRESS' && !order.obstacles) {
+      order.obstacles = [];
+      this.coreService.post('order/obstacles', {
+        controllerId: this.schedulerIds.selected,
+        orderId: order.orderId
+      }).subscribe((res: any) => {
+        order.obstacles = res.obstacles;
+      });
+    }
+  }
+
   private getState(): string {
     let state;
     if (this.orderFilters.filter.state !== 'ALL') {

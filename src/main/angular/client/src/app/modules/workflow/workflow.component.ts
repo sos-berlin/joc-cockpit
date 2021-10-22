@@ -184,6 +184,9 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
             if (/^(try+)/.test(res.orders[j].position[o])) {
               res.orders[j].position[o] = 'try+0';
             }
+            if (/^(cycle+)/.test(res.orders[j].position[o])) {
+              res.orders[j].position[o] = 'cycle';
+            }
           }
           const state = res.orders[j].state._text.toLowerCase();
           if (this.workflows[0].ordersSummary[state]) {
@@ -880,6 +883,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               for (const o in res.orders[j].position) {
                 if (/^(try+)/.test(res.orders[j].position[o])) {
                   res.orders[j].position[o] = 'try+0';
+                }
+                if (/^(cycle+)/.test(res.orders[j].position[o])) {
+                  res.orders[j].position[o] = 'cycle';
                 }
               }
               this.workflows[i].orders.push(res.orders[j]);

@@ -86,6 +86,8 @@
   "normal": "normal",
   "submitted": "submitted",
   "notSubmitted": "not submitted",
+  "WaitingForAdmission" : "Waiting for Admission",
+  "JobParallelismLimitReached" : "Job Parallelism Limit Reached",
   "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view",
   "WORKFLOW": "Workflow",
   "FILEORDERSOURCE": "File Order Source",

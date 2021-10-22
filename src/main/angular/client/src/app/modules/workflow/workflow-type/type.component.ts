@@ -350,6 +350,11 @@ export class TypeComponent implements OnChanges {
         isScript: true,
         readonly: true
       };
+    } else if (instruction.TYPE === 'Cycle') {
+      nzComponentParams = {
+        schedule: instruction.schedule,
+        timezone: this.timezone
+      };
     }
     if (nzComponentParams) {
       this.modal.create({
@@ -360,6 +365,18 @@ export class TypeComponent implements OnChanges {
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
+      });
+    }
+  }
+
+  getObstacles(order): void {
+    if (order.state._text === 'INPROGRESS' && !order.obstacles) {
+      order.obstacles = [];
+      this.coreService.post('order/obstacles', {
+        controllerId: this.schedulerId,
+        orderId: order.orderId
+      }).subscribe((res: any) => {
+        order.obstacles = res.obstacles;
       });
     }
   }

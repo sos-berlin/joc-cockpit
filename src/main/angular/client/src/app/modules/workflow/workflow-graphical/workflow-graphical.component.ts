@@ -148,7 +148,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       workflowIds: [{path: workflow.path, versionId: workflow.versionId}],
       dateTo: this.workflowFilters.date !== 'ALL' ? this.workflowFilters.date : undefined,
       timeZone: this.preferences.zone,
-      limit: this.preferences.maxOrderRecords
+      limit: this.preferences.maxWorkflowRecords
     };
     if (this.workflowFilters.date === '2d'){
       obj.dateFrom = '1d';
@@ -299,6 +299,9 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         for (const o in this.orders[j].position) {
           if (/^(try+)/.test(this.orders[j].position[o])) {
             this.orders[j].position[o] = 'try+0';
+          }
+          if (/^(cycle+)/.test(this.orders[j].position[o])) {
+            this.orders[j].position[o] = 'cycle';
           }
         }
         this.mapObj.set(JSON.stringify(this.orders[j].position), arr);
@@ -553,6 +556,15 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     };
 
     graph.getTooltipForCell = function(cell) {
+      if (cell.value.tagName === 'Order') {
+        let order = cell.getAttribute('order');
+        if (order) {
+          order = JSON.parse(order);
+          if (!cell.getAttribute('isCall')) {
+            self.getObstacles(order, cell);
+          }
+        }
+      }
       return self.workflowService.getTooltipForCell(cell);
     };
 
@@ -648,6 +660,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           }
         } else if (cell.value.tagName === 'If') {
           self.showConfiguration({predicate: cell.value.getAttribute('predicate')});
+        } else if (cell.value.tagName === 'Cycle') {
+          self.showConfiguration({schedule: cell.value.getAttribute('schedule')});
         } else if (cell.value.tagName === 'Workflow') {
           const data = cell.value.getAttribute('data');
           if (data) {
@@ -1289,12 +1303,17 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           readonly: true
         };
       }
-    } else {
+    } else if (argu.predicate){
       nzComponentParams = {
         predicate: true,
         data: argu.predicate,
         isScript: true,
         readonly: true
+      };
+    } else if (argu.schedule){
+      nzComponentParams = {
+        schedule: JSON.parse(argu.schedule),
+        timezone: this.workFlowJson.timeZone
       };
     }
     if (nzComponentParams) {
@@ -1307,6 +1326,20 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
+      });
+    }
+  }
+
+  getObstacles(order, cell): void {
+    if (order.state._text === 'INPROGRESS' && !order.obstacles) {
+      cell.setAttribute('isCall', true);
+      order.obstacles = [];
+      this.coreService.post('order/obstacles', {
+        controllerId: this.controllerId,
+        orderId: order.orderId
+      }).subscribe((res: any) => {
+        order.obstacles = res.obstacles;
+        cell.setAttribute('order', JSON.stringify(order));
       });
     }
   }

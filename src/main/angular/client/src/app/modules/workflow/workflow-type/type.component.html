@@ -9,6 +9,12 @@
       <span translate> common.label.comment </span>:
       <span class="_600"> {{order.state._reason}}</span>
     </div>
+    <div class="p-l-sm" *ngIf="order.obstacles && order.obstacles.length > 0">
+      <div *ngFor="let obstacle of order.obstacles">
+        <span translate> {{obstacle.type | translate}} </span>
+        <span class="_600" *ngIf="obstacle.until">:&nbsp;{{obstacle.until | stringToDate}}</span>
+      </div>
+    </div>
     <div class="p-l-sm" *ngIf="order.lastOutcome">
       <span translate> order.label.lastOutcome </span>:
       <span class="_600" >{{order.lastOutcome.TYPE}}</span>
@@ -32,7 +38,7 @@
   </ng-template>
   <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)"
                     [preferences]="preferences"></app-order-action>
-  <span [nz-tooltip]="contentTemplate">
+  <span [nz-tooltip]="contentTemplate" (mouseover)="getObstacles(order)">
     <i *ngIf="!order.marked" class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
     <span *ngIf="order.marked" class="half-circle half-circle-left" [ngClass]="coreService.getColor(order.state.severity, 'bg')"></span>
     <span *ngIf="order.marked" class="half-circle half-circle-right" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"></span>
@@ -46,7 +52,7 @@
     <li >
       <a class="hover"
         *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock'">
-        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If'">
+        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
             <i class="fa fa-ellipsis-h"></i>

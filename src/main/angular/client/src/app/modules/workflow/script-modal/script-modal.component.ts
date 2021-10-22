@@ -16,6 +16,7 @@ export class ScriptModalComponent implements OnInit {
   @Input() jobName: string;
   @Input() isScript: boolean;
   @Input() data: any;
+  @Input() schedule: any;
   @Input() predicate: any;
   @Input() admissionTime: any;
   @Input() timezone: string;
@@ -24,6 +25,7 @@ export class ScriptModalComponent implements OnInit {
   preferences: any = {};
   days = [];
   periodList = [];
+  schemeList = [];
   tempPeriodList = [];
   cmOption: any = {
     lineNumbers: true,
@@ -41,21 +43,38 @@ export class ScriptModalComponent implements OnInit {
     if (this.preferences && this.preferences.zone === 'Asia/Calcutta') {
       this.preferences.zone = 'Asia/Kolkata';
     }
+    this.days = this.coreService.getLocale().days;
+    if (this.days) {
+      this.days.push(this.days[0]);
+    } else {
+      this.days = [];
+    }
     if (this.admissionTime && this.admissionTime.periods && this.admissionTime.periods.length > 0) {
-      this.days = this.coreService.getLocale().days;
-      if (this.days) {
-        this.days.push(this.days[0]);
-      } else {
-        this.days = [];
-      }
       this.convertSecondIntoWeek();
     }
+    if (this.schedule && this.schedule.schemes) {
+      this.convertSchemeList();
+    }
+  }
+
+  private convertSchemeList(): void {
+    this.schemeList = [];
+    this.schedule.schemes.forEach((item) => {
+      const obj = {
+        periodList: [],
+        repeat: this.workflowService.getTextOfRepeatObject(item.repeat)
+      };
+      if (item.admissionTimeScheme && item.admissionTimeScheme.periods) {
+        this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {});
+      }
+      this.schemeList.push(obj);
+    });
   }
 
   convertSecondIntoWeek(): void {
     const hour = 3600;
     this.admissionTime.periods.forEach((period) => {
-      const hours = period.secondOfWeek / hour;
+      const hours = (period.secondOfWeek || period.secondOfDay) / hour;
       const day = Math.floor(hours / 24) + 1;
       const d = day - 1;
       const obj: any = {
@@ -64,7 +83,7 @@ export class ScriptModalComponent implements OnInit {
         frequency: this.days[day],
         periods: []
       };
-      const startTime = period.secondOfWeek - obj.secondOfWeek;
+      const startTime = (period.secondOfWeek || period.secondOfDay) - obj.secondOfWeek;
       const p: any = {
         startTime,
         duration: period.duration
@@ -102,46 +121,103 @@ export class ScriptModalComponent implements OnInit {
   }
 
   showConvertTime(): void {
-    this.tempPeriodList = this.coreService.clone(this.periodList);
-    if (this.preferences.zone !== this.timezone) {
-      const convertTedList = [];
-      this.periodList.forEach((item) => {
-        item.periods.forEach((period) => {
-          const obj: any = {
-            periods: []
-          };
-          const originalTime = this.workflowService.convertSecondToTime(period.startTime);
-          const day = parseInt(moment('1970-01-02 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('DD'), 10);
-          const convertedTime = moment('1970-01-01 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
-          if (day != 2) {
-            obj.day = (day > 2) ? (item.day + 1) : (item.day - 1);
-          } else {
-            obj.day = item.day;
-          }
-          obj.frequency = this.days[obj.day];
-          const dur = this.workflowService.convertDurationToHour(period.duration);
-          obj.periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
-          let flag = true;
-          if (convertTedList.length > 0) {
-            for (let i = 0; i < convertTedList.length; i++) {
-              if (convertTedList[i].day === obj.day) {
-                flag = false;
-                convertTedList[i].periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
-                break;
+    if (this.schedule) {
+      this.convertTime();
+    } else {
+      this.tempPeriodList = this.coreService.clone(this.periodList);
+      if (this.preferences.zone !== this.timezone) {
+        const convertTedList = [];
+        this.periodList.forEach((item) => {
+          item.periods.forEach((period) => {
+            const obj: any = {
+              periods: []
+            };
+            const originalTime = this.workflowService.convertSecondToTime(period.startTime);
+            const day = parseInt(moment('1970-01-02 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('DD'), 10);
+            const convertedTime = moment('1970-01-01 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
+            if (day != 2) {
+              obj.day = (day > 2) ? (item.day + 1) : (item.day - 1);
+            } else {
+              obj.day = item.day;
+            }
+            obj.frequency = this.days[obj.day];
+            const dur = this.workflowService.convertDurationToHour(period.duration);
+            obj.periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
+            let flag = true;
+            if (convertTedList.length > 0) {
+              for (let i = 0; i < convertTedList.length; i++) {
+                if (convertTedList[i].day === obj.day) {
+                  flag = false;
+                  convertTedList[i].periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
+                  break;
+                }
               }
             }
-          }
-          if (flag) {
-            convertTedList.push(obj);
-          }
+            if (flag) {
+              convertTedList.push(obj);
+            }
+          });
         });
-      });
-      this.periodList = convertTedList;
+        this.periodList = convertTedList;
+      }
     }
   }
 
-  showOriginalTime(): void{
-    this.periodList = this.coreService.clone(this.tempPeriodList);
+  private convertTime(): void {
+    this.tempPeriodList = this.coreService.clone(this.schemeList);
+    if (this.preferences.zone !== this.timezone) {
+      const convertTedList = [];
+      this.schemeList.forEach((list) => {
+        const x = {
+          periodList: [],
+          repeat: list.repeat
+        };
+        list.periodList.forEach((item) => {
+          item.periods.forEach((period) => {
+            const obj: any = {
+              periods: []
+            };
+            const originalTime = this.workflowService.convertSecondToTime(period.startTime);
+            const day = parseInt(moment('1970-01-02 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('DD'), 10);
+            const convertedTime = moment('1970-01-01 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
+            if (day != 2) {
+              obj.day = (day > 2) ? (item.day + 1) : (item.day - 1);
+            } else {
+              obj.day = item.day;
+            }
+            obj.frequency = this.days[obj.day];
+            if(!item.frequency){
+              obj.frequency = '';
+            }
+            const dur = this.workflowService.convertDurationToHour(period.duration);
+            obj.periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
+            let flag = true;
+            if (x.periodList.length > 0) {
+              for (let i = 0; i < x.periodList.length; i++) {
+                if (x.periodList[i].day === obj.day) {
+                  flag = false;
+                  x.periodList[i].periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
+                  break;
+                }
+              }
+            }
+            if (flag) {
+              x.periodList.push(obj);
+            }
+          });
+        });
+        convertTedList.push(x);
+      });
+      this.schemeList = convertTedList;
+    }
+  }
+
+  showOriginalTime(): void {
+    if (this.schedule) {
+      this.schemeList = this.coreService.clone(this.tempPeriodList);
+    } else {
+      this.periodList = this.coreService.clone(this.tempPeriodList);
+    }
     this.tempPeriodList = [];
   }
 

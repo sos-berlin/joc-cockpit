@@ -86,6 +86,8 @@
   "normal": "normal",
   "submitted": "übermittelt",
   "notSubmitted": "nicht übermittelt",
+  "WaitingForAdmission" : "Waiting for Admission",
+  "JobParallelismLimitReached" : "Job Parallelism Limit Reached",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "wahr",
   "False": "falsch",
