@@ -184,7 +184,7 @@ export class TimeEditorComponent implements OnInit {
   isNew: boolean;
   isExist: boolean;
 
-  defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
+  defaultOpenValue = null;
   object: any = {};
 
   @ViewChild('timePicker', {static: true}) tp;
@@ -238,7 +238,7 @@ export class TimeEditorComponent implements OnInit {
   selector: 'app-cycle-instruction',
   templateUrl: './cycle-instruction-editor.html'
 })
-export class CycleInstructionComponent implements OnInit {
+export class CycleInstructionComponent implements OnInit, OnChanges {
   @Input() selectedNode: any;
   schemeList = [];
   days = [];
@@ -248,16 +248,35 @@ export class CycleInstructionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.selectedNode) {
+      this.init();
+    }
+  }
+
+  private init(): void{
+    if (this.days.length === 0) {
+      this.days = this.coreService.getLocale().days;
+      this.days.push(this.days[0]);
+    }
     this.selectedNode.repeatObject = {};
     this.selectedNode.data = {};
     this.selectedNode.isEdit = false;
+    if (this.selectedNode.obj.schedule && typeof this.selectedNode.obj.schedule === 'string') {
+      try {
+        this.selectedNode.obj.schedule = JSON.parse(this.selectedNode.obj.schedule);
+      } catch (e) {
+      }
+    }
     if (!this.selectedNode.obj.schedule.schemes) {
       this.selectedNode.obj.schedule.schemes = [];
     }
-    this.days = this.coreService.getLocale().days;
-    this.days.push(this.days[0]);
     if (this.selectedNode.obj.schedule.schemes.length > 0) {
       this.convertSchemeList();
+    } else{
+      this.schemeList = [];
     }
   }
 
@@ -358,38 +377,38 @@ export class CycleInstructionComponent implements OnInit {
         p.text = this.workflowService.getText(p.startTime, p.duration);
         data.periods.push(p);
         this.ref.detectChanges();
-        const arr = [];
-        if (data.periods) {
-          data.periods.forEach((x) => {
-            const obj: any = {
-              TYPE: 'DailyPeriod',
-              duration: x.duration
-            };
-            obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek) + x.startTime);
-            arr.push(obj);
-          });
-        }
-        this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = arr;
+        const obj = this.createObj(data, period);
+        const obj2 = this.createObj(data, res);
+        this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods.filter((item) => {
+          return JSON.stringify(item) !== JSON.stringify(obj);
+        });
+        this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods.push(obj2);
       }
     });
   }
 
   removePeriod(data, period, index): void {
-    const arr = [];
+    const obj = this.createObj(data, period);
     data.periods = data.periods.filter((item) => {
-      if (item !== period) {
-        const obj: any = {
-          TYPE: 'DailyPeriod',
-          duration: item.duration
-        };
-        obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek) + item.startTime);
-        arr.push(obj);
-      }
       return item !== period;
     });
-    this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = arr;
+    this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods.filter((item) => {
+      return JSON.stringify(item) !== JSON.stringify(obj);
+    });
   }
 
+  private createObj(data, period): any {
+    const obj: any = {
+      TYPE: !data.frequency ? 'DailyPeriod' : 'WeekdayPeriod'
+    };
+    if (obj.TYPE === 'DailyPeriod') {
+      obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek) + period.startTime);
+    } else {
+      obj.secondOfWeek = ((data.secondOfDay || data.secondOfWeek) + period.startTime);
+    }
+    obj.duration = period.duration;
+    return obj;
+  }
 
   closeScheme(scheme): void {
     scheme.show = false;
@@ -425,7 +444,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   };
   days = [];
   isValid = true;
-  defaultOpenValue = new Date(0, 0, 0, 0, 0, 0);
+  defaultOpenValue = null;
   object: any = {};
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
@@ -472,14 +491,14 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       if (item.periods) {
         item.periods.forEach((period) => {
           const obj: any = {
-            TYPE: !item.frequency ? 'DailyPeriod' : 'WeekdayPeriod',
-            duration: period.duration
+            TYPE: !item.frequency ? 'DailyPeriod' : 'WeekdayPeriod'
           };
           if (!item.frequency) {
             obj.secondOfDay = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
           } else {
             obj.secondOfWeek = (item.secondOfWeek + period.startTime || 0);
           }
+          obj.duration = period.duration;
           arr.push(obj);
         });
       }
@@ -2130,9 +2149,63 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         delete obj.id;
         delete obj.uuid;
         this.copyId = null;
+        if (this.workflowService.isInstructionCollapsible(obj.TYPE)) {
+          this.getJobsArray(obj);
+        }
         this.inventoryConf.copiedInstuctionObject = obj;
       }
     }
+  }
+
+  private getJobsArray(obj): void {
+    obj.jobs = [];
+    const self  = this;
+    function recursive(json: any) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].TYPE === 'Job') {
+            for (const i in self.jobs) {
+              if (self.jobs[i] && self.jobs[i].name === json.instructions[x].jobName) {
+                obj.jobs.push({name: json.instructions[x].jobName, value: self.jobs[i].value});
+                break;
+              }
+            }
+          }
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x]);
+          }
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursive(json.instructions[x].catch);
+            }
+          }
+          if (json.instructions[x].then) {
+            if (json.instructions[x].then.instructions) {
+              recursive(json.instructions[x].then);
+            }
+          }
+          if (json.instructions[x].else) {
+            if (json.instructions[x].else.instructions) {
+              recursive(json.instructions[x].else);
+            }
+          }
+          if (json.instructions[x].branches) {
+            json.instructions[x].branches = json.instructions[x].branches.filter((branch: any) => {
+              return (branch.instructions && branch.instructions.length > 0);
+            });
+            if (json.instructions[x].branches.length > 0) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i]) {
+                  recursive(json.instructions[x].branches[i]);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    recursive(obj);
   }
 
   zoomIn(): void {
@@ -7165,6 +7238,10 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                         edges[i], 'result', JSON.stringify(self.selectedNode.newObj.branches[i].result));
                       graph.getModel().execute(edit2);
                     }
+                  } else{
+                    const edit2 = new mxCellAttributeChange(
+                      edges[i], 'result', null);
+                    graph.getModel().execute(edit2);
                   }
                   break;
                 }
@@ -7185,15 +7262,18 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       list.forEach((item) => {
         if (item.periods) {
           item.periods.forEach((period) => {
+            if (!period.startTime) {
+              period.startTime = 0;
+            }
             const obj: any = {
-              TYPE: item.frequency ? 'WeekdayPeriod' : 'DailyPeriod',
-              duration: period.duration
+              TYPE: item.frequency ? 'WeekdayPeriod' : 'DailyPeriod'
             };
             if (obj.TYPE === 'DailyPeriod') {
               obj.secondOfDay = ((item.secondOfWeek || item.secondOfDay || 0) + period.startTime);
             } else {
               obj.secondOfWeek = ((item.secondOfWeek || 0) + period.startTime);
             }
+            obj.duration = period.duration;
             arr.push(obj);
           });
         }
@@ -7402,11 +7482,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
               let resultObj = edges[i].getAttribute('result');
               if (resultObj) {
                 resultObj = JSON.parse(resultObj);
-                resultObj = self.coreService.convertObjectToArray( {result: resultObj}, 'result');
+                resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
+                resultObj.filter((arg) => {
+                  self.coreService.removeSlashToString(arg, 'value', true);
+                });
               } else {
                 resultObj = [];
               }
-              obj.branches.push({id: edges[i].id, label: edges[i].getAttribute('label'), result : resultObj});
+              obj.branches.push({id: edges[i].id, label: edges[i].getAttribute('label'), result: resultObj});
             }
           }
         }
@@ -7427,6 +7510,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       self.ref.detectChanges();
     }
+
 
     /**
      * Funtion: paste the instruction to given target
@@ -7533,7 +7617,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
 
-      if(self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
+      if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
         getObject(self.workflow.configuration);
       }
 
@@ -7543,6 +7627,9 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       }
       if (copyObject) {
         generateCopyObject(copyObject);
+        if (copyObject.jobs) {
+          delete copyObject.jobs;
+        }
         if (target.value.tagName !== 'Connection' && copyObject && targetIndex > -1) {
           _dropOnObject();
         } else {
@@ -7608,10 +7695,25 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
         if (!job.name) {
           job = {name: newName, value: {}};
+          if (self.inventoryConf.copiedInstuctionObject.jobs) {
+            updateMissingJobs(self.inventoryConf.copiedInstuctionObject.jobs, job, name);
+          }
         }
         self.jobs.push(job);
       }
       return newName;
+    }
+
+    function updateMissingJobs(jobs, job, name): void {
+      for (let j = 0; j < jobs.length; j++) {
+        if (jobs[j].name === name) {
+          if (jobs[j].value && jobs[j].value.executable) {
+            job.value = jobs[j].value;
+          }
+          jobs.splice(j, 1);
+          break;
+        }
+      }
     }
 
     function generateCopyObject(copyObject) {
@@ -9129,11 +9231,27 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           }
 
           if (json.instructions[x].TYPE === 'Cycle') {
+            if (json.instructions[x].schedule && typeof json.instructions[x].schedule === 'string') {
+              try {
+                json.instructions[x].schedule = JSON.parse(json.instructions[x].schedule);
+              } catch (e) {}
+            }
             if (!(!json.instructions[x].id && !json.instructions[x].instructions)) {
               if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
                 flag = false;
                 checkErr = true;
                 self.invalidMsg = 'workflow.message.invalidCycleInstruction';
+                if (isValidate) {
+                  return;
+                }
+              } else if (!json.instructions[x].schedule || (!json.instructions[x].schedule.schemes)
+                || (json.instructions[x].schedule.schemes.length === 0)) {
+                flag = false;
+                checkErr = true;
+                self.invalidMsg = 'workflow.message.scheduleIsMissing';
+                if (isOpen) {
+                  self.openSideBar(json.instructions[x].id);
+                }
                 if (isValidate) {
                   return;
                 }
@@ -9315,9 +9433,12 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             delete json.instructions[x].instructions;
             delete json.instructions[x].schedule;
             if (scheduleObj && typeof scheduleObj === 'string') {
-              scheduleObj = JSON.parse(scheduleObj);
+              try {
+                scheduleObj = JSON.parse(scheduleObj);
+              } catch (e) {
+              }
             }
-            if (scheduleObj.schemes && scheduleObj.schemes.length > 0) {
+            if (scheduleObj && scheduleObj.schemes && scheduleObj.schemes.length > 0) {
               json.instructions[x].schedule = scheduleObj;
             }
           }
@@ -9346,6 +9467,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             json.instructions[x].branches = branchObj;
             json.instructions[x].joinIfFailed = joinIfFailed;
           }
+
+          if (json.instructions[x].TYPE === 'Fail') {
+            if (json.instructions[x].uncatchable == 'false') {
+              json.instructions[x].uncatchable = false;
+            } else if (json.instructions[x].uncatchable == 'true') {
+              json.instructions[x].uncatchable = true;
+            }
+          }
+
           if (json.instructions[x].catch) {
             json.instructions[x].catch.id = undefined;
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
@@ -9376,12 +9506,14 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
             if (!flag) {
               checkErr = true;
-              if (this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' && !this.jobs[n].value.executable.script) {
-                this.invalidMsg = 'workflow.message.scriptIsMissing';
-              } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.className) {
-                this.invalidMsg = 'workflow.message.classNameIsMissing';
-              } else if (!this.jobs[n].value.agentName) {
-                this.invalidMsg = 'workflow.message.agentIsMissing';
+              if (this.jobs[n].value.executable) {
+                if (this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' && !this.jobs[n].value.executable.script) {
+                  this.invalidMsg = 'workflow.message.scriptIsMissing';
+                } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.className) {
+                  this.invalidMsg = 'workflow.message.classNameIsMissing';
+                } else if (!this.jobs[n].value.agentName) {
+                  this.invalidMsg = 'workflow.message.agentIsMissing';
+                }
               }
             }
 
@@ -9561,7 +9693,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         delete variableDeclarations.parameters;
       }
 
-      if(!isEqual(JSON.stringify(this.orderPreparation), JSON.stringify(variableDeclarations))) {
+      if (!isEqual(JSON.stringify(this.orderPreparation), JSON.stringify(variableDeclarations))) {
         this.orderPreparation = variableDeclarations;
         flag = true;
       }

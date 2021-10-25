@@ -53,16 +53,18 @@
       {{order.cycleState.index}}
     </div>
   </ng-template>
-  <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)"
-                    [preferences]="preferences"></app-order-action>
-  <span [nz-tooltip]="contentTemplate" (mouseover)="getObstacles(order)">
-    <i *ngIf="!order.marked" class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
-    <span *ngIf="order.marked" class="half-circle half-circle-left" [ngClass]="coreService.getColor(order.state.severity, 'bg')"></span>
-    <span *ngIf="order.marked" class="half-circle half-circle-right" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"></span>
-    {{order.orderId}} <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
-    <i class="text-sm text-muted" *ngIf="order.scheduledFor && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</i>
-    <i class="text-sm text-muted" *ngIf="order.scheduledNever" translate>common.label.never</i>
-  </span>
+  <div class="d-inline-block m-r">
+    <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)"
+                      [preferences]="preferences"></app-order-action>
+    <span [nz-tooltip]="contentTemplate" (mouseover)="getObstacles(order)" style="position: relative;top:2px">
+      <i *ngIf="!order.marked" class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
+      <span *ngIf="order.marked" class="half-circle half-circle-left" [ngClass]="coreService.getColor(order.state.severity, 'bg')"></span>
+      <span *ngIf="order.marked" class="half-circle half-circle-right" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"></span>
+      {{order.orderId}} <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
+      <i class="text-sm text-muted" *ngIf="order.scheduledFor && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</i>
+      <i class="text-sm text-muted" *ngIf="order.scheduledNever" translate>common.label.never</i>
+    </span>
+  </div>
 </ng-template>
 <div *ngFor="let instruction of configuration.instructions">
   <ul style="margin-bottom: 0">

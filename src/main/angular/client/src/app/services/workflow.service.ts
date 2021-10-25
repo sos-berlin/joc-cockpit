@@ -1929,7 +1929,6 @@ export class WorkflowService {
         frequency: days[day],
         periods: []
       };
-
       if (period.TYPE === 'DailyPeriod'){
         obj.frequency = '';
       }
@@ -1965,7 +1964,10 @@ export class WorkflowService {
         const arr = data.offsets.split(',');
         obj.offsets = [];
         arr.forEach(val => {
-          obj.offsets.push(this.convertStringToDuration(val, true));
+          const time = this.convertStringToDuration(val, true);
+          if (obj.offsets.indexOf(time) === -1) {
+            obj.offsets.push(time);
+          }
         });
       }
       if (data.period) {
@@ -1976,7 +1978,7 @@ export class WorkflowService {
         obj.pause = this.convertStringToDuration(data.pause, true);
       }
       if (data.limit) {
-        obj.limit = this.convertStringToDuration(data.limit, true);
+        obj.limit = data.limit;
       }
     } else if (data.TYPE === 'Ticking') {
       if (data.interval) {
@@ -1999,22 +2001,29 @@ export class WorkflowService {
       }
       if (obj.offsets) {
         str += ' at the ';
+        let offsets = '';
         returnObj.offsets = '';
-        console.log(obj.offsets)
         obj.offsets.forEach((offset, index) => {
-          returnObj.offsets += this.convertDurationToHour(offset);
+          if (offset === 0) {
+            offsets += 'begin of the repeat period';
+            returnObj.offsets += '0';
+          } else {
+            offsets += this.convertDurationToHour(offset);
+            returnObj.offsets += this.convertDurationToHour(offset);
+          }
           if (index !== obj.offsets.length - 1) {
+            offsets += ', ';
             returnObj.offsets += ', ';
           }
         });
-        str += returnObj.offsets;
+        str += offsets;
       }
     } else if (obj.TYPE === 'Continuous') {
       if (obj.pause) {
         returnObj.pause = this.convertDurationToHour(obj.pause);
         str = returnObj.pause + ' break between repeated execution of the cycle';
         if (obj.limit) {
-          returnObj.limit = this.convertDurationToHour(obj.limit);
+          returnObj.limit = obj.limit;
           str += ' and limit is ' + returnObj.limit;
         }
       }
