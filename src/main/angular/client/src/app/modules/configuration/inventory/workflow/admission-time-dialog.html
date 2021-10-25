@@ -51,13 +51,9 @@
     </div>
     <div class="form-group row" *ngIf="repeatObject.TYPE === 'Continuous'">
       <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.limit</label>
-      <div class="col-sm-6" [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}">
-        <input appValidateDuration class="form-control" name="limit"
-               #limit="ngModel" [(ngModel)]="repeatObject.limit"
-               placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
-        <div *ngIf="limit.invalid && (limit.dirty || limit.touched)" class="text-danger help-block">
-          <div *ngIf="limit.errors.invalidDuration" translate>common.message.invalid</div>
-        </div>
+      <div class="col-sm-9">
+        <nz-input-number [nzMin]="1" [nzStep]="1" name="limit"
+                         [(ngModel)]="repeatObject.limit"></nz-input-number>
       </div>
     </div>
     <div class="form-group row" *ngIf="repeatObject.TYPE === 'Ticking'">
@@ -95,9 +91,10 @@
   <div class="row">
     <div class="col-sm-12">
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>runtime.label.startTime</label>
+        <label class="col-sm-3 form-control-label" translate>workflow.admissionTime.label.startTime</label>
         <div class="col-sm-6">
-          <nz-time-picker #timePicker [nzDefaultOpenValue]="defaultOpenValue" [(ngModel)]="object.startTime" name="startTime" (keydown.Tab)="onTab()" nzPlaceHolder="HH:MM:SS"></nz-time-picker>
+          <nz-time-picker #timePicker [nzDefaultOpenValue]="defaultOpenValue" [(ngModel)]="object.startTime" name="startTime"
+                          (keydown.Tab)="onTab()" nzPlaceHolder="HH:MM:SS"></nz-time-picker>
         </div>
       </div>
       <div class="form-group row">

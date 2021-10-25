@@ -2026,6 +2026,7 @@
     "message.classNameIsMissing": "Class name is missing, but is required",
     "message.duplicateLabel": "Same Label found in more then one Job",
     "message.predicateIsMissing": "Predicate is missing, but is required",
+    "message.scheduleIsMissing": "Schedule is missing, but is required",
     "message.lockNameIsMissing": "Resource Lock Name is missing, but is required",
     "message.childrenIsMissing": "ForkList children is missing, but is required",
     "message.invalidIfInstruction": "If Instruction cannot be empty",
@@ -2077,7 +2078,10 @@
       "label.weekDays": "Weekdays",
       "label.everyDay": "Every Day",
       "label.frequency": "Frequency",
+      "label.startTime": "Period Begin",
       "label.period": "Period",
+      "label.dailyPlanTimeZone": "Daily Plan Time Zone",
+      "label.dailyPlanPeriodBegin": "Daily Plan Period Begin",
       "button.update": "Update",
       "button.back": "Back",
       "message.duplicatePeriod": "Same period for selected days"

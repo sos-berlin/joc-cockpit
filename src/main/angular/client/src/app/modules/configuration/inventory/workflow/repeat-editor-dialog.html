@@ -64,13 +64,9 @@
           </div>
           <div class="form-group row" *ngIf="object.TYPE === 'Continuous'">
             <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.limit</label>
-            <div class="col-sm-6" [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}">
-              <input appValidateDuration class="form-control" name="limit"
-                     #limit="ngModel" [(ngModel)]="object.limit"
-                     placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
-              <div *ngIf="limit.invalid && (limit.dirty || limit.touched)" class="text-danger help-block">
-                <div *ngIf="limit.errors.invalidDuration" translate>common.message.invalid</div>
-              </div>
+            <div class="col-sm-6">
+              <nz-input-number [nzMin]="1" [nzStep]="1" name="limit"
+                               [(ngModel)]="object.limit"></nz-input-number>
             </div>
           </div>
           <div class="form-group row" *ngIf="object.TYPE === 'Ticking'">
