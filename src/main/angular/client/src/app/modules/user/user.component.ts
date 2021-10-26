@@ -72,7 +72,7 @@ export class UpdateKeyModalComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
     const URL = this.type === 'key' ? 'profile/key/store' : this.type === 'certificate' ? 'profile/key/ca/store' : 'profile/ca/store';
-    this.coreService.post(URL, {keys: obj}).subscribe(res => {
+    this.coreService.post(URL, this.type === 'certificate' ? obj : {keys: obj}).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
     }, (err) => {
@@ -120,6 +120,9 @@ export class ImportKeyModalComponent implements OnInit {
         name: item.file.name,
         importKeyFilter: JSON.stringify({keyAlgorithm: this.key.keyAlg})
       };
+      if (this.type === 'certificate'){
+        obj = {};
+      }
       if (this.comments.comment) {
         obj.comment = this.comments.comment;
       }

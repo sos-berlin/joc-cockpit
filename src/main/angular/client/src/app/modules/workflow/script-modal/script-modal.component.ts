@@ -19,6 +19,7 @@ export class ScriptModalComponent implements OnInit {
   @Input() schedule: any;
   @Input() predicate: any;
   @Input() admissionTime: any;
+  @Input() timezone: string;
   @Input() readonly: boolean;
 
   preferences: any = {};
@@ -164,17 +165,16 @@ export class ScriptModalComponent implements OnInit {
       this.convertTime();
     } else {
       this.tempPeriodList = this.coreService.clone(this.periodList);
-      if (this.preferences.zone !== this.dailyPlan.time_zone) {
+      if (this.preferences.zone !== this.timezone) {
         const convertTedList = [];
         this.periodList.forEach((item) => {
           item.periods.forEach((period) => {
             const obj: any = {
               periods: []
             };
-            const dailyPlanTime = this.workflowService.convertStringToDuration(this.dailyPlan.period_begin, true);
-            const originalTime = this.workflowService.convertSecondToTime((period.startTime + dailyPlanTime));
-            const currentDay = moment(this.todayDate + ' ' + this.workflowService.convertSecondToTime(period.startTime) + '.000' + moment().tz(this.dailyPlan.time_zone).format('Z')).tz(this.preferences.zone).format('YYYY-MM-DD');
-            const convertedTime = moment(this.todayDate + ' ' + originalTime + '.000' + moment().tz(this.dailyPlan.time_zone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
+            const originalTime = this.workflowService.convertSecondToTime(period.startTime);
+            const currentDay = moment(this.todayDate + ' ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('YYYY-MM-DD');
+            const convertedTime = moment(this.todayDate + ' ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
             if (this.todayDate != currentDay) {
               obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
             } else {
@@ -204,7 +204,6 @@ export class ScriptModalComponent implements OnInit {
   }
 
   private convertTime(): void {
-  
     this.tempPeriodList = this.coreService.clone(this.schemeList);
     if (this.preferences.zone !== this.dailyPlan.time_zone) {
       const convertTedList = [];
