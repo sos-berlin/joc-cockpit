@@ -299,6 +299,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       } else {
         this.workflowTree = [...this.workflowTree];
       }
+      this.ref.detectChanges();
     });
   }
 

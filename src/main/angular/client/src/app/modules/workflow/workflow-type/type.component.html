@@ -37,9 +37,6 @@
     </div>
     <div class="m-a-sm m-t-0" *ngIf="order.cycleState">
       <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
-      <span class="_600 p-l-sm" translate>order.cycleState.label.end</span>:
-      {{order.cycleState.end | stringToDate}}
-      <br>
       <span *ngIf="order.cycleState.since">
         <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
         {{order.cycleState.since | stringToDate}}
@@ -53,16 +50,18 @@
       {{order.cycleState.index}}
     </div>
   </ng-template>
-  <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)"
-                    [preferences]="preferences"></app-order-action>
-  <span [nz-tooltip]="contentTemplate" (mouseover)="getObstacles(order)">
-    <i *ngIf="!order.marked" class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
-    <span *ngIf="order.marked" class="half-circle half-circle-left" [ngClass]="coreService.getColor(order.state.severity, 'bg')"></span>
-    <span *ngIf="order.marked" class="half-circle half-circle-right" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"></span>
-    {{order.orderId}} <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
-    <i class="text-sm text-muted" *ngIf="order.scheduledFor && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</i>
-    <i class="text-sm text-muted" *ngIf="order.scheduledNever" translate>common.label.never</i>
-  </span>
+  <div class="d-inline-block m-r">
+    <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)"
+                      [preferences]="preferences"></app-order-action>
+    <span [nz-tooltip]="contentTemplate" (mouseover)="getObstacles(order)" style="position: relative;top:2px">
+      <i *ngIf="!order.marked" class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
+      <span *ngIf="order.marked" class="half-circle half-circle-left" [ngClass]="coreService.getColor(order.state.severity, 'bg')"></span>
+      <span *ngIf="order.marked" class="half-circle half-circle-right" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"></span>
+      {{order.orderId}} <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
+      <i class="text-sm text-muted" *ngIf="order.scheduledFor && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</i>
+      <i class="text-sm text-muted" *ngIf="order.scheduledNever" translate>common.label.never</i>
+    </span>
+  </div>
 </ng-template>
 <div *ngFor="let instruction of configuration.instructions">
   <ul style="margin-bottom: 0">
@@ -196,7 +195,7 @@
             </span>
             <span class="order-count" (click)="showOrders(branch)" *ngIf="branch.orderCount > 0 && (!branch.show && !expandAll)"> {{branch.orderCount}}</span>
             <div class="p-l" *ngIf="branch.instructions && (branch.show)">
-              <app-type [timezone]="timezone" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
                         [workflowFilters]="workflowFilters" [configuration]="branch" [jobs]="jobs" (isChanged)="changedHandler($event)" [orderPreparation]="orderPreparation" [expandAll]="expandAll"></app-type>
             </div>
           </div>
@@ -204,7 +203,7 @@
       </div>
       <div *ngIf="instruction.TYPE === 'If' && (instruction.show)">
         <div *ngIf="instruction.then && instruction.then.instructions">
-          <app-type [timezone]="timezone" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
                     [workflowFilters]="workflowFilters" [configuration]="instruction.then" [jobs]="jobs" (isChanged)="changedHandler($event)" [orderPreparation]="orderPreparation" [expandAll]="expandAll"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
@@ -222,14 +221,14 @@
             </span>
             <span class="order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else && instruction.else.orderCount > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.orderCount}}</span>
             <div class="p-l" *ngIf="instruction.else && (instruction.else.show)">
-              <app-type [timezone]="timezone" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                         [workflowFilters]="workflowFilters" [configuration]="instruction.else" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
-          <app-type [timezone]="timezone" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                     [workflowFilters]="workflowFilters" [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
@@ -247,14 +246,14 @@
             </span>
             <span class="order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch && instruction.catch.orderCount > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.orderCount}}</span>
             <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show)">
-              <app-type [timezone]="timezone" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                         [workflowFilters]="workflowFilters" [configuration]="instruction.catch" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-type>
             </div>
           </div>
       </div>
       <div *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'ForkList') && (instruction.show)">
         <div>
-          <app-type [timezone]="timezone" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                     [workflowFilters]="workflowFilters" [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>

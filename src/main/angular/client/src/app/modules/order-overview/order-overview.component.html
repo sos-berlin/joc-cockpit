@@ -381,7 +381,7 @@
                     <div class="box-body">
                       <div>
                         <label class="pos-abt">
-                          <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order, $event)"></label>
+                          <label [nzDisabled]="order.positionIsImplicitEnd" nz-checkbox [nzChecked]="object.mapOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order, $event)"></label>
                         </label>
                         <div class="text-left block-ellipsis m-l-md">
                           <i nz-icon nzType="unordered-list" class="p-r-xs" nzTheme="outline"></i>
@@ -405,17 +405,14 @@
                               <span>{{obstacle.until | stringToDate}}</span>
                             </div>
                           </div>
-                          <div class="m-a-sm" *ngIf="order.cycleState">
+                          <div *ngIf="order.cycleState">
                             <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
-                            <span class="_600 p-l-sm" translate>order.cycleState.label.end</span>:
-                            {{order.cycleState.end | stringToDate}}
-                            <br>
                             <span *ngIf="order.cycleState.since">
-                            <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+                              <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
                               {{order.cycleState.since | stringToDate}}
                             </span>
                             <span *ngIf="order.cycleState.next">
-                            <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+                              <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
                               {{order.cycleState.next | stringToDate}}
                             </span>
                             <br>
@@ -423,13 +420,16 @@
                             {{order.cycleState.index}}
                           </div>
                         </ng-template>
-                        <div class="text-sm text-left text-muted p-t-xs">
+                        <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
                           <span translate>order.label.position </span>:
                           <span class="text-black-dk" [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
                           <span translate>order.label.workflow </span>:
-                          <span class="text-black-dk" [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText | highlight : orderFilters.searchText"></span>
+                          <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary text-black-dk p-l-xs p-r-xs"></i>
+                          <a class="text-hover-primary text-black-dk" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">
+                            <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
+                          </a>
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs">
                           <span translate>order.label.scheduledFor </span>:
@@ -440,11 +440,11 @@
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.modify, 'disable-link' : (order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED')}" (click)="actionChild.modifyOrder(order);">
+                        <a class="hide text-left primary-text-hover-color" [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.modify, 'disable-link' : (order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED') || order.positionIsImplicitEnd}" (click)="actionChild.modifyOrder(order);">
                           <i class="fa fa-edit p-r-xs text-black-lt"></i>
                           <span class="text-black-lt" translate>dailyPlan.button.setStartTime</span>
                         </a>
-                        <a class="text-right primary-text-hover-color" *ngIf="permission.currentController && permission.currentController.orders.cancel" [ngClass]="{'pull-right':permission.currentController.orders.modify}"
+                        <a class="text-right primary-text-hover-color" *ngIf="permission.currentController && permission.currentController.orders.cancel" [ngClass]="{'pull-right':permission.currentController.orders.modify, 'disable-link' : order.positionIsImplicitEnd}"
                            (click)="actionChild.cancelOrder(order);">
                           <i class="fa fa-times p-r-xs text-black-lt"></i>
                           <span class="text-black-lt" translate>order.button.cancel</span>
@@ -527,7 +527,7 @@
                   <ng-template ngFor let-order
                                [ngForOf]="ajaxTable.data">
                     <tr [ngClass]="{'light-bg': (showPanelObj && showPanelObj.orderId == order.orderId)}">
-                      <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order, $event)"></td>
+                      <td [nzShowCheckbox]="true" [nzDisabled]="order.positionIsImplicitEnd" [nzChecked]="object.mapOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order, $event)"></td>
                       <td>
                         <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" (isChanged)="changedHandler($event)"
                                           [permission]="permission" [preferences]="preferences"></app-order-action>
@@ -581,17 +581,14 @@
                                 <span>{{obstacle.until | stringToDate}}</span>
                               </div>
                             </div>
-                          <div class="m-a-sm" *ngIf="order.cycleState">
+                          <div *ngIf="order.cycleState">
                             <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
-                            <span class="_600 p-l-sm" translate>order.cycleState.label.end</span>:
-                            {{order.cycleState.end | stringToDate}}
-                            <br>
                             <span *ngIf="order.cycleState.since">
-                            <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+                              <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
                               {{order.cycleState.since | stringToDate}}
                             </span>
                             <span *ngIf="order.cycleState.next">
-                            <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+                              <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
                               {{order.cycleState.next | stringToDate}}
                             </span>
                             <br>
