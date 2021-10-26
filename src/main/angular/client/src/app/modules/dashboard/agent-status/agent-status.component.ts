@@ -19,13 +19,14 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   agentClusters: any = [];
   isLoaded = false;
   subscription1: Subscription;
+  mapObj = new Map();
 
   pieChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     tooltips: {
       callbacks: {
-        label: function (tooltipItem, data) {
+        label: function(tooltipItem, data) {
           return ' ' + data.labels[tooltipItem.index];
         }
       }
@@ -35,18 +36,18 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       labels: {
         fontColor: 'rgba(255, 255, 255, 0.7)'
       },
-      onHover: function (e: any) {
+      onHover: function(e: any) {
         e.target.style.cursor = 'pointer';
       },
-      onLeave: function (e: any) {
+      onLeave: function(e: any) {
         e.target.style.cursor = 'default';
       },
       onClick: ($event, item) => {
-        this.navToAgentView(item.fillStyle);
+        this.navToAgentView(item.text);
       }
     },
     hover: {
-      onHover: function (e: any) {
+      onHover: function(e: any) {
         const point = this.getElementAtEvent(e);
         if (point.length) {
           e.target.style.cursor = 'pointer';
@@ -102,10 +103,10 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (((args.eventSnapshots[j].eventType === 'ItemAdded' || args.eventSnapshots[j].eventType === 'ItemDeleted'
-          || args.eventSnapshots[j].eventType === 'ItemChanged') && args.eventSnapshots[j].objectType === 'AGENT')
+            || args.eventSnapshots[j].eventType === 'ItemChanged') && args.eventSnapshots[j].objectType === 'AGENT')
           || args.eventSnapshots[j].eventType === 'AgentStateChanged'
           || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
-          || args.eventSnapshots[j].eventType === 'ProxyDecoupled') && args.eventSnapshots[j].objectType === 'AGENT')) {
+            || args.eventSnapshots[j].eventType === 'ProxyDecoupled') && args.eventSnapshots[j].objectType === 'AGENT')) {
           this.getStatus();
           break;
         }
@@ -115,7 +116,9 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
 
   groupBy(data): any {
     const results = [];
-    if (!(data)) { return; }
+    if (!(data)) {
+      return;
+    }
     data.forEach((value) => {
       const result = {count: 1, _text: '', color: '', hoverColor: ''};
       let label: string;
@@ -137,7 +140,6 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       this.translate.get(label).subscribe(translatedValue => {
         result._text = translatedValue;
       });
-
       if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
           if (results[i]._text === result._text) {
@@ -147,6 +149,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
           }
         }
       }
+      this.mapObj.set(result.count + ' ' + result._text, value.state._text);
       results.push(result);
     });
     return results;
@@ -154,6 +157,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
 
   prepareAgentClusterData(result): void {
     this.agentClusters = result.agents;
+    this.mapObj.clear();
     this.pieChartData = [];
     this.pieChartLabels = [];
     this.pieChartColors[0].backgroundColor = [];
@@ -180,20 +184,13 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       const chart = e.active[0]._chart;
       const activePoints = chart.getElementAtEvent(e.event);
       if (activePoints.length > 0 && activePoints[0]._options) {
-        this.navToAgentView(activePoints[0]._options.backgroundColor);
+        this.navToAgentView(activePoints[0]._model.label);
       }
     }
   }
 
-  navToAgentView(color): void {
-    let state = 'RESET';
-    if (color === '#7ab97a') {
-      state = 'COUPLED';
-    } else if (color === '#ef486a') {
-      state = 'COUPLINGFAILED';
-      // state = 'UNKNOWN';
-    }
-    this.coreService.getResourceTab().agents.filter.state = state;
+  navToAgentView(text): void {
+    this.coreService.getResourceTab().agents.filter.state = this.mapObj.get(text);
     this.router.navigate(['/resources/agents']);
   }
 }

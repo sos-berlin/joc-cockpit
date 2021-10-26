@@ -28,9 +28,13 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-3" [ngClass]="{'m-t' : data}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.label.timeZone</div>
-      <div class="col-sm-8" [ngClass]="{'m-t' : data}" *ngIf="periodList.length > 0 || schemeList.length > 0">
-        {{timezone}}
+      <div class="col-sm-3" [ngClass]="{'m-t' : data}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.admissionTime.label.dailyPlanTimeZone</div>
+      <div class="col-sm-3 b-r" [ngClass]="{'m-t' : data}" *ngIf="periodList.length > 0 || schemeList.length > 0">
+        {{dailyPlan.time_zone}}
+      </div>
+      <div class="col-sm-3" [ngClass]="{'m-t' : data}" *ngIf="periodList.length > 0 || schemeList.length > 0" translate>workflow.admissionTime.label.dailyPlanPeriodBegin</div>
+      <div class="col-sm-3" [ngClass]="{'m-t' : data}" *ngIf="periodList.length > 0 || schemeList.length > 0">
+        {{dailyPlan.period_begin}}
       </div>
       <div class="col-md-12 m-t-sm" *ngIf="schedule">
         <label class="_600 m-b-xs" translate>workflow.label.listOfSchemes</label>

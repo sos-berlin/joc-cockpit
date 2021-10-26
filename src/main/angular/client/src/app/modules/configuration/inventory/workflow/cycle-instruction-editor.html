@@ -36,7 +36,7 @@
                   <span *ngIf="item.frequency">On {{item.frequency}}</span>
                   <span *ngIf="!item.frequency">Every day</span>
                   <a class="text-xs text-hover-color m-l-sm"
-                     (click)="removeFrequency(j , list.periodList)"><i class="fa fa-times"></i></a>
+                     (click)="removeFrequency(j , list, i)"><i class="fa fa-times"></i></a>
                 </div>
                 <div class="col-sm-7">
                   <div *ngFor="let p of item.periods;">
@@ -71,7 +71,7 @@
       <app-empty-data></app-empty-data>
     </div>
     <div class="form-group row ">
-      <div class="col-sm-12 b-b p-t p-b">
+      <div class="col-sm-12 b-b p-t-xs p-b">
         <button class="btn btn-sm btn-primary"
                 (click)="addScheme(selectedNode.obj)" translate>workflow.button.addScheme
         </button>

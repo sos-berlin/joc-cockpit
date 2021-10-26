@@ -16,7 +16,6 @@ export class TypeComponent implements OnChanges {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
-  @Input() timezone: string;
   @Input() orderPreparation: any;
   @Input() recursiveCals: any;
   @Input() workflowFilters: any;
@@ -337,7 +336,6 @@ export class TypeComponent implements OnChanges {
         nzComponentParams = {
           data,
           admissionTime: job.admissionTimeScheme,
-          timezone: this.timezone,
           jobName: instruction.jobName,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
           readonly: true
@@ -352,8 +350,7 @@ export class TypeComponent implements OnChanges {
       };
     } else if (instruction.TYPE === 'Cycle') {
       nzComponentParams = {
-        schedule: instruction.schedule,
-        timezone: this.timezone
+        schedule: instruction.schedule
       };
     }
     if (nzComponentParams) {

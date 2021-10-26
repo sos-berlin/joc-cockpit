@@ -729,8 +729,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       delete rsHt.orderOverview;
       this.saveService.setResizerHeight(rsHt);
       this.saveService.save();
-      this._updatePanelHeight();
     }
+    this._updatePanelHeight();
   }
 
   updatePanelHeight(): void {

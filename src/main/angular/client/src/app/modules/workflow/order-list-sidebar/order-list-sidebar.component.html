@@ -96,7 +96,7 @@
       <ng-template ngFor let-order
                    [ngForOf]="ajaxTable.data">
         <tr>
-          <td [nzShowCheckbox]="true" [nzChecked]="setOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order.orderId, $event)"></td>
+          <td [nzShowCheckbox]="true" [nzDisabled]="order.positionIsImplicitEnd" [nzChecked]="setOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order.orderId, $event)"></td>
           <td>
             <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)"
                               [preferences]="preferences"></app-order-action>
@@ -125,7 +125,7 @@
               </div>
             </ng-template>
           </td>
-          <td>
+          <td style="max-width: 160px">
             <span [innerHtml]="order.positionString"></span>
           </td>
           <td nowrap class="combine-two-label" (mouseover)="getObstacles(order)">
@@ -142,17 +142,14 @@
                   <span>{{obstacle.until | stringToDate}}</span>
                 </div>
               </div>
-              <div class="m-a-sm" *ngIf="order.cycleState">
+              <div *ngIf="order.cycleState">
                 <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
-                <span class="_600 p-l-sm" translate>order.cycleState.label.end</span>:
-                {{order.cycleState.end | stringToDate}}
-                <br>
                 <span *ngIf="order.cycleState.since">
-                <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+                  <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
                   {{order.cycleState.since | stringToDate}}
                 </span>
                 <span *ngIf="order.cycleState.next">
-                <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+                  <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
                   {{order.cycleState.next | stringToDate}}
                 </span>
                 <br>

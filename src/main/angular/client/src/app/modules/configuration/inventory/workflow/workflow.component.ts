@@ -79,7 +79,7 @@ export class DurationValidator implements Validator {
         return null;
       }
 
-      if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0-9]+\s*$/i.test(v) ||
+      if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0]+\s*$/i.test(v) ||
         /^((1+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(v)
       ) {
         return null;
@@ -107,8 +107,8 @@ export class OffsetValidator implements Validator {
         return null;
       }
       if (/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(v) ||
-        /^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0-9]+\s*$/i.test(v) ||
-        /^((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(v) || /^(\d+)\s*$/.test(v)
+        /^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(v) || /^[0]+\s*$/i.test(v) ||
+        /^((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(v)
       ) {
         return null;
       } else if (/,?$/.test(v)) {
@@ -121,8 +121,8 @@ export class OffsetValidator implements Validator {
               return;
             } else {
               if (!(/^\s*(?:(?:1?\d|2[0-3])h\s*)?(?:[1-5]?\dm\s*)?(?:[1-5]?\ds)?\s*$/.test(val) ||
-                /^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(val) || /^[0-9]+\s*$/i.test(val) ||
-                /^((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(val) || /^(\d+)\s*$/.test(val))) {
+                /^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(val) || /^[0]+\s*$/i.test(val) ||
+                /^((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(val))) {
                 flag = false;
               }
             }
@@ -238,7 +238,7 @@ export class TimeEditorComponent implements OnInit {
   selector: 'app-cycle-instruction',
   templateUrl: './cycle-instruction-editor.html'
 })
-export class CycleInstructionComponent implements OnInit, OnChanges {
+export class CycleInstructionComponent implements OnChanges {
   @Input() selectedNode: any;
   schemeList = [];
   days = [];
@@ -247,16 +247,13 @@ export class CycleInstructionComponent implements OnInit, OnChanges {
               private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
   }
 
-  ngOnInit(): void {
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.selectedNode) {
       this.init();
     }
   }
 
-  private init(): void{
+  private init(): void {
     if (this.days.length === 0) {
       this.days = this.coreService.getLocale().days;
       this.days.push(this.days[0]);
@@ -275,7 +272,7 @@ export class CycleInstructionComponent implements OnInit, OnChanges {
     }
     if (this.selectedNode.obj.schedule.schemes.length > 0) {
       this.convertSchemeList();
-    } else{
+    } else {
       this.schemeList = [];
     }
   }
@@ -312,8 +309,30 @@ export class CycleInstructionComponent implements OnInit, OnChanges {
     this.selectedNode.data.periodList = [];
   }
 
-  removeFrequency(index, list): void {
-    list.splice(index, 1);
+  removeFrequency(index, list, mainIndex): void {
+    list.periodList.splice(index, 1);
+    if (list.periodList.length === 0) {
+      this.selectedNode.obj.schedule.schemes[mainIndex].admissionTimeScheme.periods = [];
+    } else {
+      const arr = [];
+      list.periodList.forEach((item) => {
+        if (item.periods) {
+          item.periods.forEach((period) => {
+            const obj: any = {
+              TYPE: !item.frequency ? 'DailyPeriod' : 'WeekdayPeriod'
+            };
+            if (!item.frequency) {
+              obj.secondOfDay = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
+            } else {
+              obj.secondOfWeek = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
+            }
+            obj.duration = period.duration;
+            arr.push(obj);
+          });
+        }
+      });
+      this.selectedNode.obj.schedule.schemes[mainIndex].admissionTimeScheme.periods = arr;
+    }
   }
 
   addRepeat(data, index): void {
@@ -377,11 +396,13 @@ export class CycleInstructionComponent implements OnInit, OnChanges {
         p.text = this.workflowService.getText(p.startTime, p.duration);
         data.periods.push(p);
         this.ref.detectChanges();
-        const obj = this.createObj(data, period);
         const obj2 = this.createObj(data, res);
-        this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods.filter((item) => {
-          return JSON.stringify(item) !== JSON.stringify(obj);
-        });
+        if (period) {
+          const obj = this.createObj(data, period);
+          this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods.filter((item) => {
+            return JSON.stringify(item) !== JSON.stringify(obj);
+          });
+        }
         this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods.push(obj2);
       }
     });
@@ -402,9 +423,9 @@ export class CycleInstructionComponent implements OnInit, OnChanges {
       TYPE: !data.frequency ? 'DailyPeriod' : 'WeekdayPeriod'
     };
     if (obj.TYPE === 'DailyPeriod') {
-      obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek) + period.startTime);
+      obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek || 0) + period.startTime);
     } else {
-      obj.secondOfWeek = ((data.secondOfDay || data.secondOfWeek) + period.startTime);
+      obj.secondOfWeek = ((data.secondOfDay || data.secondOfWeek || 0) + period.startTime);
     }
     obj.duration = period.duration;
     return obj;
@@ -413,14 +434,31 @@ export class CycleInstructionComponent implements OnInit, OnChanges {
   closeScheme(scheme): void {
     scheme.show = false;
     setTimeout(() => {
-      if (!this.selectedNode.isEdit) {
-        this.selectedNode.obj.schedule.schemes.push({
-          repeat: this.workflowService.convertRepeatObject(this.selectedNode.repeatObject),
-          admissionTimeScheme: this.selectedNode.data.schedule.admissionTimeScheme
-        });
-      } else {
-        if (this.selectedNode.repeatObject.index || this.selectedNode.repeatObject.index === 0) {
-          this.selectedNode.obj.schedule.schemes[this.selectedNode.repeatObject.index].repeat = this.workflowService.convertRepeatObject(this.selectedNode.repeatObject);
+      let flag1 = true;
+      if (this.selectedNode.repeatObject.TYPE === 'Periodic') {
+        if (!this.selectedNode.repeatObject.period) {
+          flag1 = false;
+        }
+      } else if (this.selectedNode.repeatObject.TYPE === 'Continuous') {
+        if (!this.selectedNode.repeatObject.pause) {
+          flag1 = false;
+        }
+
+      } else if (this.selectedNode.repeatObject.TYPE === 'Ticking') {
+        if (!this.selectedNode.repeatObject.interval) {
+          flag1 = false;
+        }
+      }
+      if (flag1) {
+        if (!this.selectedNode.isEdit) {
+          this.selectedNode.obj.schedule.schemes.push({
+            repeat: this.workflowService.convertRepeatObject(this.selectedNode.repeatObject),
+            admissionTimeScheme: this.selectedNode.data.schedule.admissionTimeScheme
+          });
+        } else {
+          if (this.selectedNode.repeatObject.index || this.selectedNode.repeatObject.index === 0) {
+            this.selectedNode.obj.schedule.schemes[this.selectedNode.repeatObject.index].repeat = this.workflowService.convertRepeatObject(this.selectedNode.repeatObject);
+          }
         }
       }
       this.selectedNode.repeatObject = {};
@@ -496,7 +534,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
           if (!item.frequency) {
             obj.secondOfDay = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
           } else {
-            obj.secondOfWeek = (item.secondOfWeek + period.startTime || 0);
+            obj.secondOfWeek = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
           }
           obj.duration = period.duration;
           arr.push(obj);
@@ -7271,7 +7309,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (obj.TYPE === 'DailyPeriod') {
               obj.secondOfDay = ((item.secondOfWeek || item.secondOfDay || 0) + period.startTime);
             } else {
-              obj.secondOfWeek = ((item.secondOfWeek || 0) + period.startTime);
+              obj.secondOfWeek = ((item.secondOfWeek || item.secondOfDay || 0) + period.startTime);
             }
             obj.duration = period.duration;
             arr.push(obj);

@@ -30,9 +30,6 @@
     </div>
     <div class="m-a-sm m-t-0" *ngIf="order.cycleState">
       <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
-      <span class="_600 p-l-sm" translate>order.cycleState.label.end</span>:
-      {{order.cycleState.end | stringToDate}}
-      <br>
       <span *ngIf="order.cycleState.since">
         <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
         {{order.cycleState.since | stringToDate}}

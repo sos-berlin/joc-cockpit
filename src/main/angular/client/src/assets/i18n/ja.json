@@ -2082,6 +2082,13 @@
       "label.period": "期間",
       "label.dailyPlanTimeZone": "Daily Plan Time Zone",
       "label.dailyPlanPeriodBegin": "Daily Plan Period Begin",
+      "label.periodicTextWithoutOffSets": "Repeat every {{period}}",
+      "label.periodicTextWithOffSetsWithoutZero": "Repeat every {{period}} at the {{offsets}}",
+      "label.periodicTextWithOffSetsWithZero": "Repeat every {{period}} at the begin of the repeat period {{offsets}}",
+      "label.continuousTextWithoutLimit": "{{pause}} break between repeated execution of the cycle",
+      "label.continuousTextWithLimit": "{{pause}} break between repeated execution of the cycle and limit is {{limit}}",
+      "label.tickingText": "Execute every {{interval}}",
+      "label.periodBeginText": "starting at {{time}} for {{duration}}",
       "button.update": "更新",
       "button.back": "戻る",
       "message.duplicatePeriod": "既に同じ期間があります"
