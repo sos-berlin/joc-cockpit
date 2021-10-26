@@ -2094,8 +2094,8 @@
       "message.duplicatePeriod": "Same period for selected days"
     },
     "repeat": {
-      "label.addRepeat": "Add Repeat",
-      "label.editRepeat": "Edit Repeat",
+      "label.addRepeat": "Add Repeat Period",
+      "label.editRepeat": "Edit Repeat Period",
       "label.cycleType": "Cycle Type",
       "label.periodical": "Periodical",
       "label.continuous": "Continuous",
