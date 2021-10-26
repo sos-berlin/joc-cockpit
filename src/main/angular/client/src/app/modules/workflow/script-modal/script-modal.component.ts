@@ -6,10 +6,10 @@ import {TranslateService} from '@ngx-translate/core';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {WorkflowService} from '../../../services/workflow.service';
 import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
 
 @Component({
   selector: 'app-script-modal',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-modal.component.html'
 })
 export class ScriptModalComponent implements OnInit {
@@ -19,10 +19,10 @@ export class ScriptModalComponent implements OnInit {
   @Input() schedule: any;
   @Input() predicate: any;
   @Input() admissionTime: any;
-  @Input() timezone: string;
   @Input() readonly: boolean;
 
   preferences: any = {};
+  dailyPlan: any = {};
   days = [];
   periodList = [];
   schemeList = [];
@@ -33,15 +33,21 @@ export class ScriptModalComponent implements OnInit {
     viewportMargin: Infinity,
     mode: 'shell'
   };
+  todayDate: string;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService,
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
               private message: NzMessageService, private clipboardService: ClipboardService, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
+    this.todayDate = moment().format('YYYY-MM-DD');
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     if (this.preferences && this.preferences.zone === 'Asia/Calcutta') {
       this.preferences.zone = 'Asia/Kolkata';
+    }
+    if ((this.admissionTime && this.admissionTime.periods && this.admissionTime.periods.length > 0)
+      || (this.schedule && this.schedule.schemes)) {
+      this.loadSetting();
     }
     this.days = this.coreService.getLocale().days;
     if (this.days) {
@@ -54,6 +60,39 @@ export class ScriptModalComponent implements OnInit {
     }
     if (this.schedule && this.schedule.schemes) {
       this.convertSchemeList();
+    }
+  }
+
+  private loadSetting(): void {
+    const controllerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if (this.authService.currentUserData && controllerIds.selected) {
+      const configObj = {
+        controllerId: controllerIds.selected,
+        account: this.authService.currentUserData,
+        configurationType: 'GLOBALS'
+      };
+      this.coreService.post('configurations', configObj).subscribe((res: any) => {
+        const dailyPlan = {
+          time_zone: '',
+          period_begin: '',
+        };
+        if (res.configurations[0]) {
+          const obj = JSON.parse(res.configurations[0].configurationItem).dailyplan;
+          if (obj.time_zone) {
+            dailyPlan.time_zone = obj.time_zone.value;
+          }
+          if (obj.period_begin) {
+            dailyPlan.period_begin = obj.period_begin.value;
+          }
+        }
+        if (!dailyPlan.time_zone) {
+          dailyPlan.time_zone = res.defaultGlobals.dailyplan.time_zone.default;
+        }
+        if (!dailyPlan.period_begin) {
+          dailyPlan.period_begin = res.defaultGlobals.dailyplan.period_begin.default;
+        }
+        this.dailyPlan = dailyPlan;
+      });
     }
   }
 
@@ -125,18 +164,19 @@ export class ScriptModalComponent implements OnInit {
       this.convertTime();
     } else {
       this.tempPeriodList = this.coreService.clone(this.periodList);
-      if (this.preferences.zone !== this.timezone) {
+      if (this.preferences.zone !== this.dailyPlan.time_zone) {
         const convertTedList = [];
         this.periodList.forEach((item) => {
           item.periods.forEach((period) => {
             const obj: any = {
               periods: []
             };
-            const originalTime = this.workflowService.convertSecondToTime(period.startTime);
-            const day = parseInt(moment('1970-01-02 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('DD'), 10);
-            const convertedTime = moment('1970-01-01 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
-            if (day != 2) {
-              obj.day = (day > 2) ? (item.day + 1) : (item.day - 1);
+            const dailyPlanTime = this.workflowService.convertStringToDuration(this.dailyPlan.period_begin, true);
+            const originalTime = this.workflowService.convertSecondToTime((period.startTime + dailyPlanTime));
+            const currentDay = moment(this.todayDate + ' ' + this.workflowService.convertSecondToTime(period.startTime) + '.000' + moment().tz(this.dailyPlan.time_zone).format('Z')).tz(this.preferences.zone).format('YYYY-MM-DD');
+            const convertedTime = moment(this.todayDate + ' ' + originalTime + '.000' + moment().tz(this.dailyPlan.time_zone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
+            if (this.todayDate != currentDay) {
+              obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
             } else {
               obj.day = item.day;
             }
@@ -164,8 +204,9 @@ export class ScriptModalComponent implements OnInit {
   }
 
   private convertTime(): void {
+  
     this.tempPeriodList = this.coreService.clone(this.schemeList);
-    if (this.preferences.zone !== this.timezone) {
+    if (this.preferences.zone !== this.dailyPlan.time_zone) {
       const convertTedList = [];
       this.schemeList.forEach((list) => {
         const x = {
@@ -177,16 +218,17 @@ export class ScriptModalComponent implements OnInit {
             const obj: any = {
               periods: []
             };
-            const originalTime = this.workflowService.convertSecondToTime(period.startTime);
-            const day = parseInt(moment('1970-01-02 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('DD'), 10);
-            const convertedTime = moment('1970-01-01 ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
-            if (day != 2) {
-              obj.day = (day > 2) ? (item.day + 1) : (item.day - 1);
+            const dailyPlanTime = this.workflowService.convertStringToDuration(this.dailyPlan.period_begin, true);
+            const originalTime = this.workflowService.convertSecondToTime((period.startTime + dailyPlanTime));
+            const currentDay = moment(this.todayDate + ' ' + this.workflowService.convertSecondToTime(period.startTime) + '.000' + moment().tz(this.dailyPlan.time_zone).format('Z')).tz(this.preferences.zone).format('YYYY-MM-DD');
+            const convertedTime = moment(this.todayDate + ' ' + originalTime + '.000' + moment().tz(this.dailyPlan.time_zone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
+            if (this.todayDate != currentDay) {
+              obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
             } else {
               obj.day = item.day;
             }
             obj.frequency = this.days[obj.day];
-            if(!item.frequency){
+            if (!item.frequency) {
               obj.frequency = '';
             }
             const dur = this.workflowService.convertDurationToHour(period.duration);

@@ -32,7 +32,7 @@
           <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll()"></i>
         </span>
       </div>
-      <app-type [timezone]="workFlowJson.timeZone" [recursiveCals]="recursiveCals" [configuration]="workFlowJson" [jobs]="workflow.jobs" [orderPreparation]="workflow.orderPreparation" [permission]="permission"
+      <app-type [recursiveCals]="recursiveCals" [configuration]="workFlowJson" [jobs]="workflow.jobs" [orderPreparation]="workflow.orderPreparation" [permission]="permission"
                 [preferences]="preferences" [schedulerId]="controllerId" [expandAll]="isExpandAll" [workflowFilters]="workflowFilters"
                 [orders]="workflow.orders" [expectedNoticeBoards]="workFlowJson.expectedNoticeBoards" [addOrderToWorkflows]="workFlowJson.addOrderToWorkflows" [postNoticeBoards]="workFlowJson.postNoticeBoards"></app-type>
     </div>

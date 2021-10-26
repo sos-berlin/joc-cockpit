@@ -200,7 +200,7 @@ export class WorkflowService {
     if (!svg) {
       return image;
     } else {
-      return  WorkflowService.svgToImageURL(svg);
+      return WorkflowService.svgToImageURL(svg);
     }
   }
 
@@ -1526,7 +1526,7 @@ export class WorkflowService {
         const count = cell.getAttribute('count');
         return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
-        const x = cell.getAttribute('noticeBoardName') ||  cell.getAttribute('label');
+        const x = cell.getAttribute('noticeBoardName') || cell.getAttribute('label');
         if (x) {
           if (cell.value.tagName === 'Connection') {
             if (x === 'then' || x === 'else') {
@@ -1662,7 +1662,7 @@ export class WorkflowService {
         let _text = '';
         let _markedText = '';
         let scheduledFor = '', cyclicOrder = '', begin = '', end = '', orders = '';
-        let cycleState = '', since = '', next = '', end1 = '', index = '';
+        let cycleState = '', since = '', next = '', index = '';
         this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
           orderId = translatedValue;
         });
@@ -1703,9 +1703,6 @@ export class WorkflowService {
           this.translate.get('order.cycleState.label.cycleState').subscribe(translatedValue => {
             cycleState = translatedValue;
           });
-          this.translate.get('order.cycleState.label.end').subscribe(translatedValue => {
-            end1 = translatedValue;
-          });
           this.translate.get('order.cycleState.label.since').subscribe(translatedValue => {
             since = translatedValue;
           });
@@ -1738,7 +1735,6 @@ export class WorkflowService {
         }
         if (data.cycleState) {
           div = div + '<b class="m-b-xs">' + cycleState + '</b></br>';
-          div = div + '<b class="p-l-sm">' + end1 + '</b> : ' + this.stringDatePipe.transform(data.cycleState.end) + '</br>';
           if (data.cycleState.since) {
             div = div + '<b class="p-l-sm">' + since + '</b> : ' + this.stringDatePipe.transform(data.cycleState.since) + '</br>';
           }
@@ -1914,13 +1910,10 @@ export class WorkflowService {
   convertSecondIntoWeek(data, periodList, days, frequency): void {
     const hour = 3600;
     data.periods.forEach((period) => {
-      let hours = (period.secondOfWeek || period.secondOfDay) / hour;
+      const hours = (period.secondOfWeek || period.secondOfDay || 0) / hour;
       const day = Math.floor(hours / 24) + 1;
       if (frequency.days && frequency.days.indexOf(day.toString()) === -1) {
         frequency.days.push(day.toString());
-      }
-      if (isNaN(hours)){
-        hours = 0;
       }
       const d = day - 1;
       const obj: any = {
@@ -1929,7 +1922,7 @@ export class WorkflowService {
         frequency: days[day],
         periods: []
       };
-      if (period.TYPE === 'DailyPeriod'){
+      if (period.TYPE === 'DailyPeriod') {
         obj.frequency = '';
       }
       const startTime = (period.secondOfWeek || period.secondOfDay || 0) - obj.secondOfWeek;
@@ -1994,19 +1987,17 @@ export class WorkflowService {
       TYPE: obj.TYPE
     };
     if (obj.TYPE === 'Periodic') {
-      str = 'Repeat every ';
       if (obj.period) {
         returnObj.period = this.convertDurationToHour(obj.period);
-        str += returnObj.period;
       }
+      let isZero = false;
+      let offsets = '';
       if (obj.offsets) {
-        str += ' at the ';
-        let offsets = '';
         returnObj.offsets = '';
         obj.offsets.forEach((offset, index) => {
           if (offset === 0) {
-            offsets += 'begin of the repeat period';
             returnObj.offsets += '0';
+            isZero = true;
           } else {
             offsets += this.convertDurationToHour(offset);
             returnObj.offsets += this.convertDurationToHour(offset);
@@ -2016,31 +2007,52 @@ export class WorkflowService {
             returnObj.offsets += ', ';
           }
         });
-        str += offsets;
       }
+      this.translate.get(!obj.offsets ? 'workflow.admissionTime.label.periodicTextWithoutOffSets' :
+        isZero ? 'workflow.admissionTime.label.periodicTextWithOffSetsWithZero' : 'workflow.admissionTime.label.periodicTextWithOffSetsWithoutZero', {
+        period: returnObj.period,
+        offsets
+      }).subscribe(translatedValue => {
+        str = translatedValue;
+      });
     } else if (obj.TYPE === 'Continuous') {
       if (obj.pause) {
         returnObj.pause = this.convertDurationToHour(obj.pause);
-        str = returnObj.pause + ' break between repeated execution of the cycle';
         if (obj.limit) {
           returnObj.limit = obj.limit;
-          str += ' and limit is ' + returnObj.limit;
         }
+        this.translate.get(obj.limit ? 'workflow.admissionTime.label.continuousTextWithLimit' : 'workflow.admissionTime.label.continuousTextWithoutLimit', {
+          pause: returnObj.pause,
+          limit: returnObj.limit,
+        }).subscribe(translatedValue => {
+          str = translatedValue;
+        });
       }
     } else if (obj.TYPE === 'Ticking') {
-      str = 'Execute every ';
+      str = '';
       if (obj.interval) {
         returnObj.interval = this.convertDurationToHour(obj.interval);
-        str += returnObj.interval;
+        this.translate.get('workflow.admissionTime.label.tickingText', {
+          interval: returnObj.interval
+        }).subscribe(translatedValue => {
+          str = translatedValue;
+        });
       }
     }
     returnObj.text = str;
     return returnObj;
   }
 
-  getText(startTime, duration): string {
+  getText(startTime, dur): string {
     const time = this.convertSecondToTime(startTime);
-    const dur = this.convertDurationToHour(duration);
-    return 'starting at ' + time + ' for ' + dur;
+    const duration = this.convertDurationToHour(dur);
+    let str;
+    this.translate.get('workflow.admissionTime.label.periodBeginText', {
+      time,
+      duration
+    }).subscribe(translatedValue => {
+      str = translatedValue;
+    });
+    return str;
   }
 }

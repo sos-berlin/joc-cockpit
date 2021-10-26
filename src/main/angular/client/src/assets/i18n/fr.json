@@ -2081,6 +2081,13 @@
       "label.period": "Period",
       "label.dailyPlanTimeZone": "Daily Plan Time Zone",
       "label.dailyPlanPeriodBegin": "Daily Plan Period Begin",
+      "label.periodicTextWithoutOffSets": "Repeat every {{period}}",
+      "label.periodicTextWithOffSetsWithoutZero": "Repeat every {{period}} at the {{offsets}}",
+      "label.periodicTextWithOffSetsWithZero": "Repeat every {{period}} at the begin of the repeat period {{offsets}}",
+      "label.continuousTextWithoutLimit": "{{pause}} break between repeated execution of the cycle",
+      "label.continuousTextWithLimit": "{{pause}} break between repeated execution of the cycle and limit is {{limit}}",
+      "label.tickingText": "Execute every {{interval}}",
+      "label.periodBeginText": "starting at {{time}} for {{duration}}",
       "button.update": "Mettre à jour",
       "button.back": "Retour",
       "message.duplicatePeriod": "Les mêmes entrées existent déjà"

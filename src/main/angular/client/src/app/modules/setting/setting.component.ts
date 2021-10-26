@@ -309,6 +309,8 @@ export class SettingComponent implements OnInit {
                     this.settings[setProp][i].default = defaultGlobals[prop][i].default;
                     break;
                   }
+                } else if (!defaultGlobals[prop][i] && this.settings[prop][i]){
+                  delete this.settings[prop][i];
                 }
               }
             }
