@@ -282,8 +282,8 @@
     "label.processExecuted": "Prozess ausgeführt",
     "label.selectController": "Controller auswählen",
     "label.regexAndChooseTree": "Regulärer Ausdruck oder Ordner",
-    "placeholder.setEndDate": "Ende Zeit setzen",
-    "placeholder.setStartDate": "Start Zeit setzen",
+    "placeholder.setEndDate": "Endezeit setzen",
+    "placeholder.setStartDate": "Startzeit setzen",
     "placeholder.regexAndChooseTree": "Regulärer Ausdruck oder Auswahl eines Ordners",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "Used in all the popup window whit audit log is enable",
@@ -403,7 +403,7 @@
     "placeholder.endDate": "Ende Datum",
     "placeholder.setDate": "Datum setzen",
     "placeholder.setTime": "Zeit setzen",
-    "placeholder.startTime": "Start Zeit",
+    "placeholder.startTime": "Startzeit",
     "placeholder.endTime": "Ende Zeit",
     "placeholder.enterComment": "Begründung eingeben",
     "placeholder.title": "Titel eingeben",
@@ -587,7 +587,7 @@
     "label.submitWith": "Zum Controller übermitteln",
     "label.submitOrder": "Auftrag übermitteln",
     "label.submitOrders": "Aufträge übermitteln",
-    "label.setStartTime": "Start-Zeit ändern",
+    "label.setStartTime": "Startzeit ändern",
     "label.setParameter": "Variable ändern",
     "label.setParameters": "Variablen ändern",
     "label.repeatInterval": "Wiederholungsintervall",
@@ -596,8 +596,8 @@
     "label.repeatEvery": "Wiederholen alle",
     "label.workflow": "Arbeitsablauf",
     "label.state": "Zustand",
-    "label.endTime": "Ende Zeit",
-    "label.startTime": "Start Zeit",
+    "label.endTime": "Endezeit",
+    "label.startTime": "Startzeit",
     "label.plannedStart": "Geplanter Start",
     "label.expectedDuration": "Erwartete Dauer",
     "label.expectedEnd": "Erwartetes Ende",
@@ -660,7 +660,7 @@
     "message.errorInLoadingScheduleIds": "Fehler beim Lesen der Controller-Kennungen",
     "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners.",
     "message.invalidJSON": "Ungültige JSON Datei",
-    "message.cannotModifyStartTime": "Cannot modify start time of two different order"
+    "message.cannotModifyStartTime": "Starzeit unterschiedlicher Aufträge kann nicht geändert werden."
   },
   "fileTransfer": {
     "label.transfer": "Übertragung",
@@ -674,7 +674,7 @@
     "label.port": "Port",
     "label.account": "Konto",
     "label.protocol": "Protokoll",
-    "label.startTime": "Start Zeit",
+    "label.startTime": "Startzeit",
     "label.endTime": "Ende Zeit",
     "label.total": "Gesamt",
     "label.workflow": "Arbeitsablauf",
@@ -783,8 +783,8 @@
     "label.position": "Position",
     "label.status": "Status",
     "label.orderState": "Auftragszustand",
-    "label.endTime": "Ende Zeit",
-    "label.startTime": "Start Zeit",
+    "label.endTime": "Endezeit",
+    "label.startTime": "Startzeit",
     "label.duration": "Dauer",
     "label.plannedTime": "Geplante Zeit",
     "label.orderHistory": "Auftragshistorie",
@@ -2031,7 +2031,7 @@
     "message.invalidIfInstruction": "If-Instruktion darf nicht leer sein",
     "message.invalidTryInstruction": "Try-Instruktion darf nicht leer sein",
     "message.invalidRetryInstruction": "Retry-Instruktion darf nicht leer sein",
-    "message.invalidCycleInstruction": "Cycle Instruction cannot be empty",
+    "message.invalidCycleInstruction": "Cycle-Instruktion darf nicht leer sein",
     "message.invalidLockInstruction": "Resource-Lock-Instruktion darf nicht leer sein",
     "message.invalidPostNoticeInstruction": "PostNotice-Instruktion ist nicht gültig",
     "message.invalidExpectNoticeInstruction": "ExpectNotice-Instruktion ist nicht gültig",
@@ -2045,7 +2045,7 @@
     "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
     "placeholder.selectLock": "Kennung der Ressourcen-Sperre auswählen",
     "placeholder.selectBoard": "Notizbrett auswählen",
-    "placeholder.offset": "Enter values as h/m/s separated by comma",
+    "placeholder.offset": "Werte als Stunden/Minuten/Sekunden kommasepariert ahgeben",
     "placeholder.duration": "Wert im Format eingeben: d/w/m/y/h oder hh:mm:ss oder Sekunden",
     "placeholder.durationPeriod": "Wert im Format eingeben: w/d/h/m oder hh:mm:ss oder hh:mm:ss-hh:mm:ss oder Sekunden",
     "placeholder.enterPositiveNumber": "Nur positive Zahlen durch Komma getrennt angeben",
@@ -2083,17 +2083,17 @@
       "message.duplicatePeriod": "Gleiche Periode für ausgewählte Tage"
     },
     "repeat": {
-      "label.addRepeat": "Add Repeat",
-      "label.editRepeat": "Edit Repeat",
-      "label.cycleType": "Cycle Type",
-      "label.periodical": "Periodical",
-      "label.continuous": "Continuous",
+      "label.addRepeat": "Wiederholung hinzufügen",
+      "label.editRepeat": "Wiederholung editieren",
+      "label.cycleType": "Art des Zyklus",
+      "label.periodical": "Periodisch",
+      "label.continuous": "Fortlaufend",
       "label.ticking": "Ticking",
-      "label.interval": "Interval",
+      "label.interval": "Intervall",
       "label.pause": "Pause",
       "label.limit": "Limit",
       "label.offsets": "Offsets",
-      "label.period": "Period"
+      "label.period": "Periode"
     }
   },
   "xml": {
@@ -2260,7 +2260,7 @@
         "weekPlaceholder": "Woche auswählen",
         "rangePlaceholder": [
           "Start Datum",
-          "Ende Datum"
+          "Ended Dtum"
         ],
         "rangeYearPlaceholder": [
           "Start Jahr",

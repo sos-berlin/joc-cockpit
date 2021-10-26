@@ -660,7 +660,7 @@
     "message.errorInLoadingScheduleIds": "Error in fetching Controller IDs",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
     "message.invalidJSON": "Invalid JSON file",
-    "message.cannotModifyStartTime": "Cannot modify start time of two different order"
+    "message.cannotModifyStartTime": "Cannot modify start time of different orders"
   },
   "fileTransfer": {
     "label.transfer": "Transfer",
