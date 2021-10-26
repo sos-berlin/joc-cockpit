@@ -125,6 +125,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
           data,
           jobName: instruction.jobName,
           admissionTime: job.admissionTimeScheme,
+          timezone: this.timezone,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
           readonly: true
         };
@@ -138,7 +139,8 @@ export class WorkflowTreeStructureComponent implements OnChanges {
       };
     } else if (instruction.TYPE === 'Cycle') {
       nzComponentParams = {
-        schedule: instruction.schedule
+        schedule: instruction.schedule,
+        timezone: this.timezone
       };
     }
     if (nzComponentParams) {

@@ -1301,6 +1301,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           data,
           jobName: argu.jobName,
           admissionTime: job.admissionTimeScheme,
+          timezone: this.workFlowJson.timeZone,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
           readonly: true
         };
@@ -1314,7 +1315,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       };
     } else if (argu.schedule){
       nzComponentParams = {
-        schedule: JSON.parse(argu.schedule)
+        schedule: JSON.parse(argu.schedule),
+        timezone: this.workFlowJson.timeZone
       };
     }
     if (nzComponentParams) {
