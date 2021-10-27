@@ -124,6 +124,9 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       if (this.data.valid !== res.valid){
         this.data.valid = res.valid;
       }
+      if (res.configuration.directoryExpr){
+        this.coreService.removeSlashToString(res.configuration, 'directoryExpr');
+      }
       this.fileOrder = res;
       this.fileOrder.path1 = this.data.path;
       this.fileOrder.name = this.data.name;
@@ -139,7 +142,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
         } else if (!this.fileOrder.configuration.agentName) {
           this.invalidMsg = 'workflow.message.agentIsMissing';
-        } else if (!this.fileOrder.configuration.directory) {
+        } else if (!this.fileOrder.configuration.directoryExpr) {
           this.invalidMsg = 'inventory.message.directoryIsMissing';
         } else {
           this.validateJSON(res.configuration);
@@ -367,8 +370,12 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.history.push(JSON.stringify(this.fileOrder.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
+      const obj = this.coreService.clone(this.fileOrder.configuration);
+      if(obj.directoryExpr){
+        this.coreService.addSlashToString(obj, 'directoryExpr');
+      }
       this.coreService.post('inventory/store', {
-        configuration: this.fileOrder.configuration,
+        configuration: obj,
         valid: isValid,
         id: this.fileOrder.id,
         objectType: this.objectType

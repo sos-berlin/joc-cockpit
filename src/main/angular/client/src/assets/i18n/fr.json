@@ -2074,6 +2074,7 @@
       "button.addAnotherParameter": "Ajouter un autre paramètre"
     },
     "admissionTime": {
+      "label.on": "Le",
       "label.weekDays": "Jours de la semaine",
       "label.everyDay": "Tous les jours",
       "label.frequency": "Fréquence",

@@ -57,7 +57,7 @@
                 <div *ngFor="let item of list.periodList">
                   <div class="row">
                     <div class="col-sm-5">
-                      <span *ngIf="item.frequency">On {{item.frequency}}</span>
+                      <span *ngIf="item.frequency"><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
                       <span *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
                     </div>
                     <div class="col-sm-7">

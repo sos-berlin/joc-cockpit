@@ -2075,6 +2075,7 @@
       "button.addAnotherParameter": "他のパラメーター追加"
     },
     "admissionTime": {
+      "label.on": "On",
       "label.weekDays": "曜日",
       "label.everyDay": "毎日",
       "label.frequency": "周期",

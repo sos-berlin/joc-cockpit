@@ -2075,6 +2075,7 @@
       "button.addAnotherParameter": "Add another Variable"
     },
     "admissionTime": {
+      "label.on": "On",
       "label.weekDays": "Weekdays",
       "label.everyDay": "Every Day",
       "label.frequency": "Frequency",
