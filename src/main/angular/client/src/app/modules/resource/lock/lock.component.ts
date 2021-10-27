@@ -320,6 +320,9 @@ export class LockComponent implements OnInit, OnDestroy {
     obj.compact = true;
     const locks = [];
     this.coreService.post('locks', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
+      if (res.locks && res.locks.length === 0){
+        this.locksFilters.currentPage = 1;
+      }
       res.locks.forEach((value) => {
         value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
         value.state = value.lock.state;

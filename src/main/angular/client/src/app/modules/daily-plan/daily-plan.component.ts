@@ -2576,6 +2576,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private filterData(planItems): void {
+    if (!planItems || planItems.length === 0) {
+      this.dailyPlanFilters.currentPage = 1;
+    }
     if (planItems && planItems.length) {
       for (let i = 0; i < planItems.length; i++) {
         planItems[i].plannedDate = planItems[i].plannedStartTime;

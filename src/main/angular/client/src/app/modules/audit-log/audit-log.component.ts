@@ -342,6 +342,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('audit_log', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       res.auditLog = this.orderPipe.transform(res.auditLog, this.adtLog.filter.sortBy, this.adtLog.reverse);
+      if (res.auditLog && res.auditLog.length === 0){
+        this.adtLog.currentPage = 1;
+      }
       this.auditLogs = res.auditLog;
       if (!date) {
         this.data.forEach((item) => {

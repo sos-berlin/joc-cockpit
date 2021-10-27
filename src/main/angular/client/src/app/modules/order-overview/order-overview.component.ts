@@ -451,6 +451,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.isLoaded = true;
       res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
       this.orders = res.orders;
+      if (this.orders.length === 0){
+        this.orderFilters.currentPage = 1;
+      }
       if (tempOrder.length > 0) {
         for (let i = 0; i < this.orders.length; i++) {
           for (let j = 0; j < tempOrder.length; j++) {

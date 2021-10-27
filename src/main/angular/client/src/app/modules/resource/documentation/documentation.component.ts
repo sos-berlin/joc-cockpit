@@ -785,6 +785,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   private getDocumentationsList(obj): void {
     this.reset();
     this.coreService.post('documentations', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
+      if (res.documentations && res.documentations.length === 0){
+        this.documentFilters.currentPage = 1;
+      }
       this.loading = false;
       res.documentations.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);

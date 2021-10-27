@@ -407,6 +407,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   searchInResult(): void {
     this.data = this.yadeFilters.searchText ? this.searchPipe.transform(this.fileTransfers, this.yadeFilters.searchText, this.searchableProperties) : this.fileTransfers;
     this.data = [...this.data];
+    if (this.fileTransfers.length === 0){
+      this.yadeFilters.currentPage = 1;
+    }
   }
 
   changeController(): void {
