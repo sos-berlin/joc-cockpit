@@ -660,7 +660,7 @@
     "message.errorInLoadingScheduleIds": "Error in fetching Controller IDs",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
     "message.invalidJSON": "Invalid JSON file",
-    "message.cannotModifyStartTime": "Cannot modify start time of two different order"
+    "message.cannotModifyStartTime": "Cannot modify start time of different orders"
   },
   "fileTransfer": {
     "label.transfer": "Transfer",
@@ -1974,7 +1974,7 @@
     "label.remainWhenTerminated": "Remain When Terminated",
     "label.joinIfFailed": "Join If Failed",
     "label.skipIfNoAdmissionForOrderDay": "Skip Job if no admission for Order day",
-    "label.listOfSchemes": "List Of Cycles",
+    "label.listOfSchemes": "List of Cycles",
     "label.repeat": "Repeat",
     "label.cycle": "Cycle",
     "label.cycleEnd": "Cycle-End",
@@ -2085,8 +2085,8 @@
       "label.periodicTextWithoutOffSets": "Repeat every {{period}}",
       "label.periodicTextWithOffSetsWithoutZero": "Repeat every {{period}} at the {{offsets}}",
       "label.periodicTextWithOffSetsWithZero": "Repeat every {{period}} at the begin of the repeat period {{offsets}}",
-      "label.continuousTextWithoutLimit": "{{pause}} break between repeated execution of the cycle",
-      "label.continuousTextWithLimit": "{{pause}} break between repeated execution of the cycle and limit is {{limit}}",
+      "label.continuousTextWithoutLimit": "{{pause}} break between repeated executions of the cycle",
+      "label.continuousTextWithLimit": "{{pause}} break between repeated executions of the cycle and limit is {{limit}}",
       "label.tickingText": "Execute every {{interval}}",
       "label.periodBeginText": "starting at {{time}} for {{duration}}",
       "button.update": "Update",
@@ -2094,8 +2094,8 @@
       "message.duplicatePeriod": "Same period for selected days"
     },
     "repeat": {
-      "label.addRepeat": "Add Repeat",
-      "label.editRepeat": "Edit Repeat",
+      "label.addRepeat": "Add Repeat Period",
+      "label.editRepeat": "Edit Repeat Period",
       "label.cycleType": "Cycle Type",
       "label.periodical": "Periodical",
       "label.continuous": "Continuous",

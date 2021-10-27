@@ -1867,6 +1867,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.data = this.submissionHistorys;
     }
     this.data = [...this.data];
+    if (this.historyFilters.type === 'ORDER' && this.historys.length === 0) {
+      this.order.currentPage = 1;
+    } else if (this.historyFilters.type === 'TASK' && this.taskHistorys.length === 0) {
+      this.task.currentPage = 1;
+    } else if (this.historyFilters.type === 'YADE' && this.yadeHistorys.length === 0) {
+      this.yade.currentPage = 1;
+    } else if (this.historyFilters.type === 'DEPLOYMENT' && this.deploymentHistorys.length === 0) {
+      this.deployment.currentPage = 1;
+    } else if (this.historyFilters.type === 'SUBMISSION' && this.submissionHistorys.length === 0) {
+      this.submission.currentPage = 1;
+    }
+    
   }
 
   expandDetails(): void {

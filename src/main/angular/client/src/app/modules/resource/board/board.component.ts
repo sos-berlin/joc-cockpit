@@ -423,6 +423,9 @@ export class BoardComponent implements OnInit, OnDestroy {
     obj.compact = true;
     const boards = [];
     this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
+      if (res.noticeBoards && res.noticeBoards.length === 0){
+        this.boardsFilters.currentPage = 1;
+      }
       res.noticeBoards.forEach((value) => {
         value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);

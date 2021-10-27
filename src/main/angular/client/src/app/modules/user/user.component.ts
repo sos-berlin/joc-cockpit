@@ -57,7 +57,9 @@ export class UpdateKeyModalComponent implements OnInit {
           obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
         }
       }
-      obj.keyAlgorithm = this.algorithm.keyAlg;
+      if(this.type === 'key') {
+        obj.keyAlgorithm = this.algorithm.keyAlg;
+      }
     } else{
       obj = {certificate: this.data.certificate};
     }
@@ -72,7 +74,7 @@ export class UpdateKeyModalComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
     const URL = this.type === 'key' ? 'profile/key/store' : this.type === 'certificate' ? 'profile/key/ca/store' : 'profile/ca/store';
-    this.coreService.post(URL, this.type === 'certificate' ? obj : {keys: obj}).subscribe(res => {
+    this.coreService.post(URL, this.type === 'key' ? {keys: obj} : obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close();
     }, (err) => {

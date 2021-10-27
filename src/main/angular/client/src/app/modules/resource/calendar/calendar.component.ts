@@ -301,6 +301,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   private getCalendarsList(obj): void {
     this.coreService.post('calendars', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
+      if (res.calendars && res.calendars.length === 0){
+        this.calendarFilters.currentPage = 1;
+      }
       this.loading = false;
       if (res.calendars) {
         for (let i = 0; i < res.calendars.length; i++) {

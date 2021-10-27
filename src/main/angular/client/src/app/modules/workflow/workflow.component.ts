@@ -770,6 +770,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.currentPath = obj.folders[0].folder;
     }
     this.coreService.post('workflows', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
+      if (res.workflows && res.workflows.length === 0){
+        this.workflowFilters.currentPage = 1;
+      }
       this.loading = false;
       const request = {
         compact: true,
