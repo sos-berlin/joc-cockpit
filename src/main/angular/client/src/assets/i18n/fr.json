@@ -2025,6 +2025,7 @@
     "message.scriptIsMissing": "Le script exécutable est absent, mais il est nécessaire",
     "message.classNameIsMissing": "Le nom de la classe est absent, mais il est nécessaire",
     "message.duplicateLabel": "Même Label trouvé dans plus d'une Taĉhe",
+    "message.predicateIsMissing": "Le Predicat est manquant, mais est obligatoire",
     "message.scheduleIsMissing": "La Planification est manquante, mais est obligatoire",
     "message.lockNameIsMissing": "Le nom du Verrou de Ressource est manquant, mais est obligatoire",
     "message.childrenIsMissing": "La Variable de Tableau (ForkList) est manquante, mais est obligatoire",
