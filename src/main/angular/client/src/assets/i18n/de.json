@@ -2078,7 +2078,7 @@
       "label.weekDays": "Wochentage",
       "label.everyDay": "Jeder Tag",
       "label.frequency": "Häufigkeit",
-      "label.startTime": "Period Begin",
+      "label.startTime": "Beginn Periode",
       "label.period": "Periode",
       "label.dailyPlanTimeZone": "Zeitzone des Tagesplans",
       "label.dailyPlanPeriodBegin": "Beginn der Tagesplanperiode",
@@ -2089,7 +2089,7 @@
       "label.continuousTextWithLimit": "{{pause}} Pause zwischen wiederholten Ausführungen des Zyklus mit Begrenzung auf {{limit}} Zyklen",
       "label.tickingText": "Ausführen alle {{interval}}",
       "label.periodBeginText": "startet um {{time}} für {{duration}}",
-      "button.update": "Speichern",
+      "button.update": "Anwenden",
       "button.back": "Zurück",
       "message.duplicatePeriod": "Gleiche Periode für ausgewählte Tage"
     },
