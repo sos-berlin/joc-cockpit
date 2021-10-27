@@ -135,7 +135,7 @@
           <tr *ngFor="let item of data.periodList;">
             <td>
               <span *ngIf="item.frequency">On {{item.frequency}}</span>
-              <span *ngIf="!item.frequency">Every day</span>
+              <span *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
               <a class="text-xs text-hover-color m-l-sm"
                  (click)="removeFrequency(item)"><i class="fa fa-times"></i></a>
             </td>

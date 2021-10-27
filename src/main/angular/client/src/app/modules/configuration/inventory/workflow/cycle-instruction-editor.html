@@ -34,7 +34,7 @@
               <div class="row">
                 <div class="col-sm-5">
                   <span *ngIf="item.frequency">On {{item.frequency}}</span>
-                  <span *ngIf="!item.frequency">Every day</span>
+                  <span *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
                   <a class="text-xs text-hover-color m-l-sm"
                      (click)="removeFrequency(j , list, i)"><i class="fa fa-times"></i></a>
                 </div>
