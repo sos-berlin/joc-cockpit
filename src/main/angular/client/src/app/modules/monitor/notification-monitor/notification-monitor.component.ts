@@ -215,6 +215,9 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   searchInResult(): void {
     this.data = this.filters.filter.searchText ? this.searchPipe.transform(this.notifications, this.filters.filter.searchText, this.searchableProperties) : this.notifications;
     this.data = [...this.data];
+    if (this.notifications.length === 0){
+      this.filters.filter.currentPage = 1;
+    }
     this.totalNotification = 0;
     this.data.forEach((item) => {
       if (item.type === 'ERROR') {
