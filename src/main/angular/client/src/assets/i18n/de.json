@@ -2076,7 +2076,7 @@
     },
     "admissionTime": {
       "label.weekDays": "Wochentage",
-      "label.everyDay": "Jeder Tag",
+      "label.everyDay": "Jeden Tag",
       "label.frequency": "Häufigkeit",
       "label.startTime": "Beginn Periode",
       "label.period": "Periode",
