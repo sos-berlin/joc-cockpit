@@ -1592,20 +1592,6 @@ export class WorkflowService {
         });
         return '<b>' + maxTries + '</b> : ' + (cell.getAttribute('maxTries') || '-') + '</br>' +
           '<b>' + delay + '</b> : ' + (cell.getAttribute('retryDelays') || '-');
-      } else if (cell.value.tagName === 'FileOrder') {
-        let regex = '', directory = '', agent = '';
-        this.translate.get('workflow.label.agent').subscribe(translatedValue => {
-          agent = translatedValue;
-        });
-        this.translate.get('workflow.label.regex').subscribe(translatedValue => {
-          regex = translatedValue;
-        });
-        this.translate.get('workflow.label.directory').subscribe(translatedValue => {
-          directory = translatedValue;
-        });
-        return '<b>' + agent + '</b> : ' + (cell.getAttribute('agent') || '-') + '</br>' +
-          '<b>' + regex + '</b> : ' + (cell.getAttribute('regex') || '-') + '</br>' +
-          '<b>' + directory + '</b> : ' + (cell.getAttribute('directory') || '-');
       } else if (cell.value.tagName === 'If') {
         let msg = '';
         this.translate.get('workflow.label.predicate').subscribe(translatedValue => {

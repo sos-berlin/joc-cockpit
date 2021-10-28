@@ -172,7 +172,7 @@
                                   [innerHtml]="order.state._text | translate"></span>
                           </td>
                           <td>{{order.agentName}}</td>
-                          <td>{{order.directory}}</td>
+                          <td>{{order.directoryExpr || order.directory}}</td>
                           <td>{{order.pattern}}</td>
                           <td>{{order.timeZone}}</td>
                           <td>{{order.delay}}</td>
