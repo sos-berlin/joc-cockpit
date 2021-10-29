@@ -1894,7 +1894,7 @@
                     if (!logout && res.events) {
                         eventLoading = false;
                         setTimeout(function () {
-                            vm.changeEvent(vm.schedulerIds.jobschedulerIds);
+                           vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                         }, res.events.length > 0 ? 200 : 1000)
                         if (res.events.length === 0) {
                             vm.refreshSession();
@@ -3091,10 +3091,7 @@
             obj.calendar = vm.frequencyObj;
             $('#full-calendar').calendar({
                 language: localStorage.$SOS$LANG,
-                view: 'year',
-                clickDay: function(e)  {
-                    checkDate(e.date);
-                }
+                view: 'year'
             });
             CalendarService.getListOfDates(obj).then(function (result) {
                 let color = 'blue';

@@ -5904,7 +5904,7 @@
 
         function storeObject() {
             if (vm.lock && vm.lock.name) {
-                if (vm.lock.checkbox && vm.lock.maxNonExclusive) {
+                if (vm.lock.checkbox) {
                     vm.lock.maxNonExclusive = null;
                 }
                 if (!vm.extraInfo.lockedSince) {
@@ -5921,7 +5921,7 @@
                         vm.storeObject(vm.lock, vm.lock, null, function (result) {
                             if (!result || result !== 'no') {
                                 vm.extraInfo.storeDate = new Date();
-                                vm.lock.checkbox = !vm.lock.maxNonExclusive;
+                                //vm.lock.checkbox = !vm.lock.maxNonExclusive;
                                 vm._tempLock = angular.copy(vm.lock);
                             } else {
                                 let defaultObjects = ['name', 'deleted', 'deployed', 'type', 'expanded', 'message', 'path', '$$hashKey'];

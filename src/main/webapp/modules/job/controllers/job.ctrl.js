@@ -9414,11 +9414,11 @@
             if (/\(([^)]+)\)/i.test(name)) {
                 evtName = evtName.replace('(', '_').replace(')', '_');
             }
-            if (name.match(/./)) {
-                evtName = evtName.replace('.', '_');
+            if (name.includes('.')) {
+                evtName = evtName.replaceAll('.', '_');
             }
-            if (name.match(/#/)) {
-                evtName = evtName.replace('#', '_');
+           if (name.includes('.')) {
+                evtName = evtName.replaceAll('#', '_');
             }
             return evtName.trim().replace(/\s/g, '_');
         }
@@ -11198,7 +11198,7 @@
 
         vm.checkAllSession = function () {
             if (vm.allSessionCheck.checkbox) {
-                vm.object1.sessions = vm.sessions;
+                vm.object1.sessions = angular.copy(vm.sessions);
             } else {
                 vm.object1.sessions = [];
             }

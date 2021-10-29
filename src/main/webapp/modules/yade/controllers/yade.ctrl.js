@@ -1205,7 +1205,11 @@
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
                     if (vm.events[0].eventSnapshots[i].objectType == 'OTHER') {
                         if (vm.events[0].eventSnapshots[i].eventType == 'YADETransferStarted') {
-                           vm.load();
+                            if(hitSearch){
+                                vm.search(true);
+                            } else {
+                                vm.load();
+                            }
                             break;
                         }else if(vm.events[0].eventSnapshots[i].eventType == 'YADETransferUpdated'){
                             for(let x=0; x<vm.fileTransfers.length;x++){
