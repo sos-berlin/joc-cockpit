@@ -1,9 +1,20 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
+import {Subject, Subscription} from 'rxjs';
 import {isEmpty, isEqual, sortBy} from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
+import {debounceTime} from 'rxjs/operators';
 
 @Component({
   selector: 'app-file-order',
@@ -31,6 +42,9 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
+  private subject: Subject<string> = new Subject<string>();
+  @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
+
   constructor(private coreService: CoreService, private dataService: DataService, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -45,6 +59,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       } else if (res === 'UNDO') {
         this.undo();
       }
+    });
+    this.subject.pipe(
+      debounceTime(250)
+    ).subscribe(searchTextValue => {
+      this.checkWorkflowExist(searchTextValue);
     });
   }
 
@@ -76,6 +95,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subject.complete();
     if (this.fileOrder.name) {
       this.saveJSON();
     }
@@ -222,7 +242,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  loadData(node, type, $event): void {
+  loadData(node, type, $event, reload = false): void {
     if (!node || !node.origin) {
       return;
     }
@@ -236,7 +256,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.updateList(node, type);
+        
+        this.updateList(node, type, reload);
       }
     } else {
       if (type === 'DOCUMENTATION') {
@@ -266,7 +287,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  updateList(node, type): void {
+  updateList(node, type, reload): void {
     let obj: any = {
       path: node.key,
       objectTypes: [type]
@@ -301,9 +322,39 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.documentationTree = [...this.documentationTree];
       } else {
         this.workflowTree = [...this.workflowTree];
+        if (reload) {
+          const text = this.treeCtrl.inputValue;
+          if (text) {
+            this.treeCtrl.nzSelectSearchComponent.onValueChange(text + 1);
+            setTimeout(() => {
+              this.treeCtrl.nzSelectSearchComponent.onValueChange(text);
+            }, 0);
+          }
+        }
       }
       this.ref.detectChanges();
     });
+  }
+
+  onKeyPressFunc($event): void {
+    this.subject.next($event.target.value);
+  }
+
+  private checkWorkflowExist(name): void {
+    this.coreService.post('inventory/path', {
+      name,
+      objectType: InventoryObject.WORKFLOW
+    }).subscribe((res: any) => {
+      this.loadWorkflowList(res.path);
+    });
+  }
+
+  private loadWorkflowList(path): void {
+    const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
+    console.log(node, path)
+    if (node && node.origin) {
+      this.loadData(node, 'WORKFLOW', null, true);
+    }
   }
 
   onExpand(e, type): void {

@@ -217,6 +217,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   sideView: any = {};
   searchableProperties = ['name', 'path', 'postOrderToNoticeId', 'expectOrderToNoticeId', 'endOfLife', 'title', 'state', '_text', 'versionDate'];
   reloadState = 'no';
+  isSearchVisible = false;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -452,6 +453,48 @@ export class BoardComponent implements OnInit, OnDestroy {
   searchInResult(): void {
     this.data = this.boardsFilters.searchText ? this.searchPipe.transform(this.boards, this.boardsFilters.searchText, this.searchableProperties) : this.boards;
     this.data = [...this.data];
+  }
+
+  search(): void {
+    this.isSearchVisible = true;
+  }
+
+  closeSearch(): void {
+    this.isSearchVisible = false;
+  }
+
+  onNavigate(data): void {
+    const pathArr = [];
+    const arr = data.path.split('/');
+    this.boardsFilters.selectedkeys = [];
+    const len = arr.length - 1;
+    if (len > 1) {
+      for (let i = 0; i < len; i++) {
+        if (arr[i]) {
+          if (i > 0 && pathArr[i - 1]) {
+            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+          } else {
+            pathArr.push('/' + arr[i]);
+          }
+        } else {
+          pathArr.push('/');
+        }
+      }
+    }
+    if (pathArr.length === 0) {
+      pathArr.push('/');
+    }
+    const PATH = data.path.substring(0, data.path.lastIndexOf('/')) || '/';
+    this.boardsFilters.expandedKeys = pathArr;
+    this.boardsFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+    this.boardsFilters.expandedObjects = [data.path];
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      folders: [{folder: PATH, recursive: false}]
+    };
+    this.boards = [];
+    this.loading = true;
+    this.getBoardsList(obj);
   }
 
   private updateBoardsDetail(boards): void {

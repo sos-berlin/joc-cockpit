@@ -38,7 +38,7 @@
           </nz-tree-select>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!isWorkflow">
+      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard">
         <label class="col-md-4 col-lg-3 block-ellipsis-job"
                translate>inventory.search.label.deployedOrReleased</label>
         <div class="col-md-2 col-lg-2">
@@ -50,7 +50,7 @@
           <label nz-checkbox [(ngModel)]="searchObj.currentController" name="currentController"></label>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!isWorkflow">
+      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard">
         <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.search.label.return</label>
         <div class="col-md-8 col-lg-9">
           <nz-select [(ngModel)]="searchObj.returnType" name="returnType">
@@ -276,7 +276,7 @@
                 <td *ngIf="isJobSearch" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
                 <td (click)="navToObject(data)" *ngIf="isControllerId">{{data.controllerId}}</td>
                 <td (click)="navToObject(data)">
-                  <span *ngIf="!isWorkflow" class="fa fa-check-circle-o orange text-xs w-11"
+                  <span *ngIf="!isWorkflow && !isLock && !isBoard" class="fa fa-check-circle-o orange text-xs w-11"
                         [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"
                         style="margin-top: 4px"></span>
                   <span class="p-l-xs" [innerHTML]="data.name"></span>
@@ -285,7 +285,7 @@
                 </td>
                 <td>
                   <span class="show-in-single-line">
-                    <i *ngIf="isWorkflow && data.permitted" (click)="coreService.navToInventoryTab(data.path, 'WORKFLOW');$event.stopPropagation();"
+                    <i *ngIf="(isWorkflow || isLock || isBoard) && data.permitted" (click)="coreService.navToInventoryTab(data.path, this.type);$event.stopPropagation();"
                        class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                     <span> {{data.path.substring(0, data.path.lastIndexOf('/')) || '/'}}</span>
                   </span>

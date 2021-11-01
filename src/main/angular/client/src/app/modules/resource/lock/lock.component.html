@@ -53,6 +53,10 @@
         <button class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':locks.length>0 && pageView!='grid'}" (click)="expandDetails()" >
           <i class="fa fa-expand text" ></i>
         </button>
+        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="search()">
+          <i class="fa fa-search"></i>&nbsp;
+          <span translate>common.button.search</span>
+        </button>
         <div class="search-box-field pull-right">
           <label>
             <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
@@ -352,6 +356,15 @@
     </div>
   </div>
 </div>
+<nz-drawer [nzVisible]="isSearchVisible" nzPlacement="right" (nzOnClose)="closeSearch()">
+  <ng-container *nzDrawerContent>
+    <div class="close-btn" (click)="closeSearch()"></div>
+    <div *ngIf="isSearchVisible">
+      <div class="text-center m-b text" ><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span></div>
+      <app-inventory-search [controllerId]="schedulerIds.selected" [isLock]="true" (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)"></app-inventory-search>
+    </div>
+  </ng-container>
+</nz-drawer>
 <div class="spinner" *ngIf="(loading && pageView === 'grid') || !isLoading">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>

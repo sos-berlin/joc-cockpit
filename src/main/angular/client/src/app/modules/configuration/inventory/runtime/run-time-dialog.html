@@ -12,7 +12,7 @@
                     class="btn btn-sm btn-grey m-r-sm m-t-sm"
                     translate type="button">runtime.button.assignNonWorkingDayCalendar
             </button>
-            <button (click)="planFromRuntime()" class="btn btn-sm btn-grey m-t-sm"
+            <button [disabled]="(!calendars || calendars.length === 0)" (click)="planFromRuntime()" class="btn btn-sm btn-grey m-t-sm"
                     translate type="button">runtime.button.showYearView
             </button>
           </div>
