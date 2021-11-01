@@ -16,6 +16,8 @@ export class SearchComponent implements OnInit {
   @Output() onNavigate: EventEmitter<any> = new EventEmitter();
   @Input() controllerId: any;
   @Input() isWorkflow: boolean;
+  @Input() isBoard: boolean;
+  @Input() isLock: boolean;
   submitted = false;
   isControllerId = false;
   isJobSearch = false;
@@ -35,6 +37,7 @@ export class SearchComponent implements OnInit {
     checked: false,
     indeterminate: false
   };
+  type: string;
 
   constructor(public coreService: CoreService, public modal: NzModalService,
               private inventoryService: InventoryService, private workflowService: WorkflowService) {
@@ -42,17 +45,25 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.ENUM = InventorySearch;
-    this.searchObj.returnType = this.ENUM.WORKFLOW;
     this.deployTypes = Object.keys(this.ENUM).filter(key => isNaN(+key));
     this.getAgents();
     this.getFolderTree();
-    if (!this.isWorkflow) {
+    if (!this.isWorkflow && !this.isBoard && !this.isLock) {
       this.results = this.inventoryService.getSearchResult();
       if (this.results.length > 0 && this.results[0].controllerId) {
         this.isControllerId = true;
       }
+      this.searchObj.returnType = this.ENUM.WORKFLOW;
     } else {
-      this.results = this.workflowService.getSearchResult();
+      if (this.isWorkflow) {
+        this.type = this.ENUM.WORKFLOW;
+        this.results = this.workflowService.getSearchResult();
+      } else if (this.isBoard) {
+        this.type = this.ENUM.NOTICEBOARD;
+      } else if (this.isLock) {
+        this.type = this.ENUM.LOCK;
+      }
+      this.searchObj.returnType = this.type;
     }
   }
 

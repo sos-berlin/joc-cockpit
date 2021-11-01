@@ -7,7 +7,6 @@ import {NgJsonEditorModule} from 'ang-jsoneditor';
 import {ChecklistModule} from 'angular-checklist';
 import {DatePipe} from '@angular/common';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
-import {NzDrawerModule} from 'ng-zorro-antd/drawer';
 import {InventoryRoutingModule} from './inventory-routing.module';
 import {InventoryService} from './inventory.service';
 import {SharedModule} from '../../shared/shared.module';
@@ -60,7 +59,6 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     NzMentionModule,
     NzAutocompleteModule,
     NzTabsModule,
-    NzDrawerModule,
     NgJsonEditorModule,
     ChecklistModule
   ],

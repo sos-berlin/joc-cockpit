@@ -107,19 +107,20 @@
               [nzHideUnMatched]="true"
               [nzDropdownStyle]="{ 'max-height': '300px' }"
               nzShowSearch
+              (keyup)="onKeyPressFunc($event)"
               [(ngModel)]="schedule.configuration.workflowName1"
               (nzExpandChange)="onExpand($event, 'WORKFLOW')"
             >
-            <ng-template #nzTreeTemplate let-node>
-              <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
-                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.key == schedule.configuration.workflowName">
-                  <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                  <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                  {{node.origin.name}}
+              <ng-template #nzTreeTemplate let-node>
+                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
+                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.key == schedule.configuration.workflowName">
+                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{node.origin.name}}
+                  </div>
                 </div>
-              </div>
-            </ng-template>
-          </nz-tree-select>
+              </ng-template>
+            </nz-tree-select>
             <div *ngIf="workflowName.invalid && (workflowName.dirty || workflowName.touched)" class="text-danger help-block">
               <div *ngIf="workflowName.errors.required">
                 <div translate>common.message.requiredError</div>

@@ -103,6 +103,7 @@
               [nzHideUnMatched]="true"
               [nzDropdownStyle]="{ 'max-height': '300px' }"
               nzShowSearch
+              (keyup)="onKeyPressFunc($event)"
               [(ngModel)]="fileOrder.configuration.workflowName1"
               (nzExpandChange)="onExpand($event, 'WORKFLOW')"
             >
