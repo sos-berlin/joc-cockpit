@@ -7615,11 +7615,19 @@
             if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                 filter.timeZone = 'UTC';
             }
+            let zone = vm.userPreferences.zone;
+            if(zone.match(/GMT[-+]/)){
+                if(zone.match(/GMT-/)){
+                    zone = zone.replace('-', '+')
+                } else{
+                    zone = zone.replace('+', '-');
+                }
+            }
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                filter.dateTo = moment(filter.dateTo).tz(zone)._d;
             }
             TaskService.histories(filter).then(function (res) {
                 vm.jobHistorys = res.history;
@@ -7666,11 +7674,19 @@
             if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                 filter.timeZone = 'UTC';
             }
+            let zone = vm.userPreferences.zone;
+            if(zone.match(/GMT[-+]/)){
+                if(zone.match(/GMT-/)){
+                    zone = zone.replace('-', '+')
+                } else{
+                    zone = zone.replace('+', '-');
+                }
+            }
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                filter.dateTo = moment(filter.dateTo).tz(zone)._d;
             }
             OrderService.histories(filter).then(function (res) {
                 vm.historys = res.history;
@@ -7721,11 +7737,19 @@
             if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                 filter.timeZone = 'UTC';
             }
+            let zone = vm.userPreferences.zone;
+            if(zone.match(/GMT[-+]/)){
+                if(zone.match(/GMT-/)){
+                    zone = zone.replace('-', '+')
+                } else{
+                    zone = zone.replace('+', '-');
+                }
+            }
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                filter.dateTo = moment(filter.dateTo).tz(zone)._d;
             }
             ConditionService.getSessions(filter).then(function (res) {
                 vm.jobStreamHistorys = res.jobstreamSessions;
@@ -7772,11 +7796,19 @@
             if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                 filter.timeZone = 'UTC';
             }
+            let zone = vm.userPreferences.zone;
+            if(zone.match(/GMT[-+]/)){
+                if(zone.match(/GMT-/)){
+                    zone = zone.replace('-', '+')
+                } else{
+                    zone = zone.replace('+', '-');
+                }
+            }
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                filter.dateTo = moment(filter.dateTo).tz(zone)._d;
             }
             filter.compact = true;
             YadeService.getTransfers(filter).then(function (res) {
@@ -7945,11 +7977,19 @@
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
                 }
+                let zone = vm.userPreferences.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                    filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                    filter.dateTo = moment(filter.dateTo).tz(zone)._d;
                 }
                 TaskService.histories(filter).then(function (res) {
                     vm.jobHistorys = res.history;
@@ -8068,11 +8108,19 @@
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
                 }
+                let zone = vm.userPreferences.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                    filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                    filter.dateTo = moment(filter.dateTo).tz(zone)._d;
                 }
                 OrderService.histories(filter).then(function (res) {
                     vm.historys = res.history;
@@ -8202,11 +8250,19 @@
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
                 }
+                let zone = vm.userPreferences.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                    filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                    filter.dateTo = moment(filter.dateTo).tz(zone)._d;
                 }
                 filter.compact = true;
                 YadeService.getTransfers(filter).then(function (res) {
@@ -8281,11 +8337,19 @@
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
                 }
+                let zone = vm.userPreferences.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                    filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                    filter.dateTo = moment(filter.dateTo).tz(zone)._d;
                 }
                 ConditionService.getSessions(filter).then(function (res) {
                     vm.jobStreamHistorys = res.jobstreamSessions;
@@ -10148,11 +10212,19 @@
                     if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                         filter.timeZone = 'UTC';
                     }
+                    let zone = vm.userPreferences.zone;
+                    if(zone.match(/GMT[-+]/)){
+                        if(zone.match(/GMT-/)){
+                            zone = zone.replace('-', '+')
+                        } else{
+                            zone = zone.replace('+', '-');
+                        }
+                    }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                        filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                        filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
                     }
                     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                        filter.dateTo = moment(filter.dateTo).tz(zone)._d;
                     }
                     OrderService.histories(filter).then(function (res) {
                         let temp;
@@ -10186,11 +10258,19 @@
                     if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                         filter.timeZone = 'UTC';
                     }
+                    let zone = vm.userPreferences.zone;
+                    if(zone.match(/GMT[-+]/)){
+                        if(zone.match(/GMT-/)){
+                            zone = zone.replace('-', '+')
+                        } else{
+                            zone = zone.replace('+', '-');
+                        }
+                    }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                        filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                        filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
                     }
                     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                        filter.dateTo = moment(filter.dateTo).tz(zone)._d;
                     }
                     TaskService.histories(filter).then(function (res) {
                         vm.jobHistorys = res.history;
@@ -10215,11 +10295,19 @@
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
                 }
+                let zone = vm.userPreferences.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                    filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                    filter.dateTo = moment(filter.dateTo).tz(zone)._d;
                 }
                 filter.compact = true;
                 if (yadeSearch) {
@@ -10255,11 +10343,19 @@
                 if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                     filter.timeZone = 'UTC';
                 }
+                let zone = vm.userPreferences.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                    filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                    filter.dateTo = moment(filter.dateTo).tz(zone)._d;
                 }
                 filter.compact = true;
                 if (jobStreamSearch) {

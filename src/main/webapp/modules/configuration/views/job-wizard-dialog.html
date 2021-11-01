@@ -103,7 +103,7 @@
                                         <label class="form-control-label p-l-0" ng-class="{'light-yellow-bg': param.required}" style="white-space: normal;word-wrap: break-word;">{{param.name}}</label>
                                     </div>
                                     <div class="col-sm-5 m-b-sm p-r-0" ng-init="param.newValue = param.defaultValue">
-                                        <input type="text" autocomplete="off" class="form-control" ng-model="param.newValue">
+                                        <input type="text" autocomplete="off" class="form-control" ng-model="param.newValue" ng-blur="checkParamChanges(param)">
                                     </div>
                                     <div class="col-sm-1" ng-if="param.description">
                                         <i class="cursor fa fa-info-circle m-t-sm" data-toggle="popover" data-placement="right" data-content="{{param.description}}"></i>

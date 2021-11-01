@@ -316,10 +316,18 @@
                 vm.maxPlannedTime = new Date(res.created.until);
             }
             if (res.planItems && res.planItems.length > 0) {
+                let zone = vm.userPreferences.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 res.planItems.forEach(function (data) {
                     let planData = {
                         color: 'blue',
-                        plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
+                        plannedStartTime: moment(data.plannedStartTime).tz(zone),
                         orderId: data.orderId
                     };
 
@@ -328,7 +336,7 @@
                     planData.endDate = date;
                     if (data.period) {
                         if (data.period.end) {
-                            planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(vm.userPreferences.zone));
+                            planData.endTime = vm.getTimeFromDate(moment(data.period.end).tz(zone));
                         }
                         if (data.period.repeat) {
                             planData.repeat = vm.getTimeFromNumber(data.period.repeat);
@@ -706,7 +714,6 @@
         }
 
         function setIds() {
-
             if (SOSAuth.scheduleIds) {
                 vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
             } else if ($location.search() && $location.search().scheduler_id) {
@@ -806,8 +813,8 @@
             document.getElementById("tmpFrame").src = link;
         };
 
-        vm.showXSD= function (objType, schemaIdentifier) {
-            let link = './api/xmleditor/schema/download?show=true&jobschedulerId=' + vm.schedulerIds.selected + '&objectType='+objType+'&accessToken=' + SOSAuth.accessTokenId;
+        vm.showXSD = function (objType, schemaIdentifier) {
+            let link = './api/xmleditor/schema/download?show=true&jobschedulerId=' + vm.schedulerIds.selected + '&objectType=' + objType + '&accessToken=' + SOSAuth.accessTokenId;
             if (objType === 'OTHER') {
                 link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier)
             }
@@ -9690,14 +9697,22 @@
 
         function populatePlanItems(res) {
             if (res.periods) {
+                let zone = vm.userPreferences.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 angular.forEach(res.periods, function (value) {
                     let planData = {};
                     if (value.begin) {
                         planData = {
-                            plannedStartTime: moment(value.begin).tz(vm.userPreferences.zone)
+                            plannedStartTime: moment(value.begin).tz(zone)
                         };
                         if (value.end) {
-                            planData.endTime = vm.getTimeFromDate(moment(value.end).tz(vm.userPreferences.zone));
+                            planData.endTime = vm.getTimeFromDate(moment(value.end).tz(zone));
                         }
                         if (value.repeat) {
                             planData.repeat = value.repeat;
@@ -9707,7 +9722,7 @@
                         }
                     } else if (value.singleStart) {
                         planData = {
-                            plannedStartTime: moment(value.singleStart).tz(vm.userPreferences.zone)
+                            plannedStartTime: moment(value.singleStart).tz(zone)
                         };
                     }
                     let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);

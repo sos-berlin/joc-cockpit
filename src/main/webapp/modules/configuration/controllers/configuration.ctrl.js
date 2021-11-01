@@ -9890,6 +9890,23 @@
             }
         };
 
+        $scope.checkParamChanges = function (param) {
+            if(param.newValue && param.newValue != param.defaultValue) {
+                let flag = false;
+                $scope.wizard.params.forEach(function (item){
+                    if(item.name === param.name && item.description === param.description) {
+                        flag = true;
+                    }
+                });
+                if(!flag){
+                    $scope.wizard.params.push(param)
+                }
+            }
+            if(!param.defaultValue){
+                param.defaultValue = param.newValue;
+            }
+        };
+
         $scope.showDoc = function (path) {
             $scope.previewDocument({path: path});
         };

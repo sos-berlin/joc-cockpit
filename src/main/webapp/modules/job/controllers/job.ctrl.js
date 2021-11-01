@@ -3580,10 +3580,7 @@
                 } else {
                     recursiveUpdate1(folders[0][index], arr);
                 }
-
-
             }
-
             return folders[0];
         }
 
@@ -4054,11 +4051,19 @@
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
                 delete obj["timeZone"];
             }
+            let zone = vm.userPreferences.zone;
+            if(zone.match(/GMT[-+]/)){
+                if(zone.match(/GMT-/)){
+                    zone = zone.replace('-', '+')
+                } else{
+                    zone = zone.replace('+', '-');
+                }
+            }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
+                obj.dateFrom = moment(obj.dateFrom).tz(zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
+                obj.dateTo = moment(obj.dateTo).tz(zone)._d;
             }
             return obj;
         }
@@ -5504,7 +5509,6 @@
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             if (!task) {
-
                 if (!job) {
                     angular.forEach(vm.object.jobs, function (value) {
                         jobs.jobs.push({job: value.path});
@@ -12088,18 +12092,26 @@
 
         function populatePlanItems(res) {
             if (res.periods) {
+                let zone = vm.userPreferences.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 res.periods.forEach(function (value) {
                     let planData = {};
                     if (value.begin) {
-                        planData.plannedStartTime = moment(value.begin).tz(vm.userPreferences.zone);
+                        planData.plannedStartTime = moment(value.begin).tz(zone);
                         if (value.end) {
-                            planData.endTime = vm.getTimeFromDate(moment(value.end).tz(vm.userPreferences.zone));
+                            planData.endTime = vm.getTimeFromDate(moment(value.end).tz(zone));
                         }
                         if (value.repeat) {
                             planData.repeat = value.repeat;
                         }
                     } else if (value.singleStart) {
-                        planData.plannedStartTime = moment(value.singleStart).tz(vm.userPreferences.zone);
+                        planData.plannedStartTime = moment(value.singleStart).tz(zone);
                     }
                     let date = new Date(planData.plannedStartTime).setHours(0, 0, 0, 0);
                     planData.startDate = date;

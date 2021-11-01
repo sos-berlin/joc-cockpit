@@ -2,7 +2,15 @@
     "use strict";
     function e(e) {
         return function (t) {
-            return t ? e.sessionStorage.preferences ? (t = moment(t).tz(JSON.parse(e.sessionStorage.preferences).zone), moment(t).fromNow()) : void 0 : "-"
+            let zone = JSON.parse(e.sessionStorage.preferences).zone;
+            if(zone.match(/GMT[-+]/)){
+                if(zone.match(/GMT-/)){
+                    zone = zone.replace('-', '+')
+                } else{
+                    zone = zone.replace('+', '-');
+                }
+            }
+            return t ? e.sessionStorage.preferences ? (t = moment(t).tz(zone), moment(t).fromNow()) : void 0 : "-"
         }
     }
 
@@ -13,6 +21,13 @@
                 var n = JSON.parse(e.sessionStorage.preferences);
                 if(!n.zone){
                     return;
+                }
+                if(n.zone.match(/GMT[-+]/)){
+                    if(n.zone.match(/GMT-/)){
+                        n.zone = n.zone.replace('-', '+')
+                    } else{
+                        n.zone = n.zone.replace('+', '-');
+                    }
                 }
                 return moment(t).tz(n.zone).format(n.dateFormat)
             }else{
@@ -81,6 +96,13 @@
                     n.dateFormat = n.dateFormat.replace('|', '');
                 }
                 n.dateFormat = n.dateFormat.trim();
+                if(n.zone.match(/GMT[-+]/)){
+                    if(n.zone.match(/GMT-/)){
+                        n.zone = n.zone.replace('-', '+')
+                    } else{
+                        n.zone = n.zone.replace('+', '-');
+                    }
+                }
                 return moment(t).tz(n.zone).format(n.dateFormat)
             }
         }
@@ -90,6 +112,13 @@
             if (e.sessionStorage.preferences) {
                 if (!t)return "-";
                 var n = JSON.parse(e.sessionStorage.preferences);
+                if(n.zone.match(/GMT[-+]/)){
+                    if(n.zone.match(/GMT-/)){
+                        n.zone = n.zone.replace('-', '+')
+                    } else{
+                        n.zone = n.zone.replace('+', '-');
+                    }
+                }
                 return moment(t).tz(n.zone).format("YYYY-MM-DD HH:mm:ss,SSS")
             }
         }
@@ -99,7 +128,15 @@
             if (e.sessionStorage.preferences) {
                 if (!n || !r)return "-";
                 var o = JSON.parse(e.sessionStorage.preferences);
-                n = moment(n).tz(o.zone), r = moment(r).tz(o.zone);
+                let zone = o.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
+                n = moment(n).tz(zone), r = moment(r).tz(zone);
             }
             var i = moment(r).diff(n);
             if (i >= 1e3) {
@@ -130,7 +167,15 @@
         return function (n, r) {
             if (n || (n = new Date), r || (r = new Date), e.sessionStorage.preferences) {
                 var o = JSON.parse(e.sessionStorage.preferences);
-                n = moment(n).tz(o.zone), r = moment(r).tz(o.zone);
+                let zone = o.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
+                n = moment(n).tz(zone), r = moment(r).tz(zone);
                 var i = Math.abs(moment(r).diff(n));
                 if (i >= 1e3) {
                     var u = parseInt(i / 1e3 % 60), a = parseInt(i / 6e4 % 60), s = parseInt(i / 36e5 % 24), f = parseInt(i / 864e5);
@@ -171,7 +216,15 @@
         return function (t) {
             if (e.sessionStorage.preferences) {
                 var n = new Date, r = JSON.parse(e.sessionStorage.preferences);
-                t = moment(t).tz(r.zone), n = moment(n).tz(r.zone);
+                let zone = r.zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
+                t = moment(t).tz(zone), n = moment(n).tz(zone);
                 var o = moment(t).diff(n);
                 let minius = false;
                 if(o < 0){

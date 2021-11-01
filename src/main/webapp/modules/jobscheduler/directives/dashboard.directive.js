@@ -20,6 +20,14 @@
                 var lastId;
                 var template = '';
 
+                let zone = JSON.parse($window.sessionStorage.preferences).zone;
+                if(zone.match(/GMT[-+]/)){
+                    if(zone.match(/GMT-/)){
+                        zone = zone.replace('-', '+')
+                    } else{
+                        zone = zone.replace('+', '-');
+                    }
+                }
                 function init() {
                     rWidth = 200;
                     rHeight = 130;
@@ -193,7 +201,7 @@
                             if (master.os && master.startedAt) {
                                 popoverTemplate = gettextCatalog.getString('label.architecture') + ': ' + master.os.architecture + '<br> ' + gettextCatalog.getString('label.distribution') + ' : ' + master.os.distribution +
                                     '<br>' + gettextCatalog.getString('label.version') + ' : ' + master.version +
-                                    '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                    '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(master.startedAt).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(master.surveyDate).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                             }
                             rect.setAttribute('data-content', popoverTemplate);
                         }
@@ -217,9 +225,9 @@
                                     '<br> ' + gettextCatalog.getString('label.url') + ' : ' + supervisor.data.url +
                                     '<br>' + gettextCatalog.getString('label.version') + ' : ' + supervisor.data.version +
                                     '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' +
-                                    moment(supervisor.data.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
+                                    moment(supervisor.data.startedAt).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
                                     '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' +
-                                    moment(supervisor.data.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                    moment(supervisor.data.surveyDate).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                             }
                             rect.setAttribute('data-content', popoverTemplate);
@@ -250,7 +258,7 @@
                                     '<br>' + gettextCatalog.getString('label.distribution') + ' : ' + supervisor.data.os.distribution +
                                     '<br>' + gettextCatalog.getString('label.url') + ': ' + supervisor.data.url +
                                     '<br>' + gettextCatalog.getString('label.version') + ' : ' + supervisor.data.version +
-                                    '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(supervisor.data.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(supervisor.data.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                    '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(supervisor.data.startedAt).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(supervisor.data.surveyDate).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                             } else {
                                 popoverTemplate = gettextCatalog.getString('label.architecture') + ': - <br> ' + gettextCatalog.getString('label.distribution') + ' : - ' +
                                     '<br>' + gettextCatalog.getString('label.url') + ' : - ' +
@@ -330,7 +338,7 @@
                                         '<br>' + gettextCatalog.getString('label.distribution') + ' : ' + master.os.distribution +
                                         '<br>' + gettextCatalog.getString('label.url') + ': ' + master.url +
                                         '<br>' + gettextCatalog.getString('label.version') + ' : ' + master.version +
-                                        '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                        '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(master.startedAt).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(master.surveyDate).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                                 }
 
                                 if (master.clusterType && master.clusterType._type === 'PASSIVE') {
@@ -428,7 +436,7 @@
                                     popoverTemplate = gettextCatalog.getString('label.architecture') + ': ' + master.os.architecture + '<br> ' + gettextCatalog.getString('label.distribution') + ' : ' + master.os.distribution +
                                         '<br>' + gettextCatalog.getString('label.url') + ' : ' + master.url +
                                         '<br>' + gettextCatalog.getString('label.version') + ' : ' + master.version +
-                                        '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                        '<br>' + gettextCatalog.getString('label.startedAt') + ' : <span>' + moment(master.startedAt).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> ' + gettextCatalog.getString('label.surveyDate') + ': ' + moment(master.surveyDate).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                                 }
 
                                 var masterTemplate = '<div data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
@@ -487,7 +495,7 @@
                         if (new Date().getTime() - new Date(scope.clusterStatusData.database.surveyDate).getTime() < 2000) {
                             c = c + " yellow-border";
                         }
-                        var popoverTemplate = '{{"label.surveyDate" | translate}}' + ': ' + moment(scope.clusterStatusData.database.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                        var popoverTemplate = '{{"label.surveyDate" | translate}}' + ': ' + moment(scope.clusterStatusData.database.surveyDate).tz(zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                         var masterTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' + 'style="left:' + mLeft + 'px;top:' + dTop + 'px" id="' + 'database' + '" class="' + c + '"   >' +
                             '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
                             '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm"><span translate>label.database</span> ' + scope.clusterStatusData.database.database.dbms +
@@ -574,7 +582,6 @@
                 onRefresh: '&',
                 onOperation: '&',
                 permission: '='
-
             },
             controller: ["$scope", "$interval", function ($scope, $interval) {
                 var vm = $scope;

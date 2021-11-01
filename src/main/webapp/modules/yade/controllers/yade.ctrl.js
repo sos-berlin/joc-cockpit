@@ -340,11 +340,19 @@
             if ((obj.dateFrom && (typeof obj.dateFrom.getMonth === 'function' || typeof obj.dateFrom === 'object')) || (obj.dateTo && (typeof obj.dateTo.getMonth === 'function' || typeof obj.dateTo === 'object'))) {
                 obj.timeZone = 'UTC';
             }
+            let zone = vm.userPreferences.zone;
+            if(zone.match(/GMT[-+]/)){
+                if(zone.match(/GMT-/)){
+                    zone = zone.replace('-', '+')
+                } else{
+                    zone = zone.replace('+', '-');
+                }
+            }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
+                obj.dateFrom = moment(obj.dateFrom).tz(zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
+                obj.dateTo = moment(obj.dateTo).tz(zone)._d;
             }
             obj.limit = parseInt(vm.userPreferences.maxRecords);
             YadeService.getTransfers(obj).then(function (res) {
@@ -648,11 +656,19 @@
             if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
                 filter.timeZone = 'UTC';
             }
+            let zone = vm.userPreferences.zone;
+            if(zone.match(/GMT[-+]/)){
+                if(zone.match(/GMT-/)){
+                    zone = zone.replace('-', '+')
+                } else{
+                    zone = zone.replace('+', '-');
+                }
+            }
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+                filter.dateFrom = moment(filter.dateFrom).tz(zone)._d;
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+                filter.dateTo = moment(filter.dateTo).tz(zone)._d;
             }
 
             YadeService.getTransfers(filter).then(function (res) {
