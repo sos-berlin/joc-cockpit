@@ -927,10 +927,10 @@
     "label.priority": "Priorité",
     "label.capacity": "Capacité",
     "label.workflowName": "Nom du Workflow",
-    "label.planOrderAutomatically": "Ordre planifié automatiquement",
+    "label.planOrderAutomatically": "Planifier l'Ordre automatiquement",
     "label.deployMarkDelete": "Objet déployé marqué pour suppression",
     "label.markForDelete": "marqué pour suppression",
-    "label.submitOrderToControllerWhenPlanned": "Soumettre l'Ordre au Contrôleur si cela est prévu",
+    "label.submitOrderToControllerWhenPlanned": "Soumettre l'Ordre au Contrôleur",
     "label.orderTemplateName": "Nom de la Planification",
     "label.signatureAlgorithm": "Algorithme de Signature",
     "label.entryFound": "entrée trouvée",
@@ -1116,7 +1116,7 @@
         "title": "Le Titre d'une planification.",
         "workflowName": "Il faut ajouter une référence à un workflow pour lequel des ordres sont crées.",
         "planOrderAutomatically": "Les ordres sont planifiées automatiquement, c'est-à-dire qu'en fonction des paramètres du service du plan quotidien, les ordres sont créées pour les prochains jours à l'avance.",
-        "submitOrderToControllerWhenPlanned": "Les ordres sont automatiquement soumis à un contrôleur au moment prévu. Sur la base des paramètres des ordres du Daily Plan service sont soumis un certain nombre de jours à l'avance."
+        "submitOrderToControllerWhenPlanned": "Les ordres sont automatiquement soumis à un contrôleur au moment prévu. Sur la base des paramètres des ordres du Daily Plan Service sont soumis un certain nombre de jours à l'avance."
       },
       "workflow": {
         "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
