@@ -46,7 +46,7 @@ declare const $: any;
     '          [(ngModel)]="object.schedules"\n' +
     '        >\n' +
     '          <ng-template #nzTreeTemplate let-node>\n' +
-    '            <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">\n' +
+    '            <div class="node-wrapper w-93" (click)="loadData(node, $event);">\n' +
     '              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">\n' +
     '                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? \'folder-open\' : \'folder\'" class="w-14"></i>\n' +
     '                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>\n' +
@@ -2422,6 +2422,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.isCalendarClick = false;
         this.searchFilter = {};
         this.isSearchHit = false;
+
         if (this.selectedFiltered && this.selectedFiltered.name) {
           this.changeFilter(null);
         } else {

@@ -3,7 +3,7 @@
     <div *ngFor="let role of controllerRoles" class="box-body p-b-0" cdkDrag>
       <div class="row">
         <div class="col-sm-12">
-          <div class="pos-abt" style="font-size: 16px;cursor: move" cdkDragHandle>
+          <div class="pos-abt drag-handler" cdkDragHandle>
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div class="btn-group dropdown pull-left m-l p-l-sm m-r-xs">
@@ -37,7 +37,7 @@
                                                                         translate>user.label.controllers</span></div>
         <div class="col-xxl-11 col-xl-10 col-lg-3 col-md-4 col-sm-8">
           <div *ngFor="let controller of role.controllers" class="role">
-            <span class="fa fa-circle p-r-xs" style="font-size: 9px"></span>
+            <span class="fa fa-circle p-r-xs font9"></span>
             <a [routerLink]="['/users/permissions',controller.name || 'default', role.name]" class="text-primary">
               {{controller.name || 'default'}}
             </a>

@@ -1,13 +1,15 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {NzModalService} from 'ng-zorro-antd/modal';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
-import {isEmpty} from 'underscore';
+import {isEmpty, clone, isArray} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
 import {OrderPipe} from 'ngx-order-pipe';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
+import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
+import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {AuthService} from '../../components/guard';
 import {SaveService} from '../../services/save.service';
@@ -17,7 +19,152 @@ import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {SearchPipe} from '../../pipes/core.pipe';
 
-declare const $: any;
+declare const $;
+
+@Component({
+  selector: 'app-filter-modal-content',
+  templateUrl: './filter-dialog.html',
+})
+export class FilterModalComponent implements OnInit {
+  schedulerIds: any = {};
+  preferences: any = {};
+  permission: any = {};
+  name: string;
+
+  @Input() allFilter;
+  @Input() new;
+  @Input() edit;
+  @Input() filter;
+
+  constructor(private authService: AuthService, public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+    if (this.new) {
+      this.filter = {
+        shared: false,
+        path: []
+      };
+    } else {
+      this.name = clone(this.filter.name);
+    }
+  }
+
+  cancel(obj): void {
+    if (obj) {
+      this.activeModal.close(obj);
+    } else {
+      this.activeModal.destroy();
+    }
+  }
+
+}
+
+@Component({
+  selector: 'app-form-template',
+  templateUrl: './form-template.html',
+})
+export class SearchComponent implements OnInit {
+  @Input() schedulerIds: any;
+  @Input() filter: any;
+  @Input() preferences: any;
+  @Input() allFilter: any;
+  @Input() permission: any;
+  @Input() isSearch: boolean;
+  @Output() onCancel: EventEmitter<any> = new EventEmitter();
+  @Output() onSearch: EventEmitter<any> = new EventEmitter();
+
+  dateFormat: any;
+  existingName: any;
+  submitted = false;
+  isUnique = true;
+  objectType = 'WORKFLOW';
+
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
+  }
+
+  ngOnInit(): void {
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+  }
+
+  getFolderTree(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: TreeModalComponent,
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        paths: this.filter.paths || [],
+        type: this.objectType,
+        showCheckBox: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        if (isArray(result)) {
+          this.filter.paths = result;
+        }
+      }
+    });
+  }
+
+  remove(path): void {
+    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+  }
+
+  checkFilterName(): void {
+    this.isUnique = true;
+    for (let i = 0; i < this.allFilter.length; i++) {
+      if (this.filter.name === this.allFilter[i].name && this.authService.currentUserData === this.allFilter[i].account && this.filter.name !== this.existingName) {
+        this.isUnique = false;
+      }
+    }
+  }
+
+  onSubmit(result): void {
+    this.submitted = true;
+    const obj: any = {
+      regex: result.regex,
+      paths: result.paths,
+      name: result.name
+    };
+    const configObj = {
+      controllerId: this.schedulerIds.selected,
+      account: this.authService.currentUserData,
+      configurationType: 'CUSTOMIZATION',
+      objectType: this.objectType,
+      name: result.name,
+      shared: result.shared,
+      id: result.id || 0,
+      configurationItem: JSON.stringify(obj)
+    };
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
+      this.allFilter.push(configObj);
+      if (this.isSearch) {
+        this.filter.name = '';
+      } else {
+        this.onCancel.emit(configObj);
+      }
+      this.submitted = false;
+    }, () => {
+      this.submitted = false;
+    });
+  }
+
+  search(): void {
+    this.onSearch.emit();
+  }
+
+  cancel(): void {
+    this.onCancel.emit();
+  }
+}
 
 @Component({
   selector: 'app-single-workflow',
@@ -210,6 +357,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 export class WorkflowComponent implements OnInit, OnDestroy {
   isLoading = false;
   loading: boolean;
+  isSearchHit: boolean;
   isUnique: boolean;
   schedulerIds: any = {};
   tree: any = [];
@@ -222,12 +370,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   selectedPath: string;
   workflowFilters: any = {};
   showPanel: any;
+  showSearchPanel = false;
+  searchFilter: any = {};
+  temp_filter: any = {};
   isProcessing = false;
   isSearchVisible = false;
   sideView: any = {};
+  selectedFiltered: any = {};
+  savedFilter: any = {};
+  filterList: any = [];
   data = [];
   sideBar: any = {};
   reloadState = 'no';
+  objectType = 'WORKFLOW';
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -301,7 +456,182 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  search(): void {
+  private init(): void {
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).workflow;
+    }
+
+    this.savedFilter = JSON.parse(this.saveService.workflowFilters) || {};
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
+      this.checkSharedFilters();
+    } else{
+      this.savedFilter.selected = undefined;
+      this.initTree();
+    }
+  }
+
+  private initTree(reload = false): void {
+    if (this.schedulerIds.selected) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerIds.selected,
+        folders: [{
+          folder: '/',
+          recursive: true
+        }],
+        types: [this.objectType]
+      }).subscribe(res => {
+        this.tree = this.coreService.prepareTree(res, true);
+        if (this.tree.length && !reload) {
+          this.loadWorkflow();
+        }
+        this.isLoading = true;
+      }, () => {
+        this.isLoading = true;
+      });
+    } else {
+      this.isLoading = true;
+    }
+  }
+
+  private getWorkflowList(obj): void {
+    if (obj.folders && obj.folders.length === 1) {
+      this.currentPath = obj.folders[0].folder;
+    }
+    this.coreService.post('workflows', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
+      if (res.workflows && res.workflows.length === 0){
+        this.workflowFilters.currentPage = 1;
+      }
+      this.loading = false;
+      const request = {
+        compact: true,
+        controllerId: this.schedulerIds.selected,
+        workflowIds: []
+      };
+      const request2 = {
+        controllerId: this.schedulerIds.selected,
+        workflowIds: []
+      };
+      let flag = true;
+      res.workflows = this.orderPipe.transform(res.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
+      for (const i in res.workflows) {
+        const path = res.workflows[i].path;
+        res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
+        res.workflows[i].path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
+        if (!res.workflows[i].ordersSummary) {
+          res.workflows[i].ordersSummary = {};
+        }
+        if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
+          this.workflowFilters.expandedObjects.indexOf(path) > -1) {
+          this.showPanelFuc(res.workflows[i], false);
+          request.workflowIds.push({path, versionId: res.workflows[i].versionId});
+        } else{
+          request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
+        }
+        if (this.showPanel && this.showPanel.path === path) {
+          flag = false;
+        }
+      }
+      if (flag) {
+        this.hidePanel();
+      }
+      this.workflows = res.workflows;
+      this.searchInResult();
+      if (request.workflowIds.length > 0) {
+        this.getOrders(request);
+      }
+      if (request2.workflowIds.length > 0) {
+        this.getOrderCounts(request2);
+      }
+      if (this.isSearchHit && this.showSearchPanel) {
+        this.traverseTreeForSearchData();
+      }
+      this.updatePanelHeight();
+    }, () => {
+      this.loading = false;
+    });
+  }
+
+  checkSharedFilters(): void {
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      configurationType: 'CUSTOMIZATION',
+      objectType: this.objectType,
+      shared: true
+    };
+    this.coreService.post('configurations', obj).subscribe((res: any) => {
+      if (res.configurations && res.configurations.length > 0) {
+        this.filterList = res.configurations;
+      }
+      this.getCustomizations();
+    }, (err) => {
+      this.getCustomizations();
+    });
+  }
+
+  getCustomizations(): void {
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      account: this.authService.currentUserData,
+      configurationType: 'CUSTOMIZATION',
+      objectType: this.objectType
+    };
+    this.coreService.post('configurations', obj).subscribe((res: any) => {
+      if (this.filterList && this.filterList.length > 0) {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = this.filterList.concat(res.configurations);
+        }
+        let data = [];
+        for (let i in this.filterList) {
+          let flag = true;
+          for (let j in data) {
+            if (data[j].id === this.filterList[i].id) {
+              flag = false;
+            }
+          }
+          if (flag) {
+            data.push(this.filterList[i]);
+          }
+        }
+        this.filterList = data;
+      } else {
+        this.filterList = res.configurations;
+      }
+
+      if (this.savedFilter.selected) {
+        let flag = true;
+        this.filterList.forEach((value) => {
+          if (value.id === this.savedFilter.selected) {
+            flag = false;
+            this.coreService.post('configuration', {
+              controllerId: value.controllerId,
+              id: value.id
+            }).subscribe((conf: any) => {
+              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+              this.selectedFiltered.account = value.account;
+              this.initTree();
+            }, (err) => {
+              this.savedFilter.selected = undefined;
+              this.initTree();
+            });
+          }
+        });
+        if (flag) {
+          this.savedFilter.selected = undefined;
+          this.initTree();
+        }
+      }  else {
+        this.savedFilter.selected = undefined;
+        this.initTree();
+      }
+    }, (err) => {
+      this.savedFilter.selected = undefined;
+      this.initTree();
+    });
+  }
+  inventorySearch(): void {
     this.isSearchVisible = true;
   }
 
@@ -389,7 +719,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   loadWorkflow(): void {
     this.reloadState = 'no';
-    const obj = {
+    const obj: any = {
       folders: [],
       controllerId: this.schedulerIds.selected
     };
@@ -416,6 +746,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     for (let x in paths) {
       obj.folders.push({folder: paths[x], recursive: false});
+    }
+    if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
+      obj.regex = this.selectedFiltered.regex;
+      if (this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
+        obj.folders = [];
+        for (let i in this.selectedFiltered.paths) {
+          obj.folders.push({folder: this.selectedFiltered.paths[i], recursive: true});
+        }
+      }
     }
     this.getWorkflowList(obj);
   }
@@ -455,6 +794,144 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     workflow.show = false;
     delete workflow.configuration;
     this.updatePanelHeight();
+  }
+
+  /* ----------------------Advance Search --------------------- */
+  advancedSearch(): void {
+    this.showSearchPanel = true;
+    this.isUnique = true;
+    this.isSearchHit = false;
+    this.searchFilter = {};
+  }
+
+  search(): void {
+    this.loading = true;
+    this.isSearchHit = true;
+    let obj: any = {
+      controllerId: this.schedulerIds.selected,
+      compact: true
+    };
+    if (this.searchFilter && this.searchFilter.regex) {
+      obj.regex = this.searchFilter.regex;
+    }
+    if (this.searchFilter.paths && this.searchFilter.paths.length > 0) {
+      obj.folders = [];
+      for (let i in this.searchFilter.paths) {
+        obj.folders.push({folder: this.searchFilter.paths[i], recursive: true});
+      }
+    }
+    this.getWorkflowList(obj);
+  }
+
+  /* ---- Customization ------ */
+  createCustomization(): void {
+    if (this.schedulerIds.selected) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: FilterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          permission: this.permission,
+          allFilter: this.filterList,
+          new: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe((configObj) => {
+        if (configObj) {
+          if (this.filterList.length === 1) {
+            this.savedFilter.selected = configObj.id;
+            this.workflowFilters.selectedView = true;
+            this.selectedFiltered = configObj;
+            this.initTree();
+            this.saveService.setWorkflow(this.savedFilter);
+            this.saveService.save();
+          }
+        }
+      });
+    }
+  }
+
+  editFilters(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EditFilterModalComponent,
+      nzComponentParams: {
+        filterList: this.filterList,
+        favorite: this.savedFilter.favorite,
+        permission: this.permission,
+        username: this.authService.currentUserData,
+        action: this.action,
+        self: this
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(obj => {
+      if (obj) {
+        if (obj.type === 'EDIT') {
+          this.editFilter(obj);
+        } else if (obj.type === 'COPY') {
+          this.copyFilter(obj);
+        }
+      }
+    });
+  }
+
+  action(type, obj, self): void {
+    if (type === 'DELETE') {
+      if (self.savedFilter.selected == obj.id) {
+        self.savedFilter.selected = undefined;
+        self.workflowFilters.selectedView = false;
+        self.selectedFiltered = undefined;
+        self.initTree();
+      } else {
+        if (self.filterList.length == 0) {
+          self.savedFilter.selected = undefined;
+          self.workflowFilters.selectedView = false;
+          self.selectedFiltered = undefined;
+        }
+      }
+      self.saveService.setWorkflow(self.savedFilter);
+      self.saveService.save();
+    } else if (type === 'MAKEFAV') {
+      self.savedFilter.favorite = obj.id;
+      self.workflowFilters.selectedView = true;
+      self.saveService.setWorkflow(self.savedFilter);
+      self.saveService.save();
+      self.initTree();
+    } else if (type === 'REMOVEFAV') {
+      self.savedFilter.favorite = '';
+      self.saveService.setWorkflow(self.savedFilter);
+      self.saveService.save();
+    }
+  }
+
+  changeFilter(filter): void {
+    this.cancel();
+    if (filter) {
+      this.savedFilter.selected = filter.id;
+      this.workflowFilters.selectedView = true;
+      this.coreService.post('configuration', {
+        controllerId: filter.controllerId,
+        id: filter.id
+      }).subscribe((conf: any) => {
+        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+        this.selectedFiltered.account = filter.account;
+        this.initTree();
+      });
+    } else {
+      this.savedFilter.selected = filter;
+      this.workflowFilters.selectedView = false;
+      this.selectedFiltered = {};
+      this.initTree();
+    }
+
+    this.saveService.setWorkflow(this.savedFilter);
+    this.saveService.save();
   }
 
   /* ---------------------------- Action ----------------------------------*/
@@ -652,6 +1129,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.saveProfileSettings(this.preferences);
   }
 
+  cancel(): void {
+    this.showSearchPanel = false;
+    this.searchFilter = {};
+    if (this.isSearchHit) {
+      this.isSearchHit = false;
+      this.changeStatus();
+    }
+  }
+
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       const request = [];
@@ -693,7 +1179,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent') && args.eventSnapshots[j].message) {
           this.resetAction();
         }
-        if (args.eventSnapshots[j].objectType === 'WORKFLOW' && (args.eventSnapshots[j].eventType.match(/Item/))) {
+        if (args.eventSnapshots[j].objectType === this.objectType && (args.eventSnapshots[j].eventType.match(/Item/))) {
           if (args.eventSnapshots[j].path) {
             let path = args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/')) || args.eventSnapshots[j].path.substring(0, args.eventSnapshots[j].path.lastIndexOf('/') + 1);
             if (this.child && this.child.defaultSelectedKeys.length > 0 && this.child.defaultSelectedKeys.indexOf(path) > -1) {
@@ -730,94 +1216,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         });
       }
     }
-  }
-
-  private init(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
-    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).workflow;
-    }
-    this.initTree();
-  }
-
-  private initTree(reload = false): void {
-    if (this.schedulerIds.selected) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerIds.selected,
-        folders: [{
-          folder: '/',
-          recursive: true
-        }],
-        types: ['WORKFLOW']
-      }).subscribe(res => {
-        this.tree = this.coreService.prepareTree(res, true);
-        if (this.tree.length && !reload) {
-          this.loadWorkflow();
-        }
-        this.isLoading = true;
-      }, () => {
-        this.isLoading = true;
-      });
-    } else {
-      this.isLoading = true;
-    }
-  }
-
-  private getWorkflowList(obj): void {
-    if (obj.folders && obj.folders.length === 1) {
-      this.currentPath = obj.folders[0].folder;
-    }
-    this.coreService.post('workflows', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      if (res.workflows && res.workflows.length === 0){
-        this.workflowFilters.currentPage = 1;
-      }
-      this.loading = false;
-      const request = {
-        compact: true,
-        controllerId: this.schedulerIds.selected,
-        workflowIds: []
-      };
-      const request2 = {
-        controllerId: this.schedulerIds.selected,
-        workflowIds: []
-      };
-      let flag = true;
-      res.workflows = this.orderPipe.transform(res.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
-      for (const i in res.workflows) {
-        const path = res.workflows[i].path;
-        res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
-        res.workflows[i].path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
-        if (!res.workflows[i].ordersSummary) {
-          res.workflows[i].ordersSummary = {};
-        }
-        if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
-          this.workflowFilters.expandedObjects.indexOf(path) > -1) {
-          this.showPanelFuc(res.workflows[i], false);
-          request.workflowIds.push({path, versionId: res.workflows[i].versionId});
-        } else{
-          request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
-        }
-        if (this.showPanel && this.showPanel.path === path) {
-          flag = false;
-        }
-      }
-      if (flag) {
-        this.hidePanel();
-      }
-      this.workflows = res.workflows;
-      this.searchInResult();
-      if (request.workflowIds.length > 0) {
-        this.getOrders(request);
-      }
-      if (request2.workflowIds.length > 0) {
-        this.getOrderCounts(request2);
-      }
-      this.updatePanelHeight();
-    }, () => {
-      this.loading = false;
-    });
   }
 
   private getOrderCounts(obj): void {
@@ -940,6 +1338,84 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       traverseTree(this.tree[x]);
     }
     return flag;
+  }
+
+  private traverseTreeForSearchData(): void {
+    const self = this;
+    this.workflowFilters.expandedKeys = [];
+    this.workflowFilters.selectedkeys = [];
+
+    function traverseTree1(data) {
+      for (let i in data.children) {
+        if (!data.children[i].isLeaf) {
+          self.workflowFilters.expandedKeys.push(data.children[i].path);
+        }
+        pushJob(data.children[i]);
+        traverseTree1(data.children[i]);
+      }
+    }
+
+    function navFullTree() {
+      for (let i in self.tree) {
+        if (!self.tree[i].isLeaf) {
+          self.workflowFilters.expandedKeys.push(self.tree[i].path);
+        }
+        pushJob(self.tree[i]);
+        traverseTree1(self.tree[i]);
+      }
+    }
+
+    function pushJob(data) {
+      for (let i in self.workflows) {
+        if (data.path === self.workflows[i].path1) {
+          self.workflowFilters.selectedkeys.push(self.workflows[i].path1);
+        }
+      }
+    }
+
+    navFullTree();
+  }
+
+  private editFilter(filter): void {
+    this.openFilterModal(filter, false);
+  }
+
+  private copyFilter(filter): void {
+    this.openFilterModal(filter, true);
+  }
+
+  private openFilterModal(filter, isCopy): void {
+    if (this.schedulerIds.selected) {
+      let filterObj: any = {};
+      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+        filterObj = JSON.parse(conf.configuration.configurationItem);
+        filterObj.shared = filter.shared;
+        if (isCopy) {
+          filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
+        } else {
+          filterObj.id = filter.id;
+        }
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: FilterModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            permission: this.permission,
+            allFilter: this.filterList,
+            filter: filterObj,
+            edit: !isCopy
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(obj => {
+          if (obj && this.savedFilter.selected && filterObj.id == this.savedFilter.selected) {
+            this.changeFilter(filterObj);
+          }
+        });
+      });
+    }
   }
 
   private _updatePanelHeight(): void {

@@ -7,7 +7,7 @@
   </button>
 </div>
 <form #myForm="ngForm">
-  <div class="modal-body p-a" style="min-height: 300px">
+  <div class="modal-body p-a min-ht-300">
     <div class="row">
       <div class="col-md-12 hide" [ngClass]="{'show': display}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
@@ -16,7 +16,7 @@
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" translate>common.label.path</label>
           <div class="col-sm-9">
-            <input autocomplete="off" type="text" class="form-control pos-abt" style="border: none; width: 90%; z-index: 99"
+            <input autocomplete="off" type="text" class="form-control pos-abt input-path-with-select"
                    placeholder="{{'common.placeholder.selectFromTree' | translate}}"
                    name="path" [(ngModel)]="document.path">
             <nz-tree-select
@@ -56,8 +56,7 @@
           </div>
       </div>
       <div class="col-md-12">
-        <div class="table-responsive" *ngIf="uploader.queue.length>0"
-             style="min-height: 250px; max-height: 600px; overflow: auto">
+        <div class="table-responsive import-set-table" *ngIf="uploader.queue.length>0">
           <table class="table table-hover table-bordered  ">
             <thead>
             <tr>
@@ -73,7 +72,7 @@
               <td><strong>{{item.file.name }}</strong></td>
               <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
               <td nowrap>
-                <div class="progress" style="margin-bottom: 0;">
+                <div class="progress m-b-0">
                   <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
                 </div>
               </td>

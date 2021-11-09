@@ -82,7 +82,7 @@
           <div class="hide" [ngClass]="{'show': isLoading}">
             <div class="row " *ngIf="pageView=='grid' && data.length > 0" [hidden]="loading">
               <div class="w-full" *ngFor="let item of data  | groupBy: 'path1'">
-                <div class="col-sm-12" style="margin-bottom: 10px">
+                <div class="col-sm-12 m-b-10">
                   <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
                 </div>
                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
@@ -111,7 +111,7 @@
                           </ul>
                         </nz-dropdown-menu>
                       </div>
-                      <div class="text-sm text-left text-muted p-t-sm block-ellipsis" style="width: 99%">
+                      <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
                         <span translate>resource.board.label.deploymentDate </span>:
                         <span class="text-black-dk" [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"></span>
                       </div>
@@ -266,7 +266,7 @@
                     <ng-container *ngIf="board.show">
                       <tr>
                         <td class="menu"></td>
-                        <td colspan="8" style="padding:0 !important;">
+                        <td colspan="8" class="p-a-0">
                           <nz-table class="m-a-0 inner-table" #innerTable [nzSize]="'small'"
                                     [nzData]="['']" [nzShowPagination]="false">
                             <thead>
@@ -290,7 +290,7 @@
                       </tr>
                       <tr>
                         <td class="menu"></td>
-                        <td colspan="8" style="padding:0 !important;" class="order-history-template0">
+                        <td colspan="8" class="order-history-template0 p-a-0">
                           <nz-table class="m-a-0 inner-table" #nestedTable [nzSize]="'small'"
                                     [nzData]="board.notices" [nzLoading]="board.loading" [nzShowPagination]="false">
                             <thead>

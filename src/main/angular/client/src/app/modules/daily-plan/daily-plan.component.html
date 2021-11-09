@@ -34,14 +34,14 @@
           </button>
           <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
             <ul nz-menu *ngIf="permission.currentController">
-              <li  (click)="submitOrder(value, false)" nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')" *ngIf="permission.currentController.orders.create">
+              <li  (click)="submitOrder(value, false)" nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')" *ngIf="permission.currentController && permission.currentController.orders.create">
                 <a>{{'dailyPlan.button.submitOrder' | translate}} ..</a>
               </li>
               <li  (click)="removeOrder(value, false)" nz-menu-item class="bg-hover-color" [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')"
                   *ngIf="permission.currentController.orders.cancel">
                 <a>{{'dailyPlan.button.removeOrder' | translate}} ..</a>
               </li>
-              <li (click)="cancelOrder(value, null )" nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'PLANNED')" *ngIf="permission.currentController.orders.cancel">
+              <li (click)="cancelOrder(value, null )" nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'PLANNED')" *ngIf="permission.currentController && permission.currentController.orders.cancel">
                 <a translate>dailyPlan.button.cancel</a>
               </li>
               <li (click)="modifyOrder(value, null)" nz-menu-item [nzDisabled]="(value.state && value.state._text === 'FINISHED')"
@@ -391,7 +391,7 @@
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.cancel"
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController && permission.currentController.orders.cancel"
                     [disabled]="object.isCancel" (click)="cancelSelectedOrder()"><i class="fa fa-times"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.cancel</span>
             </button>
@@ -402,7 +402,7 @@
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.cancel"
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController && permission.currentController.orders.cancel"
                     (click)="cancelSelectedOrder()"><i
               class="fa fa-times"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.cancel</span>
@@ -418,17 +418,17 @@
     <div class="row m-t-sm">
       <div class="col-lg-12">
         <div id="leftPanel" class="sticky leftPanel daily-plan">
-          <div class="box m-b-0" style="height: calc(100vh - 155px)">
+          <div class="box m-b-0 max-ht-n-155">
             <div class="p-b b-b icon-hover">
               <ng-template #tooltipTemplate>
                 <div class="m-a-xs">
-                  <i class="fa fa-circle circle" style="opacity: .7"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep1</span><br>
-                  <i class="fa fa-circle circle" style="opacity: .7"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep2</span><br>
-                  <i class="fa fa-circle circle" style="opacity: .7"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep3</span>
+                  <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep1</span><br>
+                  <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep2</span><br>
+                  <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep3</span>
                 </div>
               </ng-template>
-              <i class="fa fa-info-circle pos-abt" style="right: 8px;top:6px" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'"></i>
-              <i class="fa fa-calendar-plus-o pos-abt cursor" [ngClass]="{'text-primary' :isCalendarClick }" style="left: 8px;top:6px" (click)="selectDateRange(true)"></i>
+              <i class="fa fa-info-circle pos-abt r-t-8" nz-tooltip [nzTooltipTitle]="tooltipTemplate" [nzTooltipPlacement]="'left'"></i>
+              <i class="fa fa-calendar-plus-o pos-abt cursor l-t-8" [ngClass]="{'text-primary' :isCalendarClick }" (click)="selectDateRange(true)"></i>
               <div class="calendar-sm m-t-0" [ngClass]="{'grab' :isCalendarClick }" id="full-calendar"></div>
             </div>
             <div class="text-center m-t">
@@ -441,11 +441,11 @@
                 <span translate>dailyPlan.button.deleteSubmissions</span>
               </button>
               <div class="m-t-sm p-a-sm p-l-0" *ngIf="submissionHistory.length > 0 && dateRanges.length == 0">
-                <div class="_600 m-b-sm text-left p-l" style="font-size: 14px">
+                <div class="_600 m-b-sm text-left p-l font14">
                   <a class="text-hover-primary" (click)="navToHistory()"
                      translate>dailyPlan.label.submissionHistory</a>
                 </div>
-                <ul class="text-left p-l" style="max-height: calc(100vh - 560px); overflow: auto">
+                <ul class="text-left p-l max-ht-n-560">
                   <li *ngFor="let history of submissionHistory">
                     <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }"
                        (click)="selectSubmissionHistory(history.submissionHistoryId)">
@@ -457,7 +457,7 @@
                 </ul>
               </div>
               <div class="m-t-sm p-a-sm p-l-0" *ngIf="dateRanges.length > 0">
-                <div class="_600 m-b-sm text-left p-l" style="font-size: 14px">
+                <div class="_600 m-b-sm text-left p-l font14">
                   <a translate>common.label.dateRange</a>
                 </div>
                 <ul class="text-left p-l">
@@ -467,7 +467,7 @@
                         <span translate>common.label.from</span>
                         <i> -</i>
                       </div>
-                      <i class="text-muted" style="position: relative; top:-4px">{{dateRanges[0] | stringToDate1: true}}</i>
+                      <i class="text-muted pos-rel t-n-xs">{{dateRanges[0] | stringToDate1: true}}</i>
                     </a>
                   </li>
                    <li>
@@ -476,7 +476,7 @@
                         <span translate>common.label.to</span>
                         <i> -</i>
                       </div>
-                      <i class="text-muted" style="position: relative; top:-4px">{{dateRanges[1] | stringToDate1: true}}</i>
+                      <i class="text-muted pos-rel t-n-xs">{{dateRanges[1] | stringToDate1: true}}</i>
                     </a>
                   </li>
                 </ul>

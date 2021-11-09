@@ -2132,20 +2132,26 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   /**
    * Constructs a new application (returns an mxEditor instance)
    */
-  createEditor(config): void {
+  createEditor(): void {
     let editor = null;
+    const self = this;
     try {
       if (!mxClient.isBrowserSupported()) {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
-        const node = mxUtils.load(config).getDocumentElement();
-        editor = new mxEditor(node);
-        this.editor = editor;
-        this.initEditorConf(editor, false, false);
-        this.workflowService.init(!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme) ? 'dark' : 'light', editor.graph);
-        const outln = document.getElementById('outlineContainer');
-        outln.innerHTML = '';
-        new mxOutline(this.editor.graph, outln);
+        const xhr = mxUtils.load(this.configXml);
+        xhr.request.onreadystatechange = function()  {
+          if (this.readyState === this.DONE) {
+            const node = xhr.getDocumentElement();
+            editor = new mxEditor(node);
+            self.editor = editor;
+            self.initEditorConf(editor, false, false);
+            self.workflowService.init(!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? 'dark' : 'light', editor.graph);
+            const outln = document.getElementById('outlineContainer');
+            outln.innerHTML = '';
+            new mxOutline(self.editor.graph, outln);
+          }
+        }
       }
     } catch (e) {
       // Shows an error message if the editor cannot start
@@ -2751,7 +2757,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       this.loadConfig();
       this.coreService.get('workflow.json').subscribe((data) => {
         this.dummyXml = x2js.json2xml_str(data);
-        this.createEditor(this.configXml);
+        this.createEditor();
         this.getWorkflowObject();
       });
 
@@ -6147,7 +6153,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           WorkflowService.executeLayout(graph);
           return cells;
         };
-
 
         /**
          * Function: addVertex

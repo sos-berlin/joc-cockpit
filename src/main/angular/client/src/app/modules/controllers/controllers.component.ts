@@ -207,6 +207,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   preferences: any = {};
   modalInstance: NzModalRef;
   loading = false;
+  isLoaded = false;
   object = {
     mapOfCheckedId: new Set()
   };
@@ -260,6 +261,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
           break;
         } else if (args.eventSnapshots[j].eventType === 'ControllerStateChanged' || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
           || args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType.match(/Item/)) && args.eventSnapshots[j].objectType === 'CONTROLLER')) {
+          this.isLoaded = false;
           this.getSchedulerIds();
           break;
         }
@@ -272,7 +274,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       this.tokens = data.tokens;
       if (flag) {
         this.getData();
-      } else{
+      } else {
         this.checkTokens();
       }
     }, () => {
@@ -333,6 +335,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
     this.modalInstance.afterClose.subscribe(result => {
       if (result && this.controllers.length === 0) {
+        this.isLoaded = false;
         this.getSchedulerIds();
       }
     });
@@ -353,6 +356,13 @@ export class ControllersComponent implements OnInit, OnDestroy {
           nzFooter: null,
           nzClosable: false,
           nzMaskClosable: false
+        });
+        this.modalInstance.afterClose.subscribe(result => {
+          if (result && this.controllers.length === 0) {
+            if (!this.isLoaded) {
+              this.getSchedulerIds();
+            }
+          }
         });
       });
     }
@@ -375,14 +385,18 @@ export class ControllersComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.coreService.post('controller/cleanup', {controllerId: matser}).subscribe(() => {
-
+          setTimeout(() => {
+            if (!this.isLoaded) {
+              this.getSchedulerIds();
+            }
+          }, 250);
         });
       }
     });
   }
 
   createToken(controller, agent = null): void {
-    const modal =  this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTokenModalComponent,
       nzAutofocus: null,
@@ -667,11 +681,14 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   private getSchedulerIds(): void {
     this.coreService.post('controller/ids', {}).subscribe((res: any) => {
+      this.isLoaded = true;
       this.data = res.controllerIds;
       this.getSecurity();
       this.authService.setIds(res);
       this.authService.save();
       this.dataService.isProfileReload.next(true);
-    }, err => console.error(err));
+    }, () => {
+      this.isLoaded = true;
+    });
   }
 }

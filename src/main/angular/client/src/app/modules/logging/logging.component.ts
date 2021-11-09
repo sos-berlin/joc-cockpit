@@ -11,12 +11,13 @@ declare const $;
   template: '<div class="p-a">\n' +
     '  <span *ngFor="let log of clientLogs">\n' +
     '  <ng-container *ngIf="logFilter(log)">\n' +
-    '    <span style="font-family:\'Courier New\';color: #009933;white-space:nowrap;" [ngClass]="log.level==\'Error\' ? \'log_error\': log.level==\'Warn\' ? \' log_warn\' : log.level==\'Debug\' ? \' log_detail\' : \'\'" >{{log.entryDate | stringToDate}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>\n' +
+    '    <span class="log-state" [ngClass]="log.level==\'Error\' ? \'log_error\': log.level==\'Warn\' ? \' log_warn\' : log.level==\'Debug\' ? \' log_detail\' : \'\'" >{{log.entryDate | stringToDate}} [<span class="log-level">{{log.level}}</span>]</span>\n' +
     '    <span>\n' +
-    '      <span style=\'display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;\'>{{log.message}}</span>\n' +
+    '      <span class="log-msg">{{log.message}}</span>\n' +
     '    </span><br></ng-container>\n' +
     '  </span>\n' +
-    '</div>'
+    '</div>',
+  styles: ['.log-state {font-family:\'Courier New\';color: #009933;white-space:nowrap;} .log-msg {display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;} .log-level {width: 47px;display: inline-block}']
 })
 export class Logging2Component implements OnInit, OnDestroy {
   clientLogs = [];

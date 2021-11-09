@@ -4,7 +4,8 @@ export enum InventorySearch {
   JOBRESOURCE = 'JOBRESOURCE',
   NOTICEBOARD = 'NOTICEBOARD',
   LOCK = 'LOCK',
-  SCHEDULE = 'SCHEDULE'
+  SCHEDULE = 'SCHEDULE',
+  CALENDAR = 'CALENDAR'
 }
 
 export enum InventoryForHistory {

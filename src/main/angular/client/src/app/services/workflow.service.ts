@@ -621,6 +621,7 @@ export class WorkflowService {
 
   convertTryToRetry(mainJson: any, cb: any, jobs = {}): void {
     let count = 1;
+
     function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -633,7 +634,7 @@ export class WorkflowService {
                 let positions = [];
                 if (!parent.join) {
                   parent.join = {};
-                } else{
+                } else {
                   positions = clone(parent.join.positionStrings);
                 }
                 positions.push(json.instructions[x].position);
@@ -800,7 +801,7 @@ export class WorkflowService {
 
         const start = vertexMap.get(json.instructions[0].uuid);
         const last = json.instructions[json.instructions.length - 1];
-        if (wf){
+        if (wf) {
           connectInstruction(wf, start, '', '', defaultParent);
         } else {
           connectInstruction(v1, start, '', '', defaultParent);
@@ -896,7 +897,7 @@ export class WorkflowService {
               let arr = [];
               if (mapObj.addOrderdMap.has(json.instructions[x].workflowName)) {
                 arr = arr.concat(JSON.parse(mapObj.addOrderdMap.get(json.instructions[x].workflowName)));
-              } else{
+              } else {
                 arr.push(v1.id);
               }
               mapObj.addOrderdMap.set(json.instructions[x].workflowName, JSON.stringify(arr));

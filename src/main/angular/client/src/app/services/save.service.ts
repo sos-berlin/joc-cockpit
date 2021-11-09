@@ -29,7 +29,6 @@ export class SaveService {
     }
   }
 
-
   setWorkflow(workflow: any): void {
     this.workflowFilters = JSON.stringify(workflow);
   }

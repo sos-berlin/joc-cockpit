@@ -1,0 +1,71 @@
+<form #myForm="ngForm" (ngSubmit)="onSubmit(filter)">
+  <div [ngClass]="{'modal-body p-a' : !isSearch }" >
+    <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName</label>
+      <div class="col-sm-6">
+        <input autocomplete="off" type="text" required class="form-control" placeholder="{{'customization.placeholder.enterName' | translate}}"
+               name="name" maxlength="30" [(ngModel)]="filter.name" #name="ngModel"
+               (blur)="checkFilterName()">
+        <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+          <div *ngIf="name.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+        <div class="help-block text-danger" *ngIf="!isUnique">
+          <div translate>common.message.uniqueError</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.regexAndChooseTree</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" name="regex"
+               placeholder="{{'common.placeholder.regexAndChooseTree' | translate}}"
+               [(ngModel)]="filter.regex">
+        <div class="inside-input-field">
+          <a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.paths && filter.paths.length>0">
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
+      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+        <div *ngFor="let path of filter.paths">
+          <span class="">{{path}}</span>
+          <i class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(path)"></i>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="permission.joc.administration.customization.share && !isSearch">
+        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <div class="col-sm-8">
+            <label class="md-check">
+                <input type="checkbox" [(ngModel)]="filter.shared" name="shared">
+                <i class="primary"></i>
+            </label>
+        </div>
+    </div>
+    <div class="form-group m-t m-b-xs" *ngIf="isSearch">
+      <button type="button" class="btn btn-primary btn-sm" (click)="search()" translate>
+        common.button.search
+      </button>
+      <button type="submit" class="btn btn-default btn-sm m-l-sm"
+              [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted">
+         <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+        {{'customization.button.saveAsCustomization' | translate}}
+      </button>
+      <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
+        common.button.cancel
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer" *ngIf="!isSearch">
+    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

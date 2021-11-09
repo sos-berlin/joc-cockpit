@@ -1,0 +1,11 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+      <span *ngIf="new" translate>customization.label.createCustomization</span>
+      <span *ngIf="edit" translate>customization.label.updateCustomization</span>
+      <span *ngIf="!new && !edit" translate>customization.label.copyCustomization</span> <span *ngIf="name">: {{name}}</span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+</div>
+<app-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds"  [permission]="permission" [allFilter]="allFilter" (onCancel)="cancel(null)"></app-form-template>

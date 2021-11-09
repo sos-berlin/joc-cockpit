@@ -117,15 +117,21 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
    */
   createEditor(): void {
     let editor = null;
+    const self = this;
     try {
       if (!mxClient.isBrowserSupported()) {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
-        const node = mxUtils.load(this.configXml).getDocumentElement();
-        editor = new mxEditor(node);
-        this.editor = editor;
-        this.initEditorConf(editor);
-        this.createWorkflowDiagram(this.editor.graph);
+        const xhr = mxUtils.load(this.configXml);
+        xhr.request.onreadystatechange = function()  {
+          if (this.readyState === this.DONE) {
+            const node = xhr.getDocumentElement();
+            editor = new mxEditor(node);
+            self.editor = editor;
+            self.initEditorConf(editor);
+            self.createWorkflowDiagram(self.editor.graph);
+          }
+        }
       }
     } catch (e) {
       console.error(e);

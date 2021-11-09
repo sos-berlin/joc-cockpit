@@ -382,7 +382,7 @@
     "button.incomplete": "処理中",
     "button.failed": "失敗",
     "button.submitted": "登録",
-    "button.advancedSearch": "詳細検索",
+    "button.advancedSearch": "Advanced Filter",
     "button.compactView": "表示を最小化",
     "button.resetPanel": "パネルリサイズ",
     "button.copyLinkToObject": "リンクをコピー",

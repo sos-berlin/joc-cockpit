@@ -67,6 +67,33 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
+   	        <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
+              <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button">
+                {{'customization.label.customizations' | translate}}
+                <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #customization="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item  *ngIf="permission.joc && permission.joc.administration.customization.manage" (click)="createCustomization()">
+                    <a translate>customization.label.createCustomization</a>
+                  </li>
+                  <li nz-menu-item  *ngIf="filterList.length>0" (click)="editFilters()">
+                    <a translate>customization.label.editExistingCustomizations</a>
+                  </li>
+                  <li nz-menu-divider *ngIf="filterList.length>0"></li>
+                  <li nz-menu-item  *ngFor="let filter of filterList | orderBy: 'name'"
+                      [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}">
+                    <a (click)="changeFilter(filter)">
+                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <i (click)="changeFilter(null);$event.stopPropagation();"
+                         *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove"
+                         [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"></i>
+                    </a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
             <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                     [disabled]="data.length===0" (click)="exportToExcel()">
               <i class="fa fa-share-square-o"></i></button>
@@ -77,7 +104,7 @@
     </div>
   </div>
 </div>
-<div class="scroll-y max-ht" style="overflow: hidden">
+<div class="scroll-y max-ht overflow-hide">
   <div class="padding p-b-0 p-l-0">
     <div class="row m-t-sm">
       <div class="col-lg-12">
@@ -111,9 +138,17 @@
                       (click)="toggleCompactView()">
                 <i class="fa fa-th-list text"></i>
               </button>
-              <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="search()">
+              <button class="btn btn-sm inline pull-right m-l-12 btn-grey" (click)="inventorySearch()">
                 <i class="fa fa-search"></i>&nbsp;
                 <span translate>common.button.search</span>
+              </button>
+              <button class="btn btn-sm inline pull-right m-l-12 btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+                <span translate>common.button.advancedSearch</span>
+                <i class="fa fa-caret-down p-l-xs"></i>
+              </button>
+              <button class="btn btn-sm inline pull-right m-l-12 btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
+                <span translate>common.button.advancedSearch</span>
+                <i class="fa fa-caret-down p-l-xs"></i>
               </button>
               <div class="search-box-field pull-right">
                 <label>
@@ -126,10 +161,19 @@
               </div>
             </div>
           </div>
+          <div class="row m-b hide" [ngClass]="{'show':showSearchPanel && tree.length > 0}">
+            <div class="col-md-12">
+              <div class="box p-a m-b-xs">
+                <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
+                                   [permission]="permission" [allFilter]="filterList"
+                                   [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
+              </div>
+            </div>
+          </div>
           <div class="hide" [ngClass]="{'show': isLoading}">
             <div class="row" *ngIf="pageView=='grid' && data.length>0" [hidden]="loading">
               <div class="w-full" *ngFor="let item of data | groupBy: 'path1'">
-                <div class="col-sm-12" style="margin-bottom: 10px">
+                <div class="col-sm-12 m-b-10">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
@@ -149,7 +193,7 @@
                                                [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
                         </div>
                       </div>
-                      <div class="text-sm text-left text-muted p-t-sm block-ellipsis" style="width: 99%">
+                      <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
                         <span translate>inventory.label.deploymentDate </span>:
                         <span class="text-black-dk" [innerHtml]="workflow.versionDate | stringToDate | highlight : workflowFilters.searchText"></span>
                       </div>
@@ -219,7 +263,7 @@
               </div>
             </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView!=='grid' && tree.length > 0">
-              <perfect-scrollbar appResizable class="resizable" style="position: initial" [height]="resizerHeight"
+              <perfect-scrollbar appResizable class="resizable pos-init" [height]="resizerHeight"
                    [type]="'workflow'" [path]="currentPath" id="workflowTableId">
                 <nz-table
                   #ajaxTable
@@ -367,7 +411,7 @@
                              *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
                           <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
                              (click)="hidePanelFuc(workflow)"></i>
-                          <i *ngIf="permission.currentController.orders.create && workflow.isCurrentVersion" class="cursor fa fa-plus p-l-xs"
+                          <i *ngIf="permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion" class="cursor fa fa-plus p-l-xs"
                              [nz-tooltip]="'workflow.button.addOrder' | translate" (click)="addOrder(workflow)"></i>
                           <i class="cursor fa fa-list p-l-xs" [nz-tooltip]="'workflow.button.showTabularView' | translate" (click)="navToDetailView('list', workflow)"></i>
                           <i class="cursor fa fa-th p-l-xs p-r-xs" [nz-tooltip]="'workflow.button.showGraphicalView' | translate" (click)="navToDetailView('grid', workflow)"></i>
@@ -432,7 +476,7 @@
                     <ng-container *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
                       <tr>
                         <td class="menu"></td>
-                        <td [colSpan]="!workflowFilters.isCompact ? 15 : 5" style="padding:0 !important;">
+                        <td class="p-a-0" [colSpan]="!workflowFilters.isCompact ? 15 : 5">
                           <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
                                     [nzData]="workflow.fileOrderSources" [nzShowPagination]="false">
                             <thead>

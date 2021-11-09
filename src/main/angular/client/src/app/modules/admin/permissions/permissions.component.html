@@ -1,16 +1,16 @@
 <div class="row">
     <div class="col-md-12">
         <div class="text-right ">
-            <div class="text-md text-primary pull-left" style="font-size: 16px">
-                <a style="cursor: default">{{controllerName || 'default'}}</a>
+            <div class="text-md text-primary pull-left text-16">
+                <a class="pointer">{{controllerName || 'default'}}</a>
                 <i class="text-black-lt m-l-sm m-r-sm">/</i>
                 <span class="text-muted">{{roleName}}</span>
             </div>
-            <button class="btn btn-sm btn-grey" style="margin-top: -4px" [nz-tooltip]="'workflow.button.undo' | translate" (click)="undoPermission()"
+            <button class="btn btn-sm btn-grey m-t-n-xs" [nz-tooltip]="'workflow.button.undo' | translate" (click)="undoPermission()"
                     *ngIf="previousPermission.length>0">
                  <i nz-icon nzType="undo" nzTheme="outline"></i>
             </button>
-            <button class="btn btn-sm btn-grey m-l-sm" style="margin-top: -4px" [nz-tooltip]="'workflow.button.redo' | translate" (click)="resetPermission()"
+            <button class="btn btn-sm btn-grey m-l-sm m-t-n-xs" [nz-tooltip]="'workflow.button.redo' | translate" (click)="resetPermission()"
                     *ngIf="isReset">
                  <i nz-icon nzType="redo" nzTheme="outline"></i>
             </button>
@@ -96,7 +96,7 @@
                 <span translate>user.button.collapseUnselected</span>
             </button>
         </div>
-        <div id="mainTree" style="overflow: auto; margin-top: 12px"></div>
+        <div id="mainTree" class="text-overflow m-t-12"></div>
     </div>
 </div>
 <!-- tree end -->

@@ -87,7 +87,7 @@
                             <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
                           </nz-select>
                           <i *ngIf="permission.joc.administration.settings.manage"
-                             class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                             class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>
@@ -99,7 +99,7 @@
                                  (blur)="changeConfiguration(timeout, val, setting.name === 'joc')"
                                  placeholder="{{'workflow.placeholder.duration' | translate}}"
                                  [(ngModel)]="val.value.value">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>
@@ -113,7 +113,7 @@
                                        [nzLabel]="'runtime.label.'+ option.label | translate"
                                        [nzValue]="option.value"></nz-option>
                           </nz-select>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>
@@ -124,7 +124,7 @@
                                  #startTime="ngModel" required name="{{val.name}}{{i}}" [maxLength]="8"
                                  (blur)="changeConfiguration(startTime, val, setting.name === 'joc')"
                                  [(ngModel)]="val.value.value" placeholder="HH:MM:SS">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>
@@ -137,7 +137,7 @@
                                            [nzStep]="1" name="value{{i}}"
                                            #pnum="ngModel" [(ngModel)]="val.value.value"
                                            (nzBlur)="changeConfiguration(pnum, val, setting.name === 'joc')"></nz-input-number>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>
@@ -150,7 +150,7 @@
                                            [nzStep]="1" name="value{{i}}"
                                            #nonnegnum="ngModel" [(ngModel)]="val.value.value"
                                            (nzBlur)="changeConfiguration(nonnegnum, val, setting.name === 'joc')"></nz-input-number>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>
@@ -162,7 +162,7 @@
                                  name="{{val.name}}{{i}}" pattern="[1-9]+[0-9]*" #positiveNum="ngModel"
                                  (blur)="changeConfiguration(positiveNum, val, setting.name === 'joc')" required
                                  [(ngModel)]="val.value.value">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>
@@ -174,7 +174,7 @@
                                  name="{{val.name}}{{i}}" pattern="[0-9]+" #nonNegNum="ngModel"
                                  (blur)="changeConfiguration(nonNegNum, val, setting.name === 'joc')" required
                                  [(ngModel)]="val.value.value">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>
@@ -186,21 +186,21 @@
                             <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                             <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                           </nz-select>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'ARRAY'">
                         <div class="col-sm-4 col-lg-3">
-                          <div style="margin-bottom: -8px" *ngFor="let item of val.value.value;let m = index"
+                          <div class="m-b-n-8" *ngFor="let item of val.value.value;let m = index"
                              [ngClass]="{ 'has-error' : (((arr.dirty || arr.touched) && arr.invalid))}">
                             <input autocomplete="off" type="text" class="form-control w-xxxl" required placeholder="{{'common.placeholder.value' | translate}}{{m + 1}}"
                                    name="{{val.name}}{{i}}{{m + 1}}" (blur)="changeConfiguration(arr, val, setting.name === 'joc')" #arr="ngModel"
                                    [(ngModel)]="item.name">
-                            <i class="text-hover-color fa fa-trash" style="position: relative;margin-left: 390px;top: -24px;"
+                            <i class="text-hover-color fa fa-trash setting-cancel-btn-390"
                                (click)="removeValInArr(val, m)"></i>
                           </div>
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 422px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn-422"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                           <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-plus"
                              (click)="addValInArr(val)"></i>
@@ -212,7 +212,7 @@
                           <input autocomplete="off" type="text" class="form-control w-xxxl" required
                                  name="{{val.name}}{{i}}" (blur)="changeConfiguration(common, val, setting.name === 'joc')" #common="ngModel"
                                  [(ngModel)]="val.value.value">
-                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times" style="position: absolute;left: 402px;top: 8px;"
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
                         </div>
                       </ng-container>

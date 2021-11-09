@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
-import {SingleWorkflowComponent, WorkflowComponent} from './workflow.component';
+import {FilterModalComponent, SearchComponent, SingleWorkflowComponent, WorkflowComponent} from './workflow.component';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowRoutingModule} from './workflow-routing.module';
 import {WorkflowService} from '../../services/workflow.service';
@@ -35,6 +35,8 @@ import {InventoryService} from '../configuration/inventory/inventory.service';
     OrderListSidebarComponent,
     ShowDependencyComponent,
     ScriptModalComponent,
+    FilterModalComponent,
+    SearchComponent,
     TypeComponent
   ],
   exports: [

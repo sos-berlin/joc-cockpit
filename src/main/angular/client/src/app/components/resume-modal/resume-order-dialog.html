@@ -12,7 +12,7 @@
 </div>
 
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-  <div class="modal-body p-a" style="min-height: 300px">
+  <div class="modal-body p-a min-ht-300">
     <div class="hide" [ngClass]="{'show': display}">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>

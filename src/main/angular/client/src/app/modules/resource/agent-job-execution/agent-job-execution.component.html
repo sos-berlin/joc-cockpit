@@ -61,7 +61,7 @@
                                     </nz-dropdown-menu>
                                 </div>
                                 <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
-                                  <button class="btn-drop btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button">
+                                  <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button">
                                     {{'customization.label.customizations' | translate}}
                                     <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
                                     <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>

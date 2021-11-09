@@ -1,5 +1,5 @@
-<div style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
-<div id="tree-modal" class="modal-body p-a" style="min-height: 350px;">
+<div class="box-shadow-on-modal">
+<div id="tree-modal" class="modal-body p-a min-ht-350">
   <a class="text" (click)="expandAll();" *ngIf="tree.length > 0"
      [nz-tooltip]="'common.tooltip.expandAll' | translate">
     <i class="fa fa-angle-double-down fa-sm"></i>
@@ -24,9 +24,9 @@
           {{node.origin.name || node.origin.path}}
         </div>
       </div>
-      <div class="m-b-xs" style="margin-left: 22px" *ngFor="let cal of node.origin.calendars">
+      <div class="m-b-xs m-l-22" *ngFor="let cal of node.origin.calendars">
         <label nz-checkbox name="'chk-'+ {{cal.id}}" [(ngModel)]="cal.isChecked" (ngModelChange)="handleCheckbox(cal)"></label>
-        <span style="margin-top: 4px" class="p-l-sm"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
+        <span class="p-l-sm m-t-xs"><i class="fa fa-calendar text-sm">&nbsp;</i>{{cal.name}}</span>
       </div>
     </ng-template>
   </div>

@@ -13,7 +13,7 @@
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-  <div class="modal-body p-a" style="min-height: 200px">
+  <div class="modal-body p-a min-ht-200">
     <div class="hide" [ngClass]="{'show': display}">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
@@ -55,7 +55,7 @@
                 <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                    class="w-14"></i>
                 <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                {{node.origin.key}}
+                {{node.origin.name}}
               </div>
             </div>
           </ng-template>

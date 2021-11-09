@@ -2,7 +2,7 @@
   <div class="box-header b-b remove">
     <h3 translate>dashboard.label.orders</h3>
   </div>
-  <div class="row m-b-sm box-tool" style="top:10px">
+  <div class="row m-b-sm box-tool t-10">
     <div class="col-md-12 container-fluid">
       <div class="pull-right" *ngIf="!notAuthenticate">
         <div class="btn-group">
@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div class="box-body" style="overflow: auto" [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
+  <div class="box-body text-overflow" [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
     <div class="table-responsive">
       <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
         <tr class="text-center">
@@ -93,7 +93,7 @@
             <a (click)="navigate('FAILED')" class="text-lg _600" [ngClass]="{'red' : orders.failed > 0}" [innerHtml]="orders.failed || 0"></a>
           </td>
         </tr>
-        <tr class="text-center" style="border-top: 16px solid transparent"  *ngIf="xbody < 8 || ybody !== 2">
+        <tr class="text-center border-16-transparent" *ngIf="xbody < 8 || ybody !== 2">
           <td width="20%">
             <div translate>common.label.completed</div>
           </td>

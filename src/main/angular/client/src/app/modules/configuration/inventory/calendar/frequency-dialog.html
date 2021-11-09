@@ -1,5 +1,5 @@
 <form id="freq-modal" (ngSubmit)="save()">
-  <div class="modal-body p-a" style="min-height: 460px;">
+  <div class="modal-body p-a min-ht-460">
     <div [hidden]="editor.showYearView">
       <div>
         <div class="row m-b-sm">
@@ -328,8 +328,8 @@
           </div>
         </div>
       </div>
-      <div class="row" style="margin-bottom:27px;">
-        <div class="col-sm-12" style="max-height: 260px; overflow: auto">
+      <div class="row m-b-27">
+        <div class="col-sm-12 max-ht-260">
           <div class="table-responsive">
             <table class="table table-hover table-bordered">
               <thead>
@@ -406,8 +406,8 @@
         <div class="loading-img1 m-t-lg"></div>
       </div>
     </div>
-    <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
-            style="bottom: 85px;" [disabled]="!editor.isEnable"
+    <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm b-85"
+            [disabled]="!editor.isEnable"
             (click)="addFrequency()">
       <span *ngIf="editor.create" translate>runtime.button.addNewFrequency</span>
       <span *ngIf="!editor.create" translate>runtime.button.updateFrequency</span>

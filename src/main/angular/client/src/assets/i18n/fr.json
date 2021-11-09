@@ -382,7 +382,7 @@
     "button.incomplete": "En cours",
     "button.failed": "Echoué",
     "button.submitted": "Soumis",
-    "button.advancedSearch": "Recherche Avancée",
+    "button.advancedSearch": "Advanced Filter",
     "button.compactView": "Vue d'ensemble",
     "button.resetPanel": "Redimensionner le panneau",
     "button.copyLinkToObject": "Copier le lien vers l'objet",

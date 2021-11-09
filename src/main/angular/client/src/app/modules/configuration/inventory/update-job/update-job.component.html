@@ -9,7 +9,7 @@
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
-  <div class="modal-body p-a" style="min-height: 400px">
+  <div class="modal-body p-a min-ht-400">
     <div class="row">
       <div class="col-md-12" *ngIf="step === 1">
         <div class="text-center m-t-lg" *ngIf="data.onlyUpdate">
@@ -32,7 +32,7 @@
         <app-job-content [selectedNode]="selectedNode" [isModal]="true" [exactMatch]="data.exactMatch" [isTooltipVisible]="!preferences.showTooltipInfo" [agents]="agents"
                          [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [schedulerId]="controllerId"></app-job-content>
       </div>
-      <div class="col-md-12" *ngIf="step === 3" style="min-height: 400px">
+      <div class="col-md-12 min-ht-400" *ngIf="step === 3">
         <div style="display: flex;justify-content: center;align-items: center;" [ngStyle]="{'height': renameFailedJobs.length > 0 ? '100px' : '100%'}">
           <div class="text-md">
             <span class="_600" translate [translateParams]="{workflowsCount: data.workflows.length}">inventory.updateJob.message.updateSuccessfully</span>

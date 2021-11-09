@@ -345,7 +345,7 @@
                             (ngModelChange)="onChangeJobResource($event, node)"
                           >
                             <ng-template #nzTreeTemplate let-item>
-                              <div style="width: 93%" class="node-wrapper" (click)="loadData(item, 'JOBRESOURCE', $event);">
+                              <div class="node-wrapper w-93" (click)="loadData(item, 'JOBRESOURCE', $event);">
                                 <div class="node-content-wrapper" [class.node-content-wrapper-active]="item.isSelected">
                                   <i *ngIf="!item.origin.type" nz-icon [nzType]="item.isExpanded ? 'folder-open' : 'folder'"
                                      class="w-14"></i>

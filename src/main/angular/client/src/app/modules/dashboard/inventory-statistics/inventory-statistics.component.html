@@ -2,7 +2,7 @@
   <div class="box-header b-b remove">
     <h3 translate>dashboard.label.inventory</h3>
   </div>
-  <div class="box-body" style="overflow: auto" [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
+  <div class="box-body text-overflow" [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}">
     <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
       <tr class="text-center">
         <td width="25%" nowrap>

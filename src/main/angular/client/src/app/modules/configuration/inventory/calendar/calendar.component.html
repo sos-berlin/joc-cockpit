@@ -72,7 +72,7 @@
                   (nzExpandChange)="onExpand($event)"
                 >
                   <ng-template #nzTreeTemplate let-node>
-                    <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+                    <div class="node-wrapper w-93" (click)="loadData(node, $event);">
                       <div class="node-content-wrapper"
                            [class.node-content-wrapper-active]="node.origin.assignReference == calendar.configuration.documentationName">
                         <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
@@ -138,7 +138,7 @@
               <span translate>runtime.button.showYearView</span>
             </button>
           </div>
-          <div class="col-lg-12 col-xl-11 col-xxl-9" style="max-height: calc(100vh - 554px); overflow: auto">
+          <div class="col-lg-12 col-xl-11 col-xxl-9 max-ht-n-554">
             <div class="table-responsive">
               <table class="table table-hover table-bordered ">
                 <thead>
@@ -152,8 +152,7 @@
                 <tbody>
                 <tr *ngFor="let data of calendar.configuration.includesFrequency;let i = index;"
                     [ngClass]="{'hide':editor.frequencyType !=='INCLUDE'}">
-                  <td class="cursor"
-                      style="border-right: none !important;vertical-align: top !important; ">
+                  <td class="cursor ver-top">
                     <a (click)="updateFrequency(data);">{{data.str}}</a>
                   </td>
                   <td>
@@ -180,7 +179,7 @@
                 </tr>
                 <tr *ngFor="let data of calendar.configuration.excludesFrequency;let i = index;"
                     [ngClass]="{'hide':editor.frequencyType !=='EXCLUDE'}">
-                  <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                  <td class="cursor ver-top">
                     <i *ngIf="data.exclude" class="fa fa-minus"> </i>
                     <a (click)="updateFrequency(data);">{{data.str}}</a>
                   </td>

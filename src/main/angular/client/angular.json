@@ -62,8 +62,8 @@
               "src/assets/js/xml2json.min.js",
               "src/assets/js/jsgantt.js",
               "src/assets/js/full-year-calendar.js",
+              "src/assets/mxgraph/mxClient.min.js",
               "node_modules/date-holidays/dist/umd.min.js",
-              "node_modules/mxgraph/javascript/mxClient.min.js",
               "node_modules/save-svg-as-png/lib/saveSvgAsPng.js"
             ],
             "allowedCommonJsDependencies": [

@@ -3,7 +3,7 @@
     <div class="modal-body p-a">
       <div *ngIf="!editor.showPlanned">
         <div class="row">
-          <div class="col-md-12" style="margin-top: -8px">
+          <div class="col-md-12 m-t-n-8">
             <button [disabled]="isTrash" (click)="assignCalendar()"
                     class="btn btn-sm btn-grey m-r-sm m-t-sm"
                     translate type="button">runtime.button.assignWorkingDayCalendar
@@ -26,7 +26,7 @@
           </div>
           <div class="col-md-12">
             <div class="form-group row m-t">
-              <div class="col-sm-12" style="max-height: 600px; overflow: auto">
+              <div class="col-sm-12 import-set-table">
                 <div class="table-responsive">
                   <table class="table table-hover table-bordered ">
                     <thead>
@@ -82,7 +82,7 @@
                            class="text-xs text-hover-primary m-l-sm"><i class="fa fa-times text-hover-color"></i>
                         </a>
                       </td>
-                      <td style="border-right: none !important;"></td>
+                      <td class="b-r-0"></td>
                       <td></td>
                     </tr>
                     </tbody>
@@ -126,7 +126,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12" style="min-height: 500px;">
+          <div class="col-md-12 min-ht-500">
             <div id="full-calendar"></div>
           </div>
         </div>

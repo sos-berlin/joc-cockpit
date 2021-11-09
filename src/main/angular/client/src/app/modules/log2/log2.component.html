@@ -1,4 +1,4 @@
-<div style="display: none" [ngClass]="{'show-block' : !loading && !error}">
+<div class="hide" [ngClass]="{'show-block' : !loading && !error}">
   <div id="upper-header" *ngIf="!error">
     <div class="inline w-full">
       <label class="_600 m-l-sm m-r-sm">{{'log.label.modifyLogCriteria' | translate}} -</label>
@@ -43,12 +43,12 @@
   <pre id="logs" #dataBody *ngIf="!error" class="log p-a-sm"></pre>
 </div>
 <div class="text-center hide" [ngClass]="{'show' : error && !loading}">
-  <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px"><span [innerHtml]="errStatus"></span></div>
-  <div style="display: none" class="text-lg text-muted" [ngClass]="{'show' : errStatus}">{{'log.label.error' | translate}}!</div>
+  <div class="text-dark p-t text-38 m-b-n-8"><span [innerHtml]="errStatus"></span></div>
+  <div class="hide text-lg text-muted" [ngClass]="{'show' : errStatus}">{{'log.label.error' | translate}}!</div>
   <div class="text m-t" [innerHtml]="error"></div>
 </div>
 <iframe name="tmpFrame" id="tmpFrame" width="1" height="1"
-  style="visibility:hidden;position:absolute;display:none"></iframe>
+  class="iframe"></iframe>
 <div class="spinner" *ngIf="loading || isLoading">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
