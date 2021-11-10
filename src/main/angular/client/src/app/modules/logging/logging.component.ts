@@ -80,12 +80,16 @@ export class LoggingComponent implements OnInit, OnDestroy {
       this.permission = JSON.parse(this.authService.permission) || {};
     }
     if (this.clientLogFilter.isEnable) {
-      this.clientLogs = JSON.parse(localStorage.logging);
+      try {
+        this.clientLogs = localStorage.logging ? JSON.parse(localStorage.logging) : [];
+      } catch (e) {}
     }
     // Create an Observable that will publish a value on an interval
     this.subscription = interval(2500).subscribe(x => {
       if (this.clientLogFilter.isEnable) {
-        this.clientLogs = JSON.parse(localStorage.logging);
+        try {
+          this.clientLogs = localStorage.logging ? JSON.parse(localStorage.logging) : [];
+        } catch (e) {}
       }
     });
     if (this.clientLogFilter.status && this.clientLogFilter.status.length > 0) {

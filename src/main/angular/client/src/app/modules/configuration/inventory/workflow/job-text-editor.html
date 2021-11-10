@@ -84,7 +84,7 @@
               <ng-template #nzTreeTemplate let-node>
                 <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'DOCUMENTATION', $event);">
                   <div class="node-content-wrapper"
-                       [class.node-content-wrapper-active]="node.origin.assignReference == selectedNode.job.documentationName">
+                       [class.node-content-wrapper-active]="node.origin.assignReference == selectedNode.job.documentationName && selectedNode.job.documentationName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                        class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -103,7 +103,11 @@
                [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
             <nz-select nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
                        [(ngModel)]="selectedNode.job.agentName" #agentName="ngModel" (ngModelChange)="onBlur();">
-              <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
+              <nz-option nzCustomContent *ngFor="let agent of agents" [nzValue]="agent" [nzLabel]="agent">
+                <div>
+                  <span>{{agent}}</span> <span *ngIf="notFound && agent == notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
+                </div>
+              </nz-option>
             </nz-select>
             <div *ngIf="obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)"
                  class="text-danger help-block">

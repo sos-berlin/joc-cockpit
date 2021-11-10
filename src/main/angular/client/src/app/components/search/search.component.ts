@@ -1,11 +1,10 @@
 import {Component, EventEmitter, OnInit, Input, Output} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {InventorySearch} from '../../models/enums';
 import {isEmpty} from 'underscore';
+import {InventorySearch} from '../../models/enums';
 import {CoreService} from '../../services/core.service';
-import {InventoryService} from '../../modules/configuration/inventory/inventory.service';
-import {WorkflowService} from '../../services/workflow.service';
 import {UpdateJobComponent} from '../../modules/configuration/inventory/update-job/update-job.component';
+import {UpdateObjectComponent} from '../../modules/configuration/inventory/update-object/update-object.component';
 
 @Component({
   selector: 'app-inventory-search',
@@ -35,12 +34,12 @@ export class SearchComponent implements OnInit {
   object = {
     mapOfCheckedId: new Set(),
     checked: false,
-    indeterminate: false
+    indeterminate: false,
+    type: ''
   };
   type: string;
 
-  constructor(public coreService: CoreService, public modal: NzModalService,
-              private inventoryService: InventoryService, private workflowService: WorkflowService) {
+  constructor(public coreService: CoreService, public modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -49,7 +48,7 @@ export class SearchComponent implements OnInit {
     this.getAgents();
     this.getFolderTree();
     if (!this.isWorkflow && !this.isBoard && !this.isLock) {
-      this.results = this.inventoryService.getSearchResult();
+      this.results = this.coreService.getSearchResult('inventory');
       if (this.results.length > 0 && this.results[0].controllerId) {
         this.isControllerId = true;
       }
@@ -57,11 +56,13 @@ export class SearchComponent implements OnInit {
     } else {
       if (this.isWorkflow) {
         this.type = this.ENUM.WORKFLOW;
-        this.results = this.workflowService.getSearchResult();
+        this.results = this.coreService.getSearchResult('workflow');
       } else if (this.isBoard) {
         this.type = this.ENUM.NOTICEBOARD;
+        this.results = this.coreService.getSearchResult('board');
       } else if (this.isLock) {
         this.type = this.ENUM.LOCK;
+        this.results = this.coreService.getSearchResult('lock');
       }
       this.searchObj.returnType = this.type;
     }
@@ -121,7 +122,8 @@ export class SearchComponent implements OnInit {
     this.object = {
       mapOfCheckedId: new Set(),
       checked: false,
-      indeterminate: false
+      indeterminate: false,
+      type: ''
     };
     this.submitted = true;
     const obj: any = {
@@ -162,18 +164,23 @@ export class SearchComponent implements OnInit {
       obj.controllerId = this.controllerId;
     }
     this.coreService.post('inventory/search', obj).subscribe((res) => {
+      this.object.type = obj.returnType;
       this.results = res.results;
       this.isControllerId = false;
-      if (!this.isWorkflow) {
-        this.inventoryService.setSearchResult(this.results);
+      if (!this.isWorkflow && !this.isBoard && !this.isLock) {
+        this.coreService.setSearchResult('inventory', this.results);
         if (this.results.length > 0 && this.results[0].controllerId) {
           this.isControllerId = true;
         }
-      } else {
-        this.workflowService.setSearchResult(this.results);
-      }
-      if (!this.isWorkflow) {
         this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
+      } else {
+        if (this.isWorkflow) {
+          this.coreService.setSearchResult('workflow', this.results);
+        } else if (this.isBoard) {
+          this.coreService.setSearchResult('board', this.results);
+        } else if (this.isLock) {
+          this.coreService.setSearchResult('lock', this.results);
+        }
       }
       this.submitted = false;
     }, () => {
@@ -183,10 +190,16 @@ export class SearchComponent implements OnInit {
 
   clear(): void {
     this.results = [];
-    if (!this.isWorkflow) {
-      this.inventoryService.setSearchResult(this.results);
+    if (!this.isWorkflow && !this.isBoard && !this.isLock) {
+      this.coreService.setSearchResult('inventory', this.results);
     } else {
-      this.workflowService.setSearchResult(this.results);
+      if (this.isWorkflow) {
+        this.coreService.setSearchResult('workflow', this.results);
+      } else if (this.isBoard) {
+        this.coreService.setSearchResult('board', this.results);
+      } else if (this.isLock) {
+        this.coreService.setSearchResult('lock', this.results);
+      }
     }
   }
 
@@ -203,12 +216,35 @@ export class SearchComponent implements OnInit {
         controllerId: this.controllerId,
         data: {
           onlyUpdate,
-          exactMatch : this.searchObj.advanced.jobNameExactMatch,
+          exactMatch: this.searchObj.advanced.jobNameExactMatch,
           jobName: this.searchObj.advanced.jobName,
           workflows: this.results.filter((item) => {
             return this.object.mapOfCheckedId.has(item.name);
           })
         }
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((res) => {
+      if (res) {
+        this.onCancel.emit();
+      }
+    });
+  }
+
+  updateObject(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: UpdateObjectComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        controllerId: this.controllerId,
+        type: this.object.type,
+        data: this.results.filter((item) => {
+          return this.object.mapOfCheckedId.has(item.name);
+        })
       },
       nzFooter: null,
       nzClosable: false,

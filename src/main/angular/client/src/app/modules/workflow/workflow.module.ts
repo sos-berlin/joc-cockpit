@@ -12,7 +12,6 @@ import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-hi
 import {OrderListSidebarComponent} from './order-list-sidebar/order-list-sidebar.component';
 import {TypeComponent} from './workflow-type/type.component';
 import {ScriptModalComponent} from './script-modal/script-modal.component';
-import {InventoryService} from '../configuration/inventory/inventory.service';
 
 @NgModule({
   imports: [
@@ -21,7 +20,7 @@ import {InventoryService} from '../configuration/inventory/inventory.service';
     NzTabsModule,
     WorkflowRoutingModule
   ],
-  providers: [WorkflowService, InventoryService],
+  providers: [WorkflowService],
   declarations: [
     WorkflowComponent,
     WorkflowDetailComponent,

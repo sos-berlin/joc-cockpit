@@ -7,7 +7,7 @@
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
-  <div class="modal-body p-a" style="min-height: 150px">
+  <div class="modal-body p-a min-ht-150">
     <div *ngIf="deployablesObject.length > 0 && !loading">
       <div class="hide" [ngClass]="{'show': display}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>

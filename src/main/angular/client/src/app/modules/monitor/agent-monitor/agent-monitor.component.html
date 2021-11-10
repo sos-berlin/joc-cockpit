@@ -43,11 +43,11 @@
           <span translate>monitor.label.runningTime</span>
         </h3>
       </div>
-      <div class="box-body p-a" style="height: 292px;overflow: auto">
+      <div class="box-body p-a ht-292 text-overflow">
         <div class="row">
           <div class="col-sm-12 col-md-6 text-center" [ngClass]="{'col-md-12' : runningTime.length === 1}" *ngFor="let item of runningTime">
             <div class="text-dark _600 m-t">{{item.agentId}}</div>
-            <div style="display: flex;justify-content: center;">
+            <div class="flex-center">
               <mwl-gauge
                 [dialStartAngle]="-90"
                 [dialEndAngle]="-90.001"
@@ -59,7 +59,7 @@
               >
               </mwl-gauge>
             </div>
-            <i class="text-muted" style="position: relative;top:-12px" >{{'common.label.total' | translate}} <i translate [translateParams]="{count: item.hours}">monitor.label.totalDays</i></i>
+            <i class="text-muted pos-rel t-n-12">{{'common.label.total' | translate}} <i translate [translateParams]="{count: item.hours}">monitor.label.totalDays</i></i>
           </div>
           <div class="col-md-12 text-center" *ngIf="!isLoaded">
             <div class="vert-middle text-primary text">
@@ -67,7 +67,7 @@
             </div>
           </div>
           <div *ngIf="isLoaded && runningTime.length ===0" class="col-md-12 vert-middle">
-            <div style="padding-top: 96px">
+            <div class="p-t-96">
               <app-empty-data></app-empty-data>
             </div>
           </div>
@@ -83,7 +83,7 @@
         </h3>
       </div>
       <div class="box-body p-a scroll-class" #chartArea [hidden]="!isLoaded || statisticsData.length ===0">
-        <div style="height: 260px">
+        <div class="ht-260">
           <ngx-charts-bar-vertical-2d
             [groupPadding]="groupPadding"
             [view]="view"
@@ -106,10 +106,10 @@
           </ngx-charts-bar-vertical-2d>
         </div>
       </div>
-      <div style="height: 291px;" class="hide text-center m-t-lg p-b-lg text-primary text" [ngClass]="{'show': !isLoaded}">
+      <div class="hide text-center m-t-lg p-b-lg text-primary text ht-291" [ngClass]="{'show': !isLoaded}">
         <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
       </div>
-      <div style="height: 291px;" *ngIf="isLoaded && statisticsData.length ===0" class="vert-middle">
+      <div *ngIf="isLoaded && statisticsData.length ===0" class="vert-middle ht-291">
         <div>
           <app-empty-data></app-empty-data>
         </div>
@@ -121,12 +121,12 @@
       <div class="box-header b-b">
         <h3 translate>monitor.label.overview</h3>
       </div>
-      <div class="box-tool" style="top:9px">
+      <div class="box-tool t-9">
         <div class="inline">
-          <label class="m-r" style="position: relative;">{{'monitor.button.groupBy' | translate}}:</label>
+          <label class="m-r pos-rel">{{'monitor.button.groupBy' | translate}}:</label>
         </div>
         <div class="inline">
-          <div style="position: relative;">
+          <div class="pos-rel">
             <nz-select class="select-box" [(ngModel)]="filters.filter.groupBy" (ngModelChange)="groupBy()" name="groupBy">
               <nz-option [nzLabel]="'Controller ID'" [nzValue]="'CONTROLLERID'"></nz-option>
               <nz-option [nzLabel]="'Date'" [nzValue]="'DATE'"></nz-option>
@@ -135,7 +135,7 @@
         </div>
       </div>
       <div class="box-body overview">
-        <div class="row" [hidden]="!isLoaded && agents.length === 0" style="overflow-y: auto;">
+        <div class="row overflow-y" [hidden]="!isLoaded && agents.length === 0">
           <div class="col-md-12">
             <app-gantt-chart
               [dayStart]="'00:00'"

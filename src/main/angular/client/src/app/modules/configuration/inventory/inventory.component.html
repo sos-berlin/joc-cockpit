@@ -92,7 +92,7 @@
         </ul>
       </div>
       <div class="inline">
-        <a class="text-hover-primary m-l-lg" style="position: relative;top:10px" *ngIf="indexOfNextAdd > 0" (click)="backToObject()" >
+        <a class="text-hover-primary m-l-lg pos-rel t-10" *ngIf="indexOfNextAdd > 0" (click)="backToObject()" >
           <i class="fa fa-arrow-circle-left" ></i>
           {{'inventory.button.backToObject' | translate}}
         </a>
@@ -138,10 +138,10 @@
     <div class="inline w-full" [hidden]="isLoading">
       <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor " [ngClass]="{'bg-white' : isTrash}" [ngStyle]="{'width': sideView.inventory ? sideView.inventory.width +'px' : 'auto'}">
         <div class="pl-20 editor-tree">
-          <a class="text resize-cursor a-1" *ngIf="!isTrash" style="position: absolute; right: 28px;z-index:99">
+          <a class="text resize-cursor a-1 pos-abt r-28 z-index-99" *ngIf="!isTrash">
             <i class="fa fa-angle-double-left fa-lg" (click)="hidePanel()"></i>
           </a>
-          <a class="text resize-cursor a-3" style="position: absolute; right: 18px;;z-index:99">
+          <a class="text resize-cursor a-3 pos-abt r-18 z-index-99">
             <i class="fa fa-angle-double-right fa-lg" (click)="showPanel()"></i>
           </a>
           <a class="trash notify" *ngIf="!isTrash" (click)="switchToTrash()">
@@ -165,8 +165,8 @@
                      *ngIf="node.origin.loading || (node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 2 || !node.origin.children[0].controller)) || node.origin.controller || node.origin.dailyPlan || node.origin.object ))"
                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
                      [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                     (click)="openFolder(node)" class="cursor w-14 m-l-xxs"
-                     [ngClass]="{'m-l-0': node.origin.path === '/'}" style="margin-top: -1px;">
+                     (click)="openFolder(node)" class="cursor w-14 m-l-xxs m-t-n-1"
+                     [ngClass]="{'m-l-0': node.origin.path === '/'}">
                      <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right"
                         nzTheme="outline"></i>
                      <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down"
@@ -195,8 +195,7 @@
                       nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.controller" nz-icon nzType="container" class="icon-color"
                        nzTheme="outline"></i>
-                    <i *ngIf="node.origin.dailyPlan" class="icon-daily-plan-icon icon-color tree-icon"
-                       style="opacity: .8"></i>
+                    <i *ngIf="node.origin.dailyPlan" class="icon-daily-plan-icon icon-color tree-icon opacity8"></i>
                     <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
                        nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
@@ -211,9 +210,8 @@
                        nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'CALENDAR'" nz-icon nzType="calendar" class="icon-color"
                        nzTheme="outline"></i>
-                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs w-11"
-                          [ngClass]="{'fa-circle-o': !node.origin.valid , 'fa-circle dark-blue' : node.origin.deployed || node.origin.released}"
-                          style="margin-top: 4px"></span>
+                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
+                          [ngClass]="{'fa-circle-o': !node.origin.valid , 'fa-circle dark-blue' : node.origin.deployed || node.origin.released}"></span>
                     <span class="p-l-xs">
                       <span
                         *ngIf="node.origin.object || node.origin.controller || node.origin.dailyPlan">{{node.origin.name | translate}}</span>

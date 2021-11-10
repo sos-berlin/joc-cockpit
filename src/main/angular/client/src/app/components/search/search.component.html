@@ -223,7 +223,7 @@
         </nz-collapse-panel>
       </nz-collapse>
     </div>
-    <div class="modal-footer border-top-0 text-left m-t-n-8" *ngIf="object.mapOfCheckedId.size === 0">
+    <div class="modal-footer border-top-0 text-left m-t-n">
       <button class="btn btn-primary btn-sm" type="submit" [disabled]="submitted">
         <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
         {{'common.button.search' | translate}}
@@ -232,9 +232,13 @@
       <button class="btn btn-grey btn-sm" translate type="button" (click)="clear()">common.button.clear</button>
     </div>
   </form>
-  <div class="p-a p-t-sm" *ngIf="results">
+  <div class="p-a p-t-0" *ngIf="results">
     <div class="form-group row">
       <div class="col-sm-12 m-b-sm" *ngIf="object.mapOfCheckedId.size > 0">
+        <button class="btn btn-grey btn-sm" translate type="button" (click)="updateObject()">inventory.search.button.updateObject</button>
+        <span class="p-l-sm" translate [translateParams]="{objectCount: object.mapOfCheckedId.size}">inventory.search.message.updateSelectedObjects</span>
+      </div>
+      <div class="col-sm-12 m-b-sm" *ngIf="object.mapOfCheckedId.size > 0 && isJobSearch">
         <button class="btn btn-grey btn-sm" *ngIf="searchObj.advanced.jobNameExactMatch" translate type="button" (click)="propagateJob()">inventory.search.button.propagateJob</button>
         <button class="btn btn-grey btn-sm" [ngClass]="{'m-l-12' : searchObj.advanced.jobNameExactMatch}" translate type="button" (click)="updateJob()">inventory.search.button.updateJob</button>
         <span class="p-l-sm" translate [translateParams]="{jobName: searchObj.advanced.jobName,workflowsCount: object.mapOfCheckedId.size}">inventory.search.message.updateJobForSelectedWorkflows</span>
@@ -247,7 +251,7 @@
         </b>
       </div>
       <div class="col-sm-12">
-        <div class="table-responsive" style="overflow: auto" [ngStyle]="{'max-height': panel.active ? '200px' : 'calc(100vh - 410px)'}">
+        <div class="table-responsive text-overflow" [ngStyle]="{'max-height': panel.active ? '200px' : 'calc(100vh - 410px)'}">
           <nz-table
             #ajaxTable
             [nzSize]="'small'"
@@ -259,7 +263,7 @@
             [nzShowSizeChanger]="false">
             <thead>
             <tr>
-              <th *ngIf="isJobSearch" class="chk"
+              <th *ngIf="!isWorkflow && !isLock && !isBoard" class="chk"
                   [nzShowCheckbox]="true"
                   [(nzChecked)]="object.checked"
                   [nzIndeterminate]="object.indeterminate"
@@ -273,12 +277,11 @@
             <tbody>
             <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
               <tr class="cursor" [ngClass]="{'disabled-row' : !data.permitted}">
-                <td *ngIf="isJobSearch" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
+                <td *ngIf="!isWorkflow && !isLock && !isBoard" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
                 <td (click)="navToObject(data)" *ngIf="isControllerId">{{data.controllerId}}</td>
                 <td (click)="navToObject(data)">
-                  <span *ngIf="!isWorkflow && !isLock && !isBoard" class="fa fa-check-circle-o orange text-xs w-11"
-                        [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"
-                        style="margin-top: 4px"></span>
+                  <span *ngIf="!isWorkflow && !isLock && !isBoard" class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
+                        [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"></span>
                   <span class="p-l-xs" [innerHTML]="data.name"></span>
                   <i *ngIf="data.title"> - </i>
                   <span class="text-muted">{{data.title}}</span>

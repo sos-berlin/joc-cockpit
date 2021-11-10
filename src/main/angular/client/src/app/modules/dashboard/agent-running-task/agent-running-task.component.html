@@ -2,7 +2,7 @@
     <div class="box-header b-b remove">
         <h3 translate>dashboard.label.agentRunningJobs</h3>
     </div>
-    <div class="row" [hidden]="!isLoaded" style="overflow-y: auto;"
+    <div class="row overflow-y" [hidden]="!isLoaded"
     [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px'}">
       <div class="col-md-12">
         <div class="p-a-sm" *ngIf="data.length>0">
@@ -18,7 +18,8 @@
               [yAxisLabel]="true"
               [showGridLines]="true"
               [roundDomains]="true"
-              [barPadding]="5">
+              [barPadding]="5"
+              [roundEdges]="false">
             </ngx-charts-bar-horizontal>
         </div>
       </div>

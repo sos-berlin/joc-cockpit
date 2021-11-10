@@ -64,11 +64,11 @@
   <span class="_600" [nz-tooltip]="contentTemplate2"> {{orders.size - 1}} others</span>
 </ng-template>
 <div *ngFor="let instruction of configuration.instructions">
-  <ul style="margin-bottom: 0">
+  <ul class="m-b-0">
     <li (dragover)="drag($event);" (dragend)="dragend($event)">
       <div class="hover" [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}"
         *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock'">
-        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">
+        <div class="btn-group dropdown m-l-n-10" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
             <i class="fa fa-ellipsis-h"></i>
@@ -114,7 +114,7 @@
       </div>
       <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
        || instruction.TYPE === 'PostNotice' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotice'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd', 'drop-area': instruction.enabled}">
-        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'Job'">
+        <div class="btn-group dropdown m-l-n-10" *ngIf="instruction.TYPE === 'Job'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
             <i class="fa fa-ellipsis-h"></i>

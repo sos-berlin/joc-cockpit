@@ -1237,7 +1237,7 @@
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"
                   [innerHtml]="transfer.numOfFiles | highlight : yade.searchText"></td>
-              <td style="nzWidth: 20% !important;" (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)" class="text-danger">
+              <td style="width: 20% !important;" (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)" class="text-danger">
                 <span *ngIf="transfer.error" [innerHtml]="transfer.error.message"></span>
               </td>
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)"

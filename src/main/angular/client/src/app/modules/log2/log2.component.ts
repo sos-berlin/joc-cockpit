@@ -450,7 +450,7 @@ export class Log2Component implements OnInit, OnDestroy {
         this.isDetailLevel = true;
       }
       const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].controllerDatetime, this.preferences.zone) : dt[i].controllerDatetime;
-      col = (datetime + ' <span style="width: 64px;display: inline-block;">[' + dt[i].logLevel + ']</span> ' +
+      col = (datetime + ' <span class="w-64 inline">[' + dt[i].logLevel + ']</span> ' +
         '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + (dt[i].position ? ', pos=' + dt[i].position : '') + '');
       if (dt[i].job) {
         col += ', Job=' + dt[i].job;
@@ -515,7 +515,7 @@ export class Log2Component implements OnInit, OnDestroy {
         this.taskCount++;
         div.innerHTML = x;
       } else {
-        div.innerHTML = `<span style="margin-left: 13px">` + col;
+        div.innerHTML = `<span class="m-l-13">` + col;
       }
       window.document.getElementById('logs').appendChild(div);
     }
@@ -647,7 +647,7 @@ export class Log2Component implements OnInit, OnDestroy {
       } else if (!lastLevel){
         lastClass = '';
       }
-      
+
       if (!orderTaskFlag) {
         window.document.getElementById('logs').appendChild(div);
       } else {

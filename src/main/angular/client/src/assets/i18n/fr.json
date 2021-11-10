@@ -968,6 +968,7 @@
     "label.hours": "Heures",
     "label.days": "Jours",
     "label.variableSets": "Jeux de Variables",
+    "label.objectNotExist": "Object does not exist",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addVariableSet": "Ajouter un Jeu de Variable",
     "button.setVersion": "Définir la Version",
@@ -1225,6 +1226,7 @@
       "button": {
         "search": "Chercher",
         "updateJob": "Mise à jour de la Tâche",
+        "updateObject": "Update Object",
         "propagateJob": "Propager la Tâche"
       },
       "placeholder": {
@@ -1232,7 +1234,8 @@
         "selectFromTree": "Sélectionner dans l'arborescence"
       },
       "message": {
-        "updateJobForSelectedWorkflows": "Mise à jour {{jobName}} dans les {{workflowsCount}} workflows sélectionnés"
+        "updateJobForSelectedWorkflows": "Mise à jour {{jobName}} dans les {{workflowsCount}} workflows sélectionnés",
+        "updateSelectedObjects": "Update {{objectCount}} selected objects"
       }
     },
     "updateJob": {
@@ -1245,6 +1248,18 @@
       "message": {
         "updateSuccessfully": "Les {{workflowsCount}} workflows sont mis à jour avec succès.",
         "selectWorkflowToOpenJobEditor": "Sélectionnez l'un des Workflow pour ouvrir l'éditeur de Tâche"
+      }
+    },
+    "updateObject": {
+      "label": {
+        "updateObject": "Update Object"
+      },
+      "button": {
+        "clickHereToDeploy": "Click here to deploy!",
+        "clickHereToRelease": "Click here to release!"
+      },
+      "message": {
+        "updateSuccessfully": "{{count}} objects updated successfully."
       }
     }
   },

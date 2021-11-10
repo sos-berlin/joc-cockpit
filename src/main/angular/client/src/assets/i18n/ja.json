@@ -968,6 +968,7 @@
     "label.hours": "時",
     "label.days": "日",
     "label.variableSets": "変数設定",
+    "label.objectNotExist": "Object does not exist",
     "button.modifyVariableSet": "変数設定変更",
     "button.addVariableSet": "変数設定追加",
     "button.setVersion": "バージョン設定",
@@ -1225,6 +1226,7 @@
       "button": {
         "search": "検索",
         "updateJob": "ジョブ更新",
+        "updateObject": "Update Object",
         "propagateJob": "ジョブ展開"
       },
       "placeholder": {
@@ -1232,7 +1234,8 @@
         "selectFromTree": "フォルダーから選択"
       },
       "message": {
-        "updateJobForSelectedWorkflows": "選択した{{workflowsCount}}ワークフローに含まれる {{jobName}}ジョブを更新"
+        "updateJobForSelectedWorkflows": "選択した{{workflowsCount}}ワークフローに含まれる {{jobName}}ジョブを更新",
+        "updateSelectedObjects": "Update {{objectCount}} selected objects"
       }
     },
     "updateJob": {
@@ -1245,6 +1248,18 @@
       "message": {
         "updateSuccessfully": "全ワークフロー{{workflowsCount}}が更新されました",
         "selectWorkflowToOpenJobEditor": "ワークフローを選択してジョブエディターを開く"
+      }
+    },
+    "updateObject": {
+      "label": {
+        "updateObject": "Update Object"
+      },
+      "button": {
+        "clickHereToDeploy": "Click here to deploy!",
+        "clickHereToRelease": "Click here to release!"
+      },
+      "message": {
+        "updateSuccessfully": "{{count}} objects updated successfully."
       }
     }
   },

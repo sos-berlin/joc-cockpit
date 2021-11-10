@@ -70,9 +70,9 @@
               (nzExpandChange)="onExpand($event, 'DOCUMENTATION')"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'DOCUMENTATION', $event);">
+                <div class="node-wrapper w-93" (click)="loadData(node, 'DOCUMENTATION', $event);">
                   <div class="node-content-wrapper"
-                       [class.node-content-wrapper-active]="node.origin.assignReference == fileOrder.configuration.documentationName">
+                       [class.node-content-wrapper-active]="node.origin.assignReference == fileOrder.configuration.documentationName && fileOrder.configuration.documentationName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
                        class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
@@ -108,7 +108,7 @@
               (nzExpandChange)="onExpand($event, 'WORKFLOW')"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
+                <div class="node-wrapper w-93" (click)="loadData(node, 'WORKFLOW', $event);">
                   <div class="node-content-wrapper"
                        [class.node-content-wrapper-active]="node.origin.key == fileOrder.configuration.workflowName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
@@ -124,7 +124,7 @@
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
-            <div *ngIf="fileOrder.configuration.workflowName" class="pos-abt" style="right: -8px;margin-top: -25px">
+            <div *ngIf="fileOrder.configuration.workflowName" class="pos-abt r-n-8 m-t-n-25">
               <i (click)="navToWorkflow()" class="fa fa-pencil cursor"></i>
             </div>
           </div>
@@ -137,7 +137,11 @@
             <nz-select nzShowSearch name="agentName" (ngModelChange)="changeValue($event, 'agentName')"
                        nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
                        [(ngModel)]="fileOrder.configuration.agentName" #agentName="ngModel">
-              <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
+              <nz-option nzCustomContent *ngFor="let agent of agents" [nzValue]="agent" [nzLabel]="agent">
+                <div>
+                  <span>{{agent}}</span> <span *ngIf="notFound && agent == notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
+                </div>
+              </nz-option>
             </nz-select>
             <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
                  class="text-danger help-block">

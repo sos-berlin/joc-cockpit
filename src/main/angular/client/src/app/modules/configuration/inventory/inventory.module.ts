@@ -44,10 +44,11 @@ import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from './runt
 import {JobWizardComponent} from './job-wizard/job-wizard.component';
 import {EnvVariableValidator, LabelValidator} from '../../../directives/core.directive';
 import {UpdateJobComponent} from './update-job/update-job.component';
+import {UpdateObjectComponent} from './update-object/update-object.component';
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent,
   SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent, CronImportModalComponent,
-  JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, FindAndReplaceComponent, CycleInstructionComponent,
+  JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent,
   AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
 
 @NgModule({

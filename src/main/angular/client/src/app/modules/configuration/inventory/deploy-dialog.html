@@ -14,7 +14,7 @@
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
     <div *ngIf="actualResult.length>0 && !loading">
-        <div class="hide" [ngClass]="{'show': display && !releasable}">
+        <div class="hide" [ngClass]="{'show': display}">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
         </div>
         <div class="form-group row" *ngIf="!releasable && !isRemove">

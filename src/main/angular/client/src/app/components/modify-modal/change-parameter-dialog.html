@@ -24,7 +24,7 @@
               </div>
               <div class="form-group row m-b-0 m-l-12" *ngFor="let actualListArr of listVariables.actualList; let i=index" [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}">
                 <div *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)" (click)="addVariableToList(listVariables)"
-                     class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 4px;cursor: pointer">
+                     class="pos-abt m-l-n-13 text-16 m-t-xs cursor">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </div>
                 <div class="col-md-12" *ngFor="let argument of actualListArr; let j=index">
@@ -93,7 +93,7 @@
           </div>
           <div cdkDropList (cdkDropListDropped)="drop($event)">
             <div class="form-group row m-b-0 m-l-12" *ngFor="let item of variables; let i = index" cdkDrag>
-              <div class="pos-abt" style="margin-left: -13px;font-size: 18px;margin-top: 3px;cursor: move" cdkDragHandle>
+              <div class="pos-abt m-l-n-13 text-18 m-t cur-m" cdkDragHandle>
                 <i class="fa fa-bars" aria-hidden="true"></i>
               </div>
               <div class="col-md-5 col-sm-6 m-b-sm" *ngIf="item.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">

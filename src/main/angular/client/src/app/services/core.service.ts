@@ -31,6 +31,13 @@ export class CoreService {
     xml: {width: 500, show: true}
   };
 
+  searchResults = {
+    inventory: [],
+    workflow: [],
+    board: [],
+    lock: []
+  };
+
   newWindow: any;
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
@@ -454,6 +461,15 @@ export class CoreService {
       this.sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
     }
   }
+
+  setSearchResult(type, result): void {
+    this.searchResults[type] = result;
+  }
+
+  getSearchResult(type): any {
+    return this.searchResults[type];
+  }
+
 
   setDefaultTab(): void {
     this.tabs = this.tempTabs;

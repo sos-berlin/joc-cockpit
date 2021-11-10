@@ -4,7 +4,7 @@
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<div class="modal-body p-a-md" style="min-height: 180px; max-height: 640px; overflow: auto">
+<div class="modal-body p-a-md min-ht-200">
   <div class="form-group row p-b b-b" *ngFor="let widget of widgets" [hidden]="widget.visible">
     <img class="pull-left m-l" src="./assets/images/{{widget.name}}.png" width="120px" height="60px">
     <div class="col-sm-6">
@@ -17,7 +17,7 @@
         <i class="fa fa-cog"></i> dashboard.button.changeSize
         </button>
         <nz-dropdown-menu #size="nzDropdownMenu">
-          <ul nz-menu style="max-height: 120px;overflow: auto;max-width: 110px;">
+          <ul nz-menu class="text-overflow max-ht-120 max-w-110">
             <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 2}"><a>1 <i class="fa fa-times"></i> 2</a></li>
             <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 3}"><a>1 <i class="fa fa-times"></i> 3</a></li>
             <li nz-menu-item class="w-xs" (click)="widget.cols= 4;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 4}"><a>1 <i class="fa fa-times"></i> 4</a></li>

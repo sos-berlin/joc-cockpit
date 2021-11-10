@@ -16,7 +16,6 @@ declare const $: any;
 @Injectable()
 export class WorkflowService {
   preferences: any = {};
-  searchResult: any;
   theme: string;
 
   constructor(public translate: TranslateService, public coreService: CoreService,
@@ -1884,14 +1883,6 @@ export class WorkflowService {
       left: -50,
       top: -80
     });
-  }
-
-  setSearchResult(result): void {
-    this.searchResult = result;
-  }
-
-  getSearchResult(): any {
-    return this.searchResult;
   }
 
   convertSecondIntoWeek(data, periodList, days, frequency): void {

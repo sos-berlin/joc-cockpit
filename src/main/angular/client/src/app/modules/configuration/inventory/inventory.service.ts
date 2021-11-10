@@ -5,8 +5,6 @@ import {InventoryObject} from '../../../models/enums';
 @Injectable()
 export class InventoryService {
 
-  private searchResult = [];
-
   sortList(arr): any {
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].objectType === InventoryObject.WORKFLOW) {
@@ -229,14 +227,6 @@ export class InventoryService {
   isControllerObject(type): boolean {
     return type === InventoryObject.WORKFLOW || type === InventoryObject.NOTICEBOARD
       || type === InventoryObject.LOCK || type === InventoryObject.FILEORDERSOURCE || type === InventoryObject.JOBRESOURCE;
-  }
-
-  setSearchResult(result): void {
-    this.searchResult = result;
-  }
-
-  getSearchResult(): any {
-    return this.searchResult;
   }
 
 }

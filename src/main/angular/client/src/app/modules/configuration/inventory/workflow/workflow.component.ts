@@ -776,6 +776,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   history = [];
   indexOfNextAdd = 0;
   error: boolean;
+  notFound: string;
   errorMsg: string;
   obj: any = {};
   isDisplay = false;
@@ -882,6 +883,28 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     this.mentionValueList = [...x, ...arr];
     this.filteredOptions = [...x, ...arr];
+    this.ref.detectChanges();
+  }
+
+  private checkIsAgentExist(): void {
+    if (this.notFound){
+      this.agents = this.agents.filter((item) => {
+        return item !== this.notFound;
+      });
+    }
+    if (this.selectedNode.job.agentName) {
+      let isFound = false;
+      for (const i in this.agents) {
+        if (this.agents[i] === this.selectedNode.job.agentName) {
+          isFound = true;
+          break;
+        }
+      }
+      if (!isFound) {
+        this.notFound = this.selectedNode.job.agentName;
+        this.agents.push(this.selectedNode.job.agentName);
+      }
+    }
     this.ref.detectChanges();
   }
 
@@ -1607,6 +1630,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.index === 0) {
       this.reloadScript();
     }
+    this.checkIsAgentExist();
     this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
     this.presentObj.job = JSON.stringify(this.selectedNode.job);
   }

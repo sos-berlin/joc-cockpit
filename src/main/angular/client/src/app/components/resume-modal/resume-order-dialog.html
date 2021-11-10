@@ -32,8 +32,8 @@
           <input #value="ngModel" autocomplete="off" type="text"
                  class="form-control" name="value{{i}}" (keypress)="onKeyPress($event)"
                  [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
-          <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
-             (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
+          <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"
+             (click)="openEditor(argument)"></i>
         </div>
         <div class="col-sm-1 p-l-0">
           <a><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>

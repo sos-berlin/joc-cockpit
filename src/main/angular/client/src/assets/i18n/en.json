@@ -968,6 +968,7 @@
     "label.hours": "Hours",
     "label.days": "Days",
     "label.variableSets": "Variable Sets",
+    "label.objectNotExist": "Object does not exist",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addVariableSet": "Add Variable Set",
     "button.setVersion": "Set Version",
@@ -1225,6 +1226,7 @@
       "button": {
         "search": "Search",
         "updateJob": "Update Job",
+        "updateObject": "Update Object",
         "propagateJob": "Propagate Job"
       },
       "placeholder": {
@@ -1232,7 +1234,8 @@
         "selectFromTree": "Select from tree"
       },
       "message": {
-        "updateJobForSelectedWorkflows": "Update job '{{jobName}}' in {{workflowsCount}} selected workflows"
+        "updateJobForSelectedWorkflows": "Update job '{{jobName}}' in {{workflowsCount}} selected workflows",
+        "updateSelectedObjects": "Update {{objectCount}} selected objects"
       }
     },
     "updateJob": {
@@ -1245,6 +1248,18 @@
       "message": {
         "updateSuccessfully": "{{workflowsCount}} workflows updated successfully.",
         "selectWorkflowToOpenJobEditor": "Select workflow to open job in Job Editor"
+      }
+    },
+    "updateObject": {
+      "label": {
+        "updateObject": "Update Object"
+      },
+      "button": {
+        "clickHereToDeploy": "Click here to deploy!",
+        "clickHereToRelease": "Click here to release!"
+      },
+      "message": {
+        "updateSuccessfully": "{{count}} objects updated successfully."
       }
     }
   },

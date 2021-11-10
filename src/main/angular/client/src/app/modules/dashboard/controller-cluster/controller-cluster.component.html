@@ -5,7 +5,7 @@
             <span *ngIf="selectedController.role === 'STANDALONE' || !selectedController.role" translate>dashboard.label.componentStatus</span>
         </h3>
     </div>
-    <div class="box-body" [hidden]="!isLoaded || !clusterStatusData" style="overflow-y:auto;"
+    <div class="box-body overflow-y" [hidden]="!isLoaded || !clusterStatusData"
     [ngStyle]="{'height': (clusterStatusData ? (ybody * 55 + ((ybody -1) *20 -50)) : 0)+'px'}">
       <div id="clusterStatus" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -80)) +'px'}"></div>
       <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -98,8 +98,7 @@
           </ul>
       </nz-dropdown-menu>
     </div>
-    <div class="hide text-center text-primary text" [ngClass]="{'show': !isLoaded}"
-         style="padding-top: 140px">
+    <div class="hide text-center text-primary text p-t-140" [ngClass]="{'show': !isLoaded}">
         <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
     <div *ngIf="isLoaded && !clusterStatusData" class="vert-middle" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50)) +'px'}">

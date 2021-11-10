@@ -478,18 +478,18 @@ export class DeployComponent implements OnInit {
         obj.update = this.object.update;
       }
     }
-    if (!this.releasable) {
-      obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
+
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
     }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+
     if (!this.releasable && isEmpty(obj.store) && isEmpty(obj.delete)) {
       this.submitted = false;
       this.ref.detectChanges();
@@ -3673,7 +3673,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeData(obj, result, reload): void {
-    if(!obj.id){
+    if (!obj.id){
       return;
     }
     this.coreService.post('inventory/store', {

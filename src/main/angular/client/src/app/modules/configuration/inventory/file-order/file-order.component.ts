@@ -33,6 +33,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   invalidMsg: string;
   zones = [];
   agents = [];
+  notFound: string;
   workflowTree = [];
   fileOrder: any = {};
   objectType = InventoryObject.FILEORDERSOURCE;
@@ -105,9 +106,33 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     if (this.agents.length === 0) {
       this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
         this.agents = res.agentNames ? res.agentNames.sort() : [];
-        this.ref.detectChanges();
+        this.checkIsAgentExist();
+      });
+    } else{
+      this.checkIsAgentExist();
+    }
+  }
+
+  private checkIsAgentExist(): void {
+    if (this.notFound){
+      this.agents = this.agents.filter((item) => {
+        return item !== this.notFound;
       });
     }
+    if (this.fileOrder.configuration.agentName) {
+      let isFound = false;
+      for (const i in this.agents) {
+        if (this.agents[i] === this.fileOrder.configuration.agentName) {
+          isFound = true;
+          break;
+        }
+      }
+      if (!isFound) {
+        this.notFound = this.fileOrder.configuration.agentName;
+        this.agents.push(this.fileOrder.configuration.agentName);
+      }
+    }
+    this.ref.detectChanges();
   }
 
   private getWorkflows(): void {
@@ -256,7 +281,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        
+
         this.updateList(node, type, reload);
       }
     } else {
