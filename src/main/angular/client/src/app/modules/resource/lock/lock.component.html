@@ -257,7 +257,7 @@
                       <td [innerHtml]="lock.limit | highlight : locksFilters.searchText"></td>
                     </tr>
                     <tr *ngIf="lock.show">
-                      <td colspan="9" class="order-history-template0 p-a-0">
+                      <td colspan="9" style="padding:0 !important;" class="order-history-template0">
                         <nz-table class="m-a-0 inner-table" #nestedWorkflowsTable [nzSize]="'small'"
                                   [nzData]="lock.workflows" [nzLoading]="lock.loading" [nzShowPagination]="false">
                           <thead>

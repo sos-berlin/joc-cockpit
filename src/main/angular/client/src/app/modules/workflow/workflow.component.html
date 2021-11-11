@@ -476,7 +476,7 @@
                     <ng-container *ngIf="workflow.show && workflow.fileOrderSources && workflow.fileOrderSources.length>0">
                       <tr>
                         <td class="menu"></td>
-                        <td class="p-a-0" [colSpan]="!workflowFilters.isCompact ? 15 : 5">
+                        <td [colSpan]="!workflowFilters.isCompact ? 15 : 5" style="padding:0 !important;">
                           <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
                                     [nzData]="workflow.fileOrderSources" [nzShowPagination]="false">
                             <thead>

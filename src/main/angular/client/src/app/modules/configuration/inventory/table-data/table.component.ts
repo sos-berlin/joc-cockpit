@@ -69,7 +69,7 @@ export class TableComponent implements OnDestroy{
         obj.name = res.name;
         if (obj.type === 'JOBCLASS') {
           configuration = {maxProcesses: 1};
-        } else if (obj.type === 'SCHEDULE') {
+        } else if (obj.type === InventoryObject.SCHEDULE) {
           configuration = {controllerId: this.schedulerId};
         } else if (obj.type === 'LOCK') {
           configuration = {limit: 1, id: res.name};
@@ -237,7 +237,7 @@ export class TableComponent implements OnDestroy{
   private deleteApiCall(object, auditLog): void {
     let isDraftOnly = true;
     let isDeployObj = true;
-    if (this.objectType.match(/CALENDAR/) || this.objectType === 'SCHEDULE') {
+    if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.SCRIPT) {
       isDeployObj = false;
       if (object.hasReleases) {
         isDraftOnly = false;
@@ -294,8 +294,8 @@ export class TableComponent implements OnDestroy{
     if (this.objectType === InventoryObject.WORKFLOW && !configuration.timeZone) {
       configuration.timeZone = this.preferences.zone;
     }
-    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.WORKFLOW
-      || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
+    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.SCRIPT
+      || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
     if (!path) {
       return;
     }

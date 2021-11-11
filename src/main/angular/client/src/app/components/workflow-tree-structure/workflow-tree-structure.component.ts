@@ -123,6 +123,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
       if (job && job.executable) {
         nzComponentParams = {
           data,
+          agentName: job.agentName,
           jobName: instruction.jobName,
           admissionTime: job.admissionTimeScheme,
           timezone: this.timezone,

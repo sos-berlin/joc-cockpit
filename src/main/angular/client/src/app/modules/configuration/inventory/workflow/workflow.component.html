@@ -358,7 +358,7 @@
               (nzExpandChange)="onExpand($event, 'NOTICEBOARD')"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'NOTICEBOARD', $event);">
+                <div class="node-wrapper w-93" (click)="loadData(node, 'NOTICEBOARD', $event);">
                   <div class="node-content-wrapper"
                        [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.noticeBoardName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
@@ -523,7 +523,7 @@
                 (nzExpandChange)="onExpand($event, 'WORKFLOW')"
               >
                 <ng-template #nzTreeTemplate let-node>
-                  <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'WORKFLOW', $event);">
+                  <div class="node-wrapper w-93" (click)="loadData(node, 'WORKFLOW', $event);">
                     <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.name == selectedNode.obj.workflowName">
                       <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                       <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>

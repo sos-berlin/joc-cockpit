@@ -487,7 +487,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   resetProfile(): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'resetProfile',
@@ -550,7 +550,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   pasteKey(type = 'key'): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: UpdateKeyModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
@@ -573,7 +573,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   showGenerateKeyModal(type = 'key'): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: GenerateKeyComponent,
       nzComponentParams: {
         display : this.preferences.auditLog,
@@ -592,7 +592,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   importKey(type = 'key'): void {
     const modal = this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: ImportKeyModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
@@ -613,7 +613,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   showKey(type = 'key'): void {
     this.modal.create({
-      nzTitle: null,
+      nzTitle: undefined,
       nzContent: UpdateKeyModalComponent,
       nzComponentParams: {
         securityLevel: this.securityLevel,

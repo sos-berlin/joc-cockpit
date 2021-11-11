@@ -45,19 +45,19 @@
           <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
             <div translate>common.label.suspended</div>
           </td>
-          <td width="10%" *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per" *ngIf="xbody > 7 && ybody == 2">
             <div translate>common.label.completed</div>
           </td>
-          <td width="10%" *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per" *ngIf="xbody > 7 && ybody == 2">
             <div translate>common.label.prompting</div>
           </td>
-          <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per"  *ngIf="xbody > 7 && ybody == 2">
             <div translate>common.label.waiting</div>
           </td>
-          <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per"  *ngIf="xbody > 7 && ybody == 2">
             <div translate>common.label.blocked</div>
           </td>
-          <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per"  *ngIf="xbody > 7 && ybody == 2">
             <div translate>common.label.failed</div>
           </td>
         </tr>
@@ -77,53 +77,53 @@
           <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
             <a (click)="navigate('SUSPENDED')" class="text-lg _600" [ngClass]="{'orange' : orders.suspended > 0}" [innerHtml]="orders.suspended || 0"></a>
           </td>
-          <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per"  *ngIf="xbody > 7 && ybody == 2">
             <a (click)="navigate('COMPLETED')" class="text-lg _600" [ngClass]="{'dark-blue' : orders.terminated > 0}" [innerHtml]="orders.terminated || 0"></a>
           </td>
-          <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per"  *ngIf="xbody > 7 && ybody == 2">
             <a (click)="navigate('PROMPTING')" class="text-lg _600 " [ngClass]="{'light-green' : orders.prompting > 0}" [innerHtml]="orders.prompting || 0"></a>
           </td>
-          <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per"  *ngIf="xbody > 7 && ybody == 2">
             <a (click)="navigate('WAITING')" class="text-lg _600" [ngClass]="{'yellow-green' : orders.waiting > 0}" [innerHtml]="orders.waiting || 0"></a>
           </td>
-          <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per"  *ngIf="xbody > 7 && ybody == 2">
             <a (click)="navigate('BLOCKED')" class="text-lg _600" [ngClass]="{'mangenta' : orders.blocked > 0}" [innerHtml]="orders.blocked || 0"></a>
           </td>
-          <td width="10%"  *ngIf="xbody > 7 && ybody == 2">
+          <td class="w-10-per"  *ngIf="xbody > 7 && ybody == 2">
             <a (click)="navigate('FAILED')" class="text-lg _600" [ngClass]="{'red' : orders.failed > 0}" [innerHtml]="orders.failed || 0"></a>
           </td>
         </tr>
         <tr class="text-center border-16-transparent" *ngIf="xbody < 8 || ybody !== 2">
-          <td width="20%">
+          <td class="w-20-per">
             <div translate>common.label.completed</div>
           </td>
-          <td width="20%">
+          <td class="w-20-per">
             <div translate>common.label.prompting</div>
           </td>
-          <td width="20%">
+          <td class="w-20-per">
             <div translate>common.label.waiting</div>
           </td>
-          <td width="20%">
+          <td class="w-20-per">
             <div translate>common.label.blocked</div>
           </td>
-          <td width="20%">
+          <td class="w-20-per">
             <div translate>common.label.failed</div>
           </td>
         </tr>
         <tr class="text-center" *ngIf="xbody < 8 || ybody !== 2">
-          <td width="20%">
+          <td class="w-20-per">
             <a (click)="navigate('COMPLETED')" class="text-lg _600" [ngClass]="{'dark-blue' : orders.terminated > 0}" [innerHtml]="orders.terminated || 0"></a>
           </td>
-          <td width="20%">
+          <td class="w-20-per">
             <a (click)="navigate('PROMPTING')" class="text-lg _600 " [ngClass]="{'light-green' : orders.prompting > 0}" [innerHtml]="orders.prompting || 0"></a>
           </td>
-          <td width="20%">
+          <td class="w-20-per">
             <a (click)="navigate('WAITING')" class="text-lg _600" [ngClass]="{'yellow-green' : orders.waiting > 0}" [innerHtml]="orders.waiting || 0"></a>
           </td>
-          <td width="20%">
+          <td class="w-20-per">
             <a (click)="navigate('BLOCKED')" class="text-lg _600" [ngClass]="{'mangenta' : orders.blocked > 0}" [innerHtml]="orders.blocked || 0"></a>
           </td>
-          <td width="20%">
+          <td class="w-20-per">
             <a (click)="navigate('FAILED')" class="text-lg _600" [ngClass]="{'red' : orders.failed > 0}" [innerHtml]="orders.failed || 0"></a>
           </td>
         </tr>

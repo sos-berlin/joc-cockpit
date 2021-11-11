@@ -211,6 +211,10 @@ export class ControllersComponent implements OnInit, OnDestroy {
   object = {
     mapOfCheckedId: new Set()
   };
+  filter = {
+    sortBy: 'agentId',
+    reverse: true
+  };
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -318,6 +322,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
     } else if (cb) {
       cb();
     }
+  }
+
+  sort(key): void {
+    this.filter.reverse = !this.filter.reverse;
+    this.filter.sortBy = key;
   }
 
   addController(): void {

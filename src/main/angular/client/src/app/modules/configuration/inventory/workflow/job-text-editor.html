@@ -82,7 +82,7 @@
               (nzExpandChange)="onExpand($event, 'DOCUMENTATION')"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'DOCUMENTATION', $event);">
+                <div class="node-wrapper w-93" (click)="loadData(node, 'DOCUMENTATION', $event);">
                   <div class="node-content-wrapper"
                        [class.node-content-wrapper-active]="node.origin.assignReference == selectedNode.job.documentationName && selectedNode.job.documentationName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
@@ -136,7 +136,7 @@
               (ngModelChange)="onChangeJobResource($event)"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, 'JOBRESOURCE', $event);">
+                <div class="node-wrapper w-93" (click)="loadData(node, 'JOBRESOURCE', $event);">
                   <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>

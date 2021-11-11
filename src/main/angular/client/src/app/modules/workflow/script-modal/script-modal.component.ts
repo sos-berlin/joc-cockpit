@@ -19,6 +19,7 @@ export class ScriptModalComponent implements OnInit {
   @Input() schedule: any;
   @Input() predicate: any;
   @Input() admissionTime: any;
+  @Input() agentName: string;
   @Input() timezone: string;
   @Input() readonly: boolean;
 

@@ -336,6 +336,7 @@ export class TypeComponent implements OnChanges {
       if (job && job.executable) {
         nzComponentParams = {
           data,
+          agentName: job.agentName,
           admissionTime: job.admissionTimeScheme,
           timezone: this.timezone,
           jobName: instruction.jobName,

@@ -4871,7 +4871,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   // save xml
   save(): void {
     const xml = this._showXml();
-    const name = this.nodes[0].ref + '.xml';
+    let name;
+    if (this.objectType !== 'NOTIFICATION') {
+      name = this.activeTab.name + '.xml';
+    } else {
+      name = 'Notification.xml';
+    }
     const fileType = 'application/xml';
     const blob = new Blob([xml], {type: fileType});
     saveAs(blob, name);

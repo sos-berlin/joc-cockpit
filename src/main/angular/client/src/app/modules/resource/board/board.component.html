@@ -266,7 +266,7 @@
                     <ng-container *ngIf="board.show">
                       <tr>
                         <td class="menu"></td>
-                        <td colspan="8" class="p-a-0">
+                        <td colspan="8" style="padding:0 !important;">
                           <nz-table class="m-a-0 inner-table" #innerTable [nzSize]="'small'"
                                     [nzData]="['']" [nzShowPagination]="false">
                             <thead>
@@ -290,7 +290,7 @@
                       </tr>
                       <tr>
                         <td class="menu"></td>
-                        <td colspan="8" class="order-history-template0 p-a-0">
+                        <td colspan="8" style="padding:0 !important;" class="order-history-template0">
                           <nz-table class="m-a-0 inner-table" #nestedTable [nzSize]="'small'"
                                     [nzData]="board.notices" [nzLoading]="board.loading" [nzShowPagination]="false">
                             <thead>

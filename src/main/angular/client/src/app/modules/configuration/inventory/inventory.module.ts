@@ -45,6 +45,7 @@ import {JobWizardComponent} from './job-wizard/job-wizard.component';
 import {EnvVariableValidator, LabelValidator} from '../../../directives/core.directive';
 import {UpdateJobComponent} from './update-job/update-job.component';
 import {UpdateObjectComponent} from './update-object/update-object.component';
+import {ScriptComponent} from './script/script.component';
 
 const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent,
   SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent, CronImportModalComponent,
@@ -70,6 +71,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     ExpressionComponent,
     CalendarComponent,
     ScheduleComponent,
+    ScriptComponent,
     LockComponent,
     WorkflowComponent,
     BoardComponent,

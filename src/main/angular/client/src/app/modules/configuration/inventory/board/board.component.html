@@ -69,7 +69,7 @@
               (nzExpandChange)="onExpand($event)"
             >
               <ng-template #nzTreeTemplate let-node>
-                <div style="width: 93%" class="node-wrapper" (click)="loadData(node, $event);">
+                <div class="node-wrapper w-93" (click)="loadData(node, $event);">
                   <div class="node-content-wrapper"
                        [class.node-content-wrapper-active]="node.origin.assignReference == board.configuration.documentationName && board.configuration.documentationName">
                     <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"

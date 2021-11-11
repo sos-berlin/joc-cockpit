@@ -1299,6 +1299,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       if (job && job.executable) {
         nzComponentParams = {
           data,
+          agentName: job.agentName,
           jobName: argu.jobName,
           admissionTime: job.admissionTimeScheme,
           timezone: this.workFlowJson.timeZone,

@@ -17,10 +17,12 @@ export class InventoryService {
         arr[i].level = 3;
       } else if (arr[i].objectType === InventoryObject.SCHEDULE) {
         arr[i].level = 4;
-      } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
+      } else if (arr[i].objectType === InventoryObject.SCRIPT) {
         arr[i].level = 5;
-      } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
+      } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
         arr[i].level = 6;
+      } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
+        arr[i].level = 7;
       }
     }
     return sortBy(arr, 'level');

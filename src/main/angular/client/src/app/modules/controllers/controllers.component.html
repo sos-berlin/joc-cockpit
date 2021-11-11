@@ -85,7 +85,7 @@
               <div class="col-md-12">
                 <perfect-scrollbar class="p-a-sm p-b-0" style="max-height: 350px;overflow: auto">
                   <nz-table #ajaxTable nzSize="small" [nzBordered]="true" [nzLoading]="controller.loading"
-                            [nzData]="controller.agents" [nzShowPagination]="false" [nzFrontPagination]="false">
+                            [nzData]="controller.agents | orderBy: filter.sortBy: filter.reverse" [nzShowPagination]="false" [nzFrontPagination]="false">
                     <thead>
                     <tr>
                       <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="chk"
@@ -95,14 +95,62 @@
                           (nzCheckedChange)="checkAll($event, controller)"
                       ></th>
                       <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
-                      <th nzWidth="15%"><span translate>agent.label.agentId</span></th>
-                      <th nzWidth="15%"><span translate>agent.label.agentName</span></th>
-                      <th><span translate>agent.label.agentNameAliases</span></th>
-                      <th nzWidth="20%"><span translate>agent.label.url</span></th>
-                      <th nzWidth="100px"><span translate>agent.label.disabled</span></th>
-                      <th nzWidth="140px"><span translate>agent.label.clusterWatcher</span></th>
-                      <th nzWidth="150px"><span translate>agent.label.validityDate</span></th>
-                      <th nzWidth="140px"><span translate>agent.label.oneTimeToken</span></th>
+                      <th nzWidth="15%" (click)="sort('agentId')">
+                        <a><span class="p-r-xs" translate>agent.label.agentId</span>
+                          <i *ngIf="filter.sortBy == 'agentId' && !filter.reverse"
+                             class="fa fa-caret-up "></i>
+                          <i *ngIf="filter.sortBy == 'agentId' && filter.reverse"
+                             class="fa fa-caret-down "></i></a>
+                      </th>
+                      <th nzWidth="15%" (click)="sort('agentName')">
+                        <a><span class="p-r-xs" translate>agent.label.agentName</span>
+                          <i *ngIf="filter.sortBy == 'agentName' && !filter.reverse"
+                             class="fa fa-caret-up "></i>
+                          <i *ngIf="filter.sortBy == 'agentName' && filter.reverse"
+                             class="fa fa-caret-down "></i></a>
+                      </th>
+                      <th (click)="sort('agentNameAliases')">
+                        <a><span class="p-r-xs" translate>agent.label.agentNameAliases</span>
+                          <i *ngIf="filter.sortBy == 'agentNameAliases' && !filter.reverse"
+                             class="fa fa-caret-up "></i>
+                          <i *ngIf="filter.sortBy == 'agentNameAliases' && filter.reverse"
+                             class="fa fa-caret-down "></i></a>
+                      </th>
+                      <th nzWidth="20%" (click)="sort('url')">
+                        <a><span class="p-r-xs" translate>agent.label.url</span>
+                          <i *ngIf="filter.sortBy == 'url' && !filter.reverse"
+                             class="fa fa-caret-up "></i>
+                          <i *ngIf="filter.sortBy == 'url' && filter.reverse"
+                             class="fa fa-caret-down "></i></a>
+                      </th>
+                      <th nzWidth="100px" (click)="sort('disabled')">
+                        <a><span class="p-r-xs" translate>agent.label.disabled</span>
+                          <i *ngIf="filter.sortBy == 'disabled' && !filter.reverse"
+                             class="fa fa-caret-up "></i>
+                          <i *ngIf="filter.sortBy == 'disabled' && filter.reverse"
+                             class="fa fa-caret-down "></i></a>
+                      </th>
+                      <th nzWidth="140px" (click)="sort('clusterWatcher')">
+                        <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
+                          <i *ngIf="filter.sortBy == 'clusterWatcher' && !filter.reverse"
+                             class="fa fa-caret-up "></i>
+                          <i *ngIf="filter.sortBy == 'clusterWatcher' && filter.reverse"
+                             class="fa fa-caret-down "></i></a>
+                      </th>
+                      <th nzWidth="150px" (click)="sort('validityDate')">
+                        <a><span class="p-r-xs" translate>agent.label.validityDate</span>
+                          <i *ngIf="filter.sortBy == 'validityDate' && !filter.reverse"
+                             class="fa fa-caret-up "></i>
+                          <i *ngIf="filter.sortBy == 'validityDate' && filter.reverse"
+                             class="fa fa-caret-down "></i></a>
+                      </th>
+                      <th nzWidth="140px" (click)="sort('token.validUntil')">
+                        <a><span class="p-r-xs" translate>agent.label.oneTimeToken</span>
+                          <i *ngIf="filter.sortBy == 'token.validUntil' && !filter.reverse"
+                             class="fa fa-caret-up "></i>
+                          <i *ngIf="filter.sortBy == 'token.validUntil' && filter.reverse"
+                             class="fa fa-caret-down "></i></a>
+                      </th>
                     </tr>
                     </thead>
                     <tbody>
