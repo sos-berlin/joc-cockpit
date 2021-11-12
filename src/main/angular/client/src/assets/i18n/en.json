@@ -2037,7 +2037,7 @@
     "button.originalAdmissionTime": "Show original times",
     "button.addResult": "Add Result",
     "button.addDelay": "Add Delay",
-    "button.addAllDelay": "Add All Delay",
+    "button.addAllDelay": "Add All Delays",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",
