@@ -11,6 +11,9 @@ import 'codemirror/addon/search/search';
 import 'codemirror/addon/scroll/annotatescrollbar';
 import 'codemirror/addon/search/matchesonscrollbar';
 import 'codemirror/addon/search/jump-to-line';
+import 'codemirror/addon/hint/javascript-hint';
+import 'codemirror/addon/hint/xml-hint';
+import 'codemirror/addon/hint/show-hint';
 
 if (environment.production) {
   enableProdMode();

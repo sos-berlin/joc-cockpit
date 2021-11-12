@@ -41,7 +41,8 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   cmOption: any = {
     lineNumbers: true,
     autoRefresh: true,
-    mode: 'shell'
+    mode: 'shell',
+    extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
   subscription1: Subscription;
   subscription2: Subscription;

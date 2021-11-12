@@ -788,7 +788,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   cmOption: any = {
     lineNumbers: true,
     autoRefresh: true,
-    mode: 'shell'
+    mode: 'shell',
+    extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
   object = {
     checked1: false,
@@ -1792,10 +1793,12 @@ export class ScriptEditorComponent implements AfterViewInit {
     viewportMargin: Infinity,
     autofocus: true,
     autoRefresh: true,
-    mode: 'shell'
+    mode: 'shell',
+    extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
+  list = [];
 
-  constructor(public activeModal: NzModalRef, private dragDrop: DragDrop) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
   }
 
   ngAfterViewInit(): void {
@@ -1818,6 +1821,22 @@ export class ScriptEditorComponent implements AfterViewInit {
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
         this.cm.codeMirror.focus();
+        this.cm.codeMirror.on('inputRead', (editor, e) => {
+          const cursor = editor.getCursor();
+          const currentLine = editor.getLine(cursor.line);
+          if (currentLine && currentLine.match(/^(##|::|\/\/)!include/i)) {
+            let start = cursor.ch;
+            let end = start;
+            while (end < currentLine.length && /[\w$]+/.test(currentLine.charAt(end))) {
+              ++end;
+            }
+            while (start && /[\w$]+/.test(currentLine.charAt(start - 1))) {
+              --start;
+            }
+            const curWord = start != end && currentLine.slice(start, end);
+            this.getScript(curWord);
+          }
+        });
       }
     }, 500);
   }
@@ -1833,6 +1852,28 @@ export class ScriptEditorComponent implements AfterViewInit {
 
   execCommand(type): void {
     this.cm.codeMirror.execCommand(type);
+  }
+
+  private getScript(curWord): void {
+    const list = ['my-script', 'script1', 'my-script2', 'my-script3', 'script2'];
+    const regex = new RegExp('^' + curWord, 'i');
+    this.list = (!curWord ? list : list.filter((item) => {
+      return item.match(regex);
+    })).sort();
+    const options = {
+      completeSingle: false,
+      hint: (CodeMirror) => {
+        return {
+          from: CodeMirror.getDoc().getCursor(),
+          to: CodeMirror.getDoc().getCursor(),
+          list: this.list
+        };
+      }
+    };
+    this.cm.codeMirror.showHint(options);
+    /*    this.coreService.post('', {regex: regex}).subscribe((res) => {
+          this.list = res;
+        });*/
   }
 }
 
@@ -3290,6 +3331,40 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (event.previousIndex !== event.currentIndex) {
       this.updateOtherProperties('variable');
     }
+  }
+
+  dropDelay(event: CdkDragDrop<string[]>, list): void {
+    moveItemInArray(list, event.previousIndex, event.currentIndex);
+  }
+
+  checkDelayEntries(): void {
+    if (this.selectedNode.obj.maxTries < this.selectedNode.obj.retryDelays.length) {
+      this.selectedNode.obj.retryDelays.splice(this.selectedNode.obj.maxTries, this.selectedNode.obj.retryDelays.length - this.selectedNode.obj.maxTries);
+    }
+  }
+
+  addAllDelay(): void {
+    if (this.selectedNode.obj.maxTries > this.selectedNode.obj.retryDelays.length) {
+      const len = (this.selectedNode.obj.maxTries - this.selectedNode.obj.retryDelays.length);
+      for (let i = 0; i <= len; i++) {
+        this.selectedNode.obj.retryDelays.push({value: '1m'});
+      }
+    }
+  }
+
+  addDelay(list): void{
+    const param = {
+      value: '1m',
+    };
+    if (list) {
+      if (!this.coreService.isLastEntryEmpty(list, 'value', '')) {
+        list.push(param);
+      }
+    }
+  }
+
+  removeDelay(index, list): void {
+    list.splice(index, 1);
   }
 
   removeVariable(index): void {
@@ -7202,8 +7277,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             const edit = new mxCellAttributeChange(
               obj.cell, 'maxTries', self.selectedNode.newObj.maxTries);
             graph.getModel().execute(edit);
+            let str = '';
+            if (self.selectedNode.newObj.retryDelays && self.selectedNode.newObj.retryDelays.length > 0) {
+              self.selectedNode.newObj.retryDelays = self.selectedNode.newObj.retryDelays.forEach((item, index) => {
+                str += self.workflowService.convertStringToDuration(item.value, true);
+                if (self.selectedNode.newObj.retryDelays.length - 1 !== index) {
+                  str += ', ';
+                }
+              });
+            }
             const edit2 = new mxCellAttributeChange(
-              obj.cell, 'retryDelays', self.selectedNode.newObj.retryDelays);
+              obj.cell, 'retryDelays', str);
             graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Cycle') {
             if (self.selectedNode.obj.schedule) {
@@ -7498,6 +7582,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         } else if (cell.value.tagName === 'Retry') {
           obj.maxTries = cell.getAttribute('maxTries');
           obj.retryDelays = cell.getAttribute('retryDelays');
+          if (obj.retryDelays && typeof obj.retryDelays == 'string') {
+            const arr = obj.retryDelays.split(',');
+            obj.retryDelays = [];
+            arr.forEach((item) => {
+              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item)});
+            });
+          } else {
+            obj.retryDelays = [];
+          }
         } else if (cell.value.tagName === 'Cycle') {
           obj.schedule = cell.getAttribute('schedule');
           if (!obj.schedule || isEmpty(obj.schedule) || typeof obj.schedule !== 'string') {

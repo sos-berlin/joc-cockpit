@@ -420,7 +420,7 @@
                  translate>workflow.label.maxTries</label>
           <div class="col-md-8 col-lg-9">
             <nz-input-number [appAutofocus]="true" required #maxTries="ngModel" [nzMin]="0" [nzStep]="1" name="maxTries"
-                             [(ngModel)]="selectedNode.obj.maxTries"></nz-input-number>
+                             [(ngModel)]="selectedNode.obj.maxTries" (nzBlur)="checkDelayEntries()"></nz-input-number>
             <div *ngIf="maxTries.invalid && (maxTries.dirty || maxTries.touched)"
                  class="text-danger help-block">
               <div *ngIf="maxTries.errors.required">
@@ -433,9 +433,30 @@
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.delay' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.delay</label>
           <div class="col-md-8 col-lg-9">
-            <input autocomplete="off"  type="text" class="form-control" validateNumberArrayReqex
-                   placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                   name="delay" [(ngModel)]="selectedNode.obj.retryDelays">
+            <div cdkDropList (cdkDropListDropped)="dropDelay($event, selectedNode.obj.retryDelays)">
+              <div class="form-group row m-b-0 move-on-hover" *ngFor="let argument of selectedNode.obj.retryDelays; let i = index" cdkDrag>
+                <div class="pos-abt move-icon m-l-n-13" style="font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
+                  <i class="fa fa-bars" aria-hidden="true"></i>
+                </div>
+                <div class="col-md-12 m-b-sm" [ngClass]="{'has-error' : ((duration.dirty || duration.touched) && duration.invalid)}">
+                  <label class="w-full">
+                    <input autocomplete="off" #duration="ngModel" type="text" class="form-control" name="value{{i}}" placeholder="{{'workflow.placeholder.retryDelay' | translate}}"
+                           appValidateOffset [(ngModel)]="argument.value">
+                  </label>
+                </div>
+                <div class="pos-abt r-n-xs">
+                  <a><i (click)="removeDelay(i, selectedNode.obj.retryDelays)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12 m-b-sm" *ngIf="selectedNode.obj.retryDelays && selectedNode.obj.maxTries > selectedNode.obj.retryDelays.length">
+                <a class="text-u-l" (click)="addDelay(selectedNode.obj.retryDelays);" translate>workflow.button.addDelay</a>
+              </div>
+              <div class="col-sm-12" *ngIf="selectedNode.obj.maxTries != selectedNode.obj.retryDelays.length">
+                <a class="text-u-l" (click)="addAllDelay();" translate>workflow.button.addAllDelay</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

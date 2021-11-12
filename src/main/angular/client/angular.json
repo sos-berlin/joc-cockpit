@@ -85,7 +85,10 @@
               "codemirror/addon/search/search",
               "codemirror/addon/scroll/annotatescrollbar",
               "codemirror/addon/search/matchesonscrollbar",
-              "codemirror/addon/search/jump-to-line"
+              "codemirror/addon/search/jump-to-line",
+              "codemirror/addon/hint/javascript-hint",
+              "codemirror/addon/hint/xml-hint",
+              "codemirror/addon/hint/show-hint"
             ]
           },
           "configurations": {

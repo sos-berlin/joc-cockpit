@@ -5,8 +5,6 @@
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  -o-border-radius: 50%;
-  -ms-border-radius: 50%;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   perspective: 740px;
@@ -17,13 +15,9 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  -o-box-sizing: border-box;
-  -ms-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   border-radius: 50%;
-  -o-border-radius: 50%;
-  -ms-border-radius: 50%;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
 }
@@ -33,7 +27,6 @@
   top: 0;
   animation: cssload-rotate-one 0.95s linear infinite;
   -o-animation: cssload-rotate-one 0.95s linear infinite;
-  -ms-animation: cssload-rotate-one 0.95s linear infinite;
   -webkit-animation: cssload-rotate-one 0.95s linear infinite;
   -moz-animation: cssload-rotate-one 0.95s linear infinite;
   border-bottom: 3px solid rgb(247, 104, 86);
@@ -44,7 +37,6 @@
   top: 0;
   animation: cssload-rotate-two 0.95s linear infinite;
   -o-animation: cssload-rotate-two 0.95s linear infinite;
-  -ms-animation: cssload-rotate-two 0.95s linear infinite;
   -webkit-animation: cssload-rotate-two 0.95s linear infinite;
   -moz-animation: cssload-rotate-two 0.95s linear infinite;
   border-right: 3px solid rgb(19, 129, 189);
@@ -55,7 +47,6 @@
   bottom: 0;
   animation: cssload-rotate-three 0.95s linear infinite;
   -o-animation: cssload-rotate-three 0.95s linear infinite;
-  -ms-animation: cssload-rotate-three 0.95s linear infinite;
   -webkit-animation: cssload-rotate-three 0.95s linear infinite;
   -moz-animation: cssload-rotate-three 0.95s linear infinite;
   border-top: 3px solid rgba(253, 212, 53, 0.98);
@@ -456,7 +447,6 @@ $trans: cubic-bezier(0.3, 0, 0.7, 1);
       top: 0;
       left: 0;
       background: linear-gradient(to right, var(--background-color) 0%, var(--primary) 100%);
-      -webkit-clip-path: inset(0 100% 0 0);
       clip-path: inset(0 100% 0 0);
       transition: all 3s;
       -webkit-transition: all 3s;
@@ -490,7 +480,6 @@ $trans: cubic-bezier(0.3, 0, 0.7, 1);
 
 @keyframes progresbar {
   to {
-    -webkit-clip-path: inset(0 0 0 0);
     clip-path: inset(0 0 0 0);
   }
 }

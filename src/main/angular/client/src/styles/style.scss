@@ -2,6 +2,7 @@
 @import "./mixins";
 @import '~jsoneditor/dist/jsoneditor.min.css';
 @import '~perfect-scrollbar/css/perfect-scrollbar.css';
+@import '~codemirror/addon/hint/show-hint.css';
 
 :root {
   --background-color: #f9f8f6;
@@ -1815,6 +1816,10 @@ button.close {
 
 .r-28 {
   right: 28px;
+}
+
+.r-n-xs {
+  right: -4px;
 }
 
 .r-n-8 {
@@ -7377,6 +7382,10 @@ tr.tr-border td:first-child {
   .CodeMirror-line > span > span::-moz-selection {
     background: #d7d4f0 !important;
   }
+}
+
+.CodeMirror-hints {
+  z-index: 9999;
 }
 
 .inner-log-m {
