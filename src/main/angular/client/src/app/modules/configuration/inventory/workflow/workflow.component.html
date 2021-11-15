@@ -144,8 +144,8 @@
     </div>
     <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [isTooltipVisible]="!preferences.showTooltipInfo" [orderPreparation]="orderPreparation" [jobs]="jobs" [agents]="agents"
-                         [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [schedulerId]="schedulerId"></app-job-content>
+        <app-job-content [selectedNode]="selectedNode" [scriptList]="scriptList" [isTooltipVisible]="!preferences.showTooltipInfo" [orderPreparation]="orderPreparation" [jobs]="jobs" [agents]="agents"
+                         [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [scriptTree]="scriptTree" [schedulerId]="schedulerId"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
         <app-expression-content [selectedNode]="selectedNode" [isTooltipVisible]="!preferences.showTooltipInfo" [error]="error"></app-expression-content>
@@ -728,12 +728,6 @@
               </ng-container>
             </div>
             <div class="form-group row">
-<!--              <div class="col-sm-12" *ngIf="selectedNode.obj.argumentList.length > selectedNode.obj.arguments.length">
-                <a class="text-u-l" (click)="addArgument(false)" translate>workflow.button.addArgument</a>
-              </div>
-              <div class="col-sm-12" *ngIf="selectedNode.obj.argumentList.length <= selectedNode.obj.arguments.length && (selectedNode.obj.workflow && selectedNode.obj.workflow.orderPreparation && selectedNode.obj.workflow.orderPreparation.allowUndeclared)">
-                <a class="text-u-l" (click)="addArgument(true)" translate>workflow.button.addArgument</a>
-              </div>-->
               <div class="col-sm-12 m-t-sm" *ngIf="selectedNode.obj.argumentList.length || (selectedNode.obj.forkListArguments && selectedNode.obj.forkListArguments.length > 0)">
                 <a class="text-u-l" (click)="addAllArguments()" translate>workflow.button.addAllArguments</a>
               </div>

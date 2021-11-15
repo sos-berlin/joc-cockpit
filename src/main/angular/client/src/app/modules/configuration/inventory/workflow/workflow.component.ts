@@ -768,6 +768,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() jobs: any;
   @Input() jobResourcesTree = [];
   @Input() documentationTree = [];
+  @Input() scriptTree = [];
+  @Input() scriptList = [];
   @Input() orderPreparation;
   @Input() agents = [];
   @Input() isTooltipVisible: boolean;
@@ -814,6 +816,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   copiedParamObjects: any = {};
   subscription: Subscription;
 
+  @ViewChild('codeMirror', {static: false}) cm: any;
+
   constructor(private coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
               private workflowService: WorkflowService, private dataService: DataService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
@@ -842,6 +846,27 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.isModal) {
       this.updateVariableList();
     }
+
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        this.cm.codeMirror.on('inputRead', (editor, e) => {
+          const cursor = editor.getCursor();
+          const currentLine = editor.getLine(cursor.line);
+          if (currentLine && currentLine.match(/^(##|::|\/\/)!include/i)) {
+            let start = cursor.ch;
+            let end = start;
+            while (end < currentLine.length && /[\w$]+/.test(currentLine.charAt(end))) {
+              ++end;
+            }
+            while (start && /[\w$]+/.test(currentLine.charAt(start - 1))) {
+              --start;
+            }
+            const curWord = start != end && currentLine.slice(start, end);
+            this.getScript(curWord);
+          }
+        });
+      }
+    }, 100);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -969,7 +994,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzContent: ScriptEditorComponent,
       nzClassName: 'lg script-editor',
       nzComponentParams: {
-        script: this.selectedNode.job.executable.script
+        script: this.selectedNode.job.executable.script,
+        list: this.scriptList
       },
       nzFooter: null,
       nzClosable: false,
@@ -1294,6 +1320,24 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     return temp;
+  }
+
+  private getScript(curWord): void {
+    const regex = new RegExp('^' + curWord, 'i');
+    const list = (!curWord ? this.scriptList : this.scriptList.filter((item) => {
+      return item.match(regex);
+    })).sort();
+    const options = {
+      completeSingle: false,
+      hint: (CodeMirror) => {
+        return {
+          from: CodeMirror.getDoc().getCursor(),
+          to: CodeMirror.getDoc().getCursor(),
+          list
+        };
+      }
+    };
+    this.cm.codeMirror.showHint(options);
   }
 
   openEditor(data: any): void {
@@ -1786,7 +1830,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 })
 export class ScriptEditorComponent implements AfterViewInit {
   @Input() script: any;
-  @ViewChild('codeMirror', {static: true}) cm;
+  @Input() list: any;
+  @ViewChild('codeMirror', {static: true}) cm: any;
   dragEle: any;
   cmOption: any = {
     lineNumbers: true,
@@ -1796,7 +1841,6 @@ export class ScriptEditorComponent implements AfterViewInit {
     mode: 'shell',
     extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
-  list = [];
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
   }
@@ -1855,9 +1899,8 @@ export class ScriptEditorComponent implements AfterViewInit {
   }
 
   private getScript(curWord): void {
-    const list = ['my-script', 'script1', 'my-script2', 'my-script3', 'script2'];
     const regex = new RegExp('^' + curWord, 'i');
-    this.list = (!curWord ? list : list.filter((item) => {
+    const list = (!curWord ? this.list : this.list.filter((item) => {
       return item.match(regex);
     })).sort();
     const options = {
@@ -1866,14 +1909,11 @@ export class ScriptEditorComponent implements AfterViewInit {
         return {
           from: CodeMirror.getDoc().getCursor(),
           to: CodeMirror.getDoc().getCursor(),
-          list: this.list
+          list
         };
       }
     };
     this.cm.codeMirror.showHint(options);
-    /*    this.coreService.post('', {regex: regex}).subscribe((res) => {
-          this.list = res;
-        });*/
   }
 }
 
@@ -2055,6 +2095,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   workflowTree = [];
   lockTree = [];
   boardTree = [];
+  scriptTree = [];
+  scriptList = [];
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
@@ -2742,6 +2784,19 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     this.loadData(e.node, type, null);
   }
 
+  private loadScripts(): void {
+    if (this.scriptList.length === 0) {
+      this.coreService.post('inventory/read/folder', {
+        objectTypes: ['SCRIPT'],
+        path: '/',
+        recursive: true
+      }).subscribe((res) => {
+        this.scriptList = res.scripts.map((item) => item.name);
+        console.log(this.scriptList)
+      });
+    }
+  }
+
   @HostListener('window:beforeunload', ['$event'])
   beforeunload(): void {
     if (this.data.type) {
@@ -2870,6 +2925,16 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           types: [InventoryObject.NOTICEBOARD]
         }).subscribe((res) => {
           this.boardTree = this.coreService.prepareTree(res, false);
+        });
+      }
+      if (this.scriptTree.length === 0) {
+        this.loadScripts();
+        this.coreService.post('tree', {
+          controllerId: this.schedulerId,
+          forInventory: true,
+          types: [InventoryObject.SCRIPT]
+        }).subscribe((res) => {
+          this.scriptTree = this.coreService.prepareTree(res, false);
         });
       }
       if (this.documentationTree.length === 0) {

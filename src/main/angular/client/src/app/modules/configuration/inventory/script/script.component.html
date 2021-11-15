@@ -88,8 +88,8 @@
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.script</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <div class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty && cm.touched))}">
-              <ngx-codemirror required #cm="ngModel" name="cm" [(ngModel)]="script.configuration.script"
-                              [options]="cmOption" (focusout)="saveJSON()"></ngx-codemirror>
+              <ngx-codemirror required #cm="ngModel" title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}" name="cm"
+                              [(ngModel)]="script.configuration.script" [options]="cmOption" (focusout)="saveJSON()"></ngx-codemirror>
             </div>
             <div *ngIf="(cm.invalid && (cm.dirty || cm.touched))"
                  class="text-danger help-block">

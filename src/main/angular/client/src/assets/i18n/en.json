@@ -86,8 +86,8 @@
   "normal": "normal",
   "submitted": "submitted",
   "notSubmitted": "not submitted",
-  "WaitingForAdmission" : "Waiting for Admission",
-  "JobParallelismLimitReached" : "Job Parallelism Limit Reached",
+  "WaitingForAdmission": "Waiting for Admission",
+  "JobParallelismLimitReached": "Job Parallelism Limit Reached",
   "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view",
   "WORKFLOW": "Workflow",
   "FILEORDERSOURCE": "File Order Source",
@@ -1130,7 +1130,8 @@
         "name": "Name of Script",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Script. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Script",
-        "script": "Script"
+        "script": "Script",
+        "autocompleteShortCut": "Use Ctrl+Space to retrieve the predefined list"
       },
       "workflow": {
         "name": "The name of a Workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
