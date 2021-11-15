@@ -22,207 +22,210 @@
 <div class="padding p-b-0">
   <div class="row m-b m-t-xs">
     <div class="col-md-12">
-      <div class="box p-a">
-        <div *ngFor="let controller of controllers; let id = index" class="box-body p-b-0">
-          <ng-container *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
-            <div class="row" >
-              <div class="col-sm-12">
-                <div class="btn-group dropdown pull-left m-r-sm" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
-                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
-                    <i class="fa fa-ellipsis-h"></i></button>
-                  <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
-                    <ul nz-menu>
-                      <li (click)="createToken(controller)" nz-menu-item>
-                        <a translate>agent.button.createToken</a>
-                      </li>
-                      <li (click)="addAgent(controller)" nz-menu-item>
-                        <a translate>agent.button.addAgent</a>
-                      </li>
-                      <li (click)="editController(controller.controllerId)" nz-menu-item>
-                        <a translate>common.button.edit</a>
-                      </li>
-                      <li (click)="deleteController(controller.controllerId)" nz-menu-item class="bg-hover-color">
-                        <a translate="">common.button.delete</a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-                <h5 class="text-dark">
-                  <a *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel" (click)="editController(controller.controllerId)">{{controller.controllerId}}</a>
-                  <span  *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">{{controller.controllerId}}</span>
+      <div class="box text-overflow">
+        <div class="p-a resizable text-overflow" appResizable id="mainContainer">
+          <div *ngFor="let controller of controllers; let id = index" class="box-body p-b-0">
+            <ng-container *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
+              <div class="row" >
+                <div class="col-sm-12">
+                  <div class="btn-group dropdown pull-left m-r-sm" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
+                    <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
+                      <i class="fa fa-ellipsis-h"></i></button>
+                    <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
+                      <ul nz-menu>
+                        <li (click)="createToken(controller)" nz-menu-item>
+                          <a translate>agent.button.createToken</a>
+                        </li>
+                        <li (click)="addAgent(controller)" nz-menu-item>
+                          <a translate>agent.button.addAgent</a>
+                        </li>
+                        <li (click)="editController(controller.controllerId)" nz-menu-item>
+                          <a translate>common.button.edit</a>
+                        </li>
+                        <li (click)="deleteController(controller.controllerId)" nz-menu-item class="bg-hover-color">
+                          <a translate="">common.button.delete</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                  <h5 class="text-dark">
+                    <a *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel" (click)="editController(controller.controllerId)">{{controller.controllerId}}</a>
+                    <span  *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">{{controller.controllerId}}</span>
 
-                  <i (click)="showPanel[id] = true;getAgents(controller, null)" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
-                  <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
-                     class="cursor fa fa-caret-down m-l-xs"></i>
-                  <span class="text-sm pull-right m-r-sm" *ngIf="controller.token && controller.token.validUntil">
-                      <span translate>agent.label.validityDate</span>:
-                    <i class="text-muted p-l-xs">{{controller.token.validUntil | stringToDate}}</i>
-                    <a nz-popover nzPopoverTrigger="click"
-                       [nzPopoverContent]="contentTemplate" class="primary-text-hover-color p-l-sm"><i class="fa fa-key"></i></a>
-                    <ng-template #contentTemplate>
-                      <div>
-                        <b translate>agent.label.url</b> :
-                        <span>{{controller.token.URI}}</span>
-                      </div>
-                      <div>
-                        <b translate>agent.label.token</b> :
-                        <span>{{controller.token.UUID}} <i ngxClipboard [cbContent]="controller.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
-                      </div>
-                      <div class="m-t-sm" *ngIf="controller.token.URI2">
-                        <b translate>agent.label.url</b> :
-                        <span>{{controller.token.URI2}}</span>
-                      </div>
-                      <div *ngIf="controller.token.URI2">
-                        <b translate>agent.label.token</b> :
-                        <span>{{controller.token.UUID2}} <i ngxClipboard [cbContent]="controller.token.UUID2" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
-                      </div>
-                    </ng-template>
-                  </span>
-                </h5>
-              </div>
-            </div>
-            <div *ngIf="showPanel[id]" class="row">
-              <div class="col-md-12">
-                <perfect-scrollbar class="p-a-sm p-b-0" style="max-height: 350px;overflow: auto">
-                  <nz-table #ajaxTable nzSize="small" [nzBordered]="true" [nzLoading]="controller.loading"
-                            [nzData]="controller.agents | orderBy: filter.sortBy: filter.reverse" [nzShowPagination]="false" [nzFrontPagination]="false">
-                    <thead>
-                    <tr>
-                      <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="chk"
-                          [nzShowCheckbox]="true"
-                          [(nzChecked)]="controller.checked"
-                          [nzIndeterminate]="controller.indeterminate"
-                          (nzCheckedChange)="checkAll($event, controller)"
-                      ></th>
-                      <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
-                      <th nzWidth="15%" (click)="sort('agentId')">
-                        <a><span class="p-r-xs" translate>agent.label.agentId</span>
-                          <i *ngIf="filter.sortBy == 'agentId' && !filter.reverse"
-                             class="fa fa-caret-up "></i>
-                          <i *ngIf="filter.sortBy == 'agentId' && filter.reverse"
-                             class="fa fa-caret-down "></i></a>
-                      </th>
-                      <th nzWidth="15%" (click)="sort('agentName')">
-                        <a><span class="p-r-xs" translate>agent.label.agentName</span>
-                          <i *ngIf="filter.sortBy == 'agentName' && !filter.reverse"
-                             class="fa fa-caret-up "></i>
-                          <i *ngIf="filter.sortBy == 'agentName' && filter.reverse"
-                             class="fa fa-caret-down "></i></a>
-                      </th>
-                      <th (click)="sort('agentNameAliases')">
-                        <a><span class="p-r-xs" translate>agent.label.agentNameAliases</span>
-                          <i *ngIf="filter.sortBy == 'agentNameAliases' && !filter.reverse"
-                             class="fa fa-caret-up "></i>
-                          <i *ngIf="filter.sortBy == 'agentNameAliases' && filter.reverse"
-                             class="fa fa-caret-down "></i></a>
-                      </th>
-                      <th nzWidth="20%" (click)="sort('url')">
-                        <a><span class="p-r-xs" translate>agent.label.url</span>
-                          <i *ngIf="filter.sortBy == 'url' && !filter.reverse"
-                             class="fa fa-caret-up "></i>
-                          <i *ngIf="filter.sortBy == 'url' && filter.reverse"
-                             class="fa fa-caret-down "></i></a>
-                      </th>
-                      <th nzWidth="100px" (click)="sort('disabled')">
-                        <a><span class="p-r-xs" translate>agent.label.disabled</span>
-                          <i *ngIf="filter.sortBy == 'disabled' && !filter.reverse"
-                             class="fa fa-caret-up "></i>
-                          <i *ngIf="filter.sortBy == 'disabled' && filter.reverse"
-                             class="fa fa-caret-down "></i></a>
-                      </th>
-                      <th nzWidth="140px" (click)="sort('clusterWatcher')">
-                        <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
-                          <i *ngIf="filter.sortBy == 'clusterWatcher' && !filter.reverse"
-                             class="fa fa-caret-up "></i>
-                          <i *ngIf="filter.sortBy == 'clusterWatcher' && filter.reverse"
-                             class="fa fa-caret-down "></i></a>
-                      </th>
-                      <th nzWidth="150px" (click)="sort('validityDate')">
-                        <a><span class="p-r-xs" translate>agent.label.validityDate</span>
-                          <i *ngIf="filter.sortBy == 'validityDate' && !filter.reverse"
-                             class="fa fa-caret-up "></i>
-                          <i *ngIf="filter.sortBy == 'validityDate' && filter.reverse"
-                             class="fa fa-caret-down "></i></a>
-                      </th>
-                      <th nzWidth="140px" (click)="sort('token.validUntil')">
-                        <a><span class="p-r-xs" translate>agent.label.oneTimeToken</span>
-                          <i *ngIf="filter.sortBy == 'token.validUntil' && !filter.reverse"
-                             class="fa fa-caret-up "></i>
-                          <i *ngIf="filter.sortBy == 'token.validUntil' && filter.reverse"
-                             class="fa fa-caret-down "></i></a>
-                      </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of ajaxTable.data" class="cursor">
-                      <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
-                          [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(agent.agentId)" (nzCheckedChange)="onItemChecked(controller, agent, $event)"></td>
-                      <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
-                        <div class="btn-group dropdown pull-left m-r-sm">
-                          <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
-                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                            <ul nz-menu >
-                              <li (click)="createToken(controller, agent)" nz-menu-item>
-                                <a translate>agent.button.createToken</a>
-                              </li>
-                              <li (click)="editAgent(agent, controller)" nz-menu-item >
-                                <a translate>common.button.edit</a>
-                              </li>
-                              <li (click)="resetAgent(agent, controller)" nz-menu-item >
-                                <a translate>agent.button.reset</a>
-                              </li>
-                              <li (click)="resetAgent(agent, controller, true)" nz-menu-item >
-                                <a translate>agent.button.resetForced</a>
-                              </li>
-                              <li (click)="disableAgent(agent, controller)" nz-menu-item *ngIf="!agent.disabled">
-                                <a translate>agent.button.disable</a>
-                              </li>
-                              <li (click)="enableAgent(agent, controller)" nz-menu-item *ngIf="agent.disabled">
-                                <a translate>agent.button.enable</a>
-                              </li>
-                              <li (click)="removeAgent(agent, controller)" nz-menu-item class="bg-hover-color">
-                                <a translate="">common.button.remove</a>
-                              </li>
-                            </ul>
-                          </nz-dropdown-menu>
+                    <i (click)="showPanel[id] = true;getAgents(controller, null)" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
+                    <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
+                       class="cursor fa fa-caret-down m-l-xs"></i>
+                    <span class="text-sm pull-right m-r-sm" *ngIf="controller.token && controller.token.validUntil">
+                        <span translate>agent.label.validityDate</span>:
+                      <i class="text-muted p-l-xs">{{controller.token.validUntil | stringToDate}}</i>
+                      <a nz-popover nzPopoverTrigger="click"
+                         [nzPopoverContent]="contentTemplate" class="primary-text-hover-color p-l-sm"><i class="fa fa-key"></i></a>
+                      <ng-template #contentTemplate>
+                        <div>
+                          <b translate>agent.label.url</b> :
+                          <span>{{controller.token.URI}}</span>
                         </div>
-                      </td>
-                      <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentId"></span></td>
-                      <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentName"></span></td>
-                      <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
-                      <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url"></span></td>
-                      <td (click)="editAgent(agent, controller)">{{agent.disabled ? 'Yes' : 'No'}}</td>
-                      <td (click)="editAgent(agent, controller)">{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
-                      <td>
-                        <span *ngIf="!agent.token">-</span>
-                        <span *ngIf="agent.token">{{agent.token.validUntil | stringToDate}}</span>
-                      </td>
-                      <td>
-                        <div *ngIf="agent.token">
-                          <a class="primary-text-hover-color" nz-popover nzPopoverTrigger="click"
-                             [nzPopoverContent]="contentTemplate"><i class="fa fa-key"></i></a>
-                          <ng-template #contentTemplate>
-                            <b translate>agent.label.token</b> :
-                            <span>{{agent.token.UUID}} <i ngxClipboard [cbContent]="agent.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
-                          </ng-template>
+                        <div>
+                          <b translate>agent.label.token</b> :
+                          <span>{{controller.token.UUID}} <i ngxClipboard [cbContent]="controller.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
                         </div>
-                        <span *ngIf="!agent.token">-</span>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </nz-table>
-                </perfect-scrollbar>
+                        <div class="m-t-sm" *ngIf="controller.token.URI2">
+                          <b translate>agent.label.url</b> :
+                          <span>{{controller.token.URI2}}</span>
+                        </div>
+                        <div *ngIf="controller.token.URI2">
+                          <b translate>agent.label.token</b> :
+                          <span>{{controller.token.UUID2}} <i ngxClipboard [cbContent]="controller.token.UUID2" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                        </div>
+                      </ng-template>
+                    </span>
+                  </h5>
+                </div>
               </div>
-            </div>
-            <hr *ngIf="showPanel[id]">
-          </ng-container>
+              <div *ngIf="showPanel[id]" class="row">
+                <div class="col-md-12">
+                  <perfect-scrollbar class="p-a-sm p-b-0" style="max-height: 350px;overflow: auto">
+                    <nz-table #ajaxTable nzSize="small" [nzBordered]="true" [nzLoading]="controller.loading"
+                              [nzData]="controller.agents | orderBy: filter.sortBy: filter.reverse" [nzShowPagination]="false" [nzFrontPagination]="false">
+                      <thead>
+                      <tr>
+                        <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="chk"
+                            [nzShowCheckbox]="true"
+                            [(nzChecked)]="controller.checked"
+                            [nzIndeterminate]="controller.indeterminate"
+                            (nzCheckedChange)="checkAll($event, controller)"
+                        ></th>
+                        <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
+                        <th nzWidth="15%" (click)="sort('agentId')">
+                          <a><span class="p-r-xs" translate>agent.label.agentId</span>
+                            <i *ngIf="filter.sortBy == 'agentId' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'agentId' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="15%" (click)="sort('agentName')">
+                          <a><span class="p-r-xs" translate>agent.label.agentName</span>
+                            <i *ngIf="filter.sortBy == 'agentName' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'agentName' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th (click)="sort('agentNameAliases')">
+                          <a><span class="p-r-xs" translate>agent.label.agentNameAliases</span>
+                            <i *ngIf="filter.sortBy == 'agentNameAliases' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'agentNameAliases' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="20%" (click)="sort('url')">
+                          <a><span class="p-r-xs" translate>agent.label.url</span>
+                            <i *ngIf="filter.sortBy == 'url' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'url' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="100px" (click)="sort('disabled')">
+                          <a><span class="p-r-xs" translate>agent.label.disabled</span>
+                            <i *ngIf="filter.sortBy == 'disabled' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'disabled' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="140px" (click)="sort('clusterWatcher')">
+                          <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
+                            <i *ngIf="filter.sortBy == 'clusterWatcher' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'clusterWatcher' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="150px" (click)="sort('validityDate')">
+                          <a><span class="p-r-xs" translate>agent.label.validityDate</span>
+                            <i *ngIf="filter.sortBy == 'validityDate' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'validityDate' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="140px" (click)="sort('token.validUntil')">
+                          <a><span class="p-r-xs" translate>agent.label.oneTimeToken</span>
+                            <i *ngIf="filter.sortBy == 'token.validUntil' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'token.validUntil' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of ajaxTable.data" class="cursor">
+                        <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+                            [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(agent.agentId)" (nzCheckedChange)="onItemChecked(controller, agent, $event)"></td>
+                        <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
+                          <div class="btn-group dropdown pull-left m-r-sm">
+                            <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                              <ul nz-menu >
+                                <li (click)="createToken(controller, agent)" nz-menu-item>
+                                  <a translate>agent.button.createToken</a>
+                                </li>
+                                <li (click)="editAgent(agent, controller)" nz-menu-item >
+                                  <a translate>common.button.edit</a>
+                                </li>
+                                <li (click)="resetAgent(agent, controller)" nz-menu-item >
+                                  <a translate>agent.button.reset</a>
+                                </li>
+                                <li (click)="resetAgent(agent, controller, true)" nz-menu-item >
+                                  <a translate>agent.button.resetForced</a>
+                                </li>
+                                <li (click)="disableAgent(agent, controller)" nz-menu-item *ngIf="!agent.disabled">
+                                  <a translate>agent.button.disable</a>
+                                </li>
+                                <li (click)="enableAgent(agent, controller)" nz-menu-item *ngIf="agent.disabled">
+                                  <a translate>agent.button.enable</a>
+                                </li>
+                                <li (click)="removeAgent(agent, controller)" nz-menu-item class="bg-hover-color">
+                                  <a translate="">common.button.remove</a>
+                                </li>
+                              </ul>
+                            </nz-dropdown-menu>
+                          </div>
+                        </td>
+                        <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentId"></span></td>
+                        <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentName"></span></td>
+                        <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
+                        <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url"></span></td>
+                        <td (click)="editAgent(agent, controller)">{{agent.disabled ? 'Yes' : 'No'}}</td>
+                        <td (click)="editAgent(agent, controller)">{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
+                        <td>
+                          <span *ngIf="!agent.token">-</span>
+                          <span *ngIf="agent.token">{{agent.token.validUntil | stringToDate}}</span>
+                        </td>
+                        <td>
+                          <div *ngIf="agent.token">
+                            <a class="primary-text-hover-color" nz-popover nzPopoverTrigger="click"
+                               [nzPopoverContent]="contentTemplate"><i class="fa fa-key"></i></a>
+                            <ng-template #contentTemplate>
+                              <b translate>agent.label.token</b> :
+                              <span>{{agent.token.UUID}} <i ngxClipboard [cbContent]="agent.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                            </ng-template>
+                          </div>
+                          <span *ngIf="!agent.token">-</span>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </nz-table>
+                  </perfect-scrollbar>
+                </div>
+              </div>
+              <hr *ngIf="showPanel[id]">
+            </ng-container>
+          </div>
+          <div *ngIf="controllers.length==0 && loading">
+            <app-empty-data></app-empty-data>
+          </div>
+          <div class="m-a-lg text-center" *ngIf="!loading">
+            <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
+          </div>
         </div>
-        <div *ngIf="controllers.length==0 && loading">
-          <app-empty-data></app-empty-data>
-        </div>
-        <div class="m-a-lg text-center" *ngIf="!loading">
-          <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
-        </div>
+        <div class="rg-bottom"><span></span></div>
       </div>
     </div>
   </div>

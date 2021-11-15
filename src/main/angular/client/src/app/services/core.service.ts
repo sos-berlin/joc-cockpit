@@ -18,7 +18,7 @@ export class CoreService {
   tabs: any = {};
   tempTabs: any = {};
   dashboard: any = {};
-  locales = [];
+  locales: any = [];
   sideView = {
     workflow: {width: 270, show: true},
     job: {width: 270, show: true},
@@ -475,7 +475,7 @@ export class CoreService {
     this.tabs = this.tempTabs;
   }
 
-  setTabs(tempTabs): void {
+  setTabs(tempTabs: any): void {
     this.tabs = tempTabs;
   }
 
@@ -527,12 +527,12 @@ export class CoreService {
     return this.tabs._yade;
   }
 
-  setLocales(locale): void {
+  setLocales(locale:any): void {
     this.locales = locale;
   }
 
   getLocale(): any {
-    const arr = this.locales.filter((item) => {
+    const arr = this.locales.filter((item: any) => {
       return localStorage.$SOS$LANG === item.lang;
     });
     if (arr.length > 0) {

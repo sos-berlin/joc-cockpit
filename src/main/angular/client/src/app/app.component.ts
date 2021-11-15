@@ -12,7 +12,7 @@ declare const $: any;
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  locales = [];
+  locales: any = [];
   public config: ToasterConfig = new ToasterConfig({
     positionClass: 'toast-top-center',
     limit: 1
