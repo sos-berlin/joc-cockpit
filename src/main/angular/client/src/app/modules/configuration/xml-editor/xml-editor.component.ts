@@ -609,6 +609,7 @@ export class ShowModalComponent implements OnInit {
 
   execCommand(type): void {
     this.cm.codeMirror.execCommand(type);
+    this.coreService.updateReplaceText();
   }
 
   submitXML(): void {

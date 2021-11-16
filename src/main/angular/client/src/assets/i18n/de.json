@@ -107,7 +107,7 @@
   "WORKINGDAYSCALENDAR": "Kalender der Arbeitstage",
   "NONWORKINGDAYSCALENDAR": "Kalender der Nicht-Arbeitstage",
   "SCHEDULE": "Zeitplan",
-  "SCRIPT": "Script",
+  "SCRIPT": "Skript",
   "Workflows": "Arbeitsabläufe",
   "File Order Sources": "Dateiauftragsquellen",
   "Job Classes": "Job-Klassen",
@@ -115,7 +115,7 @@
   "Boards": "Notizbretter",
   "Locks": "Ressourcen-Sperren",
   "Schedules": "Zeitpläne",
-  "Scripts": "Scripts",
+  "Scripts": "Skripte",
   "Calendars": "Kalender",
   "Controller": "Controller",
   "Daily Plan": "Tagesplan",
@@ -919,8 +919,8 @@
     "label.jobClasses": "Job-Klassen",
     "label.jobResources": "Job-Ressourcen",
     "label.orders": "Zeitpläne",
-    "label.scripts": "Scripts",
-    "label.script": "Script",
+    "label.scripts": "Skripte",
+    "label.script": "Skript",
     "label.templateId": "Musterkennung",
     "label.locks": "Ressourcen-Sperren",
     "label.calendars": "Kalender",
@@ -952,7 +952,7 @@
     "label.createWorkflow": "Arbeitsablauf erstellen",
     "label.createFileOrderSource": "Dateiauftragsquelle erstellen",
     "label.createOrder": "Zeitplan erstellen",
-    "label.createScript": "Create Script",
+    "label.createScript": "Skript erstellen",
     "label.createBoard": "Notizbrett erstellen",
     "label.createLock": "Ressourcen-Sperre erstellen",
     "label.objectName": "Objektname",
@@ -984,7 +984,7 @@
     "button.newWorkflow": "Neuer Arbeitsablauf",
     "button.newFileOrderSource": "Neue Dateiauftragsquelle",
     "button.newOrder": "Neuer Zeitplan",
-    "button.newScript": "New Script",
+    "button.newScript": "Neues Skript",
     "button.newBoard": "Neues Notizbrett",
     "button.newLock": "Neue Ressourcen-Sperre",
     "button.newCalendar": "Neuer Kalender",
@@ -1055,7 +1055,7 @@
     "message.startTimeIsMissing": "Periode fehlt im Kalender",
     "message.includesIsMissing": "Einschließende Startzeitregel ist erforderlich",
     "message.uriIsMissing": "URL ist erforderlich",
-    "message.scriptIsMissing": "Script is missing, but is required",
+    "message.scriptIsMissing": "Skript muss angegeben werden",
     "message.toNoticeIsMissing": "Notiz des Ausstellers wird benötigt",
     "message.readingOrderToNoticeIdIsMissing": "Notizkennung für wartenden Auftrag muss angegeben werden",
     "message.nameIsNotValid": "Ungültiger Name",
@@ -1105,7 +1105,7 @@
         "title": "Der Titel der Job-Ressource"
       },
       "board": {
-        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotice- und ExpectNotice-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotice- und ExpectNotice-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Notizbrett angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Notizbretts.",
         "toNotice": "Notizkennung des ausstellenden Auftrags",
@@ -1113,13 +1113,13 @@
         "readingOrderToNoticeId": "Notizkennung des notifizierten Auftrags"
       },
       "lock": {
-        "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs in mehreren Arbeitsabläufen. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs in mehreren Arbeitsabläufen. Der Name einer Ressourcen-Sperre ist eindeutig im Inventar. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit der Ressourcen-Sperre angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Ressourcen-Sperre",
         "limit": "Wird eine Ressourcen-Sperre von mehreren Jobs geteilt genutzt, dann kann jede Nutzung ein Gewicht für den Zugriff bestimmen, dass verwendet wird, um die verfügbare Kapazität der Ressourcen-Sperre zu bestimmen und Jobs ggf. warten zu lassen bis eine ausreichende Kapazität verfügbar ist."
       },
       "schedule": {
-        "name": "Ein Zeitplan wird verwendet, um automatisch Aufträge für Arbeitsabläufe basierend auf einem Kalender zu erzeugen. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein Zeitplan wird verwendet, um automatisch Aufträge für Arbeitsabläufe basierend auf einem Kalender zu erzeugen. Der Name eines Zeitplans ist eindeutig im Inventar. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Zeitplan angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Zeitplans",
         "workflowName": "Ein Verweis auf einen Arbeitsablauf muss angegeben werden, für den die Aufträge erzeugt werden.",
@@ -1127,11 +1127,11 @@
         "submitOrderToControllerWhenPlanned": "Gelante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt."
       },
       "script": {
-        "name": "Name of Script",
-        "documentation": "A reference to a Documentation can be added that will be displayed with the Script. The RESOURCES view allows to manage the documentation.",
-        "title": "The Title of the Script",
-        "script": "Script",
-        "autocompleteShortCut": "Use Ctrl+Space to retrieve the predefined list"
+        "name": "Ein Skript wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skripts ist eindeutig im Inventar. Für den Namen des Skripts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Skript angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "title": "Der Titel des Skripts",
+        "script": "Der Inhalt des Skripts kann je nach Verwendung in Job-Skripten aus Shell Kommandos oder Code für Skriptsprachen wie Perl, PowerShell etc. bestehen.",
+        "autocompleteShortCut": "Verwenden Sie die Tasten Ctrl+Leertaste um die Liste der Skripte anzuzeigen."
       },
       "workflow": {
         "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
@@ -1249,7 +1249,7 @@
       },
       "message": {
         "updateJobForSelectedWorkflows": "Job {{jobName}} in {{workflowsCount}} ausgewählten Arbeitsabläufen aktualisieren",
-        "updateSelectedObjects": "Update {{objectCount}} selected objects"
+        "updateSelectedObjects": "{{objectCount}} ausgewählte Objekte aktualisieren"
       }
     },
     "updateJob": {
@@ -1257,7 +1257,7 @@
         "updateJob": "Job aktualisieren"
       },
       "button": {
-        "clickHereToDeploy": "Hier klicken zum Ausrollen!"
+        "clickHereToDeploy": "Hier klicken um auszurollen!"
       },
       "message": {
         "updateSuccessfully": "{{workflowsCount}} Arbeitsabläufe erfolgreich aktualisiert.",
@@ -1266,14 +1266,14 @@
     },
     "updateObject": {
       "label": {
-        "updateObject": "Update Object"
+        "updateObject": "Objekt aktualisieren"
       },
       "button": {
-        "clickHereToDeploy": "Click here to deploy!",
-        "clickHereToRelease": "Click here to release!"
+        "clickHereToDeploy": "Hier klicken um auszurollen!",
+        "clickHereToRelease": "Hier klicken um freizugeben!"
       },
       "message": {
-        "updateSuccessfully": "{{count}} objects updated successfully."
+        "updateSuccessfully": "{{count}} Objekte erfolgreich aktualisiert."
       }
     }
   },
@@ -1453,8 +1453,8 @@
     "label.current": "Aktuell",
     "label.asCard": "Als Karte",
     "label.asList": "Als Liste",
-    "label.asBulk": "As Bulk",
-    "label.orderOverviewPageView": "Show Orders Overview",
+    "label.asBulk": "Als Zusammenfassung",
+    "label.orderOverviewPageView": "Übersicht der Aufträge anzeigen",
     "label.blueGrey": "Blau-grau",
     "label.white": "Weiß",
     "label.light": "Hell",
@@ -2037,8 +2037,8 @@
     "button.convertAdmissionTime": "Konvertierte Zeiten zeigen",
     "button.originalAdmissionTime": "Originale Zeiten zeigen",
     "button.addResult": "Ergebnis hinzufügen",
-    "button.addDelay": "Add Delay",
-    "button.addAllDelay": "Add All Delay",
+    "button.addDelay": "Verzögerung hinzufügen",
+    "button.addAllDelay": "Alle Verzögerungen hinzufügen",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",
@@ -2080,12 +2080,13 @@
     "placeholder.offset": "Werte als Stunden/Minuten/Sekunden kommasepariert ahgeben",
     "placeholder.duration": "Wert im Format eingeben: d/w/m/y/h oder hh:mm:ss oder Sekunden",
     "placeholder.durationPeriod": "Wert im Format eingeben: w/d/h/m oder hh:mm:ss oder hh:mm:ss-hh:mm:ss oder Sekunden",
-    "placeholder.retryDelay": "Enter value as h/m/s",
+    "placeholder.retryDelay": "Wert im Format eingeben: h/m/s",
     "placeholder.enterPositiveNumber": "Nur positive Zahlen durch Komma getrennt angeben",
     "placeholder.expression": "Ausdruck angeben",
     "placeholder.orderId": "Auftragskennung angeben",
     "placeholder.className": "Name der Klasse angeben",
     "placeholder.selectJobResources": "Job-Ressource auswählen",
+    "placeholder.selectScript": "Select Script",
     "placeholder.enterCredentialKey": "Name des Schlüssels in der Windows Anmeldeinformationsverwaltung",
     "placeholder.final": "Final",
     "findAndReplace": {

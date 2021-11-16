@@ -202,8 +202,33 @@
               <nz-tab [nzTitle]="'workflow.label.script' | translate" (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'">
                 <div class="row" *ngIf="isDisplay">
                   <div class="col-md-12 role">
-                    <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="showEditor()" style="right: 15px;top:1px;font-size: 16px;z-index: 999"></i>
-                    <div class="b-a" [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
+                    <div class="select-script-input bg-box" *ngIf="scriptObj.show">
+                      <nz-tree-select
+                        name="scriptName"
+                        nzNoAnimation
+                        [nzAllowClear]="true"
+                        [nzNodes]="scriptTree"
+                        [nzHideUnMatched]="true"
+                        [nzDropdownStyle]="{ 'max-height': '300px' }"
+                        nzShowSearch
+                        nzPlaceHolder="{{'workflow.placeholder.selectScript' | translate}}"
+                        [(ngModel)]="scriptObj.name"
+                        (nzExpandChange)="onExpand($event, 'SCRIPT')"
+                      >
+                        <ng-template #nzTreeTemplate let-node>
+                          <div class="node-wrapper w-93" (click)="loadData(node, 'SCRIPT', $event);">
+                            <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.key == scriptObj.name && scriptObj.name">
+                              <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                              <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                              {{node.origin.key}}
+                            </div>
+                          </div>
+                        </ng-template>
+                      </nz-tree-select>
+                    </div>
+                    <i class="pos-abt z-index-9999 text-16 r-15 t-1" nz-icon nzType="form" nzTheme="outline" (click)="showEditor()"></i>
+                    <i class="pos-abt z-index-9999 text-16 r-38 t-xxs" *ngIf="scriptList.length > 0" nz-icon nzType="folder" nzTheme="outline" (click)="showTree()"></i>
+                    <div class="b-a" (click)="closeScriptTree()" [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
                       <ngx-codemirror #codeMirror title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}" required #script="ngModel" [(ngModel)]="selectedNode.job.executable.script"
                                       [options]="cmOption" (focusChange)="focusChange()" (focusout)="saveToHistory()"
                       ></ngx-codemirror>

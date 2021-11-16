@@ -952,7 +952,7 @@
     "label.createWorkflow": "Créer un Workflow",
     "label.createFileOrderSource": "Créer une Source d'Ordre de Fichier",
     "label.createOrder": "Créer une Planification",
-    "label.createScript": "Create Script",
+    "label.createScript": "Créer un Script",
     "label.createBoard": "Créer une Condition",
     "label.createLock": "Créer un Verrou de Ressource",
     "label.objectName": "Nom de l'Objet",
@@ -984,7 +984,7 @@
     "button.newWorkflow": "Nouveau Workflow",
     "button.newFileOrderSource": "Nouveau Ordre de Fichier",
     "button.newOrder": "Nouvelle Planification",
-    "button.newScript": "New Script",
+    "button.newScript": "Nouveau Script",
     "button.newBoard": "Nouvelle Condition",
     "button.newLock": "Nouveau Verrou de Ressource",
     "button.newCalendar": "Nouveau Calendrier",
@@ -1055,7 +1055,7 @@
     "message.startTimeIsMissing": "La période manque dans le calendrier",
     "message.includesIsMissing": "La fréquence incluse est manquante, mais elle est nécessaire",
     "message.uriIsMissing": "L'URL est manquant, mais il est nécessaire",
-    "message.scriptIsMissing": "Script is missing, but is required",
+    "message.scriptIsMissing": "Le Script est manquant, mail il est nécessaire",
     "message.toNoticeIsMissing": "A noter, mais est nécessaire",
     "message.readingOrderToNoticeIdIsMissing": "L'ID Condition pour l'ordre en attente est manquant, mais est requis",
     "message.nameIsNotValid": "Nom invalide",
@@ -1105,7 +1105,7 @@
         "title": "Le Titre d'une job resource."
       },
       "board": {
-        "name": "Un tableau de condition représente les dépendances entre les workflows. Les instructions PostNotice et les instructions ExpectNotice respectives dans les workflows font référence au tableau de condition. Pour le nom du tableau de condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "name": "Un tableau de condition représente les dépendances entre les workflows. Les instructions PostNotice et les instructions ExpectNotice respectives dans les workflows font référence au tableau de condition. Le nom d'un Tableau de Condition est unique dans l'inventaire. Pour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le tableau de condition. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre de la Condition.",
         "toNotice": "Entrer la Condition",
@@ -1113,13 +1113,13 @@
         "readingOrderToNoticeId": "Entrer la règle pour créer l'ID Annonce pour 'Ordre attendu"
       },
       "lock": {
-        "name": "Les verrous de ressources sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de tâche. Ils peuvent être utilisés dans tous les workflows et limitent le parallélisme des tâches. Pour le nom du verrou de ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "name": "Les verrous de ressources sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de tâche. Ils peuvent être utilisés dans tous les workflows et limitent le parallélisme des tâches. Le nom d'un Verrou est unique dans l'inventaire. Pour le nom du verrou de ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le verrou de ressource. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre d'un verrou",
         "limit": "Si un verrou de ressource est acquis en mode partagé, chaque consommateur de verrou de ressource spécifie un nombre en fonction de la capacité du verrou de ressource. Si la capacité est dépassée, les tâches doivent attendre que leur nombre corresponde à la capacité disponible du verrou de ressource."
       },
       "schedule": {
-        "name": "Une Planification est utilisé pour créer automatiquement des ordres pour un workflow donné en fonction du calendrier attribué. Pour le nom de la Planification, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "name": "Une Planification est utilisé pour créer automatiquement des ordres pour un workflow donné en fonction du calendrier attribué. Le nom d'une Planification est unique dans l'inventaire. Pour le nom de la Planification, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec la Planification. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre d'une planification.",
         "workflowName": "Il faut ajouter une référence à un workflow pour lequel des ordres sont crées.",
@@ -1127,11 +1127,11 @@
         "submitOrderToControllerWhenPlanned": "Les ordres sont automatiquement soumis à un contrôleur au moment prévu. Sur la base des paramètres des ordres du Daily Plan Service sont soumis un certain nombre de jours à l'avance."
       },
       "script": {
-        "name": "Name of Script",
-        "documentation": "A reference to a Documentation can be added that will be displayed with the Script. The RESOURCES view allows to manage the documentation.",
-        "title": "The Title of the Script",
-        "script": "Script",
-        "autocompleteShortCut": "Use Ctrl+Space to retrieve the predefined list"
+        "name": "Un script est utilisé pour inclure des extraits de code récurrents dans un script job. Le nom d'un Script est unique dans l'inventaire. Pour le nom du Script, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec la Planification. La vue RESSOURCES permet de gérer la documentation.",
+        "title": "Le Titre d'un Script",
+        "script": "En fonction de son utilisation avec les job scripts, le contenu d'un Script peut inclure des commandes Shell ou du code pour des langages de script tels que Perl, PowerShell, etc.",
+        "autocompleteShortCut": "Tapez Ctrl+Espace pour récupérer la liste des scripts disponibles."
       },
       "workflow": {
         "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
@@ -1240,7 +1240,7 @@
       "button": {
         "search": "Chercher",
         "updateJob": "Mise à jour de la Tâche",
-        "updateObject": "Update Object",
+        "updateObject": "Mettre à jour l'Objet",
         "propagateJob": "Propager la Tâche"
       },
       "placeholder": {
@@ -1249,7 +1249,7 @@
       },
       "message": {
         "updateJobForSelectedWorkflows": "Mise à jour {{jobName}} dans les {{workflowsCount}} workflows sélectionnés",
-        "updateSelectedObjects": "Update {{objectCount}} selected objects"
+        "updateSelectedObjects": "Mise à jour de {{objectCount}} objets sélectionnés"
       }
     },
     "updateJob": {
@@ -1266,14 +1266,14 @@
     },
     "updateObject": {
       "label": {
-        "updateObject": "Update Object"
+        "updateObject": "Mettre à jour l'Objet"
       },
       "button": {
-        "clickHereToDeploy": "Click here to deploy!",
-        "clickHereToRelease": "Click here to release!"
+        "clickHereToDeploy": "Cliquez ici pour déployer!",
+        "clickHereToRelease": "Cliquez ici pour publier!"
       },
       "message": {
-        "updateSuccessfully": "{{count}} objects updated successfully."
+        "updateSuccessfully": "{{count}} objets mis à jour avec succès."
       }
     }
   },
@@ -1453,8 +1453,8 @@
     "label.current": "Actuel",
     "label.asCard": "Vue Carte",
     "label.asList": "Vue Liste",
-    "label.asBulk": "As Bulk",
-    "label.orderOverviewPageView": "Show Orders Overview",
+    "label.asBulk": "Vue d'Ensemble",
+    "label.orderOverviewPageView": "Visualiser l'Aperçu des Ordres",
     "label.blueGrey": "Bleu-gris",
     "label.white": "Blanc",
     "label.light": "Clair",
@@ -1464,7 +1464,7 @@
     "label.dark": "Foncé",
     "label.download": "Télécharger",
     "button.resetProfile": "Rétablir le profil par défaut",
-    "button.groupLimit": "Group Limit",
+    "button.groupLimit": "Limite de groupe",
     "permission": {
       "label.order": "Ordre",
       "label.job": "Tâche",
@@ -2037,8 +2037,8 @@
     "button.convertAdmissionTime": "Afficher les heures convertis",
     "button.originalAdmissionTime": "Afficher les heures originales",
     "button.addResult": "Ajouter résultat",
-    "button.addDelay": "Add Delay",
-    "button.addAllDelay": "Add All Delay",
+    "button.addDelay": "Ajouter un Délai",
+    "button.addAllDelay": "Ajouter tous les Délais",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",
@@ -2079,13 +2079,14 @@
     "placeholder.selectBoard": "Sélectionner la Condition",
     "placeholder.offset": "Entres les valeurs en format h/m/s séparés par virgule",
     "placeholder.duration": "Entrer une valeur comme d/w/m/y/h our hh:mm:ss or seconds",
-    "placeholder.durationPeriod": "Entrer une valeur comme w/d/h/m our hh:mm:ss or hh:mm:ss-hh:mm:ss or seconds",
-    "placeholder.retryDelay": "Enter value as h/m/s",
+    "placeholder.durationPeriod": "Entrer une valeur comme w/d/h/m ou hh:mm:ss ou hh:mm:ss-hh:mm:ss or seconds",
+    "placeholder.retryDelay": "Entrer une valeur comme h/m/s",
     "placeholder.enterPositiveNumber": "Entrer uniquement un nombre positif séparé par une virgule",
     "placeholder.expression": "Entrer l'expression",
     "placeholder.orderId": "Entrer l'ID de l'Ordre",
     "placeholder.className": "Entrer le Nom de la Classe",
     "placeholder.selectJobResources": "Sélectionnez les Ressources de la taĉhe",
+    "placeholder.selectScript": "Select Script",
     "placeholder.enterCredentialKey": "Entrer la clé d'identification à partir du gestionnaire d'identification Windows",
     "placeholder.final": "Final",
     "findAndReplace": {

@@ -1105,7 +1105,7 @@
         "title": "The Title of the Job Resource"
       },
       "board": {
-        "name": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "name": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Notice Board. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Notice Board",
         "toNotice": "Enter Notice ID for posting order",
@@ -1113,13 +1113,13 @@
         "readingOrderToNoticeId": "Enter Notice ID for expecting order"
       },
       "lock": {
-        "name": "Resource Locks are used to implement mutual exclusion for a sequence of jobs. They can be used across any workflows and limit the the parallellism of jobs. For the name of the Resource Lock most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "name": "Resource Locks are used to implement mutual exclusion for a sequence of jobs. They can be used across any workflows and limit the the parallellism of jobs. The name of a Resource Lock is unique in the inventory. For the name of the Resource Lock most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Resource Lock. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Resource Lock",
         "limit": "If a Resource Lock is acquired in shared mode then each Resource Lock consumer specifies a weight that is calculated towards the capacity of the Resource Lock. If the capacity is exceeded then jobs have to wait until their weight matches the available capacity of the Resource Lock."
       },
       "schedule": {
-        "name": "A Schedule is used to automatically create orders for a given workflow based on the Calendar assigned. For the name of the Schedule most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "name": "A Schedule is used to automatically create orders for a given workflow based on the Calendar assigned. The name of a Schedule is unique in the inventory. For the name of the Schedule most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Schedule. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Schedule",
         "workflowName": "A reference to a workflow has to be added for which orders are created.",
@@ -1127,11 +1127,11 @@
         "submitOrderToControllerWhenPlanned": "Orders are automatically submitted to a Controller when planned. Based on the settings of the Daily Plan Service orders are submitted a number of days in advance."
       },
       "script": {
-        "name": "Name of Script",
+        "name": "A Script is used to include recurring code snippets into a job script. The name of a Script is unique in the inventory. For the name of the Script most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Script. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Script",
-        "script": "Script",
-        "autocompleteShortCut": "Use Ctrl+Space to retrieve the predefined list"
+        "script": "Depending on its use with Job scripts the content of a Script can include Shell commands or Code for scripting languages such as Perl, PowerShell etc.",
+        "autocompleteShortCut": "Use Ctrl+Space to retrieve the list of available scripts"
       },
       "workflow": {
         "name": "The name of a Workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
@@ -2038,7 +2038,7 @@
     "button.originalAdmissionTime": "Show original times",
     "button.addResult": "Add Result",
     "button.addDelay": "Add Delay",
-    "button.addAllDelay": "Add All Delay",
+    "button.addAllDelay": "Add All Delays",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",
@@ -2086,6 +2086,7 @@
     "placeholder.orderId": "Enter Order ID",
     "placeholder.className": "Enter Class Name",
     "placeholder.selectJobResources": "Select Job Resources",
+    "placeholder.selectScript": "Select Script",
     "placeholder.enterCredentialKey": "Enter credential key for Windows Credential Manager",
     "placeholder.final": "Final",
     "findAndReplace": {

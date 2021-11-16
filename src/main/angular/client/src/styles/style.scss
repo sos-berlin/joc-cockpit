@@ -4976,7 +4976,7 @@ input[type=text][disabled] {
   cursor: pointer;
 }
 
-.img {
+.img, .z-index-9999 {
   cursor: pointer;
   z-index: 999;
 }
@@ -5800,6 +5800,10 @@ General CSS
 
 .t-9 {
   top: 9px;
+}
+
+.t-1 {
+  top: 1px;
 }
 
 .t-10 {
@@ -7060,7 +7064,7 @@ tr.tr-border td:first-child {
 
 /** ----- Code Mirror ----------- ****/
 
-.CodeMirror-gutters {
+.CodeMirror-gutters, .bg-box {
   background: var(--bg-box) !important;
 }
 
@@ -8194,8 +8198,16 @@ td .p-a-b-b-0 {
   right: 12px;
 }
 
+.r-15 {
+  right: 15px;
+}
+
 .r-18 {
   right: 18px;
+}
+
+.r-38 {
+  right: 38px;
 }
 
 .r-t-12 {
@@ -8313,4 +8325,48 @@ td .ver-top {
   position: absolute;
   left: 422px;
   top: 8px;
+}
+
+.select-script-input, .select-script-input2 {
+  position: absolute;;
+  z-index: 99999;
+  top: 1px;
+  width: 94.2%;
+}
+
+.select-script-input2 {
+  width: 97.3%;
+  background: #fff !important;
+
+  .ant-select, .ant-select-tree, .ant-select-selection-placeholder {
+    color: #3d464d !important;
+  }
+
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-color: #e3e3e3 !important;
+  }
+
+  .ant-select-clear, .ant-picker-clear, .ant-picker-clear:hover {
+    background: #fff !important;
+  }
+}
+
+.select-script-input3 {
+  background: #fff !important;
+  color: #3d464d !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+
+  .ant-select-tree {
+    background: #fff !important;
+  }
+
+  .anticon, .ant-select-tree {
+    color: #3d464d !important;
+  }
+}
+
+.select-script-input3.ant-select-dropdown {
+  background-color: #fff !important;
+  color: #3d464d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
