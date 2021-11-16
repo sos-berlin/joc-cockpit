@@ -399,7 +399,7 @@ export class ResizableDirective implements OnInit {
           }
         });
       }
-    } else {
+    } else if (this.el.nativeElement.attributes.id) {
       dom = $('#' + this.el.nativeElement.attributes.id.value);
       if (dom) {
         dom.css('top', '191px');

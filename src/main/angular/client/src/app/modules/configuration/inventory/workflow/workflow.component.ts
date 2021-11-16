@@ -610,7 +610,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.object = {};
   }
 
-  private addFrequencyAndPeriod(day, temp, p, isDaily): void{
+  private addFrequencyAndPeriod(day, temp, p, isDaily): void {
     const d = parseInt(day, 10) - 1;
     const obj: any = {
       day,
@@ -776,6 +776,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isModal: boolean;
   @Input() exactMatch: boolean;
   history = [];
+  list: Array<string> = [];
   indexOfNextAdd = 0;
   error: boolean;
   notFound: string;
@@ -787,12 +788,14 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   index = 0;
   presentObj: any = {};
   returnCodes: any = {on: 'success'};
+
   cmOption: any = {
     lineNumbers: true,
     autoRefresh: true,
     mode: 'shell',
     extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
+
   object = {
     checked1: false,
     indeterminate1: false,
@@ -810,6 +813,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     indeterminate5: false,
     setOfCheckedDefaultArgu: new Set<string>()
   };
+
+  scriptObj = {
+    name: '',
+    show: false
+  };
+
   variableList = [];
   filteredOptions = [];
   mentionValueList = [];
@@ -843,6 +852,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.index = 0;
+    if (this.scriptList.length > 0) {
+      this.list = this.scriptList.map((item) => item.name);
+    }
     if (!this.isModal) {
       this.updateVariableList();
     }
@@ -866,6 +878,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           }
         });
       }
+      this.mergeScriptData();
     }, 100);
   }
 
@@ -913,7 +926,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private checkIsAgentExist(): void {
-    if (this.notFound){
+    if (this.notFound) {
       this.agents = this.agents.filter((item) => {
         return item !== this.notFound;
       });
@@ -988,6 +1001,63 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  showTree(): void {
+    this.scriptObj.show = true;
+  }
+
+  private mergeScriptData(): void {
+    const self = this;
+
+    function recursive(mainObj): void {
+      for (const i in mainObj) {
+        if (mainObj[i].children && mainObj[i].children.length > 0) {
+          recursive(mainObj[i].children);
+        }
+        let data = [];
+        for (const j in self.scriptList) {
+          self.scriptList[j].path1 = self.scriptList[j].path.substring(0, self.scriptList[j].path.lastIndexOf('/')) || self.scriptList[j].path.substring(0, self.scriptList[j].path.lastIndexOf('/') + 1);
+          if (self.scriptList[j].path1 === mainObj[i].path) {
+            data.push({
+              title: self.scriptList[j].name,
+              path: self.scriptList[j].path,
+              key: self.scriptList[j].name,
+              type: self.scriptList[j].objectType,
+              isLeaf: true
+            });
+          }
+        }
+        if (mainObj[i].children && mainObj[i].children.length > 0) {
+          data = data.concat(mainObj[i].children);
+        }
+        if (mainObj[i].isLeaf) {
+          mainObj[i].expanded = true;
+        }
+        mainObj[i].isLeaf = false;
+        mainObj[i].children = data;
+      }
+    }
+
+    if (this.scriptTree.length > 0) {
+      if (!this.scriptTree[0].done) {
+        this.scriptTree[0].done = true;
+        recursive(this.scriptTree);
+      }
+    }
+  }
+
+  closeScriptTree(): void {
+    if (this.scriptObj.show) {
+      const doc = this.cm.codeMirror.getDoc();
+      const cursor = this.cm.codeMirror.getCursor(); // gets the line number in the cursor position
+      doc.replaceRange(this.scriptObj.name, cursor);
+      cursor.ch = cursor.ch + this.scriptObj.name.length;
+      this.cm.codeMirror.focus();
+      doc.setCursor(cursor);
+      this.scriptObj.name = '';
+    }
+    this.scriptObj.show = false;
+  }
+
   showEditor(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -995,6 +1065,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzClassName: 'lg script-editor',
       nzComponentParams: {
         script: this.selectedNode.job.executable.script,
+        scriptTree: this.scriptTree,
         list: this.scriptList
       },
       nzFooter: null,
@@ -1324,7 +1395,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   private getScript(curWord): void {
     const regex = new RegExp('^' + curWord, 'i');
-    const list = (!curWord ? this.scriptList : this.scriptList.filter((item) => {
+    const list = (!curWord ? this.list : this.list.filter((item) => {
       return item.match(regex);
     })).sort();
     const options = {
@@ -1596,7 +1667,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
-      if (type === InventoryObject.JOBRESOURCE) {
+      if (type === InventoryObject.JOBRESOURCE || type === InventoryObject.SCRIPT) {
         return;
       }
       let flag = true;
@@ -1830,9 +1901,15 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 })
 export class ScriptEditorComponent implements AfterViewInit {
   @Input() script: any;
-  @Input() list: any;
+  @Input() list: any = [];
+  @Input() scriptTree: any = [];
   @ViewChild('codeMirror', {static: true}) cm: any;
   dragEle: any;
+  scriptList: Array<string> = [];
+  scriptObj = {
+    name: '',
+    show: false
+  };
   cmOption: any = {
     lineNumbers: true,
     viewportMargin: Infinity,
@@ -1862,6 +1939,9 @@ export class ScriptEditorComponent implements AfterViewInit {
         localStorage.$SOS$SCRIPTWINDOWHIGHT = x.size.height;
       }
     });
+    if (this.list.length > 0) {
+      this.scriptList = this.list.map((item) => item.name);
+    }
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
         this.cm.codeMirror.focus();
@@ -1896,11 +1976,28 @@ export class ScriptEditorComponent implements AfterViewInit {
 
   execCommand(type): void {
     this.cm.codeMirror.execCommand(type);
+    this.coreService.updateReplaceText();
+  }
+
+  loadData(node, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+    }
+  }
+
+  onExpand(e): void{
+    this.loadData(e.node, null);
   }
 
   private getScript(curWord): void {
     const regex = new RegExp('^' + curWord, 'i');
-    const list = (!curWord ? this.list : this.list.filter((item) => {
+    const list = (!curWord ? this.scriptList : this.scriptList.filter((item) => {
       return item.match(regex);
     })).sort();
     const options = {
@@ -1914,6 +2011,23 @@ export class ScriptEditorComponent implements AfterViewInit {
       }
     };
     this.cm.codeMirror.showHint(options);
+  }
+
+  showTree(): void {
+    this.scriptObj.show = true;
+  }
+
+  closeScriptTree(): void {
+    if (this.scriptObj.show) {
+      const doc = this.cm.codeMirror.getDoc();
+      const cursor = this.cm.codeMirror.getCursor(); // gets the line number in the cursor position
+      doc.replaceRange(this.scriptObj.name, cursor);
+      cursor.ch = cursor.ch + this.scriptObj.name.length;
+      this.cm.codeMirror.focus();
+      doc.setCursor(cursor);
+      this.scriptObj.name = '';
+    }
+    this.scriptObj.show = false;
   }
 }
 
@@ -2201,7 +2315,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
     if (changes.data) {
       if (this.data.type) {
-        if(this.workflowTree.length > 0) {
+        if (this.workflowTree.length > 0) {
           this.recursiveTreeUpdate(this.workflowTree);
         }
         this.init();
@@ -2247,7 +2361,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
         const xhr = mxUtils.load(this.configXml);
-        xhr.request.onreadystatechange = function()  {
+        xhr.request.onreadystatechange = function() {
           if (this.readyState === this.DONE) {
             const node = xhr.getDocumentElement();
             editor = new mxEditor(node);
@@ -2258,7 +2372,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             outln.innerHTML = '';
             new mxOutline(self.editor.graph, outln);
           }
-        }
+        };
       }
     } catch (e) {
       // Shows an error message if the editor cannot start
@@ -2310,7 +2424,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
 
   private getJobsArray(obj): void {
     obj.jobs = [];
-    const self  = this;
+    const self = this;
+
     function recursive(json: any) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -2523,7 +2638,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   }
 
   private updateToolbar(operation, cell, name = ''): void {
-    $('#toolbar').find('img').each(function (index) {
+    $('#toolbar').find('img').each(function(index) {
       if (index === 15) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
@@ -2791,8 +2906,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         path: '/',
         recursive: true
       }).subscribe((res) => {
-        this.scriptList = res.scripts.map((item) => item.name);
-        console.log(this.scriptList)
+        this.scriptList = res.scripts;
       });
     }
   }
@@ -3417,7 +3531,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
-  addDelay(list): void{
+  addDelay(list): void {
     const param = {
       value: '1m',
     };
@@ -5361,7 +5475,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     let _iterateId = 0;
     const doc = mxUtils.createXmlDocument();
     if (!callFun) {
-      $('#toolbar').find('img').each(function (index) {
+      $('#toolbar').find('img').each(function(index) {
         if (index === 15) {
           $(this).addClass('disable-link');
         }
@@ -6793,7 +6907,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
      */
     function checkClosingCell(cell): boolean {
       return cell.value.tagName === 'Join' || cell.value.tagName === 'EndIf' || cell.value.tagName === 'EndForkList' ||
-        cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndRetry' || cell.value.tagName === 'EndCycle' ||  cell.value.tagName === 'EndLock';
+        cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndRetry' || cell.value.tagName === 'EndCycle' || cell.value.tagName === 'EndLock';
     }
 
     function getLastNodeAndConnect(name, parent, parentCell, cell, cells): any {
@@ -6943,7 +7057,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         graph.insertEdge(parent, null, getConnectionNode('try'), _middle, v3);
         graph.insertEdge(parent, null, getConnectionNode('endTry'), v3, v2);
       } else if (cellName === 'If' || cellName === 'Fork' || cellName === 'ForkList' || cellName === 'Retry' || cellName === 'Lock' || cellName === 'Cycle') {
-        const obj = getLastNodeAndConnect(cellName, parent, parentCell, cell,  cells);
+        const obj = getLastNodeAndConnect(cellName, parent, parentCell, cell, cells);
         _sour = obj._sour;
         _tar = obj._tar;
       }
@@ -7454,7 +7568,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
                         edges[i], 'result', JSON.stringify(self.selectedNode.newObj.branches[i].result));
                       graph.getModel().execute(edit2);
                     }
-                  } else{
+                  } else {
                     const edit2 = new mxCellAttributeChange(
                       edges[i], 'result', null);
                     graph.getModel().execute(edit2);
@@ -7663,7 +7777,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
           } else {
             try {
               obj.schedule = JSON.parse(obj.schedule);
-            } catch (e){
+            } catch (e) {
               obj.schedule = {};
             }
           }
@@ -8721,7 +8835,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (cell.edges[i].target.value.tagName === checkLabel) {
               const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndForkList' ? 'endForkList' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
                 ? 'endRetry' : checkLabel === 'EndLock' ? 'endLock' : checkLabel === 'EndCycle' ? 'endCycle' : 'endTry';
-              if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try'  && cell.value.tagName !== 'Cycle' && cell.value.tagName !== 'Retry' && cell.value.tagName !== 'Lock' && cell.value.tagName !== 'ForkList' && cell.value.tagName !== 'Catch') {
+              if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Cycle' && cell.value.tagName !== 'Retry' && cell.value.tagName !== 'Lock' && cell.value.tagName !== 'ForkList' && cell.value.tagName !== 'Catch') {
                 cell.edges[i].value.attributes[0].nodeValue = _label;
                 cell.edges[i].value.attributes[1].nodeValue = _label;
               }
@@ -9327,7 +9441,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     if (isFirst) {
       const _temp = JSON.parse(this.workflow.actual);
       const jobs = this.coreService.keyValuePair(this.jobs);
-      if (!isEmpty(jobs)){
+      if (!isEmpty(jobs)) {
         _temp.jobs = jobs;
       }
       this.workflow.actual = JSON.stringify(_temp);
@@ -9459,7 +9573,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             if (json.instructions[x].schedule && typeof json.instructions[x].schedule === 'string') {
               try {
                 json.instructions[x].schedule = JSON.parse(json.instructions[x].schedule);
-              } catch (e) {}
+              } catch (e) {
+              }
             }
             if (!(!json.instructions[x].id && !json.instructions[x].instructions)) {
               if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
@@ -9490,7 +9605,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
             } else {
               if (json.instructions[x].count === '' || json.instructions[x].count === 'undefined') {
                 delete json.instructions[x].count;
-              } else{
+              } else {
                 if (typeof json.instructions[x].count === 'string') {
                   json.instructions[x].count = parseInt(json.instructions[x].count, 10);
                 }
@@ -9891,7 +10006,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         flag = true;
       }
     } else if (type === 'variable') {
-      const variableDeclarations = {parameters: [], allowUndeclared : false};
+      const variableDeclarations = {parameters: [], allowUndeclared: false};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         if (value.value.type === 'List' || value.value.type === 'Final') {

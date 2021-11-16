@@ -527,7 +527,7 @@ export class CoreService {
     return this.tabs._yade;
   }
 
-  setLocales(locale:any): void {
+  setLocales(locale: any): void {
     this.locales = locale;
   }
 
@@ -1439,6 +1439,28 @@ export class CoreService {
     } else if (data[type] === '') {
       data[type] = '"' + data[type].trim() + '"';
     }
+  }
+
+  updateReplaceText(): void {
+    setTimeout(() => {
+      const dom = $('.CodeMirror-dialog .CodeMirror-search-label');
+      const text = dom.text();
+      if (text.match(/Replace:/)) {
+        dom.text('Search:');
+      } else if (text.match(/Replace all:/)) {
+        dom.text('Search all:');
+      }
+      if (text.match(/Replace/)) {
+        $('.CodeMirror-search-field').keydown((e) => {
+          if (e.keyCode === 13) {
+            const dom2 = $('.CodeMirror-dialog .CodeMirror-search-label');
+            if (dom2.text().match(/With:/)) {
+              dom2.text('Replace:');
+            }
+          }
+        });
+      }
+    }, 0);
   }
 
 }

@@ -2086,6 +2086,7 @@
     "placeholder.orderId": "Entrer l'ID de l'Ordre",
     "placeholder.className": "Entrer le Nom de la Classe",
     "placeholder.selectJobResources": "Sélectionnez les Ressources de la taĉhe",
+    "placeholder.selectScript": "Select Script",
     "placeholder.enterCredentialKey": "Entrer la clé d'identification à partir du gestionnaire d'identification Windows",
     "placeholder.final": "Final",
     "findAndReplace": {

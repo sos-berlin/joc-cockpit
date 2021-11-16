@@ -22,8 +22,8 @@
 <div class="padding p-b-0">
   <div class="row m-b m-t-xs">
     <div class="col-md-12">
-      <div class="box text-overflow">
-        <div class="p-a resizable text-overflow" appResizable id="mainContainer">
+      <div class="box p-a p-b-sm text-overflow">
+        <div class="resizable" appResizable id="mainContainer">
           <div *ngFor="let controller of controllers; let id = index" class="box-body p-b-0">
             <ng-container *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
               <div class="row" >

@@ -2086,6 +2086,7 @@
     "placeholder.orderId": "オーダーID編集",
     "placeholder.className": "クラス名を入力",
     "placeholder.selectJobResources": "ジョブリソースを選択",
+    "placeholder.selectScript": "Select Script",
     "placeholder.enterCredentialKey": "Windows資格マネージャーから認証キーを入力",
     "placeholder.final": "定数",
     "findAndReplace": {
