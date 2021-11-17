@@ -1003,7 +1003,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   isLoaded = false;
   isRefreshed = false;
   dailyPlanFilters: any = {filter: {}};
-  pageView: string;
+  pageView: string = '';
   savedFilter: any = {};
   selectedFiltered: any = {};
   searchFilter: any = {};
@@ -1023,10 +1023,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   expandedPaths = new Set();
   dateRanges = [];
   isProcessing = false;
-  isVisible: boolean;
-  isAllSelected: boolean;
+  isVisible = false;
+  isAllSelected = false;
   totalOrders: number;
   totalFinishedOrders: number;
+
+  selectedYear: any;
+  selectedMonth: any;
 
   object = {
     mapOfCheckedId: new Map(),
@@ -1231,6 +1234,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (result) {
         this.isProcessing = true;
         this.resetAction(5000);
+        this.isCalendarClick = false;
         $('#full-calendar').data('calendar').clearRange();
       }
     });
@@ -1284,6 +1288,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (result) {
         this.isProcessing = true;
         this.resetAction(5000);
+        this.isCalendarClick = false;
+        $('#full-calendar').data('calendar').clearRange();
       }
     });
   }
@@ -2010,81 +2016,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             this.submissionHistory.push(result.submissionHistoryItems[i]);
           }
         }
-        const calendar = $('#full-calendar').data('calendar');
-        if (calendar) {
-          calendar.setDataSource(this.submissionHistoryItems);
-        }
       }
-    }, () => {
-
+      const calendar = $('#full-calendar').data('calendar');
+      if (calendar) {
+        calendar.setDataSource(this.submissionHistoryItems);
+      }
     });
-  }
-
-  private updateList(): void {
-    this.load(this.selectedDate);
-    this.loadOrderPlan();
-  }
-
-  private restCall(order, multiple, type): void {
-    const obj: any = {
-      controllerId: this.schedulerIds.selected, orderIds: []
-    };
-    if (multiple) {
-      multiple.forEach((value) => {
-        obj.orderIds.push(value.orderId);
-      });
-    } else {
-      obj.orderIds.push(order.orderId);
-    }
-    if (this.preferences.auditLog) {
-      let comments = {
-        radio: 'predefined',
-        type: 'Order',
-        operation: type,
-        name: ''
-      };
-      if (order) {
-        comments.name = order.orderId;
-      } else {
-        multiple.forEach((value, index) => {
-          if (index == multiple.length - 1) {
-            comments.name = comments.name + ' ' + value.orderId;
-          } else {
-            comments.name = value.orderId + ', ' + comments.name;
-          }
-        });
-      }
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: CommentModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          comments,
-          obj,
-          url: 'orders/' + type.toLowerCase()
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this.resetCheckBox();
-          this.isProcessing = true;
-          this.resetAction(5000);
-        }
-      });
-    } else {
-      this.isProcessing = true;
-      if (multiple) {
-        this.resetCheckBox();
-      }
-      this.coreService.post('orders/' + type.toLowerCase(), obj).subscribe(() => {
-        this.resetAction(5000);
-      }, () => {
-        this.resetAction();
-      });
-    }
   }
 
   private resetAction(time = 100): void {
@@ -2390,6 +2327,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       const d = new Date().setHours(0, 0, 0, 0);
       this.selectedDate = new Date(d);
     }
+    this.selectedYear = this.selectedDate.getFullYear();
+    this.selectedMonth  = this.selectedDate.getMonth();
+
     if (this.dailyPlanFilters.selectedView) {
       this.savedFilter.selected = this.savedFilter.selected || this.savedFilter.favorite;
     } else {
@@ -2432,7 +2372,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       },
       renderEnd: (e) => {
         const year = e.currentYear || new Date().getFullYear();
-        const month = e.currentMonth || new Date().getMonth();
+        const month = (e.currentMonth || e.currentMonth === 0) ? e.currentMonth : new Date().getMonth();
+        this.selectedYear = year;
+        this.selectedMonth  = month;
         this.load(new Date(year, month, 1));
         if (this.dateRanges && this.dateRanges.length > 1) {
           $('#full-calendar').data('calendar').checkRange({from: this.dateRanges[0], to: this.dateRanges[1]});
@@ -2455,9 +2397,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/DailyPlanUpdated/)) {
-          this.load(args.eventSnapshots[j].message ? new Date(args.eventSnapshots[j].message) : this.selectedDate);
-          if (!args.eventSnapshots[j].message
-            || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) {
+          if (args.eventSnapshots[j].message) {
+            const d = new Date(args.eventSnapshots[j].message);
+            if (d.getFullYear() == this.selectedYear && d.getMonth() == this.selectedMonth) {
+              this.load(this.selectedDate);
+            }
+          }
+          if (!args.eventSnapshots[j].message || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) {
             this.refreshView();
           }
           break;

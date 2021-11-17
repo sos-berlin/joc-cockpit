@@ -30,7 +30,7 @@
         opt = [];
       }
       this.options = {
-        startYear: !isNaN(parseInt(opt.startYear)) ? parseInt(opt.startYear) : new Date().getFullYear(),
+        startYear: !isNaN(parseInt(opt.startYear)) ? parseInt(opt.startYear) : opt.selectedDate ? new Date(opt.selectedDate).getFullYear() : new Date().getFullYear(),
         startMonth: !isNaN(parseInt(opt.startMonth)) ? parseInt(opt.startMonth) : opt.selectedDate ? new Date(opt.selectedDate).getMonth() : new Date().getMonth(),
         view: opt.view ? opt.view : 'year',
         rangeSelection: !!opt.rangeSelection,

@@ -848,6 +848,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
+    $('#property-panel').on('show', () => {
+      this.reloadScript(50);
+    });
   }
 
   ngOnInit(): void {
@@ -947,12 +950,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.ref.detectChanges();
   }
 
-  reloadScript(): void {
+  reloadScript(time = 5): void {
     this.isDisplay = false;
     setTimeout(() => {
       this.isDisplay = true;
       this.ref.detectChanges();
-    }, 5);
+    }, time);
   }
 
   updateVariableList(): void {
@@ -3937,6 +3940,13 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         }
       }
     });
+
+    const el = $.fn['show'];
+    $.fn['show'] = function () {
+      this.trigger('show');
+      return el.apply(this, arguments);
+    };
+
     $('#property-panel').on('resizestop', () => {
       self.checkGraphHeight();
     });
@@ -3948,7 +3958,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
       $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
       $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
-      $('#property-panel').css({width: self.propertyPanelWidth + 'px'});
+      $('#property-panel').css({width: self.propertyPanelWidth + 'px'}).show();
       $('.sidebar-open').css({right: '-20px'});
       self.centered();
     });
@@ -3959,7 +3969,7 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
       $('.graph-container').css({'margin-right': '0'});
       $('.toolbar').css({'margin-right': '-12px'});
       $('.sidebar-open').css({right: '0'});
-      $('#property-panel').css({width: '0', left: window.innerWidth + 'px'});
+      $('#property-panel').hide();
       $('.sidebar-close').css({right: '-20px'});
       self.centered();
     });

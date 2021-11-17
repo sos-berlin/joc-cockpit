@@ -952,7 +952,7 @@
     "label.createWorkflow": "Create Workflow",
     "label.createFileOrderSource": "Create File Order Source",
     "label.createOrder": "Create Schedule",
-    "label.createScript": "Create Script Incclude",
+    "label.createScript": "Create Script Include",
     "label.createBoard": "Create Notice Board",
     "label.createLock": "Create Resource Lock",
     "label.objectName": "Object name",

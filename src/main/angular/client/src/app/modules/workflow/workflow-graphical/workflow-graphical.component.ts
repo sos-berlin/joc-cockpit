@@ -35,7 +35,7 @@ declare const mxEventObject: any;
 declare const mxActor: any;
 declare const mxPoint: any;
 declare const mxCellRenderer: any;
-declare const $;
+declare const $: any;
 
 @Component({
   selector: 'app-workflow-graphical-dialog',
@@ -52,7 +52,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
 
   workFlowJson: any = {};
   pageView = 'grid';
-  isExpandAll: boolean;
+  isExpandAll: boolean = false;
   loading = true;
 
   subscription: Subscription;

@@ -5,12 +5,10 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   SimpleChanges, ViewChild
 } from '@angular/core';
-import {isEmpty, isArray, isEqual, clone, sortBy} from 'underscore';
-import {Subject, Subscription} from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
+import {isEmpty, isEqual, clone, sortBy} from 'underscore';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
@@ -46,6 +44,8 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   };
   subscription1: Subscription;
   subscription2: Subscription;
+
+  @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(private coreService: CoreService,
               private calendarService: CalendarService, private dataService: DataService,
@@ -287,6 +287,9 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
+      if (this.cm && this.cm.codeMirror) {
+        this.cm.codeMirror.setValue('');
+      }
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();
@@ -298,6 +301,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       } else {
         res.configuration = {};
       }
+
       if (this.data.released !== res.released) {
         this.data.released = res.released;
       }
