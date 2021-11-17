@@ -98,7 +98,7 @@
   "WORKINGDAYSCALENDAR": "working day calendar",
   "NONWORKINGDAYSCALENDAR": "non-working day calendar",
   "SCHEDULE": "Schedule",
-  "SCRIPT": "Script",
+  "SCRIPT": "Script Include",
   "Workflows": "Workflows",
   "File Order Sources": "File Order Sources",
   "Job Classes": "Job Classes",
@@ -106,10 +106,10 @@
   "Boards": "Notice Boards",
   "Locks": "Resource Locks",
   "Schedules": "Schedules",
-  "Scripts": "Scripts",
+  "Scripts": "Script Includes",
   "Calendars": "Calendars",
   "Controller": "Controller",
-  "Daily Plan": "Daily Plan",
+  "Daily Plan": "Automation",
   "ImplicitEnd": "End",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "true",
@@ -910,7 +910,7 @@
     "label.editJson": "Edit JSON",
     "label.downloadJSON": "Download JSON",
     "label.uploadJSON": "Upload JSON",
-    "label.importAndDeploy": "Import and deploy signed objets",
+    "label.importAndDeploy": "Import and deploy signed objects",
     "label.signed": "signed",
     "label.unSigned": "unsigned",
     "label.workflows": "Workflows",
@@ -919,8 +919,8 @@
     "label.jobClasses": "Job Classes",
     "label.jobResources": "Job Resources",
     "label.orders": "Schedules",
-    "label.scripts": "Scripts",
-    "label.script": "Script",
+    "label.scripts": "Script Includes",
+    "label.script": "Script Include",
     "label.templateId": "Template ID",
     "label.locks": "Resource Locks",
     "label.calendars": "Calendars",
@@ -952,7 +952,7 @@
     "label.createWorkflow": "Create Workflow",
     "label.createFileOrderSource": "Create File Order Source",
     "label.createOrder": "Create Schedule",
-    "label.createScript": "Create Script",
+    "label.createScript": "Create Script Incclude",
     "label.createBoard": "Create Notice Board",
     "label.createLock": "Create Resource Lock",
     "label.objectName": "Object name",
@@ -984,7 +984,7 @@
     "button.newWorkflow": "New Workflow",
     "button.newFileOrderSource": "New File Order Source",
     "button.newOrder": "New Schedule",
-    "button.newScript": "New Script",
+    "button.newScript": "New Script Include",
     "button.newBoard": "New Notice Board",
     "button.newLock": "New Resource Lock",
     "button.newCalendar": "New Calendar",
@@ -1055,7 +1055,7 @@
     "message.startTimeIsMissing": "Period is missing in calendar",
     "message.includesIsMissing": "Included frequency is missing, but is required",
     "message.uriIsMissing": "URL is missing, but is required",
-    "message.scriptIsMissing": "Script is missing, but is required",
+    "message.scriptIsMissing": "Script Include is missing, but is required",
     "message.toNoticeIsMissing": "Notice ID for posting order is missing, but is required",
     "message.readingOrderToNoticeIdIsMissing": "Notice ID for expecting order is missing, but is required",
     "message.nameIsNotValid": "Invalid name",
@@ -1077,7 +1077,7 @@
       "label.deployed": "Deployed",
       "label.released": "Released",
       "label.controller": "Controller",
-      "label.dailyPlan": "Daily Plan"
+      "label.dailyPlan": "Automation"
     },
     "tooltips": {
       "calendar": {
@@ -1127,11 +1127,11 @@
         "submitOrderToControllerWhenPlanned": "Orders are automatically submitted to a Controller when planned. Based on the settings of the Daily Plan Service orders are submitted a number of days in advance."
       },
       "script": {
-        "name": "A Script is used to include recurring code snippets into a job script. The name of a Script is unique in the inventory. For the name of the Script most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "name": "A Script Include is used to include recurring code snippets into a job script. The name of a Script Include is unique in the inventory. For the name of the Script Include most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Script. The RESOURCES view allows to manage the documentation.",
-        "title": "The Title of the Script",
-        "script": "Depending on its use with Job scripts the content of a Script can include Shell commands or Code for scripting languages such as Perl, PowerShell etc.",
-        "autocompleteShortCut": "Use Ctrl+Space to retrieve the list of available scripts"
+        "title": "The Title of the Script Include",
+        "script": "Depending on its use with job scripts the content of a Script Include can include Shell commands or Code for scripting languages such as Perl, PowerShell etc.",
+        "autocompleteShortCut": "Use Ctrl+Space to retrieve the list of available Script Includes"
       },
       "workflow": {
         "name": "The name of a Workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
