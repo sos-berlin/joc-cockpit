@@ -791,13 +791,10 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   private getSubmissionHistory(): void {
     const obj = {
       controllerId: this.controllerId,
-      filter: {
-        controllerId: this.controllerId,
-        auditLogId: this.auditLogId
-      }
+      auditLogId: this.auditLogId
     };
     this.coreService.post('daily_plan/history', obj).subscribe((res: any) => {
-      this.history = res.dailyPlans;
+      this.history = res.dates || [];
       this.loading = false;
     }, () => {
       this.loading = false;
@@ -1430,9 +1427,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj = this.setSubmissionDateRange(obj);
     }
     this.convertRequestBody(obj);
-    this.coreService.post('daily_plan/history', {filter: obj, controllerId: this.schedulerIds.selected})
+    this.coreService.post('daily_plan/history', obj)
       .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      this.submissionHistorys = res.dailyPlans;
+      this.submissionHistorys = res.dates || [];
       if (flag) {
         this.mergeSubData();
       } else {
@@ -1449,13 +1446,39 @@ export class HistoryComponent implements OnInit, OnDestroy {
     history.show = true;
     if (history.controllers && history.controllers.length > 0) {
       history.controllers.forEach((controller) => {
-        controller.submissions.forEach((sub) => {
-          if (sub.show === undefined) {
-            sub.show = true;
-          }
-        });
+        if(controller.submissions) {
+          controller.submissions.forEach((sub) => {
+            if (sub.show === undefined) {
+              sub.show = true;
+            }
+          });
+        } else {
+          this.loadSubmissions(history, controller);
+        }
       });
     }
+  }
+
+  private loadSubmissions(history, controller): void {
+    controller.submissions = [];
+    this.coreService.post('daily_plan/history/submissions', {
+      date: history.date,
+      controllerId: controller.controllerId
+    }).subscribe((res) => {
+      controller.submissions = res.submissionTimes || [];
+    });
+  }
+
+  loadSubmissionOrders(history, controller, submission): void {
+    this.coreService.post('daily_plan/history/submissions/orders', {
+      date: history.date,
+      controllerId: controller.controllerId,
+      submissionTime: submission.submissionTime
+    }).subscribe((res) => {
+      submission.orderIds = res.orders;
+      submission.errorMessages = res.errorMessages;
+      submission.warnMessages = res.warnMessages;
+    });
   }
 
   search(obj, isLoading = true): void {
@@ -1626,8 +1649,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.controllerId = obj.controllerId;
       }
 
-      this.coreService.post('daily_plan/history', {filter, controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
-        this.submissionHistorys = res.dailyPlans;
+      this.coreService.post('daily_plan/history', filter).subscribe((res: any) => {
+        this.submissionHistorys = res.dates || [];
         this.searchInResult();
         this.isLoading = true;
       }, () => {
@@ -1878,7 +1901,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.historyFilters.type === 'SUBMISSION' && this.submissionHistorys.length === 0) {
       this.submission.currentPage = 1;
     }
-    
+
   }
 
   expandDetails(): void {

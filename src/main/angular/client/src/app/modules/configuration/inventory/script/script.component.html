@@ -87,11 +87,11 @@
           <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.script' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.script</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <div class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty && cm.touched))}">
-              <ngx-codemirror required #cm="ngModel" title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}" name="cm"
+            <div class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty && cm.touched) && !script.configuration.script)}">
+              <ngx-codemirror required #codeMirror #cm="ngModel" title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}" name="cm"
                               [(ngModel)]="script.configuration.script" [options]="cmOption" (focusout)="saveJSON()"></ngx-codemirror>
             </div>
-            <div *ngIf="(cm.invalid && (cm.dirty || cm.touched))"
+            <div *ngIf="(cm.invalid && (cm.dirty && cm.touched)) && !script.configuration.script"
                  class="text-danger help-block">
               <div *ngIf="(cm.errors && cm.errors.required)">
                 <div translate>common.message.requiredError</div>

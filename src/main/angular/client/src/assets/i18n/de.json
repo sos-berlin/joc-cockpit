@@ -107,7 +107,7 @@
   "WORKINGDAYSCALENDAR": "Kalender der Arbeitstage",
   "NONWORKINGDAYSCALENDAR": "Kalender der Nicht-Arbeitstage",
   "SCHEDULE": "Zeitplan",
-  "SCRIPT": "Skript",
+  "SCRIPT": "Skript Baustein",
   "Workflows": "Arbeitsabläufe",
   "File Order Sources": "Dateiauftragsquellen",
   "Job Classes": "Job-Klassen",
@@ -115,10 +115,10 @@
   "Boards": "Notizbretter",
   "Locks": "Ressourcen-Sperren",
   "Schedules": "Zeitpläne",
-  "Scripts": "Skripte",
+  "Scripts": "Skript Bausteine",
   "Calendars": "Kalender",
   "Controller": "Controller",
-  "Daily Plan": "Tagesplan",
+  "Daily Plan": "Automation",
   "ImplicitEnd": "Ende",
   "--------COMMENT BOX END------------": "Configuration > Inventory view",
   "agent": {
@@ -919,8 +919,8 @@
     "label.jobClasses": "Job-Klassen",
     "label.jobResources": "Job-Ressourcen",
     "label.orders": "Zeitpläne",
-    "label.scripts": "Skripte",
-    "label.script": "Skript",
+    "label.scripts": "Skript Bausteine",
+    "label.script": "Skript Baustein",
     "label.templateId": "Musterkennung",
     "label.locks": "Ressourcen-Sperren",
     "label.calendars": "Kalender",
@@ -952,7 +952,7 @@
     "label.createWorkflow": "Arbeitsablauf erstellen",
     "label.createFileOrderSource": "Dateiauftragsquelle erstellen",
     "label.createOrder": "Zeitplan erstellen",
-    "label.createScript": "Skript erstellen",
+    "label.createScript": "Skript Baustein erstellen",
     "label.createBoard": "Notizbrett erstellen",
     "label.createLock": "Ressourcen-Sperre erstellen",
     "label.objectName": "Objektname",
@@ -984,7 +984,7 @@
     "button.newWorkflow": "Neuer Arbeitsablauf",
     "button.newFileOrderSource": "Neue Dateiauftragsquelle",
     "button.newOrder": "Neuer Zeitplan",
-    "button.newScript": "Neues Skript",
+    "button.newScript": "Neuer Skript Baustein",
     "button.newBoard": "Neues Notizbrett",
     "button.newLock": "Neue Ressourcen-Sperre",
     "button.newCalendar": "Neuer Kalender",
@@ -1055,7 +1055,7 @@
     "message.startTimeIsMissing": "Periode fehlt im Kalender",
     "message.includesIsMissing": "Einschließende Startzeitregel ist erforderlich",
     "message.uriIsMissing": "URL ist erforderlich",
-    "message.scriptIsMissing": "Skript muss angegeben werden",
+    "message.scriptIsMissing": "Skript Baustein muss angegeben werden",
     "message.toNoticeIsMissing": "Notiz des Ausstellers wird benötigt",
     "message.readingOrderToNoticeIdIsMissing": "Notizkennung für wartenden Auftrag muss angegeben werden",
     "message.nameIsNotValid": "Ungültiger Name",
@@ -1077,7 +1077,7 @@
       "label.deployed": "Ausgerollt",
       "label.released": "Freigegeben",
       "label.controller": "Controller",
-      "label.dailyPlan": "Tagesplan"
+      "label.dailyPlan": "Automation"
     },
     "tooltips": {
       "calendar": {
@@ -1127,11 +1127,11 @@
         "submitOrderToControllerWhenPlanned": "Gelante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt."
       },
       "script": {
-        "name": "Ein Skript wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skripts ist eindeutig im Inventar. Für den Namen des Skripts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein Skript Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript Bausteins ist eindeutig im Inventar. Für den Namen des Skript Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Skript angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
-        "title": "Der Titel des Skripts",
-        "script": "Der Inhalt des Skripts kann je nach Verwendung in Job-Skripten aus Shell Kommandos oder Code für Skriptsprachen wie Perl, PowerShell etc. bestehen.",
-        "autocompleteShortCut": "Verwenden Sie die Tasten Ctrl+Leertaste um die Liste der Skripte anzuzeigen."
+        "title": "Der Titel des Skript Bausteins",
+        "script": "Der Inhalt des Skript Bausteins kann je nach Verwendung in Job-Skripten aus Shell Kommandos oder Code für Skriptsprachen wie Perl, PowerShell etc. bestehen.",
+        "autocompleteShortCut": "Verwenden Sie die Tasten Ctrl+Leertaste um die Liste der Skript Bausteine anzuzeigen."
       },
       "workflow": {
         "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Bindestriche und Punkte sind nicht zugelassen.",

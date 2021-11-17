@@ -478,7 +478,7 @@
                         <td class="menu"></td>
                         <td [colSpan]="!workflowFilters.isCompact ? 15 : 5" style="padding:0 !important;">
                           <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
-                                    [nzData]="workflow.fileOrderSources" [nzShowPagination]="false">
+                                    [nzData]="workflow.fileOrderSources" [nzShowPagination]="false" [nzFrontPagination]="false">
                             <thead>
                             <tr>
                               <th><span class="m-l-sm" translate>common.label.path</span></th>

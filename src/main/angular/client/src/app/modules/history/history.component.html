@@ -1250,7 +1250,7 @@
             <tr *ngIf="transfer.show">
               <td></td>
               <td colspan="10" style="padding: 0 !important;border-bottom: none!important;">
-                <nz-table class="m-a-0 inner-table" id="fileTransferTable" nzSize="small" [nzData]="['']" [nzShowPagination]="false">
+                <nz-table class="m-a-0 inner-table" id="fileTransferTable" nzSize="small" [nzData]="['']" [nzShowPagination]="false" [nzFrontPagination]="false">
                   <thead>
                     <tr>
                       <th class="order-history-template0" style="border-bottom: 1px solid #eee;" colspan="4"><span translate>fileTransfer.label.source</span></th>
@@ -1519,14 +1519,14 @@
                     <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                        *ngIf="submissionHistory.show"
                        (click)="submissionHistory.show = false;"></i>
-                    <span [innerHtml]="submissionHistory.dailyPlanDate | stringToDate1"></span>
+                    <span [innerHtml]="submissionHistory.date | stringToDate1"></span>
                   </span>
               </td>
             </tr>
             <tr *ngIf="submissionHistory.show">
               <td style="padding:0 !important;">
                 <nz-table class="m-a-0 inner-table" nzSize="small" #innerChildTable
-                          [nzData]="submissionHistory.controllers" [nzShowPagination]="false">
+                          [nzData]="submissionHistory.controllers" [nzShowPagination]="false" [nzFrontPagination]="false">
                   <tbody>
                     <ng-template ngFor let-controller
                                  [ngForOf]="innerChildTable.data">
@@ -1544,7 +1544,7 @@
                         <td colspan="6">
                           <span class="p-l" [ngClass]="{'p-l-md' : !historyFilters.current }">
                             <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                               *ngIf="!child.show" (click)="child.show = true"></i>
+                               *ngIf="!child.show" (click)="loadSubmissionOrders(submissionHistory, controller, child);child.show = true"></i>
                             <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                                *ngIf="child.show" (click)="child.show = false;"></i>
                             <span [innerHtml]="child.submissionTime | stringToDate"></span>

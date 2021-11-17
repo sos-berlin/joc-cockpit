@@ -1382,7 +1382,7 @@ export class CoreService {
           const startChar = data[type].substring(0, 1);
           if (startChar !== '$') {
             const endChar = data[type].substring(data[type].length - 1);
-            let mainStr = data[type].substring(1, data[type].length - 1);
+            const mainStr = data[type].substring(1, data[type].length - 1);
             if ((startChar === '"' && endChar === '"')) {
               if (/^\d+$/.test(mainStr)) {
                 return;
@@ -1391,8 +1391,8 @@ export class CoreService {
               } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(scheduledOrEmpty\()/g.test(mainStr)) {
                 return;
               } else if (mainStr.substring(0, 1) === '$') {
-                mainStr = mainStr.substring(1, data[type].length);
-                if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr) && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
+                const str = mainStr.substring(1, data[type].length);
+                if (!str.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(str) && /^(?!-)(?!.*--)/.test(str) && !/\s/.test(str)) {
                   return;
                 }
               }

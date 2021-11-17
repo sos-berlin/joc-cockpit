@@ -88,6 +88,7 @@ export class SearchComponent implements OnInit {
     'SCHEDULE',
     'WORKINGDAYSCALENDAR',
     'NONWORKINGDAYSCALENDAR',
+    'SCRIPT',
     'ORDER',
     'DOCUMENTATION'];
   categories = ['INVENTORY',

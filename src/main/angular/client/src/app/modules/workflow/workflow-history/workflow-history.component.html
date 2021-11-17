@@ -1,5 +1,6 @@
 <nz-tabset [(nzSelectedIndex)]="index">
-  <nz-tab *ngIf="permission.currentController && permission.currentController.orders.view" [nzTitle]="'history.label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
+  <nz-tab *ngIf="permission.currentController && permission.currentController.orders.view"
+          [nzTitle]="'history.label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
     <div class="table-responsive" id="orderTable">
       <nz-table
         #orderHistoryTable
@@ -7,6 +8,7 @@
         [nzSize]="'small'"
         [nzBordered]="true"
         [nzShowPagination]="false"
+        [nzFrontPagination]="false"
         [nzData]="orderHistory"
       >
         <thead>
@@ -81,6 +83,7 @@
         #taskHistoryTable
         [nzSize]="'small'"
         [nzBordered]="true"
+        [nzFrontPagination]="false"
         [nzShowPagination]="false"
         [nzData]="taskHistory"
       >
@@ -134,6 +137,7 @@
         #auditTable
         [nzSize]="'small'"
         [nzBordered]="true"
+        [nzFrontPagination]="false"
         [nzShowPagination]="false"
         [nzData]="auditLogs"
       >
