@@ -2086,7 +2086,7 @@
     "placeholder.orderId": "Auftragskennung angeben",
     "placeholder.className": "Name der Klasse angeben",
     "placeholder.selectJobResources": "Job-Ressource auswählen",
-    "placeholder.selectScript": "Select Script",
+    "placeholder.selectScript": "Skript Baustein auswählen",
     "placeholder.enterCredentialKey": "Name des Schlüssels in der Windows Anmeldeinformationsverwaltung",
     "placeholder.final": "Final",
     "findAndReplace": {

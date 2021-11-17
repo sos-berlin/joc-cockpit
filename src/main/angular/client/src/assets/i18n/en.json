@@ -2086,7 +2086,7 @@
     "placeholder.orderId": "Enter Order ID",
     "placeholder.className": "Enter Class Name",
     "placeholder.selectJobResources": "Select Job Resources",
-    "placeholder.selectScript": "Select Script",
+    "placeholder.selectScript": "Select Script Include",
     "placeholder.enterCredentialKey": "Enter credential key for Windows Credential Manager",
     "placeholder.final": "Final",
     "findAndReplace": {

@@ -107,7 +107,7 @@
   "WORKINGDAYSCALENDAR": "calendrier des jours ouvrés",
   "NONWORKINGDAYSCALENDAR": "calendrier des jours non ouvrés",
   "SCHEDULE": "Planification",
-  "SCRIPT": "Script",
+  "SCRIPT": "Script Élément",
   "Workflows": "Workflows",
   "File Order Sources": "Sources d'ordre de fichier",
   "Job Classes": "Catégories de Tâche",
@@ -115,10 +115,10 @@
   "Boards": "Conditions",
   "Locks": "Verrous de Ressource",
   "Schedules": "Planifications",
-  "Scripts": "Scripts",
+  "Scripts": "Scripts Éléments",
   "Calendars": "Calendriers",
   "Controller": "Contrôleur",
-  "Daily Plan": "Plan Quotidien",
+  "Daily Plan": "Automatisation",
   "ImplicitEnd": "Fin",
   "--------COMMENT BOX END------------": "Configuration > Inventory view",
   "agent": {
@@ -919,8 +919,8 @@
     "label.jobClasses": "Catégories de Tâche",
     "label.jobResources": "Resources de Tâche",
     "label.orders": "Planifications",
-    "label.scripts": "Scripts",
-    "label.script": "Script",
+    "label.scripts": "Script Éléments",
+    "label.script": "Script Élément",
     "label.templateId": "ID Modèle",
     "label.locks": "Verrous de Ressource",
     "label.calendars": "Calendriers",
@@ -952,7 +952,7 @@
     "label.createWorkflow": "Créer un Workflow",
     "label.createFileOrderSource": "Créer une Source d'Ordre de Fichier",
     "label.createOrder": "Créer une Planification",
-    "label.createScript": "Créer un Script",
+    "label.createScript": "Créer un Script Élément",
     "label.createBoard": "Créer une Condition",
     "label.createLock": "Créer un Verrou de Ressource",
     "label.objectName": "Nom de l'Objet",
@@ -984,7 +984,7 @@
     "button.newWorkflow": "Nouveau Workflow",
     "button.newFileOrderSource": "Nouveau Ordre de Fichier",
     "button.newOrder": "Nouvelle Planification",
-    "button.newScript": "Nouveau Script",
+    "button.newScript": "Nouveau Script Élément",
     "button.newBoard": "Nouvelle Condition",
     "button.newLock": "Nouveau Verrou de Ressource",
     "button.newCalendar": "Nouveau Calendrier",
@@ -1055,7 +1055,7 @@
     "message.startTimeIsMissing": "La période manque dans le calendrier",
     "message.includesIsMissing": "La fréquence incluse est manquante, mais elle est nécessaire",
     "message.uriIsMissing": "L'URL est manquant, mais il est nécessaire",
-    "message.scriptIsMissing": "Le Script est manquant, mail il est nécessaire",
+    "message.scriptIsMissing": "Le Script Élément est manquant, mail il est nécessaire",
     "message.toNoticeIsMissing": "A noter, mais est nécessaire",
     "message.readingOrderToNoticeIdIsMissing": "L'ID Condition pour l'ordre en attente est manquant, mais est requis",
     "message.nameIsNotValid": "Nom invalide",
@@ -1077,7 +1077,7 @@
       "label.deployed": "Déployé",
       "label.released": "Publié",
       "label.controller": "Contrôleur",
-      "label.dailyPlan": "Plan Quotidien"
+      "label.dailyPlan": "Automatisation"
     },
     "tooltips": {
       "calendar": {
@@ -1127,11 +1127,11 @@
         "submitOrderToControllerWhenPlanned": "Les ordres sont automatiquement soumis à un contrôleur au moment prévu. Sur la base des paramètres des ordres du Daily Plan Service sont soumis un certain nombre de jours à l'avance."
       },
       "script": {
-        "name": "Un script est utilisé pour inclure des extraits de code récurrents dans un script job. Le nom d'un Script est unique dans l'inventaire. Pour le nom du Script, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "name": "Un Script Élément est utilisé pour inclure des extraits de code récurrents dans un script job. Le nom d'un Script Élément est unique dans l'inventaire. Pour le nom du Script Élément, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec la Planification. La vue RESSOURCES permet de gérer la documentation.",
-        "title": "Le Titre d'un Script",
-        "script": "En fonction de son utilisation avec les job scripts, le contenu d'un Script peut inclure des commandes Shell ou du code pour des langages de script tels que Perl, PowerShell, etc.",
-        "autocompleteShortCut": "Tapez Ctrl+Espace pour récupérer la liste des scripts disponibles."
+        "title": "Le Titre d'un Script Élément",
+        "script": "En fonction de son utilisation avec les job scripts, le contenu d'un Script Élément peut inclure des commandes Shell ou du code pour des langages de script tels que Perl, PowerShell, etc.",
+        "autocompleteShortCut": "Tapez Ctrl+Espace pour récupérer la liste des Scripts Éléments disponibles."
       },
       "workflow": {
         "name": "Le nom d'un workflow est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
@@ -2086,7 +2086,7 @@
     "placeholder.orderId": "Entrer l'ID de l'Ordre",
     "placeholder.className": "Entrer le Nom de la Classe",
     "placeholder.selectJobResources": "Sélectionnez les Ressources de la taĉhe",
-    "placeholder.selectScript": "Select Script",
+    "placeholder.selectScript": "Sélectionnez le Script Élément",
     "placeholder.enterCredentialKey": "Entrer la clé d'identification à partir du gestionnaire d'identification Windows",
     "placeholder.final": "Final",
     "findAndReplace": {
