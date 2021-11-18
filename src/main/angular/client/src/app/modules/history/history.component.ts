@@ -860,15 +860,44 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     data.showAll = false;
   }
 
-  expandDailyPlan(history) {
+  expandDailyPlan(history): void {
     history.show = true;
     if (history.controllers && history.controllers.length > 0) {
       history.controllers.forEach((controller) => {
-        controller.submissions.forEach((sub) => {
-          if (sub.show === undefined) {
-            sub.show = true;
-          }
-        });
+        if (controller.submissions) {
+          controller.submissions.forEach((sub) => {
+            if (sub.show === undefined) {
+              sub.show = true;
+            }
+          });
+        } else {
+          this.loadSubmissions(history, controller);
+        }
+      });
+
+    }
+  }
+
+  private loadSubmissions(history, controller): void {
+    controller.submissions = [];
+    this.coreService.post('daily_plan/history/submissions', {
+      date: history.date,
+      controllerId: controller.controllerId
+    }).subscribe((res) => {
+      controller.submissions = res.submissionTimes || [];
+    });
+  }
+
+  loadSubmissionOrders(history, controller, submission): void {
+    if (!submission.orderIds) {
+      this.coreService.post('daily_plan/history/submissions/orders', {
+        date: history.date,
+        controllerId: controller.controllerId,
+        submissionTime: submission.submissionTime
+      }).subscribe((res) => {
+        submission.orderIds = res.orders || [];
+        submission.errorMessages = res.errorMessages;
+        submission.warnMessages = res.warnMessages;
       });
     }
   }
@@ -1426,7 +1455,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       obj = this.setSubmissionDateRange(obj);
     }
-    this.convertRequestBody(obj);
+    obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     this.coreService.post('daily_plan/history', obj)
       .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.submissionHistorys = res.dates || [];
@@ -1446,7 +1475,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     history.show = true;
     if (history.controllers && history.controllers.length > 0) {
       history.controllers.forEach((controller) => {
-        if(controller.submissions) {
+        if (controller.submissions) {
           controller.submissions.forEach((sub) => {
             if (sub.show === undefined) {
               sub.show = true;
@@ -1470,15 +1499,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   loadSubmissionOrders(history, controller, submission): void {
-    this.coreService.post('daily_plan/history/submissions/orders', {
-      date: history.date,
-      controllerId: controller.controllerId,
-      submissionTime: submission.submissionTime
-    }).subscribe((res) => {
-      submission.orderIds = res.orders;
-      submission.errorMessages = res.errorMessages;
-      submission.warnMessages = res.warnMessages;
-    });
+    if (!submission.orderIds) {
+      this.coreService.post('daily_plan/history/submissions/orders', {
+        date: history.date,
+        controllerId: controller.controllerId,
+        submissionTime: submission.submissionTime
+      }).subscribe((res) => {
+        submission.orderIds = res.orders || [];
+        submission.errorMessages = res.errorMessages;
+        submission.warnMessages = res.warnMessages;
+      });
+    }
   }
 
   search(obj, isLoading = true): void {
@@ -1914,10 +1945,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.historyFilters.type === 'DEPLOYMENT') {
           this.showChildHistory(value);
         } else if (this.historyFilters.type === 'SUBMISSION') {
-          value.controllers.forEach((controller: any) => {
-            controller.submissions.forEach((sub: any) => {
-              sub.show = true;
-            });
+          value.controllers.forEach((controller) => {
+            if (controller.submissions) {
+              controller.submissions.forEach((sub) => {
+                sub.show = true;
+                this.loadSubmissionOrders(value, controller, sub);
+              });
+            } else {
+              this.loadSubmissions(value, controller);
+            }
           });
         }
       });

@@ -290,7 +290,7 @@
                         <td colspan="6">
                           <span class="p-l">
                             <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                               *ngIf="!child.show" (click)="child.show = true"></i>
+                               *ngIf="!child.show" (click)="loadSubmissionOrders(submissionHistory, controller, child);child.show = true"></i>
                             <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                                *ngIf="child.show" (click)="child.show = false;"></i>
                             <span [innerHtml]="child.submissionTime | stringToDate"></span>

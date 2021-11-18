@@ -118,7 +118,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   loadOrderHistory(): void {
-    let obj = {
+    const obj = {
       controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.workflow.name}],
       limit: this.preferences.maxHistoryPerOrder
@@ -208,7 +208,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   loadAuditLogs(): void {
     const obj = {
       controllerId: this.schedulerIds.selected,
-      objectTypes: ['WORKFLOW'],
+      objectTypes: ['WORKFLOW', 'ORDER'],
       objectName: this.workflow.name,
       limit: this.preferences.maxAuditLogPerObject
     };

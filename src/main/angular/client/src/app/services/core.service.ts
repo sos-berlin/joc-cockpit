@@ -1420,6 +1420,8 @@ export class CoreService {
         if (startChar !== '$') {
           const endChar = data[type].substring(data[type].length - 1);
           if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+          } else if (data[type].match(/\s(\++)\s/)) {
+
           } else {
             data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
             data[type] = '"' + data[type] + '"';
@@ -1435,6 +1437,7 @@ export class CoreService {
             }
           }
         }
+
       }
     } else if (data[type] === '') {
       data[type] = '"' + data[type].trim() + '"';
