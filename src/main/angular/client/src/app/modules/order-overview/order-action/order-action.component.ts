@@ -45,9 +45,7 @@ export class OrderActionComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isChanged.emit(true);
-        setTimeout(() => {
-          this.isChanged.emit(false);
-        }, 5000);
+        this.resetAction();
       }
     });
   }
@@ -99,17 +97,13 @@ export class OrderActionComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isChanged.emit(true);
-          setTimeout(() => {
-            this.isChanged.emit(false);
-          }, 5000);
+          this.resetAction();
         }
       });
     } else {
       this.isChanged.emit(true);
       this.coreService.post('orders/' + url, obj).subscribe(() => {
-        setTimeout(() => {
-          this.isChanged.emit(false);
-        }, 5000);
+        this.resetAction();
       }, () => {
         this.isChanged.emit(false);
       });
@@ -152,9 +146,7 @@ export class OrderActionComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isChanged.emit(true);
-        setTimeout(() => {
-          this.isChanged.emit(false);
-        }, 5000);
+        this.resetAction();
       }
     });
   }
@@ -179,4 +171,11 @@ export class OrderActionComponent {
       nzMaskClosable: false
     });
   }
+
+  private resetAction(): void {
+    setTimeout(() => {
+      this.isChanged.emit(false);
+    }, 5000);
+  }
+
 }

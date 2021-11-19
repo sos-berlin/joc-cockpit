@@ -1233,6 +1233,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         self.roles[self.roleName].permissions.controllers[self.controllerName] = temp;
       } else {
         self.roles[self.roleName].permissions.joc = temp;
+        self.roles[self.roleName].permissions.controllerDefaults = [];
       }
       self.saveInfo();
     }

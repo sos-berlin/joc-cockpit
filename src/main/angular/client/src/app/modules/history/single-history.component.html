@@ -208,10 +208,10 @@
                           [nzData]="depHistory.children" [nzShowPagination]="false" [nzFrontPagination]="false">
                   <thead>
                   <tr>
-                    <th width="24.95%"><span translate>history.label.deployType</span></th>
-                    <th width="24.97%"><span translate>common.label.path</span></th>
-                    <th width="24.95%"><span translate>history.label.operation</span></th>
-                    <th width="24.95%"><span translate>history.label.date</span></th>
+                    <th nzWidth="19.95%"><span translate>history.label.deployType</span></th>
+                    <th nzWidth="39.97%"><span translate>common.label.path</span></th>
+                    <th nzWidth="19.95%"><span translate>history.label.operation</span></th>
+                    <th nzWidth="19.95%"><span translate>history.label.date</span></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -251,7 +251,8 @@
         >
           <thead>
           <tr>
-            <th><span translate>history.label.dailyPlanDate</span></th>
+            <th style="width: 50%"><span translate>history.label.dailyPlanDate</span></th>
+            <th><span translate>history.label.countTotal</span></th>
           </tr>
           </thead>
           <tbody>
@@ -265,14 +266,17 @@
                     <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                        *ngIf="submissionHistory.show"
                        (click)="submissionHistory.show = false;"></i>
-                    <span [innerHtml]="submissionHistory.dailyPlanDate | stringToDate1"></span>
+                    <span [innerHtml]="submissionHistory.date | stringToDate1"></span>
                   </span>
+              </td>
+              <td>
+                {{submissionHistory.countTotal}}
               </td>
             </tr>
             <tr *ngIf="submissionHistory.show">
               <td style="padding:0 !important;">
                 <nz-table class="m-a-0 inner-table" nzSize="small" #innerChildTable
-                          [nzData]="submissionHistory.controllers" [nzShowPagination]="false">
+                          [nzData]="submissionHistory.controllers" [nzShowPagination]="false" [nzFrontPagination]="false">
                   <tbody>
                   <ng-template ngFor let-controller
                                [ngForOf]="innerChildTable.data">
@@ -283,11 +287,12 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="custom-th" colspan="6"><span class="p-l" translate>history.label.submission</span></td>
+                      <td class="custom-th" colspan="3"><span class="p-l" translate>history.label.submission</span></td>
+                      <td class="custom-th" colspan="3"><span translate>history.label.submissionTotal</span></td>
                     </tr>
                     <ng-container *ngFor="let child of controller.submissions" class="order-history-template0">
                       <tr>
-                        <td colspan="6">
+                        <td colspan="3">
                           <span class="p-l">
                             <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                                *ngIf="!child.show" (click)="loadSubmissionOrders(submissionHistory, controller, child);child.show = true"></i>
@@ -296,8 +301,18 @@
                             <span [innerHtml]="child.submissionTime | stringToDate"></span>
                           </span>
                         </td>
+                        <td colspan="3">
+                          {{child.countTotal}}
+                        </td>
                       </tr>
                       <ng-container *ngIf="child.show" class="order-history-template0">
+                        <ng-container *ngIf="!child.orderIds">
+                          <tr>
+                            <td colspan="6" class="text-center">
+                              <nz-spin nzSimple></nz-spin>
+                            </td>
+                          </tr>
+                        </ng-container>
                         <ng-container  *ngIf="child.orderIds && child.orderIds.length > 0">
                           <tr>
                             <td colspan="2" class="custom-th">

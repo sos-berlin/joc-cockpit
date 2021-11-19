@@ -1459,11 +1459,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('daily_plan/history', obj)
       .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.submissionHistorys = res.dates || [];
-      if (flag) {
-        this.mergeSubData();
-      } else {
-        this.searchInResult();
-      }
+      this.searchInResult();
       this.isLoading = true;
     }, () => {
       this.data = [];
@@ -1489,12 +1485,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private loadSubmissions(history, controller): void {
+    history.loading = true;
     controller.submissions = [];
     this.coreService.post('daily_plan/history/submissions', {
       date: history.date,
       controllerId: controller.controllerId
     }).subscribe((res) => {
       controller.submissions = res.submissionTimes || [];
+      history.loading = false;
+    }, () => {
+      history.loading = false;
     });
   }
 
@@ -1947,10 +1947,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         } else if (this.historyFilters.type === 'SUBMISSION') {
           value.controllers.forEach((controller) => {
             if (controller.submissions) {
-              controller.submissions.forEach((sub) => {
-                sub.show = true;
-                this.loadSubmissionOrders(value, controller, sub);
-              });
+
             } else {
               this.loadSubmissions(value, controller);
             }
@@ -2467,23 +2464,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   /* --------------------------Actions -----------------------*/
-
-  private mergeSubData(): void {
-    const oldEntires = clone(this.data);
-    const arr = this.submissionHistorys;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < oldEntires.length; j++) {
-        if (arr[i].dailyPlanDate === oldEntires[j].dailyPlanDate) {
-          if (oldEntires[j].show) {
-            arr[i].show = true;
-          }
-          oldEntires.splice(j, 1);
-          break;
-        }
-      }
-    }
-    this.data = arr;
-  }
 
   private recursiveExpand(data, count): void {
     data.loading = true;

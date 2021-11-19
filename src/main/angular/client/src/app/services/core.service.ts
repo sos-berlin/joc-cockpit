@@ -161,7 +161,7 @@ export class CoreService {
     this.tabs._history.submission.filter = {};
     this.tabs._history.submission.filter.category = 'ALL';
     this.tabs._history.submission.filter.date = 'today';
-    this.tabs._history.submission.filter.sortBy = 'dailyPlanDate';
+    this.tabs._history.submission.filter.sortBy = 'date';
     this.tabs._history.submission.reverse = true;
     this.tabs._history.submission.currentPage = '1';
     this.tabs._history.submission.selectedView = true;
@@ -354,7 +354,7 @@ export class CoreService {
     this.tempTabs._history.submission.filter = {};
     this.tempTabs._history.submission.filter.category = 'ALL';
     this.tempTabs._history.submission.filter.date = 'today';
-    this.tempTabs._history.submission.filter.sortBy = 'dailyPlanDate';
+    this.tempTabs._history.submission.filter.sortBy = 'date';
     this.tempTabs._history.submission.reverse = true;
     this.tempTabs._history.submission.currentPage = '1';
     this.tempTabs._history.submission.selectedView = true;

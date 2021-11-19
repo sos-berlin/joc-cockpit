@@ -797,6 +797,8 @@
     "label.errorMessages": "エラーメッセージ",
     "label.warnMessages": "警告メッセージ",
     "label.dailyPlanDate": "実行計画日付",
+    "label.countTotal": "Total Count",
+    "label.submissionTotal": "Submission Count",
     "label.ignoreListFilters": "無視リストフィルター",
     "label.workflowAndOrder": "ワークフロー/オーダー",
     "label.workflowAndJob": "ワークフロー/ジョブ",
@@ -1250,6 +1252,32 @@
       "message": {
         "updateJobForSelectedWorkflows": "選択した{{workflowsCount}}ワークフローに含まれる {{jobName}}ジョブを更新",
         "updateSelectedObjects": "Update {{objectCount}} selected objects"
+      },
+      "tooltips": {
+        "search": "Search",
+        "folders": "Folders",
+        "currentController": "Current Controller",
+        "deployedOrReleased": "Deployed/Released",
+        "return": "Return",
+        "advanced": "Advanced",
+        "agent": "Agent Name",
+        "workflow": "Workflow",
+        "fileOrderSource": "File Order Source",
+        "jobResources": "Job Resources",
+        "boards": "Notice Boards",
+        "lock": "Lock",
+        "schedule": "Schedule",
+        "countJobs": "Count Jobs",
+        "from": "From",
+        "to": "To",
+        "jobName": "Job Name",
+        "jobNameExactMatch": "Exact match for Job Name",
+        "jobCriticality": "Job Criticality",
+        "jobScript": "Job Script",
+        "argumentName": "Argument Name",
+        "argumentValue": "Argument Value",
+        "environmentName": "Environment Variable Name",
+        "environmentValue": "Environment Variable Value"
       }
     },
     "updateJob": {
