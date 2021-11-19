@@ -22,6 +22,7 @@ import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../../components/modify-modal/modify.component';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
 declare const mxUtils: any;
 declare const mxEvent: any;
@@ -458,7 +459,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     });
   }
 
-  resumeOrder(): void {
+  resumeOrder(isParametrized = false): void {
     this.hideTooltip();
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -467,6 +468,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       nzComponentParams: {
         preferences: this.preferences,
         schedulerId: this.controllerId,
+        isParametrized,
         order: this.coreService.clone(this.order)
       },
       nzFooter: null,
@@ -477,6 +479,25 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       if (res) {
         this.isProcessing = true;
         this.resetAction(5000);
+      }
+    });
+  }
+
+  confirmOrder(): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ConfirmModalComponent,
+      nzComponentParams: {
+        title: 'confirm',
+        question: this.order.question
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.restCall(false, 'Confirm', this.order, 'confirm');
       }
     });
   }

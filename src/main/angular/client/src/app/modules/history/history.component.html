@@ -1498,11 +1498,18 @@
         >
           <thead>
           <tr>
-            <th (click)="sort4('dailyPlanDate')">
+            <th style="width: 50%" (click)="sort4('date')">
               <a><span class="p-r-xs" translate>history.label.dailyPlanDate</span>
-                <i *ngIf="submission.filter.sortBy == 'dailyPlanDate' && !submission.reverse"
+                <i *ngIf="submission.filter.sortBy == 'date' && !submission.reverse"
                    class="fa fa-caret-up "></i>
-                <i *ngIf="submission.filter.sortBy == 'dailyPlanDate' && submission.reverse"
+                <i *ngIf="submission.filter.sortBy == 'date' && submission.reverse"
+                   class="fa fa-caret-down "></i></a>
+            </th>
+            <th (click)="sort4('countTotal')">
+              <a><span class="p-r-xs" translate>history.label.countTotal</span>
+                <i *ngIf="submission.filter.sortBy == 'countTotal' && !submission.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="submission.filter.sortBy == 'countTotal' && submission.reverse"
                    class="fa fa-caret-down "></i></a>
             </th>
           </tr>
@@ -1522,10 +1529,13 @@
                     <span [innerHtml]="submissionHistory.date | stringToDate1"></span>
                   </span>
               </td>
+              <td>
+                {{submissionHistory.countTotal}}
+              </td>
             </tr>
             <tr *ngIf="submissionHistory.show">
-              <td style="padding:0 !important;">
-                <nz-table class="m-a-0 inner-table" nzSize="small" #innerChildTable
+              <td style="padding:0 !important;" colspan="2">
+                <nz-table class="m-a-0 inner-table" nzSize="small" #innerChildTable [nzLoading]="submissionHistory.loading"
                           [nzData]="submissionHistory.controllers" [nzShowPagination]="false" [nzFrontPagination]="false">
                   <tbody>
                     <ng-template ngFor let-controller
@@ -1537,11 +1547,12 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="custom-th" colspan="6"><span class="p-l" [ngClass]="{'p-l-md' : !historyFilters.current }" translate>history.label.submission</span></td>
+                      <td class="custom-th" colspan="3"><span class="p-l" [ngClass]="{'p-l-md' : !historyFilters.current }" translate>history.label.submission</span></td>
+                      <td class="custom-th" colspan="3"><span translate>history.label.submissionTotal</span></td>
                     </tr>
                     <ng-container *ngFor="let child of controller.submissions" class="order-history-template0">
                       <tr>
-                        <td colspan="6">
+                        <td colspan="3">
                           <span class="p-l" [ngClass]="{'p-l-md' : !historyFilters.current }">
                             <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                                *ngIf="!child.show" (click)="loadSubmissionOrders(submissionHistory, controller, child);child.show = true"></i>
@@ -1550,8 +1561,18 @@
                             <span [innerHtml]="child.submissionTime | stringToDate"></span>
                           </span>
                         </td>
+                        <td colspan="3">
+                          {{child.countTotal}}
+                        </td>
                       </tr>
                       <ng-container *ngIf="child.show" class="order-history-template0">
+                        <ng-container *ngIf="!child.orderIds">
+                          <tr>
+                            <td colspan="6" class="text-center">
+                              <nz-spin nzSimple></nz-spin>
+                            </td>
+                          </tr>
+                        </ng-container>
                         <ng-container  *ngIf="child.orderIds && child.orderIds.length > 0">
                           <tr>
                             <td colspan="2" class="custom-th">
@@ -1565,14 +1586,14 @@
                             <td colspan="2"><span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }"
                                                   [innerHtml]="order.orderId | highlight: submission.searchText"></span></td>
                             <td colspan="2">
-                              <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                              <span (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
+                              <i *ngIf="order.workflowPath" (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                              <span *ngIf="order.workflowPath" (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
                                     class="text-hover-primary" [innerHtml]="order.workflowPath | highlight: submission.searchText"></span>
                             </td>
                             <td><span>{{order.scheduledFor | stringToDate}}</span></td>
                             <td>
                                <span class="label bg-orange" *ngIf="order.submitted" translate>{{'submitted' | translate}}</span>
-                               <span class="label bg-red" *ngIf="!order.submitted" translate>{{'notSubmitted' | translate}}</span>
+                               <span class="label bg-red" *ngIf="!order.submitted && order.workflowPath" translate>{{'notSubmitted' | translate}}</span>
                             </td>
                           </tr>
                           <tr *ngIf="(child.orderIds | filter: submission.searchText : ['workflowPath', 'orderId']).length === 0">

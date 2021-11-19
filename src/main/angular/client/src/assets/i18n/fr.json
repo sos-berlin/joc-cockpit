@@ -797,6 +797,8 @@
     "label.errorMessages": "Messages d'Erreur",
     "label.warnMessages": "Messages d'Alerte",
     "label.dailyPlanDate": "Date du Plan Quotidien",
+    "label.countTotal": "Total Count",
+    "label.submissionTotal": "Submission Count",
     "label.ignoreListFilters": "Filtres pour la Liste des Ignorés",
     "label.workflowAndOrder": "Workflow/Ordres",
     "label.workflowAndJob": "Workflow/Tâches",
@@ -1250,6 +1252,32 @@
       "message": {
         "updateJobForSelectedWorkflows": "Mise à jour {{jobName}} dans les {{workflowsCount}} workflows sélectionnés",
         "updateSelectedObjects": "Mise à jour de {{objectCount}} objets sélectionnés"
+      },
+      "tooltips": {
+        "search": "Search",
+        "folders": "Folders",
+        "currentController": "Current Controller",
+        "deployedOrReleased": "Deployed/Released",
+        "return": "Return",
+        "advanced": "Advanced",
+        "agent": "Agent Name",
+        "workflow": "Workflow",
+        "fileOrderSource": "File Order Source",
+        "jobResources": "Job Resources",
+        "boards": "Notice Boards",
+        "lock": "Lock",
+        "schedule": "Schedule",
+        "countJobs": "Count Jobs",
+        "from": "From",
+        "to": "To",
+        "jobName": "Job Name",
+        "jobNameExactMatch": "Exact match for Job Name",
+        "jobCriticality": "Job Criticality",
+        "jobScript": "Job Script",
+        "argumentName": "Argument Name",
+        "argumentValue": "Argument Value",
+        "environmentName": "Environment Variable Name",
+        "environmentValue": "Environment Variable Value"
       }
     },
     "updateJob": {

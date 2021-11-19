@@ -97,7 +97,9 @@ if ("undefined" == typeof jQuery) throw new Error("Bootstrap's JavaScript requir
         var b = a.getAttribute("data-target");
         return b || (b = a.getAttribute("href") || "", b = /^#[a-z]/i.test(b) ? b : null), b
       }, reflow: function (a) {
-        new Function("bs", "return bs")(a.offsetHeight)
+        return function (){
+          return a.offsetHeight;
+        }
       }, triggerTransitionEnd: function (b) {
         a(b).trigger(h.end)
       }, supportsTransitionEnd: function () {

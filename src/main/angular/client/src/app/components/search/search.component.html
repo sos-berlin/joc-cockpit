@@ -1,8 +1,8 @@
-<div class="text-left" xmlns="http://www.w3.org/1999/html">
+<div class="text-left">
   <form #myForm="ngForm" (ngSubmit)="search()">
     <div class="p-a">
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label"
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.search' | translate"
                translate>inventory.search.label.search</label>
         <div class="col-md-8 col-lg-9">
           <label class="w-full">
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label"
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.folders' | translate"
                translate>inventory.search.label.folders</label>
         <div class="col-md-8 col-lg-9">
           <nz-tree-select
@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard">
-        <label class="col-md-4 col-lg-3 block-ellipsis-job"
+        <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'inventory.search.tooltips.deployedOrReleased' | translate"
                translate>inventory.search.label.deployedOrReleased</label>
         <div class="col-md-2 col-lg-2">
           <label nz-checkbox [(ngModel)]="searchObj.deployedOrReleased" name="deployedOrReleased"></label>
@@ -51,7 +51,8 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.search.label.return</label>
+        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.return' | translate"
+               translate>inventory.search.label.return</label>
         <div class="col-md-8 col-lg-9">
           <nz-select [(ngModel)]="searchObj.returnType" name="returnType">
             <nz-option *ngFor="let type of deployTypes" nzLabel="{{type | translate}}" [nzValue]="type"></nz-option>
@@ -66,7 +67,7 @@
         >
             <div class="p-a b-a m-t">
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.agent' | translate"
                        translate>inventory.search.label.agent</label>
                 <div class="col-md-8 col-lg-9">
                   <nz-select nzAllowClear nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
@@ -76,7 +77,7 @@
                 </div>
               </div>
               <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.WORKFLOW">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.workflow' | translate"
                        translate>inventory.search.label.workflow</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
@@ -86,7 +87,7 @@
                 </div>
               </div>
               <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.FILEORDERSOURCE">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.fileOrderSource' | translate"
                        translate>inventory.search.label.fileOrderSource</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
@@ -96,7 +97,7 @@
                 </div>
               </div>
               <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOBRESOURCE">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobResources' | translate"
                        translate>inventory.search.label.jobResources</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
@@ -106,7 +107,7 @@
                 </div>
               </div>
               <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.NOTICEBOARD">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.boards' | translate"
                        translate>inventory.search.label.boards</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
@@ -116,7 +117,7 @@
                 </div>
               </div>
               <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.LOCK">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.lock' | translate"
                        translate>inventory.search.label.lock</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
@@ -126,7 +127,7 @@
                 </div>
               </div>
               <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.SCHEDULE">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.schedule' | translate"
                        translate>inventory.search.label.schedule</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
@@ -136,15 +137,15 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.countJobs' | translate"
                        translate>inventory.search.label.countJobs</label>
-                <label class="col-md-2 col-lg-2 form-control-label"
+                <label class="col-md-2 col-lg-2 form-control-label" [nz-tooltip]="'inventory.search.tooltips.from' | translate"
                        translate>inventory.search.label.from
                 </label>
                 <div class="col-md-2 col-lg-2">
                   <nz-input-number [nzMin]="0" name="from" [(ngModel)]="searchObj.advanced.jobCountFrom"></nz-input-number>
                 </div>
-                <label class="col-md-2 col-lg-2 text-center form-control-label"
+                <label class="col-md-2 col-lg-2 text-center form-control-label" [nz-tooltip]="'inventory.search.tooltips.to' | translate"
                        translate>inventory.search.label.to
                 </label>
                 <div class="col-md-2 col-lg-2">
@@ -152,7 +153,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobName' | translate"
                        translate>inventory.search.label.jobName</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
@@ -162,14 +163,14 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 block-ellipsis w-full"
+                <label class="col-md-4 col-lg-3 block-ellipsis w-full" [nz-tooltip]="'inventory.search.tooltips.jobNameExactMatch' | translate"
                        translate>inventory.search.label.jobNameExactMatch</label>
                 <div class="col-md-8 col-lg-9">
                   <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch" (nzCheckedChange)="isJobSearch = false;object.mapOfCheckedId.clear()" name="jobNameExactMatch"></label>
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobCriticality' | translate"
                        translate>inventory.search.label.jobCriticality</label>
                 <div class="col-md-8 col-lg-9">
                   <nz-select name="criticality" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
@@ -180,7 +181,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobScript' | translate"
                        translate>inventory.search.label.jobScript</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="jobScript"
@@ -188,7 +189,7 @@
                 </div>
               </div>
               <div class="form-group row" *ngIf="searchObj.returnType === ENUM.WORKFLOW">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.argumentName' | translate"
                        translate>inventory.search.label.argumentName</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="name"
@@ -196,7 +197,7 @@
                 </div>
               </div>
               <div class="form-group row" *ngIf="searchObj.returnType === ENUM.WORKFLOW">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.argumentValue' | translate"
                        translate>inventory.search.label.argumentValue</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="value"
@@ -204,7 +205,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.environmentName' | translate"
                        translate>inventory.search.label.environmentName</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="envName"
@@ -212,7 +213,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.environmentValue' | translate"
                        translate>inventory.search.label.environmentValue</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="envValue"
