@@ -830,7 +830,7 @@
     "tab.tasks": "Tasks",
     "tab.fileTransfers": "File Transfers",
     "tab.deployments": "Deployments",
-    "tab.dailyPlan": "Daily Plan"
+    "tab.dailyPlan": "Submissions"
   },
   "info": {
     "label.welcome": "Welcome to JS7",
