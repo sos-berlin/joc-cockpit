@@ -99,9 +99,11 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted') && this.index == 1) {
           this.loadTaskHistory();
           break;
-        } else if (args.eventSnapshots[j].eventType === 'AuditLogChanged' && this.index == 2) {
-          this.loadAuditLogs();
-          break;
+        } else if (args.eventSnapshots[j].eventType === 'WorkflowAuditLogChanged' && this.index == 2) {
+          if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.workflow.path) {
+            this.loadAuditLogs();
+            break;
+          }
         }
       }
     }

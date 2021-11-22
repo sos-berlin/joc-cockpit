@@ -22,7 +22,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   eventLoading = false;
   switchScheduler = false;
   isLogout = false;
-  selectedController: any;
+  isBackUp = '';
   timeout: any;
   subscription: Subscription;
 
@@ -43,7 +43,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private init(): void {
     this.reloadSettings();
-    this.getSelectedSchedulerInfo();
     if (this.schedulerIds && this.schedulerIds.selected) {
       this.getEvents();
     }
@@ -52,22 +51,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       if (!isEmpty(showViews)) {
         this.showViews = showViews;
       }
-    }
-  }
-
-  getSelectedSchedulerInfo(): void {
-    if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
-      this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
-    }
-    if (isEmpty(this.selectedController)) {
-      const interval = setInterval(() => {
-        if (sessionStorage.$SOS$CONTROLLER && JSON.parse(sessionStorage.$SOS$CONTROLLER)) {
-          this.selectedController = JSON.parse(sessionStorage.$SOS$CONTROLLER) || {};
-          if (!isEmpty(this.selectedController)) {
-            clearInterval(interval);
-          }
-        }
-      }, 100);
     }
   }
 
@@ -80,6 +63,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
+    if (!this.isBackUp) {
+      this.isJocActive();
+    }
   }
 
   ngOnDestroy(): void {
@@ -103,10 +89,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logout(): void {
     this.isLogout = true;
     this.myLogout.emit();
-  }
-
-  switchSchedulerController(): void {
-    this.getSelectedSchedulerInfo();
   }
 
   navigateToResource(): void {
@@ -192,13 +174,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  private isJocActive(): void {
+    this.coreService.post('joc/is_active', {}).subscribe((res: any) => {
+      this.isBackUp = res.ok ? 'NO' : 'YES';
+    }, (err) => {
+      console.log(err);
+    });
+  }
+
   getEvents(): void {
     if (!this.schedulerIds.selected || this.isLogout) {
       return;
     }
     if (!this.eventLoading) {
       this.eventLoading = true;
-      let obj = {
+      const obj = {
         controllerId: this.schedulerIds.selected,
         eventId: this.eventId
       };
@@ -206,6 +196,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         if (!this.switchScheduler && !this.isLogout) {
           this.eventId = res.eventId;
           this.dataService.announceEvent(res);
+          for (let j = 0; j < res.eventSnapshots.length; j++) {
+            if (res.eventSnapshots[j].eventType === 'JOCStateChanged') {
+              this.isJocActive();
+              break;
+            }
+          }
         }
         if (!this.isLogout) {
           this.timeout = setTimeout(() => {

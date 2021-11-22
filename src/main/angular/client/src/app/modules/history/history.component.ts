@@ -5,6 +5,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {isEmpty, clone, extend} from 'underscore';
+import {takeUntil} from 'rxjs/operators';
+import {OrderPipe} from 'ngx-order-pipe';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -16,7 +18,6 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
 import {SearchPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {InventoryForHistory} from '../../models/enums';
-import {takeUntil} from 'rxjs/operators';
 
 declare const $;
 
@@ -59,7 +60,7 @@ export class OrderTemplateComponent {
     });
   }
 
-  navToWorkflowTab(workflow) {
+  navToWorkflowTab(workflow): void {
     this.coreService.getConfigurationTab().inventory.expand_to = [];
     this.coreService.getConfigurationTab().inventory.selectedObj = {
       name: workflow.substring(workflow.lastIndexOf('/') + 1),
@@ -791,12 +792,14 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   private getSubmissionHistory(): void {
     const obj = {
       controllerId: this.controllerId,
-      auditLogId: this.auditLogId
+      auditLogId: this.auditLogId,
+      limit: parseInt(this.preferences.maxRecords, 10)
     };
     this.coreService.post('daily_plan/history', obj).subscribe((res: any) => {
       this.history = res.dates || [];
       this.loading = false;
     }, () => {
+      this.history = [];
       this.loading = false;
     });
   }
@@ -882,9 +885,12 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     controller.submissions = [];
     this.coreService.post('daily_plan/history/submissions', {
       date: history.date,
-      controllerId: controller.controllerId
+      controllerId: controller.controllerId,
+      limit: parseInt(this.preferences.maxRecords, 10)
     }).subscribe((res) => {
       controller.submissions = res.submissionTimes || [];
+    }, () => {
+      controller.submissions = [];
     });
   }
 
@@ -893,11 +899,16 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       this.coreService.post('daily_plan/history/submissions/orders', {
         date: history.date,
         controllerId: controller.controllerId,
-        submissionTime: submission.submissionTime
+        submissionTime: submission.submissionTime,
+        limit: parseInt(this.preferences.maxRecords, 10)
       }).subscribe((res) => {
         submission.orderIds = res.orders || [];
-        submission.errorMessages = res.errorMessages;
-        submission.warnMessages = res.warnMessages;
+        submission.errorMessages = res.errorMessages || [];
+        submission.warnMessages = res.warnMessages || [];
+      }, () => {
+        submission.orderIds = [];
+        submission.errorMessages = [];
+        submission.warnMessages = [];
       });
     }
   }
@@ -963,6 +974,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
   yadeSearchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
+  isSubmissionLoading = false;
   reloadState = 'no';
   object: any = {};
   ignoreListConfigId = 0;
@@ -990,7 +1002,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
-              private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
+              private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
               private message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -1076,7 +1088,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   orderHistory(obj, flag): void {
-    if (!obj && !flag){
+    if (!obj && !flag) {
       this.pendingHTTPRequests$.next();
     }
     this.reloadState = 'no';
@@ -1109,6 +1121,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertRequestBody(obj);
     this.coreService.post('orders/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.historys = this.setDuration(res);
+      this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
       if (flag) {
         this.mergeOldData();
       } else {
@@ -1176,7 +1189,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   taskHistory(obj, flag): void {
-    if (!obj && !flag){
+    if (!obj && !flag) {
       this.pendingHTTPRequests$.next();
     }
     this.reloadState = 'no';
@@ -1208,6 +1221,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertRequestBody(obj);
     this.coreService.post('tasks/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res) => {
       this.taskHistorys = this.setDuration(res);
+      this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
       if (flag) {
         this.mergeOldTaskData();
       } else {
@@ -1248,7 +1262,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   yadeHistory(obj, flag): void {
-    if (!obj && !flag){
+    if (!obj && !flag) {
       this.pendingHTTPRequests$.next();
     }
     this.reloadState = 'no';
@@ -1279,6 +1293,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
     this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.yadeHistorys = res.transfers || [];
+      this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
       if (flag) {
         this.mergeOldYadeData();
       } else {
@@ -1338,7 +1353,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   deploymentHistory(obj, flag): void {
-    if (!obj && !flag){
+    if (!obj && !flag) {
       this.pendingHTTPRequests$.next();
     }
     this.reloadState = 'no';
@@ -1370,7 +1385,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     this.convertDeployRequestBody(obj);
     this.coreService.post('inventory/deployment/history', {compactFilter: obj}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      this.deploymentHistorys = res.depHistory;
+      this.deploymentHistorys = res.depHistory || [];
+      this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
       if (flag) {
         this.mergeDepData();
       } else {
@@ -1420,7 +1436,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   submissionHistory(obj, flag): void {
-    if (!obj && !flag){
+    if (!obj && !flag) {
       this.pendingHTTPRequests$.next();
     }
     this.reloadState = 'no';
@@ -1459,6 +1475,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('daily_plan/history', obj)
       .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
       this.submissionHistorys = res.dates || [];
+      this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
       this.searchInResult();
       this.isLoading = true;
     }, () => {
@@ -1489,25 +1506,35 @@ export class HistoryComponent implements OnInit, OnDestroy {
     controller.submissions = [];
     this.coreService.post('daily_plan/history/submissions', {
       date: history.date,
+      limit: parseInt(this.preferences.maxRecords, 10),
       controllerId: controller.controllerId
     }).subscribe((res) => {
       controller.submissions = res.submissionTimes || [];
       history.loading = false;
     }, () => {
+      controller.submissions = [];
       history.loading = false;
     });
   }
 
   loadSubmissionOrders(history, controller, submission): void {
     if (!submission.orderIds) {
+      this.isSubmissionLoading = true;
       this.coreService.post('daily_plan/history/submissions/orders', {
         date: history.date,
         controllerId: controller.controllerId,
-        submissionTime: submission.submissionTime
-      }).subscribe((res) => {
+        submissionTime: submission.submissionTime,
+        limit: parseInt(this.preferences.maxRecords, 10)
+      }).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res) => {
         submission.orderIds = res.orders || [];
         submission.errorMessages = res.errorMessages;
         submission.warnMessages = res.warnMessages;
+        this.isSubmissionLoading = false;
+      }, () => {
+        submission.orderIds = [];
+        submission.errorMessages = [];
+        submission.warnMessages = [];
+        this.isSubmissionLoading = false;
       });
     }
   }
@@ -1561,6 +1588,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       this.coreService.post('orders/history', filter).subscribe((res: any) => {
         this.historys = this.setDuration(res);
+        this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
         this.searchInResult();
         this.isLoading = true;
       }, () => {
@@ -1611,6 +1639,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       this.coreService.post('tasks/history', filter).subscribe((res: any) => {
         this.taskHistorys = this.setDuration(res);
+        this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
         this.searchInResult();
         this.isLoading = true;
       }, () => {
@@ -1642,7 +1671,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       this.convertDeployRequestBody(filter);
       this.coreService.post('inventory/deployment/history', {compactFilter: filter}).subscribe((res: any) => {
-        this.deploymentHistorys = res.depHistory;
+        this.deploymentHistorys = res.depHistory || [];
+        this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
         this.searchInResult();
         this.isLoading = true;
       }, () => {
@@ -1682,6 +1712,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       this.coreService.post('daily_plan/history', filter).subscribe((res: any) => {
         this.submissionHistorys = res.dates || [];
+        this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
         this.searchInResult();
         this.isLoading = true;
       }, () => {
@@ -1695,6 +1726,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.fileTransferService.getRequestForSearch(this.yadeSearch, filter, this.preferences);
       this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
         this.yadeHistorys = res.transfers || [];
+        this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
         this.searchInResult();
         this.isLoading = true;
         this.setHeaderWidth();
@@ -1853,26 +1885,31 @@ export class HistoryComponent implements OnInit, OnDestroy {
   sort(propertyName): void {
     this.order.reverse = !this.order.reverse;
     this.order.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.order.filter.sortBy, this.order.reverse);
   }
 
   sort1(propertyName): void {
     this.task.reverse = !this.task.reverse;
     this.task.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.task.filter.sortBy, this.task.reverse);
   }
 
   sort2(propertyName): void {
     this.yade.reverse = !this.yade.reverse;
     this.yade.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.yade.filter.sortBy, this.yade.reverse);
   }
 
   sort3(propertyName): void {
     this.deployment.reverse = !this.deployment.reverse;
     this.deployment.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.deployment.filter.sortBy, this.deployment.reverse);
   }
 
   sort4(propertyName): void {
     this.submission.reverse = !this.submission.reverse;
     this.submission.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.submission.filter.sortBy, this.submission.reverse);
   }
 
   pageIndexChange($event): void {
@@ -3702,6 +3739,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
   /* --------------------------Customizations End-----------------------*/
 
   reload(): void {
+    if (this.isSubmissionLoading) {
+      this.pendingHTTPRequests$.next();
+      this.isSubmissionLoading = false;
+      return;
+    }
     if (this.reloadState === 'no') {
       this.historys = [];
       this.taskHistorys = [];

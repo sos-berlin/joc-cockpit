@@ -775,6 +775,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTooltipVisible: boolean;
   @Input() isModal: boolean;
   @Input() exactMatch: boolean;
+  agentList = [];
   history = [];
   list: Array<string> = [];
   indexOfNextAdd = 0;
@@ -929,11 +930,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private checkIsAgentExist(): void {
-    if (this.notFound) {
-      this.agents = this.agents.filter((item) => {
-        return item !== this.notFound;
-      });
-    }
+    this.agentList = [];
     if (this.selectedNode.job.agentName) {
       let isFound = false;
       for (const i in this.agents) {
@@ -944,9 +941,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (!isFound) {
         this.notFound = this.selectedNode.job.agentName;
-        this.agents.push(this.selectedNode.job.agentName);
+        this.agentList.push(this.selectedNode.job.agentName);
       }
     }
+    this.agentList = this.agentList.concat(this.agents);
     this.ref.detectChanges();
   }
 
@@ -2197,7 +2195,7 @@ export class ImportComponent implements OnInit {
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss']
 })
-export class WorkflowComponent implements OnDestroy, OnChanges {
+export class WorkflowComponent implements OnChanges, OnDestroy {
   @Input() data: any;
   @Input() preferences: any;
   @Input() schedulerId: any;
@@ -2255,7 +2253,8 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
@@ -2263,12 +2262,17 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
   constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService,
               public toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
-    this.subscription = dataService.reloadTree.subscribe(res => {
+    this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.workflow.actual) {
           this.ref.detectChanges();
         }
       }
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      setTimeout(() => {
+        this.getAgents();
+      }, 0);
     });
     this.zones = coreService.getTimeZoneList();
   }
@@ -2337,6 +2341,26 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     }
   }
 
+
+  ngOnDestroy(): void {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+    if (this.data.type) {
+      this.saveCopyInstruction();
+      this.saveJSON(false);
+    }
+    try {
+      if (this.editor) {
+        this.editor.destroy();
+        mxOutline.prototype.destroy();
+        this.editor = null;
+        $('.mxTooltip').remove();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   recursiveTreeUpdate(scr): void {
     function recursive(data) {
       data.expanded = false;
@@ -2380,24 +2404,6 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
     } catch (e) {
       // Shows an error message if the editor cannot start
       mxUtils.alert('Cannot start application: ' + e.message);
-      console.error(e);
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-    if (this.data.type) {
-      this.saveCopyInstruction();
-      this.saveJSON(false);
-    }
-    try {
-      if (this.editor) {
-        this.editor.destroy();
-        mxOutline.prototype.destroy();
-        this.editor = null;
-        $('.mxTooltip').remove();
-      }
-    } catch (e) {
       console.error(e);
     }
   }
@@ -3063,11 +3069,15 @@ export class WorkflowComponent implements OnDestroy, OnChanges {
         });
       }
       if (this.agents.length === 0) {
-        this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
-          this.agents = res.agentNames ? res.agentNames.sort() : [];
-        });
+        this.getAgents();
       }
     }
+  }
+
+  private getAgents(): void{
+    this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
+      this.agents = res.agentNames ? res.agentNames.sort() : [];
+    });
   }
 
   private getJobResources(): void {
