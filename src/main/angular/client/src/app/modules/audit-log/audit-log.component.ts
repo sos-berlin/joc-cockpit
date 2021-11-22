@@ -426,7 +426,10 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'AuditLogChanged') {
+        if (args.eventSnapshots[j].eventType === 'AuditLogChanged' || args.eventSnapshots[j].eventType === 'InventoryUpdated'
+          || args.eventSnapshots[j].eventType === 'InventoryTreeUpdated' || args.eventSnapshots[j].eventType === 'InventoryTrashUpdated'
+          || args.eventSnapshots[j].eventType === 'InventoryTrashTreeUpdated' || args.eventSnapshots[j].eventType === 'DocumentationUpdated'
+          || args.eventSnapshots[j].eventType === 'DocumentationTreeUpdated') {
           if (this.searchFilter && !isEmpty(this.searchFilter)) {
             this.search(true);
           } else {

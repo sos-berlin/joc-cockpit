@@ -797,8 +797,8 @@
     "label.errorMessages": "Fehlermeldungen",
     "label.warnMessages": "Warnungen",
     "label.dailyPlanDate": "Datum Tagesplan",
-    "label.countTotal": "Total Count",
-    "label.submissionTotal": "Submission Count",
+    "label.countTotal": "Summe",
+    "label.submissionTotal": "Anzahl Übermittlungen",
     "label.ignoreListFilters": "Filter der Ausschlussliste",
     "label.workflowAndOrder": "Arbeitsabläufe/Aufträge",
     "label.workflowAndJob": "Arbeitsablauf/Jobs",
@@ -830,7 +830,7 @@
     "tab.tasks": "Prozesse",
     "tab.fileTransfers": "Dateiübertragungen",
     "tab.deployments": "Ausrollen",
-    "tab.dailyPlan": "Tagesplan Übermittlungen"
+    "tab.dailyPlan": "Übermittlungen"
   },
   "info": {
     "label.welcome": "Willkommen",
@@ -1242,7 +1242,7 @@
       "button": {
         "search": "Suche",
         "updateJob": "Job aktualisieren",
-        "updateObject": "Update Object",
+        "updateObject": "Objekt aktualisieren",
         "propagateJob": "Job propagieren"
       },
       "placeholder": {
@@ -1254,30 +1254,30 @@
         "updateSelectedObjects": "{{objectCount}} ausgewählte Objekte aktualisieren"
       },
       "tooltips": {
-        "search": "Search",
-        "folders": "Folders",
-        "currentController": "Current Controller",
-        "deployedOrReleased": "Deployed/Released",
-        "return": "Return",
-        "advanced": "Advanced",
-        "agent": "Agent Name",
-        "workflow": "Workflow",
-        "fileOrderSource": "File Order Source",
-        "jobResources": "Job Resources",
-        "boards": "Notice Boards",
-        "lock": "Lock",
-        "schedule": "Schedule",
-        "countJobs": "Count Jobs",
-        "from": "From",
-        "to": "To",
-        "jobName": "Job Name",
-        "jobNameExactMatch": "Exact match for Job Name",
-        "jobCriticality": "Job Criticality",
-        "jobScript": "Job Script",
-        "argumentName": "Argument Name",
-        "argumentValue": "Argument Value",
-        "environmentName": "Environment Variable Name",
-        "environmentValue": "Environment Variable Value"
+        "search": "Suche",
+        "folders": "Ordner",
+        "currentController": "Aktueller Controller",
+        "deployedOrReleased": "Ausgerollt/Freigegeben",
+        "return": "Rückgabe",
+        "advanced": "Erweitert",
+        "agent": "Agentenname",
+        "workflow": "Arbeitsablauf",
+        "fileOrderSource": "Dateiauftragsquelle",
+        "jobResources": "Job-Ressourcen",
+        "boards": "Notizbretter",
+        "lock": "Ressourcen-Sperre",
+        "schedule": "Zeitplan",
+        "countJobs": "Anzahl Jobs",
+        "from": "Von",
+        "to": "Bis",
+        "jobName": "Job-Name",
+        "jobNameExactMatch": "Exakte Übereinstimmung mit Job-Name",
+        "jobCriticality": "Job-Kritikalität",
+        "jobScript": "Job-Skript",
+        "argumentName": "Name des Arguments",
+        "argumentValue": "Wert des Arguments",
+        "environmentName": "Name der Umgebungsvariable",
+        "environmentValue": "Wert der Umgebungsvariable"
       }
     },
     "updateJob": {

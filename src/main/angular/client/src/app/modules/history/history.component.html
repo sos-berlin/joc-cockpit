@@ -737,7 +737,7 @@
           [nzPageIndex]="order.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data | orderBy: order.filter.sortBy:order.reverse"
+          [nzData]="data"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -929,7 +929,7 @@
           [nzPageIndex]="task.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data | orderBy: task.filter.sortBy:task.reverse"
+          [nzData]="data"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -1104,7 +1104,7 @@
           [nzPageIndex]="yade.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data | orderBy: yade.filter.sortBy:yade.reverse"
+          [nzData]="data"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -1341,7 +1341,7 @@
           [nzPageIndex]="deployment.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data | orderBy: deployment.filter.sortBy:deployment.reverse"
+          [nzData]="data"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -1489,7 +1489,7 @@
           [nzPageIndex]="submission.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data | orderBy: submission.filter.sortBy:submission.reverse"
+          [nzData]="data"
           [nzLoading]="!isLoading"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"
@@ -1633,7 +1633,7 @@
     </div>
   </div>
 </div>
-<div *ngIf="!isLoading || reloadState == 'yes'">
+<div *ngIf="!isLoading || reloadState == 'yes' || isSubmissionLoading">
   <div class="bottom-btn" (click)="reload()">
     <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
     <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>

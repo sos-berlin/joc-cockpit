@@ -103,7 +103,7 @@
                [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
             <nz-select nzShowSearch name="agentName" nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
                        [(ngModel)]="selectedNode.job.agentName" #agentName="ngModel" (ngModelChange)="onBlur();">
-              <nz-option nzCustomContent *ngFor="let agent of agents" [nzValue]="agent" [nzLabel]="agent">
+              <nz-option nzCustomContent *ngFor="let agent of agentList" [nzValue]="agent" [nzLabel]="agent">
                 <div>
                   <span>{{agent}}</span> <span *ngIf="notFound && agent == notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
                 </div>
