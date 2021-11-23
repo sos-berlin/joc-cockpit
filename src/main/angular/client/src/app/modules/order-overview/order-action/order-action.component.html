@@ -17,8 +17,8 @@
       <li (click)="suspendOrderWithKill()" nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS' || order.state._text === 'WAITING')">
         <a translate>order.button.suspendAndKillTask</a>
       </li>
-      <li nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
-        <a (click)="resumeOrder()">{{'order.button.resume' | translate}} ..</a>
+      <li (click)="resumeOrder()" nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
+        <a>{{'order.button.resume' | translate}} ..</a>
       </li>
       <li (click)="resumeOrder(true)" nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'SUSPENDED' || order.state._text === 'FAILED')">
         <a>{{'order.button.resumeParametrized' | translate}} ..</a>

@@ -178,7 +178,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.coreService.post('joc/is_active', {}).subscribe((res: any) => {
       this.isBackUp = res.ok ? 'NO' : 'YES';
     }, (err) => {
-      console.log(err);
+      console.error(err);
     });
   }
 

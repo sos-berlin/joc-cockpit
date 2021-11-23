@@ -1825,7 +1825,9 @@
       "show_view_resources": "Specifies that independently from user permissions the RESOURCES view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
       "show_view_history": "Specifies that independently from user permissions the HISTORY view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
       "show_view_auditlog": "Specifies that independently from user permissions the AUDIT LOG view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
-      "show_view_configuration": "Specifies that independently from user permissions the CONFIGURATION view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed."
+      "show_view_configuration": "Specifies that independently from user permissions the CONFIGURATION view is available (=true) or is hidden (=false). An empty value for this setting specifies that user permissions determine if the view is displayed.",
+      "controller_connection_joc_password": "controller_connection_joc_password",
+      "controller_connection_history_password": "controller_connection_history_password"
     },
     "user": {
       "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",

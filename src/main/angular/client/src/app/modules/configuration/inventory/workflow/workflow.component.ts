@@ -3140,6 +3140,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
+      this.isLoading = false;
       if (this.data.id === res.id) {
         if (this.data.deployed !== res.deployed) {
           this.data.deployed = res.deployed;
@@ -3160,33 +3161,35 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } else {
           res.configuration = {};
         }
+        try {
+          this.initObjects(res);
+          this.workflow = res;
+          this.workflow.actual = JSON.stringify(res.configuration);
 
-        this.initObjects(res);
-        this.workflow = res;
-        this.workflow.actual = JSON.stringify(res.configuration);
-
-        this.workflow.name = this.data.name;
-        if (this.workflow.configuration.jobs) {
-          if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
-            this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
-              return {name: k, value: v};
-            });
+          this.workflow.name = this.data.name;
+          if (this.workflow.configuration.jobs) {
+            if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
+              this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
+                return {name: k, value: v};
+              });
+            }
           }
-        }
 
-        if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
-          this.invalidMsg = 'workflow.message.emptyWorkflow';
-        } else if (!res.valid) {
-          this.validateByURL(res.configuration);
-        }
-        this.updateXMLJSON(false);
-        this.centered();
-        this.checkGraphHeight();
-        this.isLoading = false;
-        this.history.present = JSON.stringify(this.extendJsonObj(JSON.parse(this.workflow.actual)));
-        if (this.editor) {
-          this.updateJobs(this.editor.graph, true);
-          this.ref.detectChanges();
+          if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
+            this.invalidMsg = 'workflow.message.emptyWorkflow';
+          } else if (!res.valid) {
+            this.validateByURL(res.configuration);
+          }
+          this.updateXMLJSON(false);
+          this.centered();
+          this.checkGraphHeight();
+          this.history.present = JSON.stringify(this.extendJsonObj(JSON.parse(this.workflow.actual)));
+          if (this.editor) {
+            this.updateJobs(this.editor.graph, true);
+            this.ref.detectChanges();
+          }
+        } catch (e) {
+          console.error(e);
         }
       }
     }, () => {
@@ -7785,7 +7788,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
             arr.forEach((item) => {
-              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item)});
+              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '0s'});
             });
           } else {
             obj.retryDelays = [];
@@ -8283,7 +8286,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           _node = doc.createElement('Retry');
           _node.setAttribute('label', 'retry');
           _node.setAttribute('maxTries', '10');
-          _node.setAttribute('retryDelays', '0');
+          _node.setAttribute('retryDelays', '0s');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'retry');
         } else if (title.match('cycle')) {

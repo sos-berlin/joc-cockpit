@@ -5735,6 +5735,12 @@ General CSS
 }
 
 @-moz-document url-prefix() {
+  .ico._600 {
+    font-weight: 700;
+  }
+  .nav-text > span {
+    font-weight: 600;
+  }
   .admin-search-bar {
     margin-top: 0;
   }
@@ -7788,10 +7794,11 @@ tr.tr-border td:first-child {
 
 .ant-dropdown-menu-item-disabled, .ant-dropdown-menu-submenu-title-disabled {
   opacity: .7;
+  pointer-events: none;
 
   a {
     pointer-events: none;
-    cursor: auto;
+    cursor: not-allowed !important;
   }
 }
 
