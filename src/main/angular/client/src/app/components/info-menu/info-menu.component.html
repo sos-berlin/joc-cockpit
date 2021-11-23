@@ -6,7 +6,7 @@
   </a>
   <nz-dropdown-menu #help="nzDropdownMenu">
     <ul nz-menu>
-      <li nz-menu-item><a (click)="about()">{{'info.button.aboutJS7' | translate}}</a></li>
+      <li (click)="about()" nz-menu-item><a>{{'info.button.aboutJS7' | translate}}</a></li>
       <li nz-submenu nzTitle="{{'info.button.featuresAndDownload' | translate}} ">
         <ul>
           <li nz-menu-item>

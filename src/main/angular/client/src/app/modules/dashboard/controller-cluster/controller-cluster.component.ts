@@ -81,10 +81,10 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     try {
+      $('[data-toggle="popover"]').popover('hide');
       if (this.editor) {
         this.editor.destroy();
         this.editor = undefined;
-        $('[data-toggle="popover"]').popover('hide');
       }
     } catch (e) {
       console.error(e);

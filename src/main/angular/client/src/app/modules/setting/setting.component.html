@@ -206,6 +206,15 @@
                              (click)="addValInArr(val)"></i>
                         </div>
                       </ng-container>
+                      <ng-container *ngSwitchCase="'PASSWORD'">
+                        <div class="col-sm-4 col-lg-3">
+                          <input autocomplete="off" type="password" class="form-control w-xxxl"
+                                 name="{{val.name}}{{i}}" (blur)="changeConfiguration(pswd, val, setting.name === 'joc')" #pswd="ngModel"
+                                 [(ngModel)]="val.value.value">
+                          <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
+                             (click)="removeValue(val, setting.name === 'joc')"></i>
+                        </div>
+                      </ng-container>
                       <ng-container *ngSwitchCase="'STRING'">
                         <div class="col-sm-4 col-lg-3"
                              [ngClass]="{ 'has-error' : (((common.dirty || common.touched) && common.invalid))}">

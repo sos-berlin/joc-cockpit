@@ -38,23 +38,23 @@
             </button>
             <nz-dropdown-menu #menu="nzDropdownMenu" >
               <ul nz-menu>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='all', 'disable-link':savedFilter.selected}">
-                  <a (click)="load('all')" translate>filters.button.all</a>
+                <li (click)="load('all')" nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='all', 'disable-link':savedFilter.selected}">
+                  <a translate>filters.button.all</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='today', 'disable-link':savedFilter.selected}">
-                  <a (click)="load('today')" translate>filters.button.today</a>
+                <li (click)="load('today')" nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='today', 'disable-link':savedFilter.selected}">
+                  <a translate>filters.button.today</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-1h', 'disable-link':savedFilter.selected}">
-                  <a (click)="load('-1h')" translate>filters.button.last1</a>
+                <li (click)="load('-1h')" nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-1h', 'disable-link':savedFilter.selected}">
+                  <a translate>filters.button.last1</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-12h', 'disable-link':savedFilter.selected}">
-                  <a (click)="load('-12h')" translate>filters.button.last12</a>
+                <li (click)="load('-12h')" nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-12h', 'disable-link':savedFilter.selected}">
+                  <a translate>filters.button.last12</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-24h', 'disable-link':savedFilter.selected}">
-                  <a (click)="load('-24h')" translate>filters.button.last24</a>
+                <li (click)="load('-24h')" nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-24h', 'disable-link':savedFilter.selected}">
+                  <a translate>filters.button.last24</a>
                 </li>
-                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-7d', 'disable-link':savedFilter.selected}">
-                  <a (click)="load('-7d')" translate>filters.button.lastWeak</a>
+                <li (click)="load('-7d')" nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-7d', 'disable-link':savedFilter.selected}">
+                  <a translate>filters.button.lastWeak</a>
                 </li>
               </ul>
             </nz-dropdown-menu>
@@ -67,8 +67,8 @@
             </button>
             <nz-dropdown-menu #customization="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
-                  <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                <li (click)="createCustomization()" nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                  <a translate>customization.label.createCustomization</a>
                 </li>
                 <li nz-menu-item  *ngIf="filterList.length>0">
                   <a  (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>

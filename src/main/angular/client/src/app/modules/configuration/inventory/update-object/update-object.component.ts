@@ -379,12 +379,10 @@ export class UpdateObjectComponent implements OnInit {
   }
 
   private findAndUpdate(cb): void {
-    console.log(this.object);
     this.data.forEach((item, index) => {
       this.coreService.post('inventory/read/configuration', {
         id: item.id
       }).subscribe((res: any) => {
-        console.log(res);
         res.configuration = this.updateProperties(res.configuration, this.object);
         this.updateObject(res, index === this.data.length - 1 ? cb : null);
       });

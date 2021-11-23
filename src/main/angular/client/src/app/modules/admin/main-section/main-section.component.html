@@ -30,11 +30,11 @@
             class="fa fa-ellipsis-h"></i></button>
           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
             <ul nz-menu >
-              <li nz-menu-item >
-                <a (click)="editMain(mainSection)" translate>common.button.edit</a>
+              <li (click)="editMain(mainSection)" nz-menu-item >
+                <a translate>common.button.edit</a>
               </li>
-              <li nz-menu-item class="bg-hover-color">
-                <a (click)="deleteMain(mainSection)" translate>common.button.delete</a>
+              <li (click)="deleteMain(mainSection)" nz-menu-item class="bg-hover-color">
+                <a translate>common.button.delete</a>
               </li>
             </ul>
           </nz-dropdown-menu>

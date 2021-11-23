@@ -376,7 +376,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
   private loadWorkflowList(path): void {
     const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
-    console.log(node, path)
     if (node && node.origin) {
       this.loadData(node, 'WORKFLOW', null, true);
     }
