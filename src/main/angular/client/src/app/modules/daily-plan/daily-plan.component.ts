@@ -1003,7 +1003,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   isLoaded = false;
   isRefreshed = false;
   dailyPlanFilters: any = {filter: {}};
-  pageView: string = '';
+  pageView = '';
   savedFilter: any = {};
   selectedFiltered: any = {};
   searchFilter: any = {};

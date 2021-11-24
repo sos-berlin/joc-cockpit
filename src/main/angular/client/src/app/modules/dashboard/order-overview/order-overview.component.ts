@@ -58,7 +58,8 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/)) {
+        if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) || args.eventSnapshots[j].eventType === 'ProxyCoupled'
+          || args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
           this.getSnapshot();
           break;
         }
