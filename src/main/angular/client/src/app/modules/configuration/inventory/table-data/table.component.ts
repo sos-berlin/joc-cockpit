@@ -237,7 +237,7 @@ export class TableComponent implements OnDestroy{
   private deleteApiCall(object, auditLog): void {
     let isDraftOnly = true;
     let isDeployObj = true;
-    if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.SCRIPT) {
+    if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.INCLUDESCRIPT) {
       isDeployObj = false;
       if (object.hasReleases) {
         isDraftOnly = false;
@@ -294,7 +294,7 @@ export class TableComponent implements OnDestroy{
     if (this.objectType === InventoryObject.WORKFLOW && !configuration.timeZone) {
       configuration.timeZone = this.preferences.zone;
     }
-    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.SCRIPT
+    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.INCLUDESCRIPT
       || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
     if (!path) {
       return;

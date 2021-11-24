@@ -144,7 +144,6 @@ export class SettingComponent implements OnInit {
 
   constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService,
               private translate: TranslateService, private toasterService: ToasterService, private dataService: DataService) {
-
   }
 
   ngOnInit(): void {
@@ -171,8 +170,12 @@ export class SettingComponent implements OnInit {
 
   openEditField(val): void {
     val.value.edit = true;
-    if (!val.value.value) {
-      val.value.value = [{name: ''}];
+    if (val.value.type === 'ARRAY') {
+      if (!val.value.value) {
+        val.value.value = [{name: ''}];
+      }
+    } else if (val.value.type === 'PASSWORD') {
+      val.value.value = '';
     }
   }
 
@@ -340,7 +343,6 @@ export class SettingComponent implements OnInit {
           if (typeof _v.default === 'string') {
             _v.default = _v.default.split(';');
           }
-
           if (_v.value) {
             let arr = _v.value.split(';');
             _v.value = [];
@@ -374,7 +376,7 @@ export class SettingComponent implements OnInit {
     for (let prop in setting) {
       tempSetting[prop] = {};
       for (let x in setting[prop]) {
-        if (setting[prop][x].value || setting[prop][x].value === false || setting[prop][x].value === 0) {
+        if (setting[prop][x].value || setting[prop][x].value === false || setting[prop][x].value === 0 || (setting[prop][x].type === 'PASSWORD' && setting[prop][x].value === '')) {
           tempSetting[prop][x] = {};
           if (x !== 'ordering') {
             tempSetting[prop][x].ordering = setting[prop][x].ordering;

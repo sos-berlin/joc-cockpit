@@ -213,10 +213,10 @@
                         nzShowSearch
                         nzPlaceHolder="{{'workflow.placeholder.selectScript' | translate}}"
                         [(ngModel)]="scriptObj.name"
-                        (nzExpandChange)="onExpand($event, 'SCRIPT')"
+                        (nzExpandChange)="onExpand($event, 'INCLUDESCRIPT')"
                       >
                         <ng-template #nzTreeTemplate let-node>
-                          <div class="node-wrapper w-93" (click)="loadData(node, 'SCRIPT', $event);">
+                          <div class="node-wrapper w-93" (click)="loadData(node, 'INCLUDESCRIPT', $event);">
                             <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.key == scriptObj.name && scriptObj.name">
                               <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                               <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>

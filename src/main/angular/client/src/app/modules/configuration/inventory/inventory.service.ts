@@ -17,7 +17,7 @@ export class InventoryService {
         arr[i].level = 3;
       } else if (arr[i].objectType === InventoryObject.SCHEDULE) {
         arr[i].level = 4;
-      } else if (arr[i].objectType === InventoryObject.SCRIPT) {
+      } else if (arr[i].objectType === InventoryObject.INCLUDESCRIPT) {
         arr[i].level = 5;
       } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
         arr[i].level = 6;

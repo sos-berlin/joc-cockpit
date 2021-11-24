@@ -87,11 +87,11 @@
             {{'inventory.export.label.draft'| translate}}
           </label>
           <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()"
-            *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'SCRIPT' || exportType.match('CALENDAR'))">
+            *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR'))">
             {{'inventory.export.label.deployed'| translate}}
           </label>
           <label class="m-l-md" nz-checkbox name="release" [disabled]="exportObj.forSigning" [(ngModel)]="filter.release" (ngModelChange)="filterList()"
-                 *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'SCRIPT' || exportType.match('CALENDAR')">
+                 *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR')">
             {{'inventory.export.label.released'| translate}}
           </label>
         </div>
@@ -138,7 +138,7 @@
                 <i *ngIf="node.origin.object == 'NOTICEBOARD'" nz-icon nzType="pushpin" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
-                <i *ngIf="node.origin.object == 'SCRIPT'" class="fa fa-terminal w-13"></i>
+                <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
                 <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
                 <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'dark-blue' :node.origin.deployed || node.origin.released}" style="margin-top: 4px"></span>
                 <span class="p-l-sm text-capitalize" *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
