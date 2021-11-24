@@ -31,7 +31,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   script: any = {};
   isVisible: boolean;
   isUnique = true;
-  objectType = InventoryObject.SCRIPT;
+  objectType = InventoryObject.INCLUDESCRIPT;
   invalidMsg: string;
   documentationTree = [];
   indexOfNextAdd = 0;

@@ -850,7 +850,7 @@ export class ExportComponent implements OnInit {
     if (this.origin) {
       this.path = this.origin.path;
       if (this.origin.dailyPlan || (this.origin.object &&
-        (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.SCRIPT || this.origin.object.match('CALENDAR')))) {
+        (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')))) {
         this.exportType = this.origin.object || 'DAILYPLAN';
       } else {
         if (this.origin.controller || this.origin.object) {
@@ -895,7 +895,7 @@ export class ExportComponent implements OnInit {
         catchError(error => of(error))
       ));
     } else {
-      if (this.exportType === 'DAILYPLAN' || this.exportType === InventoryObject.SCHEDULE || this.exportType === InventoryObject.SCRIPT || this.exportType.match('CALENDAR')) {
+      if (this.exportType === 'DAILYPLAN' || this.exportType === InventoryObject.SCHEDULE || this.exportType === InventoryObject.INCLUDESCRIPT || this.exportType.match('CALENDAR')) {
         this.filter.controller = false;
         this.filter.deploy = false;
       } else if (this.exportType === 'CONTROLLER') {
@@ -907,7 +907,7 @@ export class ExportComponent implements OnInit {
       } else {
         obj.objectTypes = this.exportType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.exportType];
       }
-      if (this.exportType === 'DAILYPLAN' || this.exportType === InventoryObject.SCHEDULE || this.exportType === InventoryObject.SCRIPT || this.exportType.match('CALENDAR')) {
+      if (this.exportType === 'DAILYPLAN' || this.exportType === InventoryObject.SCHEDULE || this.exportType === InventoryObject.INCLUDESCRIPT || this.exportType.match('CALENDAR')) {
         obj.withoutReleased = false;
         obj.withoutDrafts = false;
         APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
@@ -972,15 +972,15 @@ export class ExportComponent implements OnInit {
         return false;
       }
 
-      if (!this.filter.controller && value.objectType !== InventoryObject.SCHEDULE && value.objectType !== InventoryObject.SCRIPT && !value.objectType.match(/CALENDAR/)) {
+      if (!this.filter.controller && value.objectType !== InventoryObject.SCHEDULE && value.objectType !== InventoryObject.INCLUDESCRIPT && !value.objectType.match(/CALENDAR/)) {
         return false;
       }
-      if (!this.filter.dailyPlan && (value.objectType === InventoryObject.SCHEDULE || value.objectType === InventoryObject.SCRIPT || value.objectType.match(/CALENDAR/))) {
+      if (!this.filter.dailyPlan && (value.objectType === InventoryObject.SCHEDULE || value.objectType === InventoryObject.INCLUDESCRIPT || value.objectType.match(/CALENDAR/))) {
         return false;
       }
 
       if (this.exportObj.forSigning) {
-        if (!(value.objectType === InventoryObject.SCHEDULE || value.objectType === InventoryObject.SCRIPT || value.objectType.match(/CALENDAR/))) {
+        if (!(value.objectType === InventoryObject.SCHEDULE || value.objectType === InventoryObject.INCLUDESCRIPT || value.objectType.match(/CALENDAR/))) {
           if (this.filter.draft && (value.deployed === false || value.released === false)) {
             return !(this.filter.valid && !value.valid);
           }
@@ -2407,7 +2407,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 data.children.splice(0, index, children[0]);
                 data.children.splice(1, index, children[1]);
 
-                const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type === InventoryObject.SCRIPT || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
+                const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type === InventoryObject.INCLUDESCRIPT || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
                 if (self.selectedObj.path === parentNode.path) {
                   parentNode.expanded = true;
                   for (let j = 0; j < parentNode.children.length; j++) {
@@ -2660,7 +2660,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       ];
       dailyPlanObj.dailyPlanArr = [
         {name: 'Schedules', title: 'Schedules', object: InventoryObject.SCHEDULE, children: [], path: data.path, key: (KEY + 'Schedules$')},
-        {name: 'Scripts', title: 'Scripts', object: InventoryObject.SCRIPT, children: [], path: data.path, key: (KEY + 'Scripts$')},
+        {name: 'IncludeScripts', title: 'Include Scripts', object: InventoryObject.INCLUDESCRIPT, children: [], path: data.path, key: (KEY + 'IncludeScripts$')},
         {name: 'Calendars', title: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (KEY + 'Calendars$')}
       ];
     }
@@ -2702,8 +2702,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         let resObject;
         if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.SCHEDULE) {
           resObject = res.schedules;
-        } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.SCRIPT) {
-          resObject = res.scripts;
+        } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.INCLUDESCRIPT) {
+          resObject = res.includeScripts;
         } else if (dailyPlanObj.dailyPlanArr[i].object === 'CALENDAR') {
           resObject = res.calendars;
         }
@@ -2734,12 +2734,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
         deleted: data.deleted
       }, {
         name: 'Daily Plan',
-        title: 'Daily Plan',
+        title: 'Automation',
         dailyPlan: 'DAILYPLAN',
         isLeaf: false,
         children: dailyPlanObj.dailyPlanArr,
         path: data.path,
-        key: (KEY + 'Schedule$'),
+        key: (KEY + 'Automation$'),
         expanded: dailyPlanObj.expanded,
         deleted: data.deleted
       }];
@@ -2760,9 +2760,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         deleted: data.deleted
       }, {
         name: 'Daily Plan',
-        title: 'Daily Plan',
+        title: 'Automation',
         dailyPlan: 'DAILYPLAN',
-        key: (KEY + 'Schedule$'),
+        key: (KEY + 'Automation$'),
         children: dailyPlanObj.dailyPlanArr,
         path: data.path,
         deleted: data.deleted
@@ -2875,7 +2875,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const data = node.origin.children;
       this.updateObjects(node.origin, false, (children) => {
         if (children.length > 0) {
-          if ((type.match('CALENDAR') || type === InventoryObject.SCHEDULE || type === InventoryObject.SCRIPT)) {
+          if ((type.match('CALENDAR') || type === InventoryObject.SCHEDULE || type === InventoryObject.INCLUDESCRIPT)) {
             children[1].expanded = true;
           } else {
             children[0].expanded = true;
@@ -3471,7 +3471,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (object.id) {
         let isDraftOnly = true;
         let isDeployObj = true;
-        if (object.type.match(/CALENDAR/) || object.type === InventoryObject.SCHEDULE || object.type === InventoryObject.SCRIPT) {
+        if (object.type.match(/CALENDAR/) || object.type === InventoryObject.SCHEDULE || object.type === InventoryObject.INCLUDESCRIPT) {
           isDeployObj = false;
           if (object.hasReleases) {
             isDraftOnly = false;
@@ -3652,7 +3652,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   private backToListView(): void {
     const parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
     if (parent && parent.origin.children) {
-      const index = (this.selectedObj.type === 'CALENDAR' || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.SCRIPT) ? 1 : 0;
+      const index = (this.selectedObj.type === 'CALENDAR' || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.INCLUDESCRIPT) ? 1 : 0;
       const child = parent.origin.children[index];
       for (let i = 0; i < child.children.length; i++) {
         if (child.children[i].object === this.selectedObj.type) {
@@ -3725,7 +3725,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (!data[0] || !data[0].controller || data.length === 0) {
             this.updateObjects(node.origin, false, (children) => {
               if (children.length > 0) {
-                if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.SCRIPT)) {
+                if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.INCLUDESCRIPT)) {
                   children[1].expanded = true;
                 } else {
                   children[0].expanded = true;
@@ -3741,7 +3741,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }, true);
             return;
           }
-          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.SCRIPT) {
+          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.INCLUDESCRIPT) {
             data = object.children[1];
           } else {
             data = object.children[0];
@@ -3953,7 +3953,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (obj.type === InventoryObject.WORKFLOW && !configuration.timeZone) {
       configuration.timeZone = this.preferences.zone;
     }
-    const valid = !(obj.type.match(/CALENDAR/) || obj.type === InventoryObject.SCHEDULE || obj.type === InventoryObject.SCRIPT || obj.type === InventoryObject.NOTICEBOARD
+    const valid = !(obj.type.match(/CALENDAR/) || obj.type === InventoryObject.SCHEDULE || obj.type === InventoryObject.INCLUDESCRIPT || obj.type === InventoryObject.NOTICEBOARD
       || obj.type === InventoryObject.WORKFLOW || obj.type === InventoryObject.FILEORDERSOURCE || obj.type === InventoryObject.JOBRESOURCE);
     const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (PATH && obj.type && obj.name) {

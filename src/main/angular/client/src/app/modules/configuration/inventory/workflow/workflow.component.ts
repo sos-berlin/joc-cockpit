@@ -1668,7 +1668,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
-      if (type === InventoryObject.JOBRESOURCE || type === InventoryObject.SCRIPT) {
+      if (type === InventoryObject.JOBRESOURCE || type === InventoryObject.INCLUDESCRIPT) {
         return;
       }
       let flag = true;
@@ -2911,11 +2911,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private loadScripts(): void {
     if (this.scriptList.length === 0) {
       this.coreService.post('inventory/read/folder', {
-        objectTypes: ['SCRIPT'],
+        objectTypes: ['INCLUDESCRIPT'],
         path: '/',
         recursive: true
       }).subscribe((res) => {
-        this.scriptList = res.scripts;
+        this.scriptList = res.includeScripts;
       });
     }
   }
@@ -3036,7 +3036,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.coreService.post('tree', {
           controllerId: this.schedulerId,
           forInventory: true,
-          types: ['WORKFLOW']
+          types: [InventoryObject.WORKFLOW]
         }).subscribe((res) => {
           this.workflowTree = this.coreService.prepareTree(res, true);
         });
@@ -3055,7 +3055,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.coreService.post('tree', {
           controllerId: this.schedulerId,
           forInventory: true,
-          types: [InventoryObject.SCRIPT]
+          types: [InventoryObject.INCLUDESCRIPT]
         }).subscribe((res) => {
           this.scriptTree = this.coreService.prepareTree(res, false);
         });
@@ -3127,6 +3127,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private getWorkflowObject(): void {
+
     if (!this.inventoryConf.copiedInstuctionObject || !this.inventoryConf.copiedInstuctionObject.TYPE) {
       this.updateToolbar('copy', null);
     } else {
