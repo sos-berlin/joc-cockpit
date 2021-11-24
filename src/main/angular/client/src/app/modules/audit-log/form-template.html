@@ -79,7 +79,7 @@
           name="type"
           [(ngModel)]="filter.objectTypes">
           <ng-container *ngFor="let type of objectTypes">
-            <nz-option [nzValue]="type" [nzLabel]="type"></nz-option>
+            <nz-option [nzValue]="type" nzLabel="{{type | translate}}"></nz-option>
           </ng-container>
         </nz-select>
       </div>
@@ -101,7 +101,7 @@
           name="categories"
           [(ngModel)]="filter.categories">
           <ng-container *ngFor="let category of categories">
-            <nz-option [nzValue]="category" [nzLabel]="category"></nz-option>
+            <nz-option [nzValue]="category" nzLabel="{{category | translate}}"></nz-option>
           </ng-container>
         </nz-select>
       </div>

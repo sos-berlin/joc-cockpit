@@ -138,7 +138,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getOrders(workflow): void {
+  private getOrders(workflow: any): void {
     this.loading = false;
     if (this.permission && this.permission.currentController && !this.permission.currentController.orders.view) {
       return;
@@ -202,16 +202,16 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   @Input() permission: any = {};
   @Input() preferences: any = {};
   @Input() controllerId: any;
-  @Input() pageView: string;
+  @Input() pageView: string = '';
   @Input() workflowFilters: any = {};
   @Input() orderPreparation: any = {};
   @Input() jobs: any = {};
   @Input() orders: any = [];
-  @Input() isModal: boolean;
+  @Input() isModal: boolean = false;
   @Input() recursiveCals: any;
   @Input() workflowObjects: any;
 
-  loading: boolean;
+  loading: boolean = false;
   order: any;
   job: any;
   graph: any;

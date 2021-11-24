@@ -343,7 +343,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       const noticeBoardPaths = [];
       const noticeBoardPaths2 = [];
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'NoticeBoardStateChanged' && args.eventSnapshots[j].path) {
+        if (args.eventSnapshots[j].eventType.match(/BoardStateChanged/) && args.eventSnapshots[j].path) {
           if (this.boards.length > 0) {
             for (let x = 0; x < this.boards.length; x++) {
               if (this.boards[x].path === args.eventSnapshots[j].path) {

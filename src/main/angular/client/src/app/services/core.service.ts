@@ -903,7 +903,11 @@ export class CoreService {
     if (!regEx.test(window.location.href)) {
       return;
     }
-    let host = regEx.exec(window.location.href)[1];
+    const val = regEx.exec(window.location.href);
+    let host = '';
+    if (val) {
+      host = val[1];
+    }
     host = host + '/#/';
     if (objType === 'workflow' && name) {
       link = host + 'workflows/workflow?path=' + encodeURIComponent(name);
@@ -970,7 +974,7 @@ export class CoreService {
     });
   }
 
-  showWorkflow(workflow, versionId = null): void {
+  showWorkflow(workflow: any, versionId = null): void {
     this.router.navigate(['/workflows/workflow'], {
       queryParams: {
         path: workflow,

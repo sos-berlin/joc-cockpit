@@ -122,7 +122,6 @@ export class FilterModalComponent implements OnInit {
   templateUrl: './order-form-template.html',
 })
 export class OrderSearchComponent implements OnInit {
-
   @Input() schedulerIds: any;
   @Input() filter: any;
   @Input() preferences: any;
@@ -2889,8 +2888,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
             this.init(true);
           }
           break;
-        } else if (this.isLoading && this.historyFilters.type === 'SUBMISSION') {
-          // this.init(true);
+        } else if (args.eventSnapshots[j].eventType === 'DailyPlanUpdated' && this.isLoading && this.historyFilters.type === 'SUBMISSION') {
+          if (!isEmpty(this.submissionSearch)) {
+            this.search(this.submissionSearch, false);
+          } else {
+            this.init(true);
+          }
           break;
         }
       }

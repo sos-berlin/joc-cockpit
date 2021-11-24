@@ -104,9 +104,8 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (((args.eventSnapshots[j].eventType === 'ItemAdded' || args.eventSnapshots[j].eventType === 'ItemDeleted'
             || args.eventSnapshots[j].eventType === 'ItemChanged') && args.eventSnapshots[j].objectType === 'AGENT')
-          || args.eventSnapshots[j].eventType === 'AgentStateChanged'
-          || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
-            || args.eventSnapshots[j].eventType === 'ProxyDecoupled') && args.eventSnapshots[j].objectType === 'AGENT')) {
+            || args.eventSnapshots[j].eventType === 'AgentStateChanged' || args.eventSnapshots[j].eventType === 'ProxyCoupled'
+            || args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
           this.getStatus();
           break;
         }
