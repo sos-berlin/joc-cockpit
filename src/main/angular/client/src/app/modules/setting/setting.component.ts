@@ -360,7 +360,7 @@ export class SettingComponent implements OnInit {
 
   showHashValue(data: any): void {
     let pswd = data.value.default;
-    if (data.value.value !== undefined || data.value.value !== null) {
+    if (data.value.value !== undefined && data.value.value !== null) {
       pswd = data.value.value;
     }
     const hashValue = SHA512(pswd).toString();
