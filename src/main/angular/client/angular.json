@@ -72,6 +72,7 @@
               "file-saver",
               "moment-timezone",
               "crypto-js/aes",
+              "crypto-js/sha512",
               "crypto-js/enc-utf8",
               "chartjs-plugin-datalabels",
               "@ctrl/ngx-codemirror",

@@ -882,11 +882,12 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
 
   private loadSubmissions(history, controller): void {
     controller.submissions = [];
-    this.coreService.post('daily_plan/history/submissions', {
+    const obj = {
       date: history.date,
       controllerId: controller.controllerId,
       limit: parseInt(this.preferences.maxRecords, 10)
-    }).subscribe((res) => {
+    };
+    this.coreService.post('daily_plan/history/submissions', obj).subscribe((res) => {
       controller.submissions = res.submissionTimes || [];
     }, () => {
       controller.submissions = [];
@@ -1503,11 +1504,21 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private loadSubmissions(history, controller): void {
     history.loading = true;
     controller.submissions = [];
-    this.coreService.post('daily_plan/history/submissions', {
+    const obj: any = {
       date: history.date,
       limit: parseInt(this.preferences.maxRecords, 10),
       controllerId: controller.controllerId
-    }).subscribe((res) => {
+    };
+    if (this.selectedFiltered5 && !isEmpty(this.selectedFiltered5)) {
+      if (this.selectedFiltered5.type && this.selectedFiltered5.type.length === 1) {
+        obj.submitted = this.selectedFiltered5.type[0] === 'SUBMITTED';
+      }
+    } else {
+      if (this.submission.filter.category !== 'ALL') {
+        obj.submitted = this.submission.filter.category === 'SUBMITTED';
+      }
+    }
+    this.coreService.post('daily_plan/history/submissions', obj).subscribe((res) => {
       controller.submissions = res.submissionTimes || [];
       history.loading = false;
     }, () => {
@@ -1518,13 +1529,23 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   loadSubmissionOrders(history, controller, submission): void {
     if (!submission.orderIds) {
-      this.isSubmissionLoading = true;
-      this.coreService.post('daily_plan/history/submissions/orders', {
+      const obj: any = {
         date: history.date,
         controllerId: controller.controllerId,
         submissionTime: submission.submissionTime,
         limit: parseInt(this.preferences.maxRecords, 10)
-      }).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res) => {
+      };
+      if (this.selectedFiltered5 && !isEmpty(this.selectedFiltered5)) {
+        if (this.selectedFiltered5.type && this.selectedFiltered5.type.length === 1) {
+          obj.submitted = this.selectedFiltered5.type[0] === 'SUBMITTED';
+        }
+      } else {
+        if (this.submission.filter.category !== 'ALL') {
+          obj.submitted = this.submission.filter.category === 'SUBMITTED';
+        }
+      }
+      this.isSubmissionLoading = true;
+      this.coreService.post('daily_plan/history/submissions/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res) => {
         submission.orderIds = res.orders || [];
         submission.errorMessages = res.errorMessages;
         submission.warnMessages = res.warnMessages;

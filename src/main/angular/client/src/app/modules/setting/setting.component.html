@@ -69,6 +69,13 @@
                       {{val.value.default || '  -  '}}
                         <i *ngIf="permission.joc.administration.settings.manage && !val.value.edit && (!val.value.value && val.value.value !== 0 && val.value.value !== false)" class="p-l-sm text-hover-primary fa fa-pencil"
                          (click)="openEditField(val)"></i>
+                      <a *ngIf="val.value.type === 'PASSWORD' && !val.value.edit && !val.value.value" (click)="showHashValue(val)" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" class="text-hover-primary m-l" translate>settings.button.showHashValue</a>
+                      <ng-template #contentTemplate>
+                        <div>
+                          <b translate>settings.label.hash</b> :
+                          <span>{{val.value.hash}} <i ngxClipboard [cbContent]="val.value.hash" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                        </div>
+                      </ng-template>
                     </span>
                     <div *ngIf="permission.joc.administration.settings.manage && val.value.type == 'ARRAY'">
                       <div class="m-b-xs" *ngFor="let arr of val.value.default;let x=index">
@@ -213,6 +220,15 @@
                                  [(ngModel)]="val.value.value">
                           <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
+                        </div>
+                        <div class="col-sm-4 col-lg-3 p-l-0">
+                          <a (click)="showHashValue(val)" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" class="text-hover-primary pos-rel t-xs" translate>settings.button.showHashValue</a>
+                          <ng-template #contentTemplate>
+                            <div>
+                              <b translate>settings.label.hash</b> :
+                              <span>{{val.value.hash}} <i ngxClipboard [cbContent]="val.value.hash" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                            </div>
+                          </ng-template>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'STRING'">

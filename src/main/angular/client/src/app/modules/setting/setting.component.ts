@@ -5,6 +5,7 @@ import {FileUploader} from 'ng2-file-upload';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
+import SHA512 from 'crypto-js/sha512';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
@@ -355,6 +356,15 @@ export class SettingComponent implements OnInit {
       });
       this.settingArr.push(obj);
     }
+  }
+
+  showHashValue(data: any): void {
+    let pswd = data.value.default;
+    if (data.value.value !== undefined || data.value.value !== null) {
+      pswd = data.value.value;
+    }
+    const hashValue = SHA512(pswd).toString();
+    data.value.hash = data.value.value === '' ? 'plan:' : 'sha512:' + hashValue.toUpperCase();
   }
 
   private checkTime(time): string {
