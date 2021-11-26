@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {interval, Subscription} from 'rxjs';
 import {ClipboardService} from 'ngx-clipboard';
+import {NzMessageService} from 'ng-zorro-antd/message';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 
@@ -64,7 +65,7 @@ export class LoggingComponent implements OnInit, OnDestroy {
   ];
 
   constructor(private coreService: CoreService, private authService: AuthService,
-              private clipboardService: ClipboardService) {
+              private clipboardService: ClipboardService, private message: NzMessageService) {
     if (sessionStorage.clientLogFilter) {
       this.clientLogFilter = JSON.parse(sessionStorage.clientLogFilter);
     } else {
@@ -131,6 +132,7 @@ export class LoggingComponent implements OnInit, OnDestroy {
   }
 
   copy(): void {
+    this.coreService.showCopyMessage(this.message);
     this.clipboardService.copyFromContent($('#logDiv').text());
   }
 

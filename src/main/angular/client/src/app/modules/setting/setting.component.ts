@@ -4,6 +4,7 @@ import {ToasterService} from 'angular2-toaster';
 import {FileUploader} from 'ng2-file-upload';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {saveAs} from 'file-saver';
+import {NzMessageService} from 'ng-zorro-antd/message';
 import * as _ from 'underscore';
 import SHA512 from 'crypto-js/sha512';
 import {CoreService} from '../../services/core.service';
@@ -143,7 +144,7 @@ export class SettingComponent implements OnInit {
     {label: 'sunday', value: 7},
   ];
 
-  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService,
+  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService, private message: NzMessageService,
               private translate: TranslateService, private toasterService: ToasterService, private dataService: DataService) {
   }
 
@@ -365,6 +366,10 @@ export class SettingComponent implements OnInit {
     }
     const hashValue = SHA512(pswd).toString();
     data.value.hash = data.value.value === '' ? 'plan:' : 'sha512:' + hashValue.toUpperCase();
+  }
+
+  showCopyMessage(): void {
+    this.coreService.showCopyMessage(this.message)
   }
 
   private checkTime(time): string {

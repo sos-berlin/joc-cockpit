@@ -2081,22 +2081,29 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     this.totalOrders = 0;
     this.totalFinishedOrders = 0;
-    if (this.planOrders && this.planOrders.length > 0 && this.dailyPlanFilters.filter.groupBy !== '') {
+    if (this.planOrders && this.planOrders.length > 0) {
       for (let i = 0; i < this.planOrders.length; i++) {
-        let lastDate = null;
-        for (let j = 0; j < this.planOrders[i].value.length; j++) {
+        if (this.dailyPlanFilters.filter.groupBy !== '') {
+          let lastDate = null;
+          for (let j = 0; j < this.planOrders[i].value.length; j++) {
+            ++this.totalOrders;
+            if (this.planOrders[i].value[j].state._text === 'FINISHED') {
+              ++this.totalFinishedOrders;
+            }
+            this.planOrders[i].value[j].seperate = false;
+            if (lastDate) {
+              let d = new Date(this.planOrders[i].value[j].plannedDate).setHours(0, 0, 0, 0);
+              if (d !== lastDate) {
+                this.planOrders[i].value[j - 1].seperate = true;
+              }
+            }
+            lastDate = new Date(this.planOrders[i].value[j].plannedDate).setHours(0, 0, 0, 0);
+          }
+        } else {
           ++this.totalOrders;
-          if (this.planOrders[i].value[j].state._text === 'FINISHED') {
+          if (this.planOrders[i].state._text === 'FINISHED') {
             ++this.totalFinishedOrders;
           }
-          this.planOrders[i].value[j].seperate = false;
-          if (lastDate) {
-            let d = new Date(this.planOrders[i].value[j].plannedDate).setHours(0, 0, 0, 0);
-            if (d !== lastDate) {
-              this.planOrders[i].value[j - 1].seperate = true;
-            }
-          }
-          lastDate = new Date(this.planOrders[i].value[j].plannedDate).setHours(0, 0, 0, 0);
         }
       }
     }

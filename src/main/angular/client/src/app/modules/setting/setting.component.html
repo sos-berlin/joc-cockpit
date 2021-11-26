@@ -73,7 +73,7 @@
                       <ng-template #contentTemplate>
                         <div>
                           <b translate>settings.label.hash</b> :
-                          <span>{{val.value.hash}} <i ngxClipboard [cbContent]="val.value.hash" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                          <span>{{val.value.hash}} <i ngxClipboard [cbContent]="val.value.hash" (click)="showCopyMessage()" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
                         </div>
                       </ng-template>
                     </span>
@@ -215,20 +215,22 @@
                       </ng-container>
                       <ng-container *ngSwitchCase="'PASSWORD'">
                         <div class="col-sm-4 col-lg-3">
-                          <input autocomplete="off" type="password" class="form-control w-xxxl"
+                          <input autocomplete="off"  type="{{!val.value.show ? 'password' : 'text'}}" class="form-control w-xxxl"
                                  name="{{val.name}}{{i}}" (blur)="changeConfiguration(pswd, val, setting.name === 'joc')" #pswd="ngModel"
                                  [(ngModel)]="val.value.value">
+                          <i class="fa pswd-hide-icon" [ngClass]="!val.value.show ? 'fa-eye' : 'fa-eye-slash'"
+                             (click)="val.value.show = !val.value.show"></i>
                           <i *ngIf="permission.joc.administration.settings.manage" class="text-hover-primary fa fa-times setting-cancel-btn"
                              (click)="removeValue(val, setting.name === 'joc')"></i>
-                        </div>
-                        <div class="col-sm-4 col-lg-3 p-l-0">
-                          <a (click)="showHashValue(val)" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" class="text-hover-primary pos-rel t-xs" translate>settings.button.showHashValue</a>
-                          <ng-template #contentTemplate>
-                            <div>
-                              <b translate>settings.label.hash</b> :
-                              <span>{{val.value.hash}} <i ngxClipboard [cbContent]="val.value.hash" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
-                            </div>
-                          </ng-template>
+                          <div class="pos-abt w-full" style="top: 0; left: 420px">
+                            <a (click)="showHashValue(val)" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" class="text-hover-primary pos-rel t-xs" translate>settings.button.showHashValue</a>
+                            <ng-template #contentTemplate>
+                              <div>
+                                <b translate>settings.label.hash</b> :
+                                <span>{{val.value.hash}} <i ngxClipboard [cbContent]="val.value.hash" (click)="showCopyMessage()" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                              </div>
+                            </ng-template>
+                          </div>
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchCase="'STRING'">

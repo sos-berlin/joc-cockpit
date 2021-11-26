@@ -1,6 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
+import {NzMessageService} from 'ng-zorro-antd/message';
 import {differenceInCalendarDays} from 'date-fns';
 import * as moment from 'moment-timezone';
 import {CoreService} from '../../services/core.service';
@@ -219,7 +220,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private modal: NzModalService,
+  constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
               private authService: AuthService, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -699,5 +700,9 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }, () => {
       this.isLoaded = true;
     });
+  }
+
+  showCopyMessage(): void {
+    this.coreService.showCopyMessage(this.message)
   }
 }

@@ -1696,7 +1696,7 @@ export class JsonEditorModalComponent implements OnInit {
   copyToClipboard(): void {
     this.validateByURL(this.editor.get(), (isValid) => {
       if (isValid) {
-        this.showMsg();
+        this.coreService.showCopyMessage(this.message);
         this.clipboardService.copyFromContent(this.editor.getText());
       }
     });
@@ -1734,13 +1734,6 @@ export class JsonEditorModalComponent implements OnInit {
     });
   }
 
-  private showMsg(): void {
-    let msg = '';
-    this.translate.get('common.message.copied').subscribe(translatedValue => {
-      msg = translatedValue;
-    });
-    this.message.success(msg);
-  }
 }
 
 @Component({
@@ -3708,11 +3701,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.copyObj = node.copy || node.origin;
     this.copyObj.operation = 'COPY';
     this.copyObj.shallowCopy = isShallowCopy;
-    let msg = '';
-    this.translate.get('common.message.copied').subscribe(translatedValue => {
-      msg = translatedValue;
-    });
-    this.message.success(msg);
+    this.coreService.showCopyMessage(this.message);
   }
 
   private checkNewCopyObject(node, res): void {

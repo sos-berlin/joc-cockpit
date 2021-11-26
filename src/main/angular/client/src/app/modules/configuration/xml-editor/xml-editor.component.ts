@@ -7,6 +7,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Observable, of, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
+import {NzMessageService} from 'ng-zorro-antd/message';
 import {saveAs} from 'file-saver';
 import {PerfectScrollbarComponent} from 'ngx-perfect-scrollbar';
 import {isEmpty, isArray, isEqual, sortBy, clone} from 'underscore';
@@ -14,7 +15,6 @@ import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropd
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
-import {NzMessageService} from 'ng-zorro-antd/message';
 
 declare const require: any;
 declare const $: any;
@@ -563,7 +563,7 @@ export class ShowModalComponent implements OnInit {
   obj: any = {xml: ''};
   @ViewChild('codeMirror', {static: true}) cm;
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService,
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private message: NzMessageService,
               private toasterService: ToasterService, private clipboardService: ClipboardService) {
   }
 
@@ -577,6 +577,7 @@ export class ShowModalComponent implements OnInit {
   }
 
   copyToClipboard(): void {
+    this.coreService.showCopyMessage(this.message);
     this.clipboardService.copyFromContent(this.obj.xml);
   }
 
@@ -3351,11 +3352,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
 
     if (this.copyItem) {
-      let msg = '';
-      this.translate.get('common.message.copied').subscribe(translatedValue => {
-        msg = translatedValue;
-      });
-      this.message.success(msg);
+      this.coreService.showCopyMessage(this.message);
     }
   }
 

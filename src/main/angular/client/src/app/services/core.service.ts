@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
+import {TranslateService} from '@ngx-translate/core';
 import {isEmpty, sortBy, isNumber, object, isArray} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
@@ -42,7 +43,7 @@ export class CoreService {
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router,
-              private clipboardService: ClipboardService) {
+              private clipboardService: ClipboardService, private translate: TranslateService) {
 
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
@@ -620,6 +621,14 @@ export class CoreService {
     } else {
       return '';
     }
+  }
+
+  showCopyMessage(message: any): void {
+    let msg = '';
+    this.translate.get('common.message.copied').subscribe(translatedValue => {
+      msg = translatedValue;
+    });
+    message.success(msg);
   }
 
   getDateFormatWithTime(dateFormat: string): string {

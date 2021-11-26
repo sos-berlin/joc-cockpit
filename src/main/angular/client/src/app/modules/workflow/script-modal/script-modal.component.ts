@@ -153,14 +153,6 @@ export class ScriptModalComponent implements OnInit {
     return 'starting at ' + time + ' for ' + dur;
   }
 
-  private showMsg(): void {
-    let msg = '';
-    this.translate.get('common.message.copied').subscribe(translatedValue => {
-      msg = translatedValue;
-    });
-    this.message.success(msg);
-  }
-
   showConvertTime(): void {
     if (this.schedule) {
       this.convertTime();
@@ -266,7 +258,7 @@ export class ScriptModalComponent implements OnInit {
   copyToClipboard(): void {
     const selectedText = window.getSelection().toString();
     this.clipboardService.copyFromContent(selectedText || this.data);
-    this.showMsg();
+    this.coreService.showCopyMessage(this.message);
   }
 }
 

@@ -67,7 +67,7 @@
                         </div>
                         <div>
                           <b translate>agent.label.token</b> :
-                          <span>{{controller.token.UUID}} <i ngxClipboard [cbContent]="controller.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                          <span>{{controller.token.UUID}} <i ngxClipboard [cbContent]="controller.token.UUID" (click)="showCopyMessage()" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
                         </div>
                         <div class="m-t-sm" *ngIf="controller.token.URI2">
                           <b translate>agent.label.url</b> :
@@ -75,7 +75,7 @@
                         </div>
                         <div *ngIf="controller.token.URI2">
                           <b translate>agent.label.token</b> :
-                          <span>{{controller.token.UUID2}} <i ngxClipboard [cbContent]="controller.token.UUID2" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                          <span>{{controller.token.UUID2}} <i ngxClipboard [cbContent]="controller.token.UUID2" (click)="showCopyMessage()" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
                         </div>
                       </ng-template>
                     </span>
@@ -204,7 +204,7 @@
                                [nzPopoverContent]="contentTemplate"><i class="fa fa-key"></i></a>
                             <ng-template #contentTemplate>
                               <b translate>agent.label.token</b> :
-                              <span>{{agent.token.UUID}} <i ngxClipboard [cbContent]="agent.token.UUID" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                              <span>{{agent.token.UUID}} <i ngxClipboard [cbContent]="agent.token.UUID" (click)="showCopyMessage()" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
                             </ng-template>
                           </div>
                           <span *ngIf="!agent.token">-</span>

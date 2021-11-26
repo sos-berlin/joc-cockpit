@@ -1,4 +1,3 @@
-
 span ul li a {
   color: var(--primary);
   &:active, &:hover {
@@ -40,7 +39,8 @@ strong{
   position: relative;
   float: right;
   top: -20px;
-  right: 15px
+  right: 15px;
+  cursor: pointer;
 }
 .documents{
   max-height: calc(100vh - 408px);
