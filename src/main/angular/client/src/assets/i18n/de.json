@@ -384,8 +384,8 @@
     "button.successful": "Erfolgreich",
     "button.incomplete": "Fortschreitend",
     "button.failed": "Fehlgeschlagen",
-    "button.submitted": "Submitted",
-    "button.advancedSearch": "Advanced Filter",
+    "button.submitted": "Übermittelt",
+    "button.advancedSearch": "Erweiterter Filter",
     "button.compactView": "Kompakte Darstellung",
     "button.resetPanel": "Anzeige zurücksetzen",
     "button.copyLinkToObject": "Verweis zum Objekt kopieren",
@@ -976,7 +976,7 @@
     "label.hours": "Stunden",
     "label.days": "Tage",
     "label.variableSets": "Variablensätze",
-    "label.objectNotExist": "Object does not exist",
+    "label.objectNotExist": "Objekt nicht vorhanden",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addVariableSet": "Variablensatz hinzufügen",
     "button.setVersion": "Version setzen",
@@ -1141,7 +1141,7 @@
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen. Die Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
         "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs wird in der Sicht ARBEITSABLÄUFE angezeigt.",
-        "timeZone": "Zeitzone Zutrittszeit",
+        "timeZone": "Zeitzone der Zutrittszeit",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
           "boardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen."
@@ -1187,7 +1187,7 @@
           "parallelism": "Die max. Parallelität eines Jobs bestimmt wie viele Aufträge gleichzeitig in einem Arbeitsablauf diesen Job ausführen können. Wird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
           "criticality": "Die Kritikalität eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
           "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
-          "admissionTime": "Zutrittszeit",
+          "admissionTime": "Die Zutrittszeit regelt die Zeitfenster für Job-Starts basierend auf Wochentagen und Stunden. Ein Auftrag wartet am Job-Knoten bis die Zutrittszeit erreicht ist oder kann konfiguriert werden den Job zu überspringen, falls für das Startdatum des Auftrag keine übereinstimmende Zutrittszeit vorhanden ist.",
           "skipIfNoAdmissionForOrderDay": "Der Job wird übersprungen falls keine Zutrittszeiten für das Auftragsdatum konfiguriert sind. Zum Beispiel, sind Zutrittszeiten für Montag und Dienstag konfiguiert und der Auftrag wird für Mittwoch übermittelt, dann wird der Job übersprungen. Wird ein Auftrag für Montag übermittelt, dann wartet der Auftrag am Job bis die nächste Zutrittszeit erreicht ist."
         },
         "addOrder": {
