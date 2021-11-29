@@ -2034,39 +2034,40 @@ export class CreateFolderModalComponent implements OnInit {
         this.ref.detectChanges();
       });
     } else {
-      if (this.origin.name !== this.folder.name) {
-        let obj: any = {
-          newPath: this.folder.name
-        };
-        if (this.origin.id) {
-          obj.id = this.origin.id;
-        } else {
-          obj.path = this.origin.path;
-          obj.objectType = 'FOLDER';
-        }
-
-        let URL = this.folder.deepRename === 'replace' ? 'inventory/replace' : 'inventory/rename';
-        if (this.folder.deepRename === 'replace') {
-          if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
-            obj = this.getObjectArr(this.origin);
-          } else {
-            obj = {path: this.origin.path};
-            URL = 'inventory/replace/folder';
-          }
-          obj.search = this.folder.search;
-          obj.replace = this.folder.replace;
-        }
-
-        this.submitted = false;
-        this.coreService.post(URL, obj).subscribe((res) => {
-          this.activeModal.close(res);
-        }, () => {
-          this.submitted = false;
-          this.ref.detectChanges();
-        });
-      } else {
+      if (!this.origin.controller && !this.origin.dailyPlan && !this.origin.object && this.origin.name === this.folder.name) {
         this.activeModal.close('NO');
+        return;
       }
+
+      let obj: any = {
+        newPath: this.folder.name
+      };
+      if (this.origin.id) {
+        obj.id = this.origin.id;
+      } else {
+        obj.path = this.origin.path;
+        obj.objectType = 'FOLDER';
+      }
+
+      let URL = this.folder.deepRename === 'replace' ? 'inventory/replace' : 'inventory/rename';
+      if (this.folder.deepRename === 'replace') {
+        if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
+          obj = this.getObjectArr(this.origin);
+        } else {
+          obj = {path: this.origin.path};
+          URL = 'inventory/replace/folder';
+        }
+        obj.search = this.folder.search;
+        obj.replace = this.folder.replace;
+      }
+
+      this.submitted = false;
+      this.coreService.post(URL, obj).subscribe((res) => {
+        this.activeModal.close(res);
+      }, () => {
+        this.submitted = false;
+        this.ref.detectChanges();
+      });
     }
   }
 

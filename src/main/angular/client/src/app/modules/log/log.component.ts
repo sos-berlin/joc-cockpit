@@ -552,7 +552,7 @@ export class LogComponent implements OnInit, OnDestroy {
           match = match.replace(timestampRegex, datetime);
         }
       }
-      const logLevel = level;
+      let logLevel;
       if (level) {
         lastLevel = level;
       } else {
@@ -574,6 +574,7 @@ export class LogComponent implements OnInit, OnDestroy {
       }
 
       level = (level) ? level.trim().toLowerCase() : 'info';
+      logLevel = level;
       if (level !== 'info') {
         div.className = 'log_' + level;
       }
@@ -666,7 +667,7 @@ export class LogComponent implements OnInit, OnDestroy {
         lastClass = '';
       }
 
-      if (logLevel) {
+      if (logLevel !== 'info') {
         this.showHideCheckboxs(logLevel.toUpperCase());
       }
 
