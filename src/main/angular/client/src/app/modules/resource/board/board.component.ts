@@ -299,6 +299,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event): void {
+    this.boardsFilters.expandedObjects = [];
     this.getBoards($event, $event.action !== 'NODE');
   }
 

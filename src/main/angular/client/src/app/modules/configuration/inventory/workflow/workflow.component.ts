@@ -17,7 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
-import {isEmpty, isArray, isEqual, clone, extend, sortBy, object} from 'underscore';
+import {isEmpty, isArray, isEqual, clone, extend, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
@@ -150,7 +150,7 @@ export class RepeatEditorComponent implements OnInit {
   isNew: boolean;
   object: any = {};
 
-  constructor(public activeModal: NzModalRef, private workflowService: WorkflowService) {
+  constructor(public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
@@ -1992,7 +1992,7 @@ export class ScriptEditorComponent implements AfterViewInit {
     }
   }
 
-  onExpand(e): void{
+  onExpand(e): void {
     this.loadData(e.node, null);
   }
 
@@ -3009,7 +3009,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const outln = document.getElementById('outlineContainer');
       outln.innerHTML = '';
       outln.style.border = '1px solid lightgray';
-      new mxOutline(this.editor.graph, outln);
+      if (this.editor.graph) {
+        new mxOutline(this.editor.graph, outln);
+      }
       this.getWorkflowObject();
     }
     if (!this.isTrash) {
