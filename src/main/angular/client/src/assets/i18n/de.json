@@ -799,7 +799,7 @@
     "label.warnMessages": "Warnungen",
     "label.dailyPlanDate": "Datum Tagesplan",
     "label.countTotal": "Summe",
-    "label.submissionTotal": "Anzahl Übermittlungen",
+    "label.countSubmitted": "Anzahl Übermittlungen",
     "label.ignoreListFilters": "Filter der Ausschlussliste",
     "label.workflowAndOrder": "Arbeitsabläufe/Aufträge",
     "label.workflowAndJob": "Arbeitsablauf/Jobs",

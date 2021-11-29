@@ -799,7 +799,7 @@
     "label.warnMessages": "Warning Messages",
     "label.dailyPlanDate": "Daily Plan Date",
     "label.countTotal": "Total Count",
-    "label.submissionTotal": "Submission Count",
+    "label.countSubmitted": "Submission Count",
     "label.ignoreListFilters": "Filters for Ignore List",
     "label.workflowAndOrder": "Workflow/Orders",
     "label.workflowAndJob": "Workflow/Jobs",
