@@ -901,9 +901,11 @@ export class WorkflowService {
               }
               mapObj.addOrderdMap.set(json.instructions[x].workflowName, JSON.stringify(arr));
             }
-            if (boardName === json.instructions[x].workflowName) {
+            if (json.instructions[x].workflowName && boardName === json.instructions[x].workflowName) {
               isFound = true;
-              connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
+              if (mapObj.cell) {
+                connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
+              }
             }
           } else if (json.instructions[x].TYPE === 'PostNotice') {
             _node.setAttribute('label', 'postNotice');
@@ -1631,7 +1633,6 @@ export class WorkflowService {
         this.translate.get('workflow.label.workflowName').subscribe(translatedValue => {
           workflowName = translatedValue;
         });
-        const outcome = cell.getAttribute('outcome') ? JSON.parse(cell.getAttribute('outcome')) : {};
         return '<b>' + workflowName + '</b> : ' + (cell.getAttribute('workflowName') || '-');
       } else if (cell.value.tagName === 'Prompt') {
         let question = '';
