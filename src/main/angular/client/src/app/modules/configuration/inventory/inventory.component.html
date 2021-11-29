@@ -295,10 +295,10 @@
           <a (click)="newObject(node, 'LOCK')" translate>inventory.button.newLock</a></li>
         <li nz-menu-divider *ngIf="!node.origin.controller && !node.origin.dailyPlan"></li>
         <li nz-menu-item *ngIf="!node.origin.controller">
-          <a (click)="newObject(node, 'SCHEDULE')" translate>inventory.button.newOrder</a>
+          <a (click)="newObject(node, 'INCLUDESCRIPT')" translate>inventory.button.newScript</a>
         </li>
         <li nz-menu-item *ngIf="!node.origin.controller">
-          <a (click)="newObject(node, 'INCLUDESCRIPT')" translate>inventory.button.newScript</a>
+          <a (click)="newObject(node, 'SCHEDULE')" translate>inventory.button.newOrder</a>
         </li>
         <li nz-menu-item *ngIf="!node.origin.controller">
           <a (click)="newObject(node, 'WORKINGDAYSCALENDAR')" translate>inventory.button.newCalendar</a>

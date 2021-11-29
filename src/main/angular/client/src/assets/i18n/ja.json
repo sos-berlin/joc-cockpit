@@ -799,6 +799,7 @@
     "label.warnMessages": "警告メッセージ",
     "label.dailyPlanDate": "実行計画日付",
     "label.countTotal": "Total Count",
+    "label.countSubmitted": "Submitted Count",
     "label.submissionTotal": "Submission Count",
     "label.ignoreListFilters": "無視リストフィルター",
     "label.workflowAndOrder": "ワークフロー/オーダー",

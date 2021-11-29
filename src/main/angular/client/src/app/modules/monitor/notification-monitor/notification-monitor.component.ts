@@ -129,7 +129,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
       obj.dateFrom = this.filters.filter.date;
     }
     this.coreService.post('monitoring/notifications', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      res.notifications = this.orderPipe.transform(res.notifications, this.filters.filter.sortBy, this.filters.reverse);
+      res.notifications = this.orderPipe.transform(res.notifications, this.filters.filter.sortBy, this.filters.filter.reverse);
       if (notificationIds && notificationIds.size > 0) {
         res.notifications.forEach((value) => {
           if (notificationIds.has(value.notificationId)) {
