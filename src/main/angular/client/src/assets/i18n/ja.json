@@ -799,6 +799,7 @@
     "label.warnMessages": "警告メッセージ",
     "label.dailyPlanDate": "実行計画日付",
     "label.countTotal": "合計数",
+    "label.countSubmitted": "Submitted Count",
     "label.submissionTotal": "登録数",
     "label.ignoreListFilters": "無視リストフィルター",
     "label.workflowAndOrder": "ワークフロー/オーダー",
@@ -1134,7 +1135,7 @@
         "documentation": "スクリプトと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
         "script": "スクリプトインクルードの内容には、ジョブスクリプトでの使用に応じて、シェルコマンドやPerl、PowerShellなどのスクリプト言語用のコードを含めることができます。",
         "autocompleteShortCut": "利用可能なスクリプトインクルードのリストを取得するには、Ctrl+Spaceを使用します"
-                                                                                                  
+
       },
       "workflow": {
         "name": "ワークフロー名は、インベントリー内で一意です。ほとんどのユニコード文字が使用可能で、ドットやハイフンも使用できますが、先頭または末尾のドットやハイフンは使用できません。",
