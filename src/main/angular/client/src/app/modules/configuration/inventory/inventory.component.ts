@@ -2652,8 +2652,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         {name: 'Locks', title: 'Locks', object: InventoryObject.LOCK, children: [], path: data.path, key: (KEY + 'Locks$')}
       ];
       dailyPlanObj.dailyPlanArr = [
-        {name: 'Schedules', title: 'Schedules', object: InventoryObject.SCHEDULE, children: [], path: data.path, key: (KEY + 'Schedules$')},
         {name: 'IncludeScripts', title: 'Include Scripts', object: InventoryObject.INCLUDESCRIPT, children: [], path: data.path, key: (KEY + 'IncludeScripts$')},
+        {name: 'Schedules', title: 'Schedules', object: InventoryObject.SCHEDULE, children: [], path: data.path, key: (KEY + 'Schedules$')},
         {name: 'Calendars', title: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (KEY + 'Calendars$')}
       ];
     }
@@ -3714,10 +3714,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (!data[0] || !data[0].controller || data.length === 0) {
             this.updateObjects(node.origin, false, (children) => {
               if (children.length > 0) {
-                if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.INCLUDESCRIPT)) {
-                  children[1].expanded = true;
-                } else {
-                  children[0].expanded = true;
+                if (res.objectType !== 'FOLDER' && this.copyObj.type) {
+                  if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.INCLUDESCRIPT)) {
+                    children[1].expanded = true;
+                  } else {
+                    children[0].expanded = true;
+                  }
                 }
                 node.origin.children = children;
                 if (data.length > 0) {
@@ -3730,10 +3732,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }, true);
             return;
           }
-          if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.INCLUDESCRIPT) {
-            data = object.children[1];
-          } else {
-            data = object.children[0];
+          if (this.copyObj.type) {
+            if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.INCLUDESCRIPT) {
+              data = object.children[1];
+            } else {
+              data = object.children[0];
+            }
           }
           data.expanded = true;
           if (data && data.children) {
@@ -3745,7 +3749,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }
           }
         }
-
       }
       let obj: any = {
         type: this.copyObj.type,

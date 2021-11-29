@@ -192,6 +192,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event): void {
+    this.locksFilters.expandedObjects = [];
     this.getLocks($event, $event.action !== 'NODE');
   }
 
@@ -411,9 +412,6 @@ export class LockComponent implements OnInit, OnDestroy {
       value.show = true;
       value.loading = true;
       obj.lockPaths.push(value.path);
-      value.workflows.forEach((item) => {
-        item.show = true;
-      });
     });
     this.getLocksDetail(obj, (data) => {
       if (data && data.length > 0) {
@@ -424,6 +422,9 @@ export class LockComponent implements OnInit, OnDestroy {
               lock.ordersHoldingLocksCount = data[i].ordersHoldingLocksCount;
               lock.ordersWaitingForLocksCount = data[i].ordersWaitingForLocksCount;
               lock.workflows = data[i].workflows;
+              lock.workflows.forEach((item) => {
+                item.show = true;
+              });
               data.splice(i, 1);
               break;
             }
