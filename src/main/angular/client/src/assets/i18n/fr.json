@@ -799,7 +799,6 @@
     "label.warnMessages": "Messages d'Alerte",
     "label.dailyPlanDate": "Date du Plan Quotidien",
     "label.countTotal": "Total",
-    "label.countSubmitted": "Submitted Count",
     "label.submissionTotal": "Nombre de Soumissions",
     "label.ignoreListFilters": "Filtres pour la Liste des Ignorés",
     "label.workflowAndOrder": "Workflow/Ordres",

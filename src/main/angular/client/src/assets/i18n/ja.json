@@ -107,8 +107,8 @@
   "WORKINGDAYSCALENDAR": "営業日カレンダー",
   "NONWORKINGDAYSCALENDAR": "休業日カレンダー",
   "SCHEDULE": "スケジュール",
-  "INCLUDESCRIPT": "Script Include",
-  "DOCUMENTATION": "Documentation",
+  "INCLUDESCRIPT": "スクリプトインクルード",
+  "DOCUMENTATION": "ドキュメント",
   "Workflows": "ワークフロー",
   "File Order Sources": "ファイルオーダーソース",
   "Job Classes": "ジョブクラス",
@@ -116,7 +116,7 @@
   "Boards": "通知ボード",
   "Locks": "ロック",
   "Schedules": "スケジュール",
-  "IncludeScripts": "Script Includes",
+  "IncludeScripts": "スクリプトインクルード",
   "Calendars": "カレンダー",
   "Controller": "コントローラー",
   "Daily Plan": "実行計画",
@@ -385,7 +385,7 @@
     "button.incomplete": "処理中",
     "button.failed": "失敗",
     "button.submitted": "登録",
-    "button.advancedSearch": "Advanced Filter",
+    "button.advancedSearch": "詳細検索",
     "button.compactView": "表示を最小化",
     "button.resetPanel": "パネルリサイズ",
     "button.copyLinkToObject": "リンクをコピー",
@@ -798,9 +798,8 @@
     "label.errorMessages": "エラーメッセージ",
     "label.warnMessages": "警告メッセージ",
     "label.dailyPlanDate": "実行計画日付",
-    "label.countTotal": "Total Count",
-    "label.countSubmitted": "Submitted Count",
-    "label.submissionTotal": "Submission Count",
+    "label.countTotal": "合計数",
+    "label.submissionTotal": "登録数",
     "label.ignoreListFilters": "無視リストフィルター",
     "label.workflowAndOrder": "ワークフロー/オーダー",
     "label.workflowAndJob": "ワークフロー/ジョブ",
@@ -923,8 +922,8 @@
     "label.jobClasses": "ジョブクラス",
     "label.jobResources": "ジョブリソース",
     "label.orders": "スケジュール",
-    "label.scripts": "Script Includes",
-    "label.script": "Script Include",
+    "label.scripts": "スクリプトインクルード",
+    "label.script": "スクリプトインクルード",
     "label.templateId": "テンプレートID",
     "label.locks": "ロック",
     "label.calendars": "カレンダー",
@@ -956,8 +955,8 @@
     "label.createWorkflow": "ワークフロー作成",
     "label.createFileOrderSource": "ファイルオーダーソース作成",
     "label.createOrder": "スケジュール作成",
-    "label.createScript": "Create Script Include",
-    "label.createBoard": "通知ボード作製",
+    "label.createScript": "スクリプトインクルード作成",
+    "label.createBoard": "通知ボード作成",
     "label.createLock": "ロック作成",
     "label.objectName": "オブジェクト名",
     "label.createCalendar": "カレンダー作成",
@@ -977,7 +976,7 @@
     "label.hours": "時",
     "label.days": "日",
     "label.variableSets": "変数設定",
-    "label.objectNotExist": "Object does not exist",
+    "label.objectNotExist": "オブジェクトがありません",
     "button.modifyVariableSet": "変数設定変更",
     "button.addVariableSet": "変数設定追加",
     "button.setVersion": "バージョン設定",
@@ -988,8 +987,8 @@
     "button.newWorkflow": "新規ワークフロー",
     "button.newFileOrderSource": "新規ファイルオーダーソース",
     "button.newOrder": "新規スケジュール",
-    "button.newScript": "New Script Include",
-    "button.newBoard": "New Board",
+    "button.newScript": "新規スクリプトインクルード",
+    "button.newBoard": "新規通知ボード",
     "button.newLock": "新規ロック",
     "button.newCalendar": "新規カレンダー",
     "button.workingDay": "営業日",
@@ -1059,7 +1058,7 @@
     "message.startTimeIsMissing": "カレンダーに開始時間が必要です",
     "message.includesIsMissing": "含む周期が必要です",
     "message.uriIsMissing": "URLが必要です",
-    "message.scriptIsMissing": "Script Include is missing, but is required",
+    "message.scriptIsMissing": "スクリプトインクルードが必要です",
     "message.toNoticeIsMissing": "通知先が必要です",
     "message.readingOrderToNoticeIdIsMissing": "読取順の通知IDが必要です",
     "message.nameIsNotValid": "無効な名称です",
@@ -1131,11 +1130,11 @@
         "submitOrderToControllerWhenPlanned": "実行計画作成後オーダー登録"
       },
       "script": {
-        "name": "A Script Include is used to include recurring code snippets into a job script. The name of a Script Include is unique in the inventory. For the name of the Script Include most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-        "documentation": "A reference to a Documentation can be added that will be displayed with the Script. The RESOURCES view allows to manage the documentation.",
-        "title": "The Title of the Script Include",
-        "script": "Depending on its use with job scripts the content of a Script Include can include Shell commands or Code for scripting languages such as Perl, PowerShell etc.",
-        "autocompleteShortCut": "Use Ctrl+Space to retrieve the list of available Script Includes"
+        "name": "スクリプトインクルードは、定期的に発生するコードスニペットをジョブスクリプトに含めるために使用します。スクリプトインクルード名は、インベントリー内で一意です。スクリプトインクルード名には、ドットやハイフンなど、ほとんどのユニコード文字を使用できますが、先頭や末尾のドットやハイフンは使用できません。",
+        "documentation": "スクリプトと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
+        "script": "スクリプトインクルードの内容には、ジョブスクリプトでの使用に応じて、シェルコマンドやPerl、PowerShellなどのスクリプト言語用のコードを含めることができます。",
+        "autocompleteShortCut": "利用可能なスクリプトインクルードのリストを取得するには、Ctrl+Spaceを使用します"
+                                                                                                  
       },
       "workflow": {
         "name": "ワークフロー名は、インベントリー内で一意です。ほとんどのユニコード文字が使用可能で、ドットやハイフンも使用できますが、先頭または末尾のドットやハイフンは使用できません。",
@@ -1244,7 +1243,7 @@
       "button": {
         "search": "検索",
         "updateJob": "ジョブ更新",
-        "updateObject": "Update Object",
+        "updateObject": "オブジェクト更新",
         "propagateJob": "ジョブ展開"
       },
       "placeholder": {
@@ -1253,33 +1252,33 @@
       },
       "message": {
         "updateJobForSelectedWorkflows": "選択した{{workflowsCount}}ワークフローに含まれる {{jobName}}ジョブを更新",
-        "updateSelectedObjects": "Update {{objectCount}} selected objects"
+        "updateSelectedObjects": "　選択した{{objectCount}}オブジェクトを更新"
       },
       "tooltips": {
-        "search": "Search",
-        "folders": "Folders",
-        "currentController": "Current Controller",
-        "deployedOrReleased": "Deployed/Released",
-        "return": "Return",
-        "advanced": "Advanced",
-        "agent": "Agent Name",
-        "workflow": "Workflow",
-        "fileOrderSource": "File Order Source",
-        "jobResources": "Job Resources",
-        "boards": "Notice Boards",
-        "lock": "Lock",
-        "schedule": "Schedule",
-        "countJobs": "Count Jobs",
+        "search": "検索",
+        "folders": "フォルダー",
+        "currentController": "現在のコントローラー",
+        "deployedOrReleased": "配置/リリース済",
+        "return": "戻る",
+        "advanced": "詳細",
+        "agent": "エージェント名",
+        "workflow": "ワークフロー",
+        "fileOrderSource": "ファイルオーダーソース",
+        "jobResources": "Jジョブリソース",
+        "boards": "通知ボード",
+        "lock": "ロック",
+        "schedule": "スケジュール",
+        "countJobs": "ジョブ数",
         "from": "From",
         "to": "To",
-        "jobName": "Job Name",
-        "jobNameExactMatch": "Exact match for Job Name",
-        "jobCriticality": "Job Criticality",
-        "jobScript": "Job Script",
-        "argumentName": "Argument Name",
-        "argumentValue": "Argument Value",
-        "environmentName": "Environment Variable Name",
-        "environmentValue": "Environment Variable Value"
+        "jobName": "ジョブ名",
+        "jobNameExactMatch": "ジョブ名完全一致",
+        "jobCriticality": "ジョブ重大度",
+        "jobScript": "ジョブスクリプト",
+        "argumentName": "引数名",
+        "argumentValue": "引数値",
+        "environmentName": "環境変数名",
+        "environmentValue": "環境変数値"
       }
     },
     "updateJob": {
@@ -1296,14 +1295,14 @@
     },
     "updateObject": {
       "label": {
-        "updateObject": "Update Object"
+        "updateObject": "オブジェクト更新"
       },
       "button": {
-        "clickHereToDeploy": "Click here to deploy!",
-        "clickHereToRelease": "Click here to release!"
+        "clickHereToDeploy": "クリックして配置",
+        "clickHereToRelease": "クリックしてリリース"
       },
       "message": {
-        "updateSuccessfully": "{{count}} objects updated successfully."
+        "updateSuccessfully": "{{count}}オブジェクトが更新されました"
       }
     }
   },
@@ -1778,13 +1777,13 @@
     "label.value": "値",
     "label.sectionName": "セクション名",
     "label.addSection": "セクション追加",
-    "label.hash": "Hash",
+    "label.hash": "ハッシュ",
     "label.importSetting": "設定アップロード",
     "button.importSetting": "設定アップロード",
     "button.exportSetting": "設定ダウンロード",
     "button.addSection": "セクション追加",
     "button.dropSection": "セクション削除",
-    "button.showHashValue": "Show Hash Value",
+    "button.showHashValue": "ハッシュ表示",
     "placeholder.enterPositiveNumber": "正数を入力",
     "placeholder.enterNonNegativeNumber": "負ではない数を入力",
     "placeholder.enterPositiveInteger": "正の整数を入力",
@@ -1830,8 +1829,8 @@
       "show_view_history": "Sユーザーの権限とは無関係に、履歴表示が利用可能（＝true）か、非表示（＝false）かを指定します。この設定を空にすると、ユーザーの権限によって表示されるかどうかが決まります。",
       "show_view_auditlog": "ユーザーの権限とは無関係に、操作ログ表示が利用可能（＝true）か、非表示（＝false）かを指定します。この設定を空にすると、ユーザーの権限によって表示されるかどうかが決まります。",
       "show_view_configuration": "ユーザーの権限とは無関係に、ジョブ定義表示が利用可能（＝true）か、非表示（＝false）かを指定します。この設定を空にすると、ユーザーの権限によって表示されるかどうかが決まります。",
-      "controller_connection_joc_password": "controller_connection_joc_password",
-      "controller_connection_history_password": "controller_connection_history_password"
+      "controller_connection_joc_password": "コントローラー接続JOCパスワード",
+      "controller_connection_history_password": "コントローラー接続履歴パスワード"
     },
     "user": {
       "welcome_got_it": "了解",
@@ -2071,8 +2070,8 @@
     "button.convertAdmissionTime": "変換時間表示",
     "button.originalAdmissionTime": "実時間表示",
     "button.addResult": "結果追加",
-    "button.addDelay": "Add Delay",
-    "button.addAllDelay": "Add All Delay",
+    "button.addDelay": "遅延追加",
+    "button.addAllDelay": "全遅延追加",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",
@@ -2114,13 +2113,13 @@
     "placeholder.offset": "コンマ区切りでh/m/sを入力してください",
     "placeholder.duration": "d/w/m/y/hか、hh:mm:ss、secondsで入力してください",
     "placeholder.durationPeriod": "w/d/h/mか、hh:mm:ss、hh:mm:ss-hh:mm:ss、secondsで入力してください",
-    "placeholder.retryDelay": "Enter value as h/m/s",
+    "placeholder.retryDelay": "h/m/sで入力",
     "placeholder.enterPositiveNumber": "コンマ区切りで正数を入力",
     "placeholder.expression": "条件式を入力",
     "placeholder.orderId": "オーダーID編集",
     "placeholder.className": "クラス名を入力",
     "placeholder.selectJobResources": "ジョブリソースを選択",
-    "placeholder.selectScript": "Select Script",
+    "placeholder.selectScript": "スクリプトを選択",
     "placeholder.enterCredentialKey": "Windows資格マネージャーから認証キーを入力",
     "placeholder.final": "定数",
     "findAndReplace": {
