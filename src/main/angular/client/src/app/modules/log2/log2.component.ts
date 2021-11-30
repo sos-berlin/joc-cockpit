@@ -548,7 +548,7 @@ export class Log2Component implements OnInit, OnDestroy {
           match = match.replace(timestampRegex, datetime);
         }
       }
-      let logLevel;
+
       if (level) {
         lastLevel = level;
       } else {
@@ -560,6 +560,8 @@ export class Log2Component implements OnInit, OnDestroy {
           lastLevel = 'debug';
         } else if (prefix.search(/\[trace\]/i) > -1) {
           lastLevel = 'trace';
+        } else if (prefix.search(/\[info\]/i) > -1) {
+          lastLevel = 'info';
         } else if (prefix.search(/\[main\]/i) > -1) {
           lastLevel = 'main';
         } else if (prefix.search(/\[success\]/i) > -1) {
@@ -570,7 +572,6 @@ export class Log2Component implements OnInit, OnDestroy {
       }
 
       level = (level) ? level.trim().toLowerCase() : 'info';
-      logLevel = level;
       if (level !== 'info') {
         div.className = 'log_' + level;
       }
@@ -595,6 +596,7 @@ export class Log2Component implements OnInit, OnDestroy {
           div.className += ' hide-block';
         }
       } else if (level === 'fatal') {
+        this.isFatalLevel = true;
         div.className += ' fatal';
         if (!this.object.checkBoxs.fatal) {
           div.className += ' hide-block';
@@ -605,11 +607,13 @@ export class Log2Component implements OnInit, OnDestroy {
           div.className += ' hide-block';
         }
       } else if (level === 'warn') {
+        this.isWarnLevel = true;
         div.className += ' warn';
         if (!this.object.checkBoxs.warn) {
           div.className += ' hide-block';
         }
       } else if (level === 'trace') {
+        this.isTraceLevel = true;
         div.className += ' trace';
         if (!this.object.checkBoxs.trace) {
           div.className += ' hide-block';
@@ -620,23 +624,32 @@ export class Log2Component implements OnInit, OnDestroy {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[stderr\]/i) > -1) {
+        this.isStdErrLevel = true;
         div.className += ' stderr log_stderr';
         if (!this.object.checkBoxs.stderr) {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[debug\]/i) > -1) {
-        div.className += ' stderr log_debug';
+        this.isDeBugLevel = true;
+        div.className += ' debug log_debug';
         if (!this.object.checkBoxs.debug) {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[trace\]/i) > -1) {
-        div.className += ' stderr log_trace';
+        this.isTraceLevel = true;
+        div.className += ' trace log_trace';
         if (!this.object.checkBoxs.trace) {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[main\]/i) > -1) {
         div.className += ' main log_main';
         if (!this.object.checkBoxs.main) {
+          div.className += ' hide-block';
+        }
+      } else if (prefix.search(/\[info\]/i) > -1) {
+        this.isInfoLevel = true;
+        div.className += ' info log_info';
+        if (!this.object.checkBoxs.info) {
           div.className += ' hide-block';
         }
       } else {
@@ -661,9 +674,6 @@ export class Log2Component implements OnInit, OnDestroy {
         div.className += ' ' + lastClass;
       } else if (!lastLevel) {
         lastClass = '';
-      }
-      if (logLevel !== 'info') {
-        this.showHideCheckboxs(logLevel.toUpperCase());
       }
 
       if (!orderTaskFlag) {

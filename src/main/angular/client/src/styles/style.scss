@@ -3681,6 +3681,10 @@ table.order-table-panel {
   margin-top: 0;
 }
 
+.black, .danger, .danger-bg, .dark, .grey, .info, .primary, .warn, .warning {
+  color: rgba(255, 255, 255, 0.87);
+}
+
 .mono-font {
   font-family: monospace !important;
 }
@@ -4248,10 +4252,6 @@ li > a > i.remove {
   width: 400px;
   min-height: 70px;
   max-height: 80px;
-}
-
-.black, .danger, .danger-bg, .dark, .grey, .info, .primary, .warn, .warning {
-  color: rgba(255, 255, 255, 0.87);
 }
 
 .primary-text-hover-color:hover, .ant-picker-today-btn {
