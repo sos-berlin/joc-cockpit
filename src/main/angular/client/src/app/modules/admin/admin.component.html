@@ -17,11 +17,11 @@
               </button>
               <nz-dropdown-menu #account="nzDropdownMenu" >
                 <ul nz-menu >
-                  <li nz-menu-item  *ngFor="let user of userObj.users | orderBy: 'name'">
-                    <a  [ngClass]="{orange: selectedUser === user.user}"
-                       (click)="selectUser(user.user)">
-                      <span>{{user.user | decodeSpace}}</span>
-                      <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === user.user"
+                  <li nz-menu-item  *ngFor="let account of userObj.accounts | orderBy: 'name'">
+                    <a  [ngClass]="{orange: selectedUser === account.account}"
+                       (click)="selectUser(account.account)">
+                      <span>{{account.account | decodeSpace}}</span>
+                      <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === account.account"
                         class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>

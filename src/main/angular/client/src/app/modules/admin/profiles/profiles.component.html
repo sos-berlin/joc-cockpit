@@ -20,11 +20,11 @@
         (nzCheckedChange)="onAllChecked($event)"
       ></th>
       <th class="menu"><span translate>common.label.action</span></th>
-      <th (click)="sort('user')">
+      <th (click)="sort('account')">
         <a><span class="p-r-xs" translate>user.label.user</span>
-          <i *ngIf="order == 'user' && !reverse"
+          <i *ngIf="order == 'account' && !reverse"
              class="fa fa-caret-up "></i>
-          <i *ngIf="order == 'user' && reverse"
+          <i *ngIf="order == 'account' && reverse"
              class="fa fa-caret-down "></i></a>
       </th>
       <th (click)="sort('lastLogin')">
