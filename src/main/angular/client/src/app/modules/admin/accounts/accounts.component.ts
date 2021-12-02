@@ -16,6 +16,7 @@ export class AccountModalComponent implements OnInit {
   submitted = false;
   isUnique = true;
   currentUser: any = {};
+  isPasswordVisible = true;
 
   @Input() newUser = false;
   @Input() copy = false;
@@ -27,6 +28,11 @@ export class AccountModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const type = sessionStorage.identityServiceType || '';
+    if (this.copy || (type !== 'JOC' && type !== 'SHIRO' && type !== 'VAULT-JOC' && !this.newUser)) {
+      this.isPasswordVisible = false;
+    }
+
     if (this.oldUser) {
       this.currentUser = clone(this.oldUser);
       this.currentUser.fakePassword = '00000000';
@@ -65,7 +71,6 @@ export class AccountModalComponent implements OnInit {
       const data = {
         account: obj.account,
         password: obj.password,
-        identityServiceId: 0,
         roles: obj.roles
       };
       this.userDetail.accounts.push(data);
@@ -135,8 +140,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.usr = {currentPage: 1};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.username = this.authService.currentUserData;
-    
-  }
 
   }
 

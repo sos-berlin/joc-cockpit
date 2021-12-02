@@ -6,6 +6,7 @@ import {RolesComponent} from './roles/roles.component';
 import {MainSectionComponent} from './main-section/main-section.component';
 import {ProfilesComponent} from './profiles/profiles.component';
 import {PermissionsComponent} from './permissions/permissions.component';
+import {IdentityServiceComponent} from './identity-service/identity-service.component';
 
 const routes: Routes = [
   {
@@ -13,6 +14,7 @@ const routes: Routes = [
     component: AdminComponent,
     children: [
       {path: '', pathMatch: 'full', redirectTo: 'account'},
+      {path: 'identity_service', component: IdentityServiceComponent, data: {breadcrumb: 'breadcrumb.label.manageIdentityServices'}},
       {path: 'account', component: AccountsComponent, data: {breadcrumb: 'breadcrumb.label.manageUser'}},
       {path: 'role', component: RolesComponent, data: {breadcrumb: 'breadcrumb.label.manageRoles'}},
       {path: 'main_section', component: MainSectionComponent, data: {breadcrumb: 'breadcrumb.label.mainSetting'}},

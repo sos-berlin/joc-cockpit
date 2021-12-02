@@ -86,8 +86,8 @@
   "normal": "ノーマル",
   "submitted": "登録",
   "notSubmitted": "未登録",
-  "WaitingForAdmission" : "許可時間待ち",
-  "JobParallelismLimitReached" : "最大ジョブ並列数です",
+  "WaitingForAdmission": "許可時間待ち",
+  "JobParallelismLimitReached": "最大ジョブ並列数です",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "true",
   "False": "false",
@@ -228,7 +228,8 @@
     "label.userProfile": "プロファイル",
     "label.logging": "ログ設定",
     "label.setting": "設定",
-    "label.permissions": "パーミッション"
+    "label.permissions": "パーミッション",
+    "label.manageIdentityServices": "Manage Identity Services"
   },
   "configuration": {
     "tab.inventory": "インベントリー",
@@ -442,6 +443,7 @@
     "message.deleteProfiles2": "を削除していいですか?",
     "message.deleteRole": "ロールを削除すると完全にロール一覧からも削除されます",
     "message.deleteUser": "アカウントを削除すると完全にアカウント一覧からも削除されます",
+    "message.deleteIdentityService": "Deleting an identity service will permanently remove it from the identity service list.",
     "message.removeAgent": "本当にこのエージェントを削除しますか？",
     "message.deleteMainSection": "本当に選択したセクションを削除していいですか？",
     "message.noVariableDeclarationFound": "変数はありません",
@@ -1135,7 +1137,6 @@
         "documentation": "スクリプトと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
         "script": "スクリプトインクルードの内容には、ジョブスクリプトでの使用に応じて、シェルコマンドやPerl、PowerShellなどのスクリプト言語用のコードを含めることができます。",
         "autocompleteShortCut": "利用可能なスクリプトインクルードのリストを取得するには、Ctrl+Spaceを使用します"
-
       },
       "workflow": {
         "name": "ワークフロー名は、インベントリー内で一意です。ほとんどのユニコード文字が使用可能で、ドットやハイフンも使用できますが、先頭または末尾のドットやハイフンは使用できません。",
@@ -1248,7 +1249,7 @@
         "propagateJob": "ジョブ展開"
       },
       "placeholder": {
-        "search" : "名称またはタイトル入力 '%search%'",
+        "search": "名称またはタイトル入力 '%search%'",
         "selectFromTree": "フォルダーから選択"
       },
       "message": {
@@ -1355,8 +1356,8 @@
       "filterBy": "フィルター",
       "groupBy": "グルーピング"
     },
-    "notification" : {
-      "label" : {
+    "notification": {
+      "label": {
         "workflow": "ワークフロー",
         "orderId": "オーダーID",
         "job": "ジョブ",
@@ -1886,6 +1887,17 @@
     "label.permissions": "パーミッション",
     "label.folder": "フォルダー",
     "label.folders": "フォルダー",
+    "label.manageIdentityServices": "Manage Identity Services",
+    "label.addIdentityService": "Add Identity Service",
+    "label.editIdentityService": "Edit Identity Service",
+    "label.identityServiceType": "Identity Service Type",
+    "label.identityServiceName": "Identity Service Name",
+    "label.identityServiceOrdering": "Ordering",
+    "label.identityServiceDisabled": "Disabled",
+    "label.identityServiceRequired": "Required",
+    "label.identityServiceFound": "Identity Service found",
+    "label.identityServicesFound": "Identity Services found",
+    "button.addIdentityService": "Create Identity Service",
     "button.addPermission": "パーミッション追加",
     "button.addRole": "ロール追加",
     "button.addFolder": "フォルダー追加",
@@ -1903,6 +1915,8 @@
     "button.expandSelected": "有効を表示",
     "button.collapseAll": "全て閉じる",
     "button.expandAll": "全て開く",
+    "button.enable": "Enable",
+    "button.disable": "Disable",
     "placeholder.role": "ロール名を入力",
     "placeholder.selectRoles": "ロールを選択",
     "placeholder.user": "アカウントを入力",
@@ -1912,6 +1926,7 @@
     "placeholder.enterController": "コントローラーIDを入力",
     "placeholder.folderPath": "フォルダーパスを入力",
     "placeholder.enterOrSelectPermission": "パーミッションを入力または選択",
+    "placeholder.selectIdentityServiceType": "Select Identity Service Type",
     "message.permissionIsAlreadyCovered": "パーミッションは既にあります",
     "message.noPermissionFound": "パーミッションはありません",
     "message.noRoleAssign": "選択したアカウントにはロールが適用されていません",

@@ -29,7 +29,11 @@
               </nz-dropdown-menu>
             </div>
             <!-- Sorting via Account Name Ends -->
-            <button *ngIf="route === '/users/account'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+            <button *ngIf="route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+              <i class="fa fa-plus"></i>&nbsp;
+              <span translate>user.button.addIdentityService</span>
+            </button>
+            <button *ngIf="route.match('/users/account')" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addUser</span>
             </button>
@@ -90,7 +94,7 @@
 <!-- Admin Sub Header Ends -->
 <div>
   <div class="padding p-b-0">
-    <div class="row m-b m-t-xs">
+    <div class="row m-b m-t-xs" *ngIf="route !== '/users/identity_service'">
       <div class="col-md-12">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item">
@@ -106,10 +110,10 @@
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator">
+          <li class="nav-item dropdown-separator" *ngIf="identityService === 'SHIRO'">
             <span class="separator"></span>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" *ngIf="identityService === 'SHIRO'">
             <a class="nav-link" routerLink="main_section" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.mainSetting</span></span>
             </a>
@@ -123,7 +127,7 @@
             </a>
           </li>
         </ul>
-        <div *ngIf="route === '/users/account'" class="inline pull-right search-box-field admin-search-bar">
+        <div *ngIf="route.match('/users/account')" class="inline pull-right search-box-field admin-search-bar">
           <label>
             <input type="search" #input (keyup)="searchBar(input.value)"
                    placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="searchKey">

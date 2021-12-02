@@ -8,37 +8,37 @@ export class AuthService {
   props = ['accessTokenId', 'currentUserData', 'sessionTimeout', 'permission', 'scheduleIds'];
   propsPrefix = '$SOS$';
   rememberMe = false;
-  scheduleIds;
-  accessTokenId;
-  currentUserData;
-  sessionTimeout;
-  permission;
+  scheduleIds: any;
+  accessTokenId: any;
+  currentUserData: any;
+  sessionTimeout: any;
+  permission: any;
 
   constructor() {
-    const self = this;
+    const self: any = this;
     for (const prop of this.props) {
       self[prop] = this.load(prop);
     }
   }
 
   save(): void {
-    const self = this;
+    const self: any = this;
     for (const prop of this.props) {
       this._save(sessionStorage, prop, self[prop]);
     }
   }
 
-  setUser(userData): void {
+  setUser(userData: any): void {
     this.accessTokenId = userData.accessToken;
     this.currentUserData = userData.account;
     this.sessionTimeout = userData.sessionTimeout;
   }
 
-  setPermission(permission): void {
+  setPermission(permission: any): void {
     this.permission = JSON.stringify(permission);
   }
 
-  setIds(scheduleIds): void {
+  setIds(scheduleIds: any): void {
     this.scheduleIds = JSON.stringify(scheduleIds);
   }
 

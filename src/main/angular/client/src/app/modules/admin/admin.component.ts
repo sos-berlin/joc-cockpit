@@ -19,6 +19,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   selectedUser: string;
   route: string;
   userObj: any = {};
+  identityService: string;
   pageView: string;
   searchKey: string;
   subscription1: Subscription;
@@ -47,7 +48,6 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).permission;
     }
-    this.getUsersData(true);
     if (!this.route) {
       this.checkUrl(this.router);
     }
@@ -116,6 +116,15 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('CHANGE_VIEW');
   }
 
+  private getParameterByName(name, url = window.location.href): string {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
   private checkUrl(val): void {
     if (val.url) {
       this.route = val.url;
@@ -123,17 +132,24 @@ export class AdminComponent implements OnInit, OnDestroy {
         if (this.userObj && this.userObj.accounts) {
           this.dataService.announceData(this.userObj);
         }
-        this.activeRoute.queryParams
-          .subscribe(params => {
-            this.selectedUser = params.user;
-          });
+        this.selectedUser = this.getParameterByName('account');
+        if (sessionStorage.identityServiceType) {
+          if (this.identityService !== sessionStorage.identityServiceType) {
+            this.identityService = sessionStorage.identityServiceType;
+            this.getUsersData(true);
+          }
+        }
       }
     }
   }
 
   private getUsersData(flag): void {
-    this.coreService.post('authentication/auth', {}).subscribe(res => {
+    this.coreService.post('authentication/auth', {
+      identityServiceType: this.identityService
+    }).subscribe(res => {
       this.userObj = res;
+      delete this.userObj.deliveryDate;
+      this.userObj.identityServiceType = this.identityService;
       if (flag) {
         this.dataService.announceData(this.userObj);
         this.checkLdapConf();

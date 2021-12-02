@@ -86,8 +86,8 @@
   "normal": "normal",
   "submitted": "soumis",
   "notSubmitted": "non soumis",
-  "WaitingForAdmission" : "En attente d'admission",
-  "JobParallelismLimitReached" : "Limite de parallélisme des tâches atteinte",
+  "WaitingForAdmission": "En attente d'admission",
+  "JobParallelismLimitReached": "Limite de parallélisme des tâches atteinte",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "vrai",
   "False": "faux",
@@ -228,7 +228,8 @@
     "label.userProfile": "Profil utilisateur",
     "label.logging": "Journalisation",
     "label.setting": "Paramètres",
-    "label.permissions": "Permissions"
+    "label.permissions": "Permissions",
+    "label.manageIdentityServices": "Manage Identity Services"
   },
   "configuration": {
     "tab.inventory": "Inventaire",
@@ -442,6 +443,7 @@
     "message.deleteProfiles2": "profiles ?",
     "message.deleteRole": "La suppression d'un rôle le fera disparaître définitivement de la liste des rôles.",
     "message.deleteUser": "La suppression d'un compte le fera disparaître définitivement de la liste des comptes.",
+    "message.deleteIdentityService": "Deleting an identity service will permanently remove it from the identity service list.",
     "message.removeAgent": "Êtes-vous sûr de vouloir supprimer cet Agent?",
     "message.deleteMainSection": "Êtes-vous sûr de vouloir supprimer la section sélectionnée ?",
     "message.noVariableDeclarationFound": "Aucune déclaration de variable trouvée",
@@ -1248,7 +1250,7 @@
         "propagateJob": "Propager la Tâche"
       },
       "placeholder": {
-        "search" : "nom ou titre come '%search%'",
+        "search": "nom ou titre come '%search%'",
         "selectFromTree": "Sélectionner dans l'arborescence"
       },
       "message": {
@@ -1355,8 +1357,8 @@
       "filterBy": "Filtrer par",
       "groupBy": "Grouper par"
     },
-    "notification" : {
-      "label" : {
+    "notification": {
+      "label": {
         "workflow": "Workflow",
         "orderId": "ID Ordre",
         "job": "Tâche",
@@ -1886,6 +1888,17 @@
     "label.permissions": "Permissions",
     "label.folder": "Dossier",
     "label.folders": "Dossiers",
+    "label.manageIdentityServices": "Manage Identity Services",
+    "label.addIdentityService": "Add Identity Service",
+    "label.editIdentityService": "Edit Identity Service",
+    "label.identityServiceType": "Identity Service Type",
+    "label.identityServiceName": "Identity Service Name",
+    "label.identityServiceOrdering": "Ordering",
+    "label.identityServiceDisabled": "Disabled",
+    "label.identityServiceRequired": "Required",
+    "label.identityServiceFound": "Identity Service found",
+    "label.identityServicesFound": "Identity Services found",
+    "button.addIdentityService": "Create Identity Service",
     "button.addPermission": "Ajouter une Permission",
     "button.addRole": "Créer un Rôle",
     "button.addFolder": "Ajouter un Dossier",
@@ -1903,6 +1916,8 @@
     "button.expandSelected": "Développer active",
     "button.collapseAll": "Déplier Tout",
     "button.expandAll": "Développer Tout",
+    "button.enable": "Enable",
+    "button.disable": "Disable",
     "placeholder.role": "Entrer le nom du Rôle",
     "placeholder.selectRoles": "Sélectionner les Rôles",
     "placeholder.user": "Entrer l'utilisateur",
@@ -1912,6 +1927,7 @@
     "placeholder.enterController": "Entrer l'ID du Contrôleur",
     "placeholder.folderPath": "Entrer le chemin d'accès du dossier",
     "placeholder.enterOrSelectPermission": "Entrer ou sélectionner la Permission",
+    "placeholder.selectIdentityServiceType": "Select Identity Service Type",
     "message.permissionIsAlreadyCovered": "Permission déjà active",
     "message.noPermissionFound": "Aucune permission trouvée",
     "message.noRoleAssign": "Aucun Rôle associé au Compte selectionné",

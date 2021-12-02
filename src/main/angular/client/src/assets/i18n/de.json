@@ -228,7 +228,8 @@
     "label.userProfile": "Anwenderprofil",
     "label.logging": "Protokollierung",
     "label.setting": "Einstellungen",
-    "label.permissions": "Berechtigungen"
+    "label.permissions": "Berechtigungen",
+    "label.manageIdentityServices": "Manage Identity Services"
   },
   "configuration": {
     "tab.inventory": "Inventar",
@@ -442,6 +443,7 @@
     "message.deleteProfiles2": "Profile löschen wollen?",
     "message.deleteRole": "Die Rolle wird aus der Liste der Rollen entfernt.",
     "message.deleteUser": "Das Konto wird aus der Liste der Konten entfernt.",
+    "message.deleteIdentityService": "Deleting an identity service will permanently remove it from the identity service list.",
     "message.removeAgent": "Sind Sie sicher, dass Sie diesen Agenten löschen wollen?",
     "message.deleteMainSection": "Sind Sie sicher, dass Sie die ausgewählte Sektion löschen wollen?",
     "message.noVariableDeclarationFound": "Keine Variablendeklaration gefunden",
@@ -1248,7 +1250,7 @@
         "propagateJob": "Job propagieren"
       },
       "placeholder": {
-        "search" : "Name oder Titel, z.B. '%suchtext%'",
+        "search": "Name oder Titel, z.B. '%suchtext%'",
         "selectFromTree": "Auswahl aus Ordner"
       },
       "message": {
@@ -1355,8 +1357,8 @@
       "filterBy": "Gefiltert nach",
       "groupBy": "Gruppiert nach"
     },
-    "notification" : {
-      "label" : {
+    "notification": {
+      "label": {
         "workflow": "Arbeitsablauf",
         "orderId": "Auftragskennung",
         "job": "Job",
@@ -1886,6 +1888,17 @@
     "label.permissions": "Berechtigungen",
     "label.folder": "Ordner",
     "label.folders": "Ordner",
+    "label.manageIdentityServices": "Manage Identity Services",
+    "label.addIdentityService": "Add Identity Service",
+    "label.editIdentityService": "Edit Identity Service",
+    "label.identityServiceType": "Identity Service Type",
+    "label.identityServiceName": "Identity Service Name",
+    "label.identityServiceOrdering": "Ordering",
+    "label.identityServiceDisabled": "Disabled",
+    "label.identityServiceRequired": "Required",
+    "label.identityServiceFound": "Identity Service found",
+    "label.identityServicesFound": "Identity Services found",
+    "button.addIdentityService": "Create Identity Service",
     "button.addPermission": "Berechtigung hinzufügen",
     "button.addRole": "Rolle erstellen",
     "button.addFolder": "Ordner hinzufügen",
@@ -1903,6 +1916,8 @@
     "button.expandSelected": "Aktive ausklappen",
     "button.collapseAll": "Alle einklappen",
     "button.expandAll": "Alle ausklappen",
+    "button.enable": "Enable",
+    "button.disable": "Disable",
     "placeholder.role": "Name der Rolle angeben",
     "placeholder.selectRoles": "Rollen auswählen",
     "placeholder.user": "Konto angeben",
@@ -1912,6 +1927,7 @@
     "placeholder.enterController": "Controller ID angeben",
     "placeholder.folderPath": "Pfad des Ordners angeben",
     "placeholder.enterOrSelectPermission": "Berechtigung angeben oder auswählen",
+    "placeholder.selectIdentityServiceType": "Select Identity Service Type",
     "message.permissionIsAlreadyCovered": "Berechtigung ist bereits aktiv",
     "message.noPermissionFound": "Keine Berechtigung gefunden",
     "message.noRoleAssign": "Dem ausgewählten Konto ist keine Rolle zugewiesen",

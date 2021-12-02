@@ -64,7 +64,7 @@
     </nz-table>
   </div>
   <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
-    <span translate>common.label.total</span> <span> {{(users | filter: searchKey: ['account', 'roles']).length}} </span>
+    <span translate>common.label.total</span> <span> {{(accounts | filter: searchKey: ['account', 'roles']).length}} </span>
     <span translate *ngIf="ajaxTable.data.length >1">user.label.usersFound</span>
     <span translate *ngIf="ajaxTable.data.length ===1">user.label.userFound</span>
   </div>

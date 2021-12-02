@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row" *ngIf="!copy">
+        <div class="form-group row" *ngIf="isPasswordVisible">
             <label class="col-sm-4 form-control-label" translate>user.label.password</label>
             <div class="col-sm-6">
                 <input type="password" class="form-control" placeholder="{{'user.placeholder.password' | translate}}" [(ngModel)]="currentUser.fakePassword" name="password" autocomplete="false"/>

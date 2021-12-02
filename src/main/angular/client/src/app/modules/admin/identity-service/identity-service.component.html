@@ -1,0 +1,92 @@
+<div class="box p-a">
+  <div class="table-responsive">
+    <nz-table
+      #ajaxTable
+      [nzSize]="'small'"
+      [nzPageSize]="preferences.entryPerPage || 25"
+      [nzPageIndex]="usr.currentPage"
+      [nzBordered]="true"
+      [nzShowPagination]="(identityServices | filter: searchKey : ['identityServiceName', 'identityServiceType']).length > 0"
+      [nzData]="(identityServices | filter: searchKey: ['identityServiceName', 'identityServiceType']) | orderBy: usr.sortBy:usr.reverse"
+      [nzLoading]="loading"
+      [nzShowSizeChanger]="true"
+      [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 5000]"
+    >
+      <thead>
+      <tr>
+        <th class="menu"><span translate>common.label.action</span></th>
+        <th (click)="sort('identityServiceName')">
+          <a><span class="p-r-xs" translate>user.label.identityServiceName</span>
+            <i *ngIf="usr.sortBy == 'identityServiceName' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'identityServiceName' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th (click)="sort('identityServiceType')">
+          <a><span class="p-r-xs" translate>user.label.identityServiceType</span>
+            <i *ngIf="usr.sortBy == 'identityServiceType' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'identityServiceType' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th (click)="sort('ordering')">
+          <a><span class="p-r-xs" translate>user.label.identityServiceOrdering</span>
+            <i *ngIf="usr.sortBy == 'ordering' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'ordering' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th (click)="sort('disabled')">
+          <a><span class="p-r-xs" translate>user.label.identityServiceDisabled</span>
+            <i *ngIf="usr.sortBy == 'disabled' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'disabled' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th (click)="sort('required')">
+          <a><span class="p-r-xs" translate>user.label.identityServiceRequired</span>
+            <i *ngIf="usr.sortBy == 'required' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'required' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr [ngClass]="{'disabled-row': identityService.disabled}" *ngFor="let identityService of ajaxTable.data" class="cursor">
+        <td class="menu">
+          <div class="btn-group dropdown pull-left m-r-sm">
+            <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+              <ul nz-menu >
+                <li nz-menu-item (click)="edit(identityService)">
+                  <a translate>common.button.edit</a>
+                </li>
+                <li (click)="disable(identityService)" nz-menu-item *ngIf="!identityService.disabled">
+                  <a translate>user.button.disable</a>
+                </li>
+                <li (click)="enable(identityService)" nz-menu-item *ngIf="identityService.disabled">
+                  <a translate>user.button.enable</a>
+                </li>
+                <li nz-menu-item (click)="delete(identityService)" class="bg-hover-color" [ngClass]="{'disable-link': identityServices.length === 1}">
+                  <a translate>common.button.delete</a>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+        </td>
+        <td (click)="showUser(identityService)"><span [innerHtml]="identityService.identityServiceName | highlight: searchKey"></span></td>
+        <td (click)="showUser(identityService)"><span [innerHtml]="identityService.identityServiceType | highlight: searchKey"></span></td>
+        <td (click)="showUser(identityService)"><span [innerHtml]="identityService.ordering"></span></td>
+        <td (click)="showUser(identityService)"><span>{{identityService.disabled ? 'Yes' : 'No'}}</span></td>
+        <td (click)="showUser(identityService)"><span>{{identityService.required ? 'Yes' : 'No'}}</span></td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
+    <span translate>common.label.total</span> <span> {{(identityServices | filter: searchKey: ['identityServiceName', 'identityServiceType']).length}} </span>
+    <span translate *ngIf="ajaxTable.data.length >1">user.label.identityServicesFound</span>
+    <span translate *ngIf="ajaxTable.data.length ===1">user.label.identityServiceFound</span>
+  </div>
+</div>

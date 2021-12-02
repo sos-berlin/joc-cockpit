@@ -11,6 +11,7 @@ import {
 import {PermissionsComponent, FolderModalComponent, PermissionModalComponent} from './permissions/permissions.component';
 import {DataService} from './data.service';
 import {ProfilesComponent} from './profiles/profiles.component';
+import {IdentityServiceComponent, IdentityServiceModalComponent} from './identity-service/identity-service.component';
 
 @NgModule({
   imports: [
@@ -24,9 +25,11 @@ import {ProfilesComponent} from './profiles/profiles.component';
     FolderModalComponent,
     PermissionModalComponent,
     AccountModalComponent,
+    IdentityServiceModalComponent,
     ControllerModalComponent,
     RoleModalComponent,
     AccountsComponent,
+    IdentityServiceComponent,
     AdminComponent,
     RolesComponent,
     MainSectionComponent,
