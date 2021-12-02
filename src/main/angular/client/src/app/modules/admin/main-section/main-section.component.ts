@@ -218,7 +218,7 @@ export class MainSectionModalComponent implements OnInit {
       }
     });
     this.userDetail.main = main;
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe(() => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
     }, () => {
@@ -334,7 +334,7 @@ export class EditMainSectionModalComponent implements OnInit {
       }
     });
 
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe(() => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
     }, () => {
@@ -449,7 +449,7 @@ export class LdapSectionModalComponent implements OnInit {
       }
     }
     this.userDetail.main = this.userDetail.main.concat(this.mainSection);
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe(() => {
+    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(() => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.main);
     }, () => {
@@ -474,7 +474,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   constructor(public coreService: CoreService, private router: Router, public modal: NzModalService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res && res.accounts) {
+      if (res && res.users) {
         this.setUserData(res);
       }
     });
@@ -511,12 +511,12 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   saveInfo(): void {
     const obj = {
-      accounts: this.userDetail.accounts,
+      users: this.userDetail.users,
       roles: this.userDetail.roles,
       main: this.main
     };
 
-    this.coreService.post('authentication/auth/store', obj).subscribe(() => {
+    this.coreService.post('authentication/shiro/store', obj).subscribe(() => {
       this.main = [...this.main];
       this.dataService.announceFunction('RELOAD');
     });

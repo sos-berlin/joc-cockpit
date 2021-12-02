@@ -120,7 +120,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (val.url) {
       this.route = val.url;
       if (this.route.match('/users')) {
-        if (this.userObj && this.userObj.accounts) {
+        if (this.userObj && this.userObj.users) {
           this.dataService.announceData(this.userObj);
         }
         this.activeRoute.queryParams
@@ -132,7 +132,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private getUsersData(flag): void {
-    this.coreService.post('authentication/auth', {}).subscribe(res => {
+    this.coreService.post('authentication/shiro', {}).subscribe(res => {
       this.userObj = res;
       if (flag) {
         this.dataService.announceData(this.userObj);

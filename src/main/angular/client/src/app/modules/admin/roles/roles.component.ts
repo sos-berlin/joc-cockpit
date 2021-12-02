@@ -77,11 +77,11 @@ export class RoleModalComponent implements OnInit {
       this.userDetail.roles[obj.role] = {
         permissions: obj.permissions
       };
-      for (let i = 0; i < this.userDetail.accounts.length; i++) {
-        for (let j = 0; j < this.userDetail.accounts[i].roles.length; j++) {
-          if (this.userDetail.accounts[i].roles[j] === this.oldName) {
-            this.userDetail.accounts[i].roles.splice(j, 1);
-            this.userDetail.accounts[i].roles.push(obj.role);
+      for (let i = 0; i < this.userDetail.users.length; i++) {
+        for (let j = 0; j < this.userDetail.users[i].roles.length; j++) {
+          if (this.userDetail.users[i].roles[j] === this.oldName) {
+            this.userDetail.users[i].roles.splice(j, 1);
+            this.userDetail.users[i].roles.push(obj.role);
           }
         }
       }
@@ -94,8 +94,8 @@ export class RoleModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('authentication/auth/store', {
-      accounts: this.userDetail.accounts,
+    this.coreService.post('authentication/shiro/store', {
+      users: this.userDetail.users,
       roles: this.userDetail.roles,
       main: this.userDetail.main
     }).subscribe(() => {
@@ -190,8 +190,8 @@ export class ControllerModalComponent implements OnInit {
           this.userDetail.roles[obj.role].permissions.controllerDefaults = this.oldController.permissions.controllerDefaults;
         }
       }
-      this.coreService.post('authentication/auth/store', {
-        accounts: this.userDetail.accounts,
+      this.coreService.post('authentication/shiro/store', {
+        users: this.userDetail.users,
         roles: this.userDetail.roles,
         main: this.userDetail.main
       }).subscribe(() => {
@@ -210,7 +210,7 @@ export class ControllerModalComponent implements OnInit {
   styleUrls: ['./roles.component.css']
 })
 export class RolesComponent implements OnDestroy {
-  accounts: any = [];
+  users: any = [];
   userDetail: any = {};
   showMsg: any;
   roles: any = [];
@@ -222,7 +222,7 @@ export class RolesComponent implements OnDestroy {
   constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modal: NzModalService,
               private translate: TranslateService, private toasterService: ToasterService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
-      if (res && res.accounts) {
+      if (res && res.users) {
         this.setUsersData(res);
       }
     });
@@ -247,12 +247,12 @@ export class RolesComponent implements OnDestroy {
 
   setUsersData(res): void {
     this.userDetail = res;
-    this.accounts = res.accounts;
+    this.users = res.users;
     this.createRoleArray(res);
     this.activeRoute.queryParams
       .subscribe(params => {
-        if (params.account) {
-          this.selectUser(params.account);
+        if (params.user) {
+          this.selectUser(params.user);
         }
       });
     if (this.dataService.preferences.roles.size === 0 && this.controllerRoles.length > 0) {
@@ -260,12 +260,12 @@ export class RolesComponent implements OnDestroy {
     }
   }
 
-  selectUser(account): void {
+  selectUser(user): void {
     this.showMsg = false;
-    if (account) {
-      for (let i = 0; i < this.accounts.length; i++) {
-        if (this.accounts[i].account === account && this.accounts[i].roles) {
-          const selectedRoles = this.accounts[i].roles || [];
+    if (user) {
+      for (let i = 0; i < this.users.length; i++) {
+        if (this.users[i].user === user && this.users[i].roles) {
+          const selectedRoles = this.users[i].roles || [];
           this.controllerRoles = this.controllerRoles.filter((role) => {
             return selectedRoles.includes(role.name);
           });
@@ -288,11 +288,11 @@ export class RolesComponent implements OnDestroy {
 
   saveInfo(): void {
     const obj = {
-      accounts: this.accounts,
+      users: this.users,
       roles: this.userDetail.roles,
       main: this.userDetail.main
     };
-    this.coreService.post('authentication/auth/store', obj).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.dataService.announceFunction('RELOAD');
       this.createRoleArray(obj);
     });
@@ -365,9 +365,9 @@ export class RolesComponent implements OnDestroy {
   deleteRole(role): void {
     let isAssigned: boolean;
     let waringMessage = '';
-    for (let i = 0; i < this.accounts.length; i++) {
-      for (let j = 0; j < this.accounts[i].roles.length; j++) {
-        if (this.accounts[i].roles[j] === role.name) {
+    for (let i = 0; i < this.users.length; i++) {
+      for (let j = 0; j < this.users[i].roles.length; j++) {
+        if (this.users[i].roles[j] === role.name) {
           isAssigned = true;
           break;
         }
@@ -501,7 +501,7 @@ export class RolesComponent implements OnDestroy {
     if (val.url) {
       this.activeRoute.queryParams
         .subscribe(params => {
-          this.selectUser(params.account);
+          this.selectUser(params.user);
         });
     }
   }

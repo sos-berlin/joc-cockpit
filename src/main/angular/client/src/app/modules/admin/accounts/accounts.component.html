@@ -6,8 +6,8 @@
       [nzPageSize]="preferences.entryPerPage || 25"
       [nzPageIndex]="usr.currentPage"
       [nzBordered]="true"
-      [nzShowPagination]="(accounts | filter: searchKey : ['account', 'roles']).length > 0"
-      [nzData]="(accounts | filter: searchKey: ['account', 'roles']) | orderBy: usr.sortBy:usr.reverse"
+      [nzShowPagination]="(users | filter: searchKey : ['user', 'roles']).length > 0"
+      [nzData]="(users | filter: searchKey: ['user', 'roles']) | orderBy: usr.sortBy:usr.reverse"
       [nzLoading]="loading"
       [nzShowSizeChanger]="true"
       [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 5000]"
@@ -15,11 +15,11 @@
       <thead>
       <tr>
         <th class="menu"><span translate>common.label.action</span></th>
-        <th (click)="sort('account')">
+        <th (click)="sort('user')">
           <a><span class="p-r-xs" translate>user.label.user</span>
-            <i *ngIf="usr.sortBy == 'account' && !usr.reverse"
+            <i *ngIf="usr.sortBy == 'user' && !usr.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'account' && usr.reverse"
+            <i *ngIf="usr.sortBy == 'user' && usr.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th>
@@ -35,36 +35,36 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let account of ajaxTable.data">
+      <tr *ngFor="let user of ajaxTable.data">
         <td>
           <div class="btn-group dropdown pull-left m-r-sm">
             <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
               <ul nz-menu >
                 <li nz-menu-item >
-                  <a (click)="editUser(account)" translate>common.button.edit</a>
+                  <a (click)="editUser(user)" translate>common.button.edit</a>
                 </li>
                 <li nz-menu-item >
-                  <a (click)="copyUser(account)" translate>common.button.copy</a>
+                  <a (click)="copyUser(user)" translate>common.button.copy</a>
                 </li>
-                <li nz-menu-item  class="bg-hover-color" [ngClass]="{'disable-link' :username==account.account}">
-                  <a  (click)="deleteUser(account.account)" translate="">common.button.delete</a>
+                <li nz-menu-item  class="bg-hover-color" [ngClass]="{'disable-link' :username==user.user}">
+                  <a  (click)="deleteUser(user.user)" translate="">common.button.delete</a>
                 </li>
               </ul>
             </nz-dropdown-menu>
           </div>
         </td>
-        <td><a (click)="showRole(account.account)" class="text-hover-primary" [innerHtml]="account.account  | decodeSpace | highlight: searchKey"></a></td>
+        <td><a (click)="showRole(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace | highlight: searchKey"></a></td>
         <td><span>********</span></td>
         <td>
-          <div *ngFor="let role of account.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
+          <div *ngFor="let role of user.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
         </td>
       </tr>
       </tbody>
     </nz-table>
   </div>
   <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
-    <span translate>common.label.total</span> <span> {{(users | filter: searchKey: ['account', 'roles']).length}} </span>
+    <span translate>common.label.total</span> <span> {{(users | filter: searchKey: ['user', 'roles']).length}} </span>
     <span translate *ngIf="ajaxTable.data.length >1">user.label.usersFound</span>
     <span translate *ngIf="ajaxTable.data.length ===1">user.label.userFound</span>
   </div>

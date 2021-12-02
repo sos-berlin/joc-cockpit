@@ -30,7 +30,7 @@ export class AuthService {
 
   setUser(userData): void {
     this.accessTokenId = userData.accessToken;
-    this.currentUserData = userData.account;
+    this.currentUserData = userData.user;
     this.sessionTimeout = userData.sessionTimeout;
   }
 

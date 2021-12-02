@@ -28,7 +28,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
 
   constructor(private dataService: DataService, private modal: NzModalService, private coreService: CoreService, private router: Router) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res && res.accounts) {
+      if (res && res.users) {
         this.setUserData(res);
       }
     });
@@ -141,13 +141,13 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   }
 
   saveInfo(): void {
-    const obj = {
-      accounts: this.users.accounts,
+    let obj = {
+      users: this.users.users,
       masters: this.users.masters,
       main: this.users.main,
       profiles: this.profiles
     };
-    this.coreService.post('authentication/auth/store', obj).subscribe(res => {
+    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
       this.profiles = [...this.profiles];
     });
   }

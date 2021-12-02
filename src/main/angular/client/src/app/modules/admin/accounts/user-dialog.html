@@ -16,14 +16,14 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentUser)">
     <div class="modal-body p-a">
-        <div class="form-group row" [ngClass]="{'has-error' : ((account.dirty || account.touched) && account.invalid) || !isUnique}">
+        <div class="form-group row" [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid) || !isUnique}">
             <label class="col-sm-4 form-control-label" translate>user.label.user</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control" name="name" [(ngModel)]="currentUser.account" required #account="ngModel" [appAutofocus]="true" autocomplete="off"
-                       (blur)="checkUser(account.value, currentUser.userName)"/>
+                <input type="text" class="form-control" name="name" [(ngModel)]="currentUser.user" required #user="ngModel" [appAutofocus]="true" autocomplete="off"
+                       (blur)="checkUser(user.value, currentUser.userName)"/>
 
-                <div *ngIf="account.invalid && (account.dirty || account.touched)" class="text-danger help-block">
-                    <div *ngIf="account.errors.required">
+                <div *ngIf="user.invalid && (user.dirty || user.touched)" class="text-danger help-block">
+                    <div *ngIf="user.errors.required">
                         <div translate>common.message.requiredError</div>
                     </div>
                 </div>
