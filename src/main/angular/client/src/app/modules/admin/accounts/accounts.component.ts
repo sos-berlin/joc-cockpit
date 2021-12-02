@@ -30,13 +30,13 @@ export class AccountModalComponent implements OnInit {
     if (this.oldUser) {
       this.currentUser = clone(this.oldUser);
       this.currentUser.fakePassword = '00000000';
-      this.currentUser.userName = this.currentUser.user;
+      this.currentUser.userName = this.currentUser.account;
       if (this.copy) {
-        this.currentUser.user = '';
+        this.currentUser.account = '';
       }
     } else {
       this.currentUser = {
-        user: '',
+        account: '',
         fakePassword: '',
         roles: []
       };
@@ -45,8 +45,8 @@ export class AccountModalComponent implements OnInit {
 
   checkUser(newUser, existingUser): void {
     this.isUnique = true;
-    for (let i = 0; i < this.userDetail.users.length; i++) {
-      if (this.userDetail.users[i].user === newUser && newUser !== existingUser) {
+    for (let i = 0; i < this.userDetail.accounts.length; i++) {
+      if (this.userDetail.accounts[i].account === newUser && newUser !== existingUser) {
         this.isUnique = false;
         break;
       }
@@ -63,29 +63,30 @@ export class AccountModalComponent implements OnInit {
 
     if (this.newUser || this.copy) {
       const data = {
-        user: obj.user,
+        account: obj.account,
         password: obj.password,
+        identityServiceId: 0,
         roles: obj.roles
       };
-      this.userDetail.users.push(data);
+      this.userDetail.accounts.push(data);
     } else {
-      for (let i = 0; i < this.userDetail.users.length; i++) {
-        if (this.userDetail.users[i] === this.oldUser || isEqual(this.userDetail.users[i], this.oldUser)) {
-          this.userDetail.users[i].user = obj.user;
-          this.userDetail.users[i].password = obj.password;
-          this.userDetail.users[i].roles = obj.roles;
+      for (let i = 0; i < this.userDetail.accounts.length; i++) {
+        if (this.userDetail.accounts[i] === this.oldUser || isEqual(this.userDetail.accounts[i], this.oldUser)) {
+          this.userDetail.accounts[i].account = obj.account;
+          this.userDetail.accounts[i].password = obj.password;
+          this.userDetail.accounts[i].roles = obj.roles;
           break;
         }
       }
     }
 
-    this.coreService.post('authentication/shiro/store', this.userDetail).subscribe(res => {
+    this.coreService.post('authentication/auth/store', this.userDetail).subscribe(res => {
       this.submitted = false;
-      this.activeModal.close(this.userDetail.users);
+      this.activeModal.close(this.userDetail.accounts);
     }, err => {
       this.submitted = false;
-      this.userDetail.users = this.userDetail.users.filter((user) => {
-        return user.user !== obj.user;
+      this.userDetail.accounts = this.userDetail.accounts.filter((account) => {
+        return account.account !== obj.account;
       });
     });
   }
@@ -100,9 +101,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   loading = true;
   preferences: any = {};
-  users: any = [];
+  accounts: any = [];
   roles: any = [];
-  order = 'user';
+  order = 'account';
   reverse = false;
   usr: any = {};
   userDetail: any = {};
@@ -119,7 +120,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       this.searchKey = res;
     });
     this.subscription2 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res && res.users) {
+      if (res && res.accounts) {
         this.setUserData(res);
       }
     });
@@ -134,12 +135,14 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.usr = {currentPage: 1};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.username = this.authService.currentUserData;
+    
+  }
 
   }
 
   setUserData(res): void {
     this.userDetail = res;
-    this.users = res.users;
+    this.accounts = res.accounts;
     setTimeout(() => {
       this.loading = false;
     }, 300);
@@ -154,13 +157,13 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   saveInfo(): void {
     const obj = {
-      users: this.users,
+      accounts: this.accounts,
       roles: this.userDetail.roles,
       main: this.userDetail.main
     };
 
-    this.coreService.post('authentication/shiro/store', obj).subscribe(res => {
-      this.users = [...this.users];
+    this.coreService.post('authentication/auth/store', obj).subscribe(res => {
+      this.accounts = [...this.accounts];
       this.userDetail = res;
       this.dataService.announceFunction('RELOAD');
     });
@@ -174,8 +177,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }
   }
 
-  showRole(user): void {
-    this.router.navigate(['/users/role'], {queryParams: {user}});
+  showRole(account): void {
+    this.router.navigate(['/users/role'], {queryParams: {account}});
   }
 
   addUser(): void {
@@ -194,13 +197,13 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.users = result;
-        this.users = [...this.users];
+        this.accounts = result;
+        this.accounts = [...this.accounts];
       }
     });
   }
 
-  editUser(user): void {
+  editUser(account): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AccountModalComponent,
@@ -208,7 +211,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         userDetail: this.userDetail,
         allRoles: this.roles,
-        oldUser: user,
+        oldUser: account,
       },
       nzFooter: null,
       nzClosable: false,
@@ -216,13 +219,13 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.users = result;
-        this.users = [...this.users];
+        this.accounts = result;
+        this.accounts = [...this.accounts];
       }
     });
   }
 
-  copyUser(user): void {
+  copyUser(account): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AccountModalComponent,
@@ -230,7 +233,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         userDetail: this.userDetail,
         copy: true,
-        oldUser: user,
+        oldUser: account,
       },
       nzFooter: null,
       nzClosable: false,
@@ -238,13 +241,13 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.users = result;
-        this.users = [...this.users];
+        this.accounts = result;
+        this.accounts = [...this.accounts];
       }
     });
   }
 
-  deleteUser(user): void {
+  deleteUser(account): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
@@ -252,7 +255,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         title: 'delete',
         message: 'deleteUser',
         type: 'Delete',
-        objectName: user,
+        objectName: account,
       },
       nzFooter: null,
       nzClosable: false,
@@ -260,8 +263,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.users = this.users.filter((item) => {
-          return item.user !== user;
+        this.accounts = this.accounts.filter((item) => {
+          return item.account !== account;
         });
         this.saveInfo();
       }

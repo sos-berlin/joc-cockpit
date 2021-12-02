@@ -30,7 +30,7 @@ export class AuthService {
 
   setUser(userData): void {
     this.accessTokenId = userData.accessToken;
-    this.currentUserData = userData.user;
+    this.currentUserData = userData.account;
     this.sessionTimeout = userData.sessionTimeout;
   }
 
@@ -58,7 +58,7 @@ export class AuthService {
     }
   }
 
-  permissionCheck(url): boolean {
+  permissionCheck(url: any): boolean {
     const routePath = url === '/dashboard' ? 'Dashboard' : url === '/daily_plan' ? 'DailyPlan' : url.match(/workflow/) ? 'WorkFlow' : url === '/file_transfer' ? 'FileTransfer' :
       url === '/audit_log' ? 'AuditLog' : url.match('order') ? 'Order' : url.match('/resources') ? 'Resource' : url === '/history' ? 'History' :
         url.match('/configuration') ? 'Configuration' : url.match('/users') ? 'ManageAccount' : '';
@@ -67,7 +67,7 @@ export class AuthService {
       showViews = JSON.parse(window.sessionStorage.showViews);
     }
     const permission = JSON.parse(this.permission);
-    if (!permission){
+    if (!permission) {
       return false;
     }
     let ifPermissionPassed = false;
@@ -177,15 +177,15 @@ export class AuthService {
     return ifPermissionPassed;
   }
 
-  private _save(storage, name, value): void {
-    const key = this.propsPrefix + name;
+  private _save(storage: any, name: any, value: any): void {
+    const key: any = this.propsPrefix + name;
     if (value == null) {
       value = '';
     }
     storage[key] = value;
   }
 
-  private load(name): any {
+  private load(name: any): any {
     const key = this.propsPrefix + name;
     return localStorage[key] || sessionStorage[key] || null;
   }

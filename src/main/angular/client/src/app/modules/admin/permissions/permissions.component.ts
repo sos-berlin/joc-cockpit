@@ -56,8 +56,8 @@ export class PermissionModalComponent {
       }
     }
 
-    this.coreService.post('authentication/shiro/store', {
-      users: this.userDetail.users,
+    this.coreService.post('authentication/auth/store', {
+      accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
       main: this.userDetail.main
     }).subscribe(() => {
@@ -130,8 +130,8 @@ export class FolderModalComponent implements OnInit {
       this.userDetail.roles[this.role].folders.joc = this.folderArr;
     }
 
-    this.coreService.post('authentication/shiro/store', obj = {
-      users: this.userDetail.users,
+    this.coreService.post('authentication/auth/store', obj = {
+      accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
       main: this.userDetail.main
     }).subscribe(() => {
@@ -220,7 +220,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   constructor(private coreService: CoreService, private route: ActivatedRoute, private router: Router,
               private modal: NzModalService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res && res.users) {
+      if (res && res.accounts) {
         this.setUserData(res);
       }
     });
@@ -667,8 +667,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   saveInfo(): void {
-    this.coreService.post('authentication/shiro/store', {
-      users: this.userDetail.users,
+    this.coreService.post('authentication/auth/store', {
+      accounts: this.userDetail.accounts,
       roles: this.roles,
       main: this.userDetail.main
     }).subscribe(() => {
