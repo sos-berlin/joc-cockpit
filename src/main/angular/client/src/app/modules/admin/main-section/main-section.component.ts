@@ -513,6 +513,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     const obj = {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
+      identityServiceName: this.userDetail.identityServiceName,
       main: this.main
     };
 

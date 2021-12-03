@@ -2,11 +2,14 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
+import {OrderPipe} from 'ngx-order-pipe';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+
 
 @Component({
   selector: 'app-identity-service-modal-content',
@@ -31,18 +34,16 @@ export class IdentityServiceModalComponent implements OnInit {
     if (this.identityService) {
       this.currentObj = clone(this.identityService);
     }
-    for (const i in this.identityServiceTypes) {
-      let flag = true;
-      for (const j in this.identityServices) {
-        if (this.identityServiceTypes[i] === this.identityServices[j].identityServiceType && (!this.identityService || this.identityServiceTypes[i] !== this.identityService.identityServiceType)) {
+    let flag = true;
+    for (const i in this.identityServices) {
+        if (this.identityServices[i].identityServiceType === 'SHIRO' && (!this.identityService || 'SHIRO' !== this.identityService.identityServiceType)) {
           flag = false;
           break;
         }
-      }
-      if (flag) {
-        this.types.push(this.identityServiceTypes[i]);
-      }
     }
+    this.types = this.identityServiceTypes.filter((item) => {
+      return !flag ? item !== 'SHIRO' : true;
+    });
   }
 
   checkService(): void {
@@ -86,7 +87,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService) {
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
     });
@@ -119,8 +120,9 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   showUser(account): void {
+    sessionStorage.identityServiceName = account.identityServiceName;
     sessionStorage.identityServiceType = account.identityServiceType;
-    this.router.navigate(['/users/account']);
+    this.router.navigate(['/users/identity_service/account']);
   }
 
   add(): void {
@@ -171,6 +173,24 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   enable(identityService): void {
     this.enableDisable(identityService, false);
   }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    const list = this.orderPipe.transform(this.identityServices, this.usr.sortBy, this.usr.reverse);
+    moveItemInArray(list, event.previousIndex, event.currentIndex);
+    if (this.usr.reverse) {
+      let j = 0;
+      for (let i = list.length - 1; i >= 0; i--) {
+        list[i].ordering = j;
+        j++;
+      }
+    } else {
+      for (let i = 0; i < list.length; i++) {
+        list[i].ordering = i;
+      }
+    }
+    this.identityServices = list;
+  }
+
 
   private enableDisable(identityService, flag): void {
     identityService.disabled = flag;

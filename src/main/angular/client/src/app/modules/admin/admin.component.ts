@@ -145,11 +145,11 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private getUsersData(flag): void {
     this.coreService.post('authentication/auth', {
-      identityServiceType: this.identityService
+      identityServiceName: sessionStorage.identityServiceName
     }).subscribe(res => {
       this.userObj = res;
       delete this.userObj.deliveryDate;
-      this.userObj.identityServiceType = this.identityService;
+      this.userObj.identityServiceName = sessionStorage.identityServiceName;
       if (flag) {
         this.dataService.announceData(this.userObj);
         this.checkLdapConf();

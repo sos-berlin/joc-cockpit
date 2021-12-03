@@ -29,45 +29,45 @@
               </nz-dropdown-menu>
             </div>
             <!-- Sorting via Account Name Ends -->
-            <button *ngIf="route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+            <button *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addIdentityService</span>
             </button>
-            <button *ngIf="route.match('/users/account')" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+            <button *ngIf="route.match('/users/identity_service/account')" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addUser</span>
             </button>
-            <button *ngIf="route && route.match('/users/role')" class="btn btn-grey btn-sm m-l-12" (click)="addController()">
+            <button *ngIf="route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addController()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addController</span>
             </button>
-            <button *ngIf="route && route.match('/users/role')" class="btn btn-grey btn-sm m-l-12" (click)="addRole()">
+            <button *ngIf="route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addRole()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addRole</span>
             </button>
-            <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isLdapRealmEnable"
+            <button *ngIf="route === '/users/identity_service/main_section'" type="button" [disabled]="!isLdapRealmEnable"
                     (click)="addLdapRealm()"
                     class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addLdapRealm</span>
             </button>
-            <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isJOCClusterEnable"
+            <button *ngIf="route === '/users/identity_service/main_section'" type="button" [disabled]="!isJOCClusterEnable"
                     (click)="enableJOCCluster()"
                     class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-toggle-on"></i>&nbsp;
               <span translate>user.button.enableJOCCluster</span>
             </button>
-            <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-12"
+            <button *ngIf="route === '/users/identity_service/main_section'" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="editMainSection()">
               <i class="fa fa-pencil"></i>&nbsp;
               <span translate>user.button.updateSection</span>
             </button>
-            <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-12"
+            <button *ngIf="route === '/users/identity_service/main_section'" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="addMainSection()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addEntry</span>
             </button>
-            <button *ngIf="route === '/users/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
+            <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="resetProfiles()">
               <i class="fa fa-refresh"></i>&nbsp;
               <span translate>user.button.resetProfile</span>
@@ -82,7 +82,7 @@
               <i class="fa fa-plus"></i>&nbsp;
               {{'user.button.addPermission' | translate}}
             </button>
-            <div class="hide" [ngClass]="{'show-block': route && route.match('/users/permissions')}">
+            <div class="hide" [ngClass]="{'show-block': route && route.match('/users/identity_service/permissions')}">
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>
           </div>
@@ -94,19 +94,19 @@
 <!-- Admin Sub Header Ends -->
 <div>
   <div class="padding p-b-0">
-    <div class="row m-b m-t-xs" *ngIf="route !== '/users/identity_service'">
+    <div class="row m-b m-t-xs" *ngIf="route !== '/users' && route !== '/users/identity_service'">
       <div class="col-md-12">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item">
-            <a class="nav-link" routerLink="account" routerLinkActive="active">
+            <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
-            </a>
+             </a>
           </li>
           <li class="nav-item dropdown-separator">
             <span class="separator"></span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="role" routerLinkActive="active">
+            <a class="nav-link" routerLink="identity_service/role" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
             </a>
           </li>
@@ -114,7 +114,7 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="identityService === 'SHIRO'">
-            <a class="nav-link" routerLink="main_section" routerLinkActive="active">
+            <a class="nav-link" routerLink="identity_service/main_section" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.mainSetting</span></span>
             </a>
           </li>
@@ -122,12 +122,12 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="profiles" routerLinkActive="active">
+            <a class="nav-link" routerLink="identity_service/profiles" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.profiles</span></span>
             </a>
           </li>
         </ul>
-        <div *ngIf="route.match('/users/account')" class="inline pull-right search-box-field admin-search-bar">
+        <div *ngIf="route.match('/users/identity_service/account')" class="inline pull-right search-box-field admin-search-bar">
           <label>
             <input type="search" #input (keyup)="searchBar(input.value)"
                    placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="searchKey">

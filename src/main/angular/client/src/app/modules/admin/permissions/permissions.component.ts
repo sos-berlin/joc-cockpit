@@ -59,6 +59,7 @@ export class PermissionModalComponent {
     this.coreService.post('authentication/auth/store', {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
+      identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
     }).subscribe(() => {
       this.submitted = false;
@@ -133,6 +134,7 @@ export class FolderModalComponent implements OnInit {
     this.coreService.post('authentication/auth/store', obj = {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
+      identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
     }).subscribe(() => {
       this.submitted = false;
@@ -670,6 +672,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.coreService.post('authentication/auth/store', {
       accounts: this.userDetail.accounts,
       roles: this.roles,
+      identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
     }).subscribe(() => {
       this.dataService.announceFunction('RELOAD');

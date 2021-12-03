@@ -97,6 +97,7 @@ export class RoleModalComponent implements OnInit {
     this.coreService.post('authentication/auth/store', {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
+      identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
     }).subscribe(() => {
       this.submitted = false;
@@ -193,6 +194,7 @@ export class ControllerModalComponent implements OnInit {
       this.coreService.post('authentication/auth/store', {
         accounts: this.userDetail.accounts,
         roles: this.userDetail.roles,
+        identityServiceName: this.userDetail.identityServiceName,
         main: this.userDetail.main
       }).subscribe(() => {
         this.submitted = false;
@@ -290,7 +292,8 @@ export class RolesComponent implements OnDestroy {
     const obj = {
       accounts: this.accounts,
       roles: this.userDetail.roles,
-      main: this.userDetail.main
+      main: this.userDetail.main,
+      identityServiceName: this.userDetail.identityServiceName
     };
     this.coreService.post('authentication/auth/store', obj).subscribe(res => {
       this.dataService.announceFunction('RELOAD');

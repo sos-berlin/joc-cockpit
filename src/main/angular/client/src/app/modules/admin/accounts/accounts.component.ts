@@ -162,6 +162,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     const obj = {
       accounts: this.accounts,
       roles: this.userDetail.roles,
+      identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
     };
 
@@ -173,15 +174,16 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   getRoles(): void {
-    if (this.roles.length === 0) {
-      this.coreService.post('authentication/permissions', {}).subscribe((res: any) => {
-        this.roles = res.SOSPermissionRoles.SOSPermissionRole;
-      });
+    this.roles = [];
+    if (this.userDetail.roles) {
+      for (const prop in this.userDetail.roles) {
+        this.roles.push(prop);
+      }
     }
   }
 
   showRole(account): void {
-    this.router.navigate(['/users/role'], {queryParams: {account}});
+    this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
   }
 
   addUser(): void {

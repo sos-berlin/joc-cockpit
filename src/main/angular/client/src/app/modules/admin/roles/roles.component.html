@@ -38,7 +38,7 @@
         <div class="col-xxl-11 col-xl-10 col-lg-3 col-md-4 col-sm-8">
           <div *ngFor="let controller of role.controllers" class="role">
             <span class="fa fa-circle p-r-xs font9"></span>
-            <a [routerLink]="['/users/permissions',controller.name || 'default', role.name]" class="text-primary">
+            <a [routerLink]="['/users/identity_service/permissions',controller.name || 'default', role.name]" class="text-primary">
               {{controller.name || 'default'}}
             </a>
             <i (click)="copyController(role, controller)" class="fa fa-copy m-l-xs p-l-xs"></i>
@@ -49,6 +49,9 @@
       </div>
       <hr>
     </div>
+  </div>
+  <div *ngIf="controllerRoles.length === 0">
+    <app-empty-data></app-empty-data>
   </div>
   <div [ngClass]="{show : showMsg}" class="box-body p-b-0 hide">
     <div class="row">
