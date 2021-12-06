@@ -35,7 +35,6 @@ declare const mxUtils;
 declare const mxEvent;
 declare const mxClient;
 declare const mxEdgeHandler;
-declare const mxCodec;
 declare const mxAutoSaveManager;
 declare const mxGraphHandler;
 declare const mxCellAttributeChange;
@@ -54,10 +53,7 @@ declare const mxImageShape;
 declare const mxRhombus;
 declare const mxLabel;
 declare const mxKeyHandler;
-declare const X2JS;
 declare const $;
-
-const x2js = new X2JS();
 
 @Directive({
   selector: '[appValidateDuration]',
@@ -2335,7 +2331,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.documentationName = '';
         this.jobResourceNames = [];
         this.orderPreparation = {};
-        this.dummyXml = null;
+        this.dummyXml = false;
         this.ref.detectChanges();
       }
     }
@@ -2380,7 +2376,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   /**
    * Constructs a new application (returns an mxEditor instance)
    */
-  createEditor(): void {
+  createEditor(cb): void {
     let editor = null;
     const self = this;
     try {
@@ -2398,6 +2394,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const outln = document.getElementById('outlineContainer');
             outln.innerHTML = '';
             new mxOutline(self.editor.graph, outln);
+            cb();
           }
         };
       }
@@ -2405,6 +2402,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       // Shows an error message if the editor cannot start
       mxUtils.alert('Cannot start application: ' + e.message);
       console.error(e);
+      cb();
     }
   }
 
@@ -2998,13 +2996,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (!this.dummyXml) {
       this.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
       this.loadConfig();
-      this.coreService.get('workflow.json').subscribe((data) => {
-        this.dummyXml = x2js.json2xml_str(data);
-        this.createEditor();
+      this.dummyXml = true;
+      this.createEditor(() => {
         this.getWorkflowObject();
+        this.handleWindowEvents();
       });
-
-      this.handleWindowEvents();
     } else {
       const outln = document.getElementById('outlineContainer');
       outln.innerHTML = '';
@@ -3076,7 +3072,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  private getAgents(): void{
+  private getAgents(): void {
     this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
       this.agents = res.agentNames ? res.agentNames.sort() : [];
     });
@@ -3129,7 +3125,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private getWorkflowObject(): void {
-
     if (!this.inventoryConf.copiedInstuctionObject || !this.inventoryConf.copiedInstuctionObject.TYPE) {
       this.updateToolbar('copy', null);
     } else {
@@ -3164,6 +3159,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } else {
           res.configuration = {};
         }
+
         try {
           this.initObjects(res);
           this.workflow = res;
@@ -3662,7 +3658,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           data.name = name;
           this.dataService.reloadTree.next({rename: data});
-        }, (err) => {
+        }, () => {
           this.workflow.name = this.data.name;
           this.ref.detectChanges();
         });
@@ -3880,7 +3876,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         });
       }
     } else {
-      this.reloadDummyXml(graph, this.dummyXml);
+      this.reloadDummyXml(graph);
     }
   }
 
@@ -3913,19 +3909,26 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   /**
    * Reload dummy xml
    */
-  private reloadDummyXml(graph, xml): void {
+  private reloadDummyXml(graph: any): void {
     this.jobs = [];
     graph.getModel().beginUpdate();
     try {
       // Removes all cells
       graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-      const _doc = mxUtils.parseXml(xml);
-      const dec = new mxCodec(_doc);
-      const model = dec.decode(_doc.documentElement);
-      // Merges the response model with the client model
-      if (model) {
-        graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
-      }
+      const doc = mxUtils.createXmlDocument();
+      const defaultParent = graph.getDefaultParent();
+      const startNode = doc.createElement('Process');
+      startNode.setAttribute('title', 'start');
+      const v1 = graph.insertVertex(defaultParent, null, startNode, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
+      const mainNode = doc.createElement('Process');
+      mainNode.setAttribute('title', 'dragAndDrop');
+      const v2 = graph.insertVertex(defaultParent, null, mainNode, 0, 0, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
+      const endNode = doc.createElement('Process');
+      endNode.setAttribute('title', 'end');
+      const v3 = graph.insertVertex(defaultParent, null, endNode, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
+      graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
+      graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
+
     } finally {
       // Updates the display
       graph.getModel().endUpdate();
@@ -3958,7 +3961,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     });
 
     const el = $.fn['show'];
-    $.fn['show'] = function () {
+    $.fn['show'] = function() {
       this.trigger('show');
       return el.apply(this, arguments);
     };
@@ -4014,1476 +4017,334 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
+   private traversCells(node, graph): void {
+     let startNode;
+     const nodes = [];
+     const connections = [];
+     const self = this;
+     const jsonObject = {
+       instructions: []
+     };
+
+     function findFirstNode(data): void {
+       for (const prop in node.cells) {
+         if (node.cells[prop].value && node.cells[prop].value.tagName && !node.cells[prop].value.tagName.match(/Connector/)
+           && !node.cells[prop].value.tagName.match(/Connection/) && !node.cells[prop].value.tagName.match(/Process/)) {
+           const incomingEdge = graph.getIncomingEdges(node.cells[prop]);
+           let flag = false;
+           if (incomingEdge && incomingEdge.length > 0) {
+             if (incomingEdge[0].source && incomingEdge[0].source.value && incomingEdge[0].source.value.tagName === 'Process') {
+               startNode = node.cells[prop];
+               flag = true;
+             }
+           }
+           if (!flag) {
+             nodes.push(node.cells[prop]);
+           }
+         } else if (node.cells[prop].value && node.cells[prop].value.tagName === 'Connection') {
+           if (node.cells[prop].source && node.cells[prop].source.value.tagName !== 'Process') {
+             connections.push(node.cells[prop]);
+           }
+         }
+       }
+       if (startNode) {
+         data.instructions.push(creatJSONObject(startNode, nodes));
+         findNext(nodes, startNode, data);
+       }
+     }
+
+     function getOutgoingEdges(cell): any {
+       const outgoingEdges = [];
+       for (let i = 0; i < connections.length; i++) {
+         if (connections[i].source) {
+           if (connections[i].source.id == cell.id) {
+             outgoingEdges.push(connections[i]);
+           }
+         }
+       }
+       return outgoingEdges;
+     }
+
+     function getIncomingEdges(cell): any {
+       const incomingEdges = [];
+       for (let i = 0; i < connections.length; i++) {
+         if (connections[i].target) {
+           if (connections[i].target.id == cell.id) {
+             incomingEdges.push(connections[i]);
+           }
+         }
+       }
+       return incomingEdges;
+     }
+
+     function findNext(list, firstNode, data): void {
+       const outgoingEdges = getOutgoingEdges(firstNode);
+       let isFound = false;
+       let isCatch = false;
+       for (const i in outgoingEdges) {
+         if (outgoingEdges[i].target) {
+           for (const j in list) {
+             if (outgoingEdges[i].target.id == list[j].id) {
+               startNode = list[j];
+               list.splice(j, 1);
+               if (!self.workflowService.checkClosingCell(startNode.value.tagName)) {
+                 isFound = true;
+                 if (startNode.value.tagName === 'Catch' && data.TYPE === 'Try') {
+                   data.catch = {
+                     id: startNode.id,
+                     instructions: []
+                   };
+                 } else {
+                   const obj = creatJSONObject(startNode, list);
+                   let flag = true;
+                   if (data.catch) {
+                     if (!isCatch) {
+                       for (const x in startNode.edges) {
+                         if (startNode.edges[x].getAttribute('label') === 'catch') {
+                           isCatch = true;
+                           flag = false;
+                         }
+                       }
+                     } else {
+                       const edges = getIncomingEdges(startNode);
+                       let isFound2 = false;
+                       for (const x in edges) {
+                         if (edges[x].source && edges[x].source.id == data.id) {
+                           isCatch = false;
+                           isFound2 = true;
+                         }
+                       }
+                       if (!isFound2) {
+                         const outgoingEdges2 = getOutgoingEdges(startNode);
+                         for (const x in outgoingEdges2) {
+                           if (edges[x].target && edges[x].target.id == data.id) {
+                             isCatch = false;
+                           }
+                         }
+                       }
+                     }
+                   }
+
+                   if (isCatch) {
+                     if (data.catch) {
+                       data.catch.instructions.push(obj);
+                     }
+                   } else {
+                     if (flag) {
+                       data.instructions.push(obj);
+                     }
+                   }
+                 }
+               }
+               break;
+             }
+           }
+         }
+       }
+
+       if (list.length > 0 && isFound) {
+         if (startNode && startNode.value && !self.workflowService.isInstructionCollapsible(startNode.value.tagName)) {
+           findNext(list, startNode, data);
+         }
+       }
+     }
+
+     function traversForkList(list, obj, edge, branchObj): void {
+       let callAgain = false;
+       for (const i in list) {
+         if (list[i].value) {
+           const edges = getIncomingEdges(list[i]);
+           let flag = false;
+           for (const j in edges) {
+             if (obj.lastId && edges[j].source && obj.lastId == edges[j].source.id) {
+               obj.lastId = edges[j].target.id;
+               flag = true;
+               break;
+             }
+             if (edges[j].id == edge.id && edges[j].target) {
+               obj.lastId = edges[j].target.id;
+               flag = true;
+               break;
+             }
+             if (obj.lastId && edges[j].source && self.workflowService.checkClosingCell(edges[j].source.value.tagName)) {
+               if (obj.lastId == edges[j].source.getAttribute('targetId')) {
+                 flag = true;
+                 break;
+               }
+             }
+           }
+           if (flag) {
+             const cell = list[i];
+             list.splice(i, 1);
+             if (!self.workflowService.checkClosingCell(cell.value.tagName)) {
+               branchObj.instructions.push(creatJSONObject(cell, list));
+               callAgain = true;
+               break;
+             }
+           }
+         }
+       }
+       if (callAgain) {
+         traversForkList(list, obj, edge, branchObj);
+       }
+     }
+
+     function traversForkInstruction(edge: any, obj: any, list: any): void {
+       if (!obj.branches) {
+         obj.branches = [];
+       }
+       const result = edge.getAttribute('result');
+       const branchObj = {
+         id: edge.getAttribute('label'),
+         result: result ? JSON.parse(result) : result,
+         instructions: []
+       };
+
+       traversForkList(list, {lastId: ''}, edge, branchObj);
+       obj.branches.push(branchObj);
+     }
+
+     function traversIfList(list, obj, edge, data): void {
+       let callAgain = false;
+       for (const i in list) {
+         if (list[i].value) {
+           const edges = getIncomingEdges(list[i]);
+           let flag = false;
+           for (const j in edges) {
+             if (obj.lastId && edges[j].source && edges[j].target && obj.lastId == edges[j].source.id) {
+               obj.lastId = edges[j].target.id;
+               flag = true;
+               break;
+
+             }
+             if (edges[j].id == edge.id && edges[j].target) {
+               obj.lastId = edges[j].target.id;
+               flag = true;
+               break;
+             }
+           }
+           if (flag) {
+             const cell = list[i];
+             list.splice(i, 1);
+             if (!self.workflowService.checkClosingCell(cell.value.tagName)) {
+               callAgain = true;
+               if (edge.getAttribute('label') === 'then') {
+                 data.then.instructions.push(creatJSONObject(cell, list));
+               } else if (edge.getAttribute('label') === 'else') {
+                 data.else.instructions.push(creatJSONObject(cell, list));
+               }
+             }
+             break;
+           }
+         }
+       }
+       if (callAgain) {
+         traversIfList(list, obj, edge, data);
+       }
+     }
+
+     function traversIfInstruction(edge: any, obj: any, list: any): void {
+       if (edge.getAttribute('label') === 'then') {
+         if (!obj.then) {
+           obj.then = {
+             instructions: []
+           };
+         }
+       } else if (edge.getAttribute('label') === 'else') {
+         if (!obj.else) {
+           obj.else = {
+             instructions: []
+           };
+         }
+       }
+
+       traversIfList(list, {lastId: ''}, edge, obj);
+     }
+
+     function createObject(cell: any): any {
+       const obj: any = {
+         id: cell.id,
+         TYPE: cell.value.tagName
+       };
+       const attr = cell.value.attributes;
+       for (const j in attr) {
+         if (attr[j].name && attr[j].value && (attr[j].name !== 'label' || (attr[j].name === 'label' && obj.TYPE === 'Job'))) {
+           let val = attr[j].value;
+           if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome')) {
+             val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
+           } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable') {
+             val = val == 'true';
+           }
+           obj[attr[j].name] = val;
+         }
+       }
+
+       if (obj.TYPE === 'Job' && !obj.defaultArguments) {
+         obj.defaultArguments = {};
+       }
+       return obj;
+     }
+
+     function creatJSONObject(cell: any, list: any[]): any {
+       const obj = createObject(cell);
+       if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+         if (cell.collapsed) {
+           obj.isCollapsed = cell.collapsed;
+         }
+
+         if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork') {
+           const edges = getOutgoingEdges(cell);
+           for (const j in edges) {
+             if (cell.value.tagName === 'Fork') {
+               traversForkInstruction(edges[j], obj, list);
+             } else {
+               traversIfInstruction(edges[j], obj, list);
+             }
+           }
+           for (const x in list) {
+             const incomingEdges = getIncomingEdges(list[x]);
+             let flg = false;
+             for (const y in incomingEdges) {
+               if (self.workflowService.checkClosingCell(incomingEdges[y].source.value.tagName)) {
+                 startNode = incomingEdges[y].source;
+                 flg = true;
+                 break;
+               }
+             }
+             if (flg) {
+               break;
+             }
+           }
+         } else {
+           obj.instructions = [];
+           findNext(list, cell, obj);
+         }
+
+       }
+       return obj;
+     }
+
+     findFirstNode(jsonObject);
+
+     if (jsonObject.instructions.length > 0) {
+       this.workflow.configuration = this.coreService.clone(jsonObject);
+     } else {
+       this.workflow.configuration = {};
+     }
+   }
+
   /**
    * Function: To convert Mxgraph xml to JSON (Web service response)
-   * @param xml : option
    */
-  private xmlToJsonParser(xml): void {
-    if (this.editor) {
-      const _graph = this.editor.graph;
-      if (!xml) {
-        const enc = new mxCodec();
-        const node = enc.encode(_graph.getModel());
-        xml = mxUtils.getXml(node);
+  private xmlToJsonParser(): void {
+    if (this.editor && this.editor.graph) {
+      const graph = this.editor.graph;
+      const model = graph.getModel();
+      if (model.root) {
+        this.traversCells(model, graph);
       }
-      let _json: any;
-      try {
-        _json = x2js.xml_str2json(xml);
-      } catch (e) {
-        console.error(e);
-      }
-      if (!_json.mxGraphModel) {
-        return;
-      }
-
-      const objects = _json.mxGraphModel.root;
-      const jsonObj = {
-        instructions: []
-      };
-      let startNode: any = {};
-      if (objects.Connection) {
-        if (!isArray(objects.Connection)) {
-          const _tempCon = clone(objects.Connection);
-          objects.Connection = [];
-          objects.Connection.push(_tempCon);
-        }
-        if (objects.Connection.length > 0) {
-          let _temp;
-          for (let i = 0; i < objects.Connection.length; i++) {
-            if (objects.Connection[i]._type === 'then' && !_temp) {
-              break;
-            }
-            if (objects.Connection[i]._type === 'else') {
-              _temp = clone(objects.Connection[i]);
-              objects.Connection.splice(i, 1);
-              break;
-            }
-          }
-          if (_temp) {
-            objects.Connection.push(_temp);
-          }
-        }
-        const connection = objects.Connection;
-        let _jobs = clone(objects.Job);
-        let _ifInstructions = clone(objects.If);
-        let _forkInstructions = clone(objects.Fork);
-        let _forkListInstructions = clone(objects.ForkList);
-        let _tryInstructions = clone(objects.Try);
-        let _retryInstructions = clone(objects.Retry);
-        let _lockInstructions = clone(objects.Lock);
-        let _cycleInstructions = clone(objects.Cycle);
-        let _expectNoticeInstructions = clone(objects.ExpectNotice);
-        let _postNoticeInstructions = clone(objects.PostNotice);
-        let _promptInstructions = clone(objects.Prompt);
-        let _failInstructions = clone(objects.Fail);
-        let _addOrderInstructions = clone(objects.AddOrder);
-        let _finishInstructions = clone(objects.Finish);
-        const dummyNodesId = [];
-        for (let i in objects.Process) {
-          dummyNodesId.push(objects.Process[i]._id);
-        }
-        for (let i in connection) {
-          if (dummyNodesId.indexOf(connection[i].mxCell._source) > -1) {
-            continue;
-          } else if (dummyNodesId.indexOf(connection[i].mxCell._target) > -1) {
-            continue;
-          }
-          if (_jobs) {
-            if (isArray(_jobs)) {
-              for (let j = 0; j < _jobs.length; j++) {
-                if (connection[i].mxCell._target === _jobs[j]._id) {
-                  _jobs.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _jobs._id) {
-                _jobs = [];
-              }
-            }
-          }
-          if (_forkInstructions) {
-            if (isArray(_forkInstructions)) {
-              for (let j = 0; j < _forkInstructions.length; j++) {
-                if (connection[i].mxCell._target === _forkInstructions[j]._id) {
-                  _forkInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _forkInstructions._id) {
-                _forkInstructions = [];
-              }
-            }
-          }
-          if (_forkListInstructions) {
-            if (isArray(_forkListInstructions)) {
-              for (let j = 0; j < _forkListInstructions.length; j++) {
-                if (connection[i].mxCell._target === _forkListInstructions[j]._id) {
-                  _forkListInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _forkListInstructions._id) {
-                _forkListInstructions = [];
-              }
-            }
-          }
-          if (_retryInstructions) {
-            if (isArray(_retryInstructions)) {
-              for (let j = 0; j < _retryInstructions.length; j++) {
-                if (connection[i].mxCell._target === _retryInstructions[j]._id) {
-                  _retryInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _retryInstructions._id) {
-                _retryInstructions = [];
-              }
-            }
-          }
-          if (_lockInstructions) {
-            if (isArray(_lockInstructions)) {
-              for (let j = 0; j < _lockInstructions.length; j++) {
-                if (connection[i].mxCell._target === _lockInstructions[j]._id) {
-                  _lockInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _lockInstructions._id) {
-                _lockInstructions = [];
-              }
-            }
-          }
-          if (_cycleInstructions) {
-            if (isArray(_cycleInstructions)) {
-              for (let j = 0; j < _cycleInstructions.length; j++) {
-                if (connection[i].mxCell._target === _cycleInstructions[j]._id) {
-                  _cycleInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _cycleInstructions._id) {
-                _cycleInstructions = [];
-              }
-            }
-          }
-          if (_tryInstructions) {
-            if (isArray(_tryInstructions)) {
-              for (let j = 0; j < _tryInstructions.length; j++) {
-                if (connection[i].mxCell._target === _tryInstructions[j]._id) {
-                  _tryInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _tryInstructions._id) {
-                _tryInstructions = [];
-              }
-            }
-          }
-          if (_expectNoticeInstructions) {
-            if (isArray(_expectNoticeInstructions)) {
-              for (let j = 0; j < _expectNoticeInstructions.length; j++) {
-                if (connection[i].mxCell._target === _expectNoticeInstructions[j]._id) {
-                  _expectNoticeInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _expectNoticeInstructions._id) {
-                _expectNoticeInstructions = [];
-              }
-            }
-          }
-          if (_postNoticeInstructions) {
-            if (isArray(_postNoticeInstructions)) {
-              for (let j = 0; j < _postNoticeInstructions.length; j++) {
-                if (connection[i].mxCell._target === _postNoticeInstructions[j]._id) {
-                  _postNoticeInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _postNoticeInstructions._id) {
-                _postNoticeInstructions = [];
-              }
-            }
-          }
-          if (_promptInstructions) {
-            if (isArray(_promptInstructions)) {
-              for (let j = 0; j < _promptInstructions.length; j++) {
-                if (connection[i].mxCell._target === _promptInstructions[j]._id) {
-                  _promptInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _promptInstructions._id) {
-                _promptInstructions = [];
-              }
-            }
-          }
-          if (_ifInstructions) {
-            if (isArray(_ifInstructions)) {
-              for (let j = 0; j < _ifInstructions.length; j++) {
-                if (connection[i].mxCell._target === _ifInstructions[j]._id) {
-                  _ifInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _ifInstructions._id) {
-                _ifInstructions = [];
-              }
-            }
-          }
-          if (_addOrderInstructions) {
-            if (isArray(_addOrderInstructions)) {
-              for (let j = 0; j < _addOrderInstructions.length; j++) {
-                if (connection[i].mxCell._target === _addOrderInstructions[j]._id) {
-                  _addOrderInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _addOrderInstructions._id) {
-                _addOrderInstructions = [];
-              }
-            }
-          }
-          if (_failInstructions) {
-            if (isArray(_failInstructions)) {
-              for (let j = 0; j < _failInstructions.length; j++) {
-                if (connection[i].mxCell._target === _failInstructions[j]._id) {
-                  _failInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _failInstructions._id) {
-                _failInstructions = [];
-              }
-            }
-          }
-          if (_finishInstructions) {
-            if (isArray(_finishInstructions)) {
-              for (let j = 0; j < _finishInstructions.length; j++) {
-                if (connection[i].mxCell._target === _finishInstructions[j]._id) {
-                  _finishInstructions.splice(j, 1);
-                  break;
-                }
-              }
-            } else {
-              if (connection[i].mxCell._target === _finishInstructions._id) {
-                _finishInstructions = [];
-              }
-            }
-          }
-        }
-
-        if (_jobs) {
-          if (isArray(_jobs) && _jobs.length > 0) {
-            startNode = _jobs[0];
-          } else {
-            startNode = _jobs;
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Job', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_forkInstructions) {
-            if (isArray(_forkInstructions) && _forkInstructions.length > 0) {
-              startNode = _forkInstructions[0];
-            } else {
-              startNode = _forkInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Fork', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_forkListInstructions) {
-            if (isArray(_forkListInstructions) && _forkListInstructions.length > 0) {
-              startNode = _forkListInstructions[0];
-            } else {
-              startNode = _forkListInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('ForkList', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_cycleInstructions) {
-            if (isArray(_cycleInstructions) && _cycleInstructions.length > 0) {
-              startNode = _cycleInstructions[0];
-            } else {
-              startNode = _cycleInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Cycle', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_lockInstructions) {
-            if (isArray(_lockInstructions) && _lockInstructions.length > 0) {
-              startNode = _lockInstructions[0];
-            } else {
-              startNode = _lockInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Lock', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_retryInstructions) {
-            if (isArray(_retryInstructions) && _retryInstructions.length > 0) {
-              startNode = _retryInstructions[0];
-            } else {
-              startNode = _retryInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Retry', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_tryInstructions) {
-            if (isArray(_tryInstructions) && _tryInstructions.length > 0) {
-              startNode = _tryInstructions[0];
-            } else {
-              startNode = _tryInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Try', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_postNoticeInstructions) {
-            if (isArray(_postNoticeInstructions) && _postNoticeInstructions.length > 0) {
-              startNode = _postNoticeInstructions[0];
-            } else {
-              startNode = _postNoticeInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('PostNotice', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_promptInstructions) {
-            if (isArray(_promptInstructions) && _promptInstructions.length > 0) {
-              startNode = _promptInstructions[0];
-            } else {
-              startNode = _promptInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Prompt', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_expectNoticeInstructions) {
-            if (isArray(_expectNoticeInstructions) && _expectNoticeInstructions.length > 0) {
-              startNode = _expectNoticeInstructions[0];
-            } else {
-              startNode = _expectNoticeInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('ExpectNotice', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_ifInstructions) {
-            if (isArray(_ifInstructions) && _ifInstructions.length > 0) {
-              startNode = _ifInstructions[0];
-            } else {
-              startNode = _ifInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('If', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_failInstructions) {
-            if (isArray(_failInstructions) && _failInstructions.length > 0) {
-              startNode = _failInstructions[0];
-            } else {
-              startNode = _failInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Fail', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_addOrderInstructions) {
-            if (isArray(_addOrderInstructions) && _addOrderInstructions.length > 0) {
-              startNode = _addOrderInstructions[0];
-            } else {
-              startNode = _addOrderInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('AddOrder', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        } else {
-          if (_finishInstructions) {
-            if (isArray(_finishInstructions) && _finishInstructions.length > 0) {
-              startNode = _finishInstructions[0];
-            } else {
-              startNode = _finishInstructions;
-            }
-          }
-        }
-
-        if (!isEmpty(startNode)) {
-          jsonObj.instructions.push(this.workflowService.createObject('Finish', startNode));
-          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
-          startNode = null;
-        }
-      } else {
-        const job = objects.Job;
-        const ifIns = objects.If;
-        const fork = objects.Fork;
-        const forkList = objects.Fork;
-        const retry = objects.Retry;
-        const lock = objects.Lock;
-        const cycle = objects.Cycle;
-        const tryIns = objects.Try;
-        const expectNoticeIns = objects.ExpectNotice;
-        const postNoticeIns = objects.PostNotice;
-        const promptIns = objects.Prompt;
-        const fail = objects.Fail;
-        const addOrder = objects.AddOrder;
-        const finish = objects.Finish;
-        if (job) {
-          if (isArray(job)) {
-            for (let i = 0; i < job.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Job', job[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Job', job));
-          }
-        }
-        if (ifIns) {
-          if (isArray(ifIns)) {
-            for (let i = 0; i < ifIns.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('If', ifIns[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('If', ifIns));
-          }
-        }
-        if (forkList) {
-          if (isArray(forkList)) {
-            for (let i = 0; i < forkList.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('ForkList', forkList[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('ForkList', forkList));
-          }
-        }
-        if (fork) {
-          if (isArray(fork)) {
-            for (let i = 0; i < fork.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Fork', fork[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Fork', fork));
-          }
-        }
-        if (lock) {
-          if (isArray(lock)) {
-            for (let i = 0; i < lock.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Lock', lock[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Lock', lock));
-          }
-        }
-        if (cycle) {
-          if (isArray(cycle)) {
-            for (let i = 0; i < cycle.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Cycle', cycle[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Cycle', cycle));
-          }
-        }
-        if (retry) {
-          if (isArray(retry)) {
-            for (let i = 0; i < retry.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Retry', retry[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Retry', retry));
-          }
-        }
-        if (tryIns) {
-          if (isArray(tryIns)) {
-            for (let i = 0; i < tryIns.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Try', tryIns[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Try', tryIns));
-          }
-        }
-        if (expectNoticeIns) {
-          if (isArray(expectNoticeIns)) {
-            for (let i = 0; i < expectNoticeIns.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('ExpectNotice', expectNoticeIns[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('ExpectNotice', expectNoticeIns));
-          }
-        }
-        if (postNoticeIns) {
-          if (isArray(postNoticeIns)) {
-            for (let i = 0; i < postNoticeIns.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('PostNotice', postNoticeIns[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('PostNotice', postNoticeIns));
-          }
-        }
-        if (promptIns) {
-          if (isArray(promptIns)) {
-            for (let i = 0; i < promptIns.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Prompt', promptIns[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Prompt', promptIns));
-          }
-        }
-
-        if (addOrder) {
-          if (isArray(addOrder)) {
-            for (let i = 0; i < addOrder.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('AddOrder', addOrder[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('AddOrder', addOrder));
-          }
-        }
-        if (fail) {
-          if (isArray(fail)) {
-            for (let i = 0; i < fail.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Fail', fail[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Fail', fail));
-          }
-        }
-        if (finish) {
-          if (isArray(finish)) {
-            for (let i = 0; i < finish.length; i++) {
-              jsonObj.instructions.push(this.workflowService.createObject('Finish', finish[i]));
-            }
-          } else {
-            jsonObj.instructions.push(this.workflowService.createObject('Finish', finish));
-          }
-        }
-      }
-      if (jsonObj.instructions.length > 0) {
-        this.workflow.configuration = this.coreService.clone(jsonObj);
-      } else {
-        this.workflow.configuration = {};
-      }
-
     }
     this.implicitSave = false;
-  }
-
-  private findNextNode(connection, node, objects, instructions: Array<any>, jsonObj) {
-    if (!node) {
-      return;
-    }
-    const id = node._id || node;
-    if (isArray(connection)) {
-      for (let i = 0; i < connection.length; i++) {
-        if (!connection[i].skip && connection[i].mxCell._source && connection[i].mxCell._source === id) {
-          const _id = clone(connection[i].mxCell._target);
-          let instructionArr = instructions;
-          if (connection[i]._type === 'then' || connection[i]._type === 'else') {
-            for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE === 'If' && instructions[j].id === id) {
-                if (connection[i]._type === 'then') {
-                  instructions[j].then = {
-                    instructions: []
-                  };
-                  instructionArr = instructions[j].then.instructions;
-                } else {
-                  instructions[j].else = {
-                    instructions: []
-                  };
-                  instructionArr = instructions[j].else.instructions;
-                }
-                break;
-              }
-            }
-          } else if (connection[i]._type === 'branch') {
-            for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE === 'Fork' && instructions[j].id === id) {
-                if (!instructions[j].branches) {
-                  instructions[j].branches = [];
-                }
-                instructions[j].branches.push({instructions: []});
-                for (let x = 0; x < instructions[j].branches.length; x++) {
-                  if (!instructions[j].branches[x].id) {
-                    instructions[j].branches[x].id = connection[i]._label;
-                    instructions[j].branches[x].result = connection[i]._result;
-                    if (instructions[j].branches[x].result) {
-                      instructions[j].branches[x].result = JSON.parse(instructions[j].branches[x].result);
-                    }
-                    instructionArr = instructions[j].branches[x].instructions;
-                    break;
-                  }
-                }
-                break;
-              }
-            }
-          } else if (connection[i]._type === 'retry') {
-            for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE === 'Retry' && instructions[j].id === id) {
-                if (!instructions[j].instructions) {
-                  instructions[j].instructions = [];
-                  instructionArr = instructions[j].instructions;
-                }
-                break;
-              }
-            }
-          } else if (connection[i]._type === 'lock') {
-            for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE === 'Lock' && instructions[j].id === id) {
-                if (!instructions[j].instructions) {
-                  instructions[j].instructions = [];
-                  instructionArr = instructions[j].instructions;
-                }
-                break;
-              }
-            }
-          } else if (connection[i]._type === 'cycle') {
-            for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE === 'Cycle' && instructions[j].id === id) {
-                if (!instructions[j].instructions) {
-                  instructions[j].instructions = [];
-                  instructionArr = instructions[j].instructions;
-                }
-                break;
-              }
-            }
-          } else if (connection[i]._type === 'forkList') {
-            for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE === 'ForkList' && instructions[j].id === id) {
-                if (!instructions[j].instructions) {
-                  instructions[j].instructions = [];
-                  instructionArr = instructions[j].instructions;
-                }
-                break;
-              }
-            }
-          } else if (connection[i]._type === 'try') {
-            for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE === 'Try' && instructions[j].id === id) {
-                if (!instructions[j].instructions) {
-                  instructions[j].instructions = [];
-                  instructionArr = instructions[j].instructions;
-                }
-                break;
-              }
-            }
-          }
-          connection[i].skip = true;
-          if (connection[i]._type === 'join') {
-            const joinInstructions = objects.Join;
-            let _node: any = {};
-            if (joinInstructions) {
-              if (isArray(joinInstructions)) {
-                for (let x = 0; x < joinInstructions.length; x++) {
-                  if (joinInstructions[x]._id === _id) {
-                    _node = joinInstructions[x];
-                    break;
-                  }
-                }
-              } else {
-                if (joinInstructions._id === _id) {
-                  _node = joinInstructions;
-                }
-              }
-            }
-            if (_node._targetId) {
-              const arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-              if (arr && arr.length > -1) {
-                instructionArr = arr;
-              }
-            }
-          }
-          if (connection[i]._type === 'endForkList') {
-            const endForkListInstructions = objects.EndForkList;
-            let _node: any = {};
-            if (endForkListInstructions) {
-              if (isArray(endForkListInstructions)) {
-                for (let x = 0; x < endForkListInstructions.length; x++) {
-                  if (endForkListInstructions[x]._id === _id) {
-                    _node = endForkListInstructions[x];
-                    break;
-                  }
-                }
-              } else {
-                if (endForkListInstructions._id === _id) {
-                  _node = endForkListInstructions;
-                }
-              }
-            }
-            if (_node._targetId) {
-              const arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-              if (arr && arr.length > -1) {
-                instructionArr = arr;
-              }
-            }
-          } else if (connection[i]._type === 'endIf') {
-            const endIfInstructions = objects.EndIf;
-            let _node: any = {};
-            if (endIfInstructions) {
-              if (isArray(endIfInstructions)) {
-                for (let x = 0; x < endIfInstructions.length; x++) {
-                  if (endIfInstructions[x]._id === _id) {
-                    _node = endIfInstructions[x];
-                    break;
-                  }
-                }
-              } else {
-                if (endIfInstructions._id === _id) {
-                  _node = endIfInstructions;
-                }
-              }
-            }
-
-            if (_node._targetId) {
-              const arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-              if (arr && arr.length > -1) {
-                instructionArr = arr;
-              }
-            }
-          } else if (connection[i]._type === 'endLock') {
-            const endLockInstructions = objects.EndLock;
-            let _node: any = {};
-            if (endLockInstructions) {
-              if (isArray(endLockInstructions)) {
-                for (let x = 0; x < endLockInstructions.length; x++) {
-                  if (endLockInstructions[x]._id === _id) {
-                    _node = endLockInstructions[x];
-                    break;
-                  }
-                }
-              } else {
-                if (endLockInstructions._id === _id) {
-                  _node = endLockInstructions;
-                }
-              }
-            }
-            if (_node._targetId) {
-              const arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-              if (arr && arr.length > -1) {
-                instructionArr = arr;
-              }
-            }
-          } else if (connection[i]._type === 'endCycle') {
-            const endCycleInstructions = objects.EndCycle;
-            let _node: any = {};
-            if (endCycleInstructions) {
-              if (isArray(endCycleInstructions)) {
-                for (let x = 0; x < endCycleInstructions.length; x++) {
-                  if (endCycleInstructions[x]._id === _id) {
-                    _node = endCycleInstructions[x];
-                    break;
-                  }
-                }
-              } else {
-                if (endCycleInstructions._id === _id) {
-                  _node = endCycleInstructions;
-                }
-              }
-            }
-            if (_node._targetId) {
-              const arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-              if (arr && arr.length > -1) {
-                instructionArr = arr;
-              }
-            }
-          } else if (connection[i]._type === 'endRetry') {
-            const endRetryInstructions = objects.EndRetry;
-            let _node: any = {};
-            if (endRetryInstructions) {
-              if (isArray(endRetryInstructions)) {
-                for (let x = 0; x < endRetryInstructions.length; x++) {
-                  if (endRetryInstructions[x]._id === _id) {
-                    _node = endRetryInstructions[x];
-                    break;
-                  }
-                }
-              } else {
-                if (endRetryInstructions._id === _id) {
-                  _node = endRetryInstructions;
-                }
-              }
-            }
-            if (_node._targetId) {
-              const arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-              if (arr && arr.length > -1) {
-                instructionArr = arr;
-              }
-            }
-          } else if (connection[i]._type === 'endTry') {
-            const endTryInstructions = objects.EndTry;
-            let _node: any = {};
-            if (endTryInstructions) {
-              if (isArray(endTryInstructions)) {
-                for (let x = 0; x < endTryInstructions.length; x++) {
-                  if (endTryInstructions[x]._id === _id) {
-                    _node = endTryInstructions[x];
-                    break;
-                  }
-                }
-              } else {
-                if (endTryInstructions._id === _id) {
-                  _node = endTryInstructions;
-                }
-              }
-            }
-
-            if (_node._targetId) {
-              const arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-              if (arr && arr.length > -1) {
-                instructionArr = arr;
-              }
-            }
-          }
-          this.getNextNode(_id, objects, instructionArr, jsonObj);
-        }
-      }
-    } else {
-      if (connection.mxCell._source && connection.mxCell._source === id) {
-        const _id = clone(connection.mxCell._target);
-        connection = null;
-        this.getNextNode(_id, objects, instructions, jsonObj);
-      }
-    }
-  }
-
-  private recursiveFindParentCell(id, instructionsArr: Array<any>): Array<any> {
-    let arr = [];
-
-    function recursive(_id, _instructionsArr: Array<any>) {
-      for (let i = 0; i < _instructionsArr.length; i++) {
-        if (_instructionsArr[i].id === _id) {
-          arr = _instructionsArr;
-          break;
-        } else {
-          if (_instructionsArr[i].TYPE === 'Fork') {
-            if (_instructionsArr[i].branches) {
-              for (let j = 0; j < _instructionsArr[i].branches.length; j++) {
-                recursive(_id, _instructionsArr[i].branches[j].instructions);
-              }
-            }
-          }
-          if (_instructionsArr[i].TYPE === 'If') {
-            if (_instructionsArr[i].then) {
-              recursive(_id, _instructionsArr[i].then.instructions);
-            }
-            if (_instructionsArr[i].else) {
-              recursive(_id, _instructionsArr[i].else.instructions);
-            }
-          } else if (_instructionsArr[i].TYPE === 'Try') {
-            if (_instructionsArr[i].catch) {
-              if (_instructionsArr[i].catch.id === _id) {
-                arr = _instructionsArr[i].catch.instructions;
-                break;
-              } else {
-                recursive(_id, _instructionsArr[i].catch.instructions);
-              }
-            }
-            if (_instructionsArr[i].instructions && _instructionsArr[i].instructions.length > 0) {
-              recursive(_id, _instructionsArr[i].instructions);
-            }
-          }
-        }
-      }
-    }
-
-    recursive(id, instructionsArr);
-    return arr;
-  }
-
-  private recursiveFindCatchCell(node, instructionsArr: Array<any>): Array<any> {
-    let arr = [];
-
-    function recursive(_node, _instructionsArr: Array<any>) {
-      for (let i = 0; i < _instructionsArr.length; i++) {
-        if (_instructionsArr[i].id === _node._targetId) {
-          if (_instructionsArr[i].TYPE === 'Try') {
-            if (!_instructionsArr[i].catch) {
-              _instructionsArr[i].catch = {instructions: [], id: _node._id};
-              arr = _instructionsArr[i].catch.instructions;
-            }
-          }
-          break;
-        } else {
-          if (_instructionsArr[i].TYPE === 'Fork') {
-            if (_instructionsArr[i].branches) {
-              for (let j = 0; j < _instructionsArr[i].branches.length; j++) {
-                recursive(_node, _instructionsArr[i].branches[j].instructions);
-              }
-            }
-          } else if (_instructionsArr[i].TYPE === 'If') {
-            if (_instructionsArr[i].then) {
-              recursive(_node, _instructionsArr[i].then.instructions);
-            }
-            if (_instructionsArr[i].else) {
-              recursive(_node, _instructionsArr[i].else.instructions);
-            }
-          } else if (_instructionsArr[i].TYPE === 'Try') {
-            if (_instructionsArr[i].catch) {
-              recursive(_node, _instructionsArr[i].catch.instructions);
-            }
-          } else if (_instructionsArr[i].instructions) {
-            recursive(_node, _instructionsArr[i].instructions);
-          }
-        }
-      }
-    }
-
-    recursive(node, instructionsArr);
-    return arr;
-  }
-
-  private getNextNode(id, objects, instructionsArr: Array<any>, jsonObj): void {
-    const connection = objects.Connection;
-    const jobs = objects.Job;
-    const ifInstructions = objects.If;
-    const endIfInstructions = objects.EndIf;
-    const forkInstructions = objects.Fork;
-    const joinInstructions = objects.Join;
-    const forkListInstructions = objects.ForkList;
-    const endForkListInstructions = objects.EndForkList;
-    const retryInstructions = objects.Retry;
-    const endRetryInstructions = objects.EndRetry;
-    const lockInstructions = objects.Lock;
-    const endLockInstructions = objects.EndLock;
-    const cycleInstructions = objects.Cycle;
-    const endCycleInstructions = objects.EndCycle;
-    const tryInstructions = objects.Try;
-    const catchInstructions = objects.Catch;
-    const tryEndInstructions = objects.EndTry;
-    const expectNoticeInstructions = objects.ExpectNotice;
-    const postNoticeInstructions = objects.PostNotice;
-    const promptInstructions = objects.Prompt;
-    const failInstructions = objects.Fail;
-    const addOrderInstructions = objects.AddOrder;
-    const finishInstructions = objects.Finish;
-
-    let nextNode: any = {};
-
-    if (jobs) {
-      if (isArray(jobs)) {
-        for (let i = 0; i < jobs.length; i++) {
-          if (jobs[i]._id === id) {
-            nextNode = jobs[i];
-            break;
-          }
-        }
-      } else {
-        if (jobs._id === id) {
-          nextNode = jobs;
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Job', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (forkListInstructions) {
-        if (isArray(forkListInstructions)) {
-          for (let i = 0; i < forkListInstructions.length; i++) {
-            if (forkListInstructions[i]._id === id) {
-              nextNode = forkListInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (forkListInstructions._id === id) {
-            nextNode = forkListInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('ForkList', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (endForkListInstructions) {
-        if (isArray(endForkListInstructions)) {
-          for (let i = 0; i < endForkListInstructions.length; i++) {
-            if (endForkListInstructions[i]._id === id) {
-              nextNode = endForkListInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (endForkListInstructions._id === id) {
-            nextNode = endForkListInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (forkInstructions) {
-        if (isArray(forkInstructions)) {
-          for (let i = 0; i < forkInstructions.length; i++) {
-            if (forkInstructions[i]._id === id) {
-              nextNode = forkInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (forkInstructions._id === id) {
-            nextNode = forkInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Fork', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (joinInstructions) {
-        if (isArray(joinInstructions)) {
-          for (let i = 0; i < joinInstructions.length; i++) {
-            if (joinInstructions[i]._id === id) {
-              nextNode = joinInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (joinInstructions._id === id) {
-            nextNode = joinInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (lockInstructions) {
-        if (isArray(lockInstructions)) {
-          for (let i = 0; i < lockInstructions.length; i++) {
-            if (lockInstructions[i]._id === id) {
-              nextNode = lockInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (lockInstructions._id === id) {
-            nextNode = lockInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Lock', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (endLockInstructions) {
-        if (isArray(endLockInstructions)) {
-          for (let i = 0; i < endLockInstructions.length; i++) {
-            if (endLockInstructions[i]._id === id) {
-              nextNode = endLockInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (endLockInstructions._id === id) {
-            nextNode = endLockInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (cycleInstructions) {
-        if (isArray(cycleInstructions)) {
-          for (let i = 0; i < cycleInstructions.length; i++) {
-            if (cycleInstructions[i]._id === id) {
-              nextNode = cycleInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (cycleInstructions._id === id) {
-            nextNode = cycleInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Cycle', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (endCycleInstructions) {
-        if (isArray(endCycleInstructions)) {
-          for (let i = 0; i < endCycleInstructions.length; i++) {
-            if (endCycleInstructions[i]._id === id) {
-              nextNode = endCycleInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (endCycleInstructions._id === id) {
-            nextNode = endCycleInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (retryInstructions) {
-        if (isArray(retryInstructions)) {
-          for (let i = 0; i < retryInstructions.length; i++) {
-            if (retryInstructions[i]._id === id) {
-              nextNode = retryInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (retryInstructions._id === id) {
-            nextNode = retryInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Retry', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (endRetryInstructions) {
-        if (isArray(endRetryInstructions)) {
-          for (let i = 0; i < endRetryInstructions.length; i++) {
-            if (endRetryInstructions[i]._id === id) {
-              nextNode = endRetryInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (endRetryInstructions._id === id) {
-            nextNode = endRetryInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (expectNoticeInstructions) {
-        if (isArray(expectNoticeInstructions)) {
-          for (let i = 0; i < expectNoticeInstructions.length; i++) {
-            if (expectNoticeInstructions[i]._id === id) {
-              nextNode = expectNoticeInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (expectNoticeInstructions._id === id) {
-            nextNode = expectNoticeInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('ExpectNotice', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (tryInstructions) {
-        if (isArray(tryInstructions)) {
-          for (let i = 0; i < tryInstructions.length; i++) {
-            if (tryInstructions[i]._id === id) {
-              nextNode = tryInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (tryInstructions._id === id) {
-            nextNode = tryInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Try', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (tryEndInstructions) {
-        if (isArray(tryEndInstructions)) {
-          for (let i = 0; i < tryEndInstructions.length; i++) {
-            if (tryEndInstructions[i]._id === id) {
-              nextNode = tryEndInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (tryEndInstructions._id === id) {
-            nextNode = tryEndInstructions;
-          }
-        }
-      }
-    }
-    if (nextNode && !isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (catchInstructions) {
-        if (isArray(catchInstructions)) {
-          for (let i = 0; i < catchInstructions.length; i++) {
-            if (catchInstructions[i]._id === id) {
-              nextNode = catchInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (catchInstructions._id === id) {
-            nextNode = catchInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      const arr = this.recursiveFindCatchCell(nextNode, jsonObj.instructions);
-      this.findNextNode(connection, nextNode, objects, arr, jsonObj);
-      nextNode = null;
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (ifInstructions) {
-        if (isArray(ifInstructions)) {
-          for (let i = 0; i < ifInstructions.length; i++) {
-            if (ifInstructions[i]._id === id) {
-              nextNode = ifInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (ifInstructions._id === id) {
-            nextNode = ifInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('If', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (endIfInstructions) {
-        if (isArray(endIfInstructions)) {
-          for (let i = 0; i < endIfInstructions.length; i++) {
-            if (endIfInstructions[i]._id === id) {
-              nextNode = endIfInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (endIfInstructions._id === id) {
-            nextNode = endIfInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (addOrderInstructions) {
-        if (isArray(addOrderInstructions)) {
-          for (let i = 0; i < addOrderInstructions.length; i++) {
-            if (addOrderInstructions[i]._id === id) {
-              nextNode = addOrderInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (addOrderInstructions._id === id) {
-            nextNode = addOrderInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('AddOrder', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (failInstructions) {
-        if (isArray(failInstructions)) {
-          for (let i = 0; i < failInstructions.length; i++) {
-            if (failInstructions[i]._id === id) {
-              nextNode = failInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (failInstructions._id === id) {
-            nextNode = failInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Fail', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (finishInstructions) {
-        if (isArray(finishInstructions)) {
-          for (let i = 0; i < finishInstructions.length; i++) {
-            if (finishInstructions[i]._id === id) {
-              nextNode = finishInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (finishInstructions._id === id) {
-            nextNode = finishInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Finish', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (postNoticeInstructions) {
-        if (isArray(postNoticeInstructions)) {
-          for (let i = 0; i < postNoticeInstructions.length; i++) {
-            if (postNoticeInstructions[i]._id === id) {
-              nextNode = postNoticeInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (postNoticeInstructions._id === id) {
-            nextNode = postNoticeInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('PostNotice', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      if (promptInstructions) {
-        if (isArray(promptInstructions)) {
-          for (let i = 0; i < promptInstructions.length; i++) {
-            if (promptInstructions[i]._id === id) {
-              nextNode = promptInstructions[i];
-              break;
-            }
-          }
-        } else {
-          if (promptInstructions._id === id) {
-            nextNode = promptInstructions;
-          }
-        }
-      }
-    }
-
-    if (nextNode && !isEmpty(nextNode)) {
-      instructionsArr.push(this.workflowService.createObject('Prompt', nextNode));
-      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
-      nextNode = null;
-    } else {
-      this.findNextNode(connection, id, objects, instructionsArr, jsonObj);
-    }
   }
 
   private initEditorConf(editor, isXML, callFun): void {
@@ -5563,7 +4424,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
 
               let state = graph.getView().getState(target);
-              var highlight = false;
+              let highlight = false;
               if (state != null && (clone || this.isValidDropTarget(target, me))) {
                 if (this.target != target) {
                   this.target = target;
@@ -5593,7 +4454,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   if (state.cell.value.tagName !== 'Connection') {
                     if (state.cell.value.tagName !== 'Fork') {
                       const edges = graph.getOutgoingEdges(state.cell);
-                      if ((state.cell.value.tagName !== 'If' && edges.length === 1 && !checkClosingCell(edges[0].target))
+                      if ((state.cell.value.tagName !== 'If' && edges.length === 1 && !self.workflowService.checkClosingCell(edges[0].target.value.tagName))
                         || (state.cell.value.tagName === 'If' && edges.length === 2)) {
                         this.setHighlightColor('#ff0000');
                       }
@@ -5978,7 +4839,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
          */
         graph.isCellMovable = function(cell) {
           if (cell.value && !self.isTrash) {
-            return !cell.edge && cell.value.tagName !== 'Catch' && cell.value.tagName !== 'Process' && !checkClosingCell(cell);
+            return !cell.edge && cell.value.tagName !== 'Catch' && cell.value.tagName !== 'Process' && !self.workflowService.checkClosingCell(cell.value.tagName);
           } else {
             return false;
           }
@@ -6159,11 +5020,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         /**
          * Check the drop target on drop event
-         * @param _graph
-         * @param evt
-         * @param drpTargt
-         * @param x
-         * @param y
          */
         mxDragSource.prototype.drop = function(_graph, evt, drpTargt, x, y) {
           dropTarget = null;
@@ -6221,7 +5077,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.toasterService.pop('error', title + '!!', msg);
                     return;
                   }
-                } else if (checkClosingCell(drpTargt)) {
+                } else if (self.workflowService.checkClosingCell(drpTargt.value.tagName)) {
                   if (drpTargt.edges.length > 1) {
                     for (let i = 0; i < drpTargt.edges.length; i++) {
                       if (drpTargt.edges[i].target.id !== drpTargt.id) {
@@ -6551,11 +5407,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         /**
          * Event to check if connector is valid or not on drop of new instruction
-         * @param cell
-         * @param cells
-         * @param evt
          */
-        graph.isValidDropTarget = function(cell, cells, evt) {
+        graph.isValidDropTarget = function (cell, cells, evt) {
           if (cell && cell.value) {
             self.droppedCell = null;
             if (self.isCellDragging && cells && cells.length > 0) {
@@ -6568,12 +5421,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   if (cell.source && cell.target) {
                     let sourceId = cell.source.id;
                     let targetId = cell.target.id;
-                    if (checkClosingCell(cell.source)) {
+                    if (self.workflowService.checkClosingCell(cell.source.value.tagName)) {
                       sourceId = cell.source.value.getAttribute('targetId');
                     } else if (cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start') {
                       sourceId = 'start';
                     }
-                    if (checkClosingCell(cell.target)) {
+                    if (self.workflowService.checkClosingCell(cell.target.value.tagName)) {
                       targetId = cell.target.value.getAttribute('targetId');
                     } else if (cell.target.value.tagName === 'Process' && cell.target.getAttribute('title') === 'start') {
                       targetId = 'start';
@@ -6714,8 +5567,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (evt.cells && evt.cells.length > 0) {
             cell = evt.cells[0];
           }
-          if (cell && (checkClosingCell(cell) ||
-            cell.value.tagName === 'Connection' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
+          if (cell && (self.workflowService.checkClosingCell(cell.value.tagName) ||
+            cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
             graph.clearSelection();
             return;
           }
@@ -6730,7 +5583,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         });
 
-        initGraph(this.dummyXml);
+        initGraph();
         self.centered();
 
         WorkflowService.executeLayout(graph);
@@ -6747,15 +5600,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 if (self.noSave) {
                   self.noSave = false;
                 } else {
-                  if (!self.skipXMLToJSONConversion) {
-                    self.xmlToJsonParser(null);
-                  } else {
-                    self.skipXMLToJSONConversion = false;
-                  }
+                  // if (!self.skipXMLToJSONConversion) {
+                  //   self.xmlToJsonParser();
+                  // } else {
+                  //   self.skipXMLToJSONConversion = false;
+                  // }
                   if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
                     graph.setEnabled(true);
                   } else {
-                    self.reloadDummyXml(graph, self.dummyXml);
+                    self.reloadDummyXml(graph);
                   }
                   self.validateJSON(false);
                 }
@@ -6768,7 +5621,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
               graph.setEnabled(true);
             } else {
-              self.reloadDummyXml(graph, self.dummyXml);
+              self.reloadDummyXml(graph);
             }
           }
         };
@@ -6904,7 +5757,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           flag = true;
           break;
         } else {
-          if (checkClosingCell(cell)) {
+          if (self.workflowService.checkClosingCell(cell.value.tagName)) {
             flag = true;
             break;
           }
@@ -6926,14 +5779,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           (sourName === 'Catch' && tarName === 'EndTry')) || (sourName === 'Retry' && tarName === 'EndRetry') ||
         (sourName === 'Cycle' && tarName === 'EndCycle') || (sourName === 'ForkList' && tarName === 'EndForkList') ||
         (sourName === 'Lock' && tarName === 'EndLock');
-    }
-
-    /**
-     * Function: Check closing cell
-     */
-    function checkClosingCell(cell): boolean {
-      return cell.value.tagName === 'Join' || cell.value.tagName === 'EndIf' || cell.value.tagName === 'EndForkList' ||
-        cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndRetry' || cell.value.tagName === 'EndCycle' || cell.value.tagName === 'EndLock';
     }
 
     function getLastNodeAndConnect(name, parent, parentCell, cell, cells): any {
@@ -7020,9 +5865,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     /**
      * Function: Move selected cell into dropped cell
-     * @param cell
-     * @param parentCell
-     * @param cells
      */
     function moveSelectedCellToDroppedCell(cell, parentCell, cells) {
       const cellName = parentCell.value.tagName;
@@ -7091,7 +5933,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         graph.getModel().remove(_sour);
         graph.getModel().remove(_tar);
       }
-      self.xmlToJsonParser(null);
+      self.xmlToJsonParser();
       self.updateXMLJSON(true);
     }
 
@@ -7202,13 +6044,24 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       return targetNode;
     }
 
-    function initGraph(xml) {
-      const _doc = mxUtils.parseXml(xml);
-      const codec = new mxCodec(_doc);
-      codec.decode(_doc.documentElement, graph.getModel());
-      const vertices = graph.getChildVertices(graph.getDefaultParent());
-      if (vertices.length > 3) {
-        graph.setEnabled(true);
+    function initGraph(): void {
+      const model = graph.getModel();
+      if (model.root) {
+        if (model.root.children) {
+          for (const i in model.root.children) {
+            if (model.root.children[i].children) {
+              for (const j in model.root.children[i].children) {
+                if (model.root.children[i].children[j].value && model.root.children[i].children[j].value.tagName) {
+                  const tagName = model.root.children[i].children[j].value.tagName;
+                  if (!tagName.match(/Connector/) && !tagName.match(/Connection/) && !tagName.match(/Process/)) {
+                    graph.setEnabled(true);
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
 
@@ -7231,9 +6084,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     /**
      * Create new Node object
-     * @param name
-     * @param label
-     * @param id
      */
     function getCellNode(name: string, label: string, id: any): any {
       // Create new node object
@@ -7307,7 +6157,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target !== cell.id) {
-              if (checkClosingCell(cell.edges[i].target)) {
+              if (self.workflowService.checkClosingCell(cell.edges[i].target.value.tagName)) {
                 if (cell.edges[i].target.edges) {
                   for (let j = 0; j < cell.edges[i].target.edges.length; j++) {
                     if (cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id !== cell.edges[i].target.id) {
@@ -7347,7 +6197,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
             }
             if (cell.edges[i].source !== cell.id) {
-              if (checkClosingCell(cell.edges[i].source)) {
+              if (self.workflowService.checkClosingCell(cell.edges[i].source.value.tagName)) {
                 _tempCell = cell.edges[i];
               }
             }
@@ -7740,8 +6590,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (cell == null) {
         self.selectedNode = null;
       } else {
-        if (cell.value.tagName === 'Try' || cell.value.tagName === 'Catch') {
+        if (cell.value.tagName === 'Try' || cell.value.tagName === 'Catch' || cell.value.tagName === 'Finish') {
           self.selectedNode = null;
+          self.ref.detectChanges();
           return;
         }
 
@@ -7884,7 +6735,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       let source = target.id;
 
       if (target.value.tagName === 'Connection') {
-        if (checkClosingCell(target.source)) {
+        if (self.workflowService.checkClosingCell(target.source.value.tagName)) {
           source = target.source.value.getAttribute('targetId');
         } else {
           source = target.source.id;
@@ -8157,15 +7008,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               flag = true;
             }
           }
-          if (!flag && (checkClosingCell(lastCell))) {
+          if (!flag && (self.workflowService.checkClosingCell(lastCell.value.tagName))) {
             graph.removeSelectionCell(lastCell);
           }
         }
       }
 
-      if (cell && (checkClosingCell(cell) ||
-        cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
-        graph.clearSelection();
+      if (cell && (self.workflowService.checkClosingCell(cell.value.tagName) || cell.value.tagName === 'Connection'
+        || cell.value.tagName === 'Finish' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
+        if (cell.value.tagName !== 'Finish') {
+          graph.clearSelection();
+        }
         return;
       }
       if (cell && cells.length === 1) {
@@ -8179,7 +7032,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         }, 0);
       }
-
       if (cells.length < 2) {
         selectionChanged();
       } else if (cells.length === 2) {
@@ -8209,12 +7061,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (tagName === 'Connection') {
               let sourceId = targetCell.source.id;
               let targetId = targetCell.target.id;
-              if (checkClosingCell(targetCell.source)) {
+              if (self.workflowService.checkClosingCell(targetCell.source.value.tagName)) {
                 sourceId = targetCell.source.value.getAttribute('targetId');
               } else if (targetCell.source.value.tagName === 'Process' && targetCell.source.getAttribute('title') === 'start') {
                 sourceId = 'start';
               }
-              if (checkClosingCell(targetCell.target)) {
+              if (self.workflowService.checkClosingCell(targetCell.target.value.tagName)) {
                 targetId = targetCell.target.value.getAttribute('targetId');
               } else if (targetCell.target.value.tagName === 'Process' && targetCell.target.getAttribute('title') === 'start') {
                 targetId = 'start';
@@ -8484,7 +7336,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (targetCell.edges.length > 2) {
               return 'inValid';
             }
-          } else if (checkClosingCell(targetCell)) {
+          } else if (self.workflowService.checkClosingCell(targetCell.value.tagName)) {
             if (targetCell.edges.length > 1) {
               for (let i = 0; i < targetCell.edges.length; i++) {
                 if (targetCell.edges[i].target.id !== targetCell.id) {
@@ -8731,7 +7583,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               for (let j = 0; j < cell.edges.length; j++) {
                 if (cell.edges[j].target.id !== cell.id) {
-                  if (checkClosingCell(cell.edges[j].target)) {
+                  if (self.workflowService.checkClosingCell(cell.edges[j].target.value.tagName)) {
                     if (flag) {
                       graph.insertEdge(parent, null, getConnectionNode(label), cell.edges[j].target, _dropTarget.edges[i].target);
                     } else {
@@ -8749,7 +7601,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
               for (let j = 0; j < cell.edges.length; j++) {
                 if (cell.edges[j].target.id !== cell.id) {
-                  if (checkClosingCell(cell.edges[j].target)) {
+                  if (self.workflowService.checkClosingCell(cell.edges[j].target.value.tagName)) {
                     graph.insertEdge(parent, null, getConnectionNode(label), cell.edges[j].target, _dropTarget.edges[i].target);
                     break;
                   }
@@ -8800,7 +7652,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target.id !== cell.id) {
-              if (checkClosingCell(cell.edges[i].target)) {
+              if (self.workflowService.checkClosingCell(cell.edges[i].target.value.tagName)) {
                 self.nodeMap.set(cell.id, cell.edges[i].target.id);
                 target2 = cell.edges[i].target;
                 break;
@@ -9431,39 +8283,25 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (!graph) {
       return;
     }
-    const enc = new mxCodec();
-    const node = enc.encode(graph.getModel());
-    const xml = mxUtils.getXml(node);
-    let _json: any;
-    try {
-      _json = x2js.xml_str2json(xml);
-    } catch (e) {
-      console.error(e);
-    }
-    const objects = _json.mxGraphModel.root;
-    const vertices = objects.Job;
-    if (vertices) {
-      const tempJobs = [];
-      if (isArray(vertices)) {
-        for (let i = 0; i < vertices.length; i++) {
+    const model = graph.getModel();
+    const tempJobs = [];
+    if (model.cells) {
+      for (const i in model.cells) {
+        if (model.cells[i].value && model.cells[i].value.tagName === 'Job') {
+          const name = model.cells[i].getAttribute('jobName');
           for (let j = 0; j < this.jobs.length; j++) {
-            if (vertices[i]._jobName === this.jobs[j].name) {
+            if (name === this.jobs[j].name) {
               tempJobs.push(this.jobs[j]);
               this.jobs.splice(j, 1);
               break;
             }
           }
         }
-      } else {
-        for (let j = 0; j < this.jobs.length; j++) {
-          if (vertices._jobName === this.jobs[j].name) {
-            tempJobs.push(this.jobs[j]);
-            break;
-          }
-        }
       }
-      this.jobs = tempJobs;
     }
+
+    this.jobs = tempJobs;
+
     if (isFirst) {
       const _temp = JSON.parse(this.workflow.actual);
       const jobs = this.coreService.keyValuePair(this.jobs);
@@ -9480,7 +8318,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     setTimeout(() => {
       if (this.editor && this.editor.graph && !this.implicitSave) {
         this.noSave = true;
-        this.xmlToJsonParser(null);
+        this.xmlToJsonParser();
+        if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
+          this.editor.graph.setEnabled(true);
+        } else {
+          this.reloadDummyXml(this.editor.graph);
+        }
         this.validateJSON(false);
         setTimeout(() => {
           this.noSave = false;
@@ -9948,8 +8791,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           data.jobs[prop].executable.env = data.jobs[prop].executable.env.filter((env) => {
             if (env.value) {
               if (!(/[$_+]/.test(env.value))) {
-                const startChar = env.value.substring(0, 1),
-                  endChar = env.value.substring(env.value.length - 1);
+                const startChar = env.value.substring(0, 1);
+                const endChar = env.value.substring(env.value.length - 1);
                 if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
 
                 } else {
@@ -9976,7 +8819,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (noValidate === 'false' || noValidate === false) {
         this.initEditorConf(this.editor, false, true);
       }
-      this.xmlToJsonParser(null);
+      this.xmlToJsonParser();
     } else if (this.selectedNode === undefined) {
       return;
     }
@@ -10063,7 +8906,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.orderPreparation = variableDeclarations;
         flag = true;
       }
-      //this.orderPreparation.allowUndeclared = this.variableDeclarations.allowUndeclared;
+      // this.orderPreparation.allowUndeclared = this.variableDeclarations.allowUndeclared;
     }
     if (flag) {
       const data = JSON.parse(this.workflow.actual);

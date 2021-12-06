@@ -60,10 +60,10 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   selectUser(user): void {
     if (user) {
-      this.router.navigate(['/users/role'], {queryParams: {user}});
+      this.router.navigate(['/users/identity_service/role'], {queryParams: {user}});
     } else {
       this.selectedUser = null;
-      this.router.navigate(['/users/role']);
+      this.router.navigate(['/users/identity_service/role']);
     }
   }
 
@@ -135,6 +135,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.selectedUser = this.getParameterByName('account');
         if (sessionStorage.identityServiceType) {
           if (this.identityService !== sessionStorage.identityServiceType) {
+            this.userObj = {};
             this.identityService = sessionStorage.identityServiceType;
             this.getUsersData(true);
           }
@@ -154,6 +155,9 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.dataService.announceData(this.userObj);
         this.checkLdapConf();
       }
+    }, () => {
+      this.userObj = {accounts: [], identityServiceName: sessionStorage.identityServiceName};
+      this.dataService.announceData(this.userObj);
     });
   }
 

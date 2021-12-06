@@ -292,7 +292,7 @@
                   <div class="col-md-12 tab-ht" style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
                     <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.defaultArguments)">
                       <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.job.defaultArguments; let i = index" cdkDrag>
-                        <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
+                        <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
                           <i class="fa fa-bars" aria-hidden="true"></i>
                         </div>
                         <div class="pos-abt" style="margin-left: -13px;">
@@ -364,7 +364,7 @@
                   <div class="col-md-12 tab-ht" style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
                     <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.env)">
                       <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let env of selectedNode.job.executable.env; let i = index" cdkDrag>
-                        <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
+                        <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
                           <i class="fa fa-bars" aria-hidden="true"></i>
                         </div>
                         <div class="pos-abt" style="margin-left: -13px;">
@@ -444,7 +444,7 @@
                   <div class="col-md-12 tab-ht" style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
                     <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.arguments)">
                       <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argu of selectedNode.job.executable.arguments; let i = index" cdkDrag>
-                        <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
+                        <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
                           <i class="fa fa-bars" aria-hidden="true"></i>
                         </div>
                         <div class="pos-abt" style="margin-left: -13px;">
@@ -519,7 +519,7 @@
                   <div class="col-md-12 tab-ht" style="max-height: calc(100vh - {{selectedNode.job.executable.TYPE === 'ShellScriptExecutable' ? '760px' : '686px'}}); overflow: auto">
                     <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.job.executable.jobArguments)">
                       <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.job.executable.jobArguments; let i = index" cdkDrag>
-                        <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
+                        <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
                           <i class="fa fa-bars" aria-hidden="true"></i>
                         </div>
                         <div class="pos-abt" style="margin-left: -13px;">
@@ -706,7 +706,7 @@
           <div class="col-md-12" style="max-height: calc(100vh - 332px); overflow: auto;">
             <div cdkDropList (cdkDropListDropped)="drop($event, selectedNode.obj.defaultArguments)">
                 <div class="form-group row m-b-0 m-l-md move-on-hover" *ngFor="let argument of selectedNode.obj.defaultArguments; let i = index" cdkDrag>
-                  <div class="pos-abt move-icon" style="margin-left: -31px;font-size: 18px;margin-top: 2px;cursor: move;" cdkDragHandle>
+                  <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
                     <i class="fa fa-bars" aria-hidden="true"></i>
                   </div>
                   <div class="pos-abt" style="margin-left: -13px;">

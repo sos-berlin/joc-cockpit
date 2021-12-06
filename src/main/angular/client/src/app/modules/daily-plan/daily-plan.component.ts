@@ -275,7 +275,7 @@ export class CreatePlanModalComponent implements OnInit {
     if (!node.origin.type) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
+        //$event.stopPropagation();
       }
       let flag = true;
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
@@ -323,13 +323,10 @@ export class CreatePlanModalComponent implements OnInit {
       controllerId: this.schedulerId
     };
     if (this.object.at === 'template' && this.selectedTemplates.schedules.length > 0) {
-      obj.selector = {schedulePaths: this.selectedTemplates.schedules};
+      obj.schedulePaths = {singles: this.selectedTemplates.schedules};
     }
     if (this.object.workflowPaths && this.object.workflowPaths.length > 0) {
-      if (!obj.selector) {
-        obj.selector = {};
-      }
-      obj.selector.workflowPaths = this.object.workflowPaths;
+      obj.workflowPaths = {singles: this.object.workflowPaths};
     }
     obj.auditLog = {};
     if (this.comments.comment) {

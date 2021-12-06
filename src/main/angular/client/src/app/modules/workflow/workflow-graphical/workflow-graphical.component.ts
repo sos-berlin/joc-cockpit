@@ -399,9 +399,9 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     }
   }
 
-  private expandCollapseWorkflow(isExpand): void {
+  private expandCollapseWorkflow(isExpand: boolean): void {
     let isChange = false;
-    this.workflowObjects.forEach((value, key) => {
+    this.workflowObjects.forEach((value: any, key: any) => {
       value = JSON.parse(value);
       if (value.isExpanded !== isExpand) {
         isChange = true;
@@ -761,7 +761,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           mxUtils.bind(this, function(evt) {
             self.order = null;
             self.job = null;
-            let data;
+            let data: any;
             if (state.cell.value.tagName === 'Order') {
               data = state.cell.getAttribute('order');
               data = JSON.parse(data);

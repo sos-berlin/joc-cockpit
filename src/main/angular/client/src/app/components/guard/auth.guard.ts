@@ -20,6 +20,11 @@ export class AuthGuard implements CanActivate {
         // role not authorised so redirect to home page
         this.router.navigate(['/error']);
         return false;
+      } else if (state.url.match('/users')) {
+        if (state.url.match('/users/identity_service/') && !sessionStorage.identityServiceType) {
+          this.router.navigate(['/users/identity_service/']);
+          return false;
+        }
       }
     }
     return true;

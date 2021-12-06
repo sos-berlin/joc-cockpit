@@ -950,12 +950,12 @@ export class CoreService {
     this.router.navigate(['/configuration/inventory']);
   }
 
-  showBoard(boardName): void {
+  showBoard(boardName: any): void {
     this.post('inventory/path', {
       objectType: 'NOTICEBOARD',
       name: boardName
     }).subscribe((res: any) => {
-      const pathArr = [];
+      const pathArr: string[] = [];
       const arr = res.path.split('/');
       const boardFilters = this.getResourceTab().boards;
       boardFilters.selectedkeys = [];
@@ -993,12 +993,12 @@ export class CoreService {
     });
   }
 
-  showLock(lockName): void {
+  showLock(lockName: string): void {
     this.post('inventory/path', {
       objectType: 'LOCK',
       name: lockName
     }).subscribe((res: any) => {
-      const pathArr = [];
+      const pathArr: string[] = [];
       const arr = res.path.split('/');
       const lockFilters = this.getResourceTab().locks;
       lockFilters.selectedkeys = [];
@@ -1119,7 +1119,7 @@ export class CoreService {
   downloadLog(data: any, id: string): void {
     let url = 'order/log/download';
     let obj: any;
-    let name;
+    let name: string = '';
     if (data.historyId) {
       name = 'order-' + data.historyId + '.log';
       obj = {
@@ -1135,7 +1135,7 @@ export class CoreService {
       url = 'task/log/download';
     }
     if (obj) {
-      this.download(url, obj, name, (res) => {
+      this.download(url, obj, name, (res: any) => {
       });
     }
   }
@@ -1167,12 +1167,12 @@ export class CoreService {
     }
   }
 
-  getName(list, name, key, type): string {
+  getName(list: any, name: string, key: any, type: any): string {
     if (list.length === 0) {
       return name;
     } else {
-      const arr = [];
-      list.forEach((element) => {
+      const arr: any[] = [];
+      list.forEach((element: any) => {
         if (element[key] && element[key].split(/(\d+)(?!.*\d)/)[1]) {
           arr.push(element[key].split(/(\d+)(?!.*\d)/)[1]);
         }
