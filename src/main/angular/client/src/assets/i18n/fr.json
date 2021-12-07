@@ -224,12 +224,12 @@
     "label.manageRoles": "Gérer les Rôles",
     "label.mainSetting": "Section Principale",
     "label.profiles": "Profiles",
-    "label.manageUser": "Gérer les comptes",
+    "label.manageUser": "Gérer les Services d'Identité",
     "label.userProfile": "Profil utilisateur",
     "label.logging": "Journalisation",
     "label.setting": "Paramètres",
     "label.permissions": "Permissions",
-    "label.manageIdentityServices": "Manage Identity Services"
+    "label.manageIdentityServices": "Gérer les Services d'Identité"
   },
   "configuration": {
     "tab.inventory": "Inventaire",

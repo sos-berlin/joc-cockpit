@@ -224,12 +224,12 @@
     "label.manageRoles": "Rollen verwalten",
     "label.mainSetting": "Main-Sektion",
     "label.profiles": "Profile",
-    "label.manageUser": "Konten verwalten",
+    "label.manageUser": "Identitätsdienste verwalten",
     "label.userProfile": "Anwenderprofil",
     "label.logging": "Protokollierung",
     "label.setting": "Einstellungen",
     "label.permissions": "Berechtigungen",
-    "label.manageIdentityServices": "Manage Identity Services"
+    "label.manageIdentityServices": "Identitätsdienste verwalten"
   },
   "configuration": {
     "tab.inventory": "Inventar",
