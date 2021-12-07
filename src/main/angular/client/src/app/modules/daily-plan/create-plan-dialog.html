@@ -33,6 +33,15 @@
                                      ></app-select-schedule-template>
       </div>
     </div>
+    <div class="form-group row" *ngIf="object.at === 'template' && selectedTemplates.paths.length > 0">
+      <label class="col-md-3 form-control-label" translate>common.label.folders</label>
+      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+        <div *ngFor="let path of selectedTemplates.paths">
+          <span class="">{{path}}</span>
+          <i class="pull-right pos-rel t-xs fa fa-remove text-hover-primary" (click)="remove(path, true)"></i>
+        </div>
+      </div>
+    </div>
     <div class="form-group row" *ngIf="object.at === 'template'">
       <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflow</label>
       <div class="col-md-6">
@@ -60,6 +69,15 @@
             </div>
           </ng-template>
         </nz-tree-select>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="object.at === 'template' && object.paths.length > 0">
+      <label class="col-md-3 form-control-label" translate>common.label.folders</label>
+      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+        <div *ngFor="let path of object.paths">
+          <span>{{path}}</span>
+          <i class="pull-right pos-rel t-xs fa fa-remove text-hover-primary" (click)="remove(path)"></i>
+        </div>
       </div>
     </div>
     <div class="form-group row">

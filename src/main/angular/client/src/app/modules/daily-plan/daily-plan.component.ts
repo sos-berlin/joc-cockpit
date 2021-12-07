@@ -57,8 +57,8 @@ declare const $: any;
     '        </nz-tree-select></div>'
 })
 export class SelectOrderTemplatesComponent implements OnInit {
-  @Input() schedulerId;
-  @Input() object;
+  @Input() schedulerId: any;
+  @Input() object: any;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   schedules: any = [];
 
@@ -84,7 +84,8 @@ export class SelectOrderTemplatesComponent implements OnInit {
         const obj = {
           name: path.substring(path.lastIndexOf('/') + 1),
           path: path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1),
-          key: path
+          key: path,
+          title: path
         };
         treeObj.push(obj);
       }
@@ -102,6 +103,9 @@ export class SelectOrderTemplatesComponent implements OnInit {
     if (!node.origin.type) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
+        if (this.object.paths.indexOf(node.origin.key) === -1) {
+          this.object.paths.push(node.origin.key);
+        }
         $event.stopPropagation();
       }
     }
@@ -205,6 +209,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
           name: mainPath.substring(mainPath.lastIndexOf('/') + 1),
           path: mainPath,
           key: mainPath,
+          title: mainPath,
           children: []
         });
       }
@@ -239,7 +244,7 @@ export class CreatePlanModalComponent implements OnInit {
   @Input() preferences: any;
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   objects: any = [];
-  object: any = {at: 'all', overwrite: false, submitWith: false, workflowPaths: []};
+  object: any = {at: 'all', overwrite: false, submitWith: false, workflowPaths: [], paths: []};
   plan: any;
   submitted = false;
   dateFormat: any;
@@ -247,7 +252,7 @@ export class CreatePlanModalComponent implements OnInit {
   comments: any = {};
   schedules: any = [];
   workflowsTree: any = [];
-  selectedTemplates: any = {schedules: []};
+  selectedTemplates: any = {schedules: [], paths: []};
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
@@ -275,7 +280,10 @@ export class CreatePlanModalComponent implements OnInit {
     if (!node.origin.type) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
-        //$event.stopPropagation();
+        if (this.object.paths.indexOf(node.origin.key) === -1) {
+          this.object.paths.push(node.origin.key);
+        }
+        $event.stopPropagation();
       }
       let flag = true;
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
@@ -290,10 +298,8 @@ export class CreatePlanModalComponent implements OnInit {
           let data = res.workflows;
           data = sortBy(data, 'name');
           for (let i = 0; i < data.length; i++) {
-            const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-            data[i].title = data[i].name;
-            data[i].path = path;
-            data[i].key = data[i].name;
+            data[i].title = data[i].path;
+            data[i].key = data[i].path;
             data[i].type = 'WORKFLOW';
             data[i].isLeaf = true;
           }
@@ -315,6 +321,14 @@ export class CreatePlanModalComponent implements OnInit {
     this.loadData(e.node, null);
   }
 
+  remove(path, flag = false): void {
+    if (flag) {
+      this.selectedTemplates.paths.splice(this.selectedTemplates.paths.indexOf(path), 1);
+    } else {
+      this.object.paths.splice(this.object.paths.indexOf(path), 1);
+    }
+  }
+
   onSubmit(): void {
     this.submitted = true;
     const obj: any = {
@@ -322,11 +336,24 @@ export class CreatePlanModalComponent implements OnInit {
       withSubmit: this.object.submitWith,
       controllerId: this.schedulerId
     };
-    if (this.object.at === 'template' && this.selectedTemplates.schedules.length > 0) {
-      obj.schedulePaths = {singles: this.selectedTemplates.schedules};
+    if (this.object.at === 'template' && (this.selectedTemplates.schedules.length > 0 || this.selectedTemplates.paths.length > 0)) {
+      obj.schedulePaths = {};
+      if (this.selectedTemplates.schedules.length > 0) {
+        obj.schedulePaths.singles = this.selectedTemplates.schedules;
+      }
+      if (this.selectedTemplates.paths.length > 0) {
+        obj.schedulePaths.folders = this.selectedTemplates.paths;
+      }
     }
-    if (this.object.workflowPaths && this.object.workflowPaths.length > 0) {
-      obj.workflowPaths = {singles: this.object.workflowPaths};
+    if ((this.object.workflowPaths && this.object.workflowPaths.length > 0) ||
+    (this.object.paths && this.object.paths.length > 0)) {
+      obj.workflowPaths = {};
+      if (this.object.workflowPaths.length > 0) {
+        obj.workflowPaths.singles = this.object.workflowPaths;
+      }
+      if (this.object.paths.length > 0) {
+        obj.workflowPaths.folders = this.object.paths;
+      }
     }
     obj.auditLog = {};
     if (this.comments.comment) {

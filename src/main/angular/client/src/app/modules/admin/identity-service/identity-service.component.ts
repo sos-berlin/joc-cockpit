@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {isEqual, clone} from 'underscore';
+import {clone} from 'underscore';
 import {OrderPipe} from 'ngx-order-pipe';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -60,7 +60,7 @@ export class IdentityServiceModalComponent implements OnInit {
     this.submitted = true;
     this.coreService.post('iam/identityservice/store', this.currentObj).subscribe((res) => {
       this.activeModal.close(res);
-    }, (err) => {
+    }, () => {
       this.submitted = false;
     });
   }
