@@ -39,6 +39,9 @@
                         <li (click)="addAgent(controller)" nz-menu-item>
                           <a translate>agent.button.addAgent</a>
                         </li>
+                        <li (click)="addClusterAgent(controller)" nz-menu-item>
+                          <a translate>agent.button.addClusterAgent</a>
+                        </li>
                         <li (click)="editController(controller.controllerId)" nz-menu-item>
                           <a translate>common.button.edit</a>
                         </li>
@@ -218,12 +221,12 @@
               <hr *ngIf="showPanel[id]">
             </ng-container>
           </div>
-          <div *ngIf="controllers.length==0 && loading">
-            <app-empty-data></app-empty-data>
-          </div>
-          <div class="m-a-lg text-center" *ngIf="!loading">
-            <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
-          </div>
+        </div>
+        <div *ngIf="controllers.length==0 && loading">
+          <app-empty-data></app-empty-data>
+        </div>
+        <div class="m-a-lg text-center" *ngIf="!loading">
+          <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
         </div>
         <div class="rg-bottom"><span></span></div>
       </div>

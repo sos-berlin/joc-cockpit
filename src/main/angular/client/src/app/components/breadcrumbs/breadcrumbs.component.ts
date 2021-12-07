@@ -11,6 +11,7 @@ import {Subscription} from 'rxjs';
 export class BreadcrumbsComponent implements OnInit, OnDestroy {
   static readonly ROUTE_DATA_BREADCRUMB = 'breadcrumb';
   breadcrumbs: any;
+  identityServiceName: string;
   subscription: Subscription;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
@@ -29,6 +30,7 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
 
   private createBreadcrumbs(route: ActivatedRoute, url: string = '', breadcrumbs: any = []): any {
     const children: ActivatedRoute[] = route.children;
+    this.identityServiceName = sessionStorage.identityServiceName;
 
     if (children.length === 0) {
       return breadcrumbs;

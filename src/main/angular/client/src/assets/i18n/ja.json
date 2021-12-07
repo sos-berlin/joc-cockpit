@@ -122,6 +122,8 @@
   "Daily Plan": "実行計画",
   "ImplicitEnd": "終了",
   "--------COMMENT BOX END------------": "ジョブ定義 > インベントリー　表示",
+  "PRIMARY_DIRECTOR": "Director",
+  "STANDBY_DIRECTOR": "StandBy Director",
   "agent": {
     "label.standalone": "スタンドアロン",
     "label.cluster": "クラスター",
@@ -134,6 +136,8 @@
     "label.agentNameAliases": "エイリアス名",
     "label.addAgent": "エージェント追加",
     "label.editAgent": "エージェント更新",
+    "label.addSubAgent": "Add Sub Agent",
+    "label.editSubAgent": "Update Sub Agent",
     "label.addAgents": "エージェント追加",
     "label.coupled": "接続",
     "label.reset": "リセット",
@@ -148,8 +152,10 @@
     "label.validUntil": "有効期限",
     "label.validityDate": "トークン期限切れ",
     "label.token": "トークン",
+    "label.director": "Director",
     "button.createToken": "ワンタイムトークン作成",
-    "button.addAgent": "エージェント追加",
+    "button.addAgent": "Add Single Agent",
+    "button.addClusterAgent": "Add Cluster Agent",
     "button.allAgent": "全エージェント",
     "button.coupled": "接続",
     "button.couplingFailed": "接続失敗",
@@ -1135,6 +1141,7 @@
       "script": {
         "name": "スクリプトインクルードは、定期的に発生するコードスニペットをジョブスクリプトに含めるために使用します。スクリプトインクルード名は、インベントリー内で一意です。スクリプトインクルード名には、ドットやハイフンなど、ほとんどのユニコード文字を使用できますが、先頭や末尾のドットやハイフンは使用できません。",
         "documentation": "スクリプトと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
+        "title": "The Title of the Script Include",
         "script": "スクリプトインクルードの内容には、ジョブスクリプトでの使用に応じて、シェルコマンドやPerl、PowerShellなどのスクリプト言語用のコードを含めることができます。",
         "autocompleteShortCut": "利用可能なスクリプトインクルードのリストを取得するには、Ctrl+Spaceを使用します"
       },

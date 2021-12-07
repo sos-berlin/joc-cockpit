@@ -6,7 +6,12 @@
     <li *ngFor="let item of breadcrumbs; let last = last;">
       <ng-container >
       <span *ngIf="!last">
-        <a [routerLink]="item.url">{{ item.label | translate }}</a>
+        <a [routerLink]="item.url">
+          {{ item.label | translate }}
+          <span class="p-l-xs" *ngIf="identityServiceName && item.label === 'breadcrumb.label.manageIdentityServices'">
+            ({{identityServiceName}})
+          </span>
+        </a>
       </span>
       <span *ngIf="last" class="text-muted">
         {{ item.label | translate }}

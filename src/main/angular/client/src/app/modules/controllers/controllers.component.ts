@@ -95,7 +95,8 @@ export class CreateTokenModalComponent implements OnInit {
 export class AgentModalComponent implements OnInit {
   @Input() agents: any;
   @Input() data: any;
-  @Input() new: any;
+  @Input() new: boolean;
+  @Input() isCluster: boolean;
   @Input() controllerId: any;
   agent: any = {};
   submitted = false;
@@ -123,6 +124,9 @@ export class AgentModalComponent implements OnInit {
       this.agent.agentNameAliases.filter((val) => {
         this.agentNameAliases.push({name: val});
       });
+    }
+    if (this.isCluster) {
+      this.agent.director = 'PRIMARY_DIRECTOR';
     }
   }
 
@@ -184,8 +188,14 @@ export class AgentModalComponent implements OnInit {
         }
       });
     }
-    obj.agents = [_agent];
-    this.coreService.post('agents/store', obj).subscribe(res => {
+    if (this.isCluster) {
+      _agent.subagents = [{director: _agent.director}];
+      delete _agent.director;
+      obj.clusterAgents = [_agent];
+    } else {
+      obj.agents = [_agent];
+    }
+    this.coreService.post(this.isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close('close');
     }, err => {
@@ -300,7 +310,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   getAgents(controller, cb): void {
-    if (controller) {
+    if (controller && (!controller.agents || !cb)) {
+      this.getClusterAgents(controller);
       controller.loading = true;
       this.coreService.post('agents/p', {
         controllerId: controller.controllerId
@@ -324,6 +335,23 @@ export class ControllersComponent implements OnInit, OnDestroy {
       cb();
     }
   }
+
+  getClusterAgents(controller): void {
+    controller.isLoading = true;
+    this.coreService.post('agents/cluster/p', {
+      controllerId: controller.controllerId
+    }).subscribe((data: any) => {
+      controller.agentClusters = data.agents;
+/*      controller.agentClusters.forEach((agent) => {
+        this.mergeTokenData(null, agent.agentId, agent);
+      });*/
+      controller.isLoading = false;
+    }, () => {
+      controller.agentClusters = [];
+      controller.isLoading = false;
+    });
+  }
+
 
   sort(key): void {
     this.filter.reverse = !this.filter.reverse;
@@ -517,6 +545,25 @@ export class ControllersComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  addClusterAgent(controller): void {
+    this.getAgents(controller, () => {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: AgentModalComponent,
+        nzAutofocus: null,
+        nzComponentParams: {
+          controllerId: controller.controllerId,
+          agents: controller.agents,
+          isCluster: true,
+          new: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    });
   }
 
   resetAgent(agent, controller, force = false): void {

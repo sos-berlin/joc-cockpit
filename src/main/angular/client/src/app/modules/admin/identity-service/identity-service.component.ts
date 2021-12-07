@@ -189,12 +189,14 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       }
     }
     this.identityServices = list;
+    this.identityServices.forEach((identityService) => {
+      this.enableDisable(identityService, identityService.disabled);
+    });
   }
-
 
   private enableDisable(identityService, flag): void {
     identityService.disabled = flag;
-    this.coreService.post('iam/identityservice/store', identityService).subscribe((res) => {
+    this.coreService.post('iam/identityservice/store', identityService).subscribe(() => {
 
     }, () => {
       this.getIAMList();
