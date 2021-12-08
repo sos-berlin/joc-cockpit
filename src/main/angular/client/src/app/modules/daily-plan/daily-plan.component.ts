@@ -342,7 +342,12 @@ export class CreatePlanModalComponent implements OnInit {
         obj.schedulePaths.singles = this.selectedTemplates.schedules;
       }
       if (this.selectedTemplates.paths.length > 0) {
-        obj.schedulePaths.folders = this.selectedTemplates.paths;
+        this.selectedTemplates.paths.forEach((path) => {
+          if (!obj.schedulePaths.folders) {
+            obj.schedulePaths.folders = [];
+          }
+          obj.schedulePaths.folders.push({folder: path, recursive: true});
+        });
       }
     }
     if ((this.object.workflowPaths && this.object.workflowPaths.length > 0) ||
@@ -352,7 +357,12 @@ export class CreatePlanModalComponent implements OnInit {
         obj.workflowPaths.singles = this.object.workflowPaths;
       }
       if (this.object.paths.length > 0) {
-        obj.workflowPaths.folders = this.object.paths;
+        this.object.paths.forEach((path) => {
+          if (!obj.workflowPaths.folders) {
+            obj.workflowPaths.folders = [];
+          }
+          obj.workflowPaths.folders.push({folder: path, recursive: true});
+        });
       }
     }
     obj.auditLog = {};

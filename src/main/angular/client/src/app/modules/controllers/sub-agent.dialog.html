@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+     <span *ngIf="!new">
+      <span translate>agent.label.editSubAgent</span>:
+      <span [innerHtml]="data.subagentId"></span>
+     </span>
+    <span *ngIf="new" translate>agent.label.addSubAgent</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="hide" [ngClass]="{'show': display}">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
+    </div>
+    <div class="form-group row" *ngIf="!new">
+      <label class="col-sm-3" translate>agent.label.agentId</label>
+      <div class="col-sm-8">
+        {{clusterAgent.agentId}}
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>agent.label.director</label>
+      <div class=" col-sm-8">
+        <nz-select required name="director" [(ngModel)]="subagent.isDirector">
+          <nz-option [nzValue]="'PRIMARY_DIRECTOR'" [nzLabel]="'PRIMARY_DIRECTOR' | translate"></nz-option>
+          <nz-option [nzValue]="'STANDBY_DIRECTOR'" [nzLabel]="'SECONDARY_DIRECTOR' | translate"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>agent.label.subagentId</label>
+      <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
+        <input type="text" class="form-control" name="subagentId" #subagentId="ngModel"
+               required [(ngModel)]="subagent.subagentId" placeholder="http://host:port">
+        <div *ngIf="subagentId.invalid && (subagentId.dirty || subagentId.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(subagentId.errors && subagentId.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
+      <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
+        <input type="url" class="form-control" name="url" #url="ngModel"
+               required [(ngModel)]="subagent.url" placeholder="http://host:port">
+        <div *ngIf="url.invalid && (url.dirty || url.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(url.errors && url.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>
+

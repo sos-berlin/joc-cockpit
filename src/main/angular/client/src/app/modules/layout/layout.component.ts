@@ -263,6 +263,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
         sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
         sessionStorage.welcomeGotIt = result.welcomeGotIt;
+        sessionStorage.hasLicense = result.clusterLicense;
         if (!this.loading) {
           this.init();
         }

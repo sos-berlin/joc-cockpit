@@ -39,7 +39,7 @@
                         <li (click)="addAgent(controller)" nz-menu-item>
                           <a translate>agent.button.addAgent</a>
                         </li>
-                        <li (click)="addClusterAgent(controller)" nz-menu-item>
+                        <li *ngIf="hasLicense" (click)="addClusterAgent(controller)" nz-menu-item>
                           <a translate>agent.button.addClusterAgent</a>
                         </li>
                         <li (click)="editController(controller.controllerId)" nz-menu-item>
@@ -87,7 +87,8 @@
               </div>
               <div *ngIf="showPanel[id]" class="row">
                 <div class="col-md-12">
-                  <perfect-scrollbar class="p-a-sm p-b-0" style="max-height: 350px;overflow: auto">
+                  <perfect-scrollbar class="p-a-sm p-b-0" style="max-height: 450px;overflow: auto">
+                    <label class="p-b-xs" translate>agent.label.agents</label>
                     <nz-table #ajaxTable nzSize="small" [nzBordered]="true" [nzLoading]="controller.loading"
                               [nzData]="controller.agents | orderBy: filter.sortBy: filter.reverse" [nzShowPagination]="false" [nzFrontPagination]="false">
                       <thead>
@@ -213,6 +214,174 @@
                           <span *ngIf="!agent.token">-</span>
                         </td>
                       </tr>
+                      </tbody>
+                    </nz-table>
+                    <label *ngIf="hasLicense" class="m-t p-b-xs" translate>agent.label.agentClusters</label>
+                    <nz-table *ngIf="hasLicense" #agentClusterTable nzSize="small" [nzBordered]="true" [nzLoading]="controller.isLoading"
+                              [nzData]="controller.agentClusters | orderBy: filter.sortBy: filter.reverse" [nzShowPagination]="false" [nzFrontPagination]="false">
+                                            <thead>
+                      <tr>
+                        <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="chk"
+                            [nzShowCheckbox]="true"
+                            [(nzChecked)]="controller.checked"
+                            [nzIndeterminate]="controller.indeterminate"
+                            (nzCheckedChange)="checkAll($event, controller)"
+                        ></th>
+                        <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
+                        <th nzWidth="15%" (click)="sort('agentId')">
+                          <a><span class="p-r-xs" translate>agent.label.agentId</span>
+                            <i *ngIf="filter.sortBy == 'agentId' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'agentId' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="15%" (click)="sort('agentName')">
+                          <a><span class="p-r-xs" translate>agent.label.agentName</span>
+                            <i *ngIf="filter.sortBy == 'agentName' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'agentName' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th (click)="sort('agentNameAliases')">
+                          <a><span class="p-r-xs" translate>agent.label.agentNameAliases</span>
+                            <i *ngIf="filter.sortBy == 'agentNameAliases' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'agentNameAliases' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="20%" (click)="sort('url')">
+                          <a><span class="p-r-xs" translate>agent.label.url</span>
+                            <i *ngIf="filter.sortBy == 'url' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'url' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="100px" (click)="sort('disabled')">
+                          <a><span class="p-r-xs" translate>agent.label.disabled</span>
+                            <i *ngIf="filter.sortBy == 'disabled' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'disabled' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="140px" (click)="sort('clusterWatcher')">
+                          <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
+                            <i *ngIf="filter.sortBy == 'clusterWatcher' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'clusterWatcher' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="150px" (click)="sort('validityDate')">
+                          <a><span class="p-r-xs" translate>agent.label.validityDate</span>
+                            <i *ngIf="filter.sortBy == 'validityDate' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'validityDate' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th nzWidth="140px" (click)="sort('token.validUntil')">
+                          <a><span class="p-r-xs" translate>agent.label.oneTimeToken</span>
+                            <i *ngIf="filter.sortBy == 'token.validUntil' && !filter.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="filter.sortBy == 'token.validUntil' && filter.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <ng-container *ngFor="let clusterAgent of agentClusterTable.data">
+                      <tr [ngClass]="{'disabled-row': clusterAgent.disabled}" class="cursor">
+                        <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+                            [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(clusterAgent.agentId)" (nzCheckedChange)="onItemChecked(controller, clusterAgent, $event)"></td>
+                        <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
+                          <div class="btn-group dropdown pull-left m-r-sm">
+                            <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                              <ul nz-menu >
+                                <li (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
+                                  <a translate>common.button.edit</a>
+                                </li>
+                                <li (click)="addSubagent(clusterAgent, controller)" nz-menu-item>
+                                  <a translate>agent.button.addSubagent</a>
+                                </li>
+                                <li (click)="disableAgent(clusterAgent, controller, true)" nz-menu-item *ngIf="!clusterAgent.disabled">
+                                  <a translate>agent.button.disable</a>
+                                </li>
+                                <li (click)="enableAgent(clusterAgent, controller, true)" nz-menu-item *ngIf="clusterAgent.disabled">
+                                  <a translate>agent.button.enable</a>
+                                </li>
+                                <li (click)="removeAgent(clusterAgent, controller, true)" nz-menu-item class="bg-hover-color">
+                                  <a translate="">common.button.remove</a>
+                                </li>
+                              </ul>
+                            </nz-dropdown-menu>
+                          </div>
+                        </td>
+                        <td (click)="editAgent(clusterAgent, controller, true)">
+                          <i class="cursor fa fa-caret-down fa-lg"
+                             *ngIf="!clusterAgent.show" (click)="clusterAgent.show = true;$event.stopPropagation()"></i>
+                          <i class="cursor fa fa-caret-up fa-lg"
+                             *ngIf="clusterAgent.show" (click)="clusterAgent.show = false;$event.stopPropagation()"></i>&nbsp;
+                                  <span [innerHtml]="clusterAgent.agentId"></span>
+                        </td>
+                        <td (click)="editAgent(clusterAgent, controller, true)"><span [innerHtml]="clusterAgent.agentName"></span></td>
+                        <td (click)="editAgent(clusterAgent, controller, true)"><span [innerHtml]="clusterAgent.agentNameAliases || '-'"></span></td>
+                        <td (click)="editAgent(clusterAgent, controller, true)"><span [innerHtml]="clusterAgent.url"></span></td>
+                        <td (click)="editAgent(clusterAgent, controller, true)">{{clusterAgent.disabled ? 'Yes' : 'No'}}</td>
+                        <td (click)="editAgent(clusterAgent, controller, true)">{{clusterAgent.isClusterWatcher ? 'Yes' : 'No'}}</td>
+                        <td>
+                          <span *ngIf="!clusterAgent.token">-</span>
+                          <span *ngIf="clusterAgent.token">{{clusterAgent.token.validUntil | stringToDate}}</span>
+                        </td>
+                        <td>
+                          <div *ngIf="clusterAgent.token">
+                            <a class="primary-text-hover-color" nz-popover nzPopoverTrigger="click"
+                               [nzPopoverContent]="contentTemplate"><i class="fa fa-key"></i></a>
+                            <ng-template #contentTemplate>
+                              <b translate>agent.label.token</b> :
+                              <span>{{clusterAgent.token.UUID}} <i ngxClipboard [cbContent]="clusterAgent.token.UUID" (click)="showCopyMessage()" class="cursor primary-text-hover-color p-l-sm fa fa-copy"></i></span>
+                            </ng-template>
+                          </div>
+                          <span *ngIf="!clusterAgent.token">-</span>
+                        </td>
+                      </tr>
+                      <ng-container *ngIf="clusterAgent.show">
+                        <tr>
+                          <td></td>
+                          <td><span translate>common.label.action</span></td>
+                          <td colspan="2"><span translate>agent.label.subagentId</span></td>
+                          <td colspan="2"><span translate>agent.label.director</span></td>
+                          <td colspan="2"><span translate>agent.label.url</span></td>
+                          <td colspan="2"><span translate>agent.label.clusterWatcher</span></td>
+                        </tr>
+                        <tr *ngIf="!clusterAgent.subagents || clusterAgent.subagents.length === 0">
+                          <td></td>
+                          <td colspan="9">
+                            <span translate>common.message.noDataAvailable</span>
+                          </td>
+                        </tr>
+                        <tr *ngFor="let sub of clusterAgent.subagents">
+                          <td></td>
+                          <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
+                          <div class="btn-group dropdown pull-left m-r-sm">
+                            <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                              <ul nz-menu >
+                                <li (click)="editSubagent(sub, clusterAgent, controller)" nz-menu-item >
+                                  <a translate>common.button.edit</a>
+                                </li>
+                                <li (click)="removeSubagent(sub, clusterAgent, controller)" nz-menu-item class="bg-hover-color">
+                                  <a translate="">common.button.remove</a>
+                                </li>
+                              </ul>
+                            </nz-dropdown-menu>
+                          </div>
+                        </td>
+                          <td colspan="2">{{sub.subagentId}}</td>
+                          <td colspan="2">{{sub.isDirector | translate}}</td>
+                          <td colspan="2">{{sub.url}}</td>
+                          <td colspan="2">{{sub.isClusterWatcher ? 'Yes' : 'No'}}</td>
+                        </tr>
+                      </ng-container>
+                      </ng-container>
                       </tbody>
                     </nz-table>
                   </perfect-scrollbar>

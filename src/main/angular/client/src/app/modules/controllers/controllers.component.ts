@@ -89,6 +89,67 @@ export class CreateTokenModalComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-sub-agent-modal',
+  templateUrl: './sub-agent.dialog.html'
+})
+export class SubagentModalComponent implements OnInit {
+  @Input() clusterAgent: any;
+  @Input() data: any;
+  @Input() new: boolean;
+  @Input() controllerId: any;
+  subagent: any = {};
+  submitted = false;
+  isUniqueId = true;
+  agentNameAliases: any = [];
+  comments: any = {};
+  preferences: any;
+  display: any;
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (this.data) {
+      this.subagent = this.coreService.clone(this.data);
+    } else{
+      this.subagent.isDirector = 'PRIMARY_DIRECTOR';
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj: any = {controllerId: this.controllerId, agentId: this.clusterAgent.agentId};
+    const subagent: any = this.coreService.clone(this.subagent);
+    if (this.display) {
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+    }
+
+    obj.subagents = [subagent];
+
+    this.coreService.post('agent/subagents/store', obj).subscribe(res => {
+      this.submitted = false;
+      this.activeModal.close('close');
+    }, () => {
+      this.submitted = false;
+    });
+  }
+}
+
+@Component({
   selector: 'app-agent-modal',
   templateUrl: './agent.dialog.html'
 })
@@ -189,8 +250,10 @@ export class AgentModalComponent implements OnInit {
       });
     }
     if (this.isCluster) {
-      _agent.subagents = [{director: _agent.director}];
+      _agent.subagents = [{isDirector: _agent.director, subagentId: _agent.subagentId, url: _agent.url}];
       delete _agent.director;
+      delete _agent.subagentId;
+      delete _agent.url;
       obj.clusterAgents = [_agent];
     } else {
       obj.agents = [_agent];
@@ -198,7 +261,7 @@ export class AgentModalComponent implements OnInit {
     this.coreService.post(this.isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close('close');
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -219,6 +282,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   modalInstance: NzModalRef;
   loading = false;
   isLoaded = false;
+  hasLicense = false;
   object = {
     mapOfCheckedId: new Set()
   };
@@ -251,7 +315,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-
+    this.hasLicense = sessionStorage.hasLicense;
     this.getTokens();
   }
 
@@ -311,7 +375,9 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   getAgents(controller, cb): void {
     if (controller && (!controller.agents || !cb)) {
-      this.getClusterAgents(controller);
+      if (this.hasLicense) {
+        this.getClusterAgents(controller);
+      }
       controller.loading = true;
       this.coreService.post('agents/p', {
         controllerId: controller.controllerId
@@ -473,7 +539,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
   }
 
-  editAgent(agent, controller): void {
+  editAgent(agent, controller, isCluster = false): void {
     if (this.permission.joc && this.permission.joc.administration.controllers.manage) {
       this.getAgents(controller, () => {
         const modal = this.modal.create({
@@ -483,7 +549,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
           nzComponentParams: {
             controllerId: controller.controllerId,
             agents: controller.agents,
-            data: agent
+            data: agent,
+            isCluster
           },
           nzFooter: null,
           nzClosable: false,
@@ -498,7 +565,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeAgent(agent, controller): void {
+  removeAgent(agent, controller, isCluster = false): void {
     const obj = {
       controllerId: controller.controllerId,
       agentId: agent.agentId
@@ -566,6 +633,90 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
   }
 
+  addSubagent(clusterAgent, controller): void {
+    console.log(clusterAgent, controller);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: SubagentModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        controllerId: controller.controllerId,
+        clusterAgent,
+        new: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  editSubagent(subagent, clusterAgent, controller): void {
+    console.log(subagent, clusterAgent, controller);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: SubagentModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        controllerId: controller.controllerId,
+        clusterAgent,
+        data: subagent
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  removeSubagent(sub, clusterAgent, controller): void {
+    console.log(sub, clusterAgent, controller);
+    const obj = {
+      controllerId: controller.controllerId,
+      subagentIds: [sub.subagentId]
+    };
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Agent',
+        operation: 'Remove',
+        name: sub.subagentId
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'agent/subagents/remove'
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'remove',
+          message: 'removeSubagent',
+          type: 'Remove',
+          objectName: sub.subagentId,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post('agent/subagents/remove', obj).subscribe(() => {
+
+          });
+        }
+      });
+    }
+  }
+
   resetAgent(agent, controller, force = false): void {
     const obj = {
       controllerId: controller.controllerId,
@@ -599,22 +750,26 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  disableAgent(agent, controller): void {
+  disableAgent(agent, controller, isCluster = false): void {
     agent.disabled = true;
     this.coreService.post('agents/store', {
       controllerId: controller.controllerId, agents:
       controller.agents
-    }).subscribe(res => {
+    }).subscribe(() => {
 
+    }, () => {
+      agent.disabled = false;
     });
   }
 
-  enableAgent(agent, controller): void {
+  enableAgent(agent, controller, isCluster = false): void {
     agent.disabled = false;
     this.coreService.post('agents/store', {
       controllerId: controller.controllerId, agents: controller.agents
-    }).subscribe(res => {
+    }).subscribe(() => {
 
+    }, () => {
+      agent.disabled = true;
     });
   }
 
@@ -750,6 +905,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   showCopyMessage(): void {
-    this.coreService.showCopyMessage(this.message)
+    this.coreService.showCopyMessage(this.message);
   }
 }
