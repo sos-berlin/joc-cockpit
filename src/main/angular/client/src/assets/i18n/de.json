@@ -133,7 +133,7 @@
     "label.url": "URL",
     "label.clusterWatcher": "Cluster Wächter",
     "label.disabled": "Deaktiviert",
-    "label.agents": "Agenten",
+    "label.agents": "Solo Agenten",
     "label.agentNameAliases": "Alias-Namen",
     "label.addAgent": "Agent hinzufügen",
     "label.editAgent": "Agent aktualisieren",
