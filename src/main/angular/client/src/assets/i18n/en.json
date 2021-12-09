@@ -161,7 +161,7 @@
     "button.createToken": "Create One-time Token",
     "button.addAgent": "Add Single Agent",
     "button.addSubagent": "Add Subagent",
-    "button.addClusterAgent": "Add Cluster Agent",
+    "button.addClusterAgent": "Add Agent Cluster",
     "button.allAgent": "All Agent",
     "button.coupled": "Coupled",
     "button.couplingFailed": "Coupling Failed",
