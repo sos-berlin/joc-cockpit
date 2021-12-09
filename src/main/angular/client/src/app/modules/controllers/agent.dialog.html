@@ -1,11 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title">
      <span *ngIf="!new">
-      <span *ngIf="!isCluster" translate>agent.label.editAgent</span><span *ngIf="isCluster" translate>Update Cluster Agent</span>:
+      <span *ngIf="!isCluster" translate>agent.label.editAgent</span><span *ngIf="isCluster" translate>agent.label.editClusterAgent</span>:
       <span [innerHtml]="data.agentName"></span>
      </span>
     <span *ngIf="new && !isCluster" translate>agent.label.addAgent</span>
-    <span *ngIf="new && isCluster" translate>Add Cluster Agent</span>
+    <span *ngIf="new && isCluster" translate>agent.label.addClusterAgent</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -72,20 +72,21 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="isCluster">
-      <label class="col-sm-3 form-control-label" translate>agent.label.director</label>
+    <div class="form-group row" *ngIf="isCluster && new">
+      <label class="col-sm-3 form-control-label" translate>agent.label.role</label>
       <div class=" col-sm-8">
         <nz-select required name="director" [(ngModel)]="agent.director">
+          <nz-option [nzValue]="'NO_DIRECTOR'" [nzLabel]="'NO_DIRECTOR' | translate"></nz-option>
           <nz-option [nzValue]="'PRIMARY_DIRECTOR'" [nzLabel]="'PRIMARY_DIRECTOR' | translate"></nz-option>
           <nz-option [nzValue]="'STANDBY_DIRECTOR'" [nzLabel]="'SECONDARY_DIRECTOR' | translate"></nz-option>
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="isCluster">
+    <div class="form-group row" *ngIf="isCluster && new">
       <label class="col-sm-3 form-control-label" translate>agent.label.subagentId</label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
         <input type="text" class="form-control" name="subagentId" #subagentId="ngModel"
-               required [(ngModel)]="agent.subagentId" placeholder="http://host:port">
+               required [(ngModel)]="agent.subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
         <div *ngIf="subagentId.invalid && (subagentId.dirty || subagentId.touched)"
              class="text-danger help-block">
           <div *ngIf="(subagentId.errors && subagentId.errors.required)">
@@ -94,7 +95,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="isCluster">
+    <div class="form-group row" *ngIf="isCluster && new">
       <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
         <input type="url" class="form-control" name="url" #url="ngModel"

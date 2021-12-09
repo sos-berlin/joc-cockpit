@@ -122,6 +122,7 @@
   "Daily Plan": "Automatisation",
   "ImplicitEnd": "Fin",
   "--------COMMENT BOX END------------": "Configuration > Inventory view",
+  "NO_DIRECTOR": "No Director",
   "PRIMARY_DIRECTOR": "Directeur Primaire",
   "SECONDARY_DIRECTOR": "Directeur Sécondaire",
   "agent": {
@@ -153,8 +154,10 @@
     "label.validUntil": "Valide jusqu'au",
     "label.validityDate": "Token expire le",
     "label.token": "Token",
-    "label.director": "Directeur",
+    "label.role": "Role",
     "label.agentClusters": "Agent Clusters",
+    "label.addClusterAgent": "Add Cluster Agent",
+    "label.editClusterAgent": "Update Cluster Agent",
     "button.createToken": "Créer un Token à usage unique",
     "button.addAgent": "Ajouter un Agent Unique",
     "button.addSubagent": "Ajouter un Sous-agent",
@@ -170,6 +173,7 @@
     "button.resetForced": "Réinitialiser forcement",
     "button.resetting": "en cours de réinitialisation",
     "placeholder.enterAgentId": "Entrer l'ID de l'Agent",
+    "placeholder.enterSubagentId": "Enter Subagent ID",
     "placeholder.enterAgentName": "Entrer le nom de l'Agent",
     "placeholder.enterAgentNameAlias": "Entrer le nom de l'alias"
   },
