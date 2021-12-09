@@ -130,6 +130,7 @@
     "label.cluster": "Cluster",
     "label.agentId": "ID Agent",
     "label.agentName": "Nom d'Agent",
+    "label.agentClusterName": "Agent Cluster Name",
     "label.url": "URL",
     "label.clusterWatcher": "Cluster Watcher",
     "label.disabled": "Désactivé",

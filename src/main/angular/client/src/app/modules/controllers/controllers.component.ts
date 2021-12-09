@@ -163,7 +163,6 @@ export class SubagentModalComponent implements OnInit {
   templateUrl: './agent.dialog.html'
 })
 export class AgentModalComponent implements OnInit {
-  @Input() agents: any;
   @Input() data: any;
   @Input() new: boolean;
   @Input() isCluster: boolean;
@@ -197,9 +196,6 @@ export class AgentModalComponent implements OnInit {
         this.agentNameAliases.push({name: val});
       });
     }
-    if (this.isCluster) {
-      this.agent.director = 'NO_DIRECTOR';
-    }
   }
 
   addAlise(): void {
@@ -212,28 +208,8 @@ export class AgentModalComponent implements OnInit {
     this.agentNameAliases.splice(index, 1);
   }
 
-  checkDisable(): void {
-    if (this.agent.disabled) {
-      const x = this.agents.filter((agent) => {
-        return agent.disabled;
-      });
-      const flag = x.length >= this.agents.length - 1;
-      if (flag) {
-        setTimeout(() => {
-          this.agent.disabled = false;
-        }, 0);
-      }
-    }
-  }
-
-  checkId(newId): void {
-    this.isUniqueId = true;
-    for (let i = 0; i < this.agents.length; i++) {
-      if (this.agents[i].agentId === newId && (this.data && newId !== this.data.agentId)) {
-        this.isUniqueId = false;
-        break;
-      }
-    }
+  removeSubagent(list, index): void{
+    list.splice(index, 1);
   }
 
   onSubmit(): void {
@@ -262,10 +238,15 @@ export class AgentModalComponent implements OnInit {
     }
     if (this.isCluster) {
       if (this.new) {
-        _agent.subagents = [{isDirector: _agent.director, subagentId: _agent.subagentId, url: _agent.url}];
+        _agent.subagents = [{isDirector: 'PRIMARY_DIRECTOR', subagentId: _agent.subagentId, url: _agent.url}];
+        if (_agent.subagentId2){
+          _agent.subagents.push({isDirector: 'STANDBY_DIRECTOR', subagentId: _agent.subagentId2, url: _agent.url2});
+        }
         delete _agent.director;
         delete _agent.subagentId;
+        delete _agent.subagentId2;
         delete _agent.url;
+        delete _agent.url2;
       }
       obj.clusterAgents = [_agent];
     } else {
@@ -554,7 +535,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzAutofocus: null,
         nzComponentParams: {
           controllerId: controller.controllerId,
-          agents: controller.agents,
           new: true
         },
         nzFooter: null,
@@ -573,7 +553,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
           nzAutofocus: null,
           nzComponentParams: {
             controllerId: controller.controllerId,
-            agents: controller.agents,
             data: agent,
             isCluster
           },
@@ -651,7 +630,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzAutofocus: null,
         nzComponentParams: {
           controllerId: controller.controllerId,
-          agents: controller.agents,
           isCluster: true,
           new: true
         },
@@ -816,7 +794,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     } else {
       obj.agents = controller.agents;
     }
-    this.coreService.post('agents/store', obj).subscribe(() => {
+    this.coreService.post(isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe(() => {
 
     }, () => {
       agent.disabled = !flag;

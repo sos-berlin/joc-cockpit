@@ -30,12 +30,14 @@ export class StartUpModalComponent implements OnInit {
   schedulerIds: any = {};
   error: any;
   controllerId = '';
+  hasLicense = false;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private dataService: DataService,
               public translate: TranslateService, private toasterService: ToasterService) {
   }
 
   ngOnInit(): void {
+    this.hasLicense = sessionStorage.hasLicense;
     this.controller = {
       url: '',
       type: 'STANDALONE',

@@ -130,6 +130,7 @@
     "label.cluster": "クラスター",
     "label.agentId": "エージェントID",
     "label.agentName": "エージェント名",
+    "label.agentClusterName": "Agent Cluster Name",
     "label.url": "URL",
     "label.clusterWatcher": "クラスター監視",
     "label.disabled": "無効化",
