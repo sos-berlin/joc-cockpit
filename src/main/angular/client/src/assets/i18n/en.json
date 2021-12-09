@@ -771,7 +771,7 @@
     "button.settings": "Settings",
     "button.profile": "Profile",
     "button.logging": "Logging",
-    "button.manageAccount": "Manage Accounts",
+    "button.manageAccount": "Manage Identity Services",
     "button.manageControllersAndAgents": "Manage Controllers/Agents",
     "button.logOut": "Log Out"
   },
