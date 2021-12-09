@@ -7,11 +7,11 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
-            <button *ngIf="object.mapOfCheckedId.size === 0" (click)="addController()" class="btn btn-grey btn-sm">
+            <button *ngIf="object.mapOfCheckedId.size === 0 && object.mapOfCheckedId2.size === 0" (click)="addController()" class="btn btn-grey btn-sm">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>controller.button.newController</span>
             </button>
-            <button *ngIf="object.mapOfCheckedId.size>0"
+            <button *ngIf="object.mapOfCheckedId.size>0 || object.mapOfCheckedId2.size > 0"
                     class="btn btn-grey btn-sm m-l-12" (click)="createToken(null)" translate>agent.button.createToken</button>
           </div>
         </div>
@@ -90,7 +90,7 @@
                   <perfect-scrollbar class="p-a-sm p-b-0" style="max-height: 450px;overflow: auto">
                     <label class="p-b-xs" translate>agent.label.agents</label>
                     <nz-table #ajaxTable nzSize="small" [nzBordered]="true" [nzLoading]="controller.loading"
-                              [nzData]="controller.agents | orderBy: filter.sortBy: filter.reverse" [nzShowPagination]="false" [nzFrontPagination]="false">
+                              [nzData]="controller.agents | orderBy: controller.sortBy: controller.reverse" [nzShowPagination]="false" [nzFrontPagination]="false">
                       <thead>
                       <tr>
                         <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="chk"
@@ -100,60 +100,60 @@
                             (nzCheckedChange)="checkAll($event, controller)"
                         ></th>
                         <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
-                        <th nzWidth="15%" (click)="sort('agentId')">
+                        <th nzWidth="15%" (click)="sort(controller, 'agentId')">
                           <a><span class="p-r-xs" translate>agent.label.agentId</span>
-                            <i *ngIf="filter.sortBy == 'agentId' && !filter.reverse"
+                            <i *ngIf="controller.sortBy == 'agentId' && !controller.reverse"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'agentId' && filter.reverse"
+                            <i *ngIf="controller.sortBy == 'agentId' && controller.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="15%" (click)="sort('agentName')">
+                        <th nzWidth="15%" (click)="sort(controller, 'agentName')">
                           <a><span class="p-r-xs" translate>agent.label.agentName</span>
-                            <i *ngIf="filter.sortBy == 'agentName' && !filter.reverse"
+                            <i *ngIf="controller.sortBy == 'agentName' && !controller.reverse"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'agentName' && filter.reverse"
+                            <i *ngIf="controller.sortBy == 'agentName' && controller.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th (click)="sort('agentNameAliases')">
+                        <th (click)="sort(controller, 'agentNameAliases')">
                           <a><span class="p-r-xs" translate>agent.label.agentNameAliases</span>
-                            <i *ngIf="filter.sortBy == 'agentNameAliases' && !filter.reverse"
+                            <i *ngIf="controller.sortBy == 'agentNameAliases' && !controller.reverse"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'agentNameAliases' && filter.reverse"
+                            <i *ngIf="controller.sortBy == 'agentNameAliases' && controller.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="20%" (click)="sort('url')">
+                        <th nzWidth="20%" (click)="sort(controller, 'url')">
                           <a><span class="p-r-xs" translate>agent.label.url</span>
-                            <i *ngIf="filter.sortBy == 'url' && !filter.reverse"
+                            <i *ngIf="controller.sortBy == 'url' && !controller.reverse"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'url' && filter.reverse"
+                            <i *ngIf="controller.sortBy == 'url' && controller.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="100px" (click)="sort('disabled')">
+                        <th nzWidth="100px" (click)="sort(controller, 'disabled')">
                           <a><span class="p-r-xs" translate>agent.label.disabled</span>
-                            <i *ngIf="filter.sortBy == 'disabled' && !filter.reverse"
+                            <i *ngIf="controller.sortBy == 'disabled' && !controller.reverse"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'disabled' && filter.reverse"
+                            <i *ngIf="controller.sortBy == 'disabled' && controller.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="140px" (click)="sort('clusterWatcher')">
+                        <th nzWidth="140px" (click)="sort(controller, 'clusterWatcher')">
                           <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
-                            <i *ngIf="filter.sortBy == 'clusterWatcher' && !filter.reverse"
+                            <i *ngIf="controller.sortBy == 'clusterWatcher' && !controller.reverse"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'clusterWatcher' && filter.reverse"
+                            <i *ngIf="controller.sortBy == 'clusterWatcher' && controller.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="150px" (click)="sort('validityDate')">
+                        <th nzWidth="150px" (click)="sort(controller, 'validityDate')">
                           <a><span class="p-r-xs" translate>agent.label.validityDate</span>
-                            <i *ngIf="filter.sortBy == 'validityDate' && !filter.reverse"
+                            <i *ngIf="controller.sortBy == 'validityDate' && !controller.reverse"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'validityDate' && filter.reverse"
+                            <i *ngIf="controller.sortBy == 'validityDate' && controller.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="140px" (click)="sort('token.validUntil')">
+                        <th nzWidth="140px" (click)="sort(controller, 'token.validUntil')">
                           <a><span class="p-r-xs" translate>agent.label.oneTimeToken</span>
-                            <i *ngIf="filter.sortBy == 'token.validUntil' && !filter.reverse"
+                            <i *ngIf="controller.sortBy == 'token.validUntil' && !controller.reverse"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'token.validUntil' && filter.reverse"
+                            <i *ngIf="controller.sortBy == 'token.validUntil' && controller.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                       </tr>
@@ -218,70 +218,70 @@
                     </nz-table>
                     <label *ngIf="hasLicense" class="m-t p-b-xs" translate>agent.label.agentClusters</label>
                     <nz-table *ngIf="hasLicense" #agentClusterTable nzSize="small" [nzBordered]="true" [nzLoading]="controller.isLoading"
-                              [nzData]="controller.agentClusters | orderBy: filter.sortBy: filter.reverse" [nzShowPagination]="false" [nzFrontPagination]="false">
-                                            <thead>
+                              [nzData]="controller.agentClusters | orderBy: controller.sortBy2: controller.reverse2" [nzShowPagination]="false" [nzFrontPagination]="false">
+                      <thead>
                       <tr>
                         <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="chk"
                             [nzShowCheckbox]="true"
-                            [(nzChecked)]="controller.checked"
-                            [nzIndeterminate]="controller.indeterminate"
-                            (nzCheckedChange)="checkAll($event, controller)"
+                            [(nzChecked)]="controller.checked2"
+                            [nzIndeterminate]="controller.indeterminate2"
+                            (nzCheckedChange)="checkAll($event, controller, true)"
                         ></th>
                         <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
-                        <th nzWidth="15%" (click)="sort('agentId')">
+                        <th nzWidth="15%" (click)="sort(controller, 'agentId', true)">
                           <a><span class="p-r-xs" translate>agent.label.agentId</span>
-                            <i *ngIf="filter.sortBy == 'agentId' && !filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'agentId' && !controller.reverse2"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'agentId' && filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'agentId' && controller.reverse2"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="15%" (click)="sort('agentName')">
+                        <th nzWidth="15%" (click)="sort(controller, 'agentName', true)">
                           <a><span class="p-r-xs" translate>agent.label.agentName</span>
-                            <i *ngIf="filter.sortBy == 'agentName' && !filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'agentName' && !controller.reverse2"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'agentName' && filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'agentName' && controller.reverse2"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th (click)="sort('agentNameAliases')">
+                        <th (click)="sort(controller, 'agentNameAliases', true)">
                           <a><span class="p-r-xs" translate>agent.label.agentNameAliases</span>
-                            <i *ngIf="filter.sortBy == 'agentNameAliases' && !filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'agentNameAliases' && !controller.reverse2"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'agentNameAliases' && filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'agentNameAliases' && controller.reverse2"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="20%" (click)="sort('url')">
+<!--                        <th nzWidth="20%" (click)="sort(controller, 'url')">
                           <a><span class="p-r-xs" translate>agent.label.url</span>
-                            <i *ngIf="filter.sortBy == 'url' && !filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'url' && !controller.reverse2"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'url' && filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'url' && controller.reverse2"
                                class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th nzWidth="100px" (click)="sort('disabled')">
+                        </th>-->
+                        <th nzWidth="100px" (click)="sort(controller, 'disabled', true)">
                           <a><span class="p-r-xs" translate>agent.label.disabled</span>
-                            <i *ngIf="filter.sortBy == 'disabled' && !filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'disabled' && !controller.reverse2"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'disabled' && filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'disabled' && controller.reverse2"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="140px" (click)="sort('clusterWatcher')">
+                        <th nzWidth="140px" (click)="sort(controller, 'clusterWatcher', true)">
                           <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
-                            <i *ngIf="filter.sortBy == 'clusterWatcher' && !filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'clusterWatcher' && !controller.reverse2"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'clusterWatcher' && filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'clusterWatcher' && controller.reverse2"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="150px" (click)="sort('validityDate')">
+                        <th nzWidth="150px" (click)="sort(controller, 'validityDate', true)">
                           <a><span class="p-r-xs" translate>agent.label.validityDate</span>
-                            <i *ngIf="filter.sortBy == 'validityDate' && !filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'validityDate' && !controller.reverse2"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'validityDate' && filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'validityDate' && controller.reverse2"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th nzWidth="140px" (click)="sort('token.validUntil')">
+                        <th nzWidth="140px" (click)="sort(controller, 'token.validUntil', true)">
                           <a><span class="p-r-xs" translate>agent.label.oneTimeToken</span>
-                            <i *ngIf="filter.sortBy == 'token.validUntil' && !filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'token.validUntil' && !controller.reverse2"
                                class="fa fa-caret-up "></i>
-                            <i *ngIf="filter.sortBy == 'token.validUntil' && filter.reverse"
+                            <i *ngIf="controller.sortBy2 == 'token.validUntil' && controller.reverse2"
                                class="fa fa-caret-down "></i></a>
                         </th>
                       </tr>
@@ -290,17 +290,26 @@
                       <ng-container *ngFor="let clusterAgent of agentClusterTable.data">
                       <tr [ngClass]="{'disabled-row': clusterAgent.disabled}" class="cursor">
                         <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
-                            [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(clusterAgent.agentId)" (nzCheckedChange)="onItemChecked(controller, clusterAgent, $event)"></td>
+                            [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId2.has(clusterAgent.agentId)" (nzCheckedChange)="onItemChecked(controller, clusterAgent, $event, true)"></td>
                         <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
                           <div class="btn-group dropdown pull-left m-r-sm">
                             <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                               <ul nz-menu >
-                                <li (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
-                                  <a translate>common.button.edit</a>
+                                <li (click)="createToken(controller, clusterAgent)" nz-menu-item>
+                                  <a translate>agent.button.createToken</a>
                                 </li>
                                 <li (click)="addSubagent(clusterAgent, controller)" nz-menu-item>
                                   <a translate>agent.button.addSubagent</a>
+                                </li>
+                                <li (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
+                                  <a translate>common.button.edit</a>
+                                </li>
+                                <li (click)="resetAgent(clusterAgent, controller)" nz-menu-item >
+                                  <a translate>agent.button.reset</a>
+                                </li>
+                                <li (click)="resetAgent(clusterAgent, controller, true)" nz-menu-item >
+                                  <a translate>agent.button.resetForced</a>
                                 </li>
                                 <li (click)="disableAgent(clusterAgent, controller, true)" nz-menu-item *ngIf="!clusterAgent.disabled">
                                   <a translate>agent.button.disable</a>
@@ -308,7 +317,7 @@
                                 <li (click)="enableAgent(clusterAgent, controller, true)" nz-menu-item *ngIf="clusterAgent.disabled">
                                   <a translate>agent.button.enable</a>
                                 </li>
-                                <li (click)="removeAgent(clusterAgent, controller, true)" nz-menu-item class="bg-hover-color">
+                                <li (click)="removeAgent(clusterAgent, controller)" nz-menu-item class="bg-hover-color">
                                   <a translate="">common.button.remove</a>
                                 </li>
                               </ul>
@@ -324,7 +333,7 @@
                         </td>
                         <td (click)="editAgent(clusterAgent, controller, true)"><span [innerHtml]="clusterAgent.agentName"></span></td>
                         <td (click)="editAgent(clusterAgent, controller, true)"><span [innerHtml]="clusterAgent.agentNameAliases || '-'"></span></td>
-                        <td (click)="editAgent(clusterAgent, controller, true)"><span [innerHtml]="clusterAgent.url"></span></td>
+                        <!--<td (click)="editAgent(clusterAgent, controller, true)"><span [innerHtml]="clusterAgent.url"></span></td>-->
                         <td (click)="editAgent(clusterAgent, controller, true)">{{clusterAgent.disabled ? 'Yes' : 'No'}}</td>
                         <td (click)="editAgent(clusterAgent, controller, true)">{{clusterAgent.isClusterWatcher ? 'Yes' : 'No'}}</td>
                         <td>
@@ -344,41 +353,39 @@
                         </td>
                       </tr>
                       <ng-container *ngIf="clusterAgent.show">
-                        <tr>
+                        <tr class="order-history-template0">
                           <td></td>
                           <td><span translate>common.label.action</span></td>
                           <td colspan="2"><span translate>agent.label.subagentId</span></td>
-                          <td colspan="2"><span translate>agent.label.director</span></td>
-                          <td colspan="2"><span translate>agent.label.url</span></td>
-                          <td colspan="2"><span translate>agent.label.clusterWatcher</span></td>
+                          <td colspan="2"><span translate>agent.label.role</span></td>
+                          <td colspan="3"><span translate>agent.label.url</span></td>
                         </tr>
-                        <tr *ngIf="!clusterAgent.subagents || clusterAgent.subagents.length === 0">
+                        <tr class="order-history-template0" *ngIf="!clusterAgent.subagents || clusterAgent.subagents.length === 0">
                           <td></td>
                           <td colspan="9">
                             <span translate>common.message.noDataAvailable</span>
                           </td>
                         </tr>
-                        <tr *ngFor="let sub of clusterAgent.subagents">
+                        <tr class="order-history-template0" *ngFor="let sub of clusterAgent.subagents">
                           <td></td>
                           <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
-                          <div class="btn-group dropdown pull-left m-r-sm">
-                            <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
-                            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                              <ul nz-menu >
-                                <li (click)="editSubagent(sub, clusterAgent, controller)" nz-menu-item >
-                                  <a translate>common.button.edit</a>
-                                </li>
-                                <li (click)="removeSubagent(sub, clusterAgent, controller)" nz-menu-item class="bg-hover-color">
-                                  <a translate="">common.button.remove</a>
-                                </li>
-                              </ul>
-                            </nz-dropdown-menu>
-                          </div>
-                        </td>
+                            <div class="btn-group dropdown pull-left m-r-sm">
+                              <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                              <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                                <ul nz-menu >
+                                  <li (click)="editSubagent(sub, clusterAgent, controller)" nz-menu-item >
+                                    <a translate>common.button.edit</a>
+                                  </li>
+                                  <li (click)="removeSubagent(sub, clusterAgent, controller)" nz-menu-item class="bg-hover-color">
+                                    <a translate="">common.button.remove</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
+                            </div>
+                          </td>
                           <td colspan="2">{{sub.subagentId}}</td>
                           <td colspan="2">{{sub.isDirector | translate}}</td>
-                          <td colspan="2">{{sub.url}}</td>
-                          <td colspan="2">{{sub.isClusterWatcher ? 'Yes' : 'No'}}</td>
+                          <td colspan="3">{{sub.url}}</td>
                         </tr>
                       </ng-container>
                       </ng-container>

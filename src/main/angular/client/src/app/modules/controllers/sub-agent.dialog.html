@@ -22,9 +22,10 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>agent.label.director</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.role</label>
       <div class=" col-sm-8">
         <nz-select required name="director" [(ngModel)]="subagent.isDirector">
+          <nz-option [nzValue]="'NO_DIRECTOR'" [nzLabel]="'NO_DIRECTOR' | translate"></nz-option>
           <nz-option [nzValue]="'PRIMARY_DIRECTOR'" [nzLabel]="'PRIMARY_DIRECTOR' | translate"></nz-option>
           <nz-option [nzValue]="'STANDBY_DIRECTOR'" [nzLabel]="'SECONDARY_DIRECTOR' | translate"></nz-option>
         </nz-select>
@@ -33,8 +34,8 @@
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>agent.label.subagentId</label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
-        <input type="text" class="form-control" name="subagentId" #subagentId="ngModel"
-               required [(ngModel)]="subagent.subagentId" placeholder="http://host:port">
+        <input type="text" class="form-control" name="subagentId" #subagentId="ngModel" [readOnly]="!new"
+               required [(ngModel)]="subagent.subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
         <div *ngIf="subagentId.invalid && (subagentId.dirty || subagentId.touched)"
              class="text-danger help-block">
           <div *ngIf="(subagentId.errors && subagentId.errors.required)">

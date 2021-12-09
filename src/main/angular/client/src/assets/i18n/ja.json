@@ -122,6 +122,7 @@
   "Daily Plan": "実行計画",
   "ImplicitEnd": "終了",
   "--------COMMENT BOX END------------": "ジョブ定義 > インベントリー　表示",
+  "NO_DIRECTOR": "No Director",
   "PRIMARY_DIRECTOR": "Primary Director",
   "SECONDARY_DIRECTOR": "Secondary Director",
   "agent": {
@@ -153,8 +154,10 @@
     "label.validUntil": "有効期限",
     "label.validityDate": "トークン期限切れ",
     "label.token": "トークン",
-    "label.director": "Director",
+    "label.role": "Role",
     "label.agentClusters": "Agent Clusters",
+    "label.addClusterAgent": "Add Cluster Agent",
+    "label.editClusterAgent": "Update Cluster Agent",
     "button.createToken": "ワンタイムトークン作成",
     "button.addAgent": "Add Single Agent",
     "button.addSubagent": "Add Subagent",
@@ -170,6 +173,7 @@
     "button.resetForced": "強制リセット",
     "button.resetting": "リセット中",
     "placeholder.enterAgentId": "エージェントIDを入力",
+    "placeholder.enterSubagentId": "Enter Subagent ID",
     "placeholder.enterAgentName": "エージェント名を入力",
     "placeholder.enterAgentNameAlias": "エイリアス名を入力"
   },

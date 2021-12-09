@@ -17,6 +17,7 @@ import {CommentModalComponent} from '../../components/comment-modal/comment.comp
 })
 export class CreateTokenModalComponent implements OnInit {
   @Input() agents: any;
+  @Input() clusterAgents: any;
   @Input() agent: any;
   @Input() data: any;
   @Input() controllerId: any;
@@ -52,8 +53,16 @@ export class CreateTokenModalComponent implements OnInit {
     };
     if (this.agent) {
       obj.agentIds = [this.agent.agentId];
-    } else if (this.agents && this.agents.size > 0) {
-      obj.agentIds = Array.from(this.agents);
+    } else if ((this.agents && this.agents.size > 0) || (this.clusterAgents && this.clusterAgents.size > 0)) {
+      if (this.agents && this.agents.size > 0) {
+        obj.agentIds = Array.from(this.agents);
+      }
+      if (this.clusterAgents && this.clusterAgents.size > 0) {
+        if (!obj.agentIds) {
+          obj.agentIds = [];
+        }
+        obj.agentIds = obj.agentIds.concat(Array.from(this.agents));
+      }
     } else {
       obj.controllerId = this.controllerId;
     }
@@ -85,7 +94,7 @@ export class CreateTokenModalComponent implements OnInit {
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
     return differenceInCalendarDays(current, this.viewDate) < 0;
-  }
+  };
 }
 
 @Component({
@@ -116,8 +125,8 @@ export class SubagentModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (this.data) {
       this.subagent = this.coreService.clone(this.data);
-    } else{
-      this.subagent.isDirector = 'PRIMARY_DIRECTOR';
+    } else {
+      this.subagent.isDirector = 'NO_DIRECTOR';
     }
   }
 
@@ -178,6 +187,8 @@ export class AgentModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
+      delete this.agent.token;
+      delete this.agent.show;
     }
     if (!this.agent.agentNameAliases || this.agent.agentNameAliases.length === 0) {
       this.agentNameAliases = [{name: ''}];
@@ -187,7 +198,7 @@ export class AgentModalComponent implements OnInit {
       });
     }
     if (this.isCluster) {
-      this.agent.director = 'PRIMARY_DIRECTOR';
+      this.agent.director = 'NO_DIRECTOR';
     }
   }
 
@@ -250,10 +261,12 @@ export class AgentModalComponent implements OnInit {
       });
     }
     if (this.isCluster) {
-      _agent.subagents = [{isDirector: _agent.director, subagentId: _agent.subagentId, url: _agent.url}];
-      delete _agent.director;
-      delete _agent.subagentId;
-      delete _agent.url;
+      if (this.new) {
+        _agent.subagents = [{isDirector: _agent.director, subagentId: _agent.subagentId, url: _agent.url}];
+        delete _agent.director;
+        delete _agent.subagentId;
+        delete _agent.url;
+      }
       obj.clusterAgents = [_agent];
     } else {
       obj.agents = [_agent];
@@ -284,11 +297,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
   isLoaded = false;
   hasLicense = false;
   object = {
+    mapOfCheckedId2: new Set(),
     mapOfCheckedId: new Set()
-  };
-  filter = {
-    sortBy: 'agentId',
-    reverse: true
   };
 
   subscription1: Subscription;
@@ -407,10 +417,19 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.coreService.post('agents/cluster/p', {
       controllerId: controller.controllerId
     }).subscribe((data: any) => {
+      const temp = controller.agentClusters ? this.coreService.clone(controller.agentClusters) : [];
       controller.agentClusters = data.agents;
-/*      controller.agentClusters.forEach((agent) => {
+      controller.agentClusters.forEach((agent) => {
         this.mergeTokenData(null, agent.agentId, agent);
-      });*/
+        if (temp.length > 0) {
+          for (const i in temp) {
+            if (temp[i].agentId === agent.agentId) {
+              agent.show = temp[i].show;
+              break;
+            }
+          }
+        }
+      });
       controller.isLoading = false;
     }, () => {
       controller.agentClusters = [];
@@ -418,10 +437,14 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  sort(key): void {
-    this.filter.reverse = !this.filter.reverse;
-    this.filter.sortBy = key;
+  sort(controller, key, isCluster = false): void {
+    if (isCluster) {
+      controller.reverse2 = !controller.reverse2;
+      controller.sortBy2 = key;
+    } else {
+      controller.reverse = !controller.reverse;
+      controller.sortBy = key;
+    }
   }
 
   addController(): void {
@@ -507,6 +530,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         controllerId: controller ? controller.controllerId : '',
         agents: this.object.mapOfCheckedId,
+        clusterAgents: this.object.mapOfCheckedId2,
         agent
       },
       nzFooter: null,
@@ -516,6 +540,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.object.mapOfCheckedId.clear();
+        this.object.mapOfCheckedId2.clear();
         this.getTokens(false);
       }
     });
@@ -558,14 +583,18 @@ export class ControllersComponent implements OnInit, OnDestroy {
         });
         modal.afterClose.subscribe(result => {
           if (result) {
-            this.getData();
+            if (isCluster) {
+              this.getClusterAgents(controller);
+            } else {
+              this.getAgents(controller, null);
+            }
           }
         });
       });
     }
   }
 
-  removeAgent(agent, controller, isCluster = false): void {
+  removeAgent(agent, controller): void {
     const obj = {
       controllerId: controller.controllerId,
       agentId: agent.agentId
@@ -616,7 +645,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   addClusterAgent(controller): void {
     this.getAgents(controller, () => {
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: AgentModalComponent,
         nzAutofocus: null,
@@ -630,12 +659,16 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzClosable: false,
         nzMaskClosable: false
       });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.getClusterAgents(controller);
+        }
+      });
     });
   }
 
   addSubagent(clusterAgent, controller): void {
-    console.log(clusterAgent, controller);
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: SubagentModalComponent,
       nzAutofocus: null,
@@ -648,11 +681,16 @@ export class ControllersComponent implements OnInit, OnDestroy {
       nzClosable: false,
       nzMaskClosable: false
     });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getClusterAgents(controller);
+      }
+    });
   }
 
   editSubagent(subagent, clusterAgent, controller): void {
     console.log(subagent, clusterAgent, controller);
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: SubagentModalComponent,
       nzAutofocus: null,
@@ -664,6 +702,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getClusterAgents(controller);
+      }
     });
   }
 
@@ -680,7 +723,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         operation: 'Remove',
         name: sub.subagentId
       };
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
@@ -692,6 +735,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.getClusterAgents(controller);
+        }
       });
     } else {
       const modal = this.modal.create({
@@ -710,7 +758,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.coreService.post('agent/subagents/remove', obj).subscribe(() => {
-
+            this.getClusterAgents(controller);
           });
         }
       });
@@ -744,32 +792,34 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzMaskClosable: false
       });
     } else {
-      this.coreService.post('agent/reset', obj).subscribe(res => {
+      this.coreService.post('agent/reset', obj).subscribe(() => {
 
       });
     }
   }
 
   disableAgent(agent, controller, isCluster = false): void {
-    agent.disabled = true;
-    this.coreService.post('agents/store', {
-      controllerId: controller.controllerId, agents:
-      controller.agents
-    }).subscribe(() => {
-
-    }, () => {
-      agent.disabled = false;
-    });
+    this.enableDisable(agent, controller, isCluster, true);
   }
 
   enableAgent(agent, controller, isCluster = false): void {
-    agent.disabled = false;
-    this.coreService.post('agents/store', {
-      controllerId: controller.controllerId, agents: controller.agents
-    }).subscribe(() => {
+    this.enableDisable(agent, controller, isCluster, false);
+  }
+
+  private enableDisable(agent, controller, isCluster, flag): void {
+    agent.disabled = flag;
+    const obj: any = {
+      controllerId: controller.controllerId
+    };
+    if (isCluster) {
+      obj.clusterAgents = controller.agentClusters;
+    } else {
+      obj.agents = controller.agents;
+    }
+    this.coreService.post('agents/store', obj).subscribe(() => {
 
     }, () => {
-      agent.disabled = true;
+      agent.disabled = !flag;
     });
   }
 
@@ -782,45 +832,90 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
   }
 
-  checkAll(value: boolean, controller): void {
-    if (value && controller.agents.length > 0) {
-      controller.agents.forEach(item => {
-        if (!item.disabled) {
-          this.object.mapOfCheckedId.add(item.agentId);
-        }
-      });
+  checkAll(value: boolean, controller, isCluster = false): void {
+    if (isCluster) {
+      if (value && controller.agentClusters.length > 0) {
+        controller.agentClusters.forEach(item => {
+          if (!item.disabled) {
+            this.object.mapOfCheckedId2.add(item.agentId);
+          }
+        });
+      } else {
+        controller.agentClusters.forEach(item => {
+          this.object.mapOfCheckedId2.delete(item.agentId);
+        });
+      }
     } else {
-      controller.agents.forEach(item => {
-        this.object.mapOfCheckedId.delete(item.agentId);
-      });
+      if (value && controller.agents.length > 0) {
+        controller.agents.forEach(item => {
+          if (!item.disabled) {
+            this.object.mapOfCheckedId.add(item.agentId);
+          }
+        });
+      } else {
+        controller.agents.forEach(item => {
+          this.object.mapOfCheckedId.delete(item.agentId);
+        });
+      }
     }
     let count = 0;
-    if (this.object.mapOfCheckedId.size > 0) {
-      controller.agents.forEach(item => {
-        if (this.object.mapOfCheckedId.has(item.agentId)) {
-          ++count;
-        }
-      });
+    if (isCluster) {
+      if (this.object.mapOfCheckedId2.size > 0) {
+        controller.agentClusters.forEach(item => {
+          if (this.object.mapOfCheckedId2.has(item.agentId)) {
+            ++count;
+          }
+        });
+      }
+      controller.indeterminate2 = count > 0 && !controller.checked2;
+    } else {
+      if (this.object.mapOfCheckedId.size > 0) {
+        controller.agents.forEach(item => {
+          if (this.object.mapOfCheckedId.has(item.agentId)) {
+            ++count;
+          }
+        });
+      }
+      controller.indeterminate = count > 0 && !controller.checked;
     }
-    controller.indeterminate = count > 0 && !controller.checked;
   }
 
-  onItemChecked(controller: any, agent: any, checked: boolean): void {
+  onItemChecked(controller: any, agent: any, checked: boolean, isCluster = false): void {
     if (checked) {
-      this.object.mapOfCheckedId.add(agent.agentId);
+      if (isCluster) {
+        this.object.mapOfCheckedId2.add(agent.agentId);
+      } else {
+        this.object.mapOfCheckedId.add(agent.agentId);
+      }
     } else {
-      this.object.mapOfCheckedId.delete(agent.agentId);
+      if (isCluster) {
+        this.object.mapOfCheckedId2.delete(agent.agentId);
+      } else {
+        this.object.mapOfCheckedId.delete(agent.agentId);
+      }
     }
     let count = 0;
-    if (this.object.mapOfCheckedId.size > 0) {
-      controller.agents.forEach(item => {
-        if (this.object.mapOfCheckedId.has(item.agentId)) {
-          ++count;
-        }
-      });
+    if (isCluster) {
+      if (this.object.mapOfCheckedId2.size > 0) {
+        controller.agentClusters.forEach(item => {
+          if (this.object.mapOfCheckedId2.has(item.agentId)) {
+            ++count;
+          }
+        });
+      }
+      controller.checked2 = count === controller.agentClusters.length;
+      controller.indeterminate2 = count > 0 && !controller.checked2;
+    } else {
+      if (this.object.mapOfCheckedId.size > 0) {
+        controller.agents.forEach(item => {
+          if (this.object.mapOfCheckedId.has(item.agentId)) {
+            ++count;
+          }
+        });
+      }
+      controller.checked = count === controller.agents.length;
+      controller.indeterminate = count > 0 && !controller.checked;
     }
-    controller.checked = count === controller.agents.length;
-    controller.indeterminate = count > 0 && !controller.checked;
   }
 
   private mergeTokenData(controllerId, agentId, obj): void {
@@ -841,10 +936,17 @@ export class ControllersComponent implements OnInit, OnDestroy {
   private checkTokens(): void {
     this.controllers.forEach((controller) => {
       controller.checked = false;
+      controller.checked2 = false;
       controller.indeterminate = false;
+      controller.indeterminate2 = false;
       this.mergeTokenData(controller.controllerId, null, controller);
       if (controller.agents) {
         controller.agents.forEach((agent) => {
+          this.mergeTokenData(null, agent.agentId, agent);
+        });
+      }
+      if (controller.agentClusters) {
+        controller.agentClusters.forEach((agent) => {
           this.mergeTokenData(null, agent.agentId, agent);
         });
       }
