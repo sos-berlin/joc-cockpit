@@ -115,6 +115,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
   temp: any = 0;
   searchKey: string;
   username: string;
+  userIdentityService: string;
+  selectedIdentityService: string;
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -140,7 +142,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.usr = {currentPage: 1};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.username = this.authService.currentUserData;
-
+    this.selectedIdentityService = sessionStorage.identityServiceType + ':' + sessionStorage.identityServiceName;
+    this.userIdentityService = this.authService.currentUserIdentityService;
   }
 
   setUserData(res): void {

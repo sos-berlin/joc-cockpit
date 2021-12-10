@@ -5,12 +5,13 @@ import {Injectable} from '@angular/core';
 })
 export class AuthService {
 
-  props = ['accessTokenId', 'currentUserData', 'sessionTimeout', 'permission', 'scheduleIds'];
+  props = ['accessTokenId', 'currentUserData', 'currentUserIdentityService', 'sessionTimeout', 'permission', 'scheduleIds'];
   propsPrefix = '$SOS$';
   rememberMe = false;
   scheduleIds: any;
   accessTokenId: any;
   currentUserData: any;
+  currentUserIdentityService: any;
   sessionTimeout: any;
   permission: any;
 
@@ -31,6 +32,7 @@ export class AuthService {
   setUser(userData: any): void {
     this.accessTokenId = userData.accessToken;
     this.currentUserData = userData.account;
+    this.currentUserIdentityService = userData.identityService;
     this.sessionTimeout = userData.sessionTimeout;
   }
 

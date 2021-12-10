@@ -47,7 +47,7 @@
                 <li nz-menu-item >
                   <a (click)="copyUser(account)" translate>common.button.copy</a>
                 </li>
-                <li nz-menu-item  class="bg-hover-color" [ngClass]="{'disable-link' :username==account.account}">
+                <li nz-menu-item  class="bg-hover-color" [ngClass]="{'disable-link' :username==account.account && selectedIdentityService === userIdentityService}">
                   <a  (click)="deleteUser(account.account)" translate="">common.button.delete</a>
                 </li>
               </ul>

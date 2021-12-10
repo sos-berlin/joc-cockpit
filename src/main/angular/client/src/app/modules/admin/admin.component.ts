@@ -133,10 +133,10 @@ export class AdminComponent implements OnInit, OnDestroy {
           this.dataService.announceData(this.userObj);
         }
         this.selectedUser = this.getParameterByName('account');
-        if (sessionStorage.identityServiceType && this.route.match('/users/identity_service/')) {
-          if (this.identityService !== sessionStorage.identityServiceType) {
+        if (sessionStorage.identityServiceName && this.route.match('/users/identity_service/')) {
+          if (this.identityService !== sessionStorage.identityServiceName) {
             this.userObj = {};
-            this.identityService = sessionStorage.identityServiceType;
+            this.identityService = sessionStorage.identityServiceName;
             this.getUsersData(true);
           }
         }
@@ -146,17 +146,17 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private getUsersData(flag): void {
     this.coreService.post('authentication/auth', {
-      identityServiceName: sessionStorage.identityServiceName
+      identityServiceName: this.identityService
     }).subscribe(res => {
       this.userObj = res;
       delete this.userObj.deliveryDate;
-      this.userObj.identityServiceName = sessionStorage.identityServiceName;
+      this.userObj.identityServiceName = this.identityService;
       if (flag) {
         this.dataService.announceData(this.userObj);
         this.checkLdapConf();
       }
     }, () => {
-      this.userObj = {accounts: [], identityServiceName: sessionStorage.identityServiceName};
+      this.userObj = {accounts: [], identityServiceName: this.identityService};
       this.dataService.announceData(this.userObj);
     });
   }
