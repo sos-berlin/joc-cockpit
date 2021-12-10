@@ -44,18 +44,26 @@ export class PermissionModalComponent {
   }
 
   onSubmit(obj): void {
+    const _obj = clone(obj);
+    delete _obj.permissionLabel;
     this.submitted = true;
     if (this.add) {
-      this.rolePermissions.push(obj);
+      this.rolePermissions.push(_obj);
     } else {
       for (let i = 0; i < this.rolePermissions.length; i++) {
         if (this.oldPermission === this.rolePermissions[i] || isEqual(this.oldPermission, this.rolePermissions[i])) {
-          this.rolePermissions[i] = obj;
+          this.rolePermissions[i] = _obj;
           break;
         }
       }
     }
 
+    if (this.master) {
+      this.userDetail.roles[this.role].permissions.controllers[this.master] = clone(this.rolePermissions);
+    } else {
+      this.userDetail.roles[this.role].permissions.joc = clone(this.rolePermissions);
+      this.userDetail.roles[this.role].permissions.controllerDefaults = [];
+    }
     this.coreService.post('authentication/auth/store', {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,

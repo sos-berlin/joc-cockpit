@@ -750,6 +750,40 @@
         </div>
       </div>
     </nz-tab>
+    <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
+      <div class="job-property-editor" *ngIf="index === 3">
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailTo' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>workflow.label.mailTo</label>
+          <div class="col-md-8 col-lg-9">
+            <label class="w-full">
+              <input type="email" class="form-control" name="mailTo" placeholder="{{'workflow.placeholder.mailTo' | translate}}"
+                     [(ngModel)]="selectedNode.job.notification.mail.to">
+            </label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailCC' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>workflow.label.mailCC</label>
+          <div class="col-md-8 col-lg-9">
+            <label class="w-full">
+              <input type="email" class="form-control" name="mailCC" placeholder="{{'workflow.placeholder.mailCC' | translate}}"
+                     [(ngModel)]="selectedNode.job.notification.mail.cc">
+            </label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailBcc' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>workflow.label.mailBcc</label>
+          <div class="col-md-8 col-lg-9">
+            <label class="w-full">
+              <input type="email" class="form-control" name="mailBcc" placeholder="{{'workflow.placeholder.mailBcc' | translate}}"
+                     [(ngModel)]="selectedNode.job.notification.mail.bcc">
+            </label>
+          </div>
+        </div>
+      </div>
+    </nz-tab>
   </nz-tabset>
 </div>
 

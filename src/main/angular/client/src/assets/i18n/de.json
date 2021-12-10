@@ -1206,7 +1206,10 @@
           "criticality": "Die Kritikalität eines Jobs kann zur Unterscheidung in Benachrichtigungen verwendet werden.",
           "failOnOutputErr": "Sofern ein Job Ausgaben in den stderr Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
           "admissionTime": "Die Zutrittszeit regelt die Zeitfenster für Job-Starts basierend auf Wochentagen und Stunden. Ein Auftrag wartet am Job-Knoten bis die Zutrittszeit erreicht ist oder kann konfiguriert werden den Job zu überspringen, falls für das Startdatum des Auftrag keine übereinstimmende Zutrittszeit vorhanden ist.",
-          "skipIfNoAdmissionForOrderDay": "Der Job wird übersprungen falls keine Zutrittszeiten für das Auftragsdatum konfiguriert sind. Zum Beispiel, sind Zutrittszeiten für Montag und Dienstag konfiguiert und der Auftrag wird für Mittwoch übermittelt, dann wird der Job übersprungen. Wird ein Auftrag für Montag übermittelt, dann wartet der Auftrag am Job bis die nächste Zutrittszeit erreicht ist."
+          "skipIfNoAdmissionForOrderDay": "Der Job wird übersprungen falls keine Zutrittszeiten für das Auftragsdatum konfiguriert sind. Zum Beispiel, sind Zutrittszeiten für Montag und Dienstag konfiguiert und der Auftrag wird für Mittwoch übermittelt, dann wird der Job übersprungen. Wird ein Auftrag für Montag übermittelt, dann wartet der Auftrag am Job bis die nächste Zutrittszeit erreicht ist.",
+          "mailTo": "Mail To",
+          "mailCC": "Mail CC",
+          "mailBcc": "Mail BCC"
         },
         "addOrder": {
           "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
@@ -2072,6 +2075,9 @@
     "label.repeat": "Wiederholung",
     "label.cycle": "Cycle",
     "label.cycleEnd": "Cycle-End",
+    "label.mailTo": "Mail To",
+    "label.mailCC": "Mail CC",
+    "label.mailBcc": "Mail BCC",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
@@ -2107,6 +2113,7 @@
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",
+    "tab.notification": "Notification",
     "message.noBranchFound": "Keinen Zweig gefunden",
     "message.invalidTarget": "Ungültiges Ziel",
     "message.validationError": "Instruktion kann nur eine eingehende und eine ausgehende Kante verwenden",
@@ -2154,6 +2161,9 @@
     "placeholder.selectScript": "Skript Baustein auswählen",
     "placeholder.enterCredentialKey": "Name des Schlüssels in der Windows Anmeldeinformationsverwaltung",
     "placeholder.final": "Final",
+    "placeholder.mailTo": "Enter mail to address",
+    "placeholder.mailCC": "Enter mail cc address",
+    "placeholder.mailBcc": "Enter mail bcc address",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",

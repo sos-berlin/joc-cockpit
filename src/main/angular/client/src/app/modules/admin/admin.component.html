@@ -9,7 +9,7 @@
           </div>
           <div class="inline">
             <!-- Sorting via Account Name Starts -->
-            <div class="btn-group dropdown" *ngIf="route && route.match('/users/role')">
+            <div class="btn-group dropdown" *ngIf="route && route.match('/users/identity_service/role')">
               <button class="btn btn-grey btn-sm m-l-12 "
                 nz-dropdown nzTrigger="click" [nzDropdownMenu]="account" [nzPlacement]="'bottomRight'">{{'user.label.user' | translate}}
                 <span class="text-primary">{{selectedUser | decodeSpace}} </span>
@@ -72,12 +72,12 @@
               <i class="fa fa-refresh"></i>&nbsp;
               <span translate>user.button.resetProfile</span>
             </button>
-            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/permissions')"
+            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/identity_service/permissions')"
                     (click)="addFolder()">
               <i class="fa fa-plus"></i>
               {{'user.button.addFolder' | translate}}
             </button>
-            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/permissions')"
+            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/identity_service/permissions')"
                     [hidden]="pageView=='grid'" (click)="addPermission();">
               <i class="fa fa-plus"></i>&nbsp;
               {{'user.button.addPermission' | translate}}

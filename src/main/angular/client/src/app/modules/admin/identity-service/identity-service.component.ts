@@ -23,8 +23,7 @@ export class IdentityServiceModalComponent implements OnInit {
   submitted = false;
   isUnique = true;
   types = [];
-  currentObj: any = {
-  };
+  currentObj: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -36,10 +35,10 @@ export class IdentityServiceModalComponent implements OnInit {
     }
     let flag = true;
     for (const i in this.identityServices) {
-        if (this.identityServices[i].identityServiceType === 'SHIRO' && (!this.identityService || 'SHIRO' !== this.identityService.identityServiceType)) {
-          flag = false;
-          break;
-        }
+      if (this.identityServices[i].identityServiceType === 'SHIRO' && (!this.identityService || 'SHIRO' !== this.identityService.identityServiceType)) {
+        flag = false;
+        break;
+      }
     }
     this.types = this.identityServiceTypes.filter((item) => {
       return !flag ? item !== 'SHIRO' : true;
@@ -56,8 +55,37 @@ export class IdentityServiceModalComponent implements OnInit {
     }
   }
 
+  rename(identityServiceOldName: string, identityServiceNewName: string, cb: any): void {
+    this.coreService.post('iam/identityservice/rename', {
+      identityServiceOldName,
+      identityServiceNewName
+    }).subscribe((res) => {
+      cb(res);
+    }, () => {
+      cb(null);
+    });
+  }
+
   onSubmit(): void {
     this.submitted = true;
+    if (this.identityService) {
+      if (this.identityService.identityServiceName !== this.currentObj.identityServiceName) {
+        this.rename(this.identityService.identityServiceName, this.currentObj.identityServiceName, (res) => {
+          if (res) {
+            this.store();
+          } else {
+            this.submitted = false;
+          }
+        });
+      } else {
+        this.store();
+      }
+    } else {
+      this.store();
+    }
+  }
+
+  private store(): void {
     this.coreService.post('iam/identityservice/store', this.currentObj).subscribe((res) => {
       this.activeModal.close(res);
     }, () => {

@@ -1206,7 +1206,10 @@
           "criticality": "La Criticité des tâches peut être utilisée dans les notifications pour mieux distinguer l'urgence d'un incident..",
           "failOnOutputErr": "Si une tâche écrit une sortie sur le canal stderr, cela est considéré comme une erreur et l'ordre passe à l'état ECHEC.",
           "admissionTime": "Les heures d'admission règlent l'accès aux tâches en fonction des jours et des heures de la semaine. Un ordre attend devant un nœud de tâche jusqu'à ce que l'heure d'admission soit atteinte ou peut être configurée pour ignorer la tâche si les heures d'admission ne correspondent pas à la date de l'ordre.",
-          "skipIfNoAdmissionForOrderDay": "La tâche est ignorée si des périodes d'admission ont été configurées qui ne correspondent pas à la date de l'ordre. Par exemple, si les périodes d'admission sont configurées pour le lundi et le mardi, mais que l'ordre est prévu pour le mercredi, la tâche sera ignorée. Le lundi et le mardi, l'ordre attendra avec le nœud de travail jusqu'à ce que l'heure d'admission soit atteinte."
+          "skipIfNoAdmissionForOrderDay": "La tâche est ignorée si des périodes d'admission ont été configurées qui ne correspondent pas à la date de l'ordre. Par exemple, si les périodes d'admission sont configurées pour le lundi et le mardi, mais que l'ordre est prévu pour le mercredi, la tâche sera ignorée. Le lundi et le mardi, l'ordre attendra avec le nœud de travail jusqu'à ce que l'heure d'admission soit atteinte.",
+          "mailTo": "Mail To",
+          "mailCC": "Mail CC",
+          "mailBcc": "Mail BCC"
         },
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
@@ -2072,6 +2075,9 @@
     "label.repeat": "Répéter",
     "label.cycle": "Cycle",
     "label.cycleEnd": "Cycle-End",
+    "label.mailTo": "Mail To",
+    "label.mailCC": "Mail CC",
+    "label.mailBcc": "Mail BCC",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
@@ -2107,6 +2113,7 @@
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",
+    "tab.notification": "Notification",
     "message.noBranchFound": "Aucune Branche trouvée",
     "message.invalidTarget": "Cible non valide",
     "message.validationError": "L'instruction ne peut utiliser qu'un bord sortant et un bord entrant",
@@ -2154,6 +2161,9 @@
     "placeholder.selectScript": "Sélectionnez le Script Élément",
     "placeholder.enterCredentialKey": "Entrer la clé d'identification à partir du gestionnaire d'identification Windows",
     "placeholder.final": "Final",
+    "placeholder.mailTo": "Enter mail to address",
+    "placeholder.mailCC": "Enter mail cc address",
+    "placeholder.mailBcc": "Enter mail bcc address",
     "findAndReplace": {
       "label.find": "Trouver",
       "label.replace": "Remplacer",

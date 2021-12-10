@@ -1206,7 +1206,10 @@
           "criticality": "The Criticality of jobs can be used in notifications to better distinguish the urgency of an incident.",
           "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state.",
           "admissionTime": "Admission Times rule access to jobs based on weekdays and hours. An order waits in front of a job node until the admission time is reached or can be configured to skip the job if admission times do not meet the order date.",
-          "skipIfNoAdmissionForOrderDay": "The job is skipped if admission periods have been configured that do not match the order's date. For example, if admission periods are configured for Monday and Tuesday, but the order is scheduled for Wednesday then the job will be skipped. On Monday and Tuesday the order will wait with the job node until the admission time is reached."
+          "skipIfNoAdmissionForOrderDay": "The job is skipped if admission periods have been configured that do not match the order's date. For example, if admission periods are configured for Monday and Tuesday, but the order is scheduled for Wednesday then the job will be skipped. On Monday and Tuesday the order will wait with the job node until the admission time is reached.",
+          "mailTo": "Mail To",
+          "mailCC": "Mail CC",
+          "mailBcc": "Mail BCC"
         },
         "addOrder": {
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
@@ -2072,6 +2075,9 @@
     "label.repeat": "Repeat",
     "label.cycle": "Cycle",
     "label.cycleEnd": "Cycle-End",
+    "label.mailTo": "Mail To",
+    "label.mailCC": "Mail CC",
+    "label.mailBcc": "Mail BCC",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
@@ -2107,6 +2113,7 @@
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",
+    "tab.notification": "Notification",
     "message.noBranchFound": "No Branch found",
     "message.invalidTarget": "Invalid Target",
     "message.validationError": "Instruction can use only one outgoing and one incoming edge",
@@ -2154,6 +2161,9 @@
     "placeholder.selectScript": "Select Script Include",
     "placeholder.enterCredentialKey": "Enter credential key for Windows Credential Manager",
     "placeholder.final": "Final",
+    "placeholder.mailTo": "Enter mail to address",
+    "placeholder.mailCC": "Enter mail cc address",
+    "placeholder.mailBcc": "Enter mail bcc address",
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",

@@ -1828,6 +1828,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.executable.login = {};
     }
 
+    if (!this.selectedNode.job.notification){
+      this.selectedNode.job.notification = {
+        mail: {}
+      };
+    }
+
     if (this.selectedNode.job.timeout) {
       this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
     }
@@ -6555,6 +6561,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (job.executable && isEmpty(job.executable.login)) {
                 delete job.executable.login;
               }
+              if (job.notification && isEmpty(job.notification.mail)) {
+                delete job.notification;
+              }
               if (!job.defaultArguments || typeof job.defaultArguments === 'string' || job.defaultArguments.length === 0) {
                 delete job.defaultArguments;
               }
@@ -8142,6 +8151,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (isEmpty(job.executable.login)) {
       delete job.executable.login;
+    }
+    if (job.notification && isEmpty(job.notification.mail)) {
+      delete job.notification;
     }
     if (job.executable.returnCodeMeaning) {
       if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0') {

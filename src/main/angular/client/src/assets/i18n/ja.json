@@ -1206,7 +1206,10 @@
           "criticality": "ジョブの重要度を通知に使用することで、インシデントの緊急性をより明確に区別することができます。",
           "failOnOutputErr": "ジョブがstderrに出力を書き込んだ場合、これはエラーとみなされ、オーダーは失敗ステートになります。",
           "admissionTime": "許可時間",
-          "skipIfNoAdmissionForOrderDay": "許可時間ではないときはスキップ"
+          "skipIfNoAdmissionForOrderDay": "許可時間ではないときはスキップ",
+          "mailTo": "Mail To",
+          "mailCC": "Mail CC",
+          "mailBcc": "Mail BCC"
         },
         "addOrder": {
           "workflowName": "ワークフロー名",
@@ -2072,6 +2075,9 @@
     "label.repeat": "Repeat",
     "label.cycle": "Cycle",
     "label.cycleEnd": "Cycle-End",
+    "label.mailTo": "Mail To",
+    "label.mailCC": "Mail CC",
+    "label.mailBcc": "Mail BCC",
     "button.addScheme": "スキーマ追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
@@ -2107,6 +2113,7 @@
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",
+    "tab.notification": "Notification",
     "message.noBranchFound": "分岐はありません",
     "message.invalidTarget": "無効なターゲット",
     "message.validationError": "命令は一つの入力と一つの出力しか持てません",
@@ -2154,6 +2161,9 @@
     "placeholder.selectScript": "スクリプトを選択",
     "placeholder.enterCredentialKey": "Windows資格マネージャーから認証キーを入力",
     "placeholder.final": "定数",
+    "placeholder.mailTo": "Enter mail to address",
+    "placeholder.mailCC": "Enter mail cc address",
+    "placeholder.mailBcc": "Enter mail bcc address",
     "findAndReplace": {
       "label.find": "検索",
       "label.replace": "置換",

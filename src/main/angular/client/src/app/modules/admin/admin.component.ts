@@ -133,7 +133,7 @@ export class AdminComponent implements OnInit, OnDestroy {
           this.dataService.announceData(this.userObj);
         }
         this.selectedUser = this.getParameterByName('account');
-        if (sessionStorage.identityServiceType) {
+        if (sessionStorage.identityServiceType && this.route.match('/users/identity_service/')) {
           if (this.identityService !== sessionStorage.identityServiceType) {
             this.userObj = {};
             this.identityService = sessionStorage.identityServiceType;

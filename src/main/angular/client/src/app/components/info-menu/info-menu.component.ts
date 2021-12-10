@@ -62,13 +62,13 @@ export class AboutModalComponent implements OnInit {
   templateUrl: './step-guide-dialog.component.html'
 })
 export class StepGuideComponent implements OnInit {
-  line1: string;
-  line2: string;
+  line1: string = '';
+  line2: string = '';
 
   constructor(public modalService: NzModalRef, private translate: TranslateService) {
   }
 
-  static convertTextToLink(value: string, link): string {
+  static convertTextToLink(value: string, link:any): string {
     return value.replace(new RegExp(/%(.*)%/, 'gi'),
       '<a target="_blank" href="' + link + '" class="text-primary text-u-l">$1</a>');
   }
@@ -86,7 +86,7 @@ export class StepGuideComponent implements OnInit {
     });
   }
 
-  onSubmit(type): void {
+  onSubmit(type:any): void {
     this.modalService.close(type);
   }
 }
@@ -96,7 +96,7 @@ export class StepGuideComponent implements OnInit {
   templateUrl: './info-menu.component.html'
 })
 export class InfoMenuComponent {
-  @Input() isHeader: boolean;
+  @Input() isHeader: boolean = false;
 
   constructor(private modal: NzModalService) {
   }
