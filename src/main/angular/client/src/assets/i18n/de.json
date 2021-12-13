@@ -125,8 +125,8 @@
   "NO_DIRECTOR": "Kein Director",
   "PRIMARY_DIRECTOR": "Primärer Director",
   "SECONDARY_DIRECTOR": "Sekundärer Director",
-  "FIX_PRIORITY": "Fix priority",
-  "ROUND_ROBIN": "Round robin",
+  "FIX_PRIORITY": "Fixed-priority",
+  "ROUND_ROBIN": "Round-robin",
   "agent": {
     "label.standalone": "Solo",
     "label.cluster": "Cluster",
@@ -159,8 +159,8 @@
     "label.token": "Token",
     "label.role": "Rolle",
     "label.position": "Position",
-    "label.deployAgent": "Deploy Agent",
-    "label.schedulingType": "Scheduling Type",
+    "label.deployAgent": "Agent ausrollen",
+    "label.schedulingType": "Ausführungstyp",
     "label.agentClusters": "Agenten-Cluster",
     "label.addClusterAgent": "Agenten-Cluster hinzufügen",
     "label.editClusterAgent": "Agenten-Cluster editieren",
@@ -1214,9 +1214,9 @@
           "admissionTime": "Die Zutrittszeit regelt die Zeitfenster für Job-Starts basierend auf Wochentagen und Stunden. Ein Auftrag wartet am Job-Knoten bis die Zutrittszeit erreicht ist oder kann konfiguriert werden den Job zu überspringen, falls für das Startdatum des Auftrag keine übereinstimmende Zutrittszeit vorhanden ist.",
           "skipIfNoAdmissionForOrderDay": "Der Job wird übersprungen falls keine Zutrittszeiten für das Auftragsdatum konfiguriert sind. Zum Beispiel, sind Zutrittszeiten für Montag und Dienstag konfiguiert und der Auftrag wird für Mittwoch übermittelt, dann wird der Job übersprungen. Wird ein Auftrag für Montag übermittelt, dann wartet der Auftrag am Job bis die nächste Zutrittszeit erreicht ist.",
           "mailTo": "E-Mail senden an",
-          "mailCC": "Kopie senden an",
-          "mailBcc": "Blindkopie senden an",
-          "suppress": "Suppress"
+          "mailCC": "Kopie der E-Mail senden an",
+          "mailBcc": "Blindkopie der E-Mail senden an",
+          "suppress": "Versand von E-Mail unterdrücken"
         },
         "addOrder": {
           "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
@@ -2086,7 +2086,7 @@
     "label.mailTo": "E-Mail senden an",
     "label.mailCC": "Kopie senden an",
     "label.mailBcc": "Blindkopie senden an",
-    "label.suppress": "Suppress",
+    "label.suppress": "E-Mail Versand unterdrücken",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
