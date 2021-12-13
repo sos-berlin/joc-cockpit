@@ -125,6 +125,8 @@
   "NO_DIRECTOR": "Non Directeur",
   "PRIMARY_DIRECTOR": "Directeur Primaire",
   "SECONDARY_DIRECTOR": "Directeur Sécondaire",
+  "FIX_PRIORITY": "Fix priority",
+  "ROUND_ROBIN": "Round robin",
   "agent": {
     "label.standalone": "Autonome",
     "label.cluster": "Cluster",
@@ -156,12 +158,16 @@
     "label.validityDate": "Token expire le",
     "label.token": "Token",
     "label.role": "Rôle",
+    "label.position": "Position",
+    "label.deployAgent": "Deploy Agent",
+    "label.schedulingType": "Scheduling Type",
     "label.agentClusters": "Cluster d'Agent",
     "label.addClusterAgent": "Ajouter Cluster d'Agent",
     "label.editClusterAgent": "Modifier le Cluster d'Agent",
     "button.createToken": "Créer un Token à usage unique",
     "button.addAgent": "Ajouter un Agent Unique",
     "button.addSubagent": "Ajouter un Sous-agent",
+    "button.addSecondarySubagent": "Add Secondary Subagent",
     "button.addClusterAgent": "Ajouter un Cluster d'Agent",
     "button.allAgent": "Tous les Agents",
     "button.coupled": "Couplé",
@@ -1209,7 +1215,8 @@
           "skipIfNoAdmissionForOrderDay": "La tâche est ignorée si des périodes d'admission ont été configurées qui ne correspondent pas à la date de l'ordre. Par exemple, si les périodes d'admission sont configurées pour le lundi et le mardi, mais que l'ordre est prévu pour le mercredi, la tâche sera ignorée. Le lundi et le mardi, l'ordre attendra avec le nœud de travail jusqu'à ce que l'heure d'admission soit atteinte.",
           "mailTo": "Envoyer un e-mail à",
           "mailCC": "Envoyer une copie à",
-          "mailBcc": "Envoyer une copie cachée à"
+          "mailBcc": "Envoyer une copie cachée à",
+          "suppress": "Suppress"
         },
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
@@ -2079,6 +2086,7 @@
     "label.mailTo": "Envoyer un e-mail à",
     "label.mailCC": "Envoyer une copie à",
     "label.mailBcc": "Envoyer une copie cachée à",
+    "label.suppress": "Suppress",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",

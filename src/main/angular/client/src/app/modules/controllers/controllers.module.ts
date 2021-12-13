@@ -4,12 +4,18 @@ import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../shared/shared.module';
 import {RouterModule, Routes} from '@angular/router';
 import {StartUpModalComponent} from '../start-up/start-up.component';
-import {ControllersComponent, AgentModalComponent, CreateTokenModalComponent, SubagentModalComponent} from './controllers.component';
+import {
+  ControllersComponent,
+  AgentModalComponent,
+  CreateTokenModalComponent,
+  SubagentModalComponent,
+  DeployModalComponent
+} from './controllers.component';
 
 const routes: Routes = [{path: '', component: ControllersComponent}];
 
 @NgModule({
-  declarations: [ControllersComponent, SubagentModalComponent, AgentModalComponent, CreateTokenModalComponent],
+  declarations: [ControllersComponent, DeployModalComponent, SubagentModalComponent, AgentModalComponent, CreateTokenModalComponent],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,

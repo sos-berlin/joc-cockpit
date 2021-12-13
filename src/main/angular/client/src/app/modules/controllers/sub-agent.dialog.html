@@ -25,9 +25,7 @@
       <label class="col-sm-3 form-control-label" translate>agent.label.role</label>
       <div class=" col-sm-8">
         <nz-select required name="director" [(ngModel)]="subagent.isDirector">
-          <nz-option [nzValue]="'NO_DIRECTOR'" [nzLabel]="'NO_DIRECTOR' | translate"></nz-option>
-          <nz-option *ngIf="!new" [nzValue]="'PRIMARY_DIRECTOR'" [nzLabel]="'PRIMARY_DIRECTOR' | translate"></nz-option>
-          <nz-option [nzValue]="'STANDBY_DIRECTOR'" [nzLabel]="'SECONDARY_DIRECTOR' | translate"></nz-option>
+          <nz-option *ngFor="let item of directors" [nzValue]="item" [nzLabel]="item | translate"></nz-option>
         </nz-select>
       </div>
     </div>
@@ -53,6 +51,19 @@
         <div *ngIf="url.invalid && (url.dirty || url.touched)"
              class="text-danger help-block">
           <div *ngIf="(url.errors && url.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>agent.label.position</label>
+      <div class="col-sm-8" [ngClass]="{'has-error' : ((position.dirty || position.touched) && position.invalid)}">
+        <nz-input-number required [nzMin]="1" [nzStep]="1" name="position"
+                         #position="ngModel" [(ngModel)]="subagent.position"></nz-input-number>
+        <div *ngIf="position.invalid && (position.dirty || position.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(position.errors && position.errors.required)">
             <div translate>common.message.requiredError</div>
           </div>
         </div>

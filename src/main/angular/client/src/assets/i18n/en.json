@@ -125,6 +125,8 @@
   "NO_DIRECTOR": "No Director",
   "PRIMARY_DIRECTOR": "Primary Director",
   "SECONDARY_DIRECTOR": "Secondary Director",
+  "FIX_PRIORITY": "Fix priority",
+  "ROUND_ROBIN": "Round robin",
   "agent": {
     "label.standalone": "Standalone",
     "label.cluster": "Cluster",
@@ -156,12 +158,16 @@
     "label.validityDate": "Token expires on",
     "label.token": "Token",
     "label.role": "Role",
+    "label.position": "Position",
+    "label.deployAgent": "Deploy Agent",
+    "label.schedulingType": "Scheduling Type",
     "label.agentClusters": "Agent Clusters",
     "label.addClusterAgent": "Add Agent Cluster",
     "label.editClusterAgent": "Update Agent Cluster",
     "button.createToken": "Create One-time Token",
     "button.addAgent": "Add Single Agent",
     "button.addSubagent": "Add Subagent",
+    "button.addSecondarySubagent": "Add Secondary Subagent",
     "button.addClusterAgent": "Add Agent Cluster",
     "button.allAgent": "All Agent",
     "button.coupled": "Coupled",
@@ -1209,7 +1215,8 @@
           "skipIfNoAdmissionForOrderDay": "The job is skipped if admission periods have been configured that do not match the order's date. For example, if admission periods are configured for Monday and Tuesday, but the order is scheduled for Wednesday then the job will be skipped. On Monday and Tuesday the order will wait with the job node until the admission time is reached.",
           "mailTo": "Mail To",
           "mailCC": "Mail Cc",
-          "mailBcc": "Mail Bcc"
+          "mailBcc": "Mail Bcc",
+          "suppress": "Suppress"
         },
         "addOrder": {
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
@@ -2079,6 +2086,7 @@
     "label.mailTo": "Mail To",
     "label.mailCC": "Mail Cc",
     "label.mailBcc": "Mail Bcc",
+    "label.suppress": "Suppress",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

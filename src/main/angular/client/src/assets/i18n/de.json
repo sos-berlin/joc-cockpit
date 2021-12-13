@@ -125,6 +125,8 @@
   "NO_DIRECTOR": "Kein Director",
   "PRIMARY_DIRECTOR": "Primärer Director",
   "SECONDARY_DIRECTOR": "Sekundärer Director",
+  "FIX_PRIORITY": "Fix priority",
+  "ROUND_ROBIN": "Round robin",
   "agent": {
     "label.standalone": "Solo",
     "label.cluster": "Cluster",
@@ -156,12 +158,16 @@
     "label.validityDate": "Token läuft ab am",
     "label.token": "Token",
     "label.role": "Rolle",
+    "label.position": "Position",
+    "label.deployAgent": "Deploy Agent",
+    "label.schedulingType": "Scheduling Type",
     "label.agentClusters": "Agenten-Cluster",
     "label.addClusterAgent": "Agenten-Cluster hinzufügen",
     "label.editClusterAgent": "Agenten-Cluster editieren",
     "button.createToken": "Einmaliges Token erstellen",
     "button.addAgent": "Solo Agent hinzufügent",
     "button.addSubagent": "Subagent hinzufügen",
+    "button.addSecondarySubagent": "Add Secondary Subagent",
     "button.addClusterAgent": "Ageten-Cluster hinzufügen",
     "button.allAgent": "Alle Agenten",
     "button.coupled": "gekoppelt",
@@ -1209,7 +1215,8 @@
           "skipIfNoAdmissionForOrderDay": "Der Job wird übersprungen falls keine Zutrittszeiten für das Auftragsdatum konfiguriert sind. Zum Beispiel, sind Zutrittszeiten für Montag und Dienstag konfiguiert und der Auftrag wird für Mittwoch übermittelt, dann wird der Job übersprungen. Wird ein Auftrag für Montag übermittelt, dann wartet der Auftrag am Job bis die nächste Zutrittszeit erreicht ist.",
           "mailTo": "E-Mail senden an",
           "mailCC": "Kopie senden an",
-          "mailBcc": "Blindkopie senden an"
+          "mailBcc": "Blindkopie senden an",
+          "suppress": "Suppress"
         },
         "addOrder": {
           "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
@@ -2079,6 +2086,7 @@
     "label.mailTo": "E-Mail senden an",
     "label.mailCC": "Kopie senden an",
     "label.mailBcc": "Blindkopie senden an",
+    "label.suppress": "Suppress",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

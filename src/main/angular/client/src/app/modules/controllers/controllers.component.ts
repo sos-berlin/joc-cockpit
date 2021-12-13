@@ -4,12 +4,70 @@ import {Subscription} from 'rxjs';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {differenceInCalendarDays} from 'date-fns';
 import * as moment from 'moment-timezone';
+import {sortBy} from 'underscore';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
+
+@Component({
+  selector: 'app-deploy-modal',
+  templateUrl: './deploy.dialog.html'
+})
+export class DeployModalComponent implements OnInit {
+  @Input() agent: any;
+  @Input() controllerId: any;
+  submitted = false;
+  comments: any = {};
+  preferences: any;
+  display: any;
+  schedulingTypes = [
+    'FIX_PRIORITY',
+    'ROUND_ROBIN'
+  ];
+  schedulingType = '';
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj: any = {
+      controllerId : this.controllerId,
+      clusterAgents: [{agentId: this.agent.agentId, schedulingType: this.schedulingType}]
+    };
+
+    if (this.display) {
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+    }
+    this.coreService.post('agents/cluster/deploy', obj).subscribe(res => {
+      this.submitted = false;
+      this.activeModal.close(res);
+    }, () => {
+      this.submitted = false;
+    });
+  }
+
+}
 
 @Component({
   selector: 'app-create-token-modal',
@@ -110,6 +168,11 @@ export class SubagentModalComponent implements OnInit {
   submitted = false;
   isUniqueId = true;
   agentNameAliases: any = [];
+  directors: any = [
+    'NO_DIRECTOR',
+    'PRIMARY_DIRECTOR',
+    'SECONDARY_DIRECTOR'
+  ];
   comments: any = {};
   preferences: any;
   display: any;
@@ -127,6 +190,13 @@ export class SubagentModalComponent implements OnInit {
       this.subagent = this.coreService.clone(this.data);
     } else {
       this.subagent.isDirector = 'NO_DIRECTOR';
+      for (const i in this.clusterAgent.subagents) {
+        if (this.clusterAgent.subagents[i].isDirector === 'PRIMARY_DIRECTOR') {
+          this.directors.splice(this.directors.indexOf('PRIMARY_DIRECTOR'), 1);
+        } else if (this.clusterAgent.subagents[i].isDirector === 'SECONDARY_DIRECTOR') {
+          this.directors.splice(this.directors.indexOf('SECONDARY_DIRECTOR'), 1);
+        }
+      }
     }
   }
 
@@ -168,6 +238,7 @@ export class AgentModalComponent implements OnInit {
   @Input() isCluster: boolean;
   @Input() controllerId: any;
   agent: any = {};
+  isSecondary = false;
   submitted = false;
   isUniqueId = true;
   agentNameAliases: any = [];
@@ -186,6 +257,8 @@ export class AgentModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
+      this.agent.subagents = sortBy(this.agent.subagents, 'isDirector');
+      this.checkSecondaryDirector();
       delete this.agent.token;
       delete this.agent.show;
     }
@@ -195,6 +268,16 @@ export class AgentModalComponent implements OnInit {
       this.agent.agentNameAliases.filter((val) => {
         this.agentNameAliases.push({name: val});
       });
+    }
+  }
+
+  private checkSecondaryDirector(): void {
+    this.isSecondary = false;
+    for (const i in this.agent.subagents) {
+      if (this.agent.subagents[i].isDirector === 'SECONDARY_DIRECTORY') {
+        this.isSecondary = true;
+        break;
+      }
     }
   }
 
@@ -210,6 +293,16 @@ export class AgentModalComponent implements OnInit {
 
   removeSubagent(list, index): void{
     list.splice(index, 1);
+    this.checkSecondaryDirector();
+  }
+
+  addSubagent(isSecordary = false): void {
+    if (isSecordary) {
+      this.isSecondary = isSecordary;
+    }
+    if (!this.coreService.isLastEntryEmpty(this.agent.subagents, 'subagentId', 'url')) {
+      this.agent.subagents.push({isDirector: isSecordary ? 'SECONDARY_DIRECTORY' : 'NO_DIRECTOR', subagentId: ''});
+    }
   }
 
   onSubmit(): void {
@@ -238,9 +331,9 @@ export class AgentModalComponent implements OnInit {
     }
     if (this.isCluster) {
       if (this.new) {
-        _agent.subagents = [{isDirector: 'PRIMARY_DIRECTOR', subagentId: _agent.subagentId, url: _agent.url}];
+        _agent.subagents = [{isDirector: 'PRIMARY_DIRECTOR', subagentId: _agent.subagentId, url: _agent.url, position: _agent.position}];
         if (_agent.subagentId2){
-          _agent.subagents.push({isDirector: 'STANDBY_DIRECTOR', subagentId: _agent.subagentId2, url: _agent.url2});
+          _agent.subagents.push({isDirector: 'SECONDARY_DIRECTOR', subagentId: _agent.subagentId2, url: _agent.url2, position: _agent.position2});
         }
         delete _agent.director;
         delete _agent.subagentId;
@@ -798,6 +891,25 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
     }, () => {
       agent.disabled = !flag;
+    });
+  }
+
+  deployAgent(agent, controller): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: DeployModalComponent,
+      nzComponentParams: {
+        controllerId: controller.controllerId,
+        agent,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+          this.getClusterAgents(controller);
+      }
     });
   }
 

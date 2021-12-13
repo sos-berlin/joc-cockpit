@@ -170,7 +170,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     cluster.show = true;
     this.agentsFilters.expandedObjects.push(cluster.agentId);
     cluster.loading = true;
-    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agents: [cluster.agentId]}).subscribe((result: any) => {
+    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agentIds: [cluster.agentId]}).subscribe((result: any) => {
       cluster.orders = result.agents[0].orders;
       cluster.loading = false;
     }, () => {
