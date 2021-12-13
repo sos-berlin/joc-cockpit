@@ -110,7 +110,8 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   usr: any = {};
   userDetail: any = {};
   temp: any = 0;
-  searchKey: string;
+  searchKey = '';
+  showMessage = false;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -136,10 +137,24 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     this.coreService.post('iam/identityservices', {}).subscribe((res: any) => {
       this.identityServiceTypes = res.identityServiceTypes;
       this.identityServices = res.identityServiceItems;
+      this.checkVaultTypes();
       this.loading = false;
-    }, (err) => {
+    }, () => {
       this.loading = false;
     });
+  }
+
+  private checkVaultTypes(): void {
+    this.showMessage = false;
+    const arr = [];
+    for (const i in this.identityServices) {
+      if (this.identityServices[i].identityServiceType.match(/vault/i) && !this.identityServices[i].disabled) {
+        if (arr.indexOf(this.identityServices[i].identityServiceType) === -1) {
+          arr.push(this.identityServices[i].identityServiceType);
+        }
+      }
+    }
+    this.showMessage = arr.length > 1;
   }
 
   ngOnDestroy(): void {
@@ -150,7 +165,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   showUser(account): void {
     sessionStorage.identityServiceName = account.identityServiceName;
     sessionStorage.identityServiceType = account.identityServiceType;
-    this.router.navigate(['/users/identity_service/account']);
+    this.router.navigate([account.identityServiceType === 'VAULT' ? '/users/identity_service/role' : '/users/identity_service/account']);
   }
 
   add(): void {
@@ -225,7 +240,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   private enableDisable(identityService, flag): void {
     identityService.disabled = flag;
     this.coreService.post('iam/identityservice/store', identityService).subscribe(() => {
-
+      this.checkVaultTypes();
     }, () => {
       this.getIAMList();
     });

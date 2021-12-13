@@ -1950,7 +1950,8 @@
     "message.noPermissionFound": "Keine Berechtigung gefunden",
     "message.noRoleAssign": "Dem ausgewählten Konto ist keine Rolle zugewiesen",
     "message.cannotDeleteRole": "Eine Rolle kann nicht entfernt werden solange sie einem Konto zugewiesen ist.",
-    "message.noFolderFound": "Keinen Ordner gefunden"
+    "message.noFolderFound": "Keinen Ordner gefunden",
+    "message.moreThanOneVaultEnable": "Only one VAULT* identity service should be enabled."
   },
   "workflow": {
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",

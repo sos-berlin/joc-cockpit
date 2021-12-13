@@ -29,9 +29,6 @@ export class AccountModalComponent implements OnInit {
 
   ngOnInit(): void {
     const type = sessionStorage.identityServiceType || '';
-    if (this.copy || (type !== 'JOC' && type !== 'SHIRO' && type !== 'VAULT-JOC' && !this.newUser)) {
-      this.isPasswordVisible = false;
-    }
 
     if (this.oldUser) {
       this.currentUser = clone(this.oldUser);
@@ -46,6 +43,10 @@ export class AccountModalComponent implements OnInit {
         fakePassword: '',
         roles: []
       };
+    }
+    if (this.copy || (type !== 'JOC' && type !== 'SHIRO' && !this.newUser) || type === 'VAULT-JOC') {
+      this.isPasswordVisible = false;
+      delete this.currentUser.password;
     }
   }
 

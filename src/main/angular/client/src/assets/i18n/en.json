@@ -1950,6 +1950,7 @@
     "message.noPermissionFound": "No permission found",
     "message.noRoleAssign": "No role assigned to selected account",
     "message.cannotDeleteRole": "Cannot remove a role that is assigned an account.",
+    "message.moreThanOneVaultEnable": "Only one VAULT* identity service should be enabled.",
     "message.noFolderFound": "No folder found"
   },
   "workflow": {

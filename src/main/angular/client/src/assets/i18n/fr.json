@@ -1950,7 +1950,8 @@
     "message.noPermissionFound": "Aucune permission trouvée",
     "message.noRoleAssign": "Aucun Rôle associé au Compte selectionné",
     "message.cannotDeleteRole": "Impossible de supprimer un Rôle qui est attribué un compte.",
-    "message.noFolderFound": "Aucun dossier trouvé"
+    "message.noFolderFound": "Aucun dossier trouvé",
+    "message.moreThanOneVaultEnable": "Only one VAULT* identity service should be enabled."
   },
   "workflow": {
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",

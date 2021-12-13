@@ -131,8 +131,12 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  showMaster(user): void {
-    this.router.navigate(['/users/role'], {queryParams: {user}});
+  showMaster(account): void {
+    if (sessionStorage.identityServiceType !== 'VAULT') {
+      this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
+    } else {
+      this.router.navigate(['/users/identity_service/role']);
+    }
   }
 
   sort(key): void {
@@ -145,15 +149,16 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       accounts: this.users.accounts,
       masters: this.users.masters,
       main: this.users.main,
+      identityServiceName: this.users.identityServiceName,
       profiles: this.profiles
     };
-    this.coreService.post('authentication/auth/store', obj).subscribe(res => {
+    this.coreService.post('authentication/auth/store', obj).subscribe(() => {
       this.profiles = [...this.profiles];
     });
   }
 
   private deleteProfile(profile): void {
-    let obj = {accounts: []};
+    const obj = {accounts: []};
     if (profile) {
       obj.accounts.push(profile.account);
     } else {

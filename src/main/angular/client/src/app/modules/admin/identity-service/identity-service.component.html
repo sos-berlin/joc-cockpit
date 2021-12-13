@@ -53,8 +53,10 @@
       </tr>
       </thead>
       <tbody cdkDropList (cdkDropListDropped)="drop($event)">
-        <tr *ngFor="let identityService of ajaxTable.data" cdkDrag [ngClass]="{'opacity7': identityService.disabled}" class="cursor">
-          <td class="menu move-on-hover">
+        <tr *ngFor="let identityService of ajaxTable.data" cdkDrag [nz-tooltip]="showMessage && !identityService.disabled && identityService.identityServiceType.indexOf('VAULT') > -1 ? ('user.message.moreThanOneVaultEnable' | translate) : ''"
+            [ngClass]="{'opacity7': identityService.disabled, 'error-border': showMessage && !identityService.disabled && identityService.identityServiceType.indexOf('VAULT') > -1}" class="cursor move-on-hover">
+          <td class="menu">
+            <i class="fa fa-exclamation-triangle warn-icon" aria-hidden="true"></i>
             <div *ngIf="usr.sortBy === 'ordering'" class="pos-abt move-icon text-16 cur-m" style="left: -1px" cdkDragHandle>
               <i class="fa fa-bars" aria-hidden="true"></i>
             </div>

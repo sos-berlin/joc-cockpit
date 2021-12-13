@@ -9,7 +9,7 @@
           </div>
           <div class="inline">
             <!-- Sorting via Account Name Starts -->
-            <div class="btn-group dropdown" *ngIf="route && route.match('/users/identity_service/role')">
+            <div class="btn-group dropdown" *ngIf="route && identityServiceType !== 'VAULT' && route.match('/users/identity_service/role')">
               <button class="btn btn-grey btn-sm m-l-12 "
                 nz-dropdown nzTrigger="click" [nzDropdownMenu]="account" [nzPlacement]="'bottomRight'">{{'user.label.user' | translate}}
                 <span class="text-primary">{{selectedUser | decodeSpace}} </span>
@@ -97,12 +97,12 @@
     <div class="row m-b m-t-xs" *ngIf="route !== '/users' && route !== '/users/identity_service'">
       <div class="col-md-12">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item">
+          <li class="nav-item" *ngIf="identityServiceType !== 'VAULT'">
             <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
              </a>
           </li>
-          <li class="nav-item dropdown-separator">
+          <li class="nav-item dropdown-separator" *ngIf="identityServiceType !== 'VAULT'">
             <span class="separator"></span>
           </li>
           <li class="nav-item">
@@ -110,10 +110,10 @@
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="identityService === 'SHIRO'">
+          <li class="nav-item dropdown-separator" *ngIf="identityServiceType === 'SHIRO'">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="identityService === 'SHIRO'">
+          <li class="nav-item" *ngIf="identityServiceType === 'SHIRO'">
             <a class="nav-link" routerLink="identity_service/main_section" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.mainSetting</span></span>
             </a>

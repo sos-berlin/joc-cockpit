@@ -20,6 +20,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   route: string;
   userObj: any = {};
   identityService: string;
+  identityServiceType: string;
   pageView: string;
   searchKey: string;
   subscription1: Subscription;
@@ -58,9 +59,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  selectUser(user): void {
-    if (user) {
-      this.router.navigate(['/users/identity_service/role'], {queryParams: {user}});
+  selectUser(account): void {
+    if (account) {
+      this.selectedUser = account;
+      this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
     } else {
       this.selectedUser = null;
       this.router.navigate(['/users/identity_service/role']);
@@ -129,6 +131,14 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (val.url) {
       this.route = val.url;
       if (this.route.match('/users')) {
+        if (sessionStorage.identityServiceType) {
+          if (sessionStorage.identityServiceType === 'VAULT' && this.route.match('/users/identity_service/account')) {
+            this.selectedUser = null;
+            this.router.navigate(['/users/identity_service/role']);
+          } else if (sessionStorage.identityServiceType !== 'SHIRO' && this.route.match('/users/identity_service/main_section')) {
+            this.router.navigate(['/users/identity_service/account']);
+          }
+        }
         if (this.userObj && this.userObj.accounts) {
           this.dataService.announceData(this.userObj);
         }
@@ -137,6 +147,7 @@ export class AdminComponent implements OnInit, OnDestroy {
           if (this.identityService !== sessionStorage.identityServiceName) {
             this.userObj = {};
             this.identityService = sessionStorage.identityServiceName;
+            this.identityServiceType = sessionStorage.identityServiceType;
             this.getUsersData(true);
           }
         }

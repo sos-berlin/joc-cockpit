@@ -1950,7 +1950,8 @@
     "message.noPermissionFound": "パーミッションはありません",
     "message.noRoleAssign": "選択したアカウントにはロールが適用されていません",
     "message.cannotDeleteRole": "アカウントが割り当てられているロールを削除できません。",
-    "message.noFolderFound": "フォルダーはありません"
+    "message.noFolderFound": "フォルダーはありません",
+    "message.moreThanOneVaultEnable": "Only one VAULT* identity service should be enabled."
   },
   "workflow": {
     "--------COMMENT BOX BEGIN------------": "ジョブ定義 > インベントリー表示 > ワークフロー",

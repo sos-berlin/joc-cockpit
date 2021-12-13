@@ -3205,6 +3205,12 @@ body div.mxPopupMenu {
   opacity: .7;
 }
 
+.move-on-hover:hover {
+  .warn-icon {
+    opacity: 0;
+  }
+}
+
 div.order-panel {
   margin-top: 24px;
 }
@@ -4248,6 +4254,16 @@ li > a > i.remove {
   }
 }
 
+.warn-icon{
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #a94442;
+}
+.error-border .warn-icon {
+  display: block;
+}
 .order-source-table {
   width: 400px;
   min-height: 70px;
