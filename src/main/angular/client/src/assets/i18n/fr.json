@@ -125,7 +125,7 @@
   "NO_DIRECTOR": "Non Directeur",
   "PRIMARY_DIRECTOR": "Directeur Primaire",
   "SECONDARY_DIRECTOR": "Directeur Sécondaire",
-  "FIX_PRIORITY": "Fixed-priority",
+  "FIXED_PRIORITY": "Fixed-priority",
   "ROUND_ROBIN": "Round-robin",
   "agent": {
     "label.standalone": "Autonome",
@@ -2154,6 +2154,7 @@
     "message.workflowNameIsNotValid": "Le nom du Workflow est manquant, mais est requis",
     "message.emptyWorkflow": "Workflow est vide, une instruction au minimum est requise.",
     "message.invalidForkInstruction": "L'instruction Fork doit avoir un minimum de deux branches",
+    "message.mailLengthExceed": "Maximum length of mails exceed 1000 characters",
     "placeholder.selectAgentName": "Sélectionnez le nom de l'Agent",
     "placeholder.enterJobClass": "Entrer la référence de la classe du Tâche",
     "placeholder.selectLock": "Sélectionner l'ID du Verrou de Ressource",

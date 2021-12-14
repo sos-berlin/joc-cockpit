@@ -11,6 +11,7 @@ import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.comp
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-deploy-modal',
@@ -24,7 +25,7 @@ export class DeployModalComponent implements OnInit {
   preferences: any;
   display: any;
   schedulingTypes = [
-    'FIX_PRIORITY',
+    'FIXED_PRIORITY',
     'ROUND_ROBIN'
   ];
   schedulingType = '';
@@ -43,7 +44,7 @@ export class DeployModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     const obj: any = {
-      controllerId : this.controllerId,
+      controllerId: this.controllerId,
       clusterAgents: [{agentId: this.agent.agentId, schedulingType: this.schedulingType}]
     };
 
@@ -274,7 +275,7 @@ export class AgentModalComponent implements OnInit {
   private checkSecondaryDirector(): void {
     this.isSecondary = false;
     for (const i in this.agent.subagents) {
-      if (this.agent.subagents[i].isDirector === 'SECONDARY_DIRECTORY') {
+      if (this.agent.subagents[i].isDirector === 'SECONDARY_DIRECTOR') {
         this.isSecondary = true;
         break;
       }
@@ -291,7 +292,7 @@ export class AgentModalComponent implements OnInit {
     this.agentNameAliases.splice(index, 1);
   }
 
-  removeSubagent(list, index): void{
+  removeSubagent(list, index): void {
     list.splice(index, 1);
     this.checkSecondaryDirector();
   }
@@ -301,11 +302,20 @@ export class AgentModalComponent implements OnInit {
       this.isSecondary = isSecordary;
     }
     if (!this.coreService.isLastEntryEmpty(this.agent.subagents, 'subagentId', 'url')) {
-      this.agent.subagents.push({isDirector: isSecordary ? 'SECONDARY_DIRECTORY' : 'NO_DIRECTOR', subagentId: ''});
+      this.agent.subagents.push({isDirector: isSecordary ? 'SECONDARY_DIRECTOR' : 'NO_DIRECTOR', subagentId: ''});
     }
   }
 
+  private removeSubagents(obj, cb): void {
+    this.coreService.post('agent/subagents/remove', obj).subscribe(() => {
+      cb();
+    }, () => {
+      cb();
+    });
+  }
+
   onSubmit(): void {
+    let flag = true;
     this.submitted = true;
     const obj: any = {controllerId: this.controllerId};
     const _agent: any = this.coreService.clone(this.agent);
@@ -332,8 +342,13 @@ export class AgentModalComponent implements OnInit {
     if (this.isCluster) {
       if (this.new) {
         _agent.subagents = [{isDirector: 'PRIMARY_DIRECTOR', subagentId: _agent.subagentId, url: _agent.url, position: _agent.position}];
-        if (_agent.subagentId2){
-          _agent.subagents.push({isDirector: 'SECONDARY_DIRECTOR', subagentId: _agent.subagentId2, url: _agent.url2, position: _agent.position2});
+        if (_agent.subagentId2) {
+          _agent.subagents.push({
+            isDirector: 'SECONDARY_DIRECTOR',
+            subagentId: _agent.subagentId2,
+            url: _agent.url2,
+            position: _agent.position2
+          });
         }
         delete _agent.director;
         delete _agent.subagentId;
@@ -341,10 +356,42 @@ export class AgentModalComponent implements OnInit {
         delete _agent.url;
         delete _agent.url2;
       }
+      if (this.data) {
+        console.log(_agent.subagents);
+        console.log(this.data.subagents);
+        const obj2 = {
+          controllerId: this.controllerId,
+          subagentIds: []
+        };
+        for (const i in this.data.subagents) {
+          let isFound = false;
+          for (const j in _agent.subagents) {
+            if (this.data.subagents[i].subagentId === _agent.subagents[j].subagentId) {
+              isFound = true;
+              break;
+            }
+          }
+          if (!isFound) {
+            obj2.subagentIds.push(this.data.subagents[i].subagentId);
+          }
+        }
+        if (obj2.subagentIds.length > 0) {
+          flag = false;
+          this.removeSubagents(obj2, () => {
+            this.store(obj);
+          });
+        }
+      }
       obj.clusterAgents = [_agent];
     } else {
       obj.agents = [_agent];
     }
+    if (flag) {
+      this.store(obj);
+    }
+  }
+
+  private store(obj): void {
     this.coreService.post(this.isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe(res => {
       this.submitted = false;
       this.activeModal.close('close');
@@ -518,6 +565,25 @@ export class ControllersComponent implements OnInit, OnDestroy {
     } else {
       controller.reverse = !controller.reverse;
       controller.sortBy = key;
+    }
+  }
+
+  drop(event: CdkDragDrop<string[]>, clusterAgents: any[]): void {
+    let id = event.item.element.nativeElement.getAttribute('id');
+    if (id) {
+      id = id.replace('main', '');
+      const index = parseInt(id, 10);
+      const list = clusterAgents[index].subagents;
+      moveItemInArray(list, event.previousIndex, event.currentIndex);
+      for (let i = 0; i < list.length; i++) {
+        list[i].position = i + 1;
+      }
+      this.coreService.post('agent/subagents/store', {
+        controllerId: clusterAgents[index].controllerId,
+        agentId: clusterAgents[index].agentId,
+        subagents: list
+      }).subscribe(() => {
+      });
     }
   }
 
@@ -908,7 +974,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-          this.getClusterAgents(controller);
+        this.getClusterAgents(controller);
       }
     });
   }

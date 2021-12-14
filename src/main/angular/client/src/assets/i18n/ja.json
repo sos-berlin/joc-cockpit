@@ -125,7 +125,7 @@
   "NO_DIRECTOR": "No Director",
   "PRIMARY_DIRECTOR": "Primary Director",
   "SECONDARY_DIRECTOR": "Secondary Director",
-  "FIX_PRIORITY": "Fix priority",
+  "FIXED_PRIORITY": "Fix priority",
   "ROUND_ROBIN": "Round robin",
   "agent": {
     "label.standalone": "スタンドアロン",
@@ -1213,10 +1213,10 @@
           "failOnOutputErr": "ジョブがstderrに出力を書き込んだ場合、これはエラーとみなされ、オーダーは失敗ステートになります。",
           "admissionTime": "許可時間",
           "skipIfNoAdmissionForOrderDay": "許可時間ではないときはスキップ",
-          "mailTo": "Mail To",
-          "mailCC": "Mail Cc",
-          "mailBcc": "Mail Bcc",
-          "suppress": "Suppress"
+          "mailTo": "Send e-mail to",
+          "mailCC": "Send e-mail copy to",
+          "mailBcc": "Send e-mail blind copy to",
+          "suppress": "Suppress sending of e-mails"
         },
         "addOrder": {
           "workflowName": "ワークフロー名",
@@ -2086,7 +2086,7 @@
     "label.mailTo": "Mail To",
     "label.mailCC": "Mail Cc",
     "label.mailBcc": "Mail Bcc",
-    "label.suppress": "Suppress",
+    "label.suppress": "Suppress Mail",
     "button.addScheme": "スキーマ追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
@@ -2154,6 +2154,7 @@
     "message.workflowNameIsNotValid": "ワークフロー名が必要です",
     "message.emptyWorkflow": "ワークフローには最低一つの命令が必要です",
     "message.invalidForkInstruction": "Fork命令には最低２つの分岐が必要です",
+    "message.mailLengthExceed": "Maximum length of mails exceed 1000 characters",
     "placeholder.selectAgentName": "参照エージェント入力",
     "placeholder.enterJobClass": "参照ジョブクラス入力",
     "placeholder.selectLock": "ロックID選択",

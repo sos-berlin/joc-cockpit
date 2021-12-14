@@ -125,7 +125,7 @@
   "NO_DIRECTOR": "Kein Director",
   "PRIMARY_DIRECTOR": "Primärer Director",
   "SECONDARY_DIRECTOR": "Sekundärer Director",
-  "FIX_PRIORITY": "Fixed-priority",
+  "FIXED_PRIORITY": "Fixed-priority",
   "ROUND_ROBIN": "Round-robin",
   "agent": {
     "label.standalone": "Solo",
@@ -2154,6 +2154,7 @@
     "message.emptyWorkflow": "Arbeitsablauf ist leer, mindestens eine Instruktion ist erforderlich",
     "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",
     "message.invalidForkListInstruction": "ForkList-Instruktion darf nicht leer sein",
+    "message.mailLengthExceed": "Maximum length of mails exceed 1000 characters",
     "placeholder.selectAgentName": "Agentennamen auswählen",
     "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
     "placeholder.selectLock": "Kennung der Ressourcen-Sperre auswählen",

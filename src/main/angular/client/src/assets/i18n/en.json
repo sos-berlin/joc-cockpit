@@ -125,7 +125,7 @@
   "NO_DIRECTOR": "No Director",
   "PRIMARY_DIRECTOR": "Primary Director",
   "SECONDARY_DIRECTOR": "Secondary Director",
-  "FIX_PRIORITY": "Fixed-priority",
+  "FIXED_PRIORITY": "Fixed-priority",
   "ROUND_ROBIN": "Round-robin",
   "agent": {
     "label.standalone": "Standalone",
@@ -1213,10 +1213,10 @@
           "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state.",
           "admissionTime": "Admission Times rule access to jobs based on weekdays and hours. An order waits in front of a job node until the admission time is reached or can be configured to skip the job if admission times do not meet the order date.",
           "skipIfNoAdmissionForOrderDay": "The job is skipped if admission periods have been configured that do not match the order's date. For example, if admission periods are configured for Monday and Tuesday, but the order is scheduled for Wednesday then the job will be skipped. On Monday and Tuesday the order will wait with the job node until the admission time is reached.",
-          "mailTo": "E-Mail senden an",
-          "mailCC": "E-Mail Kopie senden an",
-          "mailBcc": "E-Mail Blindkopie senden an",
-          "suppress": "E-Mail Versand unterdrücken"
+          "mailTo": "Send e-mail to",
+          "mailCC": "Send e-mail copy to",
+          "mailBcc": "Send e-mail blind copy to",
+          "suppress": "Suppress sending of e-mails"
         },
         "addOrder": {
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
@@ -2154,6 +2154,7 @@
     "message.workflowNameIsNotValid": "Workflow Name is missing, but is required",
     "message.emptyWorkflow": "Workflow is empty, minimum one instruction is required",
     "message.invalidForkInstruction": "Fork Instruction must have minimum of two branches",
+    "message.mailLengthExceed": "Maximum length of mails exceed 1000 characters",
     "placeholder.selectAgentName": "Select Agent Name",
     "placeholder.enterJobClass": "Enter Job Class reference",
     "placeholder.selectLock": "Select Resource Lock ID",

@@ -4261,9 +4261,11 @@ li > a > i.remove {
   left: 0;
   color: #a94442;
 }
+
 .error-border .warn-icon {
   display: block;
 }
+
 .order-source-table {
   width: 400px;
   min-height: 70px;
@@ -6400,6 +6402,26 @@ pre#pre {
 .cdk-drag-preview {
   box-sizing: border-box;
   z-index: 99999 !important;
+}
+
+tr.cdk-drag-preview {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  display: flex;
+  justify-content: space-between;
+  align-content: start;
+  padding-left: 10px;
+  padding-right: 20px;
+  td {
+    margin-top: 4px;
+    text-align: left;
+    align-content: start;
+  }
+
+  td:first-child {
+    display: none;
+  }
 }
 
 .cdk-drag-placeholder {

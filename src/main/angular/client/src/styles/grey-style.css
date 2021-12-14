@@ -1393,3 +1393,15 @@ div.jsoneditor-value.jsoneditor-null {
 div.jsoneditor-value.jsoneditor-invalid {
   color: white;
 }
+.ant-tabs-top > .ant-tabs-nav .ant-tabs-nav-wrap::after,
+.ant-tabs-bottom > .ant-tabs-nav .ant-tabs-nav-wrap::after,
+.ant-tabs-top > div > .ant-tabs-nav .ant-tabs-nav-wrap::after,
+.ant-tabs-bottom > div > .ant-tabs-nav .ant-tabs-nav-wrap::after {
+    box-shadow: inset -10px 0 8px -8px rgba(255, 255, 255, .2);
+}
+.ant-tabs-top > .ant-tabs-nav .ant-tabs-nav-wrap::before,
+.ant-tabs-bottom > .ant-tabs-nav .ant-tabs-nav-wrap::before,
+.ant-tabs-top > div > .ant-tabs-nav .ant-tabs-nav-wrap::before,
+.ant-tabs-bottom > div > .ant-tabs-nav .ant-tabs-nav-wrap::before {
+    box-shadow: inset 10px 0 8px -8px rgba(255, 255, 255, .2);
+}

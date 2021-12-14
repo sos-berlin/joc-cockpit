@@ -782,6 +782,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   isDisplay = false;
   isRuntimeVisible = false;
   fullScreen = false;
+  isLengthExceed = false;
   index = 0;
   presentObj: any = {};
   returnCodes: any = {on: 'success'};
@@ -897,6 +898,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   changeType(type): void {
     if (type === 'ShellScriptExecutable') {
       this.reloadScript();
@@ -904,8 +909,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.saveToHistory();
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  checkLength(): void {
+    const len = JSON.stringify(this.selectedNode.job.notification).length;
+    this.isLengthExceed = len > 1000;
   }
 
   updateSelectItems(): void {
