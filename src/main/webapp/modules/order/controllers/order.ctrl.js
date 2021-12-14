@@ -201,6 +201,7 @@
             orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
+                delete order.params;
                 order = _.merge(order, res.orders[0]);
                 updatePanelHeight();
             });
@@ -3352,6 +3353,9 @@
         function getOrderByPathV(obj) {
             OrderService.get(obj).then(function (res) {
                 if (vm.orders && vm.orders.length > 0) {
+                    vm.orders.forEach(function(order){
+                        delete order.params;
+                    });
                     vm.orders = _.merge(vm.orders, res.orders)
                 } else {
                     vm.orders = res.orders;
@@ -3725,7 +3729,6 @@
                         if (vm.flag && data.folders[x].path.substring(1, data.folders[x].path.length) === splitPath[i] && i < splitPath.length) {
                             i = i + 1;
                             splitPath[i] = splitPath[i - 1] + '/' + splitPath[i];
-
                             data.folders[x].expanded = true;
                             if (vm.expand_to.name === data.folders[x].name) {
                                 data.folders[x].selected1 = true;
@@ -3736,7 +3739,6 @@
                             }
                         }
                     }
-
                     checkExpand(data.folders[x]);
                     if (data.folders[x].expanded || data.folders[x].selected1) {
                         if (data.path === '/') {
@@ -3759,10 +3761,8 @@
                     value.selected1 = true;
                 }
                 value.expanded = true;
-
                 vm.allOrders = [];
                 checkExpand(value);
-
             });
         }
 
@@ -3799,7 +3799,6 @@
                                 x[i].show = _temp[j].show;
                                 if (x[i].show) {
                                     x[i].priority = _temp[j].priority;
-                                    x[i].params = _temp[j].params;
                                     x[i].stateText = _temp[j].stateText;
                                     x[i].endState = _temp[j].endState;
                                 }
@@ -3947,8 +3946,9 @@
             vm.reloadState = 'no';
             vm.allOrders = [];
             vm.loading = true;
-            var obj = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: true};
+            var obj = {jobschedulerId: vm.schedulerIds.selected, folders: []};
             var obj1 = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: true};
+
             angular.forEach(vm.tree, function (value) {
                 if (value.expanded || value.selected1)
                     checkExpandTreeForUpdates(value, obj, obj1);
@@ -3959,7 +3959,6 @@
                 firstVolatileCall(obj, null);
                 return
             } else {
-
                 if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
                         return;
@@ -3968,7 +3967,6 @@
                     return
                 }
             }
-
             OrderService.getOrdersP(obj1).then(function (result) {
                 vm.allOrders = result.orders;
                 vm.loading = false;
@@ -4844,6 +4842,7 @@
                 for (let x = 0; x < vm.allOrders.length; x++) {
                     for (let i = 0; i < res.orders.length; i++) {
                         if (vm.allOrders[x].path === res.orders[i].path) {
+                            delete vm.allOrders[x].params;
                             vm.allOrders[x] = _.merge(vm.allOrders[x], res.orders[i]);
                             vm.allOrders[x].show = true;
                             res.orders.splice(i, 1);
@@ -4906,6 +4905,7 @@
             OrderService.getOrdersP(obj).then(function (res) {
                 for (let i = 0; i < vm.allOrders.length; i++) {
                     if (vm.allOrders[i].path === res.orders[0].path) {
+                        delete vm.allOrders[i].params;
                         vm.allOrders[i] = _.merge(vm.allOrders[i], res.orders[0]);
                         break;
                     }
@@ -4920,6 +4920,7 @@
             orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
+                delete order.params;
                 order = _.merge(order, res.orders[0]);
                 updatePanelHeight();
             });
@@ -5525,6 +5526,7 @@
             orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
+                delete order.params;
                 order = _.merge(order, res.orders[0]);
                 updatePanelHeight();
             });
@@ -6160,6 +6162,7 @@
                 obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
                 OrderService.get(obj).then(function (res) {
+                    delete order.params;
                     order = _.merge(order, res.orders[0]);
                 });
 
@@ -6174,6 +6177,7 @@
             orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
+                delete order.params;
                 order = _.merge(order, res.orders[0]);
             });
             vm.order = order;
@@ -6845,6 +6849,7 @@
             orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
+                delete order.params;
                 order = _.merge(order, res.orders[0]);
             });
         };
