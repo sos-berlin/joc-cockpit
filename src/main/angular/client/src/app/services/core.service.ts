@@ -1119,7 +1119,7 @@ export class CoreService {
   downloadLog(data: any, id: string): void {
     let url = 'order/log/download';
     let obj: any;
-    let name: string = '';
+    let name = '';
     if (data.historyId) {
       name = 'order-' + data.historyId + '.log';
       obj = {

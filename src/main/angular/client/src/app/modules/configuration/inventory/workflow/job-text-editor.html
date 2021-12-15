@@ -786,6 +786,18 @@
           </div>
         </div>
         <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailOn' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>workflow.label.mailOn</label>
+          <div class="col-md-8 col-lg-9">
+           <nz-select class="w-full" nzMode="multiple" name="types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
+                      [(ngModel)]="selectedNode.job.notification.types">
+             <nz-option [nzValue]="'ERROR'" [nzLabel]="'ERROR'"></nz-option>
+             <nz-option [nzValue]="'WARNING'" [nzLabel]="'WARNING'"></nz-option>
+             <nz-option [nzValue]="'SUCCESS'" [nzLabel]="'SUCCESS'"></nz-option>
+           </nz-select>
+          </div>
+        </div>
+        <div class="form-group row">
           <label class="col-md-4 col-lg-3" title="{{'workflow.label.suppress' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.suppress' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.suppress</label>
           <div class="col-md-8 col-lg-9">

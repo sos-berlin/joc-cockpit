@@ -20,7 +20,7 @@
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>agent.label.schedulingType</label>
       <div class=" col-sm-8">
-        <nz-select required name="schedulingType" [(ngModel)]="schedulingType">
+        <nz-select nzAllowClear name="schedulingType" [(ngModel)]="schedulingType">
           <nz-option *ngFor="let item of schedulingTypes" [nzValue]="item" [nzLabel]="item | translate"></nz-option>
         </nz-select>
       </div>

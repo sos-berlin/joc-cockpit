@@ -2720,7 +2720,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.closeMenu();
     if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
       this.editor.graph.clearSelection();
-      const name = (this.workflow.name || 'workflow') + '.json';
+      const name = (this.workflow.name || 'workflow') + '.workflow.json';
       const fileType = 'application/octet-stream';
       let data = this.coreService.clone(this.workflow.configuration);
       const flag = this.modifyJSON(data, true, true);
@@ -4280,6 +4280,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
        };
        const attr = cell.value.attributes;
        for (const j in attr) {
+
          if (attr[j].name && attr[j].value && (attr[j].name !== 'label' || (attr[j].name === 'label' && obj.TYPE === 'Job'))) {
            let val = attr[j].value;
            if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome')) {
@@ -4290,7 +4291,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
            obj[attr[j].name] = val;
          }
        }
-
        if (obj.TYPE === 'Job' && !obj.defaultArguments) {
          obj.defaultArguments = {};
        }
@@ -5612,11 +5612,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 if (self.noSave) {
                   self.noSave = false;
                 } else {
-                  // if (!self.skipXMLToJSONConversion) {
-                  //   self.xmlToJsonParser();
-                  // } else {
-                  //   self.skipXMLToJSONConversion = false;
-                  // }
+                  if (!self.skipXMLToJSONConversion) {
+                    self.xmlToJsonParser();
+                  } else {
+                    self.skipXMLToJSONConversion = false;
+                  }
                   if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
                     graph.setEnabled(true);
                   } else {
@@ -5945,7 +5945,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         graph.getModel().remove(_sour);
         graph.getModel().remove(_tar);
       }
-      self.xmlToJsonParser();
+      if(!self.implicitSave) {
+        self.xmlToJsonParser();
+      }
       self.updateXMLJSON(true);
     }
 
@@ -6295,12 +6297,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           } else if (self.selectedNode.type === 'AddOrder') {
             if (self.selectedNode.newObj.workflow) {
               const argu: any = {};
-              if (self.selectedNode.newObj.arguments && self.selectedNode.newObj.arguments.length > 0) {
-                argu.arguments = self.coreService.clone(self.selectedNode.newObj.arguments);
-                argu.arguments.forEach((item) => {
-                  self.coreService.addSlashToString(item, 'value');
-                });
-                self.coreService.convertArrayToObject(argu, 'arguments', true);
+              if ((self.selectedNode.newObj.arguments && self.selectedNode.newObj.arguments.length > 0) ||
+                (self.selectedNode.newObj.forkListArguments && self.selectedNode.newObj.forkListArguments.length > 0)) {
+                if ((self.selectedNode.newObj.arguments && self.selectedNode.newObj.arguments.length > 0)) {
+                  argu.arguments = self.coreService.clone(self.selectedNode.newObj.arguments);
+                  argu.arguments.forEach((item) => {
+                    self.coreService.addSlashToString(item, 'value');
+                  });
+                  self.coreService.convertArrayToObject(argu, 'arguments', true);
+                } else {
+                  argu.arguments = {};
+                }
                 if (self.selectedNode.newObj.forkListArguments) {
                   self.selectedNode.newObj.forkListArguments.forEach((item) => {
                     argu.arguments[item.name] = [];
@@ -6324,6 +6331,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               } else {
                 argu.arguments = {};
               }
+
               const edit = new mxCellAttributeChange(
                 obj.cell, 'arguments', JSON.stringify(argu.arguments));
               graph.getModel().execute(edit);
@@ -6568,7 +6576,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 delete job.executable.login;
               }
               if (job.notification && isEmpty(job.notification.mail)) {
-                delete job.notification;
+                if (!job.notification.types || job.notification.types.length === 0) {
+                  delete job.notification;
+                } else {
+                  delete job.notification.mail;
+                }
               }
               if (!job.defaultArguments || typeof job.defaultArguments === 'string' || job.defaultArguments.length === 0) {
                 delete job.defaultArguments;
@@ -8159,7 +8171,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       delete job.executable.login;
     }
     if (job.notification && isEmpty(job.notification.mail)) {
-      delete job.notification;
+      if (!job.notification.types || job.notification.types.length === 0) {
+        delete job.notification;
+      } else {
+        delete job.notification.mail;
+      }
     }
     if (job.executable.returnCodeMeaning) {
       if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0') {
@@ -8837,7 +8853,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (noValidate === 'false' || noValidate === false) {
         this.initEditorConf(this.editor, false, true);
       }
-      this.xmlToJsonParser();
+      if(!this.implicitSave) {
+        this.xmlToJsonParser();
+      }
     } else if (this.selectedNode === undefined) {
       return;
     }

@@ -9,7 +9,7 @@
           </div>
           <div class="inline">
             <!-- Sorting via Account Name Starts -->
-            <div class="btn-group dropdown" *ngIf="route && identityServiceType !== 'VAULT' && route.match('/users/identity_service/role')">
+            <div class="btn-group dropdown" *ngIf="route && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP' && route.match('/users/identity_service/role')">
               <button class="btn btn-grey btn-sm m-l-12 "
                 nz-dropdown nzTrigger="click" [nzDropdownMenu]="account" [nzPlacement]="'bottomRight'">{{'user.label.user' | translate}}
                 <span class="text-primary">{{selectedUser | decodeSpace}} </span>
@@ -29,6 +29,10 @@
               </nz-dropdown-menu>
             </div>
             <!-- Sorting via Account Name Ends -->
+            <button *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
+              <i class="fa fa-plus"></i>&nbsp;
+              <span translate>user.button.manageGeneralSetting</span>
+            </button>
             <button *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addIdentityService</span>
@@ -97,12 +101,12 @@
     <div class="row m-b m-t-xs" *ngIf="route !== '/users' && route !== '/users/identity_service'">
       <div class="col-md-12">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item" *ngIf="identityServiceType !== 'VAULT'">
+          <li class="nav-item" *ngIf="identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
             <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
              </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="identityServiceType !== 'VAULT'">
+          <li class="nav-item dropdown-separator" *ngIf="identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
             <span class="separator"></span>
           </li>
           <li class="nav-item">

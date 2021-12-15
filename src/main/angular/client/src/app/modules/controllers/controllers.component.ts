@@ -357,8 +357,6 @@ export class AgentModalComponent implements OnInit {
         delete _agent.url2;
       }
       if (this.data) {
-        console.log(_agent.subagents);
-        console.log(this.data.subagents);
         const obj2 = {
           controllerId: this.controllerId,
           subagentIds: []
@@ -826,7 +824,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   editSubagent(subagent, clusterAgent, controller): void {
-    console.log(subagent, clusterAgent, controller);
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: SubagentModalComponent,
@@ -848,7 +845,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   removeSubagent(sub, clusterAgent, controller): void {
-    console.log(sub, clusterAgent, controller);
     const obj = {
       controllerId: controller.controllerId,
       subagentIds: [sub.subagentId]

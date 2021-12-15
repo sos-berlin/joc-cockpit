@@ -44,7 +44,7 @@ export class AccountModalComponent implements OnInit {
         roles: []
       };
     }
-    if (this.copy || (type !== 'JOC' && type !== 'SHIRO' && !this.newUser) || type === 'VAULT-JOC') {
+    if (this.copy || (type !== 'JOC' && type !== 'SHIRO')) {
       this.isPasswordVisible = false;
       delete this.currentUser.password;
     }

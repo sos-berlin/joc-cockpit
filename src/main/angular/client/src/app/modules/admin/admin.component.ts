@@ -69,6 +69,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
+  manageSetting(): void {
+    this.dataService.announceFunction('MANAGE_SETTING');
+  }
+
   addAccount(): void {
     this.dataService.announceFunction('ADD');
   }
@@ -132,7 +136,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.route = val.url;
       if (this.route.match('/users')) {
         if (sessionStorage.identityServiceType) {
-          if (sessionStorage.identityServiceType === 'VAULT' && this.route.match('/users/identity_service/account')) {
+          if ((sessionStorage.identityServiceType === 'VAULT' || sessionStorage.identityServiceType === 'LDAP') && this.route.match('/users/identity_service/account')) {
             this.selectedUser = null;
             this.router.navigate(['/users/identity_service/role']);
           } else if (sessionStorage.identityServiceType !== 'SHIRO' && this.route.match('/users/identity_service/main_section')) {

@@ -1,0 +1,117 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+      <span *ngIf="!data" translate>user.label.generalSetting</span>
+      <span *ngIf="data">
+        <span translate>user.label.settingFor</span>:
+        {{data.identityServiceName}}
+      </span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="modal-body p-a">
+        <div class="form-group row" *ngIf="!data" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+            <label class="col-sm-4 form-control-label" translate>user.label.sessionTimeout</label>
+            <div class="col-sm-6">
+               <nz-input-number required [nzMin]="1" [nzStep]="1" name="timeout"
+                                #timeout="ngModel" [(ngModel)]="currentObj.sessionTimeout"></nz-input-number>
+                <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
+                    <div *ngIf="timeout.errors.required">
+                        <div translate>common.message.requiredError</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="data && data.identityServiceType.match('VAULT')">
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultUrl</label>
+            <div class="col-sm-6">
+              <input type="url" class="form-control" name="iam_url"
+                     [(ngModel)]="currentObj.iam_url">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeystorePath</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" name="iam_keystorepath"
+                     [(ngModel)]="currentObj.iam_keystorepath">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeystorePassword</label>
+            <div class="col-sm-6">
+              <input type="password" class="form-control" name="iam_keystorepassword"
+                     [(ngModel)]="currentObj.iam_keystorepassword">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeyPassword</label>
+            <div class="col-sm-6">
+              <input type="password" class="form-control" name="iam_keypassword"
+                     [(ngModel)]="currentObj.iam_keypassword">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeyStoreType</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" name="iam_keystoretype"
+                     [(ngModel)]="currentObj.iam_keystoretype">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStorePath</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" name="iam_truststorepath"
+                     [(ngModel)]="currentObj.iam_truststorepath">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStorePassword</label>
+            <div class="col-sm-6">
+              <input type="password" class="form-control" name="iam_truststorepassword"
+                     [(ngModel)]="currentObj.iam_truststorepassword">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStoreType</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" name="iam_truststoretype"
+                     [(ngModel)]="currentObj.iam_truststoretype">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultApplicationToken</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" name="iam_applicationtoken"
+                     [(ngModel)]="currentObj.iam_applicationtoken">
+            </div>
+          </div>
+        </div>
+        <div *ngIf="data && data.identityServiceType.match('LDAP')">
+           <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUrl</label>
+            <div class="col-sm-6">
+              <input type="url" class="form-control" name="iam_url"
+                     [(ngModel)]="currentObj.iam_url">
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted">
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+            {{'common.button.submit' | translate}}
+        </button>
+        <button type="button" class="btn btn-default btn-sm" *ngIf="data"
+              (click)="copySetting()" translate>user.button.copySetting
+        </button>
+        <button type="button" class="btn btn-default btn-sm" *ngIf="isEnable"
+              (click)="pasteSetting()" translate>user.button.pasteSetting
+        </button>
+        <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+          common.button.cancel
+        </button>
+    </div>
+</form>

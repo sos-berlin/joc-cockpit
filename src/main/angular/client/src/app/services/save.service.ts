@@ -14,6 +14,7 @@ export class SaveService {
   ignoreList: any;
   dailyPlanFilters: any;
   resizerHeight: any;
+  copiedSetting: any;
 
   constructor() {
     const self = this;

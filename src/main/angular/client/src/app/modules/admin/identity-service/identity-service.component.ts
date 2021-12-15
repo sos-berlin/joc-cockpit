@@ -1,15 +1,89 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {clone} from 'underscore';
+import {clone, isEmpty} from 'underscore';
 import {OrderPipe} from 'ngx-order-pipe';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {NzMessageService} from 'ng-zorro-antd/message';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {SaveService} from '../../../services/save.service';
 
+@Component({
+  selector: 'app-setting-modal-content',
+  templateUrl: './setting-dialog.html'
+})
+export class SettingModalComponent implements OnInit {
+  @Input() data: any;
+
+  isEnable = false;
+  submitted = false;
+  currentObj: any = {};
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService,
+              private message: NzMessageService, private saveService: SaveService) {
+  }
+
+  ngOnInit(): void {
+    if(this.saveService.copiedSetting && this.saveService.copiedSetting.type && this.saveService.copiedSetting.name !== this.data.identityServiceName){
+      this.isEnable = true;
+    }
+
+    this.coreService.post('configuration', {
+      id: 0,
+      objectType: this.data ? this.data.identityServiceType : 'GENERAL',
+      configurationType: 'IAM',
+      name: this.data ? this.data.identityServiceName : undefined
+    }).subscribe((res) => {
+      if (res.configurationItem) {
+        this.currentObj = JSON.parse(res.configurationItem);
+      }
+    });
+  }
+
+  copySetting(): void {
+    if (this.currentObj && !isEmpty(this.currentObj)) {
+      this.saveService.copiedSetting = {
+        type: this.data ? this.data.identityServiceType : 'GENERAL',
+        name: this.data ? this.data.identityServiceName : undefined,
+        data: this.currentObj
+      };
+      this.coreService.showCopyMessage(this.message);
+    }
+  }
+
+  pasteSetting(): void {
+    this.currentObj = clone(this.saveService.copiedSetting.data);
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    let obj: any = {};
+    if (this.data && this.data.identityServiceType) {
+      if (this.data.identityServiceType.match('VAULT')) {
+        obj.vault = this.currentObj;
+      } else if (this.data.identityServiceType.match('LDAP')) {
+        obj.ldap = this.currentObj;
+      }
+    } else {
+      obj = this.currentObj;
+    }
+    this.coreService.post('configuration/save', {
+      id: 0,
+      objectType: this.data ? this.data.identityServiceType : 'GENERAL',
+      configurationType: 'IAM',
+      name: this.data ? this.data.identityServiceName : undefined,
+      configurationItem: JSON.stringify(obj)
+    }).subscribe((res) => {
+      this.activeModal.close(res);
+    }, () => {
+      this.submitted = false;
+    });
+  }
+}
 
 @Component({
   selector: 'app-identity-service-modal-content',
@@ -29,7 +103,7 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currentObj.ordering = this.identityServices.length || 0;
+    this.currentObj.ordering = this.identityServices.length + 1 || 1;
     if (this.identityService) {
       this.currentObj = clone(this.identityService);
     }
@@ -123,6 +197,8 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'ADD') {
         this.add();
+      } else if (res === 'MANAGE_SETTING') {
+        this.manageSetting(null);
       }
     });
   }
@@ -217,18 +293,32 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     this.enableDisable(identityService, false);
   }
 
+  manageSetting(data): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: SettingModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        data
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
   drop(event: CdkDragDrop<string[]>): void {
     const list = this.orderPipe.transform(this.identityServices, this.usr.sortBy, this.usr.reverse);
     moveItemInArray(list, event.previousIndex, event.currentIndex);
     if (this.usr.reverse) {
-      let j = 0;
+      let j = 1;
       for (let i = list.length - 1; i >= 0; i--) {
         list[i].ordering = j;
         j++;
       }
     } else {
       for (let i = 0; i < list.length; i++) {
-        list[i].ordering = i;
+        list[i].ordering = i + 1;
       }
     }
     this.identityServices = list;
