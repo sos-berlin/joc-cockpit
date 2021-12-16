@@ -13,7 +13,7 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
-    <div *ngIf="actualResult.length>0 && !loading">
+    <div *ngIf="nodes.length>0 && !loading">
         <div class="hide" [ngClass]="{'show': display}">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
         </div>
@@ -59,13 +59,13 @@
               [nzCheckable]="true"
               [nzCheckStrictly]="!object.isRecursive"
               [nzData]="nodes"
-              [nzExpandAll]="isExpandAll"
               [nzTreeTemplate]="nzTreeTemplate"
               (nzExpandChange)="getDeploymentVersion($event)"
               (nzCheckBoxChange)="checkBoxChange($event)"
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper">
+                  <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
                   <div class="node-content-wrapper2" [ngClass]="{'m-t-xs' :node.origin.object}">
                     <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
@@ -121,7 +121,7 @@
           </div>
         </div>
     </div>
-    <div class="m-t-md" *ngIf="nodes.length===0">
+    <div class="m-t-md" *ngIf="nodes.length===0 && !loading">
       <app-empty-data></app-empty-data>
     </div>
     <div class="text-center m-t-md" *ngIf="loading">

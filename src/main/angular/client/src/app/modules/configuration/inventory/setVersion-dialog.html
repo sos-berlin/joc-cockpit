@@ -55,7 +55,6 @@
             [nzCheckable]="version.type==='setOneVersion'"
             [nzCheckStrictly]="!object.isRecursive"
             [nzData]="nodes"
-            [nzExpandAll]="isExpandAll"
             [nzTreeTemplate]="nzTreeTemplate"
             (nzExpandChange)="getDeploymentVersion($event)"
             (nzCheckBoxChange)="checkBoxChange($event)"

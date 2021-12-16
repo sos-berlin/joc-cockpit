@@ -722,22 +722,53 @@ export class CoreService {
     $('#xmlLeftSidePanel').removeClass('sidebar-hover-effect');
   }
 
+  private recursive(data: any, output: any, isLeaf: boolean): void {
+    if (data.folders && data.folders.length > 0) {
+      for (let i = 0; i < data.folders.length; i++) {
+        const path = data.folders[i].path;
+        output.push({
+          name: data.folders[i].name || path.substring(path.lastIndexOf('/') + 1),
+          title: data.folders[i].name || path.substring(path.lastIndexOf('/') + 1),
+          path,
+          key: path,
+          permitted: data.folders[i].permitted,
+          isLeaf: isLeaf ? !data.folders[i].folders || data.folders[i].folders.length === 0 : false,
+          children: [],
+          deployables: data.folders[i].deployables,
+          releasables: data.folders[i].releasables
+        });
+        if (data.folders[i].folders && data.folders[i].folders.length > 0) {
+          this.recursive(data.folders[i], output[i].children, isLeaf);
+          output[i].children = sortBy(output[i].children, (x) => {
+            return x.name.toLowerCase();
+          });
+        }
+      }
+    }
+  }
+
   prepareTree(actualData: any, isLeaf: boolean): any {
     if (actualData.folders && actualData.folders.length > 0) {
-      const output = [{
-        name: actualData.folders[0].path,
-        path: actualData.folders[0].path,
-        title: actualData.folders[0].path,
-        key: actualData.folders[0].path,
-        permitted: actualData.folders[0].permitted,
-        isLeaf: isLeaf ? !actualData.folders[0].folders || actualData.folders[0].folders.length === 0 : false,
-        children: []
-      }];
-
-      this.recursive(actualData.folders[0], output[0].children, isLeaf);
-      output[0].children = sortBy(output[0].children, (i: any) => {
-        return i.name.toLowerCase();
-      });
+      const output = [];
+      for (const i in actualData.folders) {
+        if (actualData.folders[i]) {
+          output.push({
+            name: actualData.folders[i].path,
+            path: actualData.folders[i].path,
+            title: actualData.folders[i].path,
+            key: actualData.folders[i].path,
+            permitted: actualData.folders[i].permitted,
+            isLeaf: isLeaf ? !actualData.folders[i].folders || actualData.folders[i].folders.length === 0 : false,
+            children: [],
+            deployables: actualData.folders[i].deployables,
+            releasables: actualData.folders[i].releasables
+          });
+          this.recursive(actualData.folders[i], output[i].children, isLeaf);
+          output[i].children = sortBy(output[i].children, (i: any) => {
+            return i.name.toLowerCase();
+          });
+        }
+      }
       return output;
     } else {
       return [];
@@ -1094,27 +1125,6 @@ export class CoreService {
     return b;
   }
 
-  private recursive(data: any, output: any, isLeaf: boolean): void {
-    if (data.folders && data.folders.length > 0) {
-      for (let i = 0; i < data.folders.length; i++) {
-        output.push({
-          name: data.folders[i].name,
-          title: data.folders[i].name,
-          path: data.folders[i].path,
-          key: data.folders[i].path,
-          permitted: data.folders[i].permitted,
-          isLeaf: isLeaf ? !data.folders[i].folders || data.folders[i].folders.length === 0 : false,
-          children: []
-        });
-        if (data.folders[i].folders && data.folders[i].folders.length > 0) {
-          this.recursive(data.folders[i], output[i].children, isLeaf);
-          output[i].children = sortBy(output[i].children, (x) => {
-            return x.name.toLowerCase();
-          });
-        }
-      }
-    }
-  }
 
   downloadLog(data: any, id: string): void {
     let url = 'order/log/download';

@@ -5,110 +5,50 @@ import {InventoryObject} from '../../../models/enums';
 @Injectable()
 export class InventoryService {
 
-  sortList(arr): any {
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i].objectType === InventoryObject.WORKFLOW) {
-        arr[i].level = 0;
-      } else if (arr[i].objectType === InventoryObject.FILEORDERSOURCE) {
-        arr[i].level = 1;
-      } else if (arr[i].objectType === InventoryObject.NOTICEBOARD) {
-        arr[i].level = 2;
-      } else if (arr[i].objectType === InventoryObject.LOCK) {
-        arr[i].level = 3;
-      } else if (arr[i].objectType === InventoryObject.INCLUDESCRIPT) {
-        arr[i].level = 4;
-      } else if (arr[i].objectType === InventoryObject.SCHEDULE) {
-        arr[i].level = 5;
-      } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
-        arr[i].level = 6;
-      } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
-        arr[i].level = 7;
+  sortList(arr: any[]): any {
+    for (const i in arr) {
+      if (arr[i]) {
+        if (arr[i].objectType === InventoryObject.WORKFLOW) {
+          arr[i].level = 0;
+        } else if (arr[i].objectType === InventoryObject.FILEORDERSOURCE) {
+          arr[i].level = 1;
+        } else if (arr[i].objectType === InventoryObject.NOTICEBOARD) {
+          arr[i].level = 2;
+        } else if (arr[i].objectType === InventoryObject.LOCK) {
+          arr[i].level = 3;
+        } else if (arr[i].objectType === InventoryObject.INCLUDESCRIPT) {
+          arr[i].level = 4;
+        } else if (arr[i].objectType === InventoryObject.SCHEDULE) {
+          arr[i].level = 5;
+        } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
+          arr[i].level = 6;
+        } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
+          arr[i].level = 7;
+        }
       }
     }
     return sortBy(arr, 'level');
   }
 
-  generateTree(arr, treeArr): void {
-    for (const [key, value] of Object.entries(arr)) {
-      if (key !== '/') {
-        let paths = key.split('/');
-        if (paths.length > 1) {
-          let pathArr = [];
-          for (let i = 0; i < paths.length; i++) {
-            if (paths[i]) {
-              if (i > 0 && pathArr[i - 1]) {
-                pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + paths[i]);
-              } else {
-                pathArr.push('/' + paths[i]);
-              }
-            } else {
-              pathArr.push('/');
-            }
-          }
-          for (let i = 1; i < pathArr.length; i++) {
-            this.checkAndAddFolder(pathArr[i], treeArr);
-          }
-        }
-      }
-      this.checkFolderRecur(key, value, treeArr);
-    }
-  }
-
-  private checkFolderRecur(mainPath, data, treeArr): void {
-    let flag = false;
-    let arr = [];
-    if (data.length > 0) {
-      arr = this.createTempArray(data);
-    }
-
-    function recursive(path, nodes): void {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path) {
-            nodes[i].isLeaf = false;
-            if (!nodes[i].children || nodes[i].children.length === 0) {
-              for (let j = 0; j < arr.length; j++) {
-                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path && arr[j].key === nodes[i].key) {
-                  nodes[i].key = arr[j].key;
-                  nodes[i].deleted = arr[j].deleted;
-                  nodes[i].isFolder = true;
-                  arr.splice(j, 1);
-                  break;
-                }
-              }
-
-              nodes[i].children = arr;
-            } else {
-              nodes[i].children = nodes[i].children.concat(arr);
-            }
-            if (nodes[i].children.length === 0 && !nodes[i].isFolder) {
-              nodes[i].isLeaf = true;
-            }
-            flag = true;
-            break;
-          }
-          if (!flag && nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
+  updateTree(data: any): void {
+    if (data.children && data.children.length > 0) {
+      for (const i in data.children) {
+        if (data.children[i]) {
+          this.updateTree(data.children[i]);
         }
       }
     }
-
-    if (treeArr && treeArr[0]) {
-      treeArr[0].expanded = true;
-      recursive(mainPath, treeArr);
-    }
-  }
-
-  private createTempArray(arr): any {
-    let x = groupBy(arr, (res) => {
-      return res.objectType;
-    });
-    let tempArr = [], folderArr = [];
-    for (const [key, value] of Object.entries(x)) {
-      const temp: any = value;
-      if (key !== 'FOLDER') {
-        let parentObj: any = {
+    if ((data.deployables && data.deployables.length > 0) || (data.releasables && data.releasables.length > 0)) {
+      if (!data.children) {
+        data.children = [];
+      }
+      const x = groupBy(this.sortList(data.deployables || data.releasables), (res) => {
+        return res.objectType;
+      });
+      const tempArr = [];
+      for (const [key, value] of Object.entries(x)) {
+        const temp: any = value;
+        const parentObj: any = {
           name: value[0].objectType,
           object: value[0].objectType,
           path: value[0].folder,
@@ -117,99 +57,50 @@ export class InventoryService {
           isLeaf: true
         };
         tempArr.push(parentObj);
-        temp.forEach(data => {
+        temp.forEach(item => {
           const child: any = {
-            name: data.objectName,
-            path: data.folder,
-            key: data.id,
-            type: data.objectType,
-            deleted: data.deleted,
-            deployed: data.deployed,
-            released: data.released,
-            valid: data.valid,
-            deploymentId: data.deploymentId,
-            deployablesVersions: data.deployablesVersions,
-            releasableVersions: data.releasableVersions,
+            name: item.objectName,
+            path: item.folder,
+            key: item.id,
+            type: item.objectType,
+            deleted: item.deleted,
+            deployed: item.deployed,
+            released: item.released,
+            valid: item.valid,
+            deploymentId: item.deploymentId,
+            deployablesVersions: item.deployablesVersions,
+            releasableVersions: item.releasableVersions,
             isLeaf: true
           };
           tempArr.push(child);
         });
-      } else {
-        temp.forEach(data => {
-          if (data.deleted) {
-            folderArr.push({
-              name: data.objectName,
-              path: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-              key: data.folder + (data.folder === '/' ? '' : '/') + data.objectName,
-              isFolder: true,
-              isLeaf: true,
-              deleted: data.deleted,
-              children: []
-            });
-          }
-        });
+
       }
+      data.children = tempArr.concat(data.children);
+      delete data.deployables;
+      delete data.releasables;
     }
-    return tempArr.concat(folderArr);
   }
 
-  private checkAndAddFolder(mainPath, treeArr): void {
-    let node: any;
-
-    function recursive(path, nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
-            node = nodes[i];
+  checkHalfCheckBox(parentNode: any, isCheck: any): boolean {
+    let flag = true;
+    for (const i in parentNode.children) {
+      if (parentNode.children[i]) {
+        if (parentNode.children[i].origin.type) {
+          if ((isCheck && !parentNode.children[i].isChecked) || (!isCheck && parentNode.children[i].isChecked)) {
+            flag = false;
             break;
           }
-          if (nodes[i].children) {
-            recursive(path, nodes[i].children);
-          }
         }
-      }
-    }
-
-    recursive(mainPath, treeArr);
-
-    if (node) {
-      let falg = false;
-      for (let x = 0; x < node.children.length; x++) {
-        if (!node.children[x].type && !node.children[x].object && node.children[x].path === mainPath) {
-          falg = true;
+        if (parentNode.children[i].origin.isFolder) {
           break;
         }
-      }
-      if (!falg) {
-        node.isLeaf = false;
-        node.children.push({
-          name: mainPath.substring(mainPath.lastIndexOf('/') + 1),
-          path: mainPath,
-          key: mainPath,
-          isFolder: true,
-          children: []
-        });
-      }
-    }
-  }
-
-  checkHalfCheckBox(parentNode, isCheck): boolean {
-    let flag = true;
-    for (let i = 0; i < parentNode.children.length; i++) {
-      if (parentNode.children[i].origin.type) {
-        if ((isCheck && !parentNode.children[i].isChecked) || (!isCheck && parentNode.children[i].isChecked)) {
-          flag = false;
-          break;
-        }
-      }
-      if (parentNode.children[i].origin.isFolder) {
-        break;
       }
     }
     return flag;
   }
 
-  checkAndUpdateVersionList(data): void {
+  checkAndUpdateVersionList(data: any): void {
     data.isCall = true;
     for (let i = 0; i < data.children.length; i++) {
       if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
@@ -226,10 +117,21 @@ export class InventoryService {
     }
   }
 
-  isControllerObject(type): boolean {
+  isControllerObject(type: string): boolean {
     return type === InventoryObject.WORKFLOW || type === InventoryObject.NOTICEBOARD
       || type === InventoryObject.LOCK || type === InventoryObject.FILEORDERSOURCE || type === InventoryObject.JOBRESOURCE;
   }
 
+  preselected(node: any): void {
+    node.checked = true;
+    for (let i = 0; i < node.children.length; i++) {
+      if (node.children[i].type) {
+        node.children[i].checked = node.checked;
+      }
+      if (!node.children[i].type && !node.children[i].object) {
+        break;
+      }
+    }
+  }
 }
 

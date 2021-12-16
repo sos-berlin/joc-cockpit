@@ -1216,7 +1216,6 @@
           "mailTo": "E-Mail senden an",
           "mailCC": "Kopie der E-Mail senden an",
           "mailBcc": "Blindkopie der E-Mail senden an",
-          "suppress": "Versand von E-Mail unterdrücken",
           "mailOn": "Mail On"
         },
         "addOrder": {
@@ -2104,7 +2103,6 @@
     "label.mailTo": "E-Mail senden an",
     "label.mailCC": "Kopie senden an",
     "label.mailBcc": "Blindkopie senden an",
-    "label.suppress": "E-Mail Versand unterdrücken",
     "label.mailOn": "Mail bei",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",

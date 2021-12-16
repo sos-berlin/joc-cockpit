@@ -1216,7 +1216,6 @@
           "mailTo": "Envoyer l'e-mail à",
           "mailCC": "Envoyer une copie de l'e-mail à",
           "mailBcc": "Envoyer une copie carbone invisible de l'e-mail à",
-          "suppress": "Supprimer l'envoi d'e-mails",
           "mailOn": "Mail On"
         },
         "addOrder": {
@@ -2104,7 +2103,6 @@
     "label.mailTo": "Envoyer un e-mail à",
     "label.mailCC": "Envoyer une copie à",
     "label.mailBcc": "Envoyer une copie cachée à",
-    "label.suppress": "Supprimer l'envoi d'e-mails",
     "label.mailOn": "Mail en cas de",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",

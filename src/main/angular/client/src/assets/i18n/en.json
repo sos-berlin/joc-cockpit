@@ -1216,7 +1216,6 @@
           "mailTo": "Send e-mail to",
           "mailCC": "Send e-mail copy to",
           "mailBcc": "Send e-mail blind copy to",
-          "suppress": "Suppress sending of e-mails",
           "mailOn": "Mail On"
         },
         "addOrder": {
@@ -2104,7 +2103,6 @@
     "label.mailTo": "Mail To",
     "label.mailCC": "Mail Cc",
     "label.mailBcc": "Mail Bcc",
-    "label.suppress": "Suppress Mail",
     "label.mailOn": "Mail on",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",

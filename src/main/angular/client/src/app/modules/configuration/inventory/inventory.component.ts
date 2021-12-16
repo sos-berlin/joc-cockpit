@@ -182,9 +182,8 @@ export class DeployComponent implements OnInit {
   @Input() data: any;
   @Input() isRemove: any;
   selectedSchedulerIds = [];
-  actualResult = [];
   loading = true;
-  nodes: any = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
+  nodes: any = [];
   object: any = {
     isRecursive: false,
     delete: [],
@@ -192,7 +191,6 @@ export class DeployComponent implements OnInit {
     store: {draftConfigurations: [], deployConfigurations: []},
     deleteObj: {deployConfigurations: []}
   };
-  isExpandAll = false;
   submitted = false;
   comments: any = {radio: 'predefined'};
   isDeleted = false;
@@ -206,34 +204,37 @@ export class DeployComponent implements OnInit {
       this.isDeleted = true;
     }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    this.buildTree();
+    this.buildTree(this.path);
   }
 
-  handleRecursive(): void{
+  handleRecursive(): void {
     this.ref.detectChanges();
   }
 
   expandAll(): void {
-    this.isExpandAll = true;
-    const self = this;
+    this.buildTree(this.path, null, () => {
+      const self = this;
 
-    function recursive(node) {
-      for (let i = 0; i < node.length; i++) {
-        if (node[i].children && node[i].children.length > 0) {
-          if (!node[i].isCall) {
-            self.inventoryService.checkAndUpdateVersionList(node[i]);
+      function recursive(node): void {
+        for (const i in node) {
+          if (!node[i].isLeaf) {
+            node[i].expanded = true;
           }
-          recursive(node[i].children);
+          if (node[i].children && node[i].children.length > 0) {
+            if (!node[i].isCall) {
+              self.inventoryService.checkAndUpdateVersionList(node[i]);
+            }
+            recursive(node[i].children);
+          }
         }
       }
-    }
 
-    recursive(this.nodes);
-    this.ref.detectChanges();
+      recursive(this.nodes);
+      this.ref.detectChanges();
+    });
   }
 
   collapseAll(): void {
-    this.isExpandAll = false;
     this.expandCollapseRec(this.nodes);
     this.ref.detectChanges();
   }
@@ -258,7 +259,7 @@ export class DeployComponent implements OnInit {
           if (node.children[i].origin.type) {
             node.children[i].isChecked = node.isChecked;
           }
-          if (node.children[i].origin.isFolder) {
+          if (!node.children[i].origin.object && !node.children[i].origin.type) {
             break;
           }
         }
@@ -266,15 +267,14 @@ export class DeployComponent implements OnInit {
     }
   }
 
-  buildTree(): void {
+  buildTree(path, merge = null, cb = null): void {
     const obj: any = {
-      folder: this.path || '/',
-      recursive: true,
+      folder: path || '/',
+      recursive: !!cb,
       onlyValidObjects: true,
       withRemovedObjects: true
     };
     if (this.data && this.data.object) {
-      obj.recursive = false;
       obj.objectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
     }
     if (!this.isRemove) {
@@ -285,25 +285,68 @@ export class DeployComponent implements OnInit {
       }
     }
     if (this.isRemove) {
-      obj.recursive = false;
       obj.withRemovedObjects = false;
       obj.withoutDrafts = true;
       obj.latest = true;
     }
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
-      this.actualResult = this.releasable ? res.releasables : res.deployables;
-      this.actualResult = this.inventoryService.sortList(this.actualResult);
-      this.filterTree();
+      const tree = this.coreService.prepareTree({
+        folders: [{
+          name: res.name,
+          path: res.path,
+          folders: res.folders,
+          deployables: res.deployables,
+          releasables: res.releasables
+        }]
+      }, false);
+      this.inventoryService.updateTree(tree[0]);
+      if (merge) {
+        merge.children = tree[0].children;
+        delete merge.loading;
+        this.nodes = [...this.nodes];
+        this.ref.detectChanges();
+      } else {
+        this.nodes = tree;
+        if (!cb) {
+          setTimeout(() => {
+            this.loading = false;
+            if (this.path) {
+              if (this.nodes.length > 0) {
+                this.nodes[0].expanded = true;
+              }
+            }
+            if (this.nodes.length > 0) {
+              this.inventoryService.preselected(this.nodes[0]);
+              this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+            }
+            this.ref.detectChanges();
+          }, 0);
+        } else {
+          cb();
+        }
+      }
     }, () => {
-      this.loading = false;
-      this.nodes = [];
+      if (merge) {
+        delete merge.loading;
+      } else {
+        if (!cb) {
+          this.loading = false;
+          this.nodes = [];
+        } else {
+          cb();
+        }
+      }
     });
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     const node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
+      if (!node.origin.type && !node.origin.object) {
+        node.origin.loading = true;
+        this.buildTree(node.origin.path, node.origin);
+      }
       this.inventoryService.checkAndUpdateVersionList(node.origin);
     }
   }
@@ -317,12 +360,12 @@ export class DeployComponent implements OnInit {
       selectFolder = false;
     }
 
-    function recursive(nodes) {
+    function recursive(nodes): void {
       for (let i = 0; i < nodes.length; i++) {
-        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].checked) {
+        if (!nodes[i].object && nodes[i].checked) {
           const objDep: any = {};
-          if (nodes[i].deployId || nodes[i].deploymentId || nodes[i].isFolder) {
-            if (nodes[i].isFolder) {
+          if (nodes[i].deployId || nodes[i].deploymentId || (!nodes[i].type && !nodes[i].object)) {
+            if ((!nodes[i].type && !nodes[i].object)) {
               if (selectFolder) {
                 objDep.configuration = {
                   path: nodes[i].path,
@@ -358,7 +401,7 @@ export class DeployComponent implements OnInit {
               }
               self.object.deleteObj.deployConfigurations.push(objDep);
             } else {
-              if (nodes[i].isFolder) {
+              if ((!nodes[i].type && !nodes[i].object)) {
                 let check1 = false;
                 let check2 = false;
                 let isEmpty = false;
@@ -398,7 +441,7 @@ export class DeployComponent implements OnInit {
             recursive(nodes[i].children);
           } else if (!self.object.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
-              if (nodes[i].children[j].isFolder && nodes[i].children[j].children) {
+              if (!nodes[i].children[j].object && !nodes[i].children[j].type && nodes[i].children[j].children) {
                 recursive(nodes[i].children[j].children);
               }
             }
@@ -419,8 +462,8 @@ export class DeployComponent implements OnInit {
 
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
-        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].checked) {
-          if (nodes[i].isFolder && nodes[i].deleted) {
+        if ((!nodes[i].object) && nodes[i].checked) {
+          if ((!nodes[i].type) && nodes[i].deleted) {
             self.object.delete.push({
               path: nodes[i].path,
               objectType: 'FOLDER'
@@ -553,78 +596,16 @@ export class DeployComponent implements OnInit {
   }
 
   private expandCollapseRec(node): void {
-    for (let i = 0; i < node.length; i++) {
+    for (const i in node) {
+      if (!node[i].isLeaf) {
+        node[i].expanded = true;
+      }
       if (node[i].children && node[i].children.length > 0) {
-        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
-        a.isExpanded = false;
         this.expandCollapseRec(node[i].children);
       }
     }
   }
 
-  private filterTree(): void {
-    this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
-    this.buildDeployablesTree(this.actualResult);
-    setTimeout(() => {
-      this.loading = false;
-      if (this.path) {
-        this.getChildTree();
-        if (this.nodes.length > 0) {
-          this.nodes[0].expanded = true;
-        }
-      }
-      if (this.nodes.length > 0) {
-        this.preselected(this.nodes[0]);
-        this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
-      }
-      this.ref.detectChanges();
-    }, 0);
-  }
-
-  private preselected(node): void {
-    node.checked = true;
-    for (let i = 0; i < node.children.length; i++) {
-      if (node.children[i].type) {
-        node.children[i].checked = node.checked;
-      }
-      if (node.children[i].isFolder) {
-        break;
-      }
-    }
-  }
-
-  private getChildTree(): void {
-    const self = this;
-
-    function recursive(nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        let flag = false;
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === self.path) {
-            flag = true;
-            self.nodes = nodes;
-            break;
-          }
-          if (!flag && nodes[i].children) {
-            recursive(nodes[i].children);
-          }
-        }
-      }
-    }
-
-    recursive(this.nodes);
-  }
-
-  private buildDeployablesTree(result): void {
-    if (result && result.length > 0) {
-      const arr = groupBy(sortBy(result, 'folder'), (res) => {
-        return res.folder;
-      });
-      this.inventoryService.generateTree(arr, this.nodes);
-    } else {
-      this.nodes = [];
-    }
-  }
 }
 
 @Component({
@@ -812,10 +793,8 @@ export class ExportComponent implements OnInit {
   @Input() preferences;
   @Input() origin: any;
   @Input() display: any;
-  actualResult = [];
   loading = true;
-  nodes: any = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
-  isExpandAll = false;
+  nodes: any = [];
   submitted = false;
   comments: any = {radio: 'predefined'};
   inValid = false;
@@ -852,13 +831,17 @@ export class ExportComponent implements OnInit {
       if (this.origin.dailyPlan || (this.origin.object &&
         (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')))) {
         this.exportType = this.origin.object || 'DAILYPLAN';
+        this.filter.controller = false;
+        this.filter.deploy = false;
       } else {
         if (this.origin.controller || this.origin.object) {
           this.exportType = this.origin.object || 'CONTROLLER';
+          this.filter.dailyPlan = false;
+          this.filter.release = false;
         }
       }
     }
-    this.buildTree();
+    this.buildTree(this.path);
   }
 
   checkFileName(): void {
@@ -876,18 +859,17 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  buildTree(): void {
+  buildTree(path, merge = null, cb = null): void {
     const obj: any = {
-      folder: this.path || '/',
-      onlyValidObjects: false,
+      folder: path || '/',
+      onlyValidObjects: this.filter.valid,
+      recursive: false,
+      withoutDrafts: !this.filter.draft,
       withoutRemovedObjects: true
     };
-
     const APIs = [];
-    if (this.exportType === 'BOTH') {
-      obj.recursive = true;
-      obj.withoutReleased = false;
-      obj.withoutDrafts = false;
+    if (this.filter.controller && this.filter.dailyPlan) {
+      obj.withoutReleased = !this.filter.release;
       APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
         catchError(error => of(error))
       ));
@@ -895,140 +877,140 @@ export class ExportComponent implements OnInit {
         catchError(error => of(error))
       ));
     } else {
-      if (this.exportType === 'DAILYPLAN' || this.exportType === InventoryObject.SCHEDULE || this.exportType === InventoryObject.INCLUDESCRIPT || this.exportType.match('CALENDAR')) {
-        this.filter.controller = false;
-        this.filter.deploy = false;
-      } else if (this.exportType === 'CONTROLLER') {
-        this.filter.dailyPlan = false;
-        this.filter.release = false;
+      if (this.origin && this.origin.object) {
+        obj.objectTypes = this.origin.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.origin.object];
       }
-      if (this.exportType === 'CONTROLLER' || this.exportType === 'DAILYPLAN') {
-        obj.recursive = true;
-      } else {
-        obj.objectTypes = this.exportType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.exportType];
-      }
-      if (this.exportType === 'DAILYPLAN' || this.exportType === InventoryObject.SCHEDULE || this.exportType === InventoryObject.INCLUDESCRIPT || this.exportType.match('CALENDAR')) {
-        obj.withoutReleased = false;
-        obj.withoutDrafts = false;
+      if (this.filter.dailyPlan) {
+        obj.withoutReleased = !this.filter.release;
         APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
           catchError(error => of(error))
         ));
       } else {
-        obj.withVersions = true;
+        obj.withVersions = !this.filter.deploy;
         APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
           catchError(error => of(error))
         ));
       }
     }
     forkJoin(APIs).subscribe(res => {
-      this.actualResult = [];
-      res.forEach((data: any) => {
-        if (data.releasables) {
-          this.actualResult = this.actualResult.concat(data.releasables);
-        } else if (data.deployables) {
-          this.actualResult = this.actualResult.concat(data.deployables);
+      const mergeObj = res.length > 1 ? this.mergeDeep(res[0], res[1]) : res[0];
+      const tree = this.coreService.prepareTree({
+        folders: [{
+          name: mergeObj.name,
+          path: mergeObj.path,
+          folders: mergeObj.folders,
+          deployables: mergeObj.deployables,
+          releasables: mergeObj.releasables
+        }]
+      }, false);
+      this.inventoryService.updateTree(tree[0]);
+      if (merge) {
+        merge.children = tree[0].children;
+        delete merge.loading;
+        this.nodes = [...this.nodes];
+      } else {
+        this.nodes = tree;
+        if (!cb) {
+          setTimeout(() => {
+            this.loading = false;
+            if (this.nodes.length > 0) {
+              this.nodes[0].expanded = true;
+              this.inventoryService.preselected(this.nodes[0]);
+              this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+            }
+            this.nodes = [...this.nodes];
+          }, 0);
+        } else {
+          cb();
         }
-      });
-      this.actualResult = this.inventoryService.sortList(this.actualResult);
-      this.filterList();
+      }
     }, () => {
-      this.loading = false;
-      this.nodes = [];
+      if (merge) {
+        delete merge.loading;
+      } else {
+        if (!cb) {
+          this.loading = false;
+          this.nodes = [];
+        } else {
+          cb();
+        }
+      }
     });
+  }
+
+  private mergeDeep(deployables, releasables): any {
+    function recursive(sour, dest): void {
+      if (!sour.deployables) {
+        sour.deployables = [];
+      }
+      sour.deployables = sour.deployables.concat(dest.releasables || []);
+      for (const i in sour.folders) {
+        for (const j in dest.folders) {
+          if (sour.folders[i].path === dest.folders[j].path) {
+            recursive(sour.folders[i], dest.folders[j]);
+            dest.folders.splice(j, 1);
+            break;
+          }
+        }
+      }
+      if (dest.folders.length > 0) {
+        sour.folders = sour.folders.concat(dest.folders);
+      }
+    }
+
+    recursive(deployables, releasables);
+    return deployables;
   }
 
   onchangeSigning(): void {
     if (this.exportObj.forSigning) {
       this.filter.valid = true;
     }
-    this.filterList();
-  }
-
-  expandAll(): void {
-    this.isExpandAll = true;
-    const self = this;
-    function recursive(node): void {
-      for (let i = 0; i < node.length; i++) {
-        if (node[i].children && node[i].children.length > 0) {
-          if (!node[i].isCall) {
-            self.inventoryService.checkAndUpdateVersionList(node[i]);
-          }
-          recursive(node[i].children);
-        }
-      }
-    }
-    recursive(this.nodes);
-  }
-
-  collapseAll(): void {
-    this.isExpandAll = false;
-    this.expandCollapseRec(this.nodes);
   }
 
   filterList(): void {
-    this.nodes = [{path: '/', key: '/', name: '/', children: [], isFolder: true}];
-    const arr = this.actualResult.filter((value) => {
-      if (value.objectType === 'FOLDER') {
-        return false;
-      }
+    this.nodes = [];
+    if (!this.filter.controller && !this.filter.dailyPlan) {
+      return;
+    } else {
+      this.loading = true;
+      this.buildTree(this.path);
+    }
+  }
 
-      if (!this.filter.controller && value.objectType !== InventoryObject.SCHEDULE && value.objectType !== InventoryObject.INCLUDESCRIPT && !value.objectType.match(/CALENDAR/)) {
-        return false;
-      }
-      if (!this.filter.dailyPlan && (value.objectType === InventoryObject.SCHEDULE || value.objectType === InventoryObject.INCLUDESCRIPT || value.objectType.match(/CALENDAR/))) {
-        return false;
-      }
+  expandAll(): void {
+    this.buildTree(this.path, null, () => {
+      const self = this;
 
-      if (this.exportObj.forSigning) {
-        if (!(value.objectType === InventoryObject.SCHEDULE || value.objectType === InventoryObject.INCLUDESCRIPT || value.objectType.match(/CALENDAR/))) {
-          if (this.filter.draft && (value.deployed === false || value.released === false)) {
-            return !(this.filter.valid && !value.valid);
+      function recursive(node): void {
+        for (const i in node) {
+          if (!node[i].isLeaf) {
+            node[i].expanded = true;
           }
-          return !!(this.filter.deploy && (value.deployed || value.released));
-        } else {
-          return false;
-        }
-      } else {
-        if (this.filter.draft) {
-          let flag = !(this.filter.valid && !value.valid);
-          if (this.filter.deploy && this.filter.release) {
-
-          } else {
-            if (flag && !this.filter.deploy && value.deployed) {
-              flag = false;
-            } else if (flag && !this.filter.release && value.released) {
-              flag = false;
+          if (node[i].children && node[i].children.length > 0) {
+            if (!node[i].isCall) {
+              self.inventoryService.checkAndUpdateVersionList(node[i]);
             }
+            recursive(node[i].children);
           }
-          return flag;
-        } else if (this.filter.deploy && this.filter.release) {
-          return !!(value.deployed || value.released);
-        } else if (this.filter.deploy && !this.filter.release) {
-          return value.deployed;
-        } else if (!this.filter.deploy && this.filter.release) {
-          return value.released;
         }
       }
+
+      recursive(this.nodes);
     });
-    this.buildDeployablesTree(arr);
-    setTimeout(() => {
-      this.loading = false;
-      if (this.path) {
-        this.getChildTree();
-        if (this.nodes.length > 0) {
-          this.nodes[0].expanded = true;
-        }
-      }
-      if (this.nodes.length > 0) {
-        this.preselected(this.nodes[0]);
-        this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
-      }
-    }, 0);
+  }
+
+  collapseAll(): void {
+    this.expandCollapseRec(this.nodes);
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     const node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
+      if (!node.origin.type && !node.origin.object) {
+        node.origin.loading = true;
+        this.buildTree(node.origin.path, node.origin);
+      }
       this.inventoryService.checkAndUpdateVersionList(node.origin);
     }
   }
@@ -1061,7 +1043,7 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  getJSObject() {
+  getJSObject(): void {
     const self = this;
     this.object = {draftConfigurations: [], releaseDraftConfigurations: [], deployConfigurations: [], releasedConfigurations: []};
     let selectFolder = true;
@@ -1069,11 +1051,11 @@ export class ExportComponent implements OnInit {
       selectFolder = false;
     }
 
-    function recursive(nodes) {
+    function recursive(nodes): void {
       for (let i = 0; i < nodes.length; i++) {
-        if ((nodes[i].type || nodes[i].isFolder) && nodes[i].checked) {
+        if (!nodes[i].object && nodes[i].checked) {
           const objDep: any = {};
-          if (nodes[i].isFolder) {
+          if (!nodes[i].type) {
             if (selectFolder) {
               objDep.configuration = {
                 path: nodes[i].path,
@@ -1228,58 +1210,15 @@ export class ExportComponent implements OnInit {
 
   private expandCollapseRec(node): void {
     for (let i = 0; i < node.length; i++) {
+      if (!node[i].isLeaf) {
+        node[i].expanded = true;
+      }
       if (node[i].children && node[i].children.length > 0) {
-        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
-        a.isExpanded = false;
         this.expandCollapseRec(node[i].children);
       }
     }
   }
 
-  private preselected(node): void {
-    node.checked = true;
-    for (let i = 0; i < node.children.length; i++) {
-      if (node.children[i].type) {
-        node.children[i].checked = node.checked;
-      }
-      if (node.children[i].isFolder) {
-        break;
-      }
-    }
-  }
-
-  private getChildTree(): void {
-    const self = this;
-
-    function recursive(nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        let flag = false;
-        if (!nodes[i].type && !nodes[i].object) {
-          if (nodes[i].path === self.path) {
-            flag = true;
-            self.nodes = nodes;
-            break;
-          }
-          if (!flag && nodes[i].children) {
-            recursive(nodes[i].children);
-          }
-        }
-      }
-    }
-
-    recursive(this.nodes);
-  }
-
-  private buildDeployablesTree(result): void {
-    if (result && result.length > 0) {
-      const arr = groupBy(sortBy(result, 'folder'), (res) => {
-        return res.folder;
-      });
-      this.inventoryService.generateTree(arr, this.nodes);
-    } else {
-      this.nodes = [];
-    }
-  }
 }
 
 @Component({
@@ -1291,9 +1230,8 @@ export class SetVersionComponent implements OnInit {
   @Input() preferences;
   @Input() schedulerIds;
   @Input() display: any;
-  nodes: any = [{key: '/', path: '/', name: '/', children: [], isFolder: true}];
+  nodes: any = [];
   version = {type: 'setOneVersion', name: ''};
-  isExpandAll = false;
   loading = true;
   comments: any = {radio: 'predefined'};
   object: any = {
@@ -1310,12 +1248,11 @@ export class SetVersionComponent implements OnInit {
   }
 
   expandAll(): void {
-    this.isExpandAll = true;
+
   }
 
   // Collapse all Node
   collapseAll(): void {
-    this.isExpandAll = false;
     this.expandCollapseRec(this.nodes);
   }
 
@@ -1327,13 +1264,21 @@ export class SetVersionComponent implements OnInit {
       withoutRemovedObjects: true,
       withVersions: true
     }).subscribe((res: any) => {
-      this.buildDeployablesTree(this.inventoryService.sortList(res.deployables));
+      const tree = this.coreService.prepareTree({
+        folders: [{
+          name: res.name,
+          path: res.path,
+          folders: res.folders,
+          deployables: res.deployables,
+          releasables: res.releasables
+        }]
+      }, false);
+      this.inventoryService.updateTree(tree[0]);
+      this.nodes = tree;
       if (this.nodes.length > 0) {
         this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
       }
-      setTimeout(() => {
-        this.loading = false;
-      }, 0);
+      this.loading = false;
     }, () => {
       this.nodes = [];
       this.loading = false;
@@ -1476,20 +1421,12 @@ export class SetVersionComponent implements OnInit {
 
   private expandCollapseRec(node): void {
     for (let i = 0; i < node.length; i++) {
+      if (!node[i].isLeaf) {
+        node[i].expanded = true;
+      }
       if (node[i].children && node[i].children.length > 0) {
-        const a = this.treeCtrl.getTreeNodeByKey(node[i].key);
-        a.isExpanded = false;
         this.expandCollapseRec(node[i].children);
       }
-    }
-  }
-
-  private buildDeployablesTree(result): void {
-    if (result && result.length > 0) {
-      const arr = groupBy(sortBy(result, 'folder'), (res) => {
-        return res.folder;
-      });
-      this.inventoryService.generateTree(arr, this.nodes);
     }
   }
 }

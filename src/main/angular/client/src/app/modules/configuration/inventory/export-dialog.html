@@ -11,7 +11,7 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
-    <div *ngIf="actualResult.length>0 && !loading">
+    <div>
       <div class="hide" [ngClass]="{'show': display}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
@@ -86,11 +86,11 @@
           <label class="m-l-md" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
             {{'inventory.export.label.draft'| translate}}
           </label>
-          <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()"
+          <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" [disabled]="!filter.controller" (ngModelChange)="filterList()"
             *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR'))">
             {{'inventory.export.label.deployed'| translate}}
           </label>
-          <label class="m-l-md" nz-checkbox name="release" [disabled]="exportObj.forSigning" [(ngModel)]="filter.release" (ngModelChange)="filterList()"
+          <label class="m-l-md" nz-checkbox name="release" [disabled]="exportObj.forSigning || !filter.dailyPlan" [(ngModel)]="filter.release" (ngModelChange)="filterList()"
                  *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR')">
             {{'inventory.export.label.released'| translate}}
           </label>
@@ -114,7 +114,7 @@
           </a>
         </div>
       </div>
-      <div class="row">
+      <div class="row" *ngIf="nodes.length>0">
         <div class="col-md-12">
           <nz-tree
             #treeCtrl
@@ -122,13 +122,13 @@
             [nzCheckStrictly]="!exportObj.isRecursive"
             nzNoAnimation
             [nzData]="nodes"
-            [nzExpandAll]="isExpandAll"
             [nzTreeTemplate]="nzTreeTemplate"
             (nzExpandChange)="getDeploymentVersion($event)"
             (nzCheckBoxChange)="checkBoxChange($event)"
           ></nz-tree>
           <ng-template #nzTreeTemplate let-node>
             <div class="node-wrapper">
+               <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
               <div class="node-content-wrapper2" [ngClass]="{'m-t-xs' :node.origin.object}">
                 <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                 <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
@@ -197,7 +197,7 @@
         </div>
       </div>
     </div>
-    <div class="m-t-md" *ngIf="nodes.length===0">
+    <div class="m-t-md" *ngIf="nodes.length===0 && !loading">
       <app-empty-data></app-empty-data>
     </div>
     <div class="text-center m-t-md" *ngIf="loading">
