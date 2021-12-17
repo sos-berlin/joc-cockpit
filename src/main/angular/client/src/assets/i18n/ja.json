@@ -2179,6 +2179,7 @@
     "placeholder.offset": "コンマ区切りでh/m/sを入力してください",
     "placeholder.duration": "d/w/m/y/hか、hh:mm:ss、secondsで入力してください",
     "placeholder.durationPeriod": "w/d/h/mか、hh:mm:ss、hh:mm:ss-hh:mm:ss、secondsで入力してください",
+    "placeholder.durationWithPercentage": "Enter value as hh:mm:ss or seconds or percentage",
     "placeholder.retryDelay": "h/m/sで入力",
     "placeholder.enterPositiveNumber": "コンマ区切りで正数を入力",
     "placeholder.expression": "条件式を入力",

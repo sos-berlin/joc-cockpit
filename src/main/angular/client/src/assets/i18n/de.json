@@ -2179,6 +2179,7 @@
     "placeholder.offset": "Werte als Stunden/Minuten/Sekunden kommasepariert ahgeben",
     "placeholder.duration": "Wert im Format eingeben: d/w/m/y/h oder hh:mm:ss oder Sekunden",
     "placeholder.durationPeriod": "Wert im Format eingeben: w/d/h/m oder hh:mm:ss oder hh:mm:ss-hh:mm:ss oder Sekunden",
+    "placeholder.durationWithPercentage": "Enter value as hh:mm:ss or seconds or percentage",
     "placeholder.retryDelay": "Wert im Format eingeben: h/m/s",
     "placeholder.enterPositiveNumber": "Nur positive Zahlen durch Komma getrennt angeben",
     "placeholder.expression": "Ausdruck angeben",

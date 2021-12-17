@@ -1834,10 +1834,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.executable.login = {};
     }
 
-    if (!this.selectedNode.job.notification){
+    if (!this.selectedNode.job.notification) {
       this.selectedNode.job.notification = {
         mail: {}
       };
+    } else if (!this.selectedNode.job.notification.mail) {
+      this.selectedNode.job.notification.mail = {};
     }
 
     if (this.selectedNode.job.timeout) {
@@ -1845,12 +1847,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.selectedNode.job.graceTimeout) {
       this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
-    }
-    if (this.selectedNode.job.warnIfShorter) {
-      this.selectedNode.job.warnIfShorter1 = this.workflowService.convertDurationToString(this.selectedNode.job.warnIfShorter);
-    }
-    if (this.selectedNode.job.warnIfLonger) {
-      this.selectedNode.job.warnIfLonger1 = this.workflowService.convertDurationToString(this.selectedNode.job.warnIfLonger);
     }
     if (this.selectedNode.job.defaultArguments && this.selectedNode.job.defaultArguments.length === 0) {
       this.addVariable();
@@ -2305,6 +2301,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           graceTimeout: v.graceTimeout,
           warnIfShorter: v.warnIfShorter,
           warnIfLonger: v.warnIfLonger,
+          notification: v.notification,
           parallelism: v.parallelism
         };
       }
@@ -8268,20 +8265,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     } else {
       delete job.graceTimeout;
     }
-    if (job.warnIfShorter1) {
-      job.warnIfShorter = this.workflowService.convertStringToDuration(job.warnIfShorter1);
-    } else {
-      delete job.warnIfShorter;
-    }
-    if (job.warnIfLonger1) {
-      job.warnIfLonger = this.workflowService.convertStringToDuration(job.warnIfLonger1);
-    } else {
-      delete job.warnIfLonger;
-    }
     delete job.timeout1;
     delete job.graceTimeout1;
-    delete job.warnIfShorter1;
-    delete job.warnIfLonger1;
     let flag = true;
     let isChange = true;
     for (let i = 0; i < this.jobs.length; i++) {

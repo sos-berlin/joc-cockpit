@@ -602,8 +602,8 @@
                  translate>workflow.label.warnIfShorter</label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid)}">
             <label class="w-full">
-              <input autocomplete="off" #warnIfShorter="ngModel" type="text" class="form-control" name="warnIfShorter" placeholder="{{'workflow.placeholder.duration' | translate}}"
-                     validateDurtionReqex [(ngModel)]="selectedNode.job.warnIfShorter1">
+              <input autocomplete="off" #warnIfShorter="ngModel" type="text" class="form-control" name="warnIfShorter" placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
+                     validateDurtionWithPercentageReqex [(ngModel)]="selectedNode.job.warnIfShorter">
             </label>
           </div>
         </div>
@@ -612,8 +612,8 @@
                  translate>workflow.label.warnIfLonger</label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid)}">
             <label class="w-full">
-              <input autocomplete="off" #warnIfLonger="ngModel" type="text" class="form-control" name="warnIfLonger" placeholder="{{'workflow.placeholder.duration' | translate}}"
-                     validateDurtionReqex  [(ngModel)]="selectedNode.job.warnIfLonger1">
+              <input autocomplete="off" #warnIfLonger="ngModel" type="text" class="form-control" name="warnIfLonger" placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
+                     validateDurtionWithPercentageReqex  [(ngModel)]="selectedNode.job.warnIfLonger">
             </label>
           </div>
         </div>

@@ -944,16 +944,18 @@ export class ExportComponent implements OnInit {
         sour.deployables = [];
       }
       sour.deployables = sour.deployables.concat(dest.releasables || []);
-      for (const i in sour.folders) {
-        for (const j in dest.folders) {
-          if (sour.folders[i].path === dest.folders[j].path) {
-            recursive(sour.folders[i], dest.folders[j]);
-            dest.folders.splice(j, 1);
-            break;
+      if (dest.folders && dest.folders.length > 0) {
+        for (const i in sour.folders) {
+          for (const j in dest.folders) {
+            if (sour.folders[i].path === dest.folders[j].path) {
+              recursive(sour.folders[i], dest.folders[j]);
+              dest.folders.splice(j, 1);
+              break;
+            }
           }
         }
       }
-      if (dest.folders.length > 0) {
+      if (dest.folders && dest.folders.length > 0) {
         sour.folders = sour.folders.concat(dest.folders);
       }
     }

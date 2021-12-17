@@ -212,6 +212,33 @@ export class NumberArrayRegexValidator implements Validator {
 }
 
 @Directive({
+  selector: '[validateDurtionWithPercentageReqex]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationWithPercentageRegexValidator), multi: true}
+  ]
+})
+export class DurationWithPercentageRegexValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (v == '') {
+        return null;
+      }
+
+      if (/^([0-2][0-4]:[0-5][0-9]:[0-5][0-9])?([0-9]+s?)?([0-9]+%?)?\s*$/i.test(v)
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      invalidDuration: true
+    };
+  }
+}
+
+@Directive({
   selector: '[validateDurtionReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationRegexValidator), multi: true}
