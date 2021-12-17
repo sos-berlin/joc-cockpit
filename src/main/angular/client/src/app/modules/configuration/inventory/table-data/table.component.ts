@@ -14,7 +14,7 @@ import {InventoryObject} from '../../../../models/enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './table.component.html'
 })
-export class TableComponent implements OnDestroy{
+export class TableComponent implements OnDestroy {
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -281,6 +281,14 @@ export class TableComponent implements OnDestroy{
     this.dataService.reloadTree.next({deploy: data});
   }
 
+  synchronized(data): void {
+    this.dataService.reloadTree.next({synchronized: data});
+  }
+
+  revoke(data): void {
+    this.dataService.reloadTree.next({revoke: data});
+  }
+
   releaseObject(data): void {
     this.dataService.reloadTree.next({release: data});
   }
@@ -295,7 +303,7 @@ export class TableComponent implements OnDestroy{
       configuration.timeZone = this.preferences.zone;
     }
     const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.INCLUDESCRIPT
-      || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
+        || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
     if (!path) {
       return;
     }

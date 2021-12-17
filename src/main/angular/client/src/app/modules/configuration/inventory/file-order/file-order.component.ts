@@ -15,6 +15,7 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
 import {debounceTime} from 'rxjs/operators';
+import {InventoryService} from '../inventory.service';
 
 @Component({
   selector: 'app-file-order',
@@ -46,7 +47,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   private subject: Subject<string> = new Subject<string>();
   @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
-  constructor(private coreService: CoreService, private dataService: DataService, private ref: ChangeDetectorRef) {
+  constructor(private coreService: CoreService, private dataService: DataService,
+              private inventoryService: InventoryService, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.fileOrder.actual) {
@@ -149,9 +151,13 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
-    this.coreService.post(URL, {
+    const obj: any = {
       id: this.data.id
-    }).subscribe((res: any) => {
+    };
+    if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
+      obj.controllerId = this.schedulerId;
+    }
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();

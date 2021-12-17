@@ -7,6 +7,7 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {InventoryObject} from '../../../../models/enums';
+import {InventoryService} from '../inventory.service';
 
 @Component({
   selector: 'app-job-resource',
@@ -41,7 +42,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   subscription2: Subscription;
 
   constructor(private coreService: CoreService, private dataService: DataService,
-              private modal: NzModalService, private ref: ChangeDetectorRef) {
+              private modal: NzModalService, private ref: ChangeDetectorRef, private inventoryService: InventoryService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.jobResource.actual) {
@@ -519,9 +520,13 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   private getObject(): void {
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
-    this.coreService.post(URL, {
-      id: this.data.id,
-    }).subscribe((res: any) => {
+    const obj: any = {
+      id: this.data.id
+    };
+    if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
+      obj.controllerId = this.schedulerId;
+    }
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();

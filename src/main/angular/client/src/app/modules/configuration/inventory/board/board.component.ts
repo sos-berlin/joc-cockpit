@@ -6,6 +6,7 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {InventoryObject} from '../../../../models/enums';
+import {InventoryService} from '../inventory.service';
 
 @Component({
   selector: 'app-board',
@@ -34,7 +35,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private workflowService: WorkflowService,
+  constructor(private coreService: CoreService, private workflowService: WorkflowService, private inventoryService: InventoryService,
               private dataService: DataService, private ref: ChangeDetectorRef, private router: Router) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -83,9 +84,13 @@ export class BoardComponent implements OnChanges, OnDestroy {
 
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
-    this.coreService.post(URL, {
+    const obj: any = {
       id: this.data.id
-    }).subscribe((res: any) => {
+    };
+    if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
+      obj.controllerId = this.schedulerId;
+    }
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();

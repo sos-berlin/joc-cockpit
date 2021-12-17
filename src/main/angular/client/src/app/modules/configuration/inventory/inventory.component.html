@@ -7,6 +7,11 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" *ngIf="permission.joc">
+            <div class="inline valign">
+              <label nz-checkbox [(ngModel)]="inventoryService.checkDeploymentStatus.isChecked" name="current" (ngModelChange)="reloadTree(false)">
+                {{'inventory.button.checkDeploymentStatus' | translate}}
+              </label>
+            </div>
             <button class="btn btn-sm btn-grey m-l-12"
                     (click)="search()">
               <i class="fa fa-search"></i>&nbsp;
@@ -330,6 +335,14 @@
      || (node.origin.type && node.origin.type !== 'CALENDAR' && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'INCLUDESCRIPT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
       <a (click)="deployObject(node, false);" translate>inventory.button.deploy</a></li>
+    <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && node.origin.object !== 'CALENDAR' && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT')
+     || (node.origin.type && node.origin.type !== 'CALENDAR' && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'INCLUDESCRIPT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
+        [nzDisabled]="((node.origin.object && node.origin.children.length === 0)) || (node.origin.type && !node.origin.hasDeployments)">
+      <a (click)="synchronized(node);" translate>inventory.button.synchronized</a></li>
+    <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && node.origin.object !== 'CALENDAR' && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT')
+     || (node.origin.type && node.origin.type !== 'CALENDAR' && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'INCLUDESCRIPT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
+        [nzDisabled]="((node.origin.object && node.origin.children.length === 0)) || (node.origin.type && !node.origin.hasDeployments)">
+      <a (click)="revoke(node);" translate>inventory.button.revoke</a></li>
     <li nz-menu-item
         *ngIf="securityLevel !== 'HIGH' && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))">
       <a (click)="reDeployObject(node);" translate>inventory.button.redeploy</a></li>

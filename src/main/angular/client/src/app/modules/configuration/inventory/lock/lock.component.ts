@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
+import {InventoryService} from '../inventory.service';
 
 @Component({
   selector: 'app-lock',
@@ -29,7 +30,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   subscription2: Subscription;
 
   constructor(private coreService: CoreService, private dataService: DataService,
-              private ref: ChangeDetectorRef, private router: Router) {
+              private ref: ChangeDetectorRef, private router: Router, private inventoryService: InventoryService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.lock.actual) {
@@ -77,9 +78,13 @@ export class LockComponent implements OnChanges, OnDestroy {
 
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
-    this.coreService.post(URL, {
+    const obj: any = {
       id: this.data.id
-    }).subscribe((res: any) => {
+    };
+    if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
+      obj.controllerId = this.schedulerId;
+    }
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();

@@ -31,6 +31,7 @@ export class SingleDeployComponent implements OnInit {
   @Input() data;
   @Input() type;
   @Input() display: any;
+  @Input() isRevoke: boolean;
   selectedSchedulerIds = [];
   deployablesObject = [];
   loading = true;
@@ -82,7 +83,7 @@ export class SingleDeployComponent implements OnInit {
           };
         }
 
-        if (this.deployablesObject[i].deleted) {
+        if (this.deployablesObject[i].deleted || this.isRevoke) {
           if (!isEmpty(obj)) {
             self.object.delete.push(obj);
           } else if (objDep.configuration) {
@@ -118,8 +119,11 @@ export class SingleDeployComponent implements OnInit {
       }
       obj.store = this.object.store;
     }
-    if (this.object.delete.deployConfigurations.length > 0) {
+    if (!this.isRevoke && this.object.delete.deployConfigurations.length > 0) {
       obj.delete = this.object.delete;
+    }
+    if (this.isRevoke && this.object.delete.deployConfigurations.length > 0) {
+      obj.revoke = this.object.delete;
     }
     if (this.comments.comment) {
       obj.auditLog.comment = this.comments.comment;
@@ -131,11 +135,11 @@ export class SingleDeployComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
 
-    if (isEmpty(obj.store) && isEmpty(obj.delete)) {
+    if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
       this.submitted = false;
       return;
     }
-    this.coreService.post('inventory/deployment/deploy', obj).subscribe(() => {
+    this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe(() => {
       this.activeModal.close('ok');
     }, () => {
       this.submitted = false;
@@ -181,6 +185,7 @@ export class DeployComponent implements OnInit {
   @Input() display: any;
   @Input() data: any;
   @Input() isRemove: any;
+  @Input() isRevoke: boolean;
   selectedSchedulerIds = [];
   loading = true;
   nodes: any = [];
@@ -195,7 +200,7 @@ export class DeployComponent implements OnInit {
   comments: any = {radio: 'predefined'};
   isDeleted = false;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
               private authService: AuthService, private inventoryService: InventoryService) {
   }
 
@@ -274,35 +279,47 @@ export class DeployComponent implements OnInit {
       onlyValidObjects: true,
       withRemovedObjects: true
     };
-    if (this.data && this.data.object) {
-      obj.objectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
-    }
-    if (!this.isRemove) {
-      if (this.releasable) {
-        obj.withoutReleased = true;
-      } else {
-        obj.withVersions = true;
-      }
-    }
-    if (this.isRemove) {
-      obj.withRemovedObjects = false;
-      obj.withoutDrafts = true;
+    if (this.isRevoke) {
       obj.latest = true;
+    } else {
+      if (this.data && this.data.object) {
+        obj.objectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
+      }
+      if (!this.isRemove) {
+        if (this.releasable) {
+          obj.withoutReleased = true;
+        } else {
+          obj.withVersions = true;
+        }
+      }
+      if (this.isRemove) {
+        obj.withRemovedObjects = false;
+        obj.withoutDrafts = true;
+        obj.latest = true;
+      }
     }
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
-      const tree = this.coreService.prepareTree({
-        folders: [{
-          name: res.name,
-          path: res.path,
-          folders: res.folders,
-          deployables: res.deployables,
-          releasables: res.releasables
-        }]
-      }, false);
-      this.inventoryService.updateTree(tree[0]);
+      let tree = [];
+      if (res.folders && res.folders.length > 0 ||
+        ((res.deployables && res.deployables.length > 0) || (res.releasables && res.releasables.length > 0))) {
+        tree = this.coreService.prepareTree({
+          folders: [{
+            name: res.name,
+            path: res.path,
+            folders: res.folders,
+            deployables: res.deployables,
+            releasables: res.releasables
+          }]
+        }, false);
+        this.inventoryService.updateTree(tree[0]);
+      }
+
       if (merge) {
-        merge.children = tree[0].children;
+        if (tree.length > 0) {
+          merge.children = tree[0].children;
+          this.inventoryService.checkAndUpdateVersionList(tree[0]);
+        }
         delete merge.loading;
         this.nodes = [...this.nodes];
         this.ref.detectChanges();
@@ -395,7 +412,7 @@ export class DeployComponent implements OnInit {
             };
           }
           if (objDep.configuration) {
-            if (nodes[i].deleted) {
+            if (nodes[i].deleted || self.isRevoke) {
               if (objDep.configuration.objectType === 'FOLDER') {
                 objDep.configuration.recursive = true;
               }
@@ -510,8 +527,11 @@ export class DeployComponent implements OnInit {
         obj.store = this.object.store;
       }
 
-      if (this.object.deleteObj.deployConfigurations.length > 0) {
+      if (!this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
         obj.delete = this.object.deleteObj;
+      }
+      if (this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
+        obj.revoke = this.object.deleteObj;
       }
     } else if (this.releasable) {
       if (this.object.delete.length > 0) {
@@ -533,7 +553,7 @@ export class DeployComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
 
-    if (!this.releasable && isEmpty(obj.store) && isEmpty(obj.delete)) {
+    if (!this.releasable && isEmpty(obj.store) && isEmpty(obj.delete) && !this.isRevoke) {
       this.submitted = false;
       this.ref.detectChanges();
       return;
@@ -547,7 +567,7 @@ export class DeployComponent implements OnInit {
       }
     }
 
-    const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
+    const URL = this.releasable ? 'inventory/release' : this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe(() => {
       this.activeModal.close('ok');
     }, () => {
@@ -865,6 +885,7 @@ export class ExportComponent implements OnInit {
       onlyValidObjects: this.filter.valid,
       recursive: false,
       withoutDrafts: !this.filter.draft,
+      withoutDeployed: !this.filter.deploy,
       withoutRemovedObjects: true
     };
     const APIs = [];
@@ -894,18 +915,25 @@ export class ExportComponent implements OnInit {
     }
     forkJoin(APIs).subscribe(res => {
       const mergeObj = res.length > 1 ? this.mergeDeep(res[0], res[1]) : res[0];
-      const tree = this.coreService.prepareTree({
-        folders: [{
-          name: mergeObj.name,
-          path: mergeObj.path,
-          folders: mergeObj.folders,
-          deployables: mergeObj.deployables,
-          releasables: mergeObj.releasables
-        }]
-      }, false);
-      this.inventoryService.updateTree(tree[0]);
+      let tree = [];
+      if (mergeObj.folders && mergeObj.folders.length > 0 ||
+        ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
+        tree = this.coreService.prepareTree({
+          folders: [{
+            name: mergeObj.name,
+            path: mergeObj.path,
+            folders: mergeObj.folders,
+            deployables: mergeObj.deployables,
+            releasables: mergeObj.releasables
+          }]
+        }, false);
+        this.inventoryService.updateTree(tree[0]);
+      }
       if (merge) {
-        merge.children = tree[0].children;
+        if (tree.length > 0) {
+          merge.children = tree[0].children;
+          this.inventoryService.checkAndUpdateVersionList(tree[0]);
+        }
         delete merge.loading;
         this.nodes = [...this.nodes];
       } else {
@@ -1266,16 +1294,20 @@ export class SetVersionComponent implements OnInit {
       withoutRemovedObjects: true,
       withVersions: true
     }).subscribe((res: any) => {
-      const tree = this.coreService.prepareTree({
-        folders: [{
-          name: res.name,
-          path: res.path,
-          folders: res.folders,
-          deployables: res.deployables,
-          releasables: res.releasables
-        }]
-      }, false);
-      this.inventoryService.updateTree(tree[0]);
+      let tree = [];
+      if (res.folders && res.folders.length > 0 ||
+        ((res.deployables && res.deployables.length > 0) || (res.releasables && res.releasables.length > 0))) {
+        tree = this.coreService.prepareTree({
+          folders: [{
+            name: res.name,
+            path: res.path,
+            folders: res.folders,
+            deployables: res.deployables,
+            releasables: res.releasables
+          }]
+        }, false);
+        this.inventoryService.updateTree(tree[0]);
+      }
       this.nodes = tree;
       if (this.nodes.length > 0) {
         this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
@@ -2091,7 +2123,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     public coreService: CoreService,
     private dataService: DataService,
-    private inventoryService: InventoryService,
+    public inventoryService: InventoryService,
     private modal: NzModalService,
     private translate: TranslateService,
     private toasterService: ToasterService,
@@ -2122,6 +2154,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.paste(res.paste);
         } else if (res.deploy) {
           this.deployObject(res.deploy, false);
+        } else if (res.synchronized) {
+          this.synchronized(res.synchronized);
+        } else if (res.revoke) {
+          this.revoke(res.revoke);
         } else if (res.release) {
           this.releaseObject(res.release);
         } else if (res.restore) {
@@ -2178,6 +2214,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (!path) {
       this.isLoading = true;
     }
+
     this.coreService.post('tree', {
       forInventory: true,
       types: ['INVENTORY']
@@ -2597,11 +2634,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
         {name: 'Calendars', title: 'Calendars', object: 'CALENDAR', children: [], path: data.path, key: (KEY + 'Calendars$')}
       ];
     }
-
-    const URL = isTrash ? 'inventory/trash/read/folder' : 'inventory/read/folder';
-    this.coreService.post(URL, {
+    const obj: any = {
       path: data.path
-    }).subscribe((res: any) => {
+    };
+    if (this.inventoryService.checkDeploymentStatus.isChecked && !isTrash) {
+      obj.controllerId = this.schedulerIds.selected;
+    }
+    const URL = isTrash ? 'inventory/trash/read/folder' : 'inventory/read/folder';
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       for (let i = 0; i < controllerObj.controllerArr.length; i++) {
         let resObject;
         if (controllerObj.controllerArr[i].object === InventoryObject.WORKFLOW) {
@@ -3033,6 +3073,50 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: origin.path,
           data: origin,
           releasable
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    }
+  }
+
+  synchronized(node): void {
+    this.toasterService.pop('info', 'Not yet implement!', '');
+  }
+
+  revoke(node): void {
+    const origin = node.origin ? node.origin : node;
+    if (origin.type || this.inventoryService.isControllerObject(origin.objectType)) {
+      if (!node.origin) {
+        origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
+      }
+
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: SingleDeployComponent,
+        nzComponentParams: {
+          schedulerIds: this.getAllowedControllerOnly(),
+          display: this.preferences.auditLog,
+          data: origin,
+          isRevoke: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    } else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: DeployComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          schedulerIds: this.getAllowedControllerOnly(),
+          preferences: this.preferences,
+          display: this.preferences.auditLog,
+          path: origin.path,
+          data: origin,
+          isRevoke: true
         },
         nzFooter: null,
         nzClosable: false,

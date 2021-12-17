@@ -28,7 +28,10 @@ export class SettingModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.saveService.copiedSetting && this.saveService.copiedSetting.type && this.saveService.copiedSetting.name !== this.data.identityServiceName){
+    if (this.saveService.copiedSetting && this.saveService.copiedSetting.type &&
+      this.saveService.copiedSetting.name !== this.data.identityServiceName &&
+      (this.saveService.copiedSetting.type.indexOf(this.data.identityServiceType) > -1 ||
+        this.data.identityServiceType.indexOf(this.saveService.copiedSetting.type) > -1)) {
       this.isEnable = true;
     }
 

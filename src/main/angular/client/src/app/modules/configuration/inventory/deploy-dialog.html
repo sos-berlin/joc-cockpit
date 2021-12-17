@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span *ngIf="!releasable && !isRemove" translate>inventory.label.deploy</span>
+    <span *ngIf="!releasable && !isRemove && !isRevoke" translate>inventory.label.deploy</span>
+    <span *ngIf="isRevoke" translate>inventory.label.revoke</span>
     <span *ngIf="releasable && !isRemove" translate>inventory.label.release</span>
     <span *ngIf="isRemove" translate>inventory.label.remove</span>
     <span *ngIf="path">:
@@ -77,7 +78,7 @@
                     <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
                     <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o text-xs m-t-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'dark-blue' :node.origin.deploymentId}"></span>
+                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs m-t-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released)}"></span>
                     <span class="p-l-sm text-capitalize" *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
                     <span class="p-l-sm" *ngIf="!node.origin.object">{{node.origin.name}}</span>
                   </div>

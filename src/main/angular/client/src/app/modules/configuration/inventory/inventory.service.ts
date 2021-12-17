@@ -4,6 +4,9 @@ import {InventoryObject} from '../../../models/enums';
 
 @Injectable()
 export class InventoryService {
+  checkDeploymentStatus = {
+    isChecked : false
+  };
 
   sortList(arr: any[]): any {
     for (const i in arr) {
@@ -67,6 +70,7 @@ export class InventoryService {
             deployed: item.deployed,
             released: item.released,
             valid: item.valid,
+            syncState: item.syncState,
             deploymentId: item.deploymentId,
             deployablesVersions: item.deployablesVersions,
             releasableVersions: item.releasableVersions,

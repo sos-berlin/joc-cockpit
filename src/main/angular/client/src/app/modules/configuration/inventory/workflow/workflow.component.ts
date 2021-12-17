@@ -20,6 +20,7 @@ import {Subscription} from 'rxjs';
 import {isEmpty, isArray, isEqual, clone, extend, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {Router} from '@angular/router';
+import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
@@ -27,7 +28,7 @@ import {CoreService} from '../../../../services/core.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
-import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
+import {InventoryService} from '../inventory.service';
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -2263,7 +2264,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
-  constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService,
+  constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService, private inventoryService: InventoryService,
               public toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
@@ -3143,10 +3144,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.history = {past: [], present: {}, future: [], type: 'new'};
     this.isLoading = true;
     this.invalidMsg = '';
-    const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
-    this.coreService.post(URL, {
+    const obj: any = {
       id: this.data.id
-    }).subscribe((res: any) => {
+    };
+    if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
+      obj.controllerId = this.schedulerId;
+    }
+    const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
+    this.coreService.post(URL, obj).subscribe((res: any) => {
       this.isLoading = false;
       if (this.data.id === res.id) {
         if (this.data.deployed !== res.deployed) {
