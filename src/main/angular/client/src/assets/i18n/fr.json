@@ -1045,7 +1045,7 @@
     "button.convert": "Convertir",
     "button.cron": "Cron",
     "button.checkDeploymentStatus": "Vérifier le déploiement",
-    "button.synchronized": "Vérifier le déploiement",
+    "button.synchronized": "Synchroniser",
     "button.revoke": "Révoquer",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
