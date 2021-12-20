@@ -338,7 +338,7 @@
     <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && node.origin.object !== 'CALENDAR' && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT')
      || (node.origin.type && node.origin.type !== 'CALENDAR' && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'INCLUDESCRIPT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
         [nzDisabled]="((node.origin.object && node.origin.children.length === 0)) || (node.origin.type && !node.origin.hasDeployments)">
-      <a (click)="synchronized(node);" translate>inventory.button.synchronized</a></li>
+      <a (click)="synchronized(node);" translate>inventory.button.synchronize</a></li>
     <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && node.origin.object !== 'CALENDAR' && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT')
      || (node.origin.type && node.origin.type !== 'CALENDAR' && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'INCLUDESCRIPT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
         [nzDisabled]="((node.origin.object && node.origin.children.length === 0)) || (node.origin.type && !node.origin.hasDeployments)">

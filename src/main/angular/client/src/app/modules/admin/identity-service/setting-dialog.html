@@ -42,15 +42,19 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeystorePassword</label>
             <div class="col-sm-6">
-              <input type="password" class="form-control" name="iamVaultKeystorePassword"
+              <input type="{{!passwordFields.first ? 'password' : 'text'}}" class="form-control" name="iamVaultKeystorePassword"
                      [(ngModel)]="currentObj.iamVaultKeystorePassword">
+              <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
+                 (click)="passwordFields.first = !passwordFields.first"></i>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeyPassword</label>
             <div class="col-sm-6">
-              <input type="password" class="form-control" name="iamVaultKeyPassword"
+              <input type="{{!passwordFields.second ? 'password' : 'text'}}" class="form-control" name="iamVaultKeyPassword"
                      [(ngModel)]="currentObj.iamVaultKeyPassword">
+              <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.second ? 'fa-eye' : 'fa-eye-slash'"
+                 (click)="passwordFields.second = !passwordFields.second"></i>
             </div>
           </div>
           <div class="form-group row">
@@ -70,8 +74,10 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStorePassword</label>
             <div class="col-sm-6">
-              <input type="password" class="form-control" name="iamVaultTruststorePassword"
+              <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control" name="iamVaultTruststorePassword"
                      [(ngModel)]="currentObj.iamVaultTruststorePassword">
+              <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+                 (click)="passwordFields.third = !passwordFields.third"></i>
             </div>
           </div>
           <div class="form-group row">

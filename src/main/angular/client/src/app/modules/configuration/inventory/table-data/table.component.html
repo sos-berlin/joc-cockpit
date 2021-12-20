@@ -100,7 +100,7 @@
                     <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
                   </li>
                   <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments">
-                    <a (click)="synchronized(data)" translate>inventory.button.synchronized</a>
+                    <a (click)="synchronized(data)" translate>inventory.button.synchronize</a>
                   </li>
                   <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments">
                     <a (click)="revoke(data)" translate>inventory.button.revoke</a>

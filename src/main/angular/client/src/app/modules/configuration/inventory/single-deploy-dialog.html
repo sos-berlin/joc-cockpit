@@ -39,7 +39,7 @@
 
             <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesObject">
               <div>
-                <span class="fa fa-check-circle-o orange text-xs"
+                <span  class="fa fa-check-circle-o orange text-xs"
                        [ngClass]="{'fa-circle-o': !child.valid, 'fa-circle dark-blue' :child.deployed}" style="margin-top: 4px"></span>
                 <span class="p-l-sm">{{child.objectName | translate}}</span>
               </div>

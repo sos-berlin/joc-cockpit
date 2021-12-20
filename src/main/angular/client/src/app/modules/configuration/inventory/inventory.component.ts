@@ -5,7 +5,7 @@ import {FileUploader} from 'ng2-file-upload';
 import {ToasterService} from 'angular2-toaster';
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {TranslateService} from '@ngx-translate/core';
-import {isEmpty, sortBy, groupBy, isArray, clone, extend, isEqual} from 'underscore';
+import {isEmpty, sortBy, isArray, clone, extend, isEqual} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
 import {catchError} from 'rxjs/operators';
@@ -52,6 +52,10 @@ export class SingleDeployComponent implements OnInit {
 
   init(): void {
     const obj: any = {onlyValidObjects: true, withVersions: true, id: this.data.id};
+    if (this.isRevoke) {
+      obj.withoutDeployed = false;
+      obj.latest = true;
+    }
     this.getSingleObject(obj);
   }
 
@@ -123,7 +127,7 @@ export class SingleDeployComponent implements OnInit {
       obj.delete = this.object.delete;
     }
     if (this.isRevoke && this.object.delete.deployConfigurations.length > 0) {
-      obj.revoke = this.object.delete;
+      obj.deployConfigurations = this.object.delete.deployConfigurations;
     }
     if (this.comments.comment) {
       obj.auditLog.comment = this.comments.comment;
@@ -280,6 +284,7 @@ export class DeployComponent implements OnInit {
       withRemovedObjects: true
     };
     if (this.isRevoke) {
+      obj.withoutDeployed = false;
       obj.latest = true;
     } else {
       if (this.data && this.data.object) {
@@ -531,7 +536,7 @@ export class DeployComponent implements OnInit {
         obj.delete = this.object.deleteObj;
       }
       if (this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
-        obj.revoke = this.object.deleteObj;
+        obj.deployConfigurations = this.object.deleteObj.deployConfigurations;
       }
     } else if (this.releasable) {
       if (this.object.delete.length > 0) {

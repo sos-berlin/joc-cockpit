@@ -22,6 +22,11 @@ export class SettingModalComponent implements OnInit {
   isEnable = false;
   submitted = false;
   currentObj: any = {};
+  passwordFields: any = {
+    first: false,
+    second: false,
+    third: false
+  };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
               private message: NzMessageService, private saveService: SaveService) {
@@ -41,8 +46,15 @@ export class SettingModalComponent implements OnInit {
       configurationType: 'IAM',
       name: this.data ? this.data.identityServiceName : undefined
     }).subscribe((res) => {
-      if (res.configurationItem) {
-        this.currentObj = JSON.parse(res.configurationItem);
+      if (res.configuration.configurationItem) {
+        const data = JSON.parse(res.configuration.configurationItem);
+        if (this.data) {
+          if (data) {
+            this.currentObj = data.vault || data.ldap;
+          }
+        } else {
+          this.currentObj = data;
+        }
       }
     });
   }
