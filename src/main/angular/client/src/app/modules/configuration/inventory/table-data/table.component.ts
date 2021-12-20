@@ -8,6 +8,7 @@ import {ConfirmModalComponent} from '../../../../components/comfirm-modal/confir
 import {CreateObjectModalComponent} from '../inventory.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../../models/enums';
+import {InventoryService} from '../inventory.service';
 
 @Component({
   selector: 'app-table',
@@ -28,11 +29,11 @@ export class TableComponent implements OnDestroy {
 
   subscription: Subscription;
 
-  constructor(public coreService: CoreService, private dataService: DataService,
+  constructor(public coreService: CoreService, private dataService: DataService, public inventoryService: InventoryService,
               private modal: NzModalService, private ref: ChangeDetectorRef) {
     this.subscription = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
-        if (res.reloadTree && this.dataObj && this.dataObj.children) {
+        if ((res.reloadTree && this.dataObj && this.dataObj.children) || res.reloadFolder) {
           this.ref.detectChanges();
         }
       }

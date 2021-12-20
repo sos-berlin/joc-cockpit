@@ -35,7 +35,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private workflowService: WorkflowService, private inventoryService: InventoryService,
+  constructor(public coreService: CoreService, private workflowService: WorkflowService, public inventoryService: InventoryService,
               private dataService: DataService, private ref: ChangeDetectorRef, private router: Router) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -108,6 +108,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       if (this.data.valid !== res.valid){
         this.data.valid = res.valid;
       }
+      this.data.syncState = res.syncState;
       this.board = res;
       this.board.path1 = this.data.path;
       this.board.name = this.data.name;

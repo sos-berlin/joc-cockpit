@@ -47,8 +47,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   private subject: Subject<string> = new Subject<string>();
   @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
-  constructor(private coreService: CoreService, private dataService: DataService,
-              private inventoryService: InventoryService, private ref: ChangeDetectorRef) {
+  constructor(public coreService: CoreService, private dataService: DataService,
+              public inventoryService: InventoryService, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.fileOrder.actual) {
@@ -175,6 +175,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       if (this.data.valid !== res.valid){
         this.data.valid = res.valid;
       }
+      this.data.syncState = res.syncState;
       if (res.configuration.directoryExpr){
         this.coreService.removeSlashToString(res.configuration, 'directoryExpr');
       }

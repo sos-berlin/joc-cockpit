@@ -41,8 +41,8 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private dataService: DataService,
-              private modal: NzModalService, private ref: ChangeDetectorRef, private inventoryService: InventoryService) {
+  constructor(public coreService: CoreService, private dataService: DataService,
+              private modal: NzModalService, private ref: ChangeDetectorRef, public inventoryService: InventoryService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.jobResource.actual) {
@@ -552,6 +552,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       if (this.data.valid !== res.valid) {
         this.data.valid = res.valid;
       }
+      this.data.syncState = res.syncState;
       this.jobResource = res;
       this.jobResource.path1 = this.data.path;
       this.jobResource.name = this.data.name;

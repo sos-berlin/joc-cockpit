@@ -2477,6 +2477,35 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return scr;
   }
 
+  reloadFolders(isChecked: boolean): void {
+    this.dataService.reloadTree.next({reloadFolder: isChecked + ''});
+    if (!this.isTrash && isChecked) {
+      if (this.tree.length > 0) {
+        const paths = [];
+
+        function traverseTree(data): void {
+          if (data.children && data.children.length > 0 && data.expanded) {
+            paths.push(data.path);
+            for (const i in data.children) {
+              if (data.children[i] && !data.children[i].controller && !data.children[i].object && !data.children[i].dailyPlan) {
+                traverseTree(data.children[i]);
+              }
+            }
+          }
+        }
+
+        traverseTree(this.tree[0]);
+        paths.forEach((path, index) => {
+          this.updateFolders(path, false, () => {
+            if (index == paths.length - 1) {
+              this.updateTree(false);
+            }
+          });
+        });
+      }
+    }
+  }
+
   updateFolders(path, isTrash, cb, redirect = false): void {
     const self = this;
     let matchData: any;

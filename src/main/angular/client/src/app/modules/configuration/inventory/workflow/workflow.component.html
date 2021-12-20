@@ -25,6 +25,9 @@
                 <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
                 <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
               </span>
+              <span *ngIf="data.syncState && inventoryService.checkDeploymentStatus.isChecked" class="badge badge-sync m-l-12" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" >
+                {{data.syncState._text | translate}}
+              </span>
             </span>
             <span *ngIf="isLoading">
               <i class="fa fa-spin fa-spinner"></i>

@@ -29,8 +29,8 @@ export class LockComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private coreService: CoreService, private dataService: DataService,
-              private ref: ChangeDetectorRef, private router: Router, private inventoryService: InventoryService) {
+  constructor(public coreService: CoreService, private dataService: DataService,
+              private ref: ChangeDetectorRef, private router: Router, public inventoryService: InventoryService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.lock.actual) {
@@ -102,6 +102,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       if (this.data.valid !== res.valid) {
         this.data.valid = res.valid;
       }
+      this.data.syncState = res.syncState;
       this.lock = res;
       this.lock.path1 = this.data.path;
       this.lock.name = this.data.name;

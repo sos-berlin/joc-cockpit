@@ -2260,11 +2260,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   fullScreen = false;
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
-  constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService, private inventoryService: InventoryService,
+  constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
               public toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
@@ -2278,6 +2279,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       setTimeout(() => {
         this.getAgents();
       }, 0);
+    });
+    this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
     });
     this.zones = coreService.getTimeZoneList();
   }
@@ -2351,6 +2355,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     if (this.data.type) {
       this.saveCopyInstruction();
       this.saveJSON(false);
@@ -2367,8 +2372,24 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].path) {
+          if (args.eventSnapshots[j].eventType.match(/ItemChanged/) && args.eventSnapshots[j].objectType === this.objectType) {
+            const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+            if (args.eventSnapshots[j].path === path) {
+              this.getWorkflowObject();
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
   recursiveTreeUpdate(scr): void {
-    function recursive(data) {
+    function recursive(data): void {
       data.expanded = false;
       if (data.children && data.children.length > 0) {
         data.children = data.children.filter((item) => {
@@ -3160,6 +3181,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (this.data.valid !== res.valid) {
           this.data.valid = res.valid;
         }
+        this.data.syncState = res.syncState;
         this.jobs = [];
         this.variableDeclarations = {parameters: []};
         //this.variableDeclarations.allowUndeclared = false;

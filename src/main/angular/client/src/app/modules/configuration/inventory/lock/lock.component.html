@@ -14,6 +14,9 @@
             <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
             <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
           </span>
+          <span *ngIf="data.syncState && inventoryService.checkDeploymentStatus.isChecked" class="badge badge-sync m-l-12" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" >
+            {{data.syncState._text | translate}}
+          </span>
           <button *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" type="button" [disabled]="!lock.valid && !lock.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="deploy()" >
             <i class="fa fa-rocket p-r-xs"></i>
             <span translate>inventory.button.deploy</span>

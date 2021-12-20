@@ -74,6 +74,13 @@
           <i *ngIf="filter.sortBy == 'objectType' && filter.reverse"
              class="fa fa-caret-down "></i></a>
         </th>
+        <th (click)="sort('syncState._text')" *ngIf="inventoryService.checkDeploymentStatus.isChecked && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
+          <a><span class="p-r-xs" translate>inventory.label.deploymentStatus</span>
+          <i *ngIf="filter.sortBy == 'syncState._text' && !filter.reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="filter.sortBy == 'syncState._text' && filter.reverse"
+             class="fa fa-caret-down "></i></a>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -167,8 +174,11 @@
                   translate>inventory.label.notReleased</span>
           </td>
           <td class="cursor" (click)="editObject(data)" *ngIf="objectType === 'CALENDAR'">
-            <span class="label "  [ngClass]="data.objectType=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'">
+            <span class="label" [ngClass]="data.objectType=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'">
               {{data.objectType | translate}}</span>
+          </td>
+          <td class="cursor" (click)="editObject(data)" *ngIf="inventoryService.checkDeploymentStatus.isChecked && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
+            <span *ngIf="data.syncState" class="label" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" >{{data.syncState._text | translate}}</span>
           </td>
         </tr>
       </ng-template>
