@@ -36,7 +36,8 @@
           required
           nzShowSearch
           nzPlaceHolder="{{'user.placeholder.selectIdentityServiceType' | translate}}"
-          [(ngModel)]="currentObj.identityServiceType">
+          [(ngModel)]="currentObj.identityServiceType"
+          (ngModelChange)="changeType($event)">
           <nz-option *ngFor="let option of types" [nzLabel]="option" [nzValue]="option"></nz-option>
         </nz-select>
         <div *ngIf="type.invalid && (type.dirty || type.touched)" class="text-danger help-block">

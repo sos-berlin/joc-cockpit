@@ -2272,6 +2272,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.workflow.actual) {
           this.ref.detectChanges();
+        } else if (res.saveObject && this.selectedNode) {
+          if (res.saveObject.id) {
+            if (res.saveObject.id && res.saveObject.id === this.data.id) {
+              this.initEditorConf(this.editor, false, true);
+            }
+          } else {
+            this.initEditorConf(this.editor, false, true);
+          }
         }
       }
     });
@@ -2993,7 +3001,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.initEditorConf(this.editor, false, true);
       setTimeout(() => {
         this.dataService.reloadTree.next({deploy: this.workflow});
-      }, 10);
+      }, 100);
     } else {
       this.dataService.reloadTree.next({deploy: this.workflow});
     }
@@ -5668,9 +5676,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     /**
      * Function: Remove selected cells from JSON
-     * @param cells
      */
-    function deleteInstructionFromJSON(cells) {
+    function deleteInstructionFromJSON(cells): void {
       deleteRecursively(self.workflow.configuration, cells[0], '', () => {
         setTimeout(() => {
           if (self.editor && self.editor.graph) {
@@ -5730,7 +5737,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     /**
      * Function: Get first and last cell from the user selected cells
-     * @param cells
      */
     function isCellSelectedValid(cells) {
       const obj = {firstCell: null, lastCell: null, ids: [], invalid: false};
@@ -6780,7 +6786,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
 
     /**
-     * Funtion: paste the instruction to given target
+     * Function: paste the instruction to given target
      */
     function pasteInstruction(target): void {
       let source = target.id;

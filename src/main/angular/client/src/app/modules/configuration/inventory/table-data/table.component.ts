@@ -282,10 +282,6 @@ export class TableComponent implements OnDestroy {
     this.dataService.reloadTree.next({deploy: data});
   }
 
-  synchronized(data): void {
-    this.dataService.reloadTree.next({synchronized: data});
-  }
-
   revoke(data): void {
     this.dataService.reloadTree.next({revoke: data});
   }

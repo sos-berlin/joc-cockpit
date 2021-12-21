@@ -34,7 +34,8 @@ export class SettingModalComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.saveService.copiedSetting && this.saveService.copiedSetting.type &&
-      this.saveService.copiedSetting.name !== this.data.identityServiceName &&
+      (this.saveService.copiedSetting.name !== this.data.identityServiceName || (this.saveService.copiedSetting.name === this.data.identityServiceName &&
+      this.saveService.copiedSetting.type !== this.data.identityServiceType)) &&
       (this.saveService.copiedSetting.type.indexOf(this.data.identityServiceType) > -1 ||
         this.data.identityServiceType.indexOf(this.saveService.copiedSetting.type) > -1)) {
       this.isEnable = true;
@@ -113,6 +114,8 @@ export class IdentityServiceModalComponent implements OnInit {
   isUnique = true;
   types = [];
   currentObj: any = {};
+  settingObj: any = {};
+  removeSettingId = -1;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -142,6 +145,56 @@ export class IdentityServiceModalComponent implements OnInit {
         break;
       }
     }
+  }
+
+  changeType($event): void {
+    this.getSettings($event);
+  }
+
+  private getSettings(type): void {
+    if (this.identityService.identityServiceType === type || this.identityService.identityServiceType === 'JOC' ||
+      type === 'JOC') {
+      this.removeSettingId = -1;
+      return;
+    }
+    this.coreService.post('configuration', {
+      id: 0,
+      objectType: this.identityService.identityServiceType,
+      configurationType: 'IAM',
+      name: this.identityService.identityServiceName
+    }).subscribe((res) => {
+      if (res.configuration.configurationItem) {
+        const data = JSON.parse(res.configuration.configurationItem);
+        if (data) {
+          if (data.vault || data.ldap) {
+            this.removeSettingId = res.configuration.id;
+            this.settingObj = res.configuration.configurationItem;
+          }
+        }
+      }
+    });
+  }
+
+  private saveSettings(): void {
+    this.coreService.post('configuration/delete', {
+      controllerId: '.',
+      id: this.removeSettingId
+    }).subscribe(() => {
+
+    });
+    this.coreService.post('configuration/save', {
+      id: 0,
+      objectType: this.currentObj.identityServiceType,
+      configurationType: 'IAM',
+      name: this.currentObj.identityServiceName,
+      configurationItem: this.settingObj
+    }).subscribe(() => {
+      this.removeSettingId = -1;
+      this.store();
+    }, () => {
+      this.removeSettingId = -1;
+      this.store();
+    });
   }
 
   rename(identityServiceOldName: string, identityServiceNewName: string, cb: any): void {
@@ -175,6 +228,11 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   private store(): void {
+    if (this.removeSettingId > -1) {
+      this.submitted = false;
+      this.saveSettings();
+      return;
+    }
     this.coreService.post('iam/identityservice/store', this.currentObj).subscribe((res) => {
       this.activeModal.close(res);
     }, () => {

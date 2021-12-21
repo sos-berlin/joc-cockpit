@@ -41,6 +41,11 @@
               <div>
                 <span  class="fa fa-check-circle-o orange text-xs"
                        [ngClass]="{'fa-circle-o': !child.valid, 'fa-circle dark-blue' :child.deployed}" style="margin-top: 4px"></span>
+                <span *ngIf="child.syncState" class="p-l-xxs">
+                  <i *ngIf="child.syncState._text === 'IN_SYNC'" class="fa fa-refresh font11 p-l-xxs"></i>
+                  <i *ngIf="child.syncState._text === 'UNKNOWN'" class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
+                  <i *ngIf="child.syncState._text === 'NOT_IN_SYNC'" class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
+                </span>
                 <span class="p-l-sm">{{child.objectName | translate}}</span>
               </div>
               <div class="m-l"

@@ -32,6 +32,7 @@ export class SingleDeployComponent implements OnInit {
   @Input() type;
   @Input() display: any;
   @Input() isRevoke: boolean;
+  @Input() isChecked: boolean;
   selectedSchedulerIds = [];
   deployablesObject = [];
   loading = true;
@@ -55,6 +56,9 @@ export class SingleDeployComponent implements OnInit {
     if (this.isRevoke) {
       obj.withoutDeployed = false;
       obj.latest = true;
+    }
+    if (this.isChecked) {
+      obj.controllerId = this.schedulerIds.selected;
     }
     this.getSingleObject(obj);
   }
@@ -190,6 +194,7 @@ export class DeployComponent implements OnInit {
   @Input() data: any;
   @Input() isRemove: any;
   @Input() isRevoke: boolean;
+  @Input() isChecked: boolean;
   selectedSchedulerIds = [];
   loading = true;
   nodes: any = [];
@@ -302,6 +307,9 @@ export class DeployComponent implements OnInit {
         obj.withoutDrafts = true;
         obj.latest = true;
       }
+    }
+    if (this.isChecked && !this.releasable) {
+      obj.controllerId = this.schedulerIds.selected;
     }
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe((res: any) => {
@@ -2159,8 +2167,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.paste(res.paste);
         } else if (res.deploy) {
           this.deployObject(res.deploy, false);
-        } else if (res.synchronized) {
-          this.synchronized(res.synchronized);
         } else if (res.revoke) {
           this.revoke(res.revoke);
         } else if (res.release) {
@@ -3073,6 +3079,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   deployObject(node, releasable): void {
     const origin = node.origin ? node.origin : node;
+    if (this.selectedObj && this.selectedObj.id &&
+      this.selectedObj.type === InventoryObject.WORKFLOW) {
+      this.dataService.reloadTree.next({saveObject: origin});
+    }
     if (releasable && origin.id) {
       this.releaseSingleObject(origin);
       return;
@@ -3089,7 +3099,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           schedulerIds: this.getAllowedControllerOnly(),
           display: this.preferences.auditLog,
-          data: origin
+          data: origin,
+          isChecked: this.inventoryService.checkDeploymentStatus.isChecked
         },
         nzFooter: null,
         nzClosable: false,
@@ -3106,6 +3117,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           display: this.preferences.auditLog,
           path: origin.path,
           data: origin,
+          isChecked: this.inventoryService.checkDeploymentStatus.isChecked,
           releasable
         },
         nzFooter: null,
@@ -3113,10 +3125,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzMaskClosable: false
       });
     }
-  }
-
-  synchronized(node): void {
-    this.toasterService.pop('info', 'Not yet implement!', '');
   }
 
   revoke(node): void {
@@ -3159,32 +3167,38 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  reDeployObject(node: any): void {
+  reDeployObject(node: any, sync = false): void {
     const origin = node.origin ? node.origin : node;
     if (origin.controller) {
-      this.coreService.post('inventory/deployment/redeploy', {
+      this.coreService.post(sync ? 'inventory/deployment/synchronize' : 'inventory/deployment/redeploy', {
         controllerId: this.schedulerIds.selected,
         folder: origin.path,
         recursive: false
       }).subscribe(() => {
       });
     } else {
+      const obj = {
+        title: 'redeploy',
+        message: 'redeployFolderRecursively',
+        type: 'Redeploy',
+        objectName: origin.path
+      };
+      if (sync) {
+        obj.title = 'synchronize';
+        obj.message = 'synchronizeFolderRecursively';
+        obj.type = 'Synchronize';
+      }
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
-        nzComponentParams: {
-          title: 'redeploy',
-          message: 'redeployFolderRecursively',
-          type: 'Redeploy',
-          objectName: origin.path
-        },
+        nzComponentParams: obj,
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post('inventory/deployment/redeploy', {
+          this.coreService.post(sync ? 'inventory/deployment/synchronize' : 'inventory/deployment/redeploy', {
             controllerId: this.schedulerIds.selected,
             folder: origin.path,
             recursive: true
@@ -3193,6 +3207,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  synchronize(node): void {
+    this.reDeployObject(node, true);
   }
 
   releaseObject(data): void {
