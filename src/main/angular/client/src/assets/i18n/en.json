@@ -1930,7 +1930,7 @@
     "label.identityServiceRequired": "Required",
     "label.identityServiceFound": "Identity Service found",
     "label.identityServicesFound": "Identity Services found",
-    "label.generalSetting": "Global Settings",
+    "label.generalSetting": "General Settings",
     "label.settingFor": "Settings for",
     "label.sessionTimeout": "Session Idle Timeout",
     "label.iamVaultUrl": "Vault URL",
