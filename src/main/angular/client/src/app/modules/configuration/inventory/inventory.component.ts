@@ -290,6 +290,9 @@ export class DeployComponent implements OnInit {
     };
     if (this.isRevoke) {
       obj.withoutDeployed = false;
+      obj.withRemovedObjects = false;
+      obj.onlyValidObjects = false;
+      obj.withoutDrafts = true;
       obj.latest = true;
     } else {
       if (this.data && this.data.object) {
