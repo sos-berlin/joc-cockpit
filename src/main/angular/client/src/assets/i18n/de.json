@@ -1987,7 +1987,7 @@
     "placeholder.iamVaultTrustStorePassword": "Kennwort für Vault Truststore angeben",
     "placeholder.iamVaultTrustStoreType": "Typ des Vault Truststore angeben",
     "placeholder.iamVaultApplicationToken": "Vault Application Token angeben",
-    "placeholder.iamLdapUrl": "LDAP URL angeben",
+    "placeholder.iamLdapUrl": "LDAP URL angeben (ldap: oder ldaps:)",
     "message.permissionIsAlreadyCovered": "Berechtigung ist bereits aktiv",
     "message.noPermissionFound": "Keine Berechtigung gefunden",
     "message.noRoleAssign": "Dem ausgewählten Konto ist keine Rolle zugewiesen",

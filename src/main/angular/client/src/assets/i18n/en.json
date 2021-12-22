@@ -1987,7 +1987,7 @@
     "placeholder.iamVaultTrustStorePassword": "Enter Vault Truststore Password",
     "placeholder.iamVaultTrustStoreType": "Enter Vault Truststore Type",
     "placeholder.iamVaultApplicationToken": "Enter Vault Application Token",
-    "placeholder.iamLdapUrl": "Enter LDAP URL",
+    "placeholder.iamLdapUrl": "Enter LDAP URL (ldap: or ldaps:)",
     "message.permissionIsAlreadyCovered": "Permission is already active",
     "message.noPermissionFound": "No permission found",
     "message.noRoleAssign": "No role assigned to selected account",
