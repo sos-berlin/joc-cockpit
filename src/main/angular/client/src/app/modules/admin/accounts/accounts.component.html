@@ -3,17 +3,20 @@
     <nz-table
       #ajaxTable
       [nzSize]="'small'"
-      [nzPageSize]="preferences.entryPerPage || 25"
+      [nzPageSize]="usr.entryPerPage || preferences.entryPerPage"
       [nzPageIndex]="usr.currentPage"
       [nzBordered]="true"
-      [nzShowPagination]="(accounts | filter: searchKey : ['account', 'roles']).length > 0"
-      [nzData]="(accounts | filter: searchKey: ['account', 'roles']) | orderBy: usr.sortBy:usr.reverse"
+      [nzShowPagination]="data.length > 0"
+      [nzData]="data"
       [nzLoading]="loading"
       [nzShowSizeChanger]="true"
+      (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)"
       [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 5000]"
     >
       <thead>
       <tr>
+
         <th class="menu"><span translate>common.label.action</span></th>
         <th (click)="sort('account')">
           <a><span class="p-r-xs" translate>user.label.user</span>
@@ -36,6 +39,7 @@
       </thead>
       <tbody>
       <tr *ngFor="let account of ajaxTable.data">
+
         <td>
           <div class="btn-group dropdown pull-left m-r-sm">
             <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
@@ -64,7 +68,7 @@
     </nz-table>
   </div>
   <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
-    <span translate>common.label.total</span> <span> {{(accounts | filter: searchKey: ['account', 'roles']).length}} </span>
+    <span translate>common.label.total</span> <span> {{data.length}} </span>
     <span translate *ngIf="ajaxTable.data.length >1">user.label.usersFound</span>
     <span translate *ngIf="ajaxTable.data.length ===1">user.label.userFound</span>
   </div>

@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router, ActivatedRoute, RouterEvent, NavigationEnd} from '@angular/router';
+import {NzMessageService} from 'ng-zorro-antd/message';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {CoreService} from '../../services/core.service';
@@ -13,7 +14,9 @@ import {DataService} from './data.service';
 export class AdminComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   permission: any;
+  isPaste = false;
   isButtonShow = false;
+  isSelected = false;
   isLdapRealmEnable = true;
   isJOCClusterEnable = true;
   selectedUser: string;
@@ -22,12 +25,14 @@ export class AdminComponent implements OnInit, OnDestroy {
   identityService: string;
   identityServiceType: string;
   pageView: string;
-  searchKey: string;
+  filter = {
+    searchKey: ''
+  };
   subscription1: Subscription;
   subscription2: Subscription;
 
   constructor(private authService: AuthService, private router: Router, private activeRoute: ActivatedRoute,
-              public coreService: CoreService, private dataService: DataService) {
+              public coreService: CoreService, private dataService: DataService, private message: NzMessageService) {
     this.subscription1 = router.events
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
         this.checkUrl(e);
@@ -37,7 +42,11 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.isButtonShow = true;
       } else if (res === 'IS_RESET_PROFILES_FALSE') {
         this.isButtonShow = false;
-      }else if (res === 'RELOAD') {
+      } else if (res === 'IS_ACCOUNT_PROFILES_TRUE' || res === 'IS_ROLE_PROFILES_TRUE') {
+        this.isSelected = true;
+      } else if (res === 'IS_ACCOUNT_PROFILES_FALSE' || res === 'IS_ROLE_PROFILES_FALSE') {
+        this.isSelected = false;
+      } else if (res === 'RELOAD') {
         this.getUsersData(false);
       }
     });
@@ -75,6 +84,24 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   addAccount(): void {
     this.dataService.announceFunction('ADD');
+  }
+
+  copyList(): void {
+    if (this.route.match('/users/identity_service/account')) {
+      this.dataService.announceFunction('COPY_ACCOUNT');
+    } else {
+      this.dataService.announceFunction('COPY_ROLE');
+    }
+    this.coreService.showCopyMessage(this.message);
+    this.isPaste = true;
+  }
+
+  pasteList(): void {
+    if (this.route.match('/users/identity_service/account')) {
+      this.dataService.announceFunction('PASTE_ACCOUNT');
+    } else {
+      this.dataService.announceFunction('PASTE_ROLE');
+    }
   }
 
   addController(): void {
@@ -126,14 +153,23 @@ export class AdminComponent implements OnInit, OnDestroy {
     name = name.replace(/[\[\]]/g, '\\$&');
     let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
       results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
+    if (!results) {
+      return null;
+    }
+    if (!results[2]) {
+      return '';
+    }
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
   }
 
   private checkUrl(val): void {
     if (val.url) {
       this.route = val.url;
+      this.isPaste = false;
+      if (this.route && ((this.route.match('/users/identity_service/account') && this.dataService.copiedObject.accounts && this.dataService.copiedObject.accounts.size > 0) ||
+      (this.route.match('/users/identity_service/role') && this.dataService.copiedObject.roles && this.dataService.copiedObject.roles.size > 0))) {
+        this.isPaste = true;
+      }
       if (this.route.match('/users')) {
         if (sessionStorage.identityServiceType) {
           if ((sessionStorage.identityServiceType === 'VAULT' || sessionStorage.identityServiceType === 'LDAP') && this.route.match('/users/identity_service/account')) {

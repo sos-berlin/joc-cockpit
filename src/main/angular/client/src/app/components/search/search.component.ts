@@ -190,6 +190,9 @@ export class SearchComponent implements OnInit {
 
   clear(): void {
     this.results = [];
+    this.object.mapOfCheckedId = new Set();
+    this.object.checked = false;
+    this.object.indeterminate = false;
     if (!this.isWorkflow && !this.isBoard && !this.isLock) {
       this.coreService.setSearchResult('inventory', this.results);
     } else {

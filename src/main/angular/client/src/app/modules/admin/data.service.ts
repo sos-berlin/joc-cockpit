@@ -7,6 +7,10 @@ export class DataService implements OnDestroy {
   preferences = {
     roles: new Set()
   };
+  copiedObject: any = {
+    accounts: new Map(),
+    roles: new Map()
+  };
 
   // Observable string sources
   private dataAnnouncedSource = new Subject<any>();

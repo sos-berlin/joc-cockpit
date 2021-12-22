@@ -9,7 +9,7 @@
           </div>
           <div class="inline">
             <!-- Sorting via Account Name Starts -->
-            <div class="btn-group dropdown" *ngIf="route && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP' && route.match('/users/identity_service/role')">
+            <div class="btn-group dropdown" *ngIf="!isSelected && route && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP' && route.match('/users/identity_service/role')">
               <button class="btn btn-grey btn-sm m-l-12 "
                 nz-dropdown nzTrigger="click" [nzDropdownMenu]="account" [nzPlacement]="'bottomRight'">{{'user.label.user' | translate}}
                 <span class="text-primary">{{selectedUser | decodeSpace}} </span>
@@ -37,15 +37,23 @@
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addIdentityService</span>
             </button>
-            <button *ngIf="route.match('/users/identity_service/account')" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+            <button *ngIf="!isSelected && isPaste && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="pasteList()">
+              <i class="fa fa-paste"></i>&nbsp;
+              <span translate>common.button.paste</span>
+            </button>
+            <button *ngIf="!isSelected && route.match('/users/identity_service/account')" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addUser</span>
             </button>
-            <button *ngIf="route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addController()">
+            <button *ngIf="isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="copyList()">
+              <i class="fa fa-copy"></i>&nbsp;
+              <span translate>common.button.copy</span>
+            </button>
+            <button *ngIf="!isSelected && route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addController()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addController</span>
             </button>
-            <button *ngIf="route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addRole()">
+            <button *ngIf="!isSelected && route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addRole()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addRole</span>
             </button>
@@ -134,8 +142,8 @@
         <div *ngIf="route.match('/users/identity_service/account')" class="inline pull-right search-box-field admin-search-bar">
           <label>
             <input type="search" #input (keyup)="searchBar(input.value)"
-                   placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="searchKey">
-            <i *ngIf="searchKey" class="fa fa-times search-close" (click)="searchKey = ''"></i>
+                   placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="filter.searchKey">
+            <i *ngIf="filter.searchKey" class="fa fa-times search-close" (click)="filter.searchKey = '';searchBar('')"></i>
           </label>
         </div>
       </div>

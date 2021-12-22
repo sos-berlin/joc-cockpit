@@ -1,6 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {ToasterService} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
 import {isEqual, clone} from 'underscore';
@@ -10,7 +11,6 @@ import {DataService} from '../data.service';
 import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../../components/guard';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 // Role Actions
 @Component({
@@ -217,6 +217,9 @@ export class RolesComponent implements OnDestroy {
   showMsg: any;
   roles: any = [];
   controllerRoles = [];
+  object = {
+    mapOfCheckedId: new Map()
+  };
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -233,6 +236,12 @@ export class RolesComponent implements OnDestroy {
         this.addRole();
       } else if (res === 'ADD_CONTROLLER') {
         this.addController();
+      } else if (res === 'COPY_ROLE') {
+        this.dataService.copiedObject.roles = this.object.mapOfCheckedId;
+        this.object.mapOfCheckedId = new Map();
+        this.dataService.announceFunction('IS_ROLE_PROFILES_FALSE');
+      } else if (res === 'PASTE_ROLE') {
+        this.paste();
       }
     });
     this.subscription3 = router.events
@@ -368,12 +377,15 @@ export class RolesComponent implements OnDestroy {
   deleteRole(role): void {
     let isAssigned: boolean;
     let waringMessage = '';
-    for (let i = 0; i < this.accounts.length; i++) {
-      for (let j = 0; j < this.accounts[i].roles.length; j++) {
+    for (const i in this.accounts) {
+      for (const j in this.accounts[i].roles) {
         if (this.accounts[i].roles[j] === role.name) {
           isAssigned = true;
           break;
         }
+      }
+      if (isAssigned) {
+        break;
       }
     }
     if (!isAssigned) {
@@ -477,9 +489,11 @@ export class RolesComponent implements OnDestroy {
 
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.controllerRoles, event.previousIndex, event.currentIndex);
-    let roles: any = {};
-    for (let index in this.controllerRoles) {
-      roles[this.controllerRoles[index].name] = this.controllerRoles[index].mainObj;
+    const roles: any = {};
+    for (const index in this.controllerRoles) {
+      if (this.controllerRoles[index]) {
+        roles[this.controllerRoles[index].name] = this.controllerRoles[index].mainObj;
+      }
     }
     this.userDetail.roles = roles;
     this.saveInfo();
@@ -488,15 +502,39 @@ export class RolesComponent implements OnDestroy {
   private createRoleArray(res): void {
     this.controllerRoles = [];
     this.roles = [];
-    for (let role in res.roles) {
+    for (const role in res.roles) {
       let obj = {name: role, controllers: [{name: '', permissions: res.roles[role].permissions}], mainObj: res.roles[role]};
       if (res.roles[role].permissions && res.roles[role].permissions.controllers) {
-        for (let controller in res.roles[role].permissions.controllers) {
-          obj.controllers.push({name: controller, permissions: res.roles[role].permissions.controllers[controller]});
+        for (const controller in res.roles[role].permissions.controllers) {
+          if (res.roles[role].permissions.controllers[controller]) {
+            obj.controllers.push({name: controller, permissions: res.roles[role].permissions.controllers[controller]});
+          }
         }
       }
       this.roles.push(role);
       this.controllerRoles.push(obj);
+    }
+  }
+
+  private paste(): void {
+    this.dataService.copiedObject.roles.forEach((value, key) => {
+      if (!this.userDetail.roles[key]) {
+        this.userDetail.roles[key] = value;
+      }
+    });
+    this.saveInfo();
+  }
+
+  checkMappedObject(isChecked: boolean, role): void {
+    if (isChecked) {
+      this.object.mapOfCheckedId.set(role.name, role.mainObj);
+    } else {
+      this.object.mapOfCheckedId.delete(role.name);
+    }
+    if (this.object.mapOfCheckedId.size > 0) {
+      this.dataService.announceFunction('IS_ROLE_PROFILES_TRUE');
+    } else {
+      this.dataService.announceFunction('IS_ROLE_PROFILES_FALSE');
     }
   }
 

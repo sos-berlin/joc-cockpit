@@ -2,27 +2,29 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
+import {OrderPipe} from 'ngx-order-pipe';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {SearchPipe} from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-user-modal-content',
   templateUrl: './user-dialog.html'
 })
 export class AccountModalComponent implements OnInit {
-  submitted = false;
-  isUnique = true;
-  currentUser: any = {};
-  isPasswordVisible = true;
-
   @Input() newUser = false;
   @Input() copy = false;
   @Input() userDetail: any;
   @Input() oldUser: any;
   @Input() allRoles: any;
+
+  submitted = false;
+  isUnique = true;
+  currentUser: any = {};
+  isPasswordVisible = true;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -89,7 +91,7 @@ export class AccountModalComponent implements OnInit {
     this.coreService.post('authentication/auth/store', this.userDetail).subscribe(res => {
       this.submitted = false;
       this.activeModal.close(this.userDetail.accounts);
-    }, err => {
+    }, () => {
       this.submitted = false;
       this.userDetail.accounts = this.userDetail.accounts.filter((account) => {
         return account.account !== obj.account;
@@ -108,22 +110,32 @@ export class AccountsComponent implements OnInit, OnDestroy {
   loading = true;
   preferences: any = {};
   accounts: any = [];
+  data: any = [];
   roles: any = [];
-  usr: any = {};
   userDetail: any = {};
   temp: any = 0;
   searchKey: string;
   username: string;
   userIdentityService: string;
   selectedIdentityService: string;
+  usr: any = {};
+  object = {
+    checked: false,
+    indeterminate: false,
+    mapOfCheckedId: new Map()
+  };
+
+  searchableProperties = ['account', 'roles'];
+
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
 
-  constructor(private router: Router, private authService: AuthService, private coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService) {
+  constructor(private router: Router, private authService: AuthService, private coreService: CoreService, private searchPipe: SearchPipe,
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
+      this.searchInResult();
     });
     this.subscription2 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
@@ -133,12 +145,17 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.subscription3 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'ADD') {
         this.addUser();
+      } else if (res === 'COPY_ACCOUNT') {
+        this.dataService.copiedObject.accounts = this.object.mapOfCheckedId;
+        this.reset();
+      } else if (res === 'PASTE_ACCOUNT') {
+        this.paste();
       }
     });
   }
 
   ngOnInit(): void {
-    this.usr = {currentPage: 1, sortBy : 'account', reverse: false};
+    this.usr = {currentPage: 1, sortBy: 'account', reverse: false};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.username = this.authService.currentUserData;
     this.selectedIdentityService = sessionStorage.identityServiceType + ':' + sessionStorage.identityServiceName;
@@ -147,9 +164,11 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   setUserData(res): void {
     this.userDetail = res;
+    this.data = [];
     this.accounts = res.accounts;
     setTimeout(() => {
       this.loading = false;
+      this.searchInResult();
     }, 300);
     this.getRoles();
   }
@@ -175,7 +194,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  getRoles(): void {
+  private getRoles(): void {
     this.roles = [];
     if (this.userDetail.roles) {
       for (const prop in this.userDetail.roles) {
@@ -187,6 +206,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
   showRole(account): void {
     this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
   }
+
+
+  /* ---------------------------- Action ----------------------------------*/
 
   addUser(): void {
     const modal = this.modal.create({
@@ -278,8 +300,99 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
+  private paste(): void {
+    console.log(this.userDetail.accounts);
+    console.log(this.userDetail.roles);
+    this.dataService.copiedObject.accounts.forEach((value, key) => {
+      console.log(value, key);
+    });
+  }
+
+  private reset(): void{
+    this.object = {
+      mapOfCheckedId: new Map(),
+      checked: false,
+      indeterminate: false
+    };
+    this.dataService.announceFunction('IS_ACCOUNT_PROFILES_FALSE');
+  }
+
+  pageIndexChange($event): void {
+    this.usr.currentPage = $event;
+    if (this.object.mapOfCheckedId.size !== this.data.length) {
+      if (this.object.checked) {
+        this.checkAll(true);
+      } else {
+        this.reset();
+      }
+    }
+  }
+
+  pageSizeChange($event): void {
+    this.usr.entryPerPage = $event;
+    if (this.object.mapOfCheckedId.size !== this.data.length) {
+      if (this.object.checked) {
+        this.checkAll(true);
+      }
+    }
+  }
+
+  searchInResult(): void {
+    this.data = this.searchKey ? this.searchPipe.transform(this.accounts, this.searchKey, this.searchableProperties) : this.accounts;
+    this.data = [...this.data];
+  }
+
   sort(key): void {
     this.usr.reverse = !this.usr.reverse;
     this.usr.sortBy = key;
+    this.data = this.orderPipe.transform(this.data, this.usr.sortBy, this.usr.reverse);
+    this.reset();
+  }
+
+  private getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
+  }
+
+
+  onItemChecked(account: any, checked: boolean): void {
+    if (!checked && this.object.mapOfCheckedId.size > (this.usr.entryPerPage || this.preferences.entryPerPage)) {
+      const users = this.getCurrentData(this.data, this.usr);
+      if (users.length < this.data.length) {
+        this.object.mapOfCheckedId.clear();
+        users.forEach(item => {
+          this.object.mapOfCheckedId.set(item.account, item);
+        });
+      }
+    }
+    if (checked) {
+      this.object.mapOfCheckedId.set(account.account, account);
+    } else {
+      this.object.mapOfCheckedId.delete(account.account);
+    }
+    const documents = this.getCurrentData(this.data, this.usr);
+    this.object.checked = this.object.mapOfCheckedId.size === documents.length;
+    this.checkCheckBoxState();
+  }
+
+  checkAll(value: boolean): void {
+    if (value && this.accounts.length > 0) {
+      const users = this.getCurrentData(this.data, this.usr);
+      users.forEach(item => {
+        this.object.mapOfCheckedId.set(item.account, item);
+      });
+    } else {
+      this.object.mapOfCheckedId.clear();
+    }
+    this.checkCheckBoxState();
+  }
+
+  checkCheckBoxState(): void {
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+    if (this.object.mapOfCheckedId.size > 0) {
+      this.dataService.announceFunction('IS_ACCOUNT_PROFILES_TRUE');
+    } else {
+      this.dataService.announceFunction('IS_ACCOUNT_PROFILES_FALSE');
+    }
   }
 }
