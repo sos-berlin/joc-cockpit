@@ -50,7 +50,7 @@
       <hr>
     </div>
   </div>
-  <div *ngIf="controllerRoles.length === 0">
+  <div *ngIf="controllerRoles.length === 0 && !showMsg">
     <app-empty-data></app-empty-data>
   </div>
   <div [ngClass]="{show : showMsg}" class="box-body p-b-0 hide">

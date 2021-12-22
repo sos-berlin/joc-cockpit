@@ -749,7 +749,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     });
   }
 
-  getPeriodStr(period): void {
+  getPeriodStr(period): string {
     let periodStr = null;
     if (period.begin) {
       periodStr = period.begin;

@@ -13,9 +13,11 @@
       <label class="col-md-4 col-lg-3 form-control-label"
              translate>workflow.findAndReplace.label.find</label>
       <div class="col-md-8 col-lg-9">
-        <nz-select #selectBox nzMode="multiple" nzAllowClear nzShowSearch name="find" nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
+        <nz-select #selectBox nzMode="multiple" nzAllowClear nzShowSearch name="find"
+                   nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
                    [(ngModel)]="object.finds" (keypress)="onKeyPress($event)" (nzBlur)="focusOut()">
-          <nz-option [nzHide]="agent === '*'" *ngFor="let agent of listOfAgents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
+          <nz-option [nzHide]="agent === '*'" *ngFor="let agent of listOfAgents" [nzLabel]="agent"
+                     [nzValue]="agent"></nz-option>
         </nz-select>
       </div>
     </div>
@@ -24,10 +26,11 @@
              translate>workflow.findAndReplace.label.replace</label>
       <div class="col-md-8 col-lg-9"
            [ngClass]="{'has-error' : ((replace.dirty || replace.touched) && replace.invalid)}">
-        <nz-select nzShowSearch required name="replace" nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectReplace' | translate}}"
-                   [(ngModel)]="object.replace" #replace="ngModel">
-          <nz-option *ngFor="let agent of agents" [nzLabel]="agent" [nzValue]="agent"></nz-option>
-        </nz-select>
+        <input required name="replace" #replace="ngModel"
+               [placeholder]="'workflow.findAndReplace.placeholder.selectReplace' | translate"
+               class="form-control" [(ngModel)]="object.replace" (ngModelChange)="onChange($event)"
+               [nzAutocomplete]="auto"/>
+        <nz-autocomplete [nzDataSource]="listOfAllAgents" #auto></nz-autocomplete>
       </div>
     </div>
   </div>

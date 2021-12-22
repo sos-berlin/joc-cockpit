@@ -712,6 +712,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
 export class FindAndReplaceComponent implements OnInit {
   @Input() agents: any = [];
 
+  listOfAllAgents = [];
   listOfAgents = [];
   object = {
     replace: '',
@@ -724,6 +725,7 @@ export class FindAndReplaceComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.listOfAllAgents = this.coreService.clone(this.agents);
     this.listOfAgents = this.coreService.clone(this.agents);
     this.listOfAgents.push('*');
   }
@@ -746,6 +748,10 @@ export class FindAndReplaceComponent implements OnInit {
         return val !== '*';
       });
     }
+  }
+
+  onChange(value: string): void {
+    this.listOfAllAgents = this.agents.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
   }
 
   onSubmit(): void {
@@ -1446,6 +1452,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.obj = {};
     }
     this.saveToHistory();
+  }
+
+  onAgentChange(value: string): void {
+    this.agentList = [...this.agentList.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) === -1)];
   }
 
   onChangeJobResource(value): void {
@@ -5738,7 +5748,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     /**
      * Function: Get first and last cell from the user selected cells
      */
-    function isCellSelectedValid(cells) {
+    function isCellSelectedValid(cells): any {
       const obj = {firstCell: null, lastCell: null, ids: [], invalid: false};
       if (cells.length === 2) {
         if (!checkClosedCellWithSourceCell(cells[0], cells[1])) {
@@ -5772,10 +5782,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     /**
      * Function : To check is parent instruction also selected or not
-     * @param cells
-     * @param cell
      */
-    function isParentAlsoSelected(cells, cell) {
+    function isParentAlsoSelected(cells, cell): boolean {
       let flag = false;
       for (let i = 0; i < cells.length; i++) {
         if (cells[i].id === cell.getParent().id) {
@@ -5789,10 +5797,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     /**
      * Function: To check is selected instructions are interconnected or not
-     * @param cells
-     * @param cell
      */
-    function isSelectedCellConnected(cells, cell) {
+    function isSelectedCellConnected(cells, cell): boolean {
       let flag = false;
       for (let i = 0; i < cells.length; i++) {
         if (graph.getEdgesBetween(cells[i], cell).length > 0) {
@@ -5810,10 +5816,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     /**
      * Function: To check source is closed with its own closing cell or not
-     * @param sour
-     * @param targ
      */
-    function checkClosedCellWithSourceCell(sour, targ) {
+    function checkClosedCellWithSourceCell(sour, targ): boolean {
       const sourName = sour.value.tagName;
       const tarName = targ.value.tagName;
       return (sourName === 'Fork' && tarName === 'Join') || (sourName === 'If' && tarName === 'EndIf') ||
@@ -5908,7 +5912,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     /**
      * Function: Move selected cell into dropped cell
      */
-    function moveSelectedCellToDroppedCell(cell, parentCell, cells) {
+    function moveSelectedCellToDroppedCell(cell, parentCell, cells): void {
       const cellName = parentCell.value.tagName;
       let parent;
       if (cell) {
@@ -6015,12 +6019,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     /**
      * Get end node of If/Fork/Try/Retry/Lock/Cycle/ForkList
-     * @param cell
      */
-    function getEndNode(cell) {
+    function getEndNode(cell): any {
       let targetNode = {};
 
-      function recursive(target) {
+      function recursive(target): void {
         const edges = target.edges;
         if (checkClosedCellWithSourceCell(cell, target)) {
 
@@ -6111,7 +6114,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     /**
      * Create new connection object
-     * @param label
      */
     function getConnectionNode(label: string): any {
       // Create new Connection object
@@ -6142,7 +6144,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     /**
      * change label of EndIf and Join
      */
-    function changeLabelOfConnection(cell, data) {
+    function changeLabelOfConnection(cell, data): void {
       graph.getModel().beginUpdate();
       try {
         const label = new mxCellAttributeChange(
@@ -6159,7 +6161,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
     }
 
-    function checkConnectionLabel(cell, _dropTarget, isChange) {
+    function checkConnectionLabel(cell, _dropTarget, isChange): void {
       graph.getModel().beginUpdate();
       try {
         const uuid = new mxCellAttributeChange(
@@ -6784,7 +6786,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       self.ref.detectChanges();
     }
 
-
     /**
      * Function: paste the instruction to given target
      */
@@ -6924,7 +6925,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       let str = jobName;
       const jobs = JSON.parse((JSON.stringify(self.jobs)));
 
-      function recursivelyCheck(name) {
+      function recursivelyCheck(name): void {
         for (let i = 0; i < jobs.length; i++) {
           if (jobs[i].name == name) {
             let tName;
@@ -6989,8 +6990,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
     }
 
-    function generateCopyObject(copyObject) {
-      function recursion(json) {
+    function generateCopyObject(copyObject): void {
+      function recursion(json): void {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             json.instructions[x].uuid = undefined;
@@ -7945,7 +7946,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     /**
      * Function: Rearrange a cell to a different position in the workflow
      */
-    function rearrangeCell(obj) {
+    function rearrangeCell(obj): void {
       const connection = obj.target;
       const droppedCell = obj.cell;
       if (connection.source === droppedCell.id || connection.target === droppedCell.id ||
@@ -7957,7 +7958,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         const source = connection.source || connection;
         const tempJson = JSON.stringify(self.workflow.configuration);
 
-        function getObject(json, cell) {
+        function getObject(json, cell): void {
           if (json.instructions) {
             for (let x = 0; x < json.instructions.length; x++) {
               if (dropObject && targetObject) {

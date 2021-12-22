@@ -43,12 +43,6 @@ export class UpdateJobComponent implements OnInit {
   }
 
   private init(): void {
-    if (this.data.onlyUpdate) {
-      setTimeout(() => {
-        this.selectedNode.job = {};
-        this.step = 2;
-      }, 100);
-    }
     if (this.jobResourcesTree.length === 0) {
       this.coreService.post('tree', {
         controllerId: this.controllerId,
@@ -70,7 +64,18 @@ export class UpdateJobComponent implements OnInit {
     if (this.agents.length === 0) {
       this.coreService.post('agents/names', {controllerId: this.controllerId}).subscribe((res: any) => {
         this.agents = res.agentNames ? res.agentNames.sort() : [];
+        if (this.data.onlyUpdate) {
+          this.selectedNode.job = {};
+          this.step = 2;
+        }
       });
+    } else {
+      if (this.data.onlyUpdate) {
+        setTimeout(() => {
+          this.selectedNode.job = {};
+          this.step = 2;
+        }, 100);
+      }
     }
   }
 

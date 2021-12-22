@@ -15,8 +15,8 @@
         <div class="form-group row" *ngIf="!data" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
             <label class="col-sm-4 form-control-label" translate>user.label.sessionTimeout</label>
             <div class="col-sm-6">
-               <nz-input-number required [nzMin]="1" [nzStep]="1" name="timeout"
-                                #timeout="ngModel" [(ngModel)]="currentObj.sessionTimeout"></nz-input-number>
+              <input type="text" class="form-control" required name="timeout" [placeholder]="'user.placeholder.sessionTimeout' | translate"
+                                #timeout="ngModel" validateDurtionReqex [(ngModel)]="currentObj.sessionTimeout">
                 <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
                     <div *ngIf="timeout.errors.required">
                         <div translate>common.message.requiredError</div>
@@ -28,14 +28,14 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultUrl</label>
             <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamVaultUrl"
+              <input type="url" class="form-control" name="iamVaultUrl" [placeholder]="'user.placeholder.iamVaultUrl' | translate"
                      [(ngModel)]="currentObj.iamVaultUrl">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeystorePath</label>
             <div class="col-sm-6">
-              <input type="text" class="form-control" name="iamVaultKeystorePath"
+              <input type="text" class="form-control" name="iamVaultKeystorePath" [placeholder]="'user.placeholder.iamVaultKeystorePath' | translate"
                      [(ngModel)]="currentObj.iamVaultKeystorePath">
             </div>
           </div>
@@ -43,7 +43,7 @@
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeystorePassword</label>
             <div class="col-sm-6">
               <input type="{{!passwordFields.first ? 'password' : 'text'}}" class="form-control" name="iamVaultKeystorePassword"
-                     [(ngModel)]="currentObj.iamVaultKeystorePassword">
+                     [(ngModel)]="currentObj.iamVaultKeystorePassword" [placeholder]="'user.placeholder.iamVaultKeystorePassword' | translate">
               <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
                  (click)="passwordFields.first = !passwordFields.first"></i>
             </div>
@@ -52,7 +52,7 @@
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeyPassword</label>
             <div class="col-sm-6">
               <input type="{{!passwordFields.second ? 'password' : 'text'}}" class="form-control" name="iamVaultKeyPassword"
-                     [(ngModel)]="currentObj.iamVaultKeyPassword">
+                     [(ngModel)]="currentObj.iamVaultKeyPassword" [placeholder]="'user.placeholder.iamVaultKeyPassword' | translate">
               <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.second ? 'fa-eye' : 'fa-eye-slash'"
                  (click)="passwordFields.second = !passwordFields.second"></i>
             </div>
@@ -61,21 +61,21 @@
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeyStoreType</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" name="iamVaultKeystoreType"
-                     [(ngModel)]="currentObj.iamVaultKeystoreType">
+                     [(ngModel)]="currentObj.iamVaultKeystoreType" [placeholder]="'user.placeholder.iamVaultKeyStoreType' | translate">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStorePath</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" name="iamVaultTruststorePath"
-                     [(ngModel)]="currentObj.iamVaultTruststorePath">
+                     [(ngModel)]="currentObj.iamVaultTruststorePath" [placeholder]="'user.placeholder.iamVaultTrustStorePath' | translate">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStorePassword</label>
             <div class="col-sm-6">
               <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control" name="iamVaultTruststorePassword"
-                     [(ngModel)]="currentObj.iamVaultTruststorePassword">
+                     [(ngModel)]="currentObj.iamVaultTruststorePassword" [placeholder]="'user.placeholder.iamVaultTrustStorePassword' | translate">
               <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
                  (click)="passwordFields.third = !passwordFields.third"></i>
             </div>
@@ -84,14 +84,14 @@
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStoreType</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" name="iamVaultTruststoreType"
-                     [(ngModel)]="currentObj.iamVaultTruststoreType">
+                     [(ngModel)]="currentObj.iamVaultTruststoreType" [placeholder]="'user.placeholder.iamVaultTrustStoreType' | translate">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultApplicationToken</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" name="iamVaultApplicationToken"
-                     [(ngModel)]="currentObj.iamVaultApplicationToken">
+                     [(ngModel)]="currentObj.iamVaultApplicationToken" [placeholder]="'user.placeholder.iamVaultApplicationToken' | translate">
             </div>
           </div>
         </div>
@@ -99,7 +99,7 @@
            <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUrl</label>
             <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapUrl"
+              <input type="url" class="form-control" name="iamLdapUrl" [placeholder]="'user.placeholder.iamLdapUrl' | translate"
                      [(ngModel)]="currentObj.iamLdapUrl">
             </div>
           </div>

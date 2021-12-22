@@ -109,8 +109,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
   preferences: any = {};
   accounts: any = [];
   roles: any = [];
-  order = 'account';
-  reverse = false;
   usr: any = {};
   userDetail: any = {};
   temp: any = 0;
@@ -140,7 +138,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.usr = {currentPage: 1};
+    this.usr = {currentPage: 1, sortBy : 'account', reverse: false};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.username = this.authService.currentUserData;
     this.selectedIdentityService = sessionStorage.identityServiceType + ':' + sessionStorage.identityServiceName;
