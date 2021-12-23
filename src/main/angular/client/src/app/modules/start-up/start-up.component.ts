@@ -37,7 +37,7 @@ export class StartUpModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.hasLicense = sessionStorage.hasLicense;
+    this.hasLicense = sessionStorage.hasLicense == 'true';
     this.controller = {
       url: '',
       type: 'STANDALONE',

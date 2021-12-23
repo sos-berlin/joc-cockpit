@@ -165,11 +165,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   private checkUrl(val): void {
     if (val.url) {
       this.route = val.url;
-      this.isPaste = false;
-      if (this.route && ((this.route.match('/users/identity_service/account') && this.dataService.copiedObject.accounts && this.dataService.copiedObject.accounts.size > 0) ||
-      (this.route.match('/users/identity_service/role') && this.dataService.copiedObject.roles && this.dataService.copiedObject.roles.size > 0))) {
-        this.isPaste = true;
-      }
+      this.isPaste = this.route && ((this.route.match('/users/identity_service/account') && this.dataService.copiedObject.accounts && this.dataService.copiedObject.accounts.size > 0) ||
+        (this.route.match('/users/identity_service/role') && this.dataService.copiedObject.roles && this.dataService.copiedObject.roles.size > 0));
       if (this.route.match('/users')) {
         if (sessionStorage.identityServiceType) {
           if ((sessionStorage.identityServiceType === 'VAULT' || sessionStorage.identityServiceType === 'LDAP') && this.route.match('/users/identity_service/account')) {
@@ -179,9 +176,6 @@ export class AdminComponent implements OnInit, OnDestroy {
             this.router.navigate(['/users/identity_service/account']);
           }
         }
-        if (this.userObj && this.userObj.accounts) {
-          this.dataService.announceData(this.userObj);
-        }
         this.selectedUser = this.getParameterByName('account');
         if (sessionStorage.identityServiceName && this.route.match('/users/identity_service/')) {
           if (this.identityService !== sessionStorage.identityServiceName) {
@@ -189,6 +183,10 @@ export class AdminComponent implements OnInit, OnDestroy {
             this.identityService = sessionStorage.identityServiceName;
             this.identityServiceType = sessionStorage.identityServiceType;
             this.getUsersData(true);
+          } else {
+            if (this.userObj && this.userObj.accounts) {
+              this.dataService.announceData(this.userObj);
+            }
           }
         }
       }

@@ -155,6 +155,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.data = [];
     this.usr = {currentPage: 1, sortBy: 'account', reverse: false};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.username = this.authService.currentUserData;
@@ -188,9 +189,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('authentication/auth/store', obj).subscribe(res => {
-      this.accounts = [...this.accounts];
       this.userDetail = res;
       this.dataService.announceFunction('RELOAD');
+      this.searchInResult();
     });
   }
 
@@ -206,7 +207,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
   showRole(account): void {
     this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
   }
-
 
   /* ---------------------------- Action ----------------------------------*/
 
@@ -227,7 +227,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.accounts = result;
-        this.accounts = [...this.accounts];
+        this.searchInResult();
       }
     });
   }
@@ -249,7 +249,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.accounts = result;
-        this.accounts = [...this.accounts];
+        this.searchInResult();
       }
     });
   }
@@ -271,7 +271,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.accounts = result;
-        this.accounts = [...this.accounts];
+        this.searchInResult();
       }
     });
   }
@@ -301,11 +301,21 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   private paste(): void {
-    console.log(this.userDetail.accounts);
-    console.log(this.userDetail.roles);
     this.dataService.copiedObject.accounts.forEach((value, key) => {
-      console.log(value, key);
+      let flag = false;
+      for (const i in this.userDetail.accounts) {
+        if (this.userDetail.accounts[i]) {
+          if (this.userDetail.accounts[i].account === key) {
+            flag = true;
+            break;
+          }
+        }
+      }
+      if (!flag) {
+        this.userDetail.accounts.push(value);
+      }
     });
+    this.saveInfo();
   }
 
   private reset(): void{
@@ -339,6 +349,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   searchInResult(): void {
     this.data = this.searchKey ? this.searchPipe.transform(this.accounts, this.searchKey, this.searchableProperties) : this.accounts;
+    this.data = this.orderPipe.transform(this.data, this.usr.sortBy, this.usr.reverse);
     this.data = [...this.data];
   }
 
@@ -353,7 +364,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
     const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
     return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
   }
-
 
   onItemChecked(account: any, checked: boolean): void {
     if (!checked && this.object.mapOfCheckedId.size > (this.usr.entryPerPage || this.preferences.entryPerPage)) {

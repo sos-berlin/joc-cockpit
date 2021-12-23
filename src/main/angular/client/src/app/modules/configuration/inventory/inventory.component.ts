@@ -288,6 +288,9 @@ export class DeployComponent implements OnInit {
       onlyValidObjects: true,
       withRemovedObjects: true
     };
+    if (this.data && this.data.object) {
+      obj.objectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
+    }
     if (this.isRevoke) {
       obj.withoutDeployed = false;
       obj.withRemovedObjects = false;
@@ -295,9 +298,6 @@ export class DeployComponent implements OnInit {
       obj.withoutDrafts = true;
       obj.latest = true;
     } else {
-      if (this.data && this.data.object) {
-        obj.objectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
-      }
       if (!this.isRemove) {
         if (this.releasable) {
           obj.withoutReleased = true;

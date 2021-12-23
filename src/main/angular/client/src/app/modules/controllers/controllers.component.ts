@@ -444,7 +444,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    this.hasLicense = sessionStorage.hasLicense;
+    this.hasLicense = sessionStorage.hasLicense == 'true';
     this.getTokens();
   }
 
