@@ -51,7 +51,7 @@ export class SettingModalComponent implements OnInit {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || data.ldap;
+            this.currentObj = data.vault || data.ldap || {};
           }
         } else {
           this.currentObj = data;
