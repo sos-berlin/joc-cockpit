@@ -51,7 +51,7 @@ export class SettingModalComponent implements OnInit {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || data.ldap;
+            this.currentObj = data.vault || data.ldap || {};
           }
         } else {
           this.currentObj = data;
@@ -88,7 +88,7 @@ export class SettingModalComponent implements OnInit {
   }
 
   private convertStringToDuration(str: string): number {
-    if (/^((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {
+    if (/^((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {
       let seconds = 0;
       const a = str.split(' ');
       for (let i = 0; i < a.length; i++) {
