@@ -16,7 +16,7 @@
             <label class="col-sm-4 form-control-label" translate>user.label.sessionTimeout</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" required name="timeout" [placeholder]="'user.placeholder.sessionTimeout' | translate"
-                                #timeout="ngModel" validateDurtionReqex [(ngModel)]="currentObj.sessionTimeout">
+                                #timeout="ngModel" validateSessionTimeReqex [(ngModel)]="currentObj.sessionTimeout">
                 <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
                     <div *ngIf="timeout.errors.required">
                         <div translate>common.message.requiredError</div>

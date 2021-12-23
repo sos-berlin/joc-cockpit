@@ -1977,7 +1977,7 @@
     "placeholder.folderPath": "Entrer le chemin d'accès du dossier",
     "placeholder.enterOrSelectPermission": "Entrer ou sélectionner la Permission",
     "placeholder.selectIdentityServiceType": "Séléctionner le type du Service d'Identité",
-    "placeholder.sessionTimeout": "Entrer les valeurs en format d/w/m/y/M/h ou sécondes",
+    "placeholder.sessionTimeout": "Entrer les valeurs en format m/h/d ou sécondes",
     "placeholder.iamVaultUrl": "Entrer la Vault URL",
     "placeholder.iamVaultKeystorePath": "Entrer le chemin d'accès au Vault Keystore",
     "placeholder.iamVaultKeystorePassword": "Entrer le mot de passe du Vault Keystore",

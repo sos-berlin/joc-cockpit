@@ -1977,7 +1977,7 @@
     "placeholder.folderPath": "Pfad des Ordners angeben",
     "placeholder.enterOrSelectPermission": "Berechtigung angeben oder auswählen",
     "placeholder.selectIdentityServiceType": "Typ des Identitätsdienstes auswählen",
-    "placeholder.sessionTimeout": "Werte im Format d/w/m/y/M/h oder Sekunden angeben",
+    "placeholder.sessionTimeout": "Werte im Format m/h/d oder Sekunden angeben",
     "placeholder.iamVaultUrl": "Vault URL angeben",
     "placeholder.iamVaultKeystorePath": "Pfad zum Vault Keystore angeben",
     "placeholder.iamVaultKeystorePassword": "Kennwort für Vault Keystore angeben",
