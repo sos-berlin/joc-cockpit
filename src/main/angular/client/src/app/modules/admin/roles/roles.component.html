@@ -1,4 +1,11 @@
 <div class="box p-a">
+  <div class="m-l b-b p-b-sm" *ngIf="controllerRoles && controllerRoles.length > 1">
+    <span class="_600 text-16">#</span>
+    <label style="margin-left: 13px" nz-checkbox
+           [(nzChecked)]="object.checked"
+           [nzIndeterminate]="object.indeterminate"
+           (nzCheckedChange)="checkAll($event)"></label>
+  </div>
   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
     <div *ngFor="let role of controllerRoles; let i = index" class="box-body p-b-0" cdkDrag>
       <div class="row">

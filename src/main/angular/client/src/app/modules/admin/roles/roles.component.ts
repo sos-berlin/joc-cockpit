@@ -218,6 +218,8 @@ export class RolesComponent implements OnDestroy {
   roles: any = [];
   controllerRoles = [];
   object = {
+    checked: false,
+    indeterminate: false,
     mapOfCheckedId: new Map()
   };
   subscription1: Subscription;
@@ -238,8 +240,7 @@ export class RolesComponent implements OnDestroy {
         this.addController();
       } else if (res === 'COPY_ROLE') {
         this.dataService.copiedObject.roles = this.object.mapOfCheckedId;
-        this.object.mapOfCheckedId = new Map();
-        this.dataService.announceFunction('IS_ROLE_PROFILES_FALSE');
+        this.reset();
       } else if (res === 'PASTE_ROLE') {
         this.paste();
       }
@@ -525,17 +526,43 @@ export class RolesComponent implements OnDestroy {
     this.saveInfo();
   }
 
+  checkAll(value: boolean): void {
+    if (value && this.controllerRoles.length > 0) {
+      this.controllerRoles.forEach(item => {
+        this.object.mapOfCheckedId.set(item.name, item.mainObj);
+      });
+    } else {
+      this.object.mapOfCheckedId.clear();
+    }
+    this.checkCheckBoxState();
+  }
+
+  private checkCheckBoxState(): void {
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+    if (this.object.mapOfCheckedId.size > 0) {
+      this.dataService.announceFunction('IS_ROLE_PROFILES_TRUE');
+    } else {
+      this.dataService.announceFunction('IS_ROLE_PROFILES_FALSE');
+    }
+  }
+
+  private reset(): void {
+    this.object = {
+      checked: false,
+      indeterminate: false,
+      mapOfCheckedId: new Map()
+    };
+    this.dataService.announceFunction('IS_ROLE_PROFILES_FALSE');
+  }
+
   checkMappedObject(isChecked: boolean, role): void {
     if (isChecked) {
       this.object.mapOfCheckedId.set(role.name, role.mainObj);
     } else {
       this.object.mapOfCheckedId.delete(role.name);
     }
-    if (this.object.mapOfCheckedId.size > 0) {
-      this.dataService.announceFunction('IS_ROLE_PROFILES_TRUE');
-    } else {
-      this.dataService.announceFunction('IS_ROLE_PROFILES_FALSE');
-    }
+    this.object.checked = this.object.mapOfCheckedId.size === this.controllerRoles.length;
+    this.checkCheckBoxState();
   }
 
   private checkUrl(val): void {

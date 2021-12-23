@@ -389,8 +389,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
     } else {
       this.object.mapOfCheckedId.delete(account.account);
     }
-    const documents = this.getCurrentData(this.data, this.usr);
-    this.object.checked = this.object.mapOfCheckedId.size === documents.length;
+    const users = this.getCurrentData(this.data, this.usr);
+    this.object.checked = this.object.mapOfCheckedId.size === users.length;
     this.checkCheckBoxState();
   }
 
