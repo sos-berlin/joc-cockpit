@@ -784,7 +784,7 @@
     "button.settings": "Einstellungen",
     "button.profile": "Anwenderprofil",
     "button.logging": "Protokollierung",
-    "button.manageAccount": "Konten verwalten",
+    "button.manageAccount": "Identitätsdienste verwalten",
     "button.manageControllersAndAgents": "Controller/Agenten verwalten",
     "button.logOut": "Abmelden"
   },

@@ -784,7 +784,7 @@
     "button.settings": "Paramètres",
     "button.profile": "Profile",
     "button.logging": "Enregistrement",
-    "button.manageAccount": "Gérer les Comptes",
+    "button.manageAccount": "Gérer les Services d'Identité",
     "button.manageControllersAndAgents": "Gérer Contrôleurs/Agents",
     "button.logOut": "Se Déconnecter"
   },
