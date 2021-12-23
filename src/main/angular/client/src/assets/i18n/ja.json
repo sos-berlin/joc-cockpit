@@ -1977,7 +1977,7 @@
     "placeholder.folderPath": "フォルダーパスを入力",
     "placeholder.enterOrSelectPermission": "パーミッションを入力または選択",
     "placeholder.selectIdentityServiceType": "Select Identity Service Type",
-    "placeholder.sessionTimeout": "Enter value as d/w/m/y/M/h or seconds",
+    "placeholder.sessionTimeout": "Enter value as m/h/d or seconds",
     "placeholder.iamVaultUrl": "Enter Vault URL",
     "placeholder.iamVaultKeystorePath": "Enter Vault Keystore Path",
     "placeholder.iamVaultKeystorePassword": "Enter Vault Keystore Password",

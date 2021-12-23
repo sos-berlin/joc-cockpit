@@ -189,7 +189,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('authentication/auth/store', obj).subscribe(res => {
-      this.userDetail = res;
+      this.userDetail.accounts = this.accounts;
       this.dataService.announceFunction('RELOAD');
       this.searchInResult();
     });
@@ -312,6 +312,15 @@ export class AccountsComponent implements OnInit, OnDestroy {
         }
       }
       if (!flag) {
+        const roles = [];
+        for (const i in value.roles) {
+          if (value.roles[i]) {
+            if (this.userDetail.roles[value.roles[i]]) {
+              roles.push(value.roles[i]);
+            }
+          }
+        }
+        value.roles = roles;
         this.userDetail.accounts.push(value);
       }
     });

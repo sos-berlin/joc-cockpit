@@ -80,44 +80,26 @@ export class SettingModalComponent implements OnInit {
 
   private convertDurationToString(time: any): string {
     const seconds = Number(time);
-    const y = Math.floor(seconds / (3600 * 365 * 24));
-    const m = Math.floor((seconds % (3600 * 365 * 24)) / (3600 * 30 * 24));
-    const w = Math.floor(((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) / (3600 * 7 * 24));
     const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
     const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
-    const M = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
+    const m = Math.floor((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
     const s = Math.floor(((((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-    return (y != 0 ? y + 'y ' : '') + (m != 0 ? m + 'm ' : '') + (w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (M != 0 ? M + 'M ' : '') + (s != 0 ? s + 's ' : '');
+    return (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (m != 0 ? m + 'm ' : '') + (s != 0 ? s + 's ' : '');
   }
 
   private convertStringToDuration(str: string): number {
-    if (/^([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*-\s*([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/.test(str)) {
-      const interval = str.split('-');
-      const a = interval[0].split(':');
-      const b = interval[1].split(':');
-      const s1 = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
-      const s2 = (+b[0]) * 60 * 60 + (+b[1]) * 60 + (+b[2]);
-      return s2 > s1 ? (s2 - s1) : (86400 - (s1 - s2));
-    }
-
-    if (/^((\d+)y[ ]?)?((\d+)m[ ]?)?((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {
+    if (/^((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)M[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {
       let seconds = 0;
       const a = str.split(' ');
       for (let i = 0; i < a.length; i++) {
         const frmt: string = a[i].charAt(a[i].length - 1);
         const val: number = Number(a[i].slice(0, a[i].length - 1));
         if (frmt && val) {
-          if (frmt === 'y') {
-            seconds += val * 365 * 24 * 3600;
-          } else if (frmt === 'm') {
-            seconds += val * 30 * 24 * 3600;
-          } else if (frmt === 'w') {
-            seconds += val * 7 * 24 * 3600;
-          } else if (frmt === 'd') {
+          if (frmt === 'd') {
             seconds += val * 24 * 3600;
           } else if (frmt === 'h') {
             seconds += val * 3600;
-          } else if (frmt === 'M') {
+          } else if (frmt === 'm') {
             seconds += val * 60;
           } else if (frmt === 's') {
             seconds += Number(val);

@@ -1977,7 +1977,7 @@
     "placeholder.folderPath": "Enter folder path",
     "placeholder.enterOrSelectPermission": "Enter or Select Permission",
     "placeholder.selectIdentityServiceType": "Select Identity Service Type",
-    "placeholder.sessionTimeout": "Enter value as d/w/m/y/M/h or seconds",
+    "placeholder.sessionTimeout": "Enter value as m/h/d or seconds",
     "placeholder.iamVaultUrl": "Enter Vault URL",
     "placeholder.iamVaultKeystorePath": "Enter Vault Keystore Path",
     "placeholder.iamVaultKeystorePassword": "Enter Vault Keystore Password",

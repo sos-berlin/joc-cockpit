@@ -239,6 +239,32 @@ export class DurationWithPercentageRegexValidator implements Validator {
 }
 
 @Directive({
+  selector: '[validateSessionTimeReqex]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => SessionTimeRegexValidator), multi: true}
+  ]
+})
+export class SessionTimeRegexValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } {
+    let v = c.value;
+    if (v != null) {
+      if (v == '') {
+        return null;
+      }
+      if (/^[0-9]+\s*$/i.test(v) || /^((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(v)
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      invalidDuration: true
+    };
+  }
+}
+
+@Directive({
   selector: '[validateDurtionReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationRegexValidator), multi: true}
