@@ -15,8 +15,8 @@ import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  const lang = localStorage.$SOS$LANG || 'en';
-  import(`@angular/common/locales/${lang}.js`).then(locale => {
+  const lang = localStorage['$SOS$LANG'] || 'en';
+  import(`../../node_modules/@angular/common/locales/${lang}.mjs`).then(locale => {
     registerLocaleData(locale.default);
   });
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

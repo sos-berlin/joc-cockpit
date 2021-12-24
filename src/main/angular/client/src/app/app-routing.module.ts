@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
 import {LoginComponent} from './modules/login/login.component';
 import {AuthGuard} from './components/guard';
 
@@ -18,12 +18,19 @@ const routes: Routes = [
     loadChildren: () => import('./modules/log2/log2.module').then(m => m.Log2Module),
     canActivate: [AuthGuard]
   },
-  {path: '404', loadChildren: () => import('./modules/page-not-found/page-not-found.module').then(m => m.PageNotFoundModule)},
-  {path: '**', redirectTo: '/404'}
+  {
+    path: '404',
+    loadChildren: () => import('./modules/page-not-found/page-not-found.module').then(m => m.PageNotFoundModule)
+  },
+  {path: '**', redirectTo: '/404'},
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {useHash: true})],
+  imports: [RouterModule.forRoot(routes, {
+    preloadingStrategy: PreloadAllModules,
+    useHash: true
+  })],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

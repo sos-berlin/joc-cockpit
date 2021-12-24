@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {isEmpty} from 'underscore';
 import {Subscription} from 'rxjs';
 import {ClipboardService} from 'ngx-clipboard';
+import {NzMessageService} from 'ng-zorro-antd/message';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
 
@@ -52,7 +53,7 @@ export class LogComponent implements OnInit, OnDestroy {
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
   constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService,
-              private clipboardService: ClipboardService) {
+              private clipboardService: ClipboardService, private message: NzMessageService) {
 
   }
 
@@ -723,6 +724,7 @@ export class LogComponent implements OnInit, OnDestroy {
   }
 
   copy(): void {
+    this.coreService.showCopyMessage(this.message);
     this.clipboardService.copyFromContent(this.dataBody.nativeElement.innerText);
   }
 

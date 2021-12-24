@@ -213,7 +213,7 @@ export class SingleDocumentationComponent implements OnInit {
   previewDocument(document): void {
     const link = API_URL + 'documentation/show?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId;
     if (this.preferences.isDocNewWindow === 'newWindow') {
-      window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
+      window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
     } else {
       window.open(link, '_blank');
     }

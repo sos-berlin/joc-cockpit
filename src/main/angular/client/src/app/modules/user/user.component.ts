@@ -411,7 +411,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   setLocale(): void {
     localStorage.$SOS$LANG = this.preferences.locale;
-    import(`@angular/common/locales/${this.preferences.locale}.js`).then(locale => {
+    import(`../../../../node_modules/@angular/common/locales/${this.preferences.locale}.mjs`).then(locale => {
       registerLocaleData(locale.default);
     });
     this.translate.use(this.preferences.locale).subscribe((res) => {

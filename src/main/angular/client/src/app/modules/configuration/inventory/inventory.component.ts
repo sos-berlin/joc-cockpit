@@ -929,57 +929,76 @@ export class ExportComponent implements OnInit {
         ));
       }
     }
-    forkJoin(APIs).subscribe(res => {
-      const mergeObj = res.length > 1 ? this.mergeDeep(res[0], res[1]) : res[0];
-      let tree = [];
-      if (mergeObj.folders && mergeObj.folders.length > 0 ||
-        ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
-        tree = this.coreService.prepareTree({
-          folders: [{
-            name: mergeObj.name,
-            path: mergeObj.path,
-            folders: mergeObj.folders,
-            deployables: mergeObj.deployables,
-            releasables: mergeObj.releasables
-          }]
-        }, false);
-        this.inventoryService.updateTree(tree[0]);
-      }
-      if (merge) {
-        if (tree.length > 0) {
-          merge.children = tree[0].children;
-          this.inventoryService.checkAndUpdateVersionList(tree[0]);
+    forkJoin(APIs).subscribe({
+      next: (res: any) => {
+        let mergeObj: any = {};
+        if (res.length > 1) {
+          if (res[0].name && res[1].name) {
+            mergeObj = this.mergeDeep(res[0], res[1]);
+          } else if (res[0].name && !res[1].name) {
+            mergeObj = res[0];
+          } else if (!res[0].name && res[1].name) {
+            mergeObj = res[1];
+          }
+        } else {
+          if(res[0].name) {
+            mergeObj = res[0];
+          }
         }
-        delete merge.loading;
-        this.nodes = [...this.nodes];
-      } else {
-        this.nodes = tree;
-        if (!cb) {
-          setTimeout(() => {
-            this.loading = false;
-            if (this.nodes.length > 0) {
-              this.nodes[0].expanded = true;
-              this.inventoryService.preselected(this.nodes[0]);
-              this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+        let tree = [];
+        if (mergeObj.folders && mergeObj.folders.length > 0 ||
+          ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
+          tree = this.coreService.prepareTree({
+            folders: [{
+              name: mergeObj.name,
+              path: mergeObj.path,
+              folders: mergeObj.folders,
+              deployables: mergeObj.deployables,
+              releasables: mergeObj.releasables
+            }]
+          }, false);
+          this.inventoryService.updateTree(tree[0]);
+        }
+        if (merge) {
+          if (tree.length > 0) {
+            merge.children = tree[0].children;
+            this.inventoryService.checkAndUpdateVersionList(tree[0]);
+          }
+          delete merge.loading;
+          this.nodes = [...this.nodes];
+        } else {
+          this.nodes = tree;
+          if (!cb) {
+            setTimeout(() => {
+              this.loading = false;
+              if (this.nodes.length > 0) {
+                this.nodes[0].expanded = true;
+                this.inventoryService.preselected(this.nodes[0]);
+                this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+              }
+              this.nodes = [...this.nodes];
+            }, 0);
+          } else {
+            cb();
+          }
+        }
+      },
+      complete: () => {}
+    })
+    /*    forkJoin(APIs).subscribe(res => {
+
+        }, () => {
+          if (merge) {
+            delete merge.loading;
+          } else {
+            if (!cb) {
+              this.loading = false;
+              this.nodes = [];
+            } else {
+              cb();
             }
-            this.nodes = [...this.nodes];
-          }, 0);
-        } else {
-          cb();
-        }
-      }
-    }, () => {
-      if (merge) {
-        delete merge.loading;
-      } else {
-        if (!cb) {
-          this.loading = false;
-          this.nodes = [];
-        } else {
-          cb();
-        }
-      }
-    });
+          }
+        });*/
   }
 
   private mergeDeep(deployables, releasables): any {

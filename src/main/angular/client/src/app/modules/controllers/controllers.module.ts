@@ -15,13 +15,13 @@ import {
 const routes: Routes = [{path: '', component: ControllersComponent}];
 
 @NgModule({
-  declarations: [ControllersComponent, DeployModalComponent, SubagentModalComponent, AgentModalComponent, CreateTokenModalComponent],
-  imports: [
-    RouterModule.forChild(routes),
-    SharedModule,
-    ClipboardModule,
-    NzPopoverModule
-  ], entryComponents: [StartUpModalComponent]
+    declarations: [ControllersComponent, DeployModalComponent, SubagentModalComponent, AgentModalComponent, CreateTokenModalComponent],
+    imports: [
+        RouterModule.forChild(routes),
+        SharedModule,
+        ClipboardModule,
+        NzPopoverModule
+    ]
 })
 export class ControllersModule {
 }
