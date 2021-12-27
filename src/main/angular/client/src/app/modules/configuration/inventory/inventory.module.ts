@@ -4,7 +4,6 @@ import {NzMentionModule} from 'ng-zorro-antd/mention';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {NzAutocompleteModule} from 'ng-zorro-antd/auto-complete';
 import {NgJsonEditorModule} from 'ang-jsoneditor';
-import {ChecklistModule} from 'angular-checklist';
 import {DatePipe} from '@angular/common';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {InventoryRoutingModule} from './inventory-routing.module';
@@ -61,8 +60,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     NzMentionModule,
     NzAutocompleteModule,
     NzTabsModule,
-    NgJsonEditorModule,
-    ChecklistModule
+    NgJsonEditorModule
   ],
   providers: [DatePipe, CalendarService, WorkflowService, InventoryService],
   declarations: [

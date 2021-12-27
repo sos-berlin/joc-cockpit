@@ -104,15 +104,11 @@
           </li>
         </ul>
         <ul nz-menu *ngIf="job">
-          <li nz-menu-item>
-            <a (click)="showConfiguration(job);">
-              <span translate>common.button.showConfiguration</span>
-            </a>
+          <li nz-menu-item (click)="showConfiguration(job);">
+            <a translate>common.button.showConfiguration</a>
           </li>
-          <li nz-menu-item [nzDisabled]="!job.documentationName" *ngIf="job.jobName">
-            <a (click)="coreService.showDocumentation(job.documentationName, preferences)">
-              <span translate>common.button.viewDocumentation</span>
-            </a>
+          <li nz-menu-item (click)="coreService.showDocumentation(job.documentationName, preferences)" [nzDisabled]="!job.documentationName" *ngIf="job.jobName">
+            <a translate>common.button.viewDocumentation</a>
           </li>
         </ul>
       </nz-dropdown-menu>

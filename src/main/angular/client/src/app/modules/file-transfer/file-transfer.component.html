@@ -8,7 +8,7 @@
           </div>
           <div class="inline">
             <div class="inline valign">
-              <label nz-checkbox [(ngModel)]="yadeFilters.current" name="current" (ngModelChange)="changeController()">
+              <label nz-checkbox [(ngModel)]="yadeFilters.current" (ngModelChange)="changeController()">
                 {{'common.label.currentController' | translate}}
               </label>
             </div>
@@ -40,29 +40,21 @@
               </button>
               <nz-dropdown-menu #state="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('STATE','ALL')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.states=='ALL', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('STATE','ALL')"
-                       translate>common.button.allStatus
-                    </a>
+                    <a translate>common.button.allStatus</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('STATE','SUCCESSFUL')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active':yadeFilters.filter.states=='SUCCESSFUL', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('STATE','SUCCESSFUL')"
-                       translate>common.button.successful
-                    </a>
+                    <a translate>common.button.successful</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('STATE','FAILED')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.states=='FAILED', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('STATE','FAILED')"
-                       translate>common.button.failed
-                    </a>
+                    <a translate>common.button.failed</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('STATE','INCOMPLETE')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.states=='INCOMPLETE', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('STATE','INCOMPLETE')"
-                       translate>common.button.incomplete
-                    </a>
+                    <a translate>common.button.incomplete</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -101,29 +93,29 @@
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('DATE','all')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='all', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('DATE','all')" translate>filters.button.all</a>
+                    <a translate>filters.button.all</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('DATE','today')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='today', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('DATE','today')" translate>filters.button.today</a>
+                    <a translate>filters.button.today</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('DATE','-1h')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='-1h', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('DATE','-1h')" translate>filters.button.last1</a>
+                    <a translate>filters.button.last1</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('DATE','-12h')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='-12h', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('DATE','-12h')" translate>filters.button.last12</a>
+                    <a translate>filters.button.last12</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('DATE','-24h')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='-24h', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('DATE','-24h')" translate>filters.button.last24</a>
+                    <a translate>filters.button.last24</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadYadeFiles('DATE','-7d')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': yadeFilters.filter.date=='-7d', 'disable-link':savedFilter.selected}">
-                    <a (click)="loadYadeFiles('DATE','-7d')" translate>filters.button.lastWeak</a>
+                    <a translate>filters.button.lastWeak</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -137,11 +129,11 @@
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
-                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  <li nz-menu-item (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                    <a translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="filterList.length>0">
-                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  <li nz-menu-item (click)="editFilters()" *ngIf="filterList.length>0">
+                    <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="filterList.length>0"></li>
                   <li nz-menu-item *ngFor="let filter of filterList | orderBy: 'name'">
@@ -317,8 +309,8 @@
                   </button>
                   <nz-dropdown-menu #menu="nzDropdownMenu">
                     <ul nz-menu>
-                      <li nz-menu-item>
-                        <a (click)="coreService.copyLink('fileTransfer',transfer.id)" translate>common.button.copyLinkToObject</a>
+                      <li nz-menu-item (click)="coreService.copyLink('fileTransfer',transfer.id)">
+                        <a translate>common.button.copyLinkToObject</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>

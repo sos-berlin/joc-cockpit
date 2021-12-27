@@ -882,7 +882,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   notValidUrl: string;
   uniqueName: string;
   onlyNumbers: string;
-  isFirefox = false;
   menuNode: any = {};
   beforeDrop;
   jobResourcesTree = [];
@@ -914,7 +913,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
     this.init();
     this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
       this.requiredField = translatedValue;

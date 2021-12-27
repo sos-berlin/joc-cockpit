@@ -350,7 +350,6 @@
                    placeholder="{{'workflow.placeholder.selectBoard' | translate}}"
                    name="noticeBoardName" #noticeBoardName="ngModel" [(ngModel)]="selectedNode.obj.noticeBoardName">
             <nz-tree-select
-              name="lockNameSelect"
               nzNoAnimation
               [nzNodes]="boardTree"
               [nzHideUnMatched]="true"
@@ -535,7 +534,7 @@
                      name="workflowName" #workflowName="ngModel" [(ngModel)]="selectedNode.obj.workflowName">
               <nz-tree-select
                 name="workflowName1"
-                required
+                [required]="true"
                 nzNoAnimation
                 #treeSelectCtrl
                 [nzAllowClear]="false"
@@ -969,18 +968,18 @@
 <!-- END SLIDER -->
 <nz-dropdown-menu #menu="nzDropdownMenu">
   <ul nz-menu >
-    <li nz-menu-item>
-      <a (click)="copy(node);closeMenu()"><i nz-icon nzType="copy" nzTheme="outline"></i>&nbsp;
+    <li nz-menu-item (click)="copy(node);closeMenu()">
+      <a><i nz-icon nzType="copy" nzTheme="outline"></i>&nbsp;
         <span translate>common.button.copy</span>
       </a>
     </li>
-    <li nz-menu-item>
-      <a (click)="cut(node);closeMenu()"><i nz-icon nzType="scissor" nzTheme="outline"></i>&nbsp;
+    <li nz-menu-item (click)="cut(node);closeMenu()">
+      <a><i nz-icon nzType="scissor" nzTheme="outline"></i>&nbsp;
         <span translate>common.button.cut</span>
       </a>
     </li>
-    <li nz-menu-item>
-      <a (click)="delete();closeMenu()"><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
+    <li nz-menu-item (click)="delete();closeMenu()">
+      <a><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
         <span translate>common.button.delete</span>
       </a>
     </li>

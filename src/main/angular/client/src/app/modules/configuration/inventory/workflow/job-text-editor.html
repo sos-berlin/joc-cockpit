@@ -103,7 +103,7 @@
                [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
             <input required name="agentName"
                [placeholder]="'workflow.placeholder.selectAgentName' | translate"
-               class="form-control" [(ngModel)]="selectedNode.job.agentName" #agentName="ngModel" (blur)="onBlur();" (ngModelChange)="onAgentChange($event)"
+               class="form-control" [(ngModel)]="selectedNode.job.agentName" #agentName="ngModel" (blur)="onBlur(true);" (ngModelChange)="onAgentChange($event)"
                [nzAutocomplete]="auto"/>
             <nz-autocomplete #auto>
                 <nz-auto-option *ngFor="let agent of agentList" [nzValue]="agent" [nzLabel]="agent">

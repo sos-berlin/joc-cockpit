@@ -279,8 +279,7 @@
                   <ng-container *ngFor="let btn of filterBtn">
                     <li (click)="getPlans(btn.status)" nz-menu-item
                         [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status=== btn.status, 'disable-link':savedFilter.selected}">
-                      <a
-                         translate>common.button.{{btn.text}}</a>
+                      <a translate>common.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>

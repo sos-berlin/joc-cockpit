@@ -191,7 +191,9 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   changeType($event): void {
-    this.getSettings($event);
+    if (this.identityService) {
+      this.getSettings($event);
+    }
   }
 
   private getSettings(type): void {

@@ -46,7 +46,7 @@
                           <a translate>common.button.edit</a>
                         </li>
                         <li (click)="deleteController(controller.controllerId)" nz-menu-item class="bg-hover-color">
-                          <a translate="">common.button.delete</a>
+                          <a translate>common.button.delete</a>
                         </li>
                       </ul>
                     </nz-dropdown-menu>
@@ -186,7 +186,7 @@
                                   <a translate>agent.button.enable</a>
                                 </li>
                                 <li (click)="removeAgent(agent, controller)" nz-menu-item class="bg-hover-color">
-                                  <a translate="">common.button.remove</a>
+                                  <a translate>common.button.remove</a>
                                 </li>
                               </ul>
                             </nz-dropdown-menu>
@@ -315,7 +315,7 @@
                                       <a translate>inventory.button.deploy</a>
                                     </li>
                                     <li (click)="removeAgent(clusterAgent, controller)" nz-menu-item class="bg-hover-color">
-                                      <a translate="">common.button.remove</a>
+                                      <a translate>common.button.remove</a>
                                     </li>
                                   </ul>
                                 </nz-dropdown-menu>
@@ -405,7 +405,7 @@
           <app-empty-data></app-empty-data>
         </div>
         <div class="m-a-lg text-center" *ngIf="!loading">
-          <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
+          <nz-spin nzSimple></nz-spin>
         </div>
         <div class="rg-bottom"><span></span></div>
       </div>

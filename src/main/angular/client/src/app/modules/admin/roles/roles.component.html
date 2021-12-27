@@ -7,7 +7,7 @@
            (nzCheckedChange)="checkAll($event)"></label>
   </div>
   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-    <div *ngFor="let role of controllerRoles; let i = index" class="box-body p-b-0" cdkDrag>
+    <div *ngFor="let role of controllerRoles" class="box-body p-b-0" cdkDrag>
       <div class="row">
         <div class="col-sm-12">
           <div class="pos-abt drag-handler" cdkDragHandle>
@@ -22,14 +22,14 @@
               class="fa fa-ellipsis-h"></i></button>
             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
               <ul nz-menu>
-                <li nz-menu-item>
-                  <a (click)="editRole(role)" translate>common.button.edit</a>
+                <li nz-menu-item (click)="editRole(role)">
+                  <a translate>common.button.edit</a>
                 </li>
-                <li nz-menu-item>
-                  <a (click)="copyRole(role)" translate>common.button.copy</a>
+                <li nz-menu-item (click)="copyRole(role)">
+                  <a translate>common.button.copy</a>
                 </li>
-                <li nz-menu-item class="bg-hover-color">
-                  <a (click)="deleteRole(role)" translate="">common.button.delete</a>
+                <li nz-menu-item (click)="deleteRole(role)" class="bg-hover-color">
+                  <a translate>common.button.delete</a>
                 </li>
               </ul>
             </nz-dropdown-menu>

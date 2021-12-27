@@ -50,14 +50,15 @@
             <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
               <ul nz-menu >
-                <li nz-menu-item >
-                  <a (click)="editUser(account)" translate>common.button.edit</a>
+                <li nz-menu-item (click)="editUser(account)">
+                  <a translate>common.button.edit</a>
                 </li>
-                <li nz-menu-item >
-                  <a (click)="copyUser(account)" translate>common.button.copy</a>
+                <li nz-menu-item (click)="copyUser(account)">
+                  <a translate>common.button.copy</a>
                 </li>
-                <li nz-menu-item  class="bg-hover-color" [ngClass]="{'disable-link' :username==account.account && selectedIdentityService === userIdentityService}">
-                  <a  (click)="deleteUser(account.account)" translate="">common.button.delete</a>
+                <li nz-menu-item (click)="deleteUser(account.account)" class="bg-hover-color"
+                    [ngClass]="{'disable-link' :username==account.account && selectedIdentityService === userIdentityService}">
+                  <a translate>common.button.delete</a>
                 </li>
               </ul>
             </nz-dropdown-menu>

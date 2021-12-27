@@ -17,9 +17,8 @@
               </button>
               <nz-dropdown-menu #account="nzDropdownMenu" >
                 <ul nz-menu >
-                  <li nz-menu-item  *ngFor="let account of userObj.accounts | orderBy: 'name'">
-                    <a  [ngClass]="{orange: selectedUser === account.account}"
-                       (click)="selectUser(account.account)">
+                  <li nz-menu-item (click)="selectUser(account.account)" *ngFor="let account of userObj.accounts | orderBy: 'name'">
+                    <a [ngClass]="{orange: selectedUser === account.account}">
                       <span>{{account.account | decodeSpace}}</span>
                       <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === account.account"
                         class="fa fa-times-circle-o remove"></i>

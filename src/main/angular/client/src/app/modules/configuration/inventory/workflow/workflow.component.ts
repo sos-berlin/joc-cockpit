@@ -17,6 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
+import {NzMessageService} from "ng-zorro-antd/message";
 import {isEmpty, isArray, isEqual, clone, extend, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {Router} from '@angular/router';
@@ -1442,7 +1443,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  onBlur(): void {
+  onBlur(isAgent = false): void {
+    if (isAgent) {
+      this.onAgentChange('');
+    }
     if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentName;
@@ -1455,7 +1459,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onAgentChange(value: string): void {
-    this.agentList = [...this.agentList.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) === -1)];
+    this.agentList = this.agents.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) > -1);
+    this.agentList = [...this.agentList];
   }
 
   onChangeJobResource(value): void {
@@ -2276,7 +2281,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
-              public toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService,
+              public toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -2668,6 +2673,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (this.copyId) {
           this.updateToolbar('copy', cell);
         }
+        this.coreService.showCopyMessage(this.message);
       }
     }
   }
@@ -3980,8 +3986,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const endNode = doc.createElement('Process');
       endNode.setAttribute('title', 'end');
       const v3 = graph.insertVertex(defaultParent, null, endNode, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
-      graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
-      graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
+      graph.insertEdge(defaultParent, null, doc.createElement('Connector'), v1, v2, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
+      graph.insertEdge(defaultParent, null, doc.createElement('Connector'), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
 
     } finally {
       // Updates the display

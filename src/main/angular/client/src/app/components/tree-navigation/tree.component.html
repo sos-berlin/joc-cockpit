@@ -27,10 +27,8 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item>
-                <a (click)="deleteFolder(node.origin)"
-                   translate>common.button.remove
-                </a>
+              <li nz-menu-item (click)="deleteFolder(node.origin)">
+                <a translate>common.button.remove</a>
               </li>
             </ul>
           </nz-dropdown-menu>

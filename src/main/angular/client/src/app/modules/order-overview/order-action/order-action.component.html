@@ -8,8 +8,8 @@
       <li (click)="cancelOrder(order)" nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')">
         <a translate>order.button.cancel</a>
       </li>
-      <li nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED' && order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
-        <a (click)="cancelOrderWithKill()" translate>order.button.cancelAndKillTask</a>
+      <li (click)="cancelOrderWithKill()" nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED' && order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
+        <a translate>order.button.cancelAndKillTask</a>
       </li>
       <li (click)="suspendOrder(order)" nz-menu-item *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING' || order.state._text === 'INPROGRESS' || order.state._text === 'WAITING')">
         <a translate>order.button.suspend</a>
