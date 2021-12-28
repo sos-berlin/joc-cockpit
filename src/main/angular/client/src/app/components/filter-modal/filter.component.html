@@ -35,27 +35,23 @@
                 class="fa fa-ellipsis-h"></i></button>
               <nz-dropdown-menu #option="nzDropdownMenu">
                 <ul nz-menu >
-                  <li nz-menu-item *ngIf="permission.joc.administration.customization.manage || filter.account==username">
-                    <a (click)="editFilter(filter)" translate>customization.button.edit</a>
+                  <li nz-menu-item (click)="editFilter(filter)" *ngIf="permission.joc.administration.customization.manage || filter.account==username">
+                    <a translate>customization.button.edit</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.administration.customization.manage">
-                    <a (click)="copyFilter(filter)" translate>customization.button.copy</a>
+                  <li nz-menu-item (click)="copyFilter(filter)" *ngIf="permission.joc.administration.customization.manage">
+                    <a translate>customization.button.copy</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.administration.customization.manage && filter.shared">
-                    <a (click)="makePrivate(filter)" translate>customization.button.makePrivate</a>
+                  <li nz-menu-item (click)="makePrivate(filter)" *ngIf="permission.joc.administration.customization.manage && filter.shared">
+                    <a translate>customization.button.makePrivate</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.administration.customization.share && filter.account==username && !filter.shared">
-                    <a (click)="makeShare(filter)" translate>customization.button.share</a>
+                  <li nz-menu-item (click)="makeShare(filter)" *ngIf="permission.joc.administration.customization.share && filter.account==username && !filter.shared">
+                    <a translate>customization.button.share</a>
                   </li>
-                  <li nz-menu-item class="bg-hover-color" *ngIf="filterList.length==1 && (permission.joc.administration.customization.manage || filter.account==username)">
-                    <a (click)="deleteFilter(filter)">
-                      <span translate>customization.button.delete</span>
-                    </a>
+                  <li nz-menu-item (click)="deleteFilter(filter)" class="bg-hover-color" *ngIf="filterList.length==1 && (permission.joc.administration.customization.manage || filter.account==username)">
+                    <a translate>customization.button.delete</a>
                   </li>
-                  <li nz-menu-item class="bg-hover-color" *ngIf="filterList.length>1 && (permission.joc.administration.customization.manage || filter.account==username)">
-                    <a (click)="deleteFilter(filter)">
-                      <span translate>customization.button.delete</span>
-                    </a>
+                  <li nz-menu-item (click)="deleteFilter(filter)" class="bg-hover-color" *ngIf="filterList.length>1 && (permission.joc.administration.customization.manage || filter.account==username)">
+                    <a translate>customization.button.delete</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>

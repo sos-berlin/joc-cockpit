@@ -174,7 +174,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   history = [];
   auditLogs = [];
   data = [];
-  orderOverview: any;
+  orderOverview: any = {};
   orderOverviewAction: any = {};
   reloadState = 'no';
   isProcessing = false;

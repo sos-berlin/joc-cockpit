@@ -68,13 +68,13 @@
                   <li nz-menu-item (click)="edit(identityService)">
                     <a translate>common.button.edit</a>
                   </li>
-                  <li nz-menu-item *ngIf="identityService.identityServiceType !== 'SHIRO' && identityService.identityServiceType !== 'JOC'" (click)="manageSetting(identityService)">
+                  <li nz-menu-item (click)="manageSetting(identityService)" *ngIf="identityService.identityServiceType !== 'SHIRO' && identityService.identityServiceType !== 'JOC'">
                     <a translate>user.button.manageSetting</a>
                   </li>
-                  <li (click)="disable(identityService)" nz-menu-item *ngIf="!identityService.disabled">
+                  <li nz-menu-item (click)="disable(identityService)" *ngIf="!identityService.disabled">
                     <a translate>user.button.disable</a>
                   </li>
-                  <li (click)="enable(identityService)" nz-menu-item *ngIf="identityService.disabled">
+                  <li nz-menu-item (click)="enable(identityService)" *ngIf="identityService.disabled">
                     <a translate>user.button.enable</a>
                   </li>
                   <li nz-menu-item (click)="delete(identityService)" class="bg-hover-color"

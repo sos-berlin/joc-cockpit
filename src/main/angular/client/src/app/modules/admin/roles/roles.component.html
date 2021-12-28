@@ -22,14 +22,14 @@
               class="fa fa-ellipsis-h"></i></button>
             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
               <ul nz-menu>
-                <li nz-menu-item>
-                  <a (click)="editRole(role)" translate>common.button.edit</a>
+                <li nz-menu-item (click)="editRole(role)">
+                  <a translate>common.button.edit</a>
                 </li>
-                <li nz-menu-item>
-                  <a (click)="copyRole(role)" translate>common.button.copy</a>
+                <li nz-menu-item (click)="copyRole(role)">
+                  <a translate>common.button.copy</a>
                 </li>
-                <li nz-menu-item class="bg-hover-color">
-                  <a (click)="deleteRole(role)" translate="">common.button.delete</a>
+                <li nz-menu-item (click)="deleteRole(role)" class="bg-hover-color">
+                  <a translate>common.button.delete</a>
                 </li>
               </ul>
             </nz-dropdown-menu>

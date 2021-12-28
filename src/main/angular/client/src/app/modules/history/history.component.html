@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline valign">
-            <label nz-checkbox [(ngModel)]="historyFilters.current" name="current" (ngModelChange)="changeController()">
+            <label nz-checkbox [(ngModel)]="historyFilters.current" (ngModelChange)="changeController()">
               {{'common.label.currentController' | translate}}
             </label>
           </div>
@@ -39,29 +39,21 @@
               </button>
               <nz-dropdown-menu #state="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','ALL')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.historyStates=='ALL', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','ALL')"
-                       translate>common.button.allStatus
-                    </a>
+                    <a translate>common.button.allStatus</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','SUCCESSFUL')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.historyStates=='SUCCESSFUL', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','SUCCESSFUL')"
-                       translate>common.button.successful
-                    </a>
+                    <a translate>common.button.successful</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','FAILED')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.historyStates=='FAILED', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','FAILED')"
-                       translate>common.button.failed
-                    </a>
+                    <a translate>common.button.failed</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','INCOMPLETE')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.historyStates=='INCOMPLETE', 'disable-link':savedHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','INCOMPLETE')"
-                       translate>common.button.incomplete
-                    </a>
+                    <a translate>common.button.incomplete</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -85,11 +77,9 @@
               <nz-dropdown-menu #anyDate="nzDropdownMenu">
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item
+                    <li nz-menu-item (click)="loadHistory('DATE',btn.date)"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date==btn.date, 'disable-link':savedHistoryFilter.selected}">
-                      <a (click)="loadHistory('DATE',btn.date)"
-                         translate>filters.button.{{btn.text}}
-                      </a>
+                      <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>
@@ -104,16 +94,16 @@
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
-                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  <li nz-menu-item (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                    <a translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="orderHistoryFilterList && orderHistoryFilterList.length>0">
-                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  <li nz-menu-item (click)="editFilters()" *ngIf="orderHistoryFilterList && orderHistoryFilterList.length>0">
+                    <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="orderHistoryFilterList && orderHistoryFilterList.length>0"></li>
-                  <li nz-menu-item *ngFor="let filter of orderHistoryFilterList | orderBy: 'name'"
+                  <li nz-menu-item (click)="changeFilter(filter)" *ngFor="let filter of orderHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedHistoryFilter.selected == filter.id)}">
-                    <a (click)="changeFilter(filter)">
+                    <a>
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
@@ -152,29 +142,21 @@
               </button>
               <nz-dropdown-menu #state2="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','ALL')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.historyStates=='ALL', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','ALL')"
-                       translate>common.button.allStatus
-                    </a>
+                    <a translate>common.button.allStatus</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','SUCCESSFUL')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.historyStates=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','SUCCESSFUL')"
-                       translate>common.button.successful
-                    </a>
+                    <a translate>common.button.successful</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','FAILED')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.historyStates=='FAILED', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','FAILED')"
-                       translate>common.button.failed
-                    </a>
+                    <a translate>common.button.failed</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','INCOMPLETE')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.historyStates=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','INCOMPLETE')"
-                       translate>common.button.incomplete
-                    </a>
+                    <a translate>common.button.incomplete</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -198,11 +180,9 @@
               <nz-dropdown-menu #anyDate2="nzDropdownMenu">
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item
+                    <li nz-menu-item (click)="loadHistory('DATE',btn.date)"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date==btn.date, 'disable-link':savedJobHistoryFilter.selected}">
-                      <a (click)="loadHistory('DATE',btn.date)"
-                         translate>filters.button.{{btn.text}}
-                      </a>
+                      <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>
@@ -218,16 +198,16 @@
               </button>
               <nz-dropdown-menu #customization2="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
-                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  <li nz-menu-item (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                    <a translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="jobHistoryFilterList && jobHistoryFilterList.length>0">
-                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  <li nz-menu-item (click)="editFilters()" *ngIf="jobHistoryFilterList && jobHistoryFilterList.length>0">
+                    <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="jobHistoryFilterList && jobHistoryFilterList.length>0"></li>
-                  <li nz-menu-item *ngFor="let filter of jobHistoryFilterList | orderBy: 'name'"
+                  <li nz-menu-item (click)="changeFilter(filter)" *ngFor="let filter of jobHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedJobHistoryFilter.selected == filter.id)}">
-                    <a (click)="changeFilter(filter)">
+                    <a>
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedJobHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
@@ -263,25 +243,17 @@
               </button>
               <nz-dropdown-menu #state3="nzDropdownMenu" >
                 <ul nz-menu>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.states=='ALL', 'disable-link':savedYadeHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','ALL')"
-                       translate>common.button.allStatus
-                    </a>
+                  <li nz-menu-item (click)="loadHistory('STATE','ALL')" [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.states=='ALL', 'disable-link':savedYadeHistoryFilter.selected}">
+                    <a translate>common.button.allStatus</a>
                   </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active':yade.filter.states=='SUCCESSFUL', 'disable-link':savedYadeHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','SUCCESSFUL')"
-                       translate>common.button.successful
-                    </a>
+                  <li nz-menu-item (click)="loadHistory('STATE','SUCCESSFUL')" [ngClass]="{'ant-select-dropdown-menu-item-active':yade.filter.states=='SUCCESSFUL', 'disable-link':savedYadeHistoryFilter.selected}">
+                    <a translate>common.button.successful</a>
                   </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.states=='FAILED', 'disable-link':savedYadeHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','FAILED')"
-                       translate>common.button.failed
-                    </a>
+                  <li nz-menu-item (click)="loadHistory('STATE','FAILED')" [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.states=='FAILED', 'disable-link':savedYadeHistoryFilter.selected}">
+                    <a translate>common.button.failed</a>
                   </li>
-                  <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.states=='INCOMPLETE', 'disable-link':savedYadeHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','INCOMPLETE')"
-                       translate>common.button.incomplete
-                    </a>
+                  <li nz-menu-item (click)="loadHistory('STATE','INCOMPLETE')" [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.states=='INCOMPLETE', 'disable-link':savedYadeHistoryFilter.selected}">
+                    <a translate>common.button.incomplete</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -303,11 +275,9 @@
                   <nz-dropdown-menu #anyDate="nzDropdownMenu">
                     <ul nz-menu>
                       <ng-container *ngFor="let btn of filterBtn">
-                        <li nz-menu-item
+                        <li nz-menu-item (click)="loadHistory('DATE',btn.date)"
                             [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.date==btn.date, 'disable-link':savedYadeHistoryFilter.selected}">
-                          <a (click)="loadHistory('DATE',btn.date)"
-                             translate>filters.button.{{btn.text}}
-                          </a>
+                          <a translate>filters.button.{{btn.text}}</a>
                         </li>
                       </ng-container>
                     </ul>
@@ -325,16 +295,16 @@
               </button>
               <nz-dropdown-menu #customization3="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
-                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  <li nz-menu-item (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                    <a translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="yadeHistoryFilterList && yadeHistoryFilterList.length>0">
-                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  <li nz-menu-item (click)="editFilters()" *ngIf="yadeHistoryFilterList && yadeHistoryFilterList.length>0">
+                    <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="yadeHistoryFilterList && yadeHistoryFilterList.length>0"></li>
-                  <li nz-menu-item *ngFor="let filter of yadeHistoryFilterList | orderBy: 'name'"
+                  <li nz-menu-item (click)="changeFilter(filter)" *ngFor="let filter of yadeHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedYadeHistoryFilter.selected == filter.id)}">
-                    <a (click)="changeFilter(filter)">
+                    <a>
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedYadeHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
@@ -371,23 +341,17 @@
               </button>
               <nz-dropdown-menu #state="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','ALL')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.state=='ALL', 'disable-link':savedDeploymentHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','ALL')"
-                       translate>history.button.allState
-                    </a>
+                    <a translate>history.button.allState</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','DEPLOYED')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.state=='DEPLOYED', 'disable-link':savedDeploymentHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','DEPLOYED')"
-                       translate>history.button.deployed
-                    </a>
+                    <a translate>history.button.deployed</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('STATE','NOT_DEPLOYED')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.state=='NOT_DEPLOYED', 'disable-link':savedDeploymentHistoryFilter.selected}">
-                    <a (click)="loadHistory('STATE','NOT_DEPLOYED')"
-                       translate>history.button.notDeployed
-                    </a>
+                    <a translate>history.button.notDeployed</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -412,11 +376,9 @@
               <nz-dropdown-menu #anyDate="nzDropdownMenu">
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item
+                    <li nz-menu-item (click)="loadHistory('DATE',btn.date)"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date==btn.date, 'disable-link':savedDeploymentHistoryFilter.selected}">
-                      <a (click)="loadHistory('DATE',btn.date)"
-                         translate>filters.button.{{btn.text}}
-                      </a>
+                      <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>
@@ -432,11 +394,11 @@
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
-                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  <li nz-menu-item (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                    <a translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="deploymentHistoryFilterList && deploymentHistoryFilterList.length>0">
-                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  <li nz-menu-item (click)="editFilters()" *ngIf="deploymentHistoryFilterList && deploymentHistoryFilterList.length>0">
+                    <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="deploymentHistoryFilterList && deploymentHistoryFilterList.length>0"></li>
                   <li nz-menu-item *ngFor="let filter of deploymentHistoryFilterList | orderBy: 'name'"
@@ -479,23 +441,17 @@
               </button>
               <nz-dropdown-menu #state2="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('CATEGORY','ALL')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='ALL', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('CATEGORY','ALL')"
-                       translate>common.button.all
-                    </a>
+                    <a translate>common.button.all</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('CATEGORY','SUBMITTED')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='SUBMITTED', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('CATEGORY','SUBMITTED')"
-                       translate>history.button.submitted
-                    </a>
+                    <a translate>history.button.submitted</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="loadHistory('CATEGORY','NOT_SUBMITTED')"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='NOT_SUBMITTED', 'disable-link':savedSubmissionHistoryFilter.selected}">
-                    <a (click)="loadHistory('CATEGORY','NOT_SUBMITTED')"
-                       translate>history.button.notSubmitted
-                    </a>
+                    <a translate>history.button.notSubmitted</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -520,11 +476,9 @@
               <nz-dropdown-menu #anyDate="nzDropdownMenu">
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of subMissionFilterBtn">
-                    <li nz-menu-item
+                    <li nz-menu-item (click)="loadHistory('DATE',btn.date)"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date==btn.date, 'disable-link':savedSubmissionHistoryFilter.selected}">
-                      <a (click)="loadHistory('DATE',btn.date)"
-                         translate>filters.button.{{btn.text}}
-                      </a>
+                      <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>
@@ -540,11 +494,11 @@
               </button>
               <nz-dropdown-menu #customization="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
-                    <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                  <li nz-menu-item (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                    <a translate>customization.label.createCustomization</a>
                   </li>
-                  <li nz-menu-item *ngIf="submissionHistoryFilterList && submissionHistoryFilterList.length>0">
-                    <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                  <li nz-menu-item (click)="editFilters()" *ngIf="submissionHistoryFilterList && submissionHistoryFilterList.length>0">
+                    <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="submissionHistoryFilterList && submissionHistoryFilterList.length>0"></li>
                   <li nz-menu-item *ngFor="let filter of submissionHistoryFilterList | orderBy: 'name'"
@@ -571,20 +525,20 @@
             </button>
             <nz-dropdown-menu #ignoreList="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item *ngIf="savedIgnoreList.workflows.length > 0 && historyFilters.type == 'ORDER'">
-                  <a (click)="editIgnoreList()" translate>history.button.editIgnoreList</a>
+                <li nz-menu-item (click)="editIgnoreList()" *ngIf="savedIgnoreList.workflows.length > 0 && historyFilters.type == 'ORDER'">
+                  <a translate>history.button.editIgnoreList</a>
                 </li>
-                <li nz-menu-item *ngIf="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK'">
-                  <a (click)="editIgnoreList()" translate>history.button.editIgnoreList</a>
+                <li nz-menu-item (click)="editIgnoreList()" *ngIf="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK'">
+                  <a translate>history.button.editIgnoreList</a>
                 </li>
-                <li nz-menu-item *ngIf="!savedIgnoreList.isEnable">
-                  <a (click)="enableDisableIgnoreList()" translate>history.button.enableIgnoreList</a>
+                <li nz-menu-item (click)="enableDisableIgnoreList()" *ngIf="!savedIgnoreList.isEnable">
+                  <a translate>history.button.enableIgnoreList</a>
                 </li>
-                <li nz-menu-item *ngIf="savedIgnoreList.isEnable">
-                  <a (click)="enableDisableIgnoreList()" translate>history.button.disableIgnoreList</a>
+                <li nz-menu-item (click)="enableDisableIgnoreList()" *ngIf="savedIgnoreList.isEnable">
+                  <a translate>history.button.disableIgnoreList</a>
                 </li>
-                <li nz-menu-item>
-                  <a (click)="resetIgnoreList()" translate>history.button.resetIgnoreList</a>
+                <li nz-menu-item (click)="resetIgnoreList()">
+                  <a translate>history.button.resetIgnoreList</a>
                 </li>
               </ul>
             </nz-dropdown-menu>
@@ -822,21 +776,17 @@
                   </button>
                   <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu" >
                     <ul nz-menu>
-                      <li nz-menu-item >
-                        <a [ngClass]="{'disable-link':(schedulerIds.selected != history.controllerId && history.controllerId)}"
-                          (click)="addWorkflowToIgnoreList(history.workflow)"
-                          translate>history.button.addWorkflowToIgnoreList</a>
+                      <li nz-menu-item (click)="addWorkflowToIgnoreList(history.workflow)" [nzDisabled]="(schedulerIds.selected != history.controllerId && history.controllerId)">
+                        <a translate>history.button.addWorkflowToIgnoreList</a>
                       </li>
-                      <li nz-menu-item>
-                        <a (click)="showAllPanelFuc(history)"
-                           translate>history.button.expandAll</a>
+                      <li nz-menu-item (click)="showAllPanelFuc(history)">
+                        <a translate>history.button.expandAll</a>
                       </li>
-                      <li nz-menu-item>
-                        <a (click)="hideAllPanelFuc(history)"
-                           translate>history.button.collapseAll</a>
+                      <li nz-menu-item (click)="hideAllPanelFuc(history)">
+                        <a translate>history.button.collapseAll</a>
                       </li>
-                      <li nz-menu-item>
-                        <a (click)="coreService.copyLink('order',history.orderId, history.workflow)" translate>common.button.copyLinkToObject</a>
+                      <li nz-menu-item (click)="coreService.copyLink('order',history.orderId, history.workflow)">
+                        <a translate>common.button.copyLinkToObject</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -1021,14 +971,13 @@
                   </button>
                   <nz-dropdown-menu #export3="nzDropdownMenu" role="menu" >
                     <ul nz-menu>
-                      <li nz-menu-item >
-                        <a [ngClass]="{'disable-link':(schedulerIds.selected != jobHistory.controllerId && jobHistory.controllerId)}"
-                          (click)="addJobToIgnoreList(jobHistory.job, jobHistory.workflow)" translate>history.button.addJobToIgnoreList</a>
+                      <li nz-menu-item (click)="addJobToIgnoreList(jobHistory.job, jobHistory.workflow)"
+                          [nzDisabled]="(schedulerIds.selected != jobHistory.controllerId && jobHistory.controllerId)">
+                        <a translate>history.button.addJobToIgnoreList</a>
                       </li>
-                      <li nz-menu-item >
-                        <a [ngClass]="{'disable-link':(schedulerIds.selected != jobHistory.controllerId && jobHistory.controllerId)}"
-                          (click)="addJobToIgnoreList(null, jobHistory.workflow)"
-                          translate>history.button.addWorkflowToIgnoreList</a>
+                      <li nz-menu-item (click)="addJobToIgnoreList(null, jobHistory.workflow)"
+                          [nzDisabled]="(schedulerIds.selected != jobHistory.controllerId && jobHistory.controllerId)">
+                        <a translate>history.button.addWorkflowToIgnoreList</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>

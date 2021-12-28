@@ -6907,6 +6907,15 @@ div.jsoneditor,
   border-bottom: none;
 }
 
+.ant-table-wrapper {
+  .ant-spin-nested-loading > div > .ant-spin .ant-spin-dot {
+    position: absolute;
+    top: 55%;
+    left: 49.4%;
+    margin: auto;
+  }
+}
+
 .ant-table-small.ant-table-bordered .ant-table-content {
   border-right: none;
 }
@@ -7124,8 +7133,8 @@ tr.tr-border td:first-child {
 }
 
 .ant-dropdown-menu-submenu-title,
-.ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a {
-  padding: 1px 12px;
+.ant-dropdown-menu-item > a,
+.ant-dropdown-menu-submenu-title > a {
   line-height: 14px;
   font-size: 12px;
 }

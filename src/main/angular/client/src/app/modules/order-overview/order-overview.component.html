@@ -48,8 +48,7 @@
                   <ng-container *ngFor="let btn of filterBtn">
                     <li (click)="changeStatus(btn.status)" nz-menu-item
                         [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=== btn.status}">
-                      <a
-                         translate>common.button.{{btn.text}}</a>
+                      <a translate>common.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>

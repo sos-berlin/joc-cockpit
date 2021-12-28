@@ -30,10 +30,9 @@
               <nz-dropdown-menu #anyDate="nzDropdownMenu" >
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item
+                    <li nz-menu-item (click)="loadOrders(btn.date)"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.date=== btn.date}">
-                      <a (click)="loadOrders(btn.date)"
-                         translate>filters.button.{{btn.text}}</a>
+                      <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>
@@ -58,11 +57,11 @@
               </button>
               <nz-dropdown-menu #sortBy="nzDropdownMenu">
                 <ul nz-menu>
-                  <li nz-menu-item>
-                    <a (click)="sort('name')" translate>common.label.name</a>
+                  <li nz-menu-item (click)="sort('name')">
+                    <a translate>common.label.name</a>
                   </li>
-                  <li nz-menu-item>
-                    <a (click)="sort('path1')" translate>common.label.path</a>
+                  <li nz-menu-item (click)="sort('path1')">
+                    <a translate>common.label.path</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -82,9 +81,9 @@
                     <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="filterList.length>0"></li>
-                  <li nz-menu-item  *ngFor="let filter of filterList | orderBy: 'name'"
+                  <li nz-menu-item  (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}">
-                    <a (click)="changeFilter(filter)">
+                    <a>
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove"

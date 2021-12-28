@@ -8,13 +8,11 @@
     </button>
     <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
       <ul nz-menu>
-        <li nz-menu-item>
-          <a (click)="changeParameter(order, variable)"
-             translate>dailyPlan.button.setParameter</a>
+        <li nz-menu-item (click)="changeParameter(order, variable)">
+          <a translate>dailyPlan.button.setParameter</a>
         </li>
-        <li nz-menu-item>
-          <a (click)="removeParameter(order, variable)"
-             translate>dailyPlan.button.removeParameter</a>
+        <li nz-menu-item (click)="removeParameter(order, variable)">
+          <a translate>dailyPlan.button.removeParameter</a>
         </li>
       </ul>
     </nz-dropdown-menu>
