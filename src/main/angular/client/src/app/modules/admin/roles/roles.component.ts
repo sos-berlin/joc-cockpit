@@ -99,11 +99,12 @@ export class RoleModalComponent implements OnInit {
       roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
-    }).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close(this.userDetail);
-    }, () => {
-      this.submitted = false;
+    }).subscribe({
+      next: () => {
+        this.activeModal.close(this.userDetail);
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -196,11 +197,12 @@ export class ControllerModalComponent implements OnInit {
         roles: this.userDetail.roles,
         identityServiceName: this.userDetail.identityServiceName,
         main: this.userDetail.main
-      }).subscribe(() => {
-        this.submitted = false;
-        this.activeModal.close(this.userDetail);
-      }, () => {
-        this.submitted = false;
+      }).subscribe({
+        next: () => {
+          this.activeModal.close(this.userDetail);
+        }, complete: () => {
+          this.submitted = false;
+        }
       });
     }
   }
@@ -305,7 +307,7 @@ export class RolesComponent implements OnDestroy {
       main: this.userDetail.main,
       identityServiceName: this.userDetail.identityServiceName
     };
-    this.coreService.post('authentication/auth/store', obj).subscribe(res => {
+    this.coreService.post('authentication/auth/store', obj).subscribe(() => {
       this.dataService.announceFunction('RELOAD');
       this.createRoleArray(obj);
     });

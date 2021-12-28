@@ -196,15 +196,17 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         this.coreService.post('inventory/rename', {
           id: data.id,
           newPath: name
-        }).subscribe((res) => {
-          if (data.id === this.data.id) {
-            this.data.name = name;
+        }).subscribe({
+          next: () => {
+            if (data.id === this.data.id) {
+              this.data.name = name;
+            }
+            data.name = name;
+            this.dataService.reloadTree.next({rename: data});
+          }, error: () => {
+            this.script.name = this.data.name;
+            this.ref.detectChanges();
           }
-          data.name = name;
-          this.dataService.reloadTree.next({rename: data});
-        }, (err) => {
-          this.script.name = this.data.name;
-          this.ref.detectChanges();
         });
       } else {
         this.script.name = this.data.name;
@@ -266,21 +268,22 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         valid: !this.script.configuration.script,
         id: this.script.id,
         objectType: this.objectType
-      }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.script.id === this.data.id) {
-          this.script.actual = JSON.stringify(this.script.configuration);
-          this.script.valid = res.valid;
-          this.data.valid = res.valid;
-          this.script.released = false;
-          this.data.released = false;
-          this.setErrorMessage(res);
+      }).subscribe({
+        next: (res: any) => {
+          if (res.id === this.data.id && this.script.id === this.data.id) {
+            this.script.actual = JSON.stringify(this.script.configuration);
+            this.script.valid = res.valid;
+            this.data.valid = res.valid;
+            this.script.released = false;
+            this.data.released = false;
+            this.setErrorMessage(res);
+          }
+        }, error: () => {
+          this.ref.detectChanges();
         }
-      }, () => {
-        this.ref.detectChanges();
       });
     }
   }
-
 
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
@@ -337,7 +340,6 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         this.data.valid = res.valid;
       }
       this.setErrorMessage(res);
-    }, () => {
     });
   }
 

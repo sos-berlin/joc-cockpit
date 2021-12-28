@@ -5901,7 +5901,7 @@ General CSS
   position: relative;
   left: 12px;
   top: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 0;
   width: 24px;
   height: 24px;
   opacity: 0.3;
@@ -7911,11 +7911,12 @@ tr.tr-border td:first-child {
 
 .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
   padding: 0;
+  margin-right: 8px;
   left: 0;
 }
 
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
-  padding: 0 0 0 18px;
+  padding: 0;
   color: var(--text-color);
 }
 

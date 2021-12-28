@@ -601,24 +601,20 @@
       </ul>
     </li>
     <li nz-menu-divider>
-    <li nz-menu-item [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)">
-      <a (click)="showAllChildNode(menuNode.origin)"
-         translate>xml.button.showAllChildNodes
-      </a>
+    <li nz-menu-item  (click)="showAllChildNode(menuNode.origin)" [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)">
+      <a translate>xml.button.showAllChildNodes</a>
     </li>
     <li nz-menu-divider>
-    <li nz-menu-item [nzDisabled]="cutData" *ngIf="menuNode.origin && menuNode.origin.parent !=='#'">
-      <a (click)="cutNode(menuNode.origin)" translate>xml.button.cut
-      </a>
+    <li nz-menu-item (click)="cutNode(menuNode.origin)" [nzDisabled]="cutData" *ngIf="menuNode.origin && menuNode.origin.parent !=='#'">
+      <a translate>xml.button.cut</a>
     </li>
-    <li nz-menu-item><a (click)="copyNode(menuNode.origin)" translate>xml.button.copy</a></li>
-    <li nz-menu-item [nzDisabled]="!checkRule">
-      <a (click)="pasteNode(menuNode.origin)" translate>
-        xml.button.paste</a>
+    <li nz-menu-item (click)="copyNode(menuNode.origin)"><a translate>xml.button.copy</a></li>
+    <li nz-menu-item (click)="pasteNode(menuNode.origin)" [nzDisabled]="!checkRule">
+      <a translate>xml.button.paste</a>
     </li>
     <li nz-menu-divider>
-    <li nz-menu-item [nzDisabled]="!(menuNode.origin && menuNode.origin.parent !== '#')">
-      <a (click)="removeNode(menuNode.origin)" translate>xml.button.remove</a>
+    <li nz-menu-item (click)="removeNode(menuNode.origin)" [nzDisabled]="!(menuNode.origin && menuNode.origin.parent !== '#')">
+      <a translate>xml.button.remove</a>
     </li>
   </ul>
 </nz-dropdown-menu>

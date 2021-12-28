@@ -94,57 +94,57 @@
               </button>
               <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                 <ul nz-menu *ngIf="!isTrash && permission.joc">
-                  <li nz-menu-item *ngIf="permission.joc.inventory.manage">
-                    <a (click)="cutObject(data)" translate>inventory.button.cut</a>
+                  <li nz-menu-item (click)="cutObject(data)" *ngIf="permission.joc.inventory.manage">
+                    <a translate>inventory.button.cut</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.inventory.manage">
-                    <a (click)="copyObject(data)" translate>inventory.button.copy</a>
+                  <li nz-menu-item (click)="copyObject(data)" *ngIf="permission.joc.inventory.manage">
+                    <a translate>inventory.button.copy</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.inventory.manage">
-                    <a (click)="renameObject(data);" translate>inventory.button.rename</a></li>
+                  <li nz-menu-item (click)="renameObject(data);" *ngIf="permission.joc.inventory.manage">
+                    <a translate>inventory.button.rename</a></li>
                   <li nz-menu-divider *ngIf="permission.joc.inventory.manage">
-                  <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments && !data.valid">
-                    <a (click)="deployObject(data)" translate>inventory.button.deploy</a>
+                  <li nz-menu-item (click)="deployObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments && !data.valid">
+                    <a translate>inventory.button.deploy</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments">
-                    <a (click)="revoke(data)" translate>inventory.button.revoke</a>
+                  <li nz-menu-item (click)="revoke(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments">
+                    <a translate>inventory.button.revoke</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType === 'CALENDAR' || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT'" [nzDisabled]="!data.valid">
-                    <a (click)="releaseObject(data)" translate>inventory.button.release</a>
+                  <li nz-menu-item (click)="releaseObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType === 'CALENDAR' || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT'" [nzDisabled]="!data.valid">
+                    <a translate>inventory.button.release</a>
                   </li>
                   <li nz-menu-divider *ngIf="permission.joc.inventory.manage">
-                  <li nz-menu-item [nzDisabled]="!data.hasDeployments"
+                  <li nz-menu-item (click)="removeObject(data)" [nzDisabled]="!data.hasDeployments"
                     *ngIf="permission.joc.inventory.manage && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
-                    <a (click)="removeObject(data)" translate>inventory.button.remove</a>
+                    <a translate>inventory.button.remove</a>
                   </li>
-                  <li nz-menu-item [nzDisabled]="!data.hasReleases"
+                  <li nz-menu-item (click)="removeObject(data)" [nzDisabled]="!data.hasReleases"
                       *ngIf="permission.joc.inventory.manage && (objectType === 'CALENDAR' || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT')">
-                    <a (click)="removeObject(data)" translate>inventory.button.remove</a>
+                    <a translate>inventory.button.remove</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.inventory.manage" [nzDisabled]="data.deployed || data.released">
-                    <a (click)="deleteDraft(data)" translate>inventory.button.deleteDraft</a>
+                  <li nz-menu-item (click)="deleteDraft(data)" *ngIf="permission.joc.inventory.manage" [nzDisabled]="data.deployed || data.released">
+                    <a translate>inventory.button.deleteDraft</a>
                   </li>
                   <li nz-menu-divider></li>
-                  <li nz-menu-item>
-                    <a (click)="showJson(data, false)" translate>inventory.button.showJSON</a>
+                  <li nz-menu-item (click)="showJson(data, false)">
+                    <a translate>inventory.button.showJSON</a>
                   </li>
-                  <li nz-menu-item
+                  <li nz-menu-item (click)="showJson(data, true)"
                       *ngIf="permission.joc.inventory.manage">
-                    <a (click)="showJson(data, true)" translate>inventory.button.editJSON</a>
+                    <a translate>inventory.button.editJSON</a>
                   </li>
                   <li nz-menu-divider></li>
-                  <li nz-menu-item>
-                    <a (click)="exportJSON(data)" translate>inventory.button.downloadJSON</a>
+                  <li nz-menu-item (click)="exportJSON(data)">
+                    <a translate>inventory.button.downloadJSON</a>
                   </li>
-                  <li nz-menu-item *ngIf="permission.joc.inventory.manage">
-                    <a (click)="importJSON(data)" translate>inventory.button.uploadJSON</a>
+                  <li nz-menu-item (click)="importJSON(data)" *ngIf="permission.joc.inventory.manage">
+                    <a translate>inventory.button.uploadJSON</a>
                   </li>
                 </ul>
                 <ul nz-menu *ngIf="isTrash && permission.joc">
-                  <li nz-menu-item *ngIf="permission.joc.inventory.manage" class="bg-hover-color"><a
-                    (click)="deletePermanently(data);" translate>inventory.button.delete</a></li>
-                  <li nz-menu-item>
-                    <a (click)="restoreObject(data);" translate>inventory.button.restore</a></li>
+                  <li nz-menu-item (click)="deletePermanently(data);" *ngIf="permission.joc.inventory.manage" class="bg-hover-color">
+                    <a translate>inventory.button.delete</a></li>
+                  <li nz-menu-item (click)="restoreObject(data);">
+                    <a translate>inventory.button.restore</a></li>
                 </ul>
               </nz-dropdown-menu>
             </div>

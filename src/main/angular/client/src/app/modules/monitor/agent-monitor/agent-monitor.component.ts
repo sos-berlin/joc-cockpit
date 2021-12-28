@@ -99,12 +99,11 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       dateFrom: this.filters.filter.startDate,
       dateTo: new Date(d),
       timeZone: this.preferences.zone
-    }).subscribe((res: any) => {
-      this.data = res.controllers;
-      this.isLoaded = true;
-      this.checkMissingDates();
-    }, () => {
-      this.isLoaded = true;
+    }).subscribe({
+      next: (res: any) => {
+        this.data = res.controllers;
+        this.checkMissingDates();
+      }, complete: () => this.isLoaded = true
     });
   }
 

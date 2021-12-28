@@ -218,11 +218,12 @@ export class MainSectionModalComponent implements OnInit {
       }
     });
     this.userDetail.main = main;
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close(this.userDetail.main);
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
+      next: () => {
+        this.activeModal.close(this.userDetail.main);
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 
@@ -272,14 +273,15 @@ export class MainSectionModalComponent implements OnInit {
   templateUrl: 'edit-main-dialog.html'
 })
 export class EditMainSectionModalComponent implements OnInit {
+  @Input() oldEntry: any;
+  @Input() userDetail: any;
+
   submitted = false;
   isUnique = true;
   entryValue: any = [];
   entryComment: any = [];
   entry: any;
   existingEntry: string;
-  @Input() oldEntry: any;
-  @Input() userDetail: any;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -334,11 +336,12 @@ export class EditMainSectionModalComponent implements OnInit {
       }
     });
 
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close(this.userDetail.main);
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
+      next: () => {
+        this.activeModal.close(this.userDetail.main);
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 
@@ -375,10 +378,11 @@ export class EditMainSectionModalComponent implements OnInit {
   templateUrl: 'ldap-section-dialog.html'
 })
 export class LdapSectionModalComponent implements OnInit {
-  submitted = false;
-  mainSection: any = [];
   @Input() userDetail: any;
   @Input() isldap: boolean;
+
+  submitted = false;
+  mainSection: any = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -449,11 +453,12 @@ export class LdapSectionModalComponent implements OnInit {
       }
     }
     this.userDetail.main = this.userDetail.main.concat(this.mainSection);
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close(this.userDetail.main);
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
+      next: () => {
+        this.activeModal.close(this.userDetail.main);
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }

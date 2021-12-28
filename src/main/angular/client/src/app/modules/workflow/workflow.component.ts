@@ -143,17 +143,19 @@ export class SearchComponent implements OnInit {
       id: result.id || 0,
       configurationItem: JSON.stringify(obj)
     };
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.allFilter.push(configObj);
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
+    this.coreService.post('configuration/save', configObj).subscribe({
+      next: (res: any) => {
+        configObj.id = res.id;
+        this.allFilter.push(configObj);
+        if (this.isSearch) {
+          this.filter.name = '';
+        } else {
+          this.onCancel.emit(configObj);
+        }
+
+      }, complete: () => {
+        this.submitted = false;
       }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
     });
   }
 
@@ -282,29 +284,30 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   }
 
   private getWorkflowList(obj): void {
-    this.coreService.post('workflow', obj).subscribe((res: any) => {
-      this.loading = false;
-      const request = {
-        compact: true,
-        controllerId: this.controllerId,
-        workflowIds: []
-      };
-      const path = res.workflow.path;
-      res.workflow.name = path.substring(path.lastIndexOf('/') + 1);
-      if (!res.workflow.ordersSummary) {
-        res.workflow.ordersSummary = {};
+    this.coreService.post('workflow', obj).subscribe({
+      next: (res: any) => {
+        const request = {
+          compact: true,
+          controllerId: this.controllerId,
+          workflowIds: []
+        };
+        const path = res.workflow.path;
+        res.workflow.name = path.substring(path.lastIndexOf('/') + 1);
+        if (!res.workflow.ordersSummary) {
+          res.workflow.ordersSummary = {};
+        }
+        request.workflowIds.push({path, versionId: res.workflow.versionId});
+        this.workflows = [res.workflow];
+        if (request.workflowIds.length > 0) {
+          this.getOrders(request);
+        }
+        if (this.permission && this.permission.joc && (this.permission.currentController.orders.view || this.permission.joc.auditLog.view)) {
+          this.showPanel = this.workflows[0];
+        }
+        this.showPanelFuc(this.workflows[0]);
+      }, complete: () => {
+        this.loading = false;
       }
-      request.workflowIds.push({path, versionId: res.workflow.versionId});
-      this.workflows = [res.workflow];
-      if (request.workflowIds.length > 0) {
-        this.getOrders(request);
-      }
-      if (this.permission && this.permission.joc && (this.permission.currentController.orders.view || this.permission.joc.auditLog.view)) {
-        this.showPanel = this.workflows[0];
-      }
-      this.showPanelFuc(this.workflows[0]);
-    }, () => {
-      this.loading = false;
     });
   }
 
@@ -482,14 +485,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           recursive: true
         }],
         types: [this.objectType]
-      }).subscribe(res => {
-        this.tree = this.coreService.prepareTree(res, true);
-        if (this.tree.length && !reload) {
-          this.loadWorkflow();
+      }).subscribe({
+        next: res => {
+          this.tree = this.coreService.prepareTree(res, true);
+          if (this.tree.length && !reload) {
+            this.loadWorkflow();
+          }
+        }, complete: () => {
+          this.isLoading = true;
         }
-        this.isLoading = true;
-      }, () => {
-        this.isLoading = true;
       });
     } else {
       this.isLoading = true;
@@ -500,57 +504,58 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (obj.folders && obj.folders.length === 1) {
       this.currentPath = obj.folders[0].folder;
     }
-    this.coreService.post('workflows', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      if (res.workflows && res.workflows.length === 0){
-        this.workflowFilters.currentPage = 1;
-      }
-      this.loading = false;
-      const request = {
-        compact: true,
-        controllerId: this.schedulerIds.selected,
-        workflowIds: []
-      };
-      const request2 = {
-        controllerId: this.schedulerIds.selected,
-        workflowIds: []
-      };
-      let flag = true;
-      res.workflows = this.orderPipe.transform(res.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
-      for (const i in res.workflows) {
-        const path = res.workflows[i].path;
-        res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
-        res.workflows[i].path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
-        if (!res.workflows[i].ordersSummary) {
-          res.workflows[i].ordersSummary = {};
+    this.coreService.post('workflows', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        if (res.workflows && res.workflows.length === 0) {
+          this.workflowFilters.currentPage = 1;
         }
-        if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
-          this.workflowFilters.expandedObjects.indexOf(path) > -1) {
-          this.showPanelFuc(res.workflows[i], false);
-          request.workflowIds.push({path, versionId: res.workflows[i].versionId});
-        } else{
-          request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
+        const request = {
+          compact: true,
+          controllerId: this.schedulerIds.selected,
+          workflowIds: []
+        };
+        const request2 = {
+          controllerId: this.schedulerIds.selected,
+          workflowIds: []
+        };
+        let flag = true;
+        res.workflows = this.orderPipe.transform(res.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
+        for (const i in res.workflows) {
+          const path = res.workflows[i].path;
+          res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
+          res.workflows[i].path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
+          if (!res.workflows[i].ordersSummary) {
+            res.workflows[i].ordersSummary = {};
+          }
+          if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
+            this.workflowFilters.expandedObjects.indexOf(path) > -1) {
+            this.showPanelFuc(res.workflows[i], false);
+            request.workflowIds.push({path, versionId: res.workflows[i].versionId});
+          } else {
+            request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
+          }
+          if (this.showPanel && this.showPanel.path === path) {
+            flag = false;
+          }
         }
-        if (this.showPanel && this.showPanel.path === path) {
-          flag = false;
+        if (flag) {
+          this.hidePanel();
         }
+        this.workflows = res.workflows;
+        this.searchInResult();
+        if (request.workflowIds.length > 0) {
+          this.getOrders(request);
+        }
+        if (request2.workflowIds.length > 0) {
+          this.getOrderCounts(request2);
+        }
+        if (this.isSearchHit && this.showSearchPanel) {
+          this.traverseTreeForSearchData();
+        }
+        this.updatePanelHeight();
+      }, complete: () => {
+        this.loading = false;
       }
-      if (flag) {
-        this.hidePanel();
-      }
-      this.workflows = res.workflows;
-      this.searchInResult();
-      if (request.workflowIds.length > 0) {
-        this.getOrders(request);
-      }
-      if (request2.workflowIds.length > 0) {
-        this.getOrderCounts(request2);
-      }
-      if (this.isSearchHit && this.showSearchPanel) {
-        this.traverseTreeForSearchData();
-      }
-      this.updatePanelHeight();
-    }, () => {
-      this.loading = false;
     });
   }
 
@@ -561,13 +566,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       objectType: this.objectType,
       shared: true
     };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (res.configurations && res.configurations.length > 0) {
-        this.filterList = res.configurations;
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res: any) => {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = res.configurations;
+        }
+
+      }, complete: () => {
+        this.getCustomizations();
       }
-      this.getCustomizations();
-    }, (err) => {
-      this.getCustomizations();
     });
   }
 
@@ -578,57 +585,61 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       configurationType: 'CUSTOMIZATION',
       objectType: this.objectType
     };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (this.filterList && this.filterList.length > 0) {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = this.filterList.concat(res.configurations);
-        }
-        let data = [];
-        for (let i in this.filterList) {
-          let flag = true;
-          for (let j in data) {
-            if (data[j].id === this.filterList[i].id) {
-              flag = false;
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res: any) => {
+        if (this.filterList && this.filterList.length > 0) {
+          if (res.configurations && res.configurations.length > 0) {
+            this.filterList = this.filterList.concat(res.configurations);
+          }
+          let data = [];
+          for (let i in this.filterList) {
+            let flag = true;
+            for (let j in data) {
+              if (data[j].id === this.filterList[i].id) {
+                flag = false;
+              }
+            }
+            if (flag) {
+              data.push(this.filterList[i]);
             }
           }
-          if (flag) {
-            data.push(this.filterList[i]);
-          }
+          this.filterList = data;
+        } else {
+          this.filterList = res.configurations;
         }
-        this.filterList = data;
-      } else {
-        this.filterList = res.configurations;
-      }
 
-      if (this.savedFilter.selected) {
-        let flag = true;
-        this.filterList.forEach((value) => {
-          if (value.id === this.savedFilter.selected) {
-            flag = false;
-            this.coreService.post('configuration', {
-              controllerId: value.controllerId,
-              id: value.id
-            }).subscribe((conf: any) => {
-              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-              this.selectedFiltered.account = value.account;
-              this.initTree();
-            }, (err) => {
-              this.savedFilter.selected = undefined;
-              this.initTree();
-            });
+        if (this.savedFilter.selected) {
+          let flag = true;
+          this.filterList.forEach((value) => {
+            if (value.id === this.savedFilter.selected) {
+              flag = false;
+              this.coreService.post('configuration', {
+                controllerId: value.controllerId,
+                id: value.id
+              }).subscribe({
+                next: (conf: any) => {
+                  this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                  this.selectedFiltered.account = value.account;
+                  this.initTree();
+                }, error: () => {
+                  this.savedFilter.selected = undefined;
+                  this.initTree();
+                }
+              });
+            }
+          });
+          if (flag) {
+            this.savedFilter.selected = undefined;
+            this.initTree();
           }
-        });
-        if (flag) {
+        } else {
           this.savedFilter.selected = undefined;
           this.initTree();
         }
-      }  else {
+      }, error: () => {
         this.savedFilter.selected = undefined;
         this.initTree();
       }
-    }, (err) => {
-      this.savedFilter.selected = undefined;
-      this.initTree();
     });
   }
   inventorySearch(): void {
@@ -1260,60 +1271,58 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     obj.compact = true;
     obj.limit = this.preferences.maxWorkflowRecords;
-    this.coreService.post('orders', obj).subscribe((res: any) => {
-      if (res.orders) {
-        for (let i in this.workflows) {
-          if (obj.workflowIds && obj.workflowIds.length > 0 && !isEmpty(this.workflows[i].ordersSummary)) {
-            for (let j = 0; j < obj.workflowIds.length; j++) {
-              if (this.workflows[i].path === obj.workflowIds[j].path && this.workflows[i].versionId === obj.workflowIds[j].versionId) {
-                this.workflows[i].numOfOrders = 0;
-                this.workflows[i].orders = [];
-                this.workflows[i].orderReload = false;
-                this.workflows[i].ordersSummary = {};
-                obj.workflowIds.splice(j, 1);
-                break;
-              }
-            }
-          }
-          for (let j in res.orders) {
-            if (this.workflows[i].path === res.orders[j].workflowId.path && this.workflows[i].versionId === res.orders[j].workflowId.versionId) {
-              this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
-              if (!this.workflows[i].orders) {
-                this.workflows[i].orders = [];
-              }
-              for (const o in res.orders[j].position) {
-                if (/^(try+)/.test(res.orders[j].position[o])) {
-                  res.orders[j].position[o] = 'try+0';
-                }
-                if (/^(cycle+)/.test(res.orders[j].position[o])) {
-                  res.orders[j].position[o] = 'cycle';
+    this.coreService.post('orders', obj).subscribe({
+      next: (res: any) => {
+        if (res.orders) {
+          for (let i in this.workflows) {
+            if (obj.workflowIds && obj.workflowIds.length > 0 && !isEmpty(this.workflows[i].ordersSummary)) {
+              for (let j = 0; j < obj.workflowIds.length; j++) {
+                if (this.workflows[i].path === obj.workflowIds[j].path && this.workflows[i].versionId === obj.workflowIds[j].versionId) {
+                  this.workflows[i].numOfOrders = 0;
+                  this.workflows[i].orders = [];
+                  this.workflows[i].orderReload = false;
+                  this.workflows[i].ordersSummary = {};
+                  obj.workflowIds.splice(j, 1);
+                  break;
                 }
               }
-              this.workflows[i].orders.push(res.orders[j]);
-              const state = res.orders[j].state._text.toLowerCase();
-              if (this.workflows[i].ordersSummary[state]) {
-                this.workflows[i].ordersSummary[state] = this.workflows[i].ordersSummary[state] + 1;
-              } else {
-                this.workflows[i].ordersSummary[state] = 1;
-              }
-              this.workflows[i].orderReload = true;
             }
-          }
-          if (this.sideBar.isVisible && this.workflows[i].path === this.sideBar.workflow &&
-            this.sideBar.isVisible && this.workflows[i].versionId === this.sideBar.versionId) {
-            this.sideBar.orders = this.workflows[i].orders;
+            for (let j in res.orders) {
+              if (this.workflows[i].path === res.orders[j].workflowId.path && this.workflows[i].versionId === res.orders[j].workflowId.versionId) {
+                this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
+                if (!this.workflows[i].orders) {
+                  this.workflows[i].orders = [];
+                }
+                for (const o in res.orders[j].position) {
+                  if (/^(try+)/.test(res.orders[j].position[o])) {
+                    res.orders[j].position[o] = 'try+0';
+                  }
+                  if (/^(cycle+)/.test(res.orders[j].position[o])) {
+                    res.orders[j].position[o] = 'cycle';
+                  }
+                }
+                this.workflows[i].orders.push(res.orders[j]);
+                const state = res.orders[j].state._text.toLowerCase();
+                if (this.workflows[i].ordersSummary[state]) {
+                  this.workflows[i].ordersSummary[state] = this.workflows[i].ordersSummary[state] + 1;
+                } else {
+                  this.workflows[i].ordersSummary[state] = 1;
+                }
+                this.workflows[i].orderReload = true;
+              }
+            }
+            if (this.sideBar.isVisible && this.workflows[i].path === this.sideBar.workflow &&
+              this.sideBar.isVisible && this.workflows[i].versionId === this.sideBar.versionId) {
+              this.sideBar.orders = this.workflows[i].orders;
+            }
           }
         }
+      }, complete: () => {
+        if (cb) {
+          cb();
+        }
+        this.resetAction();
       }
-      if (cb) {
-        cb();
-      }
-      this.resetAction();
-    }, () => {
-      if (cb) {
-        cb();
-      }
-      this.resetAction();
     });
   }
 
@@ -1448,9 +1457,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       configurationItem: JSON.stringify(preferences)
     };
     sessionStorage.preferences = JSON.stringify(preferences);
-    this.coreService.post('configuration/save', configObj).subscribe((res) => {
-
-    });
+    this.coreService.post('configuration/save', configObj).subscribe();
   }
 
   reload(): void {

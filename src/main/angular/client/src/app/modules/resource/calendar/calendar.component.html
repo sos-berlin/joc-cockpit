@@ -49,14 +49,14 @@
                   </button>
                   <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                     <ul nz-menu>
-                      <li nz-menu-item >
-                        <a (click)="sort('name')" translate>common.label.name</a>
+                      <li nz-menu-item (click)="sort('name')">
+                        <a translate>common.label.name</a>
                       </li>
-                      <li nz-menu-item >
-                        <a (click)="sort('path1')" translate>common.label.path</a>
+                      <li nz-menu-item (click)="sort('path1')">
+                        <a translate>common.label.path</a>
                       </li>
-                      <li nz-menu-item  >
-                        <a (click)="sort('type')" translate>common.label.type</a>
+                      <li nz-menu-item (click)="sort('type')">
+                        <a translate>common.label.type</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -93,8 +93,8 @@
       <div class="col-sm-12">
         <div appResizable [sideView]="sideView.calendar" id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" [sideView]="sideView.calendar" [defaultSelectedKeys]="calendarFilters.selectedkeys" [defaultExpandedKeys]="calendarFilters.expandedKeys"
-                                 (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+            <app-tree-navigation [tree]="tree" [sideView]="sideView.calendar" [defaultSelectedKeys]="calendarFilters.selectedkeys" [defaultExpandedKeys]="calendarFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)"></app-tree-navigation>
           </div>
         </div>
         <div id="rightPanel">
@@ -119,14 +119,11 @@
                             <i class="text fa fa-ellipsis-h"></i></a>
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                             <ul nz-menu>
-                              <li nz-menu-item >
-                                <a (click)="previewCalendar(calendar)" translate>resource.calendar.button.showPreview</a>
+                              <li nz-menu-item (click)="previewCalendar(calendar)">
+                                <a translate>resource.calendar.button.showPreview</a>
                               </li>
-          <!--                    <li nz-menu-item >
-                                <a (click)="showUsage(calendar)" translate>resource.button.showUsage</a>
-                              </li>-->
-                              <li nz-menu-item >
-                                <a (click)="coreService.copyLink('calendar',calendar.name)" translate>common.button.copyLinkToObject</a>
+                              <li nz-menu-item (click)="coreService.copyLink('calendar',calendar.name)">
+                                <a translate>common.button.copyLinkToObject</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -153,9 +150,6 @@
                            (click)="previewCalendar(calendar)">
                           <i class="fa fa-television text-black-lt"></i>&nbsp;
                           <span class="text-black-lt" translate>resource.calendar.button.showPreview</span></a>
-                      <!--  <a class="pull-right primary-text-hover-color"
-                           (click)="showUsage(calendar)"><i class="fa fa-eye text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>resource.button.showUsage</span></a>-->
                       </div>
                     </div>
                   </div>
@@ -222,14 +216,11 @@
                         </button>
                         <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
-                            <li nz-menu-item >
-                              <a (click)="previewCalendar(calendar)" translate>resource.calendar.button.showPreview</a>
+                            <li nz-menu-item (click)="previewCalendar(calendar)">
+                              <a translate>resource.calendar.button.showPreview</a>
                             </li>
-                     <!--       <li nz-menu-item >
-                              <a (click)="showUsage(calendar)" translate>resource.button.showUsage</a>
-                            </li>-->
-                            <li nz-menu-item >
-                              <a (click)="coreService.copyLink('calendar',calendar.name)" translate>common.button.copyLinkToObject</a>
+                            <li nz-menu-item (click)="coreService.copyLink('calendar',calendar.name)">
+                              <a translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>

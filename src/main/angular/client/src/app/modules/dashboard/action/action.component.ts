@@ -34,11 +34,12 @@ export class CommentModalComponent implements OnInit {
   }
 
   postCall(url, obj): void {
-    this.coreService.post(url, obj).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close();
-    }, () => {
-      this.submitted = false;
+    this.coreService.post(url, obj).subscribe({
+      next: () => {
+        this.activeModal.close();
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -116,14 +117,13 @@ export class ActionComponent implements OnInit {
       this.coreService.download('controller/log', {
         url: obj.url,
         controllerId: obj.controllerId
-      }, 'controller.log.gz', (res) => {
+      }, 'controller.log.gz', () => {
 
       });
     }
   }
 
   private postCall(url, obj): void {
-    this.coreService.post(url, obj).subscribe(() => {
-    });
+    this.coreService.post(url, obj).subscribe();
   }
 }

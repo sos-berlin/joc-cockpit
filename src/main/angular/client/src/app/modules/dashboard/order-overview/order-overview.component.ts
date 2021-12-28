@@ -33,7 +33,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
   constructor(public authService: AuthService, public coreService: CoreService,
               private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if (res) {
+        this.refresh(res);
+      }
     });
   }
 
@@ -78,12 +80,12 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       }
       obj.timeZone = this.preferences.zone;
     }
-    this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
-      this.orders = res.orders;
-      this.isLoaded = true;
-    }, (err) => {
-      this.notAuthenticate = !err.isPermitted;
-      this.isLoaded = true;
+    this.coreService.post('orders/overview/snapshot', obj).subscribe({
+      next: (res: any) => {
+        this.orders = res.orders;
+      }, error: (err) => {
+        this.notAuthenticate = !err.isPermitted;
+      }, complete: () => this.isLoaded = true
     });
   }
 

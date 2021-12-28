@@ -29,7 +29,7 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : null;
     if (this.schedulerIds) {
       this.getInstances();
-    } else{
+    } else {
       this.isLoaded = true;
     }
   }
@@ -54,11 +54,13 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
   private getInstances(): void {
     this.coreService.post('controllers', {
       controllerId: ''
-    }).subscribe((res: any) => {
-      this.controllersList = res.controllers;
-      this.isLoaded = true;
-    }, () => {
-      this.isLoaded = true;
+    }).subscribe({
+      next: (res: any) => {
+        this.controllersList = res.controllers;
+        this.isLoaded = true;
+      }, complete: () => {
+        this.isLoaded = true;
+      }
     });
   }
 

@@ -177,8 +177,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private isJocActive(): void {
     this.coreService.post('joc/is_active', {}).subscribe((res: any) => {
       this.isBackUp = res.ok ? 'NO' : 'YES';
-    }, (err) => {
-      console.error(err);
     });
   }
 
@@ -192,33 +190,35 @@ export class HeaderComponent implements OnInit, OnDestroy {
         controllerId: this.schedulerIds.selected,
         eventId: this.eventId
       };
-      this.coreService.post('events', obj).subscribe((res: any) => {
-        if (!this.switchScheduler && !this.isLogout) {
-          this.eventId = res.eventId;
-          this.dataService.announceEvent(res);
-          for (let j = 0; j < res.eventSnapshots.length; j++) {
-            if (res.eventSnapshots[j].eventType === 'JOCStateChanged') {
-              this.isJocActive();
-              break;
+      this.coreService.post('events', obj).subscribe({
+        next: (res: any) => {
+          if (!this.switchScheduler && !this.isLogout) {
+            this.eventId = res.eventId;
+            this.dataService.announceEvent(res);
+            for (let j = 0; j < res.eventSnapshots.length; j++) {
+              if (res.eventSnapshots[j].eventType === 'JOCStateChanged') {
+                this.isJocActive();
+                break;
+              }
             }
           }
-        }
-        if (!this.isLogout) {
-          this.timeout = setTimeout(() => {
-            this.eventLoading = false;
-            this.getEvents();
-          }, 100);
-        }
-        this.switchScheduler = false;
-      }, (err) => {
-        if (!this.isLogout && err) {
-          if (err.status == 420 && err.error && err.error.error && err.error.error.message.match(/ExpiredSessionException/)) {
-
-          } else {
+          if (!this.isLogout) {
             this.timeout = setTimeout(() => {
               this.eventLoading = false;
               this.getEvents();
-            }, 1000);
+            }, 100);
+          }
+          this.switchScheduler = false;
+        }, error: (err) => {
+          if (!this.isLogout && err) {
+            if (err.status == 420 && err.error && err.error.error && err.error.error.message.match(/ExpiredSessionException/)) {
+
+            } else {
+              this.timeout = setTimeout(() => {
+                this.eventLoading = false;
+                this.getEvents();
+              }, 1000);
+            }
           }
         }
       });

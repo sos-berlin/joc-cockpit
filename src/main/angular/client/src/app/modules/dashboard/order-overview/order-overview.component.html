@@ -8,7 +8,7 @@
         <div class="btn-group">
           <div class="btn-group dropdown ">
             <button class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
-              <span>  {{ 'filters.button.'+filters.label | translate}} </span>
+              <span> {{ 'filters.button.'+filters.label | translate}} </span>
               <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
             </button>
             <nz-dropdown-menu #order="nzDropdownMenu">

@@ -3196,63 +3196,65 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       obj.controllerId = this.schedulerId;
     }
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-      this.isLoading = false;
-      if (this.data.id === res.id) {
-        if (this.data.deployed !== res.deployed) {
-          this.data.deployed = res.deployed;
-        }
-        if (this.data.valid !== res.valid) {
-          this.data.valid = res.valid;
-        }
-        this.data.syncState = res.syncState;
-        this.jobs = [];
-        this.variableDeclarations = {parameters: []};
-        //this.variableDeclarations.allowUndeclared = false;
-        this.orderPreparation = {};
-        this.jobResourceNames = [];
-        if (res.configuration) {
-          delete res.configuration.TYPE;
-          delete res.configuration.path;
-          delete res.configuration.version;
-          delete res.configuration.versionId;
-        } else {
-          res.configuration = {};
-        }
+    this.coreService.post(URL, obj).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        if (this.data.id === res.id) {
+          if (this.data.deployed !== res.deployed) {
+            this.data.deployed = res.deployed;
+          }
+          if (this.data.valid !== res.valid) {
+            this.data.valid = res.valid;
+          }
+          this.data.syncState = res.syncState;
+          this.jobs = [];
+          this.variableDeclarations = {parameters: []};
+          //this.variableDeclarations.allowUndeclared = false;
+          this.orderPreparation = {};
+          this.jobResourceNames = [];
+          if (res.configuration) {
+            delete res.configuration.TYPE;
+            delete res.configuration.path;
+            delete res.configuration.version;
+            delete res.configuration.versionId;
+          } else {
+            res.configuration = {};
+          }
 
-        try {
-          this.initObjects(res);
-          this.workflow = res;
-          this.workflow.actual = JSON.stringify(res.configuration);
+          try {
+            this.initObjects(res);
+            this.workflow = res;
+            this.workflow.actual = JSON.stringify(res.configuration);
 
-          this.workflow.name = this.data.name;
-          if (this.workflow.configuration.jobs) {
-            if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
-              this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
-                return {name: k, value: v};
-              });
+            this.workflow.name = this.data.name;
+            if (this.workflow.configuration.jobs) {
+              if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
+                this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
+                  return {name: k, value: v};
+                });
+              }
             }
-          }
 
-          if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
-            this.invalidMsg = 'workflow.message.emptyWorkflow';
-          } else if (!res.valid) {
-            this.validateByURL(res.configuration);
+            if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
+              this.invalidMsg = 'workflow.message.emptyWorkflow';
+            } else if (!res.valid) {
+              this.validateByURL(res.configuration);
+            }
+            this.updateXMLJSON(false);
+            this.centered();
+            this.checkGraphHeight();
+            this.history.present = JSON.stringify(this.extendJsonObj(JSON.parse(this.workflow.actual)));
+            if (this.editor) {
+              this.updateJobs(this.editor.graph, true);
+              this.ref.detectChanges();
+            }
+          } catch (e) {
+            console.error(e);
           }
-          this.updateXMLJSON(false);
-          this.centered();
-          this.checkGraphHeight();
-          this.history.present = JSON.stringify(this.extendJsonObj(JSON.parse(this.workflow.actual)));
-          if (this.editor) {
-            this.updateJobs(this.editor.graph, true);
-            this.ref.detectChanges();
-          }
-        } catch (e) {
-          console.error(e);
         }
+      }, complete: () => {
+        this.isLoading = false;
       }
-    }, () => {
-      this.isLoading = false;
     });
   }
 
@@ -3712,15 +3714,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.coreService.post('inventory/rename', {
           id: data.id,
           newPath: name
-        }).subscribe((res) => {
-          if (data.id === this.data.id) {
-            this.data.name = name;
+        }).subscribe({
+          next: () => {
+            if (data.id === this.data.id) {
+              this.data.name = name;
+            }
+            data.name = name;
+            this.dataService.reloadTree.next({rename: data});
+          }, error: () => {
+            this.workflow.name = this.data.name;
+            this.ref.detectChanges();
           }
-          data.name = name;
-          this.dataService.reloadTree.next({rename: data});
-        }, () => {
-          this.workflow.name = this.data.name;
-          this.ref.detectChanges();
         });
       } else {
         this.workflow.name = this.data.name;
@@ -8823,7 +8827,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.data.valid = res.valid;
       }
       this.ref.detectChanges();
-    }, () => {
     });
   }
 
@@ -8839,7 +8842,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.openSideBar(id);
         }
       }
-    }, () => {
     });
   }
 
@@ -9026,24 +9028,26 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       id: this.workflow.id,
       valid: this.workflow.valid,
       objectType: this.objectType
-    }).subscribe((res: any) => {
-      this.isStore = false;
-      if (res.id === this.data.id && this.workflow.id === this.data.id) {
-        this.workflow.actual = JSON.stringify(data);
-        this.workflow.deployed = false;
-        this.workflow.valid = res.valid;
-        this.data.valid = res.valid;
-        this.data.deployed = false;
-        if (this.invalidMsg && this.invalidMsg.match(/inventory/)) {
-          this.invalidMsg = '';
+    }).subscribe({
+      next: (res: any) => {
+        this.isStore = false;
+        if (res.id === this.data.id && this.workflow.id === this.data.id) {
+          this.workflow.actual = JSON.stringify(data);
+          this.workflow.deployed = false;
+          this.workflow.valid = res.valid;
+          this.data.valid = res.valid;
+          this.data.deployed = false;
+          if (this.invalidMsg && this.invalidMsg.match(/inventory/)) {
+            this.invalidMsg = '';
+          }
+          if (!this.invalidMsg && res.invalidMsg) {
+            this.invalidMsg = res.invalidMsg;
+          }
+          this.ref.detectChanges();
         }
-        if (!this.invalidMsg && res.invalidMsg) {
-          this.invalidMsg = res.invalidMsg;
-        }
-        this.ref.detectChanges();
+      }, complete: () => {
+        this.isStore = false;
       }
-    }, () => {
-      this.isStore = false;
     });
   }
 

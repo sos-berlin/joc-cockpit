@@ -25,11 +25,11 @@
               </button>
               <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                 <ul nz-menu>
-                  <li nz-menu-item  >
-                    <a (click)="sort('name')" translate>resource.board.label.name</a>
+                  <li nz-menu-item (click)="sort('name')">
+                    <a translate>resource.board.label.name</a>
                   </li>
-                  <li nz-menu-item  >
-                    <a (click)="sort('path1')" translate>common.label.path</a>
+                  <li nz-menu-item (click)="sort('path1')">
+                    <a translate>common.label.path</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -74,8 +74,8 @@
       <div class="col-sm-12">
         <div appResizable [sideView]="sideView.board" id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" [sideView]="sideView.board" [defaultSelectedKeys]="boardsFilters.selectedkeys" [defaultExpandedKeys]="boardsFilters.expandedKeys"
-                                 (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+            <app-tree-navigation [tree]="tree" [sideView]="sideView.board" [defaultSelectedKeys]="boardsFilters.selectedkeys" [defaultExpandedKeys]="boardsFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)"></app-tree-navigation>
            </div>
         </div>
         <div id="rightPanel">
@@ -105,8 +105,8 @@
                             <li nz-menu-item (click)="post(board)" *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
                               <a translate>resource.board.button.post</a>
                             </li>
-                            <li nz-menu-item >
-                              <a (click)="coreService.copyLink('board',board.name)" translate>common.button.copyLinkToObject</a>
+                            <li nz-menu-item (click)="coreService.copyLink('board',board.name)">
+                              <a translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -223,8 +223,8 @@
                               <li nz-menu-item (click)="post(board)" *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
                                 <a translate>resource.board.button.post</a>
                               </li>
-                              <li nz-menu-item >
-                                <a (click)="coreService.copyLink('board',board.name)" translate>common.button.copyLinkToObject</a>
+                              <li nz-menu-item (click)="coreService.copyLink('board',board.name)">
+                                <a translate>common.button.copyLinkToObject</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -379,7 +379,7 @@
   <ng-container *nzDrawerContent>
     <div class="close-btn" (click)="closeSearch()"></div>
     <div *ngIf="isSearchVisible">
-      <div class="text-center m-b text" ><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span></div>
+      <div class="text-center m-b-sm text" ><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span></div>
       <app-inventory-search [controllerId]="schedulerIds.selected" [isBoard]="true" (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)"></app-inventory-search>
     </div>
   </ng-container>

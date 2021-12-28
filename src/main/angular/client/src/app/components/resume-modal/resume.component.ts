@@ -56,17 +56,17 @@ export class ResumeOrderModalComponent implements OnInit {
     this.coreService.post('orders/resume/positions', {
       controllerId: this.schedulerId,
       orderIds: this.orders ? [...this.orders.keys()] : [this.order.orderId]
-    }).subscribe((res: any) => {
-      if (res) {
-        if (res.variablesNotSettable) {
-          this.isParametrized = false;
-        } else {
-          this.variables = this.coreService.convertObjectToArray(res, 'variables');
+    }).subscribe({
+      next: (res: any) => {
+        if (res) {
+          if (res.variablesNotSettable) {
+            this.isParametrized = false;
+          } else {
+            this.variables = this.coreService.convertObjectToArray(res, 'variables');
+          }
+          this.positions = res.positions.map((pos) => pos.positionString);
         }
-        this.positions = res.positions.map((pos) => pos.positionString);
-      }
-    }, () => {
-      this.positions = [];
+      }, error: () => this.positions = []
     });
   }
 
@@ -289,11 +289,10 @@ export class ResumeOrderModalComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
 
-    this.coreService.post('orders/resume', obj).subscribe((res: any) => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('orders/resume', obj).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, complete: () => this.submitted = false
     });
   }
 

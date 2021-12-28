@@ -152,26 +152,25 @@ export class SearchComponent implements OnInit {
     }
 
     configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      if (result.id) {
-        for (const i in this.allFilter) {
-          if (this.allFilter[i].id === result.id) {
-            this.allFilter[i] = configObj;
-            break;
+    this.coreService.post('configuration/save', configObj).subscribe({
+      next: (res: any) => {
+        if (result.id) {
+          for (const i in this.allFilter) {
+            if (this.allFilter[i].id === result.id) {
+              this.allFilter[i] = configObj;
+              break;
+            }
           }
+        } else {
+          configObj.id = res.id;
+          this.allFilter.push(configObj);
         }
-      } else {
-        configObj.id = res.id;
-        this.allFilter.push(configObj);
-      }
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
+        if (this.isSearch) {
+          this.filter.name = '';
+        } else {
+          this.onCancel.emit(configObj);
+        }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -240,13 +239,14 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       objectType: this.objectType,
       shared: true
     };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (res.configurations && res.configurations.length > 0) {
-        this.filterList = res.configurations;
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res: any) => {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = res.configurations;
+        }
+      }, complete: () => {
+        this.getCustomizations();
       }
-      this.getCustomizations();
-    }, () => {
-      this.getCustomizations();
     });
   }
 
@@ -257,57 +257,61 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       configurationType: 'CUSTOMIZATION',
       objectType: this.objectType
     };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (this.filterList && this.filterList.length > 0) {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = this.filterList.concat(res.configurations);
-        }
-        const data = [];
-        for (let i = 0; i < this.filterList.length; i++) {
-          let flag = true;
-          for (let j = 0; j < data.length; j++) {
-            if (data[j].id === this.filterList[i].id) {
-              flag = false;
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res: any) => {
+        if (this.filterList && this.filterList.length > 0) {
+          if (res.configurations && res.configurations.length > 0) {
+            this.filterList = this.filterList.concat(res.configurations);
+          }
+          const data = [];
+          for (let i = 0; i < this.filterList.length; i++) {
+            let flag = true;
+            for (let j = 0; j < data.length; j++) {
+              if (data[j].id === this.filterList[i].id) {
+                flag = false;
+              }
+            }
+            if (flag) {
+              data.push(this.filterList[i]);
             }
           }
-          if (flag) {
-            data.push(this.filterList[i]);
-          }
+          this.filterList = data;
+        } else {
+          this.filterList = res.configurations;
         }
-        this.filterList = data;
-      } else {
-        this.filterList = res.configurations;
-      }
 
-      if (this.savedFilter.selected) {
-        let flag = true;
-        this.filterList.forEach((value) => {
-          if (value.id === this.savedFilter.selected) {
-            flag = false;
-            this.coreService.post('configuration', {
-              controllerId: value.controllerId,
-              id: value.id
-            }).subscribe((conf: any) => {
-              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-              this.selectedFiltered.account = value.account;
-              this.load(null);
-            }, () => {
-              this.savedFilter.selected = undefined;
-              this.load(null);
-            });
+        if (this.savedFilter.selected) {
+          let flag = true;
+          this.filterList.forEach((value) => {
+            if (value.id === this.savedFilter.selected) {
+              flag = false;
+              this.coreService.post('configuration', {
+                controllerId: value.controllerId,
+                id: value.id
+              }).subscribe({
+                next: (conf: any) => {
+                  this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                  this.selectedFiltered.account = value.account;
+                }, error: () => {
+                  this.savedFilter.selected = undefined;
+                }, complete: () =>{
+                   this.load(null);
+                }
+              });
+            }
+          });
+          if (flag) {
+            this.savedFilter.selected = undefined;
+            this.load(null);
           }
-        });
-        if (flag) {
+        } else {
           this.savedFilter.selected = undefined;
           this.load(null);
         }
-      } else {
+      }, error: () => {
         this.savedFilter.selected = undefined;
         this.load(null);
       }
-    }, () => {
-      this.savedFilter.selected = undefined;
-      this.load(null);
     });
   }
 
@@ -341,30 +345,31 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       obj = this.setDateRange(obj);
       obj.timeZone = this.preferences.zone;
     }
-    this.coreService.post('audit_log', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      res.auditLog = this.orderPipe.transform(res.auditLog, this.adtLog.filter.sortBy, this.adtLog.reverse);
-      if (res.auditLog && res.auditLog.length === 0){
-        this.adtLog.currentPage = 1;
-      }
-      this.auditLogs = res.auditLog;
-      if (!date) {
-        this.data.forEach((item) => {
-          if (item.show) {
-            for (const i in this.auditLogs) {
-              if (item.id === this.auditLogs[i].id) {
-                this.auditLogs[i].show = true;
-                this.auditLogs[i].isLoaded = true;
-                this.auditLogs[i].details = item.details;
-                break;
+    this.coreService.post('audit_log', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        res.auditLog = this.orderPipe.transform(res.auditLog, this.adtLog.filter.sortBy, this.adtLog.reverse);
+        if (res.auditLog && res.auditLog.length === 0) {
+          this.adtLog.currentPage = 1;
+        }
+        this.auditLogs = res.auditLog;
+        if (!date) {
+          this.data.forEach((item) => {
+            if (item.show) {
+              for (const i in this.auditLogs) {
+                if (item.id === this.auditLogs[i].id) {
+                  this.auditLogs[i].show = true;
+                  this.auditLogs[i].isLoaded = true;
+                  this.auditLogs[i].details = item.details;
+                  break;
+                }
               }
             }
-          }
-        });
+          });
+        }
+        this.searchInResult();
+      }, complete: () => {
+        this.isLoaded = true;
       }
-      this.searchInResult();
-      this.isLoaded = true;
-    }, () => {
-      this.isLoaded = true;
     });
   }
 
@@ -596,11 +601,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (!auditLog.isLoaded) {
       this.coreService.post('audit_log/details', {
         auditLogId: auditLog.id
-      }).subscribe((res: any) => {
-        auditLog.details = res.auditLogDetails;
-        auditLog.isLoaded = true;
-      }, () => {
-        auditLog.isLoaded = true;
+      }).subscribe({
+        next: (res: any) => {
+          auditLog.details = res.auditLogDetails;
+        }, complete: () => {
+          auditLog.isLoaded = true;
+        }
       });
     }
   }
@@ -728,13 +734,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
       filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo)._d;
     }
-    this.coreService.post('audit_log', filter).subscribe((res: any) => {
-      res.auditLog = this.orderPipe.transform(res.auditLog, this.adtLog.filter.sortBy, this.adtLog.reverse);
-      this.auditLogs = res.auditLog;
-      this.searchInResult();
-      this.isLoaded = true;
-    }, () => {
-      this.isLoaded = true;
+    this.coreService.post('audit_log', filter).subscribe({
+      next: (res: any) => {
+        res.auditLog = this.orderPipe.transform(res.auditLog, this.adtLog.filter.sortBy, this.adtLog.reverse);
+        this.auditLogs = res.auditLog;
+        this.searchInResult();
+      }, complete: () => this.isLoaded = true
     });
   }
 

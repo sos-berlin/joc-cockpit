@@ -1,7 +1,6 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {ClipboardService} from 'ngx-clipboard';
-import * as moment from 'moment-timezone';
 import {TranslateService} from '@ngx-translate/core';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {WorkflowService} from '../../../services/workflow.service';
@@ -42,7 +41,7 @@ export class ScriptModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.todayDate = moment().format('YYYY-MM-DD');
+    this.todayDate = this.coreService.getStringDate(null);
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     if (this.preferences && this.preferences.zone === 'Asia/Calcutta') {
       this.preferences.zone = 'Asia/Kolkata';
@@ -166,8 +165,8 @@ export class ScriptModalComponent implements OnInit {
               periods: []
             };
             const originalTime = this.workflowService.convertSecondToTime(period.startTime);
-            const currentDay = moment(this.todayDate + ' ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('YYYY-MM-DD');
-            const convertedTime = moment(this.todayDate + ' ' + originalTime + '.000' + moment().tz(this.timezone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
+            const currentDay = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.timezone,'Z'), this.preferences.zone, 'YYYY-MM-DD');
+            const convertedTime = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.timezone,'Z'), this.preferences.zone, 'HH:mm:ss');
             if (this.todayDate != currentDay) {
               obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
             } else {
@@ -212,8 +211,8 @@ export class ScriptModalComponent implements OnInit {
             };
             const dailyPlanTime = this.workflowService.convertStringToDuration(this.dailyPlan.period_begin, true);
             const originalTime = this.workflowService.convertSecondToTime((period.startTime + dailyPlanTime));
-            const currentDay = moment(this.todayDate + ' ' + this.workflowService.convertSecondToTime(period.startTime) + '.000' + moment().tz(this.dailyPlan.time_zone).format('Z')).tz(this.preferences.zone).format('YYYY-MM-DD');
-            const convertedTime = moment(this.todayDate + ' ' + originalTime + '.000' + moment().tz(this.dailyPlan.time_zone).format('Z')).tz(this.preferences.zone).format('HH:mm:ss');
+            const currentDay = this.coreService.getDateByFormat(this.todayDate + ' ' + this.workflowService.convertSecondToTime(period.startTime) + '.000' + this.coreService.getDateByFormat(null, this.dailyPlan.time_zone,'Z'), this.preferences.zone, 'YYYY-MM-DD');
+            const convertedTime = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.dailyPlan.time_zone,'Z'), this.preferences.zone, 'HH:mm:ss');
             if (this.todayDate != currentDay) {
               obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
             } else {

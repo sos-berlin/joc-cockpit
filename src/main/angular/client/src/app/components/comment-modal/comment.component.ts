@@ -34,11 +34,12 @@ export class CommentModalComponent implements OnInit {
   }
 
   postCall(obj): void {
-    this.coreService.post(this.url, obj).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close('Close');
-    }, () => {
-      this.submitted = false;
+    this.coreService.post(this.url, obj).subscribe({
+      next: () => {
+        this.activeModal.close('Close');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }

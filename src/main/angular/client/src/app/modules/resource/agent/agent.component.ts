@@ -44,7 +44,7 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   private init(): void {
     this.agentsFilters = this.coreService.getResourceTab().agents;
-    if (!this.agentsFilters.expandedObjects){
+    if (!this.agentsFilters.expandedObjects) {
       this.agentsFilters.expandedObjects = [];
     }
     this.coreService.getResourceTab().state = 'agent';
@@ -65,21 +65,20 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   private getAgentClassList(obj): void {
-    this.coreService.post('agents', obj).subscribe((result: any) => {
-      this.loading = false;
-      if (this.agentsFilters.expandedObjects && this.agentsFilters.expandedObjects.length > 0) {
-        result.agents.forEach((value) => {
-          const index = this.agentsFilters.expandedObjects.indexOf(value.agentId);
-          if (index > -1) {
-            value.show = true;
-            this.agentsFilters.expandedObjects.slice(index, 1);
-          }
-        });
-      }
-      this.agentClusters = result.agents;
-      this.searchInResult();
-    }, () => {
-      this.loading = false;
+    this.coreService.post('agents', obj).subscribe({
+      next: (result: any) => {
+        if (this.agentsFilters.expandedObjects && this.agentsFilters.expandedObjects.length > 0) {
+          result.agents.forEach((value) => {
+            const index = this.agentsFilters.expandedObjects.indexOf(value.agentId);
+            if (index > -1) {
+              value.show = true;
+              this.agentsFilters.expandedObjects.slice(index, 1);
+            }
+          });
+        }
+        this.agentClusters = result.agents;
+        this.searchInResult();
+      }, complete: () => this.loading = false
     });
   }
 
@@ -143,19 +142,19 @@ export class AgentComponent implements OnInit, OnDestroy {
       ids.push(value.agentId);
       this.agentsFilters.expandedObjects = ids;
     });
-    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agents: ids}).subscribe((result: any) => {
-      this.data.forEach((value) => {
-        for (let i = 0; i < result.agents.length; i++) {
-          if (value.agentId === result.agents[i].agentId) {
-            value.orders = result.agents[i].orders;
-            result.agents.splice(i, 1);
-            break;
+    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agents: ids}).subscribe({
+      next: (result: any) => {
+        this.data.forEach((value) => {
+          value.loading = false
+          for (let i = 0; i < result.agents.length; i++) {
+            if (value.agentId === result.agents[i].agentId) {
+              value.orders = result.agents[i].orders;
+              result.agents.splice(i, 1);
+              break;
+            }
           }
-        }
-        value.loading = false;
-      });
-    }, () => {
-      this.loading = false;
+        });
+      }, complete: () => this.data.forEach((value) => value.loading = false)
     });
   }
 
@@ -170,11 +169,10 @@ export class AgentComponent implements OnInit, OnDestroy {
     cluster.show = true;
     this.agentsFilters.expandedObjects.push(cluster.agentId);
     cluster.loading = true;
-    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agentIds: [cluster.agentId]}).subscribe((result: any) => {
-      cluster.orders = result.agents[0].orders;
-      cluster.loading = false;
-    }, () => {
-      cluster.loading = false;
+    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agentIds: [cluster.agentId]}).subscribe({
+      next: (result: any) => {
+        cluster.orders = result.agents[0].orders;
+      }, complete: () => cluster.loading = false
     });
   }
 

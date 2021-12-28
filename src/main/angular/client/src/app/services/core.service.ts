@@ -1206,6 +1206,9 @@ export class CoreService {
   }
 
   getDateByFormat(date: any, zone: string, format: string): string {
+    if (!date && zone) {
+      return moment().tz(zone).format(format);
+    }
     if (zone) {
       return moment(date).tz(zone).format(format);
     }

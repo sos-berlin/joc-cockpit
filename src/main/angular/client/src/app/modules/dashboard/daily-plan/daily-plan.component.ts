@@ -26,7 +26,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   constructor(private coreService: CoreService, private authService: AuthService,
               private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if (res) {
+        this.refresh(res);
+      }
     });
   }
 
@@ -57,11 +59,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.coreService.post('daily_plan/orders/summary', obj).subscribe((res) => {
-      this.filterData(res);
-      this.isLoaded = true;
-    }, () => {
-      this.isLoaded = true;
+    this.coreService.post('daily_plan/orders/summary', obj).subscribe({
+      next: (res) => {
+        this.filterData(res);
+      }, complete: () => {
+        this.isLoaded = true;
+      }
     });
   }
 

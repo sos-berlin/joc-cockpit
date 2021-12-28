@@ -32,15 +32,16 @@ export class TreeModalComponent implements OnInit {
       onlyValidObjects: true,
       forInventory: true,
       types: this.type ? [this.type] : undefined
-    }).subscribe(res => {
-      this.tree = this.coreService.prepareTree(res, true);
-      this.loading = true;
-      if (this.tree.length > 0) {
-        this.tree[0].expanded = true;
-        this.selectNode(this.tree[0]);
+    }).subscribe({
+      next: (res) => {
+        this.tree = this.coreService.prepareTree(res, true);
+        if (this.tree.length > 0) {
+          this.tree[0].expanded = true;
+          this.selectNode(this.tree[0]);
+        }
+      }, complete: () => {
+        this.loading = true;
       }
-    }, () => {
-      this.loading = true;
     });
   }
 

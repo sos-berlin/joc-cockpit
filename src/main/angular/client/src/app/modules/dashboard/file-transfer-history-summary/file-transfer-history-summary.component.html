@@ -13,30 +13,22 @@
                         </button>
                         <nz-dropdown-menu #order="nzDropdownMenu">
                             <ul nz-menu>
-                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}">
-                                    <a (click)="getSummaryByDate('0d');filters.label='filters.button.today'"
-                                       translate>filters.button.today
-                                    </a>
+                                <li nz-menu-item (click)="getSummaryByDate('0d');filters.label='filters.button.today'"
+                                    [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}">
+                                    <a translate>filters.button.today</a>
                                 </li>
-                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-1h'}">
-                                    <a (click)="getSummaryByDate('-1h');filters.label='filters.button.last1'"
-                                       translate>filters.button.last1
-                                    </a>
+                                <li nz-menu-item (click)="getSummaryByDate('-1h');filters.label='filters.button.last1'"
+                                    [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-1h'}">
+                                    <a translate>filters.button.last1</a>
                                 </li>
-                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-12h'}">
-                                    <a (click)="getSummaryByDate('-12h');filters.label='filters.button.last12'"
-                                       translate>filters.button.last12
-                                    </a>
+                                <li nz-menu-item (click)="getSummaryByDate('-12h');filters.label='filters.button.last12'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-12h'}">
+                                    <a translate>filters.button.last12</a>
                                 </li>
-                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-24h'}">
-                                    <a (click)="getSummaryByDate('-24h');filters.label='filters.button.last24'"
-                                       translate>filters.button.last24
-                                    </a>
+                                <li nz-menu-item (click)="getSummaryByDate('-24h');filters.label='filters.button.last24'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-24h'}">
+                                    <a translate>filters.button.last24</a>
                                 </li>
-                                <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-7d'}">
-                                    <a (click)="getSummaryByDate('-7d');filters.label='filters.button.lastWeak'"
-                                       translate>filters.button.lastWeak
-                                    </a>
+                                <li nz-menu-item (click)="getSummaryByDate('-7d');filters.label='filters.button.lastWeak'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-7d'}">
+                                    <a translate>filters.button.lastWeak</a>
                                 </li>
                             </ul>
                         </nz-dropdown-menu>

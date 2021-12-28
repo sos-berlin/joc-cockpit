@@ -163,28 +163,29 @@ export class SearchComponent implements OnInit {
     if (this.searchObj.deployedOrReleased && this.searchObj.currentController) {
       obj.controllerId = this.controllerId;
     }
-    this.coreService.post('inventory/search', obj).subscribe((res) => {
-      this.object.type = obj.returnType;
-      this.results = res.results;
-      this.isControllerId = false;
-      if (!this.isWorkflow && !this.isBoard && !this.isLock) {
-        this.coreService.setSearchResult('inventory', this.results);
-        if (this.results.length > 0 && this.results[0].controllerId) {
-          this.isControllerId = true;
+    this.coreService.post('inventory/search', obj).subscribe({
+      next: (res) => {
+        this.object.type = obj.returnType;
+        this.results = res.results;
+        this.isControllerId = false;
+        if (!this.isWorkflow && !this.isBoard && !this.isLock) {
+          this.coreService.setSearchResult('inventory', this.results);
+          if (this.results.length > 0 && this.results[0].controllerId) {
+            this.isControllerId = true;
+          }
+          this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
+        } else {
+          if (this.isWorkflow) {
+            this.coreService.setSearchResult('workflow', this.results);
+          } else if (this.isBoard) {
+            this.coreService.setSearchResult('board', this.results);
+          } else if (this.isLock) {
+            this.coreService.setSearchResult('lock', this.results);
+          }
         }
-        this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
-      } else {
-        if (this.isWorkflow) {
-          this.coreService.setSearchResult('workflow', this.results);
-        } else if (this.isBoard) {
-          this.coreService.setSearchResult('board', this.results);
-        } else if (this.isLock) {
-          this.coreService.setSearchResult('lock', this.results);
-        }
+      }, complete: () => {
+        this.submitted = false;
       }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
     });
   }
 

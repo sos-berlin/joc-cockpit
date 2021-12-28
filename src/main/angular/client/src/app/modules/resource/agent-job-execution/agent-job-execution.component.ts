@@ -145,7 +145,7 @@ export class SearchComponent implements OnInit {
     }
 
     configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+    this.coreService.post('configuration/save', configObj).subscribe({next:(res: any) => {
       if (result.id) {
         for (let i in this.allFilter) {
           if (this.allFilter[i].id === result.id) {
@@ -162,9 +162,7 @@ export class SearchComponent implements OnInit {
       } else {
         this.onCancel.emit(configObj);
       }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
+    }, complete:() => this.submitted = false
     });
   }
 
@@ -251,13 +249,12 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       objectType: this.objectType,
       shared: true
     };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (res.configurations && res.configurations.length > 0) {
-        this.filterList = res.configurations;
-      }
-      this.getCustomizations();
-    }, () => {
-      this.getCustomizations();
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res: any) => {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = res.configurations;
+        }
+      }, complete: () => this.getCustomizations()
     });
   }
 

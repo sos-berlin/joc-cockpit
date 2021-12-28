@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router, ActivatedRoute, RouterEvent, NavigationEnd} from '@angular/router';
+import {Router, RouterEvent, NavigationEnd} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
@@ -31,8 +31,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private authService: AuthService, private router: Router, private activeRoute: ActivatedRoute,
-              public coreService: CoreService, private dataService: DataService, private message: NzMessageService) {
+  constructor(private authService: AuthService, private router: Router, public coreService: CoreService,
+              private dataService: DataService, private message: NzMessageService) {
     this.subscription1 = router.events
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
         this.checkUrl(e);
@@ -51,6 +51,20 @@ export class AdminComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  static getParameterByName(name, url = window.location.href): string {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+    if (!results) {
+      return null;
+    }
+    if (!results[2]) {
+      return '';
+    }
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
 
   ngOnInit(): void {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
@@ -149,19 +163,6 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('CHANGE_VIEW');
   }
 
-  private getParameterByName(name, url = window.location.href): string {
-    name = name.replace(/[\[\]]/g, '\\$&');
-    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-    if (!results) {
-      return null;
-    }
-    if (!results[2]) {
-      return '';
-    }
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  }
-
   private checkUrl(val): void {
     if (val.url) {
       this.route = val.url;
@@ -176,7 +177,7 @@ export class AdminComponent implements OnInit, OnDestroy {
             this.router.navigate(['/users/identity_service/account']);
           }
         }
-        this.selectedUser = this.getParameterByName('account');
+        this.selectedUser = AdminComponent.getParameterByName('account');
         if (sessionStorage.identityServiceName && this.route.match('/users/identity_service/')) {
           if (this.identityService !== sessionStorage.identityServiceName) {
             this.userObj = {};

@@ -590,16 +590,18 @@ export class ShowModalComponent implements OnInit {
     if (this.objectType !== 'NOTIFICATION') {
       obj.schemaIdentifier = this.activeTab.schemaIdentifier;
     }
-    this.coreService.post('xmleditor/validate', obj).subscribe((res: any) => {
-      if (res.validationError) {
-        this.highlightLineNo(res.validationError.line);
-        this.toasterService.pop('error', res.validationError.message);
-      } else {
-        this.toasterService.clear();
-      }
-    }, (error) => {
-      if (error.error) {
-        this.toasterService.pop('error', error.error.message);
+    this.coreService.post('xmleditor/validate', obj).subscribe({
+      next: (res: any) => {
+        if (res.validationError) {
+          this.highlightLineNo(res.validationError.line);
+          this.toasterService.pop('error', res.validationError.message);
+        } else {
+          this.toasterService.clear();
+        }
+      }, error: (error) => {
+        if (error.error) {
+          this.toasterService.pop('error', error.error.message);
+        }
       }
     });
   }
@@ -632,8 +634,6 @@ export class ShowModalComponent implements OnInit {
       } else {
         this.activeModal.close({result: res});
       }
-    }, (error) => {
-      console.error(error);
     });
   }
 
@@ -1127,21 +1127,23 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         objectType: this.objectType,
         configuration: this.mainXml,
         configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-      }).subscribe((res: any) => {
-        if (res.validationError) {
-          this.showError(res.validationError);
-        } else {
-          this.prevXML = this.mainXml;
-          this.extraInfo = {
-            released: res.released,
-            configurationDate: res.configurationDate,
-            state: res.state,
-            hasReleases: res.hasReleases
-          };
-          this.validConfig = true;
+      }).subscribe({
+        next: (res: any) => {
+          if (res.validationError) {
+            this.showError(res.validationError);
+          } else {
+            this.prevXML = this.mainXml;
+            this.extraInfo = {
+              released: res.released,
+              configurationDate: res.configurationDate,
+              state: res.state,
+              hasReleases: res.hasReleases
+            };
+            this.validConfig = true;
+          }
+        }, error: (error) => {
+          this.toasterService.pop('error', error.error.message);
         }
-      }, (error) => {
-        this.toasterService.pop('error', error.error.message);
       });
     } else {
       this.gotoErrorLocation();
@@ -1183,40 +1185,42 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.coreService.post('xmleditor/read', {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType
-    }).subscribe((res: any) => {
-      if (res.schemas) {
-        this.otherSchema = res.schemas;
+    }).subscribe({
+      next: (res: any) => {
+        if (res.schemas) {
+          this.otherSchema = res.schemas;
+          if (this.objectType === 'OTHER') {
+            localStorage.setItem('schemas', this.otherSchema);
+          } else {
+            localStorage.setItem('yadeSchema', this.otherSchema);
+          }
+        }
         if (this.objectType === 'OTHER') {
-          localStorage.setItem('schemas', this.otherSchema);
+          this.extraInfo = {
+            released: res.released,
+            state: res.state,
+            hasReleases: res.hasReleases,
+            configurationDate: res.configurationDate
+          };
+        }
+        if (!res.configurations) {
+          this.tabsArray = [];
+          this.isLoading = false;
+          this.newFile();
         } else {
-          localStorage.setItem('yadeSchema', this.otherSchema);
+          this.tabsArray = clone(res.configurations);
+          this.activeTab = this.tabsArray[this.selectedTabIndex];
+          if (this.activeTab) {
+            this.readOthersXSD(this.activeTab.id);
+          }
         }
-      }
-      if (this.objectType === 'OTHER') {
-        this.extraInfo = {
-          released: res.released,
-          state: res.state,
-          hasReleases: res.hasReleases,
-          configurationDate: res.configurationDate
-        };
-      }
-      if (!res.configurations) {
-        this.tabsArray = [];
+      }, error: (error) => {
         this.isLoading = false;
-        this.newFile();
-      } else {
-        this.tabsArray = clone(res.configurations);
-        this.activeTab = this.tabsArray[this.selectedTabIndex];
-        if (this.activeTab) {
-          this.readOthersXSD(this.activeTab.id);
+        this.tabsArray = [];
+        this.error = true;
+        if (error && error.error) {
+          this.toasterService.pop('error', error.error.message);
         }
-      }
-    }, (error) => {
-      this.isLoading = false;
-      this.tabsArray = [];
-      this.error = true;
-      if (error && error.error) {
-        this.toasterService.pop('error', error.error.message);
       }
     });
   }
@@ -1228,84 +1232,86 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
       id
-    }).subscribe((res: any) => {
-      if (res.validation && res.validation.validated) {
-        this.validConfig = true;
-      } else {
-        if (res.configuration && res.configuration.validation && res.configuration.validation.validated) {
+    }).subscribe({
+      next: (res: any) => {
+        if (res.validation && res.validation.validated) {
           this.validConfig = true;
-        }
-      }
-      if (!res.configuration) {
-        this.showSelectSchema = true;
-        this.submitXsd = false;
-        this.schemaIdentifier = undefined;
-        this.otherSchema = res.schemas;
-        if (this.objectType === 'OTHER') {
-          localStorage.setItem('schemas', this.otherSchema);
         } else {
-          localStorage.setItem('yadeSchema', this.otherSchema);
+          if (res.configuration && res.configuration.validation && res.configuration.validation.validated) {
+            this.validConfig = true;
+          }
         }
-      } else {
-        this.showSelectSchema = false;
-        if (!this.ok(res.configuration.configuration)) {
-          this.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
-          this.path = res.configuration.schema;
-          this.schemaIdentifier = res.configuration.schemaIdentifier;
-          this.submitXsd = true;
-          this.prevXML = this.removeComment(res.configuration.configuration);
-          if (res.configuration.configurationJson) {
-            let _tempArrToExpand = [];
-            let a;
-            try {
-              a = JSON.parse(res.configuration.configurationJson);
-            } catch (error) {
-              this.submitXsd = false;
-            }
-            if (!res.configuration.recreateJson) {
-              this.counting = clone(a.nodesCount);
-              this.nodes = a.node;
-            } else {
-              this.counting = a.lastUuid;
-              this.nodes = [a];
-            }
-            this.handleNodeToExpandAtOnce(this.nodes, _tempArrToExpand);
-            this.selectedNode = this.nodes[0];
-            this.getIndividualData(this.selectedNode, undefined);
-            this.selectedNodeDoc = this.checkText(this.nodes[0]);
-            this.extraInfo = {
-              released: res.released,
-              state: res.state,
-              hasReleases: res.hasReleases,
-              configurationDate: res.configurationDate,
-              modified: res.configuration ? res.configuration.modified : ''
-            };
-            this.printArraya(false);
-            if (_tempArrToExpand && _tempArrToExpand.length > 0) {
-              setTimeout(() => {
-                for (const i in _tempArrToExpand) {
-                  _tempArrToExpand[i].expanded = true;
-                  delete _tempArrToExpand[i].loading;
-                }
-                this.nodes = [...this.nodes];
-              }, 0);
-            }
+        if (!res.configuration) {
+          this.showSelectSchema = true;
+          this.submitXsd = false;
+          this.schemaIdentifier = undefined;
+          this.otherSchema = res.schemas;
+          if (this.objectType === 'OTHER') {
+            localStorage.setItem('schemas', this.otherSchema);
           } else {
-            this.nodes = [];
-            this.loadTree(res.configuration.schema, true);
+            localStorage.setItem('yadeSchema', this.otherSchema);
           }
         } else {
-          this.openXMLDialog(res.configuration);
+          this.showSelectSchema = false;
+          if (!this.ok(res.configuration.configuration)) {
+            this.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
+            this.path = res.configuration.schema;
+            this.schemaIdentifier = res.configuration.schemaIdentifier;
+            this.submitXsd = true;
+            this.prevXML = this.removeComment(res.configuration.configuration);
+            if (res.configuration.configurationJson) {
+              let _tempArrToExpand = [];
+              let a;
+              try {
+                a = JSON.parse(res.configuration.configurationJson);
+              } catch (error) {
+                this.submitXsd = false;
+              }
+              if (!res.configuration.recreateJson) {
+                this.counting = clone(a.nodesCount);
+                this.nodes = a.node;
+              } else {
+                this.counting = a.lastUuid;
+                this.nodes = [a];
+              }
+              this.handleNodeToExpandAtOnce(this.nodes, _tempArrToExpand);
+              this.selectedNode = this.nodes[0];
+              this.getIndividualData(this.selectedNode, undefined);
+              this.selectedNodeDoc = this.checkText(this.nodes[0]);
+              this.extraInfo = {
+                released: res.released,
+                state: res.state,
+                hasReleases: res.hasReleases,
+                configurationDate: res.configurationDate,
+                modified: res.configuration ? res.configuration.modified : ''
+              };
+              this.printArraya(false);
+              if (_tempArrToExpand && _tempArrToExpand.length > 0) {
+                setTimeout(() => {
+                  for (const i in _tempArrToExpand) {
+                    _tempArrToExpand[i].expanded = true;
+                    delete _tempArrToExpand[i].loading;
+                  }
+                  this.nodes = [...this.nodes];
+                }, 0);
+              }
+            } else {
+              this.nodes = [];
+              this.loadTree(res.configuration.schema, true);
+            }
+          } else {
+            this.openXMLDialog(res.configuration);
+          }
         }
-      }
-      this.isLoading = false;
-    }, (err) => {
-      this.submitXsd = false;
-      this.isLoading = false;
-      this.extraInfo = {};
-      this.error = true;
-      if (err.data && err.data.error) {
-        this.toasterService.pop('error', err.data.error.message);
+        this.isLoading = false;
+      }, error: (err) => {
+        this.submitXsd = false;
+        this.isLoading = false;
+        this.extraInfo = {};
+        this.error = true;
+        if (err.data && err.data.error) {
+          this.toasterService.pop('error', err.data.error.message);
+        }
       }
     });
   }
@@ -1356,59 +1362,60 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType
     };
-    this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
-      if (res.validation && res.validation.validated) {
-        this.validConfig = true;
-      } else {
-        if (res.configuration && res.configuration.validation && res.configuration.validation.validated) {
+    this.coreService.post('xmleditor/read', obj).subscribe({
+      next: (res: any) => {
+        if (res.validation && res.validation.validated) {
           this.validConfig = true;
-        }
-      }
-      this.schemaIdentifier = res.schemaIdentifier;
-      this.path = res.schema;
-      this.submitXsd = true;
-      this.extraInfo = {
-        released: res.released,
-        state: res.state,
-        hasReleases: res.hasReleases,
-        configurationDate: res.configurationDate,
-        modified: res.configuration ? res.configuration.modified : ''
-      };
-      this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
-      if (res.configurationJson) {
-        this.prevXML = this.removeComment(res.configuration);
-        let jsonArray;
-        try {
-          jsonArray = JSON.parse(res.configurationJson);
-        } catch (e) {
-          this.isLoading = false;
-          this.submitXsd = false;
-        }
-        this.recreateJsonFlag = res.recreateJson;
-        if (!res.recreateJson) {
-          this.nodes = jsonArray.node;
-          this.counting = clone(jsonArray.nodesCount);
         } else {
-          let a = [jsonArray];
-          this.counting = jsonArray.lastUuid;
-          this.nodes = a;
+          if (res.configuration && res.configuration.validation && res.configuration.validation.validated) {
+            this.validConfig = true;
+          }
         }
-        this.isLoading = false;
-        this.selectedNode = this.nodes[0];
-        this.getIndividualData(this.selectedNode, undefined);
-        this.selectedNodeDoc = this.checkText(this.nodes[0]);
-        this.printArraya(false);
-      } else if (res.configuration) {
-        if (!this.ok(res.configuration)) {
-          this.nodes = [];
-          this.isLoading = true;
-          this.submitXsd = true;
+        this.schemaIdentifier = res.schemaIdentifier;
+        this.path = res.schema;
+        this.submitXsd = true;
+        this.extraInfo = {
+          released: res.released,
+          state: res.state,
+          hasReleases: res.hasReleases,
+          configurationDate: res.configurationDate,
+          modified: res.configuration ? res.configuration.modified : ''
+        };
+        this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+        if (res.configurationJson) {
           this.prevXML = this.removeComment(res.configuration);
-          this.loadTree(this.path, true);
-          setTimeout(() => {
-            this.createJsonfromXml(res.configuration);
-          }, 600);
-        } else {
+          let jsonArray;
+          try {
+            jsonArray = JSON.parse(res.configurationJson);
+          } catch (e) {
+            this.isLoading = false;
+            this.submitXsd = false;
+          }
+          this.recreateJsonFlag = res.recreateJson;
+          if (!res.recreateJson) {
+            this.nodes = jsonArray.node;
+            this.counting = clone(jsonArray.nodesCount);
+          } else {
+            let a = [jsonArray];
+            this.counting = jsonArray.lastUuid;
+            this.nodes = a;
+          }
+          this.isLoading = false;
+          this.selectedNode = this.nodes[0];
+          this.getIndividualData(this.selectedNode, undefined);
+          this.selectedNodeDoc = this.checkText(this.nodes[0]);
+          this.printArraya(false);
+        } else if (res.configuration) {
+          if (!this.ok(res.configuration)) {
+            this.nodes = [];
+            this.isLoading = true;
+            this.submitXsd = true;
+            this.prevXML = this.removeComment(res.configuration);
+            this.loadTree(this.path, true);
+            setTimeout(() => {
+              this.createJsonfromXml(res.configuration);
+            }, 600);
+         } else {
           this.submitXsd = false;
           this.isLoading = false;
           // openXMLDialog(res.configuration);
@@ -1417,9 +1424,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.submitXsd = false;
         this.isLoading = false;
       }
-    }, () => {
-      this.isLoading = false;
-      this.submitXsd = false;
+      }, error: () => {
+        this.isLoading = false;
+        this.submitXsd = false;
+      }
     });
   }
 

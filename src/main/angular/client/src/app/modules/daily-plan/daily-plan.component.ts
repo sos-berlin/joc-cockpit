@@ -65,6 +65,22 @@ export class SelectOrderTemplatesComponent implements OnInit {
   constructor(public  coreService: CoreService) {
   }
 
+  static createTempArray(arr): any {
+    const tempArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      const parentObj: any = {
+        name: arr[i].name,
+        path: arr[i].path,
+        key: arr[i].key,
+        title: arr[i].key,
+        type: true,
+        isLeaf: true
+      };
+      tempArr.push(parentObj);
+    }
+    return tempArr;
+  }
+
   ngOnInit(): void {
     this.getOrderTemplates();
   }
@@ -73,29 +89,31 @@ export class SelectOrderTemplatesComponent implements OnInit {
     this.coreService.post('schedules', {
       controllerId: this.schedulerId,
       selector: {folders: [{folder: '/', recursive: true}]}
-    }).subscribe((res: any) => {
-      this.schedules = res.schedules;
-      if (!res.schedules || res.schedules.length === 0) {
+    }).subscribe({
+      next: (res: any) => {
+        this.schedules = res.schedules;
+        if (!res.schedules || res.schedules.length === 0) {
+          this.nodes = [];
+        }
+        const treeObj = [];
+        for (let i = 0; i < this.schedules.length; i++) {
+          const path = this.schedules[i].path;
+          const obj = {
+            name: path.substring(path.lastIndexOf('/') + 1),
+            path: path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1),
+            key: path,
+            title: path
+          };
+          treeObj.push(obj);
+        }
+        const arr = groupBy(sortBy(treeObj, 'path'), (result) => {
+          return result.path;
+        });
+        this.generateTree(arr);
+        this.nodes = [...this.nodes];
+      }, error: () => {
         this.nodes = [];
       }
-      const treeObj = [];
-      for (let i = 0; i < this.schedules.length; i++) {
-        const path = this.schedules[i].path;
-        const obj = {
-          name: path.substring(path.lastIndexOf('/') + 1),
-          path: path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1),
-          key: path,
-          title: path
-        };
-        treeObj.push(obj);
-      }
-      const arr = groupBy(sortBy(treeObj, 'path'), (result) => {
-        return result.path;
-      });
-      this.generateTree(arr);
-      this.nodes = [...this.nodes];
-    }, () => {
-      this.nodes = [];
     });
   }
 
@@ -142,7 +160,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
     let flag = false;
     let arr = [];
     if (data.length > 0) {
-      arr = this.createTempArray(data);
+      arr = SelectOrderTemplatesComponent.createTempArray(data);
     }
 
     function recursive(path, nodes) {
@@ -216,21 +234,6 @@ export class SelectOrderTemplatesComponent implements OnInit {
     }
   }
 
-  private createTempArray(arr): any {
-    const tempArr = [];
-    for (let i = 0; i < arr.length; i++) {
-      const parentObj: any = {
-        name: arr[i].name,
-        path: arr[i].path,
-        key: arr[i].key,
-        title: arr[i].key,
-        type: true,
-        isLeaf: true
-      };
-      tempArr.push(parentObj);
-    }
-    return tempArr;
-  }
 }
 
 @Component({
@@ -379,11 +382,12 @@ export class CreatePlanModalComponent implements OnInit {
       this.recursivelyCreate(obj);
     } else {
       obj.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
-      this.coreService.post('daily_plan/orders/generate', obj).subscribe(() => {
-        this.submitted = false;
-        this.activeModal.close('Done');
-      }, () => {
-        this.submitted = false;
+      this.coreService.post('daily_plan/orders/generate', obj).subscribe({
+        next: () => {
+          this.activeModal.close('Done');
+        }, complete: () => {
+          this.submitted = false;
+        }
       });
     }
   }
@@ -401,11 +405,12 @@ export class CreatePlanModalComponent implements OnInit {
         catchError(error => of(error))
       ));
     });
-    forkJoin(apiArr).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, () => {
-      this.submitted = false;
+    forkJoin(apiArr).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -492,11 +497,12 @@ export class RemovePlanModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
-    this.coreService.post('daily_plan/orders/submit', obj).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('daily_plan/orders/submit', obj).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 
@@ -557,11 +563,12 @@ export class RemovePlanModalComponent implements OnInit {
       this.removeRecursively(obj);
       return;
     }
-    this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe((res) => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, () => {
-      this.submitted = false;
+    this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 
@@ -572,11 +579,12 @@ export class RemovePlanModalComponent implements OnInit {
       obj.filter.dailyPlanDate = this.coreService.getStringDate(date);
       apiArr.push(this.coreService.post('daily_plan/orders/delete', this.coreService.clone(obj)));
     });
-    forkJoin(apiArr).subscribe((result) => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, () => {
-      this.submitted = false;
+    forkJoin(apiArr).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -989,26 +997,27 @@ export class SearchComponent implements OnInit {
     obj.to = result.to1;
 
     configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      if (result.id) {
-        for (let i in this.allFilter) {
-          if (this.allFilter[i].id === result.id) {
-            this.allFilter[i] = configObj;
-            break;
+    this.coreService.post('configuration/save', configObj).subscribe({
+      next: (res: any) => {
+        if (result.id) {
+          for (let i in this.allFilter) {
+            if (this.allFilter[i].id === result.id) {
+              this.allFilter[i] = configObj;
+              break;
+            }
           }
+        } else {
+          configObj.id = res.id;
+          this.allFilter.push(configObj);
         }
-      } else {
-        configObj.id = res.id;
-        this.allFilter.push(configObj);
+        if (this.isSearch) {
+          this.filter.name = '';
+        } else {
+          this.onCancel.emit(configObj);
+        }
+      }, complete: () => {
+        this.submitted = false;
       }
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-      this.submitted = false;
-    }, err => {
-      this.submitted = false;
     });
   }
 
@@ -1146,16 +1155,18 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         obj.filter.late = true;
       }
       obj.limit = this.preferences.maxDailyPlanRecords;
-      this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-        this.filterData(res.plannedOrderItems);
-        this.isLoaded = true;
-        this.isRefreshed = false;
-      }, () => {
-        this.isLoaded = true;
-        this.isRefreshed = false;
-        this.plans = [];
-        this.planOrders = [];
-        this.resetCheckBox();
+      this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+        next: (res: any) => {
+          this.filterData(res.plannedOrderItems);
+          this.isLoaded = true;
+          this.isRefreshed = false;
+        }, error: () => {
+          this.isLoaded = true;
+          this.isRefreshed = false;
+          this.plans = [];
+          this.planOrders = [];
+          this.resetCheckBox();
+        }
       });
     }
   }
@@ -1437,10 +1448,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         apiArr.push(this.coreService.post('orders/daily_plan/cancel', this.coreService.clone(obj)));
       });
       this.resetCheckBox();
-      forkJoin(apiArr).subscribe((result) => {
-        this.resetAction(5000);
-      }, () => {
-        this.resetAction();
+      forkJoin(apiArr).subscribe({
+        next: () => {
+          this.resetAction(5000);
+        }, error: () => {
+          this.resetAction();
+        }
       });
     } else {
       const orderIds = [];
@@ -1502,13 +1515,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       });
     } else {
       this.isProcessing = true;
-      this.coreService.post('orders/daily_plan/cancel', obj).subscribe(() => {
-        this.resetAction(5000);
-        if (isMultiple) {
-          this.resetCheckBox();
+      this.coreService.post('orders/daily_plan/cancel', obj).subscribe({
+        next: () => {
+          this.resetAction(5000);
+          if (isMultiple) {
+            this.resetCheckBox();
+          }
+        }, error: () => {
+          this.resetAction();
         }
-      }, () => {
-        this.resetAction();
       });
     }
   }
@@ -1568,7 +1583,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         controllerId: this.schedulerIds.selected
       }).subscribe((res: any) => {
         this.convertObjectToArray(res.variables, plan);
-      }, err => {
       });
     }
   }
@@ -1690,10 +1704,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   /* ---- End Action ------ */
 
   getDatesByUrl(arr, cb): void {
-    this.coreService.post('utilities/convert_relative_dates', {relativDates: arr}).subscribe((res: any) => {
-      cb(res.absoluteDates);
-    }, () => {
-      cb([]);
+    this.coreService.post('utilities/convert_relative_dates', {relativDates: arr}).subscribe({
+      next: (res: any) => {
+        cb(res.absoluteDates);
+      }, error: () => {
+        cb([]);
+      }
     });
   }
 
@@ -2073,16 +2089,18 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.filter.dailyPlanDate = this.coreService.getStringDate(date);
       apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
     });
-    forkJoin(apiArr).subscribe((result: any) => {
-      let plannedOrderItems = [];
-      for (let i = 0; i < result.length; i++) {
-        plannedOrderItems = plannedOrderItems.concat(result[i].plannedOrderItems);
+    forkJoin(apiArr).subscribe({
+      next: (result: any) => {
+        let plannedOrderItems = [];
+        for (let i = 0; i < result.length; i++) {
+          plannedOrderItems = plannedOrderItems.concat(result[i].plannedOrderItems);
+        }
+        this.filterData(plannedOrderItems);
+      }, error: () => {
+        this.resetCheckBox();
+      }, complete: () => {
+        this.isLoaded = true;
       }
-      this.filterData(plannedOrderItems);
-      this.isLoaded = true;
-    }, (err) => {
-      this.isLoaded = true;
-      this.resetCheckBox();
     });
   }
 
@@ -2491,10 +2509,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       objectType: this.objectType,
       shared: true
     };
-    this.coreService.post('configurations', obj).subscribe((res) => {
-      this.filterResponse(res);
-    }, err => {
-      this.getCustomizations();
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res) => {
+        this.filterResponse(res);
+      }, error: () => {
+        this.getCustomizations();
+      }
     });
   }
 
@@ -2554,11 +2574,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         configurationType: 'CUSTOMIZATION',
         objectType: this.objectType
       };
-      this.coreService.post('configurations', obj).subscribe((res) => {
-        this.filterCustomizationResponse(res);
-      }, (err) => {
-        this.savedFilter.selected = undefined;
-        this.loadOrderPlan();
+      this.coreService.post('configurations', obj).subscribe({
+        next: (res) => {
+          this.filterCustomizationResponse(res);
+        }, error: () => {
+          this.savedFilter.selected = undefined;
+          this.loadOrderPlan();
+        }
       });
     }
   }

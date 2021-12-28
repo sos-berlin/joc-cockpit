@@ -134,43 +134,46 @@ export class StartUpModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('controller/register', obj).subscribe(res => {
-      this.submitted = false;
-      if (this.modalRef) {
-        this.dataService.closeModal.next('reload');
-      } else {
-        this.afterSubmit.emit();
-      }
-    }, err => this.submitted = false);
-
+    this.coreService.post('controller/register', obj).subscribe({
+      next: () => {
+        if (this.modalRef) {
+          this.dataService.closeModal.next('reload');
+        } else {
+          this.afterSubmit.emit();
+        }
+      }, complete: () =>
+        this.submitted = false
+    });
   }
 
   testConnection(type, url): void {
     this.error = false;
     this.setFlag(type, true);
-    this.coreService.post('controller/test', {url, controllerId: this.new ? '' : this.controllerId}).subscribe((res: any) => {
-      this.setFlag(type, false);
-      if (res && res.controller) {
-        let title = '', msg = '';
-        if (res.controller.connectionState && res.controller.connectionState._text === 'unreachable') {
-          this.error = true;
-          this.translate.get('error.message.oops').subscribe(translatedValue => {
-            title = translatedValue;
-          });
-          this.translate.get('error.message.connectionError').subscribe(translatedValue => {
-            msg = translatedValue;
-          });
-          this.toasterService.pop('error', title, msg);
-        } else {
-          this.translate.get('error.message.connectionSuccess').subscribe(translatedValue => {
-            msg = translatedValue;
-          });
-          this.toasterService.pop('success', '', msg);
+    this.coreService.post('controller/test', {url, controllerId: this.new ? '' : this.controllerId}).subscribe({
+      next: (res: any) => {
+        this.setFlag(type, false);
+        if (res && res.controller) {
+          let title = '', msg = '';
+          if (res.controller.connectionState && res.controller.connectionState._text === 'unreachable') {
+            this.error = true;
+            this.translate.get('error.message.oops').subscribe(translatedValue => {
+              title = translatedValue;
+            });
+            this.translate.get('error.message.connectionError').subscribe(translatedValue => {
+              msg = translatedValue;
+            });
+            this.toasterService.pop('error', title, msg);
+          } else {
+            this.translate.get('error.message.connectionSuccess').subscribe(translatedValue => {
+              msg = translatedValue;
+            });
+            this.toasterService.pop('success', '', msg);
+          }
         }
+      }, error: () => {
+        this.error = true;
+        this.setFlag(type, false);
       }
-    }, err => {
-      this.error = true;
-      this.setFlag(type, false);
     });
   }
 
@@ -220,10 +223,12 @@ export class StartUpComponent implements OnInit {
   }
 
   getSchedulerIds(): void {
-    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
-      this.authService.setIds(res);
-      this.authService.save();
-      this.redirect();
-    }, err => this.redirect());
+    this.coreService.post('controller/ids', {}).subscribe({
+      next: (res: any) => {
+        this.authService.setIds(res);
+        this.authService.save();
+        this.redirect();
+      }, error: () => this.redirect()
+    });
   }
 }

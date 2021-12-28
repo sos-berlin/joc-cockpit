@@ -32,53 +32,7 @@ export class SettingModalComponent implements OnInit {
               private message: NzMessageService, private saveService: SaveService) {
   }
 
-  ngOnInit(): void {
-    if (this.saveService.copiedSetting && this.saveService.copiedSetting.type &&
-      (this.saveService.copiedSetting.name !== this.data.identityServiceName || (this.saveService.copiedSetting.name === this.data.identityServiceName &&
-      this.saveService.copiedSetting.type !== this.data.identityServiceType)) &&
-      (this.saveService.copiedSetting.type.indexOf(this.data.identityServiceType) > -1 ||
-        this.data.identityServiceType.indexOf(this.saveService.copiedSetting.type) > -1)) {
-      this.isEnable = true;
-    }
-
-    this.coreService.post('configuration', {
-      id: 0,
-      objectType: this.data ? this.data.identityServiceType : 'GENERAL',
-      configurationType: 'IAM',
-      name: this.data ? this.data.identityServiceName : undefined
-    }).subscribe((res) => {
-      if (res.configuration.configurationItem) {
-        const data = JSON.parse(res.configuration.configurationItem);
-        if (this.data) {
-          if (data) {
-            this.currentObj = data.vault || data.ldap || {};
-          }
-        } else {
-          this.currentObj = data;
-          if (data.sessionTimeout) {
-            this.currentObj.sessionTimeout = this.convertDurationToString(data.sessionTimeout);
-          }
-        }
-      }
-    });
-  }
-
-  copySetting(): void {
-    if (this.currentObj && !isEmpty(this.currentObj)) {
-      this.saveService.copiedSetting = {
-        type: this.data ? this.data.identityServiceType : 'GENERAL',
-        name: this.data ? this.data.identityServiceName : undefined,
-        data: this.currentObj
-      };
-      this.coreService.showCopyMessage(this.message);
-    }
-  }
-
-  pasteSetting(): void {
-    this.currentObj = clone(this.saveService.copiedSetting.data);
-  }
-
-  private convertDurationToString(time: any): string {
+  static convertDurationToString(time: any): string {
     const seconds = Number(time);
     const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
     const h = Math.floor(((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
@@ -87,7 +41,7 @@ export class SettingModalComponent implements OnInit {
     return (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (m != 0 ? m + 'm ' : '') + (s != 0 ? s + 's ' : '');
   }
 
-  private convertStringToDuration(str: string): number {
+  static convertStringToDuration(str: string): number {
     if (/^((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/.test(str)) {
       let seconds = 0;
       const a = str.split(' ');
@@ -115,6 +69,52 @@ export class SettingModalComponent implements OnInit {
     }
   }
 
+  ngOnInit(): void {
+    if (this.saveService.copiedSetting && this.saveService.copiedSetting.type &&
+      (this.saveService.copiedSetting.name !== this.data.identityServiceName || (this.saveService.copiedSetting.name === this.data.identityServiceName &&
+        this.saveService.copiedSetting.type !== this.data.identityServiceType)) &&
+      (this.saveService.copiedSetting.type.indexOf(this.data.identityServiceType) > -1 ||
+        this.data.identityServiceType.indexOf(this.saveService.copiedSetting.type) > -1)) {
+      this.isEnable = true;
+    }
+
+    this.coreService.post('configuration', {
+      id: 0,
+      objectType: this.data ? this.data.identityServiceType : 'GENERAL',
+      configurationType: 'IAM',
+      name: this.data ? this.data.identityServiceName : undefined
+    }).subscribe((res) => {
+      if (res.configuration.configurationItem) {
+        const data = JSON.parse(res.configuration.configurationItem);
+        if (this.data) {
+          if (data) {
+            this.currentObj = data.vault || data.ldap || {};
+          }
+        } else {
+          this.currentObj = data;
+          if (data.sessionTimeout) {
+            this.currentObj.sessionTimeout = SettingModalComponent.convertDurationToString(data.sessionTimeout);
+          }
+        }
+      }
+    });
+  }
+
+  copySetting(): void {
+    if (this.currentObj && !isEmpty(this.currentObj)) {
+      this.saveService.copiedSetting = {
+        type: this.data ? this.data.identityServiceType : 'GENERAL',
+        name: this.data ? this.data.identityServiceName : undefined,
+        data: this.currentObj
+      };
+      this.coreService.showCopyMessage(this.message);
+    }
+  }
+
+  pasteSetting(): void {
+    this.currentObj = clone(this.saveService.copiedSetting.data);
+  }
+
   onSubmit(): void {
     this.submitted = true;
     let obj: any = {};
@@ -127,7 +127,7 @@ export class SettingModalComponent implements OnInit {
     } else {
       obj = this.currentObj;
       if (obj.sessionTimeout) {
-        obj.sessionTimeout = this.convertStringToDuration(obj.sessionTimeout);
+        obj.sessionTimeout = SettingModalComponent.convertStringToDuration(obj.sessionTimeout);
       }
     }
     this.coreService.post('configuration/save', {
@@ -136,10 +136,12 @@ export class SettingModalComponent implements OnInit {
       configurationType: 'IAM',
       name: this.data ? this.data.identityServiceName : undefined,
       configurationItem: JSON.stringify(obj)
-    }).subscribe((res) => {
-      this.activeModal.close(res);
-    }, () => {
-      this.submitted = false;
+    }).subscribe({
+      next: (res) => {
+        this.activeModal.close(res);
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -224,21 +226,18 @@ export class IdentityServiceModalComponent implements OnInit {
     this.coreService.post('configuration/delete', {
       controllerId: '.',
       id: this.removeSettingId
-    }).subscribe(() => {
-
-    });
+    }).subscribe();
     this.coreService.post('configuration/save', {
       id: 0,
       objectType: this.currentObj.identityServiceType,
       configurationType: 'IAM',
       name: this.currentObj.identityServiceName,
       configurationItem: this.settingObj
-    }).subscribe(() => {
-      this.removeSettingId = -1;
-      this.store();
-    }, () => {
-      this.removeSettingId = -1;
-      this.store();
+    }).subscribe({
+      complete: () => {
+        this.removeSettingId = -1;
+        this.store();
+      }
     });
   }
 
@@ -246,10 +245,12 @@ export class IdentityServiceModalComponent implements OnInit {
     this.coreService.post('iam/identityservice/rename', {
       identityServiceOldName,
       identityServiceNewName
-    }).subscribe((res) => {
-      cb(res);
-    }, () => {
-      cb(null);
+    }).subscribe({
+      next: (res) => {
+        cb(res);
+      }, error: () => {
+        cb(null);
+      }
     });
   }
 
@@ -278,10 +279,12 @@ export class IdentityServiceModalComponent implements OnInit {
       this.saveSettings();
       return;
     }
-    this.coreService.post('iam/identityservice/store', this.currentObj).subscribe((res) => {
-      this.activeModal.close(res);
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('iam/identityservice/store', this.currentObj).subscribe({
+      next: (res) => {
+        this.activeModal.close(res);
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -328,13 +331,14 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   private getIAMList(): void {
-    this.coreService.post('iam/identityservices', {}).subscribe((res: any) => {
-      this.identityServiceTypes = res.identityServiceTypes;
-      this.identityServices = res.identityServiceItems;
-      this.checkVaultTypes();
-      this.loading = false;
-    }, () => {
-      this.loading = false;
+    this.coreService.post('iam/identityservices', {}).subscribe({
+      next: (res: any) => {
+        this.identityServiceTypes = res.identityServiceTypes;
+        this.identityServices = res.identityServiceItems;
+        this.checkVaultTypes();
+      }, complete: () => {
+        this.loading = false;
+      }
     });
   }
 
@@ -447,10 +451,12 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
 
   private enableDisable(identityService, flag): void {
     identityService.disabled = flag;
-    this.coreService.post('iam/identityservice/store', identityService).subscribe(() => {
-      this.checkVaultTypes();
-    }, () => {
-      this.getIAMList();
+    this.coreService.post('iam/identityservice/store', identityService).subscribe({
+      next: () => {
+        this.checkVaultTypes();
+      }, error: () => {
+        this.getIAMList();
+      }
     });
   }
 
@@ -470,7 +476,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.coreService.post('iam/identityservice/delete', {identityServiceName: identityService.identityServiceName}).subscribe((res) => {
+        this.coreService.post('iam/identityservice/delete', {identityServiceName: identityService.identityServiceName}).subscribe(() => {
           this.getIAMList();
         });
       }

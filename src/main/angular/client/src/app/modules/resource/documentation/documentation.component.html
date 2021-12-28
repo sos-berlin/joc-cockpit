@@ -28,15 +28,11 @@
                 </button>
                 <nz-dropdown-menu #type="nzDropdownMenu" >
                   <ul nz-menu>
-                    <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == 'ALL'}">
-                      <a (click)="documentFilters.filter.type = 'ALL';loadDocument();">
-                        <span translate>common.label.all</span>
-                      </a>
+                    <li nz-menu-item (click)="documentFilters.filter.type = 'ALL';loadDocument();" [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == 'ALL'}">
+                      <a translate>common.label.all</a>
                     </li>
-                    <li nz-menu-item  *ngFor="let type of documentTypes" [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == type}">
-                      <a (click)="documentFilters.filter.type = type;loadDocument();">
-                        <span>{{type}}</span>
-                      </a>
+                    <li nz-menu-item (click)="documentFilters.filter.type = type;loadDocument();" *ngFor="let type of documentTypes" [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == type}">
+                      <a>{{type}}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -64,14 +60,14 @@
                 </a>
                 <nz-dropdown-menu #sortBy="nzDropdownMenu" >
                   <ul nz-menu>
-                    <li nz-menu-item >
-                      <a (click)="sort('name')" translate>common.label.name</a>
+                    <li nz-menu-item (click)="sort('name')">
+                      <a translate>common.label.name</a>
                     </li>
-                    <li nz-menu-item >
-                      <a (click)="sort('path1')" translate>common.label.path</a>
+                    <li nz-menu-item (click)="sort('path1')">
+                      <a translate>common.label.path</a>
                     </li>
-                    <li nz-menu-item >
-                      <a (click)="sort('type')" translate>common.label.type</a>
+                    <li nz-menu-item (click)="sort('type')">
+                      <a translate>common.label.type</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -108,8 +104,8 @@
       <div class="col-sm-12">
         <div appResizable [sideView]="sideView.documentation" id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [isAction]="!!(permission.joc && permission.joc.documentations.manage)" [tree]="tree" [sideView]="sideView.documentation" [defaultSelectedKeys]="documentFilters.selectedkeys" [defaultExpandedKeys]="documentFilters.expandedKeys"
-                                 (messageEvent)="receiveAction($event)" (actionEvent)="deleteFolder($event)"></app-tree-nagivation>
+            <app-tree-navigation [isAction]="!!(permission.joc && permission.joc.documentations.manage)" [tree]="tree" [sideView]="sideView.documentation" [defaultSelectedKeys]="documentFilters.selectedkeys" [defaultExpandedKeys]="documentFilters.expandedKeys"
+                                 (messageEvent)="receiveAction($event)" (actionEvent)="deleteFolder($event)"></app-tree-navigation>
            </div>
         </div>
         <div id="rightPanel">
@@ -139,23 +135,23 @@
                           <i class="text fa fa-ellipsis-h"></i></a>
                         <nz-dropdown-menu #option="nzDropdownMenu">
                           <ul nz-menu>
-                            <li nz-menu-item *ngIf="permission.joc && permission.joc.documentations.manage">
-                              <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
+                            <li nz-menu-item (click)="editDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage">
+                              <a translate>resource.documentation.button.editDocument</a>
                             </li>
-                            <li nz-menu-item>
-                              <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
+                            <li nz-menu-item (click)="previewDocument(document)">
+                              <a translate>resource.documentation.button.previewDocument</a>
                             </li>
-                            <li nz-menu-item *ngIf="permission.joc && permission.joc.documentations.manage">
-                              <a (click)="exportDocument(document)" translate>common.button.export</a>
+                            <li nz-menu-item (click)="exportDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage">
+                              <a translate>common.button.export</a>
                             </li>
-                            <li nz-menu-item class="bg-hover-color" *ngIf="permission.joc && permission.joc.documentations.manage">
-                              <a (click)="deleteDocumentations(document)" translate>common.button.delete</a>
+                            <li nz-menu-item (click)="deleteDocumentations(document)" class="bg-hover-color" *ngIf="permission.joc && permission.joc.documentations.manage">
+                              <a translate>common.button.delete</a>
                             </li>
-                            <li nz-menu-item>
-                              <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
+                            <li nz-menu-item (click)="showDocumentUsage(document)">
+                              <a translate>resource.button.showUsage</a>
                             </li>
-                            <li nz-menu-item>
-                              <a (click)="coreService.copyLink('document',document.name)" translate>common.button.copyLinkToObject</a>
+                            <li nz-menu-item (click)="coreService.copyLink('document',document.name)">
+                              <a translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
@@ -259,24 +255,23 @@
                           <i class="fa fa-ellipsis-h"></i></button>
                         <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                           <ul nz-menu>
-                            <li nz-menu-item *ngIf="permission.joc.documentations.manage">
-                              <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
+                            <li nz-menu-item (click)="editDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage">
+                              <a translate>resource.documentation.button.editDocument</a>
                             </li>
-                            <li nz-menu-item >
-                              <a (click)="previewDocument(document)" translate>resource.documentation.button.previewDocument</a>
+                            <li nz-menu-item (click)="previewDocument(document)">
+                              <a translate>resource.documentation.button.previewDocument</a>
                             </li>
-                            <li nz-menu-item  *ngIf="permission.joc.documentations.manage">
-                              <a (click)="exportDocument(document)" translate>common.button.export</a>
+                            <li nz-menu-item (click)="exportDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage">
+                              <a translate>common.button.export</a>
                             </li>
-                            <li nz-menu-item class="bg-hover-color" *ngIf="permission.joc.documentations.manage">
-                              <a (click)="deleteDocumentations(document)" translate>common.button.delete</a>
+                            <li nz-menu-item (click)="deleteDocumentations(document)" class="bg-hover-color" *ngIf="permission.joc && permission.joc.documentations.manage">
+                              <a translate>common.button.delete</a>
                             </li>
-                            <li nz-menu-item  >
-                              <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
+                            <li nz-menu-item (click)="showDocumentUsage(document)">
+                              <a translate>resource.button.showUsage</a>
                             </li>
-                            <li nz-menu-item >
-                              <a (click)="coreService.copyLink('document',document.name)"
-                                translate>common.button.copyLinkToObject</a>
+                            <li nz-menu-item (click)="coreService.copyLink('document',document.name)">
+                              <a translate>common.button.copyLinkToObject</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>

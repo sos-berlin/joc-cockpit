@@ -3,9 +3,9 @@ import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
 import {OrderPipe} from 'ngx-order-pipe';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {SearchPipe} from '../../../pipes/core.pipe';
@@ -88,14 +88,14 @@ export class AccountModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe(res => {
-      this.submitted = false;
-      this.activeModal.close(this.userDetail.accounts);
-    }, () => {
-      this.submitted = false;
-      this.userDetail.accounts = this.userDetail.accounts.filter((account) => {
-        return account.account !== obj.account;
-      });
+    this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
+      next: () => {
+        this.activeModal.close(this.userDetail.accounts);
+      }, error: () => {
+        this.userDetail.accounts = this.userDetail.accounts.filter((account) => {
+          return account.account !== obj.account;
+        });
+      }, complete: () => this.submitted = false
     });
   }
 }
@@ -188,7 +188,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       main: this.userDetail.main
     };
 
-    this.coreService.post('authentication/auth/store', obj).subscribe(res => {
+    this.coreService.post('authentication/auth/store', obj).subscribe(() => {
       this.userDetail.accounts = this.accounts;
       this.dataService.announceFunction('RELOAD');
       this.searchInResult();
