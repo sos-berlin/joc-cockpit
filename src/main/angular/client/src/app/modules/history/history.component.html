@@ -401,9 +401,9 @@
                     <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="deploymentHistoryFilterList && deploymentHistoryFilterList.length>0"></li>
-                  <li nz-menu-item *ngFor="let filter of deploymentHistoryFilterList | orderBy: 'name'"
+                  <li nz-menu-item (click)="changeFilter(filter)" *ngFor="let filter of deploymentHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedDeploymentHistoryFilter.selected == filter.id)}">
-                    <a (click)="changeFilter(filter)">
+                    <a>
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedDeploymentHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
@@ -501,9 +501,9 @@
                     <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="submissionHistoryFilterList && submissionHistoryFilterList.length>0"></li>
-                  <li nz-menu-item *ngFor="let filter of submissionHistoryFilterList | orderBy: 'name'"
+                  <li nz-menu-item (click)="changeFilter(filter)" *ngFor="let filter of submissionHistoryFilterList | orderBy: 'name'"
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedSubmissionHistoryFilter.selected == filter.id)}">
-                    <a (click)="changeFilter(filter)">
+                    <a>
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedSubmissionHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove"
