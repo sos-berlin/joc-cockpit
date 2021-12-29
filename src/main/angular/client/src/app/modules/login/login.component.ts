@@ -48,31 +48,33 @@ export class LoginComponent implements OnInit {
   onSubmit(values: any): void {
     this.submitted = true;
     this.errorMsg = false;
-    this.coreService.post('authentication/login', values).subscribe((data) => {
-      this.authService.rememberMe = this.rememberMe;
-      if (this.rememberMe) {
-        if (values.userName) {
-          localStorage.$SOS$FOO = AES.encrypt(values.userName, '$SOSJS7');
+    this.coreService.post('authentication/login', values).subscribe({
+      next: (data) => {
+        this.authService.rememberMe = this.rememberMe;
+        if (this.rememberMe) {
+          if (values.userName) {
+            localStorage.$SOS$FOO = AES.encrypt(values.userName, '$SOSJS7');
+          } else {
+            localStorage.removeItem('$SOS$FOO');
+          }
+          if (values.password) {
+            localStorage.$SOS$BOO = AES.encrypt(values.password, '$SOSJS7');
+          } else {
+            localStorage.removeItem('$SOS$BOO');
+          }
+          localStorage.$SOS$REMEMBER = this.rememberMe;
         } else {
           localStorage.removeItem('$SOS$FOO');
-        }
-        if (values.password) {
-          localStorage.$SOS$BOO = AES.encrypt(values.password, '$SOSJS7');
-        } else {
           localStorage.removeItem('$SOS$BOO');
+          localStorage.removeItem('$SOS$REMEMBER');
         }
-        localStorage.$SOS$REMEMBER = this.rememberMe;
-      } else {
-        localStorage.removeItem('$SOS$FOO');
-        localStorage.removeItem('$SOS$BOO');
-        localStorage.removeItem('$SOS$REMEMBER');
+        this.authService.setUser(data);
+        this.authService.save();
+        this.router.navigateByUrl(this.returnUrl);
+      }, error: () => {
+        this.submitted = false;
+        this.errorMsg = true;
       }
-      this.authService.setUser(data);
-      this.authService.save();
-      this.router.navigateByUrl(this.returnUrl);
-    }, () => {
-      this.submitted = false;
-      this.errorMsg = true;
     });
   }
 }

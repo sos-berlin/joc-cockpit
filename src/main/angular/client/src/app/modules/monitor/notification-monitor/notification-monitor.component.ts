@@ -25,11 +25,9 @@ export class AcknowledgeModalComponent {
     this.submitted = true;
     this.coreService.post('monitoring/notification/acknowledge', {
       ...this.data, comment: this.comment
-    }).subscribe(res => {
-      this.submitted = false;
+    }).subscribe({next: res => {
       this.activeModal.close(res);
-    }, err => {
-      this.submitted = false;
+    }, error: () => this.submitted = false
     });
   }
 
@@ -128,7 +126,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     if (this.filters.filter.date && this.filters.filter.date !== 'ALL') {
       obj.dateFrom = this.filters.filter.date;
     }
-    this.coreService.post('monitoring/notifications', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
+    this.coreService.post('monitoring/notifications', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({next: (res: any) => {
       res.notifications = this.orderPipe.transform(res.notifications, this.filters.filter.sortBy, this.filters.filter.reverse);
       if (notificationIds && notificationIds.size > 0) {
         res.notifications.forEach((value) => {
@@ -141,9 +139,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
       }
       this.notifications = res.notifications;
       this.searchInResult();
-      this.isLoaded = true;
-    }, () => {
-      this.isLoaded = true;
+    }, complete: () => this.isLoaded = true
     });
   }
 
@@ -174,11 +170,9 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
       this.coreService.post('monitoring/notification', {
         controllerId: data.controllerId,
         notificationId: data.notificationId,
-      }).subscribe((res: any) => {
+      }).subscribe({next:(res: any) => {
         data.monitors = res.monitors;
-        data.isLoaded = true;
-      }, () => {
-        data.isLoaded = true;
+      }, complete:() => data.isLoaded = true
       });
     }
   }

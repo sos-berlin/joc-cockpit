@@ -102,10 +102,12 @@ export class OrderActionComponent {
       });
     } else {
       this.isChanged.emit(true);
-      this.coreService.post('orders/' + url, obj).subscribe(() => {
-        this.resetAction();
-      }, () => {
-        this.isChanged.emit(false);
+      this.coreService.post('orders/' + url, obj).subscribe({
+        next: () => {
+          this.resetAction();
+        }, error: () => {
+          this.isChanged.emit(false);
+        }
       });
     }
   }

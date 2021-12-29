@@ -260,11 +260,13 @@ export class OrderListSidebarComponent implements OnChanges{
       });
     } else {
       this.isProcessing = true;
-      this.coreService.post('orders/' + url, obj).subscribe(() => {
-        this.resetCheckBox();
-        this.resetAction(5000);
-      }, () => {
-        this.resetAction();
+      this.coreService.post('orders/' + url, obj).subscribe({
+        next: () => {
+          this.resetCheckBox();
+          this.resetAction(5000);
+        }, error: () => {
+          this.resetAction();
+        }
       });
     }
   }

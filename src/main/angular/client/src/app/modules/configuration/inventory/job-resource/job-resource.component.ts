@@ -111,15 +111,17 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.coreService.post('inventory/rename', {
           id: data.id,
           newPath: name
-        }).subscribe(() => {
-          if (data.id === this.data.id) {
-            this.data.name = name;
+        }).subscribe({
+          next: () => {
+            if (data.id === this.data.id) {
+              this.data.name = name;
+            }
+            data.name = name;
+            this.dataService.reloadTree.next({rename: data});
+          }, error: () => {
+            this.jobResource.name = this.data.name;
+            this.ref.detectChanges();
           }
-          data.name = name;
-          this.dataService.reloadTree.next({rename: data});
-        }, () => {
-          this.jobResource.name = this.data.name;
-          this.ref.detectChanges();
         });
       } else {
         this.jobResource.name = this.data.name;
@@ -488,17 +490,19 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         valid: (obj.env && obj.env.length > 0 || obj.arguments && obj.arguments.length > 0),
         id: this.jobResource.id,
         objectType: this.objectType
-      }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.jobResource.id === this.data.id) {
-          this.jobResource.actual = JSON.stringify(this.jobResource.configuration);
-          this.jobResource.valid = res.valid;
-          this.jobResource.deployed = false;
-          this.data.valid = res.valid;
-          this.data.deployed = false;
-          this.setErrorMessage(res);
+      }).subscribe({
+        next: (res: any) => {
+          if (res.id === this.data.id && this.jobResource.id === this.data.id) {
+            this.jobResource.actual = JSON.stringify(this.jobResource.configuration);
+            this.jobResource.valid = res.valid;
+            this.jobResource.deployed = false;
+            this.data.valid = res.valid;
+            this.data.deployed = false;
+            this.setErrorMessage(res);
+          }
+        }, error: () => {
+          this.ref.detectChanges();
         }
-      }, (err) => {
-        this.ref.detectChanges();
       });
     }
   }

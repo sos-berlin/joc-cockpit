@@ -153,9 +153,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.isAllLoaded = false;
       if (!this.isLoading) {
         this.recursivelyUpdateWorkflow(this.workFlowJson);
-      } else {
         setTimeout(() => {
-          this.isLoading = true;
+          if (this.isAllLoaded) {
+            this.isLoading = true;
+          }
         }, 7000);
       }
     }
@@ -339,20 +340,22 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.coreService.post('workflow', {
       controllerId: this.schedulerIds.selected,
       workflowId: {path: this.path, versionId: this.versionId}
-    }).subscribe((res: any) => {
-      this.workflow = this.coreService.clone(res.workflow);
-      this.orderPreparation = res.workflow.orderPreparation;
-      this.workFlowJson = res.workflow;
-      this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs);
-      this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
-      if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
-        this.showDependency(res.workflow);
-      } else {
-        this.getOrders(res.workflow);
+    }).subscribe({
+      next: (res: any) => {
+        this.workflow = this.coreService.clone(res.workflow);
+        this.orderPreparation = res.workflow.orderPreparation;
+        this.workFlowJson = res.workflow;
+        this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs);
+        this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
+        if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
+          this.showDependency(res.workflow);
+        } else {
+          this.getOrders(res.workflow);
+        }
+        this.showAndHideBtn();
+      }, error: () => {
+        this.loading = true;
       }
-      this.showAndHideBtn();
-    }, () => {
-      this.loading = true;
     });
   }
 
@@ -372,27 +375,28 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if (this.workflowFilters.date === '2d'){
       obj.dateFrom = '1d';
     }
-    this.coreService.post('orders', obj).subscribe((res: any) => {
-      this.workflow.orders = res.orders;
-      this.workflow.numOfOrders = res.orders.length;
-      this.workflow.ordersSummary = {};
-      if (res.orders) {
-        res.orders = sortBy(res.orders, 'scheduledFor');
-        for (let j = 0; j < res.orders.length; j++) {
-          const state = res.orders[j].state._text.toLowerCase();
-          if (this.workflow.ordersSummary[state]) {
-            this.workflow.ordersSummary[state] = this.workflow.ordersSummary[state] + 1;
-          } else {
-            this.workflow.ordersSummary[state] = 1;
+    this.coreService.post('orders', obj).subscribe({
+      next: (res: any) => {
+        this.workflow.orders = res.orders;
+        this.workflow.numOfOrders = res.orders.length;
+        this.workflow.ordersSummary = {};
+        if (res.orders) {
+          res.orders = sortBy(res.orders, 'scheduledFor');
+          for (let j = 0; j < res.orders.length; j++) {
+            const state = res.orders[j].state._text.toLowerCase();
+            if (this.workflow.ordersSummary[state]) {
+              this.workflow.ordersSummary[state] = this.workflow.ordersSummary[state] + 1;
+            } else {
+              this.workflow.ordersSummary[state] = 1;
+            }
           }
         }
+        if (this.sideBar.isVisible) {
+          this.sideBar.orders = this.workflow.orders;
+        }
+      }, complete: () => {
+        this.loading = true;
       }
-      if (this.sideBar.isVisible) {
-        this.sideBar.orders = this.workflow.orders;
-      }
-      this.loading = true;
-    }, () => {
-      this.loading = true;
     });
   }
 

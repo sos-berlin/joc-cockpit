@@ -51,11 +51,11 @@
                 </button>
                 <nz-dropdown-menu #sortBy="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item>
-                      <a (click)="sort('path')" translate>common.label.path</a>
+                    <li nz-menu-item (click)="sort('path')">
+                      <a translate>common.label.path</a>
                     </li>
-                    <li nz-menu-item>
-                      <a (click)="sort('state._text')" translate>common.label.status</a>
+                    <li nz-menu-item (click)="sort('state._text')">
+                      <a translate>common.label.status</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>

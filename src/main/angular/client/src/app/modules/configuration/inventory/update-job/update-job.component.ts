@@ -33,6 +33,81 @@ export class UpdateJobComponent implements OnInit {
               private workflowService: WorkflowService, private authService: AuthService) {
   }
 
+  static updateProperties(obj, job): any {
+    if (job.title) {
+      obj.title = job.title;
+    }
+    if (job.documentationName) {
+      obj.documentationName = job.documentationName;
+    }
+    if (job.agentName) {
+      obj.agentName = job.agentName;
+    }
+    if (job.jobResourceNames) {
+      obj.jobResourceNames = job.jobResourceNames;
+    }
+    if (job.timeout || job.timeout > -1) {
+      obj.timeout = job.timeout;
+    }
+    if (job.graceTimeout || job.graceTimeout > -1) {
+      obj.graceTimeout = job.graceTimeout;
+    }
+    if (job.warnIfShorter || job.warnIfShorter > -1) {
+      obj.warnIfShorter = job.warnIfShorter;
+    }
+    if (job.warnIfLonge || job.warnIfLonger > -1) {
+      obj.warnIfLonger = job.warnIfLonger;
+    }
+    if (job.defaultArguments) {
+      obj.defaultArguments = job.defaultArguments;
+    }
+    if (job.criticality) {
+      obj.criticality = job.criticality;
+    }
+
+    if (job.admissionTimeScheme && job.admissionTimeScheme.periods) {
+      obj.admissionTimeScheme = job.admissionTimeScheme;
+    }
+    if (job.executable) {
+      if (job.executable.TYPE !== obj.executable.TYPE) {
+        obj.executable.TYPE = job.executable.TYPE;
+      }
+      if (job.executable.className) {
+        obj.executable.className = job.executable.className;
+      }
+      if (job.executable.script) {
+        obj.executable.script = job.executable.script;
+      }
+      if (job.executable.login) {
+        obj.executable.login = job.executable.login;
+      }
+      if (job.executable.v1Compatible || job.executable.v1Compatible === false) {
+        obj.executable.v1Compatible = job.executable.v1Compatible;
+      }
+      if (job.executable.returnCodeMeaning) {
+        obj.executable.returnCodeMeaning = job.executable.returnCodeMeaning;
+      }
+      if (job.executable.env) {
+        obj.executable.env = job.executable.env;
+      }
+      if (job.executable.arguments) {
+        obj.executable.arguments = job.executable.arguments;
+      }
+      if (obj.executable.TYPE === 'InternalExecutable') {
+        delete obj.executable.script;
+        delete obj.executable.login;
+        delete obj.executable.env;
+      } else if (obj.executable.TYPE === 'ShellScriptExecutable') {
+        delete obj.executable.className;
+        delete obj.executable.arguments;
+      }
+    }
+    if (job.failOnErrWritten || job.failOnErrWritten === false) {
+      obj.failOnErrWritten = job.failOnErrWritten;
+    }
+    return obj;
+  }
+
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
@@ -150,10 +225,12 @@ export class UpdateJobComponent implements OnInit {
       };
       obj.store.draftConfigurations.push({configuration});
     });
-    this.coreService.post('inventory/deployment/deploy', obj).subscribe(() => {
-      this.activeModal.close('ok');
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('inventory/deployment/deploy', obj).subscribe({
+      next: () => {
+        this.activeModal.close('ok');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 
@@ -163,90 +240,13 @@ export class UpdateJobComponent implements OnInit {
       valid: true,
       id: workflow.id,
       objectType: InventoryObject.WORKFLOW
-    }).subscribe((res: any) => {
-      if (cb) {
-        cb();
-      }
-    }, () => {
-      if (cb) {
-        cb();
+    }).subscribe({
+      complete: () => {
+        if (cb) {
+          cb();
+        }
       }
     });
-  }
-
-  private updateProperties(obj, job): any {
-    if (job.title) {
-      obj.title = job.title;
-    }
-    if (job.documentationName) {
-      obj.documentationName = job.documentationName;
-    }
-    if (job.agentName) {
-      obj.agentName = job.agentName;
-    }
-    if (job.jobResourceNames) {
-      obj.jobResourceNames = job.jobResourceNames;
-    }
-    if (job.timeout || job.timeout > -1) {
-      obj.timeout = job.timeout;
-    }
-    if (job.graceTimeout || job.graceTimeout > -1) {
-      obj.graceTimeout = job.graceTimeout;
-    }
-    if (job.warnIfShorter || job.warnIfShorter > -1) {
-      obj.warnIfShorter = job.warnIfShorter;
-    }
-    if (job.warnIfLonge || job.warnIfLonger > -1) {
-      obj.warnIfLonger = job.warnIfLonger;
-    }
-    if (job.defaultArguments) {
-      obj.defaultArguments = job.defaultArguments;
-    }
-    if (job.criticality) {
-      obj.criticality = job.criticality;
-    }
-
-    if (job.admissionTimeScheme && job.admissionTimeScheme.periods) {
-      obj.admissionTimeScheme = job.admissionTimeScheme;
-    }
-    if (job.executable) {
-      if (job.executable.TYPE !== obj.executable.TYPE) {
-        obj.executable.TYPE = job.executable.TYPE;
-      }
-      if (job.executable.className) {
-        obj.executable.className = job.executable.className;
-      }
-      if (job.executable.script) {
-        obj.executable.script = job.executable.script;
-      }
-      if (job.executable.login) {
-        obj.executable.login = job.executable.login;
-      }
-      if (job.executable.v1Compatible || job.executable.v1Compatible === false) {
-        obj.executable.v1Compatible = job.executable.v1Compatible;
-      }
-      if (job.executable.returnCodeMeaning) {
-        obj.executable.returnCodeMeaning = job.executable.returnCodeMeaning;
-      }
-      if (job.executable.env) {
-        obj.executable.env = job.executable.env;
-      }
-      if (job.executable.arguments) {
-        obj.executable.arguments = job.executable.arguments;
-      }
-      if (obj.executable.TYPE === 'InternalExecutable') {
-        delete obj.executable.script;
-        delete obj.executable.login;
-        delete obj.executable.env;
-      } else if (obj.executable.TYPE === 'ShellScriptExecutable') {
-        delete obj.executable.className;
-        delete obj.executable.arguments;
-      }
-    }
-    if (job.failOnErrWritten || job.failOnErrWritten === false) {
-      obj.failOnErrWritten = job.failOnErrWritten;
-    }
-    return obj;
   }
 
   private recursivelyUpdateJobInstruction(mainJson): void {
@@ -296,11 +296,11 @@ export class UpdateJobComponent implements OnInit {
           if (!this.data.exactMatch) {
             for (const prop in res.configuration.jobs) {
               if (this.data.jobName === '*' || new RegExp(this.data.jobName).test(prop)) {
-                res.configuration.jobs[prop] = this.updateProperties(res.configuration.jobs[prop], job);
+                res.configuration.jobs[prop] = UpdateJobComponent.updateProperties(res.configuration.jobs[prop], job);
               }
             }
           } else{
-            res.configuration.jobs[this.data.jobName] = this.updateProperties(res.configuration.jobs[this.data.jobName], job);
+            res.configuration.jobs[this.data.jobName] = UpdateJobComponent.updateProperties(res.configuration.jobs[this.data.jobName], job);
           }
         } else {
           res.configuration.jobs[this.data.jobName] = job;

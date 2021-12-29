@@ -71,7 +71,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data){
+    if (changes.copyObj && !changes.data) {
       return;
     }
     if (changes.reload) {
@@ -110,13 +110,13 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.agents = res.agentNames ? res.agentNames.sort() : [];
         this.checkIsAgentExist();
       });
-    } else{
+    } else {
       this.checkIsAgentExist();
     }
   }
 
   private checkIsAgentExist(): void {
-    if (this.notFound){
+    if (this.notFound) {
       this.agents = this.agents.filter((item) => {
         return item !== this.notFound;
       });
@@ -169,14 +169,14 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       } else {
         res.configuration = {};
       }
-      if (this.data.deployed !== res.deployed){
+      if (this.data.deployed !== res.deployed) {
         this.data.deployed = res.deployed;
       }
-      if (this.data.valid !== res.valid){
+      if (this.data.valid !== res.valid) {
         this.data.valid = res.valid;
       }
       this.data.syncState = res.syncState;
-      if (res.configuration.directoryExpr){
+      if (res.configuration.directoryExpr) {
         this.coreService.removeSlashToString(res.configuration, 'directoryExpr');
       }
       this.fileOrder = res;
@@ -184,7 +184,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       this.fileOrder.name = this.data.name;
       this.fileOrder.actual = JSON.stringify(res.configuration);
       this.history.push(this.fileOrder.actual);
-      if (!this.fileOrder.configuration.timeZone){
+      if (!this.fileOrder.configuration.timeZone) {
         this.fileOrder.configuration.timeZone = this.preferences.zone;
       }
       this.getAgents();
@@ -218,7 +218,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.data.valid = res.valid;
       }
       this.setErrorMessage(res);
-    }, () => {
     });
   }
 
@@ -246,15 +245,17 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.coreService.post('inventory/rename', {
           id: data.id,
           newPath: name
-        }).subscribe((res) => {
-          if (data.id === this.data.id) {
-            this.data.name = name;
+        }).subscribe({
+          next: () => {
+            if (data.id === this.data.id) {
+              this.data.name = name;
+            }
+            data.name = name;
+            this.dataService.reloadTree.next({rename: data});
+          }, error: () => {
+            this.fileOrder.name = this.data.name;
+            this.ref.detectChanges();
           }
-          data.name = name;
-          this.dataService.reloadTree.next({rename: data});
-        }, (err) => {
-          this.fileOrder.name = this.data.name;
-          this.ref.detectChanges();
         });
       } else {
         this.fileOrder.name = this.data.name;
@@ -302,7 +303,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
             this.fileOrder.configuration.documentationName = node.key;
           }
         }
-      } else{
+      } else {
         if (this.fileOrder.configuration.workflowName1) {
           if (this.fileOrder.configuration.workflowName !== this.fileOrder.configuration.workflowName1) {
             this.fileOrder.configuration.workflowName = this.fileOrder.configuration.workflowName1;
@@ -428,10 +429,15 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   navToWorkflow(): void {
-    this.dataService.reloadTree.next({navigate: {name: this.fileOrder.configuration.workflowName, type: InventoryObject.WORKFLOW}});
+    this.dataService.reloadTree.next({
+      navigate: {
+        name: this.fileOrder.configuration.workflowName,
+        type: InventoryObject.WORKFLOW
+      }
+    });
   }
 
-  changeValue($event, type): void{
+  changeValue($event, type): void {
     this.fileOrder.configuration[type] = $event;
     this.saveJSON();
   }
@@ -453,7 +459,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.indexOfNextAdd = this.history.length - 1;
       }
       const obj = this.coreService.clone(this.fileOrder.configuration);
-      if(obj.directoryExpr){
+      if (obj.directoryExpr) {
         this.coreService.addSlashToString(obj, 'directoryExpr');
       }
       this.coreService.post('inventory/store', {
@@ -461,17 +467,19 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         valid: isValid,
         id: this.fileOrder.id,
         objectType: this.objectType
-      }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.fileOrder.id === this.data.id) {
-          this.fileOrder.actual = JSON.stringify(this.fileOrder.configuration);
-          this.data.valid = res.valid;
-          this.fileOrder.valid = res.valid;
-          this.fileOrder.deployed = false;
-          this.data.deployed = false;
-          this.setErrorMessage(res);
+      }).subscribe({
+        next: (res: any) => {
+          if (res.id === this.data.id && this.fileOrder.id === this.data.id) {
+            this.fileOrder.actual = JSON.stringify(this.fileOrder.configuration);
+            this.data.valid = res.valid;
+            this.fileOrder.valid = res.valid;
+            this.fileOrder.deployed = false;
+            this.data.deployed = false;
+            this.setErrorMessage(res);
+          }
+        }, error: () => {
+          this.ref.detectChanges();
         }
-      }, (err) => {
-        this.ref.detectChanges();
       });
     }
   }

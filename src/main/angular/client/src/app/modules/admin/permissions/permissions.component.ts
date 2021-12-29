@@ -69,11 +69,12 @@ export class PermissionModalComponent {
       roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
-    }).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close(this.rolePermissions);
-    }, () => {
-      this.submitted = false;
+    }).subscribe({
+      next: () => {
+        this.activeModal.close(this.rolePermissions);
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -144,11 +145,12 @@ export class FolderModalComponent implements OnInit {
       roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
-    }).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close(this.folderArr);
-    }, () => {
-      this.submitted = false;
+    }).subscribe({
+      next: () => {
+        this.activeModal.close(this.folderArr);
+      }, error: () => {
+        this.submitted = false;
+      }
     });
   }
 

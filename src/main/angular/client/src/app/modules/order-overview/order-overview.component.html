@@ -136,10 +136,10 @@
           </div>
         </aside>
         <div appResizable [sideView]="sideView.orderOverview" id="leftPanel" class="sticky leftPanel" *ngIf="pageView === 'bulk'">
-          <app-tree-nagivation [tree]="tree" [sideView]="sideView.workflow"
+          <app-tree-navigation [tree]="tree" [sideView]="sideView.workflow"
                                [defaultSelectedKeys]="orderFilters.selectedkeys"
                                [defaultExpandedKeys]="orderFilters.expandedKeys"
-                               (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+                               (messageEvent)="receiveAction($event)"></app-tree-navigation>
         </div>
         <div id="rightPanel" *ngIf="pageView === 'bulk'">
           <div class="box p-a m-t-xs" *ngIf="orderOverview">

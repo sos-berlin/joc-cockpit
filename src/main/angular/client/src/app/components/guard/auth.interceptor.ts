@@ -2,11 +2,11 @@ import {Injectable} from '@angular/core';
 import {HttpEvent, HttpInterceptor, HttpHandler} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
-import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
+import {AuthService} from './auth.service';
 import {LoggingService} from '../../services/logging.service';
 
 @Injectable()

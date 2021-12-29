@@ -1,8 +1,8 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
-import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-inventory-statistics',
@@ -19,7 +19,9 @@ export class InventoryStatisticsComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, private coreService: CoreService, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if(res) {
+        this.refresh(res);
+      }
     });
   }
 
@@ -52,12 +54,12 @@ export class InventoryStatisticsComponent implements OnInit, OnDestroy {
   }
 
   getStatistics(): void {
-    this.coreService.post('inventory/statistics', {controllerId: this.schedulerIds.selected}).subscribe(res => {
-      this.statistics = res;
-      this.isLoaded = true;
-    }, (err) => {
-      this.notAuthenticate = !err.isPermitted;
-      this.isLoaded = true;
+    this.coreService.post('inventory/statistics', {controllerId: this.schedulerIds.selected}).subscribe({
+      next: res => {
+        this.statistics = res;
+      }, error: (err) => {
+        this.notAuthenticate = !err.isPermitted;
+      }, complete: () => this.isLoaded = true
     });
   }
 }

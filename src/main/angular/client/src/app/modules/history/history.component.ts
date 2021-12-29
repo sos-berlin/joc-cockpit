@@ -49,14 +49,13 @@ export class OrderTemplateComponent {
       controllerId: data.controllerId || this.schedulerId,
       historyId: data.historyId
     };
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      data.children = res.children;
-      data.level = count + 1;
-      data.states = res.states;
-      data.loading = false;
-      this.coreService.calRowWidth(this.historyView.current);
-    }, () => {
-      data.loading = false;
+    this.coreService.post('order/history', obj).subscribe({
+      next: (res: any) => {
+        data.children = res.children;
+        data.level = count + 1;
+        data.states = res.states;
+        this.coreService.calRowWidth(this.historyView.current);
+      }, complete: () => data.loading = false
     });
   }
 
@@ -241,26 +240,25 @@ export class OrderSearchComponent implements OnInit {
     }
 
     configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      if (result.id) {
-        for (let i in this.allFilter) {
-          if (this.allFilter[i].id === result.id) {
-            this.allFilter[i] = configObj;
-            break;
+    this.coreService.post('configuration/save', configObj).subscribe({
+      next: (res: any) => {
+        if (result.id) {
+          for (let i in this.allFilter) {
+            if (this.allFilter[i].id === result.id) {
+              this.allFilter[i] = configObj;
+              break;
+            }
           }
+        } else {
+          configObj.id = res.id;
+          this.allFilter.push(configObj);
         }
-      } else {
-        configObj.id = res.id;
-        this.allFilter.push(configObj);
-      }
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
+        if (this.isSearch) {
+          this.filter.name = '';
+        } else {
+          this.onCancel.emit(configObj);
+        }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -415,26 +413,25 @@ export class TaskSearchComponent implements OnInit {
       obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      if (result.id) {
-        for (let i in this.allFilter) {
-          if (this.allFilter[i].id === result.id) {
-            this.allFilter[i] = configObj;
-            break;
+    this.coreService.post('configuration/save', configObj).subscribe({
+      next: (res: any) => {
+        if (result.id) {
+          for (let i in this.allFilter) {
+            if (this.allFilter[i].id === result.id) {
+              this.allFilter[i] = configObj;
+              break;
+            }
           }
+        } else {
+          configObj.id = res.id;
+          this.allFilter.push(configObj);
         }
-      } else {
-        configObj.id = res.id;
-        this.allFilter.push(configObj);
-      }
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
+        if (this.isSearch) {
+          this.filter.name = '';
+        } else {
+          this.onCancel.emit(configObj);
+        }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -528,26 +525,25 @@ export class DeploymentSearchComponent implements OnInit {
     }
 
     configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      if (result.id) {
-        for (let i in this.allFilter) {
-          if (this.allFilter[i].id === result.id) {
-            this.allFilter[i] = configObj;
-            break;
+    this.coreService.post('configuration/save', configObj).subscribe({
+      next: (res: any) => {
+        if (result.id) {
+          for (let i in this.allFilter) {
+            if (this.allFilter[i].id === result.id) {
+              this.allFilter[i] = configObj;
+              break;
+            }
           }
+        } else {
+          configObj.id = res.id;
+          this.allFilter.push(configObj);
         }
-      } else {
-        configObj.id = res.id;
-        this.allFilter.push(configObj);
-      }
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
+        if (this.isSearch) {
+          this.filter.name = '';
+        } else {
+          this.onCancel.emit(configObj);
+        }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -655,26 +651,25 @@ export class SubmissionSearchComponent implements OnInit {
       obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      if (result.id) {
-        for (let i in this.allFilter) {
-          if (this.allFilter[i].id === result.id) {
-            this.allFilter[i] = configObj;
-            break;
+    this.coreService.post('configuration/save', configObj).subscribe({
+      next: (res: any) => {
+        if (result.id) {
+          for (let i in this.allFilter) {
+            if (this.allFilter[i].id === result.id) {
+              this.allFilter[i] = configObj;
+              break;
+            }
           }
+        } else {
+          configObj.id = res.id;
+          this.allFilter.push(configObj);
         }
-      } else {
-        configObj.id = res.id;
-        this.allFilter.push(configObj);
-      }
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
+        if (this.isSearch) {
+          this.filter.name = '';
+        } else {
+          this.onCancel.emit(configObj);
+        }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -741,11 +736,10 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('orders/history', {
       controllerId: this.controllerId,
       orders: [{workflowPath: this.workflowPath, orderId: this.orderId}]
-    }).subscribe((res: any) => {
-      this.loading = false;
-      this.history = res.history;
-    }, () => {
-      this.loading = false;
+    }).subscribe({
+      next: (res: any) => {
+        this.history = res.history;
+      }, complete: () => this.loading = false
     });
   }
 
@@ -753,11 +747,10 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('tasks/history', {
       controllerId: this.controllerId,
       taskIds: [parseInt(this.taskId, 10)]
-    }).subscribe((res: any) => {
-      this.loading = false;
-      this.history = res.history;
-    }, () => {
-      this.loading = false;
+    }).subscribe({
+      next: (res: any) => {
+        this.history = res.history;
+      }, complete: () => this.loading = false
     });
   }
 
@@ -767,24 +760,23 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
         controllerId: this.controllerId,
         commitId: this.commitId
       }
-    }).subscribe((res: any) => {
-      const obj = {
-        controllerId: '',
-        deploymentDate: '',
-        state: '',
-        account: '',
-        children: res.depHistory
-      };
-      if (res.depHistory.length > 0) {
-        obj.deploymentDate = res.depHistory[0].deploymentDate;
-        obj.controllerId = res.depHistory[0].controllerId || this.controllerId;
-        obj.account = res.depHistory[0].account;
-        obj.state = res.depHistory[0].state;
-      }
-      this.history = [obj];
-      this.loading = false;
-    }, () => {
-      this.loading = false;
+    }).subscribe({
+      next: (res: any) => {
+        const obj = {
+          controllerId: '',
+          deploymentDate: '',
+          state: '',
+          account: '',
+          children: res.depHistory
+        };
+        if (res.depHistory.length > 0) {
+          obj.deploymentDate = res.depHistory[0].deploymentDate;
+          obj.controllerId = res.depHistory[0].controllerId || this.controllerId;
+          obj.account = res.depHistory[0].account;
+          obj.state = res.depHistory[0].state;
+        }
+        this.history = [obj];
+      }, complete: () => this.loading = false
     });
   }
 
@@ -794,12 +786,12 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       auditLogId: this.auditLogId,
       limit: parseInt(this.preferences.maxRecords, 10)
     };
-    this.coreService.post('daily_plan/history', obj).subscribe((res: any) => {
-      this.history = res.dates || [];
-      this.loading = false;
-    }, () => {
-      this.history = [];
-      this.loading = false;
+    this.coreService.post('daily_plan/history', obj).subscribe({
+      next: (res: any) => {
+        this.history = res.dates || [];
+      }, error: () => {
+        this.history = [];
+      }, complete: () => this.loading = false
     });
   }
 
@@ -847,13 +839,13 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       controllerId: this.controllerId,
       historyId: data.historyId
     };
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      data.level = 1;
-      data.children = res.children;
-      data.states = res.states;
-      data.loading = false;
-    }, () => {
-      data.loading = false;
+    this.coreService.post('order/history', obj).subscribe({
+      next: (res: any) => {
+        data.level = 1;
+        data.children = res.children;
+        data.states = res.states;
+        data.loading = false;
+      }, complete: () => data.loading = false
     });
   }
 
@@ -887,10 +879,10 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       controllerId: controller.controllerId,
       limit: parseInt(this.preferences.maxRecords, 10)
     };
-    this.coreService.post('daily_plan/history/submissions', obj).subscribe((res) => {
-      controller.submissions = res.submissionTimes || [];
-    }, () => {
-      controller.submissions = [];
+    this.coreService.post('daily_plan/history/submissions', obj).subscribe({
+      next: (res) => {
+        controller.submissions = res.submissionTimes || [];
+      }, error: () => controller.submissions = []
     });
   }
 
@@ -901,14 +893,16 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
         controllerId: controller.controllerId,
         submissionTime: submission.submissionTime,
         limit: parseInt(this.preferences.maxRecords, 10)
-      }).subscribe((res) => {
-        submission.orderIds = res.orders || [];
-        submission.errorMessages = res.errorMessages || [];
-        submission.warnMessages = res.warnMessages || [];
-      }, () => {
-        submission.orderIds = [];
-        submission.errorMessages = [];
-        submission.warnMessages = [];
+      }).subscribe({
+        next: (res) => {
+          submission.orderIds = res.orders || [];
+          submission.errorMessages = res.errorMessages || [];
+          submission.warnMessages = res.warnMessages || [];
+        }, error: () => {
+          submission.orderIds = [];
+          submission.errorMessages = [];
+          submission.warnMessages = [];
+        }
       });
     }
   }
@@ -1119,18 +1113,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     }
     this.convertRequestBody(obj);
-    this.coreService.post('orders/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      this.historys = this.setDuration(res);
-      this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
-      if (flag) {
-        this.mergeOldData();
-      } else {
-        this.searchInResult();
-      }
-      this.isLoading = true;
-    }, () => {
-      this.data = [];
-      this.isLoading = true;
+    this.coreService.post('orders/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        this.historys = this.setDuration(res);
+        this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
+        if (flag) {
+          this.mergeOldData();
+        } else {
+          this.searchInResult();
+        }
+      }, error: () => {
+        this.data = [];
+      }, complete: () => this.isLoading = true
     });
   }
 
@@ -1219,18 +1213,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
     }
     this.convertRequestBody(obj);
-    this.coreService.post('tasks/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res) => {
-      this.taskHistorys = this.setDuration(res);
-      this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
-      if (flag) {
-        this.mergeOldTaskData();
-      } else {
-        this.searchInResult();
-      }
-      this.isLoading = true;
-    }, () => {
-      this.data = [];
-      this.isLoading = true;
+    this.coreService.post('tasks/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res) => {
+        this.taskHistorys = this.setDuration(res);
+        this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
+        if (flag) {
+          this.mergeOldTaskData();
+        } else {
+          this.searchInResult();
+        }
+      }, error: () => {
+        this.data = [];
+      }, complete: () => this.isLoading = true
     });
   }
 
@@ -1291,19 +1285,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     obj.compact = true;
 
-    this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      this.yadeHistorys = res.transfers || [];
-      this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
-      if (flag) {
-        this.mergeOldYadeData();
-      } else {
-        this.searchInResult();
-      }
-      this.isLoading = true;
-      this.setHeaderWidth();
-    }, () => {
-      this.data = [];
-      this.isLoading = true;
+    this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        this.yadeHistorys = res.transfers || [];
+        this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
+        if (flag) {
+          this.mergeOldYadeData();
+        } else {
+          this.searchInResult();
+        }
+        this.setHeaderWidth();
+      }, error: () => {
+        this.data = [];
+      }, complete: () => this.isLoading = true
     });
   }
 
@@ -1384,18 +1378,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj.state = (this.deployment.filter.state && this.deployment.filter.state !== 'ALL') ? this.deployment.filter.state : undefined;
     }
     this.convertDeployRequestBody(obj);
-    this.coreService.post('inventory/deployment/history', {compactFilter: obj}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      this.deploymentHistorys = res.depHistory || [];
-      this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
-      if (flag) {
-        this.mergeDepData();
-      } else {
-        this.searchInResult();
-      }
-      this.isLoading = true;
-    }, () => {
-      this.data = [];
-      this.isLoading = true;
+    this.coreService.post('inventory/deployment/history', {compactFilter: obj}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        this.deploymentHistorys = res.depHistory || [];
+        this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
+        if (flag) {
+          this.mergeDepData();
+        } else {
+          this.searchInResult();
+        }
+      }, error: () => {
+        this.data = [];
+      }, complete: () => this.isLoading = true
     });
   }
 
@@ -1473,14 +1467,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     this.coreService.post('daily_plan/history', obj)
-      .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      this.submissionHistorys = res.dates || [];
-      this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
-      this.searchInResult();
-      this.isLoading = true;
-    }, () => {
-      this.data = [];
-      this.isLoading = true;
+      .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        this.submissionHistorys = res.dates || [];
+        this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
+        this.searchInResult();
+      }, error: () => {
+        this.data = [];
+      }, complete: () => this.isLoading = true
     });
   }
 
@@ -1518,12 +1512,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.submitted = this.submission.filter.category === 'SUBMITTED';
       }
     }
-    this.coreService.post('daily_plan/history/submissions', obj).subscribe((res) => {
-      controller.submissions = res.submissionTimes || [];
-      history.loading = false;
-    }, () => {
-      controller.submissions = [];
-      history.loading = false;
+    this.coreService.post('daily_plan/history/submissions', obj).subscribe({
+      next: (res) => {
+        controller.submissions = res.submissionTimes || [];
+      }, error: () => {
+        controller.submissions = [];
+      }, complete: () => history.loading = false
     });
   }
 
@@ -1545,16 +1539,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }
       this.isSubmissionLoading = true;
-      this.coreService.post('daily_plan/history/submissions/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res) => {
-        submission.orderIds = res.orders || [];
-        submission.errorMessages = res.errorMessages;
-        submission.warnMessages = res.warnMessages;
-        this.isSubmissionLoading = false;
-      }, () => {
-        submission.orderIds = [];
-        submission.errorMessages = [];
-        submission.warnMessages = [];
-        this.isSubmissionLoading = false;
+      this.coreService.post('daily_plan/history/submissions/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+        next: (res) => {
+          submission.orderIds = res.orders || [];
+          submission.errorMessages = res.errorMessages;
+          submission.warnMessages = res.warnMessages;
+          this.isSubmissionLoading = false;
+        }, error: () => {
+          submission.orderIds = [];
+          submission.errorMessages = [];
+          submission.warnMessages = [];
+        }, complete: () => this.isSubmissionLoading = false
       });
     }
   }
@@ -1606,14 +1601,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
         filter.excludeWorkflows = this.savedIgnoreList.workflows;
       }
-      this.coreService.post('orders/history', filter).subscribe((res: any) => {
-        this.historys = this.setDuration(res);
-        this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
-        this.searchInResult();
-        this.isLoading = true;
-      }, () => {
-        this.data = [];
-        this.isLoading = true;
+      this.coreService.post('orders/history', filter).subscribe({
+        next: (res: any) => {
+          this.historys = this.setDuration(res);
+          this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
+          this.searchInResult();
+        }, error: () => {
+          this.data = [];
+        }, complete: () => this.isLoading = true
       });
     } else if (this.historyFilters.type === 'TASK') {
       this.task.filter.historyStates = '';
@@ -1657,14 +1652,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
         && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
         filter.excludeJobs = this.savedIgnoreList.jobs;
       }
-      this.coreService.post('tasks/history', filter).subscribe((res: any) => {
-        this.taskHistorys = this.setDuration(res);
-        this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
-        this.searchInResult();
-        this.isLoading = true;
-      }, () => {
-        this.data = [];
-        this.isLoading = true;
+      this.coreService.post('tasks/history', filter).subscribe({
+        next: (res: any) => {
+          this.taskHistorys = this.setDuration(res);
+          this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
+          this.searchInResult();
+        }, error: () => {
+          this.data = [];
+        }, complete: () => this.isLoading = true
       });
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deployment.filter.state = '';
@@ -1690,14 +1685,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
 
       this.convertDeployRequestBody(filter);
-      this.coreService.post('inventory/deployment/history', {compactFilter: filter}).subscribe((res: any) => {
-        this.deploymentHistorys = res.depHistory || [];
-        this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
-        this.searchInResult();
-        this.isLoading = true;
-      }, () => {
-        this.data = [];
-        this.isLoading = true;
+      this.coreService.post('inventory/deployment/history', {compactFilter: filter}).subscribe({
+        next: (res: any) => {
+          this.deploymentHistorys = res.depHistory || [];
+          this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
+          this.searchInResult();
+        }, error: () => {
+          this.data = [];
+        }, complete: () => this.isLoading = true
       });
     } else if (this.historyFilters.type === 'SUBMISSION') {
       this.submission.filter.category = '';
@@ -1730,29 +1725,29 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter.controllerId = obj.controllerId;
       }
 
-      this.coreService.post('daily_plan/history', filter).subscribe((res: any) => {
-        this.submissionHistorys = res.dates || [];
-        this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
-        this.searchInResult();
-        this.isLoading = true;
-      }, () => {
-        this.data = [];
-        this.isLoading = true;
+      this.coreService.post('daily_plan/history', filter).subscribe({
+        next: (res: any) => {
+          this.submissionHistorys = res.dates || [];
+          this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
+          this.searchInResult();
+        }, error: () => {
+          this.data = [];
+        }, complete: () => this.isLoading = true
       });
     } else if (this.historyFilters.type === 'YADE') {
       this.yade.filter.states = '';
       this.yade.filter.date = '';
       filter.compact = true;
       this.fileTransferService.getRequestForSearch(this.yadeSearch, filter, this.preferences);
-      this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
-        this.yadeHistorys = res.transfers || [];
-        this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
-        this.searchInResult();
-        this.isLoading = true;
-        this.setHeaderWidth();
-      }, () => {
-        this.data = [];
-        this.isLoading = true;
+      this.coreService.post('yade/transfers', filter).subscribe({
+        next: (res: any) => {
+          this.yadeHistorys = res.transfers || [];
+          this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
+          this.searchInResult();
+          this.setHeaderWidth();
+        }, error: () => {
+          this.data = [];
+        }, complete: () => this.isLoading = true
       });
     }
   }
@@ -2068,14 +2063,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      data.level = 1;
-      data.children = res.children;
-      data.states = res.states;
-      data.loading = false;
-      this.coreService.calRowWidth(this.historyFilters.current);
-    }, () => {
-      data.loading = false;
+    this.coreService.post('order/history', obj).subscribe({
+      next: (res: any) => {
+        data.level = 1;
+        data.children = res.children;
+        data.states = res.states;
+        this.coreService.calRowWidth(this.historyFilters.current);
+      }, complete: () => data.loading = false
     });
   }
 
@@ -2095,11 +2089,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         limit: parseInt(this.preferences.maxRecords, 10)
       }
     };
-    this.coreService.post('inventory/deployment/history', obj).subscribe((res: any) => {
-      data.children = res.depHistory;
-      data.loading = false;
-    }, () => {
-      data.loading = false;
+    this.coreService.post('inventory/deployment/history', obj).subscribe({
+      next: (res: any) => {
+        data.children = res.depHistory;
+      }, complete: () => data.loading = false
     });
   }
 
@@ -2121,18 +2114,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('yade/files', {
       transferIds: [data.id],
       controllerId: data.controllerId || this.schedulerIds.selected
-    }).subscribe((res: any) => {
-      data.files = res.files;
-      data.loading = false;
-      data.widthArr = [...data.widthArr, ...this.coreService.calFileTransferRowWidth()];
-      setTimeout(() => {
-        const dom = $('#fileTransferMainTable');
-        dom.find('thead tr.main-header-row th').each(function(i) {
-          $(this).css('width', self.widthArr[i] + 'px');
-        });
-      }, 0);
-    }, () => {
-      data.loading = false;
+    }).subscribe({
+      next: (res: any) => {
+        data.files = res.files;
+        data.widthArr = [...data.widthArr, ...this.coreService.calFileTransferRowWidth()];
+        setTimeout(() => {
+          const dom = $('#fileTransferMainTable');
+          dom.find('thead tr.main-header-row th').each(function (i) {
+            $(this).css('width', self.widthArr[i] + 'px');
+          });
+        }, 0);
+      }, complete: () => data.loading = false
     });
   }
 
@@ -2396,7 +2388,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       self.widthArr = [];
       const dom = $('#fileTransferMainTable');
-      dom.find('thead tr.main-header-row th').each(function() {
+      dom.find('thead tr.main-header-row th').each(function () {
         self.widthArr.push($(this).outerWidth());
       });
     }, 0);
@@ -2431,29 +2423,28 @@ export class HistoryComponent implements OnInit, OnDestroy {
       return value.order;
     });
 
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      for (let i = 0; i < res.children.length; i++) {
-        if (res.children[i].order) {
-          for (let j = 0; j < perviousArr.length; j++) {
-            if (res.children[i].order.orderId === perviousArr[j].orderId) {
-              if (perviousArr[j].show) {
-                res.children[i].order.show = true;
-                res.children[i].order.children = perviousArr[j].children;
-                this.recursiveMerge(res.children[i].order, ++count);
+    this.coreService.post('order/history', obj).subscribe({
+      next: (res: any) => {
+        for (let i = 0; i < res.children.length; i++) {
+          if (res.children[i].order) {
+            for (let j = 0; j < perviousArr.length; j++) {
+              if (res.children[i].order.orderId === perviousArr[j].orderId) {
+                if (perviousArr[j].show) {
+                  res.children[i].order.show = true;
+                  res.children[i].order.children = perviousArr[j].children;
+                  this.recursiveMerge(res.children[i].order, ++count);
+                }
+                perviousArr.splice(j, 1);
+                break;
               }
-              perviousArr.splice(j, 1);
-              break;
             }
           }
         }
-      }
-      data.level = count;
-      data.children = res.children;
-      data.states = res.states;
-      data.loading = false;
-      this.coreService.calRowWidth(this.historyFilters.current);
-    }, () => {
-      data.loading = false;
+        data.level = count;
+        data.children = res.children;
+        data.states = res.states;
+        this.coreService.calRowWidth(this.historyFilters.current);
+      }, complete: () => data.loading = false
     });
   }
 
@@ -2528,20 +2519,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      for (let i = 0; i < res.children.length; i++) {
-        if (res.children[i].order) {
-          res.children[i].order.show = true;
-          this.recursiveExpand(res.children[i].order, ++count);
+    this.coreService.post('order/history', obj).subscribe({
+      next: (res: any) => {
+        for (let i = 0; i < res.children.length; i++) {
+          if (res.children[i].order) {
+            res.children[i].order.show = true;
+            this.recursiveExpand(res.children[i].order, ++count);
+          }
         }
-      }
-      data.level = count;
-      data.children = res.children;
-      data.states = res.states;
-      data.loading = false;
-      this.coreService.calRowWidth(this.historyFilters.current);
-    }, () => {
-      data.loading = false;
+        data.level = count;
+        data.children = res.children;
+        data.states = res.states;
+        this.coreService.calRowWidth(this.historyFilters.current);
+      }, complete: () => data.loading = false
     });
   }
 
@@ -3290,10 +3280,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       shared: true
     };
     if (this.permission.joc.administration.customization.view) {
-      this.coreService.post('configurations', obj).subscribe((res: any) => {
-        this.checkCurrentTab(type, res, obj);
-      }, () => {
-        this.checkCurrentTab(type, null, obj);
+      this.coreService.post('configurations', obj).subscribe({
+        next: (res: any) => {
+          this.checkCurrentTab(type, res, obj);
+        }, error: () => this.checkCurrentTab(type, null, obj)
       });
     } else {
       this.checkCurrentTab(type, null, obj);
@@ -3303,24 +3293,26 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private getCustomizations(type, obj): void {
     obj.account = this.authService.currentUserData;
     obj.shared = false;
-    this.coreService.post('configurations', obj).subscribe((result: any) => {
-      if (type === 'ORDER') {
-        this.checkOrderCustomization(result);
-      } else if (type === 'TASK') {
-        this.checkTaskCustomization(result);
-      } else if (type === 'YADE') {
-        this.checkYadeCustomization(result);
-      } else if (type === 'DEPLOYMENT') {
-        this.checkDeploymentCustomization(result);
-      } else if (type === 'SUBMISSION') {
-        this.checkSubmissionCustomization(result);
-      } else {
-        this.checkYadeCustomization(result);
+    this.coreService.post('configurations', obj).subscribe({
+      next: (result: any) => {
+        if (type === 'ORDER') {
+          this.checkOrderCustomization(result);
+        } else if (type === 'TASK') {
+          this.checkTaskCustomization(result);
+        } else if (type === 'YADE') {
+          this.checkYadeCustomization(result);
+        } else if (type === 'DEPLOYMENT') {
+          this.checkDeploymentCustomization(result);
+        } else if (type === 'SUBMISSION') {
+          this.checkSubmissionCustomization(result);
+        } else {
+          this.checkYadeCustomization(result);
+        }
+      }, error: () => {
+        this.savedHistoryFilter.selected = undefined;
+        this.loadConfig = true;
+        this.init(false);
       }
-    }, () => {
-      this.savedHistoryFilter.selected = undefined;
-      this.loadConfig = true;
-      this.init(false);
     });
   }
 
@@ -3633,29 +3625,31 @@ export class HistoryComponent implements OnInit, OnDestroy {
         account: this.authService.currentUserData,
         configurationType: 'IGNORELIST'
       };
-      this.coreService.post('configurations', configObj).subscribe((result: any) => {
-        if (result.configurations && result.configurations.length > 0) {
-          this.ignoreListConfigId = result.configurations[0].id;
-          this.coreService.post('configuration', {
-            controllerId: this.schedulerIds.selected,
-            id: result.configurations[0].id
-          }).subscribe((result1: any) => {
-            if (result1.configuration && result1.configuration.configurationItem) {
-              this.savedIgnoreList = JSON.parse(result1.configuration.configurationItem) || {};
-            }
+      this.coreService.post('configurations', configObj).subscribe({
+        next: (result: any) => {
+          if (result.configurations && result.configurations.length > 0) {
+            this.ignoreListConfigId = result.configurations[0].id;
+            this.coreService.post('configuration', {
+              controllerId: this.schedulerIds.selected,
+              id: result.configurations[0].id
+            }).subscribe({
+              next: (result1: any) => {
+                if (result1.configuration && result1.configuration.configurationItem) {
+                  this.savedIgnoreList = JSON.parse(result1.configuration.configurationItem) || {};
+                }
+              }, complete: () => {
+                this.loadIgnoreList = true;
+                this.init(false);
+              }
+            });
+          } else {
             this.loadIgnoreList = true;
             this.init(false);
-          }, () => {
-            this.loadIgnoreList = true;
-            this.init(false);
-          });
-        } else {
+          }
+        }, error: () => {
           this.loadIgnoreList = true;
           this.init(false);
         }
-      }, () => {
-        this.loadIgnoreList = true;
-        this.init(false);
       });
     }
   }
@@ -3676,7 +3670,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (filter.configurationItem) {
         this.openFilterModal(filter, true);
       } else {
-        this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+        this.coreService.post('configuration', {
+          controllerId: filter.controllerId,
+          id: filter.id
+        }).subscribe((conf: any) => {
           this.openFilterModal(conf.configuration, true);
         });
       }
@@ -3688,7 +3685,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (filter.configurationItem) {
         this.openFilterModal(filter, false);
       } else {
-        this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+        this.coreService.post('configuration', {
+          controllerId: filter.controllerId,
+          id: filter.id
+        }).subscribe((conf: any) => {
           this.openFilterModal(conf.configuration, false);
         });
       }

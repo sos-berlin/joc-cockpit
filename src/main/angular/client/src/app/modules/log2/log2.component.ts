@@ -1,7 +1,6 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {isEmpty} from 'underscore';
-import {Subscription} from 'rxjs';
 import {ClipboardService} from 'ngx-clipboard';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
@@ -13,7 +12,7 @@ declare const $;
   templateUrl: './log2.component.html',
   styleUrls: ['./log2.component.css']
 })
-export class Log2Component implements OnInit, OnDestroy {
+export class Log2Component implements OnInit {
   preferences: any = {};
   loading = false;
   isLoading = false;
@@ -34,7 +33,6 @@ export class Log2Component implements OnInit, OnDestroy {
   isStdErrLevel = false;
   isDetailLevel = false;
   isInfoLevel = false;
-  subscriber: Subscription;
   orderId: any;
   taskId: any;
   historyId: any;
@@ -89,17 +87,14 @@ export class Log2Component implements OnInit, OnDestroy {
           account: this.authService.currentUserData,
           configurationType: 'PROFILE'
         };
-        this.coreService.post('configurations', configObj).subscribe((res: any) => {
+        this.coreService.post('configurations', configObj).subscribe({next: (res: any) => {
           if (res.configurations && res.configurations.length > 0) {
             const conf = res.configurations[0];
             this.preferences = JSON.parse(conf.configurationItem);
             this.preferenceId = conf.id;
-            this.init();
-          } else {
-            this.init();
+
           }
-        }, () => {
-          this.init();
+        }, complete: () => this.init()
         });
       } else {
         this.init();
@@ -112,12 +107,6 @@ export class Log2Component implements OnInit, OnDestroy {
   scrollBottom(): void {
     if (!this.scrolled) {
       $(window).scrollTop(this.dataBody.nativeElement.scrollHeight);
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscriber) {
-      this.subscriber.unsubscribe();
     }
   }
 
@@ -161,31 +150,31 @@ export class Log2Component implements OnInit, OnDestroy {
     const order: any = {};
     order.controllerId = this.controllerId;
     order.historyId = this.historyId;
-    this.canceller = this.coreService.post('order/log', order).subscribe((res: any) => {
-      if (res) {
-        this.jsonToString(res);
-        this.showHideTask(res.logEvents);
-        if (!res.complete && !this.isCancel) {
-          this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
-        } else{
+    this.canceller = this.coreService.post('order/log', order).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.jsonToString(res);
+          this.showHideTask(res.logEvents);
+          if (!res.complete && !this.isCancel) {
+            this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
+          } else {
+            this.finished = true;
+          }
+        } else {
+          this.loading = false;
           this.finished = true;
         }
-      } else {
+      }, error: (err) => {
+        window.document.getElementById('logs').innerHTML = '';
+        if (err.data && err.data.error) {
+          this.error = err.data.error.message;
+        } else {
+          this.error = err.message;
+        }
+        this.errStatus = err.status;
         this.loading = false;
         this.finished = true;
-      }
-      this.isLoading = false;
-    }, (err) => {
-      window.document.getElementById('logs').innerHTML = '';
-      if (err.data && err.data.error) {
-        this.error = err.data.error.message;
-      } else {
-        this.error = err.message;
-      }
-      this.errStatus = err.status;
-      this.loading = false;
-      this.finished = true;
-      this.isLoading = false;
+      }, complete: () => this.isLoading = false
     });
   }
 
@@ -267,34 +256,34 @@ export class Log2Component implements OnInit, OnDestroy {
     this.canceller = this.coreService.log('task/log', jobs, {
       responseType: 'text' as 'json',
       observe: 'response' as 'response'
-    }).subscribe((res: any) => {
-      if (res && res.body) {
-        this.renderData(res.body, false);
-        if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-          const obj = {
-            controllerId: this.controllerId,
-            taskId: res.headers.get('x-log-task-id') || jobs.taskId,
-            eventId: res.headers.get('x-log-event-id')
-          };
-          this.runningTaskLog(obj, false);
-        } else{
-          this.finished = true;
+    }).subscribe({
+      next: (res: any) => {
+        if (res && res.body) {
+          this.renderData(res.body, false);
+          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+            const obj = {
+              controllerId: this.controllerId,
+              taskId: res.headers.get('x-log-task-id') || jobs.taskId,
+              eventId: res.headers.get('x-log-event-id')
+            };
+            this.runningTaskLog(obj, false);
+          } else {
+            this.finished = true;
+          }
+        } else {
+          this.loading = false;
         }
-      } else{
+      }, error: (err) => {
+        window.document.getElementById('logs').innerHTML = '';
+        if (err.data && err.data.error) {
+          this.error = err.data.error.message;
+        } else {
+          this.error = err.message;
+        }
+        this.errStatus = err.status;
         this.loading = false;
-      }
-      this.isLoading = false;
-    }, (err) => {
-      window.document.getElementById('logs').innerHTML = '';
-      if (err.data && err.data.error) {
-        this.error = err.data.error.message;
-      } else {
-        this.error = err.message;
-      }
-      this.errStatus = err.status;
-      this.loading = false;
-      this.finished = true;
-      this.isLoading = false;
+        this.finished = true;
+      }, complete: () => this.isLoading = false
     });
   }
 
@@ -715,9 +704,6 @@ export class Log2Component implements OnInit, OnDestroy {
 
   cancel(): void {
     this.isCancel = true;
-    if (this.subscriber) {
-      this.subscriber.unsubscribe();
-    }
     if (this.canceller) {
       this.canceller.unsubscribe();
     }

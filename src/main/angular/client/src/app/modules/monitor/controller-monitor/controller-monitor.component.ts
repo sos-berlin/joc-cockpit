@@ -122,10 +122,9 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       dateFrom: this.filters.filter.startDate,
       dateTo: new Date(d),
       timeZone: this.preferences.zone
-    }).subscribe((res: any) => {
+    }).subscribe({next: (res: any) => {
       this.data = res.controllers;
       let groupData = [];
-      this.isLoaded = true;
       const map = new Map();
       this.data.forEach((controller) => {
         if (controller.previousEntry) {
@@ -169,8 +168,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       });
       groupData = this.groupByPipe.transform(groupData, 'date');
       this.checkMissingDates(groupData, map);
-    }, () => {
-      this.isLoaded = true;
+    }, complete: () => this.isLoaded = true
     });
   }
 

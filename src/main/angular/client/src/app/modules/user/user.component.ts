@@ -74,11 +74,12 @@ export class UpdateKeyModalComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
     const URL = this.type === 'key' ? 'profile/key/store' : this.type === 'certificate' ? 'profile/key/ca/store' : 'profile/ca/store';
-    this.coreService.post(URL, this.type === 'key' ? {keys: obj} : obj).subscribe(res => {
-      this.submitted = false;
-      this.activeModal.close();
-    }, (err) => {
-      this.submitted = false;
+    this.coreService.post(URL, this.type === 'key' ? {keys: obj} : obj).subscribe({
+      next: () => {
+        this.activeModal.close();
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -266,11 +267,11 @@ export class GenerateKeyComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
     const URL = this.type === 'key' ? 'profile/key/generate' : 'profile/ca/generate';
-    this.coreService.post(URL, obj).subscribe(res => {
-      this.toasterService.pop('success', 'Key has been generated successfully');
-      this.submitted = false;
-      this.activeModal.close('ok');
-
+    this.coreService.post(URL, obj).subscribe({
+      next: () => {
+        this.toasterService.pop('success', 'Key has been generated successfully');
+        this.activeModal.close('ok');
+      }, complete: () => this.submitted = false
     });
   }
 }
@@ -348,10 +349,7 @@ export class UserComponent implements OnInit, OnDestroy {
     if (this.schedulerIds.selected) {
       this.configObj.configurationItem = JSON.stringify(this.preferences);
       sessionStorage.preferences = JSON.stringify(this.preferences);
-      this.coreService.post('configuration/save', this.configObj).subscribe(res => {
-      }, (err) => {
-        console.error(err);
-      });
+      this.coreService.post('configuration/save', this.configObj).subscribe();
     }
   }
 
@@ -508,7 +506,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   private _resetProfile(): void {
     const obj = {accounts: [this.username]};
-    this.coreService.post('configurations/delete', obj).subscribe(res => {
+    this.coreService.post('configurations/delete', obj).subscribe(() => {
       this.dataService.isProfileReload.next(true);
     });
   }
@@ -525,26 +523,30 @@ export class UserComponent implements OnInit, OnDestroy {
       this.keys = {};
     });
     if (this.permission.joc && this.permission.joc.administration.certificates.manage) {
-      this.coreService.post('profile/key/ca', {}).subscribe((res: any) => {
-        this.caCertificates = res;
-        if (this.caCertificates.validUntil) {
-          this.caCertificates.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.caCertificates.validUntil) < 0;
+      this.coreService.post('profile/key/ca', {}).subscribe({
+        next: (res: any) => {
+          this.caCertificates = res;
+          if (this.caCertificates.validUntil) {
+            this.caCertificates.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.caCertificates.validUntil) < 0;
+          }
+        }, error: () => {
+          this.caCertificates = {};
         }
-      }, (err) => {
-        this.caCertificates = {};
       });
     }
   }
 
   getCA(): void {
     this.certificates = {};
-    this.coreService.post('profile/ca', {}).subscribe((res: any) => {
-      this.certificates = res;
-      if (this.certificates.validUntil) {
-        this.certificates.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.certificates.validUntil) < 0;
+    this.coreService.post('profile/ca', {}).subscribe({
+      next: (res: any) => {
+        this.certificates = res;
+        if (this.certificates.validUntil) {
+          this.certificates.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.certificates.validUntil) < 0;
+        }
+      }, error: () => {
+        this.certificates = {};
       }
-    }, (err) => {
-      this.certificates = {};
     });
   }
 

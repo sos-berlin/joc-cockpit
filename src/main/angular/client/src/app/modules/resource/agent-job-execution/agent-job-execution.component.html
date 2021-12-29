@@ -8,7 +8,7 @@
                     </div>
                     <div class="inline">
                         <div class="show-block">
-                            <label nz-checkbox [(ngModel)]="agentFilters.current" name="current" (ngModelChange)="changeController()">
+                            <label nz-checkbox [(ngModel)]="agentFilters.current" (ngModelChange)="changeController()">
                               {{'common.label.currentController' | translate}}
                             </label>
                             <div class="inline">
@@ -39,23 +39,23 @@
                                     </button>
                                     <nz-dropdown-menu #state="nzDropdownMenu" >
                                         <ul nz-menu>
-                                        <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='all', 'disable-link':savedFilter.selected}">
-                                            <a (click)="loadAgentTasks('all')" translate>filters.button.all</a>
+                                        <li nz-menu-item (click)="loadAgentTasks('all')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='all', 'disable-link':savedFilter.selected}">
+                                            <a translate>filters.button.all</a>
                                         </li>
-                                        <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='today', 'disable-link':savedFilter.selected}">
-                                            <a (click)="loadAgentTasks('today')" translate>filters.button.today</a>
+                                        <li nz-menu-item (click)="loadAgentTasks('today')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='today', 'disable-link':savedFilter.selected}">
+                                            <a translate>filters.button.today</a>
                                         </li>
-                                        <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-1h', 'disable-link':savedFilter.selected}">
-                                            <a (click)="loadAgentTasks('-1h')" translate>filters.button.last1</a>
+                                        <li nz-menu-item (click)="loadAgentTasks('-1h')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-1h', 'disable-link':savedFilter.selected}">
+                                            <a translate>filters.button.last1</a>
                                         </li>
-                                        <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-12h', 'disable-link':savedFilter.selected}">
-                                            <a (click)="loadAgentTasks('-12h')" translate>filters.button.last12</a>
+                                        <li nz-menu-item (click)="loadAgentTasks('-12h')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-12h', 'disable-link':savedFilter.selected}">
+                                            <a translate>filters.button.last12</a>
                                         </li>
-                                        <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-24h', 'disable-link':savedFilter.selected}">
-                                            <a (click)="loadAgentTasks('-24h')" translate>filters.button.last24</a>
+                                        <li nz-menu-item (click)="loadAgentTasks('-24h')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-24h', 'disable-link':savedFilter.selected}">
+                                            <a translate>filters.button.last24</a>
                                         </li>
-                                        <li nz-menu-item  [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-7d', 'disable-link':savedFilter.selected}">
-                                            <a (click)="loadAgentTasks('-7d')" translate>filters.button.lastWeak</a>
+                                        <li nz-menu-item (click)="loadAgentTasks('-7d')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-7d', 'disable-link':savedFilter.selected}">
+                                            <a translate>filters.button.lastWeak</a>
                                         </li>
                                         </ul>
                                     </nz-dropdown-menu>
@@ -68,16 +68,16 @@
                                   </button>
                                   <nz-dropdown-menu #customization="nzDropdownMenu">
                                     <ul nz-menu>
-                                      <li nz-menu-item *ngIf="permission.joc && permission.joc.administration.customization.manage">
-                                        <a (click)="createCustomization()" translate>customization.label.createCustomization</a>
+                                      <li nz-menu-item (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage">
+                                        <a translate>customization.label.createCustomization</a>
                                       </li>
-                                      <li nz-menu-item  *ngIf="filterList.length>0">
-                                        <a  (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                                      <li nz-menu-item (click)="editFilters()" *ngIf="filterList.length>0">
+                                        <a translate>customization.label.editExistingCustomizations</a>
                                       </li>
                                       <li nz-menu-divider *ngIf="filterList.length>0"></li>
-                                      <li nz-menu-item  *ngFor="let filter of filterList | orderBy: 'name'"
+                                      <li nz-menu-item (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'"
                                           [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}">
-                                        <a (click)="changeFilter(filter)">
+                                        <a>
                                           <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                                           <i (click)="changeFilter(null);$event.stopPropagation();"
                                              *ngIf="savedFilter.selected == filter.id" class="fa fa-times-circle-o remove"

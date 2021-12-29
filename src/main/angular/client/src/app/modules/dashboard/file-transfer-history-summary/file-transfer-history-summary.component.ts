@@ -21,7 +21,9 @@ export class FileTransferHistorySummaryComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, private coreService: CoreService,
               private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if (res) {
+        this.refresh(res);
+      }
     });
   }
 
@@ -62,12 +64,12 @@ export class FileTransferHistorySummaryComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       dateFrom: this.filters.date,
       timeZone: this.preferences.zone
-    }).subscribe((res: any) => {
-      this.summary = res.files || {};
-      this.isLoaded = true;
-    }, (err) => {
-      this.notAuthenticate = !err.isPermitted;
-      this.isLoaded = true;
+    }).subscribe({
+      next: (res: any) => {
+        this.summary = res.files || {};
+      }, error: (err) => {
+        this.notAuthenticate = !err.isPermitted;
+      }, complete: () => this.isLoaded = true
     });
   }
 

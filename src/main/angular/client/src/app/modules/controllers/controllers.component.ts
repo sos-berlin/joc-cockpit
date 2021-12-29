@@ -3,7 +3,6 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {differenceInCalendarDays} from 'date-fns';
-import * as moment from 'moment-timezone';
 import {sortBy} from 'underscore';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
@@ -60,11 +59,12 @@ export class DeployModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-    this.coreService.post('agents/cluster/deploy', obj).subscribe(res => {
-      this.submitted = false;
-      this.activeModal.close(res);
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('agents/cluster/deploy', obj).subscribe({
+      next: res => {
+        this.activeModal.close(res);
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 
@@ -138,15 +138,16 @@ export class CreateTokenModalComponent implements OnInit {
       }
     }
     if (this.token.validUntil && this.token.at === 'date') {
-      obj.validUntil = moment(this.token.validUntil).format('YYYY-MM-DDTHH:mm:ss') + '.000Z';
+      obj.validUntil = this.coreService.getDateByFormat(this.token.validUntil, null, 'YYYY-MM-DDTHH:mm:ss') + '.000Z';
     } else {
       obj.validUntil = this.token.atTime;
     }
-    this.coreService.post('token/create', obj).subscribe(res => {
-      this.submitted = false;
-      this.activeModal.close(res);
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('token/create', obj).subscribe({
+      next: res => {
+        this.activeModal.close(res);
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 
@@ -220,11 +221,12 @@ export class SubagentModalComponent implements OnInit {
 
     obj.subagents = [subagent];
 
-    this.coreService.post('agent/subagents/store', obj).subscribe(res => {
-      this.submitted = false;
-      this.activeModal.close('close');
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('agent/subagents/store', obj).subscribe({
+      next: () => {
+        this.activeModal.close('close');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -307,10 +309,10 @@ export class AgentModalComponent implements OnInit {
   }
 
   private removeSubagents(obj, cb): void {
-    this.coreService.post('agent/subagents/remove', obj).subscribe(() => {
-      cb();
-    }, () => {
-      cb();
+    this.coreService.post('agent/subagents/remove', obj).subscribe({
+      complete: () => {
+        cb();
+      }
     });
   }
 
@@ -341,7 +343,12 @@ export class AgentModalComponent implements OnInit {
     }
     if (this.isCluster) {
       if (this.new) {
-        _agent.subagents = [{isDirector: 'PRIMARY_DIRECTOR', subagentId: _agent.subagentId, url: _agent.url, position: _agent.position}];
+        _agent.subagents = [{
+          isDirector: 'PRIMARY_DIRECTOR',
+          subagentId: _agent.subagentId,
+          url: _agent.url,
+          position: _agent.position
+        }];
         if (_agent.subagentId2) {
           _agent.subagents.push({
             isDirector: 'SECONDARY_DIRECTOR',
@@ -390,11 +397,12 @@ export class AgentModalComponent implements OnInit {
   }
 
   private store(obj): void {
-    this.coreService.post(this.isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe(res => {
-      this.submitted = false;
-      this.activeModal.close('close');
-    }, () => {
-      this.submitted = false;
+    this.coreService.post(this.isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe({
+      next: () => {
+        this.activeModal.close('close');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -478,28 +486,29 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   private getTokens(flag = true): void {
-    this.coreService.post('token/show', {}).subscribe((data: any) => {
-      this.tokens = data.tokens;
-      if (flag) {
-        this.getData();
-      } else {
-        this.checkTokens();
-      }
-    }, () => {
-      if (flag) {
-        this.getData();
+    this.coreService.post('token/show', {}).subscribe({
+      next: (data: any) => {
+        this.tokens = data.tokens;
+        if (!flag) {
+          this.checkTokens();
+        }
+      }, complete: () => {
+        if (flag) {
+          this.getData();
+        }
       }
     });
   }
 
   getData(): void {
-    this.coreService.post('controller/ids', {})
-      .subscribe((data: any) => {
+    this.coreService.post('controller/ids', {}).subscribe({
+      next: (data: any) => {
         this.data = data.controllerIds;
         this.getSecurity();
-      }, () => {
+      }, error: () => {
         this.loading = true;
-      });
+      }
+    });
   }
 
   getAgents(controller, cb): void {
@@ -510,20 +519,19 @@ export class ControllersComponent implements OnInit, OnDestroy {
       controller.loading = true;
       this.coreService.post('agents/p', {
         controllerId: controller.controllerId
-      }).subscribe((data: any) => {
-        controller.agents = data.agents;
-        controller.agents.forEach((agent) => {
-          this.mergeTokenData(null, agent.agentId, agent);
-        });
-        controller.loading = false;
-        if (cb) {
-          cb();
-        }
-      }, () => {
-        controller.agents = [];
-        controller.loading = false;
-        if (cb) {
-          cb();
+      }).subscribe({
+        next: (data: any) => {
+          controller.agents = data.agents;
+          controller.agents.forEach((agent) => {
+            this.mergeTokenData(null, agent.agentId, agent);
+          });
+        }, error: () => {
+          controller.agents = [];
+        }, complete: () => {
+          controller.loading = false;
+          if (cb) {
+            cb();
+          }
         }
       });
     } else if (cb) {
@@ -535,24 +543,26 @@ export class ControllersComponent implements OnInit, OnDestroy {
     controller.isLoading = true;
     this.coreService.post('agents/cluster/p', {
       controllerId: controller.controllerId
-    }).subscribe((data: any) => {
-      const temp = controller.agentClusters ? this.coreService.clone(controller.agentClusters) : [];
-      controller.agentClusters = data.agents;
-      controller.agentClusters.forEach((agent) => {
-        this.mergeTokenData(null, agent.agentId, agent);
-        if (temp.length > 0) {
-          for (const i in temp) {
-            if (temp[i].agentId === agent.agentId) {
-              agent.show = temp[i].show;
-              break;
+    }).subscribe({
+      next: (data: any) => {
+        const temp = controller.agentClusters ? this.coreService.clone(controller.agentClusters) : [];
+        controller.agentClusters = data.agents;
+        controller.agentClusters.forEach((agent) => {
+          this.mergeTokenData(null, agent.agentId, agent);
+          if (temp.length > 0) {
+            for (const i in temp) {
+              if (temp[i].agentId === agent.agentId) {
+                agent.show = temp[i].show;
+                break;
+              }
             }
           }
-        }
-      });
-      controller.isLoading = false;
-    }, () => {
-      controller.agentClusters = [];
-      controller.isLoading = false;
+        });
+      }, error: () => {
+        controller.agentClusters = [];
+      }, complete: () => {
+        controller.isLoading = false;
+      }
     });
   }
 
@@ -580,8 +590,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         controllerId: clusterAgents[index].controllerId,
         agentId: clusterAgents[index].agentId,
         subagents: list
-      }).subscribe(() => {
-      });
+      }).subscribe();
     }
   }
 
@@ -771,9 +780,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post('agent/remove', obj).subscribe(() => {
-
-          });
+          this.coreService.post('agent/remove', obj).subscribe();
         }
       });
     }
@@ -925,9 +932,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzMaskClosable: false
       });
     } else {
-      this.coreService.post('agent/reset', obj).subscribe(() => {
-
-      });
+      this.coreService.post('agent/reset', obj).subscribe();
     }
   }
 
@@ -949,10 +954,10 @@ export class ControllersComponent implements OnInit, OnDestroy {
     } else {
       obj.agents = controller.agents;
     }
-    this.coreService.post(isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe(() => {
-
-    }, () => {
-      agent.disabled = !flag;
+    this.coreService.post(isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe({
+      error: () => {
+        agent.disabled = !flag;
+      }
     });
   }
 
@@ -976,12 +981,13 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   private getSecurity(): void {
-    this.coreService.post('controllers/security_level', {})
-      .subscribe((data: any) => {
+    this.coreService.post('controllers/security_level', {}).subscribe({
+      next: (data: any) => {
         this.mergeData(data);
-      }, (err) => {
+      }, error: () => {
         this.mergeData(null);
-      });
+      }
+    });
   }
 
   checkAll(value: boolean, controller, isCluster = false): void {
@@ -1146,15 +1152,16 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   private getSchedulerIds(): void {
-    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
-      this.isLoaded = true;
-      this.data = res.controllerIds;
-      this.getSecurity();
-      this.authService.setIds(res);
-      this.authService.save();
-      this.dataService.isProfileReload.next(true);
-    }, () => {
-      this.isLoaded = true;
+    this.coreService.post('controller/ids', {}).subscribe({
+      next: (res: any) => {
+        this.data = res.controllerIds;
+        this.getSecurity();
+        this.authService.setIds(res);
+        this.authService.save();
+        this.dataService.isProfileReload.next(true);
+      }, complete: () => {
+        this.isLoaded = true;
+      }
     });
   }
 

@@ -99,12 +99,10 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
       }
       obj.timeZone = this.timeZone;
     }
-    this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
+    this.coreService.post('orders/overview/snapshot', obj).subscribe({next: (res: any) => {
       this.snapshot = res.orders;
       this.preparePieData(this.snapshot);
-      this.loading = false;
-    }, () => {
-      this.loading = false;
+    }, complete: () => this.loading = false
     });
   }
 
@@ -291,14 +289,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
         types: ['WORKFLOW']
-      }).subscribe(res => {
+      }).subscribe({next: res => {
         this.tree = this.coreService.prepareTree(res, true);
         if (this.tree.length) {
           this.loadOrder();
         }
         this.loading = true;
-      }, () => {
-        this.loading = true;
+      }, complete: () => this.loading = true
       });
     } else {
       this.loading = true;
@@ -343,14 +340,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       }
       obj.timeZone = this.preferences.zone;
     }
-    this.coreService.post('orders/overview/snapshot', obj).subscribe((res: any) => {
-      this.orderOverview = res.orders;
-      this.loading = true;
-      this.isLoaded = true;
-    }, () => {
-      this.orderOverview = {};
-      this.loading = true;
-      this.isLoaded = true;
+    this.coreService.post('orders/overview/snapshot', obj).subscribe({
+      next: (res: any) => {
+        this.orderOverview = res.orders;
+      }, error: () => this.orderOverview = {}, complete: () => {
+        this.loading = true;
+        this.isLoaded = true;
+      }
     });
   }
 
@@ -447,74 +443,73 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     }
     obj.limit = this.preferences.maxOrderRecords;
     obj.compact = true;
-    this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      this.isLoaded = true;
-      res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
-      this.orders = res.orders;
-      if (this.orders.length === 0){
-        this.orderFilters.currentPage = 1;
-      }
-      if (tempOrder.length > 0) {
-        for (let i = 0; i < this.orders.length; i++) {
-          for (let j = 0; j < tempOrder.length; j++) {
-            if (this.orders[i].orderId === tempOrder[j].orderId) {
-              this.orders[i].show = true;
-              if (this.orders[i].arguments && !this.orders[i].arguments[0]) {
-                this.orders[i].arguments = Object.entries(this.orders[i].arguments).map(([k, v]) => {
-                  if (v && isArray(v)) {
-                    v.forEach((list, index) => {
-                      v[index] = Object.entries(list).map(([k1, v1]) => {
-                        return {name: k1, value: v1};
-                      });
-                    });
-                  }
-                  return {name: k, value: v};
-                });
-              }
-              tempOrder.slice(j, 1);
-              break;
-            }
-          }
-          if (tempOrder.length === 0) {
-            break;
-          }
+    this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
+        this.orders = res.orders;
+        if (this.orders.length === 0) {
+          this.orderFilters.currentPage = 1;
         }
-      }
-      if (this.showPanelObj && this.showPanelObj.orderId) {
-        let flag = true;
-        if (this.orders.length > 0) {
+        if (tempOrder.length > 0) {
           for (let i = 0; i < this.orders.length; i++) {
-            if (this.orders[i].orderId === this.showPanelObj.orderId) {
-              flag = false;
+            for (let j = 0; j < tempOrder.length; j++) {
+              if (this.orders[i].orderId === tempOrder[j].orderId) {
+                this.orders[i].show = true;
+                if (this.orders[i].arguments && !this.orders[i].arguments[0]) {
+                  this.orders[i].arguments = Object.entries(this.orders[i].arguments).map(([k, v]) => {
+                    if (v && isArray(v)) {
+                      v.forEach((list, index) => {
+                        v[index] = Object.entries(list).map(([k1, v1]) => {
+                          return {name: k1, value: v1};
+                        });
+                      });
+                    }
+                    return {name: k, value: v};
+                  });
+                }
+                tempOrder.slice(j, 1);
+                break;
+              }
+            }
+            if (tempOrder.length === 0) {
               break;
             }
           }
         }
-        if (flag) {
-          this.hideAuditPanel();
-        }
-      }
-      this.searchInResult();
-      this.loading = true;
-      if (this.object.mapOfCheckedId.size > 0) {
-        const tempObject = new Map();
-        this.data.forEach((order) => {
-          if (this.object.mapOfCheckedId.has(order.orderId)) {
-            tempObject.set(order.orderId, order);
+        if (this.showPanelObj && this.showPanelObj.orderId) {
+          let flag = true;
+          if (this.orders.length > 0) {
+            for (let i = 0; i < this.orders.length; i++) {
+              if (this.orders[i].orderId === this.showPanelObj.orderId) {
+                flag = false;
+                break;
+              }
+            }
           }
-        });
-        this.object.mapOfCheckedId = tempObject;
-        this.object.mapOfCheckedId.size > 0 ? this.refreshCheckedStatus() : this.resetCheckBox();
-      } else {
-        this.resetCheckBox();
+          if (flag) {
+            this.hideAuditPanel();
+          }
+        }
+        this.searchInResult();
+        if (this.object.mapOfCheckedId.size > 0) {
+          const tempObject = new Map();
+          this.data.forEach((order) => {
+            if (this.object.mapOfCheckedId.has(order.orderId)) {
+              tempObject.set(order.orderId, order);
+            }
+          });
+          this.object.mapOfCheckedId = tempObject;
+          this.object.mapOfCheckedId.size > 0 ? this.refreshCheckedStatus() : this.resetCheckBox();
+        } else {
+          this.resetCheckBox();
+        }
+        this.updatePanelHeight();
+      }, error: () => this.resetCheckBox()
+      , complete: () => {
+        this.isLoaded = true;
+        this.loading = true;
+        this.resetAction();
       }
-      this.resetAction();
-      this.updatePanelHeight();
-    }, () => {
-      this.isLoaded = true;
-      this.loading = true;
-      this.resetCheckBox();
-      this.resetAction();
     });
   }
 
@@ -599,11 +594,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       objectName: this.showPanelObj.orderId,
       limit: this.preferences.maxAuditLogPerObject
     };
-    this.coreService.post('audit_log', obj).subscribe((res: any) => {
-      this.auditLogs = res.auditLog;
-      this.showPanelObj.loading = false;
-    }, () => {
-      this.showPanelObj.loading = false;
+    this.coreService.post('audit_log', obj).subscribe({
+      next: (res: any) => {
+        this.auditLogs = res.auditLog;
+        this.showPanelObj.loading = false;
+      }, complete: () => this.showPanelObj.loading = false
     });
   }
 
@@ -961,11 +956,13 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         });
       } else {
         this.isProcessing = true;
-        this.coreService.post('orders/resume', obj).subscribe(() => {
-          this.resetCheckBox();
-          this.resetAction(5000);
-        }, () => {
-          this.resetAction();
+        this.coreService.post('orders/resume', obj).subscribe({
+          next: () => {
+            this.resetCheckBox();
+            this.resetAction(5000);
+          }, error: () => {
+            this.resetAction();
+          }
         });
       }
     }
@@ -1030,14 +1027,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       });
     } else {
       this.isProcessing = true;
-      this.coreService.post('orders/' + url, obj).subscribe(() => {
-        if (cb) {
-          cb();
-        }
-        this.resetCheckBox();
-        this.resetAction(5000);
-      }, () => {
-        this.resetAction();
+      this.coreService.post('orders/' + url, obj).subscribe({
+        next: () => {
+          if (cb) {
+            cb();
+          }
+          this.resetCheckBox();
+          this.resetAction(5000);
+        }, error: () => this.resetAction()
       });
     }
   }

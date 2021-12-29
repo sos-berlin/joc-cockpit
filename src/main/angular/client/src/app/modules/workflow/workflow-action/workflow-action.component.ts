@@ -3,7 +3,6 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {isEmpty, isArray} from 'underscore';
-import * as moment from 'moment';
 import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
@@ -173,7 +172,7 @@ export class AddOrderModalComponent implements OnInit {
       order.scheduledFor = 'now + ' + this.order.atTime;
     } else {
       if (this.order.fromDate) {
-        order.scheduledFor = moment(this.order.fromDate).format('YYYY-MM-DD HH:mm:ss');
+        order.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate,null, 'YYYY-MM-DD HH:mm:ss');
         order.timeZone = this.order.timeZone;
       }
     }
@@ -214,11 +213,12 @@ export class AddOrderModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
-    this.coreService.post('orders/add', obj).subscribe((res) => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, err => {
-      this.submitted = false;
+    this.coreService.post('orders/add', obj).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, error: () => {
+        this.submitted = false;
+      }
     });
   }
 

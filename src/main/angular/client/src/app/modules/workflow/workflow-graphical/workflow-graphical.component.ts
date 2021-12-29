@@ -454,8 +454,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     }).subscribe((res: any) => {
       this.order.variables = res.variables;
       this.openModel(this.order);
-    }, () => {
-
     });
   }
 
@@ -1302,10 +1300,12 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       });
     } else {
       this.isProcessing = true;
-      this.coreService.post('orders/' + url, obj).subscribe(() => {
-        this.resetAction(5000);
-      }, () => {
-        this.resetAction();
+      this.coreService.post('orders/' + url, obj).subscribe({
+        next: () => {
+          this.resetAction(5000);
+        }, error: () => {
+          this.resetAction();
+        }
       });
     }
   }

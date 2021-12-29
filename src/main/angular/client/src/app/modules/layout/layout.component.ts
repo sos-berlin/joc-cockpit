@@ -213,10 +213,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   logout(timeout: any): void {
     this.isLogout = true;
     this.child.isLogout = true;
-    this.coreService.post('authentication/logout', {}).subscribe(() => {
-      this._logout(timeout);
-    }, () => {
-      this._logout(timeout);
+    this.coreService.post('authentication/logout', {}).subscribe({
+      complete: () => {
+        this._logout(timeout);
+      }
     });
   }
 
@@ -252,24 +252,26 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private loadJocProperties(): void {
     if (!this.isPropertiesLoaded) {
       this.isPropertiesLoaded = true;
-      this.coreService.post('joc/properties', {}).subscribe((result: any) => {
-        sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
-        sessionStorage.comments = JSON.stringify(result.comments);
-        sessionStorage.showViews = JSON.stringify(result.showViews);
-        sessionStorage.securityLevel = result.securityLevel;
-        sessionStorage.defaultProfile = result.defaultProfileAccount;
-        sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
-        sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
-        sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
-        sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
-        sessionStorage.welcomeGotIt = result.welcomeGotIt;
-        sessionStorage.hasLicense = result.clusterLicense;
-        if (!this.loading) {
-          this.init();
+      this.coreService.post('joc/properties', {}).subscribe({
+        next: (result: any) => {
+          sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
+          sessionStorage.comments = JSON.stringify(result.comments);
+          sessionStorage.showViews = JSON.stringify(result.showViews);
+          sessionStorage.securityLevel = result.securityLevel;
+          sessionStorage.defaultProfile = result.defaultProfileAccount;
+          sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
+          sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
+          sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
+          sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
+          sessionStorage.welcomeGotIt = result.welcomeGotIt;
+          sessionStorage.hasLicense = result.clusterLicense;
+          if (!this.loading) {
+            this.init();
+          }
+          this.isPropertiesLoaded = false;
+        }, error: () => {
+          this.ngOnInit();
         }
-        this.isPropertiesLoaded = false;
-      }, () => {
-        this.ngOnInit();
       });
     }
   }
@@ -295,38 +297,40 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private getSchedulerIds(): void {
-    this.coreService.post('controller/ids', {}).subscribe((res: any) => {
-      if (res && res.controllerIds && res.controllerIds.length > 0) {
-        const ID = localStorage.getItem('$SOS$SELECTEDID');
-        if (ID && ID !== 'null' && ID !== res.selected) {
-          if (res.controllerIds.length > 0 && res.controllerIds.indexOf(ID) > -1) {
-            res.selected = ID;
-            this.coreService.post('controller/switch', {controllerId: ID}).subscribe(() => {
-            });
-          } else {
-            localStorage.removeItem('$SOS$SELECTEDID');
+    this.coreService.post('controller/ids', {}).subscribe({
+      next: (res: any) => {
+        if (res && res.controllerIds && res.controllerIds.length > 0) {
+          const ID = localStorage.getItem('$SOS$SELECTEDID');
+          if (ID && ID !== 'null' && ID !== res.selected) {
+            if (res.controllerIds.length > 0 && res.controllerIds.indexOf(ID) > -1) {
+              res.selected = ID;
+              this.coreService.post('controller/switch', {controllerId: ID}).subscribe(() => {
+              });
+            } else {
+              localStorage.removeItem('$SOS$SELECTEDID');
+            }
           }
+          this.authService.setIds(res);
+          this.authService.save();
+          this.schedulerIds = res;
+          this.getComments();
+        } else {
+          this.coreService.post('controllers/security_level', {}).subscribe({
+            next: (result: any) => {
+              this.checkSecurityControllers(result);
+            }, error: () => this.checkSecurityControllers(null)
+          });
         }
-        this.authService.setIds(res);
-        this.authService.save();
-        this.schedulerIds = res;
-        this.getComments();
-      } else {
-        this.coreService.post('controllers/security_level', {}).subscribe((result: any) => {
-          this.checkSecurityControllers(result);
-        }, () => {
-          this.checkSecurityControllers(null);
-        });
-      }
-    }, (err) => {
-      if (err.error && err.error.message === 'Access denied') {
-        this.loadInit(true);
-      } else {
-        this.getComments();
-        this.router.navigate(['/start-up']);
-        setTimeout(() => {
-          this.loading = true;
-        }, 10);
+      }, error: (err) => {
+        if (err.error && err.error.message === 'Access denied') {
+          this.loadInit(true);
+        } else {
+          this.getComments();
+          this.router.navigate(['/start-up']);
+          setTimeout(() => {
+            this.loading = true;
+          }, 10);
+        }
       }
     });
   }
@@ -345,16 +349,18 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private authenticate(): any {
-    this.coreService.post('authentication/login', {}).subscribe((data) => {
-      this.authService.setUser(data);
-      this.authService.save();
-      this.getSchedulerIds();
-    }, () => {
-      let returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
-      if (returnUrl === '/error' || returnUrl === 'error') {
-        returnUrl = '/';
+    this.coreService.post('authentication/login', {}).subscribe({
+      next: (data) => {
+        this.authService.setUser(data);
+        this.authService.save();
+        this.getSchedulerIds();
+      }, error: () => {
+        let returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
+        if (returnUrl === '/error' || returnUrl === 'error') {
+          returnUrl = '/';
+        }
+        this.router.navigate(['login'], {queryParams: {returnUrl}});
       }
-      this.router.navigate(['login'], {queryParams: {returnUrl}});
     });
   }
 
@@ -429,13 +435,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private refreshSession(): void {
     if (!this.isTouch && this.sessionTimeout >= 0) {
       this.isTouch = true;
-      this.coreService.post('touch', undefined).subscribe(res => {
-        this.isTouch = false;
-        if (res) {
-          this.count = this.sessionTimeout / 1000 - 1;
-        }
-      }, () => {
-        this.isTouch = false;
+      this.coreService.post('touch', undefined).subscribe({
+        next: res => {
+          if (res) {
+            this.count = this.sessionTimeout / 1000 - 1;
+          }
+        }, complete: () => this.isTouch = false
       });
     }
   }
@@ -575,7 +580,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         configurationType: 'PROFILE'
       };
       const preferences: any = {};
-      this.coreService.post('configurations', configObj).subscribe((res: any) => {
+      this.coreService.post('configurations', configObj).subscribe({next: (res: any) => {
         sessionStorage.preferenceId = 0;
         if (res.configurations && res.configurations.length > 0) {
           const conf = res.configurations[0];
@@ -587,8 +592,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         } else {
           this.setUserPreferences(preferences, configObj, reload);
         }
-      }, () => {
-        this.setUserPreferences(preferences, configObj, reload);
+      }, error: () => this.setUserPreferences(preferences, configObj, reload)
       });
     }
   }

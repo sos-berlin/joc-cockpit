@@ -88,11 +88,12 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       compact: true,
       states: ['COUPLED', 'RESETTING', 'RESET']
-    }).subscribe((res: any) => {
-      this.agentClusterRunningTaskGraph(res);
-      this.isLoaded = true;
-    }, (err) => {
-      this.isLoaded = true;
+    }).subscribe({
+      next: (res: any) => {
+        this.agentClusterRunningTaskGraph(res);
+      }, complete: () => {
+        this.isLoaded = true;
+      }
     });
   }
 }

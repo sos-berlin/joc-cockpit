@@ -7,7 +7,7 @@ import {CoreService} from '../../services/core.service';
 declare const $: any;
 
 @Component({
-  selector: 'app-tree-nagivation',
+  selector: 'app-tree-navigation',
   templateUrl: './tree.component.html'
 })
 export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
@@ -119,7 +119,7 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
     this.tree = [...this.tree];
   }
 
-  deleteFolder(node): void{
+  deleteFolder(node): void {
     this.actionEvent.emit(node);
   }
 

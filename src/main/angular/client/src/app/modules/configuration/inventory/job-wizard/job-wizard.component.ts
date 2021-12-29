@@ -37,11 +37,12 @@ export class JobWizardComponent implements OnInit {
   private getJitlJobs(): void {
     this.jobList = [];
     this.job = {};
-    this.coreService.post('inventory/wizard/jobs', {}).subscribe((res: any) => {
-      this.jobList = res.jobs;
-      this.loading = false;
-    }, (err) => {
-      this.loading = false;
+    this.coreService.post('inventory/wizard/jobs', {}).subscribe({
+      next: (res: any) => {
+        this.jobList = res.jobs;
+      }, complete: () => {
+        this.loading = false;
+      }
     });
   }
 

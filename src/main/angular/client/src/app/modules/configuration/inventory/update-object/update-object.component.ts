@@ -233,8 +233,7 @@ export class UpdateObjectComponent implements OnInit {
 
   deploy(isDeploy): void {
     this.submitted = true;
-    const obj: any = {
-    };
+    const obj: any = {};
     if (isDeploy) {
       obj.controllerIds = this.selectedSchedulerIds;
       obj.store = {
@@ -258,10 +257,12 @@ export class UpdateObjectComponent implements OnInit {
       }
     });
     const URL = !isDeploy ? 'inventory/release' : 'inventory/deployment/deploy';
-    this.coreService.post(URL, obj).subscribe(() => {
-      this.activeModal.close('ok');
-    }, () => {
-      this.submitted = false;
+    this.coreService.post(URL, obj).subscribe({
+      next: () => {
+        this.activeModal.close('ok');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 
@@ -271,13 +272,15 @@ export class UpdateObjectComponent implements OnInit {
       valid: true,
       id: data.id,
       objectType: this.type
-    }).subscribe((res: any) => {
-      if (cb) {
-        cb();
-      }
-    }, () => {
-      if (cb) {
-        cb();
+    }).subscribe({
+      next: () => {
+        if (cb) {
+          cb();
+        }
+      }, error: () => {
+        if (cb) {
+          cb();
+        }
       }
     });
   }

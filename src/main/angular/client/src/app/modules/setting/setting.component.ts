@@ -5,7 +5,7 @@ import {FileUploader} from 'ng2-file-upload';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {saveAs} from 'file-saver';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import * as _ from 'underscore';
+import {isEmpty} from 'underscore';
 import SHA512 from 'crypto-js/sha512';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -305,7 +305,7 @@ export class SettingComponent implements OnInit {
         if (setProp === prop) {
           for (let x in defaultGlobals[prop]) {
             let flag = true;
-            if (!_.isEmpty(this.settings[setProp])) {
+            if (!isEmpty(this.settings[setProp])) {
               for (let i in this.settings[setProp]) {
                 if (x === i) {
                   flag = false;

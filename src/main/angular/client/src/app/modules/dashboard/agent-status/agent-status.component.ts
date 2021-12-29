@@ -161,7 +161,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     this.pieChartLabels = [];
     this.pieChartColors[0].backgroundColor = [];
     this.pieChartColors[0].hoverBackgroundColor = [];
-    this.groupBy(result.agents).forEach((value, index) => {
+    this.groupBy(result.agents).forEach((value) => {
       this.pieChartData.push(value.count);
       this.pieChartColors[0].backgroundColor.push(value.color);
       this.pieChartColors[0].hoverBackgroundColor.push(value.hoverColor);
@@ -170,11 +170,12 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   getStatus(): void {
-    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, compact: true, onlyEnabledAgents: true}).subscribe(res => {
-      this.isLoaded = true;
-      this.prepareAgentClusterData(res);
-    }, (err) => {
-      this.isLoaded = true;
+    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, compact: true, onlyEnabledAgents: true}).subscribe({
+      next: res => {
+        this.prepareAgentClusterData(res);
+      }, complete: () => {
+        this.isLoaded = true;
+      }
     });
   }
 

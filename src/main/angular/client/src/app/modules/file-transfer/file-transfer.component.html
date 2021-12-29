@@ -136,8 +136,8 @@
                     <a translate>customization.label.editExistingCustomizations</a>
                   </li>
                   <li nz-menu-divider *ngIf="filterList.length>0"></li>
-                  <li nz-menu-item *ngFor="let filter of filterList | orderBy: 'name'">
-                    <a [ngClass]="{orange: (savedFilter.selected == filter.id)}" (click)="changeFilter(filter)"
+                  <li nz-menu-item (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'">
+                    <a [ngClass]="{orange: (savedFilter.selected == filter.id)}"
                        *ngFor="let filter of filterList | orderBy: 'name'">
                       <span [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"

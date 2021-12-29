@@ -97,18 +97,20 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   getClusterStatusData(): void {
-    this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
-      this.clusterStatusData = res;
-      if (this.clusterStatusData.controllers && this.clusterStatusData.controllers.length > 0) {
-        this.selectedController.role = this.clusterStatusData.controllers[0].role;
+    this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected}).subscribe({
+      next: (res: any) => {
+        this.clusterStatusData = res;
+        if (this.clusterStatusData.controllers && this.clusterStatusData.controllers.length > 0) {
+          this.selectedController.role = this.clusterStatusData.controllers[0].role;
+        }
+        if (this.editor) {
+          this.createWorkflowDiagram(this.editor.graph);
+        } else {
+          this.createEditor();
+        }
+      }, error: () => {
+        this.isLoaded = true;
       }
-      if (this.editor) {
-        this.createWorkflowDiagram(this.editor.graph);
-      } else {
-        this.createEditor();
-      }
-    }, (err) => {
-      this.isLoaded = true;
     });
   }
 
@@ -426,15 +428,16 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   reloadGraph(): void {
-    this.onRefresh().subscribe((res) => {
-      this.clusterStatusData = res;
-      if (this.editor && this.editor.graph && !this.isDataLoaded) {
-        this.editor.graph.removeCells(this.editor.graph.getChildVertices(this.editor.graph.getDefaultParent()));
-        this.createWorkflowDiagram(this.editor.graph);
+    this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected}).subscribe({
+      next: (res) => {
+        this.clusterStatusData = res;
+        if (this.editor && this.editor.graph && !this.isDataLoaded) {
+          this.editor.graph.removeCells(this.editor.graph.getChildVertices(this.editor.graph.getDefaultParent()));
+          this.createWorkflowDiagram(this.editor.graph);
+        }
+      }, complete: () => {
+        this.isDataLoaded = true;
       }
-      this.isDataLoaded = true;
-    }, () => {
-      this.isDataLoaded = true;
     });
   }
 
@@ -792,12 +795,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     }
   }
 
-  private onRefresh(): any {
-    return this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected});
-  }
-
   private postCall(url, obj): void {
-    this.coreService.post(url, obj).subscribe(res => {
-    });
+    this.coreService.post(url, obj).subscribe();
   }
 }

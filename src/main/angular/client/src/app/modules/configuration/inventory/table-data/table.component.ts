@@ -322,5 +322,4 @@ export class TableComponent implements OnDestroy {
       this.ref.detectChanges();
     });
   }
-
 }

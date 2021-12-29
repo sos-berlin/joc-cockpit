@@ -164,7 +164,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     } else {
       obj.accounts = Array.from(this.setOfCheckedId);
     }
-    this.coreService.post('configurations/delete', obj).subscribe(res => {
+    this.coreService.post('configurations/delete', obj).subscribe(() => {
       if (profile) {
         for (let i = 0; i < this.profiles.length; i++) {
           if (this.profiles[i].account === profile.account) {

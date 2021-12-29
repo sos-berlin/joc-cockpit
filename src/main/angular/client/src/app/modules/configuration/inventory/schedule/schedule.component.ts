@@ -529,15 +529,17 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.coreService.post('inventory/rename', {
           id: data.id,
           newPath: name
-        }).subscribe((res) => {
-          if (data.id === this.data.id) {
-            this.data.name = name;
+        }).subscribe({
+          next: () => {
+            if (data.id === this.data.id) {
+              this.data.name = name;
+            }
+            data.name = name;
+            this.dataService.reloadTree.next({rename: data});
+          }, error: () => {
+            this.schedule.name = this.data.name;
+            this.ref.detectChanges();
           }
-          data.name = name;
-          this.dataService.reloadTree.next({rename: data});
-        }, (err) => {
-          this.schedule.name = this.data.name;
-          this.ref.detectChanges();
         });
       } else {
         this.schedule.name = this.data.name;
@@ -685,17 +687,19 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           valid: isValid,
           id: this.schedule.id,
           objectType: this.objectType
-        }).subscribe((res: any) => {
-          if (res.id === this.data.id && this.schedule.id === this.data.id) {
-            this.schedule.actual = JSON.stringify(obj);
-            this.schedule.valid = res.valid;
-            this.data.valid = res.valid;
-            this.schedule.released = false;
-            this.data.released = false;
-            this.setErrorMessage(res);
+        }).subscribe({
+          next: (res: any) => {
+            if (res.id === this.data.id && this.schedule.id === this.data.id) {
+              this.schedule.actual = JSON.stringify(obj);
+              this.schedule.valid = res.valid;
+              this.data.valid = res.valid;
+              this.schedule.released = false;
+              this.data.released = false;
+              this.setErrorMessage(res);
+            }
+          }, error: () => {
+            this.ref.detectChanges();
           }
-        }, () => {
-          this.ref.detectChanges();
         });
       }
     }
@@ -933,7 +937,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.data.valid = res.valid;
       }
       this.setErrorMessage(res);
-    }, () => {
     });
   }
 

@@ -105,15 +105,13 @@ export class OrderVariableComponent implements OnInit {
           removeVariables: object([variable].map((val) => {
             return [val.name, val.value];
           }))
-        }).subscribe((result) => {
+        }).subscribe(() => {
           for (let i = 0; i < order.variables.length; i++) {
             if (isEqual(order.variables[i], variable)) {
               order.variables.splice(i, 1);
               break;
             }
           }
-        }, () => {
-
         });
       } else {
         this.translate.get('common.message.requiredVariableCannotRemoved').subscribe(translatedValue => {

@@ -48,10 +48,9 @@
               <nz-dropdown-menu #anyDate="nzDropdownMenu" >
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item
+                    <li nz-menu-item (click)="loadOrders(btn.date)"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.date=== btn.date}">
-                      <a (click)="loadOrders(btn.date)"
-                         translate>filters.button.{{btn.text}}</a>
+                      <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>
                 </ul>

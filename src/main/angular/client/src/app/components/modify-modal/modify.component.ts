@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import * as moment from 'moment';
 import {differenceInCalendarDays} from 'date-fns';
 import {isEmpty, isArray, object} from 'underscore';
 import {NzModalRef} from 'ng-zorro-antd/modal';
@@ -267,7 +266,7 @@ export class ChangeParameterModalComponent implements OnInit {
           if (!val.value && val.value !== false && val.value !== 0) {
             this.removeVariables.push({name: val.name, value: val.value});
           }
-          return val.name ? [val.name, val.value] :  null;
+          return val.name ? [val.name, val.value] : null;
         }));
       }
     }
@@ -305,11 +304,12 @@ export class ChangeParameterModalComponent implements OnInit {
       });
     }
     if (obj.variables || obj.removeVariables) {
-      this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
-        this.submitted = false;
-        this.activeModal.close('Done');
-      }, () => {
-        this.submitted = false;
+      this.coreService.post('daily_plan/orders/modify', obj).subscribe({
+        next: () => {
+          this.activeModal.close('Done');
+        }, complete: () => {
+          this.submitted = false;
+        }
       });
     } else {
       this.submitted = false;
@@ -371,10 +371,10 @@ export class ModifyStartTimeModalComponent implements OnInit {
 
   disabledDate = (current: Date): boolean => {
     // Can not select days before today and today
-    return differenceInCalendarDays(current, new Date()) < 0;;
+    return differenceInCalendarDays(current, new Date()) < 0;
   }
 
-  private checkTime(time): string {
+  static checkTime(time): string {
     if (/^\d{1,2}:\d{2}?$/i.test(time)) {
       time = time + ':00';
     } else if (/^\d{1,2}:\d{2}(:)?$/i.test(time)) {
@@ -416,23 +416,24 @@ export class ModifyStartTimeModalComponent implements OnInit {
       } else if (this.dateType.at === 'later') {
         obj.scheduledFor = 'now + ' + this.order.atTime;
       } else {
-        obj.scheduledFor = moment(this.order.from).format('YYYY-MM-DD HH:mm:ss');
+        obj.scheduledFor = this.coreService.getDateByFormat(this.order.from, null, 'YYYY-MM-DD HH:mm:ss');
         obj.timeZone = this.dateType.timeZone;
       }
     } else {
       obj.cycle = {
-        repeat: this.checkTime(this.period.repeat),
-        begin: this.checkTime(this.period.begin),
-        end: this.checkTime(this.period.end),
+        repeat: ModifyStartTimeModalComponent.checkTime(this.period.repeat),
+        begin: ModifyStartTimeModalComponent.checkTime(this.period.begin),
+        end: ModifyStartTimeModalComponent.checkTime(this.period.end),
       };
       obj.timeZone = this.dateType.timeZone;
     }
     this.submitted = true;
-    this.coreService.post('daily_plan/orders/modify', obj).subscribe((result) => {
-      this.submitted = false;
-      this.activeModal.close('Done');
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('daily_plan/orders/modify', obj).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, complete: () => {
+        this.submitted = false;
+      }
     });
   }
 

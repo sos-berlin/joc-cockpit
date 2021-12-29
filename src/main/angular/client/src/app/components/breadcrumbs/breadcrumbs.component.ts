@@ -37,27 +37,29 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
     }
 
     for (const child of children) {
-      const routeURL: string = child.snapshot.url.map(segment => segment.path).join('/');
-      if (routeURL !== '') {
-        url += `/${routeURL}`;
-      }
+      if (child.snapshot) {
+        const routeURL: string = child.snapshot.url.map(segment => segment.path).join('/');
+        if (routeURL !== '') {
+          url += `/${routeURL}`;
+        }
 
-      const label = child.snapshot.data[BreadcrumbsComponent.ROUTE_DATA_BREADCRUMB];
-      if (label !== null && label !== undefined) {
-        let flag = true;
-        if (breadcrumbs.length > 0) {
-          for (const bc of breadcrumbs) {
-            if (bc.label === label) {
-              flag = false;
-              break;
+        const label = child.snapshot.data[BreadcrumbsComponent.ROUTE_DATA_BREADCRUMB];
+        if (label !== null && label !== undefined) {
+          let flag = true;
+          if (breadcrumbs.length > 0) {
+            for (const bc of breadcrumbs) {
+              if (bc.label === label) {
+                flag = false;
+                break;
+              }
             }
           }
+          if (flag) {
+            breadcrumbs.push({label, url});
+          }
         }
-        if (flag) {
-          breadcrumbs.push({label, url});
-        }
+        return this.createBreadcrumbs(child, url, breadcrumbs);
       }
-      return this.createBreadcrumbs(child, url, breadcrumbs);
     }
   }
 

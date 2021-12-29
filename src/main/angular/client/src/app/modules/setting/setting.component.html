@@ -38,8 +38,8 @@
                     <i class="fa fa-ellipsis-h"></i></button>
                   <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                     <ul nz-menu>
-                      <li nz-menu-item>
-                        <a (click)="removeSection(setting)" translate="">settings.button.dropSection</a>
+                      <li nz-menu-item (click)="removeSection(setting)">
+                        <a translate>settings.button.dropSection</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>

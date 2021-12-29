@@ -10,7 +10,6 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe} from '../../pipes/core.pipe';
-
 import {FileTransferService} from '../../services/file-transfer.service';
 
 declare const $;
@@ -187,26 +186,26 @@ export class FileTransferSearchComponent implements OnInit {
       obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      if (result.id) {
-        for (let i in this.allFilter) {
-          if (this.allFilter[i].id === result.id) {
-            this.allFilter[i] = configObj;
-            break;
+    this.coreService.post('configuration/save', configObj).subscribe({
+      next: (res: any) => {
+        if (result.id) {
+          for (let i in this.allFilter) {
+            if (this.allFilter[i].id === result.id) {
+              this.allFilter[i] = configObj;
+              break;
+            }
           }
+        } else {
+          configObj.id = res.id;
+          this.allFilter.push(configObj);
         }
-      } else {
-        configObj.id = res.id;
-        this.allFilter.push(configObj);
-      }
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-      this.submitted = false;
-    }, () => {
-      this.submitted = false;
+        if (this.isSearch) {
+          this.filter.name = '';
+        } else {
+          this.onCancel.emit(configObj);
+        }
+       
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -238,7 +237,9 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService,
               private route: ActivatedRoute, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if (res) {
+        this.refresh(res);
+      }
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
@@ -261,11 +262,12 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
       controllerId: this.controllerId,
       transferIds: [transferId]
     };
-    this.coreService.post('yade/transfers', obj).subscribe((result: any) => {
-      this.fileTransfers = result.transfers;
-      this.loading = true;
-      this.setHeaderWidth();
-    }, () => this.loading = true);
+    this.coreService.post('yade/transfers', obj).subscribe({
+      next: (result: any) => {
+        this.fileTransfers = result.transfers;
+        this.setHeaderWidth();
+      }, complete: () => this.loading = true
+    });
   }
 
   getFiles(value): void {
@@ -373,7 +375,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
               private router: Router, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if (res) {
+        this.refresh(res);
+      }
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
@@ -462,19 +466,19 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       obj.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, obj.dateTo)._d;
     }
-    this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      this.fileTransfers = res.transfers || [];
-      if (this.showFiles) {
-        this.fileTransfers.forEach((transfer) => {
-          transfer.show = true;
-          this.getFiles(transfer);
-        });
-      }
-      this.searchInResult();
-      this.isLoaded = true;
-      this.setHeaderWidth();
-
-    }, () => this.isLoaded = true);
+    this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        this.fileTransfers = res.transfers || [];
+        if (this.showFiles) {
+          this.fileTransfers.forEach((transfer) => {
+            transfer.show = true;
+            this.getFiles(transfer);
+          });
+        }
+        this.searchInResult();
+        this.setHeaderWidth();
+      }, complete: () => this.isLoaded = true
+    });
   }
 
   getTransfer(transfer): void {
@@ -503,19 +507,18 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.coreService.post('yade/files', {
       transferIds: [value.id],
       controllerId: value.controllerId || this.schedulerIds.selected
-    }).subscribe((res: any) => {
-      value.files = res.files;
-      value.loading = false;
-      value.widthArr = [...this.coreService.calFileTransferRowWidth()];
-      setTimeout(() => {
-        const dom = $('#fileTransferMainTable');
-        dom.find('thead tr.main-header-row th').each(function(i) {
-          $(this).css('width', self.widthArr[i] + 'px');
-        });
-      }, 0);
+    }).subscribe({
+      next: (res: any) => {
+        value.files = res.files;
+        value.widthArr = [...this.coreService.calFileTransferRowWidth()];
+        setTimeout(() => {
+          const dom = $('#fileTransferMainTable');
+          dom.find('thead tr.main-header-row th').each(function (i) {
+            $(this).css('width', self.widthArr[i] + 'px');
+          });
+        }, 0);
 
-    }, () => {
-      value.loading = false;
+      }, complete: () => value.loading = false
     });
   }
 
@@ -546,13 +549,12 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.yadeFilters.filter.date = '';
 
     this.fileTransferService.getRequestForSearch(this.searchFilter, filter, this.preferences);
-    this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
-      this.fileTransfers = res.transfers;
-      this.searchInResult();
-      this.isLoaded = true;
-      this.setHeaderWidth();
-    }, () => {
-      this.isLoaded = true;
+    this.coreService.post('yade/transfers', filter).subscribe({
+      next: (res: any) => {
+        this.fileTransfers = res.transfers;
+        this.searchInResult();
+        this.setHeaderWidth();
+      }, complete: () => this.isLoaded = true
     });
   }
 
@@ -563,14 +565,16 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       objectType: 'YADE',
       shared: true
     };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (res.configurations && res.configurations.length > 0) {
-        this.filterList = res.configurations;
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res: any) => {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = res.configurations;
+        }
+      }, error: () => {
+        this.filterList = [];
+      }, complete: () => {
+        this.getYadeCustomizations();
       }
-      this.getYadeCustomizations();
-    }, () => {
-      this.filterList = [];
-      this.getYadeCustomizations();
     });
   }
 
@@ -581,58 +585,60 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       configurationType: 'CUSTOMIZATION',
       objectType: 'YADE'
     };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (this.filterList && this.filterList.length > 0) {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = this.filterList.concat(res.configurations);
-        }
-        const data = [];
-        for (let i = 0; i < this.filterList.length; i++) {
-          let flag = true;
-          for (let j = 0; j < data.length; j++) {
-            if (data[j].account == this.filterList[i].account && data[j].name == this.filterList[i].name) {
-              flag = false;
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res: any) => {
+        if (this.filterList && this.filterList.length > 0) {
+          if (res.configurations && res.configurations.length > 0) {
+            this.filterList = this.filterList.concat(res.configurations);
+          }
+          const data = [];
+          for (let i = 0; i < this.filterList.length; i++) {
+            let flag = true;
+            for (let j = 0; j < data.length; j++) {
+              if (data[j].account == this.filterList[i].account && data[j].name == this.filterList[i].name) {
+                flag = false;
+              }
+            }
+            if (flag) {
+              data.push(this.filterList[i]);
             }
           }
-          if (flag) {
-            data.push(this.filterList[i]);
-          }
+          this.filterList = data;
+        } else {
+          this.filterList = res.configurations;
         }
-        this.filterList = data;
-      } else {
-        this.filterList = res.configurations;
-      }
 
-      if (this.savedFilter.selected) {
-        let flag = true;
-        this.filterList.forEach((value) => {
-          if (value.id == this.savedFilter.selected) {
-            flag = false;
-            this.coreService.post('configuration', {
-              controllerId: value.controllerId,
-              id: value.id
-            }).subscribe((conf: any) => {
-              this.loadConfig = true;
-              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-              this.selectedFiltered.account = value.account;
-              this.load();
-            });
+        if (this.savedFilter.selected) {
+          let flag = true;
+          this.filterList.forEach((value) => {
+            if (value.id == this.savedFilter.selected) {
+              flag = false;
+              this.coreService.post('configuration', {
+                controllerId: value.controllerId,
+                id: value.id
+              }).subscribe((conf: any) => {
+                this.loadConfig = true;
+                this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                this.selectedFiltered.account = value.account;
+                this.load();
+              });
+            }
+          });
+          if (flag) {
+            this.savedFilter.selected = undefined;
+            this.loadConfig = true;
+            this.load();
           }
-        });
-        if (flag) {
-          this.savedFilter.selected = undefined;
+        } else {
           this.loadConfig = true;
+          this.savedFilter.selected = undefined;
           this.load();
         }
-      } else {
+      }, error: () => {
         this.loadConfig = true;
         this.savedFilter.selected = undefined;
         this.load();
       }
-    }, () => {
-      this.loadConfig = true;
-      this.savedFilter.selected = undefined;
-      this.load();
     });
   }
 

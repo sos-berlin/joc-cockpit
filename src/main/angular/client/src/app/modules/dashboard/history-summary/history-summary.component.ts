@@ -23,7 +23,9 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, private coreService: CoreService,
               private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if (res) {
+        this.refresh(res);
+      }
     });
   }
 
@@ -76,12 +78,12 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       dateFrom: this.filters.date,
       timeZone: this.preferences.zone
-    }).subscribe((res: any) => {
-      this.orderSummary = res.orders || {};
-      this.isLoaded = true;
-    }, (err) => {
-      this.notAuthenticate1 = !err.isPermitted;
-      this.isLoaded = true;
+    }).subscribe({
+      next: (res: any) => {
+        this.orderSummary = res.orders || {};
+      }, error: (err) => {
+        this.notAuthenticate1 = !err.isPermitted;
+      }, complete: () => this.isLoaded = true
     });
   }
 
@@ -102,12 +104,12 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       dateFrom: this.filters.date,
       timeZone: this.preferences.zone
-    }).subscribe((res: any) => {
-      this.taskSummary = res.jobs;
-      this.isLoaded = true;
-    }, (err) => {
-      this.notAuthenticate2 = !err.isPermitted;
-      this.isLoaded = true;
+    }).subscribe({
+      next: (res: any) => {
+        this.taskSummary = res.jobs;
+      }, error: (err) => {
+        this.notAuthenticate2 = !err.isPermitted;
+      }, complete: () => this.isLoaded = true
     });
   }
 
