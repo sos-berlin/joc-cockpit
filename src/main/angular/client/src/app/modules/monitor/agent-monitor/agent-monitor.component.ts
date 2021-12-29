@@ -9,8 +9,6 @@ import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
 import {GroupByPipe} from '../../../pipes/core.pipe';
 
-declare let self;
-
 @Component({
   selector: 'app-agent-monitor',
   templateUrl: './agent-monitor.component.html',
@@ -29,7 +27,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   runningTime: any = [];
   groupByData = [];
   statisticsData: any = [];
-
   viewDate: Date = new Date();
   dateFormat: string;
   weekStart = 1;
@@ -44,7 +41,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     domain: ['rgb(122,185,122)', '#ef486a', '#AAAAAA']
   };
 
-  @ViewChild('chartArea', { static: true }) chartArea: ElementRef;
+  @ViewChild('chartArea', {static: true}) chartArea: ElementRef;
 
   constructor(private coreService: CoreService, private authService: AuthService, private translate: TranslateService,
               private groupByPipe: GroupByPipe, private dataService: DataService) {
@@ -59,6 +56,18 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     });
   }
 
+  static isAlreadyExist(value, data): boolean {
+    let isMatch = false;
+    for (const y in value) {
+      if (value[y].readyTime === data.readyTime && value[y].agentId === data.agentId) {
+        isMatch = true;
+        break;
+      }
+    }
+    return isMatch;
+  }
+
+
   refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
@@ -71,7 +80,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    self = this;
     this.translate.get('monitor.label.inHours').subscribe(translatedValue => {
       this.yAxisLabel = translatedValue;
     });
@@ -87,7 +95,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   init(): void {
     if (this.filters.filter.view !== 'Custom') {
       this.renderTimeSheetHeader();
-    } else{
+    } else {
       this.getData();
     }
   }
@@ -107,7 +115,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeController(): void{
+  changeController(): void {
     this.getData();
   }
 
@@ -118,7 +126,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         tempArr = tempArr.concat(item.value);
       });
       this.getOverviewData(this.groupByPipe.transform(tempArr, 'controllerId'));
-    } else{
+    } else {
       this.getOverviewData(this.groupByData);
     }
   }
@@ -143,7 +151,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   setViewSize(len): void {
     this.view = this.statisticsData.length > 10 ? [(32 * len * this.statisticsData.length), 260] :
       (this.chartArea.nativeElement.offsetWidth && this.chartArea.nativeElement.offsetWidth > 500)
-      ? [(this.chartArea.nativeElement.offsetWidth - 34), 260] : null;
+        ? [(this.chartArea.nativeElement.offsetWidth - 34), 260] : null;
     if (!this.view && this.chartArea.nativeElement.offsetWidth === 0) {
       setTimeout(() => {
         this.setViewSize(len);
@@ -153,8 +161,8 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   customColors(): any {
-    self.toggle = !self.toggle;
-    return self.toggle ? 'rgb(122,185,122)' : '#ef486a';
+    this.toggle = !this.toggle;
+    return this.toggle ? 'rgb(122,185,122)' : '#ef486a';
   }
 
   prev(): void {
@@ -268,18 +276,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private isAlreadyExist(value, data): boolean {
-    let isMatch = false;
-    for (const y in value) {
-      if (value[y].readyTime === data.readyTime && value[y].agentId === data.agentId) {
-        isMatch = true;
-        break;
-      }
-    }
-    return isMatch;
-  }
-
-  private checkMissingDates(): void{
+  private checkMissingDates(): void {
     this.groupByData = [];
     const map = new Map();
     this.data.forEach((controller) => {
@@ -442,7 +439,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
                   copyObj.readyTime = new Date(date).setHours(23, 59, 59, 59);
                   copyObj.lastKnownTime = null;
                   copyObj.isShutdown = true;
-                  if (!this.isAlreadyExist(mainObj.value, copyObj)) {
+                  if (!AgentMonitorComponent.isAlreadyExist(mainObj.value, copyObj)) {
                     mainObj.value.push(copyObj);
                   }
                 } else {
@@ -452,7 +449,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
                     copyObj.date = date;
                     data.lastKnownTime = null;
                     copyObj.readyTime = new Date(date).setHours(0, 0, 0, 0);
-                    if (!this.isAlreadyExist(mainObj.value, copyObj)) {
+                    if (!AgentMonitorComponent.isAlreadyExist(mainObj.value, copyObj)) {
                       mainObj.value.push(copyObj);
                     }
                   }
@@ -482,7 +479,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
                     prev[j].lastKnownTime = null;
                     copyPrevObj.date = tempArr[i].value[x].date;
                     copyPrevObj.readyTime = new Date(copyPrevObj.date).setHours(0, 0, 0, 0);
-                    if (!this.isAlreadyExist(tempArr[i].value, copyPrevObj)) {
+                    if (!AgentMonitorComponent.isAlreadyExist(tempArr[i].value, copyPrevObj)) {
                       tempArr[i].value.push(copyPrevObj);
                     }
                   }
@@ -505,7 +502,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
                   item.lastKnownTime = null;
                   item.isShutdown = true;
                 }
-              } else{
+              } else {
                 item.readyTime = new Date(tempArr[i].key).setHours(0, 0, 0, 0);
               }
             });
@@ -550,7 +547,7 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       if (dur > 86400) {
         dur = dur - 86400;
       }
-      if (dur < 0){
+      if (dur < 0) {
         dur = 0;
       }
 
@@ -571,14 +568,13 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
         name: values[i].key,
       };
       statusObj.value1 = ((dur1 ? (dur1 / (60 * 60)) : 24) - statusObj.value2).toFixed(2);
-      if (parseInt(statusObj2.value, 10) < parseInt(statusObj.value, 10)){
+      if (parseInt(statusObj2.value, 10) < parseInt(statusObj.value, 10)) {
         obj.series.push(statusObj);
         obj.series.push(statusObj2);
-      } else{
+      } else {
         obj.series.push(statusObj2);
         obj.series.push(statusObj);
       }
-
     }
     this.statisticsData.push(obj);
   }

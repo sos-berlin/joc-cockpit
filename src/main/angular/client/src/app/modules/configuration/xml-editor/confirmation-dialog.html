@@ -1,10 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span *ngIf="!delete && !deleteAll && !remove" translate>xml.label.saveXml</span>
-    <span *ngIf="!delete && deleteAll && objectType !== 'NOTIFICATION'" translate>xml.label.deleteXml</span>
-      <span *ngIf="delete && objectType === 'NOTIFICATION'" translate>xml.label.deleteDraft</span>
-      <span *ngIf="remove" translate>common.label.remove</span>
-      <span *ngIf="delete && !deleteAll && objectType !== 'NOTIFICATION'" ><span translate>xml.button.delete</span> <span class="m-l-xs" *ngIf="objectType !== 'NOTIFICATION'">{{activeTab.name}}</span></span> ?
+    <span *ngIf="!delete && deleteAll && objectType !== 'NOTIFICATION'" translate>xml.label.deleteDraft</span>
+    <span *ngIf="delete && objectType === 'NOTIFICATION'" translate>xml.label.deleteDraft</span>
+    <span *ngIf="remove" translate>common.label.remove</span>
+    <span *ngIf="delete && !deleteAll && objectType !== 'NOTIFICATION'" ><span translate>common.button.delete</span> <span class="m-l-xs" *ngIf="objectType !== 'NOTIFICATION'">{{activeTab.name}}</span></span> ?
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>

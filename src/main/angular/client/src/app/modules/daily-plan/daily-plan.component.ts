@@ -385,9 +385,7 @@ export class CreatePlanModalComponent implements OnInit {
       this.coreService.post('daily_plan/orders/generate', obj).subscribe({
         next: () => {
           this.activeModal.close('Done');
-        }, complete: () => {
-          this.submitted = false;
-        }
+        }, complete: () => this.submitted = false
       });
     }
   }
@@ -408,9 +406,7 @@ export class CreatePlanModalComponent implements OnInit {
     forkJoin(apiArr).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 }
@@ -500,9 +496,7 @@ export class RemovePlanModalComponent implements OnInit {
     this.coreService.post('daily_plan/orders/submit', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -566,9 +560,7 @@ export class RemovePlanModalComponent implements OnInit {
     this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -582,9 +574,7 @@ export class RemovePlanModalComponent implements OnInit {
     forkJoin(apiArr).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 }
@@ -632,7 +622,6 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private init(): void {
-    const lang = localStorage.$SOS$LANG;
     let workflow = '';
     let scheduleAndOrder = '';
     let orders = '';
@@ -1015,9 +1004,7 @@ export class SearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -1451,9 +1438,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       forkJoin(apiArr).subscribe({
         next: () => {
           this.resetAction(5000);
-        }, error: () => {
-          this.resetAction();
-        }
+        }, error: () => this.resetAction()
       });
     } else {
       const orderIds = [];
@@ -1521,9 +1506,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           if (isMultiple) {
             this.resetCheckBox();
           }
-        }, error: () => {
-          this.resetAction();
-        }
+        }, error: () => this.resetAction()
       });
     }
   }
@@ -2098,9 +2081,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.filterData(plannedOrderItems);
       }, error: () => {
         this.resetCheckBox();
-      }, complete: () => {
-        this.isLoaded = true;
-      }
+      }, complete: () => this.isLoaded = true
     });
   }
 
@@ -2316,7 +2297,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private _openModel(plan, order, orderPreparation): void {
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
       nzClassName: 'lg',
@@ -2329,20 +2310,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        if (order && order.show) {
-          this.coreService.post('daily_plan/order/variables', {
-            orderId: order.orderId,
-            controllerId: this.schedulerIds.selected
-          }).subscribe((res: any) => {
-            this.convertObjectToArray(res.variables, order);
-          });
-        } else {
-          this.loadOrderPlan();
-        }
-      }
     });
   }
 
@@ -2512,9 +2479,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.coreService.post('configurations', obj).subscribe({
       next: (res) => {
         this.filterResponse(res);
-      }, error: () => {
-        this.getCustomizations();
-      }
+      }, error: () => this.getCustomizations()
     });
   }
 
@@ -2615,6 +2580,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }
       this.plans = planItems;
       this.sortBy();
+      this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
     } else {
       this.plans = [];
       this.planOrders = [];

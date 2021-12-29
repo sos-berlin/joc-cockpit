@@ -452,7 +452,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       orderId: this.order.orderId,
       controllerId: this.controllerId
     }).subscribe((res: any) => {
-      this.order.variables = res.variables;
+      this.order.variables = res.variables || {};
       this.openModel(this.order);
     });
   }
@@ -1240,7 +1240,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
 
   private openModel(order: any): void {
     this.hideTooltip();
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
       nzClassName: 'lg',
@@ -1252,18 +1252,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        if (order && order.show) {
-          this.coreService.post('daily_plan/order/variables', {
-            orderId: order.orderId,
-            controllerId: this.controllerId
-          }).subscribe((res: any) => {
-            order.variables = res.variables;
-          });
-        }
-      }
     });
   }
 

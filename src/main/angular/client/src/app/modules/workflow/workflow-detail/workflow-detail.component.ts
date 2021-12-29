@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {isEmpty, sortBy} from 'underscore';
+import {sortBy} from 'underscore';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {AuthService} from '../../../components/guard';
@@ -353,9 +353,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           this.getOrders(res.workflow);
         }
         this.showAndHideBtn();
-      }, error: () => {
-        this.loading = true;
-      }
+      }, error: () => this.loading = true
     });
   }
 
@@ -394,9 +392,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         if (this.sideBar.isVisible) {
           this.sideBar.orders = this.workflow.orders;
         }
-      }, complete: () => {
-        this.loading = true;
-      }
+      }, complete: () => this.loading = true
     });
   }
 

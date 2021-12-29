@@ -155,7 +155,7 @@ export class UpdateObjectComponent implements OnInit {
             this.object.documentationName = node.key;
           }
         }
-      } else if (type === 'WORKFLOW'){
+      } else if (type === 'WORKFLOW') {
         if (node.key && !node.key.match('/')) {
           if (this.object.workflowName !== node.key) {
             this.object.workflowName = node.key;
@@ -260,9 +260,7 @@ export class UpdateObjectComponent implements OnInit {
     this.coreService.post(URL, obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -273,11 +271,7 @@ export class UpdateObjectComponent implements OnInit {
       id: data.id,
       objectType: this.type
     }).subscribe({
-      next: () => {
-        if (cb) {
-          cb();
-        }
-      }, error: () => {
+      complete: () => {
         if (cb) {
           cb();
         }

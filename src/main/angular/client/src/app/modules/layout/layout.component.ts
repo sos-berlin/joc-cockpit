@@ -214,9 +214,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.isLogout = true;
     this.child.isLogout = true;
     this.coreService.post('authentication/logout', {}).subscribe({
-      complete: () => {
-        this._logout(timeout);
-      }
+      complete: () => this._logout(timeout)
     });
   }
 
@@ -269,9 +267,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.init();
           }
           this.isPropertiesLoaded = false;
-        }, error: () => {
-          this.ngOnInit();
-        }
+        }, error: () => this.ngOnInit()
       });
     }
   }
@@ -304,8 +300,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           if (ID && ID !== 'null' && ID !== res.selected) {
             if (res.controllerIds.length > 0 && res.controllerIds.indexOf(ID) > -1) {
               res.selected = ID;
-              this.coreService.post('controller/switch', {controllerId: ID}).subscribe(() => {
-              });
+              this.coreService.post('controller/switch', {controllerId: ID}).subscribe();
             } else {
               localStorage.removeItem('$SOS$SELECTEDID');
             }

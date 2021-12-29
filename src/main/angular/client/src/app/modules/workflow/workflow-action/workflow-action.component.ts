@@ -216,9 +216,7 @@ export class AddOrderModalComponent implements OnInit {
     this.coreService.post('orders/add', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => {
-        this.submitted = false;
-      }
+      }, error: () => this.submitted = false
     });
   }
 

@@ -120,15 +120,17 @@ export class LockComponent implements OnChanges, OnDestroy {
         this.coreService.post('inventory/rename', {
           id: data.id,
           newPath: name
-        }).subscribe((res) => {
-          if (data.id === this.data.id) {
-            this.data.name = name;
+        }).subscribe({
+          next: () => {
+            if (data.id === this.data.id) {
+              this.data.name = name;
+            }
+            data.name = name;
+            this.dataService.reloadTree.next({rename: data});
+          }, error: () => {
+            this.lock.name = this.data.name;
+            this.ref.detectChanges();
           }
-          data.name = name;
-          this.dataService.reloadTree.next({rename: data});
-        }, (err) => {
-          this.lock.name = this.data.name;
-          this.ref.detectChanges();
         });
       } else {
         this.lock.name = this.data.name;
@@ -296,17 +298,17 @@ export class LockComponent implements OnChanges, OnDestroy {
         valid: this.lock.configuration.limit > -1,
         id: this.lock.id,
         objectType: this.objectType
-      }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.lock.id === this.data.id) {
-          this.lock.actual = JSON.stringify(this.lock.configuration);
-          this.data.valid = res.valid;
-          this.lock.valid = res.valid;
-          this.lock.deployed = false;
-          this.data.deployed = false;
-          this.ref.detectChanges();
-        }
-      }, (err) => {
-        this.ref.detectChanges();
+      }).subscribe({
+        next: (res: any) => {
+          if (res.id === this.data.id && this.lock.id === this.data.id) {
+            this.lock.actual = JSON.stringify(this.lock.configuration);
+            this.data.valid = res.valid;
+            this.lock.valid = res.valid;
+            this.lock.deployed = false;
+            this.data.deployed = false;
+            this.ref.detectChanges();
+          }
+        }, error: () => this.ref.detectChanges()
       });
     }
   }

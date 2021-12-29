@@ -26,7 +26,7 @@ const API_URL = './api/';
 export class ShowModalComponent {
   @Input() document: any;
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef) {
   }
 }
 
@@ -145,18 +145,17 @@ export class EditModalComponent implements OnInit {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
 
-    this.coreService.post('documentation/edit ', obj).subscribe(() => {
-      this.submitted = false;
-      this.activeModal.close(this.document);
-    }, err => {
-      this.submitted = false;
+    this.coreService.post('documentation/edit ', obj).subscribe({
+      next: () => {
+        this.submitted = false;
+        this.activeModal.close(this.document);
+      }, complete: () => this.submitted = false
     });
   }
 
   cancel(): void {
     this.activeModal.destroy();
   }
-
 }
 
 @Component({
@@ -268,11 +267,11 @@ export class SingleDocumentationComponent implements OnInit {
   }
 
   private getDocumentationsList(obj): void {
-    this.coreService.post('documentations', obj).subscribe((res: any) => {
-      this.loading = false;
-      this.documents = res.documentations;
-    }, () => {
-      this.loading = false;
+    this.coreService.post('documentations', obj).subscribe({
+      next: (res: any) => {
+        this.loading = false;
+        this.documents = res.documentations;
+      }, complete: () => this.loading = false
     });
   }
 
@@ -414,14 +413,14 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
         types: ['DOCUMENTATION']
-      }).subscribe(res => {
-        this.tree = this.coreService.prepareTree(res, true);
-        if (this.tree.length && !isSkip) {
-          this.loadDocument();
-        }
-        this.isLoading = true;
-      }, () => {
-        this.isLoading = true;
+      }).subscribe({
+        next: res => {
+          this.tree = this.coreService.prepareTree(res, true);
+          if (this.tree.length && !isSkip) {
+            this.loadDocument();
+          }
+          this.isLoading = true;
+        }, complete: () => this.isLoading = true
       });
     } else {
       this.isLoading = true;
@@ -463,7 +462,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   deleteFolder(folder): void {
-    const obj  = {
+    const obj = {
       folder: folder.path
     };
     if (this.preferences.auditLog) {
@@ -509,7 +508,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
           this.isProcessing = true;
           this.coreService.post('documentations/delete', obj).subscribe(res => {
 
-          }, () =>{
+          }, () => {
             this.resetAction();
           });
         }
@@ -568,7 +567,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
-  selectAll(): void{
+  selectAll(): void {
     this.data.forEach(item => {
       this.object.mapOfCheckedId.add(item.path);
     });
@@ -578,8 +577,8 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     if (value && this.documents.length > 0) {
       const documents = this.getCurrentData(this.data, this.documentFilters);
       documents.forEach(item => {
-          this.object.mapOfCheckedId.add(item.path);
-        });
+        this.object.mapOfCheckedId.add(item.path);
+      });
     } else {
       this.object.mapOfCheckedId.clear();
     }
@@ -762,7 +761,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
-  reset(): void{
+  reset(): void {
     this.object = {
       mapOfCheckedId: new Set(),
       checked: false,
@@ -785,7 +784,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   private getDocumentationsList(obj): void {
     this.reset();
     this.coreService.post('documentations', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      if (res.documentations && res.documentations.length === 0){
+      if (res.documentations && res.documentations.length === 0) {
         this.documentFilters.currentPage = 1;
       }
       this.loading = false;

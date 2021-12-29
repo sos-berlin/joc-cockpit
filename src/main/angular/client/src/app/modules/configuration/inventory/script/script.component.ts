@@ -344,6 +344,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   }
 
   private setErrorMessage(res): void {
+    this.invalidMsg = '';
     if (res.invalidMsg) {
       if (res.invalidMsg.match('script')) {
         this.invalidMsg = 'inventory.message.scriptIsMissing';
@@ -351,8 +352,6 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
-    } else {
-      this.invalidMsg = '';
     }
     this.ref.detectChanges();
   }

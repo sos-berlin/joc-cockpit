@@ -18,7 +18,7 @@
         </div>
       </div>
     </div>
-    <div [hidden]="isLoaded" class="text-center m-t-lg p-b-lg text-primary text">
+    <div *ngIf="!isLoaded" class="loading-center text-primary text" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
       <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
     <div *ngIf="pieChartData.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">

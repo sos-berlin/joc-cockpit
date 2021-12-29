@@ -228,9 +228,7 @@ export class UpdateJobComponent implements OnInit {
     this.coreService.post('inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 

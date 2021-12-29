@@ -152,10 +152,7 @@ export class SearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -305,9 +302,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
           this.showPanel = this.workflows[0];
         }
         this.showPanelFuc(this.workflows[0]);
-      }, complete: () => {
-        this.loading = false;
-      }
+      }, complete: () => this.loading = false
     });
   }
 
@@ -491,9 +486,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if (this.tree.length && !reload) {
             this.loadWorkflow();
           }
-        }, complete: () => {
-          this.isLoading = true;
-        }
+        }, complete: () => this.isLoading = true
       });
     } else {
       this.isLoading = true;
@@ -553,9 +546,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.traverseTreeForSearchData();
         }
         this.updatePanelHeight();
-      }, complete: () => {
-        this.loading = false;
-      }
+      }, complete: () => this.loading = false
     });
   }
 
@@ -571,10 +562,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (res.configurations && res.configurations.length > 0) {
           this.filterList = res.configurations;
         }
-
-      }, complete: () => {
-        this.getCustomizations();
-      }
+      }, complete: () => this.getCustomizations()
     });
   }
 

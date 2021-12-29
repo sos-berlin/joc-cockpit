@@ -508,6 +508,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   private setErrorMessage(res): void {
+    this.invalidMsg = '';
     if (res.invalidMsg) {
       if (res.invalidMsg.match('env: is missing')) {
         this.invalidMsg = 'inventory.message.envOrArgumentIsMissing';
@@ -515,8 +516,6 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
-    } else {
-      this.invalidMsg = '';
     }
     this.ref.detectChanges();
   }
@@ -579,9 +578,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.jobResource.configuration.arguments = [];
         this.addArgu(true);
       }
-      if (!res.valid) {
-        this.invalidMsg = 'inventory.message.envOrArgumentIsMissing';
-      }
+      this.setErrorMessage(res);
       this.jobResource.actual = JSON.stringify(res.configuration);
       this.history.push(this.jobResource.actual);
       this.ref.detectChanges();

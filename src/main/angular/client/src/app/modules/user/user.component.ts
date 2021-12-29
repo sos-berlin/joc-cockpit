@@ -43,7 +43,7 @@ export class UpdateKeyModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     let obj;
-    if(this.type !== 'certificate') {
+    if (this.type !== 'certificate') {
       if (this.securityLevel !== 'HIGH') {
         if (this.algorithm.keyAlg === 'PGP') {
           obj = {privateKey: this.data.privateKey};
@@ -57,10 +57,10 @@ export class UpdateKeyModalComponent implements OnInit {
           obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
         }
       }
-      if(this.type === 'key') {
+      if (this.type === 'key') {
         obj.keyAlgorithm = this.algorithm.keyAlg;
       }
-    } else{
+    } else {
       obj = {certificate: this.data.certificate};
     }
     obj.auditLog = {};
@@ -77,9 +77,7 @@ export class UpdateKeyModalComponent implements OnInit {
     this.coreService.post(URL, this.type === 'key' ? {keys: obj} : obj).subscribe({
       next: () => {
         this.activeModal.close();
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 }
@@ -514,13 +512,15 @@ export class UserComponent implements OnInit, OnDestroy {
   getKeys(): void {
     this.keys = {};
     this.caCertificates = {};
-    this.coreService.post('profile/key', {}).subscribe((res: any) => {
-      this.keys = res;
-      if (this.keys.validUntil) {
-        this.keys.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.keys.validUntil) < 0;
+    this.coreService.post('profile/key', {}).subscribe({
+      next: (res: any) => {
+        this.keys = res;
+        if (this.keys.validUntil) {
+          this.keys.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.keys.validUntil) < 0;
+        }
+      }, error: () => {
+        this.keys = {};
       }
-    }, (err) => {
-      this.keys = {};
     });
     if (this.permission.joc && this.permission.joc.administration.certificates.manage) {
       this.coreService.post('profile/key/ca', {}).subscribe({

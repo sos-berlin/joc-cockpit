@@ -826,34 +826,33 @@ export class FrequencyModalComponent implements OnInit {
       };
       this.isCalendarLoading = true;
 
-      this.coreService.post('inventory/calendar/dates', obj).subscribe((result: any) => {
-        let color = 'blue';
-        if (this.calObj.frequency && this.calObj.frequency != 'all' && this.calObj.frequency.type == 'EXCLUDE') {
-          color = 'orange';
-        }
-        for (let i = 0; i < result.dates.length; i++) {
-          const x = result.dates[i];
-          this.planItems.push({
-            startDate: moment(x),
-            endDate: moment(x),
-            color
-          });
-        }
-        if (result.withExcludes) {
-          for (let i = 0; i < result.withExcludes.length; i++) {
-            const x = result.withExcludes[i];
+      this.coreService.post('inventory/calendar/dates', obj).subscribe({
+        next: (result: any) => {
+          let color = 'blue';
+          if (this.calObj.frequency && this.calObj.frequency != 'all' && this.calObj.frequency.type == 'EXCLUDE') {
+            color = 'orange';
+          }
+          for (let i = 0; i < result.dates.length; i++) {
+            const x = result.dates[i];
             this.planItems.push({
               startDate: moment(x),
               endDate: moment(x),
-              color: 'orange'
+              color
             });
           }
-        }
+          if (result.withExcludes) {
+            for (let i = 0; i < result.withExcludes.length; i++) {
+              const x = result.withExcludes[i];
+              this.planItems.push({
+                startDate: moment(x),
+                endDate: moment(x),
+                color: 'orange'
+              });
+            }
+          }
 
-        this.isCalendarLoading = false;
-        $('#full-calendar').data('calendar').setDataSource(this.planItems);
-      }, () => {
-        this.isCalendarLoading = false;
+          $('#full-calendar').data('calendar').setDataSource(this.planItems);
+        }, complete: () => this.isCalendarLoading = false
       });
     } else if (newDate.getFullYear() == this.calendarTitle) {
       this.planItems = clone(this.tempList);
@@ -1237,55 +1236,55 @@ export class FrequencyModalComponent implements OnInit {
     if (!obj.dateFrom || obj.dateFrom === 'Invalid date') {
       obj.dateFrom = moment().format('YYYY-MM-DD');
     }
-    this.coreService.post('inventory/calendar/dates', obj).subscribe((res) => {
-      result = res;
-      let color = 'blue';
-      if (data && data.type == 'EXCLUDE') {
-        color = 'orange';
-      }
-      this.planItems = [];
-      for (let m = 0; m < result.dates.length; m++) {
-        const x = result.dates[m];
-        this.planItems.push({
-          startDate: moment(x),
-          endDate: moment(x),
-          color
-        });
-      }
-      if (result.withExcludes) {
-        for (let m = 0; m < result.withExcludes.length; m++) {
-          const x = result.withExcludes[m];
+    this.coreService.post('inventory/calendar/dates', obj).subscribe({
+      next: (res) => {
+        result = res;
+        let color = 'blue';
+        if (data && data.type == 'EXCLUDE') {
+          color = 'orange';
+        }
+        this.planItems = [];
+        for (let m = 0; m < result.dates.length; m++) {
+          const x = result.dates[m];
           this.planItems.push({
             startDate: moment(x),
             endDate: moment(x),
-            color: 'orange'
+            color
           });
         }
-      }
-      if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
-
-      } else {
-        $('#full-calendar').calendar({
-          language: this.coreService.getLocale(),
-          renderEnd: (e) => {
-            this.calendarTitle = e.currentYear;
-            if (this.isCalendarDisplay) {
-              this.changeDate();
-            }
+        if (result.withExcludes) {
+          for (let m = 0; m < result.withExcludes.length; m++) {
+            const x = result.withExcludes[m];
+            this.planItems.push({
+              startDate: moment(x),
+              endDate: moment(x),
+              color: 'orange'
+            });
           }
-        });
-      }
-      this.tempList = [];
-      this.tempList = clone(this.planItems);
-      const a = Object.assign(this.tempList);
-      $('#full-calendar').data('calendar').setDataSource(a);
-      this.isCalendarLoading = false;
-      setTimeout(() => {
-        this.isCalendarDisplay = true;
-      }, 100);
+        }
+        if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
 
-    }, () => {
-      this.isCalendarLoading = false;
+        } else {
+          $('#full-calendar').calendar({
+            language: this.coreService.getLocale(),
+            renderEnd: (e) => {
+              this.calendarTitle = e.currentYear;
+              if (this.isCalendarDisplay) {
+                this.changeDate();
+              }
+            }
+          });
+        }
+        this.tempList = [];
+        this.tempList = clone(this.planItems);
+        const a = Object.assign(this.tempList);
+        $('#full-calendar').data('calendar').setDataSource(a);
+        this.isCalendarLoading = false;
+        setTimeout(() => {
+          this.isCalendarDisplay = true;
+        }, 100);
+
+      }, error: () => this.isCalendarLoading = false
     });
   }
 
@@ -1399,15 +1398,17 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.coreService.post('inventory/rename', {
           id: data.id,
           newPath: name
-        }).subscribe((res) => {
-          if (data.id === this.data.id) {
-            this.data.name = name;
+        }).subscribe({
+          next: () => {
+            if (data.id === this.data.id) {
+              this.data.name = name;
+            }
+            data.name = name;
+            this.dataService.reloadTree.next({rename: data});
+          }, error: () => {
+            this.calendar.name = this.data.name;
+            this.ref.detectChanges();
           }
-          data.name = name;
-          this.dataService.reloadTree.next({rename: data});
-        }, (err) => {
-          this.calendar.name = this.data.name;
-          this.ref.detectChanges();
         });
       } else {
         this.calendar.name = this.data.name;
@@ -1638,22 +1639,22 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         id: this.calendar.id,
         valid: !!obj.includes,
         objectType: obj.type
-      }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.calendar.id === this.data.id) {
-          this.calendar.actual = JSON.stringify(this.calendar.configuration);
-          this.calendar.valid = res.valid;
-          this.data.valid = res.valid;
-          this.calendar.released = false;
-          this.data.released = false;
-          if (res.invalidMsg && !obj.includes) {
-            this.invalidMsg = 'inventory.message.includesIsMissing';
-          } else {
-            this.invalidMsg = res.invalidMsg;
+      }).subscribe({
+        next: (res: any) => {
+          if (res.id === this.data.id && this.calendar.id === this.data.id) {
+            this.calendar.actual = JSON.stringify(this.calendar.configuration);
+            this.calendar.valid = res.valid;
+            this.data.valid = res.valid;
+            this.calendar.released = false;
+            this.data.released = false;
+            if (res.invalidMsg && !obj.includes) {
+              this.invalidMsg = 'inventory.message.includesIsMissing';
+            } else {
+              this.invalidMsg = res.invalidMsg;
+            }
+            this.ref.detectChanges();
           }
-          this.ref.detectChanges();
-        }
-      }, (err) => {
-        this.ref.detectChanges();
+        }, error: () => this.ref.detectChanges()
       });
     }
   }

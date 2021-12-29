@@ -141,8 +141,7 @@ export class StartUpModalComponent implements OnInit {
         } else {
           this.afterSubmit.emit();
         }
-      }, complete: () =>
-        this.submitted = false
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -227,8 +226,7 @@ export class StartUpComponent implements OnInit {
       next: (res: any) => {
         this.authService.setIds(res);
         this.authService.save();
-        this.redirect();
-      }, error: () => this.redirect()
+      }, complete: () => this.redirect()
     });
   }
 }

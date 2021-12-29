@@ -2,7 +2,8 @@ import {Component, OnInit, OnDestroy, Input, ElementRef, HostListener, ViewChild
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
+import {takeUntil} from "rxjs/operators";
 import {CommentModalComponent} from '../action/action.component';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -38,6 +39,8 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   cluster: any;
   joc: any;
   configXml = './assets/mxgraph/config/diagram.xml';
+  private pendingHTTPRequests$ = new Subject<void>();
+
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
@@ -80,6 +83,8 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
     try {
       $('[data-toggle="popover"]').popover('hide');
       if (this.editor) {
@@ -97,7 +102,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
   }
 
   getClusterStatusData(): void {
-    this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected}).subscribe({
+    this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.clusterStatusData = res;
         if (this.clusterStatusData.controllers && this.clusterStatusData.controllers.length > 0) {
@@ -108,9 +113,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
         } else {
           this.createEditor();
         }
-      }, error: () => {
-        this.isLoaded = true;
-      }
+      }, error: () => this.isLoaded = true
     });
   }
 
@@ -435,9 +438,7 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
           this.editor.graph.removeCells(this.editor.graph.getChildVertices(this.editor.graph.getDefaultParent()));
           this.createWorkflowDiagram(this.editor.graph);
         }
-      }, complete: () => {
-        this.isDataLoaded = true;
-      }
+      }, complete: () => this.isDataLoaded = true
     });
   }
 

@@ -24,8 +24,8 @@ export class BoardComponent implements OnChanges, OnDestroy {
 
   board: any = {};
   boardObj: any = {
-    endOfLifeMsg : '$js7EpochMilli + ',
-    units : 'Milliseconds'
+    endOfLifeMsg: '$js7EpochMilli + ',
+    units: 'Milliseconds'
   };
   invalidMsg: string;
   objectType = InventoryObject.NOTICEBOARD;
@@ -54,7 +54,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data){
+    if (changes.copyObj && !changes.data) {
       return;
     }
     if (changes.reload) {
@@ -102,10 +102,10 @@ export class BoardComponent implements OnChanges, OnDestroy {
       } else {
         res.configuration = {};
       }
-      if (this.data.deployed !== res.deployed){
+      if (this.data.deployed !== res.deployed) {
         this.data.deployed = res.deployed;
       }
-      if (this.data.valid !== res.valid){
+      if (this.data.valid !== res.valid) {
         this.data.valid = res.valid;
       }
       this.data.syncState = res.syncState;
@@ -113,7 +113,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       this.board.path1 = this.data.path;
       this.board.name = this.data.name;
       this.boardObj = {
-        endOfLifeMsg : '$js7EpochMilli + '
+        endOfLifeMsg: '$js7EpochMilli + '
       };
       if (res.configuration.endOfLife) {
         this.boardObj.endOfLife = this.convertIntoUnit(res.configuration.endOfLife.replace(this.boardObj.endOfLifeMsg, ''));
@@ -181,11 +181,11 @@ export class BoardComponent implements OnChanges, OnDestroy {
         this.data.valid = res.valid;
       }
       this.setErrorMessage(res);
-    }, () => {
     });
   }
 
   private setErrorMessage(res): void {
+    this.invalidMsg = '';
     if (res.invalidMsg) {
       if (res.invalidMsg.match('expectOrderToNoticeId')) {
         this.invalidMsg = 'inventory.message.readingOrderToNoticeIdIsMissing';
@@ -195,8 +195,6 @@ export class BoardComponent implements OnChanges, OnDestroy {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
-    } else {
-      this.invalidMsg = '';
     }
     this.ref.detectChanges();
   }
@@ -209,15 +207,17 @@ export class BoardComponent implements OnChanges, OnDestroy {
         this.coreService.post('inventory/rename', {
           id: data.id,
           newPath: name
-        }).subscribe(() => {
-          if (data.id === this.data.id) {
-            this.data.name = name;
+        }).subscribe({
+          next: () => {
+            if (data.id === this.data.id) {
+              this.data.name = name;
+            }
+            data.name = name;
+            this.dataService.reloadTree.next({rename: data});
+          }, error: () => {
+            this.board.name = this.data.name;
+            this.ref.detectChanges();
           }
-          data.name = name;
-          this.dataService.reloadTree.next({rename: data});
-        }, () => {
-          this.board.name = this.data.name;
-          this.ref.detectChanges();
         });
       } else {
         this.board.name = this.data.name;
@@ -489,18 +489,18 @@ export class BoardComponent implements OnChanges, OnDestroy {
         valid: !!(this.board.configuration.postOrderToNoticeId && this.board.configuration.expectOrderToNoticeId && this.board.configuration.endOfLife),
         id: this.board.id,
         objectType: this.objectType
-      }).subscribe((res: any) => {
-        if (res.id === this.data.id && this.board.id === this.data.id) {
-          this.board.actual = JSON.stringify(this.board.configuration);
-          this.board.deployed = false;
-          this.data.deployed = false;
-          this.board.valid = res.valid;
-          this.data.valid = res.valid;
-          this.setErrorMessage(res);
-          this.ref.detectChanges();
-        }
-      }, (err) => {
-        this.ref.detectChanges();
+      }).subscribe({
+        next: (res: any) => {
+          if (res.id === this.data.id && this.board.id === this.data.id) {
+            this.board.actual = JSON.stringify(this.board.configuration);
+            this.board.deployed = false;
+            this.data.deployed = false;
+            this.board.valid = res.valid;
+            this.data.valid = res.valid;
+            this.setErrorMessage(res);
+            this.ref.detectChanges();
+          }
+        }, error: () => this.ref.detectChanges()
       });
     }
   }

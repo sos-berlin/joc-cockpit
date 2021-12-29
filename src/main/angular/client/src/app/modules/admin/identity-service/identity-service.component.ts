@@ -282,9 +282,7 @@ export class IdentityServiceModalComponent implements OnInit {
     this.coreService.post('iam/identityservice/store', this.currentObj).subscribe({
       next: (res) => {
         this.activeModal.close(res);
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 }
@@ -336,9 +334,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         this.identityServiceTypes = res.identityServiceTypes;
         this.identityServices = res.identityServiceItems;
         this.checkVaultTypes();
-      }, complete: () => {
-        this.loading = false;
-      }
+      }, complete: () => this.loading = false
     });
   }
 
@@ -452,11 +448,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   private enableDisable(identityService, flag): void {
     identityService.disabled = flag;
     this.coreService.post('iam/identityservice/store', identityService).subscribe({
-      next: () => {
-        this.checkVaultTypes();
-      }, error: () => {
-        this.getIAMList();
-      }
+      next: () => this.checkVaultTypes(), error: () => this.getIAMList()
     });
   }
 

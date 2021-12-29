@@ -20,7 +20,7 @@ declare const $: any;
 export class ShowModalComponent {
   @Input() calendar: any;
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef) {
   }
 }
 
@@ -65,7 +65,6 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: null,
         nzContent: ShowModalComponent,
-
         nzComponentParams: {
           calendar: cal
         },
@@ -109,11 +108,10 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
   }
 
   private getCalendarsList(obj): void {
-    this.coreService.post('calendars', obj).subscribe((res: any) => {
-      this.loading = false;
-      this.calendars = res.calendars;
-    }, () => {
-      this.loading = false;
+    this.coreService.post('calendars', obj).subscribe({
+      next: (res: any) => {
+        this.calendars = res.calendars;
+      }, complete: () => this.loading = false
     });
   }
 }
@@ -300,20 +298,20 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   private getCalendarsList(obj): void {
-    this.coreService.post('calendars', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      if (res.calendars && res.calendars.length === 0){
-        this.calendarFilters.currentPage = 1;
-      }
-      this.loading = false;
-      if (res.calendars) {
-        for (let i = 0; i < res.calendars.length; i++) {
-          res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
+    this.coreService.post('calendars', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        if (res.calendars && res.calendars.length === 0) {
+          this.calendarFilters.currentPage = 1;
         }
-      }
-      this.calendars = res.calendars || [];
-      this.searchInResult();
-    }, () => {
-      this.loading = false;
+        this.loading = false;
+        if (res.calendars) {
+          for (let i = 0; i < res.calendars.length; i++) {
+            res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
+          }
+        }
+        this.calendars = res.calendars || [];
+        this.searchInResult();
+      }, complete: () => this.loading = false
     });
   }
 

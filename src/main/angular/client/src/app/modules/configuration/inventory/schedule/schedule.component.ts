@@ -910,18 +910,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         });
       }
       this.history.push(this.schedule.actual);
-      if (!res.valid) {
-        if (!this.schedule.configuration.workflowName) {
-          this.invalidMsg = 'inventory.message.workflowIsMissing';
-        } else if (this.schedule.configuration.calendars.length === 0) {
-          this.invalidMsg = 'inventory.message.calendarIsMissing';
-        } else {
-          this.validateJSON(res.configuration);
-        }
-      } else {
-        this.invalidMsg = '';
-      }
-      this.ref.detectChanges();
+      this.setErrorMessage(res);
     });
   }
 
@@ -941,6 +930,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private setErrorMessage(res): void {
+    this.invalidMsg = '';
     if (res.invalidMsg) {
       if (res.invalidMsg.match('workflowName')) {
         this.invalidMsg = 'inventory.message.workflowIsMissing';
@@ -952,8 +942,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
-    } else {
-      this.invalidMsg = '';
     }
     this.ref.detectChanges();
   }

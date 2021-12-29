@@ -24,9 +24,8 @@
         </div>
       </div>
     </div>
-    <div [hidden]="data.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
-         [ngClass]="{'show': !isLoaded}">
-        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    <div *ngIf="!isLoaded" class="loading-center text-primary text" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
+      <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
     <div *ngIf="data.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
       <div>
