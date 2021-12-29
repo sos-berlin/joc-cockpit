@@ -294,7 +294,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         if (this.tree.length) {
           this.loadOrder();
         }
-        this.loading = true;
       }, complete: () => this.loading = true
       });
     } else {
@@ -960,9 +959,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           next: () => {
             this.resetCheckBox();
             this.resetAction(5000);
-          }, error: () => {
-            this.resetAction();
-          }
+          }, error: () => this.resetAction()
         });
       }
     }

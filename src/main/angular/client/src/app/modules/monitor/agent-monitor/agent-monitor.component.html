@@ -62,7 +62,7 @@
             <i class="text-muted pos-rel t-n-12">{{'common.label.total' | translate}} <i translate [translateParams]="{count: item.hours}">monitor.label.totalDays</i></i>
           </div>
           <div class="col-md-12 text-center" *ngIf="!isLoaded">
-            <div class="vert-middle text-primary text">
+            <div class="loading-center text-primary text ht-260">
               <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
             </div>
           </div>
@@ -106,7 +106,7 @@
           </ngx-charts-bar-vertical-2d>
         </div>
       </div>
-      <div class="hide text-center m-t-lg p-b-lg text-primary text ht-291" [ngClass]="{'show': !isLoaded}">
+      <div *ngIf="!isLoaded" class="loading-center text-primary text ht-291">
         <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
       </div>
       <div *ngIf="isLoaded && statisticsData.length ===0" class="vert-middle ht-291">
@@ -127,7 +127,7 @@
         </div>
         <div class="inline">
           <div class="pos-rel">
-            <nz-select class="select-box" [(ngModel)]="filters.filter.groupBy" (ngModelChange)="groupBy()" name="groupBy">
+            <nz-select class="select-box" [(ngModel)]="filters.filter.groupBy" (ngModelChange)="groupBy()">
               <nz-option [nzLabel]="'Controller ID'" [nzValue]="'CONTROLLERID'"></nz-option>
               <nz-option [nzLabel]="'Date'" [nzValue]="'DATE'"></nz-option>
             </nz-select>
@@ -146,11 +146,10 @@
             ></app-gantt-chart>
           </div>
         </div>
-        <div [hidden]="agents.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
-             [ngClass]="{'show': !isLoaded}">
+        <div *ngIf="!isLoaded && agents.length === 0" class="loading-center text-primary text min-ht-150">
           <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
         </div>
-        <div *ngIf="agents.length==0 && isLoaded" class="p-a">
+        <div *ngIf="agents.length==0 && isLoaded" class="p-t-lg">
           <div>
             <app-empty-data></app-empty-data>
           </div>

@@ -58,9 +58,7 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.controllersList = res.controllers;
         this.isLoaded = true;
-      }, complete: () => {
-        this.isLoaded = true;
-      }
+      }, complete: () => this.isLoaded = true
     });
   }
 

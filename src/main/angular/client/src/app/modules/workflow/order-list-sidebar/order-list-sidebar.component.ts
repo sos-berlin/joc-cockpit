@@ -264,9 +264,7 @@ export class OrderListSidebarComponent implements OnChanges{
         next: () => {
           this.resetCheckBox();
           this.resetAction(5000);
-        }, error: () => {
-          this.resetAction();
-        }
+        }, error: () => this.resetAction()
       });
     }
   }

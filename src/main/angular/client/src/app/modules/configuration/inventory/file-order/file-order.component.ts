@@ -222,6 +222,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private setErrorMessage(res): void {
+    this.invalidMsg = '';
     if (res.invalidMsg) {
       this.invalidMsg = res.invalidMsg;
       if (res.invalidMsg.match('workflowName')) {
@@ -231,8 +232,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       } else if (res.invalidMsg.match('directory')) {
         this.invalidMsg = 'inventory.message.directoryIsMissing';
       }
-    } else {
-      this.invalidMsg = '';
     }
     this.ref.detectChanges();
   }

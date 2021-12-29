@@ -145,24 +145,25 @@ export class SearchComponent implements OnInit {
     }
 
     configObj.configurationItem = JSON.stringify(obj);
-    this.coreService.post('configuration/save', configObj).subscribe({next:(res: any) => {
-      if (result.id) {
-        for (let i in this.allFilter) {
-          if (this.allFilter[i].id === result.id) {
-            this.allFilter[i] = configObj;
-            break;
+    this.coreService.post('configuration/save', configObj).subscribe({
+      next: (res: any) => {
+        if (result.id) {
+          for (let i in this.allFilter) {
+            if (this.allFilter[i].id === result.id) {
+              this.allFilter[i] = configObj;
+              break;
+            }
           }
+        } else {
+          configObj.id = res.id;
+          this.allFilter.push(configObj);
         }
-      } else {
-        configObj.id = res.id;
-        this.allFilter.push(configObj);
-      }
-      if (this.isSearch) {
-        this.filter.name = '';
-      } else {
-        this.onCancel.emit(configObj);
-      }
-    }, complete:() => this.submitted = false
+        if (this.isSearch) {
+          this.filter.name = '';
+        } else {
+          this.onCancel.emit(configObj);
+        }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -212,139 +213,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.init();
-  }
-
-  ngOnDestroy(): void {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
-  }
-
-  private init(): void {
-    this.agentFilters = this.coreService.getResourceTab().agentJobExecution;
-    this.coreService.getResourceTab().state = 'agentJobExecutions';
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
-    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if (!(this.agentFilters.current || this.agentFilters.current === false)) {
-      this.agentFilters.current = this.preferences.currentController;
-    }
-    if (!this.agentFilters.filter.date) {
-      this.agentFilters.filter.date = 'all';
-    }
-    this.savedFilter = JSON.parse(this.saveService.agentFilters) || {};
-    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
-      this.checkSharedFilters();
-    } else {
-      this.savedFilter.selected = undefined;
-      this.loadAgentTasks(null);
-    }
-  }
-  checkSharedFilters(): void {
-    const obj = {
-      controllerId: this.schedulerIds.selected,
-      configurationType: 'CUSTOMIZATION',
-      objectType: this.objectType,
-      shared: true
-    };
-    this.coreService.post('configurations', obj).subscribe({
-      next: (res: any) => {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = res.configurations;
-        }
-      }, complete: () => this.getCustomizations()
-    });
-  }
-
-  getCustomizations(): void {
-    const obj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'CUSTOMIZATION',
-      objectType: this.objectType
-    };
-    this.coreService.post('configurations', obj).subscribe((res: any) => {
-      if (this.filterList && this.filterList.length > 0) {
-        if (res.configurations && res.configurations.length > 0) {
-          this.filterList = this.filterList.concat(res.configurations);
-        }
-        const data = [];
-        for (let i = 0; i < this.filterList.length; i++) {
-          let flag = true;
-          for (let j = 0; j < data.length; j++) {
-            if (data[j].id === this.filterList[i].id) {
-              flag = false;
-            }
-          }
-          if (flag) {
-            data.push(this.filterList[i]);
-          }
-        }
-        this.filterList = data;
-      } else {
-        this.filterList = res.configurations;
-      }
-
-      if (this.savedFilter.selected) {
-        let flag = true;
-        this.filterList.forEach((value) => {
-          if (value.id === this.savedFilter.selected) {
-            flag = false;
-            this.coreService.post('configuration', {
-              controllerId: value.controllerId,
-              id: value.id
-            }).subscribe((conf: any) => {
-              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-              this.selectedFiltered.account = value.account;
-              this.loadAgentTasks(null);
-            }, () => {
-              this.savedFilter.selected = undefined;
-              this.loadAgentTasks(null);
-            });
-          }
-        });
-        if (flag) {
-          this.savedFilter.selected = undefined;
-          this.loadAgentTasks(null);
-        }
-      } else {
-        this.savedFilter.selected = undefined;
-        this.loadAgentTasks(null);
-      }
-    }, () => {
-      this.savedFilter.selected = undefined;
-      this.loadAgentTasks(null);
-    });
-  }
-
-  isCustomizationSelected(flag): void {
-    if (flag) {
-      this.temp_filter = clone(this.agentFilters.filter.date);
-      this.agentFilters.filter.date = '';
-    } else {
-      if (this.temp_filter) {
-        this.agentFilters.filter.date = clone(this.temp_filter);
-      } else {
-        this.agentFilters.filter.date = 'today';
-      }
-    }
-  }
-
-  private setDateRange(filter): any {
-    if (this.agentFilters.filter.date == 'all') {
-
-    } else if (this.agentFilters.filter.date == 'today') {
-      filter.dateFrom = '0d';
-      filter.dateTo = '0d';
-    } else {
-      filter.dateFrom = this.agentFilters.filter.date;
-    }
-    return filter;
-  }
-
-  private parseProcessExecuted(regex, obj): any {
+  static parseProcessExecuted(regex, obj): any {
     let fromDate;
     let toDate;
 
@@ -417,12 +286,172 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  private parseDate(agentSearch, filter): any {
+  static parseDate(agentSearch, filter): any {
     if (agentSearch.from) {
       filter.dateFrom = new Date(agentSearch.from);
     }
     if (agentSearch.to) {
       filter.dateTo = new Date(agentSearch.to);
+    }
+    return filter;
+  }
+
+  static generateRequestObj(object, filter): any {
+    if (object.urls) {
+      filter.urls = object.urls.split(',');
+    }
+    if (object.agentIds) {
+      filter.agentIds = object.agentIds;
+    }
+    if (object.controllerId) {
+      filter.controllerId = object.controllerId;
+    }
+    if (object.radio) {
+      if (object.radio == 'planned') {
+        filter = AgentJobExecutionComponent.parseProcessExecuted(object.planned, filter);
+      } else {
+        filter = AgentJobExecutionComponent.parseDate(object, filter);
+      }
+    } else if (object.planned) {
+      filter = AgentJobExecutionComponent.parseProcessExecuted(object.planned, filter);
+    }
+    return filter;
+  }
+
+
+  ngOnInit(): void {
+    this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
+  private init(): void {
+    this.agentFilters = this.coreService.getResourceTab().agentJobExecution;
+    this.coreService.getResourceTab().state = 'agentJobExecutions';
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    if (!(this.agentFilters.current || this.agentFilters.current === false)) {
+      this.agentFilters.current = this.preferences.currentController;
+    }
+    if (!this.agentFilters.filter.date) {
+      this.agentFilters.filter.date = 'all';
+    }
+    this.savedFilter = JSON.parse(this.saveService.agentFilters) || {};
+    if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
+      this.checkSharedFilters();
+    } else {
+      this.savedFilter.selected = undefined;
+      this.loadAgentTasks(null);
+    }
+  }
+
+  checkSharedFilters(): void {
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      configurationType: 'CUSTOMIZATION',
+      objectType: this.objectType,
+      shared: true
+    };
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res: any) => {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = res.configurations;
+        }
+      }, complete: () => this.getCustomizations()
+    });
+  }
+
+  getCustomizations(): void {
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      account: this.authService.currentUserData,
+      configurationType: 'CUSTOMIZATION',
+      objectType: this.objectType
+    };
+    this.coreService.post('configurations', obj).subscribe({
+      next: (res: any) => {
+        if (this.filterList && this.filterList.length > 0) {
+          if (res.configurations && res.configurations.length > 0) {
+            this.filterList = this.filterList.concat(res.configurations);
+          }
+          const data = [];
+          for (let i = 0; i < this.filterList.length; i++) {
+            let flag = true;
+            for (let j = 0; j < data.length; j++) {
+              if (data[j].id === this.filterList[i].id) {
+                flag = false;
+              }
+            }
+            if (flag) {
+              data.push(this.filterList[i]);
+            }
+          }
+          this.filterList = data;
+        } else {
+          this.filterList = res.configurations;
+        }
+
+        if (this.savedFilter.selected) {
+          let flag = true;
+          this.filterList.forEach((value) => {
+            if (value.id === this.savedFilter.selected) {
+              flag = false;
+              this.coreService.post('configuration', {
+                controllerId: value.controllerId,
+                id: value.id
+              }).subscribe({
+                next: (conf: any) => {
+                  this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                  this.selectedFiltered.account = value.account;
+                }, error: () => {
+                  this.savedFilter.selected = undefined;
+                }, complete: () => {
+                  this.loadAgentTasks(null);
+                }
+              });
+            }
+          });
+          if (flag) {
+            this.savedFilter.selected = undefined;
+            this.loadAgentTasks(null);
+          }
+        } else {
+          this.savedFilter.selected = undefined;
+          this.loadAgentTasks(null);
+        }
+      }, error: () => {
+        this.savedFilter.selected = undefined;
+        this.loadAgentTasks(null);
+      }
+    });
+  }
+
+  isCustomizationSelected(flag): void {
+    if (flag) {
+      this.temp_filter = clone(this.agentFilters.filter.date);
+      this.agentFilters.filter.date = '';
+    } else {
+      if (this.temp_filter) {
+        this.agentFilters.filter.date = clone(this.temp_filter);
+      } else {
+        this.agentFilters.filter.date = 'today';
+      }
+    }
+  }
+
+  private setDateRange(filter): any {
+    if (this.agentFilters.filter.date == 'all') {
+
+    } else if (this.agentFilters.filter.date == 'today') {
+      filter.dateFrom = '0d';
+      filter.dateTo = '0d';
+    } else {
+      filter.dateFrom = this.agentFilters.filter.date;
     }
     return filter;
   }
@@ -438,43 +467,21 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     };
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       this.isCustomizationSelected(true);
-      obj = this.generateRequestObj(this.selectedFiltered, obj);
+      obj = AgentJobExecutionComponent.generateRequestObj(this.selectedFiltered, obj);
     } else {
       obj = this.setDateRange(obj);
       obj.timeZone = this.preferences.zone;
     }
-    this.coreService.post('agents/report', obj).subscribe((res: any) => {
-      this.agentTasks = res.agents || [];
-      this.searchInResult();
-      this.totalJobExecution = res.totalNumOfSuccessfulTasks;
-      this.totalNumOfJobs = res.totalNumOfJobs;
-      this.isLoading = true;
-    }, () => {
-      this.isLoading = true;
-      this.agentTasks = [];
+    this.coreService.post('agents/report', obj).subscribe({
+      next: (res: any) => {
+        this.agentTasks = res.agents || [];
+        this.searchInResult();
+        this.totalJobExecution = res.totalNumOfSuccessfulTasks;
+        this.totalNumOfJobs = res.totalNumOfJobs;
+      }, error: () => {
+        this.agentTasks = [];
+      }, complete: () => this.isLoading = true
     });
-  }
-
-  private generateRequestObj(object, filter): any {
-    if (object.urls) {
-      filter.urls = object.urls.split(',');
-    }
-    if (object.agentIds) {
-      filter.agentIds = object.agentIds;
-    }
-    if (object.controllerId) {
-      filter.controllerId = object.controllerId;
-    }
-    if(object.radio) {
-      if (object.radio == 'planned') {
-        filter = this.parseProcessExecuted(object.planned, filter);
-      } else {
-        filter = this.parseDate(object, filter);
-      }
-    } else if(object.planned){
-      filter = this.parseProcessExecuted(object.planned, filter);
-    }
-    return filter;
   }
 
   searchInResult(): void {
@@ -508,23 +515,23 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone
     };
     this.agentFilters.filter.date = '';
-    filter = this.generateRequestObj(this.searchFilter, filter);
+    filter = AgentJobExecutionComponent.generateRequestObj(this.searchFilter, filter);
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
       filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom)._d;
     }
     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
       filter.dateTo = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateTo)._d;
     }
-    this.coreService.post('agents/report', filter).subscribe((res: any) => {
-      this.agentTasks = res.agents || [];
-      this.searchInResult();
-      this.totalJobExecution = res.totalNumOfSuccessfulTasks;
-      this.totalNumOfJobs = res.totalNumOfJobs;
-      this.isLoading = true;
-    }, () => {
-      this.isLoading = true;
-      this.agentTasks = [];
-    });
+    this.coreService.post('agents/report', filter).subscribe({
+      next: (res: any) => {
+        this.agentTasks = res.agents || [];
+        this.searchInResult();
+        this.totalJobExecution = res.totalNumOfSuccessfulTasks;
+        this.totalNumOfJobs = res.totalNumOfJobs;
+      }, error: () => {
+        this.agentTasks = [];
+      }, complete: () => this.isLoading = true
+    })
   }
 
   /* ---------------------------- Action ----------------------------------*/
@@ -704,7 +711,10 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   private openFilterModal(filter, isCopy): void {
     if (this.schedulerIds.selected) {
       let filterObj: any = {};
-      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+      this.coreService.post('configuration', {
+        controllerId: filter.controllerId,
+        id: filter.id
+      }).subscribe((conf: any) => {
         filterObj = JSON.parse(conf.configuration.configurationItem);
         filterObj.shared = filter.shared;
         if (isCopy) {

@@ -50,8 +50,7 @@ export class SingleLockComponent implements OnInit, OnDestroy {
 
   private getLocksList(obj): void {
     obj.limit = this.preferences.maxLockRecords;
-    this.coreService.post('locks', obj).subscribe((res: any) => {
-      this.loading = false;
+    this.coreService.post('locks', obj).subscribe({next: (res: any) => {
       res.locks.forEach((value) => {
         value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
         value.state = value.lock.state;
@@ -62,8 +61,7 @@ export class SingleLockComponent implements OnInit, OnDestroy {
         value.title = value.lock.title;
       });
       this.locks = res.locks;
-    }, () => {
-      this.loading = false;
+    }, complete:() => this.loading = false
     });
   }
 
@@ -157,14 +155,13 @@ export class LockComponent implements OnInit, OnDestroy {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
         types: ['LOCK']
-      }).subscribe(res => {
-        this.tree = this.coreService.prepareTree(res, true);
-        if (this.tree.length) {
-          this.loadLocks();
-        }
-        this.isLoading = true;
-      }, () => {
-        this.isLoading = true;
+      }).subscribe({
+        next: res => {
+          this.tree = this.coreService.prepareTree(res, true);
+          if (this.tree.length) {
+            this.loadLocks();
+          }
+        }, complete: () => this.isLoading = true
       });
     } else {
       this.isLoading = true;
@@ -269,39 +266,39 @@ export class LockComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateListOnEvent(paths, compact): void{
+  private updateListOnEvent(paths, compact): void {
     this.coreService.post('locks', {
       controllerId: this.schedulerIds.selected,
       compact,
       lockPaths: paths,
       limit: this.preferences.maxLockRecords
-    }).subscribe((res: any) => {
-      res.locks.forEach((value) => {
-        for (let x = 0; x < this.locks.length; x++) {
-          if (this.locks[x].path === value.lock.path) {
-            this.locks[x].loading = false;
-            if (this.locks[x].workflows.length > 0 && value.workflows.length > 0) {
-              this.locks[x].workflows.forEach((workflow) => {
-                if (workflow.show) {
-                  for (let m = 0; value.workflows.length > 0; m++) {
-                    if (value.workflows[m].path === workflow.path) {
-                      value.workflows[m].show = true;
-                      break;
+    }).subscribe({
+      next: (res: any) => {
+        res.locks.forEach((value) => {
+          for (let x = 0; x < this.locks.length; x++) {
+            if (this.locks[x].path === value.lock.path) {
+              this.locks[x].loading = false;
+              if (this.locks[x].workflows.length > 0 && value.workflows.length > 0) {
+                this.locks[x].workflows.forEach((workflow) => {
+                  if (workflow.show) {
+                    for (let m = 0; value.workflows.length > 0; m++) {
+                      if (value.workflows[m].path === workflow.path) {
+                        value.workflows[m].show = true;
+                        break;
+                      }
                     }
                   }
-                }
-              });
+                });
+              }
+              this.locks[x].acquiredLockCount = value.acquiredLockCount;
+              this.locks[x].ordersHoldingLocksCount = value.ordersHoldingLocksCount;
+              this.locks[x].ordersWaitingForLocksCount = value.ordersWaitingForLocksCount;
+              this.locks[x].workflows = value.workflows;
+              break;
             }
-            this.locks[x].acquiredLockCount = value.acquiredLockCount;
-            this.locks[x].ordersHoldingLocksCount = value.ordersHoldingLocksCount;
-            this.locks[x].ordersWaitingForLocksCount = value.ordersWaitingForLocksCount;
-            this.locks[x].workflows = value.workflows;
-            break;
           }
-        }
-      });
-    }, () => {
-      this.loading = false;
+        });
+      }, complete: () => this.loading = false
     });
   }
 
@@ -321,38 +318,37 @@ export class LockComponent implements OnInit, OnDestroy {
     obj.limit = this.preferences.maxLockRecords;
     obj.compact = true;
     const locks = [];
-    this.coreService.post('locks', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      if (res.locks && res.locks.length === 0){
-        this.locksFilters.currentPage = 1;
-      }
-      res.locks.forEach((value) => {
-        value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
-        value.state = value.lock.state;
-        value.versionDate = value.lock.versionDate;
-        value.path = value.lock.path;
-        value.limit = value.lock.limit;
-        value.documentationName = value.lock.documentationName;
-        value.title = value.lock.title;
-        if (value.path) {
-          value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
+    this.coreService.post('locks', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        if (res.locks && res.locks.length === 0) {
+          this.locksFilters.currentPage = 1;
         }
-        if (this.locksFilters.expandedObjects && this.locksFilters.expandedObjects.length > 0) {
-          const index = this.locksFilters.expandedObjects.indexOf(value.id);
-          if (index > -1) {
-            locks.push(value);
-            this.locksFilters.expandedObjects.slice(index, 1);
+        res.locks.forEach((value) => {
+          value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
+          value.state = value.lock.state;
+          value.versionDate = value.lock.versionDate;
+          value.path = value.lock.path;
+          value.limit = value.lock.limit;
+          value.documentationName = value.lock.documentationName;
+          value.title = value.lock.title;
+          if (value.path) {
+            value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
           }
+          if (this.locksFilters.expandedObjects && this.locksFilters.expandedObjects.length > 0) {
+            const index = this.locksFilters.expandedObjects.indexOf(value.id);
+            if (index > -1) {
+              locks.push(value);
+              this.locksFilters.expandedObjects.slice(index, 1);
+            }
+          }
+        });
+        res.locks = this.orderPipe.transform(res.locks, this.locksFilters.filter.sortBy, this.locksFilters.reverse);
+        this.locks = res.locks;
+        this.searchInResult();
+        if (locks && locks.length > 0) {
+          this.updateLocksDetail(locks);
         }
-      });
-      res.locks = this.orderPipe.transform(res.locks, this.locksFilters.filter.sortBy, this.locksFilters.reverse);
-      this.loading = false;
-      this.locks = res.locks;
-      this.searchInResult();
-      if (locks && locks.length > 0) {
-        this.updateLocksDetail(locks);
-      }
-    }, () => {
-      this.loading = false;
+      }, complete: () => this.loading = false
     });
   }
 
@@ -438,10 +434,10 @@ export class LockComponent implements OnInit, OnDestroy {
 
   private getLocksDetail(obj, cb): void {
     obj.limit = this.preferences.maxLockRecords;
-    this.coreService.post('locks', obj).subscribe((res: any) => {
-      cb(res.locks);
-    }, () => {
-      cb();
+    this.coreService.post('locks', obj).subscribe({
+      next: (res: any) => {
+        cb(res.locks);
+      }, error: () => cb()
     });
   }
 

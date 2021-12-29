@@ -93,7 +93,7 @@
           </div>
           <div cdkDropList (cdkDropListDropped)="drop($event)">
             <div class="form-group row m-b-0 m-l-12" *ngFor="let item of variables; let i = index" cdkDrag>
-              <div class="pos-abt m-l-n-13 text-18 m-t cur-m" cdkDragHandle>
+              <div class="pos-abt m-l-n-13 text-18 cur-m" cdkDragHandle>
                 <i class="fa fa-bars" aria-hidden="true"></i>
               </div>
               <div class="col-md-5 col-sm-6 m-b-sm" *ngIf="item.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">

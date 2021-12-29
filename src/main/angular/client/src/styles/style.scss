@@ -5397,6 +5397,12 @@ tr.disabled-row td:not(.menu) {
   right: 10px !important;
 }
 
+#xmlLeftSidePanel {
+  .tree-block > .ps.ps--active-y > .ps__rail-y {
+    right: 0 !important;
+  }
+}
+
 .tree-children {
   &.tree-children-no-padding {
     padding-left: 0;
@@ -6706,6 +6712,12 @@ tr.tr-border td {
   }
 }
 
+.loading-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .m-l-55 {
   margin-left: 55%;
 }
@@ -6893,6 +6905,8 @@ div.jsoneditor,
 .ant-pagination-item, .ant-pagination-item-active,
 .ant-table-small,
 .ant-time-picker-input,
+.ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table,
+.ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table,
 .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > thead > tr > th,
 .ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table > thead > tr > th,
 .ant-table.ant-table-bordered > .ant-table-container > .ant-table-body > table > thead > tr > th,

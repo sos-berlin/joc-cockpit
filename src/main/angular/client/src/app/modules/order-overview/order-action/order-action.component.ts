@@ -105,9 +105,7 @@ export class OrderActionComponent {
       this.coreService.post('orders/' + url, obj).subscribe({
         next: () => {
           this.resetAction();
-        }, error: () => {
-          this.isChanged.emit(false);
-        }
+        }, error: () => this.isChanged.emit(false)
       });
     }
   }
@@ -153,25 +151,43 @@ export class OrderActionComponent {
     });
   }
 
+  private getRequirements(order, cb): void {
+    if (order.requirements && order.requirements.parameters) {
+      cb();
+    } else {
+      this.coreService.post('workflow', {
+        controllerId: this.schedulerId,
+        workflowId: {path: order.workflowId.path}
+      }).subscribe({
+        next: (res: any) => {
+          order.requirements = res.workflow.orderPreparation;
+        }, complete: () => cb()
+      });
+    }
+  }
+
   changeParameter(order): void {
     if (order.arguments && !isArray(order.arguments)) {
       order.arguments = Object.entries(order.arguments).map(([k, v]) => {
         return {name: k, value: v};
       });
     }
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: ChangeParameterModalComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        schedulerId: this.schedulerId,
-        orderPreparation: order.requirements,
-        order: this.coreService.clone(order)
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+
+    this.getRequirements(order, () => {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ChangeParameterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          schedulerId: this.schedulerId,
+          orderPreparation: order.requirements,
+          order: this.coreService.clone(order)
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    })
   }
 
   private resetAction(): void {
@@ -179,5 +195,4 @@ export class OrderActionComponent {
       this.isChanged.emit(false);
     }, 5000);
   }
-
 }

@@ -197,17 +197,19 @@ export class AdminComponent implements OnInit, OnDestroy {
   private getUsersData(flag): void {
     this.coreService.post('authentication/auth', {
       identityServiceName: this.identityService
-    }).subscribe(res => {
-      this.userObj = res;
-      delete this.userObj.deliveryDate;
-      this.userObj.identityServiceName = this.identityService;
-      if (flag) {
+    }).subscribe({
+      next: res => {
+        this.userObj = res;
+        delete this.userObj.deliveryDate;
+        this.userObj.identityServiceName = this.identityService;
+        if (flag) {
+          this.dataService.announceData(this.userObj);
+          this.checkLdapConf();
+        }
+      }, error: () => {
+        this.userObj = {accounts: [], identityServiceName: this.identityService};
         this.dataService.announceData(this.userObj);
-        this.checkLdapConf();
       }
-    }, () => {
-      this.userObj = {accounts: [], identityServiceName: this.identityService};
-      this.dataService.announceData(this.userObj);
     });
   }
 

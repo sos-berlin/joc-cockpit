@@ -62,9 +62,7 @@ export class DeployModalComponent implements OnInit {
     this.coreService.post('agents/cluster/deploy', obj).subscribe({
       next: res => {
         this.activeModal.close(res);
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -145,9 +143,7 @@ export class CreateTokenModalComponent implements OnInit {
     this.coreService.post('token/create', obj).subscribe({
       next: res => {
         this.activeModal.close(res);
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 
@@ -224,9 +220,7 @@ export class SubagentModalComponent implements OnInit {
     this.coreService.post('agent/subagents/store', obj).subscribe({
       next: () => {
         this.activeModal.close('close');
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 }
@@ -400,9 +394,7 @@ export class AgentModalComponent implements OnInit {
     this.coreService.post(this.isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe({
       next: () => {
         this.activeModal.close('close');
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, complete: () => this.submitted = false
     });
   }
 }
@@ -505,9 +497,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       next: (data: any) => {
         this.data = data.controllerIds;
         this.getSecurity();
-      }, error: () => {
-        this.loading = true;
-      }
+      }, error: () => this.loading = true
     });
   }
 
@@ -560,9 +550,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         });
       }, error: () => {
         controller.agentClusters = [];
-      }, complete: () => {
-        controller.isLoading = false;
-      }
+      }, complete: () => controller.isLoading = false
     });
   }
 

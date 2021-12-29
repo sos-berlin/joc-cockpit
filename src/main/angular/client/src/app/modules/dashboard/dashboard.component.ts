@@ -221,9 +221,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       configurationItem: JSON.stringify(this.preferences)
     };
     if (configObj.id && configObj.id > 0) {
-      this.coreService.post('configuration/save', configObj).subscribe(() => {
-
-      });
+      this.coreService.post('configuration/save', configObj).subscribe();
     }
   }
 

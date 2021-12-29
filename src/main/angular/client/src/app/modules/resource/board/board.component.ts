@@ -1,7 +1,6 @@
 import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
-import * as moment from 'moment';
 import {takeUntil} from 'rxjs/operators';
 import {OrderPipe} from 'ngx-order-pipe';
 import {differenceInCalendarDays} from 'date-fns';
@@ -62,7 +61,7 @@ export class PostModalComponent implements OnInit {
     };
     if (this.postObj.at === 'date') {
       if (this.postObj.fromDate) {
-        obj.endOfLife = moment(this.postObj.fromDate).format('YYYY-MM-DD HH:mm:ss');
+        obj.endOfLife = this.coreService.getDateByFormat(this.postObj.fromDate, null,'YYYY-MM-DD HH:mm:ss');
       }
     } else if (this.postObj.at === 'later') {
       obj.endOfLife = this.postObj.atTime;
@@ -115,14 +114,12 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
 
   private getBoardsList(obj): void {
     obj.limit = this.preferences.maxBoardRecords;
-    this.coreService.post('notice/boards', obj).subscribe((res: any) => {
-      this.loading = false;
+    this.coreService.post('notice/boards', obj).subscribe({next: (res: any) => {
       this.boards = res.noticeBoards;
       this.boards.forEach((value) => {
         value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
       });
-    }, () => {
-      this.loading = false;
+    }, complete: () => this.loading = false
     });
   }
 
@@ -264,14 +261,13 @@ export class BoardComponent implements OnInit, OnDestroy {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
         types: ['NOTICEBOARD']
-      }).subscribe(res => {
-        this.tree = this.coreService.prepareTree(res, true);
-        if (this.tree.length) {
-          this.loadBoards();
-        }
-        this.isLoading = true;
-      }, () => {
-        this.isLoading = true;
+      }).subscribe({
+        next: res => {
+          this.tree = this.coreService.prepareTree(res, true);
+          if (this.tree.length) {
+            this.loadBoards();
+          }
+        }, complete: () => this.isLoading = true
       });
     } else {
       this.isLoading = true;
@@ -377,27 +373,27 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateListOnEvent(paths, compact): void{
+  private updateListOnEvent(paths, compact): void {
     this.coreService.post('notice/boards', {
       controllerId: this.schedulerIds.selected,
       compact,
       limit: this.preferences.maxBoardRecords,
       noticeBoardPaths: paths
-    }).subscribe((res: any) => {
-      res.noticeBoards.forEach((value) => {
-        for (let x = 0; x < this.boards.length; x++) {
-          if (this.boards[x].path === value.path) {
-            this.boards[x].loading = false;
-            this.boards[x].numOfNotices = value.numOfNotices;
-            this.boards[x].numOfExpectingOrders = value.numOfExpectingOrders;
-            this.boards[x].notices = value.notices;
-            break;
+    }).subscribe({
+      next: (res: any) => {
+        res.noticeBoards.forEach((value) => {
+          for (let x = 0; x < this.boards.length; x++) {
+            if (this.boards[x].path === value.path) {
+              this.boards[x].loading = false;
+              this.boards[x].numOfNotices = value.numOfNotices;
+              this.boards[x].numOfExpectingOrders = value.numOfExpectingOrders;
+              this.boards[x].notices = value.notices;
+              break;
+            }
           }
-        }
-      });
-      this.boards = [...this.boards];
-    }, () => {
-      this.loading = false;
+        });
+        this.boards = [...this.boards];
+      }, complete: () => this.loading = false
     });
   }
 
@@ -424,30 +420,30 @@ export class BoardComponent implements OnInit, OnDestroy {
     obj.limit = this.preferences.maxBoardRecords;
     obj.compact = true;
     const boards = [];
-    this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe((res: any) => {
-      if (res.noticeBoards && res.noticeBoards.length === 0){
-        this.boardsFilters.currentPage = 1;
-      }
-      res.noticeBoards.forEach((value) => {
-        value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
-        value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
-        if (this.boardsFilters.expandedObjects && this.boardsFilters.expandedObjects.length > 0) {
-          const index = this.boardsFilters.expandedObjects.indexOf(value.path);
-          if (index > -1) {
-            boards.push(value);
-            this.boardsFilters.expandedObjects.slice(index, 1);
-          }
+    this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        if (res.noticeBoards && res.noticeBoards.length === 0) {
+          this.boardsFilters.currentPage = 1;
         }
-      });
-      res.noticeBoards = this.orderPipe.transform(res.noticeBoards, this.boardsFilters.filter.sortBy, this.boardsFilters.reverse);
-      this.loading = false;
-      this.boards = res.noticeBoards;
-      this.searchInResult();
-      if (boards && boards.length > 0) {
-        this.updateBoardsDetail(boards);
-      }
-    }, () => {
-      this.loading = false;
+        res.noticeBoards.forEach((value) => {
+          value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
+          value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
+          if (this.boardsFilters.expandedObjects && this.boardsFilters.expandedObjects.length > 0) {
+            const index = this.boardsFilters.expandedObjects.indexOf(value.path);
+            if (index > -1) {
+              boards.push(value);
+              this.boardsFilters.expandedObjects.slice(index, 1);
+            }
+          }
+        });
+        res.noticeBoards = this.orderPipe.transform(res.noticeBoards, this.boardsFilters.filter.sortBy, this.boardsFilters.reverse);
+        this.loading = false;
+        this.boards = res.noticeBoards;
+        this.searchInResult();
+        if (boards && boards.length > 0) {
+          this.updateBoardsDetail(boards);
+        }
+      }, complete: () => this.loading = false
     });
   }
 
@@ -529,10 +525,12 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   private getNoticeBoards(obj, cb): void {
     obj.limit = this.preferences.maxBoardRecords;
-    this.coreService.post('notice/boards', obj).subscribe((res: any) => {
-      cb(res.noticeBoards);
-    }, () => {
-      cb();
+    this.coreService.post('notice/boards', obj).subscribe({
+      next: (res: any) => {
+        cb(res.noticeBoards);
+      }, error: () => {
+        cb();
+      }
     });
   }
 
