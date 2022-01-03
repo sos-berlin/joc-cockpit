@@ -2310,6 +2310,22 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        if (order && order.show) {
+          this.coreService.post('daily_plan/order/variables', {
+            orderId: order.orderId,
+            controllerId: this.schedulerIds.selected
+          }).subscribe((res: any) => {
+            if (!res.variables) {
+              res.variables = result;
+            }
+            this.convertObjectToArray(res.variables, order);
+          });
+        } else {
+          this.loadOrderPlan();
+        }
+      }
     });
   }
 

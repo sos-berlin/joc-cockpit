@@ -33,6 +33,7 @@
         startYear: !isNaN(parseInt(opt.startYear)) ? parseInt(opt.startYear) : opt.selectedDate ? new Date(opt.selectedDate).getFullYear() : new Date().getFullYear(),
         startMonth: !isNaN(parseInt(opt.startMonth)) ? parseInt(opt.startMonth) : opt.selectedDate ? new Date(opt.selectedDate).getMonth() : new Date().getMonth(),
         view: opt.view ? opt.view : 'year',
+        showBack: false,
         rangeSelection: !!opt.rangeSelection,
         selectedDate: opt.selectedDate ? new Date(opt.selectedDate) : null,
         minDate: opt.minDate instanceof Date ? opt.minDate : null,
@@ -157,9 +158,7 @@
 
         let nextIcon = $(document.createElement('span'));
         nextIcon.addClass('fa fa-angle-right');
-
         nextDiv.append(nextIcon);
-
         headerTable.append(nextDiv);
         header.append(headerTable);
       } else {
@@ -167,22 +166,23 @@
         headerDiv.addClass('month-header');
         let prevIcon = $(document.createElement('i'));
         prevIcon.addClass('fa fa-angle-left');
-        /*				let d = new Date();
-                if (new Date(d.getFullYear(), d.getMonth(), 1).getTime() >= new Date(this.options.startYear, this.options.startMonth, 1).getTime()) {
-                  prevIcon.addClass('disabled');
-                }*/
         headerDiv.append(prevIcon);
         let titleCell = $(document.createElement('span'));
         titleCell.addClass('month-title');
-        if(this.options.language.months) {
+        if (this.options.language.months) {
           titleCell.text(this.options.language.months[this.options.startMonth] + ' ' + this.options.startYear);
-        } else{
+        } else {
           titleCell.text(dates['en'].months[this.options.startMonth] + ' ' + this.options.startYear);
         }
         headerDiv.append(titleCell);
         let nextDiv = $(document.createElement('i'));
         nextDiv.addClass('fa fa-angle-right');
         headerDiv.append(nextDiv);
+        if (this.options.showBack) {
+          let backDiv = $(document.createElement('i'));
+          backDiv.addClass('fa fa-arrow-left back-arrow');
+          headerDiv.append(backDiv);
+        }
         header.append(headerDiv);
       }
 
@@ -553,16 +553,19 @@
         }
       });
 
-      this.element.find('.month-header .fa-angle-left').click(function () {
+      this.element.find('.month-header .back-arrow').click(function () {
+        _this.options.view = 'year';
+        _this.options.showBack = false;
+        _this._render();
+      });
 
-        //_this.options.view = 'year';
+      this.element.find('.month-header .fa-angle-left').click(function () {
         if (!$(this).hasClass('disabled')) {
           _this.setMonth(_this.options.startMonth - 1);
         }
       });
 
       this.element.find('.month-header .fa-angle-right').click(function () {
-        //_this.options.view = 'year';
         if (!$(this).hasClass('disabled')) {
           _this.setMonth(_this.options.startMonth + 1)
         }
@@ -572,6 +575,7 @@
         let month = $(this).attr('id');
         _this.options.startMonth = parseInt(month);
         _this.options.view = 'month';
+        _this.options.showBack = true;
         _this._render();
       });
 
@@ -767,16 +771,6 @@
     getAllowOverlap: function () {
       return this.options.allowOverlap;
     },
-    setAllowOverlap: function (allowOverlap) {
-      this.options.allowOverlap = allowOverlap;
-    },
-    getDisplayWeekNumber: function () {
-      return this.options.displayWeekNumber;
-    },
-    setDisplayWeekNumber: function (displayWeekNumber) {
-      this.options.displayWeekNumber = displayWeekNumber;
-      this._render();
-    },
 
     getDisabledDays: function () {
       return this.options.disabledDays;
@@ -788,12 +782,14 @@
 
     setView: function (view) {
       this.options.view = view;
+      this.options.showBack = false;
     },
     getView: function () {
       return this.options.view;
     },
     setYearView: function (obj) {
       this.options.view = obj.view;
+      this.options.showBack = false;
       this.setYear(obj.year);
     },
     setCallBack: function (cb) {

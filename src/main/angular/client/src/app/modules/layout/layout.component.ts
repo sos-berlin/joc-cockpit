@@ -82,7 +82,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       $('a.navbar-item').addClass('collapsed');
     }
     const headerHt = $('.fixed-top').height() || 70;
-    $('.app-body').css('margin-top', headerHt + 'px');
+    $('.app-body').css({'margin-top': headerHt + 'px'});
+    $('.max-ht').css({'max-height': 'calc(100vh - ' + (headerHt + 56) +'px)'});
   }
 
   static checkNavHeader(): void {

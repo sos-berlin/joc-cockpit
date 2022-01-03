@@ -107,7 +107,7 @@
   <div class="padding p-b-0 p-l-0">
     <div class="row m-t-sm">
       <div class="col-lg-12">
-        <div appResizable [sideView]="sideView" id="leftPanel" class="sticky leftPanel">
+        <div appResizable [sideView]="sideView" id="leftPanel" class="sticky leftPanel workflow">
           <div *ngIf="tree.length>0">
             <app-tree-navigation [tree]="tree" [sideView]="sideView.workflow"
                                  [defaultSelectedKeys]="workflowFilters.selectedkeys"

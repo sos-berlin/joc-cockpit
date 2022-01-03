@@ -21,7 +21,6 @@
   direction: ltr;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
@@ -46,11 +45,17 @@
     font-size: 16px;
     text-align: center;
     margin-bottom: 6px;
+
     i {
       font-size: 20px;
       margin-left: 12px;
       margin-right: 12px;
       cursor: pointer;
+    }
+
+    i.back-arrow {
+      position: absolute;
+      left: 6px;
     }
   }
 
@@ -205,7 +210,6 @@
 .grab {
     td.day .day-content:hover {
       background: rgba(0, 0, 0, 0.2);
-      cursor: -webkit-grab !important;
       cursor: grab !important;
     }
 }
@@ -299,8 +303,7 @@
 @-webkit-keyframes zoomIn {
   0% {
     opacity: 0;
-    -webkit-transform: scale3d(.3, .3, .3);
-    transform: scale3d(.3, .3, .3)
+    transform: scale(.3, .3)
   }
   50% {
     opacity: 1
@@ -310,8 +313,7 @@
 @keyframes zoomIn {
   0% {
     opacity: 0;
-    -webkit-transform: scale3d(.3, .3, .3);
-    transform: scale3d(.3, .3, .3)
+    transform: scale(.3, .3)
   }
   50% {
     opacity: 1

@@ -1417,7 +1417,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private _updatePanelHeight(): void {
     setTimeout(() => {
-      let ht = (parseInt($('#workflowTableId table').height(), 10) + 90);
+      let ht = (parseInt($('#workflowTableId table').height(), 10) + 60);
       if (ht > 140 && ht < 150) {
         ht += 40;
       }
@@ -1425,9 +1425,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       if (el && el.scrollWidth > el.clientWidth) {
         ht = ht + 11;
       }
-      if (ht > 450) {
-        ht = 450;
-      }
+
       if (ht < 140) {
         ht = 142;
       }
