@@ -1,8 +1,6 @@
-
 .timeline {
   display: inline-block;
   min-width: 100%;
-
   .ant-picker-input {
     top: 1px;
     cursor: pointer;
@@ -41,7 +39,7 @@
 }
 
 .overview {
-  max-height: calc(100vh - 676px);
+  max-height: calc(100vh - 636px);
   overflow: auto;
   min-height: 200px;
 }

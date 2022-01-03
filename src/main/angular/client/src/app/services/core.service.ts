@@ -471,7 +471,6 @@ export class CoreService {
     return this.searchResults[type];
   }
 
-
   setDefaultTab(): void {
     this.tabs = this.tempTabs;
   }

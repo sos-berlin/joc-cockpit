@@ -82,7 +82,7 @@ export class ChangeParameterModalComponent implements OnInit {
               }
             }
           }
-        } else if (!this.variable || (this.variable && isArray(this.variable.value))){
+        } else if (!this.variable || (this.variable && isArray(this.variable.value))) {
           const actualList = [];
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
@@ -109,16 +109,15 @@ export class ChangeParameterModalComponent implements OnInit {
         }
         return !item.value.final;
       });
-      for (const prop in this.variables) {
-        this.variables = this.variables.filter(item => {
-          if (isArray(item.value)) {
-            this.setForkListVariables(item, this.forkListVariables);
-            return false;
-          } else {
-            return true;
-          }
-        });
-      }
+
+      this.variables = this.variables.filter(item => {
+        if (isArray(item.value)) {
+          this.setForkListVariables(item, this.forkListVariables);
+          return false;
+        } else {
+          return true;
+        }
+      });
     }
     this.updateSelectItems();
   }
@@ -307,7 +306,7 @@ export class ChangeParameterModalComponent implements OnInit {
     if (obj.variables || obj.removeVariables) {
       this.coreService.post('daily_plan/orders/modify', obj).subscribe({
         next: () => {
-          this.activeModal.close('Done');
+          this.activeModal.close(obj.variables);
         }, complete: () => this.submitted = false
       });
     } else {

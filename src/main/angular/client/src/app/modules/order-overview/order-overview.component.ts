@@ -514,7 +514,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   private _updatePanelHeight(): void {
     setTimeout(() => {
-      let ht = (parseInt($('#orderTableId table').height(), 10) + 76);
+      let ht = (parseInt($('#orderTableId table').height(), 10) + 60);
       if (ht > 140 && ht < 150) {
         ht += 40;
       }

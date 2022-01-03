@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {sortBy} from 'underscore';
@@ -69,6 +69,18 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  static showAndHideBtn(): void {
+    const dom = $('.scroll-y');
+    if (dom && dom.scrollTop() > 50) {
+      $('.scrollBottom-btn').hide();
+      $('.scrollTop-btn').show();
+    } else {
+      $('.scrollBottom-btn').show();
+      $('.scrollTop-btn').hide();
+    }
+  }
+
+
   ngOnInit(): void {
     this.path = this.route.snapshot.paramMap.get('path');
     this.versionId = this.route.snapshot.paramMap.get('versionId');
@@ -112,21 +124,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   /* ---------------------------- Broadcast messages ----------------------------------*/
 
-  @HostListener('window:scroll', ['$event'])
-  scrollHandler(): void {
-    this.showAndHideBtn();
-  }
-
-  private showAndHideBtn(): void {
-    if (window.scrollY > 50) {
-      $('.scrollBottom-btn').hide();
-      $('.scrolltop-btn').show();
-    } else {
-      $('.scrollBottom-btn').show();
-      $('.scrolltop-btn').hide();
-    }
-  }
-
   expandAll(): void {
     if (this.pageView === 'list') {
       this.isExpandAll = true;
@@ -140,11 +137,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   scrollTop(): void {
-    $(window).scrollTop(0);
+    $('.scroll-y').scrollTop(0);
   }
 
   scrollBottom(): void {
-    $(window).scrollTop($('body').height());
+    $('.scroll-y').scrollTop($('.scroll-y').height());
   }
 
   setView($event): void {
@@ -335,6 +332,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
+    $('.scroll-y').scroll(function () {
+      WorkflowDetailComponent.showAndHideBtn();
+    });
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.coreService.post('workflow', {
@@ -352,7 +352,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         } else {
           this.getOrders(res.workflow);
         }
-        this.showAndHideBtn();
+        WorkflowDetailComponent.showAndHideBtn();
       }, error: () => this.loading = true
     });
   }
@@ -370,7 +370,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone,
       limit: this.preferences.maxWorkflowRecords
     };
-    if (this.workflowFilters.date === '2d'){
+    if (this.workflowFilters.date === '2d') {
       obj.dateFrom = '1d';
     }
     this.coreService.post('orders', obj).subscribe({
@@ -402,5 +402,4 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       orders: workflow.orders
     };
   }
-
 }

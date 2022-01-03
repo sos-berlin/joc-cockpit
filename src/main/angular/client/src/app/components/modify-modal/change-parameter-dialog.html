@@ -161,7 +161,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-12 text" *ngIf="(variableList.length === 0 && forkListVariables.length === 0) || (variables.length === 0 && variable)">
+        <div class="col-sm-12 text" *ngIf="(variableList.length === 0 && forkListVariables.length === 0) || (variables.length === 0 && forkListVariables.length === 0 && variable)">
           <div class="text-center m-t m-b" translate>common.message.noVariableDeclarationFound</div>
         </div>
       </div>

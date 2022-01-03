@@ -66,6 +66,27 @@ export class OrderVariableComponent implements OnInit {
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post('daily_plan/order/variables', {
+            orderId: order.orderId,
+            controllerId: this.schedulerId
+          }).subscribe((res: any) => {
+            if (!res.variables) {
+              res.variables = result;
+            }
+            order.variables = Object.entries(res.variables).map(([k, v]) => {
+              if (v && isArray(v)) {
+                v.forEach((list, index) => {
+                  v[index] = Object.entries(list).map(([k1, v1]) => {
+                    return {name: k1, value: v1};
+                  });
+                });
+              }
+              return {name: k, value: v};
+            });
+          });
+        }
       });
     });
   }
@@ -108,7 +129,7 @@ export class OrderVariableComponent implements OnInit {
     } else {
       this.coreService.post('workflow', {
         controllerId: this.schedulerId,
-        workflowId: {path: order.workflowId.path}
+        workflowId: {path: order.workflowId ? order.workflowId.path : order.workflowPath}
       }).subscribe({
         next: (res: any) => {
           order.requirements = res.workflow.orderPreparation;
