@@ -67,9 +67,11 @@ export class FileTransferHistorySummaryComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         this.summary = res.files || {};
+        this.isLoaded = true;
       }, error: (err) => {
         this.notAuthenticate = !err.isPermitted;
-      }, complete: () => this.isLoaded = true
+        this.isLoaded = true;
+      }
     });
   }
 

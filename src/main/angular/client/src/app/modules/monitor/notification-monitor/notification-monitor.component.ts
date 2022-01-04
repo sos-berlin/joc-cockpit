@@ -126,20 +126,22 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     if (this.filters.filter.date && this.filters.filter.date !== 'ALL') {
       obj.dateFrom = this.filters.filter.date;
     }
-    this.coreService.post('monitoring/notifications', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({next: (res: any) => {
-      res.notifications = this.orderPipe.transform(res.notifications, this.filters.filter.sortBy, this.filters.filter.reverse);
-      if (notificationIds && notificationIds.size > 0) {
-        res.notifications.forEach((value) => {
-          if (notificationIds.has(value.notificationId)) {
-            value.show = true;
-            value.isLoaded = true;
-            value.monitors = notificationIds.get(value.notificationId);
-          }
-        });
-      }
-      this.notifications = res.notifications;
-      this.searchInResult();
-    }, complete: () => this.isLoaded = true
+    this.coreService.post('monitoring/notifications', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        this.isLoaded = true;
+        res.notifications = this.orderPipe.transform(res.notifications, this.filters.filter.sortBy, this.filters.filter.reverse);
+        if (notificationIds && notificationIds.size > 0) {
+          res.notifications.forEach((value) => {
+            if (notificationIds.has(value.notificationId)) {
+              value.show = true;
+              value.isLoaded = true;
+              value.monitors = notificationIds.get(value.notificationId);
+            }
+          });
+        }
+        this.notifications = res.notifications;
+        this.searchInResult();
+      }, error: () => this.isLoaded = true
     });
   }
 
@@ -170,9 +172,11 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
       this.coreService.post('monitoring/notification', {
         controllerId: data.controllerId,
         notificationId: data.notificationId,
-      }).subscribe({next:(res: any) => {
-        data.monitors = res.monitors;
-      }, complete:() => data.isLoaded = true
+      }).subscribe({
+        next: (res: any) => {
+          data.monitors = res.monitors;
+          data.isLoaded = true;
+        }, error: () => data.isLoaded = true
       });
     }
   }

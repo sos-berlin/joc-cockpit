@@ -307,7 +307,7 @@ export class ChangeParameterModalComponent implements OnInit {
       this.coreService.post('daily_plan/orders/modify', obj).subscribe({
         next: () => {
           this.activeModal.close(obj.variables);
-        }, complete: () => this.submitted = false
+        }, error: () => this.submitted = false
       });
     } else {
       this.submitted = false;
@@ -429,7 +429,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
     this.coreService.post('daily_plan/orders/modify', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 

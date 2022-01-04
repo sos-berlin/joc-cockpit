@@ -57,9 +57,11 @@ export class InventoryStatisticsComponent implements OnInit, OnDestroy {
     this.coreService.post('inventory/statistics', {controllerId: this.schedulerIds.selected}).subscribe({
       next: res => {
         this.statistics = res;
+        this.isLoaded = true;
       }, error: (err) => {
         this.notAuthenticate = !err.isPermitted;
-      }, complete: () => this.isLoaded = true
+        this.isLoaded = true;
+      }
     });
   }
 }

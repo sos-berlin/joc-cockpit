@@ -3252,9 +3252,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             console.error(e);
           }
         }
-      }, complete: () => {
-        this.isLoading = false;
-      }
+      }, error: () => this.isLoading = false
     });
   }
 
@@ -9045,9 +9043,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
           this.ref.detectChanges();
         }
-      }, complete: () => {
-        this.isStore = false;
-      }
+      }, error: () => this.isStore = false
     });
   }
 

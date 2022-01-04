@@ -476,9 +476,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
             this.data.deployed = false;
             this.setErrorMessage(res);
           }
-        }, error: () => {
-          this.ref.detectChanges();
-        }
+        }, error: () => this.ref.detectChanges()
       });
     }
   }

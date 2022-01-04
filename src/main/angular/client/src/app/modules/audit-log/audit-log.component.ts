@@ -170,7 +170,8 @@ export class SearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, complete: () => this.submitted = false
+        this.submitted = false;
+      }, error: () => this.submitted = false
     });
   }
 
@@ -244,9 +245,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         if (res.configurations && res.configurations.length > 0) {
           this.filterList = res.configurations;
         }
-      }, complete: () => {
         this.getCustomizations();
-      }
+      }, error: () => this.getCustomizations()
     });
   }
 
@@ -292,10 +292,10 @@ export class AuditLogComponent implements OnInit, OnDestroy {
                 next: (conf: any) => {
                   this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                   this.selectedFiltered.account = value.account;
+                  this.load(null);
                 }, error: () => {
                   this.savedFilter.selected = undefined;
-                }, complete: () =>{
-                   this.load(null);
+                  this.load(null);
                 }
               });
             }
@@ -366,10 +366,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
             }
           });
         }
-        this.searchInResult();
-      }, complete: () => {
         this.isLoaded = true;
-      }
+        this.searchInResult();
+      }, error: () => this.isLoaded = true
     });
   }
 
@@ -604,9 +603,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       }).subscribe({
         next: (res: any) => {
           auditLog.details = res.auditLogDetails;
-        }, complete: () => {
           auditLog.isLoaded = true;
-        }
+        }, error: () => auditLog.isLoaded = true
       });
     }
   }
@@ -738,8 +736,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         res.auditLog = this.orderPipe.transform(res.auditLog, this.adtLog.filter.sortBy, this.adtLog.reverse);
         this.auditLogs = res.auditLog;
+        this.isLoaded = true;
         this.searchInResult();
-      }, complete: () => this.isLoaded = true
+      }, error: () => this.isLoaded = true
     });
   }
 

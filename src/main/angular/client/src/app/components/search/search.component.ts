@@ -183,7 +183,8 @@ export class SearchComponent implements OnInit {
             this.coreService.setSearchResult('lock', this.results);
           }
         }
-      }, complete: () => {
+        this.submitted = false;
+      }, error: () => {
         this.submitted = false;
       }
     });

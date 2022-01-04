@@ -228,7 +228,7 @@ export class UpdateJobComponent implements OnInit {
     this.coreService.post('inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -239,7 +239,11 @@ export class UpdateJobComponent implements OnInit {
       id: workflow.id,
       objectType: InventoryObject.WORKFLOW
     }).subscribe({
-      complete: () => {
+      next: () => {
+        if (cb) {
+          cb();
+        }
+      }, error: () => {
         if (cb) {
           cb();
         }

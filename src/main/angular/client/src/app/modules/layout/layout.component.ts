@@ -215,7 +215,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.isLogout = true;
     this.child.isLogout = true;
     this.coreService.post('authentication/logout', {}).subscribe({
-      complete: () => this._logout(timeout)
+      next: () => this._logout(timeout),
+      error: () => this._logout(timeout)
     });
   }
 
@@ -433,17 +434,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.isTouch = true;
       this.coreService.post('touch', undefined).subscribe({
         next: res => {
+          this.isTouch = false;
           if (res) {
             this.count = this.sessionTimeout / 1000 - 1;
           }
-        }, complete: () => this.isTouch = false
+        }, error: () => this.isTouch = false
       });
     }
   }
 
   private calculateTime(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
     this.interval = setInterval(() => {
-      if (!this.preferences.zone && sessionStorage.preferences) {
+      if (!this.preferences || !this.preferences.zone && sessionStorage.preferences) {
         this.preferences = JSON.parse(sessionStorage.preferences) || {};
       }
       this.currentTime = this.coreService.stringToDate(this.preferences, new Date());

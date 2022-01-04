@@ -145,6 +145,7 @@ export class SearchComponent implements OnInit {
     };
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
+        this.submitted = false;
         configObj.id = res.id;
         this.allFilter.push(configObj);
         if (this.isSearch) {
@@ -152,7 +153,7 @@ export class SearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -283,6 +284,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   private getWorkflowList(obj): void {
     this.coreService.post('workflow', obj).subscribe({
       next: (res: any) => {
+        this.loading = false;
         const request = {
           compact: true,
           controllerId: this.controllerId,
@@ -302,7 +304,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
           this.showPanel = this.workflows[0];
         }
         this.showPanelFuc(this.workflows[0]);
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 
@@ -483,10 +485,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }).subscribe({
         next: res => {
           this.tree = this.coreService.prepareTree(res, true);
+          this.isLoading = true;
           if (this.tree.length && !reload) {
             this.loadWorkflow();
           }
-        }, complete: () => this.isLoading = true
+        }, error: () => this.isLoading = true
       });
     } else {
       this.isLoading = true;
@@ -534,6 +537,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (flag) {
           this.hidePanel();
         }
+        this.loading = false;
         this.workflows = res.workflows;
         this.searchInResult();
         if (request.workflowIds.length > 0) {
@@ -546,7 +550,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.traverseTreeForSearchData();
         }
         this.updatePanelHeight();
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 
@@ -562,7 +566,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         if (res.configurations && res.configurations.length > 0) {
           this.filterList = res.configurations;
         }
-      }, complete: () => this.getCustomizations()
+        this.getCustomizations();
+      }, error: () => this.getCustomizations()
     });
   }
 
@@ -1305,7 +1310,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
         }
-      }, complete: () => {
+        if (cb) {
+          cb();
+        }
+        this.resetAction();
+      }, error: () => {
         if (cb) {
           cb();
         }

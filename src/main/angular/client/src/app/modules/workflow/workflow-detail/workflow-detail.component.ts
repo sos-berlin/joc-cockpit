@@ -375,6 +375,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('orders', obj).subscribe({
       next: (res: any) => {
+        this.loading = true;
         this.workflow.orders = res.orders;
         this.workflow.numOfOrders = res.orders.length;
         this.workflow.ordersSummary = {};
@@ -392,7 +393,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         if (this.sideBar.isVisible) {
           this.sideBar.orders = this.workflow.orders;
         }
-      }, complete: () => this.loading = true
+      }, error: () => this.loading = true
     });
   }
 

@@ -76,9 +76,10 @@ export class AgentComponent implements OnInit, OnDestroy {
             }
           });
         }
+        this.loading = false;
         this.agentClusters = result.agents;
         this.searchInResult();
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 
@@ -154,7 +155,7 @@ export class AgentComponent implements OnInit, OnDestroy {
             }
           }
         });
-      }, complete: () => this.data.forEach((value) => value.loading = false)
+      }, error: () => this.data.forEach((value) => value.loading = false)
     });
   }
 
@@ -172,7 +173,8 @@ export class AgentComponent implements OnInit, OnDestroy {
     this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agentIds: [cluster.agentId]}).subscribe({
       next: (result: any) => {
         cluster.orders = result.agents[0].orders;
-      }, complete: () => cluster.loading = false
+        cluster.loading = false;
+      }, error: () => cluster.loading = false
     });
   }
 

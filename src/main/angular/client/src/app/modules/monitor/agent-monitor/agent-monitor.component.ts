@@ -111,7 +111,8 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.data = res.controllers;
         this.checkMissingDates();
-      }, complete: () => this.isLoaded = true
+        this.isLoaded = true;
+      }, error: () => this.isLoaded = true
     });
   }
 

@@ -147,6 +147,7 @@ export class SearchComponent implements OnInit {
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
+        this.submitted = false;
         if (result.id) {
           for (let i in this.allFilter) {
             if (this.allFilter[i].id === result.id) {
@@ -163,7 +164,7 @@ export class SearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -362,7 +363,8 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
         if (res.configurations && res.configurations.length > 0) {
           this.filterList = res.configurations;
         }
-      }, complete: () => this.getCustomizations()
+        this.getCustomizations();
+      }, error: () => this.getCustomizations()
     });
   }
 
@@ -408,9 +410,9 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
                 next: (conf: any) => {
                   this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                   this.selectedFiltered.account = value.account;
+                  this.loadAgentTasks(null);
                 }, error: () => {
                   this.savedFilter.selected = undefined;
-                }, complete: () => {
                   this.loadAgentTasks(null);
                 }
               });
@@ -474,13 +476,15 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('agents/report', obj).subscribe({
       next: (res: any) => {
+        this.isLoading = true;
         this.agentTasks = res.agents || [];
         this.searchInResult();
         this.totalJobExecution = res.totalNumOfSuccessfulTasks;
         this.totalNumOfJobs = res.totalNumOfJobs;
       }, error: () => {
         this.agentTasks = [];
-      }, complete: () => this.isLoading = true
+        this.isLoading = true;
+      }
     });
   }
 
@@ -524,13 +528,15 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('agents/report', filter).subscribe({
       next: (res: any) => {
+        this.isLoading = true;
         this.agentTasks = res.agents || [];
         this.searchInResult();
         this.totalJobExecution = res.totalNumOfSuccessfulTasks;
         this.totalNumOfJobs = res.totalNumOfJobs;
       }, error: () => {
         this.agentTasks = [];
-      }, complete: () => this.isLoading = true
+        this.isLoading = true;
+      }
     })
   }
 

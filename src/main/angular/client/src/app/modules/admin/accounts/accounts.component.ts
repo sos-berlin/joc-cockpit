@@ -95,7 +95,8 @@ export class AccountModalComponent implements OnInit {
         this.userDetail.accounts = this.userDetail.accounts.filter((account) => {
           return account.account !== obj.account;
         });
-      }, complete: () => this.submitted = false
+        this.submitted = false;
+      }
     });
   }
 }

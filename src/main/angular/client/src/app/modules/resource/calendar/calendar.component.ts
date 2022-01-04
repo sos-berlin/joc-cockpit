@@ -111,7 +111,8 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
     this.coreService.post('calendars', obj).subscribe({
       next: (res: any) => {
         this.calendars = res.calendars;
-      }, complete: () => this.loading = false
+        this.loading = false;
+      }, error: () => this.loading = false
     });
   }
 }
@@ -311,7 +312,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         }
         this.calendars = res.calendars || [];
         this.searchInResult();
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 

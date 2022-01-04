@@ -139,9 +139,7 @@ export class SettingModalComponent implements OnInit {
     }).subscribe({
       next: (res) => {
         this.activeModal.close(res);
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -234,7 +232,10 @@ export class IdentityServiceModalComponent implements OnInit {
       name: this.currentObj.identityServiceName,
       configurationItem: this.settingObj
     }).subscribe({
-      complete: () => {
+      next: () => {
+        this.removeSettingId = -1;
+        this.store();
+      }, error: () => {
         this.removeSettingId = -1;
         this.store();
       }
@@ -282,7 +283,7 @@ export class IdentityServiceModalComponent implements OnInit {
     this.coreService.post('iam/identityservice/store', this.currentObj).subscribe({
       next: (res) => {
         this.activeModal.close(res);
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -333,8 +334,9 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.identityServiceTypes = res.identityServiceTypes;
         this.identityServices = res.identityServiceItems;
+        this.loading = false;
         this.checkVaultTypes();
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 

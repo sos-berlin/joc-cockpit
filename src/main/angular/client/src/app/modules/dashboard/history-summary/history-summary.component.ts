@@ -81,9 +81,11 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         this.orderSummary = res.orders || {};
+        this.isLoaded = true;
       }, error: (err) => {
         this.notAuthenticate1 = !err.isPermitted;
-      }, complete: () => this.isLoaded = true
+        this.isLoaded = true;
+      }
     });
   }
 
@@ -107,9 +109,11 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         this.taskSummary = res.jobs;
+        this.isLoaded = true;
       }, error: (err) => {
         this.notAuthenticate2 = !err.isPermitted;
-      }, complete: () => this.isLoaded = true
+        this.isLoaded = true;
+      }
     });
   }
 

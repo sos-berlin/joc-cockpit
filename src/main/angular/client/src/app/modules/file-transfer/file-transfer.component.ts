@@ -188,6 +188,7 @@ export class FileTransferSearchComponent implements OnInit {
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
+        this.submitted = false;
         if (result.id) {
           for (let i in this.allFilter) {
             if (this.allFilter[i].id === result.id) {
@@ -204,8 +205,7 @@ export class FileTransferSearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-       
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -265,8 +265,9 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
     this.coreService.post('yade/transfers', obj).subscribe({
       next: (result: any) => {
         this.fileTransfers = result.transfers;
+        this.loading = true;
         this.setHeaderWidth();
-      }, complete: () => this.loading = true
+      }, error: () => this.loading = true
     });
   }
 
@@ -468,6 +469,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
+        this.isLoaded = true;
         this.fileTransfers = res.transfers || [];
         if (this.showFiles) {
           this.fileTransfers.forEach((transfer) => {
@@ -477,7 +479,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         }
         this.searchInResult();
         this.setHeaderWidth();
-      }, complete: () => this.isLoaded = true
+      }, error: () => this.isLoaded = true
     });
   }
 
@@ -510,6 +512,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         value.files = res.files;
+        value.loading = false;
         value.widthArr = [...this.coreService.calFileTransferRowWidth()];
         setTimeout(() => {
           const dom = $('#fileTransferMainTable');
@@ -518,7 +521,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
           });
         }, 0);
 
-      }, complete: () => value.loading = false
+      }, error: () => value.loading = false
     });
   }
 
@@ -551,10 +554,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.fileTransferService.getRequestForSearch(this.searchFilter, filter, this.preferences);
     this.coreService.post('yade/transfers', filter).subscribe({
       next: (res: any) => {
+        this.isLoaded = true;
         this.fileTransfers = res.transfers;
         this.searchInResult();
         this.setHeaderWidth();
-      }, complete: () => this.isLoaded = true
+      }, error: () => this.isLoaded = true
     });
   }
 
@@ -570,9 +574,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         if (res.configurations && res.configurations.length > 0) {
           this.filterList = res.configurations;
         }
+        this.getYadeCustomizations();
       }, error: () => {
         this.filterList = [];
-      }, complete: () => {
         this.getYadeCustomizations();
       }
     });

@@ -83,9 +83,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.post('orders/overview/snapshot', obj).subscribe({
       next: (res: any) => {
         this.orders = res.orders;
+        this.isLoaded = true;
       }, error: (err) => {
         this.notAuthenticate = !err.isPermitted;
-      }, complete: () => this.isLoaded = true
+        this.isLoaded = true;
+      }
     });
   }
 

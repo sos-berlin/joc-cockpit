@@ -102,9 +102,7 @@ export class RoleModalComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail);
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -200,9 +198,7 @@ export class ControllerModalComponent implements OnInit {
       }).subscribe({
         next: () => {
           this.activeModal.close(this.userDetail);
-        }, complete: () => {
-          this.submitted = false;
-        }
+        }, error: () => this.submitted = false
       });
     }
   }

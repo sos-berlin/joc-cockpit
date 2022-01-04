@@ -133,7 +133,8 @@ export class OrderVariableComponent implements OnInit {
       }).subscribe({
         next: (res: any) => {
           order.requirements = res.workflow.orderPreparation;
-        }, complete: () => cb()
+          cb();
+        }, error: () => cb()
       });
     }
   }

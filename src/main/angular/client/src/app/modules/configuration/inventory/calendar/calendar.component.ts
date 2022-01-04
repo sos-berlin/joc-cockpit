@@ -850,9 +850,9 @@ export class FrequencyModalComponent implements OnInit {
               });
             }
           }
-
+          this.isCalendarLoading = false;
           $('#full-calendar').data('calendar').setDataSource(this.planItems);
-        }, complete: () => this.isCalendarLoading = false
+        }, error: () => this.isCalendarLoading = false
       });
     } else if (newDate.getFullYear() == this.calendarTitle) {
       this.planItems = clone(this.tempList);

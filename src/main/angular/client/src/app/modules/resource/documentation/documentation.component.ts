@@ -149,7 +149,7 @@ export class EditModalComponent implements OnInit {
       next: () => {
         this.submitted = false;
         this.activeModal.close(this.document);
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -271,7 +271,7 @@ export class SingleDocumentationComponent implements OnInit {
       next: (res: any) => {
         this.loading = false;
         this.documents = res.documentations;
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 
@@ -420,7 +420,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
             this.loadDocument();
           }
           this.isLoading = true;
-        }, complete: () => this.isLoading = true
+        }, error: () => this.isLoading = true
       });
     } else {
       this.isLoading = true;
