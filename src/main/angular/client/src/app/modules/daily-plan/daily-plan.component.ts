@@ -385,7 +385,7 @@ export class CreatePlanModalComponent implements OnInit {
       this.coreService.post('daily_plan/orders/generate', obj).subscribe({
         next: () => {
           this.activeModal.close('Done');
-        }, complete: () => this.submitted = false
+        }, error: () => this.submitted = false
       });
     }
   }
@@ -406,7 +406,7 @@ export class CreatePlanModalComponent implements OnInit {
     forkJoin(apiArr).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -496,7 +496,7 @@ export class RemovePlanModalComponent implements OnInit {
     this.coreService.post('daily_plan/orders/submit', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -560,7 +560,7 @@ export class RemovePlanModalComponent implements OnInit {
     this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -574,7 +574,7 @@ export class RemovePlanModalComponent implements OnInit {
     forkJoin(apiArr).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -1004,7 +1004,7 @@ export class SearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -2079,9 +2079,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           plannedOrderItems = plannedOrderItems.concat(result[i].plannedOrderItems);
         }
         this.filterData(plannedOrderItems);
+        this.isLoaded = true;
       }, error: () => {
         this.resetCheckBox();
-      }, complete: () => this.isLoaded = true
+        this.isLoaded = true;
+      }
     });
   }
 

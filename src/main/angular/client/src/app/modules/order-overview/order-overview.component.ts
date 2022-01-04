@@ -99,10 +99,12 @@ export class OrderPieChartComponent implements OnInit, OnDestroy, OnChanges {
       }
       obj.timeZone = this.timeZone;
     }
-    this.coreService.post('orders/overview/snapshot', obj).subscribe({next: (res: any) => {
-      this.snapshot = res.orders;
-      this.preparePieData(this.snapshot);
-    }, complete: () => this.loading = false
+    this.coreService.post('orders/overview/snapshot', obj).subscribe({
+      next: (res: any) => {
+        this.snapshot = res.orders;
+        this.loading = false;
+        this.preparePieData(this.snapshot);
+      }, error: () => this.loading = false
     });
   }
 
@@ -289,12 +291,14 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
         types: ['WORKFLOW']
-      }).subscribe({next: res => {
-        this.tree = this.coreService.prepareTree(res, true);
-        if (this.tree.length) {
-          this.loadOrder();
-        }
-      }, complete: () => this.loading = true
+      }).subscribe({
+        next: res => {
+          this.tree = this.coreService.prepareTree(res, true);
+          this.loading = true;
+          if (this.tree.length) {
+            this.loadOrder();
+          }
+        }, error: () => this.loading = true
       });
     } else {
       this.loading = true;
@@ -342,7 +346,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.coreService.post('orders/overview/snapshot', obj).subscribe({
       next: (res: any) => {
         this.orderOverview = res.orders;
-      }, error: () => this.orderOverview = {}, complete: () => {
+        this.loading = true;
+        this.isLoaded = true;
+      }, error: () => {
+        this.orderOverview = {};
         this.loading = true;
         this.isLoaded = true;
       }
@@ -503,8 +510,11 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
           this.resetCheckBox();
         }
         this.updatePanelHeight();
-      }, error: () => this.resetCheckBox()
-      , complete: () => {
+        this.isLoaded = true;
+        this.loading = true;
+        this.resetAction();
+      }, error: () => {
+        this.resetCheckBox();
         this.isLoaded = true;
         this.loading = true;
         this.resetAction();
@@ -597,7 +607,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.auditLogs = res.auditLog;
         this.showPanelObj.loading = false;
-      }, complete: () => this.showPanelObj.loading = false
+      }, error: () => this.showPanelObj.loading = false
     });
   }
 

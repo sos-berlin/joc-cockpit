@@ -51,11 +51,12 @@ export class OrderTemplateComponent {
     };
     this.coreService.post('order/history', obj).subscribe({
       next: (res: any) => {
+        data.loading = false;
         data.children = res.children;
         data.level = count + 1;
         data.states = res.states;
         this.coreService.calRowWidth(this.historyView.current);
-      }, complete: () => data.loading = false
+      }, error: () => data.loading = false
     });
   }
 
@@ -242,6 +243,7 @@ export class OrderSearchComponent implements OnInit {
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
+        this.submitted = false;
         if (result.id) {
           for (let i in this.allFilter) {
             if (this.allFilter[i].id === result.id) {
@@ -258,7 +260,7 @@ export class OrderSearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -415,6 +417,7 @@ export class TaskSearchComponent implements OnInit {
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
+        this.submitted = false
         if (result.id) {
           for (let i in this.allFilter) {
             if (this.allFilter[i].id === result.id) {
@@ -431,7 +434,7 @@ export class TaskSearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -527,6 +530,7 @@ export class DeploymentSearchComponent implements OnInit {
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
+        this.submitted = false;
         if (result.id) {
           for (let i in this.allFilter) {
             if (this.allFilter[i].id === result.id) {
@@ -543,7 +547,7 @@ export class DeploymentSearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -653,6 +657,7 @@ export class SubmissionSearchComponent implements OnInit {
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
+        this.submitted = false;
         if (result.id) {
           for (let i in this.allFilter) {
             if (this.allFilter[i].id === result.id) {
@@ -669,7 +674,7 @@ export class SubmissionSearchComponent implements OnInit {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -739,7 +744,8 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         this.history = res.history;
-      }, complete: () => this.loading = false
+        this.loading = false;
+      }, error: () => this.loading = false
     });
   }
 
@@ -750,7 +756,8 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         this.history = res.history;
-      }, complete: () => this.loading = false
+        this.loading = false;
+      }, error: () => this.loading = false
     });
   }
 
@@ -775,8 +782,9 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
           obj.account = res.depHistory[0].account;
           obj.state = res.depHistory[0].state;
         }
+        this.loading = false;
         this.history = [obj];
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 
@@ -789,9 +797,11 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('daily_plan/history', obj).subscribe({
       next: (res: any) => {
         this.history = res.dates || [];
+        this.loading = false;
       }, error: () => {
         this.history = [];
-      }, complete: () => this.loading = false
+        this.loading = false;
+      }
     });
   }
 
@@ -845,7 +855,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
         data.children = res.children;
         data.states = res.states;
         data.loading = false;
-      }, complete: () => data.loading = false
+      }, error: () => data.loading = false
     });
   }
 
@@ -1115,6 +1125,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertRequestBody(obj);
     this.coreService.post('orders/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
+        this.isLoading = true;
         this.historys = this.setDuration(res);
         this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
         if (flag) {
@@ -1124,7 +1135,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }, error: () => {
         this.data = [];
-      }, complete: () => this.isLoading = true
+        this.isLoading = true;
+      }
     });
   }
 
@@ -1215,6 +1227,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertRequestBody(obj);
     this.coreService.post('tasks/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res) => {
+        this.isLoading = true;
         this.taskHistorys = this.setDuration(res);
         this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
         if (flag) {
@@ -1224,7 +1237,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }, error: () => {
         this.data = [];
-      }, complete: () => this.isLoading = true
+        this.isLoading = true;
+      }
     });
   }
 
@@ -1287,6 +1301,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
     this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
+        this.isLoading = true;
         this.yadeHistorys = res.transfers || [];
         this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
         if (flag) {
@@ -1297,7 +1312,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.setHeaderWidth();
       }, error: () => {
         this.data = [];
-      }, complete: () => this.isLoading = true
+        this.isLoading = true;
+      }
     });
   }
 
@@ -1380,6 +1396,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.convertDeployRequestBody(obj);
     this.coreService.post('inventory/deployment/history', {compactFilter: obj}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
+        this.isLoading = true;
         this.deploymentHistorys = res.depHistory || [];
         this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
         if (flag) {
@@ -1389,7 +1406,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       }, error: () => {
         this.data = [];
-      }, complete: () => this.isLoading = true
+        this.isLoading = true;
+      }
     });
   }
 
@@ -1469,12 +1487,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('daily_plan/history', obj)
       .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
+        this.isLoading = true;
         this.submissionHistorys = res.dates || [];
         this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
         this.searchInResult();
       }, error: () => {
         this.data = [];
-      }, complete: () => this.isLoading = true
+        this.isLoading = true;
+      }
     });
   }
 
@@ -1515,9 +1535,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('daily_plan/history/submissions', obj).subscribe({
       next: (res) => {
         controller.submissions = res.submissionTimes || [];
+        history.loading = false;
       }, error: () => {
         controller.submissions = [];
-      }, complete: () => history.loading = false
+        history.loading = false;
+      }
     });
   }
 
@@ -1549,7 +1571,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
           submission.orderIds = [];
           submission.errorMessages = [];
           submission.warnMessages = [];
-        }, complete: () => this.isSubmissionLoading = false
+          this.isSubmissionLoading = false;
+        }
       });
     }
   }
@@ -1605,10 +1628,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
         next: (res: any) => {
           this.historys = this.setDuration(res);
           this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
+          this.isLoading = true;
           this.searchInResult();
         }, error: () => {
           this.data = [];
-        }, complete: () => this.isLoading = true
+          this.isLoading = true;
+        }
       });
     } else if (this.historyFilters.type === 'TASK') {
       this.task.filter.historyStates = '';
@@ -1654,12 +1679,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
       this.coreService.post('tasks/history', filter).subscribe({
         next: (res: any) => {
+          this.isLoading = true;
           this.taskHistorys = this.setDuration(res);
           this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
           this.searchInResult();
         }, error: () => {
           this.data = [];
-        }, complete: () => this.isLoading = true
+          this.isLoading = true;
+        }
       });
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.deployment.filter.state = '';
@@ -1687,12 +1714,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.convertDeployRequestBody(filter);
       this.coreService.post('inventory/deployment/history', {compactFilter: filter}).subscribe({
         next: (res: any) => {
+          this.isLoading = true;
           this.deploymentHistorys = res.depHistory || [];
           this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
           this.searchInResult();
         }, error: () => {
           this.data = [];
-        }, complete: () => this.isLoading = true
+          this.isLoading = true;
+        }
       });
     } else if (this.historyFilters.type === 'SUBMISSION') {
       this.submission.filter.category = '';
@@ -1727,12 +1756,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
       this.coreService.post('daily_plan/history', filter).subscribe({
         next: (res: any) => {
+          this.isLoading = true;
           this.submissionHistorys = res.dates || [];
           this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
           this.searchInResult();
         }, error: () => {
           this.data = [];
-        }, complete: () => this.isLoading = true
+          this.isLoading = true;
+        }
       });
     } else if (this.historyFilters.type === 'YADE') {
       this.yade.filter.states = '';
@@ -1741,13 +1772,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.fileTransferService.getRequestForSearch(this.yadeSearch, filter, this.preferences);
       this.coreService.post('yade/transfers', filter).subscribe({
         next: (res: any) => {
+          this.isLoading = true;
           this.yadeHistorys = res.transfers || [];
           this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
           this.searchInResult();
           this.setHeaderWidth();
         }, error: () => {
           this.data = [];
-        }, complete: () => this.isLoading = true
+          this.isLoading = true;
+        }
       });
     }
   }
@@ -2065,11 +2098,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
     };
     this.coreService.post('order/history', obj).subscribe({
       next: (res: any) => {
+        data.loading = false;
         data.level = 1;
         data.children = res.children;
         data.states = res.states;
         this.coreService.calRowWidth(this.historyFilters.current);
-      }, complete: () => data.loading = false
+      }, error: () => data.loading = false
     });
   }
 
@@ -2092,7 +2126,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.coreService.post('inventory/deployment/history', obj).subscribe({
       next: (res: any) => {
         data.children = res.depHistory;
-      }, complete: () => data.loading = false
+        data.loading = false;
+      }, error: () => data.loading = false
     });
   }
 
@@ -2116,6 +2151,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       controllerId: data.controllerId || this.schedulerIds.selected
     }).subscribe({
       next: (res: any) => {
+        data.loading = false;
         data.files = res.files;
         data.widthArr = [...data.widthArr, ...this.coreService.calFileTransferRowWidth()];
         setTimeout(() => {
@@ -2124,7 +2160,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             $(this).css('width', self.widthArr[i] + 'px');
           });
         }, 0);
-      }, complete: () => data.loading = false
+      }, error: () => data.loading = false
     });
   }
 
@@ -2440,11 +2476,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
             }
           }
         }
+        data.loading = false;
         data.level = count;
         data.children = res.children;
         data.states = res.states;
         this.coreService.calRowWidth(this.historyFilters.current);
-      }, complete: () => data.loading = false
+      }, error: () => data.loading = false
     });
   }
 
@@ -2527,11 +2564,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
             this.recursiveExpand(res.children[i].order, ++count);
           }
         }
+        data.loading = false;
         data.level = count;
         data.children = res.children;
         data.states = res.states;
         this.coreService.calRowWidth(this.historyFilters.current);
-      }, complete: () => data.loading = false
+      }, error: () => data.loading = false
     });
   }
 
@@ -3637,7 +3675,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
                 if (result1.configuration && result1.configuration.configurationItem) {
                   this.savedIgnoreList = JSON.parse(result1.configuration.configurationItem) || {};
                 }
-              }, complete: () => {
+                this.loadIgnoreList = true;
+                this.init(false);
+              }, error: () => {
                 this.loadIgnoreList = true;
                 this.init(false);
               }

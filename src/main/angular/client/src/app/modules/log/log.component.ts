@@ -98,7 +98,8 @@ export class LogComponent implements OnInit {
             this.preferences = JSON.parse(conf.configurationItem);
             this.preferenceId = conf.id;
           }
-        }, complete:() => this.init()
+          this.init();
+        }, error:() => this.init()
         });
       } else {
         this.init();
@@ -262,34 +263,36 @@ export class LogComponent implements OnInit {
     this.canceller = this.coreService.log('task/log', jobs, {
       responseType: 'text' as 'json',
       observe: 'response' as 'response'
-    }).subscribe((res: any) => {
-      if (res) {
-        this.renderData(res.body, false);
-        if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-          const obj = {
-            controllerId: this.controllerId,
-            taskId: res.headers.get('x-log-task-id') || jobs.taskId,
-            eventId: res.headers.get('x-log-event-id')
-          };
-          this.runningTaskLog(obj, false);
-        } else{
-          this.finished = true;
+    }).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.renderData(res.body, false);
+          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+            const obj = {
+              controllerId: this.controllerId,
+              taskId: res.headers.get('x-log-task-id') || jobs.taskId,
+              eventId: res.headers.get('x-log-event-id')
+            };
+            this.runningTaskLog(obj, false);
+          } else {
+            this.finished = true;
+          }
+        } else {
+          this.loading = false;
         }
-      } else {
+        this.isLoading = false;
+      }, error: (err) => {
+        window.document.getElementById('logs').innerHTML = '';
+        if (err.data && err.data.error) {
+          this.error = err.data.error.message;
+        } else {
+          this.error = err.message;
+        }
+        this.errStatus = err.status;
         this.loading = false;
+        this.finished = true;
+        this.isLoading = false;
       }
-      this.isLoading = false;
-    }, (err) => {
-      window.document.getElementById('logs').innerHTML = '';
-      if (err.data && err.data.error) {
-        this.error = err.data.error.message;
-      } else {
-        this.error = err.message;
-      }
-      this.errStatus = err.status;
-      this.loading = false;
-      this.finished = true;
-      this.isLoading = false;
     });
   }
 

@@ -91,7 +91,8 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         this.agentClusterRunningTaskGraph(res);
-      }, complete: () => this.isLoaded = true
+        this.isLoaded = true;
+      }, error: () => this.isLoaded = true
     });
   }
 }

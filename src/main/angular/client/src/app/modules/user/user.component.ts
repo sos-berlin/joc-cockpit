@@ -77,7 +77,7 @@ export class UpdateKeyModalComponent implements OnInit {
     this.coreService.post(URL, this.type === 'key' ? {keys: obj} : obj).subscribe({
       next: () => {
         this.activeModal.close();
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -225,7 +225,8 @@ export class GenerateKeyComponent implements OnInit {
     keyAlg: 'RSA'
   };
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService,
+              private translate: TranslateService,  private toasterService: ToasterService) {
   }
 
   ngOnInit(): void {
@@ -267,9 +268,13 @@ export class GenerateKeyComponent implements OnInit {
     const URL = this.type === 'key' ? 'profile/key/generate' : 'profile/ca/generate';
     this.coreService.post(URL, obj).subscribe({
       next: () => {
-        this.toasterService.pop('success', 'Key has been generated successfully');
+        let msg;
+        this.translate.get('profile.keyManagement.message.keyGeneratedSuccessfully').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        this.toasterService.pop('success', msg);
         this.activeModal.close('ok');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 }

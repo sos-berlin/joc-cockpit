@@ -50,18 +50,20 @@ export class SingleLockComponent implements OnInit, OnDestroy {
 
   private getLocksList(obj): void {
     obj.limit = this.preferences.maxLockRecords;
-    this.coreService.post('locks', obj).subscribe({next: (res: any) => {
-      res.locks.forEach((value) => {
-        value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
-        value.state = value.lock.state;
-        value.versionDate = value.lock.versionDate;
-        value.documentationName = value.lock.documentationName;
-        value.path = value.lock.path;
-        value.limit = value.lock.limit;
-        value.title = value.lock.title;
-      });
-      this.locks = res.locks;
-    }, complete:() => this.loading = false
+    this.coreService.post('locks', obj).subscribe({
+      next: (res: any) => {
+        this.loading = false;
+        res.locks.forEach((value) => {
+          value.id = value.lock.path.substring(value.lock.path.lastIndexOf('/') + 1);
+          value.state = value.lock.state;
+          value.versionDate = value.lock.versionDate;
+          value.documentationName = value.lock.documentationName;
+          value.path = value.lock.path;
+          value.limit = value.lock.limit;
+          value.title = value.lock.title;
+        });
+        this.locks = res.locks;
+      }, error: () => this.loading = false
     });
   }
 
@@ -157,11 +159,12 @@ export class LockComponent implements OnInit, OnDestroy {
         types: ['LOCK']
       }).subscribe({
         next: res => {
+          this.isLoading = true;
           this.tree = this.coreService.prepareTree(res, true);
           if (this.tree.length) {
             this.loadLocks();
           }
-        }, complete: () => this.isLoading = true
+        }, error: () => this.isLoading = true
       });
     } else {
       this.isLoading = true;
@@ -274,6 +277,7 @@ export class LockComponent implements OnInit, OnDestroy {
       limit: this.preferences.maxLockRecords
     }).subscribe({
       next: (res: any) => {
+        this.loading = false;
         res.locks.forEach((value) => {
           for (let x = 0; x < this.locks.length; x++) {
             if (this.locks[x].path === value.lock.path) {
@@ -298,7 +302,7 @@ export class LockComponent implements OnInit, OnDestroy {
             }
           }
         });
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 
@@ -320,6 +324,7 @@ export class LockComponent implements OnInit, OnDestroy {
     const locks = [];
     this.coreService.post('locks', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
+        this.loading = false;
         if (res.locks && res.locks.length === 0) {
           this.locksFilters.currentPage = 1;
         }
@@ -348,7 +353,7 @@ export class LockComponent implements OnInit, OnDestroy {
         if (locks && locks.length > 0) {
           this.updateLocksDetail(locks);
         }
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 

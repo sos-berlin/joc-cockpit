@@ -72,9 +72,7 @@ export class PermissionModalComponent {
     }).subscribe({
       next: () => {
         this.activeModal.close(this.rolePermissions);
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, error: () => this.submitted = false
     });
   }
 }

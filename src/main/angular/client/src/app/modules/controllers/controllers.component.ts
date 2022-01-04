@@ -62,7 +62,7 @@ export class DeployModalComponent implements OnInit {
     this.coreService.post('agents/cluster/deploy', obj).subscribe({
       next: res => {
         this.activeModal.close(res);
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -143,7 +143,7 @@ export class CreateTokenModalComponent implements OnInit {
     this.coreService.post('token/create', obj).subscribe({
       next: res => {
         this.activeModal.close(res);
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -220,7 +220,7 @@ export class SubagentModalComponent implements OnInit {
     this.coreService.post('agent/subagents/store', obj).subscribe({
       next: () => {
         this.activeModal.close('close');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -304,7 +304,9 @@ export class AgentModalComponent implements OnInit {
 
   private removeSubagents(obj, cb): void {
     this.coreService.post('agent/subagents/remove', obj).subscribe({
-      complete: () => {
+      next: () => {
+        cb();
+      }, error: () => {
         cb();
       }
     });
@@ -394,7 +396,7 @@ export class AgentModalComponent implements OnInit {
     this.coreService.post(this.isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe({
       next: () => {
         this.activeModal.close('close');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -483,8 +485,10 @@ export class ControllersComponent implements OnInit, OnDestroy {
         this.tokens = data.tokens;
         if (!flag) {
           this.checkTokens();
+        } else {
+          this.getData();
         }
-      }, complete: () => {
+      }, error: () => {
         if (flag) {
           this.getData();
         }
@@ -511,13 +515,16 @@ export class ControllersComponent implements OnInit, OnDestroy {
         controllerId: controller.controllerId
       }).subscribe({
         next: (data: any) => {
+          controller.loading = false;
           controller.agents = data.agents;
           controller.agents.forEach((agent) => {
             this.mergeTokenData(null, agent.agentId, agent);
           });
+          if (cb) {
+            cb();
+          }
         }, error: () => {
           controller.agents = [];
-        }, complete: () => {
           controller.loading = false;
           if (cb) {
             cb();
@@ -537,6 +544,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       next: (data: any) => {
         const temp = controller.agentClusters ? this.coreService.clone(controller.agentClusters) : [];
         controller.agentClusters = data.agents;
+        controller.isLoading = false;
         controller.agentClusters.forEach((agent) => {
           this.mergeTokenData(null, agent.agentId, agent);
           if (temp.length > 0) {
@@ -550,7 +558,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
         });
       }, error: () => {
         controller.agentClusters = [];
-      }, complete: () => controller.isLoading = false
+        controller.isLoading = false;
+      }
     });
   }
 
@@ -1143,13 +1152,12 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.coreService.post('controller/ids', {}).subscribe({
       next: (res: any) => {
         this.data = res.controllerIds;
+        this.isLoaded = true;
         this.getSecurity();
         this.authService.setIds(res);
         this.authService.save();
         this.dataService.isProfileReload.next(true);
-      }, complete: () => {
-        this.isLoaded = true;
-      }
+      }, error: () => this.isLoaded = true
     });
   }
 

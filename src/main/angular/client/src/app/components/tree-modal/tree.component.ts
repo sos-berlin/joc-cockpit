@@ -39,7 +39,8 @@ export class TreeModalComponent implements OnInit {
           this.tree[0].expanded = true;
           this.selectNode(this.tree[0]);
         }
-      }, complete: () => {
+        this.loading = true;
+      }, error: () => {
         this.loading = true;
       }
     });

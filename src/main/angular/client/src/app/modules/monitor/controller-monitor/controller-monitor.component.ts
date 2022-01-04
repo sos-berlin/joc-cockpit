@@ -131,6 +131,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone
     }).subscribe({
       next: (res: any) => {
+        this.isLoaded = true;
         this.data = res.controllers;
         let groupData = [];
         const map = new Map();
@@ -176,7 +177,7 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
         });
         groupData = this.groupByPipe.transform(groupData, 'date');
         this.checkMissingDates(groupData, map);
-      }, complete: () => this.isLoaded = true
+      }, error: () => this.isLoaded = true
     });
   }
 

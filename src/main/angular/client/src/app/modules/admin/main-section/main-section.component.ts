@@ -221,7 +221,7 @@ export class MainSectionModalComponent implements OnInit {
     this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
-      }, complete: () => {
+      }, error: () => {
         this.submitted = false;
       }
     });
@@ -339,9 +339,7 @@ export class EditMainSectionModalComponent implements OnInit {
     this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, error: () => this.submitted = false
     });
   }
 
@@ -456,9 +454,7 @@ export class LdapSectionModalComponent implements OnInit {
     this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, error: () => this.submitted = false
     });
   }
 }

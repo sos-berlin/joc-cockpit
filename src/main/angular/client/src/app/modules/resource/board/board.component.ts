@@ -114,12 +114,14 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
 
   private getBoardsList(obj): void {
     obj.limit = this.preferences.maxBoardRecords;
-    this.coreService.post('notice/boards', obj).subscribe({next: (res: any) => {
-      this.boards = res.noticeBoards;
-      this.boards.forEach((value) => {
-        value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
-      });
-    }, complete: () => this.loading = false
+    this.coreService.post('notice/boards', obj).subscribe({
+      next: (res: any) => {
+        this.loading = false;
+        this.boards = res.noticeBoards;
+        this.boards.forEach((value) => {
+          value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
+        });
+      }, error: () => this.loading = false
     });
   }
 
@@ -263,11 +265,12 @@ export class BoardComponent implements OnInit, OnDestroy {
         types: ['NOTICEBOARD']
       }).subscribe({
         next: res => {
+          this.isLoading = true;
           this.tree = this.coreService.prepareTree(res, true);
           if (this.tree.length) {
             this.loadBoards();
           }
-        }, complete: () => this.isLoading = true
+        }, error: () => this.isLoading = true
       });
     } else {
       this.isLoading = true;
@@ -381,6 +384,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       noticeBoardPaths: paths
     }).subscribe({
       next: (res: any) => {
+        this.loading = false;
         res.noticeBoards.forEach((value) => {
           for (let x = 0; x < this.boards.length; x++) {
             if (this.boards[x].path === value.path) {
@@ -393,7 +397,7 @@ export class BoardComponent implements OnInit, OnDestroy {
           }
         });
         this.boards = [...this.boards];
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 
@@ -422,6 +426,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     const boards = [];
     this.coreService.post('notice/boards', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
+        this.loading = false;
         if (res.noticeBoards && res.noticeBoards.length === 0) {
           this.boardsFilters.currentPage = 1;
         }
@@ -443,7 +448,7 @@ export class BoardComponent implements OnInit, OnDestroy {
         if (boards && boards.length > 0) {
           this.updateBoardsDetail(boards);
         }
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 

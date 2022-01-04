@@ -292,7 +292,7 @@ export class ResumeOrderModalComponent implements OnInit {
     this.coreService.post('orders/resume', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 

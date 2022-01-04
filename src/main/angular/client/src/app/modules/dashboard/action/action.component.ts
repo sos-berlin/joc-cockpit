@@ -7,7 +7,7 @@ import {AuthService} from '../../../components/guard';
   selector: 'app-comment-modal',
   templateUrl: './dialog.html',
 })
-export class CommentModalComponent implements OnInit {
+export class CommentModalComponent {
   @Input() action;
   @Input() comments: any;
   @Input() obj: any;
@@ -17,10 +17,6 @@ export class CommentModalComponent implements OnInit {
   show = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
-  }
-
-  ngOnInit(): void {
-
   }
 
   onSubmit(result, obj): void {
@@ -37,9 +33,7 @@ export class CommentModalComponent implements OnInit {
     this.coreService.post(url, obj).subscribe({
       next: () => {
         this.activeModal.close();
-      }, complete: () => {
-        this.submitted = false;
-      }
+      }, error: () => this.submitted = false
     });
   }
 }

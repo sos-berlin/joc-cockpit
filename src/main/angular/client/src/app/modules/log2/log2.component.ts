@@ -87,14 +87,15 @@ export class Log2Component implements OnInit {
           account: this.authService.currentUserData,
           configurationType: 'PROFILE'
         };
-        this.coreService.post('configurations', configObj).subscribe({next: (res: any) => {
-          if (res.configurations && res.configurations.length > 0) {
-            const conf = res.configurations[0];
-            this.preferences = JSON.parse(conf.configurationItem);
-            this.preferenceId = conf.id;
-
-          }
-        }, complete: () => this.init()
+        this.coreService.post('configurations', configObj).subscribe({
+          next: (res: any) => {
+            if (res.configurations && res.configurations.length > 0) {
+              const conf = res.configurations[0];
+              this.preferences = JSON.parse(conf.configurationItem);
+              this.preferenceId = conf.id;
+            }
+            this.init();
+          }, error: () => this.init()
         });
       } else {
         this.init();
@@ -147,9 +148,10 @@ export class Log2Component implements OnInit {
   loadOrderLog(): void {
     this.workflow = this.route.snapshot.queryParams.workflow;
     this.taskMap = new Map();
-    const order: any = {};
-    order.controllerId = this.controllerId;
-    order.historyId = this.historyId;
+    const order: any = {
+      controllerId: this.controllerId,
+      historyId: this.historyId
+    };
     this.canceller = this.coreService.post('order/log', order).subscribe({
       next: (res: any) => {
         if (res) {
@@ -164,6 +166,7 @@ export class Log2Component implements OnInit {
           this.loading = false;
           this.finished = true;
         }
+        this.isLoading = false;
       }, error: (err) => {
         window.document.getElementById('logs').innerHTML = '';
         if (err.data && err.data.error) {
@@ -174,7 +177,8 @@ export class Log2Component implements OnInit {
         this.errStatus = err.status;
         this.loading = false;
         this.finished = true;
-      }, complete: () => this.isLoading = false
+        this.isLoading = false;
+      }
     });
   }
 
@@ -273,6 +277,7 @@ export class Log2Component implements OnInit {
         } else {
           this.loading = false;
         }
+        this.isLoading = false;
       }, error: (err) => {
         window.document.getElementById('logs').innerHTML = '';
         if (err.data && err.data.error) {
@@ -283,7 +288,8 @@ export class Log2Component implements OnInit {
         this.errStatus = err.status;
         this.loading = false;
         this.finished = true;
-      }, complete: () => this.isLoading = false
+        this.isLoading = false;
+      }
     });
   }
 

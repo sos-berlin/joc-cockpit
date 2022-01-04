@@ -40,7 +40,8 @@ export class JobWizardComponent implements OnInit {
     this.coreService.post('inventory/wizard/jobs', {}).subscribe({
       next: (res: any) => {
         this.jobList = res.jobs;
-      }, complete: () => this.loading = false
+        this.loading = false;
+      }, error: () => this.loading = false
     });
   }
 

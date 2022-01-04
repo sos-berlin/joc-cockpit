@@ -260,7 +260,7 @@ export class UpdateObjectComponent implements OnInit {
     this.coreService.post(URL, obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -271,7 +271,11 @@ export class UpdateObjectComponent implements OnInit {
       id: data.id,
       objectType: this.type
     }).subscribe({
-      complete: () => {
+      next: () => {
+        if (cb) {
+          cb();
+        }
+      }, error: () => {
         if (cb) {
           cb();
         }

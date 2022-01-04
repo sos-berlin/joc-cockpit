@@ -158,7 +158,7 @@ export class SingleDeployComponent implements OnInit {
     this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
-      }, complete: () => this.submitted = false
+      }, error: () => this.submitted = false
     });
   }
 
@@ -180,8 +180,9 @@ export class SingleDeployComponent implements OnInit {
         } else {
           result.deployablesVersions = [];
         }
+        this.loading = false;
         this.deployablesObject = [result];
-      }, complete: () => this.loading = false
+      }, error: () => this.loading = false
     });
   }
 }
@@ -596,7 +597,7 @@ export class DeployComponent implements OnInit {
     this.coreService.post(URL, obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
-      }, complete: () => {
+      }, error: () => {
         this.submitted = false;
         this.ref.detectChanges();
       }
@@ -632,7 +633,7 @@ export class DeployComponent implements OnInit {
       this.coreService.post(URL, obj).subscribe({
         next: () => {
           this.activeModal.close('ok');
-        }, complete: () => {
+        }, error: () => {
           this.submitted = false;
           this.ref.detectChanges();
         }
@@ -1934,7 +1935,7 @@ export class CreateObjectModalComponent implements OnInit {
           this.activeModal.close({
             name: this.object.name
           });
-        }, complete: () => {
+        }, error: () => {
           this.submitted = false;
           this.ref.detectChanges();
         }
@@ -1969,7 +1970,7 @@ export class CreateObjectModalComponent implements OnInit {
     this.coreService.post('inventory/copy', request).subscribe({
       next: (res) => {
         this.activeModal.close(res);
-      }, complete: () => {
+      }, error: () => {
         this.submitted = false;
         this.ref.detectChanges();
       }
@@ -2002,7 +2003,7 @@ export class CreateObjectModalComponent implements OnInit {
     this.coreService.post('inventory/trash/restore', request).subscribe({
       next: (res) => {
         this.activeModal.close(res);
-      }, complete: () => {
+      }, error: () => {
         this.submitted = false;
         this.ref.detectChanges();
       }
@@ -2062,7 +2063,7 @@ export class CreateFolderModalComponent implements OnInit {
             key: res.path,
             children: []
           });
-        }, complete: () => {
+        }, error: () => {
           this.submitted = false;
           this.ref.detectChanges();
         }
@@ -2099,7 +2100,7 @@ export class CreateFolderModalComponent implements OnInit {
       this.coreService.post(URL, obj).subscribe({
         next: (res) => {
           this.activeModal.close(res);
-        }, complete: () => {
+        }, error: () => {
           this.submitted = false;
           this.ref.detectChanges();
         }
