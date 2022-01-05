@@ -1924,7 +1924,6 @@ export class ScriptEditorComponent implements AfterViewInit {
   @Input() script: any;
   @Input() list: any = [];
   @Input() scriptTree: any = [];
-  @ViewChild('codeMirror', {static: true}) cm: any;
   dragEle: any;
   scriptList: Array<string> = [];
   scriptObj = {
@@ -1939,6 +1938,7 @@ export class ScriptEditorComponent implements AfterViewInit {
     mode: 'shell',
     extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
+  @ViewChild('codeMirror', {static: true}) cm: any;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
   }
@@ -2281,7 +2281,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
-              public toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
+              private toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -2654,6 +2654,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const cells = this.node ? [this.node.cell] : null;
       this.editor.graph.removeCells(cells, null);
     }
+  }
+
+  deleteAll(): void {
+    this.node.deleteAll = true;
+    this.delete();
   }
 
   copy(node): void {
@@ -4709,7 +4714,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             img.style.top = y + 'px';
             mxEvent.addListener(img, 'click',
               mxUtils.bind(this, function(evt) {
-                self.node = {cell: state.cell};
+                self.node = {cell: state.cell, isCloseable: self.workflowService.isInstructionCollapsible(state.cell.value.tagName)};
                 if (self.menu) {
                   setTimeout(() => {
                     self.nzContextMenuService.create(evt, self.menu);
@@ -5706,11 +5711,40 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       });
     }
 
+    function mergeInternalInstructions(instructions, index): void {
+      let instructionsArr = [];
+      if (instructions[index].TYPE === 'Fork') {
+        for (const i in instructions[index].branches) {
+          instructionsArr = instructionsArr.concat(instructions[index].branches[i].instructions)
+        }
+      } else if (instructions[index].TYPE === 'If') {
+        if (instructions[index].then && instructions[index].then.instructions) {
+          instructionsArr = instructionsArr.concat(instructions[index].then.instructions)
+        }
+        if (instructions[index].else && instructions[index].else.instructions) {
+          instructionsArr = instructionsArr.concat(instructions[index].else.instructions)
+        }
+      } else if (instructions[index].TYPE === 'Try') {
+        instructionsArr = instructionsArr.concat(instructions[index].instructions);
+        if (instructions[index].catch && instructions[index].catch.instructions) {
+          instructionsArr = instructionsArr.concat(instructions[index].catch.instructions)
+        }
+      } else {
+        instructionsArr = instructionsArr.concat(instructions[index].instructions)
+      }
+      for (let i = 0; i < instructionsArr.length; i++) {
+        instructions.splice(index + i + 1, 0, instructionsArr[i]);
+      }
+    }
+
     function deleteRecursively(_json, _cell, _type, cb) {
       function iterateJson(json, cell, type) {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == cell.id) {
+              if(self.node && self.node.isCloseable && !self.node.deleteAll){
+                mergeInternalInstructions(json.instructions, x);
+              }
               json.instructions.splice(x, 1);
               if (json.instructions.length === 0 && type !== 'catch') {
                 delete json.instructions;
@@ -8449,7 +8483,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
 
           if (json.instructions[x].TYPE === 'If') {
-            if ((!json.instructions[x].predicate || !json.instructions[x].then) && isValidate) {
+            if ((!json.instructions[x].predicate || !json.instructions[x].then)) {
               flag = false;
               self.invalidMsg = !json.instructions[x].predicate ? 'workflow.message.predicateIsMissing' : 'workflow.message.invalidIfInstruction';
               checkErr = true;
@@ -8464,7 +8498,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   self.toasterService.pop('error', msg);
                 }
               }
-              return;
+              if (isValidate) {
+                return;
+              }
             } else {
               self.validatePredicate(json.instructions[x].predicate, json.instructions[x].id, isOpen);
             }

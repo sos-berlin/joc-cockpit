@@ -141,6 +141,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
     } else if (instruction.TYPE === 'Cycle') {
       nzComponentParams = {
         schedule: instruction.schedule,
+        workflowPath: this.configuration.path,
         timezone: this.timezone
       };
     }
@@ -148,7 +149,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
-        nzClassName: 'lg',
+        nzClassName: 'lg script-editor',
         nzComponentParams,
         nzFooter: null,
         nzClosable: false,

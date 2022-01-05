@@ -1,10 +1,8 @@
 <div class="modal-header">
-  <h4 class="modal-title" *ngIf="jobName">
-    <span translate>workflow.label.showConfiguration</span>
-    <i class="text-muted p-l-xs text">{{jobName}}</i>
-  </h4>
-  <h4 class="modal-title" *ngIf="!jobName">
-    <span translate>workflow.label.showConfiguration</span>
+  <h4 class="modal-title" >
+    <span class="drag-text" translate>workflow.label.showConfiguration</span>
+    <i *ngIf="jobName">:</i>
+    {{jobName}}
   </h4>
   <button type="button" class="close" aria-label="Close"
           (click)="activeModal.destroy()">
@@ -21,13 +19,17 @@
       <div class="col-md-12" *ngIf="isScript">
         <label class="_600 m-b-xs" *ngIf="!predicate" translate>workflow.label.script</label>
         <label class="_600 m-b-xs" *ngIf="predicate" translate>workflow.label.predicate</label>
-        <div class="b-a">
-          <ngx-codemirror name="cm" [(ngModel)]="data" [options]="cmOption"></ngx-codemirror>
+        <a *ngIf="permission && permission.joc.inventory.view" class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
+        <div class="b-a" id="resizable">
+          <ngx-codemirror #codeMirror name="cm" [(ngModel)]="data" [options]="cmOption"></ngx-codemirror>
         </div>
+        <div class="rg-right" style="background: transparent; margin-right: 4px"><span style="top:50%"></span></div>
+        <div class="rg-bottom" style="margin-bottom: -7px;background: transparent"><span></span></div>
       </div>
       <div class="col-md-12" *ngIf="!isScript && data">
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>workflow.label.className</label>
+          <label class="col-sm-3 form-control-label">{{'workflow.label.className' | translate}}
+          <a *ngIf="permission && permission.joc.inventory.view" class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a></label>
           <div class=" col-sm-8">
             <input nz-input name="data" [(ngModel)]="data" readonly>
           </div>
@@ -47,6 +49,7 @@
       </div>
       <div class="col-md-12 m-t-sm" *ngIf="schedule">
         <label class="_600 m-b-xs" translate>workflow.label.listOfSchemes</label>
+        <a *ngIf="permission && permission.joc.inventory.view" class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
         <div class="table-responsive">
           <table class="table table-hover table-bordered ">
             <thead>

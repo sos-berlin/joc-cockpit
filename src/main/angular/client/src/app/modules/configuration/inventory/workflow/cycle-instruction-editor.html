@@ -23,8 +23,8 @@
               </button>
               <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                 <ul nz-menu>
-                  <li nz-menu-item><a (click)="editFrequency(list, i);" translate>common.button.edit</a></li>
-                  <li nz-menu-item><a (click)="removeRepeat(i)" translate>inventory.button.delete</a></li>
+                  <li nz-menu-item (click)="editFrequency(list, i);"><a translate>common.button.edit</a></li>
+                  <li nz-menu-item (click)="removeRepeat(i)"><a translate>inventory.button.delete</a></li>
                 </ul>
               </nz-dropdown-menu>
             </div>

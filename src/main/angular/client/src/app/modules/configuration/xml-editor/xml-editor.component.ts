@@ -5723,18 +5723,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (this.objectType !== 'NOTIFICATION') {
       obj.schemaIdentifier = this.schemaIdentifier;
     }
-    this.coreService.post('xmleditor/validate', obj).subscribe((res: any) => {
+    this.coreService.post('xmleditor/validate', obj).subscribe({
+next:(res: any) => {
       if (res.validationError) {
         this.showError(res.validationError);
       } else {
         this.validConfig = true;
       }
-    }, (error) => {
+    }, error: (error) => {
       this.validConfig = false;
       if (error && error.error) {
         this.toasterService.pop('error', error.error.message);
       }
-    });
+    }
+});
   }
 
   private _showXml(json = this.nodes, flag = false): any {

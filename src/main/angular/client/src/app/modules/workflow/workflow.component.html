@@ -281,35 +281,35 @@
                   <thead>
                   <tr>
                     <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
-                    <th (click)="sort('name')" rowspan="2">
+                    <th [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('name')" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.name</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'name' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'name' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('path1')" rowspan="2">
+                    <th [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('path1')" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.path</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'path1' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'path1' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('versionDate')" rowspan="2">
+                    <th [nzWidth]="workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('versionDate')" rowspan="2">
                       <a><span class="p-r-xs" translate>inventory.label.deploymentDate</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'versionDate' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'versionDate' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('state._text')" rowspan="2">
+                    <th [nzWidth]="workflowFilters.isCompact ? '100px' : 'auto'" (click)="sort('state._text')" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.status</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'state._text' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="workflowFilters.filter.sortBy == 'state._text' && workflowFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sort('numOfOrders')" rowspan="2">
+                    <th [nzWidth]="workflowFilters.isCompact ? '100px' : 'auto'" (click)="sort('numOfOrders')" rowspan="2">
                       <a><span class="p-r-xs" translate>workflow.label.noOfOrders</span>
                         <i *ngIf="workflowFilters.filter.sortBy == 'numOfOrders' && !workflowFilters.reverse"
                            class="fa fa-caret-up "></i>
@@ -439,7 +439,7 @@
                            [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"></a>
                       </td>
                       <td>
-                        <a class="text-hover-primary" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></a>
+                        <span class="remaining-order-count" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></span>
                       </td>
                       <td *ngIf="!workflowFilters.isCompact">
                         <span [innerHtml]="workflow.ordersSummary.pending || 0"></span>
@@ -532,7 +532,7 @@
                               <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
                             </span>
                           </div>
-                          <app-type [timezone]="workflow.configuration.timeZone" [configuration]="workflow.configuration" [orderReload]="workflow.orderReload" [jobs]="workflow.configuration.jobs" [orderPreparation]="workflow.configuration.orderPreparation" [permission]="permission" [preferences]="preferences"
+                          <app-type [timezone]="workflow.configuration.timeZone" [path]="workflow.configuration.path" [configuration]="workflow.configuration" [orderReload]="workflow.orderReload" [jobs]="workflow.configuration.jobs" [orderPreparation]="workflow.configuration.orderPreparation" [permission]="permission" [preferences]="preferences"
                                     [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand"
                                     (update)="updatePanelHeight()" (isChanged)="changedHandler($event)" [orders]="workflow.orders"></app-type>
                         </div>

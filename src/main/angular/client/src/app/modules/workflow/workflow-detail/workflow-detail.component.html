@@ -275,7 +275,7 @@
                     <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll()"></i>
                   </span>
                 </div>
-                <app-type [timezone]="workFlowJson.timeZone" [recursiveCals]="recursiveCals" [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderPreparation]="orderPreparation" [permission]="permission" [preferences]="preferences"
+                <app-type [timezone]="workFlowJson.timeZone" [path]="workFlowJson.path" [recursiveCals]="recursiveCals" [configuration]="workFlowJson" [jobs]="workFlowJson.jobs" [orderPreparation]="orderPreparation" [permission]="permission" [preferences]="preferences"
                           [schedulerId]="schedulerIds.selected" [expandAll]="isExpandAll" (isChanged)="changedHandler($event)" [orders]="workflow.orders"
                           [workflowFilters]="workflowFilters" [expectedNoticeBoards]="workFlowJson.expectedNoticeBoards" [addOrderToWorkflows]="workFlowJson.addOrderToWorkflows" [postNoticeBoards]="workFlowJson.postNoticeBoards"></app-type>
                 <div class="rg-bottom"><span></span></div>

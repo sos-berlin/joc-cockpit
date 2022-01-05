@@ -1310,6 +1310,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           data,
           agentName: job.agentName,
           jobName: argu.jobName,
+          workflowPath:this.workFlowJson.path,
           admissionTime: job.admissionTimeScheme,
           timezone: this.workFlowJson.timeZone,
           isScript: job.executable.TYPE === 'ShellScriptExecutable',
@@ -1319,6 +1320,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     } else if (argu.predicate){
       nzComponentParams = {
         predicate: true,
+        workflowPath:this.workFlowJson.path,
         data: argu.predicate,
         isScript: true,
         readonly: true
@@ -1326,6 +1328,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     } else if (argu.schedule){
       nzComponentParams = {
         schedule: JSON.parse(argu.schedule),
+        workflowPath:this.workFlowJson.path,
         timezone: this.workFlowJson.timeZone
       };
     }
@@ -1334,7 +1337,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
-        nzClassName: 'lg',
+        nzClassName: 'lg script-editor',
         nzComponentParams,
         nzFooter: null,
         nzClosable: false,

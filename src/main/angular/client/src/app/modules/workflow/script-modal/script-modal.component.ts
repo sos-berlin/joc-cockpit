@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
@@ -6,12 +6,16 @@ import {NzMessageService} from 'ng-zorro-antd/message';
 import {WorkflowService} from '../../../services/workflow.service';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
+import {DragDrop} from "@angular/cdk/drag-drop";
+
+declare const $;
 
 @Component({
   selector: 'app-script-modal',
   templateUrl: './script-modal.component.html'
 })
-export class ScriptModalComponent implements OnInit {
+export class ScriptModalComponent implements OnInit, AfterViewInit {
+  @Input() workflowPath: string;
   @Input() jobName: string;
   @Input() isScript: boolean;
   @Input() data: any;
@@ -22,7 +26,9 @@ export class ScriptModalComponent implements OnInit {
   @Input() timezone: string;
   @Input() readonly: boolean;
 
+  dragEle: any;
   preferences: any = {};
+  permission: any = {};
   dailyPlan: any = {};
   days = [];
   periodList = [];
@@ -35,14 +41,16 @@ export class ScriptModalComponent implements OnInit {
     mode: 'shell'
   };
   todayDate: string;
+  @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
-              private message: NzMessageService, private clipboardService: ClipboardService, private workflowService: WorkflowService) {
+              private message: NzMessageService, private clipboardService: ClipboardService, private workflowService: WorkflowService, private dragDrop: DragDrop) {
   }
 
   ngOnInit(): void {
     this.todayDate = this.coreService.getStringDate(null);
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (this.preferences && this.preferences.zone === 'Asia/Calcutta') {
       this.preferences.zone = 'Asia/Kolkata';
     }
@@ -62,6 +70,22 @@ export class ScriptModalComponent implements OnInit {
     if (this.schedule && this.schedule.schemes) {
       this.convertSchemeList();
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.dragEle = this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
+    $('#resizable').resizable({
+      resize: (e, x) => {
+        const dom: any = document.getElementsByClassName('script-editor')[0];
+        this.cm.codeMirror.setSize((x.size.width - 2), (x.size.height - 2));
+        dom.style.setProperty('width', (x.size.width + 32) + 'px', 'important');
+      }
+    });
+  }
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(e): void {
+    this.dragEle.disabled = !(e.target && (e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
   }
 
   private loadSetting(): void {
@@ -165,8 +189,8 @@ export class ScriptModalComponent implements OnInit {
               periods: []
             };
             const originalTime = this.workflowService.convertSecondToTime(period.startTime);
-            const currentDay = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.timezone,'Z'), this.preferences.zone, 'YYYY-MM-DD');
-            const convertedTime = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.timezone,'Z'), this.preferences.zone, 'HH:mm:ss');
+            const currentDay = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.timezone, 'Z'), this.preferences.zone, 'YYYY-MM-DD');
+            const convertedTime = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.timezone, 'Z'), this.preferences.zone, 'HH:mm:ss');
             if (this.todayDate != currentDay) {
               obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
             } else {
@@ -211,8 +235,8 @@ export class ScriptModalComponent implements OnInit {
             };
             const dailyPlanTime = this.workflowService.convertStringToDuration(this.dailyPlan.period_begin, true);
             const originalTime = this.workflowService.convertSecondToTime((period.startTime + dailyPlanTime));
-            const currentDay = this.coreService.getDateByFormat(this.todayDate + ' ' + this.workflowService.convertSecondToTime(period.startTime) + '.000' + this.coreService.getDateByFormat(null, this.dailyPlan.time_zone,'Z'), this.preferences.zone, 'YYYY-MM-DD');
-            const convertedTime = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.dailyPlan.time_zone,'Z'), this.preferences.zone, 'HH:mm:ss');
+            const currentDay = this.coreService.getDateByFormat(this.todayDate + ' ' + this.workflowService.convertSecondToTime(period.startTime) + '.000' + this.coreService.getDateByFormat(null, this.dailyPlan.time_zone, 'Z'), this.preferences.zone, 'YYYY-MM-DD');
+            const convertedTime = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.dailyPlan.time_zone, 'Z'), this.preferences.zone, 'HH:mm:ss');
             if (this.todayDate != currentDay) {
               obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
             } else {
@@ -258,6 +282,13 @@ export class ScriptModalComponent implements OnInit {
     const selectedText = window.getSelection().toString();
     this.clipboardService.copyFromContent(selectedText || this.data);
     this.coreService.showCopyMessage(this.message);
+  }
+
+  navToConfig(): void {
+    if (this.workflowPath) {
+      this.activeModal.destroy();
+      this.coreService.navToInventoryTab(this.workflowPath, 'WORKFLOW');
+    }
   }
 }
 
