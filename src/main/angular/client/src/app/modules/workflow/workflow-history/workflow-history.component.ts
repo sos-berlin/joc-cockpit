@@ -1,5 +1,6 @@
 import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {Router} from "@angular/router";
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -23,14 +24,16 @@ export class WorkflowTemplateComponent {
       controllerId: data.controllerId || this.schedulerId,
       historyId: data.historyId
     };
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      data.children = res.children;
-      data.level = count + 1;
-      data.states = res.states;
-      data.loading = false;
-      this.coreService.calRowWidth(null);
-    }, () => {
-      data.loading = false;
+    this.coreService.post('order/history', obj).subscribe({
+      next: (res: any) => {
+        data.children = res.children;
+        data.level = count + 1;
+        data.states = res.states;
+        data.loading = false;
+        this.coreService.calRowWidth(null);
+      }, error: () => {
+        data.loading = false;
+      }
     });
   }
 
@@ -55,9 +58,12 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   taskHistory: any = [];
   subscription: Subscription;
 
-  constructor(public coreService: CoreService, private authService: AuthService, private dataService: DataService) {
+  constructor(public coreService: CoreService, private authService: AuthService,
+              private router: Router, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      this.refresh(res);
+      if (res) {
+        this.refresh(res);
+      }
     });
   }
 
@@ -125,11 +131,13 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       orders: [{workflowPath: this.workflow.name}],
       limit: this.preferences.maxHistoryPerOrder
     };
-    this.coreService.post('orders/history', obj).subscribe((res: any) => {
-      this.orderHistory = res.history;
-      this.loading = false;
-    }, () => {
-      this.loading = false;
+    this.coreService.post('orders/history', obj).subscribe({
+      next: (res: any) => {
+        this.orderHistory = res.history;
+        this.loading = false;
+      }, error: () => {
+        this.loading = false;
+      }
     });
   }
 
@@ -145,20 +153,22 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      for (let i = 0; i < res.children.length; i++) {
-        if (res.children[i].order) {
-          res.children[i].order.show = true;
-          this.recursiveExpand(res.children[i].order, ++count);
+    this.coreService.post('order/history', obj).subscribe({
+      next: (res: any) => {
+        for (let i = 0; i < res.children.length; i++) {
+          if (res.children[i].order) {
+            res.children[i].order.show = true;
+            this.recursiveExpand(res.children[i].order, ++count);
+          }
         }
+        data.level = count;
+        data.children = res.children;
+        data.states = res.states;
+        data.loading = false;
+        this.coreService.calRowWidth(null);
+      }, error: () => {
+        data.loading = false;
       }
-      data.level = count;
-      data.children = res.children;
-      data.states = res.states;
-      data.loading = false;
-      this.coreService.calRowWidth(null);
-    }, () => {
-      data.loading = false;
     });
   }
 
@@ -176,14 +186,16 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
-    this.coreService.post('order/history', obj).subscribe((res: any) => {
-      data.level = 1;
-      data.children = res.children;
-      data.states = res.states;
-      data.loading = false;
-      this.coreService.calRowWidth(null);
-    }, () => {
-      data.loading = false;
+    this.coreService.post('order/history', obj).subscribe({
+      next: (res: any) => {
+        data.level = 1;
+        data.children = res.children;
+        data.states = res.states;
+        data.loading = false;
+        this.coreService.calRowWidth(null);
+      }, error: () => {
+        data.loading = false;
+      }
     });
   }
 
@@ -217,5 +229,18 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     this.coreService.post('audit_log', obj).subscribe((res: any) => {
       this.auditLogs = res.auditLog;
     });
+  }
+
+  navToHistory(type: string): void {
+    const filter = this.coreService.getHistoryTab();
+    filter.type = type;
+    if(type === 'ORDER') {
+      filter.order.selectedView = false;
+      filter.order.workflow = this.workflow.path;
+    } else{
+      filter.task.selectedView = false;
+      filter.task.workflow = this.workflow.path;
+    }
+    this.router.navigate(['/history']);
   }
 }

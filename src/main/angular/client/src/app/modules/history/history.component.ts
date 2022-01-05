@@ -3079,9 +3079,23 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.data = [];
       }
       if (this.historyFilters.type === 'ORDER') {
-        this.orderHistory(obj, flag);
+        if (this.order.workflow) {
+          this.advancedSearch();
+          this.orderSearch.workflowPath = this.order.workflow;
+          delete this.order.workflow;
+          this.search(this.orderSearch);
+        } else {
+          this.orderHistory(obj, flag);
+        }
       } else if (this.historyFilters.type === 'TASK') {
-        this.taskHistory(obj, flag);
+         if (this.task.workflow) {
+          this.advancedSearch();
+          this.jobSearch.workflowPath = this.task.workflow;
+          delete this.task.workflow;
+          this.search(this.jobSearch);
+        } else {
+           this.taskHistory(obj, flag);
+         }
       } else if (this.historyFilters.type === 'YADE') {
         this.yadeHistory(obj, flag);
       } else if (this.historyFilters.type === 'DEPLOYMENT') {

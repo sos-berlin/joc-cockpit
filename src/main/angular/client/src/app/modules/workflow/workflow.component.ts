@@ -1086,9 +1086,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         delete rsHt.workflow[this.currentPath];
         this.saveService.setResizerHeight(rsHt);
         this.saveService.save();
-        this._updatePanelHeight();
       }
     }
+    this._updatePanelHeight();
   }
 
   updatePanelHeight(): void {

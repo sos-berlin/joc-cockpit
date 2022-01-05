@@ -1,6 +1,7 @@
 <nz-tabset [(nzSelectedIndex)]="index">
   <nz-tab *ngIf="permission.currentController && permission.currentController.orders.view"
           [nzTitle]="'history.label.orderHistory' | translate" (nzClick)="loadOrderHistory()">
+    <a class="text-primary text-hover-primary pos-abt r-15" (click)="navToHistory('ORDER')" style="top: 64px" translate>common.button.viewHistory</a>
     <div class="table-responsive" id="orderTable">
       <nz-table
         #orderHistoryTable
@@ -78,6 +79,7 @@
     </div>
   </nz-tab>
   <nz-tab *ngIf="permission.currentController && permission.currentController.orders.view" [nzTitle]="'history.label.taskHistory' | translate" (nzClick)="loadTaskHistory()">
+    <a class="text-primary text-hover-primary pos-abt r-15" (click)="navToHistory('TASK')" style="top: 64px" translate>common.button.viewHistory</a>
     <div class="table-responsive">
       <nz-table
         #taskHistoryTable

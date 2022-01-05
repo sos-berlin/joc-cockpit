@@ -27,10 +27,13 @@
     <div class="form-group row" *ngIf="repeatObject.TYPE === 'Periodic'">
       <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.offsets</label>
       <div class="col-sm-9" [ngClass]="{ 'has-error' : (((offsets.dirty || offsets.touched) && offsets.invalid))}">
-        <input appValidateOffset class="form-control" name="offsets"
+        <input appValidateOffset required class="form-control" name="offsets"
                #offsets="ngModel" [(ngModel)]="repeatObject.offsets"
                placeholder="{{'workflow.placeholder.offset' | translate}}" type="text">
         <div *ngIf="offsets.invalid && (offsets.dirty || offsets.touched)" class="text-danger help-block">
+          <div *ngIf="offsets.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
           <div *ngIf="offsets.errors.invalidOffset" translate>common.message.invalid</div>
         </div>
       </div>

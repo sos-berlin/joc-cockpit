@@ -980,7 +980,12 @@
     </li>
     <li nz-menu-item (click)="delete();closeMenu()">
       <a><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
-        <span translate>common.button.delete</span>
+        <span translate>common.button.remove</span>
+      </a>
+    </li>
+    <li *ngIf="node && node.isCloseable" nz-menu-item (click)="deleteAll();closeMenu()">
+      <a><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
+        <span translate>common.button.removeAll</span>
       </a>
     </li>
   </ul>

@@ -17,6 +17,7 @@ export class TypeComponent implements OnChanges {
   @Input() permission: any;
   @Input() schedulerId: any;
   @Input() timezone: string;
+  @Input() path: string;
   @Input() orderPreparation: any;
   @Input() recursiveCals: any;
   @Input() workflowFilters: any;
@@ -337,6 +338,7 @@ export class TypeComponent implements OnChanges {
         nzComponentParams = {
           data,
           agentName: job.agentName,
+          workflowPath: this.path,
           admissionTime: job.admissionTimeScheme,
           timezone: this.timezone,
           jobName: instruction.jobName,
@@ -348,12 +350,14 @@ export class TypeComponent implements OnChanges {
       nzComponentParams = {
         predicate: true,
         data: instruction.predicate,
+        workflowPath: this.path,
         isScript: true,
         readonly: true
       };
     } else if (instruction.TYPE === 'Cycle') {
       nzComponentParams = {
         schedule: instruction.schedule,
+        workflowPath: this.path,
         timezone: this.timezone
       };
     }
@@ -361,7 +365,7 @@ export class TypeComponent implements OnChanges {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
-        nzClassName: 'lg',
+        nzClassName: 'lg script-editor',
         nzComponentParams,
         nzFooter: null,
         nzClosable: false,

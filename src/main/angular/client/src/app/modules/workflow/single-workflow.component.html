@@ -192,7 +192,7 @@
                           <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
                         </span>
                       </div>
-                      <app-type [timezone]="workflow.configuration.timeZone" [jobs]="workflow.configuration.jobs" [configuration]="workflow.configuration" [orderPreparation]="workflow.configuration.orderPreparation"
+                      <app-type [timezone]="workflow.configuration.timeZone" [path]="workflow.configuration.path" [jobs]="workflow.configuration.jobs" [configuration]="workflow.configuration" [orderPreparation]="workflow.configuration.orderPreparation"
                                 [permission]="permission" [preferences]="preferences"
                                 [schedulerId]="controllerId" [expandAll]="workflow.isExpand"
                                 [orders]="workflow.orders"></app-type>

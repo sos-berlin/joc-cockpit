@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {ChartsModule} from 'ng2-charts';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {GaugeModule} from 'angular-gauge';
 import {NzPopoverModule} from 'ng-zorro-antd/popover';
@@ -16,7 +15,6 @@ import {GroupByPipe} from '../../pipes/core.pipe';
 @NgModule({
   imports: [
     NgxChartsModule,
-    ChartsModule,
     SharedModule,
     NzTabsModule,
     NzPopoverModule,
