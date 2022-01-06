@@ -17,6 +17,7 @@ declare const $: any;
 export class WorkflowService {
   preferences: any = {};
   theme: string;
+  private jobPath = '';
 
   constructor(public translate: TranslateService, public coreService: CoreService,
               private stringDatePipe: StringDatePipe) {
@@ -322,7 +323,7 @@ export class WorkflowService {
 
   create_UUID(): string {
     let dt = new Date().getTime();
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       const r = (dt + Math.random() * 16) % 16 | 0;
       dt = Math.floor(dt / 16);
       return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
@@ -641,7 +642,10 @@ export class WorkflowService {
               }
             }
             if (!isChecked) {
-              mainJson.compressData.push({name: json.instructions[x].noticeBoardName, instructions: [json.instructions[x]]});
+              mainJson.compressData.push({
+                name: json.instructions[x].noticeBoardName,
+                instructions: [json.instructions[x]]
+              });
             }
           }
           if (json.instructions[x].instructions) {
@@ -1448,7 +1452,11 @@ export class WorkflowService {
         } else {
           str = str + '<i class="fa fa-circle text-xs p-r-xs ' + class1 + '"></i>';
         }
-        str = str + data.orderId + '</div>';
+        if (data.state && (data.state._text !== 'SCHEDULED' && data.state._text !== 'PENDING')) {
+          str = str + '<a id="order-type" class="text-hover-primary">' + data.orderId + '</a></div>';
+        } else {
+          str = str + data.orderId + '</div>';
+        }
         if (data.scheduledFor) {
           if (!data.scheduledNever) {
             str = str + ' <span class="text-xs" >' + this.stringDatePipe.transform(data.scheduledFor) + '</span>';
@@ -1976,5 +1984,13 @@ export class WorkflowService {
       str = translatedValue;
     });
     return str;
+  }
+
+  setJobValue(val): void {
+    this.jobPath = val;
+  }
+
+  getJobValue(): string {
+    return this.jobPath;
   }
 }

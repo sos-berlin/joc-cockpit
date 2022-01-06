@@ -1415,15 +1415,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             setTimeout(() => {
               this.createJsonfromXml(res.configuration);
             }, 600);
-         } else {
+          } else {
+            this.submitXsd = false;
+            this.isLoading = false;
+            // openXMLDialog(res.configuration);
+          }
+        } else {
           this.submitXsd = false;
           this.isLoading = false;
-          // openXMLDialog(res.configuration);
         }
-      } else {
-        this.submitXsd = false;
-        this.isLoading = false;
-      }
       }, error: () => {
         this.isLoading = false;
         this.submitXsd = false;
@@ -3518,11 +3518,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       id: data.id,
       name: data.name,
       schemaIdentifier: this.schemaIdentifier
-    }).subscribe((res) => {
-      this.oldName = null;
-    }, (err) => {
-      data.name = this.oldName;
-      this.toasterService.pop('error', err.data.error.message);
+    }).subscribe({
+      next: () => {
+        this.oldName = null;
+      }, error: (err) => {
+        data.name = this.oldName;
+        this.toasterService.pop('error', err.data.error.message);
+      }
     });
   }
 
@@ -4579,15 +4581,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       objectType: this.objectType,
       uri: this.schemaIdentifier
     };
-    this.coreService.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
-      if (res.schema) {
-        this.path = res.schema;
-        this.schemaIdentifier = res.schemaIdentifier;
-        this.xmlToJsonService(this.uploadData);
+    this.coreService.post('xmleditor/schema/assign', obj).subscribe({
+      next: (res: any) => {
+        if (res.schema) {
+          this.path = res.schema;
+          this.schemaIdentifier = res.schemaIdentifier;
+          this.xmlToJsonService(this.uploadData);
+        }
+      }, error: (err) => {
+        this.toasterService.pop('error', err.data.error.message);
+        this.isLoading = false;
       }
-    }, (err) => {
-      this.toasterService.pop('error', err.data.error.message);
-      this.isLoading = false;
     });
   }
 
@@ -4761,24 +4765,26 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         configuration: xml
       };
     }
-    this.coreService.post('xmleditor/schema/reassign', obj).subscribe((res: any) => {
-      this.doc = new DOMParser().parseFromString(res.schema, 'application/xml');
-      this.nodes = [];
-      this.nodes.push(JSON.parse(res.configurationJson));
-      this.getIndividualData(this.nodes[0], undefined);
-      this.getData(this.nodes[0]);
-      this.submitXsd = true;
-      this.activeTab.schemaIdentifier = res.schemaIdentifier;
-      this.showSelectSchema = false;
-      this.prevXML = '';
-      this.schemaIdentifier = res.schemaIdentifier;
-      this.storeXML(this.activeTab);
-      this.path = res.schemaIdentifier;
-      this.selectedXsd = res.schemaIdentifier;
-      this.isLoading = false;
-      this.reassignSchema = false;
-    }, () => {
-      this.isLoading = false;
+    this.coreService.post('xmleditor/schema/reassign', obj).subscribe({
+      next: (res: any) => {
+        this.doc = new DOMParser().parseFromString(res.schema, 'application/xml');
+        this.nodes = [];
+        this.nodes.push(JSON.parse(res.configurationJson));
+        this.getIndividualData(this.nodes[0], undefined);
+        this.getData(this.nodes[0]);
+        this.submitXsd = true;
+        this.activeTab.schemaIdentifier = res.schemaIdentifier;
+        this.showSelectSchema = false;
+        this.prevXML = '';
+        this.schemaIdentifier = res.schemaIdentifier;
+        this.storeXML(this.activeTab);
+        this.path = res.schemaIdentifier;
+        this.selectedXsd = res.schemaIdentifier;
+        this.isLoading = false;
+        this.reassignSchema = false;
+      }, error: () => {
+        this.isLoading = false;
+      }
     });
   }
 
@@ -5616,36 +5622,38 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (this.objectType !== 'NOTIFICATION') {
       obj.schemaIdentifier = this.schemaIdentifier;
     }
-    this.coreService.post('xmleditor/xml2json', obj).subscribe((res: any) => {
-      this.validConfig = false;
-      let _tempArrToExpand = [];
-      let arr = JSON.parse(res.configurationJson);
-      let a = [arr];
-      this.counting = arr.lastUuid;
-      this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
-      this.addKey(a);
-      this.nodes = a;
-      this.handleNodeToExpandAtOnce(this.nodes, _tempArrToExpand);
-      this.selectedNode = this.nodes[0];
-      this.getIndividualData(this.selectedNode, undefined);
-      this.selectedNodeDoc = this.checkText(this.nodes[0]);
-      this.isLoading = false;
-      this.submitXsd = true;
-      this.prevXML = '';
-      if (_tempArrToExpand && _tempArrToExpand.length > 0) {
-        setTimeout(() => {
-          for (const i in _tempArrToExpand) {
-            _tempArrToExpand[i].expanded = true;
-            delete _tempArrToExpand[i].loading;
-          }
-          this.nodes = [...this.nodes];
+    this.coreService.post('xmleditor/xml2json', obj).subscribe({
+      next: (res: any) => {
+        this.validConfig = false;
+        let _tempArrToExpand = [];
+        let arr = JSON.parse(res.configurationJson);
+        let a = [arr];
+        this.counting = arr.lastUuid;
+        this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+        this.addKey(a);
+        this.nodes = a;
+        this.handleNodeToExpandAtOnce(this.nodes, _tempArrToExpand);
+        this.selectedNode = this.nodes[0];
+        this.getIndividualData(this.selectedNode, undefined);
+        this.selectedNodeDoc = this.checkText(this.nodes[0]);
+        this.isLoading = false;
+        this.submitXsd = true;
+        this.prevXML = '';
+        if (_tempArrToExpand && _tempArrToExpand.length > 0) {
+          setTimeout(() => {
+            for (const i in _tempArrToExpand) {
+              _tempArrToExpand[i].expanded = true;
+              delete _tempArrToExpand[i].loading;
+            }
+            this.nodes = [...this.nodes];
+            this.storeXML(this.activeTab);
+          }, 0);
+        } else {
           this.storeXML(this.activeTab);
-        }, 0);
-      } else {
-        this.storeXML(this.activeTab);
+        }
+      }, error: () => {
+        this.isLoading = false;
       }
-    }, () => {
-      this.isLoading = false;
     });
   }
 

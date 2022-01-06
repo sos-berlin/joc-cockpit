@@ -287,6 +287,7 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
   navToConfig(): void {
     if (this.workflowPath) {
       this.activeModal.destroy();
+      this.workflowService.setJobValue(this.jobName);
       this.coreService.navToInventoryTab(this.workflowPath, 'WORKFLOW');
     }
   }

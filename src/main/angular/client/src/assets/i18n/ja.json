@@ -1451,8 +1451,10 @@
     "button.leaveWorkflow": "ワークフローを離れる",
     "button.addVariable": "変数追加",
     "button.modifyVariable": "変数編集",
+    "button.showLog": "Show Log",
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
+    "message.noLogHistoryFound": "No log history found for this Order",
     "treeView": {
       "label": {
         "state": "ステート",

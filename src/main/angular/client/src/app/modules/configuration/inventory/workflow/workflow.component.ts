@@ -3253,6 +3253,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.updateJobs(this.editor.graph, true);
               this.ref.detectChanges();
             }
+            if(this.workflowService.getJobValue()) {
+              this.navToJob(this.workflow.configuration, this.workflowService.getJobValue());
+              this.workflowService.setJobValue('')
+            }
           } catch (e) {
             console.error(e);
           }
@@ -8434,6 +8438,66 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
       this.initEditorConf(this.editor, false, true);
     }
+  }
+
+  private navToJob(mainJson, jobName): void {
+    if (isEmpty(mainJson)) {
+      return;
+    }
+    const self = this;
+    function recursive(json): void {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].TYPE === 'Job') {
+            if(json.instructions[x].jobName === jobName) {
+              self.openSideBar(json.instructions[x].id);
+              break;
+            }
+          }
+
+          if (json.instructions[x].TYPE === 'Fork') {
+            if (json.instructions[x].branches) {
+              json.instructions[x].branches = json.instructions[x].branches.filter((branch) => {
+                branch.workflow = {
+                  instructions: branch.instructions,
+                  result: branch.result
+                };
+                delete branch.instructions;
+                delete branch.result;
+                return (branch.workflow.instructions && branch.workflow.instructions.length > 0);
+              });
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i].workflow) {
+                  recursive(json.instructions[x].branches[i].workflow);
+                }
+              }
+            } else {
+              json.instructions[x].branches = [];
+            }
+          }
+
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x]);
+          }
+
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursive(json.instructions[x].catch);
+            }
+          }
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            recursive(json.instructions[x].then);
+          }
+          if (json.instructions[x].else) {
+            if (json.instructions[x].else.instructions) {
+              recursive(json.instructions[x].else);
+            }
+          }
+        }
+      }
+    }
+
+    recursive(mainJson);
   }
 
   private modifyJSON(mainJson, isValidate, isOpen): boolean {

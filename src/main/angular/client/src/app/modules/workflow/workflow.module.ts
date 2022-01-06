@@ -4,7 +4,6 @@ import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {FilterModalComponent, SearchComponent, SingleWorkflowComponent, WorkflowComponent} from './workflow.component';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowRoutingModule} from './workflow-routing.module';
-import {WorkflowService} from '../../services/workflow.service';
 import {AddOrderModalComponent, ShowDependencyComponent, WorkflowActionComponent} from './workflow-action/workflow-action.component';
 import {WorkflowDetailComponent} from './workflow-detail/workflow-detail.component';
 import {DependentWorkflowComponent, WorkflowGraphicalComponent} from './workflow-graphical/workflow-graphical.component';
@@ -20,7 +19,6 @@ import {ScriptModalComponent} from './script-modal/script-modal.component';
     NzTabsModule,
     WorkflowRoutingModule
   ],
-  providers: [WorkflowService],
   declarations: [
     WorkflowComponent,
     WorkflowDetailComponent,

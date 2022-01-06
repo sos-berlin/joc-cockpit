@@ -11,7 +11,7 @@ import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume
   selector: 'app-order-list-sidebar',
   templateUrl: './order-list-sidebar.component.html'
 })
-export class OrderListSidebarComponent implements OnChanges{
+export class OrderListSidebarComponent implements OnChanges {
   @Input() orders;
   @Input() preferences: any;
   @Input() permission: any;
@@ -82,7 +82,7 @@ export class OrderListSidebarComponent implements OnChanges{
     this.isProcessing = flag;
   }
 
-  private resetAction(time= 100): void {
+  private resetAction(time = 100): void {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
@@ -279,6 +279,10 @@ export class OrderListSidebarComponent implements OnChanges{
         order.obstacles = res.obstacles;
       });
     }
+  }
+
+  showLog(): void {
+    this.actionChild.showLog();
   }
 
   private resetCheckBox(): void {

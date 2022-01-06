@@ -1,4 +1,13 @@
-import {AfterViewInit, Directive, ElementRef, forwardRef, HostListener, Input, OnChanges, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  Directive,
+  ElementRef,
+  forwardRef,
+  HostListener,
+  Input,
+  OnChanges,
+  OnInit
+} from '@angular/core';
 import {AbstractControl, NG_VALIDATORS, NgModel, Validator} from '@angular/forms';
 import {SaveService} from '../services/save.service';
 
@@ -533,5 +542,50 @@ export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
         }
       }
     }, 0);
+  }
+}
+
+@Directive({
+  selector: '[appMaximum]'
+})
+export class MaximumDirective {
+  @Input('codeMirror') cm: any;
+  isMax = false;
+  height = 0;
+
+  constructor(public el: ElementRef) {
+  }
+
+  @HostListener('click', ['$event.target'])
+  onClick(): void {
+    const hostElem = this.el.nativeElement;
+    this.isMax = !this.isMax;
+    const modalElem = hostElem.closest('.ant-modal');
+    if (this.isMax) {
+      this.height = $('.CodeMirror').height();
+      hostElem.querySelector('i').classList.add('fa-window-minimize');
+      modalElem.classList.add('maximum');
+    } else {
+      hostElem.querySelector('i').classList.remove('fa-window-minimize');
+      modalElem.classList.remove('maximum');
+    }
+    if (this.cm && this.cm.codeMirror) {
+      this.checkAndUpdateCM($(modalElem));
+    }
+  }
+
+  private checkAndUpdateCM(modalElem): void {
+    const width = modalElem.width() - 52;
+    let height = modalElem.height() - 204;
+    if (this.isMax) {
+      $('.rg-bottom').hide();
+      $('.rg-right').hide();
+    } else {
+      height = this.height;
+      $('.rg-bottom').show();
+      $('.rg-right').show();
+    }
+    this.cm.codeMirror.setSize((width), (height));
+    $('#resizable').css({'width': 'auto', 'height': 'auto'});
   }
 }

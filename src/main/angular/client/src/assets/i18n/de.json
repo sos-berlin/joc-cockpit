@@ -1451,8 +1451,10 @@
     "button.leaveWorkflow": "Arbeitsablauf verlassen",
     "button.addVariable": "Variable hinzufügen",
     "button.modifyVariable": "Variable ändern",
+    "button.showLog": "Show Log",
     "message.noVariableAvailable": "keine Variablen vorhanden",
     "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung",
+    "message.noLogHistoryFound": "No log history found for this Order",
     "treeView": {
       "label": {
         "state": "Zustand",

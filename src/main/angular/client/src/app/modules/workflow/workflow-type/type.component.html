@@ -57,7 +57,9 @@
       <i *ngIf="!order.marked" class="fa fa-circle p-r-s" [ngClass]="coreService.getColor(order.state.severity, 'text')"></i>
       <span *ngIf="order.marked" class="half-circle half-circle-left" [ngClass]="coreService.getColor(order.state.severity, 'bg')"></span>
       <span *ngIf="order.marked" class="half-circle half-circle-right" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"></span>
-      {{order.orderId}} <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
+      <a *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary p-r-sm" (click)="showLog(order)">{{order.orderId}}</a>
+      <span class="p-r-sm" *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')">{{order.orderId}}</span>
+      <i *ngIf="order.cyclicOrder" class="fa fa-repeat p-l-xs p-r-xs" aria-hidden="true"></i>
       <i class="text-sm text-muted" *ngIf="order.scheduledFor && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</i>
       <i class="text-sm text-muted" *ngIf="order.scheduledNever" translate>common.label.never</i>
     </span>

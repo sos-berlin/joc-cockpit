@@ -4,6 +4,9 @@
     <span *ngIf="!edit" translate>inventory.label.showJson</span>:
     <span class="text-muted">{{name}}</span>
   </h4>
+  <a class="max-btn" appMaximum>
+    <i class="fa fa-window-maximize"></i>
+  </a>
   <button type="button" class="close" (click)="activeModal.destroy()" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>

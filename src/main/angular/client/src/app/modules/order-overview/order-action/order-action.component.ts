@@ -1,6 +1,8 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
+import {ToasterService} from 'angular2-toaster';
+import {TranslateService} from "@ngx-translate/core";
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
@@ -20,7 +22,8 @@ export class OrderActionComponent {
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   isVisible: boolean;
 
-  constructor(public coreService: CoreService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private modal: NzModalService,
+              private toasterService: ToasterService, private translate: TranslateService) {
   }
 
   change(value: boolean): void {
@@ -64,6 +67,24 @@ export class OrderActionComponent {
 
   cancelOrderWithKill(): void {
     this.restCall(true, 'Cancel', this.order, 'cancel');
+  }
+
+  showLog(): void {
+    if (this.order.state && (this.order.state._text !== 'SCHEDULED' && this.order.state._text !== 'PENDING')) {
+      this.coreService.post('orders/history', {
+        orderId: this.order.orderId
+      }).subscribe((res) => {
+        if (res.history && res.history.length > 0) {
+          this.coreService.showLogWindow(res.history[0], null, null, res.history[0].controllerId, null);
+        } else {
+          let msg = '';
+          this.translate.get('order.message.noLogHistoryFound').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.pop('info', msg);
+        }
+      })
+    }
   }
 
   removeWhenTerminated(): void {

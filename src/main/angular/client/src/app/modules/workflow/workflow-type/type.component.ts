@@ -1,5 +1,7 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {ToasterService} from 'angular2-toaster';
+import {TranslateService} from "@ngx-translate/core";
 import {CoreService} from '../../../services/core.service';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
 import {DependentWorkflowComponent} from '../workflow-graphical/workflow-graphical.component';
@@ -31,7 +33,8 @@ export class TypeComponent implements OnChanges {
   sideBar: any = {};
   isFirst = false;
 
-  constructor(public coreService: CoreService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private modal: NzModalService,
+              private toasterService: ToasterService, private translate: TranslateService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -434,6 +437,24 @@ export class TypeComponent implements OnChanges {
           nzMaskClosable: false
         });
       }
+    }
+  }
+
+  showLog(order): void {
+    if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
+      this.coreService.post('orders/history', {
+        orderId: order.orderId
+      }).subscribe((res) => {
+        if (res.history && res.history.length > 0) {
+          this.coreService.showLogWindow(res.history[0], null, null, res.history[0].controllerId, null);
+        } else {
+          let msg = '';
+          this.translate.get('order.message.noLogHistoryFound').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.pop('info', msg);
+        }
+      })
     }
   }
 }
