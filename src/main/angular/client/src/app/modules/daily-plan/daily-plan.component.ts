@@ -988,6 +988,7 @@ export class SearchComponent implements OnInit {
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
+        this.submitted = false;
         if (result.id) {
           for (let i in this.allFilter) {
             if (this.allFilter[i].id === result.id) {
@@ -1713,6 +1714,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   applySearchFilter(obj, filter): void {
     if (filter.workflowPaths) {
       obj.workflowPaths = filter.workflowPaths;
+    }
+    if (filter.folders && filter.folders.length > 0) {
+      obj.scheduleFolders = [];
+      for(const i in filter.folders) {
+        obj.scheduleFolders.push({
+          folder: filter.folders[i],
+          recursive: true
+        });
+      }
     }
     if (filter.late) {
       obj.late = true;
