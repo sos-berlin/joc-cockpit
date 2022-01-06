@@ -48,7 +48,7 @@ export class ToggleComponent implements OnInit {
       agent: this.view,
       documentation: this.view,
       calendar: this.view,
-      permission: this.view
+      permission: 'grid'
     };
     if (!localStorage.views) {
       localStorage.views = JSON.stringify(this.views);

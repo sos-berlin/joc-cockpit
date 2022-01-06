@@ -144,7 +144,7 @@
                        [innerHtml]="item.state._text | translate"></span>
                   </td>
                   <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow)" [innerHtml]="item.numOfOrders || 0"></a>
+                    <span class="remaining-order-count" (click)="viewOrders(workflow)" [innerHtml]="item.numOfOrders || 0"></span>
                   </td>
                   <td>
                     <span *ngIf="item.ordersSummary" [innerHtml]="item.ordersSummary.pending || 0"></span>

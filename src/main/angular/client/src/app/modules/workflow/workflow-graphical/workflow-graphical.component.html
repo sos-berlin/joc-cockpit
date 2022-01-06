@@ -102,6 +102,13 @@
           <li nz-menu-item (click)="confirmOrder()" *ngIf="permission && permission.controllerDefaults && permission.controllerDefaults.orders.modify && order.state && (order.state._text === 'PROMPTING')">
             <a>{{'order.button.confirm' | translate}} ..</a>
           </li>
+          <li nz-menu-divider *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')"></li>
+          <li (click)="showLog(order)" nz-menu-item *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
+            <a>{{'order.button.showLog' | translate}}</a>
+          </li>
+          <li (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" nz-menu-item *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
+            <a translate>common.button.copyLinkToObject</a>
+          </li>
         </ul>
         <ul nz-menu *ngIf="job">
           <li nz-menu-item (click)="showConfiguration(job);">

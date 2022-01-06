@@ -8,11 +8,11 @@
             </div>
             <button class="btn btn-sm btn-grey m-t-n-xs" [nz-tooltip]="'workflow.button.undo' | translate" (click)="undoPermission()"
                     *ngIf="previousPermission.length>0">
-                 <i nz-icon nzType="undo" nzTheme="outline"></i>
+              <i nz-icon nzType="undo" nzTheme="outline"></i>
             </button>
-            <button class="btn btn-sm btn-grey m-l-sm m-t-n-xs" [nz-tooltip]="'workflow.button.redo' | translate" (click)="resetPermission()"
+            <button class="btn btn-sm btn-grey m-l-sm m-t-n-xs" [nz-tooltip]="'agent.button.reset' | translate" (click)="resetPermission()"
                     *ngIf="isReset">
-                 <i nz-icon nzType="redo" nzTheme="outline"></i>
+                <i nz-icon nzType="sync" nzTheme="outline"></i>
             </button>
         </div>
     </div>

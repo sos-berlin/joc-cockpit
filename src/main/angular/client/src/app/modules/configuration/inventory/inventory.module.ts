@@ -9,7 +9,6 @@ import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {InventoryRoutingModule} from './inventory-routing.module';
 import {InventoryService} from './inventory.service';
 import {SharedModule} from '../../shared/shared.module';
-import {WorkflowService} from '../../../services/workflow.service';
 import {CalendarService} from '../../../services/calendar.service';
 import {
   CreateFolderModalComponent, CreateObjectModalComponent, CronImportModalComponent,
@@ -62,7 +61,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     NzTabsModule,
     NgJsonEditorModule
   ],
-  providers: [DatePipe, CalendarService, WorkflowService, InventoryService],
+  providers: [DatePipe, CalendarService, InventoryService],
   declarations: [
     InventoryComponent,
     JobComponent,

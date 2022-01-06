@@ -14,6 +14,8 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {sortBy} from 'underscore';
 import {Subscription} from 'rxjs';
+import {ToasterService} from 'angular2-toaster';
+import {TranslateService} from "@ngx-translate/core";
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
@@ -132,9 +134,6 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       this.workFlowJson.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
       this.workFlowJson.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
       this.getOrders(this.workflow);
-      setTimeout(() => {
-        $('.mxTooltip').remove();
-      }, 500);
     });
   }
 
@@ -235,8 +234,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
-              public workflowService: WorkflowService, public modal: NzModalService,
-              private dataService: DataService, private nzContextMenuService: NzContextMenuService) {
+              public workflowService: WorkflowService, public modal: NzModalService, private toasterService: ToasterService,
+              private translate: TranslateService, private dataService: DataService, private nzContextMenuService: NzContextMenuService) {
   }
 
   ngAfterViewInit(): void {
@@ -420,12 +419,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     this.job = null;
   }
 
-  hideTooltip(): void {
-    $('.mxTooltip').hide();
-  }
-
   modifyOrder(): void {
-    this.hideTooltip();
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
@@ -458,7 +452,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   }
 
   resumeOrder(isParametrized = false): void {
-    this.hideTooltip();
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ResumeOrderModalComponent,
@@ -681,6 +674,14 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           self.showConfiguration({predicate: cell.value.getAttribute('predicate')});
         } else if (cell.value.tagName === 'Cycle') {
           self.showConfiguration({schedule: cell.value.getAttribute('schedule')});
+        } else if (cell.value.tagName === 'Order') {
+          const event = evt.getProperty('event');
+          if (event && event.target && event.target.getAttribute('id')) {
+            const order = cell.value.getAttribute('order');
+            if(order) {
+              self.showLog(JSON.parse(order));
+            }
+          }
         } else if (cell.value.tagName === 'Workflow') {
           const data = cell.value.getAttribute('data');
           if (data) {
@@ -1239,7 +1240,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   }
 
   private openModel(order: any): void {
-    this.hideTooltip();
     this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
@@ -1266,7 +1266,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         operation: type,
         name: order.orderId
       };
-      this.hideTooltip();
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
@@ -1333,7 +1332,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       };
     }
     if (nzComponentParams) {
-      this.hideTooltip();
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
@@ -1357,6 +1355,24 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         order.obstacles = res.obstacles;
         cell.setAttribute('order', JSON.stringify(order));
       });
+    }
+  }
+
+  showLog(order): void {
+    if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
+      this.coreService.post('orders/history', {
+        orderId: order.orderId
+      }).subscribe((res) => {
+        if (res.history && res.history.length > 0) {
+          this.coreService.showLogWindow(res.history[0], null, null, res.history[0].controllerId, null);
+        } else {
+          let msg = '';
+          this.translate.get('order.message.noLogHistoryFound').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.pop('info', msg);
+        }
+      })
     }
   }
 

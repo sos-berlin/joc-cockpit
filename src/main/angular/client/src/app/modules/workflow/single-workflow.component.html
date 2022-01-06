@@ -99,7 +99,7 @@
                        [innerHtml]="workflow.state._text | translate"></a>
                   </td>
                   <td>
-                    <a class="text-hover-primary" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></a>
+                    <span class="remaining-order-count" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></span>
                   </td>
                   <td>
                     <span [innerHtml]="workflow.ordersSummary.pending || 0"></span>
