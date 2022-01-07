@@ -3,7 +3,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from 'ngx-toastr';
 import {isEmpty, clone, isArray} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
 import {OrderPipe} from 'ngx-order-pipe';
@@ -406,7 +406,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private workflowService: WorkflowService,
               private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService,
-              private toasterService: ToasterService, private router: Router, private orderPipe: OrderPipe) {
+              private toasterService: ToastrService, private router: Router, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -743,7 +743,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.translate.get('error.message.objectNotFound').subscribe(translatedValue => {
             msg = translatedValue;
           });
-          this.toasterService.pop('error', '', msg);
+          this.toasterService.error(msg);
         }
       }
       paths = this.workflowFilters.selectedkeys;

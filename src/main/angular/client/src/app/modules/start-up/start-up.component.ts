@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from 'angular2-toaster';
+import { ToastrService } from 'ngx-toastr';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
@@ -33,7 +33,7 @@ export class StartUpModalComponent implements OnInit {
   hasLicense = false;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private dataService: DataService,
-              public translate: TranslateService, private toasterService: ToasterService) {
+              public translate: TranslateService, private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -162,12 +162,12 @@ export class StartUpModalComponent implements OnInit {
             this.translate.get('error.message.connectionError').subscribe(translatedValue => {
               msg = translatedValue;
             });
-            this.toasterService.pop('error', title, msg);
+            this.toasterService.error(msg, title);
           } else {
             this.translate.get('error.message.connectionSuccess').subscribe(translatedValue => {
               msg = translatedValue;
             });
-            this.toasterService.pop('success', '', msg);
+            this.toasterService.success(msg);
           }
         }
       }, error: () => {

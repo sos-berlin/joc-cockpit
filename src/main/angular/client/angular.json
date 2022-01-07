@@ -43,7 +43,7 @@
               "src/theme.less",
               "node_modules/codemirror/lib/codemirror.css",
               "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/angular2-toaster/toaster.min.css",
+              "node_modules/ngx-toastr/toastr.css",
               "src/styles/bootstrap.scss",
               "src/styles/jsgantt.scss",
               "src/styles/full-year-calendar.scss",
@@ -75,6 +75,7 @@
               "@ctrl/ngx-codemirror",
               "chart.js",
               "svg-gauge",
+              "clone-deep",
               "codemirror/mode/shell/shell",
               "codemirror/mode/xml/xml",
               "codemirror/mode/ruby/ruby",
@@ -157,10 +158,17 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/styles",
+              "src/version.json",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles/style.scss"
             ],
             "scripts": []
           }

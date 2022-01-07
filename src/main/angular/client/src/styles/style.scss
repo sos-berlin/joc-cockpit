@@ -5296,15 +5296,10 @@ div.min-ht-widget-controller-status {
   min-height: 300px !important;
 }
 
-.toast-container > div {
+.toast-container .ngx-toastr {
   min-width: 300px;
-  width: auto;
-  max-width: 500px;
-  -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
-  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
-  opacity: 0.9;
-  filter: alpha(opacity=90);
+  width: auto !important;
+  max-width: 500px !important;
 }
 
 .btn-default {
@@ -7284,6 +7279,10 @@ tr.tr-border td:first-child {
 .CodeMirror-matchingbracket {
   outline: 1px solid grey;
   color: #1d1d1d !important
+}
+
+.bg-highlight {
+    background-color: #d9534f4f !important
 }
 
 .ant-modal.maximum {

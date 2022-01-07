@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {isArray, isEqual, object} from 'underscore';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {ChangeParameterModalComponent} from '../modify-modal/modify.component';
@@ -17,7 +17,7 @@ export class OrderVariableComponent implements OnInit {
   @Input() schedulerId: any;
 
   constructor(public coreService: CoreService, public modal: NzModalService,
-              public toasterService: ToasterService, private translate: TranslateService) {
+              public toasterService: ToastrService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -117,7 +117,7 @@ export class OrderVariableComponent implements OnInit {
         });
       } else {
         this.translate.get('common.message.requiredVariableCannotRemoved').subscribe(translatedValue => {
-          this.toasterService.pop('warning', translatedValue);
+          this.toasterService.warning(translatedValue);
         });
       }
     });

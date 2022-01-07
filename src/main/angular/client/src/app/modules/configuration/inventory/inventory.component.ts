@@ -10,7 +10,7 @@ import {
 import {forkJoin, of, Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {FileUploader} from 'ng2-file-upload';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from 'ngx-toastr';
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {TranslateService} from '@ngx-translate/core';
 import {isEmpty, sortBy, isArray, clone, extend, isEqual} from 'underscore';
@@ -677,7 +677,7 @@ export class CronImportModalComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
-              public toasterService: ToasterService, private coreService: CoreService, private authService: AuthService) {
+              public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -726,7 +726,7 @@ export class CronImportModalComponent implements OnInit {
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
-        this.toasterService.pop('error', res.error.code, res.error.message);
+        this.toasterService.error(res.error.message, res.error.code);
       }
     };
   }
@@ -1539,7 +1539,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
-              public toasterService: ToasterService, private coreService: CoreService, private authService: AuthService) {
+              public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -1606,7 +1606,7 @@ export class ImportWorkflowModalComponent implements OnInit {
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
-        this.toasterService.pop('error', res.error.code, res.error.message);
+        this.toasterService.error(res.error.message, res.error.code);
       }
     };
   }
@@ -1637,7 +1637,7 @@ export class ImportWorkflowModalComponent implements OnInit {
       this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
         msg = translatedValue;
       });
-      this.toasterService.pop('error', '', fileExt + ' ' + msg);
+      this.toasterService.error(fileExt + ' ' + msg);
       this.uploader.clearQueue();
     }
   }
@@ -1773,7 +1773,7 @@ export class UploadModalComponent implements OnInit {
   uploader: FileUploader;
   data: any;
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToasterService) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToastrService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
@@ -1790,7 +1790,7 @@ export class UploadModalComponent implements OnInit {
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
-        this.toasterService.pop('error', res.error.code, res.error.message);
+        this.toasterService.error(res.error.message, res.error.code);
       }
     };
   }
@@ -1805,7 +1805,7 @@ export class UploadModalComponent implements OnInit {
       this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
         msg = translatedValue;
       });
-      this.toasterService.pop('error', '', fileExt + ' ' + msg);
+      this.toasterService.error(fileExt + ' ' + msg);
       this.uploader.clearQueue();
     } else {
       const reader = new FileReader();
@@ -1858,7 +1858,7 @@ export class UploadModalComponent implements OnInit {
         msg = translatedValue;
       });
     }
-    this.toasterService.pop('error', '', msg);
+    this.toasterService.error(msg);
     this.uploader.queue[0].remove();
   }
 }
@@ -2192,7 +2192,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     public inventoryService: InventoryService,
     private modal: NzModalService,
     private translate: TranslateService,
-    private toasterService: ToasterService,
+    private toasterService: ToastrService,
     private nzContextMenuService: NzContextMenuService,
     private message: NzMessageService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -3467,7 +3467,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.translate.get('error.message.pasteInSubFolderNotAllowed').subscribe(translatedValue => {
               msg = translatedValue;
             });
-            this.toasterService.pop('warning', '', msg);
+            this.toasterService.warning(msg);
             return;
           }
         }

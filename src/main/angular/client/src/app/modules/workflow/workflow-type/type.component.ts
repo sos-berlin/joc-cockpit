@@ -1,6 +1,6 @@
 import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from "ngx-toastr";
 import {TranslateService} from "@ngx-translate/core";
 import {CoreService} from '../../../services/core.service';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
@@ -34,7 +34,7 @@ export class TypeComponent implements OnChanges {
   isFirst = false;
 
   constructor(public coreService: CoreService, private modal: NzModalService,
-              private toasterService: ToasterService, private translate: TranslateService) {
+              private toasterService: ToastrService, private translate: TranslateService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -452,7 +452,7 @@ export class TypeComponent implements OnChanges {
           this.translate.get('order.message.noLogHistoryFound').subscribe(translatedValue => {
             msg = translatedValue;
           });
-          this.toasterService.pop('info', msg);
+          this.toasterService.info(msg)
         }
       })
     }

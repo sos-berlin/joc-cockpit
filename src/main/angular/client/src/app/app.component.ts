@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {ToasterConfig} from 'angular2-toaster';
 import {TranslateService} from '@ngx-translate/core';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
-import {DataService} from './services/data.service';
 import {CoreService} from './services/core.service';
 
 declare const $: any;
@@ -13,13 +11,9 @@ declare const $: any;
 })
 export class AppComponent implements OnInit {
   locales: any = [];
-  public config: ToasterConfig = new ToasterConfig({
-    positionClass: 'toast-top-center',
-    limit: 1
-  });
 
   constructor(public translate: TranslateService, private i18n: NzI18nService,
-              private dataService: DataService, private coreService: CoreService) {
+              private coreService: CoreService) {
     AppComponent.themeInit();
 /*    Object.getOwnPropertyNames(console).filter((property) => {
       return typeof console[property] === 'function';
@@ -73,7 +67,4 @@ export class AppComponent implements OnInit {
     });
   }
 
-  gotoErrorLocation(): void {
-    this.dataService.announceFunction('xmlEditor');
-  }
 }

@@ -14,12 +14,12 @@ import {
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from 'angular2-toaster';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import {NzMessageService} from "ng-zorro-antd/message";
 import {isEmpty, isArray, isEqual, clone, extend, sortBy} from 'underscore';
 import {saveAs} from 'file-saver';
+import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
 import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
@@ -2136,7 +2136,7 @@ export class ImportComponent implements OnInit {
   hasBaseDropZoneOver: any;
   uploader: FileUploader;
 
-  constructor(public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToastrService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
@@ -2153,7 +2153,7 @@ export class ImportComponent implements OnInit {
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
-        this.toasterService.pop('error', res.error.code, res.error.message);
+        this.toasterService.error(res.error.message, res.error.code);
       }
     };
   }
@@ -2173,7 +2173,7 @@ export class ImportComponent implements OnInit {
       this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
         msg = translatedValue;
       });
-      this.toasterService.pop('error', '', fileExt + ' ' + msg);
+      this.toasterService.error(fileExt + ' ' + msg);
       this.uploader.clearQueue();
     } else {
       const reader = new FileReader();
@@ -2194,7 +2194,7 @@ export class ImportComponent implements OnInit {
         self.translate.get('workflow.message.inValidWorkflow').subscribe(translatedValue => {
           msg = translatedValue;
         });
-        self.toasterService.pop('error', '', msg);
+        self.toasterService.error(msg);
         self.uploader.queue[0].remove();
         return;
       }
@@ -2281,7 +2281,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
-              private toasterService: ToasterService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
+              private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -3579,7 +3579,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       for (let i = 0; i < list.length; i++) {
         if (list[i].name === variable.name && i !== index) {
           variable.name = '';
-          this.toasterService.pop('warning', list[i].name + ' is already exist');
+          this.toasterService.warning(list[i].name + ' is already exist');
           break;
         }
       }
@@ -5117,7 +5117,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       self.translate.get('workflow.message.invalidInstructionsSelected').subscribe(translatedValue => {
                         msg = translatedValue;
                       });
-                      self.toasterService.pop('error', title + '!!', msg);
+                      self.toasterService.error(msg, title + '!!');
                       return;
                     }
                   }
@@ -5136,7 +5136,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
                         msg = translatedValue;
                       });
-                      self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
+                      self.toasterService.error( drpTargt.value.tagName + ' ' + msg, title + '!!');
                       return;
                     }
                   }
@@ -5145,7 +5145,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.translate.get('workflow.message.ifInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
-                    self.toasterService.pop('error', title + '!!', msg);
+                    self.toasterService.error( msg, title + '!!');
                     return;
                   }
                 } else if (self.workflowService.checkClosingCell(drpTargt.value.tagName)) {
@@ -5155,7 +5155,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                         self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                           msg = translatedValue;
                         });
-                        self.toasterService.pop('error', title + '!!', msg);
+                        self.toasterService.error(msg, title + '!!');
                         return;
                       }
                     }
@@ -5173,7 +5173,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
-                    self.toasterService.pop('error', title + '!!', msg);
+                    self.toasterService.error(msg, title + '!!');
                     return;
                   }
                 } else if (drpTargt.value.tagName === 'Lock') {
@@ -5189,7 +5189,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
-                    self.toasterService.pop('error', title + '!!', msg);
+                    self.toasterService.error(msg, title + '!!');
                     return;
                   }
                 } else if (drpTargt.value.tagName === 'Cycle') {
@@ -5205,7 +5205,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
-                    self.toasterService.pop('error', title + '!!', msg);
+                    self.toasterService.error(msg, title + '!!');
                     return;
                   }
                 } else if (drpTargt.value.tagName === 'ForkList') {
@@ -5221,7 +5221,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
-                    self.toasterService.pop('error', title + '!!', msg);
+                    self.toasterService.error(msg, title + '!!');
                     return;
                   }
                 } else if (drpTargt.value.tagName === 'Try') {
@@ -5237,7 +5237,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
-                    self.toasterService.pop('error', title + '!!', msg);
+                    self.toasterService.error(msg, title + '!!');
                     return;
                   }
                 } else if (drpTargt.value.tagName === 'Catch') {
@@ -5253,7 +5253,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
-                    self.toasterService.pop('error', title + '!!', msg);
+                    self.toasterService.error(msg, title + '!!');
                     return;
                   }
                 } else if (drpTargt.value.tagName === 'Process') {
@@ -7892,7 +7892,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             self.translate.get('workflow.message.ifInstructionValidationError').subscribe(translatedValue => {
               msg = translatedValue;
             });
-            self.toasterService.pop('error', title + '!!', msg);
+            self.toasterService.error(msg, title + '!!');
           }
         } else if (targetObj.TYPE === 'Fork') {
           let branchId;
@@ -8559,7 +8559,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   self.translate.get('workflow.message.invalidIfInstruction').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
-                  self.toasterService.pop('error', msg);
+                  self.toasterService.error(msg);
                 }
               }
               if (isValidate) {
@@ -8590,7 +8590,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   self.translate.get('workflow.message.invalidRetryInstruction').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
-                  self.toasterService.pop('error', msg);
+                  self.toasterService.error(msg);
                 }
                 if (isValidate) {
                   return;
@@ -8652,7 +8652,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.translate.get('workflow.message.invalidLockInstruction').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
-                    self.toasterService.pop('error', msg);
+                    self.toasterService.error(msg);
                   }
                 }
                 if (isValidate) {
@@ -8678,7 +8678,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.translate.get('workflow.message.invalidForkListInstruction').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
-                    self.toasterService.pop('error', msg);
+                    self.toasterService.error(msg);
                   }
                 }
                 if (isValidate) {
@@ -8748,7 +8748,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   self.translate.get('workflow.message.invalidForkInstruction').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
-                  self.toasterService.pop('error', msg);
+                  self.toasterService.error(msg);
                 }
               }
               return;

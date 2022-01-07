@@ -3,7 +3,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
-import {ToasterService} from 'angular2-toaster';
+import { ToastrService } from 'ngx-toastr';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
@@ -99,7 +99,7 @@ export class ImportKeyModalComponent implements OnInit {
   key = {keyAlg: 'RSA'};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
-              public translate: TranslateService, public toasterService: ToasterService) {
+              public translate: TranslateService, public toasterService: ToastrService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 2
@@ -149,7 +149,7 @@ export class ImportKeyModalComponent implements OnInit {
       this.submitted = false;
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
-        this.toasterService.pop('error', res.error.code, res.error.message);
+        this.toasterService.error(res.error.message, res.error.code);
       }
     };
   }
@@ -182,7 +182,7 @@ export class ImportKeyModalComponent implements OnInit {
               self.translate.get('profile.message.invalidKeyFileSelected').subscribe(translatedValue => {
                 msg = translatedValue;
               });
-              self.toasterService.pop('error', '', msg);
+              self.toasterService.error(msg);
               self.uploader.queue[i].remove();
             }
           }
@@ -226,7 +226,7 @@ export class GenerateKeyComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-              private translate: TranslateService,  private toasterService: ToasterService) {
+              private translate: TranslateService,  private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -272,7 +272,7 @@ export class GenerateKeyComponent implements OnInit {
         this.translate.get('profile.keyManagement.message.keyGeneratedSuccessfully').subscribe(translatedValue => {
           msg = translatedValue;
         });
-        this.toasterService.pop('success', msg);
+        this.toasterService.success(msg);
         this.activeModal.close('ok');
       }, error: () => this.submitted = false
     });
@@ -304,7 +304,7 @@ export class UserComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService, private router: Router,
-              private modal: NzModalService, private translate: TranslateService, private toasterService: ToasterService, private i18n: NzI18nService) {
+              private modal: NzModalService, private translate: TranslateService, private toasterService: ToastrService, private i18n: NzI18nService) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
