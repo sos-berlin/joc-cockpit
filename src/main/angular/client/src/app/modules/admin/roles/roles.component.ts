@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import {isEqual, clone} from 'underscore';
 import {filter} from 'rxjs/operators';
@@ -225,7 +225,7 @@ export class RolesComponent implements OnDestroy {
   subscription3: Subscription;
 
   constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modal: NzModalService,
-              private translate: TranslateService, private toasterService: ToasterService, public dataService: DataService) {
+              private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUsersData(res);
@@ -412,11 +412,8 @@ export class RolesComponent implements OnDestroy {
       this.translate.get('user.message.cannotDeleteRole').subscribe(translatedValue => {
         waringMessage = translatedValue;
       });
-      this.toasterService.pop({
-        type: 'warning',
-        title: '',
-        body: waringMessage,
-        timeout: 3000
+      this.toasterService.warning(waringMessage, '',{
+        timeOut: 3000
       });
     }
   }

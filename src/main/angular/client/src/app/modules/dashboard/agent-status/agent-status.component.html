@@ -4,15 +4,13 @@
     </div>
     <div class="row" [hidden]="!isLoaded">
       <div class="col-md-12">
-        <div class="p-a" [ngStyle]="{'height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px', 'width': '90%'}" *ngIf="pieChartData.length > 0">
+        <div class="p-a" [ngStyle]="{'height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px', 'width': '90%'}" *ngIf="pieChartData.datasets.length > 0">
           <canvas baseChart
                   [data]="pieChartData"
-                  [labels]="pieChartLabels"
-                  [chartType]="'pie'"
+                  [type]="'pie'"
                   [options]="pieChartOptions"
                   [plugins]="pieChartPlugins"
-                  [colors]="pieChartColors"
-                  [legend]="pieChartLegend"
+                  [legend]="true"
                   (chartClick)="onChartClick($event)">
           </canvas>
         </div>
@@ -21,7 +19,7 @@
     <div *ngIf="!isLoaded" class="loading-center text-primary text" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
       <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
-    <div *ngIf="pieChartData.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
+    <div *ngIf="pieChartData.datasets.length==0 && isLoaded" class="vert-middle" [ngStyle]="{'height':(layout.rows * 55 -20) +'px'}">
       <div>
         <app-empty-data></app-empty-data>
       </div>

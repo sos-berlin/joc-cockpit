@@ -1217,3 +1217,6 @@ div.jsoneditor-value.jsoneditor-invalid {
 .warn-icon {
   color: red;
 }
+.bg-highlight {
+    background-color: rgba(253, 70, 71, .58) !important
+}

@@ -5,7 +5,7 @@ import {tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from 'ngx-toastr';
 import {AuthService} from './auth.service';
 import {LoggingService} from '../../services/logging.service';
 
@@ -13,13 +13,13 @@ import {LoggingService} from '../../services/logging.service';
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService,
-              private logService: LoggingService, private translate: TranslateService, private toasterService: ToasterService) {
+              private logService: LoggingService, private translate: TranslateService, private toasterService: ToastrService) {
   }
 
   intercept(req: any, next: HttpHandler): Observable<HttpEvent<any>> {
     if (req.method === 'POST') {
       req = req.clone({
-        url: './api/' + req.url,
+        url: 'api/' + req.url,
         headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
       });
       if (req.url.match('authentication/login')) {
@@ -56,7 +56,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 this.translate.get('error.message.sessionExpired').subscribe(translatedValue => {
                   msg = translatedValue;
                 });
-                this.toasterService.pop('error', title, msg);
+                this.toasterService.error(title, msg);
                 this.authService.clearUser();
                 this.authService.clearStorage();
                 let url = this.router.url;
@@ -73,19 +73,19 @@ export class AuthInterceptor implements HttpInterceptor {
               }
               if (err.error.error) {
                 if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
-                  this.toasterService.pop('error', '', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
+                  this.toasterService.error( '', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
                 } else {
-                  this.toasterService.pop('error', '', err.error.error.message);
+                  this.toasterService.error( '', err.error.error.message);
                 }
               } else if (err.error.message) {
-                this.toasterService.pop('error', '', err.error.message);
+                this.toasterService.error( err.error.message);
               } else {
                 if (err.error.errors) {
                   for (let i = 0; i < err.error.errors.length; i++) {
-                    this.toasterService.pop('error', '', err.error.errors[i].message);
+                    this.toasterService.error(  err.error.errors[i].message);
                   }
                 } else if (err.message) {
-                  this.toasterService.pop('error', '', err.message);
+                  this.toasterService.error(  err.message);
                 }
               }
             }

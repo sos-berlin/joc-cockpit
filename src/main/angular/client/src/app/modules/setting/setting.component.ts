@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from 'angular2-toaster';
+import { ToastrService } from 'ngx-toastr';
 import {FileUploader} from 'ng2-file-upload';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {saveAs} from 'file-saver';
@@ -24,7 +24,7 @@ export class AddSectionComponent implements OnInit {
   submitted = false;
 
   constructor(public activeModal: NzModalRef, public translate: TranslateService,
-              public toasterService: ToasterService) {
+              public toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -62,7 +62,7 @@ export class ImportSettingComponent implements OnInit {
   submitted = false;
   uploader: FileUploader;
 
-  constructor(public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToasterService) {
+  constructor(public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToastrService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
@@ -73,7 +73,7 @@ export class ImportSettingComponent implements OnInit {
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
-        this.toasterService.pop('error', res.error.code, res.error.message);
+        this.toasterService.error(res.error.code, res.error.message);
       }
     };
   }
@@ -89,7 +89,7 @@ export class ImportSettingComponent implements OnInit {
       this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
         msg = translatedValue;
       });
-      this.toasterService.pop('error', '', fileExt + ' ' + msg);
+      this.toasterService.error(fileExt + ' ' + msg);
       this.uploader.clearQueue();
     } else {
       let reader = new FileReader();
@@ -104,7 +104,7 @@ export class ImportSettingComponent implements OnInit {
         self.setting = data;
       } catch (e) {
         self.translate.get('error.message.invalidJSON').subscribe(translatedValue => {
-          self.toasterService.pop('error', '', translatedValue);
+          self.toasterService.error(translatedValue);
         });
         self.uploader.clearQueue();
       }
@@ -145,7 +145,7 @@ export class SettingComponent implements OnInit {
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService, private message: NzMessageService,
-              private translate: TranslateService, private toasterService: ToasterService, private dataService: DataService) {
+              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
@@ -162,7 +162,7 @@ export class SettingComponent implements OnInit {
       this.translate.get('common.message.notValidInput').subscribe(translatedValue => {
         msg = translatedValue;
       });
-      this.toasterService.pop('error', msg);
+      this.toasterService.error(msg);
       return;
     } else if (value && value.value && value.value.type === 'TIME') {
       value.value.value = this.checkTime(value.value.value);

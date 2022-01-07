@@ -1,10 +1,10 @@
 import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from 'ngx-toastr';
 import {FileUploader} from 'ng2-file-upload';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {Observable, of, Subscription} from 'rxjs';
+import {Observable, of, Subscription, take} from 'rxjs';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -564,7 +564,7 @@ export class ShowModalComponent implements OnInit {
   @ViewChild('codeMirror', {static: true}) cm;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private message: NzMessageService,
-              private toasterService: ToasterService, private clipboardService: ClipboardService) {
+              private toasterService: ToastrService, private clipboardService: ClipboardService) {
   }
 
   ngOnInit(): void {
@@ -572,7 +572,7 @@ export class ShowModalComponent implements OnInit {
       this.obj.xml = this.xml;
     }
     if (this.validation && this.validation.validationError) {
-      this.toasterService.pop('error', this.validation.validationError.message);
+      this.toasterService.error(this.validation.validationError.message, '');
     }
   }
 
@@ -594,13 +594,13 @@ export class ShowModalComponent implements OnInit {
       next: (res: any) => {
         if (res.validationError) {
           this.highlightLineNo(res.validationError.line);
-          this.toasterService.pop('error', res.validationError.message);
+          this.toasterService.error(res.validationError.message, '');
         } else {
           this.toasterService.clear();
         }
       }, error: (error) => {
         if (error.error) {
-          this.toasterService.pop('error', error.error.message);
+          this.toasterService.error(error.error.message, '');
         }
       }
     });
@@ -630,7 +630,7 @@ export class ShowModalComponent implements OnInit {
     this.coreService.post('xmleditor/apply', obj).subscribe((res: any) => {
       if (res.validationError) {
         this.highlightLineNo(res.validationError.line);
-        this.toasterService.pop('error', res.ValidationError.message);
+        this.toasterService.error(res.ValidationError.message, '');
       } else {
         this.activeModal.close({result: res});
       }
@@ -687,7 +687,7 @@ export class ImportModalComponent implements OnInit {
 
   constructor(public activeModal: NzModalRef,
               public translate: TranslateService,
-              public toasterService: ToasterService
+              public toasterService: ToastrService
   ) {
     this.uploader = new FileUploader({
       url: ''
@@ -705,7 +705,7 @@ export class ImportModalComponent implements OnInit {
 
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
       if (response.error) {
-        this.toasterService.pop('error', response.error.code, response.error.message);
+        this.toasterService.error(response.error.message, response.error.code);
       }
     };
   }
@@ -720,7 +720,7 @@ export class ImportModalComponent implements OnInit {
     let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
     if (!this.importXsd) {
       if (fileExt !== 'XML') {
-        this.toasterService.pop('error', '', fileExt + ' ' + 'invalid file type');
+        this.toasterService.error(fileExt + ' ' + 'invalid file type', '');
         event.remove();
       } else {
         this.fileLoading = false;
@@ -730,13 +730,13 @@ export class ImportModalComponent implements OnInit {
           this.uploadData = _event.target.result;
           if (this.uploadData !== undefined && this.uploadData !== '') {
           } else {
-            this.toasterService.pop('error', 'Invalid xml file or file must be empty');
+            this.toasterService.error('Invalid xml file or file must be empty', '');
           }
         };
       }
     } else if (this.importXsd) {
       if (fileExt !== 'XSD') {
-        this.toasterService.pop('error', '', fileExt + ' ' + 'invalid file type');
+        this.toasterService.error(fileExt + ' ' + 'invalid file type', '');
         event.remove();
       } else {
         this.fileLoading = false;
@@ -746,7 +746,7 @@ export class ImportModalComponent implements OnInit {
           this.uploadData = _event.target.result;
           if (this.uploadData !== undefined && this.uploadData !== '') {
           } else {
-            this.toasterService.pop('error', 'Invalid xml file or file must be empty');
+            this.toasterService.error('Invalid xml file or file must be empty', '');
           }
         };
       }
@@ -886,7 +886,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   beforeDrop;
   jobResourcesTree = [];
   subscription1: Subscription;
-  subscription2: Subscription;
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
@@ -898,16 +897,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     private dataService: DataService,
     public translate: TranslateService,
     private message: NzMessageService,
-    public toasterService: ToasterService,
+    public toasterService: ToastrService,
     private nzContextMenuService: NzContextMenuService,
     private router: Router,
     private authService: AuthService
   ) {
-    this.myContent = '';
-    this.subscription1 = this.dataService.functionAnnounced$.subscribe(res => {
-      this.gotoErrorLocation();
-    });
-    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+    this.subscription1 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
   }
@@ -984,7 +979,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
     this.coreService.setSideView(this.sideView);
     if (this.nodes && this.nodes.length > 0 && !this.isStore) {
       this.storeXML();
@@ -1142,7 +1136,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.validConfig = true;
           }
         }, error: (error) => {
-          this.toasterService.pop('error', error.error.message);
+          this.showErrorToast(error.error.message, '');
         }
       });
     } else {
@@ -1219,7 +1213,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.tabsArray = [];
         this.error = true;
         if (error && error.error) {
-          this.toasterService.pop('error', error.error.message);
+          this.showErrorToast(error.error.message, '');
         }
       }
     });
@@ -1310,7 +1304,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.extraInfo = {};
         this.error = true;
         if (err.data && err.data.error) {
-          this.toasterService.pop('error', err.data.error.message);
+          this.showErrorToast(err.data.error.message, '');
         }
       }
     });
@@ -1709,9 +1703,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         || dom_document.documentElement.nodeName === 'parsererror') {
         if (dom_document.documentElement.getElementsByTagName('parsererror').length > 0) {
           let a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
-          this.toasterService.pop('error', 'Invalid xml ', a.innerText);
+          this.showErrorToast(a.innerText, 'Invalid xml ');
         } else {
-          this.toasterService.pop('error', 'Invalid xml ', dom_document.documentElement.firstChild.nodeValue);
+          this.showErrorToast(dom_document.documentElement.firstChild.nodeValue, 'Invalid xml ');
         }
         return true;
       } else {
@@ -1719,7 +1713,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     } catch (e) {
       let a: any = dom_document.documentElement.getElementsByTagName('parsererror')[0];
-      this.toasterService.pop('error', 'Invalid xml ' + a.innerText, e);
+      this.showErrorToast(e, 'Invalid xml ' + a.innerText);
       return true;
     }
   }
@@ -3523,7 +3517,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.oldName = null;
       }, error: (err) => {
         data.name = this.oldName;
-        this.toasterService.pop('error', err.data.error.message);
+        this.showErrorToast(err.data.error.message, '');
       }
     });
   }
@@ -4589,7 +4583,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.xmlToJsonService(this.uploadData);
         }
       }, error: (err) => {
-        this.toasterService.pop('error', err.data.error.message);
+        this.showErrorToast(err.data.error.message, '');
         this.isLoading = false;
       }
     });
@@ -4625,7 +4619,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   checkForTab(id): void {
-    $(document).delegate('#' + id, 'keydown', function(e) {
+    $(document).delegate('#' + id, 'keydown', function (e) {
       let keyCode = e.keyCode || e.which;
       if (keyCode == 9) {
         e.preventDefault();
@@ -4727,17 +4721,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       obj.fileContent = this.uploadData;
     }
     this.path = this.selectedXsd;
-    this.coreService.post('xmleditor/schema/assign', obj).subscribe((res: any) => {
-      this.schemaIdentifier = res.schemaIdentifier;
-      this.loadTree(res.schema, false);
-      this.submitXsd = true;
-      this.prevXML = '';
-      this.isLoading = false;
-      this.storeXML(this.activeTab);
-    }, (error) => {
-      this.isLoading = false;
-      if (error && error.error) {
-        this.toasterService.pop('error', error.error.message);
+    this.coreService.post('xmleditor/schema/assign', obj).subscribe({
+      next: (res: any) => {
+        this.schemaIdentifier = res.schemaIdentifier;
+        this.loadTree(res.schema, false);
+        this.submitXsd = true;
+        this.prevXML = '';
+        this.isLoading = false;
+        this.storeXML(this.activeTab);
+      }, error: (error) => {
+        this.isLoading = false;
+        if (error && error.error) {
+          this.showErrorToast(error.error.message, '');
+        }
       }
     });
   }
@@ -4952,11 +4948,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     } else {
       msg = 'cannot be empty';
     }
-    this.toasterService.pop('error', 'Element : ' + node.parent, msg);
+    this.showErrorToast(msg, 'Element : ' + node.parent);
   }
 
   successPopToast(): void {
-    this.toasterService.pop('success', 'Element : ' + this.nodes[0].ref, 'XML is valid');
+    this.toasterService.success('Element : ' + this.nodes[0].ref, 'XML is valid');
   }
 
   // goto error location
@@ -5321,55 +5317,59 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     } else {
       obj.release = isRelease;
     }
-    this.coreService.post('xmleditor/remove', obj).subscribe((res: any) => {
-      if (this.objectType === 'NOTIFICATION') {
-        this.extraInfo = {
-          released: res.released,
-          state: res.state,
-          hasReleases: res.hasReleases
-        };
-        if (res.released) {
-          this.validConfig = true;
-        }
-      }
-      if (res.configuration) {
-        if (!this.ok(res.configuration)) {
-          let obj1: any = {
-            controllerId: this.schedulerIds.selected,
-            objectType: this.objectType,
-            configuration: res.configuration
+    this.coreService.post('xmleditor/remove', obj).subscribe({
+      next: (res: any) => {
+        if (this.objectType === 'NOTIFICATION') {
+          this.extraInfo = {
+            released: res.released,
+            state: res.state,
+            hasReleases: res.hasReleases
           };
-          if (this.objectType !== 'NOTIFICATION') {
-            obj1.schemaIdentifier = this.schemaIdentifier;
+          if (res.released) {
+            this.validConfig = true;
           }
-          this.coreService.post('xmleditor/xml2json', obj1).subscribe((result: any) => {
-            this.isLoading = true;
-            let a = [];
-            let arr = JSON.parse(result.configurationJson);
-            a.push(arr);
-            this.counting = arr.lastUuid;
-            this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
-            this.nodes = a;
-            this.isLoading = false;
-            this.selectedNode = this.nodes[0];
-            this.selectedNodeDoc = this.checkText(this.nodes[0]);
-            this.getIndividualData(this.selectedNode, undefined);
-            this.submitXsd = true;
-            this.prevXML = this.removeComment(res.configuration);
-            this.copyItem = undefined;
-          }, (err) => {
-            this.isLoading = false;
-            this.error = true;
-            this.toasterService.pop('error', err.data.error.message);
-          });
+        }
+        if (res.configuration) {
+          if (!this.ok(res.configuration)) {
+            let obj1: any = {
+              controllerId: this.schedulerIds.selected,
+              objectType: this.objectType,
+              configuration: res.configuration
+            };
+            if (this.objectType !== 'NOTIFICATION') {
+              obj1.schemaIdentifier = this.schemaIdentifier;
+            }
+            this.coreService.post('xmleditor/xml2json', obj1).subscribe({
+              next: (result: any) => {
+                this.isLoading = true;
+                let a = [];
+                let arr = JSON.parse(result.configurationJson);
+                a.push(arr);
+                this.counting = arr.lastUuid;
+                this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
+                this.nodes = a;
+                this.isLoading = false;
+                this.selectedNode = this.nodes[0];
+                this.selectedNodeDoc = this.checkText(this.nodes[0]);
+                this.getIndividualData(this.selectedNode, undefined);
+                this.submitXsd = true;
+                this.prevXML = this.removeComment(res.configuration);
+                this.copyItem = undefined;
+              }, error: (err) => {
+                this.isLoading = false;
+                this.error = true;
+                this.showErrorToast(err.data.error.message, '');
+              }
+            });
+          } else {
+            this.afterDelete(res, tab);
+          }
         } else {
           this.afterDelete(res, tab);
         }
-      } else {
-        this.afterDelete(res, tab);
+      }, error: (error) => {
+        this.showErrorToast(error.error.message, '');
       }
-    }, (error) => {
-      this.toasterService.pop('error', error.error.message);
     });
   }
 
@@ -5404,7 +5404,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.gotoInfectedElement(iNode, this.nodes);
     this.validConfig = false;
     this.getIndividualData(this.selectedNode, true);
-    this.toasterService.pop('error', error.message);
+    this.showErrorToast(error.message, '');
   }
 
   private gotoInfectedElement(node, nodes): void {
@@ -5456,13 +5456,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           objectType: this.objectType,
           configuration: this.mainXml,
           configurationJson: JSON.stringify({nodesCount: this.counting, node: tempNode || this.nodes}),
-        }).subscribe((res: any) => {
-          this.prevXML = this.mainXml;
-          this.isStore = false;
-        }, (error) => {
-          this.isStore = false;
-          if (error && error.error) {
-            this.toasterService.pop('error', error.error.message);
+        }).subscribe({
+          next: () => {
+            this.prevXML = this.mainXml;
+            this.isStore = false;
+          }, error: (error) => {
+            this.isStore = false;
+            if (error && error.error) {
+              this.showErrorToast(error.error.message, '');
+            }
           }
         });
       } else {
@@ -5475,17 +5477,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           name: this.activeTab.name,
           schemaIdentifier: this.schemaIdentifier || ((tab && tab.schemaIdentifier) ? tab.schemaIdentifier : this.path),
           schema: this.path
-        }).subscribe((res: any) => {
-          this.prevXML = this.mainXml;
-          this.isStore = false;
-          if (tab && tab.id < 0) {
-            this.extraInfo.modified = res.modified;
-            tab.id = res.id;
-            tab.schemaIdentifier = this.schemaIdentifier;
+        }).subscribe({
+          next: (res: any) => {
+            this.prevXML = this.mainXml;
+            this.isStore = false;
+            if (tab && tab.id < 0) {
+              this.extraInfo.modified = res.modified;
+              tab.id = res.id;
+              tab.schemaIdentifier = this.schemaIdentifier;
+            }
+          }, error: (error) => {
+            this.isStore = false;
+            this.showErrorToast(error.error.message, '');
           }
-        }, (error) => {
-          this.isStore = false;
-          this.toasterService.pop('error', error.error.message);
         });
       }
     }
@@ -5686,35 +5690,37 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (this.mainXml) {
       obj.configuration = this.mainXml;
     }
-    this.coreService.post('xmleditor/read', obj).subscribe((res: any) => {
-      if (res.validation && res.validation.validated) {
-        this.validConfig = true;
-      } else {
-        if (res.configuration && res.configuration.validation && res.configuration.validation.validated) {
+    this.coreService.post('xmleditor/read', obj).subscribe({
+      next: (res: any) => {
+        if (res.validation && res.validation.validated) {
           this.validConfig = true;
+        } else {
+          if (res.configuration && res.configuration.validation && res.configuration.validation.validated) {
+            this.validConfig = true;
+          }
         }
+        this.schemaIdentifier = res.schemaIdentifier;
+        if (res.schema) {
+          this.path = res.schema;
+          this.loadTree(res.schema, false);
+          this.submitXsd = true;
+          this.extraInfo = {
+            released: res.released,
+            state: res.state,
+            configurationDate: res.configurationDate,
+            hasReleases: res.hasReleases,
+            modified: res.modified
+          };
+          this.prevXML = '';
+          this.storeXML();
+        }
+      }, error: (err) => {
+        this.submitXsd = false;
+        this.isLoading = false;
+        this.error = true;
+        this.extraInfo = {};
+        this.showErrorToast(err.data.error.message, '');
       }
-      this.schemaIdentifier = res.schemaIdentifier;
-      if (res.schema) {
-        this.path = res.schema;
-        this.loadTree(res.schema, false);
-        this.submitXsd = true;
-        this.extraInfo = {
-          released: res.released,
-          state: res.state,
-          configurationDate: res.configurationDate,
-          hasReleases: res.hasReleases,
-          modified: res.modified
-        };
-        this.prevXML = '';
-        this.storeXML();
-      }
-    }, (err) => {
-      this.submitXsd = false;
-      this.isLoading = false;
-      this.error = true;
-      this.extraInfo = {};
-      this.toasterService.pop('error', err.data.error.message);
     });
   }
 
@@ -5732,19 +5738,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       obj.schemaIdentifier = this.schemaIdentifier;
     }
     this.coreService.post('xmleditor/validate', obj).subscribe({
-next:(res: any) => {
-      if (res.validationError) {
-        this.showError(res.validationError);
-      } else {
-        this.validConfig = true;
+      next: (res: any) => {
+        if (res.validationError) {
+          this.showError(res.validationError);
+        } else {
+          this.validConfig = true;
+        }
+      }, error: (error) => {
+        this.validConfig = false;
+        if (error && error.error) {
+          this.showErrorToast(error.error.message, '');
+        }
       }
-    }, error: (error) => {
-      this.validConfig = false;
-      if (error && error.error) {
-        this.toasterService.pop('error', error.error.message);
-      }
-    }
-});
+    });
   }
 
   private _showXml(json = this.nodes, flag = false): any {
@@ -5753,16 +5759,22 @@ next:(res: any) => {
       const xmlAsString = new XMLSerializer().serializeToString(xml);
       let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
       a = a.concat(xmlAsString);
-      if(flag) {
+      if (flag) {
         let formatedXml = format(a);
         formatedXml = formatedXml.replace(/>\s*(<!\[CDATA\[)/g, '>$1');
         formatedXml = formatedXml.replace(/]]>\s*<\//g, ']]></');
         return formatedXml;
-      } else{
+      } else {
         return a;
       }
     } else {
       return null;
     }
+  }
+
+  private showErrorToast(msg: string, title: string): void {
+    this.toasterService.error(msg, title).onTap
+    .pipe(take(1))
+    .subscribe(() => this.gotoErrorLocation());
   }
 }

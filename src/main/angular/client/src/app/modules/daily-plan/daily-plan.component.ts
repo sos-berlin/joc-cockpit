@@ -18,7 +18,7 @@ import {OrderPipe} from 'ngx-order-pipe';
 import {isEmpty, groupBy, sortBy, clone, isArray} from 'underscore';
 import {Router} from '@angular/router';
 import {catchError, takeUntil} from 'rxjs/operators';
-import {ToasterService} from 'angular2-toaster';
+import { ToastrService } from 'ngx-toastr';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {GroupByPipe, SearchPipe} from '../../pipes/core.pipe';
 import {CoreService} from '../../services/core.service';
@@ -1084,7 +1084,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private groupByPipe: GroupByPipe, private toasterService: ToasterService,
+              private dataService: DataService, private groupByPipe: GroupByPipe, private toasterService: ToastrService,
               private modal: NzModalService, private translate: TranslateService, private searchPipe: SearchPipe,
               private orderPipe: OrderPipe, private excelService: ExcelService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -1996,7 +1996,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private showInfoMsg(state): void {
     this.translate.get(state).subscribe(stateTranslated => {
       this.translate.get('order.message.orderModificationNotAllowed', {state: stateTranslated}).subscribe(translatedValue => {
-        this.toasterService.pop('info', translatedValue);
+        this.toasterService.info(translatedValue);
       });
     });
   }

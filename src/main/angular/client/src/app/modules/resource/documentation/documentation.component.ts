@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {FileUploader} from 'ng2-file-upload';
 import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from 'ngx-toastr';
 import {Subject, Subscription} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {OrderPipe} from 'ngx-order-pipe';
@@ -46,7 +46,7 @@ export class ImportModalComponent implements OnInit {
   document = {path: '', path1: ''};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
-              public translate: TranslateService, public toasterService: ToasterService) {
+              public translate: TranslateService, public toasterService: ToastrService) {
     this.uploader = new FileUploader({
       url: API_URL + 'documentations/import'
     });
@@ -84,7 +84,7 @@ export class ImportModalComponent implements OnInit {
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
-        this.toasterService.pop('error', res.error.code, res.error.message);
+        this.toasterService.error(res.error.code, res.error.message);
       }
     };
   }

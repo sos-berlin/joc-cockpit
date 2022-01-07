@@ -1,7 +1,7 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from "ngx-toastr";
 import {TranslateService} from "@ngx-translate/core";
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -23,7 +23,7 @@ export class OrderActionComponent {
   isVisible: boolean;
 
   constructor(public coreService: CoreService, private modal: NzModalService,
-              private toasterService: ToasterService, private translate: TranslateService) {
+              private toasterService: ToastrService, private translate: TranslateService) {
   }
 
   change(value: boolean): void {
@@ -81,7 +81,7 @@ export class OrderActionComponent {
           this.translate.get('order.message.noLogHistoryFound').subscribe(translatedValue => {
             msg = translatedValue;
           });
-          this.toasterService.pop('info', msg);
+          this.toasterService.info(msg)
         }
       })
     }

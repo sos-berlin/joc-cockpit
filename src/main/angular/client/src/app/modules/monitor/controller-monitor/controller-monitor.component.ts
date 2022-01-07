@@ -39,10 +39,6 @@ export class ControllerMonitorComponent implements OnInit, OnDestroy {
   groupPadding = 16;
   view: any = null;
 
-  colorScheme = {
-    domain: ['rgb(122,185,122)', '#ef486a', '#AAAAAA']
-  };
-
   subscription1: Subscription;
   subscription2: Subscription;
 

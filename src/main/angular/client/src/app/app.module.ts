@@ -6,7 +6,7 @@ import {FormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {ToasterModule} from 'angular2-toaster';
+import {ToastrModule} from 'ngx-toastr';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {AppRoutingModule} from './app-routing.module';
 import {LoginModule} from './modules/login/login.module';
@@ -44,7 +44,11 @@ export class MyErrorHandler implements ErrorHandler {
     HttpClientModule,
     BrowserAnimationsModule,
     LoginModule,
-    ToasterModule.forRoot(),
+    ToastrModule.forRoot({
+      maxOpened: 1,
+      positionClass: 'toast-top-center',
+      preventDuplicates: true,
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

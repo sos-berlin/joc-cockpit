@@ -14,7 +14,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {sortBy} from 'underscore';
 import {Subscription} from 'rxjs';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from "ngx-toastr";
 import {TranslateService} from "@ngx-translate/core";
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
@@ -234,7 +234,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
-              public workflowService: WorkflowService, public modal: NzModalService, private toasterService: ToasterService,
+              public workflowService: WorkflowService, public modal: NzModalService, private toasterService: ToastrService,
               private translate: TranslateService, private dataService: DataService, private nzContextMenuService: NzContextMenuService) {
   }
 
@@ -1370,7 +1370,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           this.translate.get('order.message.noLogHistoryFound').subscribe(translatedValue => {
             msg = translatedValue;
           });
-          this.toasterService.pop('info', msg);
+          this.toasterService.info(msg)
         }
       })
     }

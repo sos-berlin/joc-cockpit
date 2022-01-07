@@ -1454,7 +1454,7 @@
     "button.showLog": "Show Log",
     "message.noVariableAvailable": "no variable available",
     "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification",
-    "message.noLogHistoryFound": "No log history found for this Order",
+    "message.noLogHistoryFound": "No log found for this order",
     "treeView": {
       "label": {
         "state": "State",

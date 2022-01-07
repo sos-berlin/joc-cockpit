@@ -1,7 +1,7 @@
 import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from 'angular2-toaster';
+import {ToastrService} from 'ngx-toastr';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
@@ -46,7 +46,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   @ViewChild('customTpl', {static: true}) customTpl: any;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
-              private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService,
+              private dataService: DataService, public translate: TranslateService, private toasterService: ToastrService,
               private nzConfigService: NzConfigService, private modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -107,7 +107,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent') && args.eventSnapshots[j].message) {
           if (args.eventSnapshots[j].accessToken === this.authService.accessTokenId) {
-            this.toasterService.pop(args.eventSnapshots[j].eventType === 'ProblemEvent' ? 'error' : 'warning', '', args.eventSnapshots[j].message);
+            if (args.eventSnapshots[j].eventType === 'ProblemEvent') {
+              this.toasterService.error(args.eventSnapshots[j].message);
+            } else {
+              this.toasterService.warning(args.eventSnapshots[j].message);
+            }
             break;
           }
         }
@@ -205,7 +209,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.translate.get('error.message.errorInLoadingScheduleIds').subscribe(translatedValue => {
             msg = translatedValue;
           });
-          this.toasterService.pop('error', title, msg);
+          this.toasterService.error(title, msg);
         }
       });
     });

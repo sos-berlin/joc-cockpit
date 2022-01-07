@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {GridsterModule} from 'angular-gridster2';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {ChartsModule} from 'ng2-charts';
+import {NgChartsModule} from 'ng2-charts';
 import {DashboardRoutingModule} from './dashboard-routing.module';
 import {SharedModule} from '../shared/shared.module';
 import {DashboardComponent, AddWidgetModalComponent} from './dashboard.component';
@@ -19,7 +19,7 @@ import {FileTransferHistorySummaryComponent} from './file-transfer-history-summa
 @NgModule({
   imports: [
     NgxChartsModule,
-    ChartsModule,
+    NgChartsModule,
     GridsterModule,
     SharedModule,
     DashboardRoutingModule

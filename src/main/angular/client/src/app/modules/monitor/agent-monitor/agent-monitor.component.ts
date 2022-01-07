@@ -37,10 +37,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  colorScheme = {
-    domain: ['rgb(122,185,122)', '#ef486a', '#AAAAAA']
-  };
-
   @ViewChild('chartArea', {static: true}) chartArea: ElementRef;
 
   constructor(private coreService: CoreService, private authService: AuthService, private translate: TranslateService,
