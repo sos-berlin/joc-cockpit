@@ -2,13 +2,12 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
-import {OrderPipe} from 'ngx-order-pipe';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {SearchPipe} from '../../../pipes/core.pipe';
+import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-user-modal-content',

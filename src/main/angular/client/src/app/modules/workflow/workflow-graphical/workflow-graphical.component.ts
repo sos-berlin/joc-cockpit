@@ -14,8 +14,6 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {sortBy} from 'underscore';
 import {Subscription} from 'rxjs';
-import {ToastrService} from "ngx-toastr";
-import {TranslateService} from "@ngx-translate/core";
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
@@ -234,8 +232,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
-              public workflowService: WorkflowService, public modal: NzModalService, private toasterService: ToastrService,
-              private translate: TranslateService, private dataService: DataService, private nzContextMenuService: NzContextMenuService) {
+              public workflowService: WorkflowService, public modal: NzModalService, private dataService: DataService,
+              private nzContextMenuService: NzContextMenuService) {
   }
 
   ngAfterViewInit(): void {
@@ -1335,7 +1333,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
-        nzClassName: 'lg script-editor',
+        nzClassName: 'lg script-editor2',
         nzComponentParams,
         nzFooter: null,
         nzClosable: false,
@@ -1360,19 +1358,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
 
   showLog(order): void {
     if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
-      this.coreService.post('orders/history', {
-        orderId: order.orderId
-      }).subscribe((res) => {
-        if (res.history && res.history.length > 0) {
-          this.coreService.showLogWindow(res.history[0], null, null, res.history[0].controllerId, null);
-        } else {
-          let msg = '';
-          this.translate.get('order.message.noLogHistoryFound').subscribe(translatedValue => {
-            msg = translatedValue;
-          });
-          this.toasterService.info(msg)
-        }
-      })
+      this.coreService.showOrderLogWindow(order.orderId);
     }
   }
 

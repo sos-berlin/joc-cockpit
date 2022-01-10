@@ -2,14 +2,13 @@ import {Component, OnInit, OnDestroy, ViewChild, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
-import {OrderPipe} from 'ngx-order-pipe';
 import {differenceInCalendarDays} from 'date-fns';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
-import {SearchPipe} from '../../../pipes/core.pipe';
+import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
 declare const $: any;

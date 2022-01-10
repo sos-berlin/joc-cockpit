@@ -1,13 +1,12 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
-import {OrderPipe} from 'ngx-order-pipe';
 import {takeUntil} from 'rxjs/operators';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
-import {SearchPipe} from '../../../pipes/core.pipe';
+import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-acknowledge-modal',

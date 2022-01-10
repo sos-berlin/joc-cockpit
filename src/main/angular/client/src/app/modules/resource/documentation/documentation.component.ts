@@ -6,14 +6,13 @@ import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {Subject, Subscription} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {OrderPipe} from 'ngx-order-pipe';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {SearchPipe} from '../../../pipes/core.pipe';
+import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 
 declare const $: any;
 

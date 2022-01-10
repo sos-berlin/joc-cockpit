@@ -1,5 +1,4 @@
 import {NgModule} from '@angular/core';
-import {OrderModule} from 'ngx-order-pipe';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
@@ -56,7 +55,7 @@ import {SearchComponent} from '../../components/search/search.component';
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule, NzDrawerModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
-  NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, OrderModule];
+  NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, TreeModalComponent, ResumeOrderModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent];

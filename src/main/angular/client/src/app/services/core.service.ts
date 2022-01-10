@@ -4,10 +4,12 @@ import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
+import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
 import {isEmpty, sortBy, isNumber, object, isArray} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
+
 
 declare const diff_match_patch: any;
 declare const $: any;
@@ -42,7 +44,7 @@ export class CoreService {
   newWindow: any;
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
-  constructor(private http: HttpClient, private authService: AuthService, private router: Router,
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
               private clipboardService: ClipboardService, private translate: TranslateService) {
 
     this.tabs._workflow = {};
@@ -772,6 +774,63 @@ export class CoreService {
     } else {
       return [];
     }
+  }
+
+  showOrderLogWindow(orderId: string): void {
+    const preferenceObj = JSON.parse(sessionStorage.preferences);
+    const self = this;
+    let url;
+
+    function openWindow() {
+      if (url) {
+        if (preferenceObj.isNewWindow === 'newWindow') {
+          self.newWindow = window.open(url, '', 'top=' + window.localStorage.log_window_y + ',' +
+            'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
+            'innerheight=' + window.localStorage.log_window_ht + self.windowProperties);
+        } else if (preferenceObj.isNewWindow === 'newTab') {
+          window.open(url, '_blank');
+        }
+      } else if (url === undefined) {
+        setTimeout(() => {
+          openWindow();
+        }, 50);
+      }
+    }
+
+    openWindow();
+    this.post('orders/history', {
+      orderId: orderId
+    }).subscribe({
+      next: (res) => {
+        if (res.history && res.history.length > 0) {
+          this.refreshParent();
+          let url2 = '';
+          const order = res.history[0];
+          const controllerId = order.controllerId || JSON.parse(this.authService.scheduleIds).selected;
+          if (order && order.historyId && order.orderId) {
+            url2 = '?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&workflow=' + encodeURIComponent(order.workflow) + '&controllerId=' + controllerId;
+          }
+          if (preferenceObj.isNewWindow === 'newWindow') {
+            url = '#/log2' + url2;
+            setTimeout(() => {
+              this.calWindowSize();
+            }, 500);
+          } else if (preferenceObj.isNewWindow === 'newTab') {
+            url = '#/log' + url2;
+          } else {
+            url = '';
+            this.downloadLog(order, controllerId);
+          }
+        } else {
+          url = '';
+          let msg = '';
+          this.translate.get('order.message.noLogHistoryFound').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.info(msg)
+        }
+      }, error: () => url = ''
+    })
   }
 
   showLogWindow(order: any, task: any, job: any, id: string, transfer: any): void {

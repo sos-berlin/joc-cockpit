@@ -14,13 +14,12 @@ import {
 import {forkJoin, of, Subject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {OrderPipe} from 'ngx-order-pipe';
 import {isEmpty, groupBy, sortBy, clone, isArray} from 'underscore';
 import {Router} from '@angular/router';
 import {catchError, takeUntil} from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {GroupByPipe, SearchPipe} from '../../pipes/core.pipe';
+import {GroupByPipe, SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
@@ -1124,7 +1123,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     };
     if (this.selectedFiltered && this.selectedFiltered.name) {
       this.selectedDate = new Date();
-      $('#full-calendar').data('calendar').setSelectedDate(this.selectedDate);
+      const dom = $('#full-calendar');
+      if (dom && dom.data('calendar')) {
+        dom.data('calendar').setSelectedDate(this.selectedDate);
+      }
       this.applySearchFilter(obj.filter, this.selectedFiltered);
       if (this.selectedFiltered.from && this.selectedFiltered.to) {
         this.getDatesByUrl([this.selectedFiltered.from, this.selectedFiltered.to], (dates) => {
