@@ -2,7 +2,6 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {clone, isEmpty} from 'underscore';
-import {OrderPipe} from 'ngx-order-pipe';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -11,6 +10,7 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {SaveService} from '../../../services/save.service';
+import {OrderPipe} from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-setting-modal-content',

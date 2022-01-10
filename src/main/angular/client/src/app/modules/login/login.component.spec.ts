@@ -26,7 +26,7 @@ fdescribe('LoginComponent', () => {
         CommonModule,
         RouterTestingModule,
         AppModule,
-        
+
         TranslateModule.forRoot({
             loader: {
               provide: TranslateLoader,
@@ -75,6 +75,5 @@ fdescribe('LoginComponent', () => {
         password: ''
     };
     expect(component.onSubmit(user))
-    console.log(sessionStorage.$SOS$accessTokenId)
   }));
 });

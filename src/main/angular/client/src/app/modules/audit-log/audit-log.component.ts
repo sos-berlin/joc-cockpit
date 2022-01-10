@@ -5,14 +5,13 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty, clone} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {takeUntil} from 'rxjs/operators';
-import {OrderPipe} from 'ngx-order-pipe';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {ExcelService} from '../../services/excel.service';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
-import {SearchPipe} from '../../pipes/core.pipe';
+import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 
 @Component({
   selector: 'app-filter-content',

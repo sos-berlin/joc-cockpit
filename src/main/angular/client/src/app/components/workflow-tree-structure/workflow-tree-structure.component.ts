@@ -149,7 +149,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
-        nzClassName: 'lg script-editor',
+        nzClassName: 'lg script-editor2',
         nzComponentParams,
         nzFooter: null,
         nzClosable: false,

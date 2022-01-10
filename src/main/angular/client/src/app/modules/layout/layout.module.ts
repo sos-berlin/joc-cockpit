@@ -10,7 +10,7 @@ import {Shared2Module} from '../shared/shared2.module';
 import {SaveService} from '../../services/save.service';
 import {ExcelService} from '../../services/excel.service';
 import {WorkflowService} from "../../services/workflow.service";
-import {SearchPipe} from '../../pipes/core.pipe';
+import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 
 
 @NgModule({
@@ -31,6 +31,7 @@ import {SearchPipe} from '../../pipes/core.pipe';
     WorkflowService,
     ExcelService,
     SearchPipe,
+    OrderPipe
   ]
 })
 export class LayoutModule {

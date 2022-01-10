@@ -6,6 +6,7 @@ import {
   DecodeSpacePipe,
   SafeHtmlPipe,
   SearchPipe,
+  OrderPipe,
   HighlightSearch,
   StringDatePipe,
   StringTimePipe,
@@ -17,7 +18,7 @@ import {EmptyDataComponent} from '../../components/empty-data/empty-data.compone
 import {Shared3Module} from './shared3.module';
 
 const MODULES = [Shared3Module, PerfectScrollbarModule, NzEmptyModule];
-const PIPES = [StringDatePipe, TimeInStringFormatPipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, HighlightSearch];
+const PIPES = [StringDatePipe, TimeInStringFormatPipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, OrderPipe, HighlightSearch];
 const EXPORTS = [...PIPES, EmptyDataComponent, BreadcrumbsComponent, OrderActionComponent];
 
 @NgModule({

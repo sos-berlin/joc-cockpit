@@ -106,7 +106,7 @@
               <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" *ngIf="!order.show"
                  (click)="showPanelFuc(order)"></i>
               <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="order.show" (click)="order.show = false"></i>
-              <a *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary" (click)="showLog()">{{order.orderId}}</a>
+              <a *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary" (click)="showLog(order)">{{order.orderId}}</a>
               <span *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')">{{order.orderId}}</span>
               <span *ngIf="order.title">-</span>
               <i class="text-muted">{{order.title}}</i>

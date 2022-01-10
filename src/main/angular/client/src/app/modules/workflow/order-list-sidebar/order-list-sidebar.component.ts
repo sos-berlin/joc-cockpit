@@ -281,8 +281,8 @@ export class OrderListSidebarComponent implements OnChanges {
     }
   }
 
-  showLog(): void {
-    this.actionChild.showLog();
+  showLog(order): void {
+    this.actionChild.showLog(order);
   }
 
   private resetCheckBox(): void {

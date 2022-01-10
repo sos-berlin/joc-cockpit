@@ -6,7 +6,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {isEmpty, clone, extend} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
-import {OrderPipe} from 'ngx-order-pipe';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
@@ -15,7 +14,7 @@ import {ExcelService} from '../../services/excel.service';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
-import {SearchPipe} from '../../pipes/core.pipe';
+import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {InventoryForHistory} from '../../models/enums';
 

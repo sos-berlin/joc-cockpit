@@ -2,12 +2,11 @@ import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
-import {OrderPipe} from 'ngx-order-pipe';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
-import {SearchPipe} from '../../../pipes/core.pipe';
+import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 
 declare const $: any;
 

@@ -6,7 +6,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {isEmpty, clone, isArray} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
-import {OrderPipe} from 'ngx-order-pipe';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
@@ -17,7 +16,7 @@ import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
-import {SearchPipe} from '../../pipes/core.pipe';
+import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 
 declare const $;
 
@@ -1426,13 +1425,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private _updatePanelHeight(): void {
     setTimeout(() => {
-      let ht = (parseInt($('#workflowTableId table').height(), 10) + 60);
+      let ht = (parseInt($('#workflowTableId table').height(), 10) + 62);
       if (ht > 140 && ht < 150) {
         ht += 40;
       }
       let el = document.getElementById('workflowTableId');
       if (el && el.scrollWidth > el.clientWidth) {
         ht = ht + 11;
+      }
+      if (ht > 480) {
+        ht = 480;
       }
 
       if (ht < 140) {

@@ -76,7 +76,7 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
     this.dragEle = this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
     $('#resizable').resizable({
       resize: (e, x) => {
-        const dom: any = document.getElementsByClassName('script-editor')[0];
+        const dom: any = document.getElementsByClassName('script-editor2')[0];
         this.cm.codeMirror.setSize((x.size.width - 2), (x.size.height - 2));
         dom.style.setProperty('width', (x.size.width + 32) + 'px', 'important');
       }
@@ -85,7 +85,9 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e): void {
-    this.dragEle.disabled = !(e.target && (e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
+    if (this.dragEle) {
+      this.dragEle.disabled = !(e.target && (e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
+    }
   }
 
   private loadSetting(): void {
