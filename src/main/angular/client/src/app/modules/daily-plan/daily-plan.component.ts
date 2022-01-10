@@ -17,7 +17,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty, groupBy, sortBy, clone, isArray} from 'underscore';
 import {Router} from '@angular/router';
 import {catchError, takeUntil} from 'rxjs/operators';
-import { ToastrService } from 'ngx-toastr';
+import {ToastrService} from 'ngx-toastr';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {GroupByPipe, SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 import {CoreService} from '../../services/core.service';
@@ -61,7 +61,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
   nodes: any = [{path: '/', key: '/', name: '/', children: []}];
   schedules: any = [];
 
-  constructor(public  coreService: CoreService) {
+  constructor(public coreService: CoreService) {
   }
 
   static createTempArray(arr): any {
@@ -145,7 +145,6 @@ export class SelectOrderTemplatesComponent implements OnInit {
               pathArr.push('/');
             }
           }
-
           for (let i = 0; i < pathArr.length; i++) {
             this.checkAndAddFolder(pathArr[i]);
           }
@@ -168,7 +167,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
           if (nodes[i].path === path) {
             if (!nodes[i].children || nodes[i].children.length === 0) {
               for (let j = 0; j < arr.length; j++) {
-                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path) {
+                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path && arr[j].type === nodes[i].type) {
                   nodes[i].key = arr[j].key;
                   nodes[i].deleted = arr[j].deleted;
                   arr.splice(j, 1);
@@ -197,6 +196,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
 
   private checkAndAddFolder(mainPath): void {
     let node: any;
+
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type) {
