@@ -295,10 +295,10 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           arr = arr.concat(this.mapObj.get(JSON.stringify(this.orders[j].position)));
         }
         for (const o in this.orders[j].position) {
-          if (/^(try+)/.test(this.orders[j].position[o])) {
+          if (/^(try\+)/.test(this.orders[j].position[o])) {
             this.orders[j].position[o] = 'try+0';
           }
-          if (/^(cycle+)/.test(this.orders[j].position[o])) {
+          if (/^(cycle\+)/.test(this.orders[j].position[o])) {
             this.orders[j].position[o] = 'cycle';
           }
         }

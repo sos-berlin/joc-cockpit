@@ -1057,6 +1057,8 @@ div.CodeMirror-selected {
   color: #D8FA3C !important;
 }
 
+.cm-type,
+.cm-variable-3,
 .cm-def {
   color: #66D9EF !important;
 }

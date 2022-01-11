@@ -3,10 +3,10 @@ import {NzModalRef} from 'ng-zorro-antd/modal';
 import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import {DragDrop} from "@angular/cdk/drag-drop";
 import {WorkflowService} from '../../../services/workflow.service';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
-import {DragDrop} from "@angular/cdk/drag-drop";
 
 declare const $;
 
