@@ -327,10 +327,10 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
       if (res.orders && res.orders.length > 0) {
         for (let j in res.orders) {
           for (const o in res.orders[j].position) {
-            if (/^(try+)/.test(res.orders[j].position[o])) {
+            if (/^(try\+)/.test(res.orders[j].position[o])) {
               res.orders[j].position[o] = 'try+0';
             }
-            if (/^(cycle+)/.test(res.orders[j].position[o])) {
+            if (/^(cycle\+)/.test(res.orders[j].position[o])) {
               res.orders[j].position[o] = 'cycle';
             }
           }
@@ -1286,10 +1286,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   this.workflows[i].orders = [];
                 }
                 for (const o in res.orders[j].position) {
-                  if (/^(try+)/.test(res.orders[j].position[o])) {
+                  if (/^(try\+)/.test(res.orders[j].position[o])) {
                     res.orders[j].position[o] = 'try+0';
                   }
-                  if (/^(cycle+)/.test(res.orders[j].position[o])) {
+                  if (/^(cycle\+)/.test(res.orders[j].position[o])) {
                     res.orders[j].position[o] = 'cycle';
                   }
                 }
