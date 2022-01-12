@@ -68,7 +68,7 @@
           </ul>
         </div>
       </div>
-      <div class="col-md-12 role">
+      <div class="col-md-12 role" *ngIf="isLoaded">
         <div class="select-script-input2" *ngIf="scriptObj.show">
           <nz-tree-select
             name="scriptName"

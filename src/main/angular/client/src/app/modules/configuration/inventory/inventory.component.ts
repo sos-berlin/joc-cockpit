@@ -2175,12 +2175,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
   isTrash = false;
   isSearchVisible = false;
   tempObjSelection: any = {};
+  indexOfNextAdd = 0;
+  objectHistory = [];
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
-
-  indexOfNextAdd = 0;
-  objectHistory = [];
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;

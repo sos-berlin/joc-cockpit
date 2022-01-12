@@ -306,6 +306,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   temp: any = 0;
   searchKey = '';
   showMessage = false;
+  showMessage2 = false;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -335,22 +336,29 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         this.identityServiceTypes = res.identityServiceTypes;
         this.identityServices = res.identityServiceItems;
         this.loading = false;
-        this.checkVaultTypes();
+        this.checkTypes();
       }, error: () => this.loading = false
     });
   }
 
-  private checkVaultTypes(): void {
-    this.showMessage = false;
+  private checkTypes(): void {
     const arr = [];
+    const arr2 = [];
     for (const i in this.identityServices) {
-      if (this.identityServices[i].identityServiceType.match(/vault/i) && !this.identityServices[i].disabled) {
-        if (arr.indexOf(this.identityServices[i].identityServiceType) === -1) {
-          arr.push(this.identityServices[i].identityServiceType);
+      if (!this.identityServices[i].disabled) {
+        if (this.identityServices[i].identityServiceType.match(/vault/i)) {
+          if (arr.indexOf(this.identityServices[i].identityServiceType) === -1) {
+            arr.push(this.identityServices[i].identityServiceType);
+          }
+        } else if (this.identityServices[i].identityServiceType.match(/ldap/i)) {
+          if (arr2.indexOf(this.identityServices[i].identityServiceType) === -1) {
+            arr2.push(this.identityServices[i].identityServiceType);
+          }
         }
       }
     }
     this.showMessage = arr.length > 1;
+    this.showMessage2 = arr2.length > 1;
   }
 
   ngOnDestroy(): void {
@@ -450,7 +458,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   private enableDisable(identityService, flag): void {
     identityService.disabled = flag;
     this.coreService.post('iam/identityservice/store', identityService).subscribe({
-      next: () => this.checkVaultTypes(), error: () => this.getIAMList()
+      next: () => this.checkTypes(), error: () => this.getIAMList()
     });
   }
 

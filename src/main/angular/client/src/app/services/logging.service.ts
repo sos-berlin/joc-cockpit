@@ -21,6 +21,17 @@ export class LoggingService {
   constructor() {
   }
 
+  static shouldLog(level: LogLevel): boolean {
+    let ret = false;
+    const clientLogFilter = sessionStorage.clientLogFilter ? JSON.parse(sessionStorage.clientLogFilter) : {};
+    if (clientLogFilter.isEnable) {
+      if (clientLogFilter.status.indexOf(LogLevel[level].toLowerCase()) !== -1) {
+        ret = true;
+      }
+    }
+    return ret;
+  }
+
   // *************************
   // Public methods
   // *************************
@@ -44,22 +55,8 @@ export class LoggingService {
     this.writeToLog(msg, LogLevel.All);
   }
 
-  // *************************
-  // Private methods
-  // *************************
-  private shouldLog(level: LogLevel): boolean {
-    let ret = false;
-    const clientLogFilter = sessionStorage.clientLogFilter ? JSON.parse(sessionStorage.clientLogFilter) : {};
-    if (clientLogFilter.isEnable) {
-      if (clientLogFilter.status.indexOf(LogLevel[level].toLowerCase()) !== -1) {
-        ret = true;
-      }
-    }
-    return ret;
-  }
-
   private writeToLog(msg: string, level: LogLevel): void {
-    if (this.shouldLog(level)) {
+    if (LoggingService.shouldLog(level)) {
       let entry = {
         message: msg,
         level: LogLevel[level],
@@ -71,7 +68,7 @@ export class LoggingService {
         values = localStorage.getItem(this.location) ? JSON.parse(localStorage.getItem(this.location)) || [] : [];
         // Add new log entry to array
         values.push(entry);
-        if (values.length > 20 && ((1024 * 200) - unescape(encodeURIComponent(JSON.stringify(values))).length < 0)) {
+        if (values.length > 20 && ((1024 * 200) - decodeURIComponent(encodeURIComponent(JSON.stringify(values))).length < 0)) {
           values.splice(1, 100);
         }
         localStorage.setItem(this.location, JSON.stringify(values));

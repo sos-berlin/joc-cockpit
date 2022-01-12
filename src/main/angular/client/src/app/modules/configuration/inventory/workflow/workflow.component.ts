@@ -787,7 +787,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   notFound: string;
   errorMsg: string;
   obj: any = {};
-  isDisplay = false;
+  isDisplay = true;
   isRuntimeVisible = false;
   fullScreen = false;
   isLengthExceed = false;
@@ -911,9 +911,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   changeType(type): void {
-    if (type === 'ShellScriptExecutable') {
-      this.reloadScript();
-    }
     this.saveToHistory();
   }
 
@@ -976,9 +973,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   tabChange($event): void {
-    if ($event.index === 0) {
-      this.reloadScript();
-    }
     if ($event.index === 0) {
       this.updateSelectItems();
     }
@@ -1762,9 +1756,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.jobResourceNames = [...this.selectedNode.job.jobResourceNames];
     }
     this.onBlur();
-    if (this.index === 0) {
-      this.reloadScript();
-    }
     this.checkIsAgentExist();
     this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
     this.presentObj.job = JSON.stringify(this.selectedNode.job);
@@ -1906,11 +1897,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   private restoreData(obj: any): void {
     obj = JSON.parse(obj);
     this.selectedNode.obj = JSON.parse(obj.obj);
-    const x = JSON.parse(obj.job);
-    if (this.selectedNode.job.executable.TYPE !== x.executable.TYPE && x.executable.TYPE === 'ShellScriptExecutable') {
-      this.reloadScript();
-    }
-    this.selectedNode.job = x;
+    this.selectedNode.job = JSON.parse(obj.job);
     this.ref.detectChanges();
   }
 }
@@ -1920,11 +1907,12 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-editor.html'
 })
-export class ScriptEditorComponent implements AfterViewInit {
+export class ScriptEditorComponent implements OnInit, AfterViewInit {
   @Input() script: any;
   @Input() list: any = [];
   @Input() scriptTree: any = [];
   dragEle: any;
+  isLoaded = false;
   scriptList: Array<string> = [];
   scriptObj = {
     name: '',
@@ -1938,17 +1926,16 @@ export class ScriptEditorComponent implements AfterViewInit {
     mode: 'shell',
     extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
-  @ViewChild('codeMirror', {static: true}) cm: any;
+  @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
   }
 
+  ngOnInit(): void {
+    this.isLoaded = true;
+  }
+
   ngAfterViewInit(): void {
-    if (localStorage.$SOS$SCRIPTWINDOWWIDTH) {
-      const wt = parseInt(localStorage.$SOS$SCRIPTWINDOWWIDTH, 10);
-      this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage.$SOS$SCRIPTWINDOWHIGHT, 10) - 2));
-      $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
-    }
     this.dragEle = this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
     $('#resizable').resizable({
       resize: (e, x) => {
@@ -1965,7 +1952,16 @@ export class ScriptEditorComponent implements AfterViewInit {
     }
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
-        this.cm.codeMirror.focus();
+        setTimeout(() => {
+          if (this.cm && this.cm.codeMirror) {
+            this.cm.codeMirror.focus();
+          }
+        }, 400);
+        if (localStorage.$SOS$SCRIPTWINDOWWIDTH) {
+          const wt = parseInt(localStorage.$SOS$SCRIPTWINDOWWIDTH, 10);
+          this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage.$SOS$SCRIPTWINDOWHIGHT, 10) - 2));
+          $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
+        }
         this.cm.codeMirror.on('inputRead', (editor, e) => {
           const cursor = editor.getCursor();
           const currentLine = editor.getLine(cursor.line);
@@ -1983,13 +1979,13 @@ export class ScriptEditorComponent implements AfterViewInit {
           }
         });
       }
-    }, 500);
+    }, 10);
   }
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e): void {
-    if (this.dragEle) {
-      this.dragEle.disabled = !(e.target && (e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
+    if (this.dragEle && e && e.target) {
+      this.dragEle.disabled = !((e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
     }
   }
 

@@ -562,11 +562,13 @@ export class CoreService {
       responseType: 'blob',
       observe: 'response'
     };
-    this.http.post(url, options, headers).subscribe((response: any) => {
-      saveAs(response.body, fileName || response.headers.get('content-disposition'));
-      cb(true);
-    }, () => {
-      cb(false);
+    this.http.post(url, options, headers).subscribe({
+      next: (response: any) => {
+        saveAs(response.body, fileName || response.headers.get('content-disposition'));
+        cb(true);
+      }, error: () => {
+        cb(false);
+      }
     });
   }
 
@@ -1351,17 +1353,17 @@ export class CoreService {
     setTimeout(() => {
       const arr = currentView != null ? [53] : [];
       if (!currentView) {
-        $('#orderTable').find('thead th.dynamic-thead-o').each(function() {
+        $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
           const w = $(this).outerWidth();
           arr.push(w);
         });
       }
-      $('#orderTable').find('thead th.dynamic-thead').each(function() {
+      $('#orderTable').find('thead th.dynamic-thead').each(function () {
         const w = $(this).outerWidth();
         arr.push(w);
       });
       let count = -1;
-      $('tr.tr-border').find('td').each(function(i) {
+      $('tr.tr-border').find('td').each(function (i) {
         count = count + 1;
         if (arr.length === count) {
           count = 0;
@@ -1375,7 +1377,7 @@ export class CoreService {
     const arr: Array<number> = [];
     const arr2 = [];
     const dom = $('#fileTransferTable');
-    dom.find('thead tr.sub-header th.dynamic-thead').each(function() {
+    dom.find('thead tr.sub-header th.dynamic-thead').each(function () {
       arr.push($(this).outerWidth());
     });
 
@@ -1438,7 +1440,7 @@ export class CoreService {
     }
     const dates = [];
     let currentDate = startDate;
-    const addDays = function(days) {
+    const addDays = function (days) {
       const date = new Date(this.valueOf());
       date.setDate(date.getDate() + days);
       return date.setHours(0, 0, 0, 0);

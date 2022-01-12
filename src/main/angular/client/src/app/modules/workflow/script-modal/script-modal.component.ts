@@ -24,7 +24,6 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
   @Input() admissionTime: any;
   @Input() agentName: string;
   @Input() timezone: string;
-  @Input() readonly: boolean;
 
   dragEle: any;
   preferences: any = {};
@@ -36,8 +35,6 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
   tempPeriodList = [];
   cmOption: any = {
     lineNumbers: true,
-    readonly: true,
-    viewportMargin: Infinity,
     mode: 'shell'
   };
   todayDate: string;

@@ -7309,7 +7309,17 @@ tr.tr-border td:first-child {
 }
 
 .CodeMirror-gutters {
+  left: 0 !important;
   background: #f9f9f9 !important;
+}
+
+.CodeMirror-gutter-wrapper {
+  left: -30px !important;
+}
+
+.CodeMirror-cursor {
+  border-left-width: 2px !important;
+  height: 19.5px !important;
 }
 
 .script-editor {
@@ -7325,7 +7335,7 @@ tr.tr-border td:first-child {
   }
 
   .CodeMirror-cursor {
-    border-left: 2px solid #000000 !important;
+    border-left-color: #000000 !important;
   }
 
   .CodeMirror-dialog-top {
