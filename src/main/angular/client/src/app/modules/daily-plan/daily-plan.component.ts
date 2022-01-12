@@ -1235,13 +1235,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   groupByWorkflow(type): void {
     if (this.dailyPlanFilters.filter.groupBy !== type) {
       this.dailyPlanFilters.filter.groupBy = type;
-      if (type) {
-        this.planOrders = this.groupByPipe.transform(this.plans, type === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
-      } else {
-        this.planOrders = this.plans.slice();
-      }
+      this.searchInResult();
     }
-    this.setStateToParentObject();
   }
 
   selectDateRange(flag): void {
@@ -1907,7 +1902,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   sortBy(): void {
     this.plans = this.orderPipe.transform(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-    this.updateTable(this.plans);
+    this.searchInResult();
   }
 
   searchInResult(): void {

@@ -1129,11 +1129,6 @@ export class CoreService {
     return flag;
   }
 
-  // To convert date string into moment date format
-  toMomentDateFormat(date: any): any {
-    return moment(date, 'DD.MM.YYYY');
-  }
-
   // Function: get local time zone
   getTimeZone(): string {
     return moment.tz.guess();
@@ -1550,4 +1545,8 @@ export class CoreService {
     }, 0);
   }
 
+  convertTextToLink(value: string, link: any): string {
+    return value.replace(new RegExp(/%(.*)%/, 'gi'),
+      '<a target="_blank" href="' + link + '" class="text-primary text-u-l">$1</a>');
+  }
 }

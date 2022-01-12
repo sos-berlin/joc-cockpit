@@ -27,19 +27,13 @@ export class CommentModalComponent implements OnInit {
         timeSpent: this.comments.timeSpent,
         ticketLink: this.comments.ticketLink
       };
-      this.postCall(this.obj);
+      this.coreService.post(this.url, this.obj).subscribe({
+        next: () => {
+          this.activeModal.close('Close');
+        }, error: () => this.submitted = false
+      });
     } else {
       this.activeModal.close(this.comments);
     }
-  }
-
-  postCall(obj): void {
-    this.coreService.post(this.url, obj).subscribe({
-      next: () => {
-        this.activeModal.close('Close');
-      }, error: () => {
-        this.submitted = false;
-      }
-    });
   }
 }

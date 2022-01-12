@@ -22,9 +22,9 @@ import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
+import {InventoryService} from './inventory.service';
 import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {InventoryService} from './inventory.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../models/enums';
 
