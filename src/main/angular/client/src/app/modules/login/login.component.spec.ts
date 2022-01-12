@@ -56,7 +56,7 @@ fdescribe('LoginComponent', () => {
     console.log(compiled.querySelector('button')?.textContent)
     expect(compiled.querySelector('button')?.textContent).toContain('Log In');
   }));
-  it('should have two input fields', waitForAsync(() => {
+  it('should have three input fields', waitForAsync(() => {
     const compiled = fixture.nativeElement as HTMLElement;
     console.log(compiled.querySelectorAll('input'))
     expect(compiled.querySelectorAll('input')?.length).toEqual(3);

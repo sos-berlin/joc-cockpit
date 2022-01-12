@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {CoreService} from '../../services/core.service';
 import {TranslateService} from '@ngx-translate/core';
+import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-about',
@@ -65,23 +65,18 @@ export class StepGuideComponent implements OnInit {
   line1: string = '';
   line2: string = '';
 
-  constructor(public modalService: NzModalRef, private translate: TranslateService) {
-  }
-
-  static convertTextToLink(value: string, link:any): string {
-    return value.replace(new RegExp(/%(.*)%/, 'gi'),
-      '<a target="_blank" href="' + link + '" class="text-primary text-u-l">$1</a>');
+  constructor(public modalService: NzModalRef, private translate: TranslateService, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.translate.get('info.link.jobEnvironmentVariables').subscribe(link => {
       this.translate.get('info.message.line1').subscribe(translatedValue => {
-        this.line1 = StepGuideComponent.convertTextToLink(translatedValue, link);
+        this.line1 = this.coreService.convertTextToLink(translatedValue, link);
       });
     });
     this.translate.get('info.link.instructions').subscribe(link => {
       this.translate.get('info.message.line2').subscribe(translatedValue => {
-        this.line2 = StepGuideComponent.convertTextToLink(translatedValue, link);
+        this.line2 = this.coreService.convertTextToLink(translatedValue, link);
       });
     });
   }
