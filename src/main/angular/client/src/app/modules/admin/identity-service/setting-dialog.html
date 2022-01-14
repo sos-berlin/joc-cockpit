@@ -161,6 +161,22 @@
               </div>
             </div>
             <div class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchBase</label>
+              <div class="col-sm-6">
+                <input type="url" class="form-control" name="iamLdapGroupSearchBase"
+                       [placeholder]="'user.placeholder.iamLdapGroupSearchBase' | translate"
+                       [(ngModel)]="currentObj.iamLdapGroupSearchBase">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchFilter</label>
+              <div class="col-sm-6">
+                <input type="url" class="form-control" name="iamLdapGroupSearchFilter"
+                       [placeholder]="'user.placeholder.iamLdapGroupSearchFilter' | translate"
+                       [(ngModel)]="currentObj.iamLdapGroupSearchFilter">
+              </div>
+            </div>
+            <div class="form-group row">
               <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
               <div class="col-sm-6">
                 <input type="url" class="form-control" name="iamLdapUserSearchFilter"
@@ -203,9 +219,9 @@
                     <div class="col-sm-1 p-r-0">
                       <a class="text-hover-primary" (click)="addRole(items.roles)" *ngIf="cIndex === items.roles.length - 1"><i class="fa fa-plus m-t-sm text-muted"></i></a>
                     </div>
-                    <div class="col-sm-10 p-l-0 m-b-sm">
-                        <input type="text" class="form-control" [(ngModel)]="role.name"
-                               name="role{{i+1}}{{cIndex+1}}"
+                    <div class="col-sm-10 p-l-0 m-b-sm"  [ngClass]="{'has-error' : ((roleModal.dirty || roleModal.touched) && roleModal.invalid)}">
+                        <input type="text" class="form-control" [(ngModel)]="role.name" [required]="(items.ldapGroupDn && items.ldapGroupDn.length > 0 && cIndex === 0) ? true : false"
+                               name="role{{i+1}}{{cIndex+1}}" #roleModal="ngModel"
                                placeholder="{{'user.placeholder.role' | translate}} {{cIndex+1}}">
                     </div>
                     <div class="col-sm-1 p-l-0">

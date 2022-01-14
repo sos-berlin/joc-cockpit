@@ -35,7 +35,7 @@ export class SettingModalComponent implements OnInit {
 
   static convertObj(obj, isArray): void {
     if (obj.iamLdapGroupRolesMap && obj.iamLdapGroupRolesMap.items.length > 0) {
-      obj.iamLdapGroupRolesMap.items.forEach((item) => {
+      obj.iamLdapGroupRolesMap.items = obj.iamLdapGroupRolesMap.items.filter((item) => {
         if (item.roles) {
           const roles = [];
           item.roles.forEach((role) => {
@@ -49,8 +49,12 @@ export class SettingModalComponent implements OnInit {
               }
             }
           });
+          if (!isArray && roles.length === 0) {
+            roles.push({name: ''});
+          }
           item.roles = roles;
         }
+        return item.ldapGroupDn;
       })
     }
   }
