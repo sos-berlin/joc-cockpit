@@ -60,8 +60,14 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeyStoreType</label>
             <div class="col-sm-6">
-              <input type="text" class="form-control" name="iamVaultKeystoreType"
-                     [(ngModel)]="currentObj.iamVaultKeystoreType" [placeholder]="'user.placeholder.iamVaultKeyStoreType' | translate">
+              <nz-select
+                name="iamVaultKeystoreType"
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="{{'user.placeholder.iamVaultKeyStoreType' | translate}}"
+                [(ngModel)]="currentObj.iamVaultKeystoreType">
+                <nz-option *ngFor="let option of keyStoreTypes" [nzLabel]="option" [nzValue]="option"></nz-option>
+              </nz-select>
             </div>
           </div>
           <div class="form-group row">
@@ -83,8 +89,14 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStoreType</label>
             <div class="col-sm-6">
-              <input type="text" class="form-control" name="iamVaultTruststoreType"
-                     [(ngModel)]="currentObj.iamVaultTruststoreType" [placeholder]="'user.placeholder.iamVaultTrustStoreType' | translate">
+              <nz-select
+                name="iamVaultTruststoreType"
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="{{'user.placeholder.iamVaultTrustStoreType' | translate}}"
+                [(ngModel)]="currentObj.iamVaultTruststoreType">
+                <nz-option *ngFor="let option of keyStoreTypes" [nzLabel]="option" [nzValue]="option"></nz-option>
+              </nz-select>
             </div>
           </div>
           <div class="form-group row">
@@ -97,75 +109,120 @@
         </div>
         <div *ngIf="data && data.identityServiceType.match('LDAP')">
           <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapSearchBase</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapSearchBase"
-                     [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
-                     [(ngModel)]="currentObj.iamLdapSearchBase">
+            <div class="col-md-12" translate>user.label.general</div>
+          </div>
+          <div class="p-a b-a">
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>user.label.iamLdapServerUrl</label>
+              <div class="col-sm-6">
+                <input type="url" class="form-control" name="iamLdapServerUrl"
+                       [placeholder]="'user.placeholder.iamLdapServerUrl' | translate"
+                       [(ngModel)]="currentObj.iamLdapServerUrl">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-4" translate>user.label.iamLdapUseStartTls</label>
+              <div class="col-sm-6">
+                <label nz-checkbox [(ngModel)]="currentObj.iamLdapUseStartTls" name="iamLdapUseStartTls"></label>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-sm-4 form-control-label" translate>user.label.iamLdapSecurityProtocol</label>
+              <div class="col-sm-6">
+                <input type="url" class="form-control" name="iamLdapSecurityProtocol"
+                       [placeholder]="'user.placeholder.iamLdapSecurityProtocol' | translate"
+                       [(ngModel)]="currentObj.iamLdapSecurityProtocol">
+              </div>
             </div>
           </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserDnTemplate</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapUserDnTemplate"
-                     [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate"
-                     [(ngModel)]="currentObj.iamLdapUserDnTemplate">
+          <div class="form-group row m-t">
+            <div class="col-md-12" translate>user.label.authentication</div>
+          </div>
+          <div class="p-a b-a">
+            <div class="row">
+              <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserDnTemplate</label>
+              <div class="col-sm-6">
+                <input type="url" class="form-control" name="iamLdapUserDnTemplate"
+                       [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate"
+                       [(ngModel)]="currentObj.iamLdapUserDnTemplate">
+              </div>
             </div>
           </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapServerUrl</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapServerUrl"
-                     [placeholder]="'user.placeholder.iamLdapServerUrl' | translate"
-                     [(ngModel)]="currentObj.iamLdapServerUrl">
-            </div>
+          <div class="form-group row m-t" *ngIf="data.identityServiceType !== 'LDAP-JOC'">
+            <div class="col-md-12" translate>user.label.groupRolesMapping</div>
           </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupNameAttribute</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapGroupNameAttribute"
-                     [placeholder]="'user.placeholder.iamLdapGroupNameAttribute' | translate"
-                     [(ngModel)]="currentObj.iamLdapGroupNameAttribute">
+          <div class="p-a b-a" *ngIf="data.identityServiceType !== 'LDAP-JOC'">
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>user.label.iamLdapSearchBase</label>
+              <div class="col-sm-6">
+                <input type="url" class="form-control" name="iamLdapSearchBase"
+                       [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
+                       [(ngModel)]="currentObj.iamLdapSearchBase">
+              </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserNameAttribute</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapUserNameAttribute"
-                     [placeholder]="'user.placeholder.iamLdapUserNameAttribute' | translate"
-                     [(ngModel)]="currentObj.iamLdapUserNameAttribute">
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
+              <div class="col-sm-6">
+                <input type="url" class="form-control" name="iamLdapUserSearchFilter"
+                       [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate"
+                       [(ngModel)]="currentObj.iamLdapUserSearchFilter">
+              </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapUserSearchFilter"
-                     [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate"
-                     [(ngModel)]="currentObj.iamLdapUserSearchFilter">
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupNameAttribute</label>
+              <div class="col-sm-6">
+                <input type="url" class="form-control" name="iamLdapGroupNameAttribute"
+                       [placeholder]="'user.placeholder.iamLdapGroupNameAttribute' | translate"
+                       [(ngModel)]="currentObj.iamLdapGroupNameAttribute">
+              </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUseStartTls</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapUseStartTls"
-                     [placeholder]="'user.placeholder.iamLdapUseStartTls' | translate"
-                     [(ngModel)]="currentObj.iamLdapUseStartTls">
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserNameAttribute</label>
+              <div class="col-sm-6">
+                <input type="url" class="form-control" name="iamLdapUserNameAttribute"
+                       [placeholder]="'user.placeholder.iamLdapUserNameAttribute' | translate"
+                       [(ngModel)]="currentObj.iamLdapUserNameAttribute">
+              </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapSecurityProtocol</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapSecurityProtocol"
-                     [placeholder]="'user.placeholder.iamLdapSecurityProtocol' | translate"
-                     [(ngModel)]="currentObj.iamLdapSecurityProtocol">
+            <div class="form-group row">
+              <label class="col-sm-12 _600" translate>user.label.iamLdapGroupRolesMap</label>
             </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupRolesMap</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamLdapGroupRolesMap"
-                     [placeholder]="'user.placeholder.iamLdapGroupRolesMap' | translate"
-                     [(ngModel)]="currentObj.iamLdapGroupRolesMap">
+            <div class="form-group row m-b-0" *ngIf="currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0">
+              <div class="col-md-5 m-b-sm" translate>user.label.group</div>
+              <div class="col-md-6 m-b-sm m-l-22" translate>user.label.roles</div>
+            </div>
+            <ng-container *ngIf="currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0">
+              <div class="form-group row m-b-0" *ngFor="let items of currentObj.iamLdapGroupRolesMap.items; let i = index">
+                <div class="col-md-5 m-b-sm p-r-0"
+                     [ngClass]="{'has-error' : ((group.dirty || group.touched) && group.invalid)}">
+                  <input #group="ngModel" type="text" class="form-control" name="group{{i}}"
+                         [(ngModel)]="items.ldapGroupDn" placeholder="{{'user.placeholder.group' | translate}}">
+                </div>
+                <div class="col-md-6 m-b-sm p-r-0">
+                  <div class="row" *ngFor="let role of items.roles; let cIndex = index">
+                    <div class="col-sm-1 p-r-0">
+                      <a class="text-hover-primary" (click)="addRole(items.roles)" *ngIf="cIndex === items.roles.length - 1"><i class="fa fa-plus m-t-sm text-muted"></i></a>
+                    </div>
+                    <div class="col-sm-10 p-l-0 m-b-sm">
+                        <input type="text" class="form-control" [(ngModel)]="role.name"
+                               name="role{{i+1}}{{cIndex+1}}"
+                               placeholder="{{'user.placeholder.role' | translate}} {{cIndex+1}}">
+                    </div>
+                    <div class="col-sm-1 p-l-0">
+                      <a *ngIf="items.roles.length>1" class="cursor" (click)="removeRole(items.roles, cIndex)">
+                        <i  class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-1">
+                  <a class="cursor" (click)="removeGroupRoles(i)"><i class="fa fa-times m-t-sm text-hover-color"></i></a>
+                </div>
+              </div>
+            </ng-container>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <a class="text-u-l" (click)="addGroupRoles()" translate>user.button.addGroupRole</a>
+              </div>
             </div>
           </div>
         </div>

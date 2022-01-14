@@ -53,7 +53,7 @@
       </tr>
       </thead>
       <tbody cdkDropList (cdkDropListDropped)="drop($event)">
-        <tr *ngFor="let identityService of ajaxTable.data" cdkDrag [nz-tooltip]="(showMessage && !identityService.disabled && identityService.identityServiceType.indexOf('VAULT') > -1 ? ('user.message.moreThanOneVaultEnable' | translate) : '') || (showMessage2 && !identityService.disabled && identityService.identityServiceType.indexOf('LDAP') > -1 ? ('user.message.moreThanOneLdapEnable' | translate) : '')"
+        <tr *ngFor="let identityService of ajaxTable.data" cdkDrag [nz-tooltip]="(showMessage && !identityService.disabled && identityService.identityServiceType.indexOf('VAULT') > -1 ? ('user.message.moreThanOneVaultEnable' | translate) : '') || (showMessage2 && !identityService.disabled && identityService.identityServiceType.indexOf('LDAP') > -1 ? ('user.message.moreThanOneLDAPEnable' | translate) : '')"
             [ngClass]="{'opacity7': identityService.disabled, 'error-border': !identityService.disabled && ((showMessage && identityService.identityServiceType.indexOf('VAULT') > -1) || (showMessage2 && identityService.identityServiceType.indexOf('LDAP') > -1))}" class="cursor move-on-hover">
           <td class="menu">
             <i class="fa fa-exclamation-triangle warn-icon" aria-hidden="true"></i>

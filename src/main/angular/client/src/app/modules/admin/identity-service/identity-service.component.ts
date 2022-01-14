@@ -19,6 +19,7 @@ import {OrderPipe} from '../../../pipes/core.pipe';
 export class SettingModalComponent implements OnInit {
   @Input() data: any;
 
+  keyStoreTypes = ['JKS', 'PKCS12'];
   isEnable = false;
   submitted = false;
   currentObj: any = {};
@@ -30,6 +31,28 @@ export class SettingModalComponent implements OnInit {
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
               private message: NzMessageService, private saveService: SaveService) {
+  }
+
+  static convertObj(obj, isArray): void {
+    if (obj.iamLdapGroupRolesMap && obj.iamLdapGroupRolesMap.items.length > 0) {
+      obj.iamLdapGroupRolesMap.items.forEach((item) => {
+        if (item.roles) {
+          const roles = [];
+          item.roles.forEach((role) => {
+            if (isArray) {
+              if (role.name) {
+                roles.push(role.name);
+              }
+            } else {
+              if (role) {
+                roles.push({name: role});
+              }
+            }
+          });
+          item.roles = roles;
+        }
+      })
+    }
   }
 
   static convertDurationToString(time: any): string {
@@ -88,7 +111,11 @@ export class SettingModalComponent implements OnInit {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || data.ldap || {};
+            this.currentObj = data.vault || {};
+            if (data.ldap && data.ldap.expert) {
+              this.currentObj = data.ldap.expert;
+              SettingModalComponent.convertObj(this.currentObj, false);
+            }
           }
         } else {
           this.currentObj = data;
@@ -115,6 +142,33 @@ export class SettingModalComponent implements OnInit {
     this.currentObj = clone(this.saveService.copiedSetting.data);
   }
 
+  addGroupRoles(): void {
+    const param = {
+      ldapGroupDn: '',
+      roles: [{name: ''}]
+    };
+    if (!this.currentObj.iamLdapGroupRolesMap) {
+      this.currentObj.iamLdapGroupRolesMap = {items: []};
+    }
+    if (!this.coreService.isLastEntryEmpty(this.currentObj.iamLdapGroupRolesMap.items, 'ldapGroupDn', '')) {
+      this.currentObj.iamLdapGroupRolesMap.items.push(param);
+    }
+  }
+
+  addRole(list): void {
+     if (!this.coreService.isLastEntryEmpty(list, 'name', '')) {
+      list.push({name: ''});
+    }
+  }
+
+  removeGroupRoles(index): void {
+    this.currentObj.iamLdapGroupRolesMap.items.splice(index, 1);
+  }
+
+  removeRole(list, index): void {
+    list.splice(index, 1);
+  }
+
   onSubmit(): void {
     this.submitted = true;
     let obj: any = {};
@@ -122,7 +176,8 @@ export class SettingModalComponent implements OnInit {
       if (this.data.identityServiceType.match('VAULT')) {
         obj.vault = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
-        obj.ldap = this.currentObj;
+        obj.ldap = {expert: this.coreService.clone(this.currentObj)};
+        SettingModalComponent.convertObj(obj.ldap.expert, true);
       }
     } else {
       obj = this.currentObj;
@@ -425,6 +480,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: SettingModalComponent,
+      nzClassName: data ? 'lg' : '',
       nzAutofocus: null,
       nzComponentParams: {
         data
