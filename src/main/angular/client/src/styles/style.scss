@@ -6549,6 +6549,18 @@ tr.cdk-drag-preview {
   }
 }
 
+.select-input-both2 {
+  .ant-select {
+    padding-right: 4px;
+    width: 97%;
+  }
+
+  .ant-select-open {
+    width: 96.4%;
+    padding-right: 0;
+  }
+}
+
 .doc-in-workflow {
   .ant-select-open {
     width: 94% !important;

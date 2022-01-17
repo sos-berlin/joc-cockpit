@@ -20,9 +20,23 @@ export class SettingModalComponent implements OnInit {
   @Input() data: any;
 
   keyStoreTypes = ['JKS', 'PKCS12'];
+  iamLdapProtocols = [{
+    text: 'plainText',
+    value: 'PLAIN'
+  }, {
+    text: 'startTls',
+    value: 'STARTTLS'
+  }, {
+    text: 'ssl',
+    value: 'SSL'
+  }];
   isEnable = false;
   submitted = false;
   currentObj: any = {};
+  userObj: any = {
+    iamLdapProtocol: 'PLAIN',
+    iamLdapPort: 389
+  };
   passwordFields: any = {
     first: false,
     second: false,
@@ -118,6 +132,9 @@ export class SettingModalComponent implements OnInit {
             this.currentObj = data.vault || {};
             if (data.ldap && data.ldap.expert) {
               this.currentObj = data.ldap.expert;
+              if(data.ldap.simple) {
+                this.userObj = data.ldap.simple;
+              }
               SettingModalComponent.convertObj(this.currentObj, false);
             }
           }
@@ -131,19 +148,18 @@ export class SettingModalComponent implements OnInit {
     });
   }
 
-  copySetting(): void {
-    if (this.currentObj && !isEmpty(this.currentObj)) {
-      this.saveService.copiedSetting = {
-        type: this.data ? this.data.identityServiceType : 'GENERAL',
-        name: this.data ? this.data.identityServiceName : undefined,
-        data: this.currentObj
-      };
-      this.coreService.showCopyMessage(this.message);
+  changeConfiguration($event): void {
+    if ($event === 'SSL' && ((!this.userObj.iamLdapPort || this.userObj.iamLdapPort > 0) && this.userObj.iamLdapPort === 389)) {
+      this.userObj.iamLdapPort = 636;
+    } else if ((!this.userObj.iamLdapPort || this.userObj.iamLdapPort > 0) && this.userObj.iamLdapPort === 636) {
+      this.userObj.iamLdapPort = 389;
     }
   }
 
-  pasteSetting(): void {
-    this.currentObj = clone(this.saveService.copiedSetting.data);
+  tabChange($event): void {
+    if ($event.index === 1) {
+      this.currentObj.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'STARTTLS' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
+    }
   }
 
   addGroupRoles(): void {
@@ -160,7 +176,7 @@ export class SettingModalComponent implements OnInit {
   }
 
   addRole(list): void {
-     if (!this.coreService.isLastEntryEmpty(list, 'name', '')) {
+    if (!this.coreService.isLastEntryEmpty(list, 'name', '')) {
       list.push({name: ''});
     }
   }
@@ -180,7 +196,7 @@ export class SettingModalComponent implements OnInit {
       if (this.data.identityServiceType.match('VAULT')) {
         obj.vault = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
-        obj.ldap = {expert: this.coreService.clone(this.currentObj)};
+        obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
         SettingModalComponent.convertObj(obj.ldap.expert, true);
       }
     } else {
@@ -201,6 +217,22 @@ export class SettingModalComponent implements OnInit {
       }, error: () => this.submitted = false
     });
   }
+
+  copySetting(): void {
+    if (this.currentObj && !isEmpty(this.currentObj)) {
+      this.saveService.copiedSetting = {
+        type: this.data ? this.data.identityServiceType : 'GENERAL',
+        name: this.data ? this.data.identityServiceName : undefined,
+        data: this.currentObj
+      };
+      this.coreService.showCopyMessage(this.message);
+    }
+  }
+
+  pasteSetting(): void {
+    this.currentObj = clone(this.saveService.copiedSetting.data);
+  }
+
 }
 
 @Component({

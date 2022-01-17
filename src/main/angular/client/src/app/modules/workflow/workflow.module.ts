@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {FilterModalComponent, SearchComponent, SingleWorkflowComponent, WorkflowComponent} from './workflow.component';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowRoutingModule} from './workflow-routing.module';
@@ -17,6 +18,7 @@ import {ScriptModalComponent} from './script-modal/script-modal.component';
     SharedModule,
     CodemirrorModule,
     NzTabsModule,
+    NzDrawerModule,
     WorkflowRoutingModule
   ],
   declarations: [
