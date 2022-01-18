@@ -1947,6 +1947,7 @@
     "label.iamVaultTrustStorePassword": "Vaultトラストストアパスワード",
     "label.iamVaultTrustStoreType": "Vaultトラストストアタイプ",
     "label.iamVaultApplicationToken": "Vaultアプリケーショントークン",
+    "label.iamVaultAuthenticationMethodPath": "Vault Authentication Method Path",
     "label.iamLdapSearchBase": "LDAP Search Base",
     "label.iamLdapGroupSearchBase": "LDAP Group Search Base",
     "label.iamLdapUserDnTemplate": "LDAP User Dn Template",
@@ -2009,6 +2010,7 @@
     "placeholder.iamVaultTrustStorePassword": "Vaultトラストストアパスワードを入力",
     "placeholder.iamVaultTrustStoreType": "EVaultトラストストアタイプを入力",
     "placeholder.iamVaultApplicationToken": "Vaultアプリケーショントークンを入力",
+    "placeholder.iamVaultAuthenticationMethodPath": "Enter Vault Authentication Method Path",
     "placeholder.iamLdapSearchBase": "Enter LDAP Search Base",
     "placeholder.iamLdapGroupSearchBase": "Enter LDAP Group Search Base",
     "placeholder.iamLdapUserDnTemplate": "Enter LDAP User Dn Template",
@@ -2035,11 +2037,12 @@
       "label.ssl": "SSL",
       "label.iamLdapPort": "LDAP Port",
       "label.iamLdapAD": "LDAP AD",
-      "label.iamLdapADWithSamAccount": "LDAP With Sam Account",
-      "label.iamLdapWithMemberOf": "LDAP With Member Of",
+      "label.iamLdapADWithSamAccount": "LDAP with sAMAccountName",
+      "label.iamLdapWithMemberOf": "LDAP with memberOf",
       "placeholder.iamLdapHost": "Enter LDAP host",
       "placeholder.iamLdapPort": "Enter LDAP port",
-      "placeholder.iamLdapProtocol": "Select one or multiple options"
+      "placeholder.iamLdapProtocol": "Select one or multiple options",
+      "message.overwriteChanges": "Are you sure you want to overwrite the changes?"
     }
   },
   "workflow": {

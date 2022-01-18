@@ -33,6 +33,13 @@
             </div>
           </div>
           <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultAuthenticationMethodPath</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" name="iamVaultAuthenticationMethodPath" [placeholder]="'user.placeholder.iamVaultAuthenticationMethodPath' | translate"
+                     [(ngModel)]="currentObj.iamVaultAuthenticationMethodPath">
+            </div>
+          </div>
+          <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeystorePath</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" name="iamVaultKeystorePath" [placeholder]="'user.placeholder.iamVaultKeystorePath' | translate"
@@ -113,8 +120,8 @@
               <div class="m-l-12 m-r-12">
                 <div class="form-group row">
                   <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapHost</label>
-                  <div class="col-sm-6">
-                    <input type="text" class="form-control" name="iamLdapHost"
+                  <div class="col-sm-6" [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
+                    <input type="text" class="form-control" name="iamLdapHost" required #host="ngModel"
                            [(ngModel)]="userObj.iamLdapHost" [placeholder]="'user.usermode.placeholder.iamLdapHost' | translate">
                   </div>
                 </div>
@@ -129,15 +136,15 @@
                 </div>
                 <div class="form-group row">
                   <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapPort</label>
-                  <div class="col-sm-6">
-                    <nz-input-number name="iamLdapPort"
+                  <div class="col-sm-6" [ngClass]="{'has-error' : ((port.dirty || port.touched) && port.invalid)}">
+                    <nz-input-number name="iamLdapPort" required #port="ngModel"
                                      [(ngModel)]="userObj.iamLdapPort" [nzPlaceHolder]="'user.usermode.placeholder.iamLdapPort' | translate"></nz-input-number>
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-sm-4" translate>user.usermode.label.iamLdapAD</label>
                   <div class="col-sm-6">
-                    <label nz-checkbox [(ngModel)]="userObj.iamLdapAD" name="iamLdapAD"></label>
+                    <label nz-checkbox [(ngModel)]="userObj.iamLdapAD" (ngModelChange)="onChangeCheckBox($event)" name="iamLdapAD"></label>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -150,6 +157,22 @@
                   <label class="col-sm-4" translate>user.usermode.label.iamLdapWithMemberOf</label>
                   <div class="col-sm-6">
                     <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf" name="iamLdapWithMemberOf"></label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label" translate>user.label.iamLdapSearchBase</label>
+                  <div class="col-sm-6" [ngClass]="{'has-error' : ((searchBase.dirty || searchBase.touched) && searchBase.invalid)}">
+                    <input type="text" class="form-control" name="iamLdapSearchBase" [required]="userObj.iamLdapWithMemberOf" #searchBase="ngModel"
+                           [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
+                           [(ngModel)]="currentObj.iamLdapSearchBase">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
+                  <div class="col-sm-6">
+                    <input type="text" class="form-control" name="iamLdapUserSearchFilter"
+                           [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate"
+                           [(ngModel)]="currentObj.iamLdapUserSearchFilter">
                   </div>
                 </div>
               </div>
@@ -220,7 +243,7 @@
                   <div class="row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserDnTemplate</label>
                     <div class="col-sm-6">
-                      <input type="url" class="form-control" name="iamLdapUserDnTemplate"
+                      <input type="text" class="form-control" name="iamLdapUserDnTemplate"
                              [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate"
                              [(ngModel)]="currentObj.iamLdapUserDnTemplate">
                     </div>
@@ -233,7 +256,7 @@
                   <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapSearchBase</label>
                     <div class="col-sm-6">
-                      <input type="url" class="form-control" name="iamLdapSearchBase"
+                      <input type="text" class="form-control" name="iamLdapSearchBase"
                              [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
                              [(ngModel)]="currentObj.iamLdapSearchBase">
                     </div>
@@ -241,7 +264,7 @@
                   <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchBase</label>
                     <div class="col-sm-6">
-                      <input type="url" class="form-control" name="iamLdapGroupSearchBase"
+                      <input type="text" [disabled]="userObj.iamLdapWithMemberOf" class="form-control" name="iamLdapGroupSearchBase"
                              [placeholder]="'user.placeholder.iamLdapGroupSearchBase' | translate"
                              [(ngModel)]="currentObj.iamLdapGroupSearchBase">
                     </div>
@@ -249,7 +272,7 @@
                   <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchFilter</label>
                     <div class="col-sm-6">
-                      <input type="url" class="form-control" name="iamLdapGroupSearchFilter"
+                      <input type="text" [disabled]="userObj.iamLdapWithMemberOf" class="form-control" name="iamLdapGroupSearchFilter"
                              [placeholder]="'user.placeholder.iamLdapGroupSearchFilter' | translate"
                              [(ngModel)]="currentObj.iamLdapGroupSearchFilter">
                     </div>
@@ -257,7 +280,7 @@
                   <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
                     <div class="col-sm-6">
-                      <input type="url" class="form-control" name="iamLdapUserSearchFilter"
+                      <input type="text" class="form-control" name="iamLdapUserSearchFilter"
                              [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate"
                              [(ngModel)]="currentObj.iamLdapUserSearchFilter">
                     </div>
@@ -265,7 +288,7 @@
                   <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupNameAttribute</label>
                     <div class="col-sm-6">
-                      <input type="url" class="form-control" name="iamLdapGroupNameAttribute"
+                      <input type="text" class="form-control" name="iamLdapGroupNameAttribute"
                              [placeholder]="'user.placeholder.iamLdapGroupNameAttribute' | translate"
                              [(ngModel)]="currentObj.iamLdapGroupNameAttribute">
                     </div>
@@ -273,7 +296,7 @@
                   <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserNameAttribute</label>
                     <div class="col-sm-6">
-                      <input type="url" class="form-control" name="iamLdapUserNameAttribute"
+                      <input type="text" class="form-control" name="iamLdapUserNameAttribute"
                              [placeholder]="'user.placeholder.iamLdapUserNameAttribute' | translate"
                              [(ngModel)]="currentObj.iamLdapUserNameAttribute">
                     </div>

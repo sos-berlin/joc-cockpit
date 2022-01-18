@@ -1,10 +1,13 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
-import {isArray, isEmpty, isEqual, sortBy} from 'underscore';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {isArray, isEmpty, sortBy} from 'underscore';
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from '../../../../models/enums';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {AuthService} from '../../../../components/guard';
+import {CalendarService} from "../../../../services/calendar.service";
+import {ValueEditorComponent} from "../../../../components/value-editor/value.component";
 
 @Component({
   selector: 'app-update-object',
@@ -16,6 +19,7 @@ export class UpdateObjectComponent implements OnInit {
   @Input() controllerId: any;
 
   preferences: any = {};
+  permission: any = {};
   schedulerIds: any = {};
   comments: any = {};
   selectedSchedulerIds = [];
@@ -33,24 +37,25 @@ export class UpdateObjectComponent implements OnInit {
   object: any = {};
   workflow: any = {};
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef,
-              private workflowService: WorkflowService, private authService: AuthService) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
+              private workflowService: WorkflowService, private authService: AuthService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.comments.radio = 'predefined';
     this.selectedSchedulerIds.push(this.controllerId);
     this.init();
   }
 
   private init(): void {
-    if (this.type === InventoryObject.WORKFLOW || this.type === 'FILEORDERSOURCE') {
+    if (this.type === InventoryObject.WORKFLOW || this.type === InventoryObject.FILEORDERSOURCE) {
       this.zones = this.coreService.getTimeZoneList();
     } else if (this.type === 'CALENDAR') {
       this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    } else if (this.type === 'NOTICEBOARD') {
+    } else if (this.type === InventoryObject.NOTICEBOARD) {
       this.object = {
         endOfLifeMsg: '$js7EpochMilli + ',
         units: 'Milliseconds'
@@ -66,7 +71,7 @@ export class UpdateObjectComponent implements OnInit {
         this.getJobResources();
       });
     }
-    if (this.workflowTree.length === 0 && (this.type === 'FILEORDERSOURCE' || this.type === 'SCHEDULE')) {
+    if (this.workflowTree.length === 0 && (this.type === InventoryObject.FILEORDERSOURCE || this.type === InventoryObject.SCHEDULE)) {
       this.coreService.post('tree', {
         controllerId: this.controllerId,
         forInventory: true,
@@ -83,7 +88,7 @@ export class UpdateObjectComponent implements OnInit {
         this.documentationTree = this.coreService.prepareTree(res, true);
       });
     }
-    if (this.agents.length === 0 && this.type === 'FILEORDERSOURCE') {
+    if (this.agents.length === 0 && this.type === InventoryObject.FILEORDERSOURCE) {
       this.coreService.post('agents/names', {controllerId: this.controllerId}).subscribe((res: any) => {
         this.agents = res.agentNames ? res.agentNames.sort() : [];
       });
@@ -154,7 +159,7 @@ export class UpdateObjectComponent implements OnInit {
       }
     } else {
       if (type === 'DOCUMENTATION') {
-         if (this.object.documentationName1) {
+        if (this.object.documentationName1) {
           if (this.object.documentationName !== this.object.documentationName1) {
             this.object.documentationName = this.object.documentationName1;
           }
@@ -173,22 +178,11 @@ export class UpdateObjectComponent implements OnInit {
             this.object.workflowName = node.key;
           }
         }
-        if (this.object.workflowName && this.type === 'SCHEDULE') {
+        if (this.object.workflowName && this.type === InventoryObject.SCHEDULE) {
           this.getWorkflowInfo(this.object.workflowName);
         }
       }
     }
-  }
-
-  private getWorkflowInfo(name): void {
-    this.coreService.post('inventory/read/configuration', {
-      path: name,
-      objectType: InventoryObject.WORKFLOW
-    }).subscribe((conf: any) => {
-      this.workflow = conf.configuration;
-      this.object.variableSets = [];
-      this.updateVariableList();
-    });
   }
 
   private updateList(node, type): void {
@@ -237,7 +231,26 @@ export class UpdateObjectComponent implements OnInit {
     });
   }
 
+  private getWorkflowInfo(name): void {
+    this.coreService.post('inventory/read/configuration', {
+      path: name,
+      objectType: InventoryObject.WORKFLOW
+    }).subscribe((conf: any) => {
+      this.workflow = conf.configuration;
+      this.object.variableSets = [];
+      this.updateVariableList();
+    });
+  }
+
+  /*------------ BEGIN SCHEDULE -----------------*/
+
   openRuntimeEditor(): void {
+    if (!this.object.configuration) {
+      this.object.configuration = {
+        calendars: [],
+        nonWorkingDayCalendars: []
+      };
+    }
     this.isVisible = true;
   }
 
@@ -503,6 +516,96 @@ export class UpdateObjectComponent implements OnInit {
     }
   }
 
+  /*------------ END SCHEDULE -----------------*/
+
+  /*------------ BEGIN JOBRESOURCE -----------------*/
+
+  addEnv(): void {
+    const param = {
+      name: '',
+      value: ''
+    };
+    if (!this.object.env) {
+      this.object.env = [];
+    }
+    if (!this.coreService.isLastEntryEmpty(this.object.env, 'name', '')) {
+      this.object.env.push(param);
+    }
+  }
+
+  removeEnv(index): void {
+    this.object.env.splice(index, 1);
+  }
+
+  addArgu(): void {
+    const param = {
+      name: '',
+      value: ''
+    };
+    if (!this.object.arguments) {
+      this.object.arguments = [];
+    }
+    if (!this.coreService.isLastEntryEmpty(this.object.arguments, 'name', '')) {
+      this.object.arguments.push(param);
+    }
+  }
+
+  removeArgu(index): void {
+    this.object.arguments.splice(index, 1);
+  }
+
+  onKeyPress2($event, type): void {
+    if ($event.which === '13' || $event.which === 13) {
+      if (type === 'ENV') {
+        this.addEnv();
+      } else {
+        this.addArgu();
+      }
+    }
+  }
+
+  isStringValid(data, notValid): void {
+    if (notValid) {
+      data.name = '';
+      data.value = '';
+    }
+  }
+
+  upperCase(env): void {
+    if (env.name) {
+      env.name = env.name.toUpperCase();
+      if (!env.value) {
+        env.value = '$' + env.name.toLowerCase();
+      }
+    }
+  }
+
+  drop(event: CdkDragDrop<string[]>, list): void {
+    moveItemInArray(list, event.previousIndex, event.currentIndex);
+  }
+
+
+  openEditor(data): void {
+    const modal = this.modal.create({
+      nzTitle: null,
+      nzContent: ValueEditorComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        data: data.value
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data.value = result;
+      }
+    });
+  }
+
+  /*------------ END JOBRESOURCE -----------------*/
+
   changeUnit($event): void {
     if ($event === 'HH:MM:SS') {
       if (!isNaN(this.object.endOfLife)) {
@@ -602,25 +705,41 @@ export class UpdateObjectComponent implements OnInit {
       obj.documentationName = object.documentationName;
     }
     if (object.workflowName) {
-      if (this.type === 'SCHEDULE' || this.type === 'FILEORDERSOURCE') {
+      if (this.type === InventoryObject.SCHEDULE || this.type === InventoryObject.FILEORDERSOURCE) {
         obj.workflowName = object.workflowName;
       }
     }
     if (object.timeZone) {
-      if (this.type === 'WORKFLOW' || this.type === 'FILEORDERSOURCE') {
+      if (this.type === InventoryObject.WORKFLOW || this.type === InventoryObject.FILEORDERSOURCE) {
         obj.timeZone = object.timeZone;
       }
     }
-    if (this.type === 'WORKFLOW') {
+    if (this.type === InventoryObject.WORKFLOW) {
       if (object.jobResourceNames) {
         obj.jobResourceNames = object.jobResourceNames;
       }
-    } else if (this.type === 'FILEORDERSOURCE') {
+    } else if (this.type === InventoryObject.JOBRESOURCE) {
+      if (object.env && object.env.length > 0) {
+        obj.env = this.coreService.clone(object.env);
+        obj.env.filter((env) => {
+          this.coreService.addSlashToString(env, 'value');
+        });
+        this.coreService.convertArrayToObject(obj, 'env', true);
+      }
+      if (object.arguments && object.arguments.length > 0) {
+        obj.arguments = this.coreService.clone(object.arguments);
+        obj.arguments.filter((argu) => {
+          this.coreService.addSlashToString(argu, 'value');
+        });
+        this.coreService.convertArrayToObject(obj, 'arguments', true);
+      }
+    } else if (this.type === InventoryObject.FILEORDERSOURCE) {
       if (object.agentName) {
         obj.agentName = object.agentName;
       }
       if (object.directoryExpr) {
         obj.directoryExpr = object.directoryExpr;
+        this.coreService.addSlashToString(obj, 'directoryExpr');
       }
       if (object.pattern) {
         obj.pattern = object.pattern;
@@ -628,7 +747,7 @@ export class UpdateObjectComponent implements OnInit {
       if (object.delay) {
         obj.delay = object.delay;
       }
-    } else if (this.type === 'NOTICEBOARD') {
+    } else if (this.type === InventoryObject.NOTICEBOARD) {
       if (object.endOfLife) {
         obj.endOfLife = object.endOfLifeMsg + this.getConvertedValue(object.endOfLife);
       }
@@ -638,80 +757,91 @@ export class UpdateObjectComponent implements OnInit {
       if (object.expectOrderToNoticeId) {
         obj.expectOrderToNoticeId = object.expectOrderToNoticeId;
       }
-    } else if (this.type === 'LOCK') {
+    } else if (this.type === InventoryObject.LOCK) {
       if (object.limit || object.limit === 0) {
         obj.limit = object.limit;
       }
-    } else if (this.type === 'SCHEDULE') {
+    } else if (this.type === InventoryObject.SCHEDULE) {
       if (object.planOrderAutomatically || object.planOrderAutomatically === false) {
         obj.planOrderAutomatically = object.planOrderAutomatically;
       }
       if (object.submitOrderToControllerWhenPlanned || object.submitOrderToControllerWhenPlanned === false) {
         obj.submitOrderToControllerWhenPlanned = object.submitOrderToControllerWhenPlanned;
       }
-      let isEmptyExist = false;
-      obj.variableSets = obj.variableSets.filter(variableSet => {
-        if (variableSet.orderName === '' || !variableSet.orderName) {
-          if (isEmptyExist) {
-            return false;
+      if (object.workflowName) {
+        obj.variableSets = [];
+      }
+      if (object.variableSets && object.variableSets.length > 0) {
+        obj.variableSets = this.coreService.clone(object.variableSets);
+        let isEmptyExist = false;
+        obj.variableSets = obj.variableSets.filter(variableSet => {
+          if (variableSet.orderName === '' || !variableSet.orderName) {
+            if (isEmptyExist) {
+              return false;
+            }
+            isEmptyExist = true;
           }
-          isEmptyExist = true;
-        }
-        if (variableSet.variables && isArray(variableSet.variables)) {
-          variableSet.variables = variableSet.variables.filter((variable) => {
-            return !!variable.name;
-          });
-          variableSet.variables = variableSet.variables.map(variable => ({name: variable.name, value: variable.value}));
-          variableSet.variables = this.coreService.keyValuePair(variableSet.variables);
-        }
-        if (variableSet.forkListVariables) {
-          variableSet.forkListVariables.forEach((item) => {
-            variableSet.variables[item.name] = [];
-            if (item.actualList) {
-              for (const i in item.actualList) {
-                const listObj = {};
-                item.actualList[i].forEach((data) => {
-                  if (data.value) {
-                    listObj[data.name] = data.value;
+          if (variableSet.variables && isArray(variableSet.variables)) {
+            variableSet.variables = variableSet.variables.filter((variable) => {
+              return !!variable.name;
+            });
+            variableSet.variables = variableSet.variables.map(variable => ({
+              name: variable.name,
+              value: variable.value
+            }));
+            variableSet.variables = this.coreService.keyValuePair(variableSet.variables);
+          }
+          if (variableSet.forkListVariables) {
+            variableSet.forkListVariables.forEach((item) => {
+              variableSet.variables[item.name] = [];
+              if (item.actualList) {
+                for (const i in item.actualList) {
+                  const listObj = {};
+                  item.actualList[i].forEach((data) => {
+                    if (data.value) {
+                      listObj[data.name] = data.value;
+                    }
+                  });
+                  if (!isEmpty(listObj)) {
+                    variableSet.variables[item.name].push(listObj);
                   }
-                });
-                if (!isEmpty(listObj)) {
-                  variableSet.variables[item.name].push(listObj);
                 }
               }
-            }
-          });
-        }
-        return true;
-      });
-
-      obj.variableSets = obj.variableSets.map(variableSet => {
-        return {orderName: variableSet.orderName, variables: variableSet.variables};
-      });
-
-      if (obj.nonWorkingDayCalendars.length === 0) {
-        delete obj.nonWorkingDayCalendars;
-      }
-
-
-      if (obj.calendars.length > 0) {
-        for (let i = 0; i < obj.calendars.length; i++) {
-          delete obj.calendars[i].type;
-          if (obj.calendars[i].frequencyList) {
-            if (obj.calendars[i].frequencyList.length > 0) {
-              obj.calendars[i].includes = {};
-              obj.calendars[i].frequencyList.forEach((val) => {
-                //this.calendarService.generateCalendarObj(val, obj.calendars[i]);
-              });
-            }
-            delete obj.calendars[i].frequencyList;
+            });
           }
-        }
+          return true;
+        });
+
+        obj.variableSets = obj.variableSets.map(variableSet => {
+          return {orderName: variableSet.orderName, variables: variableSet.variables};
+        });
       }
-      if (obj.nonWorkingDayCalendars && obj.nonWorkingDayCalendars.length > 0) {
-        for (const i in obj.nonWorkingDayCalendars) {
-          delete obj.nonWorkingDayCalendars[i].periods;
-          delete obj.nonWorkingDayCalendars[i].type;
+
+      if (object.configuration) {
+        if (object.configuration.nonWorkingDayCalendars && object.configuration.nonWorkingDayCalendars.length === 0) {
+          delete object.configuration.nonWorkingDayCalendars;
+        }
+        if (object.configuration.calendars && object.configuration.calendars.length > 0) {
+          for (let i = 0; i < object.configuration.calendars.length; i++) {
+            delete object.configuration.calendars[i].type;
+            if (object.configuration.calendars[i].frequencyList) {
+              if (object.configuration.calendars[i].frequencyList.length > 0) {
+                object.configuration.calendars[i].includes = {};
+                object.configuration.calendars[i].frequencyList.forEach((val) => {
+                  this.calendarService.generateCalendarObj(val, object.configuration.calendars[i]);
+                });
+              }
+              delete object.configuration.calendars[i].frequencyList;
+            }
+          }
+          obj.calendars = object.configuration.calendars;
+        }
+        if (object.configuration.nonWorkingDayCalendars && object.configuration.nonWorkingDayCalendars.length > 0) {
+          for (const i in object.configuration.nonWorkingDayCalendars) {
+            delete object.configuration.nonWorkingDayCalendars[i].periods;
+            delete object.configuration.nonWorkingDayCalendars[i].type;
+          }
+          obj.nonWorkingDayCalendars = object.configuration.nonWorkingDayCalendars;
         }
       }
     } else if (this.type === 'CALENDAR') {
