@@ -40,44 +40,6 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeystorePath</label>
-            <div class="col-sm-6">
-              <input type="text" class="form-control" name="iamVaultKeystorePath" [placeholder]="'user.placeholder.iamVaultKeystorePath' | translate"
-                     [(ngModel)]="currentObj.iamVaultKeystorePath">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeystorePassword</label>
-            <div class="col-sm-6">
-              <input type="{{!passwordFields.first ? 'password' : 'text'}}" class="form-control" name="iamVaultKeystorePassword"
-                     [(ngModel)]="currentObj.iamVaultKeystorePassword" [placeholder]="'user.placeholder.iamVaultKeystorePassword' | translate">
-              <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
-                 (click)="passwordFields.first = !passwordFields.first"></i>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeyPassword</label>
-            <div class="col-sm-6">
-              <input type="{{!passwordFields.second ? 'password' : 'text'}}" class="form-control" name="iamVaultKeyPassword"
-                     [(ngModel)]="currentObj.iamVaultKeyPassword" [placeholder]="'user.placeholder.iamVaultKeyPassword' | translate">
-              <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.second ? 'fa-eye' : 'fa-eye-slash'"
-                 (click)="passwordFields.second = !passwordFields.second"></i>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultKeyStoreType</label>
-            <div class="col-sm-6">
-              <nz-select
-                name="iamVaultKeystoreType"
-                nzShowSearch
-                nzAllowClear
-                nzPlaceHolder="{{'user.placeholder.iamVaultKeyStoreType' | translate}}"
-                [(ngModel)]="currentObj.iamVaultKeystoreType">
-                <nz-option *ngFor="let option of keyStoreTypes" [nzLabel]="option" [nzValue]="option"></nz-option>
-              </nz-select>
-            </div>
-          </div>
-          <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStorePath</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" name="iamVaultTruststorePath"
@@ -186,7 +148,7 @@
                   <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapServerUrl</label>
                     <div class="col-sm-6">
-                      <input type="url" class="form-control" name="iamLdapServerUrl"
+                      <input type="url" class="form-control" name="iamLdapServerUrl" (blur)="changeInput('URL')"
                              [placeholder]="'user.placeholder.iamLdapServerUrl' | translate"
                              [(ngModel)]="currentObj.iamLdapServerUrl">
                     </div>
@@ -243,7 +205,7 @@
                   <div class="row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapUserDnTemplate</label>
                     <div class="col-sm-6">
-                      <input type="text" class="form-control" name="iamLdapUserDnTemplate"
+                      <input type="text" class="form-control" name="iamLdapUserDnTemplate" (blur)="changeInput('Dn')"
                              [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate"
                              [(ngModel)]="currentObj.iamLdapUserDnTemplate">
                     </div>
@@ -288,7 +250,7 @@
                   <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupNameAttribute</label>
                     <div class="col-sm-6">
-                      <input type="text" class="form-control" name="iamLdapGroupNameAttribute"
+                      <input type="text" class="form-control" name="iamLdapGroupNameAttribute" (blur)="changeInput('GroupName')"
                              [placeholder]="'user.placeholder.iamLdapGroupNameAttribute' | translate"
                              [(ngModel)]="currentObj.iamLdapGroupNameAttribute">
                     </div>

@@ -185,7 +185,6 @@ export class SettingModalComponent implements OnInit {
     if (this.actualData.expert && this.actualData.expert.iamLdapServerUrl) {
       if (this.actualData.expert.iamLdapServerUrl !== url) {
         this.showConfirm((res) => {
-          console.log(res);
           if (res === 'OK') {
             this.actualData.expert.iamLdapServerUrl = '';
             this.currentObj.iamLdapServerUrl = url;
@@ -204,19 +203,23 @@ export class SettingModalComponent implements OnInit {
   }
 
   checkConfirmation(isChecked, type): void {
-    if (type === 'AD') {
-      if (!isChecked) {
-        this.userObj.iamLdapADwithSamAccount = false;
-      }
+    if (type === 'AD' && !isChecked) {
+      this.userObj.iamLdapADwithSamAccount = false;
+    }
+    if (this.userObj.iamLdapWithMemberOf) {
       if (this.userObj.iamLdapAD) {
-        this.currentObj.iamLdapUserSearchFilter = '';
+        if (!this.currentObj.iamLdapUserSearchFilter || this.currentObj.iamLdapUserSearchFilter === '(uid=%s' || this.currentObj.iamLdapUserSearchFilter === '%s') {
+          this.currentObj.iamLdapUserSearchFilter = '';
+        }
       } else {
-        this.currentObj.iamLdapUserSearchFilter = '(uid=%s)';
+        if (!this.currentObj.iamLdapUserSearchFilter || this.currentObj.iamLdapUserSearchFilter === '%s') {
+          this.currentObj.iamLdapUserSearchFilter = '(uid=%s)';
+        }
       }
     }
     if (type === 'MemberOf') {
       if (this.userObj.iamLdapWithMemberOf) {
-        if (this.userObj.iamLdapGroupNameAttribute) {
+        if (this.currentObj.iamLdapGroupNameAttribute) {
           if (this.actualData.expert && this.actualData.expert.iamLdapGroupNameAttribute) {
             this.showConfirm((res) => {
               if (res === 'OK') {
@@ -246,6 +249,56 @@ export class SettingModalComponent implements OnInit {
           this.currentObj.iamLdapUserDnTemplate = '';
         }
       }
+    }
+  }
+
+  changeInput(type): void {
+    if (type === 'GroupName') {
+
+    } else if (type === 'URL') {
+      if (this.actualData.simple && this.actualData.simple.iamLdapHost) {
+        this.showConfirm((res) => {
+          if (res === 'OK') {
+            this.actualData.simple.iamLdapHost = '';
+            this.actualData.expert.iamLdapServerUrl = '';
+            this.updateUserMode();
+          } else {
+            this.currentObj.iamLdapServerUrl = this.actualData.expert.iamLdapServerUrl;
+          }
+        });
+      } else {
+        this.updateUserMode();
+      }
+    } else {
+      if (this.currentObj.iamLdapUserDnTemplate && this.currentObj.iamLdapUserDnTemplate !== '{0}' && this.userObj.iamLdapADwithSamAccount) {
+        if (this.actualData.simple && this.actualData.simple.iamLdapADwithSamAccount) {
+          this.showConfirm((res) => {
+            if (res === 'OK') {
+               this.userObj.iamLdapADwithSamAccount = false;
+            } else {
+              this.currentObj.iamLdapUserDnTemplate = this.actualData.expert.iamLdapUserDnTemplate;
+            }
+          });
+        } else {
+          this.userObj.iamLdapADwithSamAccount = false;
+        }
+      }
+    }
+  }
+
+  private updateUserMode(): void {
+    const PORT = this.currentObj.iamLdapServerUrl.substring(this.currentObj.iamLdapServerUrl.lastIndexOf(':') + 1);
+    this.userObj.iamLdapPort = PORT.match(/\d+/g);
+    if (this.userObj.iamLdapPort) {
+      this.userObj.iamLdapPort = parseInt(this.userObj.iamLdapPort, 10);
+    }
+    const from = this.currentObj.iamLdapServerUrl.indexOf('//') + 2;
+    const to = this.currentObj.iamLdapServerUrl.lastIndexOf(':');
+    this.userObj.iamLdapHost = from < to ? this.currentObj.iamLdapServerUrl.substring(from, to) : '';
+    if (this.currentObj.iamLdapUseStartTls) {
+      this.userObj.iamLdapProtocol = 'STARTTLS';
+    } else {
+      this.userObj.iamLdapProtocol = this.currentObj.iamLdapServerUrl.match('ldaps') ? 'SSL' : 'PLAIN';
     }
   }
 
