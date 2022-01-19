@@ -41,6 +41,7 @@ export class SettingModalComponent implements OnInit {
     second: false,
     third: false
   };
+  actualData:any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService,
               private message: NzMessageService, private saveService: SaveService, private translate: TranslateService) {
@@ -129,15 +130,18 @@ export class SettingModalComponent implements OnInit {
         if (this.data) {
           if (data) {
             this.currentObj = data.vault || {};
-            if (data.ldap && data.ldap.expert) {
-              this.currentObj = data.ldap.expert;
+            if (data.ldap) {
+              this.actualData = this.coreService.clone(data.ldap);
               if (data.ldap.simple) {
                 this.userObj = data.ldap.simple;
               } else {
                 this.userObj.iamLdapProtocol = 'PLAIN';
                 this.userObj.iamLdapPort = 389;
               }
-              SettingModalComponent.convertObj(this.currentObj, false);
+              if (data.ldap.expert) {
+                 this.currentObj = data.ldap.expert;
+                SettingModalComponent.convertObj(this.currentObj, false);
+              }
             }
           }
         } else {
@@ -156,48 +160,96 @@ export class SettingModalComponent implements OnInit {
     } else if ((!this.userObj.iamLdapPort || this.userObj.iamLdapPort > 0) && this.userObj.iamLdapPort !== 636) {
       this.userObj.iamLdapPort = 389;
     }
-    // this.showConfirm();
-  }
-
-  onChangeCheckBox(isChecked): void {
-    if (!isChecked) {
-      this.userObj.iamLdapADwithSamAccount = false;
-    }
-  }
-
-  tabChange($event): void {
-    if ($event.index === 1) {
-      this.currentObj.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost;
-      this.currentObj.iamLdapUseStartTls = this.userObj.iamLdapProtocol === 'STARTTLS';
-      if (this.userObj.iamLdapPort) {
-        this.currentObj.iamLdapServerUrl = this.currentObj.iamLdapServerUrl + ':' + this.userObj.iamLdapPort;
-      }
-      if (this.userObj.iamLdapWithMemberOf) {
-        this.currentObj.iamLdapGroupNameAttribute = '';
-        if (this.userObj.iamLdapAD) {
-          this.currentObj.iamLdapUserSearchFilter = '';
-        } else {
-          this.currentObj.iamLdapUserSearchFilter = '(uid=%s)';
-        }
-      }
-      if (this.userObj.iamLdapADwithSamAccount) {
-        this.currentObj.iamLdapUserDnTemplate = '';
+    const url = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
+    if (this.actualData.expert && this.actualData.expert.iamLdapServerUrl) {
+      if (this.actualData.expert.iamLdapServerUrl !== url) {
+        this.showConfirm((res) => {
+          if (res === 'OK') {
+            this.actualData.expert.iamLdapServerUrl = '';
+            this.currentObj.iamLdapServerUrl = url;
+            this.currentObj.iamLdapUseStartTls = this.userObj.iamLdapProtocol === 'STARTTLS';
+          } else {
+            this.userObj.iamLdapProtocol = this.actualData.simple.iamLdapProtocol;
+            this.userObj.iamLdapPort = this.actualData.simple.iamLdapPort;
+          }
+        });
       }
     } else {
-      const PORT = this.currentObj.iamLdapServerUrl.substring(this.currentObj.iamLdapServerUrl.lastIndexOf(':') + 1);
-      this.userObj.iamLdapPort = PORT.match(/\d+/g);
-      const from = this.currentObj.iamLdapServerUrl.indexOf('//') + 2;
-      const to = this.currentObj.iamLdapServerUrl.lastIndexOf(':');
-      this.userObj.iamLdapHost = from < to ? this.currentObj.iamLdapServerUrl.substring(from, to) : '';
-      if (this.currentObj.iamLdapUseStartTls) {
-        this.userObj.iamLdapProtocol = 'STARTTLS';
+      this.currentObj.iamLdapServerUrl = url;
+      this.currentObj.iamLdapUseStartTls = this.userObj.iamLdapProtocol === 'STARTTLS';
+    }
+  }
+
+  changeField(type): void {
+    const url = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
+    if (this.actualData.expert && this.actualData.expert.iamLdapServerUrl) {
+      if (this.actualData.expert.iamLdapServerUrl !== url) {
+        this.showConfirm((res) => {
+          console.log(res);
+          if (res === 'OK') {
+            this.actualData.expert.iamLdapServerUrl = '';
+            this.currentObj.iamLdapServerUrl = url;
+          } else {
+            if (type === 'Host') {
+              this.userObj.iamLdapHost = this.actualData.simple.iamLdapHost;
+            } else if (type === 'Port') {
+              this.userObj.iamLdapPort = this.actualData.simple.iamLdapPort;
+            }
+          }
+        });
+      }
+    } else {
+      this.currentObj.iamLdapServerUrl = url;
+    }
+  }
+
+  checkConfirmation(isChecked, type): void {
+    if (type === 'AD') {
+      if (!isChecked) {
+        this.userObj.iamLdapADwithSamAccount = false;
+      }
+      if (this.userObj.iamLdapAD) {
+        this.currentObj.iamLdapUserSearchFilter = '';
       } else {
-        this.userObj.iamLdapProtocol = this.currentObj.iamLdapServerUrl.match('ldaps') ? 'SSL' : 'PLAIN';
+        this.currentObj.iamLdapUserSearchFilter = '(uid=%s)';
+      }
+    }
+    if (type === 'MemberOf') {
+      if (this.userObj.iamLdapWithMemberOf) {
+        if (this.userObj.iamLdapGroupNameAttribute) {
+          if (this.actualData.expert && this.actualData.expert.iamLdapGroupNameAttribute) {
+            this.showConfirm((res) => {
+              if (res === 'OK') {
+                this.currentObj.iamLdapGroupNameAttribute = '';
+              } else {
+                this.userObj.iamLdapWithMemberOf = this.actualData.simple.iamLdapWithMemberOf;
+              }
+            });
+          } else {
+            this.currentObj.iamLdapGroupNameAttribute = '';
+          }
+        }
+      }
+    } else if (type === 'samAccount') {
+      if (this.userObj.iamLdapADwithSamAccount) {
+        if (this.actualData.expert && this.actualData.expert.iamLdapUserDnTemplate) {
+          if (this.actualData.expert.iamLdapUserDnTemplate !== '{0}') {
+            this.showConfirm((res) => {
+              if (res === 'OK') {
+                this.currentObj.iamLdapUserDnTemplate = '';
+              } else {
+                this.userObj.iamLdapADwithSamAccount = this.actualData.simple.iamLdapADwithSamAccount;
+              }
+            });
+          }
+        } else{
+          this.currentObj.iamLdapUserDnTemplate = '';
+        }
       }
     }
   }
 
-  private showConfirm(): void {
+  private showConfirm(cb): void {
     let msg = '';
     this.translate.get('user.usermode.message.overwriteChanges').subscribe(translatedValue => {
       msg = translatedValue;
@@ -215,10 +267,12 @@ export class SettingModalComponent implements OnInit {
       nzContent: '',
       nzOkText: confirmBtn,
       nzCancelText: cancelBtn,
-      nzOnOk: () =>
-        new Promise((resolve, reject) => {
-          setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
-        }).catch(() => console.log('Oops errors!'))
+      nzOnCancel: () => {
+        cb('CANCEL')
+      },
+      nzOnOk: () => {
+        cb('OK')
+      }
     });
   }
 
@@ -520,7 +574,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   showUser(account): void {
     sessionStorage.identityServiceName = account.identityServiceName;
     sessionStorage.identityServiceType = account.identityServiceType;
-    this.router.navigate([account.identityServiceType === 'VAULT' ? '/users/identity_service/role' : '/users/identity_service/account']);
+    this.router.navigate([(account.identityServiceType === 'VAULT' || account.identityServiceType === 'LDAP') ? '/users/identity_service/role' : '/users/identity_service/account']);
   }
 
   add(): void {

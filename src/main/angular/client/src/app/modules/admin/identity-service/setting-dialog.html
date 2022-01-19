@@ -115,13 +115,13 @@
           </div>
         </div>
         <div *ngIf="data && data.identityServiceType.match('LDAP')">
-          <nz-tabset class="m-t-n-8" (nzSelectChange)="tabChange($event)">
+          <nz-tabset class="m-t-n-8">
             <nz-tab [nzTitle]="'user.tab.simpleMode' | translate">
               <div class="m-l-12 m-r-12">
                 <div class="form-group row">
                   <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapHost</label>
                   <div class="col-sm-6" [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
-                    <input type="text" class="form-control" name="iamLdapHost" required #host="ngModel"
+                    <input type="text" class="form-control" name="iamLdapHost" required #host="ngModel" (blur)="changeField('Host')"
                            [(ngModel)]="userObj.iamLdapHost" [placeholder]="'user.usermode.placeholder.iamLdapHost' | translate">
                   </div>
                 </div>
@@ -137,26 +137,26 @@
                 <div class="form-group row">
                   <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapPort</label>
                   <div class="col-sm-6" [ngClass]="{'has-error' : ((port.dirty || port.touched) && port.invalid)}">
-                    <nz-input-number name="iamLdapPort" required #port="ngModel"
+                    <nz-input-number name="iamLdapPort" required #port="ngModel" (nzBlur)="changeField('Port')"
                                      [(ngModel)]="userObj.iamLdapPort" [nzPlaceHolder]="'user.usermode.placeholder.iamLdapPort' | translate"></nz-input-number>
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-sm-4" translate>user.usermode.label.iamLdapAD</label>
                   <div class="col-sm-6">
-                    <label nz-checkbox [(ngModel)]="userObj.iamLdapAD" (ngModelChange)="onChangeCheckBox($event)" name="iamLdapAD"></label>
+                    <label nz-checkbox [(ngModel)]="userObj.iamLdapAD" (ngModelChange)="checkConfirmation($event, 'AD')" name="iamLdapAD"></label>
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-sm-4" translate>user.usermode.label.iamLdapADWithSamAccount</label>
                   <div class="col-sm-6">
-                    <label nz-checkbox [nzDisabled]="!userObj.iamLdapAD" [(ngModel)]="userObj.iamLdapADwithSamAccount" name="iamLdapADWithSamAccount"></label>
+                    <label nz-checkbox [nzDisabled]="!userObj.iamLdapAD" [(ngModel)]="userObj.iamLdapADwithSamAccount" (ngModelChange)="checkConfirmation($event, 'samAccount')" name="iamLdapADWithSamAccount"></label>
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-sm-4" translate>user.usermode.label.iamLdapWithMemberOf</label>
                   <div class="col-sm-6">
-                    <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf" name="iamLdapWithMemberOf"></label>
+                    <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf" (ngModelChange)="checkConfirmation($event, 'MemberOf')" name="iamLdapWithMemberOf"></label>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -207,30 +207,30 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStorePath</label>
+                    <label class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStorePath</label>
                     <div class="col-sm-6">
-                      <input type="text" class="form-control" name="iamVaultTruststorePath"
-                             [(ngModel)]="currentObj.iamVaultTruststorePath" [placeholder]="'user.placeholder.iamVaultTrustStorePath' | translate">
+                      <input type="text" class="form-control" name="iamLdapTruststorePath"
+                             [(ngModel)]="currentObj.iamLdapTruststorePath" [placeholder]="'user.placeholder.iamLdapTrustStorePath' | translate">
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStorePassword</label>
+                    <label class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStorePassword</label>
                     <div class="col-sm-6">
-                      <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control" name="iamVaultTruststorePassword"
-                             [(ngModel)]="currentObj.iamVaultTruststorePassword" [placeholder]="'user.placeholder.iamVaultTrustStorePassword' | translate">
+                      <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control" name="iamLdapTruststorePassword"
+                             [(ngModel)]="currentObj.iamLdapTruststorePassword" [placeholder]="'user.placeholder.iamLdapTrustStorePassword' | translate">
                       <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
                          (click)="passwordFields.third = !passwordFields.third"></i>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStoreType</label>
+                    <label class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStoreType</label>
                     <div class="col-sm-6">
                       <nz-select
-                        name="iamVaultTruststoreType"
+                        name="iamLdapTruststoreType"
                         nzShowSearch
                         nzAllowClear
-                        nzPlaceHolder="{{'user.placeholder.iamVaultTrustStoreType' | translate}}"
-                        [(ngModel)]="currentObj.iamVaultTruststoreType">
+                        nzPlaceHolder="{{'user.placeholder.iamLdapTrustStoreType' | translate}}"
+                        [(ngModel)]="currentObj.iamLdapTruststoreType">
                         <nz-option *ngFor="let option of keyStoreTypes" [nzLabel]="option" [nzValue]="option"></nz-option>
                       </nz-select>
                     </div>
