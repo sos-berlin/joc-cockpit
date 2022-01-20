@@ -68,6 +68,13 @@
               </nz-select>
             </div>
           </div>
+          <div class="form-group row" *ngIf="data.identityServiceType === 'VAULT-JOC-ACTIVE'">
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultApplicationToken</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" name="iamVaultApplicationToken"
+                     [(ngModel)]="currentObj.iamVaultApplicationToken" [placeholder]="'user.placeholder.iamVaultApplicationToken' | translate">
+            </div>
+          </div>
         </div>
         <div *ngIf="data && data.identityServiceType.match('LDAP')">
           <nz-tabset class="m-t-n-8">
