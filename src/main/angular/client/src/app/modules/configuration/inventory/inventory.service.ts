@@ -15,18 +15,20 @@ export class InventoryService {
           arr[i].level = 0;
         } else if (arr[i].objectType === InventoryObject.FILEORDERSOURCE) {
           arr[i].level = 1;
-        } else if (arr[i].objectType === InventoryObject.NOTICEBOARD) {
+        } else if (arr[i].objectType === InventoryObject.JOBRESOURCE) {
           arr[i].level = 2;
-        } else if (arr[i].objectType === InventoryObject.LOCK) {
+        } else if (arr[i].objectType === InventoryObject.NOTICEBOARD) {
           arr[i].level = 3;
-        } else if (arr[i].objectType === InventoryObject.INCLUDESCRIPT) {
+        } else if (arr[i].objectType === InventoryObject.LOCK) {
           arr[i].level = 4;
-        } else if (arr[i].objectType === InventoryObject.SCHEDULE) {
+        } else if (arr[i].objectType === InventoryObject.INCLUDESCRIPT) {
           arr[i].level = 5;
-        } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
+        } else if (arr[i].objectType === InventoryObject.SCHEDULE) {
           arr[i].level = 6;
-        } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
+        } else if (arr[i].objectType === InventoryObject.WORKINGDAYSCALENDAR) {
           arr[i].level = 7;
+        } else if (arr[i].objectType === InventoryObject.NONWORKINGDAYSCALENDAR) {
+          arr[i].level = 8;
         }
       }
     }
@@ -41,11 +43,11 @@ export class InventoryService {
         }
       }
     }
-    if ((data.deployables && data.deployables.length > 0) || (data.releasables && data.releasables.length > 0)) {
+    if ((data.deployables && data.deployables.length > 0) || (data.releasables && data.releasables.length > 0)  || (data.items && data.items.length > 0)) {
       if (!data.children) {
         data.children = [];
       }
-      const x = groupBy(this.sortList(data.deployables || data.releasables), (res) => {
+      const x = groupBy(this.sortList(data.deployables || data.releasables || data.items), (res) => {
         return res.objectType;
       });
       const tempArr = [];
@@ -61,7 +63,14 @@ export class InventoryService {
         };
         tempArr.push(parentObj);
         temp.forEach(item => {
-          const child: any = {
+          const child: any = data.items ? {
+            name: item.objectName,
+            path: item.folder,
+            key: item.folder + (item.folder === '/' ? '' : '/') + item.objectType,
+            type: item.objectType,
+            lastModified: item.lastModified,
+            isLeaf: true
+          } : {
             name: item.objectName,
             path: item.folder,
             key: item.id,
@@ -78,11 +87,11 @@ export class InventoryService {
           };
           tempArr.push(child);
         });
-
       }
       data.children = tempArr.concat(data.children);
       delete data.deployables;
       delete data.releasables;
+      delete data.items;
     }
   }
 

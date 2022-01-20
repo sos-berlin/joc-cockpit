@@ -614,7 +614,7 @@
     "label.submissionHistory": "Daily Plan",
     "label.overwrite": "Overwrite",
     "label.planeDate": "Daily Plan Date",
-    "label.submission": "Submission",
+    "label.created": "Created",
     "label.submitWith": "Submit to Controller",
     "label.submitOrder": "Submit Order",
     "label.submitOrders": "Submit Orders",
@@ -1122,6 +1122,16 @@
       "label.released": "Released",
       "label.controller": "Controller",
       "label.dailyPlan": "Automation"
+    },
+    "repository": {
+      "label.filter": "Filter",
+      "label.filterType": "Filter Type",
+      "label.validOnly": "Valid Only",
+      "label.draft": "Draft",
+      "label.deployed": "Deployed",
+      "label.released": "Released",
+      "label.envRelated": "Env Related",
+      "label.envIndependent": "Env Independent"
     },
     "tooltips": {
       "calendar": {

@@ -449,8 +449,8 @@
                     <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }"
                        (click)="selectSubmissionHistory(history.submissionHistoryId)">
                       <i class="fa fa-circle p-r-xs"></i>
-                      <span translate>dailyPlan.label.submission</span> -
-                      <i class="text-muted">({{history.submissionTime | stringToTime}})</i>
+                      <span translate>dailyPlan.label.created</span> -
+                      <i class="text-muted">{{history.submissionTime | stringToTime}}</i>
                     </a>
                   </li>
                 </ul>

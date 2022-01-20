@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>dailyPlan.label.setStartTime</span>
+    <span *ngIf="order">:</span>
     <i class="text-muted p-l-xs text" *ngIf="order">{{order.orderId}}</i>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="cancel()">

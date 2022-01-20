@@ -737,6 +737,7 @@ export class CoreService {
           permitted: data.folders[i].permitted,
           isLeaf: isLeaf ? !data.folders[i].folders || data.folders[i].folders.length === 0 : false,
           children: [],
+          items: data.folders[i].items,
           deployables: data.folders[i].deployables,
           releasables: data.folders[i].releasables
         });
@@ -756,13 +757,14 @@ export class CoreService {
       for (const i in actualData.folders) {
         if (actualData.folders[i]) {
           output.push({
-            name: actualData.folders[i].path,
+            name: actualData.folders[i].name || actualData.folders[i].path,
             path: actualData.folders[i].path,
-            title: actualData.folders[i].path,
+            title: actualData.folders[i].name || actualData.folders[i].path,
             key: actualData.folders[i].path,
             permitted: actualData.folders[i].permitted,
             isLeaf: isLeaf ? !actualData.folders[i].folders || actualData.folders[i].folders.length === 0 : false,
             children: [],
+            items: actualData.folders[i].items,
             deployables: actualData.folders[i].deployables,
             releasables: actualData.folders[i].releasables
           });

@@ -2,6 +2,7 @@
   <h4 class="modal-title">
     <span *ngIf="variable" translate>dailyPlan.label.setParameter</span>
     <span *ngIf="!variable" translate>dailyPlan.label.setParameters</span>
+    <span *ngIf="order || plan">:</span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
     <i *ngIf="plan" class="text-muted p-l-xs text">{{plan.key}}</i>
   </h4>

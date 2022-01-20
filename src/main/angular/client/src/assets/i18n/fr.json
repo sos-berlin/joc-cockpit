@@ -614,7 +614,7 @@
     "label.submissionHistory": "Historique du Plan Quotidien",
     "label.overwrite": "Ecraser",
     "label.planeDate": "Date du Plan Quotidien",
-    "label.submission": "Soumission",
+    "label.created": "Created",
     "label.submitWith": "Soumettre au Contrôleur",
     "label.submitOrder": "Soumettre l'Ordre",
     "label.submitOrders": "Soumettre les Ordres",
@@ -1122,6 +1122,16 @@
       "label.released": "Publié",
       "label.controller": "Contrôleur",
       "label.dailyPlan": "Automatisation"
+    },
+    "repository": {
+      "label.filter": "Filter",
+      "label.filterType": "Filter Type",
+      "label.validOnly": "Valid Only",
+      "label.draft": "Draft",
+      "label.deployed": "Deployed",
+      "label.released": "Released",
+      "label.envRelated": "Env Related",
+      "label.envIndependent": "Env Independent"
     },
     "tooltips": {
       "calendar": {

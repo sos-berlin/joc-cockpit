@@ -15,8 +15,7 @@ import {
   CreateFolderModalComponent, CreateObjectModalComponent, CronImportModalComponent,
   DeployComponent,
   ExportComponent, ImportWorkflowModalComponent,
-  InventoryComponent, JsonEditorModalComponent,
-  SetVersionComponent,
+  InventoryComponent, JsonEditorModalComponent, RepositoryComponent,
   SingleDeployComponent, UploadModalComponent
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
@@ -46,9 +45,9 @@ import {UpdateJobComponent} from './update-job/update-job.component';
 import {UpdateObjectComponent} from './update-object/update-object.component';
 import {ScriptComponent} from './script/script.component';
 
-const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent,
-  SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent, CronImportModalComponent,
-  JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent,
+const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent, RepositoryComponent,
+  CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent, CronImportModalComponent, JsonEditorModalComponent,
+  UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent,
   AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
 
 @NgModule({

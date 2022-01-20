@@ -614,7 +614,7 @@
     "label.submissionHistory": "Historie Tagesplan",
     "label.overwrite": "Überschreiben",
     "label.planeDate": "Datum Tagesplan",
-    "label.submission": "Übermittlung",
+    "label.created": "Created",
     "label.submitWith": "Zum Controller übermitteln",
     "label.submitOrder": "Auftrag übermitteln",
     "label.submitOrders": "Aufträge übermitteln",
@@ -1122,6 +1122,16 @@
       "label.released": "Freigegeben",
       "label.controller": "Controller",
       "label.dailyPlan": "Automation"
+    },
+    "repository": {
+      "label.filter": "Filter",
+      "label.filterType": "Filter Type",
+      "label.validOnly": "Valid Only",
+      "label.draft": "Draft",
+      "label.deployed": "Deployed",
+      "label.released": "Released",
+      "label.envRelated": "Env Related",
+      "label.envIndependent": "Env Independent"
     },
     "tooltips": {
       "calendar": {

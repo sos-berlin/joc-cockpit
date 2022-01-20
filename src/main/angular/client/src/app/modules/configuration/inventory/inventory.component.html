@@ -342,6 +342,19 @@
         [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
       <a translate>inventory.button.export</a>
     </li>
+    <li nz-submenu [nzTitle]="'inventory.button.repository' | translate"  *ngIf="(!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
+      <ul>
+        <li nz-menu-item (click)="repositoryOperation(node, 'store');">
+          <a translate>inventory.button.storeTo</a>
+        </li>
+        <li nz-menu-item (click)="repositoryOperation(node, 'update');">
+          <a translate>inventory.button.updateFrom</a>
+        </li>
+        <li nz-menu-item (click)="repositoryOperation(node, 'delete');">
+          <a translate>inventory.button.deleteFrom</a>
+        </li>
+      </ul>
+    </li>
     <li nz-menu-divider *ngIf="(node.origin.type || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan))
                        && permission.joc.inventory.manage && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)"></li>
     <li nz-menu-item (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && node.origin.object !== 'CALENDAR' && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT')

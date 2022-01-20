@@ -614,7 +614,7 @@
     "label.submissionHistory": "登録履歴",
     "label.overwrite": "上書",
     "label.planeDate": "プラン日付",
-    "label.submission": "登録",
+    "label.created": "Created",
     "label.submitWith": "登録",
     "label.submitOrder": "オーダー登録",
     "label.submitOrders": "オーダー登録",
@@ -1122,6 +1122,16 @@
       "label.released": "リリース済",
       "label.controller": "コントローラー",
       "label.dailyPlan": "実行計画"
+    },
+    "repository": {
+      "label.filter": "Filter",
+      "label.filterType": "Filter Type",
+      "label.validOnly": "Valid Only",
+      "label.draft": "Draft",
+      "label.deployed": "Deployed",
+      "label.released": "Released",
+      "label.envRelated": "Env Related",
+      "label.envIndependent": "Env Independent"
     },
     "tooltips": {
       "calendar": {
