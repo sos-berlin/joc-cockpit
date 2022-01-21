@@ -638,6 +638,10 @@
     "label.cyclicOrder": "Ordre Cyclique",
     "label.begin": "Commencer",
     "label.end": "Fin",
+    "label.submitOrderByWorkflow": "Submit Order for workflow",
+    "label.submitOrderBySchedule": "Submit Order for schedule",
+    "label.removeOrderByWorkflow": "Remove Order for workflow",
+    "label.removeOrderBySchedule": "Remove Order for schedule",
     "button.late": "En retard",
     "button.setStartTime": "Modifier l'heure de démarrage",
     "button.setParameter": "Modifier la Variable",
@@ -669,6 +673,10 @@
     "popup.removeOrderCount": "Êtes-vous sûr de vouloir supprimer les {{count}} ordres ?",
     "popup.submitSelectedOrder": "Êtes-vous sûr de vouloir soumettre cet ordre ?",
     "popup.submitOrderCount": "Êtes-vous sûr de vouloir soumettre les {{count}} ordres?",
+    "popup.modifyOrdersCount": "This will modify {{n1}} order",
+    "popup.modifyCyclicOrdersCount": "This will modify {{n1}} cyclic orders (total {{n2}})",
+    "popup.cannotModifyStartTime": "Cannot modify start time because {{n1}} single orders and {{n2}} cyclic orders",
+    "popup.differentModifyStartTime": "{{n1}} different planned starts",
     "tooltip.dateRangeSelectStep1": "Maintenez la souris et faites glisser pour sélectionner la plage de dates",
     "tooltip.dateRangeSelectStep2": "Ou appuyez sur la touche CTRL et sélectionnez la date de début et la date de fin en cliquant avec la souris",
     "tooltip.dateRangeSelectStep3": "Ou cliquez sur l'icône du calendrier, puis sélectionnez la date de début et la date de fin à l'aide d'un clic de souris"
@@ -690,8 +698,7 @@
     "message.noControllerFound": "Aucun Contrôleur trouvé",
     "message.errorInLoadingScheduleIds": "Erreur lors de la récupération des ID du contrôleur",
     "message.pasteInSubFolderNotAllowed": "Le dossier de destination est un sous-dossier du dossier source.",
-    "message.invalidJSON": "Fichier JSON invalide",
-    "message.cannotModifyStartTime": "Impossible de modifier l'heure de démarrage de deux orders différents"
+    "message.invalidJSON": "Fichier JSON invalide"
   },
   "fileTransfer": {
     "label.transfer": "Transfert",

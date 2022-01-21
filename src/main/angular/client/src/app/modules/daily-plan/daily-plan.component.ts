@@ -445,8 +445,9 @@ export class RemovePlanModalComponent implements OnInit {
     if (this.order) {
       if (this.order.value) {
         if (this.order.value.length > 1) {
-          this.count = this.order.value.reduce((acc, value) => {
-            return (acc + (value.cyclicOrder ? value.cyclicOrder.count : 1));
+          console.log(this.order.value)
+          this.order.value.forEach((value) => {
+            this.count = this.count + (value.cyclicOrder ? value.cyclicOrder.count : 1);
           });
         } else {
           this.count = (this.order.value[0].cyclicOrder ? this.order.value[0].cyclicOrder.count : 1);
@@ -1303,6 +1304,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         timeZone: this.preferences.zone,
@@ -1380,6 +1382,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         orders: this.object.mapOfCheckedId,
@@ -1402,6 +1405,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         order,
@@ -1513,6 +1517,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         orders: this.object.mapOfCheckedId,
@@ -1537,6 +1542,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: RemovePlanModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         order,

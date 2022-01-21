@@ -14,8 +14,20 @@
       <i class="text-muted">{{dateRange[1] | stringToDate1:true}}</i>
     </span>
     <span *ngIf="order">
-      <span *ngIf="isSubmit" translate>dailyPlan.label.submitOrder</span>
-      <span *ngIf="!isSubmit" translate>dailyPlan.label.removeOrder</span>
+      <span *ngIf="!order.value">
+        <span *ngIf="isSubmit" translate>dailyPlan.label.submitOrder</span>
+        <span *ngIf="!isSubmit" translate>dailyPlan.label.removeOrder</span>
+      </span>
+      <span *ngIf="order.value">
+        <span *ngIf="isSubmit" translate>
+          <span *ngIf="workflow" translate>dailyPlan.label.submitOrderByWorkflow</span>
+          <span *ngIf="!workflow" translate>dailyPlan.label.submitOrderBySchedule</span>
+        </span>
+        <span *ngIf="!isSubmit" translate>
+          <span *ngIf="workflow" translate>dailyPlan.label.removeOrderByWorkflow</span>
+          <span *ngIf="!workflow" translate>dailyPlan.label.removeOrderBySchedule</span>
+        </span>
+      </span>
       :
     </span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderTemplatePath ? order.orderTemplatePath : order.key ? order.key : order.orderId}}</i>

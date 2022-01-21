@@ -638,6 +638,10 @@
     "label.cyclicOrder": "Zyklischer Auftrag",
     "label.begin": "Beginn",
     "label.end": "Ende",
+    "label.submitOrderByWorkflow": "Submit Order for workflow",
+    "label.submitOrderBySchedule": "Submit Order for schedule",
+    "label.removeOrderByWorkflow": "Remove Order for workflow",
+    "label.removeOrderBySchedule": "Remove Order for schedule",
     "button.late": "Verspätet",
     "button.setStartTime": "Startzeit ändern",
     "button.setParameter": "Variable ändern",
@@ -669,6 +673,10 @@
     "popup.removeOrderCount": "Sind Sie sicher, dass Sie {{count}} Aufträge entfernen wollen?",
     "popup.submitSelectedOrder": "Sind Sie sicher, dass Sie den ausgewählten Auftrag übermitteln wollen?",
     "popup.submitOrderCount": "Sind Sie sicher, dass Sie {{count}} Aufträge übermitteln wollen?",
+    "popup.modifyOrdersCount": "This will modify {{n1}} order",
+    "popup.modifyCyclicOrdersCount": "This will modify {{n1}} cyclic orders (total {{n2}})",
+    "popup.cannotModifyStartTime": "Cannot modify start time because {{n1}} single orders and {{n2}} cyclic orders",
+    "popup.differentModifyStartTime": "{{n1}} different planned starts",
     "tooltip.dateRangeSelectStep1": "Mauszeiger gedrückt halten und ziehen, um Datumsbereich auszuwählen",
     "tooltip.dateRangeSelectStep2": "oder CTRL Taste gedrückt halten und Startdatum & Enddatum per Mausklick auswählen",
     "tooltip.dateRangeSelectStep3": "oder Kalendersymbol anklicken und Startdatum & Enddatum per Mausklick auswählen"
@@ -690,8 +698,7 @@
     "message.noControllerFound": "Keinen Controller gefunden",
     "message.errorInLoadingScheduleIds": "Fehler beim Lesen der Controller-Kennungen",
     "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners.",
-    "message.invalidJSON": "Ungültige JSON Datei",
-    "message.cannotModifyStartTime": "Starzeit unterschiedlicher Aufträge kann nicht geändert werden."
+    "message.invalidJSON": "Ungültige JSON Datei"
   },
   "fileTransfer": {
     "label.transfer": "Übertragung",

@@ -335,6 +335,8 @@ export class ModifyStartTimeModalComponent implements OnInit {
   dateType: any = {at: 'date'};
   zones = [];
   period: any = {};
+  n1 = 0;
+  n2 = 0;
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService) {
   }
@@ -342,10 +344,15 @@ export class ModifyStartTimeModalComponent implements OnInit {
   ngOnInit(): void {
     if (!this.order) {
       this.order = {};
-    } else if (this.plan) {
+    }
+    if (this.plan && this.plan.value) {
       let isCyclic = false;
       let isStandalone = false;
       this.plan.value.forEach((order) => {
+        this.n1 = this.n1 + 1;
+        if (order.cyclicOrder) {
+          this.n2 = this.n2 + order.cyclicOrder.count;
+        }
         if (order.cyclicOrder && !isCyclic) {
           isCyclic = true;
         }

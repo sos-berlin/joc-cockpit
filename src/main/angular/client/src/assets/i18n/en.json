@@ -638,6 +638,10 @@
     "label.cyclicOrder": "Cyclic Order",
     "label.begin": "Begin",
     "label.end": "End",
+    "label.submitOrderByWorkflow": "Submit Order for workflow",
+    "label.submitOrderBySchedule": "Submit Order for schedule",
+    "label.removeOrderByWorkflow": "Remove Order for workflow",
+    "label.removeOrderBySchedule": "Remove Order for schedule",
     "button.late": "Late",
     "button.setStartTime": "Modify Start Time",
     "button.setParameter": "Modify Variable",
@@ -669,6 +673,10 @@
     "popup.removeOrderCount": "Are you sure you want to remove {{count}} orders?",
     "popup.submitSelectedOrder": "Are you sure you want to submit this order?",
     "popup.submitOrderCount": "Are you sure you want to submit {{count}} orders?",
+    "popup.modifyOrdersCount": "This will modify {{n1}} order",
+    "popup.modifyCyclicOrdersCount": "This will modify {{n1}} cyclic orders (total {{n2}})",
+    "popup.cannotModifyStartTime": "Cannot modify start time because {{n1}} single orders and {{n2}} cyclic orders",
+    "popup.differentModifyStartTime": "{{n1}} different planned starts",
     "tooltip.dateRangeSelectStep1": "Hold mouse and drag to select date range",
     "tooltip.dateRangeSelectStep2": "Or press CTRL key and select start date and end date using mouse click",
     "tooltip.dateRangeSelectStep3": "Or click calendar icon and then select start date and end date using mouse click"
@@ -690,8 +698,7 @@
     "message.noControllerFound": "No Controller Found",
     "message.errorInLoadingScheduleIds": "Error in fetching Controller IDs",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
-    "message.invalidJSON": "Invalid JSON file",
-    "message.cannotModifyStartTime": "Cannot modify start time of different orders"
+    "message.invalidJSON": "Invalid JSON file"
   },
   "fileTransfer": {
     "label.transfer": "Transfer",

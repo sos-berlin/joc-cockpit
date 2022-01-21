@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
         }
         this.authService.setUser(data);
         this.authService.save();
-        this.router.navigateByUrl(this.returnUrl);
+        this.router.navigate([this.returnUrl]);
       }, error: () => {
         this.submitted = false;
         this.errorMsg = true;

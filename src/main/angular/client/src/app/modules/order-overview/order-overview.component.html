@@ -528,7 +528,7 @@
                     <tr [ngClass]="{'light-bg': (showPanelObj && showPanelObj.orderId == order.orderId)}">
                       <td [nzShowCheckbox]="true" [nzDisabled]="order.positionIsImplicitEnd" [nzChecked]="object.mapOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order, $event)"></td>
                       <td>
-                        <app-order-action [order]="order" [schedulerId]="schedulerIds.selected" (isChanged)="changedHandler($event)"
+                        <app-order-action [isDisabled]="object.checked || object.indeterminate" [order]="order" [schedulerId]="schedulerIds.selected" (isChanged)="changedHandler($event)"
                                           [permission]="permission" [preferences]="preferences"></app-order-action>
                       </td>
                       <td>

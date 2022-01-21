@@ -98,7 +98,7 @@
         <tr>
           <td [nzShowCheckbox]="true" [nzDisabled]="order.positionIsImplicitEnd" [nzChecked]="setOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order.orderId, $event)"></td>
           <td>
-            <app-order-action [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)"
+            <app-order-action [isDisabled]="checked || indeterminate" [order]="order" [schedulerId]="schedulerId" [permission]="permission" (isChanged)="changedHandler($event)"
                               [preferences]="preferences"></app-order-action>
           </td>
           <td>

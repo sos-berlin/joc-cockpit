@@ -58,14 +58,13 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStoreType</label>
             <div class="col-sm-6">
-              <nz-select
-                name="iamVaultTruststoreType"
-                nzShowSearch
-                nzAllowClear
-                nzPlaceHolder="{{'user.placeholder.iamVaultTrustStoreType' | translate}}"
-                [(ngModel)]="currentObj.iamVaultTruststoreType">
-                <nz-option *ngFor="let option of keyStoreTypes" [nzLabel]="option" [nzValue]="option"></nz-option>
-              </nz-select>
+              <input name="iamVaultTruststoreType" [placeholder]="'user.placeholder.iamVaultTrustStoreType' | translate"
+               class="form-control" [(ngModel)]="currentObj.iamVaultTruststoreType" [nzAutocomplete]="auto"/>
+              <nz-autocomplete #auto>
+                <nz-auto-option *ngFor="let option of keyStoreTypes" [nzValue]="option" [nzLabel]="option">
+                  <span>{{option}}</span>
+                </nz-auto-option>
+              </nz-autocomplete>
             </div>
           </div>
           <div class="form-group row" *ngIf="data.identityServiceType === 'VAULT-JOC-ACTIVE'">
@@ -187,14 +186,13 @@
                   <div class="form-group row">
                     <label class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStoreType</label>
                     <div class="col-sm-6">
-                      <nz-select
-                        name="iamLdapTruststoreType"
-                        nzShowSearch
-                        nzAllowClear
-                        nzPlaceHolder="{{'user.placeholder.iamLdapTrustStoreType' | translate}}"
-                        [(ngModel)]="currentObj.iamLdapTruststoreType">
-                        <nz-option *ngFor="let option of keyStoreTypes" [nzLabel]="option" [nzValue]="option"></nz-option>
-                      </nz-select>
+                      <input name="iamLdapTruststoreType" [placeholder]="'user.placeholder.iamLdapTrustStoreType' | translate"
+                       class="form-control" [(ngModel)]="currentObj.iamLdapTruststoreType" [nzAutocomplete]="auto"/>
+                      <nz-autocomplete #auto>
+                        <nz-auto-option *ngFor="let option of keyStoreTypes" [nzValue]="option" [nzLabel]="option">
+                          <span>{{option}}</span>
+                        </nz-auto-option>
+                      </nz-autocomplete>
                     </div>
                   </div>
                 </div>
