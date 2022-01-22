@@ -1978,7 +1978,7 @@
     "label.iamLdapUserSearchFilter": "LDAP User Search Filter",
     "label.iamLdapUseStartTls": "LDAP Start TLS",
     "label.iamLdapHostNameVerification": "LDAP Host Name Verification",
-    "label.iamLdapGroupRolesMap": "LDAP Group/Roles Map",
+    "label.iamLdapGroupRolesMap": "LDAP Gruppen/Rollen Abbildung",
     "label.iamLdapTrustStorePath": "LDAP Truststore Path",
     "label.iamLdapTrustStorePassword": "LDAP Truststore Password",
     "label.iamLdapTrustStoreType": "LDAP Truststore Type",
