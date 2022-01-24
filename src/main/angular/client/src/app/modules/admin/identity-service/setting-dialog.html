@@ -13,7 +13,9 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
     <div class="modal-body p-a">
         <div class="form-group row" *ngIf="!data" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
-            <label class="col-sm-4 form-control-label" translate>user.label.sessionTimeout</label>
+            <label class="col-sm-4 form-control-label" translate>user.label.sessionTimeout
+              <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-6">
               <input type="text" class="form-control" required name="timeout" [placeholder]="'user.placeholder.sessionTimeout' | translate"
                                 #timeout="ngModel" validateSessionTimeReqex [(ngModel)]="currentObj.sessionTimeout">
@@ -26,16 +28,20 @@
         </div>
         <div *ngIf="data && data.identityServiceType.match('VAULT')">
           <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultUrl</label>
-            <div class="col-sm-6">
-              <input type="url" class="form-control" name="iamVaultUrl" [placeholder]="'user.placeholder.iamVaultUrl' | translate"
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultUrl
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-sm-6" [ngClass]="{'has-error' : ((vaultUrl.dirty || vaultUrl.touched) && vaultUrl.invalid)}">
+              <input type="url" class="form-control" required #vaultUrl="ngModel" name="iamVaultUrl" [placeholder]="'user.placeholder.iamVaultUrl' | translate"
                      [(ngModel)]="currentObj.iamVaultUrl">
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultAuthenticationMethodPath</label>
-            <div class="col-sm-6">
-              <input type="text" class="form-control" name="iamVaultAuthenticationMethodPath" [placeholder]="'user.placeholder.iamVaultAuthenticationMethodPath' | translate"
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultAuthenticationMethodPath
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-sm-6" [ngClass]="{'has-error' : ((methodPath.dirty || methodPath.touched) && methodPath.invalid)}">
+              <input type="text" class="form-control" required #methodPath="ngModel" name="iamVaultAuthenticationMethodPath" [placeholder]="'user.placeholder.iamVaultAuthenticationMethodPath' | translate"
                      [(ngModel)]="currentObj.iamVaultAuthenticationMethodPath">
             </div>
           </div>
@@ -56,9 +62,11 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStoreType</label>
-            <div class="col-sm-6">
-              <input name="iamVaultTruststoreType" [placeholder]="'user.placeholder.iamVaultTrustStoreType' | translate"
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultTrustStoreType
+              <sup *ngIf="currentObj.iamVaultTruststorePath" class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-sm-6" [ngClass]="{'has-error' : ((storePath.dirty || storePath.touched) && storePath.invalid)}">
+              <input name="iamVaultTruststoreType" #storePath="ngModel" [required]="currentObj.iamVaultTruststorePath && currentObj.iamVaultTruststorePath.length > 0" [placeholder]="'user.placeholder.iamVaultTrustStoreType' | translate"
                class="form-control" [(ngModel)]="currentObj.iamVaultTruststoreType" [nzAutocomplete]="auto"/>
               <nz-autocomplete #auto>
                 <nz-auto-option *ngFor="let option of keyStoreTypes" [nzValue]="option" [nzLabel]="option">
@@ -68,9 +76,11 @@
             </div>
           </div>
           <div class="form-group row" *ngIf="data.identityServiceType === 'VAULT-JOC-ACTIVE'">
-            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultApplicationToken</label>
-            <div class="col-sm-6">
-              <input type="text" class="form-control" name="iamVaultApplicationToken"
+            <label class="col-sm-4 form-control-label" translate>user.label.iamVaultApplicationToken
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-sm-6" [ngClass]="{'has-error' : ((token.dirty || token.touched) && token.invalid)}">
+              <input type="text" class="form-control" required name="iamVaultApplicationToken" #token="ngModel"
                      [(ngModel)]="currentObj.iamVaultApplicationToken" [placeholder]="'user.placeholder.iamVaultApplicationToken' | translate">
             </div>
           </div>
@@ -80,23 +90,29 @@
             <nz-tab [nzTitle]="'user.tab.simpleMode' | translate">
               <div class="m-l-12 m-r-12">
                 <div class="form-group row">
-                  <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapHost</label>
+                  <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapHost
+                    <sup class="text-danger text-sm">*</sup>
+                  </label>
                   <div class="col-sm-6" [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
                     <input type="text" class="form-control" name="iamLdapHost" required #host="ngModel" (blur)="changeField('Host')"
                            [(ngModel)]="userObj.iamLdapHost" [placeholder]="'user.usermode.placeholder.iamLdapHost' | translate">
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapProtocol</label>
+                  <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapProtocol
+                   <sup class="text-danger text-sm">*</sup>
+                  </label>
                   <div class="col-sm-6">
-                    <nz-select name="iamLdapProtocol" [(ngModel)]="userObj.iamLdapProtocol" (ngModelChange)="changeConfiguration($event)">
+                    <nz-select name="iamLdapProtocol" required [(ngModel)]="userObj.iamLdapProtocol" (ngModelChange)="changeConfiguration($event)">
                       <nz-option *ngFor="let option of iamLdapProtocols" [nzLabel]="'user.usermode.label.'+ option.text | translate"
                                  [nzValue]="option.value"></nz-option>
                     </nz-select>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapPort</label>
+                  <label class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapPort
+                   <sup class="text-danger text-sm">*</sup>
+                  </label>
                   <div class="col-sm-6" [ngClass]="{'has-error' : ((port.dirty || port.touched) && port.invalid)}">
                     <nz-input-number name="iamLdapPort" required #port="ngModel" (nzBlur)="changeField('Port')"
                                      [(ngModel)]="userObj.iamLdapPort" [nzPlaceHolder]="'user.usermode.placeholder.iamLdapPort' | translate"></nz-input-number>
@@ -121,7 +137,9 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-4 form-control-label" translate>user.label.iamLdapSearchBase</label>
+                  <label class="col-sm-4 form-control-label" translate>user.label.iamLdapSearchBase
+                   <sup *ngIf="userObj.iamLdapWithMemberOf" class="text-danger text-sm">*</sup>
+                  </label>
                   <div class="col-sm-6" [ngClass]="{'has-error' : ((searchBase.dirty || searchBase.touched) && searchBase.invalid)}">
                     <input type="text" class="form-control" name="iamLdapSearchBase" [required]="userObj.iamLdapWithMemberOf" #searchBase="ngModel"
                            [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
@@ -145,9 +163,11 @@
                 </div>
                 <div class="p-a b-a">
                   <div class="form-group row">
-                    <label class="col-sm-4 form-control-label" translate>user.label.iamLdapServerUrl</label>
-                    <div class="col-sm-6">
-                      <input type="url" class="form-control" name="iamLdapServerUrl" (blur)="changeInput('URL')"
+                    <label class="col-sm-4 form-control-label" translate>user.label.iamLdapServerUrl
+                      <sup class="text-danger text-sm">*</sup>
+                    </label>
+                    <div class="col-sm-6" [ngClass]="{'has-error' : ((iamLdapServerUrl.dirty || iamLdapServerUrl.touched) && iamLdapServerUrl.invalid)}">
+                      <input type="url" class="form-control" required #iamLdapServerUrl="ngModel" name="iamLdapServerUrl" (blur)="changeInput('URL')"
                              [placeholder]="'user.placeholder.iamLdapServerUrl' | translate"
                              [(ngModel)]="currentObj.iamLdapServerUrl">
                     </div>
