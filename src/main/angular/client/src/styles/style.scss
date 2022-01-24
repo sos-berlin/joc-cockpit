@@ -7318,6 +7318,13 @@ tr.tr-border td:first-child {
     min-height: 100%;
     max-height: 100%;
   }
+
+}
+
+.ant-modal {
+  .CodeMirror-code {
+    padding-bottom: 52px;
+  }
 }
 
 .CodeMirror-gutters {

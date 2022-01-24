@@ -49,6 +49,9 @@ export class AccountModalComponent implements OnInit {
       this.isPasswordVisible = false;
       delete this.currentUser.password;
     }
+    if (this.copy && this.oldUser.hashedPassword) {
+      this.currentUser.password = this.oldUser.hashedPassword;
+    }
   }
 
   checkUser(newUser, existingUser): void {

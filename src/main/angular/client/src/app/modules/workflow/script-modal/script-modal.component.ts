@@ -35,6 +35,7 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
   tempPeriodList = [];
   cmOption: any = {
     lineNumbers: true,
+    readOnly: true,
     mode: 'shell'
   };
   todayDate: string;
@@ -71,6 +72,15 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.dragEle = this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        const doc = this.cm.codeMirror.getDoc();
+        const cursor = doc.getCursor(); // gets the line number in the cursor position
+        doc.replaceRange(this.data, cursor);
+        this.cm.codeMirror.focus();
+        doc.setCursor(cursor);
+      }
+    }, 250);
     $('#resizable').resizable({
       resize: (e, x) => {
         const dom: any = document.getElementsByClassName('script-editor2')[0];

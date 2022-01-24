@@ -204,9 +204,12 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStoreType</label>
-                    <div class="col-sm-6">
-                      <input name="iamLdapTruststoreType" [placeholder]="'user.placeholder.iamLdapTrustStoreType' | translate"
+                    <label class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStoreType
+                      <sup *ngIf="currentObj.iamLdapTruststorePath" class="text-danger text-sm">*</sup>
+                    </label>
+                    <div class="col-sm-6" [ngClass]="{'has-error' : ((ldapTruststorePath.dirty || ldapTruststorePath.touched) && ldapTruststorePath.invalid)}">
+                      <input name="iamLdapTruststoreType" [required]="currentObj.iamLdapTruststorePath && currentObj.iamLdapTruststorePath.length>0"
+                             #ldapTruststorePath="ngModel" [placeholder]="'user.placeholder.iamLdapTrustStoreType' | translate"
                        class="form-control" [(ngModel)]="currentObj.iamLdapTruststoreType" [nzAutocomplete]="auto"/>
                       <nz-autocomplete #auto>
                         <nz-auto-option *ngFor="let option of keyStoreTypes" [nzValue]="option" [nzLabel]="option">
@@ -299,23 +302,16 @@
                                [(ngModel)]="items.ldapGroupDn" placeholder="{{'user.placeholder.group' | translate}}">
                       </div>
                       <div class="col-md-6 m-b-sm p-r-0">
-                        <div class="row" *ngFor="let role of items.roles; let cIndex = index">
-                          <div class="col-sm-1 p-r-0">
-                            <a class="text-hover-primary" (click)="addRole(items.roles)"
-                               *ngIf="cIndex === items.roles.length - 1"><i class="fa fa-plus m-t-sm text-muted"></i></a>
-                          </div>
-                          <div class="col-sm-10 p-l-0 m-b-sm"
-                               [ngClass]="{'has-error' : ((roleModal.dirty || roleModal.touched) && roleModal.invalid)}">
-                            <input type="text" class="form-control" [(ngModel)]="role.name"
-                                   [required]="(items.ldapGroupDn && items.ldapGroupDn.length > 0 && cIndex === 0) ? true : false"
-                                   name="role{{i+1}}{{cIndex+1}}" #roleModal="ngModel"
-                                   placeholder="{{'user.placeholder.role' | translate}} {{cIndex+1}}">
-                          </div>
-                          <div class="col-sm-1 p-l-0">
-                            <a *ngIf="items.roles.length>1" class="cursor" (click)="removeRole(items.roles, cIndex)">
-                              <i class="fa fa-times m-t-sm text-muted"></i></a>
-                          </div>
-                        </div>
+                        <nz-select
+                          name="roles{{i}}"
+                          #roles="ngModel"
+                          required
+                          nzShowSearch
+                          nzMode="multiple"
+                          nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
+                          [(ngModel)]="items.roles">
+                          <nz-option *ngFor="let option of allRoles" [nzLabel]="option" [nzValue]="option"></nz-option>
+                        </nz-select>
                       </div>
                       <div class="col-md-1">
                         <a class="cursor" (click)="removeGroupRoles(i)"><i

@@ -68,7 +68,7 @@
           </ul>
         </div>
       </div>
-      <div class="col-md-12 role" *ngIf="isLoaded">
+      <div class="col-md-12 role">
         <div class="select-script-input2" *ngIf="scriptObj.show">
           <nz-tree-select
             name="scriptName"
@@ -97,7 +97,7 @@
         <i *ngIf="list.length > 0" class="pos-abt z-index-9999 text-16 r-15 t-1" nz-icon nzType="folder" nzTheme="outline" (click)="showTree()"></i>
         <div (click)="closeScriptTree()" id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
           <ngx-codemirror required #codeMirror title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}"
-                          #cm="ngModel" name="cm" [(ngModel)]="script" [options]="cmOption"
+                          #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption"
           ></ngx-codemirror>
         </div>
         <div class="rg-right" style="background: transparent; margin-right: 4px"><span style="top:48%"></span></div>

@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -546,7 +546,7 @@ export class ShowChildModalComponent implements OnInit {
   selector: 'app-show-modal',
   templateUrl: './show-dialog.html'
 })
-export class ShowModalComponent implements OnInit {
+export class ShowModalComponent implements AfterViewInit {
   @Input() xml;
   @Input() objectType: any;
   @Input() schemaIdentifier;
@@ -567,13 +567,19 @@ export class ShowModalComponent implements OnInit {
               private toasterService: ToastrService, private clipboardService: ClipboardService) {
   }
 
-  ngOnInit(): void {
-    if (this.xml && this.xml !== 'null') {
-      this.obj.xml = this.xml;
-    }
+  ngAfterViewInit(): void {
     if (this.validation && this.validation.validationError) {
       this.toasterService.error(this.validation.validationError.message, '');
     }
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        const doc = this.cm.codeMirror.getDoc();
+        const cursor = doc.getCursor(); // gets the line number in the cursor position
+        doc.replaceRange(this.xml, cursor);
+        this.cm.codeMirror.focus();
+        doc.setCursor(cursor);
+      }
+    }, 300);
   }
 
   copyToClipboard(): void {

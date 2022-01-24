@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="permission.joc.administration.customization.share && !isSearch">
+    <div class="form-group row" *ngIf="permission && permission.joc && permission.joc.administration.customization.share && !isSearch">
         <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
         <div class="col-sm-8">
             <label class="md-check">

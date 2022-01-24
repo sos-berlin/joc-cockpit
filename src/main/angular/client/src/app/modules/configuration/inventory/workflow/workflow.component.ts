@@ -1907,21 +1907,20 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-editor.html'
 })
-export class ScriptEditorComponent implements OnInit, AfterViewInit {
+export class ScriptEditorComponent implements AfterViewInit {
   @Input() script: any;
   @Input() list: any = [];
   @Input() scriptTree: any = [];
   dragEle: any;
-  isLoaded = false;
   scriptList: Array<string> = [];
   scriptObj = {
     name: '',
+    data: '',
     show: false
   };
   cmOption: any = {
     lineNumbers: true,
     viewportMargin: Infinity,
-    autofocus: true,
     autoRefresh: true,
     mode: 'shell',
     extraKeys: {'Ctrl-Space': 'autocomplete'}
@@ -1929,10 +1928,6 @@ export class ScriptEditorComponent implements OnInit, AfterViewInit {
   @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
-  }
-
-  ngOnInit(): void {
-    this.isLoaded = true;
   }
 
   ngAfterViewInit(): void {
@@ -1952,16 +1947,21 @@ export class ScriptEditorComponent implements OnInit, AfterViewInit {
     }
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
-        setTimeout(() => {
-          if (this.cm && this.cm.codeMirror) {
-            this.cm.codeMirror.focus();
-          }
-        }, 400);
         if (localStorage.$SOS$SCRIPTWINDOWWIDTH) {
           const wt = parseInt(localStorage.$SOS$SCRIPTWINDOWWIDTH, 10);
           this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage.$SOS$SCRIPTWINDOWHIGHT, 10) - 2));
           $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
         }
+        setTimeout(() => {
+          if (this.cm && this.cm.codeMirror) {
+            const doc = this.cm.codeMirror.getDoc();
+            const cursor = doc.getCursor(); // gets the line number in the cursor position
+            doc.replaceRange(this.script, cursor);
+            this.cm.codeMirror.focus();
+            doc.setCursor(cursor);
+          }
+        }, 100);
+
         this.cm.codeMirror.on('inputRead', (editor, e) => {
           const cursor = editor.getCursor();
           const currentLine = editor.getLine(cursor.line);
@@ -1979,7 +1979,7 @@ export class ScriptEditorComponent implements OnInit, AfterViewInit {
           }
         });
       }
-    }, 10);
+    }, 100);
   }
 
   @HostListener('document:mousemove', ['$event'])
@@ -1990,7 +1990,7 @@ export class ScriptEditorComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(): void {
-    this.activeModal.close(this.script);
+    this.activeModal.close(this.scriptObj.data);
   }
 
   execCommand(type): void {
@@ -2068,7 +2068,7 @@ export class ExpressionComponent implements OnInit {
   @ViewChild('codeMirror', {static: false}) cm;
   cmOption: any = {
     lineNumbers: false,
-    autofocus: true,
+    autoFocus: true,
     autoRefresh: true,
     mode: 'ruby'
   };

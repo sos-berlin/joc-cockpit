@@ -36,6 +36,7 @@ export class SettingModalComponent implements OnInit {
   currentObj: any = {};
   userObj: any = {
   };
+  allRoles = [];
   passwordFields: any = {
     first: false,
     second: false,
@@ -131,6 +132,7 @@ export class SettingModalComponent implements OnInit {
           if (data) {
             this.currentObj = data.vault || {};
             if (data.ldap) {
+              this.getUsersData();
               this.actualData = this.coreService.clone(data.ldap);
               if (data.ldap.simple) {
                 this.userObj = data.ldap.simple;
@@ -154,10 +156,25 @@ export class SettingModalComponent implements OnInit {
     });
   }
 
+  private getUsersData(): void {
+    this.allRoles = [];
+    this.coreService.post('authentication/auth', {
+      identityServiceName: this.data.identityServiceName
+    }).subscribe({
+      next: res => {
+        if (res.roles) {
+          for (const prop in res.roles) {
+            this.allRoles.push(prop);
+          }
+        }
+      }
+    });
+  }
+
   changeConfiguration($event): void {
-    if ($event === 'SSL' && ((!this.userObj.iamLdapPort || this.userObj.iamLdapPort > 0) && this.userObj.iamLdapPort !== 389)) {
+    if ($event === 'SSL' && (!this.userObj.iamLdapPort || this.userObj.iamLdapPort == 389)) {
       this.userObj.iamLdapPort = 636;
-    } else if ((!this.userObj.iamLdapPort || this.userObj.iamLdapPort > 0) && this.userObj.iamLdapPort !== 636) {
+    } else if ((!this.userObj.iamLdapPort || this.userObj.iamLdapPort == 636)) {
       this.userObj.iamLdapPort = 389;
     }
     const url = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
@@ -209,7 +226,7 @@ export class SettingModalComponent implements OnInit {
     if (this.userObj.iamLdapWithMemberOf) {
       if (this.userObj.iamLdapAD) {
         if (!this.currentObj.iamLdapUserSearchFilter || this.currentObj.iamLdapUserSearchFilter === '(uid=%s' || this.currentObj.iamLdapUserSearchFilter === '%s') {
-          this.currentObj.iamLdapUserSearchFilter = '';
+          this.currentObj.iamLdapUserSearchFilter = '%s';
         }
       } else {
         if (!this.currentObj.iamLdapUserSearchFilter || this.currentObj.iamLdapUserSearchFilter === '%s') {
@@ -223,13 +240,13 @@ export class SettingModalComponent implements OnInit {
           if (this.actualData.expert && this.actualData.expert.iamLdapGroupNameAttribute) {
             this.showConfirm((res) => {
               if (res === 'OK') {
-                this.currentObj.iamLdapGroupNameAttribute = '';
+                this.currentObj.iamLdapGroupNameAttribute = 'memberOf';
               } else {
                 this.userObj.iamLdapWithMemberOf = this.actualData.simple.iamLdapWithMemberOf;
               }
             });
           } else {
-            this.currentObj.iamLdapGroupNameAttribute = '';
+            this.currentObj.iamLdapGroupNameAttribute = 'memberOf';
           }
         }
       }
@@ -239,14 +256,14 @@ export class SettingModalComponent implements OnInit {
           if (this.actualData.expert.iamLdapUserDnTemplate !== '{0}') {
             this.showConfirm((res) => {
               if (res === 'OK') {
-                this.currentObj.iamLdapUserDnTemplate = '';
+                this.currentObj.iamLdapUserDnTemplate = '{0}';
               } else {
                 this.userObj.iamLdapADwithSamAccount = this.actualData.simple.iamLdapADwithSamAccount;
               }
             });
           }
         } else{
-          this.currentObj.iamLdapUserDnTemplate = '';
+          this.currentObj.iamLdapUserDnTemplate = '{0}';
         }
       }
     }
@@ -342,18 +359,8 @@ export class SettingModalComponent implements OnInit {
     }
   }
 
-  addRole(list): void {
-    if (!this.coreService.isLastEntryEmpty(list, 'name', '')) {
-      list.push({name: ''});
-    }
-  }
-
   removeGroupRoles(index): void {
     this.currentObj.iamLdapGroupRolesMap.items.splice(index, 1);
-  }
-
-  removeRole(list, index): void {
-    list.splice(index, 1);
   }
 
   onSubmit(): void {
