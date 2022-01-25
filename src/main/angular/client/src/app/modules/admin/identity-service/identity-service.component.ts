@@ -48,32 +48,6 @@ export class SettingModalComponent implements OnInit {
               private message: NzMessageService, private saveService: SaveService, private translate: TranslateService) {
   }
 
-  static convertObj(obj, isArray): void {
-    if (obj.iamLdapGroupRolesMap && obj.iamLdapGroupRolesMap.items.length > 0) {
-      obj.iamLdapGroupRolesMap.items = obj.iamLdapGroupRolesMap.items.filter((item) => {
-        if (item.roles) {
-          const roles = [];
-          item.roles.forEach((role) => {
-            if (isArray) {
-              if (role.name) {
-                roles.push(role.name);
-              }
-            } else {
-              if (role) {
-                roles.push({name: role});
-              }
-            }
-          });
-          if (!isArray && roles.length === 0) {
-            roles.push({name: ''});
-          }
-          item.roles = roles;
-        }
-        return item.ldapGroupDn;
-      })
-    }
-  }
-
   static convertDurationToString(time: any): string {
     const seconds = Number(time);
     const d = Math.floor((((seconds % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) / (3600 * 24));
@@ -142,7 +116,6 @@ export class SettingModalComponent implements OnInit {
               }
               if (data.ldap.expert) {
                  this.currentObj = data.ldap.expert;
-                SettingModalComponent.convertObj(this.currentObj, false);
               }
             }
           }
@@ -349,7 +322,7 @@ export class SettingModalComponent implements OnInit {
   addGroupRoles(): void {
     const param = {
       ldapGroupDn: '',
-      roles: [{name: ''}]
+      roles: []
     };
     if (!this.currentObj.iamLdapGroupRolesMap) {
       this.currentObj.iamLdapGroupRolesMap = {items: []};
@@ -371,7 +344,6 @@ export class SettingModalComponent implements OnInit {
         obj.vault = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
         obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
-        SettingModalComponent.convertObj(obj.ldap.expert, true);
       }
     } else {
       obj = this.currentObj;
@@ -634,7 +606,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   showUser(account): void {
     sessionStorage.identityServiceName = account.identityServiceName;
     sessionStorage.identityServiceType = account.identityServiceType;
-    this.router.navigate([(account.identityServiceType === 'VAULT' || account.identityServiceType === 'LDAP') ? '/users/identity_service/role' : '/users/identity_service/account']);
+    this.router.navigate(['/users/identity_service/role']);
   }
 
   add(): void {

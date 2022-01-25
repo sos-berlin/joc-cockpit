@@ -2065,6 +2065,41 @@
       "placeholder.iamLdapPort": "Enter LDAP port",
       "placeholder.iamLdapProtocol": "Select one or multiple options",
       "message.overwriteChanges": "Are you sure you want to overwrite the changes?"
+    },
+    "tooltips": {
+      "ldap": {
+        "iamLdapHost": "LDAP Server Host",
+        "iamLdapProtocol": "LDAP Protocol",
+        "iamLdapPort": "LDAP Server Port",
+        "iamLdapAD": "LDAP Server is Active Directory",
+        "iamLdapADWithSamAccount": "LDAP Server offers sAMAccountName attribute",
+        "iamLdapWithMemberOf": "LDAP Server offers memberOf attribute",
+        "iamLdapSearchBase": "LDAP Search Base",
+        "iamLdapGroupSearchBase": "LDAP Group Search Base",
+        "iamLdapUserDnTemplate": "LDAP User DN Template",
+        "iamLdapServerUrl": "LDAP Server URL",
+        "iamLdapGroupNameAttribute": "LDAP Group Name Attribute",
+        "iamLdapUserNameAttribute": "LDAP UserName Attribute",
+        "iamLdapGroupSearchFilter": "LDAP Group Search Filter",
+        "iamLdapUserSearchFilter": "LDAP User Search Filter",
+        "iamLdapUseStartTls": "LDAP Start TLS",
+        "iamLdapHostNameVerification": "LDAP Host Name Verification",
+        "iamLdapGroupRolesMap": "LDAP Group/Roles Map",
+        "iamLdapTrustStorePath": "LDAP Truststore Path",
+        "iamLdapTrustStorePassword": "LDAP Truststore Password",
+        "iamLdapTrustStoreType": "LDAP Truststore Type"
+      },
+      "vault": {
+        "iamVaultUrl": "Vault URL",
+        "iamVaultTrustStorePath": "Vault Truststore Path",
+        "iamVaultTrustStorePassword": "Vault Truststore Password",
+        "iamVaultTrustStoreType": "Vault Truststore Type",
+        "iamVaultApplicationToken": "Vault Application Token",
+        "iamVaultAuthenticationMethodPath": "Vault Authentication Method Path"
+      },
+      "general": {
+        "sessionTimeout": "Session Idle Timeout"
+      }
     }
   },
   "workflow": {

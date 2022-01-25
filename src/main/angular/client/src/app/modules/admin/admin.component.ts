@@ -174,7 +174,7 @@ export class AdminComponent implements OnInit, OnDestroy {
             this.selectedUser = null;
             this.router.navigate(['/users/identity_service/role']);
           } else if (sessionStorage.identityServiceType !== 'SHIRO' && this.route.match('/users/identity_service/main_section')) {
-            this.router.navigate(['/users/identity_service/account']);
+            this.router.navigate(['/users/identity_service/role']);
           }
         }
         this.selectedUser = AdminComponent.getParameterByName('account');
