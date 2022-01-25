@@ -2068,37 +2068,37 @@
     },
     "tooltips": {
       "ldap": {
-        "iamLdapHost": "LDAP Server Host",
-        "iamLdapProtocol": "LDAP Protocol",
-        "iamLdapPort": "LDAP Server Port",
-        "iamLdapAD": "LDAP Server is Active Directory",
-        "iamLdapADWithSamAccount": "LDAP Server offers sAMAccountName attribute",
-        "iamLdapWithMemberOf": "LDAP Server offers memberOf attribute",
-        "iamLdapSearchBase": "LDAP Search Base",
-        "iamLdapGroupSearchBase": "LDAP Group Search Base",
-        "iamLdapUserDnTemplate": "LDAP User DN Template",
-        "iamLdapServerUrl": "LDAP Server URL",
-        "iamLdapGroupNameAttribute": "LDAP Group Name Attribute",
-        "iamLdapUserNameAttribute": "LDAP UserName Attribute",
-        "iamLdapGroupSearchFilter": "LDAP Group Search Filter",
-        "iamLdapUserSearchFilter": "LDAP User Search Filter",
-        "iamLdapUseStartTls": "LDAP Start TLS",
-        "iamLdapHostNameVerification": "LDAP Host Name Verification",
-        "iamLdapGroupRolesMap": "LDAP Group/Roles Map",
-        "iamLdapTrustStorePath": "LDAP Truststore Path",
-        "iamLdapTrustStorePassword": "LDAP Truststore Password",
-        "iamLdapTrustStoreType": "LDAP Truststore Type"
+        "iamLdapHost": "Es wird der Hostname oder die IP-Adresse des LDAP Server Hosts erwartet. Sofern die Protokolle TLS/SSL im Einsatz sind, muss der Fully Qualified Domain Name (FQDN) des Hosts angegeben werden, für den das LDAP Server SSL Zertifikat ausgestellt ist.",
+        "iamLdapProtocol": "Als LDAP Protokoll kann Plain Text, TLS oder SSL verwendet werden. Plain Text verbietet sich, da Benutzerkonto und Kennwort unverschlüsselt gesendet werden. TLS und SSL können als sicher betrachtet werden, da sie die Verbindung zum LDAP Server verschlüsseln.",
+        "iamLdapPort": "Die Port-Nummer des LDAP Servers. Für Plain Text und TLS Verbindungen wird häufig Port 389 verwendet, für SSL Verbindungen Port 636.",
+        "iamLdapAD": "Der Schalter vereinfacht die Konfiguration sofern der LDAP Server durch Active Directory implementiert ist. Eine Reihe von Attributen zur Suche nach Benutzerkonten und Gruppen kann in den meisten Fällen als vorhanden vorausgesetzt werden.",
+        "iamLdapADWithSamAccount": "Das sAMAccountName Attribut ist der eindeutige Bezeichner eines Benutzerkontos. Das Attribut ist meist mit LDAP Servern vom Typ Active Directory verfügbar.",
+        "iamLdapWithMemberOf": "Das memberOf Attribut vereinfacht das Auffinden des anzumeldenden Benutzerkontos in Security Groups. Das Attribut ist meist mit LDAP Servern vom Typ Active Directory verfügbar, kann aber auch von anderen LDAP Produkten implementiert werden.",
+        "iamLdapSearchBase": "Die Basis für die Suche nach Benutzerkonten in der Hiearchie des LDAP Servers, z.B. OU=Operations,O=IT,O=Users,DC=example,DC=com.",
+        "iamLdapGroupSearchBase": "Analog zur LDAP Search Base wird die Group Search Base zur Suche nach Security Groups verwendet, in denen ein Benutzerkonto Mitglied ist.",
+        "iamLdapUserDnTemplate": "Der Distinguished Name (DN) identifiziert ein Benutzerkonto. Im Fall von LDAP Servern des Typs Actice Directory kann hier der Wert {0} angegeben werden, der durch das Benutzerkonto der Anmeldung ersetzt wird. Andernfalls kann eine LDAP Abfrage angegeben werden, z.B. uid={0},OU=Operations,O=IT,O=Users,DC=example,DC=com.",
+        "iamLdapServerUrl": "Die URL des LDAP Servers benennt das Protokoll, z.B. ldap:// für Plain Text und TLS Verbindungen, ldaps:// für SSL Verbindungen. Dem Protokoll folgt der Hostname (FQDN) und Port des LDAP Servers.",
+        "iamLdapGroupNameAttribute": "Das LDAP Group Name Attribut liefert den Namen der Security Group, in der ein Benutzerkonto Mitglied ist, z.B. CN (Common Name).",
+        "iamLdapUserNameAttribute": "Das LDAP User Name Attribut liefert den Namen des Benutzerkontos, häufig ist dies das Attribut CN (Common Name)",
+        "iamLdapGroupSearchFilter": "Der LDAP Group Search Filter spezifiziert eine LDAP Abfrage und wird verwendet, um Security Groups zu finden, in denen das Benutzerkonto Mitglied ist.",
+        "iamLdapUserSearchFilter": "Der LDAP User Search Filter spezifiziert eine LDAP Abfrage und wird verwendet, um das Benutzerkonto in der Hierarchie der LDAP Einträge zu finden.",
+        "iamLdapUseStartTls": "Der Schalter LDAP Start TLS vereinbart die Verwendung des TLS Protokolls für die Verbindung zum LDAP Server.",
+        "iamLdapHostNameVerification": "Der Schalter LDAP Host Name Verification muss aktiviert sein, um die Übereinstimmung des Hostnamens in der LDAP URL und im Zertifikat des LDAP Servers zu prüfen.",
+        "iamLdapGroupRolesMap": "Die LDAP Group/Roles Map stellt eine Abbildung zwischen Security Groups, in denen das Benutzerkonto Mitglied ist, und JS7 Rollen dar. Security Groups müssen in Abhängigkeit vom LDAP Group Search Attribut als Distinguished Names, z.B. CN=js7_admins,OU=Operations,O=IT,O=Groups,DC=example,DC=com, oder als Common Names, z.B. js7_admins, aufgeführt werden.",
+        "iamLdapTrustStorePath": "Der Pfad zum LDAP Truststore, der das Server Zertifikat oder das entsprechende Root CA Zertifikat enthält, mit dem das LDAP Server Zertifikat signiert ist.",
+        "iamLdapTrustStorePassword": "Sofern ein LDAP Truststore verwendet wird, der durch ein Kennwort geschützt ist, wird das Kennwort hier angegeben.",
+        "iamLdapTrustStoreType": "Der Typ des LDAP Truststore kann PKCS12 oder JKS (deprecated) sein."
       },
       "vault": {
-        "iamVaultUrl": "Vault URL",
-        "iamVaultTrustStorePath": "Vault Truststore Path",
-        "iamVaultTrustStorePassword": "Vault Truststore Password",
-        "iamVaultTrustStoreType": "Vault Truststore Type",
-        "iamVaultApplicationToken": "Vault Application Token",
-        "iamVaultAuthenticationMethodPath": "Vault Authentication Method Path"
+        "iamVaultUrl": "Die URL, unter der das Vault Server REST API verfügbar ist.",
+        "iamVaultTrustStorePath": "Der Pfad zum Vault Truststore, der das Vault Server Zertifikat oder das Root CA Zertifikat enthält, mit dem das Vault Server Zertifikat signiert ist.",
+        "iamVaultTrustStorePassword": "Ist der Vault Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
+        "iamVaultTrustStoreType": "Der Typ des Vault Truststore kann PKCS12 sein oder JKS (deprecated).",
+        "iamVaultApplicationToken": "Das Vault Application Token ist ein Application Role Token, das für JOC Cockpit erstellt wird und das es erlaubt Benutzerkonten und Kennwörter in Vault zu speichern.",
+        "iamVaultAuthenticationMethodPath": "Der Pfad der Vault Authentication Method benennt den Pfad mit dem diese Methode in Vault eingerichtet ist, z.B. userpass, userpass_js7, ldap etc."
       },
       "general": {
-        "sessionTimeout": "Session Idle Timeout"
+        "sessionTimeout": "Eine Benutzersitzung wird von JOC Cockpit geschlossen und der Benutzer zur Anmeldung aufgeforder, wenn für die in Sekunden angegebene Dauer keine Aktivitäten in JOC Cockpit durch den Benutzer erfolgt sind."
       }
     }
   },
