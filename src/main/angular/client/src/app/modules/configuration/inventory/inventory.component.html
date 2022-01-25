@@ -337,7 +337,7 @@
         [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
       <a translate>inventory.button.export</a>
     </li>
-    <li nz-submenu [nzTitle]="'inventory.button.repository' | translate"  *ngIf="(!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
+    <li nz-submenu [nzTitle]="'inventory.button.repository' | translate"  *ngIf="(!node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
       <ul>
         <li nz-menu-item (click)="repositoryOperation(node, 'store');">
           <a translate>inventory.button.storeTo</a>

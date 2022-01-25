@@ -17,7 +17,7 @@
       <div class="hide" [ngClass]="{'show': display}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
-      <div class="form-group row" *ngIf="operation === 'store'">
+      <div class="form-group row" *ngIf="operation === 'store' && type === 'ALL'">
         <div class="col-md-3">
           <label translate>inventory.repository.label.filterType</label>
         </div>
@@ -41,10 +41,10 @@
           <label class="m-l-md" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
             {{'inventory.repository.label.draft'| translate}}
           </label>
-          <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
+          <label *ngIf="type === 'ALL' || !(type === 'SCHEDULE' && type === 'INCLUDESCRIPT' && type.match('CALENDAR'))" class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
             {{'inventory.repository.label.deployed'| translate}}
           </label>
-          <label class="m-l-md" nz-checkbox name="release" [(ngModel)]="filter.release" (ngModelChange)="filterList()">
+          <label *ngIf="type === 'ALL' || type === 'SCHEDULE' || type === 'INCLUDESCRIPT' || type.match('CALENDAR')" class="m-l-md" nz-checkbox name="release" [(ngModel)]="filter.release" (ngModelChange)="filterList()">
             {{'inventory.repository.label.released'| translate}}
           </label>
         </div>

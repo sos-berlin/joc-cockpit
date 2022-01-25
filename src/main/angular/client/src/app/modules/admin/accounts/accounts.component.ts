@@ -324,6 +324,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
           }
         }
         value.roles = roles;
+        value.identityServiceId = 0;
+        delete value.password;
         this.userDetail.accounts.push(value);
       }
     });

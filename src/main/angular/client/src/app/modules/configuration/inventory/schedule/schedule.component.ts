@@ -909,7 +909,29 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         });
       }
       this.history.push(this.schedule.actual);
+      if (!res.valid) {
+        if (this.schedule.configuration.workflowName && this.schedule.configuration.calendars.length > 0) {
+          this.validateJSON(res.configuration);
+        }
+      }
       this.setErrorMessage(res);
+    });
+  }
+
+  private validateJSON(json): void {
+    const obj = clone(json);
+    obj.path = this.data.path;
+    this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe({
+      next: (res: any) => {
+        this.schedule.valid = res.valid;
+        if (this.schedule.id === this.data.id) {
+          if (this.data.valid !== res.valid) {
+            this.saveJSON(true, true);
+          }
+          this.data.valid = res.valid;
+        }
+        this.setErrorMessage(res);
+      }
     });
   }
 

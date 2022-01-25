@@ -1110,7 +1110,7 @@ export class ExportComponent implements OnInit {
           if (node.children[i].origin.type) {
             node.children[i].isChecked = node.isChecked;
           }
-          if (node.children[i].origin.isFolder) {
+          if (!node.children[i].origin.object && !node.children[i].origin.type) {
             break;
           }
         }
@@ -1198,7 +1198,7 @@ export class ExportComponent implements OnInit {
             recursive(nodes[i].children);
           } else if (!self.exportObj.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
-              if (nodes[i].children[j].isFolder && nodes[i].children[j].children) {
+              if (!nodes[i].children[j].object && !nodes[i].children[j].type && nodes[i].children[j].children) {
                 recursive(nodes[i].children[j].children);
               }
             }
@@ -1309,10 +1309,12 @@ export class RepositoryComponent implements OnInit {
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
   @Input() controllerId;
   @Input() preferences;
-  @Input() path: string;
+  @Input() origin: any;
   @Input() operation: string;
   @Input() display: string;
   loading = true;
+  path: string;
+  type = 'ALL';
   nodes: any = [];
   submitted = false;
   comments: any = {radio: 'predefined'};
@@ -1339,6 +1341,20 @@ export class RepositoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.origin) {
+      this.path = this.origin.path;
+      if(this.origin.object) {
+        if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')) {
+          this.type = this.origin.object;
+          this.filter.envIndependent = false;
+          this.filter.deploy = false;
+        } else {
+          this.type = this.origin.object;
+          this.filter.envRelated = false;
+          this.filter.release = false;
+        }
+      }
+    }
     if (this.operation === 'store') {
       this.buildTree(this.path);
     } else {
@@ -1357,20 +1373,28 @@ export class RepositoryComponent implements OnInit {
     };
     const APIs = [];
     if (this.filter.envRelated) {
-      const obj2 = clone(obj);
-      if(!this.filter.envIndependent){
-        obj2.objectTypes = [InventoryObject.JOBRESOURCE];
+      if (this.type !== 'ALL') {
+        obj.objectTypes = [this.type];
+      } else {
+        const obj2 = clone(obj);
+        if (!this.filter.envIndependent && this.type === 'ALL') {
+          obj2.objectTypes = [InventoryObject.JOBRESOURCE];
+        }
+        APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
+          catchError(error => of(error))
+        ));
       }
-      APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
-        catchError(error => of(error))
-      ));
       obj.withoutReleased = !this.filter.release;
       APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
         catchError(error => of(error))
       ));
     } else if(this.filter.envIndependent) {
       obj.withVersions = !this.filter.deploy;
-      obj.objectTypes = [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.LOCK, InventoryObject.NOTICEBOARD];
+      if (this.type !== 'ALL') {
+        obj.objectTypes = [this.type];
+      } else {
+        obj.objectTypes = [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.LOCK, InventoryObject.NOTICEBOARD];
+      }
       APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
         catchError(error => of(error))
       ));
@@ -1462,6 +1486,22 @@ export class RepositoryComponent implements OnInit {
     this.coreService.post('inventory/repository/read', {folder: path || '/', recursive: false}).subscribe((res) => {
       let tree = [];
       if (res.folders && res.folders.length > 0 || res.items && res.items.length > 0) {
+        if(this.type !== 'ALL') {
+          if (res.folders && res.folders.length > 0) {
+            res.folders.forEach((folder) => {
+              if (folder.items && folder.items.length > 0) {
+                folder.items = folder.items.filter((item) => {
+                  return item.objectType === this.type;
+                })
+              }
+            })
+          }
+          if (res.items && res.items.length > 0) {
+            res.items = res.items.filter((item) => {
+              return item.objectType === this.type;
+            })
+          }
+        }
         tree = this.coreService.prepareTree({
           folders: [{
             name: res.name,
@@ -1471,6 +1511,9 @@ export class RepositoryComponent implements OnInit {
           }]
         }, false);
         this.inventoryService.updateTree(tree[0]);
+      }
+      if(!merge && tree[0] && tree[0].children && tree[0].children.length === 0) {
+        tree = [];
       }
       if (merge) {
         if (tree.length > 0) {
@@ -1507,7 +1550,6 @@ export class RepositoryComponent implements OnInit {
 
   expandAll(): void {
     const self = this;
-
     function recursive(node): void {
       for (const i in node) {
         if (!node[i].isLeaf) {
@@ -1574,7 +1616,7 @@ export class RepositoryComponent implements OnInit {
           if (node.children[i].origin.type) {
             node.children[i].isChecked = node.isChecked;
           }
-          if (node.children[i].origin.isFolder) {
+          if (!node.children[i].origin.type && !node.children[i].origin.object) {
             break;
           }
         }
@@ -1602,25 +1644,29 @@ export class RepositoryComponent implements OnInit {
         if (!nodes[i].object && nodes[i].checked) {
           const objDep: any = {};
           if (!nodes[i].type) {
-            objDep.configuration = {
-              path: nodes[i].path,
-              objectType: 'FOLDER',
-              recursive: self.exportObj.isRecursive
-            };
+            if (self.type === 'ALL') {
+              objDep.configuration = {
+                path: nodes[i].path,
+                objectType: 'FOLDER',
+                recursive: self.exportObj.isRecursive
+              };
+            }
           } else {
             objDep.configuration = {
               path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
               objectType: nodes[i].type
             };
           }
-          obj.configurations.push(objDep);
+          if(objDep.configuration) {
+            obj.configurations.push(objDep);
+          }
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
-          if (!nodes[i].checked) {
+          if (!nodes[i].checked || self.type !== 'ALL') {
             recursive(nodes[i].children);
           } else if (!self.exportObj.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
-              if (nodes[i].children[j].isFolder && nodes[i].children[j].children) {
+              if (!nodes[i].children[j].object && !nodes[i].children[j].type && nodes[i].children[j].children) {
                 recursive(nodes[i].children[j].children);
               }
             }
@@ -1642,8 +1688,8 @@ export class RepositoryComponent implements OnInit {
         }
       }
       this.coreService.post('inventory/repository/' + this.operation, obj).subscribe({
-        next: () => {
-          this.activeModal.close();
+        next: (res) => {
+          this.activeModal.close(res);
         }, error: () => this.submitted = false
       });
     } else {
@@ -1666,11 +1712,13 @@ export class RepositoryComponent implements OnInit {
         if (!nodes[i].object && nodes[i].checked) {
           const objDep: any = {};
           if (!nodes[i].type) {
-            objDep.configuration = {
-              path: nodes[i].path,
-              objectType: 'FOLDER',
-              recursive: self.exportObj.isRecursive
-            };
+            if (self.type === 'ALL') {
+              objDep.configuration = {
+                path: nodes[i].path,
+                objectType: 'FOLDER',
+                recursive: self.exportObj.isRecursive
+              };
+            }
           } else {
             objDep.configuration = {
               path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
@@ -1688,10 +1736,10 @@ export class RepositoryComponent implements OnInit {
             }
             if (objDep.configuration.objectType !== 'FOLDER') {
               if (self.inventoryService.isControllerObject(nodes[i].type)) {
-                if(objDep.configuration.objectType === InventoryObject.JOBRESOURCE){
+                if (objDep.configuration.objectType === InventoryObject.JOBRESOURCE) {
                   if (objDep.configuration.commitId) {
                     self.object.deploy2Configurations.push(objDep);
-                  } else{
+                  } else {
                     self.object.releaseDraftConfigurations.push(objDep);
                   }
                 } else {
@@ -1718,7 +1766,7 @@ export class RepositoryComponent implements OnInit {
                 }
               }
               if (self.filter.envRelated) {
-                if(self.filter.deploy){
+                if (self.filter.deploy) {
                   self.object.deploy2Configurations.push(objDep);
                 }
                 if (self.filter.release) {
@@ -1732,11 +1780,11 @@ export class RepositoryComponent implements OnInit {
           }
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
-          if (!nodes[i].checked) {
+          if (!nodes[i].checked || self.type !== 'ALL') {
             recursive(nodes[i].children);
           } else if (!self.exportObj.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
-              if (nodes[i].children[j].isFolder && nodes[i].children[j].children) {
+              if (!nodes[i].children[j].object && !nodes[i].children[j].type && nodes[i].children[j].children) {
                 recursive(nodes[i].children[j].children);
               }
             }
@@ -3343,7 +3391,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         controllerId: this.schedulerIds.selected,
         preferences: this.preferences,
         display: this.preferences.auditLog,
-        path: origin.path,
+        origin,
         operation
       },
       nzFooter: null,
@@ -3353,7 +3401,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (res) {
         setTimeout(() => {
           if (this.tree && this.tree.length > 0) {
-            this.initTree(origin.path, null, true);
+            if (this.selectedData.path && origin.path.indexOf(this.selectedData.path) > -1) {
+              this.selectedData.reload = true;
+            }
+            this.initTree(origin.path, null);
           }
         }, 750);
       }
