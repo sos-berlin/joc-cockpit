@@ -1566,7 +1566,7 @@
     "button.resetProfile": "Reset profile to default",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
-    "message.passwordNotMatch": "Password and Confirm Password must be match",
+    "message.passwordNotMatch": "New password and confirmed password have to match",
     "permission": {
       "label.order": "Order",
       "label.job": "Job",
@@ -1997,14 +1997,14 @@
     "label.off": "Off",
     "label.authentication": "Authentication",
     "label.groupRolesMapping": "Group/Roles Mapping",
-    "label.serviceAuthenticationScheme": "Service Authentication Scheme",
-    "label.singleFactorCert": "Single Factor Cert",
-    "label.singleFactorPwd": "Single Factor Password",
+    "label.serviceAuthenticationScheme": "Identity Service Authentication Scheme",
+    "label.singleFactorCert": "Certificate as single factor",
+    "label.singleFactorPwd": "Password as single factor",
     "label.initialPassword": "Initial Password",
     "label.minPasswordLength": "Minimum Password Length",
     "label.resetPassword": "Reset Password",
     "label.forcePasswordChange": "Force Password Change",
-    "label.forceToChangePassword": "force to change password",
+    "label.forceToChangePassword": "Force password change",
     "button.addGroupRole": "Add Group/Roles",
     "button.addIdentityService": "Add Identity Service",
     "button.addPermission": "Add Permission",
@@ -2071,12 +2071,12 @@
     "message.noFolderFound": "No folder found",
     "message.moreThanOneVaultEnable": "Only one VAULT* identity service should be enabled.",
     "message.moreThanOneLDAPEnable": "Only one LDAP* identity service should be enabled.",
-    "message.deleteSelectedUser": "Are you sure you want to delete all selected accounts?",
-    "message.resetPasswordForUser": "Are you sure you want to reset password of this account?",
-    "message.forcePasswordChangeForUser": "Are you sure you want to force password change this account?",
-    "message.resetPasswordForSelectedUser": "Are you sure you want to reset password of all selected accounts?",
-    "message.forcePasswordChangeForSelectedUser": "Are you sure you want to force password change all selected accounts?",
-    "message.minPasswordLength": "Password must be grater then minimum password length",
+    "message.deleteSelectedUser": "Are you sure that you want to delete all selected accounts?",
+    "message.resetPasswordForUser": "Are you sure you want to reset the password of this account?",
+    "message.forcePasswordChangeForUser": "Are you sure you want to force password change for this account?",
+    "message.resetPasswordForSelectedUser": "Are you sure you want to reset the password of all selected accounts?",
+    "message.forcePasswordChangeForSelectedUser": "Are you sure you want to force password change for all selected accounts?",
+    "message.minPasswordLength": "Password has to be at least as long as the minimum password length",
     "tab.simpleMode": "Simple Mode",
     "tab.expertMode": "Expert Mode",
     "usermode": {
@@ -2127,8 +2127,8 @@
       },
       "general": {
         "sessionTimeout": "A user session will be terminated by JOC Cockpit and the user has to login after the given number of seconds if no action is performed in JOC Cockpit.",
-        "initialPassword": "Initial Password",
-        "minPasswordLength": "Minimum Password Length"
+        "initialPassword": "When user accounts are added then they are assigned an initial password that has to be changed with the next login.",
+        "minPasswordLength": "Password strength preferably depends on length. A password that is shorter than the specified Minimum Password Length will be denied."
       }
     }
   },
