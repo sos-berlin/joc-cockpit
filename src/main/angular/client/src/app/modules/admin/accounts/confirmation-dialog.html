@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="delete" translate>common.label.delete</span>
+    <span *ngIf="reset" translate>user.label.resetPassword</span>
+    <span *ngIf="forceChange" translate>user.label.forcePasswordChange</span>
+    ?
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<div class="modal-body p-a">
+  <div class="row text-center">
+    <div class="col-sm-12 text m-t m-b">
+      <span *ngIf="delete" translate>user.message.deleteSelectedUser</span>
+      <span *ngIf="reset" translate>user.message.resetPasswordForSelectedUser</span>
+      <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForSelectedUser</span>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger btn-sm" [disabled]="submitted" [ngClass]="{'btn-primary' : (!delete)}" (click)="confirm()">
+    <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+    <span *ngIf="delete">{{'common.button.delete' | translate}}</span>
+    <span *ngIf="!delete">{{'common.button.confirm' | translate}}</span>
+  </button>
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()"
+          translate>common.button.cancel
+  </button>
+</div>

@@ -10,6 +10,44 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 
 @Component({
+  selector: 'app-confirmation-modal',
+  templateUrl: './confirmation-dialog.html'
+})
+export class ConfirmationModalComponent {
+  @Input() delete;
+  @Input() reset;
+  @Input() forceChange;
+  @Input() accounts;
+  submitted = false;
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  confirm(): void {
+    if (this.delete) {
+      this.activeModal.close('DONE');
+      return;
+    }
+    const accounts = [];
+    this.accounts.forEach((value, key) => {
+      console.log(value);
+      accounts.push({account: key})
+    });
+    this.submitted = true;
+    const URL = this.forceChange ? 'authentication/auth/forcepasswordchange' : 'authentication/auth/resetpassword';
+    this.coreService.post(URL, {
+      accounts
+    }).subscribe({
+      next: () => {
+        this.activeModal.close('DONE');
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
+  }
+}
+
+@Component({
   selector: 'app-user-modal-content',
   templateUrl: './user-dialog.html'
 })
@@ -151,6 +189,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
       } else if (res === 'COPY_ACCOUNT') {
         this.dataService.copiedObject.accounts = this.object.mapOfCheckedId;
         this.reset();
+      } else if (res === 'DELETE') {
+        this.deleteList();
+      } else if (res === 'RESET_PASSWORD') {
+        this.resetPassword();
+      } else if (res === 'FORCE_PASSWORD_CHANGE') {
+        this.forcePasswordChange();
       } else if (res === 'PASTE_ACCOUNT') {
         this.paste();
       }
@@ -303,6 +347,54 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
+  private deleteList(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmationModalComponent,
+      nzComponentParams: {
+        delete: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.accounts = this.accounts.filter((item) => {
+          return !this.object.mapOfCheckedId.has(item.account);
+        });
+        this.saveInfo();
+      }
+    });
+  }
+
+  private resetPassword(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmationModalComponent,
+      nzComponentParams: {
+        reset: true,
+        accounts: this.object.mapOfCheckedId
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  private forcePasswordChange(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmationModalComponent,
+      nzComponentParams: {
+        forceChange: true,
+        accounts: this.object.mapOfCheckedId
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
   private paste(): void {
     this.dataService.copiedObject.accounts.forEach((value, key) => {
       let flag = false;
@@ -332,7 +424,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.saveInfo();
   }
 
-  private reset(): void{
+  private reset(): void {
     this.object = {
       mapOfCheckedId: new Map(),
       checked: false,

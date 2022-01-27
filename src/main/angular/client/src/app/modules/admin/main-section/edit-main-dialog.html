@@ -11,7 +11,9 @@
     <div class="modal-body p-a text-overflow">
         <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}">
             <div class="row col-md-12">
-                <label class="col-md-4 form-control-label" translate>user.label.entryName</label>
+                <label class="col-md-4 form-control-label" translate>user.label.entryName
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
                 <div class=" col-md-6">
                     <input type="text" class="form-control" name="name" placeholder="{{'common.placeholder.name' | translate}}"
                            [(ngModel)]="entry.entryName" required (blur)="checkMainSection(entry.entryName)" #name="ngModel">

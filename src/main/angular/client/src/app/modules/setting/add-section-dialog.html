@@ -9,6 +9,7 @@
     <div class="form-group row">
       <label class="col-md-3 form-control-label" translate>
         settings.label.sectionName
+         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
         <nz-select [(ngModel)]="setting.name" name="name" required #name="ngModel">

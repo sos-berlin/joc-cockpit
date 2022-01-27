@@ -19,7 +19,9 @@
       <div class="job-property-editor" *ngIf="index === 0">
         <div class="form-group row" [hidden]="fullScreen || (!exactMatch && isModal)">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.name' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.name</label>
+                 translate>workflow.label.name
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
             <label class="w-full">
               <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required class="form-control"
@@ -37,7 +39,9 @@
         </div>
         <div class="form-group row" *ngIf="!isModal" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.label</label>
+                 translate>workflow.label.label
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
             <label class="w-full">
               <input type="text" labelValidation required autocomplete="off" (blur)="onBlur();errorMsg=''" maxlength="30" class="form-control"
@@ -98,7 +102,9 @@
         </div>
         <div class="form-group row" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.agent</label>
+                 translate>workflow.label.agent
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-md-8 col-lg-9"
                [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
             <input required name="agentName"
@@ -200,7 +206,11 @@
         <div class="form-group row">
           <div class="col-md-12">
             <nz-tabset>
-              <nz-tab [nzTitle]="'workflow.label.script' | translate" (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'">
+              <nz-tab [nzTitle]="titleTemplate" (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'">
+                <ng-template #titleTemplate>
+                    <span translate>workflow.label.script</span>
+                    <sup class="text-danger text-sm">*</sup>
+                </ng-template>
                 <div class="row" *ngIf="isDisplay">
                   <div class="col-md-12 role">
                     <div class="select-script-input bg-box" *ngIf="scriptObj.show">
@@ -243,7 +253,11 @@
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab [nzTitle]="'workflow.label.className' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+              <nz-tab [nzTitle]="titleTemplate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+                <ng-template #titleTemplate>
+                    <span translate>workflow.label.className</span>
+                    <sup class="text-danger text-sm">*</sup>
+                </ng-template>
                 <div class="row">
                   <div class="col-md-12" [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched))}">
                     <label class="w-full">

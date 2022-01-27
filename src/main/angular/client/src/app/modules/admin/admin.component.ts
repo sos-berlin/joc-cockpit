@@ -100,6 +100,18 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('ADD');
   }
 
+  deleteList(): void {
+    this.dataService.announceFunction('DELETE');
+  }
+
+  resetPassword(): void {
+    this.dataService.announceFunction('RESET_PASSWORD');
+  }
+
+  forcePasswordChange(): void {
+    this.dataService.announceFunction('FORCE_PASSWORD_CHANGE');
+  }
+
   copyList(): void {
     if (this.route.match('/users/identity_service/account')) {
       this.dataService.announceFunction('COPY_ACCOUNT');

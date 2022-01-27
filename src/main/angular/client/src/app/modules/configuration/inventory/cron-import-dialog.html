@@ -41,7 +41,9 @@
         </div>
         <div class="form-group row">
           <label class="col-md-3 form-control-label">
-            <label translate>inventory.cronTab.label.calendarName</label>
+            <label translate>inventory.cronTab.label.calendarName
+             <sup class="text-danger text-sm">*</sup>
+            </label>
           </label>
           <div class="col-md-9" [ngClass]="{'has-error' : ((calendarName.dirty || calendarName.touched) && calendarName.invalid)}">
             <nz-tree-select
@@ -78,7 +80,9 @@
         </div>
         <div class="form-group row">
           <label class="col-md-3 form-control-label">
-            <label translate>inventory.cronTab.label.agentName</label>
+            <label translate>inventory.cronTab.label.agentName
+             <sup class="text-danger text-sm">*</sup>
+            </label>
           </label>
           <div class="col-md-9" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
             <nz-select nzShowSearch name="agentName" required nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"

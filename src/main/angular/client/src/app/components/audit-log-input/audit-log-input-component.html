@@ -9,7 +9,9 @@
 </div>
 <div class="form-group row" *ngIf="comments.radio=='predefined'"
      [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
-  <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.selectComment</label>
+  <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.selectComment
+    <sup *ngIf="required && comments.radio=='predefined'" class="text-danger text-sm">*</sup>
+  </label>
   <div class="col-sm-{{sizeY}}">
     <nz-select [nzAllowClear]="!required" nzPlaceHolder="{{'common.label.selectPredefinedReason' | translate}}"
                [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
@@ -25,7 +27,9 @@
 </div>
 <div class="form-group row" *ngIf="comments.radio=='new'"
      [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}">
-  <label class="col-sm-{{sizeX}} " translate>common.label.comment</label>
+  <label class="col-sm-{{sizeX}} " translate>common.label.comment
+    <sup *ngIf="required && comments.radio=='new'" class="text-danger text-sm">*</sup>
+  </label>
   <div class="col-sm-{{sizeY}}">
     <textarea rows="3" class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
               [required]="required && comments.radio=='new'"

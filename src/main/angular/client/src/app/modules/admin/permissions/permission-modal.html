@@ -10,7 +10,9 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentPermission)">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>user.label.permission</label>
+      <label class="col-sm-3 form-control-label" translate>user.label.permission
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-6">
         <nz-select nzShowSearch [(ngModel)]="currentPermission.path" name="path1" required nzPlaceHolder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
                    (ngModelChange)="checkCovered(currentPermission)">
@@ -26,11 +28,8 @@
     <div class="form-group row">
       <label class="col-sm-3" translate>user.label.excluded</label>
       <div class=" col-sm-6">
-        <label class="md-check">
-          <input type="checkbox" [(ngModel)]="currentPermission.excluded" name="excluded"
-                 (change)="checkCovered(currentPermission)">
-          <i class="primary"></i><span class="m-l-xs" > </span>
-        </label>
+        <label nz-checkbox [(ngModel)]="currentPermission.excluded"
+               name="excluded" (ngModelChange)="checkCovered(currentPermission)"></label>
       </div>
     </div>
   </div>

@@ -29,7 +29,9 @@
       <div class="col-sm-9">{{data.keyID}}</div>
     </div>
     <div class="form-group row" *ngIf="securityLevel !== 'HIGH' && ((!paste && data.privateKey) || paste) && type !== 'certificate'">
-      <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.privateKey</label>
+      <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.privateKey
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-12" [ngClass]="{'has-error' : ((privateKey.dirty || privateKey.touched) && privateKey.invalid) }">
         <textarea class="form-control" rows="10" name="privateKey" [(ngModel)]="data.privateKey" placeholder="{{'profile.keyManagement.placeholder.pastePrivateKey' | translate}}"  [readOnly]="!paste" required #privateKey="ngModel" autofocus autocomplete="false"></textarea>
         <div *ngIf="privateKey.invalid && (privateKey.dirty || privateKey.touched)" class="text-danger help-block">
@@ -40,7 +42,9 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="((!paste && data.keyAlgorithm === 'PGP') || (securityLevel === 'HIGH' && algorithm.keyAlg === 'PGP' && paste))">
-      <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.publicKey</label>
+      <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.publicKey
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-12" [ngClass]="{'has-error' : ((publicKey.dirty || publicKey.touched) && publicKey.invalid) }">
         <textarea class="form-control" rows="10" name="publicKey" [(ngModel)]="data.publicKey" [readOnly]="!paste" placeholder="{{'profile.keyManagement.placeholder.pastePublicKey' | translate}}" required #publicKey="ngModel" autocomplete="false"></textarea>
 
@@ -52,7 +56,9 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="((!paste && data.keyAlgorithm !== 'PGP') || ((algorithm.keyAlg !== 'PGP') && paste))" [hidden]="(!data.certificate && !paste)">
-      <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.x509Certificate</label>
+      <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.x509Certificate
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-12" [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid) }">
         <textarea class="form-control" rows="10" name="certificate" [(ngModel)]="data.certificate" [readOnly]="!paste" placeholder="{{'profile.keyManagement.placeholder.pasteCertificate' | translate}}" required #certificate="ngModel" autocomplete="false"></textarea>
 

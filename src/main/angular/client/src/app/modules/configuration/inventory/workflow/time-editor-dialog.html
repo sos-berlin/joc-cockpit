@@ -14,7 +14,9 @@
       <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
         <div>
           <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>runtime.label.startTime</label>
+            <label class="col-sm-3 form-control-label" translate>runtime.label.startTime
+              <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
               <nz-time-picker #timePicker required [(ngModel)]="object.startTime" (keydown.Tab)="onTab()" name="startTime"  #startTime="ngModel" [nzDefaultOpenValue]="defaultOpenValue"
               nzPlaceHolder="HH:MM:SS"></nz-time-picker>
@@ -26,7 +28,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>common.label.duration</label>
+            <label class="col-sm-3 form-control-label" translate>common.label.duration
+              <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
               <input appValidateDuration required class="form-control" name="duration" #duration="ngModel"
                      [(ngModel)]="object.duration"

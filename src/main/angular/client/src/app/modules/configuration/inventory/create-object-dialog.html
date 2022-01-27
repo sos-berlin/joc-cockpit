@@ -28,7 +28,9 @@
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
     <div class="form-group row" *ngIf="!copy && !restore">
-      <label class="col-md-3 form-control-label" translate>inventory.label.objectName</label>
+      <label class="col-md-3 form-control-label" translate>inventory.label.objectName
+       <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
         <input type="text" required identifierValidation class="form-control" name="name" placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}"
                #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" autocomplete="off">

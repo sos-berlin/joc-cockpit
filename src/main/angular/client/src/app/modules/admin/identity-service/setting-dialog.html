@@ -12,19 +12,53 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
-    <div class="form-group row" *ngIf="!data"
-         [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
-      <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.general.sessionTimeout' | translate"
-             [nzTooltipMouseEnterDelay]="0.5" translate>user.label.sessionTimeout
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" required name="timeout"
-               [placeholder]="'user.placeholder.sessionTimeout' | translate"
-               #timeout="ngModel" validateSessionTimeReqex [(ngModel)]="currentObj.sessionTimeout">
-        <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
-          <div *ngIf="timeout.errors.required">
-            <div translate>common.message.requiredError</div>
+    <div *ngIf="!data">
+      <div class="form-group row" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.general.sessionTimeout' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.sessionTimeout
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" required name="timeout"
+                 [placeholder]="'user.placeholder.sessionTimeout' | translate"
+                 #timeout="ngModel" validateSessionTimeReqex [(ngModel)]="currentObj.sessionTimeout">
+          <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
+            <div *ngIf="timeout.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.general.initialPassword' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.initialPassword
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <input type="{{!passwordFields.first ? 'password' : 'text'}}" class="form-control" required name="initialPassword"
+                 [placeholder]="'user.placeholder.initialPassword' | translate"
+                 #timeout="ngModel" [(ngModel)]="currentObj.initialPassword">
+          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
+             (click)="passwordFields.first = !passwordFields.first"></i>
+          <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
+            <div *ngIf="timeout.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" [ngClass]="{'has-error' : ((minPasswordLength.dirty || minPasswordLength.touched) && minPasswordLength.invalid)}">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.general.minPasswordLength' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.minPasswordLength
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <nz-input-number required name="minPasswordLength" [nzPlaceHolder]="'user.placeholder.minPasswordLength' | translate" [nzMin]="0"
+                           #minPasswordLength="ngModel" [(ngModel)]="currentObj.minPasswordLength"></nz-input-number>
+          <div *ngIf="minPasswordLength.invalid && (minPasswordLength.dirty || minPasswordLength.touched)" class="text-danger help-block">
+            <div *ngIf="minPasswordLength.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
           </div>
         </div>
       </div>
@@ -144,9 +178,9 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6" [ngClass]="{'has-error' : ((port.dirty || port.touched) && port.invalid)}">
-                <nz-input-number name="iamLdapPort" required #port="ngModel" (nzBlur)="changeField('Port')"
+                 <input type="text" class="form-control" name="iamLdapPort" required #port="ngModel" (blur)="changeField('Port')"
                                  [(ngModel)]="userObj.iamLdapPort"
-                                 [nzPlaceHolder]="'user.usermode.placeholder.iamLdapPort' | translate"></nz-input-number>
+                                 [placeholder]="'user.usermode.placeholder.iamLdapPort' | translate">
               </div>
             </div>
             <div class="form-group row">

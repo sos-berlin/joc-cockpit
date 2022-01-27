@@ -14,7 +14,9 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentRole)">
     <div class="modal-body p-a">
         <div class="form-group row"  [ngClass]="{'has-error' : ((roleName.dirty || roleName.touched) && roleName.invalid) || !isUnique}">
-            <label class="col-sm-4 form-control-label" translate>user.label.role</label>
+            <label class="col-sm-4 form-control-label" translate>user.label.role
+              <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-6">
                 <input type="text" class="form-control" name="role" placeholder="{{'user.placeholder.role' | translate}}" [(ngModel)]="currentRole.role" required [appAutofocus]="true" autocomplete="off" #roleName="ngModel"
                        (blur)="checkRole(currentRole.role)"/>

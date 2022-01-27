@@ -22,7 +22,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>agent.label.role</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.role
+       <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class=" col-sm-8">
         <nz-select required name="director" [(ngModel)]="subagent.isDirector">
           <nz-option *ngFor="let item of directors" [nzValue]="item" [nzLabel]="item | translate"></nz-option>
@@ -30,7 +32,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>agent.label.subagentId</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.subagentId
+       <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
         <input identifierValidation type="text" class="form-control" name="subagentId" #subagentId="ngModel" [readOnly]="!new"
                required [(ngModel)]="subagent.subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
@@ -44,7 +48,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.url
+       <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
         <input type="url" class="form-control" name="url" #url="ngModel"
                required [(ngModel)]="subagent.url" placeholder="http://host:port">
@@ -57,7 +63,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>agent.label.position</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.position
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-8" [ngClass]="{'has-error' : ((position.dirty || position.touched) && position.invalid)}">
         <nz-input-number required [nzMin]="1" [nzStep]="1" name="position"
                          #position="ngModel" [(ngModel)]="subagent.position"></nz-input-number>

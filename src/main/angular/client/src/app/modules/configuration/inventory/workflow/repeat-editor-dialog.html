@@ -24,7 +24,9 @@
             </div>
           </div>
           <div class="form-group row" *ngIf="object.TYPE === 'Periodic'">
-            <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.period</label>
+            <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.period
+             <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((period.dirty || period.touched) && period.invalid))}">
               <input appValidateDuration required class="form-control" name="period"
                      #period="ngModel" [(ngModel)]="object.period"
@@ -38,18 +40,25 @@
             </div>
           </div>
           <div class="form-group row" *ngIf="object.TYPE === 'Periodic'">
-            <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.offsets</label>
+            <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.offsets
+              <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((offsets.dirty || offsets.touched) && offsets.invalid))}">
-              <input appValidateOffset class="form-control" name="offsets"
+              <input appValidateOffset required class="form-control" name="offsets"
                      #offsets="ngModel" [(ngModel)]="object.offsets"
                      placeholder="{{'workflow.placeholder.offset' | translate}}" type="text">
               <div *ngIf="offsets.invalid && (offsets.dirty || offsets.touched)" class="text-danger help-block">
+                <div *ngIf="offsets.errors.required">
+                  <div translate>common.message.requiredError</div>
+                </div>
                 <div *ngIf="offsets.errors.invalidOffset" translate>common.message.invalid</div>
               </div>
             </div>
           </div>
           <div class="form-group row" *ngIf="object.TYPE === 'Continuous'">
-            <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.pause</label>
+            <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.pause
+             <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((pause.dirty || pause.touched) && pause.invalid))}">
               <input appValidateDuration required class="form-control" name="pause"
                      #pause="ngModel" [(ngModel)]="object.pause"
@@ -70,7 +79,9 @@
             </div>
           </div>
           <div class="form-group row" *ngIf="object.TYPE === 'Ticking'">
-            <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.interval</label>
+            <label class="col-sm-3 form-control-label" translate>workflow.repeat.label.interval
+             <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((interval.dirty || interval.touched) && interval.invalid))}">
               <input appValidateDuration required class="form-control" name="interval"
                      #interval="ngModel" [(ngModel)]="object.interval"

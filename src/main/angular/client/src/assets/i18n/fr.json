@@ -1556,8 +1556,14 @@
     "label.grey": "Gris",
     "label.dark": "Foncé",
     "label.download": "Télécharger",
+    "label.changePassword": "Change Password",
+    "label.oldPassword": "Old Password",
+    "label.newPassword": "New Password",
+    "label.confirmPassword": "Confirm Password",
     "button.resetProfile": "Rétablir le profil par défaut",
     "button.groupLimit": "Limite de groupe",
+    "button.changePassword": "Change Password",
+    "message.passwordNotMatch": "Password and Confirm Password must be match",
     "permission": {
       "label.order": "Ordre",
       "label.job": "Tâche",
@@ -1988,6 +1994,13 @@
     "label.off": "Off",
     "label.authentication": "Authentification",
     "label.groupRolesMapping": "Mappage des Groupes/Rôles",
+    "label.serviceAuthenticationScheme": "Service Authentication Scheme",
+    "label.singleFactorCert": "Single Factor Cert",
+    "label.singleFactorPwd": "Single Factor Password",
+    "label.initialPassword": "Initial Password",
+    "label.minPasswordLength": "Minimum Password Length",
+    "label.resetPassword": "Reset Password",
+    "label.forcePasswordChange": "Force Password Change",
     "button.addGroupRole": "Ajouter Groupes/Rôles",
     "button.addIdentityService": "Ajouter un Service d'Identité",
     "button.addPermission": "Ajouter une Permission",
@@ -2013,6 +2026,9 @@
     "button.manageGeneralSetting": "Gérer les Paramètres Généraux",
     "button.copySetting": "Copier Paramètres",
     "button.pasteSetting": "Coller Paramètres",
+    "button.delete": "Delete",
+    "button.resetPassword": "Reset Password",
+    "button.forcePasswordChange": "Force Password Change",
     "placeholder.role": "Entrer le nom du Rôle",
     "placeholder.selectRoles": "Sélectionner les Rôles",
     "placeholder.user": "Entrer l'utilisateur",
@@ -2042,6 +2058,8 @@
     "placeholder.iamLdapTrustStorePassword": "Entrer le LDAP Truststore Password",
     "placeholder.iamLdapTrustStoreType": "Entrer le LDAP Truststore Type",
     "placeholder.group": "Entrer la Groupe",
+    "placeholder.initialPassword": "Enter initial password",
+    "placeholder.minPasswordLength": "Enter minimum password length",
     "message.permissionIsAlreadyCovered": "Permission déjà active",
     "message.noPermissionFound": "Aucune permission trouvée",
     "message.noRoleAssign": "Aucun Rôle associé au Compte selectionné",
@@ -2049,6 +2067,9 @@
     "message.noFolderFound": "Aucun dossier trouvé",
     "message.moreThanOneVaultEnable": "Un seul Service d'Identité VAULT* doit être activé.",
     "message.moreThanOneLDAPEnable": "Un seul Service d'Identité LDAP* doit être activé.",
+    "message.deleteSelectedUser": "Are you sure you want to delete all selected accounts?",
+    "message.resetPasswordForSelectedUser": "Are you sure you want to reset password of all selected accounts?",
+    "message.forcePasswordChangeForSelectedUser": "Are you sure you want to force password change all selected accounts?",
     "tab.simpleMode": "Mode Simple",
     "tab.expertMode": "Mode Expert",
     "usermode": {
@@ -2098,7 +2119,9 @@
         "iamVaultAuthenticationMethodPath": "The Vault Authentication Method Path specifies the path for which the Vault authentication method has been created, e.g. userpass, userpass_js7, ldap etc."
       },
       "general": {
-        "sessionTimeout": "A user session will be terminated by JOC Cockpit and the user has to login after the given number of seconds if no action is performed in JOC Cockpit."
+        "sessionTimeout": "A user session will be terminated by JOC Cockpit and the user has to login after the given number of seconds if no action is performed in JOC Cockpit.",
+        "initialPassword": "Initial Password",
+        "minPasswordLength": "Minimum Password Length"
       }
     }
   },

@@ -393,6 +393,7 @@ export class IdentityServiceModalComponent implements OnInit {
   submitted = false;
   isUnique = true;
   types = [];
+  serviceAuthenticationSchemes = ['SINGLE-FACTOR', 'TWO-FACTOR'];
   currentObj: any = {};
   settingObj: any = {};
   removeSettingId = -1;

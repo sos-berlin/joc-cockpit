@@ -1,5 +1,11 @@
 import {NgModule} from '@angular/core';
-import {ImportKeyModalComponent, UpdateKeyModalComponent, UserComponent, GenerateKeyComponent} from './user.component';
+import {
+  ImportKeyModalComponent,
+  UpdateKeyModalComponent,
+  UserComponent,
+  GenerateKeyComponent,
+  ChangePasswordComponent
+} from './user.component';
 import {FileUploadModule} from 'ng2-file-upload';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import { SharedModule } from '../shared/shared.module';
@@ -10,7 +16,8 @@ import {UserRoutingModule} from './user-routing.module';
     UserComponent,
     ImportKeyModalComponent,
     UpdateKeyModalComponent,
-    GenerateKeyComponent
+    GenerateKeyComponent,
+    ChangePasswordComponent
   ],
   imports: [
     SharedModule,
