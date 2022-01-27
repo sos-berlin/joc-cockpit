@@ -3,7 +3,7 @@
     <span *ngIf="delete" translate>common.label.delete</span>
     <span *ngIf="reset" translate>user.label.resetPassword</span>
     <span *ngIf="forceChange" translate>user.label.forcePasswordChange</span>
-    ?
+    <span *ngIf="account">: {{account.account}}</span>?
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -13,8 +13,14 @@
   <div class="row text-center">
     <div class="col-sm-12 text m-t m-b">
       <span *ngIf="delete" translate>user.message.deleteSelectedUser</span>
-      <span *ngIf="reset" translate>user.message.resetPasswordForSelectedUser</span>
-      <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForSelectedUser</span>
+      <span *ngIf="account">
+        <span *ngIf="reset" translate>user.message.resetPasswordForUser</span>
+        <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForUser</span>
+      </span>
+      <span *ngIf="!account">
+        <span *ngIf="reset" translate>user.message.resetPasswordForSelectedUser</span>
+        <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForSelectedUser</span>
+      </span>
     </div>
   </div>
 </div>

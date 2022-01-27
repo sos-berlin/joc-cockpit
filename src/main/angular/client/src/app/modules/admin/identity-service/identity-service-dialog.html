@@ -51,31 +51,6 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="currentObj.identityServiceType !== 'SHIRO'">
-      <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div class="col-sm-6">
-        <nz-select name="serviceAuthenticationScheme"
-          [(ngModel)]="currentObj.serviceAuthenticationScheme">
-          <nz-option *ngFor="let option of serviceAuthenticationSchemes" [nzLabel]="option" [nzValue]="option"></nz-option>
-        </nz-select>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="currentObj.identityServiceType === 'JOC'">
-      <label class="col-sm-4 form-control-label" translate>user.label.singleFactorCert</label>
-      <div class="col-sm-6">
-         <label nz-checkbox [(ngModel)]="currentObj.singleFactorCert"
-                       name="singleFactorCert"></label>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="currentObj.identityServiceType === 'JOC'">
-      <label class="col-sm-4 form-control-label" translate>user.label.singleFactorPwd</label>
-      <div class="col-sm-6">
-         <label nz-checkbox [(ngModel)]="currentObj.singleFactorPwd"
-                       name="singleFactorPwd"></label>
-      </div>
-    </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.identityServiceOrdering</label>
       <div class="col-sm-6">
@@ -88,6 +63,31 @@
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="currentObj.required"
                        name="serviceRequired"></label>
+      </div>
+    </div>
+    <div class="form-group row b-t p-t" *ngIf="currentObj.identityServiceType !== 'SHIRO'">
+      <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <nz-select name="serviceAuthenticationScheme"
+          [(ngModel)]="currentObj.serviceAuthenticationScheme">
+          <nz-option *ngFor="let option of serviceAuthenticationSchemes" [nzLabel]="option | translate" [nzValue]="option"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="currentObj.identityServiceType === 'JOC'">
+      <label class="col-sm-4 form-control-label" translate>user.label.singleFactorPwd</label>
+      <div class="col-sm-6">
+         <label nz-checkbox [nzDisabled]="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'" [(ngModel)]="currentObj.singleFactorPwd"
+                       name="singleFactorPwd"></label>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="currentObj.identityServiceType === 'JOC'">
+      <label class="col-sm-4 form-control-label" translate>user.label.singleFactorCert</label>
+      <div class="col-sm-6">
+         <label nz-checkbox [nzDisabled]="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'" [(ngModel)]="currentObj.singleFactorCert"
+                       name="singleFactorCert"></label>
       </div>
     </div>
   </div>

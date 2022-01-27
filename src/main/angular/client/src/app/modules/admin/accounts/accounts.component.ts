@@ -18,6 +18,7 @@ export class ConfirmationModalComponent {
   @Input() reset;
   @Input() forceChange;
   @Input() accounts;
+  @Input() account;
   submitted = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
@@ -29,13 +30,17 @@ export class ConfirmationModalComponent {
       return;
     }
     const accounts = [];
-    this.accounts.forEach((value, key) => {
-      console.log(value);
-      accounts.push({account: key})
-    });
+    if (this.account) {
+      accounts.push({account: this.account.account})
+    } else {
+      this.accounts.forEach((value, key) => {
+        accounts.push({account: key})
+      });
+    }
     this.submitted = true;
     const URL = this.forceChange ? 'authentication/auth/forcepasswordchange' : 'authentication/auth/resetpassword';
     this.coreService.post(URL, {
+      identityServiceName: sessionStorage.identityServiceName,
       accounts
     }).subscribe({
       next: () => {
@@ -192,9 +197,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
       } else if (res === 'DELETE') {
         this.deleteList();
       } else if (res === 'RESET_PASSWORD') {
-        this.resetPassword();
+        this.resetPassword(null);
       } else if (res === 'FORCE_PASSWORD_CHANGE') {
-        this.forcePasswordChange();
+        this.forcePasswordChange(null);
       } else if (res === 'PASTE_ACCOUNT') {
         this.paste();
       }
@@ -367,31 +372,41 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private resetPassword(): void {
+  resetPassword(account): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
       nzComponentParams: {
         reset: true,
+        account,
         accounts: this.object.mapOfCheckedId
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe((res) => {
+      if (res) {
+        this.reset();
+      }
     });
   }
 
-  private forcePasswordChange(): void {
+  forcePasswordChange(account): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
       nzComponentParams: {
         forceChange: true,
+        account,
         accounts: this.object.mapOfCheckedId
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe((res) => {
+      if(res) {
+        this.reset();
+      }
     });
   }
 

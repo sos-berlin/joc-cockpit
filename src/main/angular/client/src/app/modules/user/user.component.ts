@@ -7,55 +7,13 @@ import { ToastrService } from 'ngx-toastr';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
+import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import {isEqual} from "underscore";
 
 declare var $;
-
-@Component({
-  selector: 'app-change-password',
-  templateUrl: './change-password-dialog.html'
-})
-export class ChangePasswordComponent implements OnInit {
-  @Input() username: string;
-  submitted = false;
-  passwordObj: any = {
-    account: '',
-    oldPassword: '',
-    password: '',
-    repeatedPassword: ''
-  };
-  isPasswordMatch = true;
-
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
-  }
-
-  ngOnInit(): void {
-    this.passwordObj.account = this.username;
-  }
-
-  checkPassword(): void {
-    this.isPasswordMatch = isEqual(this.passwordObj.password, this.passwordObj.repeatedPassword);
-  }
-
-  onSubmit(): void {
-    if (this.isPasswordMatch) {
-      this.submitted = true;
-      this.coreService.post('authentication/auth/changepassword', {
-        accounts: [this.passwordObj]
-      }).subscribe({
-        next: () => {
-          this.activeModal.close('DONE');
-        }, error: () => {
-          this.submitted = false;
-        }
-      });
-    }
-  }
-}
 
 @Component({
   selector: 'app-update-modal-content',
@@ -343,6 +301,7 @@ export class UserComponent implements OnInit, OnDestroy {
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
   securityLevel: string;
+  identityServiceType: string;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -364,6 +323,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.forceLoging = true;
       this.preferences.auditLog = true;
     }
+    this.identityServiceType  = this.authService.currentUserIdentityService.substring(0, this.authService.currentUserIdentityService.lastIndexOf(':'));
     this.setIds();
     this.setPreferences();
     this.zones = this.coreService.getTimeZoneList();
@@ -396,7 +356,8 @@ export class UserComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ChangePasswordComponent,
       nzComponentParams: {
-        username: this.username
+        username: this.username,
+        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':')+1)
       },
       nzFooter: null,
       nzClosable: false,

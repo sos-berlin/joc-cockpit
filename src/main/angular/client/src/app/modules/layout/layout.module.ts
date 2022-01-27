@@ -11,6 +11,7 @@ import {SaveService} from '../../services/save.service';
 import {ExcelService} from '../../services/excel.service';
 import {WorkflowService} from "../../services/workflow.service";
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
+import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
   ],
   declarations: [
     LayoutComponent,
+    ChangePasswordComponent,
     HeaderComponent
   ],
   providers: [

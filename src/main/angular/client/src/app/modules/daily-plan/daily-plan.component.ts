@@ -445,7 +445,6 @@ export class RemovePlanModalComponent implements OnInit {
     if (this.order) {
       if (this.order.value) {
         if (this.order.value.length > 1) {
-          console.log(this.order.value)
           this.order.value.forEach((value) => {
             this.count = this.count + (value.cyclicOrder ? value.cyclicOrder.count : 1);
           });

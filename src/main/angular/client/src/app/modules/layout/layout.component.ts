@@ -12,6 +12,7 @@ import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
 import {StepGuideComponent} from '../../components/info-menu/info-menu.component';
+import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 
 declare const $: any;
 
@@ -39,6 +40,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isProfileLoaded = false;
   isPropertiesLoaded = false;
   isPopupOpen = false;
+  isChangePasswordPopupOpen = false;
   count = 0;
   count2 = 0;
 
@@ -69,6 +71,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
     this.subscription5 = router.events
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
+        if (!this.isChangePasswordPopupOpen && this.authService.currentUserData && (this.authService.forcePasswordChange == true || this.authService.forcePasswordChange == 'true')) {
+          this.isChangePasswordPopupOpen = true;
+          this.changePassword();
+        }
         if (this.loading) {
           LayoutComponent.calculateHeight();
         }
@@ -356,6 +362,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.authService.setUser(data);
         this.authService.save();
         this.getSchedulerIds();
+        if (!this.isChangePasswordPopupOpen && this.authService.currentUserData && (this.authService.forcePasswordChange == true || this.authService.forcePasswordChange == 'true')) {
+          this.isChangePasswordPopupOpen = true;
+          this.changePassword();
+        }
       }, error: () => {
         let returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
         if (returnUrl === '/error' || returnUrl === 'error') {
@@ -408,6 +418,27 @@ export class LayoutComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       LayoutComponent.calculateHeight();
     }, 10);
+  }
+
+  private changePassword(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ChangePasswordComponent,
+      nzComponentParams: {
+        username: this.authService.currentUserData,
+        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':')+1),
+        force: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe((result) => {
+      this.isChangePasswordPopupOpen = false;
+      if (result) {
+        this.authService.forcePasswordChange = false;
+        this.authService.save();
+      }
+    });
   }
 
   private _logout(timeout: any): void {

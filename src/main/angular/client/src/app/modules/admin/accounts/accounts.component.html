@@ -47,7 +47,7 @@
         <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(account.account)" (nzCheckedChange)="onItemChecked(account, $event)"></td>
         <td>
           <div class="btn-group dropdown pull-left m-r-sm">
-            <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+            <button type="button" class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
               <ul nz-menu >
                 <li nz-menu-item (click)="editUser(account)">
@@ -56,16 +56,25 @@
                 <li nz-menu-item (click)="copyUser(account)">
                   <a translate>common.button.copy</a>
                 </li>
+                <li nz-menu-item (click)="resetPassword(account)">
+                  <a translate>user.button.resetPassword</a>
+                </li>
+                <li nz-menu-item [nzDisabled]="account.forcePasswordChange" (click)="forcePasswordChange(account)">
+                  <a translate>user.button.forcePasswordChange</a>
+                </li>
                 <li nz-menu-item (click)="deleteUser(account.account)" class="bg-hover-color"
                     [ngClass]="{'disable-link' :username==account.account && selectedIdentityService === userIdentityService}">
-                  <a translate>common.button.delete</a>
+                  <a translate>user.button.delete</a>
                 </li>
               </ul>
             </nz-dropdown-menu>
           </div>
         </td>
         <td><a (click)="showRole(account.account)" class="text-hover-primary" [innerHtml]="account.account  | decodeSpace | highlight: searchKey"></a></td>
-        <td><span>********</span></td>
+        <td>
+          <span>********</span>
+          <i class="p-l text-sm" *ngIf="account.forcePasswordChange">({{'user.label.forceToChangePassword'| translate}})</i>
+        </td>
         <td>
           <div *ngFor="let role of account.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
         </td>

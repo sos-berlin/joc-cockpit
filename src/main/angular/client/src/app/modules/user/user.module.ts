@@ -3,8 +3,7 @@ import {
   ImportKeyModalComponent,
   UpdateKeyModalComponent,
   UserComponent,
-  GenerateKeyComponent,
-  ChangePasswordComponent
+  GenerateKeyComponent
 } from './user.component';
 import {FileUploadModule} from 'ng2-file-upload';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
@@ -16,8 +15,7 @@ import {UserRoutingModule} from './user-routing.module';
     UserComponent,
     ImportKeyModalComponent,
     UpdateKeyModalComponent,
-    GenerateKeyComponent,
-    ChangePasswordComponent
+    GenerateKeyComponent
   ],
   imports: [
     SharedModule,
