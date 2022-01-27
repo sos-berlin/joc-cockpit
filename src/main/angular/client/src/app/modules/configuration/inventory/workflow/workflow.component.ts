@@ -2338,7 +2338,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (changes.copyObj && !changes.data) {
       return;
     }
+
     if (changes.reload) {
+      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+        return;
+      }
       if (this.reload) {
         this.selectedNode = null;
         this.init();

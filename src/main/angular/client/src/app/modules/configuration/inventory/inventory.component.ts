@@ -3215,6 +3215,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
           conf[0].expanded = true;
           conf[1].expanded = true;
         }
+        if(this.selectedData.reload){
+          this.selectedData.reload = false;
+        }
         cb(conf);
       }, error: () => {
         cb([{

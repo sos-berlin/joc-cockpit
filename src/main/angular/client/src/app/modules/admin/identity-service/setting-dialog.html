@@ -29,14 +29,14 @@
           </div>
         </div>
       </div>
-      <div class="form-group row" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+      <div class="form-group row" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid) || !isLengthMatch}">
         <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.general.initialPassword' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.initialPassword
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
           <input type="{{!passwordFields.first ? 'password' : 'text'}}" class="form-control" required name="initialPassword"
-                 [placeholder]="'user.placeholder.initialPassword' | translate"
+                 [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="isLengthMatch = true"
                  #timeout="ngModel" [(ngModel)]="currentObj.initialPassword">
           <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
              (click)="passwordFields.first = !passwordFields.first"></i>
@@ -44,6 +44,9 @@
             <div *ngIf="timeout.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
+          </div>
+          <div *ngIf="!isLengthMatch" class="text-danger help-block">
+            <div translate>user.message.minPasswordLength</div>
           </div>
         </div>
       </div>
@@ -54,7 +57,7 @@
         </label>
         <div class="col-sm-6">
           <nz-input-number required name="minPasswordLength" [nzPlaceHolder]="'user.placeholder.minPasswordLength' | translate" [nzMin]="0"
-                           #minPasswordLength="ngModel" [(ngModel)]="currentObj.minPasswordLength"></nz-input-number>
+                           #minPasswordLength="ngModel" [(ngModel)]="currentObj.minPasswordLength" (ngModelChange)="isLengthMatch = true"></nz-input-number>
           <div *ngIf="minPasswordLength.invalid && (minPasswordLength.dirty || minPasswordLength.touched)" class="text-danger help-block">
             <div *ngIf="minPasswordLength.errors.required">
               <div translate>common.message.requiredError</div>
@@ -329,9 +332,12 @@
             <div class="p-a b-a" *ngIf="data.identityServiceType !== 'LDAP-JOC'">
               <div class="form-group row">
                 <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapSearchBase</label>
-                <div class="col-sm-6">
+                       [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapSearchBase
+                  <sup *ngIf="userObj.iamLdapWithMemberOf" class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-sm-6" [ngClass]="{'has-error' : ((searchBase.dirty || searchBase.touched) && searchBase.invalid)}">
                   <input type="text" class="form-control" name="iamLdapSearchBase"
+                         [required]="userObj.iamLdapWithMemberOf" #searchBase="ngModel"
                          [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
                          [(ngModel)]="currentObj.iamLdapSearchBase">
                 </div>
@@ -433,7 +439,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || !isLengthMatch">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

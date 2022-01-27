@@ -32,6 +32,7 @@ export class SettingModalComponent implements OnInit {
     value: 'SSL'
   }];
   isEnable = false;
+  isLengthMatch = true;
   submitted = false;
   currentObj: any = {};
   userObj: any = {
@@ -337,6 +338,13 @@ export class SettingModalComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if(!this.data) {
+      this.isLengthMatch = true;
+      if (this.currentObj.initialPassword && this.currentObj.minPasswordLength > this.currentObj.initialPassword.length) {
+        this.isLengthMatch = false;
+        return;
+      }
+    }
     this.submitted = true;
     let obj: any = {};
     if (this.data && this.data.identityServiceType) {

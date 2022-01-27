@@ -2076,6 +2076,7 @@
     "message.forcePasswordChangeForUser": "Are you sure you want to force password change this account?",
     "message.resetPasswordForSelectedUser": "Are you sure you want to reset password of all selected accounts?",
     "message.forcePasswordChangeForSelectedUser": "Are you sure you want to force password change all selected accounts?",
+    "message.minPasswordLength": "Password must be grater then minimum password length",
     "tab.simpleMode": "Einfacher Modus",
     "tab.expertMode": "Experten-Modus",
     "usermode": {

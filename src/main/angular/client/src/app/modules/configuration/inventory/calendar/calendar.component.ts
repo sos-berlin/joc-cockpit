@@ -1361,6 +1361,9 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
     if (changes.reload) {
+      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+        return;
+      }
       if (this.reload) {
         this.editor.frequencyType = 'INCLUDE';
         this.getObject();
