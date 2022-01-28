@@ -433,7 +433,7 @@ export class RolesComponent implements OnDestroy {
   }
 
   private removeRole(role) {
-    this.coreService.post('auth/roles/delete', {
+    this.coreService.post('authentication/auth/roles/delete', {
       roles: [
         {role}
       ],

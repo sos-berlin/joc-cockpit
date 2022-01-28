@@ -404,7 +404,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
           obj.accounts.push({account: key});
         });
       }
-      this.coreService.post('auth/accounts/delete', obj).subscribe(() => {
+      this.coreService.post('authentication/auth/accounts/delete', obj).subscribe(() => {
         this.reset();
         this.userDetail.accounts = this.accounts;
         this.dataService.announceFunction('RELOAD');
