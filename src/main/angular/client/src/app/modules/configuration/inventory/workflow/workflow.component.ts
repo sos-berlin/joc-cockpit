@@ -6728,11 +6728,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (isArray(arg.value)) {
                 arg.value.forEach((item, index) => {
                   for (const prop in arg.value[index]) {
-                    self.coreService.removeSlashToString(arg.value[index], prop, true);
+                    self.coreService.removeSlashToString(arg.value[index], prop);
                   }
                 });
               }
-              self.coreService.removeSlashToString(arg, 'value', true);
+              self.coreService.removeSlashToString(arg, 'value');
             });
           }
           obj.arguments = argument;
@@ -6807,7 +6807,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 resultObj = JSON.parse(resultObj);
                 resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
                 resultObj.filter((arg) => {
-                  self.coreService.removeSlashToString(arg, 'value', true);
+                  self.coreService.removeSlashToString(arg, 'value');
                 });
               } else {
                 resultObj = [];

@@ -36,7 +36,7 @@
         </label>
         <div class="col-sm-6">
           <input type="{{!passwordFields.first ? 'password' : 'text'}}" class="form-control" required name="initialPassword"
-                 [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="isLengthMatch = true"
+                 [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="isLengthMatch = true" autocomplete="off"
                  #timeout="ngModel" [(ngModel)]="currentObj.initialPassword">
           <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
              (click)="passwordFields.first = !passwordFields.first"></i>
@@ -107,7 +107,7 @@
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamVaultTrustStorePassword</label>
         <div class="col-sm-6">
           <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control"
-                 name="iamVaultTruststorePassword"
+                 name="iamVaultTruststorePassword" autocomplete="off"
                  [(ngModel)]="currentObj.iamVaultTruststorePassword"
                  [placeholder]="'user.placeholder.iamVaultTrustStorePassword' | translate">
           <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
@@ -122,7 +122,7 @@
         </label>
         <div class="col-sm-6" [ngClass]="{'has-error' : ((storePath.dirty || storePath.touched) && storePath.invalid)}">
           <input name="iamVaultTruststoreType" #storePath="ngModel"
-                 [required]="currentObj.iamVaultTruststorePath && currentObj.iamVaultTruststorePath.length > 0"
+                 [required]="(currentObj.iamVaultTruststorePath && currentObj.iamVaultTruststorePath.length > 0) ? true : false"
                  [placeholder]="'user.placeholder.iamVaultTrustStoreType' | translate"
                  class="form-control" [(ngModel)]="currentObj.iamVaultTruststoreType" [nzAutocomplete]="auto"/>
           <nz-autocomplete #auto>
@@ -275,7 +275,7 @@
                 <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStorePath' | translate"
                        [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapTrustStorePath</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control" name="iamLdapTruststorePath"
+                  <input type="text" class="form-control" name="iamLdapTruststorePath" autocomplete="off"
                          [(ngModel)]="currentObj.iamLdapTruststorePath"
                          [placeholder]="'user.placeholder.iamLdapTrustStorePath' | translate">
                 </div>
@@ -285,7 +285,7 @@
                        [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapTrustStorePassword</label>
                 <div class="col-sm-6">
                   <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control"
-                         name="iamLdapTruststorePassword"
+                         name="iamLdapTruststorePassword" autocomplete="off"
                          [(ngModel)]="currentObj.iamLdapTruststorePassword"
                          [placeholder]="'user.placeholder.iamLdapTrustStorePassword' | translate">
                   <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
@@ -300,7 +300,7 @@
                 <div class="col-sm-6"
                      [ngClass]="{'has-error' : ((ldapTruststorePath.dirty || ldapTruststorePath.touched) && ldapTruststorePath.invalid)}">
                   <input name="iamLdapTruststoreType"
-                         [required]="currentObj.iamLdapTruststorePath && currentObj.iamLdapTruststorePath.length>0"
+                         [required]="(currentObj.iamLdapTruststorePath && currentObj.iamLdapTruststorePath.length>0) ? true : false"
                          #ldapTruststorePath="ngModel"
                          [placeholder]="'user.placeholder.iamLdapTrustStoreType' | translate"
                          class="form-control" [(ngModel)]="currentObj.iamLdapTruststoreType" [nzAutocomplete]="auto"/>

@@ -190,11 +190,11 @@
         </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" translate>agent.label.agentName
-           <sup *ngIf="agent.agentId" class="text-danger text-sm">*</sup>
+           <sup *ngIf="agent.agentId && agent.agentId.length > 0" class="text-danger text-sm">*</sup>
           </label>
           <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
             <input type="text" class="form-control" name="agentName" [readonly]="!new && agents && agents.length>0"
-                   [(ngModel)]="agent.agentName" #agentName="ngModel" [required]="agent.agentId && agent.agentId.length > 0"
+                   [(ngModel)]="agent.agentName" #agentName="ngModel" [required]="(agent.agentId && agent.agentId.length > 0) ? true : false"
                    placeholder="{{'agent.placeholder.enterAgentName' | translate}}">
             <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
                  class="text-danger help-block">
@@ -206,11 +206,11 @@
         </div>
         <div class="row">
           <label class="col-sm-4 form-control-label" translate>agent.label.url
-            <sup *ngIf="agent.agentId" class="text-danger text-sm">*</sup>
+            <sup *ngIf="agent.agentId && agent.agentId.length > 0" class="text-danger text-sm">*</sup>
           </label>
           <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
             <input type="url" class="form-control" name="url" #url="ngModel" [readonly]="!new && agents && agents.length>0"
-                   [required]="agent.agentId && agent.agentId.length > 0" [(ngModel)]="agent.url" placeholder="http://host:port">
+                   [required]="(agent.agentId && agent.agentId.length > 0) ? true : false" [(ngModel)]="agent.url" placeholder="http://host:port">
             <div *ngIf="url.invalid && (url.dirty || url.touched)"
                  class="text-danger help-block">
               <div *ngIf="(url.errors && url.errors.required)">

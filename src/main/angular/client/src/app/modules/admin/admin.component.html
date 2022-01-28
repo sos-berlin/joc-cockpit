@@ -48,11 +48,11 @@
               <i class="fa fa-copy"></i>&nbsp;
               <span translate>common.button.copy</span>
             </button>
-            <button *ngIf="isSelected && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="resetPassword()">
+            <button *ngIf="isSelected && (identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="resetPassword()">
               <i class="fa fa-refresh"></i>&nbsp;
               <span translate>user.button.resetPassword</span>
             </button>
-            <button *ngIf="isSelected && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="forcePasswordChange()">
+            <button *ngIf="isSelected && (identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="forcePasswordChange()">
               <i class="fa fa-key"></i>&nbsp;
               <span translate>user.button.forcePasswordChange</span>
             </button>

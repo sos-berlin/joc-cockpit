@@ -35,10 +35,26 @@ export class CoreService {
   };
 
   searchResults = {
-    inventory: [],
-    workflow: [],
-    board: [],
-    lock: []
+    inventory: {
+      panel: false,
+      result: [],
+      request: {}
+    },
+    workflow: {
+      panel: false,
+      result: [],
+      request: {}
+    },
+    board: {
+      panel: false,
+      result: [],
+      request: {}
+    },
+    lock: {
+      panel: false,
+      result: [],
+      request: {}
+    }
   };
 
   newWindow: any;
@@ -1454,7 +1470,7 @@ export class CoreService {
     return dates;
   }
 
-  removeSlashToString(data: any, type: string, flag = false): void {
+  removeSlashToString(data: any, type: string): void {
     if (data[type]) {
       if (isArray(data[type])) {
 
@@ -1484,7 +1500,7 @@ export class CoreService {
             try {
               data[type] = JSON.parse(data[type]);
             } catch (e) {
-              if ((startChar === '"' && endChar === '"') || (startChar === "'" && endChar === "'" && (type === 'final' || type === 'default' || flag))) {
+              if ((startChar === '"' && endChar === '"')) {
                 data[type] = mainStr;
               }
             }
@@ -1502,12 +1518,12 @@ export class CoreService {
         || /^(jobResourceVariable\()/g.test(data[type]) || /^(scheduledOrEmpty\()/g.test(data[type])) {
       } else if (typeof data[type] == 'string') {
         const startChar = data[type].substring(0, 1);
+        const endChar = data[type].substring(data[type].length - 1);
         if (startChar !== '$') {
-          const endChar = data[type].substring(data[type].length - 1);
           if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
           } else {
             data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
-            data[type] = '"' + data[type] + '"';
+            data[type] = endChar === "$" ? data[type] : '"' + data[type] + '"';
           }
         } else {
           const mainStr = data[type].substring(1, data[type].length);
@@ -1516,7 +1532,7 @@ export class CoreService {
             if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr)
               && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
             } else {
-              data[type] = '"' + data[type].trim() + '"';
+              data[type] = endChar === "$" ?  data[type].trim() : '"' + data[type].trim() + '"';
             }
           }
         }

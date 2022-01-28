@@ -1794,7 +1794,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.orderSearch = {
       radio: 'current',
       planned: 'today',
-      from: new Date().setHours(0, 0, 0, 0),
+      from: new Date(new Date().setHours(0, 0, 0, 0)),
       to: new Date()
     };
 
@@ -1803,21 +1803,21 @@ export class HistoryComponent implements OnInit, OnDestroy {
       planned: 'today',
       operation: 'ALL',
       state: 'ALL',
-      from: new Date().setHours(0, 0, 0, 0),
+      from: new Date(new Date().setHours(0, 0, 0, 0)),
       to: new Date()
     };
 
     this.yadeSearch = {
       radio: 'current',
       planned: 'today',
-      from: new Date().setHours(0, 0, 0, 0),
+      from: new Date(new Date().setHours(0, 0, 0, 0)),
       to: new Date()
     };
 
     this.deploymentSearch = {
       radio: 'current',
       planned: 'today',
-      from: new Date().setHours(0, 0, 0, 0),
+      from: new Date(new Date().setHours(0, 0, 0, 0)),
       to: new Date()
     };
 

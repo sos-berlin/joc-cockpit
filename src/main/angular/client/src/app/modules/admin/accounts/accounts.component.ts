@@ -164,6 +164,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   username: string;
   userIdentityService: string;
   selectedIdentityService: string;
+  selectedIdentityServiceType: string;
   usr: any = {};
   object = {
     checked: false,
@@ -211,6 +212,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.usr = {currentPage: 1, sortBy: 'account', reverse: false};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.username = this.authService.currentUserData;
+    this.selectedIdentityServiceType = sessionStorage.identityServiceType;
     this.selectedIdentityService = sessionStorage.identityServiceType + ':' + sessionStorage.identityServiceName;
     this.userIdentityService = this.authService.currentUserIdentityService;
   }
