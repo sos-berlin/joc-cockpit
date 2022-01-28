@@ -62,6 +62,7 @@ export class AccountModalComponent implements OnInit {
   @Input() userDetail: any;
   @Input() oldUser: any;
   @Input() allRoles: any;
+  @Input() selectedIdentityServiceType: string;
 
   submitted = false;
   isUnique = true;
@@ -133,7 +134,14 @@ export class AccountModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
+    this.coreService.post('authentication/auth/store', this.selectedIdentityServiceType === 'SHIRO' ? this.userDetail : {
+      identityServiceName: this.userDetail.identityServiceName,
+      accounts: [{
+        account: obj.account,
+        password: obj.password,
+        roles: obj.roles
+      }]
+    }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.accounts);
       }, error: () => {
@@ -234,15 +242,18 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.subscription3.unsubscribe();
   }
 
-  saveInfo(): void {
-    const obj = {
-      accounts: this.accounts,
-      roles: this.userDetail.roles,
+  saveInfo(accounts): void {
+    const obj: any = {
+      accounts: accounts,
       identityServiceName: this.userDetail.identityServiceName,
-      main: this.userDetail.main
     };
-
+    if (this.selectedIdentityServiceType === 'SHIRO') {
+      obj.roles = this.userDetail.roles;
+      obj.accounts = this.accounts;
+      obj.main = this.userDetail.main;
+    }
     this.coreService.post('authentication/auth/store', obj).subscribe(() => {
+      this.reset();
       this.userDetail.accounts = this.accounts;
       this.dataService.announceFunction('RELOAD');
       this.searchInResult();
@@ -272,6 +283,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         userDetail: this.userDetail,
         allRoles: this.roles,
+        selectedIdentityServiceType: this.selectedIdentityServiceType,
         newUser: true,
       },
       nzFooter: null,
@@ -294,6 +306,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         userDetail: this.userDetail,
         allRoles: this.roles,
+        selectedIdentityServiceType: this.selectedIdentityServiceType,
         oldUser: account,
       },
       nzFooter: null,
@@ -315,6 +328,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         userDetail: this.userDetail,
+        selectedIdentityServiceType: this.selectedIdentityServiceType,
         copy: true,
         oldUser: account,
       },
@@ -346,10 +360,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.accounts = this.accounts.filter((item) => {
-          return item.account !== account;
-        });
-        this.saveInfo();
+        this.deleteAccount(account);
       }
     });
   }
@@ -366,12 +377,40 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        this.accounts = this.accounts.filter((item) => {
-          return !this.object.mapOfCheckedId.has(item.account);
-        });
-        this.saveInfo();
+        this.deleteAccount(null);
       }
     });
+  }
+
+  private deleteAccount(account) {
+    this.accounts = this.accounts.filter((item) => {
+      if (account) {
+        return item.account !== account;
+      } else {
+        return !this.object.mapOfCheckedId.has(item.account);
+      }
+    });
+    if (this.selectedIdentityServiceType === 'SHIRO') {
+      this.saveInfo([]);
+    } else {
+      const obj: any = {
+        accounts: [],
+        identityServiceName: this.userDetail.identityServiceName,
+      };
+      if (account) {
+        obj.accounts.push({account});
+      } else {
+        this.object.mapOfCheckedId.forEach((value, key) => {
+          obj.accounts.push({account: key});
+        });
+      }
+      this.coreService.post('auth/accounts/delete', obj).subscribe(() => {
+        this.reset();
+        this.userDetail.accounts = this.accounts;
+        this.dataService.announceFunction('RELOAD');
+        this.searchInResult();
+      });
+    }
   }
 
   resetPassword(account): void {
@@ -422,6 +461,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   private paste(): void {
+    const arr = [];
     this.dataService.copiedObject.accounts.forEach((value, key) => {
       let flag = false;
       for (const i in this.userDetail.accounts) {
@@ -444,10 +484,14 @@ export class AccountsComponent implements OnInit, OnDestroy {
         value.roles = roles;
         value.identityServiceId = 0;
         delete value.password;
-        this.userDetail.accounts.push(value);
+        if (this.selectedIdentityServiceType === 'SHIRO') {
+          this.userDetail.accounts.push(value);
+        } else {
+          arr.push(value);
+        }
       }
     });
-    this.saveInfo();
+    this.saveInfo(arr);
   }
 
   private reset(): void {

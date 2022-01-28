@@ -18,16 +18,16 @@ import {AuthService} from '../../../components/guard';
   templateUrl: './role-dialog.html'
 })
 export class RoleModalComponent implements OnInit {
-  submitted = false;
-  isUnique = true;
-  currentRole: any = {};
-  oldName: string;
-
   @Input() userDetail: any;
   @Input() oldRole: any;
   @Input() allRoles: any;
   @Input() newRole: boolean;
   @Input() copy: boolean;
+
+  submitted = false;
+  isUnique = true;
+  currentRole: any = {};
+  oldName: string;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -94,11 +94,15 @@ export class RoleModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('authentication/auth/store', {
+    this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
+    } : {
+      accounts: this.userDetail.accounts,
+      roles: this.userDetail.roles,
+      identityServiceName: this.userDetail.identityServiceName,
     }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail);
@@ -190,11 +194,15 @@ export class ControllerModalComponent implements OnInit {
           this.userDetail.roles[obj.role].permissions.controllerDefaults = this.oldController.permissions.controllerDefaults;
         }
       }
-      this.coreService.post('authentication/auth/store', {
+      this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
         accounts: this.userDetail.accounts,
         roles: this.userDetail.roles,
         identityServiceName: this.userDetail.identityServiceName,
         main: this.userDetail.main
+      } : {
+        accounts: this.userDetail.accounts,
+        roles: this.userDetail.roles,
+        identityServiceName: this.userDetail.identityServiceName,
       }).subscribe({
         next: () => {
           this.activeModal.close(this.userDetail);
@@ -297,12 +305,14 @@ export class RolesComponent implements OnDestroy {
   }
 
   saveInfo(): void {
-    const obj = {
+    const obj: any = {
       accounts: this.accounts,
       roles: this.userDetail.roles,
-      main: this.userDetail.main,
       identityServiceName: this.userDetail.identityServiceName
     };
+    if (sessionStorage.identityServiceType === 'SHIRO') {
+      obj.main = this.userDetail.main;
+    }
     this.coreService.post('authentication/auth/store', obj).subscribe(() => {
       this.dataService.announceFunction('RELOAD');
       this.createRoleArray(obj);
@@ -404,7 +414,11 @@ export class RolesComponent implements OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           delete this.userDetail.roles[role.name];
-          this.saveInfo();
+          if (sessionStorage.identityServiceType === 'SHIRO') {
+            this.saveInfo();
+          } else{
+            this.removeRole(role.name);
+          }
           this.dataService.preferences.roles.delete(role.name);
         }
       });
@@ -416,6 +430,23 @@ export class RolesComponent implements OnDestroy {
         timeOut: 3000
       });
     }
+  }
+
+  private removeRole(role) {
+    this.coreService.post('auth/roles/delete', {
+      roles: [
+        {role}
+      ],
+      identityServiceName: this.userDetail.identityServiceName,
+    }).subscribe(() => {
+      this.roles = this.roles.filter((item) => {
+        return role != item;
+      });
+      this.controllerRoles = this.controllerRoles.filter((item) => {
+        return role != item.name;
+      });
+      this.reset();
+    });
   }
 
   addController(): void {
