@@ -122,12 +122,22 @@ export class SettingModalComponent implements OnInit {
           }
         } else {
           this.currentObj = data;
+          if (this.currentObj.initialPassword) {
+            this.currentObj.initialPassword1 = '********';
+          }
           if (data.sessionTimeout) {
             this.currentObj.sessionTimeout = SettingModalComponent.convertDurationToString(data.sessionTimeout);
           }
         }
       }
     });
+  }
+
+  changePswd(): void{
+    this.isLengthMatch = true;
+    if(this.currentObj.initialPassword1 !== '********'){
+      this.currentObj.initialPassword = this.currentObj.initialPassword1;
+    }
   }
 
   private getUsersData(): void {

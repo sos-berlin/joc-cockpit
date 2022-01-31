@@ -484,7 +484,7 @@ export class ShowChildModalComponent implements OnInit {
               }
             }
             nodes.parent = parent;
-            nodes.choice1 = parent;
+            nodes.choice = parent;
             childArr.push(nodes);
             if (data) {
               data.children = childArr;
@@ -890,6 +890,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   onlyNumbers: string;
   menuNode: any = {};
   beforeDrop;
+  jobResources = [];
   jobResourcesTree = [];
   subscription1: Subscription;
 
@@ -1451,7 +1452,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
-  private getJobResourceTree(): void {
+  private getJobResourceTree(list): void {
     if (this.jobResourcesTree.length === 0) {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
@@ -1459,12 +1460,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         types: ['JOBRESOURCE']
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, true);
-        this.getJobResources();
+        this.getJobResources(list);
       });
+    } else {
+      if (list && list.length > 0) {
+        for (const i in this.jobResources) {
+          if (list.indexOf(this.jobResources[i].name) === -1) {
+            this.extraInfo.released = false;
+            break;
+          }
+        }
+      }
     }
   }
 
-  private getJobResources(): void {
+  private getJobResources(list): void {
     this.coreService.post('inventory/read/folder', {
       path: '/',
       recursive: true,
@@ -1472,6 +1482,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }).subscribe((res: any) => {
       let map = new Map();
       res.jobResources = sortBy(res.jobResources, 'name');
+      this.jobResources = res.jobResources;
       res.jobResources.forEach((item) => {
         const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
         const obj = {
@@ -1487,6 +1498,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           map.set(path, arr);
         } else {
           map.set(path, [obj]);
+        }
+        if (list && list.length > 0) {
+          if (list.indexOf(item.name) === -1) {
+            this.extraInfo.released = false;
+          }
         }
       });
       this.jobResourcesTree[0].expanded = true;
@@ -1512,10 +1528,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (attrs && attrs.length > 0) {
       if (node.attributes && node.attributes.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
-          if (attrs[i].name === 'job_resources' && !flag) {
-            flag = true;
-            this.getJobResourceTree();
-          }
           for (let j = 0; j < node.attributes.length; j++) {
             this.checkAttrsValue(attrs[i]);
             let vals = (attrs[i].values && attrs[i].values.length > 0) ? this.coreService.clone(attrs[i].values) : '';
@@ -1533,6 +1545,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
+          }
+          if (attrs[i].name === 'job_resources' && !flag) {
+            flag = true;
+            this.getJobResourceTree(attrs[i].data);
           }
         }
       }
@@ -1910,7 +1926,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             for (let j = 0; j < eElement[i].attributes.length; j++) {
               let a = eElement[i].attributes[j].nodeName;
               let b = eElement[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = node;
             if (nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') {
@@ -2380,11 +2396,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             for (let j = 0; j < getChildChoiceSeq[i].attributes.length; j++) {
               let a = getChildChoiceSeq[i].attributes[j].nodeName;
               let b = getChildChoiceSeq[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = parent;
             nodes.choice1 = parent;
-            childArr.push(nodes);
+            let flag = false;
+            for (let k = 0; k < childArr.length; k++) {
+              if (childArr[k].ref === nodes.ref) {
+                flag = true;
+                childArr[k] = Object.assign(childArr[k], nodes);
+                break;
+              }
+            }
+            if (!flag) {
+              childArr.push(nodes);
+            }
             if (data) {
               data.children = childArr;
             } else {
@@ -2432,59 +2458,58 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   addChild(child, nodeArr, check, index) {
-    setTimeout(() => {
-      let attrs = this.checkAttributes(child.ref);
-      let value = this.getValues(child.ref);
-      let attrsType: any = this.getAttrFromType(child.ref, child.parent);
-      let valueType = this.getValueFromType(child.ref, child.parent);
-      let val = this.getVal(child);
-      if ((isEmpty(val)) && (isEmpty(value)) && (isEmpty(valueType))) {
-        val = this.getValFromDefault(child);
-      }
-      child.recreateJson = true;
-      child.order = index;
-      child.children = [];
-      nodeArr.expanded = true;
-      child.uuid = this.counting;
-      child.key = this.counting;
-      child.parentId = nodeArr.uuid;
-      this.counting++;
-      child.expanded = child.children && child.children.length > 0;
-      if (!(isEmpty(attrs))) {
-        this.attachAttrs(attrs, child);
-      }
+    this.menuNode = {};
+    let attrs = this.checkAttributes(child.ref);
+    let value = this.getValues(child.ref);
+    let attrsType: any = this.getAttrFromType(child.ref, child.parent);
+    let valueType = this.getValueFromType(child.ref, child.parent);
+    let val = this.getVal(child);
+    if ((isEmpty(val)) && (isEmpty(value)) && (isEmpty(valueType))) {
+      val = this.getValFromDefault(child);
+    }
+    child.recreateJson = true;
+    child.order = index;
+    child.children = [];
+    nodeArr.expanded = true;
+    child.uuid = this.counting;
+    child.key = this.counting;
+    child.parentId = nodeArr.uuid;
+    this.counting++;
+    child.expanded = child.children && child.children.length > 0;
+    if (!(isEmpty(attrs))) {
+      this.attachAttrs(attrs, child);
+    }
 
-      nodeArr.children.push(child);
-      nodeArr.children = sortBy(nodeArr.children, 'order');
-      if (check) {
-        if ((nodeArr && (nodeArr.ref !== 'SystemMonitorNotification' || (nodeArr.ref === 'SystemMonitorNotification' && child.ref !== 'Timer')))) {
-          this.autoAddChild(child);
-        }
+    nodeArr.children.push(child);
+    nodeArr.children = sortBy(nodeArr.children, 'order');
+    if (check) {
+      if ((nodeArr && (nodeArr.ref !== 'SystemMonitorNotification' || (nodeArr.ref === 'SystemMonitorNotification' && child.ref !== 'Timer')))) {
+        this.autoAddChild(child);
       }
-      if (!isEmpty(val)) {
-        this.attachValue(val, nodeArr.children);
-      }
-      if (!(isEmpty(value))) {
-        this.attachValue(value, nodeArr.children);
-      }
-      if (valueType !== undefined) {
-        this.attachValue(valueType, nodeArr.children);
-      }
-      if (attrsType !== undefined) {
-        this.attachTypeAttrs(attrsType, nodeArr.children);
-      }
+    }
+    if (!isEmpty(val)) {
+      this.attachValue(val, nodeArr.children);
+    }
+    if (!(isEmpty(value))) {
+      this.attachValue(value, nodeArr.children);
+    }
+    if (valueType !== undefined) {
+      this.attachValue(valueType, nodeArr.children);
+    }
+    if (attrsType !== undefined) {
+      this.attachTypeAttrs(attrsType, nodeArr.children);
+    }
 
-      // this.autoExpand(nodeArr);
-      this.printArraya(false);
-      if (child) {
-        this.getData(child);
-        if (this.nodes.length > 0) {
-          this.scrollTreeToGivenId(this.selectedNode.uuid);
-        }
+    // this.autoExpand(nodeArr);
+    this.printArraya(false);
+    if (child) {
+      this.getData(child);
+      if (this.nodes.length > 0) {
+        this.scrollTreeToGivenId(this.selectedNode.uuid);
       }
-      this.validConfig = false;
-      this.extraInfo.released = false;
-    }, 0);
+    }
+    this.validConfig = false;
+    this.extraInfo.released = false;
   }
 
   autoAddChild(child) {

@@ -49,7 +49,9 @@ declare const $: any;
     '              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">\n' +
     '                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? \'folder-open\' : \'folder\'" class="w-14"></i>\n' +
     '                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>\n' +
-    '                {{node.origin.name}}\n' +
+    '                {{node.origin.name}}' +
+    '                 <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path)" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
+    '                 <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path)" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
     '              </div>\n' +
     '            </div>\n' +
     '          </ng-template>\n' +
@@ -120,12 +122,19 @@ export class SelectOrderTemplatesComponent implements OnInit {
     if (!node.origin.type) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
-        if (this.object.paths.indexOf(node.origin.key) === -1) {
-          this.object.paths.push(node.origin.key);
-        }
         $event.stopPropagation();
       }
     }
+  }
+
+  addFolder(path): void {
+    if (this.object.paths.indexOf(path) === -1) {
+      this.object.paths.push(path);
+    }
+  }
+
+  remove(path): void {
+    this.object.paths.splice(this.object.paths.indexOf(path), 1);
   }
 
   private generateTree(arr): void {
@@ -282,9 +291,6 @@ export class CreatePlanModalComponent implements OnInit {
     if (!node.origin.type) {
       if ($event) {
         node.isExpanded = !node.isExpanded;
-        if (this.object.paths.indexOf(node.origin.key) === -1) {
-          this.object.paths.push(node.origin.key);
-        }
         $event.stopPropagation();
       }
       let flag = true;
@@ -321,6 +327,12 @@ export class CreatePlanModalComponent implements OnInit {
 
   onExpand(e): void {
     this.loadData(e.node, null);
+  }
+
+  addFolder(path): void {
+    if (this.object.paths.indexOf(path) === -1) {
+      this.object.paths.push(path);
+    }
   }
 
   remove(path, flag = false): void {

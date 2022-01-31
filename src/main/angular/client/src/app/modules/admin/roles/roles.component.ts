@@ -46,6 +46,10 @@ export class RoleModalComponent implements OnInit {
             {
               path: 'sos:products:joc',
               excluded: false
+            },
+            {
+              path: 'sos:products:controller:view',
+              excluded: false
             }
           ],
           controllerDefaults: [],
@@ -180,7 +184,11 @@ export class ControllerModalComponent implements OnInit {
           joc: [{
             path: 'sos:products:joc',
             excluded: false
-          }],
+          },
+            {
+              path: 'sos:products:controller:view',
+              excluded: false
+            }],
           controllerDefaults: [],
           controllers: {}
         };

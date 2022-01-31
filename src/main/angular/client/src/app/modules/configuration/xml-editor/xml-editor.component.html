@@ -361,7 +361,7 @@
                              (blur)="validateAttr(node.data, node)"
                              (focus)="hideError();previousName = node.data;"
                              (change)="submitData(node.data, node)"
-                             *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer"
+                             *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer && node.name !== 'job_resources'"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
                              xmlAutofocus>
@@ -592,8 +592,8 @@
         [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)">
       <ul *ngIf="childNode && childNode.length>0">
         <li nz-menu-item [ngClass]="getCustomCss(child,menuNode.origin)"
-            *ngFor="let child of childNode; let i=index">
-          <a (click)="addChild(child, menuNode.origin, true, i); addDefaultValue(child)">
+            *ngFor="let child of childNode; let i=index" (click)="addChild(child, menuNode.origin, true, i);addDefaultValue(child)">
+          <a>
             <i class="fa fa-angle-right"></i>&nbsp;
             {{child.ref}}
           </a>

@@ -426,8 +426,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       nzContent: ChangePasswordComponent,
       nzComponentParams: {
         username: this.authService.currentUserData,
-        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':')+1),
-        force: true
+        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':')+1)
       },
       nzFooter: null,
       nzClosable: false,
@@ -437,6 +436,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (result) {
         this.authService.forcePasswordChange = false;
         this.authService.save();
+      } else{
+        this.logout(null);
       }
     });
   }

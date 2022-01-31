@@ -10,7 +10,6 @@ import {CoreService} from '../../services/core.service';
 export class ChangePasswordComponent implements OnInit {
   @Input() username: string;
   @Input() identityServiceName: string;
-  @Input() force: boolean;
   submitted = false;
   passwordObj: any = {
     account: '',

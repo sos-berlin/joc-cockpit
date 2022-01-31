@@ -647,6 +647,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               obj.calendars[i].frequencyList.forEach((val) => {
                 this.calendarService.generateCalendarObj(val, obj.calendars[i]);
               });
+            } else{
+              delete obj.calendars[i].includes;
             }
             delete obj.calendars[i].frequencyList;
           }

@@ -136,6 +136,7 @@ export class AccountModalComponent implements OnInit {
 
     this.coreService.post('authentication/auth/store', this.selectedIdentityServiceType === 'SHIRO' ? this.userDetail : {
       identityServiceName: this.userDetail.identityServiceName,
+      roles: this.userDetail.roles,
       accounts: [{
         account: obj.account,
         password: obj.password,
@@ -245,15 +246,18 @@ export class AccountsComponent implements OnInit, OnDestroy {
   saveInfo(accounts): void {
     const obj: any = {
       accounts: accounts,
+      roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
     };
     if (this.selectedIdentityServiceType === 'SHIRO') {
-      obj.roles = this.userDetail.roles;
       obj.accounts = this.accounts;
       obj.main = this.userDetail.main;
     }
-    this.coreService.post('authentication/auth/store', obj).subscribe(() => {
+    this.coreService.post('authentication/auth/store', obj).subscribe((res) => {
       this.reset();
+      if (accounts) {
+        this.accounts = this.accounts.concat(accounts)
+      }
       this.userDetail.accounts = this.accounts;
       this.dataService.announceFunction('RELOAD');
       this.searchInResult();

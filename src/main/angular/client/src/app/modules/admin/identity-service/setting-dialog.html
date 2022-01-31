@@ -35,11 +35,9 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
-          <input type="{{!passwordFields.first ? 'password' : 'text'}}" class="form-control" required name="initialPassword"
-                 [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="isLengthMatch = true" autocomplete="off"
-                 #timeout="ngModel" [(ngModel)]="currentObj.initialPassword">
-          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
-             (click)="passwordFields.first = !passwordFields.first"></i>
+          <input type="password" class="form-control" required name="initialPassword"
+                 [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd()" autocomplete="off"
+                 #timeout="ngModel" [(ngModel)]="currentObj.initialPassword1">
           <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
             <div *ngIf="timeout.errors.required">
               <div translate>common.message.requiredError</div>
