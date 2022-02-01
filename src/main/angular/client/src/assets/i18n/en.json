@@ -1567,8 +1567,8 @@
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
     "message.passwordNotMatch": "New password and confirmed password have to match",
-    "message.minimumPasswordLength": "Password has to be at least {{length}} characters",
-    "message.passwordShouldNotSame": "New password should not be same as Old password",
+    "message.minimumPasswordLength": "Password too short",
+    "message.passwordShouldNotSame": "Old password and new password cannot be the same",
     "permission": {
       "label.order": "Order",
       "label.job": "Job",
@@ -1912,14 +1912,14 @@
       "welcome_do_not_remind_me": "Specifies that for the welcome window that offers defaults and examples for download no reminders should be active."
     },
     "git": {
-      "git_hold_job_resources": "git_hold_job_resources",
-      "git_hold_workflows": "git_hold_workflows",
-      "git_hold_calendars": "git_hold_calendars",
-      "git_hold_schedules": "git_hold_schedules",
-      "git_hold_notice_boards": "git_hold_notice_boards",
-      "git_hold_resource_locks": "git_hold_resource_locks",
-      "git_hold_script_includes": "git_hold_script_includes",
-      "git_hold_file_order_sources": "git_hold_file_order_sources"
+      "git_hold_job_resources": "Specifies if Job Resources should be considered local to an environment or are intended for rollout with Git.",
+      "git_hold_workflows": "Specifies if Workflows should be considered local to an environment or are intended for rollout with Git.",
+      "git_hold_calendars": "Specifies if Calendars should be considered local to an environment or are intended for rollout with Git.",
+      "git_hold_schedules": "Specifies if Schedules should be considered local to an environment or are intended for rollout with Git.",
+      "git_hold_notice_boards": "Specifies if Notice Boards should be considered local to an environment or are intended for rollout with Git.",
+      "git_hold_resource_locks": "Specifies if Resource Locks should be considered local to an environment or are intended for rollout with Git.",
+      "git_hold_script_includes": "Specifies if Script Includes should be considered local to an environment or are intended for rollout with Git.",
+      "git_hold_file_order_sources": "Specifies if File Order Sources should be considered local to an environment or are intended for rollout with Git."
     }
   },
   "user": {
@@ -2088,7 +2088,7 @@
     "message.forcePasswordChangeForUser": "Are you sure you want to force password change for this account?",
     "message.resetPasswordForSelectedUser": "Are you sure you want to reset the password of all selected accounts?",
     "message.forcePasswordChangeForSelectedUser": "Are you sure you want to force password change for all selected accounts?",
-    "message.minPasswordLength": "Password has to be at least as long as the minimum password length",
+    "message.minPasswordLength": "Password too short",
     "tab.simpleMode": "Simple Mode",
     "tab.expertMode": "Expert Mode",
     "usermode": {

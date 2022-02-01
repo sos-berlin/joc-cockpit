@@ -1567,8 +1567,8 @@
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
     "message.passwordNotMatch": "Le nouveau mot de passe et le mot de passe confirmé doivent correspondre",
-    "message.minimumPasswordLength": "Password has to be at least {{length}} characters",
-    "message.passwordShouldNotSame": "New password should not be same as Old password",
+    "message.minimumPasswordLength": "Mot de passe trop court",
+    "message.passwordShouldNotSame": "L'ancien mot de passe et le nouveau mot de passe ne doivent pas être les mêmes.",
     "permission": {
       "label.order": "Ordre",
       "label.job": "Tâche",
@@ -1912,14 +1912,14 @@
       "welcome_do_not_remind_me": "Spécifie que pour la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger, aucun rappel ne doit être actif."
     },
     "git": {
-      "git_hold_job_resources": "git_hold_job_resources",
-      "git_hold_workflows": "git_hold_workflows",
-      "git_hold_calendars": "git_hold_calendars",
-      "git_hold_schedules": "git_hold_schedules",
-      "git_hold_notice_boards": "git_hold_notice_boards",
-      "git_hold_resource_locks": "git_hold_resource_locks",
-      "git_hold_script_includes": "git_hold_script_includes",
-      "git_hold_file_order_sources": "git_hold_file_order_sources"
+      "git_hold_job_resources": "Indique si les Resources de Tâche doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
+      "git_hold_workflows": "Indique si les Workflows doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
+      "git_hold_calendars": "Indique si les Calendriers doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
+      "git_hold_schedules": "Indique si les Resources de Tâche doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
+      "git_hold_notice_boards": "Indique si les Conditions doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
+      "git_hold_resource_locks": "Indique si les Verroux de Resource doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
+      "git_hold_script_includes": "Indique si les Scripts Éléments doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
+      "git_hold_file_order_sources": "Indique si les Sources d'Ordre de Fichier doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git."
     }
   },
   "user": {

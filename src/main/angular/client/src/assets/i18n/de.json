@@ -1567,8 +1567,8 @@
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
     "message.passwordNotMatch": "Neues Kennwort und bestätigtes Kennwort müssen übereinstimmen",
-    "message.minimumPasswordLength": "Password has to be at least {{length}} characters",
-    "message.passwordShouldNotSame": "New password should not be same as Old password",
+    "message.minimumPasswordLength": "Kennwort zu kurz",
+    "message.passwordShouldNotSame": "Altes Kennwort und neues Kennwort dürfen nicht übereinstimmen.",
     "permission": {
       "label.order": "Auftrag",
       "label.job": "Job",
@@ -1912,14 +1912,14 @@
       "welcome_do_not_remind_me": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht erneut zur Erinnerung angezeigt wird."
     },
     "git": {
-      "git_hold_job_resources": "git_hold_job_resources",
-      "git_hold_workflows": "git_hold_workflows",
-      "git_hold_calendars": "git_hold_calendars",
-      "git_hold_schedules": "git_hold_schedules",
-      "git_hold_notice_boards": "git_hold_notice_boards",
-      "git_hold_resource_locks": "git_hold_resource_locks",
-      "git_hold_script_includes": "git_hold_script_includes",
-      "git_hold_file_order_sources": "git_hold_file_order_sources"
+      "git_hold_job_resources": "Vereinbart, dass Job-Ressourcen als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
+      "git_hold_workflows": "Vereinbart, dass Arbeitsabläufe als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
+      "git_hold_calendars": "Vereinbart, dass Kalender als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
+      "git_hold_schedules": "Vereinbart, dass Zeitpläne als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
+      "git_hold_notice_boards": "Vereinbart, dass Notizbretter als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
+      "git_hold_resource_locks": "Vereinbart, dass Ressourcen-Sperren als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
+      "git_hold_script_includes": "Vereinbart, dass Skript Bausteine als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
+      "git_hold_file_order_sources": "Vereinbart, dass Dateiauftragsquellen als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind."
     }
   },
   "user": {
