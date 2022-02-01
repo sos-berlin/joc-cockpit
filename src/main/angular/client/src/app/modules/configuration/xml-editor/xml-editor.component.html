@@ -236,14 +236,16 @@
                         <tr *ngFor="let item of node.origin.attributes">
                           <td style="padding: 3px;"><span> {{item.name}}</span></td>
                           <td
-                            style="padding: 3px;">{{(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)}}</td>
+                            style="padding: 3px;">{{(item.data && item.name !== 'password') ? item.data : passwordLabel(item.data)}}
+                          </td>
                         </tr>
                       </table>
                       <table style="padding: 3px;" *ngIf="node.origin && node.origin.values">
                         <tr *ngFor="let item of node.origin.values">
                           <td style="padding: 3px;"><span> {{item.name}}</span></td>
                           <td style="padding: 3px;"
-                              [innerHTML]="(item.data && item.name !== 'password') ? (item.data | safeHtml) : passwordLabel(item.data)"></td>
+                              [innerHTML]="(item.data && (item.name && item.name !== 'password' || (item.base && item.base !== 'password'))) ? (item.data | safeHtml) : passwordLabel(item.data)">
+                          </td>
                         </tr>
                       </table>
                     </ng-template>
@@ -332,29 +334,30 @@
                       <sup *ngIf="node.use ==='required' || !node.use" class="text-danger text-sm">*</sup></label></div>
                     <div class="col-sm-5">
                       <div *ngIf="node.name === 'job_resources'">
-                          <nz-tree-select
-                            name="jobResourceName"
-                            nzMultiple
-                            nzNoAnimation
-                            [nzAllowClear]="false"
-                            [nzNodes]="jobResourcesTree"
-                            [nzHideUnMatched]="true"
-                            [nzDropdownStyle]="{ 'max-height': '300px' }"
-                            nzShowSearch
-                            [(ngModel)]="node.data"
-                            (ngModelChange)="onChangeJobResource($event, node)"
-                          >
-                            <ng-template #nzTreeTemplate let-item>
-                              <div class="node-wrapper w-93" (click)="loadData(item, 'JOBRESOURCE', $event);">
-                                <div class="node-content-wrapper" [class.node-content-wrapper-active]="item.isSelected">
-                                  <i *ngIf="!item.origin.type" nz-icon [nzType]="item.isExpanded ? 'folder-open' : 'folder'"
-                                     class="w-14"></i>
-                                  <i *ngIf="item.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                                  {{item.origin.key}}
-                                </div>
+                        <nz-select
+                          name="jobResourceName"
+                          [(ngModel)]="node.data"
+                          nzShowSearch
+                          [nzAllowClear]="false"
+                          [nzDropdownClassName]="'group-list'"
+                          nzMode="multiple"
+                          (ngModelChange)="onChangeJobResource()"
+                        >
+                          <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of jobResourcesTree">
+                            <ng-template #nzTreeTemplate>
+                              <div>
+                                <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
+                                  {{item.name}}
                               </div>
                             </ng-template>
-                          </nz-tree-select>
+                            <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
+                              <div>
+                                <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                                 {{option.name}}
+                              </div>
+                            </nz-option>
+                          </nz-option-group>
+                        </nz-select>
                       </div>
                       <input class="form-control w-full" id="{{node.name}}" type="text"
                              [(ngModel)]="node.data"

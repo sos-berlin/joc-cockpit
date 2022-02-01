@@ -10,7 +10,7 @@ import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {saveAs} from 'file-saver';
 import {PerfectScrollbarComponent} from 'ngx-perfect-scrollbar';
-import {isEmpty, isArray, isEqual, sortBy, clone} from 'underscore';
+import {isEmpty, isArray, isEqual, sortBy, clone, groupBy} from 'underscore';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
@@ -890,7 +890,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   onlyNumbers: string;
   menuNode: any = {};
   beforeDrop;
-  jobResources = [];
   jobResourcesTree = [];
   subscription1: Subscription;
 
@@ -1007,16 +1006,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.checkOrder(node.origin);
   }
 
-  loadData(node, type, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-    }
+  onChangeJobResource(): void {
+    this.extraInfo.released = false;
   }
 
   deleteAllConf(): void {
@@ -1446,83 +1437,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
-  private getJobResourceTree(node): void {
+  private getJobResourceTree(): void {
     if (this.jobResourcesTree.length === 0) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerIds.selected,
-        forInventory: true,
-        types: ['JOBRESOURCE']
-      }).subscribe((res) => {
-        this.jobResourcesTree = this.coreService.prepareTree(res, true);
-        this.getJobResources(node);
+      this.coreService.getJobResource((arr) => {
+        this.jobResourcesTree = arr;
       });
-    } else {
-      this.matchJobResourceList(node);
-    }
-  }
-
-  private matchJobResourceList(node): void {
-    if (node.data && node.data.length > 0) {
-      const arr = [];
-      for (const i in this.jobResources) {
-        let flag = false;
-        for (let j = 0; j < node.data.length; j++) {
-          if (node.data[j] === this.jobResources[i].name) {
-            flag = true;
-            arr.push(node.data[j])
-            break;
-          }
-        }
-        if (!flag) {
-          this.extraInfo.released = false;
-        }
-      }
-
-      node.data = arr;
-    }
-  }
-
-  private getJobResources(node): void {
-    this.coreService.post('inventory/read/folder', {
-      path: '/',
-      recursive: true,
-      objectTypes: ['JOBRESOURCE']
-    }).subscribe((res: any) => {
-      let map = new Map();
-      res.jobResources = sortBy(res.jobResources, 'name');
-      this.jobResources = res.jobResources;
-      res.jobResources.forEach((item) => {
-        const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
-        const obj = {
-          title: item.name,
-          path: item.path,
-          key: item.name,
-          type: item.objectType,
-          isLeaf: true
-        };
-        if (map.has(path)) {
-          const arr = map.get(path);
-          arr.push(obj);
-          map.set(path, arr);
-        } else {
-          map.set(path, [obj]);
-        }
-      });
-      this.jobResourcesTree[0].expanded = true;
-      this.matchJobResourceList(node);
-      this.updateTreeRecursive(this.jobResourcesTree, map);
-      this.jobResourcesTree = [...this.jobResourcesTree];
-    });
-  }
-
-  private updateTreeRecursive(nodes, map): void {
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i].path && map.has(nodes[i].path)) {
-        nodes[i].children = map.get(nodes[i].path).concat(nodes[i].children || []);
-      }
-      if (nodes[i].children) {
-        this.updateTreeRecursive(nodes[i].children, map);
-      }
     }
   }
 
@@ -1532,6 +1451,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (attrs && attrs.length > 0) {
       if (node.attributes && node.attributes.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
+          if (attrs[i].name === 'job_resources' && !flag) {
+            flag = true;
+            this.getJobResourceTree();
+          }
           for (let j = 0; j < node.attributes.length; j++) {
             this.checkAttrsValue(attrs[i]);
             let vals = (attrs[i].values && attrs[i].values.length > 0) ? this.coreService.clone(attrs[i].values) : '';
@@ -1549,10 +1472,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-          }
-          if (attrs[i].name === 'job_resources' && !flag) {
-            flag = true;
-            this.getJobResourceTree(attrs[i]);
           }
         }
       }

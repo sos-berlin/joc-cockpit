@@ -144,29 +144,30 @@
             <label class="col-md-4 col-lg-3 form-control-label"
                    translate>workflow.label.jobResourceNames</label>
             <div class="col-md-8 col-lg-9">
-              <nz-tree-select
+              <nz-select
                 name="jobResource"
-                nzNoAnimation
-                nzMultiple
-                nzAllowClear
-                [nzNodes]="jobResourcesTree"
-                [nzHideUnMatched]="true"
-                [nzDropdownStyle]="{ 'max-height': '300px' }"
-                nzShowSearch
-                [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
                 [(ngModel)]="object.jobResourceNames"
+                nzShowSearch
+                [nzAllowClear]="false"
+                [nzDropdownClassName]="'group-list'"
+                [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
+                nzMode="multiple"
               >
-                <ng-template #nzTreeTemplate let-node>
-                  <div class="node-wrapper w-93" (click)="loadData(node, 'JOBRESOURCE', $event);">
-                    <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
-                      <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                         class="w-14"></i>
-                      <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                      {{node.origin.key}}
+                <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of jobResourcesTree">
+                  <ng-template #nzTreeTemplate>
+                    <div>
+                      <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
+                      {{item.name}}
                     </div>
-                  </div>
-                </ng-template>
-              </nz-tree-select>
+                  </ng-template>
+                  <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
+                    <div>
+                      <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                      {{option.name}}
+                    </div>
+                  </nz-option>
+                </nz-option-group>
+              </nz-select>
             </div>
           </div>
           <div class="form-group row">

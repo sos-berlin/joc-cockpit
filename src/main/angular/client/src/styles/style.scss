@@ -5894,6 +5894,10 @@ General CSS
   }
 }
 
+.ant-drawer-header{
+  padding: 0;
+}
+
 .ant-drawer-header-no-title {
   display: none;
 }
@@ -7716,6 +7720,24 @@ tr.tr-border td:first-child {
 
 .ant-select-item {
   color: var(--text-color);
+}
+
+.ant-select-item-group{
+  padding-top: 1px;
+  padding-bottom: 1px;
+  min-height: auto;
+  padding-left: 16px;
+}
+
+.ant-select-item-option-grouped {
+  padding-left: 36px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  min-height: auto;
+}
+
+.group-list .cdk-virtual-scroll-spacer{
+  height: auto !important;
 }
 
 .ant-select-item-option-active:not(.ant-select-item-option-disabled) {

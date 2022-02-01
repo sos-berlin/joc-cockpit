@@ -57,13 +57,13 @@ export class FrequencyModalComponent implements OnInit {
   countArrU = [1, 2, 3, 4];
 
   daysOptions = [
-    {label: 'sunday', value: '0', checked: false},
     {label: 'monday', value: '1', checked: false},
     {label: 'tuesday', value: '2', checked: false},
     {label: 'wednesday', value: '3', checked: false},
     {label: 'thursday', value: '4', checked: false},
     {label: 'friday', value: '5', checked: false},
-    {label: 'saturday', value: '6', checked: false}
+    {label: 'saturday', value: '6', checked: false},
+    {label: 'sunday', value: '0', checked: false}
   ];
 
   monthsOptions = [

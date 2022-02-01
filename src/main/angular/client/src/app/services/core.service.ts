@@ -6,7 +6,7 @@ import {Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
-import {isEmpty, sortBy, isNumber, object, isArray} from 'underscore';
+import {isEmpty, sortBy, isNumber, object, isArray, groupBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 
@@ -1532,7 +1532,7 @@ export class CoreService {
             if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr)
               && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
             } else {
-              data[type] = endChar === "$" ?  data[type].trim() : '"' + data[type].trim() + '"';
+              data[type] = endChar === "$" ? data[type].trim() : '"' + data[type].trim() + '"';
             }
           }
         }
@@ -1568,5 +1568,38 @@ export class CoreService {
   convertTextToLink(value: string, link: any): string {
     return value.replace(new RegExp(/%(.*)%/, 'gi'),
       '<a target="_blank" href="' + link + '" class="text-primary text-u-l">$1</a>');
+  }
+
+  getJobResource(cb): void {
+    this.post('inventory/read/folder', {
+      path: '/',
+      recursive: true,
+      objectTypes: ['JOBRESOURCE']
+    }).subscribe({
+      next: (res: any) => {
+        res.jobResources = sortBy(res.jobResources, (i: any) => {
+          return i.name.toLowerCase();
+        });
+        let entries = [];
+        res.jobResources.forEach((item) => {
+          const obj = {
+            name: item.name,
+            path: item.path.substring(0, item.path.lastIndexOf('/')) || '/'
+          };
+          entries.push(obj);
+        });
+        entries = sortBy(entries, (i: any) => {
+          return i.path.toLowerCase();
+        });
+        const arr = [];
+        for (const [key, value] of Object.entries(groupBy(entries, 'path'))) {
+          arr.push({name: key, list: value});
+        }
+
+        cb(arr);
+      }, error: () => {
+        cb([]);
+      }
+    });
   }
 }

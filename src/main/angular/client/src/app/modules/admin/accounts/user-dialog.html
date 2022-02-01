@@ -40,7 +40,7 @@
             <input type="password" class="form-control" placeholder="{{'user.placeholder.password' | translate}}" [(ngModel)]="currentUser.fakePassword"
                    name="password" autocomplete="off" (focus)="minimumPasswordLength = true" (blur)="checkPwdLength()"/>
             <div *ngIf="!minimumPasswordLength && currentUser.fakePassword" class="text-danger help-block">
-              <div translate [translateParams]="{length: settings.minPasswordLength}">profile.message.minimumPasswordLength</div>
+              <div translate>profile.message.minimumPasswordLength</div>
             </div>
           </div>
         </div>

@@ -62,14 +62,7 @@ export class UpdateObjectComponent implements OnInit {
       };
     }
     if (this.jobResourcesTree.length === 0 && this.type === InventoryObject.WORKFLOW) {
-      this.coreService.post('tree', {
-        controllerId: this.controllerId,
-        forInventory: true,
-        types: [InventoryObject.JOBRESOURCE]
-      }).subscribe((res) => {
-        this.jobResourcesTree = this.coreService.prepareTree(res, false);
-        this.getJobResources();
-      });
+      this.getJobResources();
     }
     if (this.workflowTree.length === 0 && (this.type === InventoryObject.FILEORDERSOURCE || this.type === InventoryObject.SCHEDULE)) {
       this.coreService.post('tree', {
@@ -96,45 +89,9 @@ export class UpdateObjectComponent implements OnInit {
   }
 
   private getJobResources(): void {
-    this.coreService.post('inventory/read/folder', {
-      path: '/',
-      recursive: true,
-      objectTypes: [InventoryObject.JOBRESOURCE]
-    }).subscribe((res: any) => {
-      let map = new Map();
-      res.jobResources = sortBy(res.jobResources, 'name');
-      res.jobResources.forEach((item) => {
-        const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
-        const obj = {
-          title: item.name,
-          path: item.path,
-          key: item.name,
-          type: item.objectType,
-          isLeaf: true
-        };
-        if (map.has(path)) {
-          const arr = map.get(path);
-          arr.push(obj);
-          map.set(path, arr);
-        } else {
-          map.set(path, [obj]);
-        }
-      });
-      this.jobResourcesTree[0].expanded = true;
-      this.updateTreeRecursive(this.jobResourcesTree, map);
-      this.jobResourcesTree = [...this.jobResourcesTree];
+    this.coreService.getJobResource((arr) => {
+      this.jobResourcesTree = arr;
     });
-  }
-
-  private updateTreeRecursive(nodes, map): void {
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i].path && map.has(nodes[i].path)) {
-        nodes[i].children = map.get(nodes[i].path).concat(nodes[i].children || []);
-      }
-      if (nodes[i].children) {
-        this.updateTreeRecursive(nodes[i].children, map);
-      }
-    }
   }
 
   onExpand(e, type): void {
