@@ -68,13 +68,15 @@ export class AccountModalComponent implements OnInit {
   isUnique = true;
   currentUser: any = {};
   isPasswordVisible = true;
+  minimumPasswordLength = true;
+  settings: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
     const type = sessionStorage.identityServiceType || '';
-
+    this.getConfiguration();
     if (this.oldUser) {
       this.currentUser = clone(this.oldUser);
       this.currentUser.fakePassword = '00000000';
@@ -98,6 +100,18 @@ export class AccountModalComponent implements OnInit {
     }
   }
 
+  private getConfiguration(): void {
+    this.coreService.post('configuration', {
+      id: 0,
+      objectType: 'GENERAL',
+      configurationType: 'IAM',
+    }).subscribe((res) => {
+      if (res.configuration.configurationItem) {
+        this.settings = JSON.parse(res.configuration.configurationItem);
+      }
+    });
+  }
+
   checkUser(newUser, existingUser): void {
     this.isUnique = true;
     for (let i = 0; i < this.userDetail.accounts.length; i++) {
@@ -105,6 +119,34 @@ export class AccountModalComponent implements OnInit {
         this.isUnique = false;
         break;
       }
+    }
+  }
+
+  checkPwdLength(): void {
+    if (this.settings) {
+      if (this.settings.minPasswordLength) {
+        if (this.currentUser.fakePassword && this.settings.minPasswordLength > this.currentUser.fakePassword.length) {
+          this.minimumPasswordLength = false;
+        }
+      }
+    }
+  }
+
+  private rename(cb): void {
+    if (this.oldUser.account !== this.currentUser.account) {
+      this.coreService.post('authentication/auth/account/rename', {
+        identityServiceName: this.userDetail.identityServiceName,
+        accountOldName: this.oldUser.account,
+        accountNewName: this.currentUser.account
+      }).subscribe({
+        next: () => {
+          cb('OK');
+        }, error: () => {
+          cb();
+        }
+      });
+    } else {
+      cb();
     }
   }
 
@@ -123,17 +165,23 @@ export class AccountModalComponent implements OnInit {
         roles: obj.roles
       };
       this.userDetail.accounts.push(data);
+      this.store(obj);
     } else {
-      for (let i = 0; i < this.userDetail.accounts.length; i++) {
-        if (this.userDetail.accounts[i] === this.oldUser || isEqual(this.userDetail.accounts[i], this.oldUser)) {
-          this.userDetail.accounts[i].account = obj.account;
-          this.userDetail.accounts[i].password = obj.password;
-          this.userDetail.accounts[i].roles = obj.roles;
-          break;
+      this.rename(() => {
+        for (let i = 0; i < this.userDetail.accounts.length; i++) {
+          if (this.userDetail.accounts[i] === this.oldUser || isEqual(this.userDetail.accounts[i], this.oldUser)) {
+            this.userDetail.accounts[i].account = obj.account;
+            this.userDetail.accounts[i].password = obj.password;
+            this.userDetail.accounts[i].roles = obj.roles;
+            break;
+          }
         }
-      }
+        this.store(obj);
+      });
     }
+  }
 
+  private store(obj) {
     this.coreService.post('authentication/auth/store', this.selectedIdentityServiceType === 'SHIRO' ? this.userDetail : {
       identityServiceName: this.userDetail.identityServiceName,
       roles: this.userDetail.roles,

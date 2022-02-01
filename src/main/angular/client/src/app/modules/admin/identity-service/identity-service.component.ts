@@ -43,6 +43,7 @@ export class SettingModalComponent implements OnInit {
     second: false,
     third: false
   };
+  oldPassword : string;
   actualData:any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService,
@@ -116,15 +117,17 @@ export class SettingModalComponent implements OnInit {
                 this.userObj.iamLdapPort = 389;
               }
               if (data.ldap.expert) {
-                 this.currentObj = data.ldap.expert;
+                this.currentObj = data.ldap.expert;
               }
             }
           }
         } else {
           this.currentObj = data;
           if (this.currentObj.initialPassword) {
+            this.oldPassword = this.currentObj.initialPassword;
             this.currentObj.initialPassword1 = '********';
           }
+
           if (data.sessionTimeout) {
             this.currentObj.sessionTimeout = SettingModalComponent.convertDurationToString(data.sessionTimeout);
           }
@@ -133,10 +136,16 @@ export class SettingModalComponent implements OnInit {
     });
   }
 
-  changePswd(): void{
+  changePswd(type): void {
     this.isLengthMatch = true;
-    if(this.currentObj.initialPassword1 !== '********'){
-      this.currentObj.initialPassword = this.currentObj.initialPassword1;
+    if (type == 'TEXT') {
+      if (this.oldPassword !== this.currentObj.initialPassword) {
+        this.currentObj.initialPassword1 = this.currentObj.initialPassword;
+      }
+    } else {
+      if (this.currentObj.initialPassword1 !== '********') {
+        this.currentObj.initialPassword = this.currentObj.initialPassword1;
+      }
     }
   }
 
@@ -364,7 +373,8 @@ export class SettingModalComponent implements OnInit {
         obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
       }
     } else {
-      obj = this.currentObj;
+      obj = this.coreService.clone(this.currentObj);
+      delete obj.initialPassword1;
       if (obj.sessionTimeout) {
         obj.sessionTimeout = SettingModalComponent.convertStringToDuration(obj.sessionTimeout);
       }

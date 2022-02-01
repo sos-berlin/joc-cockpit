@@ -1019,12 +1019,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  onChangeJobResource(value, data): void {
-    if (!isEqual(JSON.stringify(data.data), JSON.stringify(value))) {
-      data.data = value;
-    }
-  }
-
   deleteAllConf(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -1452,7 +1446,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
-  private getJobResourceTree(list): void {
+  private getJobResourceTree(node): void {
     if (this.jobResourcesTree.length === 0) {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
@@ -1460,21 +1454,35 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         types: ['JOBRESOURCE']
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, true);
-        this.getJobResources(list);
+        this.getJobResources(node);
       });
     } else {
-      if (list && list.length > 0) {
-        for (const i in this.jobResources) {
-          if (list.indexOf(this.jobResources[i].name) === -1) {
-            this.extraInfo.released = false;
-            break;
-          }
-        }
-      }
+      this.matchJobResourceList(node);
     }
   }
 
-  private getJobResources(list): void {
+  private matchJobResourceList(node): void {
+    if (node.data && node.data.length > 0) {
+      const arr = [];
+      for (const i in this.jobResources) {
+        let flag = false;
+        for (let j = 0; j < node.data.length; j++) {
+          if (node.data[j] === this.jobResources[i].name) {
+            flag = true;
+            arr.push(node.data[j])
+            break;
+          }
+        }
+        if (!flag) {
+          this.extraInfo.released = false;
+        }
+      }
+
+      node.data = arr;
+    }
+  }
+
+  private getJobResources(node): void {
     this.coreService.post('inventory/read/folder', {
       path: '/',
       recursive: true,
@@ -1499,13 +1507,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         } else {
           map.set(path, [obj]);
         }
-        if (list && list.length > 0) {
-          if (list.indexOf(item.name) === -1) {
-            this.extraInfo.released = false;
-          }
-        }
       });
       this.jobResourcesTree[0].expanded = true;
+      this.matchJobResourceList(node);
       this.updateTreeRecursive(this.jobResourcesTree, map);
       this.jobResourcesTree = [...this.jobResourcesTree];
     });
@@ -1548,7 +1552,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           }
           if (attrs[i].name === 'job_resources' && !flag) {
             flag = true;
-            this.getJobResourceTree(attrs[i].data);
+            this.getJobResourceTree(attrs[i]);
           }
         }
       }

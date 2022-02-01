@@ -1567,6 +1567,8 @@
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
     "message.passwordNotMatch": "New password and confirmed password have to match",
+    "message.minimumPasswordLength": "Password has to be at least {{length}} characters",
+    "message.passwordShouldNotSame": "New password should not be same as Old password",
     "permission": {
       "label.order": "Order",
       "label.job": "Job",
@@ -1908,6 +1910,16 @@
     "user": {
       "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",
       "welcome_do_not_remind_me": "Specifies that for the welcome window that offers defaults and examples for download no reminders should be active."
+    },
+    "git": {
+      "git_hold_job_resources": "git_hold_job_resources",
+      "git_hold_workflows": "git_hold_workflows",
+      "git_hold_calendars": "git_hold_calendars",
+      "git_hold_schedules": "git_hold_schedules",
+      "git_hold_notice_boards": "git_hold_notice_boards",
+      "git_hold_resource_locks": "git_hold_resource_locks",
+      "git_hold_script_includes": "git_hold_script_includes",
+      "git_hold_file_order_sources": "git_hold_file_order_sources"
     }
   },
   "user": {

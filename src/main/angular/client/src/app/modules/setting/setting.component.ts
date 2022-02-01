@@ -148,6 +148,52 @@ export class SettingComponent implements OnInit {
               private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService) {
   }
 
+  static checkTime(time): string {
+    if (/^\d{1,2}:\d{2}?$/i.test(time)) {
+      time = time + ':00';
+    } else if (/^\d{1,2}:\d{2}(:)?$/i.test(time)) {
+      time = time + '00';
+    } else if (/^\d{1,2}?$/i.test(time)) {
+      time = time + ':00:00';
+    }
+    if (time === '00:00') {
+      time = '00:00:00';
+    }
+    return time;
+  }
+
+  static generateStoreObject(setting): any {
+    const tempSetting: any = {};
+    for (let prop in setting) {
+      tempSetting[prop] = {};
+      for (let x in setting[prop]) {
+        if (setting[prop][x].value || setting[prop][x].value === false || setting[prop][x].value === 0 || (setting[prop][x].type === 'PASSWORD' && setting[prop][x].value === '')) {
+          tempSetting[prop][x] = {};
+          if (x !== 'ordering') {
+            tempSetting[prop][x].ordering = setting[prop][x].ordering;
+            let value = setting[prop][x].value;
+            if (setting[prop][x].type === 'WEEKDAYS') {
+              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
+                value = setting[prop][x].value.toString();
+              }
+            } else if (setting[prop][x].type === 'ARRAY') {
+              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
+                value = setting[prop][x].value.filter((item) => {
+                  return item.name;
+                });
+                value = value.map((item) => item.name).join(';');
+              }
+            }
+            tempSetting[prop][x].value = value;
+          } else {
+            tempSetting[prop][x] = setting[prop].ordering;
+          }
+        }
+      }
+    }
+    return tempSetting;
+  }
+
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
@@ -165,9 +211,9 @@ export class SettingComponent implements OnInit {
       this.toasterService.error(msg);
       return;
     } else if (value && value.value && value.value.type === 'TIME') {
-      value.value.value = this.checkTime(value.value.value);
+      value.value.value = SettingComponent.checkTime(value.value.value);
     }
-    this.savePreferences(this.generateStoreObject(tempSetting), isJoc);
+    this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc);
   }
 
   openEditField(val): void {
@@ -269,7 +315,7 @@ export class SettingComponent implements OnInit {
   exportSetting(): void {
     const name = 'global-setting.json';
     const fileType = 'application/octet-stream';
-    let data = this.generateStoreObject(this.settings);
+    let data = SettingComponent.generateStoreObject(this.settings);
     data = JSON.stringify(data, undefined, 2);
     const blob = new Blob([data], {type: fileType});
     saveAs(blob, name);
@@ -370,52 +416,6 @@ export class SettingComponent implements OnInit {
 
   showCopyMessage(): void {
     this.coreService.showCopyMessage(this.message)
-  }
-
-  private checkTime(time): string {
-    if (/^\d{1,2}:\d{2}?$/i.test(time)) {
-      time = time + ':00';
-    } else if (/^\d{1,2}:\d{2}(:)?$/i.test(time)) {
-      time = time + '00';
-    } else if (/^\d{1,2}?$/i.test(time)) {
-      time = time + ':00:00';
-    }
-    if (time === '00:00') {
-      time = '00:00:00';
-    }
-    return time;
-  }
-
-  private generateStoreObject(setting): any {
-    const tempSetting: any = {};
-    for (let prop in setting) {
-      tempSetting[prop] = {};
-      for (let x in setting[prop]) {
-        if (setting[prop][x].value || setting[prop][x].value === false || setting[prop][x].value === 0 || (setting[prop][x].type === 'PASSWORD' && setting[prop][x].value === '')) {
-          tempSetting[prop][x] = {};
-          if (x !== 'ordering') {
-            tempSetting[prop][x].ordering = setting[prop][x].ordering;
-            let value = setting[prop][x].value;
-            if (setting[prop][x].type === 'WEEKDAYS') {
-              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
-                value = setting[prop][x].value.toString();
-              }
-            } else if (setting[prop][x].type === 'ARRAY') {
-              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
-                value = setting[prop][x].value.filter((item) => {
-                  return item.name;
-                });
-                value = value.map((item) => item.name).join(';');
-              }
-            }
-            tempSetting[prop][x].value = value;
-          } else {
-            tempSetting[prop][x] = setting[prop].ordering;
-          }
-        }
-      }
-    }
-    return tempSetting;
   }
 
   private savePreferences(tempSetting, isJoc): void {

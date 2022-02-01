@@ -29,17 +29,22 @@
           </div>
         </div>
       </div>
-      <div class="form-group row" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid) || !isLengthMatch}">
+      <div class="form-group row" [ngClass]="{'has-error' : ((pwd.dirty || pwd.touched) && pwd.invalid) || !isLengthMatch}">
         <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.general.initialPassword' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.initialPassword
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
-          <input type="password" class="form-control" required name="initialPassword"
-                 [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd()" autocomplete="off"
-                 #timeout="ngModel" [(ngModel)]="currentObj.initialPassword1">
-          <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
-            <div *ngIf="timeout.errors.required">
+          <input [hidden]="passwordFields.first" type="password" class="form-control" required name="initialPassword1"
+                 [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd('PASSWORD')" autocomplete="off"
+                 #pwd="ngModel" [(ngModel)]="currentObj.initialPassword1">
+          <input [hidden]="!passwordFields.first" type="text" class="form-control" required name="initialPassword"
+                 [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd('TEXT')" autocomplete="off"
+                 #pwd="ngModel" [(ngModel)]="currentObj.initialPassword">
+          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
+             (click)="passwordFields.first = !passwordFields.first"></i>
+          <div *ngIf="pwd.invalid && (pwd.dirty || pwd.touched)" class="text-danger help-block">
+            <div *ngIf="pwd.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
