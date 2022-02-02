@@ -184,7 +184,6 @@ export class AccountModalComponent implements OnInit {
   private store(obj) {
     this.coreService.post('authentication/auth/store', this.selectedIdentityServiceType === 'SHIRO' ? this.userDetail : {
       identityServiceName: this.userDetail.identityServiceName,
-      roles: this.userDetail.roles,
       accounts: [{
         account: obj.account,
         password: obj.password,
@@ -294,7 +293,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
   saveInfo(accounts): void {
     const obj: any = {
       accounts: accounts,
-      roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
     };
     if (this.selectedIdentityServiceType === 'SHIRO') {

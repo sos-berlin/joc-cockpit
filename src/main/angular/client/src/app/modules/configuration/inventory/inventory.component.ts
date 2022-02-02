@@ -1311,6 +1311,7 @@ export class RepositoryComponent implements OnInit {
   @Input() preferences;
   @Input() origin: any;
   @Input() operation: string;
+  @Input() repositoryType: string;
   @Input() display: string;
   loading = true;
   path: string;
@@ -1483,7 +1484,11 @@ export class RepositoryComponent implements OnInit {
   }
 
   private readFileSystem(path, merge = null, cb = null): void {
-    this.coreService.post('inventory/repository/read', {folder: path || '/', recursive: false}).subscribe((res) => {
+    this.coreService.post('inventory/repository/read', {
+      folder: path || '/',
+      recursive: false,
+      category: this.repositoryType
+    }).subscribe((res) => {
       let tree = [];
       if (res.folders && res.folders.length > 0 || res.items && res.items.length > 0) {
         if(this.type !== 'ALL') {
@@ -1687,6 +1692,7 @@ export class RepositoryComponent implements OnInit {
           obj.auditLog.ticketLink = this.comments.ticketLink;
         }
       }
+      obj.category = this.repositoryType;
       this.coreService.post('inventory/repository/' + this.operation, obj).subscribe({
         next: (res) => {
           this.activeModal.close(res);
@@ -1820,14 +1826,14 @@ export class RepositoryComponent implements OnInit {
       };
 
       if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations || this.object.deploy2Configurations) {
-        obj.envRelated = {
+        obj.local = {
           releasedConfigurations: this.object.releasedConfigurations,
           deployConfigurations: this.object.deploy2Configurations,
           draftConfigurations: this.object.releaseDraftConfigurations
         };
       }
       if (this.object.draftConfigurations || this.object.deployConfigurations) {
-        obj.envIndependent = {
+        obj.rollout = {
           draftConfigurations: this.object.draftConfigurations,
           deployConfigurations: this.object.deployConfigurations
         };
@@ -3383,7 +3389,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  repositoryOperation(node, operation): void {
+  repositoryOperation(node, operation, repositoryType): void {
     const origin = node.origin ? node.origin : node;
     this.modal.create({
       nzTitle: undefined,
@@ -3395,7 +3401,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         preferences: this.preferences,
         display: this.preferences.auditLog,
         origin,
-        operation
+        operation,
+        repositoryType
       },
       nzFooter: null,
       nzClosable: false,

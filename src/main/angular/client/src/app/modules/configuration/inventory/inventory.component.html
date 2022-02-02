@@ -339,14 +339,31 @@
     </li>
     <li nz-submenu [nzTitle]="'inventory.button.repository' | translate"  *ngIf="(!node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
       <ul>
-        <li nz-menu-item (click)="repositoryOperation(node, 'store');">
-          <a translate>inventory.button.storeTo</a>
+        <li nz-submenu [nzTitle]="'inventory.button.local' | translate">
+          <ul>
+            <li nz-menu-item (click)="repositoryOperation(node, 'store', 'LOCAL');">
+              <a translate>inventory.button.storeTo</a>
+            </li>
+            <li nz-menu-item (click)="repositoryOperation(node, 'update', 'LOCAL');">
+              <a translate>inventory.button.updateFrom</a>
+            </li>
+            <li nz-menu-item (click)="repositoryOperation(node, 'delete', 'LOCAL');">
+              <a translate>inventory.button.deleteFrom</a>
+            </li>
+          </ul>
         </li>
-        <li nz-menu-item (click)="repositoryOperation(node, 'update');">
-          <a translate>inventory.button.updateFrom</a>
-        </li>
-        <li nz-menu-item (click)="repositoryOperation(node, 'delete');">
-          <a translate>inventory.button.deleteFrom</a>
+        <li nz-submenu [nzTitle]="'inventory.button.rollout' | translate">
+          <ul>
+            <li nz-menu-item (click)="repositoryOperation(node, 'store', 'ROLLOUT');">
+              <a translate>inventory.button.storeTo</a>
+            </li>
+            <li nz-menu-item (click)="repositoryOperation(node, 'update', 'ROLLOUT');">
+              <a translate>inventory.button.updateFrom</a>
+            </li>
+            <li nz-menu-item (click)="repositoryOperation(node, 'delete', 'ROLLOUT');">
+              <a translate>inventory.button.deleteFrom</a>
+            </li>
+          </ul>
         </li>
       </ul>
     </li>
