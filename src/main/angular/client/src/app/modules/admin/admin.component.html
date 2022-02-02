@@ -56,6 +56,10 @@
               <i class="fa fa-key"></i>&nbsp;
               <span translate>user.button.forcePasswordChange</span>
             </button>
+            <button *ngIf="isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="disableList()">
+              <i class="fa fa-ban"></i>&nbsp;
+              <span translate>user.button.disable</span>
+            </button>
             <button *ngIf="isSelected && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="deleteList()">
               <i class="fa fa-trash"></i>&nbsp;
               <span translate>user.button.delete</span>

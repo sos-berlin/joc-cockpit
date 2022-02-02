@@ -358,6 +358,9 @@ export class SettingComponent implements OnInit {
                   if (defaultGlobals[prop][i] && defaultGlobals[prop][i].type) {
                     this.settings[setProp][i].type = defaultGlobals[prop][i].type;
                     this.settings[setProp][i].default = defaultGlobals[prop][i].default;
+                    if(defaultGlobals[prop][i].values){
+                      this.settings[setProp][i].values = defaultGlobals[prop][i].values;
+                    }
                     break;
                   }
                 } else if (!defaultGlobals[prop][i] && this.settings[prop][i]){

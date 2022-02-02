@@ -104,6 +104,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('DELETE');
   }
 
+  disableList(): void {
+    this.dataService.announceFunction('DISABLE');
+  }
+
   resetPassword(): void {
     this.dataService.announceFunction('RESET_PASSWORD');
   }

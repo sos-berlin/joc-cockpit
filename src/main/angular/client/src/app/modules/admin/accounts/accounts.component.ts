@@ -162,6 +162,8 @@ export class AccountModalComponent implements OnInit {
       const data = {
         account: obj.account,
         password: obj.password,
+        disabled: obj.disabled,
+        forcePasswordChange: obj.forcePasswordChange,
         roles: obj.roles
       };
       this.userDetail.accounts.push(data);
@@ -173,6 +175,8 @@ export class AccountModalComponent implements OnInit {
             this.userDetail.accounts[i].account = obj.account;
             this.userDetail.accounts[i].password = obj.password;
             this.userDetail.accounts[i].roles = obj.roles;
+            this.userDetail.accounts[i].forcePasswordChange = obj.forcePasswordChange;
+            this.userDetail.accounts[i].disabled = obj.disabled;
             break;
           }
         }
@@ -187,6 +191,8 @@ export class AccountModalComponent implements OnInit {
       accounts: [{
         account: obj.account,
         password: obj.password,
+        disabled: obj.disabled,
+        forcePasswordChange: obj.forcePasswordChange,
         roles: obj.roles
       }]
     }).subscribe({
@@ -253,6 +259,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
         this.reset();
       } else if (res === 'DELETE') {
         this.deleteList();
+      } else if (res === 'DISABLE') {
+        this.disableList();
       } else if (res === 'RESET_PASSWORD') {
         this.resetPassword(null);
       } else if (res === 'FORCE_PASSWORD_CHANGE') {
@@ -297,6 +305,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     };
     if (this.selectedIdentityServiceType === 'SHIRO') {
       obj.accounts = this.accounts;
+      obj.roles = this.userDetail.roles;
       obj.main = this.userDetail.main;
     }
     this.coreService.post('authentication/auth/store', obj).subscribe((res) => {
@@ -389,6 +398,44 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.accounts = result;
+        this.searchInResult();
+      }
+    });
+  }
+
+  disabledUser(account) {
+    account.disabled = !account.disabled;
+    this.coreService.post('authentication/auth/store', {
+      identityServiceName: this.userDetail.identityServiceName,
+      accounts: [account]
+    }).subscribe({
+      next: () => {
+        this.userDetail.accounts = this.accounts;
+        this.dataService.announceFunction('RELOAD');
+        this.searchInResult();
+      }, error: () => {
+        account.disabled = !account.disabled;
+      }
+    });
+  }
+
+  private disableList(): void {
+    let accounts = this.accounts.filter((item) => {
+      if (this.object.mapOfCheckedId.has(item.account)) {
+        item.disabled = true;
+        return true;
+      } else {
+        return false;
+      }
+    });
+    this.coreService.post('authentication/auth/store', {
+      identityServiceName: this.userDetail.identityServiceName,
+      accounts: accounts
+    }).subscribe({
+      next: () => {
+        this.reset();
+        this.userDetail.accounts = this.accounts;
+        this.dataService.announceFunction('RELOAD');
         this.searchInResult();
       }
     });
