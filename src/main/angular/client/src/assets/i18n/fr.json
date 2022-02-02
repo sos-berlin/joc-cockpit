@@ -2018,7 +2018,7 @@
     "label.minPasswordLength": "Longueur minimale du mot de passe",
     "label.resetPassword": "Réinitialiser le mot de passe",
     "label.forcePasswordChange": "Forcer le changement de mot de passe",
-    "label.disable": "Disable",
+    "label.disable": "Désactiver",
     "button.addGroupRole": "Ajouter Groupes/Rôles",
     "button.addIdentityService": "Ajouter un Service d'Identité",
     "button.addPermission": "Ajouter une Permission",
