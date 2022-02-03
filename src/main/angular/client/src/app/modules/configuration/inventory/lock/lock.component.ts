@@ -288,6 +288,9 @@ export class LockComponent implements OnChanges, OnDestroy {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
+    if(this.lock.configuration.limit === ''){
+      this.lock.configuration.limit = 1;
+    }
     if (!isEqual(this.lock.actual, JSON.stringify(this.lock.configuration))) {
       if (!flag) {
         if (this.history.length === 20) {
@@ -298,7 +301,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       }
       this.coreService.post('inventory/store', {
         configuration: this.lock.configuration,
-        valid: this.lock.configuration.limit > -1,
+        valid: true,
         id: this.lock.id,
         objectType: this.objectType
       }).subscribe({

@@ -890,6 +890,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   onlyNumbers: string;
   menuNode: any = {};
   beforeDrop;
+  jobResources = [];
   jobResourcesTree = [];
   subscription1: Subscription;
 
@@ -1437,13 +1438,42 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
-  private getJobResourceTree(): void {
+  private getJobResourceTree(node): void {
     if (this.jobResourcesTree.length === 0) {
+      const obj = {list: []};
       this.coreService.getJobResource((arr) => {
         this.jobResourcesTree = arr;
-      });
+        this.jobResources = obj.list;
+        this.matchJobResourceList(node);
+      }, obj);
+    } else {
+      this.matchJobResourceList(node);
     }
   }
+
+   private matchJobResourceList(node): void {
+     const arr = [];
+     if(typeof node.data === 'string'){
+       let val = node.data;
+        node.data = [val];
+     }
+     if (node.data && node.data.length > 0) {
+       for (const i in this.jobResources) {
+         let flag = false;
+         for (let j = 0; j < node.data.length; j++) {
+           if (node.data[j] === this.jobResources[i].name) {
+             flag = true;
+             arr.push(node.data[j])
+             break;
+           }
+         }
+         if (!flag) {
+           this.extraInfo.released = false;
+         }
+       }
+     }
+     node.data = arr;
+   }
 
   getIndividualData(node, scroll) {
     let flag = false;
@@ -1451,10 +1481,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (attrs && attrs.length > 0) {
       if (node.attributes && node.attributes.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
-          if (attrs[i].name === 'job_resources' && !flag) {
-            flag = true;
-            this.getJobResourceTree();
-          }
           for (let j = 0; j < node.attributes.length; j++) {
             this.checkAttrsValue(attrs[i]);
             let vals = (attrs[i].values && attrs[i].values.length > 0) ? this.coreService.clone(attrs[i].values) : '';
@@ -1472,6 +1498,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
+          }
+          if (attrs[i].name === 'job_resources' && !flag) {
+            flag = true;
+            this.getJobResourceTree(attrs[i]);
           }
         }
       }

@@ -38,7 +38,6 @@ export class ChangePasswordComponent implements OnInit {
     }).subscribe((res) => {
       if (res.configuration.configurationItem) {
         this.settings = JSON.parse(res.configuration.configurationItem);
-        console.log(this.settings);
       }
     });
   }

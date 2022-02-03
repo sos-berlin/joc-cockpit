@@ -1,8 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span *ngIf="operation === 'store'" translate>inventory.label.storeTo</span>
-    <span *ngIf="operation === 'delete'" translate>inventory.label.deleteFrom</span>
-    <span *ngIf="operation === 'update'" translate>inventory.label.updateFrom</span>
+    <span *ngIf="operation === 'store' && category === 'LOCAL'" translate>inventory.label.storeToLocal</span>
+    <span *ngIf="operation === 'store' && category !== 'LOCAL'" translate>inventory.label.storeToRollout</span>
+    <span *ngIf="operation === 'delete' && category === 'LOCAL'" translate>inventory.label.deleteFromLocal</span>
+    <span *ngIf="operation === 'delete' && category !== 'LOCAL'" translate>inventory.label.deleteFromRollout</span>
+    <span *ngIf="operation === 'update' && category === 'LOCAL'" translate>inventory.label.updateFromLocal</span>
+    <span *ngIf="operation === 'update' && category !== 'LOCAL'" translate>inventory.label.updateFromRollout</span>
     <span *ngIf="path">:
       {{path}}
     </span>

@@ -1311,7 +1311,7 @@ export class RepositoryComponent implements OnInit {
   @Input() preferences;
   @Input() origin: any;
   @Input() operation: string;
-  @Input() repositoryType: string;
+  @Input() category: string;
   @Input() display: string;
   loading = true;
   path: string;
@@ -1487,7 +1487,7 @@ export class RepositoryComponent implements OnInit {
     this.coreService.post('inventory/repository/read', {
       folder: path || '/',
       recursive: false,
-      category: this.repositoryType
+      category: this.category
     }).subscribe((res) => {
       let tree = [];
       if (res.folders && res.folders.length > 0 || res.items && res.items.length > 0) {
@@ -1692,7 +1692,7 @@ export class RepositoryComponent implements OnInit {
           obj.auditLog.ticketLink = this.comments.ticketLink;
         }
       }
-      obj.category = this.repositoryType;
+      obj.category = this.category;
       this.coreService.post('inventory/repository/' + this.operation, obj).subscribe({
         next: (res) => {
           this.activeModal.close(res);
@@ -3389,7 +3389,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  repositoryOperation(node, operation, repositoryType): void {
+  repositoryOperation(node, operation, category): void {
     const origin = node.origin ? node.origin : node;
     this.modal.create({
       nzTitle: undefined,
@@ -3402,7 +3402,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         display: this.preferences.auditLog,
         origin,
         operation,
-        repositoryType
+        category
       },
       nzFooter: null,
       nzClosable: false,

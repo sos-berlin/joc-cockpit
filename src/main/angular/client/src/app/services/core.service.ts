@@ -1570,7 +1570,7 @@ export class CoreService {
       '<a target="_blank" href="' + link + '" class="text-primary text-u-l">$1</a>');
   }
 
-  getJobResource(cb): void {
+  getJobResource(cb, obj = null): void {
     this.post('inventory/read/folder', {
       path: '/',
       recursive: true,
@@ -1580,6 +1580,9 @@ export class CoreService {
         res.jobResources = sortBy(res.jobResources, (i: any) => {
           return i.name.toLowerCase();
         });
+        if(obj) {
+          obj.list = res.jobResources;
+        }
         let entries = [];
         res.jobResources.forEach((item) => {
           const obj = {

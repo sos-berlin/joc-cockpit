@@ -462,6 +462,27 @@ export class IdentityServiceModalComponent implements OnInit {
     }
   }
 
+  changeScheme($event): void {
+    if ($event === 'TWO-FACTOR') {
+      this.currentObj.singleFactorPwd = true;
+      this.currentObj.singleFactorCert = true;
+    } else {
+      if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
+        this.currentObj.singleFactorPwd = true;
+      } else if (this.currentObj.singleFactorPwd && this.currentObj.singleFactorCert){
+        this.currentObj.singleFactorCert = false;
+      }
+    }
+  }
+
+  checkCheckbox(type): void {
+    if (type === 'pwd') {
+      this.currentObj.singleFactorCert = !this.currentObj.singleFactorPwd;
+    } else {
+      this.currentObj.singleFactorPwd = !this.currentObj.singleFactorCert;
+    }
+  }
+
   private getSettings(type): void {
     if (this.identityService.identityServiceType === type || this.identityService.identityServiceType === 'JOC' ||
       type === 'JOC') {

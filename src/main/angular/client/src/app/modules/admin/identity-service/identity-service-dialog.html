@@ -69,25 +69,25 @@
       <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-sm-6">
-        <nz-select name="serviceAuthenticationScheme"
-          [(ngModel)]="currentObj.serviceAuthenticationScheme">
+      <div class="col-sm-6" [ngClass]="{'has-error' : ((scheme.dirty || scheme.touched) && scheme.invalid)}">
+        <nz-select name="serviceAuthenticationScheme" required #scheme="ngModel"
+          [(ngModel)]="currentObj.serviceAuthenticationScheme" (ngModelChange)="changeScheme($event)">
           <nz-option *ngFor="let option of serviceAuthenticationSchemes" [nzLabel]="option | translate" [nzValue]="option"></nz-option>
         </nz-select>
       </div>
     </div>
     <div class="form-group row" *ngIf="currentObj.identityServiceType === 'JOC'">
-      <label class="col-sm-4 form-control-label" translate>user.label.singleFactorPwd</label>
+      <label class="col-sm-4" translate>user.label.singleFactorPwd</label>
       <div class="col-sm-6">
          <label nz-checkbox [nzDisabled]="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'" [(ngModel)]="currentObj.singleFactorPwd"
-                       name="singleFactorPwd"></label>
+                       name="singleFactorPwd" (nzCheckedChange)="checkCheckbox('pwd')"></label>
       </div>
     </div>
     <div class="form-group row" *ngIf="currentObj.identityServiceType === 'JOC'">
-      <label class="col-sm-4 form-control-label" translate>user.label.singleFactorCert</label>
+      <label class="col-sm-4" translate>user.label.singleFactorCert</label>
       <div class="col-sm-6">
          <label nz-checkbox [nzDisabled]="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'" [(ngModel)]="currentObj.singleFactorCert"
-                       name="singleFactorCert"></label>
+                       name="singleFactorCert" (nzCheckedChange)="checkCheckbox('cert')"></label>
       </div>
     </div>
   </div>
