@@ -16,10 +16,6 @@
               <i class="fa fa-upload"></i>
               {{'settings.button.importSetting' | translate}}
             </button>
-            <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="addSection();">
-              <i class="fa fa-plus"></i>
-              {{'settings.button.addSection' | translate}}
-            </button>
           </div>
         </div>
       </div>
@@ -31,20 +27,12 @@
     <div class="row m-t-sm">
       <div class="col-sm-12">
         <div class="box p-a" *ngIf="settingArr.length > 0 && loading">
-          <form #myForm="ngForm">
-            <div class="p-b-sm p-l-sm" *ngFor="let setting of settingArr | orderBy: 'ordering': false;let i = index">
-              <div class="btn-group dropdown pull-left m-r-sm" *ngIf="permission.joc.administration.settings.manage">
-                  <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
-                    <i class="fa fa-ellipsis-h"></i></button>
-                  <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
-                    <ul nz-menu>
-                      <li nz-menu-item (click)="removeSection(setting)">
-                        <a translate>settings.button.dropSection</a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
+          <form #myForm="ngForm" cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+            <div class="p-b-sm p-l-sm" *ngFor="let setting of settingArr;let i = index" cdkDrag>
+              <div class="pos-abt drag-handler m-t-n-xxs" cdkDragHandle>
+                <i class="fa fa-bars" aria-hidden="true"></i>
               </div>
-              <h5>
+              <h5 class="m-l p-l-sm">
                 {{setting.name}}
                 <i (click)="setting.show = true;" *ngIf="!setting.show" class="cursor fa fa-caret-up m-l-xs"></i>
                   <i (click)="setting.show = false" *ngIf="setting.show"

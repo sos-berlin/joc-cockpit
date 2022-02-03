@@ -69,6 +69,22 @@ export class RoleModalComponent implements OnInit {
     }
   }
 
+  private rename(): void {
+    if (this.oldRole.name !== this.currentRole.role) {
+      this.coreService.post('authentication/auth/role/rename', {
+        identityServiceName: this.userDetail.identityServiceName,
+        roleOldName: this.oldRole.name,
+        roleNewName: this.currentRole.role
+      }).subscribe({
+        next: () => {
+          this.activeModal.close(this.userDetail);
+        }, error: () => this.submitted = false
+      });
+    } else {
+      this.activeModal.close();
+    }
+  }
+
   onSubmit(obj): void {
     this.submitted = true;
     if (this.newRole || this.copy) {
@@ -77,6 +93,10 @@ export class RoleModalComponent implements OnInit {
         permissions: obj.permissions
       };
     } else {
+      if (sessionStorage.identityServiceType !== 'SHIRO') {
+        this.rename();
+        return;
+      }
       delete this.userDetail.roles[this.oldName];
       this.userDetail.roles[obj.role] = {
         permissions: obj.permissions
@@ -424,7 +444,7 @@ export class RolesComponent implements OnDestroy {
           delete this.userDetail.roles[role.name];
           if (sessionStorage.identityServiceType === 'SHIRO') {
             this.saveInfo();
-          } else{
+          } else {
             this.removeRole(role.name);
           }
           this.dataService.preferences.roles.delete(role.name);
@@ -434,7 +454,7 @@ export class RolesComponent implements OnDestroy {
       this.translate.get('user.message.cannotDeleteRole').subscribe(translatedValue => {
         waringMessage = translatedValue;
       });
-      this.toasterService.warning(waringMessage, '',{
+      this.toasterService.warning(waringMessage, '', {
         timeOut: 3000
       });
     }
@@ -538,7 +558,11 @@ export class RolesComponent implements OnDestroy {
     this.controllerRoles = [];
     this.roles = [];
     for (const role in res.roles) {
-      let obj = {name: role, controllers: [{name: '', permissions: res.roles[role].permissions}], mainObj: res.roles[role]};
+      let obj = {
+        name: role,
+        controllers: [{name: '', permissions: res.roles[role].permissions}],
+        mainObj: res.roles[role]
+      };
       if (res.roles[role].permissions && res.roles[role].permissions.controllers) {
         for (const controller in res.roles[role].permissions.controllers) {
           if (res.roles[role].permissions.controllers[controller]) {

@@ -1452,27 +1452,27 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
    private matchJobResourceList(node): void {
-     const arr = [];
-     if(typeof node.data === 'string'){
+     if (typeof node.data === 'string') {
        let val = node.data;
-        node.data = [val];
+       node.data = [val];
      }
      if (node.data && node.data.length > 0) {
+       const arr = [];
        for (const i in this.jobResources) {
-         let flag = false;
          for (let j = 0; j < node.data.length; j++) {
            if (node.data[j] === this.jobResources[i].name) {
-             flag = true;
              arr.push(node.data[j])
              break;
            }
          }
-         if (!flag) {
-           this.extraInfo.released = false;
-         }
        }
+       if (node.data.length !== arr.length) {
+         this.extraInfo.released = false;
+         node.data = arr;
+       }
+     } else {
+       node.data = [];
      }
-     node.data = arr;
    }
 
   getIndividualData(node, scroll) {

@@ -76,17 +76,19 @@
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="currentObj.identityServiceType === 'JOC'">
+    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE')
+       && currentObj.serviceAuthenticationScheme === 'SINGLE-FACTOR'">
       <label class="col-sm-4" translate>user.label.singleFactorPwd</label>
       <div class="col-sm-6">
-         <label nz-checkbox [nzDisabled]="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'" [(ngModel)]="currentObj.singleFactorPwd"
+         <label nz-checkbox [(ngModel)]="currentObj.singleFactorPwd"
                        name="singleFactorPwd" (nzCheckedChange)="checkCheckbox('pwd')"></label>
       </div>
     </div>
-    <div class="form-group row" *ngIf="currentObj.identityServiceType === 'JOC'">
+    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE')
+       && currentObj.serviceAuthenticationScheme === 'SINGLE-FACTOR'">
       <label class="col-sm-4" translate>user.label.singleFactorCert</label>
       <div class="col-sm-6">
-         <label nz-checkbox [nzDisabled]="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR'" [(ngModel)]="currentObj.singleFactorCert"
+         <label nz-checkbox [(ngModel)]="currentObj.singleFactorCert"
                        name="singleFactorCert" (nzCheckedChange)="checkCheckbox('cert')"></label>
       </div>
     </div>

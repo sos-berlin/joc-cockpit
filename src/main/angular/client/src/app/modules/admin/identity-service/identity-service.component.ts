@@ -463,23 +463,24 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   changeScheme($event): void {
-    if ($event === 'TWO-FACTOR') {
-      this.currentObj.singleFactorPwd = true;
-      this.currentObj.singleFactorCert = true;
-    } else {
-      if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
-        this.currentObj.singleFactorPwd = true;
-      } else if (this.currentObj.singleFactorPwd && this.currentObj.singleFactorCert){
-        this.currentObj.singleFactorCert = false;
+    if (this.currentObj.identityServiceType === 'JOC' || this.currentObj.identityServiceType === 'VAULT-JOC-ACTIVE') {
+      if ($event === 'SINGLE-FACTOR') {
+        if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
+          this.currentObj.singleFactorPwd = true;
+        }
       }
     }
   }
 
   checkCheckbox(type): void {
     if (type === 'pwd') {
-      this.currentObj.singleFactorCert = !this.currentObj.singleFactorPwd;
+      if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
+        this.currentObj.singleFactorCert = true;
+      }
     } else {
-      this.currentObj.singleFactorPwd = !this.currentObj.singleFactorCert;
+      if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
+        this.currentObj.singleFactorPwd = true;
+      }
     }
   }
 
