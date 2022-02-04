@@ -16,7 +16,9 @@
       <div class="col-md-12" *ngIf="isDeploy">
         <div class="form-group row">
           <label class="col-md-3 form-control-label">
-            <label translate>inventory.label.signatureAlgorithm</label>
+            <label translate>inventory.label.signatureAlgorithm
+             <sup class="text-danger text-sm">*</sup>
+            </label>
           </label>
           <div class="col-md-9">
             <input type="text" name="signature" required class="form-control" [(ngModel)]="signatureAlgorithm" placeholder="{{'inventory.placeholder.signatureAlgorithm' | translate}}">

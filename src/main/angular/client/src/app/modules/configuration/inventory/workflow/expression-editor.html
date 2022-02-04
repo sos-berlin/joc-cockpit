@@ -1,6 +1,10 @@
 <div class="form-group row" >
-  <div class="col-sm-12 m-b-xs"><span [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.if.predicate' | translate) : ''"
-                                      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.predicate</span>:</div>
+  <div class="col-sm-12 m-b-xs">
+    <span [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.if.predicate' | translate) : ''"
+                                      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.predicate
+    </span>:
+    <sup class="text-danger text-sm">*</sup>
+  </div>
   <div class="col-md-12">
     <div class="b-a p-a-xs" [ngClass]="{'invalid': error || (cm.invalid && (cm.dirty || cm.touched))}">
       <ngx-codemirror required #codeMirror #cm="ngModel" [(ngModel)]="selectedNode.obj.predicate"

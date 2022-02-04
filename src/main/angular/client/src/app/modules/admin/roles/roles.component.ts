@@ -18,16 +18,16 @@ import {AuthService} from '../../../components/guard';
   templateUrl: './role-dialog.html'
 })
 export class RoleModalComponent implements OnInit {
-  submitted = false;
-  isUnique = true;
-  currentRole: any = {};
-  oldName: string;
-
   @Input() userDetail: any;
   @Input() oldRole: any;
   @Input() allRoles: any;
   @Input() newRole: boolean;
   @Input() copy: boolean;
+
+  submitted = false;
+  isUnique = true;
+  currentRole: any = {};
+  oldName: string;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -45,6 +45,10 @@ export class RoleModalComponent implements OnInit {
           joc: [
             {
               path: 'sos:products:joc',
+              excluded: false
+            },
+            {
+              path: 'sos:products:controller:view',
               excluded: false
             }
           ],
@@ -65,6 +69,22 @@ export class RoleModalComponent implements OnInit {
     }
   }
 
+  private rename(): void {
+    if (this.oldRole.name !== this.currentRole.role) {
+      this.coreService.post('authentication/auth/role/rename', {
+        identityServiceName: this.userDetail.identityServiceName,
+        roleOldName: this.oldRole.name,
+        roleNewName: this.currentRole.role
+      }).subscribe({
+        next: () => {
+          this.activeModal.close(this.userDetail);
+        }, error: () => this.submitted = false
+      });
+    } else {
+      this.activeModal.close();
+    }
+  }
+
   onSubmit(obj): void {
     this.submitted = true;
     if (this.newRole || this.copy) {
@@ -73,6 +93,10 @@ export class RoleModalComponent implements OnInit {
         permissions: obj.permissions
       };
     } else {
+      if (sessionStorage.identityServiceType !== 'SHIRO') {
+        this.rename();
+        return;
+      }
       delete this.userDetail.roles[this.oldName];
       this.userDetail.roles[obj.role] = {
         permissions: obj.permissions
@@ -94,11 +118,15 @@ export class RoleModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('authentication/auth/store', {
+    this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
+    } : {
+      accounts: this.userDetail.accounts,
+      roles: this.userDetail.roles,
+      identityServiceName: this.userDetail.identityServiceName,
     }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail);
@@ -176,7 +204,11 @@ export class ControllerModalComponent implements OnInit {
           joc: [{
             path: 'sos:products:joc',
             excluded: false
-          }],
+          },
+            {
+              path: 'sos:products:controller:view',
+              excluded: false
+            }],
           controllerDefaults: [],
           controllers: {}
         };
@@ -190,11 +222,15 @@ export class ControllerModalComponent implements OnInit {
           this.userDetail.roles[obj.role].permissions.controllerDefaults = this.oldController.permissions.controllerDefaults;
         }
       }
-      this.coreService.post('authentication/auth/store', {
+      this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
         accounts: this.userDetail.accounts,
         roles: this.userDetail.roles,
         identityServiceName: this.userDetail.identityServiceName,
         main: this.userDetail.main
+      } : {
+        accounts: this.userDetail.accounts,
+        roles: this.userDetail.roles,
+        identityServiceName: this.userDetail.identityServiceName,
       }).subscribe({
         next: () => {
           this.activeModal.close(this.userDetail);
@@ -297,12 +333,14 @@ export class RolesComponent implements OnDestroy {
   }
 
   saveInfo(): void {
-    const obj = {
+    const obj: any = {
       accounts: this.accounts,
       roles: this.userDetail.roles,
-      main: this.userDetail.main,
       identityServiceName: this.userDetail.identityServiceName
     };
+    if (sessionStorage.identityServiceType === 'SHIRO') {
+      obj.main = this.userDetail.main;
+    }
     this.coreService.post('authentication/auth/store', obj).subscribe(() => {
       this.dataService.announceFunction('RELOAD');
       this.createRoleArray(obj);
@@ -404,7 +442,11 @@ export class RolesComponent implements OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           delete this.userDetail.roles[role.name];
-          this.saveInfo();
+          if (sessionStorage.identityServiceType === 'SHIRO') {
+            this.saveInfo();
+          } else {
+            this.removeRole(role.name);
+          }
           this.dataService.preferences.roles.delete(role.name);
         }
       });
@@ -412,10 +454,27 @@ export class RolesComponent implements OnDestroy {
       this.translate.get('user.message.cannotDeleteRole').subscribe(translatedValue => {
         waringMessage = translatedValue;
       });
-      this.toasterService.warning(waringMessage, '',{
+      this.toasterService.warning(waringMessage, '', {
         timeOut: 3000
       });
     }
+  }
+
+  private removeRole(role) {
+    this.coreService.post('authentication/auth/roles/delete', {
+      roles: [
+        {role}
+      ],
+      identityServiceName: this.userDetail.identityServiceName,
+    }).subscribe(() => {
+      this.roles = this.roles.filter((item) => {
+        return role != item;
+      });
+      this.controllerRoles = this.controllerRoles.filter((item) => {
+        return role != item.name;
+      });
+      this.reset();
+    });
   }
 
   addController(): void {
@@ -499,7 +558,11 @@ export class RolesComponent implements OnDestroy {
     this.controllerRoles = [];
     this.roles = [];
     for (const role in res.roles) {
-      let obj = {name: role, controllers: [{name: '', permissions: res.roles[role].permissions}], mainObj: res.roles[role]};
+      let obj = {
+        name: role,
+        controllers: [{name: '', permissions: res.roles[role].permissions}],
+        mainObj: res.roles[role]
+      };
       if (res.roles[role].permissions && res.roles[role].permissions.controllers) {
         for (const controller in res.roles[role].permissions.controllers) {
           if (res.roles[role].permissions.controllers[controller]) {

@@ -28,7 +28,9 @@
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.name' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>common.label.name</label>
+                 [nzTooltipMouseEnterDelay]="0.5" translate>common.label.name
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" identifierValidation required class="form-control" [appAutofocus]="!isTrash"
                    name="name" [(ngModel)]="script.name" #name="ngModel" (blur)="rename(name.invalid)">
@@ -85,7 +87,9 @@
         </div>
         <div class="form-group row">
           <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.script' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.script</label>
+                 [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.script
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <div class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty && cm.touched) && !script.configuration.script)}">
               <ngx-codemirror required #codeMirror #cm="ngModel" title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}" name="cm"

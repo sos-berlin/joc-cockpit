@@ -13,7 +13,7 @@ import {FileUploader} from 'ng2-file-upload';
 import {ToastrService} from 'ngx-toastr';
 import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 import {TranslateService} from '@ngx-translate/core';
-import {isEmpty, sortBy, isArray, clone, extend, isEqual} from 'underscore';
+import {clone, extend, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
 import {catchError} from 'rxjs/operators';
@@ -1110,7 +1110,7 @@ export class ExportComponent implements OnInit {
           if (node.children[i].origin.type) {
             node.children[i].isChecked = node.isChecked;
           }
-          if (node.children[i].origin.isFolder) {
+          if (!node.children[i].origin.object && !node.children[i].origin.type) {
             break;
           }
         }
@@ -1198,7 +1198,7 @@ export class ExportComponent implements OnInit {
             recursive(nodes[i].children);
           } else if (!self.exportObj.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
-              if (nodes[i].children[j].isFolder && nodes[i].children[j].children) {
+              if (!nodes[i].children[j].object && !nodes[i].children[j].type && nodes[i].children[j].children) {
                 recursive(nodes[i].children[j].children);
               }
             }
@@ -1302,179 +1302,307 @@ export class ExportComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-set-version-modal',
-  templateUrl: './setVersion-dialog.html'
+  selector: 'app-repository-modal',
+  templateUrl: './repository-dialog.html'
 })
-export class SetVersionComponent implements OnInit {
+export class RepositoryComponent implements OnInit {
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
+  @Input() controllerId;
   @Input() preferences;
-  @Input() schedulerIds;
-  @Input() display: any;
-  nodes: any = [];
-  version = {type: 'setOneVersion', name: ''};
+  @Input() origin: any;
+  @Input() operation: string;
+  @Input() category: string;
+  @Input() display: string;
   loading = true;
+  path: string;
+  type = 'ALL';
+  nodes: any = [];
+  submitted = false;
   comments: any = {radio: 'predefined'};
+  exportObj = {
+    isRecursive: false
+  };
+  filter = {
+    envRelated: true,
+    envIndependent: true,
+    draft: true,
+    deploy: true,
+    release: true,
+    valid: false,
+  };
   object: any = {
-    isRecursive: false,
+    draftConfigurations: [],
+    releaseDraftConfigurations: [],
     deployConfigurations: [],
-    prevVersion: ''
+    releasedConfigurations: []
   };
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService,
+              private authService: AuthService, private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
-    this.buildTree();
+    if (this.origin) {
+      this.path = this.origin.path;
+      if(this.origin.object) {
+        if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')) {
+          this.type = this.origin.object;
+          this.filter.envIndependent = false;
+          this.filter.deploy = false;
+        } else {
+          this.type = this.origin.object;
+          this.filter.envRelated = false;
+          this.filter.release = false;
+        }
+      }
+    }
+    if (this.operation === 'store') {
+      this.buildTree(this.path);
+    } else {
+      this.readFileSystem(this.path);
+    }
   }
 
-  expandAll(): void {
-
-  }
-
-  // Collapse all Node
-  collapseAll(): void {
-    this.expandCollapseRec(this.nodes);
-  }
-
-  buildTree(): void {
-    this.coreService.post('inventory/deployables', {
-      folder: '/',
-      recursive: true,
-      onlyValidObjects: true,
-      withoutRemovedObjects: true,
-      withVersions: true
-    }).subscribe({
+  private buildTree(path, merge = null, cb = null): void {
+    const obj: any = {
+      folder: path || '/',
+      onlyValidObjects: this.filter.valid,
+      recursive: false,
+      withoutDrafts: !this.filter.draft,
+      withoutDeployed: !this.filter.deploy,
+      withoutRemovedObjects: true
+    };
+    const APIs = [];
+    if (this.filter.envRelated) {
+      if (this.type !== 'ALL') {
+        obj.objectTypes = [this.type];
+      } else {
+        const obj2 = clone(obj);
+        if (!this.filter.envIndependent && this.type === 'ALL') {
+          obj2.objectTypes = [InventoryObject.JOBRESOURCE];
+        }
+        APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
+          catchError(error => of(error))
+        ));
+      }
+      obj.withoutReleased = !this.filter.release;
+      APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
+        catchError(error => of(error))
+      ));
+    } else if(this.filter.envIndependent) {
+      obj.withVersions = !this.filter.deploy;
+      if (this.type !== 'ALL') {
+        obj.objectTypes = [this.type];
+      } else {
+        obj.objectTypes = [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.LOCK, InventoryObject.NOTICEBOARD];
+      }
+      APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
+        catchError(error => of(error))
+      ));
+    }
+    forkJoin(APIs).subscribe({
       next: (res: any) => {
+        let mergeObj: any = {};
+        if (res.length > 1) {
+          if (res[0].name && res[1].name) {
+            mergeObj = this.mergeDeep(res[0], res[1]);
+          } else if (res[0].name && !res[1].name) {
+            mergeObj = res[0];
+          } else if (!res[0].name && res[1].name) {
+            mergeObj = res[1];
+          }
+        } else {
+          if (res[0].name) {
+            mergeObj = res[0];
+          }
+        }
         let tree = [];
-        if (res.folders && res.folders.length > 0 ||
-          ((res.deployables && res.deployables.length > 0) || (res.releasables && res.releasables.length > 0))) {
+        if (mergeObj.folders && mergeObj.folders.length > 0 ||
+          ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
           tree = this.coreService.prepareTree({
             folders: [{
-              name: res.name,
-              path: res.path,
-              folders: res.folders,
-              deployables: res.deployables,
-              releasables: res.releasables
+              name: mergeObj.name,
+              path: mergeObj.path,
+              folders: mergeObj.folders,
+              deployables: mergeObj.deployables,
+              releasables: mergeObj.releasables
             }]
           }, false);
           this.inventoryService.updateTree(tree[0]);
         }
-        this.nodes = tree;
-        if (this.nodes.length > 0) {
-          this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+        if (merge) {
+          if (tree.length > 0) {
+            merge.children = tree[0].children;
+            this.inventoryService.checkAndUpdateVersionList(tree[0]);
+          }
+          delete merge.loading;
+          this.nodes = [...this.nodes];
+        } else {
+          this.nodes = tree;
+          if (!cb) {
+            setTimeout(() => {
+              this.loading = false;
+              if (this.nodes.length > 0) {
+                this.nodes[0].expanded = true;
+                this.inventoryService.preselected(this.nodes[0]);
+                this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+              }
+              this.nodes = [...this.nodes];
+            }, 0);
+          } else {
+            cb();
+          }
         }
-        this.loading = false;
-      }, error: () => {
-        this.nodes = [];
-        this.loading = false;
+      }
+    })
+  }
+
+  private mergeDeep(deployables, releasables): any {
+    function recursive(sour, dest): void {
+      if (!sour.deployables) {
+        sour.deployables = [];
+      }
+      sour.deployables = sour.deployables.concat(dest.releasables || []);
+      if (dest.folders && dest.folders.length > 0) {
+        for (const i in sour.folders) {
+          for (const j in dest.folders) {
+            if (sour.folders[i].path === dest.folders[j].path) {
+              recursive(sour.folders[i], dest.folders[j]);
+              dest.folders.splice(j, 1);
+              break;
+            }
+          }
+        }
+      }
+      if (dest.folders && dest.folders.length > 0) {
+        sour.folders = sour.folders.concat(dest.folders);
+      }
+    }
+
+    recursive(deployables, releasables);
+    return deployables;
+  }
+
+  private readFileSystem(path, merge = null, cb = null): void {
+    this.coreService.post('inventory/repository/read', {
+      folder: path || '/',
+      recursive: false,
+      category: this.category
+    }).subscribe((res) => {
+      let tree = [];
+      if (res.folders && res.folders.length > 0 || res.items && res.items.length > 0) {
+        if(this.type !== 'ALL') {
+          if (res.folders && res.folders.length > 0) {
+            res.folders.forEach((folder) => {
+              if (folder.items && folder.items.length > 0) {
+                folder.items = folder.items.filter((item) => {
+                  return item.objectType === this.type;
+                })
+              }
+            })
+          }
+          if (res.items && res.items.length > 0) {
+            res.items = res.items.filter((item) => {
+              return item.objectType === this.type;
+            })
+          }
+        }
+        tree = this.coreService.prepareTree({
+          folders: [{
+            name: res.name,
+            path: res.path,
+            folders: res.folders,
+            items: res.items
+          }]
+        }, false);
+        this.inventoryService.updateTree(tree[0]);
+      }
+      if(!merge && tree[0] && tree[0].children && tree[0].children.length === 0) {
+        tree = [];
+      }
+      if (merge) {
+        if (tree.length > 0) {
+          merge.children = tree[0].children;
+        }
+        delete merge.loading;
+        this.nodes = [...this.nodes];
+      } else {
+        this.nodes = tree;
+        if (!cb) {
+          this.loading = false;
+          if (this.nodes.length > 0) {
+            this.nodes[0].expanded = true;
+            this.inventoryService.preselected(this.nodes[0]);
+          }
+          this.nodes = [...this.nodes];
+
+        } else {
+          cb();
+        }
       }
     });
+  }
+
+  filterList(): void {
+    this.nodes = [];
+    if (!this.filter.envRelated && !this.filter.envIndependent) {
+      return;
+    } else {
+      this.loading = true;
+      this.buildTree(this.path);
+    }
+  }
+
+  expandAll(): void {
+    const self = this;
+    function recursive(node): void {
+      for (const i in node) {
+        if (!node[i].isLeaf) {
+          node[i].expanded = true;
+        }
+        if (node[i].children && node[i].children.length > 0) {
+          if (!node[i].isCall && self.operation === 'store') {
+            self.inventoryService.checkAndUpdateVersionList(node[i]);
+          }
+          recursive(node[i].children);
+        }
+      }
+    }
+
+    if (this.operation === 'store') {
+      this.buildTree(this.path, null, () => {
+        recursive(this.nodes);
+      });
+    } else {
+      this.readFileSystem(this.path, null, () => {
+        recursive(this.nodes);
+      });
+    }
+  }
+
+  collapseAll(): void {
+    this.expandCollapseRec(this.nodes);
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     const node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
-      this.inventoryService.checkAndUpdateVersionList(node.origin);
-    }
-  }
-
-  getJSObject(): void {
-    this.object.deployConfigurations = [];
-    const self = this;
-
-    function recursive(nodes) {
-      for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].type && (nodes[i].version || nodes[i].checked)) {
-          if (nodes[i].deployId || nodes[i].deploymentId) {
-            const configuration: any = {
-              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
-              objectType: nodes[i].type
-            };
-            if (nodes[i].deployablesVersions) {
-              for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
-                if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId) {
-                  configuration.commitId = nodes[i].deployablesVersions[j].commitId;
-                  break;
-                }
-              }
-            }
-            if (self.version.type === 'setSeparateVersion') {
-              self.object.deployConfigurations.push({
-                configuration,
-                version: nodes[i].version
-              });
-            } else {
-              self.object.deployConfigurations.push({configuration});
-            }
-          }
-        }
-        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
-          recursive(nodes[i].children);
+      if (!node.origin.type && !node.origin.object) {
+        node.origin.loading = true;
+        if (this.operation === 'store') {
+          this.buildTree(node.origin.path, node.origin);
+        } else {
+          this.readFileSystem(node.origin.path, node.origin);
         }
       }
-    }
-
-    recursive(this.nodes);
-  }
-
-  setVersion(): void {
-    const obj: any = {
-      auditLog: {}
-    };
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
-    this.getJSObject();
-    if (this.version.type === 'setSeparateVersion') {
-      obj.deployConfigurations = this.object.deployConfigurations;
-      this.coreService.post('inventory/deployment/set_versions', obj).subscribe(() => {
-        this.activeModal.close('ok');
-      });
-    } else {
-      if (this.object.deployConfigurations.length > 0) {
-        obj.deployConfigurations = this.object.deployConfigurations;
-        obj.version = this.version.name;
-        this.coreService.post('inventory/deployment/set_version', obj).subscribe(() => {
-          this.activeModal.close('ok');
-        });
+      if (this.operation === 'store') {
+        this.inventoryService.checkAndUpdateVersionList(node.origin);
       }
     }
-  }
-
-  cancelSetVersion(data): void {
-    if (this.object.prevVersion) {
-      data.version = clone(this.object.prevVersion);
-    }
-    this.object.prevVersion = undefined;
-    data.setVersion = false;
-  }
-
-  deleteSetVersion(data): void {
-    delete data.version;
-  }
-
-  editVersion(data): void {
-    if (data.version) {
-      this.object.prevVersion = clone(data.version);
-    }
-  }
-
-  applySetVersion(data): void {
-    data.setVersion = false;
-  }
-
-  setIndividualVersion(data): void {
-    data.setVersion = true;
   }
 
   checkBoxChange(e: NzFormatEmitEvent): void {
-    if (!this.object.isRecursive) {
+    if (!this.exportObj.isRecursive) {
       const node = e.node;
       if (node.origin.type && node.parentNode) {
         node.parentNode.isHalfChecked = true;
@@ -1493,11 +1621,241 @@ export class SetVersionComponent implements OnInit {
           if (node.children[i].origin.type) {
             node.children[i].isChecked = node.isChecked;
           }
-          if (node.children[i].origin.isFolder) {
+          if (!node.children[i].origin.type && !node.children[i].origin.object) {
             break;
           }
         }
       }
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    if (this.operation === 'store') {
+      this.store();
+    } else {
+      this.updateOrDelete();
+    }
+  }
+
+  private updateOrDelete(): void {
+    const self = this;
+    const obj: any = {
+      configurations: []
+    };
+
+    function recursive(nodes): void {
+      for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i].object && nodes[i].checked) {
+          const objDep: any = {};
+          if (!nodes[i].type) {
+            if (self.type === 'ALL') {
+              objDep.configuration = {
+                path: nodes[i].path,
+                objectType: 'FOLDER',
+                recursive: self.exportObj.isRecursive
+              };
+            }
+          } else {
+            objDep.configuration = {
+              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+              objectType: nodes[i].type
+            };
+          }
+          if(objDep.configuration) {
+            obj.configurations.push(objDep);
+          }
+        }
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+          if (!nodes[i].checked || self.type !== 'ALL') {
+            recursive(nodes[i].children);
+          } else if (!self.exportObj.isRecursive) {
+            for (let j = 0; j < nodes[i].children.length; j++) {
+              if (!nodes[i].children[j].object && !nodes[i].children[j].type && nodes[i].children[j].children) {
+                recursive(nodes[i].children[j].children);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    recursive(this.nodes);
+    if (obj.configurations.length > 0) {
+      if (this.comments.comment) {
+        obj.auditLog = {};
+        obj.auditLog.comment = this.comments.comment;
+        if (this.comments.timeSpent) {
+          obj.auditLog.timeSpent = this.comments.timeSpent;
+        }
+        if (this.comments.ticketLink) {
+          obj.auditLog.ticketLink = this.comments.ticketLink;
+        }
+      }
+      obj.category = this.category;
+      this.coreService.post('inventory/repository/' + this.operation, obj).subscribe({
+        next: (res) => {
+          this.activeModal.close(res);
+        }, error: () => this.submitted = false
+      });
+    } else {
+      this.submitted = false;
+    }
+  }
+
+  private store(): void {
+    const self = this;
+    this.object = {
+      draftConfigurations: [],
+      releaseDraftConfigurations: [],
+      deployConfigurations: [],
+      deploy2Configurations: [],
+      releasedConfigurations: []
+    };
+
+    function recursive(nodes): void {
+      for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i].object && nodes[i].checked) {
+          const objDep: any = {};
+          if (!nodes[i].type) {
+            if (self.type === 'ALL') {
+              objDep.configuration = {
+                path: nodes[i].path,
+                objectType: 'FOLDER',
+                recursive: self.exportObj.isRecursive
+              };
+            }
+          } else {
+            objDep.configuration = {
+              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+              objectType: nodes[i].type
+            };
+          }
+          if (objDep.configuration) {
+            if (nodes[i].deployablesVersions) {
+              for (let j = 0; j < nodes[i].deployablesVersions.length; j++) {
+                if (nodes[i].deployablesVersions[j].deploymentId === nodes[i].deploymentId || nodes[i].deployablesVersions[j].deploymentId === nodes[i].deployId) {
+                  objDep.configuration.commitId = nodes[i].deployablesVersions[j].commitId;
+                  break;
+                }
+              }
+            }
+            if (objDep.configuration.objectType !== 'FOLDER') {
+              if (self.inventoryService.isControllerObject(nodes[i].type)) {
+                if (objDep.configuration.objectType === InventoryObject.JOBRESOURCE) {
+                  if (objDep.configuration.commitId) {
+                    self.object.deploy2Configurations.push(objDep);
+                  } else {
+                    self.object.releaseDraftConfigurations.push(objDep);
+                  }
+                } else {
+                  if (objDep.configuration.commitId) {
+                    self.object.deployConfigurations.push(objDep);
+                  } else {
+                    self.object.draftConfigurations.push(objDep);
+                  }
+                }
+              } else {
+                if (nodes[i].releaseId) {
+                  self.object.releasedConfigurations.push(objDep);
+                } else {
+                  self.object.releaseDraftConfigurations.push(objDep);
+                }
+              }
+            } else {
+              if (self.filter.envIndependent) {
+                if (self.filter.deploy) {
+                  self.object.deployConfigurations.push(objDep);
+                }
+                if (self.filter.draft) {
+                  self.object.draftConfigurations.push(objDep);
+                }
+              }
+              if (self.filter.envRelated) {
+                if (self.filter.deploy) {
+                  self.object.deploy2Configurations.push(objDep);
+                }
+                if (self.filter.release) {
+                  self.object.releasedConfigurations.push(objDep);
+                }
+                if (self.filter.draft) {
+                  self.object.releaseDraftConfigurations.push(objDep);
+                }
+              }
+            }
+          }
+        }
+        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+          if (!nodes[i].checked || self.type !== 'ALL') {
+            recursive(nodes[i].children);
+          } else if (!self.exportObj.isRecursive) {
+            for (let j = 0; j < nodes[i].children.length; j++) {
+              if (!nodes[i].children[j].object && !nodes[i].children[j].type && nodes[i].children[j].children) {
+                recursive(nodes[i].children[j].children);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    recursive(this.nodes);
+    if ((this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
+      (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
+      (this.object.deploy2Configurations && this.object.deploy2Configurations.length > 0) ||
+      (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
+      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
+      if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
+        delete this.object.deployConfigurations;
+      }
+      if (this.object.draftConfigurations && this.object.draftConfigurations.length === 0) {
+        delete this.object.draftConfigurations;
+      }
+      if (this.object.deploy2Configurations && this.object.deploy2Configurations.length === 0) {
+        delete this.object.deploy2Configurations;
+      }
+      if (this.object.releasedConfigurations && this.object.releasedConfigurations.length === 0) {
+        delete this.object.releasedConfigurations;
+      }
+      if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
+        delete this.object.releaseDraftConfigurations;
+      }
+      const obj: any = {
+        controllerId: this.controllerId,
+        withoutInvalid: this.filter.valid
+      };
+
+      if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations || this.object.deploy2Configurations) {
+        obj.local = {
+          releasedConfigurations: this.object.releasedConfigurations,
+          deployConfigurations: this.object.deploy2Configurations,
+          draftConfigurations: this.object.releaseDraftConfigurations
+        };
+      }
+      if (this.object.draftConfigurations || this.object.deployConfigurations) {
+        obj.rollout = {
+          draftConfigurations: this.object.draftConfigurations,
+          deployConfigurations: this.object.deployConfigurations
+        };
+      }
+
+      if (this.comments.comment) {
+        obj.auditLog = {};
+        obj.auditLog.comment = this.comments.comment;
+        if (this.comments.timeSpent) {
+          obj.auditLog.timeSpent = this.comments.timeSpent;
+        }
+        if (this.comments.ticketLink) {
+          obj.auditLog.ticketLink = this.comments.ticketLink;
+        }
+      }
+      this.coreService.post('inventory/repository/store', obj).subscribe({
+        next: () => {
+          this.activeModal.close();
+        }, error: () => this.submitted = false
+      });
+    } else {
+      this.submitted = false;
     }
   }
 
@@ -1515,6 +1873,7 @@ export class SetVersionComponent implements OnInit {
       }
     }
   }
+
 }
 
 @Component({
@@ -2175,12 +2534,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
   isTrash = false;
   isSearchVisible = false;
   tempObjSelection: any = {};
+  indexOfNextAdd = 0;
+  objectHistory = [];
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
-
-  indexOfNextAdd = 0;
-  objectHistory = [];
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
@@ -2863,6 +3221,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
           conf[0].expanded = true;
           conf[1].expanded = true;
         }
+        if(this.selectedData.reload){
+          this.selectedData.reload = false;
+        }
         cb(conf);
       }, error: () => {
         cb([{
@@ -3028,6 +3389,38 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
+  repositoryOperation(node, operation, category): void {
+    const origin = node.origin ? node.origin : node;
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: RepositoryComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzComponentParams: {
+        controllerId: this.schedulerIds.selected,
+        preferences: this.preferences,
+        display: this.preferences.auditLog,
+        origin,
+        operation,
+        category
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe((res) => {
+      if (res) {
+        setTimeout(() => {
+          if (this.tree && this.tree.length > 0) {
+            if (this.selectedData.path && origin.path.indexOf(this.selectedData.path) > -1) {
+              this.selectedData.reload = true;
+            }
+            this.initTree(origin.path, null);
+          }
+        }, 750);
+      }
+    });
+  }
+
   exportObject(node): void {
     let origin = null;
     if (node) {
@@ -3098,23 +3491,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }, 700);
       }
     });
-  }
-
-  setVersion(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: SetVersionComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        schedulerIds: this.schedulerIds,
-        preferences: this.preferences,
-        display: this.preferences.auditLog
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe();
   }
 
   convertJob(type: string): void {

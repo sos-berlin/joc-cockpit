@@ -16,7 +16,9 @@
           </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>user.label.role</label>
+            <label class="col-sm-4 form-control-label" translate>user.label.role
+              <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-6">
               <nz-select name="role" nzShowSearch
                          nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
@@ -26,7 +28,9 @@
             </div>
         </div>
         <div class="form-group row" *ngIf="!copy">
-          <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
+          <label class="col-sm-4 form-control-label" translate>user.label.js7Controller
+            <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-sm-6" [ngClass]="{'has-error' : !isUnique || ((controllerName.dirty || controllerName.touched) && controllerName.invalid)}">
             <nz-select [nzDisabled]="!currentController.role" nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
                        required #controllerName="ngModel" name="schedulerIds" (ngModelChange)="checkController($event, currentController.role)"

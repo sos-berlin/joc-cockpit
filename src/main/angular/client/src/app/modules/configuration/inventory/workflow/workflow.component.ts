@@ -787,7 +787,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   notFound: string;
   errorMsg: string;
   obj: any = {};
-  isDisplay = false;
+  isDisplay = true;
   isRuntimeVisible = false;
   fullScreen = false;
   isLengthExceed = false;
@@ -911,9 +911,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   changeType(type): void {
-    if (type === 'ShellScriptExecutable') {
-      this.reloadScript();
-    }
     this.saveToHistory();
   }
 
@@ -976,9 +973,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   tabChange($event): void {
-    if ($event.index === 0) {
-      this.reloadScript();
-    }
     if ($event.index === 0) {
       this.updateSelectItems();
     }
@@ -1686,7 +1680,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
-      if (type === InventoryObject.JOBRESOURCE || type === InventoryObject.INCLUDESCRIPT) {
+      if (type === InventoryObject.INCLUDESCRIPT) {
         return;
       }
       let flag = true;
@@ -1762,9 +1756,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.jobResourceNames = [...this.selectedNode.job.jobResourceNames];
     }
     this.onBlur();
-    if (this.index === 0) {
-      this.reloadScript();
-    }
     this.checkIsAgentExist();
     this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
     this.presentObj.job = JSON.stringify(this.selectedNode.job);
@@ -1906,11 +1897,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   private restoreData(obj: any): void {
     obj = JSON.parse(obj);
     this.selectedNode.obj = JSON.parse(obj.obj);
-    const x = JSON.parse(obj.job);
-    if (this.selectedNode.job.executable.TYPE !== x.executable.TYPE && x.executable.TYPE === 'ShellScriptExecutable') {
-      this.reloadScript();
-    }
-    this.selectedNode.job = x;
+    this.selectedNode.job = JSON.parse(obj.job);
     this.ref.detectChanges();
   }
 }
@@ -1928,27 +1915,22 @@ export class ScriptEditorComponent implements AfterViewInit {
   scriptList: Array<string> = [];
   scriptObj = {
     name: '',
+    data: '',
     show: false
   };
   cmOption: any = {
     lineNumbers: true,
     viewportMargin: Infinity,
-    autofocus: true,
     autoRefresh: true,
     mode: 'shell',
     extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
-  @ViewChild('codeMirror', {static: true}) cm: any;
+  @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
   }
 
   ngAfterViewInit(): void {
-    if (localStorage.$SOS$SCRIPTWINDOWWIDTH) {
-      const wt = parseInt(localStorage.$SOS$SCRIPTWINDOWWIDTH, 10);
-      this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage.$SOS$SCRIPTWINDOWHIGHT, 10) - 2));
-      $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
-    }
     this.dragEle = this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
     $('#resizable').resizable({
       resize: (e, x) => {
@@ -1965,7 +1947,21 @@ export class ScriptEditorComponent implements AfterViewInit {
     }
     setTimeout(() => {
       if (this.cm && this.cm.codeMirror) {
-        this.cm.codeMirror.focus();
+        if (localStorage.$SOS$SCRIPTWINDOWWIDTH) {
+          const wt = parseInt(localStorage.$SOS$SCRIPTWINDOWWIDTH, 10);
+          this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage.$SOS$SCRIPTWINDOWHIGHT, 10) - 2));
+          $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
+        }
+        setTimeout(() => {
+          if (this.cm && this.cm.codeMirror) {
+            const doc = this.cm.codeMirror.getDoc();
+            const cursor = doc.getCursor(); // gets the line number in the cursor position
+            doc.replaceRange(this.script, cursor);
+            this.cm.codeMirror.focus();
+            doc.setCursor(cursor);
+          }
+        }, 100);
+
         this.cm.codeMirror.on('inputRead', (editor, e) => {
           const cursor = editor.getCursor();
           const currentLine = editor.getLine(cursor.line);
@@ -1983,18 +1979,18 @@ export class ScriptEditorComponent implements AfterViewInit {
           }
         });
       }
-    }, 500);
+    }, 100);
   }
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e): void {
-    if (this.dragEle) {
-      this.dragEle.disabled = !(e.target && (e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
+    if (this.dragEle && e && e.target) {
+      this.dragEle.disabled = !((e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
     }
   }
 
   onSubmit(): void {
-    this.activeModal.close(this.script);
+    this.activeModal.close(this.scriptObj.data);
   }
 
   execCommand(type): void {
@@ -2072,7 +2068,7 @@ export class ExpressionComponent implements OnInit {
   @ViewChild('codeMirror', {static: false}) cm;
   cmOption: any = {
     lineNumbers: false,
-    autofocus: true,
+    autoFocus: true,
     autoRefresh: true,
     mode: 'ruby'
   };
@@ -2342,7 +2338,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (changes.copyObj && !changes.data) {
       return;
     }
+
     if (changes.reload) {
+      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+        return;
+      }
       if (this.reload) {
         this.selectedNode = null;
         this.init();
@@ -2857,9 +2857,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
-      if (type === InventoryObject.JOBRESOURCE) {
-        return;
-      }
       let flag = true;
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
         flag = false;
@@ -3074,14 +3071,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (!this.isTrash) {
       if (this.jobResourcesTree.length === 0) {
-        this.coreService.post('tree', {
-          controllerId: this.schedulerId,
-          forInventory: true,
-          types: [InventoryObject.JOBRESOURCE]
-        }).subscribe((res) => {
-          this.jobResourcesTree = this.coreService.prepareTree(res, false);
-          this.getJobResources();
-        });
+        this.getJobResources();
       }
       if (this.lockTree.length === 0) {
         this.coreService.post('tree', {
@@ -3141,49 +3131,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private getJobResources(): void {
-    this.coreService.post('inventory/read/folder', {
-      path: '/',
-      recursive: true,
-      objectTypes: [InventoryObject.JOBRESOURCE]
-    }).subscribe((res: any) => {
-      let map = new Map();
-      res.jobResources = sortBy(res.jobResources, 'name');
-      res.jobResources.forEach((item) => {
-        const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
-        const obj = {
-          title: item.name,
-          path: item.path,
-          key: item.name,
-          type: item.objectType,
-          isLeaf: true
-        };
-        if (map.has(path)) {
-          const arr = map.get(path);
-          arr.push(obj);
-          map.set(path, arr);
-        } else {
-          map.set(path, [obj]);
-        }
-      });
-      this.jobResourcesTree[0].expanded = true;
-      this.updateTreeRecursive(this.jobResourcesTree, map);
-      this.jobResourcesTree = [...this.jobResourcesTree];
+    this.coreService.getJobResource((arr) => {
+      this.jobResourcesTree = arr;
       if (this.extraConfiguration.jobResourceNames && this.extraConfiguration.jobResourceNames.length > 0) {
         this.extraConfiguration.jobResourceNames = [...this.extraConfiguration.jobResourceNames];
         this.ref.detectChanges();
       }
     });
-  }
-
-  private updateTreeRecursive(nodes, map): void {
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i].path && map.has(nodes[i].path)) {
-        nodes[i].children = map.get(nodes[i].path).concat(nodes[i].children || []);
-      }
-      if (nodes[i].children) {
-        this.updateTreeRecursive(nodes[i].children, map);
-      }
-    }
   }
 
   private getWorkflowObject(): void {
@@ -6751,11 +6705,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (isArray(arg.value)) {
                 arg.value.forEach((item, index) => {
                   for (const prop in arg.value[index]) {
-                    self.coreService.removeSlashToString(arg.value[index], prop, true);
+                    self.coreService.removeSlashToString(arg.value[index], prop);
                   }
                 });
               }
-              self.coreService.removeSlashToString(arg, 'value', true);
+              self.coreService.removeSlashToString(arg, 'value');
             });
           }
           obj.arguments = argument;
@@ -6830,7 +6784,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 resultObj = JSON.parse(resultObj);
                 resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
                 resultObj.filter((arg) => {
-                  self.coreService.removeSlashToString(arg, 'value', true);
+                  self.coreService.removeSlashToString(arg, 'value');
                 });
               } else {
                 resultObj = [];

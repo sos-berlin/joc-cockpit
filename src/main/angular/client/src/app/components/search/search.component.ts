@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Input, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Input, Output, OnDestroy} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty} from 'underscore';
 import {InventorySearch} from '../../models/enums';
@@ -10,7 +10,7 @@ import {UpdateObjectComponent} from '../../modules/configuration/inventory/updat
   selector: 'app-inventory-search',
   templateUrl: './search.component.html'
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onNavigate: EventEmitter<any> = new EventEmitter();
   @Input() controllerId: any;
@@ -47,25 +47,31 @@ export class SearchComponent implements OnInit {
     this.deployTypes = Object.keys(this.ENUM).filter(key => isNaN(+key));
     this.getAgents();
     this.getFolderTree();
-    if (!this.isWorkflow && !this.isBoard && !this.isLock) {
-      this.results = this.coreService.getSearchResult('inventory');
-      if (this.results.length > 0 && this.results[0].controllerId) {
-        this.isControllerId = true;
-      }
-      this.searchObj.returnType = this.ENUM.WORKFLOW;
+    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory');
+    this.panel.active = savedObj.panel;
+    if (!isEmpty(savedObj.request)) {
+      this.searchObj = savedObj.request;
+      this.results = savedObj.result;
     } else {
-      if (this.isWorkflow) {
-        this.type = this.ENUM.WORKFLOW;
-        this.results = this.coreService.getSearchResult('workflow');
-      } else if (this.isBoard) {
-        this.type = this.ENUM.NOTICEBOARD;
-        this.results = this.coreService.getSearchResult('board');
-      } else if (this.isLock) {
-        this.type = this.ENUM.LOCK;
-        this.results = this.coreService.getSearchResult('lock');
+      if (!this.isWorkflow && !this.isBoard && !this.isLock) {
+        this.searchObj.returnType = this.ENUM.WORKFLOW;
+      } else {
+        if (this.isWorkflow) {
+          this.type = this.ENUM.WORKFLOW;
+        } else if (this.isBoard) {
+          this.type = this.ENUM.NOTICEBOARD;
+        } else if (this.isLock) {
+          this.type = this.ENUM.LOCK;
+        }
+        this.searchObj.returnType = this.type;
       }
-      this.searchObj.returnType = this.type;
     }
+  }
+
+  ngOnDestroy(): void {
+    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory');
+    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory',
+      {...savedObj, panel: this.panel.active, request: this.searchObj});
   }
 
   private getAgents(): void {
@@ -169,20 +175,13 @@ export class SearchComponent implements OnInit {
         this.results = res.results;
         this.isControllerId = false;
         if (!this.isWorkflow && !this.isBoard && !this.isLock) {
-          this.coreService.setSearchResult('inventory', this.results);
           if (this.results.length > 0 && this.results[0].controllerId) {
             this.isControllerId = true;
           }
           this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
-        } else {
-          if (this.isWorkflow) {
-            this.coreService.setSearchResult('workflow', this.results);
-          } else if (this.isBoard) {
-            this.coreService.setSearchResult('board', this.results);
-          } else if (this.isLock) {
-            this.coreService.setSearchResult('lock', this.results);
-          }
         }
+        this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory',
+          {panel: this.panel.active, request: this.searchObj, result: this.results});
         this.submitted = false;
       }, error: () => {
         this.submitted = false;
@@ -191,21 +190,14 @@ export class SearchComponent implements OnInit {
   }
 
   clear(): void {
+    const type = this.searchObj.returnType;
+    this.searchObj = {advanced: {}, returnType:  type};
     this.results = [];
     this.object.mapOfCheckedId = new Set();
     this.object.checked = false;
     this.object.indeterminate = false;
-    if (!this.isWorkflow && !this.isBoard && !this.isLock) {
-      this.coreService.setSearchResult('inventory', this.results);
-    } else {
-      if (this.isWorkflow) {
-        this.coreService.setSearchResult('workflow', this.results);
-      } else if (this.isBoard) {
-        this.coreService.setSearchResult('board', this.results);
-      } else if (this.isLock) {
-        this.coreService.setSearchResult('lock', this.results);
-      }
-    }
+    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory',
+      {panel: false, request: {}, result: []});
   }
 
   propagateJob(): void {

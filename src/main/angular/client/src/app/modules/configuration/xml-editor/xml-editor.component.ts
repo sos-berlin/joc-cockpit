@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -10,7 +10,7 @@ import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {saveAs} from 'file-saver';
 import {PerfectScrollbarComponent} from 'ngx-perfect-scrollbar';
-import {isEmpty, isArray, isEqual, sortBy, clone} from 'underscore';
+import {isEmpty, isArray, isEqual, sortBy, clone, groupBy} from 'underscore';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
@@ -484,7 +484,7 @@ export class ShowChildModalComponent implements OnInit {
               }
             }
             nodes.parent = parent;
-            nodes.choice1 = parent;
+            nodes.choice = parent;
             childArr.push(nodes);
             if (data) {
               data.children = childArr;
@@ -546,7 +546,7 @@ export class ShowChildModalComponent implements OnInit {
   selector: 'app-show-modal',
   templateUrl: './show-dialog.html'
 })
-export class ShowModalComponent implements OnInit {
+export class ShowModalComponent implements AfterViewInit {
   @Input() xml;
   @Input() objectType: any;
   @Input() schemaIdentifier;
@@ -567,13 +567,19 @@ export class ShowModalComponent implements OnInit {
               private toasterService: ToastrService, private clipboardService: ClipboardService) {
   }
 
-  ngOnInit(): void {
-    if (this.xml && this.xml !== 'null') {
-      this.obj.xml = this.xml;
-    }
+  ngAfterViewInit(): void {
     if (this.validation && this.validation.validationError) {
       this.toasterService.error(this.validation.validationError.message, '');
     }
+    setTimeout(() => {
+      if (this.cm && this.cm.codeMirror) {
+        const doc = this.cm.codeMirror.getDoc();
+        const cursor = doc.getCursor(); // gets the line number in the cursor position
+        doc.replaceRange(this.xml, cursor);
+        this.cm.codeMirror.focus();
+        doc.setCursor(cursor);
+      }
+    }, 300);
   }
 
   copyToClipboard(): void {
@@ -884,6 +890,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   onlyNumbers: string;
   menuNode: any = {};
   beforeDrop;
+  jobResources = [];
   jobResourcesTree = [];
   subscription1: Subscription;
 
@@ -1000,22 +1007,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.checkOrder(node.origin);
   }
 
-  loadData(node, type, $event): void {
-    if (!node || !node.origin) {
-      return;
-    }
-    if (!node.origin.type) {
-      if ($event) {
-        node.isExpanded = !node.isExpanded;
-        $event.stopPropagation();
-      }
-    }
-  }
-
-  onChangeJobResource(value, data): void {
-    if (!isEqual(JSON.stringify(data.data), JSON.stringify(value))) {
-      data.data = value;
-    }
+  onChangeJobResource(): void {
+    this.extraInfo.released = false;
   }
 
   deleteAllConf(): void {
@@ -1445,60 +1438,42 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
-  private getJobResourceTree(): void {
+  private getJobResourceTree(node): void {
     if (this.jobResourcesTree.length === 0) {
-      this.coreService.post('tree', {
-        controllerId: this.schedulerIds.selected,
-        forInventory: true,
-        types: ['JOBRESOURCE']
-      }).subscribe((res) => {
-        this.jobResourcesTree = this.coreService.prepareTree(res, true);
-        this.getJobResources();
-      });
+      const obj = {list: []};
+      this.coreService.getJobResource((arr) => {
+        this.jobResourcesTree = arr;
+        this.jobResources = obj.list;
+        this.matchJobResourceList(node);
+      }, obj);
+    } else {
+      this.matchJobResourceList(node);
     }
   }
 
-  private getJobResources(): void {
-    this.coreService.post('inventory/read/folder', {
-      path: '/',
-      recursive: true,
-      objectTypes: ['JOBRESOURCE']
-    }).subscribe((res: any) => {
-      let map = new Map();
-      res.jobResources = sortBy(res.jobResources, 'name');
-      res.jobResources.forEach((item) => {
-        const path = item.path.substring(0, item.path.lastIndexOf('/')) || '/';
-        const obj = {
-          title: item.name,
-          path: item.path,
-          key: item.name,
-          type: item.objectType,
-          isLeaf: true
-        };
-        if (map.has(path)) {
-          const arr = map.get(path);
-          arr.push(obj);
-          map.set(path, arr);
-        } else {
-          map.set(path, [obj]);
-        }
-      });
-      this.jobResourcesTree[0].expanded = true;
-      this.updateTreeRecursive(this.jobResourcesTree, map);
-      this.jobResourcesTree = [...this.jobResourcesTree];
-    });
-  }
-
-  private updateTreeRecursive(nodes, map): void {
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i].path && map.has(nodes[i].path)) {
-        nodes[i].children = map.get(nodes[i].path).concat(nodes[i].children || []);
-      }
-      if (nodes[i].children) {
-        this.updateTreeRecursive(nodes[i].children, map);
-      }
-    }
-  }
+   private matchJobResourceList(node): void {
+     if (typeof node.data === 'string') {
+       let val = node.data;
+       node.data = [val];
+     }
+     if (node.data && node.data.length > 0) {
+       const arr = [];
+       for (const i in this.jobResources) {
+         for (let j = 0; j < node.data.length; j++) {
+           if (node.data[j] === this.jobResources[i].name) {
+             arr.push(node.data[j])
+             break;
+           }
+         }
+       }
+       if (node.data.length !== arr.length) {
+         this.extraInfo.released = false;
+         node.data = arr;
+       }
+     } else {
+       node.data = [];
+     }
+   }
 
   getIndividualData(node, scroll) {
     let flag = false;
@@ -1506,10 +1481,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (attrs && attrs.length > 0) {
       if (node.attributes && node.attributes.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
-          if (attrs[i].name === 'job_resources' && !flag) {
-            flag = true;
-            this.getJobResourceTree();
-          }
           for (let j = 0; j < node.attributes.length; j++) {
             this.checkAttrsValue(attrs[i]);
             let vals = (attrs[i].values && attrs[i].values.length > 0) ? this.coreService.clone(attrs[i].values) : '';
@@ -1527,6 +1498,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
+          }
+          if (attrs[i].name === 'job_resources' && !flag) {
+            flag = true;
+            this.getJobResourceTree(attrs[i]);
           }
         }
       }
@@ -1904,7 +1879,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             for (let j = 0; j < eElement[i].attributes.length; j++) {
               let a = eElement[i].attributes[j].nodeName;
               let b = eElement[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = node;
             if (nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') {
@@ -2374,11 +2349,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             for (let j = 0; j < getChildChoiceSeq[i].attributes.length; j++) {
               let a = getChildChoiceSeq[i].attributes[j].nodeName;
               let b = getChildChoiceSeq[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, {[a]: b});
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = parent;
             nodes.choice1 = parent;
-            childArr.push(nodes);
+            let flag = false;
+            for (let k = 0; k < childArr.length; k++) {
+              if (childArr[k].ref === nodes.ref) {
+                flag = true;
+                childArr[k] = Object.assign(childArr[k], nodes);
+                break;
+              }
+            }
+            if (!flag) {
+              childArr.push(nodes);
+            }
             if (data) {
               data.children = childArr;
             } else {
@@ -2426,59 +2411,58 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   addChild(child, nodeArr, check, index) {
-    setTimeout(() => {
-      let attrs = this.checkAttributes(child.ref);
-      let value = this.getValues(child.ref);
-      let attrsType: any = this.getAttrFromType(child.ref, child.parent);
-      let valueType = this.getValueFromType(child.ref, child.parent);
-      let val = this.getVal(child);
-      if ((isEmpty(val)) && (isEmpty(value)) && (isEmpty(valueType))) {
-        val = this.getValFromDefault(child);
-      }
-      child.recreateJson = true;
-      child.order = index;
-      child.children = [];
-      nodeArr.expanded = true;
-      child.uuid = this.counting;
-      child.key = this.counting;
-      child.parentId = nodeArr.uuid;
-      this.counting++;
-      child.expanded = child.children && child.children.length > 0;
-      if (!(isEmpty(attrs))) {
-        this.attachAttrs(attrs, child);
-      }
+    this.menuNode = {};
+    let attrs = this.checkAttributes(child.ref);
+    let value = this.getValues(child.ref);
+    let attrsType: any = this.getAttrFromType(child.ref, child.parent);
+    let valueType = this.getValueFromType(child.ref, child.parent);
+    let val = this.getVal(child);
+    if ((isEmpty(val)) && (isEmpty(value)) && (isEmpty(valueType))) {
+      val = this.getValFromDefault(child);
+    }
+    child.recreateJson = true;
+    child.order = index;
+    child.children = [];
+    nodeArr.expanded = true;
+    child.uuid = this.counting;
+    child.key = this.counting;
+    child.parentId = nodeArr.uuid;
+    this.counting++;
+    child.expanded = child.children && child.children.length > 0;
+    if (!(isEmpty(attrs))) {
+      this.attachAttrs(attrs, child);
+    }
 
-      nodeArr.children.push(child);
-      nodeArr.children = sortBy(nodeArr.children, 'order');
-      if (check) {
-        if ((nodeArr && (nodeArr.ref !== 'SystemMonitorNotification' || (nodeArr.ref === 'SystemMonitorNotification' && child.ref !== 'Timer')))) {
-          this.autoAddChild(child);
-        }
+    nodeArr.children.push(child);
+    nodeArr.children = sortBy(nodeArr.children, 'order');
+    if (check) {
+      if ((nodeArr && (nodeArr.ref !== 'SystemMonitorNotification' || (nodeArr.ref === 'SystemMonitorNotification' && child.ref !== 'Timer')))) {
+        this.autoAddChild(child);
       }
-      if (!isEmpty(val)) {
-        this.attachValue(val, nodeArr.children);
-      }
-      if (!(isEmpty(value))) {
-        this.attachValue(value, nodeArr.children);
-      }
-      if (valueType !== undefined) {
-        this.attachValue(valueType, nodeArr.children);
-      }
-      if (attrsType !== undefined) {
-        this.attachTypeAttrs(attrsType, nodeArr.children);
-      }
+    }
+    if (!isEmpty(val)) {
+      this.attachValue(val, nodeArr.children);
+    }
+    if (!(isEmpty(value))) {
+      this.attachValue(value, nodeArr.children);
+    }
+    if (valueType !== undefined) {
+      this.attachValue(valueType, nodeArr.children);
+    }
+    if (attrsType !== undefined) {
+      this.attachTypeAttrs(attrsType, nodeArr.children);
+    }
 
-      // this.autoExpand(nodeArr);
-      this.printArraya(false);
-      if (child) {
-        this.getData(child);
-        if (this.nodes.length > 0) {
-          this.scrollTreeToGivenId(this.selectedNode.uuid);
-        }
+    // this.autoExpand(nodeArr);
+    this.printArraya(false);
+    if (child) {
+      this.getData(child);
+      if (this.nodes.length > 0) {
+        this.scrollTreeToGivenId(this.selectedNode.uuid);
       }
-      this.validConfig = false;
-      this.extraInfo.released = false;
-    }, 0);
+    }
+    this.validConfig = false;
+    this.extraInfo.released = false;
   }
 
   autoAddChild(child) {

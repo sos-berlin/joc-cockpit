@@ -13,7 +13,9 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}">
-      <label class="col-sm-4 form-control-label" translate>user.label.identityServiceName</label>
+      <label class="col-sm-4 form-control-label" translate>user.label.identityServiceName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-6">
         <input type="text" class="form-control" name="name" [(ngModel)]="currentObj.identityServiceName" required
                #name="ngModel" [appAutofocus]="true" autocomplete="off" (blur)="checkService()"/>
@@ -28,7 +30,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.identityServiceType</label>
+      <label class="col-sm-4 form-control-label" translate>user.label.identityServiceType
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-6" [ngClass]="{'has-error' : ((type.dirty || type.touched) && type.invalid)}">
         <nz-select
           name="type"
@@ -57,10 +61,35 @@
     <div class="form-group row">
       <label class="col-sm-4" translate>user.label.identityServiceRequired</label>
       <div class="col-sm-6">
-        <label class="md-check">
-          <input type="checkbox" [(ngModel)]="currentObj.required" name="recursive">
-          <i class="primary"></i><span class="m-l-xs"> </span>
-        </label>
+        <label nz-checkbox [(ngModel)]="currentObj.required"
+                       name="serviceRequired"></label>
+      </div>
+    </div>
+    <div class="form-group row b-t p-t" *ngIf="currentObj.identityServiceType !== 'SHIRO'">
+      <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6" [ngClass]="{'has-error' : ((scheme.dirty || scheme.touched) && scheme.invalid)}">
+        <nz-select name="serviceAuthenticationScheme" required #scheme="ngModel"
+          [(ngModel)]="currentObj.serviceAuthenticationScheme" (ngModelChange)="changeScheme($event)">
+          <nz-option *ngFor="let option of serviceAuthenticationSchemes" [nzLabel]="option | translate" [nzValue]="option"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE')
+       && currentObj.serviceAuthenticationScheme === 'SINGLE-FACTOR'">
+      <label class="col-sm-4" translate>user.label.singleFactorPwd</label>
+      <div class="col-sm-6">
+         <label nz-checkbox [(ngModel)]="currentObj.singleFactorPwd"
+                       name="singleFactorPwd" (nzCheckedChange)="checkCheckbox('pwd')"></label>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE')
+       && currentObj.serviceAuthenticationScheme === 'SINGLE-FACTOR'">
+      <label class="col-sm-4" translate>user.label.singleFactorCert</label>
+      <div class="col-sm-6">
+         <label nz-checkbox [(ngModel)]="currentObj.singleFactorCert"
+                       name="singleFactorCert" (nzCheckedChange)="checkCheckbox('cert')"></label>
       </div>
     </div>
   </div>

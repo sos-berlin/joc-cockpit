@@ -36,7 +36,6 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
           e.native.target.style.cursor = 'default';
         },
         onClick: ($event, item) => {
-          console.log(item)
           this.navToAgentView(item.text);
         }
       },
@@ -174,7 +173,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   }
 
   navToAgentView(text): void {
-    
+
     this.coreService.getResourceTab().agents.filter.state = this.mapObj.get(text);
     this.router.navigate(['/resources/agents']);
   }

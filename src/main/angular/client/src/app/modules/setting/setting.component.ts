@@ -1,57 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import {FileUploader} from 'ng2-file-upload';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {saveAs} from 'file-saver';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {isEmpty} from 'underscore';
 import SHA512 from 'crypto-js/sha512';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {DataService} from '../../services/data.service';
-
-@Component({
-  selector: 'app-add-section-content',
-  templateUrl: './add-section-dialog.html'
-})
-export class AddSectionComponent implements OnInit {
-  @Input() defaultGlobals: any;
-  @Input() settings: any;
-  settingArr = [];
-  setting: any = {};
-  submitted = false;
-
-  constructor(public activeModal: NzModalRef, public translate: TranslateService,
-              public toasterService: ToastrService) {
-  }
-
-  ngOnInit(): void {
-    for (let prop in this.defaultGlobals) {
-      let flag = false;
-      for (let i = 0; i < this.settings.length; i++) {
-        if (prop === this.settings[i].name) {
-          flag = true;
-          break;
-        }
-      }
-      this.settingArr.push(
-        {
-          name: prop,
-          isExist: flag,
-          value: this.defaultGlobals[prop]
-        });
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    setTimeout(() => {
-      this.activeModal.close(this.setting);
-    }, 100);
-  }
-}
+import {OrderPipe} from "../../pipes/core.pipe";
 
 @Component({
   selector: 'app-import-setting-content',
@@ -120,7 +80,7 @@ export class ImportSettingComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-user',
+  selector: 'app-setting',
   templateUrl: './setting.component.html'
 })
 export class SettingComponent implements OnInit {
@@ -145,7 +105,55 @@ export class SettingComponent implements OnInit {
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService, private message: NzMessageService,
-              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService) {
+              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService, private orderPipe: OrderPipe) {
+  }
+
+  static checkTime(time): string {
+    if (/^\d{1,2}:\d{2}?$/i.test(time)) {
+      time = time + ':00';
+    } else if (/^\d{1,2}:\d{2}(:)?$/i.test(time)) {
+      time = time + '00';
+    } else if (/^\d{1,2}?$/i.test(time)) {
+      time = time + ':00:00';
+    }
+    if (time === '00:00') {
+      time = '00:00:00';
+    }
+    return time;
+  }
+
+  static generateStoreObject(setting): any {
+    const tempSetting: any = {};
+    for (let prop in setting) {
+      tempSetting[prop] = {
+        ordering: setting[prop].ordering
+      };
+      for (let x in setting[prop]) {
+        if (setting[prop][x].value || setting[prop][x].value === false || setting[prop][x].value === 0 || (setting[prop][x].type === 'PASSWORD' && setting[prop][x].value === '')) {
+          tempSetting[prop][x] = {};
+          if (x !== 'ordering') {
+            tempSetting[prop][x].ordering = setting[prop][x].ordering;
+            let value = setting[prop][x].value;
+            if (setting[prop][x].type === 'WEEKDAYS') {
+              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
+                value = setting[prop][x].value.toString();
+              }
+            } else if (setting[prop][x].type === 'ARRAY') {
+              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
+                value = setting[prop][x].value.filter((item) => {
+                  return item.name;
+                });
+                value = value.map((item) => item.name).join(';');
+              }
+            }
+            tempSetting[prop][x].value = value;
+          } else {
+            tempSetting[prop][x] = setting[prop].ordering;
+          }
+        }
+      }
+    }
+    return tempSetting;
   }
 
   ngOnInit(): void {
@@ -153,6 +161,20 @@ export class SettingComponent implements OnInit {
     this.permission = JSON.parse(this.authService.permission) || {};
     this.zones = this.coreService.getTimeZoneList();
     this.loadSetting();
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    this.settingArr = this.orderPipe.transform(this.settingArr, 'ordering', false);
+    moveItemInArray(this.settingArr, event.previousIndex, event.currentIndex);
+    for (let i = 0; i < this.settingArr.length; i++) {
+      this.settingArr[i].ordering = i;
+    }
+    this.settingArr.forEach(item => {
+      this.settings[item.name].ordering = item.ordering;
+    });
+    const tempSetting = this.coreService.clone(this.settings);
+    console.log(this.settings)
+    this.savePreferences(SettingComponent.generateStoreObject(tempSetting), false)
   }
 
   changeConfiguration(form, value, isJoc): void {
@@ -165,9 +187,9 @@ export class SettingComponent implements OnInit {
       this.toasterService.error(msg);
       return;
     } else if (value && value.value && value.value.type === 'TIME') {
-      value.value.value = this.checkTime(value.value.value);
+      value.value.value = SettingComponent.checkTime(value.value.value);
     }
-    this.savePreferences(this.generateStoreObject(tempSetting), isJoc);
+    this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc);
   }
 
   openEditField(val): void {
@@ -197,57 +219,6 @@ export class SettingComponent implements OnInit {
     this.changeConfiguration(null, null, isJoc);
   }
 
-  addSection(): void {
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: AddSectionComponent,
-      nzComponentParams: {
-        settings: this.settingArr,
-        defaultGlobals: this.defaultGlobals
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(section => {
-      if (section) {
-        this.settings[section.name] = {};
-        this.changeConfiguration(null, null, null);
-        setTimeout(() => {
-          this.loadSetting();
-        }, 100);
-      }
-    });
-  }
-
-  removeSection(section): void {
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'remove',
-        message: 'removeSetting',
-        type: 'Remove',
-        objectName: section.name
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        for (let i = 0; i < this.settingArr.length; i++) {
-          if (this.settingArr[i].name === section.name) {
-            this.settingArr.splice(i, 1);
-            delete this.settings[section.name];
-            break;
-          }
-        }
-        this.changeConfiguration(null, null, null);
-      }
-    });
-  }
-
   importSetting(): void {
     const modal = this.modal.create({
       nzTitle: null,
@@ -269,7 +240,7 @@ export class SettingComponent implements OnInit {
   exportSetting(): void {
     const name = 'global-setting.json';
     const fileType = 'application/octet-stream';
-    let data = this.generateStoreObject(this.settings);
+    let data = SettingComponent.generateStoreObject(this.settings);
     data = JSON.stringify(data, undefined, 2);
     const blob = new Blob([data], {type: fileType});
     saveAs(blob, name);
@@ -301,8 +272,14 @@ export class SettingComponent implements OnInit {
 
   private mergeData(defaultGlobals): void {
     for (let prop in defaultGlobals) {
+      let isExist = false;
       for (let setProp in this.settings) {
         if (setProp === prop) {
+          if(this.settings[setProp].ordering > -1){
+          } else{
+            this.settings[setProp].ordering = this.defaultGlobals[setProp].ordering;
+          }
+          isExist = true;
           for (let x in defaultGlobals[prop]) {
             let flag = true;
             if (!isEmpty(this.settings[setProp])) {
@@ -312,9 +289,12 @@ export class SettingComponent implements OnInit {
                   if (defaultGlobals[prop][i] && defaultGlobals[prop][i].type) {
                     this.settings[setProp][i].type = defaultGlobals[prop][i].type;
                     this.settings[setProp][i].default = defaultGlobals[prop][i].default;
+                    if(defaultGlobals[prop][i].values){
+                      this.settings[setProp][i].values = defaultGlobals[prop][i].values;
+                    }
                     break;
                   }
-                } else if (!defaultGlobals[prop][i] && this.settings[prop][i]){
+                } else if (!defaultGlobals[prop][i] && this.settings[prop][i] && i !== 'ordering'){
                   delete this.settings[prop][i];
                 }
               }
@@ -326,11 +306,15 @@ export class SettingComponent implements OnInit {
           break;
         }
       }
+      if(!isExist){
+        this.settings[prop] = defaultGlobals[prop];
+      }
     }
     this.settingArr = [];
     for (let prop in this.settings) {
       const obj = {
         name: prop,
+        ordering: this.settings[prop].ordering,
         value: []
       };
       obj.value = Object.entries(this.settings[prop]).map(([k, v]) => {
@@ -357,6 +341,7 @@ export class SettingComponent implements OnInit {
       });
       this.settingArr.push(obj);
     }
+    this.settingArr = this.orderPipe.transform(this.settingArr, 'ordering', false);
   }
 
   showHashValue(data: any): void {
@@ -370,52 +355,6 @@ export class SettingComponent implements OnInit {
 
   showCopyMessage(): void {
     this.coreService.showCopyMessage(this.message)
-  }
-
-  private checkTime(time): string {
-    if (/^\d{1,2}:\d{2}?$/i.test(time)) {
-      time = time + ':00';
-    } else if (/^\d{1,2}:\d{2}(:)?$/i.test(time)) {
-      time = time + '00';
-    } else if (/^\d{1,2}?$/i.test(time)) {
-      time = time + ':00:00';
-    }
-    if (time === '00:00') {
-      time = '00:00:00';
-    }
-    return time;
-  }
-
-  private generateStoreObject(setting): any {
-    const tempSetting: any = {};
-    for (let prop in setting) {
-      tempSetting[prop] = {};
-      for (let x in setting[prop]) {
-        if (setting[prop][x].value || setting[prop][x].value === false || setting[prop][x].value === 0 || (setting[prop][x].type === 'PASSWORD' && setting[prop][x].value === '')) {
-          tempSetting[prop][x] = {};
-          if (x !== 'ordering') {
-            tempSetting[prop][x].ordering = setting[prop][x].ordering;
-            let value = setting[prop][x].value;
-            if (setting[prop][x].type === 'WEEKDAYS') {
-              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
-                value = setting[prop][x].value.toString();
-              }
-            } else if (setting[prop][x].type === 'ARRAY') {
-              if (setting[prop][x].value && Array.isArray(setting[prop][x].value)) {
-                value = setting[prop][x].value.filter((item) => {
-                  return item.name;
-                });
-                value = value.map((item) => item.name).join(';');
-              }
-            }
-            tempSetting[prop][x].value = value;
-          } else {
-            tempSetting[prop][x] = setting[prop].ordering;
-          }
-        }
-      }
-    }
-    return tempSetting;
   }
 
   private savePreferences(tempSetting, isJoc): void {

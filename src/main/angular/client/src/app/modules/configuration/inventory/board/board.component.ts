@@ -58,6 +58,9 @@ export class BoardComponent implements OnChanges, OnDestroy {
       return;
     }
     if (changes.reload) {
+      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+        return;
+      }
       if (this.reload) {
         this.getObject();
         this.reload = false;
@@ -129,8 +132,10 @@ export class BoardComponent implements OnChanges, OnDestroy {
       if (!res.valid) {
         if (!this.board.configuration.expectOrderToNoticeId) {
           this.invalidMsg = 'inventory.message.readingOrderToNoticeIdIsMissing';
-        } else if (this.board.configuration.postOrderToNoticeId) {
+        } else if (!this.board.configuration.postOrderToNoticeId) {
           this.invalidMsg = 'inventory.message.toNoticeIsMissing';
+        } else if (!this.boardObj.endOfLife) {
+          this.invalidMsg = 'inventory.message.endOfLifeIsMissing';
         } else {
           this.validateJSON(res.configuration);
         }
@@ -181,6 +186,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
         this.data.valid = res.valid;
       }
       this.setErrorMessage(res);
+      this.ref.detectChanges();
     });
   }
 
@@ -191,12 +197,13 @@ export class BoardComponent implements OnChanges, OnDestroy {
         this.invalidMsg = 'inventory.message.readingOrderToNoticeIdIsMissing';
       } else if (res.invalidMsg.match('toNoticeIsMissing')) {
         this.invalidMsg = 'inventory.message.toNoticeIsMissing';
+      } else if (res.invalidMsg.match('endOfLife')) {
+        this.invalidMsg = 'inventory.message.endOfLifeIsMissing';
       }
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
     }
-    this.ref.detectChanges();
   }
 
   rename(inValid): void {

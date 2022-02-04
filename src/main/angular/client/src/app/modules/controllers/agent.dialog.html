@@ -23,7 +23,9 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="new">
-      <label class="col-sm-3 form-control-label" translate>agent.label.agentId</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.agentId
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}">
         <input type="text" identifierValidation class="form-control" name="agentId"
                required [(ngModel)]="agent.agentId" #agentId="ngModel" [appAutofocus]="true"
@@ -38,8 +40,12 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" *ngIf="!isCluster" translate>agent.label.agentName</label>
-      <label class="col-sm-3 form-control-label" *ngIf="isCluster" translate>agent.label.agentClusterName</label>
+      <label class="col-sm-3 form-control-label" *ngIf="!isCluster" translate>agent.label.agentName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <label class="col-sm-3 form-control-label" *ngIf="isCluster" translate>agent.label.agentClusterName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
         <input type="text" class="form-control" name="agentName" [appAutofocus]="!new"
                required [(ngModel)]="agent.agentName" #agentName="ngModel"
@@ -61,7 +67,9 @@
       <div class="p-l-0 m-l-0 col-sm-1" *ngIf="agentNameAliases.length - 1 == i" style="padding-top: 6px"><i (click)="addAlise()" class="cursor text-muted fa fa-plus"></i></div>
     </div>
     <div class="form-group row" *ngIf="!isCluster">
-      <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.url
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
         <input type="url" class="form-control" name="url" #url="ngModel"
                required [(ngModel)]="agent.url" placeholder="http://host:port">
@@ -78,7 +86,9 @@
     </div>
     <div class="p-a b-a" *ngIf="isCluster && new">
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>agent.label.subagentId</label>
+        <label class="col-sm-3 form-control-label" translate>agent.label.subagentId
+          <sup class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
           <input identifierValidation type="text" class="form-control" name="subagentId" #subagentId="ngModel"
                  required [(ngModel)]="agent.subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
@@ -92,7 +102,9 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
+        <label class="col-sm-3 form-control-label" translate>agent.label.url
+          <sup class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
           <input type="url" class="form-control" name="url" #url="ngModel"
                  required [(ngModel)]="agent.url" placeholder="http://host:port">
@@ -105,7 +117,9 @@
         </div>
       </div>
       <div class="row">
-        <label class="col-sm-3 form-control-label" translate>agent.label.position</label>
+        <label class="col-sm-3 form-control-label" translate>agent.label.position
+          <sup class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-8" [ngClass]="{'has-error' : ((position.dirty || position.touched) && position.invalid)}">
            <nz-input-number required [nzMin]="1" [nzStep]="1" name="position"
                             #position="ngModel" [(ngModel)]="agent.position"></nz-input-number>
@@ -134,10 +148,12 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
+        <label class="col-sm-3 form-control-label" translate>agent.label.url
+          <sup *ngIf="agent.subagentId2 && agent.subagentId2.length > 0" class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-8" [ngClass]="{'has-error' : ((url2.dirty || url2.touched) && url2.invalid)}">
           <input type="url" class="form-control" name="url2" #url2="ngModel"
-                 [required]="agent.subagentId2 && agent.subagentId2.length > 0" [(ngModel)]="agent.url2" placeholder="http://host:port">
+                 [required]="(agent.subagentId2 && agent.subagentId2.length > 0) ? true : false" [(ngModel)]="agent.url2" placeholder="http://host:port">
           <div *ngIf="url2.invalid && (url2.dirty || url2.touched)"
                class="text-danger help-block">
             <div *ngIf="(url2.errors && url2.errors.required)">
@@ -147,9 +163,11 @@
         </div>
       </div>
       <div class="row">
-        <label class="col-sm-3 form-control-label" translate>agent.label.position</label>
+        <label class="col-sm-3 form-control-label" translate>agent.label.position
+         <sup *ngIf="agent.subagentId2 && agent.subagentId2.length > 0" class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-8" [ngClass]="{'has-error' : ((position2.dirty || position2.touched) && position2.invalid)}">
-           <nz-input-number [required]="agent.subagentId2 && agent.subagentId2.length > 0" [nzMin]="1" [nzStep]="1" name="position2"
+           <nz-input-number [required]="(agent.subagentId2 && agent.subagentId2.length > 0) ? true : false" [nzMin]="1" [nzStep]="1" name="position2"
                             #position2="ngModel" [(ngModel)]="agent.position2"></nz-input-number>
           <div *ngIf="position2.invalid && (position2.dirty || position2.touched)"
                class="text-danger help-block">
@@ -176,7 +194,9 @@
         </div>
         <div class="p-a b-a">
           <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>agent.label.subagentId</label>
+            <label class="col-sm-3 form-control-label" translate>agent.label.subagentId
+             <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
               <input identifierValidation required type="text" class="form-control" name="subagentId{{i}}" #subagentId="ngModel"
                      [(ngModel)]="item.subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}">
@@ -187,7 +207,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>agent.label.url</label>
+            <label class="col-sm-3 form-control-label" translate>agent.label.url
+             <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
               <input type="url" class="form-control" name="url{{i}}" #url="ngModel"
                      required [(ngModel)]="item.url" placeholder="http://host:port">
@@ -200,7 +222,9 @@
             </div>
           </div>
           <div class="row">
-            <label class="col-sm-3 form-control-label" translate>agent.label.position</label>
+            <label class="col-sm-3 form-control-label" translate>agent.label.position
+             <sup class="text-danger text-sm">*</sup>
+            </label>
             <div class="col-sm-8" [ngClass]="{'has-error' : ((position.dirty || position.touched) && position.invalid)}">
                <nz-input-number required [nzMin]="1" [nzStep]="1" name="position{{i}}"
                                 #position="ngModel" [(ngModel)]="item.position"></nz-input-number>

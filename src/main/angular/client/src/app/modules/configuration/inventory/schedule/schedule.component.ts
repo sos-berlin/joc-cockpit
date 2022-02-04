@@ -82,6 +82,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
     if (changes.reload) {
+      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+        return;
+      }
       if (this.reload) {
         this.getObject();
         this.reload = false;
@@ -153,7 +156,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       data.actualList.push(arr);
     }
   }
-
 
   addVariableSet(): void {
     const variableSet: any = {
@@ -645,6 +647,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               obj.calendars[i].frequencyList.forEach((val) => {
                 this.calendarService.generateCalendarObj(val, obj.calendars[i]);
               });
+            } else{
+              delete obj.calendars[i].includes;
             }
             delete obj.calendars[i].frequencyList;
           }
@@ -910,6 +914,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         });
       }
       this.history.push(this.schedule.actual);
+      if (!res.valid) {
+        if (this.schedule.configuration.workflowName && this.schedule.configuration.calendars.length > 0) {
+          this.validateJSON(res.configuration);
+        }
+      }
       this.setErrorMessage(res);
     });
   }
@@ -917,15 +926,17 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   private validateJSON(json): void {
     const obj = clone(json);
     obj.path = this.data.path;
-    this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
-      this.schedule.valid = res.valid;
-      if (this.schedule.id === this.data.id) {
-        if (this.data.valid !== res.valid) {
-          this.saveJSON(true, true);
+    this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe({
+      next: (res: any) => {
+        this.schedule.valid = res.valid;
+        if (this.schedule.id === this.data.id) {
+          if (this.data.valid !== res.valid) {
+            this.saveJSON(true, true);
+          }
+          this.data.valid = res.valid;
         }
-        this.data.valid = res.valid;
+        this.setErrorMessage(res);
       }
-      this.setErrorMessage(res);
     });
   }
 

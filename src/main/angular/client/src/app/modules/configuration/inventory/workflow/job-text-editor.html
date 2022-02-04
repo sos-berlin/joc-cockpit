@@ -19,7 +19,9 @@
       <div class="job-property-editor" *ngIf="index === 0">
         <div class="form-group row" [hidden]="fullScreen || (!exactMatch && isModal)">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.name' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.name</label>
+                 translate>workflow.label.name
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
             <label class="w-full">
               <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required class="form-control"
@@ -37,7 +39,9 @@
         </div>
         <div class="form-group row" *ngIf="!isModal" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.label</label>
+                 translate>workflow.label.label
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
             <label class="w-full">
               <input type="text" labelValidation required autocomplete="off" (blur)="onBlur();errorMsg=''" maxlength="30" class="form-control"
@@ -98,7 +102,9 @@
         </div>
         <div class="form-group row" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.agent</label>
+                 translate>workflow.label.agent
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-md-8 col-lg-9"
                [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
             <input required name="agentName"
@@ -122,30 +128,31 @@
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.jobResourceNames' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.jobResourceNames</label>
           <div class="col-md-8 col-lg-9">
-            <nz-tree-select
+            <nz-select
               name="jobResource"
-              #treeSelectCtrl
-              nzNoAnimation
-              nzMultiple
-              [nzAllowClear]="false"
-              [nzNodes]="jobResourcesTree"
-              [nzHideUnMatched]="true"
-              [nzDropdownStyle]="{ 'max-height': '300px' }"
-              nzShowSearch
-              [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
               [(ngModel)]="selectedNode.job.jobResourceNames"
+              nzShowSearch
+              [nzAllowClear]="false"
+              [nzDropdownClassName]="'group-list'"
+              [nzPlaceHolder]="'workflow.placeholder.selectJobResources' | translate"
+              nzMode="multiple"
               (ngModelChange)="onChangeJobResource($event)"
             >
-              <ng-template #nzTreeTemplate let-node>
-                <div class="node-wrapper w-93" (click)="loadData(node, 'JOBRESOURCE', $event);">
-                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
-                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                    {{node.origin.key}}
+              <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of jobResourcesTree">
+                <ng-template #nzTreeTemplate>
+                  <div>
+                    <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
+                    {{item.name}}
                   </div>
-                </div>
-              </ng-template>
-            </nz-tree-select>
+                </ng-template>
+                <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
+                  <div>
+                    <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                    {{option.name}}
+                  </div>
+                </nz-option>
+              </nz-option-group>
+            </nz-select>
           </div>
         </div>
         <div class="form-group row" *ngIf="selectedNode.job.executable.TYPE === 'ShellScriptExecutable'" [hidden]="fullScreen">
@@ -200,7 +207,11 @@
         <div class="form-group row">
           <div class="col-md-12">
             <nz-tabset>
-              <nz-tab [nzTitle]="'workflow.label.script' | translate" (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'">
+              <nz-tab [nzTitle]="titleTemplate" (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'">
+                <ng-template #titleTemplate>
+                    <span translate>workflow.label.script</span>
+                    <sup class="text-danger text-sm">*</sup>
+                </ng-template>
                 <div class="row" *ngIf="isDisplay">
                   <div class="col-md-12 role">
                     <div class="select-script-input bg-box" *ngIf="scriptObj.show">
@@ -243,7 +254,11 @@
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab [nzTitle]="'workflow.label.className' | translate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+              <nz-tab [nzTitle]="titleTemplate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
+                <ng-template #titleTemplate>
+                    <span translate>workflow.label.className</span>
+                    <sup class="text-danger text-sm">*</sup>
+                </ng-template>
                 <div class="row">
                   <div class="col-md-12" [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched))}">
                     <label class="w-full">

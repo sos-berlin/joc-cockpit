@@ -165,7 +165,8 @@
                               [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(agent.agentId)" (nzCheckedChange)="onItemChecked(controller, agent, $event)"></td>
                           <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
                             <div class="btn-group dropdown pull-left m-r-sm">
-                              <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                              <button type="button" class="btn-drop more-option-h" [nzDisabled]="controller.checked || controller.indeterminate" nz-dropdown nzTrigger="click"
+                                      [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                 <ul nz-menu >
                                   <li (click)="createToken(controller, agent)" nz-menu-item>
@@ -287,7 +288,7 @@
                                   [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId2.has(clusterAgent.agentId)" (nzCheckedChange)="onItemChecked(controller, clusterAgent, $event, true)"></td>
                               <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
                                 <div class="btn-group dropdown pull-left m-r-sm">
-                                  <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                                  <button type="button" class="btn-drop more-option-h" [nzDisabled]="controller.checked2 || controller.indeterminate2" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                     <ul nz-menu >
                                       <li (click)="createToken(controller, clusterAgent)" nz-menu-item>

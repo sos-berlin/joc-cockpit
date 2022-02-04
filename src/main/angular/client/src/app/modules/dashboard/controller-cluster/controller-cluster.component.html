@@ -61,17 +61,17 @@
                 *ngIf="permission.currentController && permission.currentController.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
               <a translate>dashboard.button.abort</a>
             </li>
-            <li nz-menu-item (click)="clusterAction('abortAndRestart', controller, false)" [nzDisabled]="controller.componentState._text !== 'operational'"
+            <li nz-menu-item (click)="clusterAction('abortAndRestart', controller, false)" [nzDisabled]="controller && controller.componentState._text !== 'operational'"
                 *ngIf="permission.currentController && (permission.currentController.restart && permission.currentController.terminate) && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
               <a translate>dashboard.button.abortAndRestart</a>
             </li>
-            <li nz-menu-item (click)="clusterAction('download', controller, false)" [nzDisabled]="controller.componentState._text !== 'operational'"
+            <li nz-menu-item (click)="clusterAction('download', controller, false)" [nzDisabled]="controller && controller.componentState._text !== 'operational'"
                 *ngIf="controller && permission.currentController && permission.currentController.getLog">
               <a translate>dashboard.button.downloadLog</a>
             </li>
-            <li nz-menu-item (click)="clusterAction('switchover',cluster, false)" [nzDisabled]="controller.componentState._text !== 'operational'"
+            <li nz-menu-item (click)="clusterAction('switchover',cluster, false)" [nzDisabled]="controller && controller.componentState._text !== 'operational'"
                 *ngIf="permission.currentController && permission.currentController.switchOver && cluster">
-              <a translate>dashboard.button.switchOver</a>
+              <a>{{'dashboard.button.switchOver' | translate}}</a>
             </li>
             <li nz-menu-item (click)="restartService('cluster')" *ngIf="joc && joc.current && joc.clusterNodeState && joc.clusterNodeState._text == 'active' && permission.joc.administration.controllers.manage" >
               <a translate>dashboard.button.restartCluster</a>

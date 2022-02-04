@@ -71,6 +71,9 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       return;
     }
     if (changes.reload) {
+      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+        return;
+      }
       if (this.reload) {
         this.getObject();
         this.reload = false;

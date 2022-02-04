@@ -120,7 +120,7 @@
                   <div class="box card">
                     <div class="box-body">
                       <label class="pos-abt" style="margin-top: -2px">
-                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.name)"
+                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.path)"
                                (nzCheckedChange)="onItemChecked(document, $event)"></label>
                       </label>
                       <div class="text-left block-ellipsis m-l-md">
@@ -130,9 +130,10 @@
                         </span>
                       </div>
                       <div class="btn-group dropdown pull-right abt-dropdown">
-                        <a class=" more-option text-black-lt" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
-                           nzPlacement="bottomRight">
-                          <i class="text fa fa-ellipsis-h"></i></a>
+                        <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+                                type="button">
+                          <i class="fa fa-ellipsis-h"></i>
+                        </button>
                         <nz-dropdown-menu #option="nzDropdownMenu">
                           <ul nz-menu>
                             <li nz-menu-item (click)="editDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage">
@@ -251,7 +252,7 @@
                     <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"></td>
                     <td>
                       <div class="btn-group dropdown">
-                        <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2">
+                        <button type="button" class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option2">
                           <i class="fa fa-ellipsis-h"></i></button>
                         <nz-dropdown-menu #option2="nzDropdownMenu" role="menu" >
                           <ul nz-menu>

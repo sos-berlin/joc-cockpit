@@ -74,6 +74,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       return;
     }
     if (changes.reload) {
+      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+        return;
+      }
       if (this.reload) {
         this.getObject();
         this.reload = false;
@@ -360,7 +363,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   copyParam(type): void {
-   this.cutCopyOperation(type, 'COPY');
+    this.cutCopyOperation(type, 'COPY');
   }
 
   private cutOperation(): void {
@@ -499,6 +502,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
             this.data.valid = res.valid;
             this.data.deployed = false;
             this.setErrorMessage(res);
+            this.ref.detectChanges();
           }
         }, error: () => {
           this.ref.detectChanges();
@@ -516,8 +520,11 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
+    } else {
+      if (!res.configuration.arguments && !res.configuration.env) {
+        this.invalidMsg = 'inventory.message.envOrArgumentIsMissing';
+      }
     }
-    this.ref.detectChanges();
   }
 
   private getObject(): void {
@@ -559,7 +566,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       this.jobResource = res;
       this.jobResource.path1 = this.data.path;
       this.jobResource.name = this.data.name;
-
+      this.setErrorMessage(res);
       if (this.jobResource.configuration.env) {
         this.jobResource.configuration.env = this.coreService.convertObjectToArray(this.jobResource.configuration, 'env');
         this.jobResource.configuration.env.filter((env) => {
@@ -578,7 +585,6 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.jobResource.configuration.arguments = [];
         this.addArgu(true);
       }
-      this.setErrorMessage(res);
       this.jobResource.actual = JSON.stringify(res.configuration);
       this.history.push(this.jobResource.actual);
       this.ref.detectChanges();

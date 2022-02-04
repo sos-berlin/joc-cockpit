@@ -111,7 +111,7 @@
             <td [nzShowCheckbox]="true" [nzDisabled]="notify.type !== 'ERROR'" [nzChecked]="filters.mapOfCheckedId.has(notify.notificationId)" (nzCheckedChange)="onItemChecked(notify, $event)"></td>
             <td>
               <div class="btn-group dropdown">
-                <button class="btn-drop more-option-h" [disabled]="notify.type !== 'ERROR'" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
+                <button class="btn-drop more-option-h" [nzDisabled]="notify.type !== 'ERROR' || object.check || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
                   <i class="fa fa-ellipsis-h"></i>
                 </button>
                 <nz-dropdown-menu #option="nzDropdownMenu" role="menu" >

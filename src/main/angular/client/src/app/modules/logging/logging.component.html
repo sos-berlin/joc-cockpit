@@ -38,10 +38,7 @@
             <label class="col-lg-2 col-sm-3 " translate>log.label.logEnabled</label>
             <div class=" col-sm-9" >
               <div>
-                <label class="md-check w-sm">
-                  <input type="checkbox" [(ngModel)]="clientLogFilter.isEnable" (change)="saveSettingConf()">
-                  <i class="primary"></i>
-                </label>
+                <label nz-checkbox [(ngModel)]="clientLogFilter.isEnable" name="isEnable" (ngModelChange)="saveSettingConf()"></label>
               </div>
             </div>
           </div>

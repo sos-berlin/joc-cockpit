@@ -13,9 +13,11 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentFolder)">
     <div class="modal-body p-a">
         <div class="form-group row" *ngIf="!newFolder">
-          <label class="col-sm-3 form-control-label" translate>user.label.folders</label>
+          <label class="col-sm-3 form-control-label" translate>user.label.folders
+            <sup *ngIf="folderObj.paths.length===0" class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-sm-8" [ngClass]="{'has-error' : ((folder.dirty || folder.touched) && folder.invalid)}">
-            <input type="text" class="form-control" name="name" placeholder="{{'user.placeholder.folderPath' | translate}}"  [(ngModel)]="currentFolder.folder" [required]="folderObj.paths.length===0" #folder="ngModel"/>
+            <input type="text" class="form-control" name="name" placeholder="{{'user.placeholder.folderPath' | translate}}"  [(ngModel)]="currentFolder.folder" [required]="(folderObj.paths.length===0) ? true : false" #folder="ngModel"/>
             <div *ngIf="folder.invalid && (folder.dirty || folder.touched) " class="text-danger help-block">
               <div *ngIf="folder.errors.required">
                 <div translate>common.message.requiredError</div>
@@ -53,10 +55,8 @@
         <div class="form-group row">
             <label class="col-sm-3" translate>user.label.recursive</label>
             <div class="col-sm-6">
-                <label class="md-check">
-                    <input type="checkbox" [(ngModel)]="currentFolder.recursive" name="recursive">
-                    <i class="primary"></i><span class="m-l-xs"> </span>
-                </label>
+              <label nz-checkbox [(ngModel)]="currentFolder.recursive"
+                       name="recursive"></label>
             </div>
         </div>
     </div>

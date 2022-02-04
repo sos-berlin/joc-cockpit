@@ -30,9 +30,6 @@
             <i *ngIf="usr.sortBy == 'account' && usr.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
-        <th>
-          <span translate>user.label.password</span>
-        </th>
         <th (click)="sort('roles')">
           <a><span class="p-r-xs" translate>user.label.roles</span>
             <i *ngIf="usr.sortBy == 'roles' && !usr.reverse"
@@ -40,14 +37,28 @@
             <i *ngIf="usr.sortBy == 'roles' && usr.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
+        <th nzWidth="20%" (click)="sort('forcePasswordChange')">
+          <a><span class="p-r-xs" translate>user.label.forcePasswordChange</span>
+            <i *ngIf="usr.sortBy == 'forcePasswordChange' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'forcePasswordChange' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+        <th nzWidth="20%" (click)="sort('disabled')">
+          <a><span class="p-r-xs" translate>user.label.disable</span>
+            <i *ngIf="usr.sortBy == 'disabled' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'disabled' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let account of ajaxTable.data">
+      <tr *ngFor="let account of ajaxTable.data" [ngClass]="{'opacity7': account.disabled}">
         <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(account.account)" (nzCheckedChange)="onItemChecked(account, $event)"></td>
         <td>
           <div class="btn-group dropdown pull-left m-r-sm">
-            <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+            <button type="button" class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
               <ul nz-menu >
                 <li nz-menu-item (click)="editUser(account)">
@@ -56,19 +67,33 @@
                 <li nz-menu-item (click)="copyUser(account)">
                   <a translate>common.button.copy</a>
                 </li>
+                <li *ngIf="(selectedIdentityServiceType === 'JOC' || selectedIdentityServiceType === 'VAULT-JOC-ACTIVE')" nz-menu-item (click)="resetPassword(account)">
+                  <a translate>user.button.resetPassword</a>
+                </li>
+                <li nz-menu-item *ngIf="(selectedIdentityServiceType === 'JOC' || selectedIdentityServiceType === 'VAULT-JOC-ACTIVE')" [nzDisabled]="account.forcePasswordChange" (click)="forcePasswordChange(account)">
+                  <a translate>user.button.forcePasswordChange</a>
+                </li>
+                <li nz-menu-item *ngIf="selectedIdentityServiceType.match('JOC')" (click)="disabledUser(account)"
+                    [ngClass]="{'disable-link' :username==account.account && selectedIdentityService === userIdentityService}">
+                  <a *ngIf="account.disabled" translate>user.button.enable</a>
+                  <a *ngIf="!account.disabled" translate>user.button.disable</a>
+                </li>
                 <li nz-menu-item (click)="deleteUser(account.account)" class="bg-hover-color"
                     [ngClass]="{'disable-link' :username==account.account && selectedIdentityService === userIdentityService}">
-                  <a translate>common.button.delete</a>
+                  <a translate>user.button.delete</a>
                 </li>
               </ul>
             </nz-dropdown-menu>
           </div>
         </td>
-        <td><a (click)="showRole(account.account)" class="text-hover-primary" [innerHtml]="account.account  | decodeSpace | highlight: searchKey"></a></td>
-        <td><span>********</span></td>
+        <td>
+          <a (click)="showRole(account.account)" class="text-hover-primary" [innerHtml]="account.account  | decodeSpace | highlight: searchKey"></a>
+        </td>
         <td>
           <div *ngFor="let role of account.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
         </td>
+        <td><span>{{account.forcePasswordChange ? 'Yes' : 'No'}}</span></td>
+        <td><span>{{account.disabled ? 'Yes' : 'No'}}</span></td>
       </tr>
       </tbody>
     </nz-table>

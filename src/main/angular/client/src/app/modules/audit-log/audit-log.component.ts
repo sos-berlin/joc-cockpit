@@ -221,6 +221,89 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     });
   }
 
+  static parseProcessExecuted(regex, obj): any {
+    let fromDate;
+    let toDate;
+
+    if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
+
+    } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
+      fromDate = new Date();
+      toDate = new Date();
+      const seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
+      fromDate.setSeconds(toDate.getSeconds() - seconds);
+    } else if (/^\s*(Today)\s*$/i.test(regex)) {
+      fromDate = '0d';
+      toDate = '0d';
+    } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
+      fromDate = '-1d';
+      toDate = '-1d';
+    } else if (/^\s*(now)\s*$/i.test(regex)) {
+      fromDate = new Date();
+      toDate = new Date();
+    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      const arr = date[0].split('to');
+      fromDate = arr[0].trim();
+      toDate = arr[1].trim();
+
+    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      const arr = date[0].split('to');
+      fromDate = arr[0].trim();
+      toDate = arr[1].trim();
+
+    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      const arr = date[0].split('to');
+      fromDate = arr[0].trim();
+      toDate = arr[1].trim();
+
+    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      const arr = date[0].split('to');
+      fromDate = arr[0].trim();
+      toDate = arr[1].trim();
+
+    } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
+      const time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
+      fromDate = new Date();
+      if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
+        fromDate.setHours(parseInt(time[1], 10) - 12);
+      } else {
+        fromDate.setHours(parseInt(time[1], 10));
+      }
+
+      fromDate.setMinutes(parseInt(time[2], 10));
+      toDate = new Date();
+      if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
+        toDate.setHours(parseInt(time[4], 10) - 12);
+      } else {
+        toDate.setHours(parseInt(time[4], 10));
+      }
+      toDate.setMinutes(parseInt(time[5], 10));
+    }
+
+    if (fromDate) {
+      obj.dateFrom = fromDate;
+    }
+    if (toDate) {
+      obj.dateTo = toDate;
+    }
+    return obj;
+  }
+
+  static parseDate(auditSearch, filter): any {
+    if (auditSearch.from) {
+      filter.dateFrom = new Date(auditSearch.from);
+    }
+    if (auditSearch.to) {
+      filter.dateTo = new Date(auditSearch.to);
+    }
+    return filter;
+  }
+
   ngOnInit(): void {
     this.init();
   }
@@ -416,12 +499,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
     if (object.radio) {
       if (object.radio == 'planned') {
-        filter = this.parseProcessExecuted(object.planned, filter);
+        filter = AuditLogComponent.parseProcessExecuted(object.planned, filter);
       } else {
-        filter = this.parseDate(object, filter);
+        filter = AuditLogComponent.parseDate(object, filter);
       }
     } else if (object.planned) {
-      filter = this.parseProcessExecuted(object.planned, filter);
+      filter = AuditLogComponent.parseProcessExecuted(object.planned, filter);
     }
     return filter;
   }
@@ -452,89 +535,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       filter.dateTo = '0d';
     } else {
       filter.dateFrom = this.adtLog.filter.date;
-    }
-    return filter;
-  }
-
-  private parseProcessExecuted(regex, obj): any {
-    let fromDate;
-    let toDate;
-
-    if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
-
-    } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
-      fromDate = new Date();
-      toDate = new Date();
-      const seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
-      fromDate.setSeconds(toDate.getSeconds() - seconds);
-    } else if (/^\s*(Today)\s*$/i.test(regex)) {
-      fromDate = '0d';
-      toDate = '0d';
-    } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
-      fromDate = '-1d';
-      toDate = '-1d';
-    } else if (/^\s*(now)\s*$/i.test(regex)) {
-      fromDate = new Date();
-      toDate = new Date();
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      const arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      const arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      const arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      const date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-      const arr = date[0].split('to');
-      fromDate = arr[0].trim();
-      toDate = arr[1].trim();
-
-    } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-      const time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
-      fromDate = new Date();
-      if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
-        fromDate.setHours(parseInt(time[1], 10) - 12);
-      } else {
-        fromDate.setHours(parseInt(time[1], 10));
-      }
-
-      fromDate.setMinutes(parseInt(time[2], 10));
-      toDate = new Date();
-      if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
-        toDate.setHours(parseInt(time[4], 10) - 12);
-      } else {
-        toDate.setHours(parseInt(time[4], 10));
-      }
-      toDate.setMinutes(parseInt(time[5], 10));
-    }
-
-    if (fromDate) {
-      obj.dateFrom = fromDate;
-    }
-    if (toDate) {
-      obj.dateTo = toDate;
-    }
-    return obj;
-  }
-
-  private parseDate(auditSearch, filter): any {
-    if (auditSearch.from) {
-      filter.dateFrom = new Date(auditSearch.from);
-    }
-    if (auditSearch.to) {
-      filter.dateTo = new Date(auditSearch.to);
     }
     return filter;
   }
@@ -684,7 +684,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
-      from: new Date().setHours(0, 0, 0, 0),
+      from: new Date(new Date().setHours(0, 0, 0, 0)),
       to: new Date()
     };
   }

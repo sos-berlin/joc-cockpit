@@ -668,7 +668,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
-      from: new Date().setHours(0, 0, 0, 0),
+      from: new Date(new Date().setHours(0, 0, 0, 0)),
       to: new Date(),
     };
   }

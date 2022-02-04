@@ -13,7 +13,6 @@ import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
 import {NzNoAnimationModule} from 'ng-zorro-antd/core/no-animation';
 import {NzRadioModule} from 'ng-zorro-antd/radio';
-import {NzDrawerModule} from 'ng-zorro-antd/drawer';
 import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {Shared2Module} from './shared2.module';
@@ -53,7 +52,7 @@ import {WorkflowTreeStructureComponent} from '../../components/workflow-tree-str
 import {SearchComponent} from '../../components/search/search.component';
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
-  NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule, NzDrawerModule,
+  NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
   NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,

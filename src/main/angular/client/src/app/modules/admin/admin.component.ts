@@ -100,6 +100,22 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('ADD');
   }
 
+  deleteList(): void {
+    this.dataService.announceFunction('DELETE');
+  }
+
+  disableList(): void {
+    this.dataService.announceFunction('DISABLE');
+  }
+
+  resetPassword(): void {
+    this.dataService.announceFunction('RESET_PASSWORD');
+  }
+
+  forcePasswordChange(): void {
+    this.dataService.announceFunction('FORCE_PASSWORD_CHANGE');
+  }
+
   copyList(): void {
     if (this.route.match('/users/identity_service/account')) {
       this.dataService.announceFunction('COPY_ACCOUNT');
@@ -174,7 +190,7 @@ export class AdminComponent implements OnInit, OnDestroy {
             this.selectedUser = null;
             this.router.navigate(['/users/identity_service/role']);
           } else if (sessionStorage.identityServiceType !== 'SHIRO' && this.route.match('/users/identity_service/main_section')) {
-            this.router.navigate(['/users/identity_service/account']);
+            this.router.navigate(['/users/identity_service/role']);
           }
         }
         this.selectedUser = AdminComponent.getParameterByName('account');

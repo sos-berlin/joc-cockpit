@@ -23,7 +23,9 @@
     </div>
     <div class="form-group row">
       <label class="col-md-4 col-lg-3 form-control-label"
-             translate>workflow.findAndReplace.label.replace</label>
+             translate>workflow.findAndReplace.label.replace
+       <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-md-8 col-lg-9"
            [ngClass]="{'has-error' : ((replace.dirty || replace.touched) && replace.invalid)}">
         <input required name="replace" #replace="ngModel"

@@ -24,7 +24,9 @@
     </div>
     <div class="p-a b-a" *ngIf="controller.type === 'STANDALONE'">
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>common.label.title</label>
+        <label class="col-sm-4 form-control-label" translate>common.label.title
+         <sup class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}">
           <input type="text" class="form-control" required name="title" [(ngModel)]="controller.title"
@@ -37,7 +39,9 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.standaloneUrlForJOC' | translate" translate>controller.label.standaloneUrl</label>
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.standaloneUrlForJOC' | translate" translate>controller.label.standaloneUrl
+         <sup class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
           <input type="url" class="form-control" placeholder="http://host:port" required name="remoteUrl" [(ngModel)]="controller.url"
@@ -65,7 +69,9 @@
       </div>
       <div class="p-a b-a">
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>common.label.title</label>
+          <label class="col-sm-4 form-control-label" translate>common.label.title
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryTitle.dirty || primaryTitle.touched) && primaryTitle.invalid)}">
             <input type="text" class="form-control" required name="primaryTitle" [(ngModel)]="controller.primaryTitle"
@@ -78,7 +84,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.primaryUrlForJOC' | translate" translate>controller.label.jocUrlForPrimary</label>
+          <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.primaryUrlForJOC' | translate" translate>controller.label.jocUrlForPrimary
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryUrl.dirty || primaryUrl.touched) && primaryUrl.invalid)}">
             <input type="url" placeholder="http://host:port" class="form-control" required name="primaryUrl" [(ngModel)]="controller.primaryUrl" #primaryUrl="ngModel">
@@ -111,7 +119,9 @@
       </div>
       <div class="p-a b-a">
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>common.label.title</label>
+          <label class="col-sm-4 form-control-label" translate>common.label.title
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupTitle.dirty || backupTitle.touched) && backupTitle.invalid)}">
             <input type="text" class="form-control" required name="backupTitle" [(ngModel)]="controller.backupTitle"
@@ -124,7 +134,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.backupUrlForJOC' | translate" translate>controller.label.jocUrlForBackup</label>
+          <label class="col-sm-4 form-control-label" [nz-tooltip]="'controller.tooltip.backupUrlForJOC' | translate" translate>controller.label.jocUrlForBackup
+           <sup class="text-danger text-sm">*</sup>
+          </label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupUrl.dirty || backupUrl.touched) && backupUrl.invalid)}">
             <input type="url" placeholder="http://host:port" class="form-control" required name="backupUrl" [(ngModel)]="controller.backupUrl" #backupUrl="ngModel">
@@ -172,18 +184,17 @@
                    placeholder="{{'agent.placeholder.enterAgentId' | translate}}">
             <div *ngIf="agentId.invalid && (agentId.dirty || agentId.touched)"
                  class="text-danger help-block">
-              <div *ngIf="(agentId.errors && agentId.errors.required)">
-                <div translate>common.message.requiredError</div>
-              </div>
               <div *ngIf="agentId.errors.invalidIdentifier" translate>common.message.invalid</div>
             </div>
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>agent.label.agentName</label>
+          <label class="col-sm-4 form-control-label" translate>agent.label.agentName
+           <sup *ngIf="agent.agentId && agent.agentId.length > 0" class="text-danger text-sm">*</sup>
+          </label>
           <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
             <input type="text" class="form-control" name="agentName" [readonly]="!new && agents && agents.length>0"
-                   [(ngModel)]="agent.agentName" #agentName="ngModel" [required]="agent.agentId"
+                   [(ngModel)]="agent.agentName" #agentName="ngModel" [required]="(agent.agentId && agent.agentId.length > 0) ? true : false"
                    placeholder="{{'agent.placeholder.enterAgentName' | translate}}">
             <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
                  class="text-danger help-block">
@@ -194,10 +205,12 @@
           </div>
         </div>
         <div class="row">
-          <label class="col-sm-4 form-control-label" translate>agent.label.url</label>
+          <label class="col-sm-4 form-control-label" translate>agent.label.url
+            <sup *ngIf="agent.agentId && agent.agentId.length > 0" class="text-danger text-sm">*</sup>
+          </label>
           <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
             <input type="url" class="form-control" name="url" #url="ngModel" [readonly]="!new && agents && agents.length>0"
-                   [required]="agent.agentId" [(ngModel)]="agent.url" placeholder="http://host:port">
+                   [required]="(agent.agentId && agent.agentId.length > 0) ? true : false" [(ngModel)]="agent.url" placeholder="http://host:port">
             <div *ngIf="url.invalid && (url.dirty || url.touched)"
                  class="text-danger help-block">
               <div *ngIf="(url.errors && url.errors.required)">

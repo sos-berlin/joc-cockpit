@@ -27,17 +27,17 @@
       </td>
       <td>
         <div class="btn-group dropdown">
-          <button class="btn-drop more-option-h"
+          <button class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate"
                   nz-dropdown nzTrigger="click"
                   [nzDropdownMenu]="export5" type="button" (nzVisibleChange)="change($event)">
             <i class="fa fa-ellipsis-h"></i>
           </button>
           <nz-dropdown-menu #export5="nzDropdownMenu" role="menu">
             <ul nz-menu *ngIf="permission.currentController">
-              <li  (click)="submitOrder(value, false)" nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')" *ngIf="permission.currentController && permission.currentController.orders.create">
+              <li (click)="submitOrder(value, false)" nz-menu-item [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')" *ngIf="permission.currentController && permission.currentController.orders.create">
                 <a>{{'dailyPlan.button.submitOrder' | translate}} ..</a>
               </li>
-              <li  (click)="removeOrder(value, false)" nz-menu-item class="bg-hover-color" [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')"
+              <li (click)="removeOrder(value, false)" nz-menu-item class="bg-hover-color" [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'SUBMITTED')"
                   *ngIf="permission.currentController.orders.cancel">
                 <a>{{'dailyPlan.button.removeOrder' | translate}} ..</a>
               </li>
@@ -150,7 +150,7 @@
       </td>
       <td>
         <div class="btn-group dropdown">
-          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [ngClass]="{'disable-link': plan.isFinished}"
+          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDisabled]="plan.isFinished || object.checked || object.indeterminate"
                   [nzDropdownMenu]="export2" type="button" (nzVisibleChange)="change($event)">
             <i class="fa fa-ellipsis-h"></i>
           </button>
@@ -449,8 +449,8 @@
                     <a [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }"
                        (click)="selectSubmissionHistory(history.submissionHistoryId)">
                       <i class="fa fa-circle p-r-xs"></i>
-                      <span translate>dailyPlan.label.submission</span> -
-                      <i class="text-muted">({{history.submissionTime | stringToTime}})</i>
+                      <span translate>dailyPlan.label.created</span> -
+                      <i class="text-muted">{{history.submissionTime | stringToDate}}</i>
                     </a>
                   </li>
                 </ul>

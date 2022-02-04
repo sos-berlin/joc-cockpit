@@ -6,7 +6,7 @@ import {Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
-import {isEmpty, sortBy, isNumber, object, isArray} from 'underscore';
+import {isEmpty, sortBy, isNumber, object, isArray, groupBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 
@@ -35,10 +35,26 @@ export class CoreService {
   };
 
   searchResults = {
-    inventory: [],
-    workflow: [],
-    board: [],
-    lock: []
+    inventory: {
+      panel: false,
+      result: [],
+      request: {}
+    },
+    workflow: {
+      panel: false,
+      result: [],
+      request: {}
+    },
+    board: {
+      panel: false,
+      result: [],
+      request: {}
+    },
+    lock: {
+      panel: false,
+      result: [],
+      request: {}
+    }
   };
 
   newWindow: any;
@@ -562,11 +578,13 @@ export class CoreService {
       responseType: 'blob',
       observe: 'response'
     };
-    this.http.post(url, options, headers).subscribe((response: any) => {
-      saveAs(response.body, fileName || response.headers.get('content-disposition'));
-      cb(true);
-    }, () => {
-      cb(false);
+    this.http.post(url, options, headers).subscribe({
+      next: (response: any) => {
+        saveAs(response.body, fileName || response.headers.get('content-disposition'));
+        cb(true);
+      }, error: () => {
+        cb(false);
+      }
     });
   }
 
@@ -735,6 +753,7 @@ export class CoreService {
           permitted: data.folders[i].permitted,
           isLeaf: isLeaf ? !data.folders[i].folders || data.folders[i].folders.length === 0 : false,
           children: [],
+          items: data.folders[i].items,
           deployables: data.folders[i].deployables,
           releasables: data.folders[i].releasables
         });
@@ -754,13 +773,14 @@ export class CoreService {
       for (const i in actualData.folders) {
         if (actualData.folders[i]) {
           output.push({
-            name: actualData.folders[i].path,
+            name: actualData.folders[i].name || actualData.folders[i].path,
             path: actualData.folders[i].path,
-            title: actualData.folders[i].path,
+            title: actualData.folders[i].name || actualData.folders[i].path,
             key: actualData.folders[i].path,
             permitted: actualData.folders[i].permitted,
             isLeaf: isLeaf ? !actualData.folders[i].folders || actualData.folders[i].folders.length === 0 : false,
             children: [],
+            items: actualData.folders[i].items,
             deployables: actualData.folders[i].deployables,
             releasables: actualData.folders[i].releasables
           });
@@ -1351,17 +1371,17 @@ export class CoreService {
     setTimeout(() => {
       const arr = currentView != null ? [53] : [];
       if (!currentView) {
-        $('#orderTable').find('thead th.dynamic-thead-o').each(function() {
+        $('#orderTable').find('thead th.dynamic-thead-o').each(function () {
           const w = $(this).outerWidth();
           arr.push(w);
         });
       }
-      $('#orderTable').find('thead th.dynamic-thead').each(function() {
+      $('#orderTable').find('thead th.dynamic-thead').each(function () {
         const w = $(this).outerWidth();
         arr.push(w);
       });
       let count = -1;
-      $('tr.tr-border').find('td').each(function(i) {
+      $('tr.tr-border').find('td').each(function (i) {
         count = count + 1;
         if (arr.length === count) {
           count = 0;
@@ -1375,7 +1395,7 @@ export class CoreService {
     const arr: Array<number> = [];
     const arr2 = [];
     const dom = $('#fileTransferTable');
-    dom.find('thead tr.sub-header th.dynamic-thead').each(function() {
+    dom.find('thead tr.sub-header th.dynamic-thead').each(function () {
       arr.push($(this).outerWidth());
     });
 
@@ -1438,7 +1458,7 @@ export class CoreService {
     }
     const dates = [];
     let currentDate = startDate;
-    const addDays = function(days) {
+    const addDays = function (days) {
       const date = new Date(this.valueOf());
       date.setDate(date.getDate() + days);
       return date.setHours(0, 0, 0, 0);
@@ -1450,7 +1470,7 @@ export class CoreService {
     return dates;
   }
 
-  removeSlashToString(data: any, type: string, flag = false): void {
+  removeSlashToString(data: any, type: string): void {
     if (data[type]) {
       if (isArray(data[type])) {
 
@@ -1467,7 +1487,8 @@ export class CoreService {
                 return;
               } else if (mainStr === 'true' || mainStr === 'false') {
                 return;
-              } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(jobResourceVariable\()/g.test(mainStr) || /^(scheduledOrEmpty\()/g.test(mainStr)) {
+              } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(replaceAll\()/i.test(mainStr)
+                || /^(jobResourceVariable\()/g.test(mainStr) || /^(scheduledOrEmpty\()/g.test(mainStr)) {
                 return;
               } else if (mainStr.substring(0, 1) === '$') {
                 const str = mainStr.substring(1, data[type].length);
@@ -1479,7 +1500,7 @@ export class CoreService {
             try {
               data[type] = JSON.parse(data[type]);
             } catch (e) {
-              if ((startChar === '"' && endChar === '"') || (startChar === "'" && endChar === "'" && (type === 'final' || type === 'default' || flag))) {
+              if ((startChar === '"' && endChar === '"')) {
                 data[type] = mainStr;
               }
             }
@@ -1493,17 +1514,16 @@ export class CoreService {
     if (data[type]) {
       if (data[type] === 'true' || data[type] === 'false') {
       } else if (/^\d+$/.test(data[type])) {
-      } else if (/^(now\()/i.test(data[type]) || /^(env\()/i.test(data[type]) || /^(jobResourceVariable\()/g.test(data[type]) || /^(scheduledOrEmpty\()/g.test(data[type])) {
+      } else if (/^(now\()/i.test(data[type]) || /^(env\()/i.test(data[type]) || /^(replaceAll\()/i.test(data[type])
+        || /^(jobResourceVariable\()/g.test(data[type]) || /^(scheduledOrEmpty\()/g.test(data[type])) {
       } else if (typeof data[type] == 'string') {
         const startChar = data[type].substring(0, 1);
+        const endChar = data[type].substring(data[type].length - 1);
         if (startChar !== '$') {
-          const endChar = data[type].substring(data[type].length - 1);
           if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
-          } else if (data[type].match(/\s(\++)\s/)) {
-
           } else {
             data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
-            data[type] = '"' + data[type] + '"';
+            data[type] = endChar === "$" ? data[type] : '"' + data[type] + '"';
           }
         } else {
           const mainStr = data[type].substring(1, data[type].length);
@@ -1512,7 +1532,7 @@ export class CoreService {
             if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr)
               && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
             } else {
-              data[type] = '"' + data[type].trim() + '"';
+              data[type] = endChar === "$" ? data[type].trim() : '"' + data[type].trim() + '"';
             }
           }
         }
@@ -1548,5 +1568,41 @@ export class CoreService {
   convertTextToLink(value: string, link: any): string {
     return value.replace(new RegExp(/%(.*)%/, 'gi'),
       '<a target="_blank" href="' + link + '" class="text-primary text-u-l">$1</a>');
+  }
+
+  getJobResource(cb, obj = null): void {
+    this.post('inventory/read/folder', {
+      path: '/',
+      recursive: true,
+      objectTypes: ['JOBRESOURCE']
+    }).subscribe({
+      next: (res: any) => {
+        res.jobResources = sortBy(res.jobResources, (i: any) => {
+          return i.name.toLowerCase();
+        });
+        if(obj) {
+          obj.list = res.jobResources;
+        }
+        let entries = [];
+        res.jobResources.forEach((item) => {
+          const obj = {
+            name: item.name,
+            path: item.path.substring(0, item.path.lastIndexOf('/')) || '/'
+          };
+          entries.push(obj);
+        });
+        entries = sortBy(entries, (i: any) => {
+          return i.path.toLowerCase();
+        });
+        const arr = [];
+        for (const [key, value] of Object.entries(groupBy(entries, 'path'))) {
+          arr.push({name: key, list: value});
+        }
+
+        cb(arr);
+      }, error: () => {
+        cb([]);
+      }
+    });
   }
 }

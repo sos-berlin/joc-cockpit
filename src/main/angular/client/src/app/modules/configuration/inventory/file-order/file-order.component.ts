@@ -75,6 +75,9 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       return;
     }
     if (changes.reload) {
+      if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
+        return;
+      }
       if (this.reload) {
         this.getObject();
         this.reload = false;
@@ -229,7 +232,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.invalidMsg = 'inventory.message.workflowIsMissing';
       } else if (res.invalidMsg.match('agentName')) {
         this.invalidMsg = 'workflow.message.agentIsMissing';
-      } else if (res.invalidMsg.match('directory')) {
+      } else if (res.invalidMsg.match('directoryExpr: is missing but it is required')) {
         this.invalidMsg = 'inventory.message.directoryIsMissing';
       }
     }

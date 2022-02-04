@@ -48,6 +48,22 @@
               <i class="fa fa-copy"></i>&nbsp;
               <span translate>common.button.copy</span>
             </button>
+            <button *ngIf="isSelected && (identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="resetPassword()">
+              <i class="fa fa-refresh"></i>&nbsp;
+              <span translate>user.button.resetPassword</span>
+            </button>
+            <button *ngIf="isSelected && (identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="forcePasswordChange()">
+              <i class="fa fa-key"></i>&nbsp;
+              <span translate>user.button.forcePasswordChange</span>
+            </button>
+            <button *ngIf="isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="disableList()">
+              <i class="fa fa-ban"></i>&nbsp;
+              <span translate>user.button.disable</span>
+            </button>
+            <button *ngIf="isSelected && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="deleteList()">
+              <i class="fa fa-trash"></i>&nbsp;
+              <span translate>user.button.delete</span>
+            </button>
             <button *ngIf="!isSelected && route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addController()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addController</span>
@@ -108,18 +124,18 @@
     <div class="row m-b m-t-xs" *ngIf="route !== '/users' && route !== '/users/identity_service'">
       <div class="col-md-12">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item" *ngIf="identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
-            <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
-             </a>
-          </li>
-          <li class="nav-item dropdown-separator" *ngIf="identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
-            <span class="separator"></span>
-          </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="identity_service/role" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
             </a>
+          </li>
+          <li class="nav-item dropdown-separator" *ngIf="identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item" *ngIf="identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
+            <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
+             </a>
           </li>
           <li class="nav-item dropdown-separator" *ngIf="identityServiceType === 'SHIRO'">
             <span class="separator"></span>

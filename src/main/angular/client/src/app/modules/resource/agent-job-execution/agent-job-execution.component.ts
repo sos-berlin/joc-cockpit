@@ -452,7 +452,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     } else if (this.agentFilters.filter.date == 'today') {
       filter.dateFrom = '0d';
       filter.dateTo = '0d';
-    } else {
+    } else if (this.agentFilters.filter.date) {
       filter.dateFrom = this.agentFilters.filter.date;
     }
     return filter;
@@ -512,8 +512,10 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     this.loadAgentTasks(null);
   }
 
-  search(): void {
-    this.isLoading = false;
+  search(flag = false): void {
+    if (!flag) {
+      this.isLoading = false;
+    }
     let filter: any = {
       controllerId: this.searchFilter.controllerId || '',
       timeZone: this.preferences.zone
@@ -597,7 +599,11 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType === 'JobStateChanged') {
-          this.loadAgentTasks(null);
+          if (this.searchFilter && !isEmpty(this.searchFilter) && !this.agentFilters.filter.date) {
+            this.search(true);
+          } else {
+            this.loadAgentTasks(null);
+          }
           break;
         }
       }

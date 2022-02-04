@@ -1,0 +1,173 @@
+<div class="modal-header">
+  <h4 class="modal-title" >
+    <span *ngIf="operation === 'store' && category === 'LOCAL'" translate>inventory.label.storeToLocal</span>
+    <span *ngIf="operation === 'store' && category !== 'LOCAL'" translate>inventory.label.storeToRollout</span>
+    <span *ngIf="operation === 'delete' && category === 'LOCAL'" translate>inventory.label.deleteFromLocal</span>
+    <span *ngIf="operation === 'delete' && category !== 'LOCAL'" translate>inventory.label.deleteFromRollout</span>
+    <span *ngIf="operation === 'update' && category === 'LOCAL'" translate>inventory.label.updateFromLocal</span>
+    <span *ngIf="operation === 'update' && category !== 'LOCAL'" translate>inventory.label.updateFromRollout</span>
+    <span *ngIf="path">:
+      {{path}}
+    </span>
+  </h4>
+  <button type="button" class="close" (click)="cancel()" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a min-ht-150">
+    <div>
+      <div class="hide" [ngClass]="{'show': display}">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+      </div>
+      <div class="form-group row" *ngIf="operation === 'store' && type === 'ALL'">
+        <div class="col-md-3">
+          <label translate>inventory.repository.label.filterType</label>
+        </div>
+        <div class="col-md-9">
+          <label nz-checkbox name="envIndependent"  [(ngModel)]="filter.envIndependent" (ngModelChange)="filterList()">
+            {{'inventory.repository.label.envIndependent'| translate}}
+          </label>
+          <label class="m-l-md" nz-checkbox name="envRelated" [(ngModel)]="filter.envRelated" (ngModelChange)="filterList()">
+            {{'inventory.repository.label.envRelated'| translate}}
+          </label>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="operation === 'store'">
+        <div class="col-md-3">
+          <label translate>inventory.repository.label.filter</label>
+        </div>
+        <div class="col-md-9">
+          <label nz-checkbox name="valid" [(ngModel)]="filter.valid" (ngModelChange)="filterList()">
+            {{'inventory.repository.label.validOnly'| translate}}
+          </label>
+          <label class="m-l-md" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
+            {{'inventory.repository.label.draft'| translate}}
+          </label>
+          <label *ngIf="type === 'ALL' || !(type === 'SCHEDULE' && type === 'INCLUDESCRIPT' && type.match('CALENDAR'))" class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
+            {{'inventory.repository.label.deployed'| translate}}
+          </label>
+          <label *ngIf="type === 'ALL' || type === 'SCHEDULE' || type === 'INCLUDESCRIPT' || type.match('CALENDAR')" class="m-l-md" nz-checkbox name="release" [(ngModel)]="filter.release" (ngModelChange)="filterList()">
+            {{'inventory.repository.label.released'| translate}}
+          </label>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="nodes.length > 0">
+        <div class="col-md-3">
+          <label translate>inventory.label.handleRecursively</label>
+        </div>
+        <div class="col-md-6">
+          <label nz-checkbox [(ngModel)]="exportObj.isRecursive" name="isRecursive"></label>
+        </div>
+      </div>
+      <div class="row m-b-sm" *ngIf="nodes.length > 0">
+        <div class="col-md-12">
+          <a class="text" (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate">
+            <i class="fa fa-angle-double-down fa-lg"></i>
+          </a>
+          <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
+            <i class="fa fa-angle-double-up fa-lg"></i>
+          </a>
+        </div>
+      </div>
+      <div class="row" *ngIf="nodes.length>0">
+        <div class="col-md-12">
+          <nz-tree
+            #treeCtrl
+            [nzCheckable]="true"
+            [nzCheckStrictly]="!exportObj.isRecursive"
+            nzNoAnimation
+            [nzData]="nodes"
+            [nzTreeTemplate]="nzTreeTemplate"
+            (nzExpandChange)="getDeploymentVersion($event)"
+            (nzCheckBoxChange)="checkBoxChange($event)"
+          ></nz-tree>
+          <ng-template #nzTreeTemplate let-node>
+            <div class="node-wrapper">
+               <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
+              <div class="node-content-wrapper2" [ngClass]="{'m-t-xs' :node.origin.object}">
+                <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
+               <!-- <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>-->
+                <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
+                <i *ngIf="node.origin.object == 'NOTICEBOARD'" nz-icon nzType="pushpin" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
+                <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
+                <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
+                <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released), 'fa-circle text-dark': node.origin.lastModified}" style="margin-top: 4px"></span>
+                <span class="p-l-sm text-capitalize" *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
+                <span class="p-l-sm" *ngIf="!node.origin.object">{{node.origin.name}}</span>
+                <i class="text-muted p-l-sm" *ngIf="node.origin.lastModified">({{node.origin.lastModified | stringToDate}})</i>
+              </div>
+              <div class="m-l" *ngIf="node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0">
+                <nz-select name="'version-' + {{node.key}}"
+                           [nzSize]="'small'"
+                           [(ngModel)]="node.origin.deployId">
+                  <ng-container *ngIf="!node.origin.valid" >
+                    <nz-option nzCustomContent [nzValue]="''" [nzLabel]="'workflow.label.draft' | translate">
+                      <div>
+                        <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}} - <span class="label bg-orange" translate>inventory.label.notValid</span>
+                      </div>
+                    </nz-option>
+                  </ng-container>
+                  <ng-container *ngFor="let version of node.origin.deployablesVersions">
+                    <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
+                      <div *ngIf="version.versions && version.versions.length>0">
+                        <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.deploymentId ? ' dark-blue': ''"></span>
+                        {{version.versionDate | stringToDate}} <span class="p-l-sm" [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''">{{version.deploymentOperation}}</span> <i *ngIf="version.deploymentPath" [nz-tooltip]="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
+                      <div class="version-inner-list" *ngFor="let ver of version.versions">
+                        {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
+                      </div>
+                      <div *ngIf="!version.versions || version.versions.length === 0">
+                        <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
+                      </div>
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+              </div>
+              <div class="m-l" *ngIf="node.origin.type && node.origin.releasableVersions && node.origin.releasableVersions.length >0">
+                <nz-select name="'version-' + {{node.key}}" [nzSize]="'small'" [(ngModel)]="node.origin.releaseId">
+                  <ng-container *ngIf="!node.origin.valid" >
+                    <nz-option nzCustomContent [nzValue]="''" [nzLabel]="'workflow.label.draft' | translate">
+                      <div>
+                        <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}} - <span class="label bg-orange" translate>inventory.label.notValid</span>
+                      </div>
+                    </nz-option>
+                  </ng-container>
+                  <ng-container *ngFor="let version of node.origin.releasableVersions">
+                    <nz-option nzCustomContent [nzValue]="version.releaseId" [nzLabel]="version.versionDate ? (version.versionDate | stringToDate) : ('workflow.label.draft' | translate)">
+                      <div>
+                        <span class="fa fa-circle-o text-xs p-r-xs" [ngClass]="version.releaseId ? ' dark-blue': ''"></span>
+                        {{version.versionDate | stringToDate}} <i *ngIf="version.releasePath" [nz-tooltip]="version.releasePath" class="text-muted p-l-sm">{{version.releasePath}}</i>
+                      </div>
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+              </div>
+              <div class="m-l" *ngIf="node.origin.type && operation === 'store' && (!node.origin.releasableVersions || node.origin.releasableVersions.length ===0) && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+                <i class="text-muted" translate>workflow.label.draft</i>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <div class="m-t-md" *ngIf="nodes.length===0 && !loading">
+      <app-empty-data></app-empty-data>
+    </div>
+    <div class="text-center m-t-md" *ngIf="loading">
+      <nz-spin nzSimple></nz-spin>
+    </div>
+  </div>
+  <div class="modal-footer text-left" >
+    <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

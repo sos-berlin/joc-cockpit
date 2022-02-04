@@ -24,7 +24,9 @@
       </div>
     </div>
     <div class="form-group row" >
-      <label class="col-sm-3 form-control-label" translate>agent.label.validUntil</label>
+      <label class="col-sm-3 form-control-label" translate>agent.label.validUntil
+       <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-8" *ngIf="token.at === 'date'" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}">
         <nz-date-picker [nzDisabledDate]="disabledDate" nzShowTime [nzFormat]="dateFormat" name="date" #date="ngModel" required [(ngModel)]="token.validUntil"></nz-date-picker>
         <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
@@ -45,7 +47,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-sm-3 form-control-label" translate>common.label.timeZone</div>
+      <div class="col-sm-3 form-control-label" translate>common.label.timeZone
+       <sup class="text-danger text-sm">*</sup>
+      </div>
       <div class="col-sm-8">
         <nz-select required nzShowSearch name="timeZone" [(ngModel)]="token.timezone">
           <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>

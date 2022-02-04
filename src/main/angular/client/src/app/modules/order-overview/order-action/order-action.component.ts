@@ -16,6 +16,7 @@ export class OrderActionComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
+  @Input() isDisabled: boolean;
 
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   isVisible: boolean;

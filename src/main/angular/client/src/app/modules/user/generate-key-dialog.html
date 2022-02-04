@@ -6,7 +6,7 @@
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<form>
+<form #myForm="ngForm">
   <div class="modal-body p-a">
     <div class="hide" [ngClass]="{'show': display}">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
@@ -40,7 +40,9 @@
     </div>
     <div *ngIf="type === 'ca'">
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.distinguishedName</label>
+        <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.distinguishedName
+          <sup class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-md-8 col-lg-6" [ngClass]="{ 'has-error' : (dn.dirty || dn.touched) && dn.invalid}">
           <input autocomplete="off" required class="form-control"
                  name="dn" [(ngModel)]="caObj.dn" #dn="ngModel">
@@ -54,7 +56,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" [disabled]="submitted" (click)="generateKey()" class="btn btn-primary btn-sm">
+    <button type="button" [disabled]="!myForm.form.valid || submitted" (click)="generateKey()" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

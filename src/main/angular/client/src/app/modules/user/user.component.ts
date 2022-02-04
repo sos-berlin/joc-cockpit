@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
+import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
@@ -300,6 +301,7 @@ export class UserComponent implements OnInit, OnDestroy {
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
   securityLevel: string;
+  identityServiceType: string;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -321,6 +323,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.forceLoging = true;
       this.preferences.auditLog = true;
     }
+    this.identityServiceType  = this.authService.currentUserIdentityService.substring(0, this.authService.currentUserIdentityService.lastIndexOf(':'));
     this.setIds();
     this.setPreferences();
     this.zones = this.coreService.getTimeZoneList();
@@ -346,6 +349,20 @@ export class UserComponent implements OnInit, OnDestroy {
         this.getCA();
       }
     }
+  }
+
+  changePassword(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ChangePasswordComponent,
+      nzComponentParams: {
+        username: this.username,
+        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':')+1)
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   savePreferences(): void {

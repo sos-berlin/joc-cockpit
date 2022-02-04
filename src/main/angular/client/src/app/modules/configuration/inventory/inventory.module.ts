@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {FileUploadModule} from 'ng2-file-upload';
 import {NzMentionModule} from 'ng-zorro-antd/mention';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzAutocompleteModule} from 'ng-zorro-antd/auto-complete';
 import {NgJsonEditorModule} from 'ang-jsoneditor';
 import {DatePipe} from '@angular/common';
@@ -14,8 +15,7 @@ import {
   CreateFolderModalComponent, CreateObjectModalComponent, CronImportModalComponent,
   DeployComponent,
   ExportComponent, ImportWorkflowModalComponent,
-  InventoryComponent, JsonEditorModalComponent,
-  SetVersionComponent,
+  InventoryComponent, JsonEditorModalComponent, RepositoryComponent,
   SingleDeployComponent, UploadModalComponent
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
@@ -45,9 +45,9 @@ import {UpdateJobComponent} from './update-job/update-job.component';
 import {UpdateObjectComponent} from './update-object/update-object.component';
 import {ScriptComponent} from './script/script.component';
 
-const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent,
-  SetVersionComponent, CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent, CronImportModalComponent,
-  JsonEditorModalComponent, UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent,
+const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent, RepositoryComponent,
+  CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent, CronImportModalComponent, JsonEditorModalComponent,
+  UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent,
   AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
 
 @NgModule({
@@ -59,6 +59,7 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     NzMentionModule,
     NzAutocompleteModule,
     NzTabsModule,
+    NzDrawerModule,
     NgJsonEditorModule
   ],
   providers: [DatePipe, CalendarService, InventoryService],

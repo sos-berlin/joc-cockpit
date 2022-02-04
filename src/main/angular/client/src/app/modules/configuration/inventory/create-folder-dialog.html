@@ -11,8 +11,8 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="row" *ngIf="!rename">
-      <label class="col-md-3 form-control-label" translate>
-        inventory.label.folderName
+      <label class="col-md-3 form-control-label" translate>inventory.label.folderName
+        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-md-6" [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}">
         <input type="text" (blur)="checkFolderName()" identifierValidation class="form-control" name="name" required
@@ -42,8 +42,8 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="folder.deepRename === 'rename' && origin.type">
-        <label class="col-md-3 form-control-label" translate>
-          inventory.label.newName
+        <label class="col-md-3 form-control-label" translate>inventory.label.newName
+           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-md-6" [ngClass]="{'has-error' :  !isValid || ((name.dirty || name.touched) && name.invalid)}">
           <input type="text" placeholder="{{'inventory.placeholder.enterNewName' | translate}}" class="form-control" name="name" required
@@ -60,8 +60,8 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="folder.deepRename === 'rename' && !origin.type">
-        <label class="col-md-3 form-control-label" translate>
-          inventory.label.newPath
+        <label class="col-md-3 form-control-label" translate>inventory.label.newPath
+          <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-md-6" [ngClass]="{'has-error' :  ((name.dirty || name.touched) && name.invalid)}">
           <input type="text" placeholder="{{'inventory.placeholder.enterNewPath' | translate}}" class="form-control" name="name" required
@@ -75,8 +75,8 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="folder.deepRename === 'replace'">
-        <label class="col-md-3 form-control-label" translate>
-          inventory.label.search
+        <label class="col-md-3 form-control-label" translate>inventory.label.search
+          <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-md-6" [ngClass]="{'has-error' :  ((search.dirty || search.touched) && search.invalid)}">
           <input type="text" placeholder="{{'inventory.placeholder.valueWhichNeedToReplace' | translate}}" class="form-control" name="search" required
@@ -90,8 +90,8 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="folder.deepRename === 'replace'">
-        <label class="col-md-3 form-control-label" translate>
-          inventory.label.replace
+        <label class="col-md-3 form-control-label" translate>inventory.label.replace
+          <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-md-6" [ngClass]="{'has-error' :  ((replace.dirty || replace.touched) && replace.invalid)}">
           <input type="text" placeholder="{{'inventory.placeholder.valueReplaceBy' | translate}}" class="form-control" name="replace" required

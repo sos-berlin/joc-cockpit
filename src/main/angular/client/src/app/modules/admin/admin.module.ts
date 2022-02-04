@@ -1,8 +1,10 @@
 import {NgModule} from '@angular/core';
+import {NzTabsModule} from "ng-zorro-antd/tabs";
+import {NzAutocompleteModule} from "ng-zorro-antd/auto-complete";
 import {AdminRoutingModule} from './admin-routing.module';
 import {AdminComponent} from './admin.component';
 import {SharedModule} from '../shared/shared.module';
-import {AccountsComponent, AccountModalComponent} from './accounts/accounts.component';
+import {AccountsComponent, AccountModalComponent, ConfirmationModalComponent} from './accounts/accounts.component';
 import {RolesComponent, RoleModalComponent, ControllerModalComponent} from './roles/roles.component';
 import {
   MainSectionComponent, MainSectionModalComponent, LdapSectionModalComponent,
@@ -21,7 +23,9 @@ import {SessionTimeRegexValidator} from '../../directives/core.directive';
 @NgModule({
   imports: [
     AdminRoutingModule,
-    SharedModule
+    SharedModule,
+    NzTabsModule,
+    NzAutocompleteModule
   ],
   declarations: [
     MainSectionModalComponent,
@@ -41,7 +45,8 @@ import {SessionTimeRegexValidator} from '../../directives/core.directive';
     MainSectionComponent,
     ProfilesComponent,
     PermissionsComponent,
-    SessionTimeRegexValidator
+    SessionTimeRegexValidator,
+    ConfirmationModalComponent
   ],
   providers: [
     DataService
