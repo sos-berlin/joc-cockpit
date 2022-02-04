@@ -1125,7 +1125,7 @@
       "label.calendarName": "Nom du Calendrier",
       "label.agentName": "Nom de l'Agent",
       "label.systemCrontab": "Système crontab",
-      "tooltip.systemCrontab": "Le fichier crontab contient l'utilisateur",
+      "tooltip.systemCrontab": "Le fichier crontab contient le compte d'utilisateur",
       "button.convert": "Convertir"
     },
     "export": {
@@ -1139,11 +1139,11 @@
       "label.dailyPlan": "Automatisation"
     },
     "repository": {
-      "label.filter": "Filter",
-      "label.validOnly": "Valid Only",
-      "label.draft": "Draft",
-      "label.deployed": "Deployed",
-      "label.released": "Released"
+      "label.filter": "Filtre",
+      "label.validOnly": "Valable uniquement",
+      "label.draft": "Brouillon",
+      "label.deployed": "Déployé",
+      "label.released": "Publié"
     },
     "tooltips": {
       "calendar": {

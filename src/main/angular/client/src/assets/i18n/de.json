@@ -1140,10 +1140,10 @@
     },
     "repository": {
       "label.filter": "Filter",
-      "label.validOnly": "Valid Only",
-      "label.draft": "Draft",
-      "label.deployed": "Deployed",
-      "label.released": "Released"
+      "label.validOnly": "Nur gültige",
+      "label.draft": "Entwurf",
+      "label.deployed": "Ausgerollt",
+      "label.released": "Freigegeben"
     },
     "tooltips": {
       "calendar": {
