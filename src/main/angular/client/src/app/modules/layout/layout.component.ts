@@ -330,7 +330,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           });
         }
       }, error: (err) => {
-        if (err.error && err.error.message === 'Access denied') {
+        if (err.error && (err.message === 'Access denied' || err.error.message === 'Access denied')) {
           this.loadInit(true);
         } else {
           this.getComments();

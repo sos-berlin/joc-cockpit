@@ -1323,8 +1323,8 @@ export class RepositoryComponent implements OnInit {
     isRecursive: false
   };
   filter = {
-    envRelated: true,
-    envIndependent: true,
+    envRelated: false,
+    envIndependent: false,
     draft: true,
     deploy: true,
     release: true,
@@ -1342,6 +1342,13 @@ export class RepositoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(this.category === 'LOCAL'){
+      this.filter.envRelated = true;
+      this.filter.envIndependent = false;
+    } else {
+      this.filter.envRelated = false;
+      this.filter.envIndependent = true;
+    }
     if (this.origin) {
       this.path = this.origin.path;
       if(this.origin.object) {
@@ -1651,7 +1658,7 @@ export class RepositoryComponent implements OnInit {
           if (!nodes[i].type) {
             if (self.type === 'ALL') {
               objDep.configuration = {
-                path: nodes[i].path,
+                path: nodes[i].path || nodes[i].name,
                 objectType: 'FOLDER',
                 recursive: self.exportObj.isRecursive
               };
@@ -1720,7 +1727,7 @@ export class RepositoryComponent implements OnInit {
           if (!nodes[i].type) {
             if (self.type === 'ALL') {
               objDep.configuration = {
-                path: nodes[i].path,
+                path: nodes[i].path || nodes[i].name,
                 objectType: 'FOLDER',
                 recursive: self.exportObj.isRecursive
               };
