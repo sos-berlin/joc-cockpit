@@ -20,19 +20,6 @@
       <div class="hide" [ngClass]="{'show': display}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
-      <div class="form-group row" *ngIf="operation === 'store' && type === 'ALL'">
-        <div class="col-md-3">
-          <label translate>inventory.repository.label.filterType</label>
-        </div>
-        <div class="col-md-9">
-          <label nz-checkbox name="envIndependent"  [(ngModel)]="filter.envIndependent" (ngModelChange)="filterList()">
-            {{'inventory.repository.label.envIndependent'| translate}}
-          </label>
-          <label class="m-l-md" nz-checkbox name="envRelated" [(ngModel)]="filter.envRelated" (ngModelChange)="filterList()">
-            {{'inventory.repository.label.envRelated'| translate}}
-          </label>
-        </div>
-      </div>
       <div class="form-group row" *ngIf="operation === 'store'">
         <div class="col-md-3">
           <label translate>inventory.repository.label.filter</label>

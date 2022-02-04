@@ -64,11 +64,15 @@ export class PermissionModalComponent {
       this.userDetail.roles[this.role].permissions.joc = clone(this.rolePermissions);
       this.userDetail.roles[this.role].permissions.controllerDefaults = [];
     }
-    this.coreService.post('authentication/auth/store', {
+    this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
+    } : {
+      accounts: this.userDetail.accounts,
+      roles: this.userDetail.roles,
+      identityServiceName: this.userDetail.identityServiceName,
     }).subscribe({
       next: () => {
         this.activeModal.close(this.rolePermissions);
@@ -138,11 +142,15 @@ export class FolderModalComponent implements OnInit {
       this.userDetail.roles[this.role].folders.joc = this.folderArr;
     }
 
-    this.coreService.post('authentication/auth/store', obj = {
+    this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
+    } : {
+      accounts: this.userDetail.accounts,
+      identityServiceName: this.userDetail.identityServiceName,
+      roles: this.userDetail.roles,
     }).subscribe({
       next: () => {
         this.activeModal.close(this.folderArr);
@@ -677,11 +685,15 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   saveInfo(): void {
-    this.coreService.post('authentication/auth/store', {
+    this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
       accounts: this.userDetail.accounts,
       roles: this.roles,
       identityServiceName: this.userDetail.identityServiceName,
       main: this.userDetail.main
+    } : {
+      accounts: this.userDetail.accounts,
+      roles: this.roles,
+      identityServiceName: this.userDetail.identityServiceName,
     }).subscribe(() => {
       this.dataService.announceFunction('RELOAD');
     });

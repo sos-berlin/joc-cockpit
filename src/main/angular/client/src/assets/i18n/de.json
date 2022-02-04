@@ -1140,13 +1140,10 @@
     },
     "repository": {
       "label.filter": "Filter",
-      "label.filterType": "Filter Type",
       "label.validOnly": "Valid Only",
       "label.draft": "Draft",
       "label.deployed": "Deployed",
-      "label.released": "Released",
-      "label.envRelated": "Env Related",
-      "label.envIndependent": "Env Independent"
+      "label.released": "Released"
     },
     "tooltips": {
       "calendar": {
