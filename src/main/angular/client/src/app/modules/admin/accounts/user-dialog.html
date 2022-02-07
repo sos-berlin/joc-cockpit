@@ -47,6 +47,16 @@
         </div>
       </div>
     </div>
+    <div class="form-group row" *ngIf="isPasswordVisible && newUser && !copy">
+      <label class="col-sm-4 form-control-label" translate>profile.label.confirmPassword</label>
+      <div class="col-sm-6" [ngClass]="{'has-error' : !isPasswordMatch}">
+        <input type="password" [required]="currentUser.fakePassword && currentUser.fakePassword.length > 0 ? true : false" class="form-control" [(ngModel)]="currentUser.repeatedPassword"
+               name="repeatedPassword" autocomplete="off"  (blur)="checkPassword()"/>
+        <div *ngIf="!isPasswordMatch && currentUser.repeatedPassword" class="text-danger help-block">
+          <div translate>profile.message.passwordNotMatch</div>
+        </div>
+      </div>
+    </div>
     <div class="form-group row" *ngIf="!copy">
       <label class="col-sm-4 form-control-label" translate>user.label.roles
         <sup class="text-danger text-sm">*</sup>
@@ -85,7 +95,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted || !minimumPasswordLength"
+    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted || !minimumPasswordLength || !isPasswordMatch"
             class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
