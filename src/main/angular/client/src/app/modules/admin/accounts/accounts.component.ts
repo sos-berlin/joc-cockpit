@@ -68,6 +68,7 @@ export class AccountModalComponent implements OnInit {
   isUnique = true;
   currentUser: any = {};
   isPasswordVisible = true;
+  isPasswordMatch = true;
   minimumPasswordLength = true;
   settings: any = {};
 
@@ -130,6 +131,10 @@ export class AccountModalComponent implements OnInit {
         }
       }
     }
+  }
+
+  checkPassword(): void {
+    this.isPasswordMatch = isEqual(this.currentUser.fakePassword, this.currentUser.repeatedPassword);
   }
 
   private rename(cb): void {
