@@ -47,7 +47,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="isPasswordVisible && newUser && !copy">
+    <div class="form-group row" *ngIf="isPasswordVisible && !copy">
       <label class="col-sm-4 form-control-label" translate>profile.label.confirmPassword</label>
       <div class="col-sm-6" [ngClass]="{'has-error' : !isPasswordMatch}">
         <input type="password" [required]="currentUser.fakePassword && currentUser.fakePassword.length > 0 ? true : false" class="form-control" [(ngModel)]="currentUser.repeatedPassword"
