@@ -69,7 +69,7 @@ export class RoleModalComponent implements OnInit {
     }
   }
 
-  private rename(): void {
+  private rename(obj): void {
     if (this.oldRole.name !== this.currentRole.role) {
       this.coreService.post('authentication/auth/role/rename', {
         identityServiceName: this.userDetail.identityServiceName,
@@ -77,6 +77,10 @@ export class RoleModalComponent implements OnInit {
         roleNewName: this.currentRole.role
       }).subscribe({
         next: () => {
+          delete this.userDetail.roles[this.oldName];
+          this.userDetail.roles[obj.role] = {
+            permissions: obj.permissions
+          };
           this.activeModal.close(this.userDetail);
         }, error: () => this.submitted = false
       });
@@ -94,7 +98,7 @@ export class RoleModalComponent implements OnInit {
       };
     } else {
       if (sessionStorage.identityServiceType !== 'SHIRO') {
-        this.rename();
+        this.rename(obj);
         return;
       }
       delete this.userDetail.roles[this.oldName];
@@ -205,10 +209,10 @@ export class ControllerModalComponent implements OnInit {
             path: 'sos:products:joc',
             excluded: false
           },
-            {
-              path: 'sos:products:controller:view',
-              excluded: false
-            }],
+          {
+            path: 'sos:products:controller:view',
+            excluded: false
+          }],
           controllerDefaults: [],
           controllers: {}
         };
@@ -261,7 +265,7 @@ export class RolesComponent implements OnDestroy {
   subscription3: Subscription;
 
   constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modal: NzModalService,
-              private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
+    private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUsersData(res);

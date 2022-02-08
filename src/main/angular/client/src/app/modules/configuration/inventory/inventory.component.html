@@ -161,7 +161,7 @@
               <ng-template #nzTreeTemplate let-node>
                 <div class="node-wrapper">
                    <span
-                     *ngIf="node.origin.loading || (node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 2 || !node.origin.children[0].controller)) || node.origin.controller || node.origin.dailyPlan || node.origin.object ))"
+                     *ngIf="node.origin.loading || node.origin.isArrow || (!node.origin.controller && !node.origin.dailyPlan && node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 2 || !node.origin.children[0].controller)) || node.origin.object ))"
                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
                      [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
                      (click)="openFolder(node)" class="cursor w-14 m-l-xxs m-t-n-1"
@@ -173,7 +173,7 @@
                      <i *ngIf="node.origin.loading"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
                   </span>
                   <span
-                    *ngIf="!node.origin.loading && (!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===2 && node.origin.children[0].controller))) && !node.origin.type"
+                    *ngIf="!node.origin.loading && (((node.origin.controller || node.origin.dailyPlan) && !node.origin.isArrow) || (!node.origin.children || node.origin.children.length === 0 || ((node.origin.children.length===2 && node.origin.children[0].controller))) && !node.origin.type)"
                     class="w-16">
                     <span class="fa fa-lg p-r-sm"></span>
                   </span>

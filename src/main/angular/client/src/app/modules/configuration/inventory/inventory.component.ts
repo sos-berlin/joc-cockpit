@@ -3053,8 +3053,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       return;
     }
     let flag = true;
-    const controllerObj: any = {controllerArr: []};
-    const dailyPlanObj: any = {dailyPlanArr: []};
+    const controllerObj: any = { controllerArr: [], isArrow: false };
+    const dailyPlanObj: any = { dailyPlanArr: [], isArrow: false };
     const KEY = data.path === '/' ? '/' : (data.path + '/');
     if (!data.children) {
       data.children = [];
@@ -3149,6 +3149,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const URL = isTrash ? 'inventory/trash/read/folder' : 'inventory/read/folder';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
+        if (res.workflows && (res.workflows.length || res.fileOrderSources.length || res.jobResources.length
+          || res.noticeBoards.length || res.locks.length)) {
+          controllerObj.isArrow = true;
+        }
+        if (res.schedules && (res.schedules.length || res.includeScripts.length || res.calendars.length)) {
+          dailyPlanObj.isArrow = true;
+        }
         for (let i = 0; i < controllerObj.controllerArr.length; i++) {
           let resObject;
           if (controllerObj.controllerArr[i].object === InventoryObject.WORKFLOW) {
@@ -3211,6 +3218,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: data.path,
           key: (KEY + 'Controller$'),
           expanded: controllerObj.expanded,
+          isArrow: controllerObj.isArrow,
           deleted: data.deleted
         }, {
           name: 'Daily Plan',
@@ -3221,6 +3229,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: data.path,
           key: (KEY + 'Automation$'),
           expanded: dailyPlanObj.expanded,
+          isArrow: dailyPlanObj.isArrow,
           deleted: data.deleted
         }];
 
