@@ -88,7 +88,7 @@ export class SettingModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.saveService.copiedSetting && this.saveService.copiedSetting.type &&
+    if (this.data && this.saveService.copiedSetting && this.saveService.copiedSetting.type &&
       (this.saveService.copiedSetting.name !== this.data.identityServiceName || (this.saveService.copiedSetting.name === this.data.identityServiceName &&
         this.saveService.copiedSetting.type !== this.data.identityServiceType)) &&
       (this.saveService.copiedSetting.type.indexOf(this.data.identityServiceType) > -1 ||
@@ -111,21 +111,31 @@ export class SettingModalComponent implements OnInit {
               this.getUsersData();
               this.actualData = this.coreService.clone(data.ldap);
               if (data.ldap.simple) {
-                this.userObj = data.ldap.simple;
+                this.userObj = data.ldap.simple;              
+                if (this.userObj.iamLdapHost && (!data.ldap.expert || !data.ldap.iamLdapServerUrl)) {
+                  data.ldap.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
+                }
               } else {
                 this.userObj.iamLdapProtocol = 'PLAIN';
                 this.userObj.iamLdapPort = 389;
               }
               if (data.ldap.expert) {
                 this.currentObj = data.ldap.expert;
+                if (!this.userObj.iamLdapHost && this.currentObj.iamLdapServerUrl) {
+                  const from = this.currentObj.iamLdapServerUrl.indexOf('//') + 2;
+                  const to = this.currentObj.iamLdapServerUrl.lastIndexOf(':');
+                  this.userObj.iamLdapHost = from < to ? this.currentObj.iamLdapServerUrl.substring(from, to) : '';
+                }
               }
             }
           }
         } else {
           this.currentObj = data;
+          this.currentObj.initialPassword1 = '********';
           if (this.currentObj.initialPassword) {
             this.oldPassword = this.currentObj.initialPassword;
-            this.currentObj.initialPassword1 = '********';
+          } else {
+            this.currentObj.initialPassword = 'initial';
           }
 
           if (data.sessionTimeout) {
