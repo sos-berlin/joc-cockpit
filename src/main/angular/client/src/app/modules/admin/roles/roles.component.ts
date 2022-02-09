@@ -69,6 +69,18 @@ export class RoleModalComponent implements OnInit {
     }
   }
 
+  private updateRoleObject(oldRole, newRole): void {
+    const obj: any = {};
+    for(const key in this.userDetail.roles){
+      if(key === oldRole){
+        obj[newRole] = this.userDetail.roles[key]
+      } else {
+        obj[key] = this.userDetail.roles[key]
+      }
+    }
+    this.userDetail.roles = obj;
+  }
+
   private rename(obj): void {
     if (this.oldRole.name !== this.currentRole.role) {
       this.coreService.post('authentication/auth/role/rename', {
@@ -77,10 +89,7 @@ export class RoleModalComponent implements OnInit {
         roleNewName: this.currentRole.role
       }).subscribe({
         next: () => {
-          delete this.userDetail.roles[this.oldName];
-          this.userDetail.roles[obj.role] = {
-            permissions: obj.permissions
-          };
+          this.updateRoleObject(this.oldName, obj.role);
           this.activeModal.close(this.userDetail);
         }, error: () => this.submitted = false
       });
@@ -101,10 +110,7 @@ export class RoleModalComponent implements OnInit {
         this.rename(obj);
         return;
       }
-      delete this.userDetail.roles[this.oldName];
-      this.userDetail.roles[obj.role] = {
-        permissions: obj.permissions
-      };
+      this.updateRoleObject(this.oldName, obj.role);
       for (let i = 0; i < this.userDetail.accounts.length; i++) {
         for (let j = 0; j < this.userDetail.accounts[i].roles.length; j++) {
           if (this.userDetail.accounts[i].roles[j] === this.oldName) {

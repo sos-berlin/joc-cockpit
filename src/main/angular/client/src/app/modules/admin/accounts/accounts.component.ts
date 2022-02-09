@@ -80,7 +80,7 @@ export class AccountModalComponent implements OnInit {
     this.getConfiguration();
     if (this.oldUser) {
       this.currentUser = clone(this.oldUser);
-      this.currentUser.fakePassword = '00000000';
+      this.currentUser.fakePassword = '********';
       this.currentUser.userName = this.currentUser.account;
       if (this.copy) {
         this.currentUser.account = '';
@@ -134,7 +134,9 @@ export class AccountModalComponent implements OnInit {
   }
 
   checkPassword(): void {
+    if(this.currentUser.fakePassword !== '********'){
     this.isPasswordMatch = isEqual(this.currentUser.fakePassword, this.currentUser.repeatedPassword);
+    }
   }
 
   private rename(cb): void {
@@ -159,7 +161,7 @@ export class AccountModalComponent implements OnInit {
     this.submitted = true;
     this.isUnique = true;
 
-    if (obj.fakePassword !== '00000000') {
+    if (obj.fakePassword !== '********') {
       obj.password = obj.fakePassword || '';
     }
 

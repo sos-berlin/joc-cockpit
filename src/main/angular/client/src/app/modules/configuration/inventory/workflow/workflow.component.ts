@@ -2727,6 +2727,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const arr = PATH.split('/');
       const workflowFilters = this.coreService.getWorkflowTab();
       workflowFilters.selectedkeys = [];
+      workflowFilters.showPanel = PATH;
       const len = arr.length - 1;
       if (len > 1) {
         for (let i = 0; i < len; i++) {

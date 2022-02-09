@@ -1141,6 +1141,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  deployXML(): void {
+
+  }
+
+  assignJobResource(): void {
+  
+  }
+
   tabChange(tab, index): void {
     this.selectedTabIndex = index;
     if (this.activeTab.id > -1 && this.activeTab.id !== tab.id) {
