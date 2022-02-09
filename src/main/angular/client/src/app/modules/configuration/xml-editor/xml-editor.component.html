@@ -17,6 +17,11 @@
               <span *ngIf="extraInfo.released" translate>xml.label.released</span>
               <span *ngIf="!extraInfo.released" translate>xml.label.notReleased</span>
             </span>
+            <span class="custom-icon badge m-l-12" [ngClass]="extraInfo.deployed ? 'badge-success' : 'badge-danger'"
+                  *ngIf="objectType === 'YADE' && nodes && nodes.length > 0">
+              <span *ngIf="extraInfo.deployed" translate>xml.label.deployed</span>
+              <span *ngIf="!extraInfo.deployed" translate>xml.label.notDeployed</span>
+            </span>
             <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()">
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
@@ -64,6 +69,16 @@
                     (click)="releaseXML()">
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>xml.button.release</span>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"
+              (click)="deployXML()">
+              <i class="fa fa-rocket m-r-xs"></i>
+              <span translate>xml.button.deployed</span>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"
+              (click)="assignJobResource()">
+              <i class="fa fa-plus m-r-xs"></i>
+              <span translate>xml.button.assignJobResource</span>
             </button>
           </div>
         </div>

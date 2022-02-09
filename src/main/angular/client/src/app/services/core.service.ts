@@ -1487,7 +1487,7 @@ export class CoreService {
                 return;
               } else if (mainStr === 'true' || mainStr === 'false') {
                 return;
-              } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(replaceAll\()/i.test(mainStr)
+              } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(toFile\()/i.test(mainStr) || /^(replaceAll\()/i.test(mainStr)
                 || /^(jobResourceVariable\()/g.test(mainStr) || /^(scheduledOrEmpty\()/g.test(mainStr)) {
                 return;
               } else if (mainStr.substring(0, 1) === '$') {
@@ -1514,7 +1514,7 @@ export class CoreService {
     if (data[type]) {
       if (data[type] === 'true' || data[type] === 'false') {
       } else if (/^\d+$/.test(data[type])) {
-      } else if (/^(now\()/i.test(data[type]) || /^(env\()/i.test(data[type]) || /^(replaceAll\()/i.test(data[type])
+      } else if (/^(now\()/i.test(data[type]) || /^(env\()/i.test(data[type]) || /^(toFile\()/i.test(data[type]) || /^(replaceAll\()/i.test(data[type]) 
         || /^(jobResourceVariable\()/g.test(data[type]) || /^(scheduledOrEmpty\()/g.test(data[type])) {
       } else if (typeof data[type] == 'string') {
         const startChar = data[type].substring(0, 1);

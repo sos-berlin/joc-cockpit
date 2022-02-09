@@ -431,7 +431,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (this.child) {
       this.workflowFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
-    }
+    }  
+    this.workflowFilters.showPanel = this.showPanel ? this.showPanel.path : '';
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
@@ -514,6 +515,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           workflowIds: []
         };
         let flag = true;
+        let panelObj;
         res.workflows = this.orderPipe.transform(res.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
         for (const i in res.workflows) {
           const path = res.workflows[i].path;
@@ -531,10 +533,19 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
           if (this.showPanel && this.showPanel.path === path) {
             flag = false;
+            panelObj = this.showPanel;
+          } else {
+            if (this.workflowFilters.showPanel == path) {
+              flag = false;
+              panelObj = res.workflows[i];
+              delete this.workflowFilters.showPanel;
+            }
           }
         }
         if (flag) {
           this.hidePanel();
+        } else if(panelObj) {
+          this.showPanelFunc(panelObj);
         }
         this.loading = false;
         this.workflows = res.workflows;

@@ -41,7 +41,7 @@
       <div class="col-sm-6" [ngClass]="{'has-error' : !minimumPasswordLength}">
         <input type="password" class="form-control" placeholder="{{'user.placeholder.password' | translate}}"
                [(ngModel)]="currentUser.fakePassword"
-               name="password" autocomplete="off" (focus)="minimumPasswordLength = true" (blur)="checkPwdLength()"/>
+               name="password" autocomplete="off" (focus)="minimumPasswordLength = true; isPasswordMatch = true" (blur)="checkPwdLength()"/>
         <div *ngIf="!minimumPasswordLength && currentUser.fakePassword" class="text-danger help-block">
           <div translate>profile.message.minimumPasswordLength</div>
         </div>
@@ -50,7 +50,7 @@
     <div class="form-group row" *ngIf="isPasswordVisible && !copy">
       <label class="col-sm-4 form-control-label" translate>profile.label.confirmPassword</label>
       <div class="col-sm-6" [ngClass]="{'has-error' : !isPasswordMatch}">
-        <input type="password" [required]="currentUser.fakePassword && currentUser.fakePassword.length > 0 ? true : false" class="form-control" [(ngModel)]="currentUser.repeatedPassword"
+        <input type="password" [required]="currentUser.fakePassword && currentUser.fakePassword !== '********' && currentUser.fakePassword.length > 0 ? true : false" class="form-control" [(ngModel)]="currentUser.repeatedPassword"
                name="repeatedPassword" autocomplete="off"  (blur)="checkPassword()"/>
         <div *ngIf="!isPasswordMatch && currentUser.repeatedPassword" class="text-danger help-block">
           <div translate>profile.message.passwordNotMatch</div>
