@@ -2464,7 +2464,7 @@
     "button.release": "Release",
     "button.preview": "Preview",
     "button.sourceCode": "Source",
-    "button.deployed": "Deployed",
+    "button.deployed": "Deploy",
     "button.check": "Check",
     "message.uniqueError": "Name already in use",
     "message.requiredField": "Required field",
