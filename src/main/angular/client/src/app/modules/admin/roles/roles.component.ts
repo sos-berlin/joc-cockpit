@@ -342,6 +342,16 @@ export class RolesComponent implements OnDestroy {
     this.dataService.preferences.roles.delete(role);
   }
 
+  expandAll() {
+    this.controllerRoles.forEach(role => {
+      this.dataService.preferences.roles.add(role.name);
+    });
+  }
+
+  collapseAll() {
+    this.dataService.preferences.roles.clear();
+  }
+
   saveInfo(): void {
     const obj: any = {
       accounts: this.accounts,

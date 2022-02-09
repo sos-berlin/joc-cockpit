@@ -16,7 +16,7 @@ declare var d3: any;
   selector: 'app-permission-modal-content',
   templateUrl: 'permission-modal.html'
 })
-export class PermissionModalComponent {
+export class PermissionModalComponent implements OnInit {
   @Input() rolePermissions: any;
   @Input() userDetail: any;
   @Input() master: any;
@@ -32,7 +32,27 @@ export class PermissionModalComponent {
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
+  ngOnInit(): void {
+    if (!this.add) {
+      let flag = false;
+      for (const i in this.permissionOptions) {
+        if (this.permissionOptions[i] === this.currentPermission.path) {
+          flag = true;
+          break;
+        }
+      }
+      if (!flag) {
+        this.permissionOptions = [this.currentPermission.path].concat(this.permissionOptions)
+      }
+    }
+  }
+
   checkCovered(currentPermission): void {
+    if (!this.add) {
+      if (currentPermission.path.indexOf(currentPermission.permissionLabel) > -1) {
+        return;
+      }
+    }
     this.isCovered = false;
     this.rolePermissions.forEach((permission1) => {
       if (currentPermission.path.trim() && currentPermission.path.trim().indexOf(permission1.path) !== -1 &&
