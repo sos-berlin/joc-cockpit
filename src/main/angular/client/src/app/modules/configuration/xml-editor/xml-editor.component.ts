@@ -1007,8 +1007,23 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.checkOrder(node.origin);
   }
 
-  onChangeJobResource(): void {
-    this.extraInfo.released = false;
+  onChangeJobResource($event): void {
+    if (this.objectType === 'NOTIFICATION') {
+      this.extraInfo.released = false;
+    } else {
+      this.checkJobReource($event);
+    }
+  }
+
+  private checkJobReource(name): void {
+    this.extraInfo.isExist = false;
+    for (const i in this.jobResources) {
+      if (this.jobResources[i].name === name) {
+        this.extraInfo.isExist = true;
+        this.extraInfo.deployed = this.jobResources[i].deployed;
+        break;
+      }
+    }
   }
 
   deleteAllConf(): void {
@@ -1141,12 +1156,101 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  deployXML(): void {
-
+  deployXML(isCheck = false): void {
+    const obj: any = {};
+    for (const i in this.nodes[0].children) {
+      if (this.nodes[0].children[i].ref === 'JobResource') {
+        for (const j in this.nodes[0].children[i].attributes) {
+          if (this.nodes[0].children[i].attributes[j].name === 'name') {
+            obj.name = this.nodes[0].children[i].attributes[j].data;
+          } else if (this.nodes[0].children[i].attributes[j].name === 'variable') {
+            obj.variable = this.nodes[0].children[i].attributes[j].data;
+          } else if (this.nodes[0].children[i].attributes[j].name === 'environment_variable') {
+            obj.env = this.nodes[0].children[i].attributes[j].data;
+          }
+        }
+        break;
+      }
+    }
+    if (obj.name) {
+      for (const i in this.jobResources) {
+        if (this.jobResources[i].name === obj.name) {
+          this.getSingleObject(this.jobResources[i].id, obj, isCheck);
+          break;
+        }
+      }
+    }
   }
 
-  assignJobResource(): void {
-  
+  private getSingleObject(id, obj, isCheck = false): void {
+    this.coreService.post('inventory/read/configuration', {
+      id
+    }).subscribe((res: any) => {
+      if (!isCheck) {
+        this.storeAndDeployJobResource(res, obj, id);
+      } else if (res.configuration) {
+        this.compareJobResource(res.configuration, obj);
+      }
+    });
+  }
+
+  private storeAndDeployJobResource(res, obj, id): void {
+    if (res.configuration) {
+      if (!res.configuration.arguments) {
+        res.configuration.arguments = {};
+      }
+      res.configuration.arguments[obj.variable] = "toFile( '" + this._showXml(this.nodes, true) + "', '*.xml' )";
+      if (!res.configuration.env) {
+        res.configuration.env = {};
+      }
+      if (res.configuration.env && !res.configuration.env[obj.env]) {
+        res.configuration.env[obj.env] = '$' + obj.env.toLowerCase();
+      }
+    }
+    this.coreService.post('inventory/store', {
+      configuration: res.configuration,
+      valid: true,
+      id,
+      objectType: res.objectType
+    }).subscribe(() => {
+      this.coreService.post('inventory/deployment/deploy', {
+        controllerIds: [this.schedulerIds.selected],
+        store: {
+          draftConfigurations: {
+            configuration: {
+              path: res.path,
+              objectType: res.objectType
+            }
+          }
+        }
+      }).subscribe();
+    });
+  }
+
+  private compareJobResource(configuration, obj): void {
+    let flag = true;
+    if (!configuration.arguments) {
+      flag = false;
+    } else if (!configuration.arguments[obj.variable]) {
+      flag = false;
+    }
+    if (flag) {
+      if (!configuration.env) {
+        flag = false;
+      } else if (!configuration.env[obj.env]) {
+        flag = false;
+      }
+    }
+    if (flag) {
+      if (!isEqual(JSON.stringify(configuration.arguments[obj.variable]), JSON.stringify("toFile( '" + this._showXml(this.nodes, true) + "', '*.xml' )"))) {
+        flag = false;
+      }
+    }
+    this.extraInfo.sync = flag;
+  }
+
+  checkXML(): void {
+    this.deployXML(true);
   }
 
   tabChange(tab, index): void {
@@ -1293,6 +1397,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             } else {
               this.nodes = [];
               this.loadTree(res.configuration.schema, true);
+            }
+            if (this.nodes.length > 0 && this.nodes[0].children && this.nodes[0].children.length > 0) {
+              for (const i in this.nodes[0].children) {
+                if (this.nodes[0].children[i].ref === 'JobResource') {
+                  for (const j in this.nodes[0].children[i].attributes) {
+                    if (this.nodes[0].children[i].attributes[j].name === 'name') {
+                      this.getJobResourceTree(this.nodes[0].children[i].attributes[j]);
+                      break;
+                    }
+                  }
+                  break;
+                }
+              }
             }
           } else {
             this.openXMLDialog(res.configuration);
@@ -1448,7 +1565,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   private getJobResourceTree(node): void {
     if (this.jobResourcesTree.length === 0) {
-      const obj = {list: []};
+      const obj = { list: [] };
       this.coreService.getJobResource((arr) => {
         this.jobResourcesTree = arr;
         this.jobResources = obj.list;
@@ -1459,29 +1576,35 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-   private matchJobResourceList(node): void {
-     if (typeof node.data === 'string') {
-       let val = node.data;
-       node.data = [val];
-     }
-     if (node.data && node.data.length > 0) {
-       const arr = [];
-       for (const i in this.jobResources) {
-         for (let j = 0; j < node.data.length; j++) {
-           if (node.data[j] === this.jobResources[i].name) {
-             arr.push(node.data[j])
-             break;
-           }
-         }
-       }
-       if (node.data.length !== arr.length) {
-         this.extraInfo.released = false;
-         node.data = arr;
-       }
-     } else {
-       node.data = [];
-     }
-   }
+  private matchJobResourceList(node): void {
+    if (this.objectType === 'NOTIFICATION') {
+      if (typeof node.data === 'string') {
+        let val = node.data;
+        node.data = [val];
+      }
+      if (node.data && node.data.length > 0) {
+        const arr = [];
+        for (const i in this.jobResources) {
+          for (let j = 0; j < node.data.length; j++) {
+            if (node.data[j] === this.jobResources[i].name) {
+              arr.push(node.data[j])
+              break;
+            }
+          }
+        }
+        if (node.data.length !== arr.length) {
+          this.extraInfo.released = false;
+          node.data = arr;
+        }
+      } else {
+        node.data = [];
+      }
+    } else {
+      if (node.data) {
+        this.checkJobReource(node.data);
+      }
+    }
+  }
 
   getIndividualData(node, scroll) {
     let flag = false;
@@ -1507,7 +1630,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
               }
             }
           }
-          if (attrs[i].name === 'job_resources' && !flag) {
+          if (((attrs[i].name === 'name' && attrs[i].parent === 'JobResource') || attrs[i].name === 'job_resources') && !flag) {
             flag = true;
             this.getJobResourceTree(attrs[i]);
           }
@@ -3997,6 +4120,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   updateListData(node): void {
     node.data = node.data1.join(' ');
     this.extraInfo.released = false;
+  }
+
+  upperCase(env): void {
+    if (env.data) {
+      env.data = env.data.toUpperCase();
+    }
   }
 
   submitData(value, tag) {

@@ -5,6 +5,12 @@
            [(nzChecked)]="object.checked"
            [nzIndeterminate]="object.indeterminate"
            (nzCheckedChange)="checkAll($event)"></label>
+    <a class="text" style="padding-left: 12px;" (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate">
+      <i class="fa fa-angle-double-down fa-lg"></i>
+    </a>
+    <a class="text m-l-xs" (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate">
+      <i class="fa fa-angle-double-up fa-lg"></i>
+    </a>
   </div>
   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
     <div *ngFor="let role of controllerRoles" class="box-body p-b-0" cdkDrag>
