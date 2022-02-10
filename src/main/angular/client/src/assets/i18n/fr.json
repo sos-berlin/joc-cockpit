@@ -2486,7 +2486,7 @@
     "message.removeXML": "Êtes-vous sûr de vouloir supprimer cette configuration ?",
     "message.deleteAllDraft": "Êtes-vous sûr de vouloir supprimer tous les brouillons XML ?",
     "message.noConfigurationFound": "Aucune configuration trouvée",
-    "message.jobResourceNotFound": "Job Resource does not exist any longer"
+    "message.jobResourceNotFound": "Ressource de Tâche n'existe plus"
   },
   "calendar": {
     "days": ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],

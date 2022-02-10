@@ -598,7 +598,6 @@ export class MaximumDirective {
 
   private doResize() {
     let height = Math.ceil(($('body').height() - 212) / 20);
-    console.log(height, this.rows)
     this.textarea.nativeElement.rows = !this.isMax ? this.rows : height;
   }
 }

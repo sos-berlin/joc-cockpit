@@ -131,11 +131,19 @@ export class AccountModalComponent implements OnInit {
         }
       }
     }
+    if (this.currentUser.repeatedPassword) {
+      this.checkPassword();
+    }
   }
 
   checkPassword(): void {
-    if(this.currentUser.fakePassword !== '********'){
     this.isPasswordMatch = isEqual(this.currentUser.fakePassword, this.currentUser.repeatedPassword);
+    if (!this.currentUser.repeatedPassword) {
+      this.isPasswordMatch = true;
+    }
+    if (this.oldUser && this.currentUser.fakePassword !== '********') {
+      this.currentUser.forcePasswordChange = true;
+      this.currentUser.isDisabled = true;
     }
   }
 
