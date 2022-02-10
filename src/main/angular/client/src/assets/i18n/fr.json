@@ -2485,7 +2485,8 @@
     "message.validateSuccessfully": "Document XML validé avec succès",
     "message.removeXML": "Êtes-vous sûr de vouloir supprimer cette configuration ?",
     "message.deleteAllDraft": "Êtes-vous sûr de vouloir supprimer tous les brouillons XML ?",
-    "message.noConfigurationFound": "Aucune configuration trouvée"
+    "message.noConfigurationFound": "Aucune configuration trouvée",
+    "message.jobResourceNotFound": "Job Resource does not exist any longer"
   },
   "calendar": {
     "days": ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],

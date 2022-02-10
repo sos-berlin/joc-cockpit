@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import {isArray, isEmpty, isEqual} from 'underscore';
+import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -41,7 +42,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private dataService: DataService,
+  constructor(public coreService: CoreService, private dataService: DataService, private router: Router,
               private modal: NzModalService, private ref: ChangeDetectorRef, public inventoryService: InventoryService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -589,5 +590,10 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       this.history.push(this.jobResource.actual);
       this.ref.detectChanges();
     });
+  }
+
+  navToYade(title): void {
+    sessionStorage.tabName = title.split(':')[1];
+    this.router.navigate(['/configuration/file_transfer']);
   }
 }

@@ -1012,6 +1012,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.extraInfo.released = false;
     } else {
       this.checkJobReource($event);
+      this.extraInfo.sync = false;
+      this.autoValidate();
     }
   }
 
@@ -1173,11 +1175,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     }
     if (obj.name) {
+      let flag = false;
       for (const i in this.jobResources) {
         if (this.jobResources[i].name === obj.name) {
-          this.getSingleObject(this.jobResources[i].id, obj, isCheck);
+          flag = true;
+          this.getSingleObject(this.jobResources[i], obj, isCheck);
           break;
         }
+      }
+      if (!flag) {
+        this.translate.get('xml.message.jobResourceNotFound').subscribe(translatedValue => {
+          this.toasterService.info(obj.name + ' ' +translatedValue, '');
+        });
       }
     }
   }
@@ -1195,18 +1204,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   private storeAndDeployJobResource(res, obj, data): void {
-    if (res.configuration) {
-      if (!res.configuration.arguments) {
-        res.configuration.arguments = {};
-      }
-      res.configuration.arguments[obj.variable] = "toFile( '" + this._showXml(this.nodes, true) + "', '*.xml' )";
-      if (!res.configuration.env) {
-        res.configuration.env = {};
-      }
-      if (res.configuration.env && !res.configuration.env[obj.env]) {
-        res.configuration.env[obj.env] = '$' + obj.env.toLowerCase();
-      }
+    if (!res.configuration) {
+      res.configuration = {};
     }
+    if (!res.configuration.arguments) {
+      res.configuration.arguments = {};
+    }
+    res.configuration.arguments[obj.variable] = "toFile( '" + this._showXml(this.nodes, true) + "', '*.xml' )";
+    if (!res.configuration.env) {
+      res.configuration.env = {};
+    }
+    if (res.configuration.env && !res.configuration.env[obj.env]) {
+      res.configuration.env[obj.env] = '$' + obj.env.toLowerCase();
+    }
+    res.configuration.title = 'Job Resource for File Transfer: '+ this.activeTab.name;
     this.coreService.post('inventory/store', {
       configuration: res.configuration,
       valid: true,
@@ -1223,7 +1234,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             }
           }]
         }
-      }).subscribe(()=>{
+      }).subscribe(() => {
         data.deployed = true;
         this.extraInfo.deployed = true;
         this.extraInfo.sync = true;
@@ -3010,6 +3021,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   // autoValidate
   autoValidate() {
+    this.validConfig = true;
     if (this.nodes[0] && this.nodes[0].attributes && this.nodes[0].attributes.length > 0) {
       for (let i = 0; i < this.nodes[0].attributes.length; i++) {
         if (this.nodes[0].attributes[i].use === 'required') {
@@ -3045,7 +3057,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (child && child.attributes && child.attributes.length > 0) {
       for (let i = 0; i < child.attributes.length; i++) {
         if (child.attributes[i].use === 'required') {
-          if (child.attributes[i].data === undefined) {
+          if (child.attributes[i].data === undefined || child.attributes[i].data === null) {
             this.nonValidattribute = child.attributes[i];
             this.errorLocation = child;
             this.validConfig = false;
@@ -3055,7 +3067,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     }
     if (child && child.values && child.values.length > 0) {
-      if (child.values[0].data === undefined) {
+      if (child.values[0].data === undefined || child.values[0].data === null) {
         this.nonValidattribute = child.values[0];
         this.errorLocation = child;
         this.validConfig = false;
@@ -5531,9 +5543,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       elePos: error.elementPosition.split('-')
     };
     this.gotoInfectedElement(iNode, this.nodes);
-    this.validConfig = false;
     this.getIndividualData(this.selectedNode, true);
     this.showErrorToast(error.message, '');
+    this.validConfig = false;
   }
 
   private gotoInfectedElement(node, nodes): void {
