@@ -1215,7 +1215,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       res.configuration.env = {};
     }
     if (res.configuration.env && !res.configuration.env[obj.env]) {
-      res.configuration.env[obj.env] = '$' + obj.env.toLowerCase();
+      res.configuration.env[obj.env] = '$' + obj.variable;
     }
     res.configuration.title = 'Job Resource for File Transfer: '+ this.activeTab.name;
     this.coreService.post('inventory/store', {
@@ -1323,6 +1323,17 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.newFile();
         } else {
           this.tabsArray = clone(res.configurations);
+          if (sessionStorage.tabName) {
+            if (this.tabsArray.length > 1) {
+              for (const i in this.tabsArray) {
+                if (this.tabsArray[i].name == sessionStorage.tabName || (' ' + this.tabsArray[i].name == sessionStorage.tabName)) {
+                  this.selectedTabIndex = parseInt(i, 10);
+                  break;
+                }
+              }
+            }
+            sessionStorage.tabName = undefined;
+          }
           this.activeTab = this.tabsArray[this.selectedTabIndex];
           if (this.activeTab) {
             this.readOthersXSD(this.activeTab.id);
@@ -3151,7 +3162,22 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   selectNode(node): void {
     this.getData(node.origin);
-    this.getIndividualData(node.origin, undefined);
+    this.getIndividualData(node.origin, undefined);  
+    if(this.selectedNode && this.selectedNode.ref === 'JobResource'){
+      console.log(this.selectedNode.attributes)
+      const arr = [];
+      const arr2 = [];
+      for (const i in this.selectedNode.attributes) {
+        if (this.selectedNode.attributes[i].name === 'name') {
+          arr.push(this.selectedNode.attributes[i]);
+        } else if (this.selectedNode.attributes[i].name === 'environment_variable') {
+          arr2.push(this.selectedNode.attributes[i]);
+        } else {
+          arr.push(this.selectedNode.attributes[i]);
+        }
+      }
+      this.selectedNode.attributes = arr.concat(arr2);
+    }
     this.changeLastUUid(node.origin);
     if (this.preferences.expandOption === 'both') {
       node.isExpanded = !node.isExpanded;

@@ -82,7 +82,7 @@
     <div class="form-group row" *ngIf="(selectedIdentityServiceType === 'JOC' || selectedIdentityServiceType === 'VAULT-JOC-ACTIVE')">
       <label class="col-sm-4" translate>user.label.forcePasswordChange</label>
       <div class="col-sm-6">
-        <label nz-checkbox [(ngModel)]="currentUser.forcePasswordChange"
+        <label nz-checkbox [(ngModel)]="currentUser.forcePasswordChange" [nzDisabled]="currentUser.isDisabled"
                name="forcePasswordChange"></label>
       </div>
     </div>
