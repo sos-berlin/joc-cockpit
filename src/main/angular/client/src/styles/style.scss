@@ -6362,12 +6362,12 @@ pre#pre {
   color: white;
 }
 
-.badge-success {
+.badge-success, .btn-badge-success {
   background-color: var(--bg-blue);
   color: white;
 }
 
-.badge-danger {
+.badge-danger, .btn-badge-danger {
   background-color: var(--bg-orange);
   color: white;
 }

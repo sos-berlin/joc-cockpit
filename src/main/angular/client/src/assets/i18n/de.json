@@ -2485,7 +2485,8 @@
     "message.validateSuccessfully": "XML Dokument erfolgreich validiert",
     "message.removeXML": "Sind Sie sicher, dass Sie diese Konfiguraton entfernen möchten?",
     "message.deleteAllDraft": "Sind Sie sicher, dass Sie alle Entwürfe für XML Dokumente löschen möchten?",
-    "message.noConfigurationFound": "Keine Konfiguration gefunden"
+    "message.noConfigurationFound": "Keine Konfiguration gefunden",
+    "message.jobResourceNotFound": "Job Resource does not exist any longer"
   },
   "calendar": {
     "days": ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],

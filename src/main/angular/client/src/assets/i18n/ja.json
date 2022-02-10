@@ -2485,7 +2485,8 @@
     "message.validateSuccessfully": "XMLドキュメントを確認できました",
     "message.removeXML": "本当にこのコンフィグレーションを削除しますか?",
     "message.deleteAllDraft": "本当に全てのXML下書きを削除しますか?",
-    "message.noConfigurationFound": "ジョブ定義はありません"
+    "message.noConfigurationFound": "ジョブ定義はありません",
+    "message.jobResourceNotFound": "Job Resource does not exist any longer"
   },
   "calendar": {
     "days": ["日曜", "月曜", "火曜", "水曜", "木曜", "金曜", "土曜"],
