@@ -1197,10 +1197,13 @@ export class FrequencyModalComponent implements OnInit {
       }
     }
     if (!obj.dateFrom && this.calendar.configuration.from) {
-      obj.dateFrom = moment(this.calendar.configuration.from, this.dateFormatM).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD');
+      obj.dateFrom = moment(new Date(this.calendar.configuration.from), this.dateFormatM).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD');
     }
     if (!obj.dateTo && this.calendar.configuration.to) {
-      obj.dateTo = moment(this.calendar.configuration.to, this.dateFormatM).format('YYYY-MM-DD');
+      obj.dateTo = moment(new Date(this.calendar.configuration.to), this.dateFormatM).format('YYYY-MM-DD');
+      if (obj.dateTo === 'Invalid date') {
+        obj.dateTo = this.calendarTitle + '-12-31';
+      }
       if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
         obj.dateTo = this.calendarTitle + '-12-31';
       }
