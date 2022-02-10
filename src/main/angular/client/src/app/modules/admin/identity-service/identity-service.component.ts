@@ -1,17 +1,16 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {clone, isEmpty} from 'underscore';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {TranslateService} from "@ngx-translate/core";
-import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard';
-import {DataService} from '../data.service';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {SaveService} from '../../../services/save.service';
-import {OrderPipe} from '../../../pipes/core.pipe';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { clone, isEmpty } from 'underscore';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { CoreService } from '../../../services/core.service';
+import { AuthService } from '../../../components/guard';
+import { DataService } from '../data.service';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { SaveService } from '../../../services/save.service';
+import { OrderPipe } from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-setting-modal-content',
@@ -43,11 +42,10 @@ export class SettingModalComponent implements OnInit {
     second: false,
     third: false
   };
-  oldPassword : string;
-  actualData:any = {};
-
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService,
-              private message: NzMessageService, private saveService: SaveService, private translate: TranslateService) {
+  oldPassword: string;
+ 
+  constructor(public activeModal: NzModalRef, private coreService: CoreService,
+    private message: NzMessageService, private saveService: SaveService) {
   }
 
   static convertDurationToString(time: any): string {
@@ -109,7 +107,6 @@ export class SettingModalComponent implements OnInit {
             this.currentObj = data.vault || {};
             if (data.ldap) {
               this.getUsersData();
-              this.actualData = this.coreService.clone(data.ldap);
               if (data.ldap.simple) {
                 this.userObj = data.ldap.simple;              
                 if (this.userObj.iamLdapHost && (!data.ldap.expert || !data.ldap.iamLdapServerUrl)) {
@@ -181,45 +178,13 @@ export class SettingModalComponent implements OnInit {
       this.userObj.iamLdapPort = 389;
     }
     const url = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
-    if (this.actualData.expert && this.actualData.expert.iamLdapServerUrl) {
-      if (this.actualData.expert.iamLdapServerUrl !== url) {
-        this.showConfirm((res) => {
-          if (res === 'OK') {
-            this.actualData.expert.iamLdapServerUrl = '';
-            this.currentObj.iamLdapServerUrl = url;
-            this.currentObj.iamLdapUseStartTls = this.userObj.iamLdapProtocol === 'STARTTLS';
-          } else {
-            this.userObj.iamLdapProtocol = this.actualData.simple.iamLdapProtocol;
-            this.userObj.iamLdapPort = this.actualData.simple.iamLdapPort;
-          }
-        });
-      }
-    } else {
-      this.currentObj.iamLdapServerUrl = url;
-      this.currentObj.iamLdapUseStartTls = this.userObj.iamLdapProtocol === 'STARTTLS';
-    }
+    this.currentObj.iamLdapServerUrl = url;
+    this.currentObj.iamLdapUseStartTls = this.userObj.iamLdapProtocol === 'STARTTLS';
   }
 
-  changeField(type): void {
+  changeField(): void {
     const url = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
-    if (this.actualData.expert && this.actualData.expert.iamLdapServerUrl) {
-      if (this.actualData.expert.iamLdapServerUrl !== url) {
-        this.showConfirm((res) => {
-          if (res === 'OK') {
-            this.actualData.expert.iamLdapServerUrl = '';
-            this.currentObj.iamLdapServerUrl = url;
-          } else {
-            if (type === 'Host') {
-              this.userObj.iamLdapHost = this.actualData.simple.iamLdapHost;
-            } else if (type === 'Port') {
-              this.userObj.iamLdapPort = this.actualData.simple.iamLdapPort;
-            }
-          }
-        });
-      }
-    } else {
-      this.currentObj.iamLdapServerUrl = url;
-    }
+    this.currentObj.iamLdapServerUrl = url;
   }
 
   checkConfirmation(isChecked, type): void {
@@ -240,68 +205,22 @@ export class SettingModalComponent implements OnInit {
     if (type === 'MemberOf') {
       if (this.userObj.iamLdapWithMemberOf) {
         if (this.currentObj.iamLdapGroupNameAttribute) {
-          if (this.actualData.expert && this.actualData.expert.iamLdapGroupNameAttribute) {
-            this.showConfirm((res) => {
-              if (res === 'OK') {
-                this.currentObj.iamLdapGroupNameAttribute = 'memberOf';
-              } else {
-                this.userObj.iamLdapWithMemberOf = this.actualData.simple.iamLdapWithMemberOf;
-              }
-            });
-          } else {
-            this.currentObj.iamLdapGroupNameAttribute = 'memberOf';
-          }
+          this.currentObj.iamLdapGroupNameAttribute = 'memberOf';
         }
       }
     } else if (type === 'samAccount') {
       if (this.userObj.iamLdapADwithSamAccount) {
-        if (this.actualData.expert && this.actualData.expert.iamLdapUserDnTemplate) {
-          if (this.actualData.expert.iamLdapUserDnTemplate !== '{0}') {
-            this.showConfirm((res) => {
-              if (res === 'OK') {
-                this.currentObj.iamLdapUserDnTemplate = '{0}';
-              } else {
-                this.userObj.iamLdapADwithSamAccount = this.actualData.simple.iamLdapADwithSamAccount;
-              }
-            });
-          }
-        } else{
-          this.currentObj.iamLdapUserDnTemplate = '{0}';
-        }
+        this.currentObj.iamLdapUserDnTemplate = '{0}';
       }
     }
   }
 
   changeInput(type): void {
-    if (type === 'GroupName') {
-
-    } else if (type === 'URL') {
-      if (this.actualData.simple && this.actualData.simple.iamLdapHost) {
-        this.showConfirm((res) => {
-          if (res === 'OK') {
-            this.actualData.simple.iamLdapHost = '';
-            this.actualData.expert.iamLdapServerUrl = '';
-            this.updateUserMode();
-          } else {
-            this.currentObj.iamLdapServerUrl = this.actualData.expert.iamLdapServerUrl;
-          }
-        });
-      } else {
-        this.updateUserMode();
-      }
+    if (type === 'URL') {
+      this.updateUserMode();
     } else {
       if (this.currentObj.iamLdapUserDnTemplate && this.currentObj.iamLdapUserDnTemplate !== '{0}' && this.userObj.iamLdapADwithSamAccount) {
-        if (this.actualData.simple && this.actualData.simple.iamLdapADwithSamAccount) {
-          this.showConfirm((res) => {
-            if (res === 'OK') {
-               this.userObj.iamLdapADwithSamAccount = false;
-            } else {
-              this.currentObj.iamLdapUserDnTemplate = this.actualData.expert.iamLdapUserDnTemplate;
-            }
-          });
-        } else {
-          this.userObj.iamLdapADwithSamAccount = false;
-        }
+        this.userObj.iamLdapADwithSamAccount = false;
       }
     }
   }
@@ -322,40 +241,13 @@ export class SettingModalComponent implements OnInit {
     }
   }
 
-  private showConfirm(cb): void {
-    let msg = '';
-    this.translate.get('user.usermode.message.overwriteChanges').subscribe(translatedValue => {
-      msg = translatedValue;
-    });
-    let confirmBtn = '';
-    let cancelBtn = '';
-    this.translate.get('common.button.confirm').subscribe(translatedValue => {
-      confirmBtn = translatedValue;
-    });
-    this.translate.get('common.button.cancel').subscribe(translatedValue => {
-      cancelBtn = translatedValue;
-    });
-    this.modal.confirm({
-      nzTitle: msg,
-      nzContent: '',
-      nzOkText: confirmBtn,
-      nzCancelText: cancelBtn,
-      nzOnCancel: () => {
-        cb('CANCEL')
-      },
-      nzOnOk: () => {
-        cb('OK')
-      }
-    });
-  }
-
   addGroupRoles(): void {
     const param = {
       ldapGroupDn: '',
       roles: []
     };
     if (!this.currentObj.iamLdapGroupRolesMap) {
-      this.currentObj.iamLdapGroupRolesMap = {items: []};
+      this.currentObj.iamLdapGroupRolesMap = { items: [] };
     }
     if (!this.coreService.isLastEntryEmpty(this.currentObj.iamLdapGroupRolesMap.items, 'ldapGroupDn', '')) {
       this.currentObj.iamLdapGroupRolesMap.items.push(param);
@@ -367,7 +259,7 @@ export class SettingModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if(!this.data) {
+    if (!this.data) {
       this.isLengthMatch = true;
       if (this.currentObj.initialPassword && this.currentObj.minPasswordLength > this.currentObj.initialPassword.length) {
         this.isLengthMatch = false;
@@ -380,7 +272,7 @@ export class SettingModalComponent implements OnInit {
       if (this.data.identityServiceType.match('VAULT')) {
         obj.vault = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
-        obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
+        obj.ldap = { expert: this.coreService.clone(this.currentObj), simple: this.userObj };
       }
     } else {
       obj = this.coreService.clone(this.currentObj);
@@ -609,7 +501,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
+    private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
     });
@@ -623,7 +515,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.usr = {currentPage: 1, sortBy: 'ordering', reverse: false};
+    this.usr = { currentPage: 1, sortBy: 'ordering', reverse: false };
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.getIAMList();
   }
@@ -777,7 +669,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.coreService.post('iam/identityservice/delete', {identityServiceName: identityService.identityServiceName}).subscribe(() => {
+        this.coreService.post('iam/identityservice/delete', { identityServiceName: identityService.identityServiceName }).subscribe(() => {
           this.getIAMList();
         });
       }

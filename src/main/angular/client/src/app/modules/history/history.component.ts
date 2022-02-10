@@ -2021,7 +2021,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   expandDetails(): void {
     const currentData = this.getCurrentData(this.data, this.historyFilters.type === 'ORDER' ?
-      this.order : this.historyFilters.type === 'TASK' ? this.task : this.historyFilters.type === 'YADE' ? 'yade' :
+      this.order : this.historyFilters.type === 'TASK' ? this.task : this.historyFilters.type === 'YADE' ? this.yade :
         this.historyFilters.type === 'DEPLOYMENT' ? this.deployment : this.submission);
     if (this.historyFilters.type !== 'YADE') {
       currentData.forEach((value: any) => {
@@ -2047,7 +2047,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   collapseDetails(): void {
     const currentData = this.getCurrentData(this.data, this.historyFilters.type === 'ORDER' ?
-      this.order : this.historyFilters.type === 'TASK' ? this.task : this.historyFilters.type === 'YADE' ? 'yade' :
+      this.order : this.historyFilters.type === 'TASK' ? this.task : this.historyFilters.type === 'YADE' ? this.yade :
         this.historyFilters.type === 'DEPLOYMENT' ? this.deployment : this.submission);
     currentData.forEach((value: any) => {
       value.show = false;
@@ -2152,7 +2152,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         data.loading = false;
         data.files = res.files;
-        data.widthArr = [...data.widthArr, ...this.coreService.calFileTransferRowWidth()];
+        data.widthArr = [...this.coreService.calFileTransferRowWidth()];
         setTimeout(() => {
           const dom = $('#fileTransferMainTable');
           dom.find('thead tr.main-header-row th').each(function (i) {

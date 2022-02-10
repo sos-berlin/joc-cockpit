@@ -17,15 +17,15 @@
               <span *ngIf="extraInfo.released" translate>xml.label.released</span>
               <span *ngIf="!extraInfo.released" translate>xml.label.notReleased</span>
             </span>
-            <span class="custom-icon badge m-l-12" [ngClass]="extraInfo.deployed ? 'badge-success' : 'badge-danger'"
-                  *ngIf="objectType === 'YADE' && nodes && nodes.length > 0 && extraInfo.isExist">
-              <span *ngIf="extraInfo.deployed" translate>xml.label.deployed</span>
-              <span *ngIf="!extraInfo.deployed" translate>xml.label.notDeployed</span>
-            </span>
             <span class="custom-icon badge m-l-12" [ngClass]="extraInfo.sync ? 'badge-success' : 'badge-danger'"
                   *ngIf="objectType === 'YADE' && nodes && nodes.length > 0 && extraInfo.isExist">
               <span *ngIf="extraInfo.sync" translate>xml.label.sync</span>
               <span *ngIf="!extraInfo.sync" translate>xml.label.notSync</span>
+            </span>
+            <span class="custom-icon badge m-l-12" [ngClass]="extraInfo.deployed ? 'badge-success' : 'badge-danger'"
+                  *ngIf="objectType === 'YADE' && nodes && nodes.length > 0 && extraInfo.isExist">
+              <span *ngIf="extraInfo.deployed" translate>xml.label.deployed</span>
+              <span *ngIf="!extraInfo.deployed" translate>xml.label.notDeployed</span>
             </span>
             <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()">
               <i class="fa fa-file m-r-xs"></i>
@@ -79,7 +79,7 @@
                && permission.joc && permission.joc.inventory.deploy"
               (click)="deployXML()">
               <i class="fa fa-rocket m-r-xs"></i>
-              <span translate>xml.button.deployed</span>
+              <span translate>xml.button.deploy</span>
             </button>
             <button class="btn btn-sm btn-grey m-l-12" [disabled]="!extraInfo.isExist && extraInfo.deployed" *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"
               (click)="checkXML()">
@@ -455,12 +455,12 @@
                              (focus)="hideError()"
                              (keydown)="stopPressingSpace(node.name)"
                              (change)="submitData(node.data, node)"
-                             *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer && (node.name !== 'name' && node.parent !== 'JobResource') &&
-                              node.name !== 'job_resources' && node.name !== 'job_resource_variable' && node.name !== 'job_resource_environment_variable'"
+                             *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources' && 
+                             !(node.parent === 'JobResource' && (node.name === 'name' || node.name === 'variable' || node.name === 'environment_variable'))"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
                              xmlAutofocus>
-                      <ng-container  *ngIf="node.name && node.type === 'xs:NMTOKEN' && node.parent === 'JobResource' && node.name === 'variable'">
+                      <ng-container *ngIf="node.name && node.type === 'xs:NMTOKEN' && node.parent === 'JobResource' && node.name === 'variable'">
                         <input type="text" class="form-control w-full" identifierValidation autocomplete="off"
                               [(ngModel)]="node.data"  
                               #aname="ngModel"
@@ -564,7 +564,7 @@
                       </div>
                     </div>
                     <div class="col-sm-3 p-l-xs">
-                      <span class="v-align-link"
+                      <span class=""
                         (click)="gotoKey(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)"
                         *ngIf="node.refer"><a translate>xml.button.gotoKeyElement</a></span>
                       <span

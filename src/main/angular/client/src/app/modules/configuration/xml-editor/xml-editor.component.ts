@@ -1182,19 +1182,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getSingleObject(id, obj, isCheck = false): void {
+  private getSingleObject(data, obj, isCheck = false): void {
     this.coreService.post('inventory/read/configuration', {
-      id
+      id: data.id
     }).subscribe((res: any) => {
       if (!isCheck) {
-        this.storeAndDeployJobResource(res, obj, id);
+        this.storeAndDeployJobResource(res, obj, data);
       } else if (res.configuration) {
         this.compareJobResource(res.configuration, obj);
       }
     });
   }
 
-  private storeAndDeployJobResource(res, obj, id): void {
+  private storeAndDeployJobResource(res, obj, data): void {
     if (res.configuration) {
       if (!res.configuration.arguments) {
         res.configuration.arguments = {};
@@ -1210,20 +1210,24 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.coreService.post('inventory/store', {
       configuration: res.configuration,
       valid: true,
-      id,
+      id: data.id,
       objectType: res.objectType
     }).subscribe(() => {
       this.coreService.post('inventory/deployment/deploy', {
         controllerIds: [this.schedulerIds.selected],
         store: {
-          draftConfigurations: {
+          draftConfigurations: [{
             configuration: {
               path: res.path,
               objectType: res.objectType
             }
-          }
+          }]
         }
-      }).subscribe();
+      }).subscribe(()=>{
+        data.deployed = true;
+        this.extraInfo.deployed = true;
+        this.extraInfo.sync = true;
+      });
     });
   }
 
@@ -1577,31 +1581,33 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   private matchJobResourceList(node): void {
-    if (this.objectType === 'NOTIFICATION') {
-      if (typeof node.data === 'string') {
-        let val = node.data;
-        node.data = [val];
-      }
-      if (node.data && node.data.length > 0) {
-        const arr = [];
-        for (const i in this.jobResources) {
-          for (let j = 0; j < node.data.length; j++) {
-            if (node.data[j] === this.jobResources[i].name) {
-              arr.push(node.data[j])
-              break;
+    if (node) {
+      if (this.objectType === 'NOTIFICATION') {
+        if (typeof node.data === 'string') {
+          let val = node.data;
+          node.data = [val];
+        }
+        if (node.data && node.data.length > 0) {
+          const arr = [];
+          for (const i in this.jobResources) {
+            for (let j = 0; j < node.data.length; j++) {
+              if (node.data[j] === this.jobResources[i].name) {
+                arr.push(node.data[j])
+                break;
+              }
             }
           }
-        }
-        if (node.data.length !== arr.length) {
-          this.extraInfo.released = false;
-          node.data = arr;
+          if (node.data.length !== arr.length) {
+            this.extraInfo.released = false;
+            node.data = arr;
+          }
+        } else {
+          node.data = [];
         }
       } else {
-        node.data = [];
-      }
-    } else {
-      if (node.data) {
-        this.checkJobReource(node.data);
+        if (node.data) {
+          this.checkJobReource(node.data);
+        }
       }
     }
   }
@@ -1845,12 +1851,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     let temp: any;
     let attrs: any;
     let child: any;
-    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let select = xpath.useNamespaces({ 'xs': 'http://www.w3.org/2001/XMLSchema' });
     let rootElementPath = '//xs:element';
     let root = select(rootElementPath, doc);
     for (let i = 0; i < root[0].attributes.length; i++) {
       let b = root[0].attributes[i].nodeValue;
-      temp = Object.assign({}, {ref: b});
+      temp = Object.assign({}, { ref: b });
     }
     temp.parent = '#';
     temp.uuid = this.counting;
@@ -2563,7 +2569,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (!(isEmpty(attrs))) {
       this.attachAttrs(attrs, child);
     }
-
+    if (child.ref === 'JobResource') {
+      this.getJobResourceTree(null);
+    }
     nodeArr.children.push(child);
     nodeArr.children = sortBy(nodeArr.children, 'order');
     if (check) {
