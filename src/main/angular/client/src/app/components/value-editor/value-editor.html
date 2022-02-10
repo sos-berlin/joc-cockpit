@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span translate>workflow.label.valueEditor</span>
   </h4>
-  <a class="max-btn" appMaximum>
+  <a class="max-btn" appMaximum [textarea]="myInputField">
     <i class="fa fa-window-maximize"></i>
   </a>
   <button type="button" class="close" aria-label="Close"
@@ -14,9 +14,8 @@
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-md-12 mono-font">
-        <textarea style="overflow-y: hidden" nz-input name="value" #myinput [(ngModel)]="data"
+        <textarea nz-input name="value" #myinput (keyup)="do_resize()" [(ngModel)]="data" rows="10"
                   placeholder="{{'common.placeholder.value' | translate}}"
-                  [nzAutosize]="{ minRows: 8}"
         ></textarea>
       </div>
     </div>

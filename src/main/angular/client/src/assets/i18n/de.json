@@ -2464,7 +2464,7 @@
     "button.release": "Freigeben",
     "button.preview": "Vorschau",
     "button.sourceCode": "Quelle",
-    "button.deployed": "Ausrollen",
+    "button.deploy": "Ausrollen",
     "button.check": "Prüfen",
     "message.uniqueError": "Name wird bereits verwendet",
     "message.requiredField": "Erforderliches Eingabefeld",

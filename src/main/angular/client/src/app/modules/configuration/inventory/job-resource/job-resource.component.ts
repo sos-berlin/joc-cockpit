@@ -520,7 +520,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
-    } else {
+    } else if(res.configuration) {
       if (!res.configuration.arguments && !res.configuration.env) {
         this.invalidMsg = 'inventory.message.envOrArgumentIsMissing';
       }

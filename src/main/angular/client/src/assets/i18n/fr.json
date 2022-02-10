@@ -2464,7 +2464,7 @@
     "button.release": "Publier",
     "button.preview": "Aperçu",
     "button.sourceCode": "Source",
-    "button.deployed": "Déployer",
+    "button.deploy": "Déployer",
     "button.check": "Vérifier",
     "message.uniqueError": "Nom déjà utilisé",
     "message.requiredField": "Champs Requis",

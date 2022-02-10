@@ -159,7 +159,7 @@
               </label>
               <div class="col-sm-6" [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
                 <input type="text" class="form-control" name="iamLdapHost" required #host="ngModel"
-                       (blur)="changeField('Host')"
+                       (blur)="changeField()"
                        [(ngModel)]="userObj.iamLdapHost"
                        [placeholder]="'user.usermode.placeholder.iamLdapHost' | translate">
               </div>
@@ -184,7 +184,7 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6" [ngClass]="{'has-error' : ((port.dirty || port.touched) && port.invalid)}">
-                 <input type="text" class="form-control" name="iamLdapPort" required #port="ngModel" (blur)="changeField('Port')"
+                 <input type="text" class="form-control" name="iamLdapPort" required #port="ngModel" (blur)="changeField()"
                                  [(ngModel)]="userObj.iamLdapPort"
                                  [placeholder]="'user.usermode.placeholder.iamLdapPort' | translate">
               </div>
