@@ -539,6 +539,15 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe((res) => {
       if (res) {
+        if (account) {
+          account.forcePasswordChange = true;
+        } else {
+          this.accounts.forEach((item) => {
+            if (this.object.mapOfCheckedId.has(item.account)) {
+              item.forcePasswordChange = true;
+            }
+          });
+        }
         this.reset();
       }
     });

@@ -2440,6 +2440,7 @@
     "label.xmlEditor": "XML Editor",
     "label.sync": "in sync",
     "label.notSync": "not in sync",
+    "label.unknownSyncState":"unknown sync state",
     "button.expand": "Expand",
     "button.collapse": "Collapse",
     "button.cut": "Cut",

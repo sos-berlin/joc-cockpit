@@ -2440,6 +2440,7 @@
     "label.xmlEditor": "XMLエディター",
     "label.sync": "in sync",
     "label.notSync": "not in sync",
+    "label.unknownSyncState":"unknown sync state",
     "button.expand": "開く",
     "button.collapse": "閉じる",
     "button.cut": "切り取り",

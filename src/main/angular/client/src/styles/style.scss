@@ -6806,8 +6806,9 @@ aside.sidebar-hover-effect {
 }
 
 .label-top {
-  position: absolute;
-  margin-top: -38px;
+  position: relative;
+  top: -38px;
+  margin-bottom: -18px;
 }
 
 .fixed-top {

@@ -148,7 +148,7 @@
                 <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
                   <div>
                     <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                    {{option.name}}
+                    {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
                   </div>
                 </nz-option>
               </nz-option-group>

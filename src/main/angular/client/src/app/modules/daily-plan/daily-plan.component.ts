@@ -107,7 +107,10 @@ export class SelectOrderTemplatesComponent implements OnInit {
           };
           treeObj.push(obj);
         }
-        const arr = groupBy(sortBy(treeObj, 'path'), (result) => {
+
+        const arr = groupBy(sortBy(treeObj, (i: any) => {
+          return i.path.toLowerCase();
+        }), (result) => {
           return result.path;
         });
         this.generateTree(arr);
@@ -304,7 +307,9 @@ export class CreatePlanModalComponent implements OnInit {
         };
         this.coreService.post('inventory/read/folder', request).subscribe((res: any) => {
           let data = res.workflows;
-          data = sortBy(data, 'name');
+          data = sortBy(data, (i: any) => {
+            return i.name.toLowerCase();
+          });
           for (let i = 0; i < data.length; i++) {
             data[i].title = data[i].path;
             data[i].key = data[i].path;
@@ -942,7 +947,9 @@ export class SearchComponent implements OnInit {
   private loadWorkflowObjects(node, obj): void{
     this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
       let data = res.workflows;
-      data = sortBy(data, 'name');
+      data = sortBy(data, (i: any) => {
+        return i.name.toLowerCase();
+      });
       for (let i = 0; i < data.length; i++) {
         const path = obj.path + (obj.path === '/' ? '' : '/') + data[i].name;
         data[i].title = path;
