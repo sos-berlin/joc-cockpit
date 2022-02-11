@@ -2440,7 +2440,7 @@
     "label.xmlEditor": "Éditeur XML",
     "label.sync": "synchronisé",
     "label.notSync": "non synchronisé",
-    "label.unknownSyncState":"unknown sync state",
+    "label.unknownSyncState":"état de synchro inconnu",
     "button.expand": "Développer",
     "button.collapse": "Réduire",
     "button.cut": "Couper",
