@@ -1649,7 +1649,7 @@ export class CoreService {
     }
     if (obj.notFound && obj.list.length > 0) {
       data.arr = [obj].concat(data.arr);
-    } else {
+    } else if(data.arr[0]) {
       if (data.arr[0].name === '/' && data.arr[0].notFound && data.arr[0].list.length === 0) {
         data.arr.splice(0, 1);
       }

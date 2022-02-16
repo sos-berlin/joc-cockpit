@@ -303,14 +303,13 @@ export class SettingModalComponent implements OnInit {
             }
           }
         } else if (self.data.identityServiceType.match('LDAP')) {
-          for (const prop in data) {
-            if (prop && prop.match('iamLdap')) {
-              self.currentObj = data;
-              break;
-            }
+          if (data.simple) {
+            self.userObj = data.simple;
+          } 
+          if (data.expert) {
+            self.currentObj = data.expert;
           }
         }
-
       } catch (e) {
         self.translate.get('error.message.invalidJSON').subscribe(translatedValue => {
           self.toasterService.error(translatedValue);
@@ -320,14 +319,14 @@ export class SettingModalComponent implements OnInit {
     }
   }
 
-  uploadSetting(): void {
-
-  }
-
   downloadSetting(): void {
     const name = this.data.identityServiceName + '.' + this.data.identityServiceType.toLowerCase() + '.json';
     const fileType = 'application/octet-stream';
-    const data = JSON.stringify(this.currentObj, undefined, 2);
+    let obj = this.currentObj;
+    if (this.data.identityServiceType.match('LDAP')) {
+      obj = { simple: this.userObj, expert: this.currentObj };
+    }
+    const data = JSON.stringify(obj, undefined, 2);
     const blob = new Blob([data], { type: fileType });
     saveAs(blob, name);
   }

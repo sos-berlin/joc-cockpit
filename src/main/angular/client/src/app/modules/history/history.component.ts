@@ -2956,7 +2956,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     }
     this.historyFilters = this.coreService.getHistoryTab();
-    if (!this.permission.currentController.orders.view && (this.historyFilters.type === 'ORDER' || this.historyFilters.type === 'TASK')) {
+    if (this.permission.currentController && !this.permission.currentController.orders.view && (this.historyFilters.type === 'ORDER' || this.historyFilters.type === 'TASK')) {
       this.historyFilters.type = 'YADE';
     }
     if (!this.permission.joc.fileTransfer.view && this.historyFilters.type === 'YADE') {
