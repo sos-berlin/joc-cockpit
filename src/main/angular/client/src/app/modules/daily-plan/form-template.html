@@ -62,31 +62,6 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
-      <div class="col-sm-6">
-        <nz-tree-select
-          name="folder"
-          [nzNodes]="nodes"
-          [nzHideUnMatched]="true"
-          [nzDropdownStyle]="{ 'max-height': '300px' }"
-          nzShowSearch
-          [nzMultiple]="true"
-          [nzDisplayWith]="displayWith"
-          [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
-          [(ngModel)]="filter.folders"
-        >
-          <ng-template #nzTreeTemplate let-node>
-            <div class="node-wrapper">
-              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
-                <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                {{node.title}}
-              </div>
-            </div>
-          </ng-template>
-        </nz-tree-select>
-      </div>
-    </div>
-    <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.workflows</label>
       <div class="col-sm-6">
         <nz-tree-select
@@ -104,20 +79,40 @@
         >
           <ng-template #nzTreeTemplate let-node>
             <div class="node-wrapper w-93" (click)="loadWorkflow(node, $event);">
-              <div class="node-content-wrapper">
+              <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
                 <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                 <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
                 {{node.origin.name}}
+                <i *ngIf="!node.origin.type && filter.workflowFolders.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
+                <i *ngIf="!node.origin.type && filter.workflowFolders.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path, true);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
               </div>
             </div>
           </ng-template>
         </nz-tree-select>
       </div>
     </div>
+    <div class="form-group row" *ngIf="filter.workflowFolders.length > 0">
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
+      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+        <div *ngFor="let path of filter.workflowFolders">
+          <span>{{path}}</span>
+          <i class="pull-right pos-rel t-xs fa fa-remove text-hover-primary" (click)="remove(path, true)"></i>
+        </div>
+      </div>
+    </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>dailyPlan.label.schedules</label>
       <div class="col-sm-6">
         <app-select-schedule-template [schedulerId]="schedulerIds.selected" [object]="filter"></app-select-schedule-template>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.scheduleFolders.length > 0">
+      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
+      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+        <div *ngFor="let path of filter.scheduleFolders">
+          <span class="">{{path}}</span>
+          <i class="pull-right pos-rel t-xs fa fa-remove text-hover-primary" (click)="remove(path)"></i>
+        </div>
       </div>
     </div>
     <div class="form-group row">

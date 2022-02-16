@@ -5,12 +5,16 @@ import { clone, isEmpty } from 'underscore';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { FileUploader } from 'ng2-file-upload';
+import { ToastrService } from 'ngx-toastr';
+import { saveAs } from 'file-saver';
 import { CoreService } from '../../../services/core.service';
 import { AuthService } from '../../../components/guard';
 import { DataService } from '../data.service';
 import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
 import { SaveService } from '../../../services/save.service';
 import { OrderPipe } from '../../../pipes/core.pipe';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modal-content',
@@ -43,9 +47,15 @@ export class SettingModalComponent implements OnInit {
     third: false
   };
   oldPassword: string;
- 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService,
-    private message: NzMessageService, private saveService: SaveService) {
+
+  uploader: FileUploader;
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService,
+    private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService) {
+    this.uploader = new FileUploader({
+      url: '',
+      queueLimit: 1
+    });
   }
 
   static convertDurationToString(time: any): string {
@@ -86,6 +96,12 @@ export class SettingModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.error(res.error.code, res.error.message);
+      }
+    };
     if (this.data && this.saveService.copiedSetting && this.saveService.copiedSetting.type &&
       (this.saveService.copiedSetting.name !== this.data.identityServiceName || (this.saveService.copiedSetting.name === this.data.identityServiceName &&
         this.saveService.copiedSetting.type !== this.data.identityServiceType)) &&
@@ -254,6 +270,66 @@ export class SettingModalComponent implements OnInit {
     if (!this.coreService.isLastEntryEmpty(this.currentObj.iamLdapGroupRolesMap.items, 'ldapGroupDn', '')) {
       this.currentObj.iamLdapGroupRolesMap.items.push(param);
     }
+  }
+
+  // CALLBACKS
+  onFileSelected(event: any): void {
+    const self = this;
+    let item = event['0'];
+
+    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
+    if (fileExt != 'JSON') {
+      let msg = '';
+      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.error(fileExt + ' ' + msg);
+      this.uploader.clearQueue();
+    } else {
+      let reader = new FileReader();
+      reader.readAsText(item, 'UTF-8');
+      reader.onload = onLoadFile;
+    }
+
+    function onLoadFile(_event) {
+      let data;
+      try {
+        data = JSON.parse(_event.target.result);
+        if (self.data.identityServiceType.match('VAULT')) {
+          for (const prop in data) {
+            if (prop && prop.match('iamVault')) {
+              self.currentObj = data;
+              break;
+            }
+          }
+        } else if (self.data.identityServiceType.match('LDAP')) {
+          for (const prop in data) {
+            if (prop && prop.match('iamLdap')) {
+              self.currentObj = data;
+              break;
+            }
+          }
+        }
+
+      } catch (e) {
+        self.translate.get('error.message.invalidJSON').subscribe(translatedValue => {
+          self.toasterService.error(translatedValue);
+        });
+      }
+      self.uploader.clearQueue();
+    }
+  }
+
+  uploadSetting(): void {
+
+  }
+
+  downloadSetting(): void {
+    const name = this.data.identityServiceName + '.' + this.data.identityServiceType.toLowerCase() + '.json';
+    const fileType = 'application/octet-stream';
+    const data = JSON.stringify(this.currentObj, undefined, 2);
+    const blob = new Blob([data], { type: fileType });
+    saveAs(blob, name);
   }
 
   removeGroupRoles(index): void {
