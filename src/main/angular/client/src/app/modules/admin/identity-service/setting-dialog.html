@@ -455,5 +455,19 @@
     <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
       common.button.cancel
     </button>
+    <div class="w-full" style="display: flex;justify-content: end;" *ngIf="data">
+      <button type="button" class="btn btn-default btn-sm m-r-xxs"
+          (click)="downloadSetting()" translate>
+          <i nz-icon nzType="download" nzTheme="outline"></i>&nbsp;
+          inventory.button.download
+      </button>
+      <div class="upload-btn-wrapper1">
+        <button type="button" class="btn btn-default btn-sm m-l-sm" translate>
+            <i nz-icon nzType="upload" nzTheme="outline"></i>&nbsp;
+            inventory.button.upload
+        </button>
+        <input type="file" accept=".json" ng2FileSelect (onFileSelected)="onFileSelected($event)" [uploader]="uploader">
+      </div>
+    </div>
   </div>
 </form>

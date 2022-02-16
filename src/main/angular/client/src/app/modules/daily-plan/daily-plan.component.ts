@@ -50,8 +50,10 @@ declare const $: any;
     '                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? \'folder-open\' : \'folder\'" class="w-14"></i>\n' +
     '                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>\n' +
     '                {{node.origin.name}}' +
-    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path)" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
-    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path)" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
+    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
+    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
+    '                 <i *ngIf="!node.origin.type && object.scheduleFolders && object.scheduleFolders.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path, true);$event.stopPropagation()" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
+    '                 <i *ngIf="!node.origin.type && object.scheduleFolders && object.scheduleFolders.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path, true);$event.stopPropagation()" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
     '              </div>\n' +
     '            </div>\n' +
     '          </ng-template>\n' +
@@ -130,14 +132,23 @@ export class SelectOrderTemplatesComponent implements OnInit {
     }
   }
 
-  addFolder(path): void {
-    if (this.object.paths.indexOf(path) === -1) {
-      this.object.paths.push(path);
+  addFolder(path, flag = false): void {
+    if (flag) {
+      if (this.object.scheduleFolders.indexOf(path) === -1) {
+        this.object.scheduleFolders.push(path);
+      }
+    } else {
+      if (this.object.paths.indexOf(path) === -1) {
+        this.object.paths.push(path);
+      }
     }
   }
-
-  remove(path): void {
-    this.object.paths.splice(this.object.paths.indexOf(path), 1);
+  remove(path, flag = false): void {
+    if (flag) {
+      this.object.scheduleFolders.splice(this.object.scheduleFolders.indexOf(path), 1);
+    } else {
+      this.object.paths.splice(this.object.paths.indexOf(path), 1);
+    }
   }
 
   private generateTree(arr): void {
@@ -833,6 +844,12 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!this.filter.scheduleFolders) {
+      this.filter.scheduleFolders = [];
+    }
+    if (!this.filter.workflowFolders) {
+      this.filter.workflowFolders = [];
+    }
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
     if (this.filter.state && this.filter.state.length > 0) {
@@ -906,8 +923,18 @@ export class SearchComponent implements OnInit {
     return data.key;
   }
 
-  remove(path): void {
-    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+  addFolder(path): void {
+    if (this.filter.workflowFolders.indexOf(path) === -1) {
+      this.filter.workflowFolders.push(path);
+    }
+  }
+
+  remove(path, flag = false): void {
+    if (flag) {
+      this.filter.workflowFolders.splice(this.filter.workflowFolders.indexOf(path), 1);
+    } else {
+      this.filter.scheduleFolders.splice(this.filter.scheduleFolders.indexOf(path), 1);
+    }
   }
 
   stateChange(value: string[]): void {
@@ -995,8 +1022,9 @@ export class SearchComponent implements OnInit {
 
     const obj: any = {};
     obj.workflowPaths = result.workflowPaths;
-    obj.folders = result.folders;
+    obj.workflowFolders = result.workflowFolders;
     obj.schedules = result.schedules;
+    obj.scheduleFolders = result.scheduleFolders;
     obj.state = result.state;
     obj.late = result.late;
     obj.name = result.name;
@@ -1736,11 +1764,23 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (filter.workflowPaths) {
       obj.workflowPaths = filter.workflowPaths;
     }
-    if (filter.folders && filter.folders.length > 0) {
+    if (filter.workflowFolders && filter.workflowFolders.length > 0) {
+      obj.workflowFolders = [];
+      for (const i in filter.workflowFolders) {
+        obj.workflowFolders.push({
+          folder: filter.workflowFolders[i],
+          recursive: true
+        });
+      }
+    }
+    if (filter.schedules && filter.schedules.length > 0) {
+      obj.schedulePaths = filter.schedules;
+    }
+    if (filter.scheduleFolders && filter.scheduleFolders.length > 0) {
       obj.scheduleFolders = [];
-      for(const i in filter.folders) {
+      for (const i in filter.scheduleFolders) {
         obj.scheduleFolders.push({
-          folder: filter.folders[i],
+          folder: filter.scheduleFolders[i],
           recursive: true
         });
       }
@@ -1755,9 +1795,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (obj.states.length === 0) {
         delete obj.states;
       }
-    }
-    if (filter.schedules && filter.schedules.length > 0) {
-      obj.schedulePaths = filter.schedules;
     }
     return obj;
   }

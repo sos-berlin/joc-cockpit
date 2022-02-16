@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="object.at === 'template' && selectedTemplates.paths.length > 0">
-      <label class="col-md-3 form-control-label" translate>common.label.folders</label>
+      <label class="col-md-3" translate>common.label.folders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of selectedTemplates.paths">
           <span class="">{{path}}</span>
@@ -64,8 +64,8 @@
                    class="w-14"></i>
                 <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
                 {{node.origin.name}}
-                <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path)" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
-                <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path)" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
+                <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
+                <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
               </div>
             </div>
           </ng-template>
@@ -73,7 +73,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="object.at === 'template' && object.paths.length > 0">
-      <label class="col-md-3 form-control-label" translate>common.label.folders</label>
+      <label class="col-md-3" translate>common.label.folders</label>
       <div class="col-sm-6" style="max-height: 140px; overflow: auto">
         <div *ngFor="let path of object.paths">
           <span>{{path}}</span>

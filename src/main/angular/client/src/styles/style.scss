@@ -78,7 +78,6 @@
   font-weight: normal !important;
   font-variant: normal !important;
   text-transform: none !important;
-  speak: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -91,7 +90,6 @@
   font-weight: normal !important;
   font-variant: normal !important;
   text-transform: none !important;
-  speak: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -112,7 +110,6 @@
 [class^="icon1-"], [class*=" icon1-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
-  speak: none;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -141,7 +138,6 @@
   font-weight: normal !important;
   font-variant: normal !important;
   text-transform: none !important;
-  speak: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -154,7 +150,6 @@
   font-weight: normal !important;
   font-variant: normal !important;
   text-transform: none !important;
-  speak: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -178,7 +173,6 @@
   font-weight: normal !important;
   font-variant: normal !important;
   text-transform: none !important;
-  speak: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -5743,13 +5737,16 @@ General CSS
   display: block
 }
 
-.upload-btn-wrapper {
+.upload-btn-wrapper, .upload-btn-wrapper1 {
   position: relative;
-  overflow: hidden;
   display: inline-block;
 }
 
-.upload-btn-wrapper input[type=file] {
+.upload-btn-wrapper {
+  overflow: hidden;
+}
+
+.upload-btn-wrapper input[type=file], .upload-btn-wrapper1 input[type=file] {
   position: absolute;
   left: 0;
   top: 0;

@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {NzTabsModule} from "ng-zorro-antd/tabs";
+import {FileUploadModule} from 'ng2-file-upload';
 import {NzAutocompleteModule} from "ng-zorro-antd/auto-complete";
 import {AdminRoutingModule} from './admin-routing.module';
 import {AdminComponent} from './admin.component';
@@ -23,6 +24,7 @@ import {SessionTimeRegexValidator} from '../../directives/core.directive';
 @NgModule({
   imports: [
     AdminRoutingModule,
+    FileUploadModule,
     SharedModule,
     NzTabsModule,
     NzAutocompleteModule
