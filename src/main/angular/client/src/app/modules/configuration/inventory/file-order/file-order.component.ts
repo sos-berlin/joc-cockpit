@@ -336,7 +336,9 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
     this.coreService.post(URL, obj).subscribe((res: any) => {
       let data = res.workflows || res.documentations;
-      data = sortBy(data, 'name');
+      data = sortBy(data, (i: any) => {
+        return i.name.toLowerCase();
+      });
       for (let i = 0; i < data.length; i++) {
         const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
         data[i].title = data[i].assignReference || data[i].name;

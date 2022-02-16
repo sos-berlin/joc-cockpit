@@ -100,15 +100,17 @@ export class SettingModalComponent implements OnInit {
       configurationType: 'IAM',
       name: this.data ? this.data.identityServiceName : undefined
     }).subscribe((res) => {
+      if (res.configuration.objectType && res.configuration.objectType.match('LDAP')) {
+        this.getUsersData();
+      }
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
             this.currentObj = data.vault || {};
             if (data.ldap) {
-              this.getUsersData();
               if (data.ldap.simple) {
-                this.userObj = data.ldap.simple;              
+                this.userObj = data.ldap.simple;
                 if (this.userObj.iamLdapHost && (!data.ldap.expert || !data.ldap.iamLdapServerUrl)) {
                   data.ldap.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
                 }

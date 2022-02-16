@@ -730,6 +730,9 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   editFrequency(data): void {
+    if(data.tab === 'every'){
+      return;
+    }
     this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
 

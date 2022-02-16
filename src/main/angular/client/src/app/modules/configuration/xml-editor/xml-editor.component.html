@@ -20,7 +20,8 @@
             <span class="custom-icon badge m-l-12" [ngClass]="extraInfo.sync ? 'badge-success' : 'badge-danger'"
                   *ngIf="objectType === 'YADE' && nodes && nodes.length > 0 && extraInfo.isExist">
               <span *ngIf="extraInfo.sync" translate>xml.label.sync</span>
-              <span *ngIf="!extraInfo.sync" translate>xml.label.notSync</span>
+              <span *ngIf="extraInfo.sync == false" translate>xml.label.notSync</span>
+              <span *ngIf="extraInfo.sync === undefined" translate>xml.label.unknownSyncState</span>
             </span>
             <span class="custom-icon badge m-l-12" [ngClass]="extraInfo.deployed ? 'badge-success' : 'badge-danger'"
                   *ngIf="objectType === 'YADE' && nodes && nodes.length > 0 && extraInfo.isExist">
@@ -75,7 +76,7 @@
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>xml.button.release</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" [ngClass]="extraInfo.isExist ? extraInfo.sync ? 'btn-badge-success' : 'btn-badge-danger' : ''" [disabled]="!extraInfo.isExist && extraInfo.deployed" *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"
+            <button class="btn btn-sm btn-grey m-l-12" [ngClass]="extraInfo.isExist ? extraInfo.sync ? 'btn-badge-success' : 'btn-badge-danger' : ''" [disabled]="!extraInfo.isExist" *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"
               (click)="checkXML()">
               <i class="fa fa-check m-r-xs"></i>
               <span translate>xml.button.check</span>
@@ -375,7 +376,7 @@
                             <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
                               <div>
                                 <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                                 {{option.name}}
+                                 {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>                      
                               </div>
                             </nz-option>
                           </nz-option-group>
@@ -400,7 +401,7 @@
                             <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
                               <div>
                                 <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                                 {{option.name}}
+                                 {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
                               </div>
                             </nz-option>
                           </nz-option-group>

@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="object.at === 'template'">
-      <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflow</label>
+      <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflows</label>
       <div class="col-md-6">
         <nz-tree-select
           name="workflows"
@@ -54,7 +54,7 @@
           [nzDropdownStyle]="{ 'max-height': '300px' }"
           nzShowSearch
           (nzExpandChange)="onExpand($event)"
-          [nzPlaceHolder]="'inventory.placeholder.workflowName' | translate"
+          [nzPlaceHolder]="'dailyPlan.placeholder.workflowPath' | translate"
           [(ngModel)]="object.workflowPaths"
         >
           <ng-template #nzTreeTemplate let-node>

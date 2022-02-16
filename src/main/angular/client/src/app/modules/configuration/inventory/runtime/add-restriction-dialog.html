@@ -22,7 +22,7 @@
             <nz-option nzValue="specificWeekDays" [nzLabel]="'runtime.label.specificWeekDays' | translate"></nz-option>
             <nz-option nzValue="specificDays" [nzLabel]="'runtime.label.specificDays' | translate"></nz-option>
             <nz-option nzValue="monthDays" [nzLabel]="'runtime.label.monthDays' | translate"></nz-option>
-            <nz-option nzValue="every" [nzLabel]="'runtime.label.every' | translate"></nz-option>
+            <nz-option nzDisabled nzValue="every" [nzLabel]="'runtime.label.every' | translate"></nz-option>
           </nz-select>
         </div>
       </div>
@@ -178,7 +178,7 @@
                   (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')">-{{(7 * count) + 2 }}</a></td>
                 <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}"><a
                   (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')">-{{(7 * count) + 3 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 6) +'')}"><a
+                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 4) +'')}"><a
                   (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')">-{{(7 * count) + 4 }}</a></td>
                 <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 5) +'')}"><a
                   (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')">-{{(7 * count) + 5 }}</a></td>
@@ -274,7 +274,7 @@
                 <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1}}</span>
               </td>
               <td>
-                <a><i (click)="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                <a [ngClass]="{'disable-link': data.tab=='every'}"><i (click)="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
                 <a class="text-hover-color">
                   <i (click)="deleteFrequency(data, i)" class="fa fa-times "></i>
                 </a>

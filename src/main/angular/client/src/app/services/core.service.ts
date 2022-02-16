@@ -1605,4 +1605,55 @@ export class CoreService {
       }
     });
   }
+
+  getNotExistJobResource(data): any {
+    let tempARr = [];
+    const obj = {
+      name: '/',
+      notFound: true,
+      list: []
+    };
+    data.arr.forEach(items => {
+      if (items.name === '/') {
+        if (!items.notFound) {
+          obj.list = items.list;
+          delete obj.notFound;
+        } else if (items.list.length > 0) {
+          let x = [];
+          for (let i in items.list) {
+            if (!items.list[i].notFound) {
+              x.push(items.list[i])
+            }
+          }
+          items.list = x;
+          obj.list = items.list;
+        }
+      }
+      tempARr = tempARr.concat(items.list);
+    });
+    if(typeof data.jobResources === 'string'){
+      let x = data.jobResources;
+      data.jobResources = [x];
+    }
+    for (let i in data.jobResources) {
+      let flag = true;
+      for (let j in tempARr) {
+        if (data.jobResources[i] === tempARr[j].name) {
+          flag = false;
+          break;
+        }
+      }
+      if (flag) {
+        obj.list = [{ name: data.jobResources[i], path: '/', notFound: true }].concat(obj.list);
+      }
+    }
+    if (obj.notFound && obj.list.length > 0) {
+      data.arr = [obj].concat(data.arr);
+    } else {
+      if (data.arr[0].name === '/' && data.arr[0].notFound && data.arr[0].list.length === 0) {
+        data.arr.splice(0, 1);
+      }
+    }
+    return data.arr;
+  }
 }

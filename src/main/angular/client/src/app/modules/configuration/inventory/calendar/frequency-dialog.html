@@ -24,7 +24,7 @@
                              [nzLabel]="'runtime.label.specificWeekDays' | translate"></nz-option>
                   <nz-option nzValue="specificDays" [nzLabel]="'runtime.label.specificDays' | translate"></nz-option>
                   <nz-option nzValue="monthDays" [nzLabel]="'runtime.label.monthDays' | translate"></nz-option>
-                  <nz-option nzValue="every" [nzLabel]="'runtime.label.every' | translate"></nz-option>
+                  <nz-option nzDisabled nzValue="every" [nzLabel]="'runtime.label.every' | translate"></nz-option>
                   <nz-option nzValue="nationalHoliday"
                              [nzLabel]="'runtime.label.nationalHoliday' | translate"></nz-option>
                 </nz-select>
@@ -182,7 +182,7 @@
                         (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')">-{{(7 * count) + 2 }}</a></td>
                       <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}"><a
                         (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')">-{{(7 * count) + 3 }}</a></td>
-                      <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 6) +'')}"><a
+                      <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 4) +'')}"><a
                         (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')">-{{(7 * count) + 4 }}</a></td>
                       <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 5) +'')}"><a
                         (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')">-{{(7 * count) + 5 }}</a></td>
@@ -365,7 +365,7 @@
                   <a class="text-hover-primary">
                     <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
                   </a>
-                  <a><i (click)="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                  <a [ngClass]="{'disable-link': data.tab=='every'}"><i (click)="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
                   <a class="text-hover-color">
                     <i (click)="deleteFrequency(data)" class="fa fa-times "></i>
                   </a>

@@ -1755,6 +1755,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
       this.selectedNode.job.jobResourceNames = [...this.selectedNode.job.jobResourceNames];
     }
+    this.jobResourcesTree = this.coreService.getNotExistJobResource({ arr: this.jobResourcesTree, jobResources: this.selectedNode.job.jobResourceNames });
     this.onBlur();
     this.checkIsAgentExist();
     this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
@@ -3008,7 +3009,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.isUpdate = true;
       if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
         const data = this.coreService.clone(this.workflow.configuration);
-        this.workflow.valid = this.modifyJSON(data, true, false);
+        this.modifyJSON(data, true, false);
         this.saveJSON(this.workflow.valid ? data : skip ? false : 'false');
       }
       setTimeout(() => {
@@ -3214,6 +3215,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.navToJob(this.workflow.configuration, this.workflowService.getJobValue());
               this.workflowService.setJobValue('')
             }
+
+            this.jobResourcesTree = this.coreService.getNotExistJobResource({ arr: this.jobResourcesTree, jobResources: this.extraConfiguration.jobResourceNames });
           } catch (e) {
             console.error(e);
           }
@@ -8884,9 +8887,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (this.error || checkErr) {
       flag = false;
     }
-    if (flag) {
-      this.invalidMsg = '';
-    }
     return flag;
   }
 
@@ -8967,7 +8967,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     let data;
     if (!noValidate || noValidate === 'false') {
       data = this.coreService.clone(this.workflow.configuration);
-      this.workflow.valid = this.modifyJSON(data, false, false);
+      this.modifyJSON(data, false, false);
     } else {
       data = noValidate;
     }
@@ -9157,7 +9157,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         });
         const data = this.coreService.clone(this.workflow.configuration);
-        this.workflow.valid = this.modifyJSON(data, false, false);
+        this.modifyJSON(data, false, false);
         if (!isEqual(this.workflow.actual, JSON.stringify(data))) {
           this.isStore = true;
           this.storeData(data);

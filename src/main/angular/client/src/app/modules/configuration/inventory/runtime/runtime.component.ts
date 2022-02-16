@@ -133,10 +133,10 @@ export class AddRestrictionComponent implements OnInit {
         }
       }
       if (this.calendar.frequencyList[i].startingWithM) {
-        this.frequency.startingWithM = this.coreService.getDateByFormat(this.calendar.frequencyList[i].startingWithM, null, this.dateFormatM);
+        this.frequency.startingWithM = new Date(this.calendar.frequencyList[i].startingWithM);
       }
       if (this.calendar.frequencyList[i].endOnM) {
-        this.frequency.endOnM = this.coreService.getDateByFormat(this.calendar.frequencyList[i].endOnM, null, this.dateFormatM);
+        this.frequency.endOnM = new Date(this.calendar.frequencyList[i].endOnM);
       }
     } else if (this.calendar.frequencyList[i].tab === 'specificDays') {
       if (this.calendar.frequencyList[i].dates) {
@@ -523,6 +523,9 @@ export class AddRestrictionComponent implements OnInit {
   }
 
   editFrequency(data): void {
+    if(data.tab === 'every'){
+      return;
+    }
     this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
     this.isRuntimeEdit = true;
@@ -986,6 +989,9 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   editRestrictionInCalendar(data, frequency): void {
+    if(frequency.tab === 'every'){
+      return;
+    }
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddRestrictionComponent,

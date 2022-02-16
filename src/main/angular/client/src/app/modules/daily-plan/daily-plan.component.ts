@@ -50,8 +50,8 @@ declare const $: any;
     '                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? \'folder-open\' : \'folder\'" class="w-14"></i>\n' +
     '                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>\n' +
     '                {{node.origin.name}}' +
-    '                 <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path)" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
-    '                 <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path)" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
+    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path)" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
+    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path)" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
     '              </div>\n' +
     '            </div>\n' +
     '          </ng-template>\n' +
@@ -107,7 +107,10 @@ export class SelectOrderTemplatesComponent implements OnInit {
           };
           treeObj.push(obj);
         }
-        const arr = groupBy(sortBy(treeObj, 'path'), (result) => {
+
+        const arr = groupBy(sortBy(treeObj, (i: any) => {
+          return i.path.toLowerCase();
+        }), (result) => {
           return result.path;
         });
         this.generateTree(arr);
@@ -304,7 +307,9 @@ export class CreatePlanModalComponent implements OnInit {
         };
         this.coreService.post('inventory/read/folder', request).subscribe((res: any) => {
           let data = res.workflows;
-          data = sortBy(data, 'name');
+          data = sortBy(data, (i: any) => {
+            return i.name.toLowerCase();
+          });
           for (let i = 0; i < data.length; i++) {
             data[i].title = data[i].path;
             data[i].key = data[i].path;
@@ -942,7 +947,9 @@ export class SearchComponent implements OnInit {
   private loadWorkflowObjects(node, obj): void{
     this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
       let data = res.workflows;
-      data = sortBy(data, 'name');
+      data = sortBy(data, (i: any) => {
+        return i.name.toLowerCase();
+      });
       for (let i = 0; i < data.length; i++) {
         const path = obj.path + (obj.path === '/' ? '' : '/') + data[i].name;
         data[i].title = path;

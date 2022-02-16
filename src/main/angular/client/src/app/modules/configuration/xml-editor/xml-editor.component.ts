@@ -1608,28 +1608,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         if (typeof node.data === 'string') {
           let val = node.data;
           node.data = [val];
-        }
-        if (node.data && node.data.length > 0) {
-          const arr = [];
-          for (const i in this.jobResources) {
-            for (let j = 0; j < node.data.length; j++) {
-              if (node.data[j] === this.jobResources[i].name) {
-                arr.push(node.data[j])
-                break;
-              }
-            }
-          }
-          if (node.data.length !== arr.length) {
-            this.extraInfo.released = false;
-            node.data = arr;
-          }
-        } else {
+        } else if (!node.data || !isArray(node.data)) {
           node.data = [];
         }
       } else {
         if (node.data) {
           this.checkJobReource(node.data);
         }
+      }
+      if (node.data) {
+        this.jobResourcesTree = this.coreService.getNotExistJobResource({ arr: this.jobResourcesTree, jobResources: node.data });
       }
     }
   }
@@ -3162,9 +3150,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   selectNode(node): void {
     this.getData(node.origin);
-    this.getIndividualData(node.origin, undefined);  
-    if(this.selectedNode && this.selectedNode.ref === 'JobResource'){
-      console.log(this.selectedNode.attributes)
+    this.getIndividualData(node.origin, undefined);
+    if (this.selectedNode && this.selectedNode.ref === 'JobResource') {
       const arr = [];
       const arr2 = [];
       for (const i in this.selectedNode.attributes) {

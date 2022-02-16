@@ -173,7 +173,6 @@ export class SettingComponent implements OnInit {
       this.settings[item.name].ordering = item.ordering;
     });
     const tempSetting = this.coreService.clone(this.settings);
-    console.log(this.settings)
     this.savePreferences(SettingComponent.generateStoreObject(tempSetting), false)
   }
 
