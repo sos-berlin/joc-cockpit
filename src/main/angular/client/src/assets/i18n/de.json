@@ -666,7 +666,7 @@
     "placeholder.selectOrderTemplate": "Zeitpläne auswählen",
     "placeholder.selectSubmissionHistory": "Tagesplan auswählen",
     "placeholder.timeRange": "now, (+/-)(d), today",
-    "placeholder.workflowPath": "Arbeitsablauf auswählen",
+    "placeholder.workflowPath": "Arbeitsabläufe auswählen",
     "popup.removeSelectedOrder": "Sind Sie sicher, dass den ausgewählten Auftrag entfernen wollen?",
     "popup.removeSelectedOrderForDateRange": "Sind Sie sicher, dass Sie Aufträge für den ausgewählten Datumsbereich entfernen wollen?",
     "popup.removeAllOrders": "Sind Sie sicher, dass Sie alle Aufträge entfernen wollen?",

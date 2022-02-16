@@ -50,8 +50,8 @@ declare const $: any;
     '                <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? \'folder-open\' : \'folder\'" class="w-14"></i>\n' +
     '                <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>\n' +
     '                {{node.origin.name}}' +
-    '                 <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path)" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
-    '                 <i *ngIf="!node.origin.type && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path)" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
+    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path)" [nz-tooltip]="\'user.button.addFolder\' | translate" nz-icon [nzType]="\'plus\'" class="p-l-sm"></i>' +
+    '                 <i *ngIf="!node.origin.type && object.paths && object.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path)" nz-icon [nzType]="\'delete\'" class="p-l-sm"></i>' +
     '              </div>\n' +
     '            </div>\n' +
     '          </ng-template>\n' +

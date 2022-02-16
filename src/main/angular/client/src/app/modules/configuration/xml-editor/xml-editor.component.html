@@ -76,7 +76,7 @@
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>xml.button.release</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" [ngClass]="extraInfo.isExist ? extraInfo.sync ? 'btn-badge-success' : 'btn-badge-danger' : ''" [disabled]="!extraInfo.isExist && extraInfo.deployed" *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"
+            <button class="btn btn-sm btn-grey m-l-12" [ngClass]="extraInfo.isExist ? extraInfo.sync ? 'btn-badge-success' : 'btn-badge-danger' : ''" [disabled]="!extraInfo.isExist" *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"
               (click)="checkXML()">
               <i class="fa fa-check m-r-xs"></i>
               <span translate>xml.button.check</span>

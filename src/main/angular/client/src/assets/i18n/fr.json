@@ -666,7 +666,7 @@
     "placeholder.selectOrderTemplate": "Sélectionner les Planifications",
     "placeholder.selectSubmissionHistory": "Sélectionner Historique du Plan Quotidien",
     "placeholder.timeRange": "now, (+/-)(d), today",
-    "placeholder.workflowPath": "Selectionner le Workflow",
+    "placeholder.workflowPath": "Selectionner le Workflows",
     "popup.removeSelectedOrder": "Êtes-vous sûr de vouloir supprimer cet Ordre ?",
     "popup.removeSelectedOrderForDateRange": "Êtes-vous sûr de vouloir supprimer les Ordres pour la plage de dates sélectionnée ?",
     "popup.removeAllOrders": "Êtes-vous sûr de vouloir supprimer tous les Ordres ?",

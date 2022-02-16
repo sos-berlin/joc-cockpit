@@ -155,7 +155,8 @@
                 <tr *ngFor="let data of calendar.configuration.includesFrequency;let i = index;"
                     [ngClass]="{'hide':editor.frequencyType !=='INCLUDE'}">
                   <td class="cursor ver-top">
-                    <a (click)="updateFrequency(data);">{{data.str}}</a>
+                    <a *ngIf="!isTrash && permission.joc.inventory.manage && data.tab !=='every'" (click)="updateFrequency(data);">{{data.str}}</a>
+                    <a *ngIf="isTrash || !permission.joc.inventory.manage || data.tab=='every'">{{data.str}}</a>
                   </td>
                   <td>
                     <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
@@ -173,7 +174,7 @@
                     <a class="text-hover-primary">
                       <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
                     </a>
-                    <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                    <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage || data.tab=='every'}"><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
                     <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="text-hover-color">
                       <i (click)="removeFrequency(i)" class="fa fa-times "></i>
                     </a>

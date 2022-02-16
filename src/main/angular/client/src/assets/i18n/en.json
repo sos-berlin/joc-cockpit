@@ -666,7 +666,7 @@
     "placeholder.selectOrderTemplate": "Select Schedules",
     "placeholder.selectSubmissionHistory": "Select Daily Plan History",
     "placeholder.timeRange": "now, (+/-)(d), today",
-    "placeholder.workflowPath": "Select Workflow",
+    "placeholder.workflowPath": "Select Workflows",
     "popup.removeSelectedOrder": "Are you sure you want to remove this order?",
     "popup.removeSelectedOrderForDateRange": "Are you sure you want to remove orders for the selected date range?",
     "popup.removeAllOrders": "Are you sure you want to remove all orders?",
