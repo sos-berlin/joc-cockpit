@@ -1,7 +1,9 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(filter)">
   <div [ngClass]="{'modal-body p-a' : !isSearch }" >
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName
+        <sup *ngIf="!isSearch" class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-6">
         <input autocomplete="off" type="text" class="form-control"
                placeholder="{{'customization.placeholder.enterName' | translate}}" required
@@ -56,19 +58,30 @@
         </nz-select>
       </div>
     </div>
-    <div class="row" [ngClass]="{'form-group': !(filter.paths && filter.paths.length>0)}">
-      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.folders</label>
       <div class=" col-sm-6">
-        <a (click)="getFolderTree(false)"><i class="fa fa-folder-o fa-lg"></i></a>
-      </div>
-    </div>
-    <div class="form-group row m-t-sm" *ngIf="filter.paths && filter.paths.length>0">
-      <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}"></label>
-      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
-        <div *ngFor="let path of filter.paths">
-          <span class="">{{path}}</span>
-          <i class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(path)"></i>
-        </div>
+        <nz-tree-select
+          name="folders"
+          nzMultiple
+          [nzAllowClear]="true"
+          [nzNodes]="folders"
+          [nzAsyncData]="true"
+          [nzHideUnMatched]="true"
+          [nzDropdownStyle]="{ 'max-height': '300px' }"
+          nzShowSearch
+          [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
+          [(ngModel)]="filter.paths"
+        >
+          <ng-template #nzTreeTemplate let-node>
+            <div class="node-wrapper w-93">
+              <div class="node-content-wrapper" [class.node-content-wrapper-active]="filter.paths && filter.paths.indexOf(node.origin.path) > -1">
+                <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                {{node.origin.name}}
+              </div>
+            </div>
+          </ng-template>
+        </nz-tree-select>
       </div>
     </div>
     <div class="form-group row">

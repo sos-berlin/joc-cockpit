@@ -2,7 +2,9 @@
 
   <div [ngClass]="{'modal-body p-a' : !isSearch }" >
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName
+        <sup *ngIf="!isSearch" class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-6">
         <input autocomplete="off" required class="form-control"
                placeholder="{{'customization.placeholder.enterName' | translate}}"
@@ -28,21 +30,27 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio === 'current'">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.from</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.from
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-6">
-        <nz-date-picker name="from" required=true [nzAllowClear]="false"
+        <nz-date-picker name="from" required [nzAllowClear]="false"
                         [(ngModel)]="filter.from" [nzFormat]="dateFormat"></nz-date-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio === 'current'">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.to</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.to
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-6">
-        <nz-date-picker name="to" required=true [nzAllowClear]="false"
+        <nz-date-picker name="to" required [nzAllowClear]="false"
                         [(ngModel)]="filter.to" [nzFormat]="dateFormat"></nz-date-picker>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio === 'planned'">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.from</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.from
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class=" col-sm-6" [ngClass]="{'has-error' : ((from.dirty || from.touched) && from.invalid)}">
         <input autocomplete="off" validateDailyPlanReqex required class="form-control" #from="ngModel" type="text" name="from" placeholder="{{'dailyPlan.placeholder.timeRange' | translate}}"
                [(ngModel)]="filter.from1">
@@ -52,7 +60,9 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio === 'planned'">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.to</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.to
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class=" col-sm-6" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
         <input autocomplete="off" validateDailyPlanReqex required class="form-control" #to="ngModel" type="text" name="to" placeholder="{{'dailyPlan.placeholder.timeRange' | translate}}"
                [(ngModel)]="filter.to1">

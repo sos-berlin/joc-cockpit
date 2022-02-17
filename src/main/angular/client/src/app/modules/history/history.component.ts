@@ -1,22 +1,21 @@
-import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subject, Subscription} from 'rxjs';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {TranslateService} from '@ngx-translate/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {isEmpty, clone, extend} from 'underscore';
-import {takeUntil} from 'rxjs/operators';
-import {DataService} from '../../services/data.service';
-import {CoreService} from '../../services/core.service';
-import {AuthService} from '../../components/guard';
-import {SaveService} from '../../services/save.service';
-import {ExcelService} from '../../services/excel.service';
-import {TreeModalComponent} from '../../components/tree-modal/tree.component';
-import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
-import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
-import {FileTransferService} from '../../services/file-transfer.service';
-import {InventoryForHistory} from '../../models/enums';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { isEmpty, clone, extend } from 'underscore';
+import { takeUntil } from 'rxjs/operators';
+import { DataService } from '../../services/data.service';
+import { CoreService } from '../../services/core.service';
+import { AuthService } from '../../components/guard';
+import { SaveService } from '../../services/save.service';
+import { ExcelService } from '../../services/excel.service';
+import { EditFilterModalComponent } from '../../components/filter-modal/filter.component';
+import { EditIgnoreListComponent } from './ignore-list-modal/ignore-list.component';
+import { SearchPipe, OrderPipe } from '../../pipes/core.pipe';
+import { FileTransferService } from '../../services/file-transfer.service';
+import { InventoryForHistory } from '../../models/enums';
 
 declare const $;
 
@@ -30,7 +29,7 @@ export class OrderTemplateComponent {
   @Input() schedulerId: any;
   @Input() orderSearch: any;
 
-  constructor(public coreService: CoreService, private authService: AuthService, private router: Router) {
+  constructor(public coreService: CoreService, private router: Router) {
   }
 
   downloadLog(obj, schedulerId): void {
@@ -131,21 +130,23 @@ export class OrderSearchComponent implements OnInit {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
+  folders = [];
   dateFormat: any;
   existingName: any;
   submitted = false;
   isUnique = true;
   checkOptions = [
-    {label: 'successful', value: 'SUCCESSFUL', checked: false},
-    {label: 'failed', value: 'FAILED', checked: false},
-    {label: 'incomplete', value: 'INCOMPLETE', checked: false}
+    { label: 'successful', value: 'SUCCESSFUL', checked: false },
+    { label: 'failed', value: 'FAILED', checked: false },
+    { label: 'incomplete', value: 'INCOMPLETE', checked: false }
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
+  constructor(private authService: AuthService, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.getFolderTree();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
         return {
@@ -160,29 +161,20 @@ export class OrderSearchComponent implements OnInit {
     this.filter.historyStates = value;
   }
 
-  getFolderTree(flag: boolean): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: TreeModalComponent,
-      nzComponentParams: {
-        schedulerId: this.schedulerIds.selected,
-        paths: this.filter.paths || [],
-        type: 'FOLDER',
-        showCheckBox: !flag
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.filter.paths = result;
+  getFolderTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerIds.selected,
+      onlyValidObjects: true,
+      forInventory: true,
+      types: ['FOLDER']
+    }).subscribe({
+      next: (res) => {
+        this.folders = this.coreService.prepareTree(res, true);
+        if (this.folders.length > 0) {
+          this.folders[0].expanded = true;
+        }
       }
     });
-  }
-
-  remove(path): void {
-    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
   }
 
   checkFilterName(): void {
@@ -289,26 +281,27 @@ export class TaskSearchComponent implements OnInit {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-
+  folders = [];
   existingName: any;
   submitted = false;
   isUnique = true;
   checkOptions = [
-    {label: 'successful', value: 'SUCCESSFUL', checked: false},
-    {label: 'failed', value: 'FAILED', checked: false},
-    {label: 'incomplete', value: 'INCOMPLETE', checked: false}
+    { label: 'successful', value: 'SUCCESSFUL', checked: false },
+    { label: 'failed', value: 'FAILED', checked: false },
+    { label: 'incomplete', value: 'INCOMPLETE', checked: false }
   ];
   criticalities = [
-    {label: 'normal', value: 'NORMAL', checked: false},
-    {label: 'minor', value: 'MINOR', checked: false},
-    {label: 'major', value: 'MAJOR', checked: false}
+    { label: 'normal', value: 'NORMAL', checked: false },
+    { label: 'minor', value: 'MINOR', checked: false },
+    { label: 'major', value: 'MAJOR', checked: false }
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
+  constructor(private authService: AuthService, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.getFolderTree();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
         return {
@@ -336,29 +329,20 @@ export class TaskSearchComponent implements OnInit {
     this.filter.criticality = value;
   }
 
-  getFolderTree(flag: boolean): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: TreeModalComponent,
-      nzComponentParams: {
-        schedulerId: this.schedulerIds.selected,
-        paths: this.filter.paths || [],
-        type: 'FOLDER',
-        showCheckBox: !flag
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.filter.paths = result;
+  getFolderTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerIds.selected,
+      onlyValidObjects: true,
+      forInventory: true,
+      types: ['FOLDER']
+    }).subscribe({
+      next: (res) => {
+        this.folders = this.coreService.prepareTree(res, true);
+        if (this.folders.length > 0) {
+          this.folders[0].expanded = true;
+        }
       }
     });
-  }
-
-  remove(path): void {
-    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
   }
 
   checkFilterName(): void {
@@ -580,8 +564,8 @@ export class SubmissionSearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   checkOptions = [
-    {label: 'submitted', value: 'SUBMITTED', checked: false},
-    {label: 'notSubmitted', value: 'NOT_SUBMITTED', checked: false}
+    { label: 'submitted', value: 'SUBMITTED', checked: false },
+    { label: 'notSubmitted', value: 'NOT_SUBMITTED', checked: false }
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService) {
@@ -704,7 +688,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
-              private dataService: DataService, private route: ActivatedRoute) {
+    private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -739,7 +723,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   private getOrderHistory(): void {
     this.coreService.post('orders/history', {
       controllerId: this.controllerId,
-      orders: [{workflowPath: this.workflowPath, orderId: this.orderId}]
+      orders: [{ workflowPath: this.workflowPath, orderId: this.orderId }]
     }).subscribe({
       next: (res: any) => {
         this.history = res.history;
@@ -948,7 +932,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   savedYadeHistoryFilter: any = {};
   savedDeploymentHistoryFilter: any = {};
   savedSubmissionHistoryFilter: any = {};
-  savedIgnoreList: any = {workflows: [], jobs: []};
+  savedIgnoreList: any = { workflows: [], jobs: [] };
   orderSearch: any = {};
   jobSearch: any = {};
   yadeSearch: any = {};
@@ -986,12 +970,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private pendingHTTPRequests$ = new Subject<void>();
 
   filterBtn: any = [
-    {date: 'ALL', text: 'all'},
-    {date: 'today', text: 'today'},
-    {date: '-1h', text: 'last1'},
-    {date: '-12h', text: 'last12'},
-    {date: '-24h', text: 'last24'},
-    {date: '-7d', text: 'lastWeak'}
+    { date: 'ALL', text: 'all' },
+    { date: 'today', text: 'today' },
+    { date: '-1h', text: 'last1' },
+    { date: '-12h', text: 'last12' },
+    { date: '-24h', text: 'last24' },
+    { date: '-7d', text: 'lastWeak' }
   ];
 
   subMissionFilterBtn: any = [
@@ -1037,7 +1021,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.selectedFiltered1.paths && this.selectedFiltered1.paths.length > 0) {
       obj.folders = [];
       this.selectedFiltered1.paths.forEach((value) => {
-        obj.folders.push({folder: value, recursive: true});
+        obj.folders.push({ folder: value, recursive: false });
       });
     }
     if (this.selectedFiltered1.workflowPath) {
@@ -1102,7 +1086,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.checkSharedFilters('ORDER');
         return;
       }
-      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
+      obj = { controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : '' };
       this.isLoading = false;
       this.data = [];
     }
@@ -1173,7 +1157,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.selectedFiltered2.paths && this.selectedFiltered2.paths.length > 0) {
       obj.folders = [];
       this.selectedFiltered2.paths.forEach((value) => {
-        obj.folders.push({folder: value, recursive: true});
+        obj.folders.push({ folder: value, recursive: false });
       });
     }
     if (this.selectedFiltered2.workflowPath) {
@@ -1205,7 +1189,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.checkSharedFilters('TASK');
         return;
       }
-      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
+      obj = { controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : '' };
       this.isLoading = false;
       this.data = [];
     }
@@ -1280,7 +1264,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.checkSharedFilters('YADE');
         return;
       }
-      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
+      obj = { controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : '' };
       this.isLoading = false;
       this.data = [];
     }
@@ -1374,7 +1358,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         return;
       }
       if (this.historyFilters.current == true) {
-        obj = {controllerId: this.schedulerIds.selected};
+        obj = { controllerId: this.schedulerIds.selected };
       } else {
         obj = {};
       }
@@ -1393,7 +1377,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj.state = (this.deployment.filter.state && this.deployment.filter.state !== 'ALL') ? this.deployment.filter.state : undefined;
     }
     this.convertDeployRequestBody(obj);
-    this.coreService.post('inventory/deployment/history', {compactFilter: obj}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('inventory/deployment/history', { compactFilter: obj }).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoading = true;
         this.deploymentHistorys = res.depHistory || [];
@@ -1459,7 +1443,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         return;
       }
       if (this.historyFilters.current == true) {
-        obj = {controllerId: this.schedulerIds.selected};
+        obj = { controllerId: this.schedulerIds.selected };
       } else {
         obj = {};
       }
@@ -1613,7 +1597,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
         obj.paths.forEach((value) => {
-          filter.folders.push({folder: value, recursive: true});
+          filter.folders.push({ folder: value, recursive: false });
         });
       }
       if (obj.workflowPath) {
@@ -1665,7 +1649,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
         obj.paths.forEach((value) => {
-          filter.folders.push({folder: value, recursive: true});
+          filter.folders.push({ folder: value, recursive: false });
         });
       }
       if (obj.workflowPath) {
@@ -1706,7 +1690,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.paths && obj.paths.length > 0) {
         filter.folders = [];
         obj.paths.forEach((value) => {
-          filter.folders.push({folder: value, recursive: true});
+          filter.folders.push({ folder: value, recursive: false });
         });
       }
 

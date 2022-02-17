@@ -309,10 +309,9 @@
     "label.relativeTime": "Relative Uhrzeit",
     "label.processExecuted": "Prozess ausgeführt",
     "label.selectController": "Controller auswählen",
-    "label.regexAndChooseTree": "Regulärer Ausdruck oder Ordner",
     "placeholder.setEndDate": "Endezeit setzen",
     "placeholder.setStartDate": "Startzeit setzen",
-    "placeholder.regexAndChooseTree": "Regulärer Ausdruck oder Auswahl eines Ordners",
+    "placeholder.regex": "Enter Regular expression",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "Used in all the popup window whit audit log is enable",
     "label.predefined": "Vordefinierte Begründungen",
@@ -2103,8 +2102,7 @@
       "label.iamLdapWithMemberOf": "LDAP Server bietet memberOf Attribut",
       "placeholder.iamLdapHost": "LDAP Server Host angeben",
       "placeholder.iamLdapPort": "LDAP Server Port angeben",
-      "placeholder.iamLdapProtocol": "Eine order mehrere Optionen auswählen",
-      "message.overwriteChanges": "Sind Sie sicher, dass Sie die Änderungen anwenden möchten?"
+      "placeholder.iamLdapProtocol": "Eine order mehrere Optionen auswählen"
     },
     "tooltips": {
       "ldap": {

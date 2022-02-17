@@ -165,6 +165,7 @@
     "label.deployAgent": "Deploy Agent",
     "label.schedulingType": "Scheduling Type",
     "label.agentClusters": "Agent Clusters",
+    "label.agentGroups": "Agent Groups",
     "label.addClusterAgent": "Add Agent Cluster",
     "label.editClusterAgent": "Update Agent Cluster",
     "button.createToken": "Create One-time Token",
@@ -182,6 +183,7 @@
     "button.reset": "Reset",
     "button.resetForced": "Reset forced",
     "button.resetting": "Resetting",
+    "button.manageCluster": "Manage Cluster",
     "placeholder.enterAgentId": "Enter Agent ID",
     "placeholder.enterSubagentId": "Enter Subagent ID",
     "placeholder.enterAgentName": "Enter Agent name",
@@ -252,7 +254,8 @@
     "label.logging": "Logging",
     "label.setting": "Settings",
     "label.permissions": "Permissions",
-    "label.manageIdentityServices": "Manage Identity Services"
+    "label.manageIdentityServices": "Manage Identity Services",
+    "label.clusterAgents": "Cluster Agents"
   },
   "configuration": {
     "tab.inventory": "Inventory",
@@ -309,10 +312,9 @@
     "label.relativeTime": "Relative Time",
     "label.processExecuted": "Process executed",
     "label.selectController": "Choose Controller",
-    "label.regexAndChooseTree": "Regular Expression or Folders",
     "placeholder.setEndDate": "Set end time",
     "placeholder.setStartDate": "Set start time",
-    "placeholder.regexAndChooseTree": "Regular expression or choose folders from tree",
+    "placeholder.regex": "Enter Regular expression",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "Used in all the popup window whit audit log is enable",
     "label.predefined": "Pre-defined Reason",
@@ -1565,6 +1567,7 @@
     "label.oldPassword": "Old Password",
     "label.newPassword": "New Password",
     "label.confirmPassword": "Confirm Password",
+    "label.gitManagement": "Git Management",
     "button.resetProfile": "Reset profile to default",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -1656,6 +1659,13 @@
       "tooltip.generate": "Generate public/private key",
       "tooltip.importCertificate": "Import Certificate",
       "tooltip.updateCertificate": "Update Certificate"
+    },
+    "gitManagement": {
+      "label.manageGitCredentials": "Manage Git Credentials",
+      "label.gitAccount": "Git Account",
+      "label.gitPassword": "Git Password",
+      "label.gitPrivateKey": "Git Private Key",
+      "label.gitAccessToken": "Git Access Token"
     }
   },
   "runtime": {
@@ -2103,8 +2113,7 @@
       "label.iamLdapWithMemberOf": "LDAP Server offers memberOf attribute",
       "placeholder.iamLdapHost": "Enter LDAP Server Host",
       "placeholder.iamLdapPort": "Enter LDAP Server Port",
-      "placeholder.iamLdapProtocol": "Select one or multiple options",
-      "message.overwriteChanges": "Are you sure you want to apply the changes?"
+      "placeholder.iamLdapProtocol": "Select one or multiple options"
     },
     "tooltips": {
       "ldap": {

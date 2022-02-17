@@ -76,37 +76,32 @@ export class SearchComponent implements OnInit {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
+  folders = [];
   dateFormat: any;
   existingName: any;
   submitted = false;
   isUnique = true;
   objectType = 'WORKFLOW';
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
+  constructor(private authService: AuthService, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.getFolderTree();
   }
 
   getFolderTree(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: TreeModalComponent,
-      nzComponentParams: {
-        schedulerId: this.schedulerIds.selected,
-        paths: this.filter.paths || [],
-        type: this.objectType,
-        showCheckBox: true
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        if (isArray(result)) {
-          this.filter.paths = result;
+    this.coreService.post('tree', {
+      controllerId: this.schedulerIds.selected,
+      onlyValidObjects: true,
+      forInventory: true,
+      types: ['FOLDER']
+    }).subscribe({
+      next: (res) => {
+        this.folders = this.coreService.prepareTree(res, true);
+        if (this.folders.length > 0) {
+          this.folders[0].expanded = true;
         }
       }
     });
@@ -831,7 +826,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (this.searchFilter.paths && this.searchFilter.paths.length > 0) {
       obj.folders = [];
       for (let i in this.searchFilter.paths) {
-        obj.folders.push({folder: this.searchFilter.paths[i], recursive: true});
+        obj.folders.push({folder: this.searchFilter.paths[i], recursive: false});
       }
     }
     this.getWorkflowList(obj);

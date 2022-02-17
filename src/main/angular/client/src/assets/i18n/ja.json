@@ -309,10 +309,9 @@
     "label.relativeTime": "相対時刻",
     "label.processExecuted": "実行済",
     "label.selectController": "コントローラー選択",
-    "label.regexAndChooseTree": "正規表現入力またはフォルダーから選択",
     "placeholder.setEndDate": "終了日時設定",
     "placeholder.setStartDate": "開始日時設定",
-    "placeholder.regexAndChooseTree": "正規表現入力またはフォルダから選択",
+    "placeholder.regex": "Enter Regular expression",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "操作ログ有効時にポップアップで使用",
     "label.predefined": "事前設定したコメント",
@@ -2103,8 +2102,7 @@
       "label.iamLdapWithMemberOf": "LDAP with memberOf",
       "placeholder.iamLdapHost": "LDAPホストを入力",
       "placeholder.iamLdapPort": "LDAPポートを入力",
-      "placeholder.iamLdapProtocol": "一つ以上のオプションを選択",
-      "message.overwriteChanges": "本当に変更を上書きしますか?"
+      "placeholder.iamLdapProtocol": "一つ以上のオプションを選択"
     },
     "tooltips": {
       "ldap": {

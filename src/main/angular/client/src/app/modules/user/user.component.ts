@@ -16,6 +16,45 @@ import {AuthService} from '../../components/guard';
 declare var $;
 
 @Component({
+  selector: 'app-git-modal-content',
+  templateUrl: './git-dialog.html'
+})
+export class GitModalComponent implements OnInit {
+  @Input() display: any;
+
+  submitted = false;
+  comments: any = {};
+  gitObject: any = {};
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+   
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    let obj: any = {};
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('profile/key/store', obj).subscribe({
+      next: () => {
+        this.activeModal.close();
+      }, error: () => this.submitted = false
+    });
+  }
+}
+
+@Component({
   selector: 'app-update-modal-content',
   templateUrl: './update-dialog.html'
 })
@@ -647,6 +686,27 @@ export class UserComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+  }
+
+  /* ------------- Git Management-------------- */
+
+  addGitCredential(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: GitModalComponent,
+      nzComponentParams: {
+        display : this.preferences.auditLog
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        
+      }
     });
   }
 }

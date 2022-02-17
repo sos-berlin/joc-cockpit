@@ -1,0 +1,57 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>profile.gitManagement.label.manageGitCredentials</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm">
+  <div class="modal-body p-a">
+    <div class="hide" [ngClass]="{'show': display}">
+      <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div class="form-group row"
+      [ngClass]="{'has-error' : ((account.dirty || account.touched) && account.invalid)}">
+      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.gitAccount
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" name="name" [(ngModel)]="gitObject.gitAccount" required
+          #account="ngModel" [appAutofocus]="true" autocomplete="off" />
+        <div *ngIf="account.invalid && (account.dirty || account.touched)" class="text-danger help-block">
+          <div *ngIf="account.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.gitPassword</label>
+      <div class="col-sm-6">
+        <input type="password" class="form-control" [(ngModel)]="gitObject.gitPassword" name="password" autocomplete="off" />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.gitPrivateKey</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" [(ngModel)]="gitObject.gitPrivateKey" name="gitPrivateKey" autocomplete="off" />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.gitAccessToken</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" [(ngModel)]="gitObject.gitAccessToken" name="gitAccessToken" autocomplete="off" />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted || (!gitObject.gitPassword && !gitObject.gitPrivateKey && !gitObject.gitAccessToken)" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()">
+      <span translate>common.button.cancel</span>
+    </button>
+  </div>
+</form>

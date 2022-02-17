@@ -1,7 +1,9 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(filter)">
   <div [ngClass]="{'modal-body p-a' : !isSearch }" >
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName
+        <sup *ngIf="!isSearch" class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-6">
         <input autocomplete="off" type="text" class="form-control"
                placeholder="{{'customization.placeholder.enterName' | translate}}" required
