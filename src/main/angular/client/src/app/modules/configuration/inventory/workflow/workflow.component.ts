@@ -2763,7 +2763,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     } else {
       if (!this.workflow.valid) {
         const data = this.coreService.clone(this.workflow.configuration);
-        this.modifyJSON(data, true, true);
+        const flag = this.modifyJSON(data, true, true);
+        if (flag) {
+          this.invalidMsg = '';
+          this.validateByURL(data);
+        }
       }
     }
   }
@@ -3004,13 +3008,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  validateJSON(skip): void {
+  private validateJSON(): void {
     if (!this.isUpdate) {
       this.isUpdate = true;
       if (this.workflow.configuration && this.workflow.configuration.instructions && this.workflow.configuration.instructions.length > 0) {
         const data = this.coreService.clone(this.workflow.configuration);
-        this.modifyJSON(data, true, false);
-        this.saveJSON(this.workflow.valid ? data : skip ? false : 'false');
+        const valid = this.modifyJSON(data, true, false);
+        this.saveJSON(valid ? data : 'false');
       }
       setTimeout(() => {
         this.isUpdate = false;
@@ -5664,7 +5668,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   } else {
                     self.reloadDummyXml(graph);
                   }
-                  self.validateJSON(false);
+                  self.validateJSON();
                 }
                 setTimeout(() => {
                   self.implicitSave = false;
@@ -8406,7 +8410,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } else {
           this.reloadDummyXml(this.editor.graph);
         }
-        this.validateJSON(false);
+        this.validateJSON();
         setTimeout(() => {
           this.noSave = false;
         }, 250);
