@@ -3,6 +3,7 @@
 @import '~jsoneditor/dist/jsoneditor.min.css';
 @import '~perfect-scrollbar/css/perfect-scrollbar.css';
 @import '~codemirror/addon/hint/show-hint.css';
+@import '~codemirror/addon/scroll/simplescrollbars.css';
 
 :root {
   --background-color: #f9f8f6;
@@ -8390,8 +8391,12 @@ td .p-a-b-b-0 {
   right: 18px;
 }
 
-.r-38 {
-  right: 38px;
+.r-24 {
+  right: 24px;
+}
+
+.r-50 {
+  right: 50px;
 }
 
 .r-t-12 {

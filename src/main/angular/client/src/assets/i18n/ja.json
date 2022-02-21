@@ -2027,6 +2027,7 @@
     "label.resetPassword": "パスワードリセット",
     "label.forcePasswordChange": "パスワード変更を強制",
     "label.disable": "無効化",
+    "label.folderNotExist": "Folder does not exist",
     "button.addGroupRole": "グループロールを追加",
     "button.addIdentityService": "IDサービス作成",
     "button.addPermission": "パーミッション追加",

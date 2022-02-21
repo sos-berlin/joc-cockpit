@@ -2027,6 +2027,7 @@
     "label.resetPassword": "Kennwort zurücksetzen",
     "label.forcePasswordChange": "Kennwortänderung erzwingen",
     "label.disable": "Deaktivieren",
+    "label.folderNotExist": "Folder does not exist",
     "button.addGroupRole": "Gruppen/Rollen hinzufügen",
     "button.addIdentityService": "Identitätsdienst hinzufügen",
     "button.addPermission": "Berechtigung hinzufügen",

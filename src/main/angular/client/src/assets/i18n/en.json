@@ -2027,6 +2027,7 @@
     "label.resetPassword": "Reset Password",
     "label.forcePasswordChange": "Force Password Change",
     "label.disable": "Disable",
+    "label.folderNotExist": "Folder does not exist",
     "button.addGroupRole": "Add Group/Roles",
     "button.addIdentityService": "Add Identity Service",
     "button.addPermission": "Add Permission",

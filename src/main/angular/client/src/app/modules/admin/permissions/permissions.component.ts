@@ -193,8 +193,21 @@ export class FolderModalComponent implements OnInit {
           if (node) {
             this.folderObj.paths.push(path);
             node.isSelected = true;
-            this.nodes = [...this.nodes];
+          } else {
+            const obj = {
+              name: path,
+              title: path,
+              key: path,
+              isSelected: true,
+              isLeaf: true,
+              notExist: true,
+              path
+            };
+            this.folderObj.paths.push(path);
+            this.nodes.push(obj);
+            this.folderObj.paths = [...this.folderObj.paths];
           }
+          this.nodes = [...this.nodes];
         }
       }
       $event.preventDefault();

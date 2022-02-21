@@ -798,6 +798,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   cmOption: any = {
     lineNumbers: true,
     autoRefresh: true,
+    scrollbarStyle: 'simple',
     mode: 'shell',
     extraKeys: {'Ctrl-Space': 'autocomplete'}
   };
@@ -1921,6 +1922,7 @@ export class ScriptEditorComponent implements AfterViewInit {
   };
   cmOption: any = {
     lineNumbers: true,
+    scrollbarStyle: 'simple',
     viewportMargin: Infinity,
     autoRefresh: true,
     mode: 'shell',
@@ -1961,7 +1963,7 @@ export class ScriptEditorComponent implements AfterViewInit {
             this.cm.codeMirror.focus();
             doc.setCursor(cursor);
           }
-        }, 100);
+        }, 200);
 
         this.cm.codeMirror.on('inputRead', (editor, e) => {
           const cursor = editor.getCursor();
@@ -2069,6 +2071,7 @@ export class ExpressionComponent implements OnInit {
   @ViewChild('codeMirror', {static: false}) cm;
   cmOption: any = {
     lineNumbers: false,
+    scrollbarStyle: 'simple',
     autoFocus: true,
     autoRefresh: true,
     mode: 'ruby'

@@ -46,6 +46,7 @@
                   <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
                     <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     {{node.title}}
+                    <span *ngIf="node.origin.notExist" class="m-l-sm label bg-danger" translate>user.label.folderNotExist</span>
                   </div>
                 </div>
               </ng-template>
