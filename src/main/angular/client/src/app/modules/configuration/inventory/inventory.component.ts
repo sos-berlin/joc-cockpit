@@ -218,7 +218,7 @@ export class DeployComponent implements OnInit {
   isDeleted = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
-              private authService: AuthService, private inventoryService: InventoryService) {
+    private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
@@ -1338,7 +1338,7 @@ export class RepositoryComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-              private authService: AuthService, private inventoryService: InventoryService) {
+    private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {

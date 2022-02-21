@@ -165,6 +165,7 @@
     "label.deployAgent": "エージェント配置",
     "label.schedulingType": "スケジューリングタイプ",
     "label.agentClusters": "エージェントクラスター",
+    "label.agentGroups": "Agent Groups",
     "label.addClusterAgent": "クラスターエージェント追加",
     "label.editClusterAgent": "クラスターエージェント更新",
     "button.createToken": "ワンタイムトークン作成",
@@ -182,6 +183,7 @@
     "button.reset": "リセット",
     "button.resetForced": "強制リセット",
     "button.resetting": "リセット中",
+    "button.manageCluster": "Manage Cluster",
     "placeholder.enterAgentId": "エージェントIDを入力",
     "placeholder.enterSubagentId": "サブエージェントIDを入力",
     "placeholder.enterAgentName": "エージェント名を入力",
@@ -252,7 +254,8 @@
     "label.logging": "ログ設定",
     "label.setting": "設定",
     "label.permissions": "パーミッション",
-    "label.manageIdentityServices": "IDサービス管理"
+    "label.manageIdentityServices": "IDサービス管理",
+    "label.clusterAgents": "Cluster Agents"
   },
   "configuration": {
     "tab.inventory": "インベントリー",
@@ -1564,6 +1567,7 @@
     "label.oldPassword": "今のパスワード",
     "label.newPassword": "新しいパスワード",
     "label.confirmPassword": "確認用パスワード",
+    "label.gitManagement": "Git Management",
     "button.resetProfile": "リセットプロファイル",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -1655,6 +1659,13 @@
       "tooltip.generate": "生成",
       "tooltip.importCertificate": "証明書インポート",
       "tooltip.updateCertificate": "証明書更新"
+    },
+    "gitManagement": {
+      "label.manageGitCredentials": "Manage Git Credentials",
+      "label.gitAccount": "Git Account",
+      "label.gitPassword": "Git Password",
+      "label.gitPrivateKey": "Git Private Key",
+      "label.gitAccessToken": "Git Access Token"
     }
   },
   "runtime": {
@@ -2083,6 +2094,7 @@
     "message.moreThanOneVaultEnable": "VAULT* IDサービスは1つしか有効にできません",
     "message.moreThanOneLDAPEnable": "LDAP* IDサービスは1つしか有効にできません",
     "message.deleteSelectedUser": "本当に選択したアカウントをすべて削除しますか？",
+    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
     "message.resetPasswordForUser": "本当にこのアカウントのパスワードをリセットしますか?",
     "message.forcePasswordChangeForUser": "本当にこのアカウントにパスワード変更を強制しますか?",
     "message.resetPasswordForSelectedUser": "本当に選択した全てのアカウントのパスワードをリセットしますか？",

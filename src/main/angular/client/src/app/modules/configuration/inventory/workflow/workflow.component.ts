@@ -8897,8 +8897,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private validateByURL(json): void {
     const obj = clone(json);
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
-      if (!this.invalidMsg && res.invalidMsg) {
+      if (res.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
+        if(res.invalidMsg.match('lockName: is missing but it is required')){
+          this.invalidMsg = 'workflow.message.lockNameIsMissing';
+        }
       }
       this.workflow.valid = res.valid;
       if (this.workflow.id === this.data.id) {

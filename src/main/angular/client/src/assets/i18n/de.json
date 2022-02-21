@@ -165,6 +165,7 @@
     "label.deployAgent": "Agent ausrollen",
     "label.schedulingType": "Ausführungstyp",
     "label.agentClusters": "Agenten-Cluster",
+    "label.agentGroups": "Agent Groups",
     "label.addClusterAgent": "Agenten-Cluster hinzufügen",
     "label.editClusterAgent": "Agenten-Cluster editieren",
     "button.createToken": "Einmaliges Token erstellen",
@@ -182,6 +183,7 @@
     "button.reset": "Zurücksetzen",
     "button.resetForced": "Zurücksetzen erzwingen",
     "button.resetting": "beim Zurücksetzen",
+    "button.manageCluster": "Manage Cluster",
     "placeholder.enterAgentId": "Kennung des Agenten angeben",
     "placeholder.enterSubagentId": "Kennung des Subagenten angeben",
     "placeholder.enterAgentName": "Name des Agenten angeben",
@@ -252,7 +254,8 @@
     "label.logging": "Protokollierung",
     "label.setting": "Einstellungen",
     "label.permissions": "Berechtigungen",
-    "label.manageIdentityServices": "Identitätsdienste verwalten"
+    "label.manageIdentityServices": "Identitätsdienste verwalten",
+    "label.clusterAgents": "Cluster Agents"
   },
   "configuration": {
     "tab.inventory": "Inventar",
@@ -1564,6 +1567,7 @@
     "label.oldPassword": "Altes Kennwort",
     "label.newPassword": "Neues Kennwort",
     "label.confirmPassword": "Kennwort bestätigen",
+    "label.gitManagement": "Git Management",
     "button.resetProfile": "Profil zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -1655,6 +1659,13 @@
       "tooltip.generate": "Erzeugen",
       "tooltip.importCertificate": "Zertifikat importieren",
       "tooltip.updateCertificate": "Zertifikat aktualisieren"
+    },
+    "gitManagement": {
+      "label.manageGitCredentials": "Manage Git Credentials",
+      "label.gitAccount": "Git Account",
+      "label.gitPassword": "Git Password",
+      "label.gitPrivateKey": "Git Private Key",
+      "label.gitAccessToken": "Git Access Token"
     }
   },
   "runtime": {
@@ -2083,6 +2094,7 @@
     "message.moreThanOneVaultEnable": "Nur ein einziger VAULT* Identitätsdienst darf aktiv sein.",
     "message.moreThanOneLDAPEnable": "Nur ein einziger LDAP* Identitätsdienst darf aktiv sein.",
     "message.deleteSelectedUser": "Sind Sie sicher, dass Sie alle ausgewählten Benutzerkonten löschen wollen?",
+    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
     "message.resetPasswordForUser": "Sind Sie sicher, dass Sie das Kennwort dieses Benutzerkontos zurücksetzen wollen?",
     "message.forcePasswordChangeForUser": "Sind Sie sicher, dass Sie eine Kennwortänderung bei der nächsten Anmeldung erzwingen wollen?",
     "message.resetPasswordForSelectedUser": "Sind Sie sicher, dass Sie das Kennwort der ausgewählten Benutzerkonten zurücksetzen wollen?",

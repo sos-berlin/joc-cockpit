@@ -206,6 +206,10 @@ export class SettingModalComponent implements OnInit {
   }
 
   checkConfirmation(isChecked, type): void {
+    if (type === 'StartTls') {
+      this.userObj.iamLdapProtocol = isChecked ? 'STARTTLS' : this.currentObj.iamLdapServerUrl.match('ldaps://') ? 'SSL' : 'PLAIN';
+      return;
+    }
     if (type === 'AD' && !isChecked) {
       this.userObj.iamLdapADwithSamAccount = false;
     }

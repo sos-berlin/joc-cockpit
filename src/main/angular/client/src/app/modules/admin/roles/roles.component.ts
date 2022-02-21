@@ -11,6 +11,7 @@ import {DataService} from '../data.service';
 import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../../components/guard';
+import {ConfirmationModalComponent} from '../accounts/accounts.component';
 
 // Role Actions
 @Component({
@@ -287,6 +288,8 @@ export class RolesComponent implements OnDestroy {
         this.reset();
       } else if (res === 'PASTE_ROLE') {
         this.paste();
+      } else if (res === 'DELETE') {
+        this.deleteList();
       }
     });
     this.subscription3 = router.events
@@ -483,7 +486,7 @@ export class RolesComponent implements OnDestroy {
   private removeRole(role) {
     this.coreService.post('authentication/auth/roles/delete', {
       roles: [
-        {role}
+        { role }
       ],
       identityServiceName: this.userDetail.identityServiceName,
     }).subscribe(() => {
@@ -559,6 +562,43 @@ export class RolesComponent implements OnDestroy {
         delete this.userDetail.roles[role.name].permissions.controllers[controller.name];
         this.saveInfo();
       }
+    });
+  }
+
+  private deleteList(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmationModalComponent,
+      nzComponentParams: {
+        delete: true,
+        isRole: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.deleteRoles();
+      }
+    });
+  }
+
+  private deleteRoles() {
+    const obj: any = {
+      roles: [],
+      identityServiceName: this.userDetail.identityServiceName,
+    };
+    this.object.mapOfCheckedId.forEach((value, key) => {
+      obj.roles.push({ account: key });
+    });
+    this.coreService.post('authentication/auth/roles/delete', obj).subscribe(() => {
+      this.roles = this.roles.filter((item) => {
+        return !this.object.mapOfCheckedId.has(item);
+      });
+      this.controllerRoles = this.controllerRoles.filter((item) => {
+        return !this.object.mapOfCheckedId.has(item.name);
+      });
+      this.reset();
     });
   }
 

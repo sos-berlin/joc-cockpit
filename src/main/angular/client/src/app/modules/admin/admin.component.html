@@ -60,7 +60,7 @@
               <i class="fa fa-ban"></i>&nbsp;
               <span translate>user.button.disable</span>
             </button>
-            <button *ngIf="isSelected && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="deleteList()">
+            <button *ngIf="isSelected && route && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="deleteList()">
               <i class="fa fa-trash"></i>&nbsp;
               <span translate>user.button.delete</span>
             </button>

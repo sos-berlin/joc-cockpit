@@ -235,10 +235,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     preferences = JSON.parse(sessionStorage.preferences);
     $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
     localStorage.$SOS$THEME = preferences.theme;
-    $('#headerColor').addClass(preferences.headerColor);
-    localStorage.$SOS$MENUTHEME = preferences.headerColor;
-    $('#avatarBg').addClass(preferences.avatarColor);
-    localStorage.$SOS$AVATARTHEME = preferences.avatarColor;
     localStorage.$SOS$LANG = preferences.locale;
     this.translate.setDefaultLang(preferences.locale);
     this.translate.use(preferences.locale);

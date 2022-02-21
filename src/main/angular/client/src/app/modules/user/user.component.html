@@ -878,6 +878,24 @@
                 </div>
               </div>
             </nz-tab>
+            <nz-tab [nzTitle]="'profile.label.gitManagement' | translate"
+                    *ngIf="permission.joc && securityLevel !== 'HIGH'">
+              <div class="m-l-12">
+                <div class="row m-t-xs p-b-xs">
+                  <div class="col-sm-12">
+                    <div class="m-t-sm">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <button class="btn btn-sm btn-grey pull-right" (click)="addGitCredential()">
+                            <i nz-icon nzType="plus" nzTheme="outline"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nz-tab>
           </nz-tabset>
         </div>
       </div>

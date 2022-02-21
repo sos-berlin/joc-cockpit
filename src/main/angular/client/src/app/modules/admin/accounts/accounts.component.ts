@@ -19,6 +19,7 @@ export class ConfirmationModalComponent {
   @Input() forceChange;
   @Input() accounts;
   @Input() account;
+  @Input() isRole;
   submitted = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {

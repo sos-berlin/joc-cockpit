@@ -3,14 +3,15 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {differenceInCalendarDays} from 'date-fns';
-import {sortBy} from 'underscore';
+import {Router} from "@angular/router";
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {CoreService} from '../../services/core.service';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {AgentModalComponent, SubagentModalComponent} from "./agent/agent.component";
 
 @Component({
   selector: 'app-deploy-modal',
@@ -154,254 +155,6 @@ export class CreateTokenModalComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-sub-agent-modal',
-  templateUrl: './sub-agent.dialog.html'
-})
-export class SubagentModalComponent implements OnInit {
-  @Input() clusterAgent: any;
-  @Input() data: any;
-  @Input() new: boolean;
-  @Input() controllerId: any;
-  subagent: any = {};
-  submitted = false;
-  isUniqueId = true;
-  agentNameAliases: any = [];
-  directors: any = [
-    'NO_DIRECTOR',
-    'PRIMARY_DIRECTOR',
-    'SECONDARY_DIRECTOR'
-  ];
-  comments: any = {};
-  preferences: any;
-  display: any;
-
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
-  }
-
-  ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    this.display = this.preferences.auditLog;
-    this.comments.radio = 'predefined';
-    if (this.data) {
-      this.subagent = this.coreService.clone(this.data);
-    } else {
-      this.subagent.isDirector = 'NO_DIRECTOR';
-      for (const i in this.clusterAgent.subagents) {
-        if (this.clusterAgent.subagents[i].isDirector === 'PRIMARY_DIRECTOR') {
-          this.directors.splice(this.directors.indexOf('PRIMARY_DIRECTOR'), 1);
-        } else if (this.clusterAgent.subagents[i].isDirector === 'SECONDARY_DIRECTOR') {
-          this.directors.splice(this.directors.indexOf('SECONDARY_DIRECTOR'), 1);
-        }
-      }
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    const obj: any = {controllerId: this.controllerId, agentId: this.clusterAgent.agentId};
-    const subagent: any = this.coreService.clone(this.subagent);
-    if (this.display) {
-      obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
-    }
-
-    obj.subagents = [subagent];
-
-    this.coreService.post('agent/subagents/store', obj).subscribe({
-      next: () => {
-        this.activeModal.close('close');
-      }, error: () => this.submitted = false
-    });
-  }
-}
-
-@Component({
-  selector: 'app-agent-modal',
-  templateUrl: './agent.dialog.html'
-})
-export class AgentModalComponent implements OnInit {
-  @Input() data: any;
-  @Input() new: boolean;
-  @Input() isCluster: boolean;
-  @Input() controllerId: any;
-  agent: any = {};
-  isSecondary = false;
-  submitted = false;
-  isUniqueId = true;
-  agentNameAliases: any = [];
-  comments: any = {};
-  preferences: any;
-  display: any;
-
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
-  }
-
-  ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    this.display = this.preferences.auditLog;
-    this.comments.radio = 'predefined';
-    if (this.data) {
-      this.agent = this.coreService.clone(this.data);
-      this.agent.subagents = sortBy(this.agent.subagents, 'isDirector');
-      this.checkSecondaryDirector();
-      delete this.agent.token;
-      delete this.agent.show;
-    }
-    if (!this.agent.agentNameAliases || this.agent.agentNameAliases.length === 0) {
-      this.agentNameAliases = [{name: ''}];
-    } else {
-      this.agent.agentNameAliases.filter((val) => {
-        this.agentNameAliases.push({name: val});
-      });
-    }
-  }
-
-  private checkSecondaryDirector(): void {
-    this.isSecondary = false;
-    for (const i in this.agent.subagents) {
-      if (this.agent.subagents[i].isDirector === 'SECONDARY_DIRECTOR') {
-        this.isSecondary = true;
-        break;
-      }
-    }
-  }
-
-  addAlise(): void {
-    if (this.agentNameAliases[this.agentNameAliases.length - 1].name) {
-      this.agentNameAliases.push({name: ''});
-    }
-  }
-
-  removeAlise(index): void {
-    this.agentNameAliases.splice(index, 1);
-  }
-
-  removeSubagent(list, index): void {
-    list.splice(index, 1);
-    this.checkSecondaryDirector();
-  }
-
-  addSubagent(isSecordary = false): void {
-    if (isSecordary) {
-      this.isSecondary = isSecordary;
-    }
-    if (!this.coreService.isLastEntryEmpty(this.agent.subagents, 'subagentId', 'url')) {
-      this.agent.subagents.push({isDirector: isSecordary ? 'SECONDARY_DIRECTOR' : 'NO_DIRECTOR', subagentId: ''});
-    }
-  }
-
-  private removeSubagents(obj, cb): void {
-    this.coreService.post('agent/subagents/remove', obj).subscribe({
-      next: () => {
-        cb();
-      }, error: () => {
-        cb();
-      }
-    });
-  }
-
-  onSubmit(): void {
-    let flag = true;
-    this.submitted = true;
-    const obj: any = {controllerId: this.controllerId};
-    const _agent: any = this.coreService.clone(this.agent);
-    if (this.display) {
-      obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
-    }
-    if (this.agentNameAliases.length > 0) {
-      _agent.agentNameAliases = [];
-      this.agentNameAliases.filter((val) => {
-        if (val.name) {
-          _agent.agentNameAliases.push(val.name);
-        }
-      });
-    }
-    if (this.isCluster) {
-      if (this.new) {
-        _agent.subagents = [{
-          isDirector: 'PRIMARY_DIRECTOR',
-          subagentId: _agent.subagentId,
-          url: _agent.url,
-          position: _agent.position
-        }];
-        if (_agent.subagentId2) {
-          _agent.subagents.push({
-            isDirector: 'SECONDARY_DIRECTOR',
-            subagentId: _agent.subagentId2,
-            url: _agent.url2,
-            position: _agent.position2
-          });
-        }
-        delete _agent.director;
-        delete _agent.subagentId;
-        delete _agent.subagentId2;
-        delete _agent.url;
-        delete _agent.url2;
-      }
-      if (this.data) {
-        const obj2 = {
-          controllerId: this.controllerId,
-          subagentIds: []
-        };
-        for (const i in this.data.subagents) {
-          let isFound = false;
-          for (const j in _agent.subagents) {
-            if (this.data.subagents[i].subagentId === _agent.subagents[j].subagentId) {
-              isFound = true;
-              break;
-            }
-          }
-          if (!isFound) {
-            obj2.subagentIds.push(this.data.subagents[i].subagentId);
-          }
-        }
-        if (obj2.subagentIds.length > 0) {
-          flag = false;
-          this.removeSubagents(obj2, () => {
-            this.store(obj);
-          });
-        }
-      }
-      obj.clusterAgents = [_agent];
-    } else {
-      obj.agents = [_agent];
-    }
-    if (flag) {
-      this.store(obj);
-    }
-  }
-
-  private store(obj): void {
-    this.coreService.post(this.isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe({
-      next: () => {
-        this.activeModal.close('close');
-      }, error: () => this.submitted = false
-    });
-  }
-}
-
-@Component({
   selector: 'app-controllers',
   templateUrl: './controllers.component.html'
 })
@@ -426,7 +179,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
-              private authService: AuthService, private dataService: DataService) {
+              private authService: AuthService, private dataService: DataService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -589,6 +342,10 @@ export class ControllersComponent implements OnInit, OnDestroy {
         subagents: list
       }).subscribe();
     }
+  }
+
+  navToController(controller): void{
+    this.router.navigate(['/controllers/cluster_agent'])
   }
 
   addController(): void {

@@ -218,7 +218,7 @@
                         </tr>
                         </tbody>
                       </nz-table>
-                      <label *ngIf="hasLicense" class="m-t p-b-xs" translate>agent.label.agentClusters</label>
+                      <label *ngIf="hasLicense" class="m-t p-b-xs" translate>agent.label.agentGroups</label>
                       <nz-table *ngIf="hasLicense" #agentClusterTable nzSize="small" [nzBordered]="true" [nzLoading]="controller.isLoading"
                                 [nzData]="controller.agentClusters | orderBy: controller.sortBy2: controller.reverse2" [nzShowPagination]="false" [nzFrontPagination]="false">
                         <thead>

@@ -2094,6 +2094,7 @@
     "message.moreThanOneVaultEnable": "Only one VAULT* identity service should be enabled.",
     "message.moreThanOneLDAPEnable": "Only one LDAP* identity service should be enabled.",
     "message.deleteSelectedUser": "Are you sure that you want to delete all selected accounts?",
+    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
     "message.resetPasswordForUser": "Are you sure you want to reset the password of this account?",
     "message.forcePasswordChangeForUser": "Are you sure you want to force password change for this account?",
     "message.resetPasswordForSelectedUser": "Are you sure you want to reset the password of all selected accounts?",

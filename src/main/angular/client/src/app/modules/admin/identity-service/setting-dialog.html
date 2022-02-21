@@ -212,7 +212,18 @@
                 <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf"
                        (ngModelChange)="checkConfirmation($event, 'MemberOf')" name="iamLdapWithMemberOf"></label>
               </div>
-            </div>
+            </div>  
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
+                     [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapUserDnTemplate
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-sm-6" [ngClass]="{'has-error' : ((dnTemplate.dirty || dnTemplate.touched) && dnTemplate.invalid)}">
+                <input type="text" required class="form-control" name="iamLdapUserDnTemplate" (blur)="changeInput('Dn')"
+                       [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate" #dnTemplate="ngModel"
+                       [(ngModel)]="currentObj.iamLdapUserDnTemplate">
+              </div>
+            </div>            
             <div class="form-group row">
               <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
                      [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapSearchBase
@@ -260,7 +271,7 @@
                 <label class="col-sm-4" [nz-tooltip]="'user.tooltips.ldap.iamLdapUseStartTls' | translate"
                        [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapUseStartTls</label>
                 <div class="col-sm-6">
-                  <label nz-checkbox [(ngModel)]="currentObj.iamLdapUseStartTls" name="iamLdapUseStartTls"></label>
+                  <label nz-checkbox [(ngModel)]="currentObj.iamLdapUseStartTls" (ngModelChange)="checkConfirmation($event, 'StartTls')" name="iamLdapUseStartTls"></label>
                 </div>
               </div>
               <div class="form-group row">
@@ -269,6 +280,7 @@
                 <div class="col-sm-6">
                   <nz-select nzAllowClear name="iamLdapHostNameVerification"
                              [(ngModel)]="userObj.iamLdapHostNameVerification">
+                    <nz-option [nzLabel]="''" [nzValue]="''"></nz-option>
                     <nz-option [nzLabel]="'user.label.on' | translate" [nzValue]="'on'"></nz-option>
                     <nz-option [nzLabel]="'user.label.off' | translate" [nzValue]="'off'"></nz-option>
                   </nz-select>
@@ -321,10 +333,12 @@
             <div class="p-a b-a">
               <div class="row">
                 <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapUserDnTemplate</label>
-                <div class="col-sm-6">
-                  <input type="text" class="form-control" name="iamLdapUserDnTemplate" (blur)="changeInput('Dn')"
-                         [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate"
+                       [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapUserDnTemplate
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-sm-6" [ngClass]="{'has-error' : ((dnTemplate.dirty || dnTemplate.touched) && dnTemplate.invalid)}">
+                  <input type="text" required class="form-control" name="iamLdapUserDnTemplate" (blur)="changeInput('Dn')"
+                         [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate" #dnTemplate="ngModel"
                          [(ngModel)]="currentObj.iamLdapUserDnTemplate">
                 </div>
               </div>

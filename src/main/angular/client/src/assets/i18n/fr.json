@@ -165,6 +165,7 @@
     "label.deployAgent": "Deployer l'Agent",
     "label.schedulingType": "Type d'Ordonnancement",
     "label.agentClusters": "Clusters d'Agents",
+    "label.agentGroups": "Agent Groups",
     "label.addClusterAgent": "Ajouter un Cluster d'Agents",
     "label.editClusterAgent": "Modifier le Cluster d'Agents",
     "button.createToken": "Créer un Token à usage unique",
@@ -182,6 +183,7 @@
     "button.reset": "Réinitialiser",
     "button.resetForced": "Réinitialiser forcement",
     "button.resetting": "en cours de réinitialisation",
+    "button.manageCluster": "Manage Cluster",
     "placeholder.enterAgentId": "Entrer l'ID de l'Agent",
     "placeholder.enterSubagentId": "Entrer l'ID du Sous-agent",
     "placeholder.enterAgentName": "Entrer le nom de l'Agent",
@@ -252,7 +254,8 @@
     "label.logging": "Journalisation",
     "label.setting": "Paramètres",
     "label.permissions": "Permissions",
-    "label.manageIdentityServices": "Gérer les Services d'Identité"
+    "label.manageIdentityServices": "Gérer les Services d'Identité",
+    "label.clusterAgents": "Cluster Agents"
   },
   "configuration": {
     "tab.inventory": "Inventaire",
@@ -1564,6 +1567,7 @@
     "label.oldPassword": "Ancien mot de passe",
     "label.newPassword": "Nouveau mot de passe",
     "label.confirmPassword": "Confirmer le mot de passe",
+    "label.gitManagement": "Git Management",
     "button.resetProfile": "Rétablir le profil par défaut",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
@@ -1655,6 +1659,13 @@
       "tooltip.generate": "Générer",
       "tooltip.importCertificate": "Importer un certificat",
       "tooltip.updateCertificate": "mettre à jour le certificat"
+    },
+    "gitManagement": {
+      "label.manageGitCredentials": "Manage Git Credentials",
+      "label.gitAccount": "Git Account",
+      "label.gitPassword": "Git Password",
+      "label.gitPrivateKey": "Git Private Key",
+      "label.gitAccessToken": "Git Access Token"
     }
   },
   "runtime": {
@@ -2083,6 +2094,7 @@
     "message.moreThanOneVaultEnable": "Un seul Service d'Identité VAULT* doit être activé.",
     "message.moreThanOneLDAPEnable": "Un seul Service d'Identité LDAP* doit être activé.",
     "message.deleteSelectedUser": "Êtes-vous sûr de vouloir supprimer tous le comptes sélectionnés ?",
+    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
     "message.resetPasswordForUser": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de ce compte ?",
     "message.forcePasswordChangeForUser": "Êtes-vous sûr de vouloir forcer le changement du mot de passe de ce compte ?",
     "message.resetPasswordForSelectedUser": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de tous les comptes sélectionnés ?",
