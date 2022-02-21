@@ -24,15 +24,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isLogout = false;
   isBackUp = '';
   timeout: any;
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private authService: AuthService,
               private modal: NzModalService, private router: Router, private dataService: DataService) {
-    this.subscription = dataService.isProfileReload.subscribe(res => {
+    this.subscription1 = dataService.isProfileReload.subscribe(res => {
       if (res) {
         this.init();
+      }
+    });
+    this.subscription2 = dataService.isThemeReload.subscribe(res => {
+      if (res) {
+        this.preferences = JSON.parse(sessionStorage.preferences);
       }
     });
   }
@@ -69,7 +75,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
     this.modal.closeAll();
     if (this.timeout) {
       clearTimeout(this.timeout);

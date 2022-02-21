@@ -1,6 +1,5 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
 import { ToastrService } from 'ngx-toastr';
@@ -138,7 +137,7 @@ export class ImportKeyModalComponent implements OnInit {
   comments: any = {};
   key = {keyAlg: 'RSA'};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,
+  constructor(public activeModal: NzModalRef, private authService: AuthService,
               public translate: TranslateService, public toasterService: ToastrService) {
     this.uploader = new FileUploader({
       url: '',
@@ -344,8 +343,8 @@ export class UserComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService, private router: Router,
-              private modal: NzModalService, private translate: TranslateService, private toasterService: ToastrService, private i18n: NzI18nService) {
+  constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
+              private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
@@ -404,10 +403,13 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
-  savePreferences(): void {
+  savePreferences(isThemeReload = false): void {
     if (this.schedulerIds.selected) {
       this.configObj.configurationItem = JSON.stringify(this.preferences);
       sessionStorage.preferences = JSON.stringify(this.preferences);
+      if (isThemeReload) {
+        this.dataService.isThemeReload.next(true);
+      }
       this.coreService.post('configuration/save', this.configObj).subscribe();
     }
   }
@@ -496,50 +498,8 @@ export class UserComponent implements OnInit, OnDestroy {
     this.savePreferences();
   }
 
-  changeMenuTheme(theme): void {
-    const headerDom = $('#headerColor');
-    const avatarDom = $('#avatarBg');
-    for (let i = 0; i < headerDom[0].classList.length; i++) {
-      const temp = headerDom[0].classList[i].split('-');
-      if (temp[0] === 'header') {
-        this.prevMenuTheme = headerDom[0].classList[i];
-        break;
-      }
-    }
-    headerDom.removeClass(this.prevMenuTheme);
-    headerDom.addClass(theme);
-
-    for (let i = 0; i < avatarDom[0].classList.length; i++) {
-      const temp = avatarDom[0].classList[i].split('-');
-      if (temp[0] === 'avatarbg') {
-        this.prevMenuAvatorColor = avatarDom[0].classList[i];
-        break;
-      }
-    }
-    avatarDom.removeClass(this.prevMenuAvatorColor);
-    if (headerDom.hasClass('header-prussian-blue')) {
-      this.preferences.avatarColor = 'avatarbg-prussian-blue';
-    } else if (headerDom.hasClass('header-eggplant')) {
-      this.preferences.avatarColor = 'avatarbg-eggplant';
-    } else if (headerDom.hasClass('header-blackcurrant')) {
-      this.preferences.avatarColor = 'avatarbg-blackcurrant';
-    } else if (headerDom.hasClass('header-Dodger-Blue')) {
-      this.preferences.avatarColor = 'avatarbg-Dodger-Blue';
-    } else if (headerDom.hasClass('header-nordic')) {
-      this.preferences.avatarColor = 'avatarbg-nordic';
-    } else if (headerDom.hasClass('header-light-sea-green')) {
-      this.preferences.avatarColor = 'avatarbg-light-sea-green';
-    } else if (headerDom.hasClass('header-toledo')) {
-      this.preferences.avatarColor = 'avatarbg-toledo';
-    } else if (headerDom.hasClass('header-Pine-Green')) {
-      this.preferences.avatarColor = 'avatarbg-Pine-Green';
-    } else if (headerDom.hasClass('header-radical-red')) {
-      this.preferences.avatarColor = 'avatarbg-radical-red';
-    }
-    avatarDom.addClass(this.preferences.avatarColor);
-    localStorage.$SOS$AVATARTHEME = this.preferences.avatarColor;
-    localStorage.$SOS$MENUTHEME = theme;
-    this.savePreferences();
+  changeMenuTheme(): void {
+    this.savePreferences(true);
   }
 
   resetProfile(): void {

@@ -17,7 +17,7 @@
               <i class="fa fa-search"></i>&nbsp;
               <span translate>common.button.search</span>
             </button>
-            <div class="btn-group">
+            <div class="btn-group" *ngIf="permission.joc.inventory.manage">
               <div class="btn-group dropdown ">
                 <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
                   <i nz-icon nzType="sync" nzTheme="outline"></i>&nbsp;

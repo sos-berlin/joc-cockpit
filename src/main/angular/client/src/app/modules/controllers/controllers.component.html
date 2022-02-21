@@ -291,6 +291,9 @@
                                   <button type="button" class="btn-drop more-option-h" [nzDisabled]="controller.checked2 || controller.indeterminate2" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                     <ul nz-menu >
+                                      <li (click)="navToController(controller.controllerId, clusterAgent)" nz-menu-item>
+                                        <a translate>agent.button.manageCluster</a>
+                                      </li>
                                       <li (click)="createToken(controller, clusterAgent)" nz-menu-item>
                                         <a translate>agent.button.createToken</a>
                                       </li>
@@ -357,8 +360,7 @@
                                 <td><span translate>common.label.action</span></td>
                                 <td colspan="2"><span translate>agent.label.subagentId</span></td>
                                 <td colspan="2"><span translate>agent.label.role</span></td>
-                                <td colspan="3"><span translate>agent.label.url</span></td>
-                               
+                                <td colspan="3"><span translate>agent.label.url</span></td>                      
                               </tr>
                               <tr class="order-history-template0" *ngIf="!clusterAgent.subagents || clusterAgent.subagents.length === 0">
                                 <td></td>
@@ -390,7 +392,6 @@
                                 <td colspan="2">{{sub.subagentId}}</td>
                                 <td colspan="2">{{sub.isDirector | translate}}</td>
                                 <td colspan="3">{{sub.url}}</td>
-                               
                               </tr>
                             </ng-container>
                           </ng-container>
