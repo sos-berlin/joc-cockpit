@@ -825,7 +825,7 @@
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.caManagement' | translate"
-                    *ngIf="permission.joc && permission.joc.administration.certificates.manage">
+                    *ngIf="permission.joc && permission.joc.administration.certificates.view">
               <div class="m-l-12">
                 <div class="row m-t-sm p-b-xs">
                   <div class="col-sm-12">
@@ -856,7 +856,7 @@
                           <span *ngIf="!certificates.keyID && !certificates.keyAlgorithm" translate>
                             profile.keyManagement.message.noCAFound
                           </span>
-                          <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
+                          <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px"  *ngIf="permission.joc.administration.certificates.manage">
                             <button class="btn btn-sm btn-grey m-l-12" (click)="pasteKey('ca')"
                                     [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate">
                               <i class="fa fa-paste"></i>

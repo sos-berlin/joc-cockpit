@@ -88,21 +88,22 @@
 </div>
 <div class="scroll-y max-ht">
   <div class="padding p-b-0" *ngIf="loading">
-    <nz-tabset [(nzSelectedIndex)]="index" (nzSelectChange)="tabChange($event)" *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
-      <nz-tab [nzTitle]="'monitor.label.controllerAvailability' | translate">
-        <div *ngIf="index === 0">
+    <nz-tabset [(nzSelectedIndex)]="index" (nzSelectChange)="tabChange($event)">
+      <nz-tab [nzTitle]="'monitor.label.controllerAvailability' | translate" *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
+        <div *ngIf="index === 0" >
           <app-controller-monitor [permission]="permission" [preferences]="preferences"
                                   [schedulerIds]="schedulerIds" [filters]="monitorFilters.controller"></app-controller-monitor>
         </div>
       </nz-tab>
       <nz-tab [nzTitle]="'monitor.label.agentAvailability' | translate" *ngIf="permission && permission.currentController && permission.currentController.agents.view">
-        <div *ngIf="index === 1">
+        <div *ngIf="index === 1 || (!permission.joc.administration.controllers.view && index === 0)">
           <app-agent-monitor [permission]="permission" [preferences]="preferences"
                              [schedulerIds]="schedulerIds" [filters]="monitorFilters.agent"></app-agent-monitor>
         </div>
       </nz-tab>
-      <nz-tab [nzTitle]="'monitor.label.notification' | translate">
-        <div *ngIf="index === 2">
+      <nz-tab [nzTitle]="'monitor.label.notification' | translate" *ngIf="permission && permission.joc && permission.joc.notification && permission.joc.notification.view">
+        <div *ngIf="index === 2 || (!permission.joc.administration.controllers.view && index === 1) ||
+         (!permission.joc.administration.controllers.view && !permission.currentController.agents.view && index === 0)">
           <app-notification-monitor [permission]="permission" [preferences]="preferences"
                              [schedulerIds]="schedulerIds" [filters]="monitorFilters.notification"></app-notification-monitor>
         </div>

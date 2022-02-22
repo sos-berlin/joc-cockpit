@@ -63,12 +63,11 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     this.order.timeZone = this.preferences.zone;
-    this.order.fromTime = new Date();
     this.order.at = 'now';
     this.updateVariableList();
   }
@@ -156,6 +155,10 @@ export class AddOrderModalComponent implements OnInit {
     moveItemInArray(this.arguments, event.previousIndex, event.currentIndex);
   }
 
+  selectTime(time, isEditor = false): void {
+    this.coreService.selectTime(time, isEditor, this.order);
+  }
+
   onSubmit(): void {
     this.submitted = true;
     const obj: any = {
@@ -172,7 +175,8 @@ export class AddOrderModalComponent implements OnInit {
       order.scheduledFor = 'now + ' + this.order.atTime;
     } else {
       if (this.order.fromDate) {
-        order.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate,null, 'YYYY-MM-DD HH:mm:ss');
+        this.coreService.getDateAndTime(this.order);
+        order.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
         order.timeZone = this.order.timeZone;
       }
     }

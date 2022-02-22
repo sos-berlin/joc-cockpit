@@ -256,10 +256,11 @@ export class ControllerModalComponent implements OnInit {
   templateUrl: 'roles.component.html',
   styleUrls: ['./roles.component.css']
 })
-export class RolesComponent implements OnDestroy {
+export class RolesComponent implements OnInit, OnDestroy {
   accounts: any = [];
   userDetail: any = {};
   showMsg: any;
+  permission: any = {};
   roles: any = [];
   controllerRoles = [];
   object = {
@@ -271,7 +272,7 @@ export class RolesComponent implements OnDestroy {
   subscription2: Subscription;
   subscription3: Subscription;
 
-  constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modal: NzModalService,
+  constructor(private coreService: CoreService, private router: Router, private authService: AuthService, private activeRoute: ActivatedRoute, private modal: NzModalService,
     private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
@@ -296,6 +297,10 @@ export class RolesComponent implements OnDestroy {
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
         this.checkUrl(e);
       });
+  }
+
+  ngOnInit(): void {
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
   }
 
   ngOnDestroy(): void {

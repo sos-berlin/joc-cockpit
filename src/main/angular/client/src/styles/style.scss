@@ -5351,8 +5351,19 @@ tr.disabled-row td:not(.menu) {
 }
 
 .time-picker {
-  width: 166px !important;
-  background-position: 150px !important;
+   width: 130px !important;
+   display: inline-block;
+   margin-left: 16px;
+  // background-position: 150px !important;
+  .ant-picker {
+    width: 0;
+    height: 0;
+    margin-left: 94px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+  }
 }
 
 .custom-tooltip {
@@ -7966,6 +7977,7 @@ tr.tr-border td:first-child {
   color: var(--text-color);
   background: transparent;
   border-color: var(--border-color);
+  height: 30px;
 }
 
 .ant-dropdown-menu {

@@ -1,7 +1,7 @@
 <div class="box p-a">
   <div class="m-l b-b p-b-sm" *ngIf="controllerRoles && controllerRoles.length > 1">
     <span class="_600 text-16">#</span>
-    <label style="margin-left: 13px" nz-checkbox
+    <label *ngIf="permission.joc && permission.joc.administration.accounts.manage" style="margin-left: 13px" nz-checkbox
            [(nzChecked)]="object.checked"
            [nzIndeterminate]="object.indeterminate"
            (nzCheckedChange)="checkAll($event)"></label>
@@ -16,13 +16,13 @@
     <div *ngFor="let role of controllerRoles" class="box-body p-b-0" cdkDrag>
       <div class="row">
         <div class="col-sm-12">
-          <div class="pos-abt drag-handler" cdkDragHandle>
+          <div class="pos-abt drag-handler" cdkDragHandle *ngIf="permission.joc && permission.joc.administration.accounts.manage">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
-          <div class="pull-left m-l p-l-sm m-r-xs">
+          <div class="pull-left m-l p-l-sm m-r-xs" *ngIf="permission.joc && permission.joc.administration.accounts.manage">
             <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(role.name)" (nzCheckedChange)="checkMappedObject($event, role)"></label>
           </div>
-          <div class="btn-group dropdown pull-left m-r-xs">
+          <div class="btn-group dropdown pull-left m-r-xs" *ngIf="permission.joc && permission.joc.administration.accounts.manage">
             <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
                     type="button"><i
               class="fa fa-ellipsis-h"></i></button>

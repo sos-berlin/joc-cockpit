@@ -14,7 +14,7 @@
     >
       <thead>
       <tr>
-        <th class="menu"><span translate>common.label.action</span></th>
+        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span></th>
         <th (click)="sort('identityServiceName')">
           <a><span class="p-r-xs" translate>user.label.identityServiceName</span>
             <i *ngIf="usr.sortBy == 'identityServiceName' && !usr.reverse"
@@ -76,7 +76,7 @@
       <tbody cdkDropList (cdkDropListDropped)="drop($event)">
         <tr *ngFor="let identityService of ajaxTable.data" cdkDrag [nz-tooltip]="(showMessage && !identityService.disabled && identityService.identityServiceType.indexOf('VAULT') > -1 ? ('user.message.moreThanOneVaultEnable' | translate) : '') || (showMessage2 && !identityService.disabled && identityService.identityServiceType.indexOf('LDAP') > -1 ? ('user.message.moreThanOneLDAPEnable' | translate) : '')"
             [ngClass]="{'opacity7': identityService.disabled, 'error-border': !identityService.disabled && ((showMessage && identityService.identityServiceType.indexOf('VAULT') > -1) || (showMessage2 && identityService.identityServiceType.indexOf('LDAP') > -1))}" class="cursor move-on-hover">
-          <td class="menu">
+          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu">
             <i class="fa fa-exclamation-triangle warn-icon" aria-hidden="true"></i>
             <div *ngIf="usr.sortBy === 'ordering'" class="pos-abt move-icon text-16 cur-m" style="left: -1px" cdkDragHandle>
               <i class="fa fa-bars" aria-hidden="true"></i>

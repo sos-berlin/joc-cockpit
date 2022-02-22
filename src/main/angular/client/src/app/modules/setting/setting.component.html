@@ -6,13 +6,13 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="show-inline" *ngIf="permission.joc.administration.settings.manage">
+          <div class="show-inline">
             <button type="button" class="btn btn-sm btn-grey" [disabled]="settingArr.length === 0"
                     (click)="exportSetting();">
               <i class="fa fa-download"></i>
               {{'settings.button.exportSetting' | translate}}
             </button>
-            <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="importSetting();">
+            <button type="button" *ngIf="permission.joc.administration.settings.manage" class="btn btn-sm btn-grey m-l-12" (click)="importSetting();">
               <i class="fa fa-upload"></i>
               {{'settings.button.importSetting' | translate}}
             </button>
@@ -65,10 +65,10 @@
                         </div>
                       </ng-template>
                     </span>
-                    <div *ngIf="permission.joc.administration.settings.manage && val.value.type == 'ARRAY'">
+                    <div *ngIf="val.value.type == 'ARRAY'">
                       <div class="m-b-xs" *ngFor="let arr of val.value.default;let x=index">
                         {{arr || '  -  '}}
-                        <i *ngIf="!val.value.edit && (!val.value.value && val.value.value !== 0 && val.value.value !== false) && x === 0" class="p-l-sm text-hover-primary fa fa-pencil"
+                        <i *ngIf="permission.joc.administration.settings.manage && !val.value.edit && (!val.value.value && val.value.value !== 0 && val.value.value !== false) && x === 0" class="p-l-sm text-hover-primary fa fa-pencil"
                          (click)="openEditField(val)"></i>
                       </div>
                     </div>

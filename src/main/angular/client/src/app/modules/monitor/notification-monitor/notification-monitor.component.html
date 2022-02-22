@@ -45,13 +45,13 @@
       >
         <thead>
         <tr>
-          <th class="chk"
+          <th *ngIf="permission.joc && permission.joc.notification && permission.joc.notification.manage" class="chk"
               [nzShowCheckbox]="true"
               [(nzChecked)]="object.checked"
               [nzIndeterminate]="object.indeterminate"
               (nzCheckedChange)="checkAll($event)"
           ></th>
-          <th class="menu"><span translate>common.label.action</span></th>
+          <th *ngIf="permission.joc && permission.joc.notification && permission.joc.notification.manage" class="menu"><span translate>common.label.action</span></th>
           <th nzWidth="35px"><span translate>#</span></th>
           <th *ngIf="!filters.current" (click)="sort('controllerId')">
             <a><span class="p-r-xs" translate>common.label.controllerId</span>
@@ -108,8 +108,8 @@
         <ng-template ngFor let-notify
                      [ngForOf]="ajaxTable.data">
           <tr>
-            <td [nzShowCheckbox]="true" [nzDisabled]="notify.type !== 'ERROR'" [nzChecked]="filters.mapOfCheckedId.has(notify.notificationId)" (nzCheckedChange)="onItemChecked(notify, $event)"></td>
-            <td>
+            <td *ngIf="permission.joc && permission.joc.notification && permission.joc.notification.manage" [nzShowCheckbox]="true" [nzDisabled]="notify.type !== 'ERROR'" [nzChecked]="filters.mapOfCheckedId.has(notify.notificationId)" (nzCheckedChange)="onItemChecked(notify, $event)"></td>
+            <td *ngIf="permission.joc && permission.joc.notification && permission.joc.notification.manage">
               <div class="btn-group dropdown">
                 <button class="btn-drop more-option-h" [nzDisabled]="notify.type !== 'ERROR' || object.check || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option" type="button">
                   <i class="fa fa-ellipsis-h"></i>

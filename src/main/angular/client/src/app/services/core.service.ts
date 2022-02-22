@@ -1656,4 +1656,52 @@ export class CoreService {
     }
     return data.arr;
   }
+
+  getDateAndTime(data): any {
+    if (data.fromDate && data.fromTime) {
+      const arr = data.fromTime.split(':');
+      if (arr[0] && arr[0].length === 2) {
+        data.fromDate.setHours(arr[0])
+      } else {
+        data.fromDate.setHours(0)
+      }
+      if (arr[1] && arr[1].length === 2) {
+        data.fromDate.setMinutes(arr[1])
+      } else {
+        data.fromDate.setMinutes(0)
+      }
+      if (arr[2] && arr[2].length === 2) {
+        data.fromDate.setSeconds(arr[2])
+      } else {
+        data.fromDate.setSeconds(0);
+      }
+      data.fromDate.setMilliseconds(0);
+    }
+  }
+
+  selectTime(time, isEditor = false, data): void {
+    if (time && !isEditor) {
+      const h = time.getHours() + '';
+      const m = time.getMinutes() + '';
+      const s = time.getSeconds() + '';
+      data.fromTime = (h.length == 1 ? '0' + h : h) + ':' + (m.length == 1 ? '0' + m : m) + ':' + (s.length == 1 ? '0' + s : s);
+    } else if (isEditor && time) {
+      let d = new Date();
+      const arr = time.split(':');
+      if (arr[0] && arr[0].length === 2) {
+        d.setHours(arr[0])
+      }
+      if (arr[1] && arr[1].length === 2) {
+        d.setMinutes(arr[1])
+      } else {
+        d.setMinutes(0)
+      }
+      if (arr[2] && arr[2].length === 2) {
+        d.setSeconds(arr[2])
+      } else {
+        d.setSeconds(0);
+      }
+      data.fromTime1 = new Date(d);
+    }
+  }
 }
