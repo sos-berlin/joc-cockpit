@@ -311,7 +311,7 @@
     "label.selectController": "Controller auswählen",
     "placeholder.setEndDate": "Endezeit setzen",
     "placeholder.setStartDate": "Startzeit setzen",
-    "placeholder.regex": "Enter Regular expression",
+    "placeholder.regex": "Regulären Ausdruck eingeben",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "Used in all the popup window whit audit log is enable",
     "label.predefined": "Vordefinierte Begründungen",
@@ -387,7 +387,7 @@
     "button.saveAs": "Speichern unter",
     "button.submit": "Übermitteln",
     "button.search": "Suchen",
-    "button.duplicate": "Duplicate",
+    "button.duplicate": "Duplizieren",
     "button.copy": "Kopieren",
     "button.cut": "Ausschneiden",
     "button.paste": "Einfügen",
@@ -2017,7 +2017,7 @@
     "label.resetPassword": "Kennwort zurücksetzen",
     "label.forcePasswordChange": "Kennwortänderung erzwingen",
     "label.disable": "Deaktivieren",
-    "label.folderNotExist": "Folder does not exist",
+    "label.folderNotExist": "Ordner nicht vorhanden",
     "button.addGroupRole": "Gruppen/Rollen hinzufügen",
     "button.addIdentityService": "Identitätsdienst hinzufügen",
     "button.addPermission": "Berechtigung hinzufügen",
@@ -2085,7 +2085,7 @@
     "message.moreThanOneVaultEnable": "Nur ein einziger VAULT* Identitätsdienst darf aktiv sein.",
     "message.moreThanOneLDAPEnable": "Nur ein einziger LDAP* Identitätsdienst darf aktiv sein.",
     "message.deleteSelectedUser": "Sind Sie sicher, dass Sie alle ausgewählten Benutzerkonten löschen wollen?",
-    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
+    "message.deleteSelectedRole": "Sind Sie sicher, dass Sie alle ausgewählten Rollen löschen wollen?",
     "message.resetPasswordForUser": "Sind Sie sicher, dass Sie das Kennwort dieses Benutzerkontos zurücksetzen wollen?",
     "message.forcePasswordChangeForUser": "Sind Sie sicher, dass Sie eine Kennwortänderung bei der nächsten Anmeldung erzwingen wollen?",
     "message.resetPasswordForSelectedUser": "Sind Sie sicher, dass Sie das Kennwort der ausgewählten Benutzerkonten zurücksetzen wollen?",
@@ -2093,7 +2093,7 @@
     "message.minPasswordLength": "Die Länge des Kennnworts muss mindestens der Minimallänge entsprechen",
     "tab.simpleMode": "Einfacher Modus",
     "tab.expertMode": "Experten-Modus",
-    "tooltip.toAddNonExistFolders": "Press space bar or press enter to add non exist folder path",
+    "tooltip.toAddNonExistFolders": "Ordner können ausgewählt werden. Zur Eingabe eines Ordnerpfads per Tastatur den Pfad eingeben und Leertaste oder Eingabetaste drücken.",
     "usermode": {
       "label.iamLdapHost": "LDAP Server Host",
       "label.iamLdapProtocol": "LDAP Protocol",
@@ -2106,7 +2106,7 @@
       "label.iamLdapWithMemberOf": "LDAP Server bietet memberOf Attribut",
       "placeholder.iamLdapHost": "LDAP Server Host angeben",
       "placeholder.iamLdapPort": "LDAP Server Port angeben",
-      "placeholder.iamLdapProtocol": "Eine order mehrere Optionen auswählen"
+      "placeholder.iamLdapProtocol": "Eine oder mehrere Optionen auswählen"
     },
     "tooltips": {
       "ldap": {

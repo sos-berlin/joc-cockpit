@@ -311,7 +311,7 @@
     "label.selectController": "Choisissez le Contrôleur",
     "placeholder.setEndDate": "Définir la date de fin",
     "placeholder.setStartDate": "Définir la date de démarrage",
-    "placeholder.regex": "Enter Regular expression",
+    "placeholder.regex": "Entrer l'expression regulière",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "Used in all the popup window whit audit log is enable",
     "label.predefined": "Justification prédéfinie",
@@ -387,7 +387,7 @@
     "button.saveAs": "Enregistrer sous",
     "button.submit": "Soumettre",
     "button.search": "Recherche",
-    "button.duplicate": "Duplicate",
+    "button.duplicate": "Dupliquer",
     "button.copy": "Copier",
     "button.cut": "Couper",
     "button.paste": "Coller",
@@ -2017,7 +2017,7 @@
     "label.resetPassword": "Réinitialiser le mot de passe",
     "label.forcePasswordChange": "Forcer le changement de mot de passe",
     "label.disable": "Désactiver",
-    "label.folderNotExist": "Folder does not exist",
+    "label.folderNotExist": "Le dossier n'existe pas",
     "button.addGroupRole": "Ajouter Groupes/Rôles",
     "button.addIdentityService": "Ajouter un Service d'Identité",
     "button.addPermission": "Ajouter une Permission",
@@ -2085,7 +2085,7 @@
     "message.moreThanOneVaultEnable": "Un seul Service d'Identité VAULT* doit être activé.",
     "message.moreThanOneLDAPEnable": "Un seul Service d'Identité LDAP* doit être activé.",
     "message.deleteSelectedUser": "Êtes-vous sûr de vouloir supprimer tous le comptes sélectionnés ?",
-    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
+    "message.deleteSelectedRole": "Êtes-vous sûr de vouloir supprimer tous le rôles sélectionnés ?",
     "message.resetPasswordForUser": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de ce compte ?",
     "message.forcePasswordChangeForUser": "Êtes-vous sûr de vouloir forcer le changement du mot de passe de ce compte ?",
     "message.resetPasswordForSelectedUser": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de tous les comptes sélectionnés ?",
@@ -2093,7 +2093,7 @@
     "message.minPasswordLength": "Le mot de passe doit être au moins aussi long que la longueur minimale du mot de passe.",
     "tab.simpleMode": "Mode Simple",
     "tab.expertMode": "Mode Expert",
-    "tooltip.toAddNonExistFolders": "Press space bar or press enter to add non exist folder path",
+    "tooltip.toAddNonExistFolders": "Les dossiers peuvent être sélectionnés. Pour saisir manuellement le chemin d'accès à un dossier, utilisez le clavier et appuyez sur la touche d'espacement ou la touche Entrée.",
     "usermode": {
       "label.iamLdapHost": "LDAP Server Host",
       "label.iamLdapProtocol": "LDAP Protocol",
@@ -2106,7 +2106,7 @@
       "label.iamLdapWithMemberOf": "LDAP Server offre l'attribut memberOf",
       "placeholder.iamLdapHost": "Entrez le LDAP Server Host",
       "placeholder.iamLdapPort": "Entrer le LDAP Server Port",
-      "placeholder.iamLdapProtocol": "Selectionnez une ou plusieurs options"
+      "placeholder.iamLdapProtocol": "Sélectionner une ou plusieurs options"
     },
     "tooltips": {
       "ldap": {
