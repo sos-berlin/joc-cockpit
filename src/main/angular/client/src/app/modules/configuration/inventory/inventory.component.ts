@@ -2446,7 +2446,7 @@ export class CreateFolderModalComponent implements OnInit {
         }
       });
     } else {
-      if (!this.origin.controller && !this.origin.dailyPlan && !this.origin.object && this.origin.name === this.folder.name) {
+      if (!this.origin.controller && !this.origin.dailyPlan && !this.origin.object && this.origin.name === this.folder.name && this.folder.deepRename === 'rename') {
         this.activeModal.close('NO');
         return;
       }

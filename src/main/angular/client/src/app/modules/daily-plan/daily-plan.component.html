@@ -534,7 +534,7 @@
                 </div>
               </div>
             </div>
-            <div class="row" *ngIf="showSearchPanel && !(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))">
+            <div class="row" *ngIf="showSearchPanel">
               <div class="col-md-12">
                 <div class="box p-a m-b p-t-md">
                   <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"

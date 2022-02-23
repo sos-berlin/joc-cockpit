@@ -34,7 +34,7 @@ export class PostModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
     this.postObj.at = 'date';
@@ -50,26 +50,33 @@ export class PostModalComponent implements OnInit {
     return differenceInCalendarDays(current, this.viewDate) < 0;
   }
 
+  selectTime(time, isEditor = false): void {
+    this.coreService.selectTime(time, isEditor, this.postObj);
+  }
+
   onSubmit(): void {
     this.submitted = true;
     const obj: any = {
       controllerId: this.controllerId,
       noticeBoardPath: this.board.path,
       noticeId: this.postObj.noticeId,
-      timeZone : this.postObj.timeZone
+      timeZone: this.postObj.timeZone
     };
     if (this.postObj.at === 'date') {
       if (this.postObj.fromDate) {
-        obj.endOfLife = this.coreService.getDateByFormat(this.postObj.fromDate, null,'YYYY-MM-DD HH:mm:ss');
+        this.coreService.getDateAndTime(this.postObj);
+        obj.endOfLife = this.coreService.getDateByFormat(this.postObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
       }
     } else if (this.postObj.at === 'later') {
       obj.endOfLife = this.postObj.atTime;
     }
-    this.coreService.post('notice/post', obj).subscribe((res) => {
-      this.submitted = false;
-      this.activeModal.close(res);
-    }, () => {
-      this.submitted = false;
+    this.coreService.post('notice/post', obj).subscribe({
+      next: (res) => {
+        this.submitted = false;
+        this.activeModal.close(res);
+      }, error: () => {
+        this.submitted = false;
+      }
     });
   }
 }
@@ -88,7 +95,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
+    private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -103,7 +110,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getBoardsList({
       controllerId: this.controllerId,
-      noticeBoardPaths	: [this.name]
+      noticeBoardPaths: [this.name]
     });
   }
 
@@ -182,7 +189,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
           const obj = {
             controllerId: this.controllerId,
             limit: this.preferences.maxBoardRecords,
-            noticeBoardPath : this.name
+            noticeBoardPath: this.name
           };
           this.coreService.post('notice/board', obj).subscribe((res: any) => {
             this.boards[0].numOfNotices = res.noticeBoard.numOfNotices;
@@ -221,10 +228,10 @@ export class BoardComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
-  @ViewChild(TreeComponent, {static: false}) child;
+  @ViewChild(TreeComponent, { static: false }) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
+    private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -291,7 +298,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       paths = this.boardsFilters.selectedkeys;
     }
     for (let x = 0; x < paths.length; x++) {
-      obj.folders.push({folder: paths[x], recursive: false});
+      obj.folders.push({ folder: paths[x], recursive: false });
     }
     this.getBoardsList(obj);
   }
@@ -305,7 +312,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     data.isSelected = true;
     this.loading = true;
     const obj = {
-      folders: [{folder: data.path, recursive}],
+      folders: [{ folder: data.path, recursive }],
       controllerId: this.schedulerIds.selected
     };
     this.getBoardsList(obj);
@@ -491,7 +498,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.boardsFilters.expandedObjects = [data.path];
     const obj = {
       controllerId: this.schedulerIds.selected,
-      folders: [{folder: PATH, recursive: false}]
+      folders: [{ folder: PATH, recursive: false }]
     };
     this.boards = [];
     this.loading = true;

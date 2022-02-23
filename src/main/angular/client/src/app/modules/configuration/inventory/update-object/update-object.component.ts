@@ -73,7 +73,7 @@ export class UpdateObjectComponent implements OnInit {
         this.workflowTree = this.coreService.prepareTree(res, false);
       });
     }
-    if (this.documentationTree.length === 0) {
+    if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
       this.coreService.post('tree', {
         onlyWithAssignReference: true,
         types: ['DOCUMENTATION']

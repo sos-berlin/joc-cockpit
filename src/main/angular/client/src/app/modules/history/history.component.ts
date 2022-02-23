@@ -145,7 +145,7 @@ export class OrderSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
@@ -161,11 +161,13 @@ export class OrderSearchComponent implements OnInit {
     this.filter.historyStates = value;
   }
 
+  selectTime(time, isEditor = false, val = 'from'): void {
+    this.coreService.selectTime(time, isEditor, this.filter, val);
+  }
+
   getFolderTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
-      onlyValidObjects: true,
-      forInventory: true,
       types: ['FOLDER']
     }).subscribe({
       next: (res) => {
@@ -300,7 +302,7 @@ export class TaskSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
       this.checkOptions = this.checkOptions.map(item => {
@@ -327,6 +329,10 @@ export class TaskSearchComponent implements OnInit {
 
   criticalityChange(value: string[]): void {
     this.filter.criticality = value;
+  }
+
+  selectTime(time, isEditor = false, val = 'from'): void {
+    this.coreService.selectTime(time, isEditor, this.filter, val);
   }
 
   getFolderTree(): void {
@@ -457,12 +463,12 @@ export class DeploymentSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.deployTypes = Object.keys(InventoryForHistory).filter(key => isNaN(+key));
   }
 
-  remove(path): void {
-    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+  selectTime(time, isEditor = false, val = 'from'): void {
+    this.coreService.selectTime(time, isEditor, this.filter, val);
   }
 
   checkFilterName(): void {
@@ -1578,11 +1584,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.radio === 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
-        if (obj.from) {
-          filter.dateFrom = new Date(obj.from);
+        if (obj.fromDate) {
+          this.coreService.getDateAndTime(obj);
+          filter.dateFrom = new Date(obj.fromDate);
         }
-        if (obj.to) {
-          filter.dateTo = new Date(obj.to);
+        if (obj.toDate) {
+          this.coreService.getDateAndTime(obj, 'to');
+          filter.dateTo = new Date(obj.toDate);
         }
       }
 
@@ -1630,11 +1638,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (obj.radio == 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);
       } else {
-        if (obj.from) {
-          filter.dateFrom = new Date(obj.from);
+        if (obj.fromDate) {
+          this.coreService.getDateAndTime(obj);
+          filter.dateFrom = new Date(obj.fromDate);
         }
-        if (obj.to) {
-          filter.dateTo = new Date(obj.to);
+        if (obj.toDate) {
+          this.coreService.getDateAndTime(obj, 'to');
+          filter.dateTo = new Date(obj.toDate);
         }
       }
 
@@ -1676,11 +1686,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.deployment.filter.date = '';
       filter = this.deploymentParseDate(filter, obj, (obj.radio === 'planned'));
       if (obj.radio !== 'planned') {
-        if (obj.from) {
-          filter.from = new Date(obj.from);
+        if (obj.fromDate) {
+          this.coreService.getDateAndTime(obj);
+          filter.from = new Date(obj.fromDate);
         }
-        if (obj.to) {
-          filter.to = new Date(obj.to);
+        if (obj.toDate) {
+          this.coreService.getDateAndTime(obj, 'to');
+          filter.to = new Date(obj.toDate);
         }
       }
 
@@ -1778,8 +1790,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.orderSearch = {
       radio: 'current',
       planned: 'today',
-      from: new Date(new Date().setHours(0, 0, 0, 0)),
-      to: new Date()
+      fromDate: new Date(),
+      toDate: new Date()
     };
 
     this.jobSearch = {
@@ -1787,22 +1799,22 @@ export class HistoryComponent implements OnInit, OnDestroy {
       planned: 'today',
       operation: 'ALL',
       state: 'ALL',
-      from: new Date(new Date().setHours(0, 0, 0, 0)),
-      to: new Date()
+      fromDate: new Date(),
+      toDate: new Date()
     };
 
     this.yadeSearch = {
       radio: 'current',
       planned: 'today',
-      from: new Date(new Date().setHours(0, 0, 0, 0)),
-      to: new Date()
+      fromDate: new Date(),
+      toDate: new Date()
     };
 
     this.deploymentSearch = {
       radio: 'current',
       planned: 'today',
-      from: new Date(new Date().setHours(0, 0, 0, 0)),
-      to: new Date()
+      fromDate: new Date(),
+      toDate: new Date()
     };
 
     this.submissionSearch = {

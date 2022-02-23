@@ -319,6 +319,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.schedulerIds = res;
           this.getComments();
         } else {
+          const preferences: any = {};
+          this.getDefaultPreferences(preferences);
+          sessionStorage.preferences = JSON.stringify(preferences);
           this.coreService.post('controllers/security_level', {}).subscribe({
             next: (result: any) => {
               this.checkSecurityControllers(result);
@@ -367,7 +370,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (returnUrl === '/error' || returnUrl === 'error') {
           returnUrl = '/';
         }
-        this.router.navigate(['login'], {queryParams: {returnUrl}});
+        this.router.navigate(['login'], { queryParams: { returnUrl } });
       }
     });
   }
@@ -516,40 +519,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private setUserPreferences(preferences: any, configObj: any, reload: boolean): void {
     if (sessionStorage.preferenceId === 0 || sessionStorage.preferenceId == '0') {
-      const timezone = this.coreService.getTimeZone();
-      if (timezone) {
-        preferences.zone = timezone;
-      }
-      preferences.locale = 'en';
-      preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
-      preferences.maxRecords = 5000;
-      preferences.maxAuditLogRecords = 5000;
-      preferences.maxNotificationRecords = 5000;
-      preferences.maxOrderRecords = 5000;
-      preferences.maxDailyPlanRecords = 5000;
-      preferences.maxWorkflowRecords = 5000;
-      preferences.maxFileTransferRecords = 5000;
-      preferences.maxLockRecords = 5000;
-      preferences.maxBoardRecords = 5000;
-      preferences.maxHistoryPerOrder = 10;
-      preferences.maxHistoryPerTask = 10;
-      preferences.maxAuditLogPerObject = 10;
-      preferences.maxEntryPerPage = '1000';
-      preferences.entryPerPage = '25';
-      preferences.isNewWindow = 'newWindow';
-      preferences.isDocNewWindow = 'newWindow';
-      preferences.isXSDNewWindow = 'newWindow';
-      preferences.pageView = 'list';
-      preferences.orderOverviewPageView = 'list';
-      preferences.theme = 'light';
-      preferences.headerColor = '';
-      preferences.historyTab = 'order';
-      preferences.expandOption = 'both';
-      preferences.currentController = true;
-      preferences.logTimezone = true;
-      if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
-        preferences.auditLog = true;
-      }
+      this.getDefaultPreferences(preferences);
       configObj.configurationItem = JSON.stringify(preferences);
       configObj.id = 0;
       sessionStorage.preferences = configObj.configurationItem;
@@ -567,6 +537,43 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.dataService.refreshUI('reload');
     }
     this.isProfileLoaded = false;
+  }
+
+  private getDefaultPreferences(preferences): void {
+    const timezone = this.coreService.getTimeZone();
+    if (timezone) {
+      preferences.zone = timezone;
+    }
+    preferences.locale = 'en';
+    preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
+    preferences.maxRecords = 5000;
+    preferences.maxAuditLogRecords = 5000;
+    preferences.maxNotificationRecords = 5000;
+    preferences.maxOrderRecords = 5000;
+    preferences.maxDailyPlanRecords = 5000;
+    preferences.maxWorkflowRecords = 5000;
+    preferences.maxFileTransferRecords = 5000;
+    preferences.maxLockRecords = 5000;
+    preferences.maxBoardRecords = 5000;
+    preferences.maxHistoryPerOrder = 10;
+    preferences.maxHistoryPerTask = 10;
+    preferences.maxAuditLogPerObject = 10;
+    preferences.maxEntryPerPage = '1000';
+    preferences.entryPerPage = '25';
+    preferences.isNewWindow = 'newWindow';
+    preferences.isDocNewWindow = 'newWindow';
+    preferences.isXSDNewWindow = 'newWindow';
+    preferences.pageView = 'list';
+    preferences.orderOverviewPageView = 'list';
+    preferences.theme = 'light';
+    preferences.headerColor = '';
+    preferences.historyTab = 'order';
+    preferences.expandOption = 'both';
+    preferences.currentController = true;
+    preferences.logTimezone = true;
+    if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
+      preferences.auditLog = true;
+    }
   }
 
   private setUserObject(preferences: any, conf: any, configObj: any): void {
@@ -614,19 +621,20 @@ export class LayoutComponent implements OnInit, OnDestroy {
         configurationType: 'PROFILE'
       };
       const preferences: any = {};
-      this.coreService.post('configurations', configObj).subscribe({next: (res: any) => {
-        sessionStorage.preferenceId = 0;
-        if (res.configurations && res.configurations.length > 0) {
-          const conf = res.configurations[0];
-          sessionStorage.preferenceId = conf.id;
-          this.setUserObject(preferences, conf, configObj);
-          if (reload) {
-            this.dataService.refreshUI('reload');
+      this.coreService.post('configurations', configObj).subscribe({
+        next: (res: any) => {
+          sessionStorage.preferenceId = 0;
+          if (res.configurations && res.configurations.length > 0) {
+            const conf = res.configurations[0];
+            sessionStorage.preferenceId = conf.id;
+            this.setUserObject(preferences, conf, configObj);
+            if (reload) {
+              this.dataService.refreshUI('reload');
+            }
+          } else {
+            this.setUserPreferences(preferences, configObj, reload);
           }
-        } else {
-          this.setUserPreferences(preferences, configObj, reload);
-        }
-      }, error: () => this.setUserPreferences(preferences, configObj, reload)
+        }, error: () => this.setUserPreferences(preferences, configObj, reload)
       });
     }
   }

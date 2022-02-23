@@ -358,18 +358,20 @@ export class SettingComponent implements OnInit {
   }
 
   private savePreferences(tempSetting, isJoc): void {
-    if (this.schedulerIds.selected) {
-      this.coreService.post('configuration/save', {
-        controllerId: this.schedulerIds.selected,
-        account: this.authService.currentUserData,
-        id: this.configId || 0,
-        configurationType: 'GLOBALS',
-        configurationItem: JSON.stringify(tempSetting)
-      }).subscribe(() => {
-        if (isJoc) {
-          this.getProperties();
-        }
-      });
+    if (this.permission.joc.administration.settings.manage) {
+      if (this.schedulerIds.selected) {
+        this.coreService.post('configuration/save', {
+          controllerId: this.schedulerIds.selected,
+          account: this.authService.currentUserData,
+          id: this.configId || 0,
+          configurationType: 'GLOBALS',
+          configurationItem: JSON.stringify(tempSetting)
+        }).subscribe(() => {
+          if (isJoc) {
+            this.getProperties();
+          }
+        });
+      }
     }
   }
 

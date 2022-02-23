@@ -160,7 +160,7 @@
               </div>
             </div>
           </div>
-          <div class="row m-b hide" [ngClass]="{'show':showSearchPanel && tree.length > 0}">
+          <div class="row m-b" *ngIf="showSearchPanel">
             <div class="col-md-12">
               <div class="box p-a m-b-xs">
                 <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"

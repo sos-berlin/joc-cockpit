@@ -128,7 +128,7 @@
                          (click)="item.hide = true"></i>
                       <i *ngIf="item.documentationName" (click)="coreService.showDocumentation(item.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                       <span class="text-dark">
-                        <i (click)="coreService.navToInventoryTab(item.path, 'WORKFLOW');"
+                        <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(item.path, 'WORKFLOW');"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                         <span [innerHtml]="item.path"></span>
                         <i *ngIf="item.title"> - </i>

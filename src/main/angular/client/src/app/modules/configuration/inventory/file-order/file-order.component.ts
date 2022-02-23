@@ -267,7 +267,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private getDocumentations(): void {
-    if (this.documentationTree.length === 0) {
+    if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
       this.coreService.post('tree', {
         onlyWithAssignReference: true,
         types: ['DOCUMENTATION']
@@ -328,8 +328,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       objectTypes: [type]
     };
     if (type === 'DOCUMENTATION') {
+      if (!this.permission.joc.documentations.view) {
+        return;
+      }
       obj = {
-        folders: [{folder: node.key, recursive: false}],
+        folders: [{ folder: node.key, recursive: false }],
         onlyWithAssignReference: true
       };
     }
@@ -398,11 +401,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   deploy(): void {
-    this.dataService.reloadTree.next({deploy: this.fileOrder});
+    this.dataService.reloadTree.next({ deploy: this.fileOrder });
   }
 
   backToListView(): void {
-    this.dataService.reloadTree.next({back: this.fileOrder});
+    this.dataService.reloadTree.next({ back: this.fileOrder });
   }
 
   /**

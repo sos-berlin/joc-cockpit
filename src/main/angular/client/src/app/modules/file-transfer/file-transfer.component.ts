@@ -98,7 +98,7 @@ export class FileTransferSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.allhosts = this.coreService.getProtocols();
     if (this.filter.states && this.filter.states.length > 0) {
       this.stateOptions = this.stateOptions.map(item => {
@@ -116,6 +116,10 @@ export class FileTransferSearchComponent implements OnInit {
         };
       });
     }
+  }
+
+  selectTime(time, isEditor = false, val = 'from'): void {
+    this.coreService.selectTime(time, isEditor, this.filter, val);
   }
 
   checkFilterName(): void {
@@ -668,8 +672,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
-      from: new Date(new Date().setHours(0, 0, 0, 0)),
-      to: new Date(),
+      fromDate: new Date(),
+      toDate: new Date(),
     };
   }
 

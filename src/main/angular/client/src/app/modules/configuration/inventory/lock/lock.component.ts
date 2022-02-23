@@ -143,7 +143,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   }
 
   private getDocumentations(): void {
-    if (this.documentationTree.length === 0) {
+    if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
       this.coreService.post('tree', {
         onlyWithAssignReference: true,
         types: ['DOCUMENTATION']
