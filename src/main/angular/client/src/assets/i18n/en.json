@@ -309,10 +309,9 @@
     "label.relativeTime": "Relative Time",
     "label.processExecuted": "Process executed",
     "label.selectController": "Choose Controller",
-    "label.regexAndChooseTree": "Regular Expression or Folders",
     "placeholder.setEndDate": "Set end time",
     "placeholder.setStartDate": "Set start time",
-    "placeholder.regexAndChooseTree": "Regular expression or choose folders from tree",
+    "placeholder.regex": "Enter Regular expression",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "Used in all the popup window whit audit log is enable",
     "label.predefined": "Pre-defined Reason",
@@ -388,6 +387,7 @@
     "button.saveAs": "Save as",
     "button.submit": "Submit",
     "button.search": "Search",
+    "button.duplicate": "Duplicate",
     "button.copy": "Copy",
     "button.cut": "Cut",
     "button.paste": "Paste",
@@ -2017,6 +2017,7 @@
     "label.resetPassword": "Reset Password",
     "label.forcePasswordChange": "Force Password Change",
     "label.disable": "Disable",
+    "label.folderNotExist": "Folder does not exist",
     "button.addGroupRole": "Add Group/Roles",
     "button.addIdentityService": "Add Identity Service",
     "button.addPermission": "Add Permission",
@@ -2084,6 +2085,7 @@
     "message.moreThanOneVaultEnable": "Only one VAULT* identity service should be enabled.",
     "message.moreThanOneLDAPEnable": "Only one LDAP* identity service should be enabled.",
     "message.deleteSelectedUser": "Are you sure that you want to delete all selected accounts?",
+    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
     "message.resetPasswordForUser": "Are you sure you want to reset the password of this account?",
     "message.forcePasswordChangeForUser": "Are you sure you want to force password change for this account?",
     "message.resetPasswordForSelectedUser": "Are you sure you want to reset the password of all selected accounts?",
@@ -2091,6 +2093,7 @@
     "message.minPasswordLength": "Password too short",
     "tab.simpleMode": "Simple Mode",
     "tab.expertMode": "Expert Mode",
+    "tooltip.toAddNonExistFolders": "Press space bar or press enter to add non exist folder path",
     "usermode": {
       "label.iamLdapHost": "LDAP Server Host",
       "label.iamLdapProtocol": "LDAP Protocol",
@@ -2103,8 +2106,7 @@
       "label.iamLdapWithMemberOf": "LDAP Server offers memberOf attribute",
       "placeholder.iamLdapHost": "Enter LDAP Server Host",
       "placeholder.iamLdapPort": "Enter LDAP Server Port",
-      "placeholder.iamLdapProtocol": "Select one or multiple options",
-      "message.overwriteChanges": "Are you sure you want to apply the changes?"
+      "placeholder.iamLdapProtocol": "Select one or multiple options"
     },
     "tooltips": {
       "ldap": {

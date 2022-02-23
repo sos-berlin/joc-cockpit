@@ -193,11 +193,13 @@ export class FileTransferService {
         filter = this.parseProcessExecuted(data.planned, filter);
       } else {
         if (data.radio === 'current') {
-          if (data.from) {
-            filter.dateFrom = new Date(data.from);
+          if (data.fromDate) {
+            this.coreService.getDateAndTime(data);
+            filter.dateFrom = new Date(data.fromDate);
           }
-          if (data.to) {
-            filter.dateTo = new Date(data.to);
+          if (data.toDate) {
+            this.coreService.getDateAndTime(data, 'to');
+            filter.dateTo = new Date(data.toDate);
           }
         }
       }

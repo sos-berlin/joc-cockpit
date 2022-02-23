@@ -103,7 +103,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   }
 
   private getDocumentations(): void {
-    if (this.documentationTree.length === 0) {
+    if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
       this.coreService.post('tree', {
         onlyWithAssignReference: true,
         types: ['DOCUMENTATION']
@@ -151,6 +151,9 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       objectTypes: [type]
     };
     if (type === 'DOCUMENTATION') {
+      if (!this.permission.joc.documentations.view) {
+        return;
+      }
       obj = {
         folders: [{folder: node.key, recursive: false}],
         onlyWithAssignReference: true

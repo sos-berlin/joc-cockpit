@@ -50,7 +50,7 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}">
-        <nz-date-picker [nzDisabledDate]="disabledDate" [required]="order.at == 'date'" [nzFormat]="dateFormat"
+        <nz-date-picker [nzDisabledDate]="disabledDate" required [nzFormat]="dateFormat"
                         #date="ngModel" name="date" [(ngModel)]="order.fromDate"></nz-date-picker>
         <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
           <div *ngIf="date.errors.required">

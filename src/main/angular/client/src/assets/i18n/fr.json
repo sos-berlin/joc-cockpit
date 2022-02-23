@@ -387,6 +387,7 @@
     "button.saveAs": "Enregistrer sous",
     "button.submit": "Soumettre",
     "button.search": "Recherche",
+    "button.duplicate": "Duplicate",
     "button.copy": "Copier",
     "button.cut": "Couper",
     "button.paste": "Coller",
@@ -2092,6 +2093,7 @@
     "message.minPasswordLength": "Le mot de passe doit être au moins aussi long que la longueur minimale du mot de passe.",
     "tab.simpleMode": "Mode Simple",
     "tab.expertMode": "Mode Expert",
+    "tooltip.toAddNonExistFolders": "Press space bar or press enter to add non exist folder path",
     "usermode": {
       "label.iamLdapHost": "LDAP Server Host",
       "label.iamLdapProtocol": "LDAP Protocol",

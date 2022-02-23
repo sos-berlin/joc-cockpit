@@ -98,9 +98,13 @@ export class CreateTokenModalComponent implements OnInit {
     }
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.token.timezone = this.preferences.zone;
     this.comments.radio = 'predefined';
+  }
+
+  selectTime(time, isEditor = false): void {
+    this.coreService.selectTime(time, isEditor, this.token);
   }
 
   onSubmit(): void {
@@ -136,7 +140,8 @@ export class CreateTokenModalComponent implements OnInit {
       }
     }
     if (this.token.validUntil && this.token.at === 'date') {
-      obj.validUntil = this.coreService.getDateByFormat(this.token.validUntil, null, 'YYYY-MM-DDTHH:mm:ss') + '.000Z';
+      this.coreService.getDateAndTime(this.token);
+      obj.validUntil = this.coreService.getDateByFormat(this.token.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
     } else {
       obj.validUntil = this.token.atTime;
     }

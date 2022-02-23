@@ -83,7 +83,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getAgentIds();
   }
 
@@ -105,6 +105,10 @@ export class SearchComponent implements OnInit {
         this.isUnique = false;
       }
     }
+  }
+
+  selectTime(time, isEditor = false, val = 'from'): void {
+    this.coreService.selectTime(time, isEditor, this.filter, val);
   }
 
   onSubmit(result): void {
@@ -287,38 +291,6 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  static parseDate(agentSearch, filter): any {
-    if (agentSearch.from) {
-      filter.dateFrom = new Date(agentSearch.from);
-    }
-    if (agentSearch.to) {
-      filter.dateTo = new Date(agentSearch.to);
-    }
-    return filter;
-  }
-
-  static generateRequestObj(object, filter): any {
-    if (object.urls) {
-      filter.urls = object.urls.split(',');
-    }
-    if (object.agentIds) {
-      filter.agentIds = object.agentIds;
-    }
-    if (object.controllerId) {
-      filter.controllerId = object.controllerId;
-    }
-    if (object.radio) {
-      if (object.radio == 'planned') {
-        filter = AgentJobExecutionComponent.parseProcessExecuted(object.planned, filter);
-      } else {
-        filter = AgentJobExecutionComponent.parseDate(object, filter);
-      }
-    } else if (object.planned) {
-      filter = AgentJobExecutionComponent.parseProcessExecuted(object.planned, filter);
-    }
-    return filter;
-  }
-
 
   ngOnInit(): void {
     this.init();
@@ -349,6 +321,41 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       this.savedFilter.selected = undefined;
       this.loadAgentTasks(null);
     }
+  }
+
+  
+  private generateRequestObj(object, filter): any {
+    if (object.urls) {
+      filter.urls = object.urls.split(',');
+    }
+    if (object.agentIds) {
+      filter.agentIds = object.agentIds;
+    }
+    if (object.controllerId) {
+      filter.controllerId = object.controllerId;
+    }
+    if (object.radio) {
+      if (object.radio == 'planned') {
+        filter = AgentJobExecutionComponent.parseProcessExecuted(object.planned, filter);
+      } else {
+        filter = this.parseDate(object, filter);
+      }
+    } else if (object.planned) {
+      filter = AgentJobExecutionComponent.parseProcessExecuted(object.planned, filter);
+    }
+    return filter;
+  }
+
+  private parseDate(agentSearch, filter): any {
+    if (agentSearch.fromDate) {
+      this.coreService.getDateAndTime(agentSearch);
+      filter.dateFrom = new Date(agentSearch.fromDate);
+    }
+    if (agentSearch.toDate) {
+      this.coreService.getDateAndTime(agentSearch, 'to');
+      filter.dateTo = new Date(agentSearch.toDate);
+    }
+    return filter;
   }
 
   checkSharedFilters(): void {
@@ -469,7 +476,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     };
     if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
       this.isCustomizationSelected(true);
-      obj = AgentJobExecutionComponent.generateRequestObj(this.selectedFiltered, obj);
+      obj = this.generateRequestObj(this.selectedFiltered, obj);
     } else {
       obj = this.setDateRange(obj);
       obj.timeZone = this.preferences.zone;
@@ -498,8 +505,8 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
-      from: new Date(new Date().setHours(0, 0, 0, 0)),
-      to: new Date()
+      fromDate: new Date(),
+      toDate: new Date()
     };
   }
 
@@ -521,7 +528,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone
     };
     this.agentFilters.filter.date = '';
-    filter = AgentJobExecutionComponent.generateRequestObj(this.searchFilter, filter);
+    filter = this.generateRequestObj(this.searchFilter, filter);
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
       filter.dateFrom = this.coreService.convertTimeToLocalTZ(this.preferences, filter.dateFrom)._d;
     }

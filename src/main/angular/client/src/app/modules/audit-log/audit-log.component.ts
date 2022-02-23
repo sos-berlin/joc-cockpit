@@ -101,7 +101,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
   }
 
   checkFilterName(): void {
@@ -113,6 +113,10 @@ export class SearchComponent implements OnInit {
     }
   }
 
+  selectTime(time, isEditor = false, val = 'from'): void {
+    this.coreService.selectTime(time, isEditor, this.filter, val);
+  }
+  
   onSubmit(result): void {
     this.submitted = true;
     const configObj = {
@@ -210,9 +214,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService, private router: Router,
-              private orderPipe: OrderPipe) {
+    private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
+    private translate: TranslateService, private excelService: ExcelService, private router: Router,
+    private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -292,16 +296,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       obj.dateTo = toDate;
     }
     return obj;
-  }
-
-  static parseDate(auditSearch, filter): any {
-    if (auditSearch.from) {
-      filter.dateFrom = new Date(auditSearch.from);
-    }
-    if (auditSearch.to) {
-      filter.dateTo = new Date(auditSearch.to);
-    }
-    return filter;
   }
 
   ngOnInit(): void {
@@ -501,10 +495,23 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       if (object.radio == 'planned') {
         filter = AuditLogComponent.parseProcessExecuted(object.planned, filter);
       } else {
-        filter = AuditLogComponent.parseDate(object, filter);
+        filter = this.parseDate(object, filter);
       }
     } else if (object.planned) {
       filter = AuditLogComponent.parseProcessExecuted(object.planned, filter);
+    }
+    return filter;
+  }
+
+
+  private parseDate(auditSearch, filter): any {
+    if (auditSearch.fromDate) {
+      this.coreService.getDateAndTime(auditSearch);
+      filter.dateFrom = new Date(auditSearch.fromDate);
+    }
+    if (auditSearch.toDate) {
+      this.coreService.getDateAndTime(auditSearch, 'to');
+      filter.dateTo = new Date(auditSearch.toDate);
     }
     return filter;
   }
@@ -684,8 +691,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.searchFilter = {
       radio: 'current',
       planned: 'today',
-      from: new Date(new Date().setHours(0, 0, 0, 0)),
-      to: new Date()
+      fromDate: new Date(),
+      toDate: new Date()
     };
   }
 

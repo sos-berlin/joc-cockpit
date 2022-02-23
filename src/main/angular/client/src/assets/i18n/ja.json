@@ -387,6 +387,7 @@
     "button.saveAs": "名前を付けて保存",
     "button.submit": "登録",
     "button.search": "検索",
+    "button.duplicate": "Duplicate",
     "button.copy": "コピー",
     "button.cut": "切り取り",
     "button.paste": "ペースト",
@@ -2092,6 +2093,7 @@
     "message.minPasswordLength": "パスワードは最少パスワード文字数より長い必要があります",
     "tab.simpleMode": "シンプルモード",
     "tab.expertMode": "エキスパートモードe",
+    "tooltip.toAddNonExistFolders": "Press space bar or press enter to add non exist folder path",
     "usermode": {
       "label.iamLdapHost": "LDAPホスト",
       "label.iamLdapProtocol": "LDAPプロトコル",

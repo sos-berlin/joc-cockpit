@@ -387,6 +387,7 @@
     "button.saveAs": "Speichern unter",
     "button.submit": "Übermitteln",
     "button.search": "Suchen",
+    "button.duplicate": "Duplicate",
     "button.copy": "Kopieren",
     "button.cut": "Ausschneiden",
     "button.paste": "Einfügen",
@@ -2092,6 +2093,7 @@
     "message.minPasswordLength": "Die Länge des Kennnworts muss mindestens der Minimallänge entsprechen",
     "tab.simpleMode": "Einfacher Modus",
     "tab.expertMode": "Experten-Modus",
+    "tooltip.toAddNonExistFolders": "Press space bar or press enter to add non exist folder path",
     "usermode": {
       "label.iamLdapHost": "LDAP Server Host",
       "label.iamLdapProtocol": "LDAP Protocol",

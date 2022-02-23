@@ -46,12 +46,17 @@
       <div class="form-group row" *ngIf="postObj.at == 'date'">
         <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime</label>
         <div class="col-sm-6" [ngClass]="{ 'has-error' : (date.dirty || date.touched) && date.invalid}">
-          <nz-date-picker required [nzDisabledDate]="disabledDate" nzShowTime [nzFormat]="dateFormat" name="date"
+          <nz-date-picker required [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat" name="date"
                           #date="ngModel" [(ngModel)]="postObj.fromDate"></nz-date-picker>
           <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
             <div *ngIf="date.errors.required" translate>
               common.message.requiredError
             </div>
+          </div>
+          <div class="time-picker">
+            <input timevalidator [disabled]="!postObj.fromDate" type="text" #time="ngModel" class="form-control"
+                name="fromTime" [(ngModel)]="postObj.fromTime" (ngModelChange)="selectTime(postObj.fromTime, true)" placeholder="HH:MM:SS">
+            <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="postObj.fromTime1" name="fromTimeIcon"></nz-time-picker>
           </div>
         </div>
       </div>

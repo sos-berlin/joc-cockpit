@@ -1657,34 +1657,34 @@ export class CoreService {
     return data.arr;
   }
 
-  getDateAndTime(data): any {
-    if (data.fromDate && data.fromTime) {
-      const arr = data.fromTime.split(':');
+  getDateAndTime(data, val = 'from'): any {
+    if (data[val === 'from' ? 'fromDate' : 'toDate'] && data[val === 'from' ? 'fromTime' : 'toTime']) {
+      const arr = data[val === 'from' ? 'fromTime' : 'toTime'].split(':');
       if (arr[0] && arr[0].length === 2) {
-        data.fromDate.setHours(arr[0])
+        data[val === 'from' ? 'fromDate' : 'toDate'].setHours(arr[0])
       } else {
-        data.fromDate.setHours(0)
+        data[val === 'from' ? 'fromDate' : 'toDate'].setHours(0)
       }
       if (arr[1] && arr[1].length === 2) {
-        data.fromDate.setMinutes(arr[1])
+        data[val === 'from' ? 'fromDate' : 'toDate'].setMinutes(arr[1])
       } else {
-        data.fromDate.setMinutes(0)
+        data[val === 'from' ? 'fromDate' : 'toDate'].setMinutes(0)
       }
       if (arr[2] && arr[2].length === 2) {
-        data.fromDate.setSeconds(arr[2])
+        data[val === 'from' ? 'fromDate' : 'toDate'].setSeconds(arr[2])
       } else {
-        data.fromDate.setSeconds(0);
+        data[val === 'from' ? 'fromDate' : 'toDate'].setSeconds(0);
       }
-      data.fromDate.setMilliseconds(0);
+      data[val === 'from' ? 'fromDate' : 'toDate'].setMilliseconds(0);
     }
   }
 
-  selectTime(time, isEditor = false, data): void {
+  selectTime(time, isEditor = false, data, val = 'from'): void {
     if (time && !isEditor) {
       const h = time.getHours() + '';
       const m = time.getMinutes() + '';
       const s = time.getSeconds() + '';
-      data.fromTime = (h.length == 1 ? '0' + h : h) + ':' + (m.length == 1 ? '0' + m : m) + ':' + (s.length == 1 ? '0' + s : s);
+      data[val === 'from' ? 'fromTime' : 'toTime'] = (h.length == 1 ? '0' + h : h) + ':' + (m.length == 1 ? '0' + m : m) + ':' + (s.length == 1 ? '0' + s : s);
     } else if (isEditor && time) {
       let d = new Date();
       const arr = time.split(':');
@@ -1701,7 +1701,7 @@ export class CoreService {
       } else {
         d.setSeconds(0);
       }
-      data.fromTime1 = new Date(d);
+      data[val === 'from' ? 'fromTime1' : 'toTime1'] = new Date(d);
     }
   }
 }

@@ -101,7 +101,7 @@
                              [schedulerIds]="schedulerIds" [filters]="monitorFilters.agent"></app-agent-monitor>
         </div>
       </nz-tab>
-      <nz-tab [nzTitle]="'monitor.label.notification' | translate">
+      <nz-tab [nzTitle]="'monitor.label.notification' | translate" *ngIf="permission && permission.currentController && permission.currentController.orders.view">
         <div *ngIf="index === 2 || (!permission.currentController.view && permission.currentController.agents.view && index === 1) || (!permission.currentController.agents.view && permission.currentController.view && index === 1) ||
          (!permission.currentController.view && !permission.currentController.agents.view && index === 0)">
           <app-notification-monitor [permission]="permission" [preferences]="preferences"

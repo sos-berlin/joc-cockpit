@@ -15,6 +15,7 @@ export class UpdateJobComponent implements OnInit {
   @Input() controllerId: any;
 
   preferences: any = {};
+  permission: any = {};
   schedulerIds: any = {};
   comments: any = {};
   selectedSchedulerIds = [];
@@ -110,6 +111,7 @@ export class UpdateJobComponent implements OnInit {
 
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.comments.radio = 'predefined';
     this.selectedNode.obj.jobName = this.data.jobName;
@@ -121,7 +123,7 @@ export class UpdateJobComponent implements OnInit {
     if (this.jobResourcesTree.length === 0) {
       this.getJobResources();
     }
-    if (this.documentationTree.length === 0) {
+    if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
       this.coreService.post('tree', {
         onlyWithAssignReference: true,
         types: ['DOCUMENTATION']

@@ -12,7 +12,7 @@
   >
     <thead>
     <tr>
-      <th nzWidth="50px"><span translate>common.label.action</span></th>
+      <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" nzWidth="50px"><span translate>common.label.action</span></th>
       <th>
         <span translate>user.label.entryName</span>
       </th>
@@ -24,7 +24,7 @@
     </thead>
     <tbody >
     <tr *ngFor="let mainSection of ajaxTable.data">
-      <td>
+      <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
         <div class="btn-group dropdown pull-left m-r-sm">
           <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i
             class="fa fa-ellipsis-h"></i></button>

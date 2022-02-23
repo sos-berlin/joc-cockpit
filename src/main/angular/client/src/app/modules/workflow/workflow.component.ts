@@ -94,8 +94,6 @@ export class SearchComponent implements OnInit {
   getFolderTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
-      onlyValidObjects: true,
-      forInventory: true,
       types: ['FOLDER']
     }).subscribe({
       next: (res) => {
