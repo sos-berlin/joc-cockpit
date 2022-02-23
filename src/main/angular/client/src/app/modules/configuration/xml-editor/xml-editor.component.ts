@@ -555,6 +555,7 @@ export class ShowModalComponent implements AfterViewInit {
   @Input() validation;
   prevErrLine;
   cmOptions: any = {
+    scrollbarStyle: 'simple',
     lineNumbers: true,
     indentWithTabs: true,
     autoRefresh: true,

@@ -369,7 +369,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
       }
     }
 
-    this.dateFormat = this.coreService.getDateFormatWithTime(this.preferences.dateFormat);
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.dateType.timeZone = this.preferences.zone;
   }
@@ -401,6 +401,10 @@ export class ModifyStartTimeModalComponent implements OnInit {
     return time;
   }
 
+  selectTime(time, isEditor = false): void {
+    this.coreService.selectTime(time, isEditor, this.order);
+  }
+
   onSubmit(): void {
     let obj: any = {
       controllerId: this.schedulerId,
@@ -421,7 +425,8 @@ export class ModifyStartTimeModalComponent implements OnInit {
       } else if (this.dateType.at === 'later') {
         obj.scheduledFor = 'now + ' + this.order.atTime;
       } else {
-        obj.scheduledFor = this.coreService.getDateByFormat(this.order.from, null, 'YYYY-MM-DD HH:mm:ss');
+        this.coreService.getDateAndTime(this.order);
+        obj.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
         obj.timeZone = this.dateType.timeZone;
       }
     } else {

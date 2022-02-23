@@ -19,6 +19,7 @@ export class ConfirmationModalComponent {
   @Input() forceChange;
   @Input() accounts;
   @Input() account;
+  @Input() isRole;
   submitted = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
@@ -232,6 +233,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   loading = true;
   preferences: any = {};
+  permission: any = {};
   accounts: any = [];
   data: any = [];
   roles: any = [];
@@ -290,6 +292,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.data = [];
     this.usr = {currentPage: 1, sortBy: 'account', reverse: false};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.username = this.authService.currentUserData;
     this.selectedIdentityServiceType = sessionStorage.identityServiceType;
     this.selectedIdentityService = sessionStorage.identityServiceType + ':' + sessionStorage.identityServiceName;

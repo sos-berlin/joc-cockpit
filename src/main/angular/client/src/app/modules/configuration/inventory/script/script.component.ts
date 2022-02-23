@@ -37,6 +37,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   indexOfNextAdd = 0;
   history = [];
   cmOption: any = {
+    scrollbarStyle: 'simple',
     lineNumbers: true,
     autoRefresh: true,
     mode: 'shell',

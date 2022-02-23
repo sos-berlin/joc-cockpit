@@ -425,7 +425,7 @@
                         </div>
                         <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
                           <span translate>order.label.workflow </span>:
-                          <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary text-black-dk p-l-xs p-r-xs"></i>
+                          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary text-black-dk p-l-xs p-r-xs"></i>
                           <a class="text-hover-primary text-black-dk" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">
                             <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
                           </a>
@@ -557,7 +557,7 @@
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                           <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">
                             <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
                           </a>

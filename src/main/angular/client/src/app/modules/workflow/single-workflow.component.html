@@ -86,7 +86,7 @@
                   </td>
                   <td>
                     <span class="show-in-single-line">
-                      <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
+                      <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
                          class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                       <span>{{workflow.path}} </span>
                     </span>
@@ -156,7 +156,7 @@
                             <span class="show-in-single-line m-l-sm">
                               <i *ngIf="order.documentationName" (click)="coreService.showDocumentation(order.documentationName, preferences)" class="cursor fa fa-book p-r-xs"></i>
                               <span class="text-dark">
-                                <i (click)="coreService.navToInventoryTab(order.path, 'FILEORDERSOURCE')"
+                                <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(order.path, 'FILEORDERSOURCE')"
                                    class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                                 <span [innerHtml]="order.path"></span>
                                 <i *ngIf="order.title"> - </i>

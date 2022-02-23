@@ -238,7 +238,7 @@
                     </td>
                     <td>
                         <span class="show-in-single-line">
-                          <i (click)="coreService.navToInventoryTab(calendar.path, calendar.type);"
+                          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(calendar.path, calendar.type);"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="calendar.path | highlight : calendarFilters.searchText"></span>
                         </span>

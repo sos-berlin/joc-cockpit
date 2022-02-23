@@ -218,7 +218,7 @@ export class DeployComponent implements OnInit {
   isDeleted = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
-              private authService: AuthService, private inventoryService: InventoryService) {
+    private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
@@ -252,12 +252,25 @@ export class DeployComponent implements OnInit {
       }
 
       recursive(this.nodes);
+      this.nodes = [...this.nodes];
       this.ref.detectChanges();
-    });
+    }, true);
+  }
+
+  private expandCollapseRec(node): void {
+    for (const i in node) {
+      if (!node[i].isLeaf) {
+        node[i].expanded = false;
+      }
+      if (node[i].children && node[i].children.length > 0) {
+        this.expandCollapseRec(node[i].children);
+      }
+    }
   }
 
   collapseAll(): void {
     this.expandCollapseRec(this.nodes);
+    this.nodes = [...this.nodes];
     this.ref.detectChanges();
   }
 
@@ -289,7 +302,7 @@ export class DeployComponent implements OnInit {
     }
   }
 
-  buildTree(path, merge = null, cb = null): void {
+  buildTree(path, merge = null, cb = null, flag = false): void {
     const obj: any = {
       folder: path || '/',
       recursive: !!cb,
@@ -346,8 +359,10 @@ export class DeployComponent implements OnInit {
             this.inventoryService.checkAndUpdateVersionList(tree[0]);
           }
           delete merge.loading;
-          this.nodes = [...this.nodes];
-          this.ref.detectChanges();
+          if (!flag) {
+            this.nodes = [...this.nodes];
+            this.ref.detectChanges();
+          }
         } else {
           this.nodes = tree;
           if (!cb) {
@@ -645,17 +660,6 @@ export class DeployComponent implements OnInit {
     this.activeModal.destroy();
   }
 
-  private expandCollapseRec(node): void {
-    for (const i in node) {
-      if (!node[i].isLeaf) {
-        node[i].expanded = true;
-      }
-      if (node[i].children && node[i].children.length > 0) {
-        this.expandCollapseRec(node[i].children);
-      }
-    }
-  }
-
 }
 
 @Component({
@@ -676,8 +680,7 @@ export class CronImportModalComponent implements OnInit {
     folder: '/'
   };
 
-  constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
-              public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
+  constructor(public activeModal: NzModalRef, private toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -804,8 +807,6 @@ export class CronImportModalComponent implements OnInit {
           this.calendarTree = [...this.calendarTree];
         });
       }
-    } else {
-
     }
   }
 
@@ -881,7 +882,7 @@ export class ExportComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-              private authService: AuthService, private inventoryService: InventoryService) {
+    private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
@@ -920,11 +921,11 @@ export class ExportComponent implements OnInit {
     }
   }
 
-  buildTree(path, merge = null, cb = null): void {
+  buildTree(path, merge = null, cb = null, flag = false): void {
     const obj: any = {
       folder: path || '/',
       onlyValidObjects: this.filter.valid,
-      recursive: false,
+      recursive: flag,
       withoutDrafts: !this.filter.draft,
       withoutDeployed: !this.filter.deploy,
       withoutRemovedObjects: true
@@ -990,7 +991,9 @@ export class ExportComponent implements OnInit {
             this.inventoryService.checkAndUpdateVersionList(tree[0]);
           }
           delete merge.loading;
-          this.nodes = [...this.nodes];
+          if (!flag) {
+            this.nodes = [...this.nodes];
+          }
         } else {
           this.nodes = tree;
           if (!cb) {
@@ -1070,13 +1073,25 @@ export class ExportComponent implements OnInit {
           }
         }
       }
-
       recursive(this.nodes);
-    });
+      this.nodes = [...this.nodes];
+    }, true);
+  }
+
+  private expandCollapseRec(node): void {
+    for (let i = 0; i < node.length; i++) {
+      if (!node[i].isLeaf) {
+        node[i].expanded = false;
+      }
+      if (node[i].children && node[i].children.length > 0) {
+        this.expandCollapseRec(node[i].children);
+      }
+    }
   }
 
   collapseAll(): void {
     this.expandCollapseRec(this.nodes);
+    this.nodes = [...this.nodes];
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
@@ -1288,17 +1303,6 @@ export class ExportComponent implements OnInit {
     this.activeModal.destroy();
   }
 
-  private expandCollapseRec(node): void {
-    for (let i = 0; i < node.length; i++) {
-      if (!node[i].isLeaf) {
-        node[i].expanded = true;
-      }
-      if (node[i].children && node[i].children.length > 0) {
-        this.expandCollapseRec(node[i].children);
-      }
-    }
-  }
-
 }
 
 @Component({
@@ -1338,7 +1342,7 @@ export class RepositoryComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-              private authService: AuthService, private inventoryService: InventoryService) {
+    private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
@@ -1370,11 +1374,11 @@ export class RepositoryComponent implements OnInit {
     }
   }
 
-  private buildTree(path, merge = null, cb = null): void {
+  private buildTree(path, merge = null, cb = null, flag = false): void {
     const obj: any = {
       folder: path || '/',
       onlyValidObjects: this.filter.valid,
-      recursive: false,
+      recursive: flag,
       withoutDrafts: !this.filter.draft,
       withoutDeployed: !this.filter.deploy,
       withoutRemovedObjects: true
@@ -1443,7 +1447,9 @@ export class RepositoryComponent implements OnInit {
             this.inventoryService.checkAndUpdateVersionList(tree[0]);
           }
           delete merge.loading;
-          this.nodes = [...this.nodes];
+          if (!flag) {
+            this.nodes = [...this.nodes];
+          }
         } else {
           this.nodes = tree;
           if (!cb) {
@@ -1490,10 +1496,10 @@ export class RepositoryComponent implements OnInit {
     return deployables;
   }
 
-  private readFileSystem(path, merge = null, cb = null): void {
+  private readFileSystem(path, merge = null, cb = null, flag = false): void {
     this.coreService.post('inventory/repository/read', {
       folder: path || '/',
-      recursive: false,
+      recursive: flag,
       category: this.category
     }).subscribe((res) => {
       let tree = [];
@@ -1532,7 +1538,9 @@ export class RepositoryComponent implements OnInit {
           merge.children = tree[0].children;
         }
         delete merge.loading;
-        this.nodes = [...this.nodes];
+        if (!flag) {
+          this.nodes = [...this.nodes];
+        }
       } else {
         this.nodes = tree;
         if (!cb) {
@@ -1579,16 +1587,30 @@ export class RepositoryComponent implements OnInit {
     if (this.operation === 'store') {
       this.buildTree(this.path, null, () => {
         recursive(this.nodes);
-      });
+        this.nodes = [...this.nodes];
+      }, true);
     } else {
       this.readFileSystem(this.path, null, () => {
         recursive(this.nodes);
-      });
+        this.nodes = [...this.nodes];
+      }, true);
+    }
+  }
+
+  private expandCollapseRec(node): void {
+    for (let i = 0; i < node.length; i++) {
+      if (!node[i].isLeaf) {
+        node[i].expanded = false;
+      }
+      if (node[i].children && node[i].children.length > 0) {
+        this.expandCollapseRec(node[i].children);
+      }
     }
   }
 
   collapseAll(): void {
     this.expandCollapseRec(this.nodes);
+    this.nodes = [...this.nodes];
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
@@ -1868,17 +1890,6 @@ export class RepositoryComponent implements OnInit {
 
   cancel(): void {
     this.activeModal.destroy();
-  }
-
-  private expandCollapseRec(node): void {
-    for (let i = 0; i < node.length; i++) {
-      if (!node[i].isLeaf) {
-        node[i].expanded = true;
-      }
-      if (node[i].children && node[i].children.length > 0) {
-        this.expandCollapseRec(node[i].children);
-      }
-    }
   }
 
 }
@@ -2435,7 +2446,7 @@ export class CreateFolderModalComponent implements OnInit {
         }
       });
     } else {
-      if (!this.origin.controller && !this.origin.dailyPlan && !this.origin.object && this.origin.name === this.folder.name) {
+      if (!this.origin.controller && !this.origin.dailyPlan && !this.origin.object && this.origin.name === this.folder.name && this.folder.deepRename === 'rename') {
         this.activeModal.close('NO');
         return;
       }

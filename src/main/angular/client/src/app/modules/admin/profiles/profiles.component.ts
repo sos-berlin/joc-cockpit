@@ -5,6 +5,7 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
+import { AuthService } from '../../../components/guard';
 
 @Component({
   selector: 'app-profiles',
@@ -13,6 +14,7 @@ import {DataService} from '../data.service';
 })
 export class ProfilesComponent implements OnInit, OnDestroy {
   preferences: any = {};
+  permission: any = {};
   profiles: any = [];
   subscription1: Subscription;
   subscription2: Subscription;
@@ -26,7 +28,8 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   indeterminate = false;
   setOfCheckedId = new Set<string>();
 
-  constructor(private dataService: DataService, private modal: NzModalService, private coreService: CoreService, private router: Router) {
+  constructor(private dataService: DataService, private modal: NzModalService, private coreService: CoreService,
+     private router: Router, private authService: AuthService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUserData(res);
@@ -42,6 +45,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
   }
 
   ngOnDestroy(): void {

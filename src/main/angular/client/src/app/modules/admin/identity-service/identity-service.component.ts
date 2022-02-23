@@ -206,6 +206,10 @@ export class SettingModalComponent implements OnInit {
   }
 
   checkConfirmation(isChecked, type): void {
+    if (type === 'StartTls') {
+      this.userObj.iamLdapProtocol = isChecked ? 'STARTTLS' : this.currentObj.iamLdapServerUrl.match('ldaps://') ? 'SSL' : 'PLAIN';
+      return;
+    }
     if (type === 'AD' && !isChecked) {
       this.userObj.iamLdapADwithSamAccount = false;
     }
@@ -305,7 +309,7 @@ export class SettingModalComponent implements OnInit {
         } else if (self.data.identityServiceType.match('LDAP')) {
           if (data.simple) {
             self.userObj = data.simple;
-          } 
+          }
           if (data.expert) {
             self.currentObj = data.expert;
           }
@@ -561,9 +565,9 @@ export class IdentityServiceModalComponent implements OnInit {
   templateUrl: 'identity-service.component.html'
 })
 export class IdentityServiceComponent implements OnInit, OnDestroy {
-
   loading = true;
   preferences: any = {};
+  permission: any = {};
   identityServiceTypes: any = [];
   identityServices: any = [];
   roles: any = [];
@@ -594,6 +598,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.usr = { currentPage: 1, sortBy: 'ordering', reverse: false };
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.getIAMList();
   }
 

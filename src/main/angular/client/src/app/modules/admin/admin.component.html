@@ -7,7 +7,7 @@
           <div class="pull-left">
               <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline">
+          <div class="inline" *ngIf="permission.joc && permission.joc.administration.accounts.manage">
             <!-- Sorting via Account Name Starts -->
             <div class="btn-group dropdown" *ngIf="!isSelected && route && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP' && route.match('/users/identity_service/role')">
               <button class="btn btn-grey btn-sm m-l-12 "
@@ -60,7 +60,7 @@
               <i class="fa fa-ban"></i>&nbsp;
               <span translate>user.button.disable</span>
             </button>
-            <button *ngIf="isSelected && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="deleteList()">
+            <button *ngIf="isSelected && route && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="deleteList()">
               <i class="fa fa-trash"></i>&nbsp;
               <span translate>user.button.delete</span>
             </button>
@@ -109,6 +109,11 @@
               <i class="fa fa-plus"></i>&nbsp;
               {{'user.button.addPermission' | translate}}
             </button>
+            <div class="hide" [ngClass]="{'show-block': route && route.match('/users/identity_service/permissions')}">
+              <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+            </div>
+          </div>
+          <div class="inline" *ngIf="permission.joc && !permission.joc.administration.accounts.manage">
             <div class="hide" [ngClass]="{'show-block': route && route.match('/users/identity_service/permissions')}">
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>

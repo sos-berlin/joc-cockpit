@@ -1,12 +1,12 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {isEqual, clone} from 'underscore';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {AuthService} from '../../../components/guard';
-import {CoreService} from '../../../services/core.service';
-import {DataService} from '../data.service';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { isEqual, clone } from 'underscore';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { AuthService } from '../../../components/guard';
+import { CoreService } from '../../../services/core.service';
+import { DataService } from '../data.service';
 
 declare var $: any;
 declare var d3: any;
@@ -117,10 +117,10 @@ export class FolderModalComponent implements OnInit {
 
   nodes = [];
   submitted = false;
-  folderObj: any = {paths: []};
+  folderObj: any = { paths: [] };
   schedulerIds: any;
 
-  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
+  @ViewChild('treeSelectCtrl', { static: false }) treeSelectCtrl;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService) {
   }
@@ -146,7 +146,7 @@ export class FolderModalComponent implements OnInit {
       this.folderArr = [];
       if (this.folderObj.paths && this.folderObj.paths.length > 0) {
         this.folderObj.paths.forEach((path) => {
-          this.folderArr.push({folder: path, recursive: obj.recursive});
+          this.folderArr.push({ folder: path, recursive: obj.recursive });
         });
       }
     }
@@ -193,8 +193,21 @@ export class FolderModalComponent implements OnInit {
           if (node) {
             this.folderObj.paths.push(path);
             node.isSelected = true;
-            this.nodes = [...this.nodes];
+          } else {
+            const obj = {
+              name: path,
+              title: path,
+              key: path,
+              isSelected: true,
+              isLeaf: true,
+              notExist: true,
+              path
+            };
+            this.folderObj.paths.push(path);
+            this.nodes.push(obj);
+            this.folderObj.paths = [...this.folderObj.paths];
           }
+          this.nodes = [...this.nodes];
         }
       }
       $event.preventDefault();
@@ -204,7 +217,7 @@ export class FolderModalComponent implements OnInit {
   getFolderTree(): void {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
-      forInventory: true
+      types: ['FOLDER']
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);
       if (this.nodes.length > 0) {
@@ -224,7 +237,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   roleName;
   roles: any = [];
   permissionsObj: any;
-
+  userPermission: any = {};
   permissions;
   rolePermissions: any = [];
   permissionOptions = [];
@@ -256,7 +269,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   subscription3: Subscription;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private router: Router,
-              private modal: NzModalService, private dataService: DataService) {
+    private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUserData(res);
@@ -281,6 +294,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.pageView = JSON.parse(localStorage.views).permission;
+    this.userPermission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.subscription3 = this.route.params.subscribe(params => {
       this.controllerName = params['master.master'];
       if (this.controllerName === 'default') {
@@ -315,7 +329,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   addFolder(): void {
-    let folder = {folder: '', recursive: true};
+    let folder = { folder: '', recursive: true };
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: FolderModalComponent,
@@ -387,7 +401,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   addPermission(): void {
-    let permission = {path: '', excluded: false};
+    let permission = { path: '', excluded: false };
     this.modal.create({
       nzTitle: undefined,
       nzContent: PermissionModalComponent,
@@ -773,10 +787,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     const self = this;
     let _temp = [];
     let endNodes2 = {
-      leftMost: {x: 0, y: 0},
-      rightMost: {x: 0, y: 0},
-      topMost: {x: 0, y: 0},
-      lowerMost: {x: 0, y: 0}
+      leftMost: { x: 0, y: 0 },
+      rightMost: { x: 0, y: 0 },
+      topMost: { x: 0, y: 0 },
+      lowerMost: { x: 0, y: 0 }
     };
     if (type === 'EXPANDALL') {
 
@@ -936,8 +950,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       link.enter().append('path')
         .attr('class', 'link')
         .attr('d', (d) => {
-          let o = {x: source.x0, y: (source.y0 + self.boxWidth / 2)};
-          return transitionElbow({source: o, target: o});
+          let o = { x: source.x0, y: (source.y0 + self.boxWidth / 2) };
+          return transitionElbow({ source: o, target: o });
         });
 
       // Update the old links positions
@@ -949,8 +963,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .transition()
         .duration(self.duration)
         .attr('d', (d) => {
-          let o = {x: source.x, y: (source.y + self.boxWidth / 2)};
-          return transitionElbow({source: o, target: o});
+          let o = { x: source.x, y: (source.y + self.boxWidth / 2) };
+          return transitionElbow({ source: o, target: o });
         })
         .remove();
       // Update nodes
@@ -1111,10 +1125,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     function calculateTopMost() {
       endNodes2 = {
-        leftMost: {x: 0, y: 0},
-        rightMost: {x: 0, y: 0},
-        topMost: {x: 0, y: 0},
-        lowerMost: {x: 0, y: 0}
+        leftMost: { x: 0, y: 0 },
+        rightMost: { x: 0, y: 0 },
+        topMost: { x: 0, y: 0 },
+        lowerMost: { x: 0, y: 0 }
       };
 
       nodes = self.tree.nodes(self.root);
@@ -1171,16 +1185,18 @@ export class PermissionsComponent implements OnInit, OnDestroy {
      * Update a permission_node's state when they are clicked.
      */
     function togglePermission(permission_node) {
-      if (permission_node.icon) {
-        permission_node.icon = './assets/images/minus.png';
-      }
-      if (permission_node.collapsed) {
-        permission_node.collapsed = false;
-      } else {
-        collapse(permission_node);
-      }
+      if (self.userPermission.joc && self.userPermission.joc.administration.accounts.manage) {
+        if (permission_node.icon) {
+          permission_node.icon = './assets/images/minus.png';
+        }
+        if (permission_node.collapsed) {
+          permission_node.collapsed = false;
+        } else {
+          collapse(permission_node);
+        }
 
-      draw(permission_node, calculateTopMost());
+        draw(permission_node, calculateTopMost());
+      }
     }
 
     function generatePermissionList(permission) {
@@ -1211,63 +1227,67 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function selectPermission(permission_node) {
-      let _previousPermissionObj = clone(self.rolePermissions);
-      if (!permission_node.greyed && permission_node.name != 'sos') {
-        permission_node.selected = !permission_node.selected;
+      if (self.userPermission.joc && self.userPermission.joc.administration.accounts.manage) {
+        let _previousPermissionObj = clone(self.rolePermissions);
+        if (!permission_node.greyed && permission_node.name != 'sos') {
+          permission_node.selected = !permission_node.selected;
 
-        if (permission_node.selected) {
-          permission_node.isSelected = true;
-          if (permission_node.parent && !permission_node.parent.isSelected) {
-            setParentSelected(permission_node);
+          if (permission_node.selected) {
+            permission_node.isSelected = true;
+            if (permission_node.parent && !permission_node.parent.isSelected) {
+              setParentSelected(permission_node);
+            }
+            self.selectedNode(permission_node, false);
+          } else {
+            permission_node.isSelected = false;
+            self.unSelectedNode(permission_node, false);
           }
-          self.selectedNode(permission_node, false);
-        } else {
-          permission_node.isSelected = false;
-          self.unSelectedNode(permission_node, false);
-        }
 
-        _temp = [];
-        generatePermissionList(self.permissionNodes[0][0]);
-        toggleRectangleColour(_temp);
-        self.rolePermissions = _temp;
-        updatePermissionAfterChange(_temp);
-        if (self.previousPermission.length === 10) {
-          self.previousPermission.splice(0, 1);
+          _temp = [];
+          generatePermissionList(self.permissionNodes[0][0]);
+          toggleRectangleColour(_temp);
+          self.rolePermissions = _temp;
+          updatePermissionAfterChange(_temp);
+          if (self.previousPermission.length === 10) {
+            self.previousPermission.splice(0, 1);
+          }
+          self.isReset = true;
+          self.previousPermission.push(_previousPermissionObj);
         }
-        self.isReset = true;
-        self.previousPermission.push(_previousPermissionObj);
       }
     }
 
     function toggleExclude(permission_node) {
-      let _previousPermissionObj = clone(self.rolePermissions);
-      if (!permission_node.greyedBtn && permission_node.name != 'sos') {
-        permission_node.excluded = !permission_node.excluded;
-        permission_node.excludedParent = !permission_node.excludedParent;
+      if (self.userPermission.joc && self.userPermission.joc.administration.accounts.manage) {
+        let _previousPermissionObj = clone(self.rolePermissions);
+        if (!permission_node.greyedBtn && permission_node.name != 'sos') {
+          permission_node.excluded = !permission_node.excluded;
+          permission_node.excludedParent = !permission_node.excludedParent;
 
-        if (permission_node.excluded) {
-          permission_node.isSelected = true;
-          if (permission_node.parent && !permission_node.parent.isSelected) {
-            setParentSelected(permission_node);
+          if (permission_node.excluded) {
+            permission_node.isSelected = true;
+            if (permission_node.parent && !permission_node.parent.isSelected) {
+              setParentSelected(permission_node);
+            }
+            self.selectedExcludeNode(permission_node);
+          } else {
+            if (!permission_node.selected) {
+              permission_node.isSelected = false;
+            }
+            self.unSelectedExcludeNode(permission_node);
           }
-          self.selectedExcludeNode(permission_node);
-        } else {
-          if (!permission_node.selected) {
-            permission_node.isSelected = false;
-          }
-          self.unSelectedExcludeNode(permission_node);
-        }
 
-        _temp = [];
-        generatePermissionList(self.permissionNodes[0][0]);
-        toggleRectangleColour(_temp);
-        self.rolePermissions = _temp;
-        updatePermissionAfterChange(_temp);
-        if (self.previousPermission.length === 10) {
-          self.previousPermission.splice(0, 1);
+          _temp = [];
+          generatePermissionList(self.permissionNodes[0][0]);
+          toggleRectangleColour(_temp);
+          self.rolePermissions = _temp;
+          updatePermissionAfterChange(_temp);
+          if (self.previousPermission.length === 10) {
+            self.previousPermission.splice(0, 1);
+          }
+          self.isReset = true;
+          self.previousPermission.push(_previousPermissionObj);
         }
-        self.isReset = true;
-        self.previousPermission.push(_previousPermissionObj);
       }
     }
 

@@ -89,7 +89,7 @@
         <span class="_600">
           {{instruction.TYPE}}<span *ngIf="instruction.TYPE === 'Lock'">:</span>
           <span class="text-muted" *ngIf="instruction.TYPE === 'Lock'">
-              <i (click)="coreService.navToInventoryTab(instruction.lockName, 'LOCK');$event.stopPropagation();"
+              <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(instruction.lockName, 'LOCK');$event.stopPropagation();"
                  class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
               <a class="text-hover-primary" [nz-tooltip]="lockItemTemplate" (click)="coreService.showLock(instruction.lockName);$event.stopPropagation();" >{{instruction.lockName}}</a>
             </span>
@@ -145,12 +145,12 @@
           {{instruction.TYPE | translate}}
           <span *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice' || instruction.TYPE === 'AddOrder')">: </span>
           <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice') && instruction.noticeBoardName">
-            <i (click)="coreService.navToInventoryTab(instruction.noticeBoardName, 'NOTICEBOARD');$event.stopPropagation();"
+            <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(instruction.noticeBoardName, 'NOTICEBOARD');$event.stopPropagation();"
                  class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
             <a class="text-hover-primary" (click)="coreService.showBoard(instruction.noticeBoardName);$event.stopPropagation();" >{{instruction.noticeBoardName}}</a>
           </span>
           <span class="text-muted" *ngIf="instruction.TYPE === 'AddOrder'">
-            <i (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"
+            <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"
                class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
             <a class="text-hover-primary" (click)="coreService.showWorkflow(instruction.workflowName);$event.stopPropagation();" >{{instruction.workflowName}}</a>
           </span>

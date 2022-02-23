@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {isEqual, isArray, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
+import { AuthService } from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 
@@ -469,11 +470,13 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   main: any = [];
   usr: any = {currentPage: 1};
   preferences: any = {};
+  permission: any = {};
   userDetail: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private router: Router, public modal: NzModalService, private dataService: DataService) {
+  constructor(public coreService: CoreService, private router: Router, public modal: NzModalService,
+    private authService: AuthService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUserData(res);
@@ -495,6 +498,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
   }
 
   ngOnDestroy(): void {

@@ -309,10 +309,9 @@
     "label.relativeTime": "相対時刻",
     "label.processExecuted": "実行済",
     "label.selectController": "コントローラー選択",
-    "label.regexAndChooseTree": "正規表現入力またはフォルダーから選択",
     "placeholder.setEndDate": "終了日時設定",
     "placeholder.setStartDate": "開始日時設定",
-    "placeholder.regexAndChooseTree": "正規表現入力またはフォルダから選択",
+    "placeholder.regex": "Enter Regular expression",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "操作ログ有効時にポップアップで使用",
     "label.predefined": "事前設定したコメント",
@@ -2017,6 +2016,7 @@
     "label.resetPassword": "パスワードリセット",
     "label.forcePasswordChange": "パスワード変更を強制",
     "label.disable": "無効化",
+    "label.folderNotExist": "Folder does not exist",
     "button.addGroupRole": "グループロールを追加",
     "button.addIdentityService": "IDサービス作成",
     "button.addPermission": "パーミッション追加",
@@ -2084,6 +2084,7 @@
     "message.moreThanOneVaultEnable": "VAULT* IDサービスは1つしか有効にできません",
     "message.moreThanOneLDAPEnable": "LDAP* IDサービスは1つしか有効にできません",
     "message.deleteSelectedUser": "本当に選択したアカウントをすべて削除しますか？",
+    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
     "message.resetPasswordForUser": "本当にこのアカウントのパスワードをリセットしますか?",
     "message.forcePasswordChangeForUser": "本当にこのアカウントにパスワード変更を強制しますか?",
     "message.resetPasswordForSelectedUser": "本当に選択した全てのアカウントのパスワードをリセットしますか？",
@@ -2103,8 +2104,7 @@
       "label.iamLdapWithMemberOf": "LDAP with memberOf",
       "placeholder.iamLdapHost": "LDAPホストを入力",
       "placeholder.iamLdapPort": "LDAPポートを入力",
-      "placeholder.iamLdapProtocol": "一つ以上のオプションを選択",
-      "message.overwriteChanges": "本当に変更を上書きしますか?"
+      "placeholder.iamLdapProtocol": "一つ以上のオプションを選択"
     },
     "tooltips": {
       "ldap": {

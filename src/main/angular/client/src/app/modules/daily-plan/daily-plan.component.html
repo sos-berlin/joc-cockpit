@@ -77,14 +77,14 @@
       </td>
       <td *ngIf="dailyPlanFilters.filter.groupBy === ''">
         <span class="show-in-single-line">
-          <i (click)="coreService.navToInventoryTab(value.schedulePath, 'SCHEDULE');"
+          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(value.schedulePath, 'SCHEDULE');"
              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
           <span [innerHtml]="value.schedulePath | highlight : dailyPlanFilters.searchText"></span>
         </span>
       </td>
       <td *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
          <span class="show-in-single-line">
-          <i (click)="coreService.navToInventoryTab(value.workflowPath, 'WORKFLOW');"
+          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(value.workflowPath, 'WORKFLOW');"
              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
           <a class="text-hover-primary"
              (click)="coreService.showWorkflow(value.workflowPath);"  [innerHtml]="value.workflowPath | highlight : dailyPlanFilters.searchText"></a>
@@ -189,7 +189,7 @@
           <i class="fa fa-angle-right cursor fa-lg p-r-xs" *ngIf="!plan.order"
              (click)="expandCollapseOrder(plan)" aria-hidden="true"></i>
           <span *ngIf="dailyPlanFilters.filter.groupBy === 'WORKFLOW'">
-             <i (click)="coreService.navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');"
+             <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');"
                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
             <a class="text-hover-primary"
                (click)="coreService.showWorkflow(plan.value[0].workflowPath);">
@@ -197,7 +197,7 @@
             </a>
           </span>
           <span *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
-            <i (click)="coreService.navToInventoryTab(plan.value[0].schedulePath, 'SCHEDULE');"
+            <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(plan.value[0].schedulePath, 'SCHEDULE');"
                class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
             <span [innerHtml]="plan.value[0].schedulePath | highlight : dailyPlanFilters.searchText"></span>
           </span>
@@ -208,7 +208,7 @@
       <td
         *ngIf="!plan.order && plan.value.length === 1 && plan.value[0] && dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
          <span class="show-in-single-line">
-          <i (click)="coreService.navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');"
+          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(plan.value[0].workflowPath, 'WORKFLOW');"
              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
           <a class="text-hover-primary"
              (click)="coreService.showWorkflow(plan.value[0].workflowPath);">
@@ -534,7 +534,7 @@
                 </div>
               </div>
             </div>
-            <div class="row" *ngIf="showSearchPanel && !(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))">
+            <div class="row" *ngIf="showSearchPanel">
               <div class="col-md-12">
                 <div class="box p-a m-b p-t-md">
                   <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"

@@ -12,14 +12,14 @@
   >
     <thead>
     <tr>
-      <th
+      <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
         class="chk"
         [nzShowCheckbox]="true"
         [(nzChecked)]="checked"
         [nzIndeterminate]="indeterminate"
         (nzCheckedChange)="onAllChecked($event)"
       ></th>
-      <th class="menu"><span translate>common.label.action</span></th>
+      <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span></th>
       <th (click)="sort('account')">
         <a><span class="p-r-xs" translate>user.label.user</span>
           <i *ngIf="order == 'account' && !reverse"
@@ -38,8 +38,8 @@
     </thead>
     <tbody>
     <tr *ngFor="let profile of ajaxTable.data  | orderBy: order:reverse:false; let i = index">
-      <td [nzShowCheckbox]="true" [nzChecked]="setOfCheckedId.has(profile.account)" (nzCheckedChange)="onItemChecked(profile.account, $event)"></td>
-      <td>
+      <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" [nzShowCheckbox]="true" [nzChecked]="setOfCheckedId.has(profile.account)" (nzCheckedChange)="onItemChecked(profile.account, $event)"></td>
+      <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
         <div class="btn-group dropdown">
           <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option">
             <i class="fa fa-ellipsis-h"></i></button>

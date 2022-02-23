@@ -11,6 +11,7 @@ import {DataService} from '../data.service';
 import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../../components/guard';
+import { ConfirmationModalComponent } from '../accounts/accounts.component';
 
 // Role Actions
 @Component({
@@ -255,10 +256,11 @@ export class ControllerModalComponent implements OnInit {
   templateUrl: 'roles.component.html',
   styleUrls: ['./roles.component.css']
 })
-export class RolesComponent implements OnDestroy {
+export class RolesComponent implements OnInit, OnDestroy {
   accounts: any = [];
   userDetail: any = {};
   showMsg: any;
+  permission: any = {};
   roles: any = [];
   controllerRoles = [];
   object = {
@@ -270,7 +272,7 @@ export class RolesComponent implements OnDestroy {
   subscription2: Subscription;
   subscription3: Subscription;
 
-  constructor(private coreService: CoreService, private router: Router, private activeRoute: ActivatedRoute, private modal: NzModalService,
+  constructor(private coreService: CoreService, private router: Router, private authService: AuthService, private activeRoute: ActivatedRoute, private modal: NzModalService,
     private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
@@ -287,12 +289,18 @@ export class RolesComponent implements OnDestroy {
         this.reset();
       } else if (res === 'PASTE_ROLE') {
         this.paste();
+      } else if (res === 'DELETE') {
+        this.deleteList();
       }
     });
     this.subscription3 = router.events
       .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd)).subscribe((e: any) => {
         this.checkUrl(e);
       });
+  }
+
+  ngOnInit(): void {
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
   }
 
   ngOnDestroy(): void {
@@ -483,7 +491,7 @@ export class RolesComponent implements OnDestroy {
   private removeRole(role) {
     this.coreService.post('authentication/auth/roles/delete', {
       roles: [
-        {role}
+        { role }
       ],
       identityServiceName: this.userDetail.identityServiceName,
     }).subscribe(() => {
@@ -562,6 +570,43 @@ export class RolesComponent implements OnDestroy {
     });
   }
 
+  private deleteList(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmationModalComponent,
+      nzComponentParams: {
+        delete: true,
+        isRole: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.deleteRoles();
+      }
+    });
+  }
+
+  private deleteRoles() {
+    const obj: any = {
+      roles: [],
+      identityServiceName: this.userDetail.identityServiceName,
+    };
+    this.object.mapOfCheckedId.forEach((value, key) => {
+      obj.roles.push({ account: key });
+    });
+    this.coreService.post('authentication/auth/roles/delete', obj).subscribe(() => {
+      this.roles = this.roles.filter((item) => {
+        return !this.object.mapOfCheckedId.has(item);
+      });
+      this.controllerRoles = this.controllerRoles.filter((item) => {
+        return !this.object.mapOfCheckedId.has(item.name);
+      });
+      this.reset();
+    });
+  }
+
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.controllerRoles, event.previousIndex, event.currentIndex);
     const roles: any = {};
@@ -580,13 +625,13 @@ export class RolesComponent implements OnDestroy {
     for (const role in res.roles) {
       let obj = {
         name: role,
-        controllers: [{name: '', permissions: res.roles[role].permissions}],
+        controllers: [{ name: '', permissions: res.roles[role].permissions }],
         mainObj: res.roles[role]
       };
       if (res.roles[role].permissions && res.roles[role].permissions.controllers) {
         for (const controller in res.roles[role].permissions.controllers) {
           if (res.roles[role].permissions.controllers[controller]) {
-            obj.controllers.push({name: controller, permissions: res.roles[role].permissions.controllers[controller]});
+            obj.controllers.push({ name: controller, permissions: res.roles[role].permissions.controllers[controller] });
           }
         }
       }

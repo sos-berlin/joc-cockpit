@@ -94,7 +94,7 @@
             </ng-template>
           </nz-tree-select>
         </div>
-        <i *ngIf="list.length > 0" class="pos-abt z-index-9999 text-16 r-15 t-1" nz-icon nzType="folder" nzTheme="outline" (click)="showTree()"></i>
+        <i *ngIf="list.length > 0" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzType="folder" nzTheme="outline" (click)="showTree()"></i>
         <div (click)="closeScriptTree()" id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
           <ngx-codemirror required #codeMirror title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}"
                           #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption"

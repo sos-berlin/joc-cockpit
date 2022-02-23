@@ -1,5 +1,5 @@
-<div class="app-header white box-shadow bg-blue-color"
-     [ngClass]="{'backup': (isBackUp === 'YES')}" id="headerColor">
+<div class="app-header white box-shadow bg-blue-color {{preferences.headerColor}}"
+     [ngClass]="{'backup': (isBackUp === 'YES')}">
   <div class="navbar box-shadow-z0 p-l-0 p-r-20">
     <a data-toggle="collapse" data-target="#navbar1" class="navbar-item pull-right hide-menubar m-a-0 m-l">
       <i class="fa fa-navicon text-white"></i>
@@ -23,7 +23,7 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link text-white pointer">
-          <span class="avatar" id="avatarBg" [innerHtml]="username | slice:0:1"></span>
+          <span class="avatar" [innerHtml]="username | slice:0:1"></span>
           <span class="cursor text-left p-l-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="user"
                 nzPlacement="bottomRight">
             <span class="_500 text-md">{{username | decodeSpace}}</span>
@@ -83,7 +83,7 @@
             </span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="(showViews && showViews.monitor != undefined) ? showViews.monitor : (permission.currentController && (permission.joc.administration.controllers.view || permission.currentController.agents.view))">
+        <li class="nav-item" *ngIf="(showViews && showViews.monitor != undefined) ? showViews.monitor : true">
           <a class="nav-link" routerLink="/monitor" [routerLinkActive]="['active']">
             <span class="nav-text">
               <i class="icon-dashboard-icon text-white"></i>
@@ -147,7 +147,7 @@
           </a>
         </li>
         <li class="nav-item"
-            *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.notification.view || permission.joc.others.view)))">
+            *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.fileTransfer.view || permission.joc.notification.view || permission.joc.others.view)))">
           <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']"
              (click)="navigateToConfiguration()">
             <span class="nav-text">

@@ -34,6 +34,7 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
   schemeList = [];
   tempPeriodList = [];
   cmOption: any = {
+    scrollbarStyle: 'simple',
     lineNumbers: true,
     readOnly: true,
     mode: 'shell'

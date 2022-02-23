@@ -51,7 +51,7 @@
             <i class="cursor fa fa-caret-down m-l-xs" [hidden]="showPanel1" (click)="showPanel1=true"></i>
             <i class="cursor fa fa-caret-up m-l-xs" *ngIf="showPanel1" (click)="showPanel1=false"></i>
         </div>
-        <div class="col-sm-12 m-t-sm" *ngIf="!showPanel1">
+        <div class="col-sm-12 m-t-sm m-b-xs" *ngIf="!showPanel1">
             <div class="box p-a m-b-0">
                 <div class="row ">
                     <div class="col-md-12 role" *ngFor="let p of rolePermissions">

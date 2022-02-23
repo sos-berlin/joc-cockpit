@@ -309,10 +309,9 @@
     "label.relativeTime": "Heure relative",
     "label.processExecuted": "Processus exécuté",
     "label.selectController": "Choisissez le Contrôleur",
-    "label.regexAndChooseTree": "Expression Régulière ou Dossiers",
     "placeholder.setEndDate": "Définir la date de fin",
     "placeholder.setStartDate": "Définir la date de démarrage",
-    "placeholder.regexAndChooseTree": "Expression régulière ou choisir des dossiers dans l'arborescence",
+    "placeholder.regex": "Enter Regular expression",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "Used in all the popup window whit audit log is enable",
     "label.predefined": "Justification prédéfinie",
@@ -2017,6 +2016,7 @@
     "label.resetPassword": "Réinitialiser le mot de passe",
     "label.forcePasswordChange": "Forcer le changement de mot de passe",
     "label.disable": "Désactiver",
+    "label.folderNotExist": "Folder does not exist",
     "button.addGroupRole": "Ajouter Groupes/Rôles",
     "button.addIdentityService": "Ajouter un Service d'Identité",
     "button.addPermission": "Ajouter une Permission",
@@ -2084,6 +2084,7 @@
     "message.moreThanOneVaultEnable": "Un seul Service d'Identité VAULT* doit être activé.",
     "message.moreThanOneLDAPEnable": "Un seul Service d'Identité LDAP* doit être activé.",
     "message.deleteSelectedUser": "Êtes-vous sûr de vouloir supprimer tous le comptes sélectionnés ?",
+    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
     "message.resetPasswordForUser": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de ce compte ?",
     "message.forcePasswordChangeForUser": "Êtes-vous sûr de vouloir forcer le changement du mot de passe de ce compte ?",
     "message.resetPasswordForSelectedUser": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de tous les comptes sélectionnés ?",
@@ -2103,8 +2104,7 @@
       "label.iamLdapWithMemberOf": "LDAP Server offre l'attribut memberOf",
       "placeholder.iamLdapHost": "Entrez le LDAP Server Host",
       "placeholder.iamLdapPort": "Entrer le LDAP Server Port",
-      "placeholder.iamLdapProtocol": "Selectionnez une ou plusieurs options",
-      "message.overwriteChanges": "Êtes-vous sûr de vouloir appliquer les modifications?"
+      "placeholder.iamLdapProtocol": "Selectionnez une ou plusieurs options"
     },
     "tooltips": {
       "ldap": {

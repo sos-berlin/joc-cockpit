@@ -6,104 +6,104 @@
 
 .backup {
   background: #2c3e50;
-  background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #2c3e50);
-  background: -o-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
-  background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
-  background: linear-gradient(to right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1))
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.51), #2c3e50);
+  background: -o-linear-gradient(right, rgba(255, 255, 255, 0.51), rgba(44, 62, 80, 1));
+  background: -moz-linear-gradient(right, rgba(255, 255, 255, 0.51), rgba(44, 62, 80, 1));
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.51), rgba(44, 62, 80, 1));
 }
 
 .backup-top-header {
-  background: #2c3e50
+  background: #2c3e50;
 }
 
 .backup-top-header .backup-text,
 .backup-top-header .m-r-sm {
-  color: #fff
+  color: #fff;
 }
 
-img.logo-for-default{
+img.logo-for-default {
   display: inline-block !important;
 }
 
 .header-prussian-blue {
-  background-color: #03254E !important;
+  background-color: #03254e !important;
+}
+
+.header-prussian-blue .avatar {
+  background-color: #fff !important;
+  color: #03254e !important;
 }
 
 .header-eggplant {
-  background-color: #45062E !important;
+  background-color: #45062e !important;
+}
+
+.header-eggplant .avatar {
+  background-color: #fff !important;
+  color: #45062e !important;
 }
 
 .header-blackcurrant {
-  background-color: #320E3B !important;
+  background-color: #320e3b !important;
+}
+
+.header-blackcurrant .avatar {
+  background-color: #fff !important;
+  color: #320e3b !important;
 }
 
 .header-Dodger-Blue {
-  background-color: #246EB9 !important;
+  background-color: #246eb9 !important;
+}
+
+.header-Dodger-Blue .avatar {
+  background-color: #fff !important;
+  color: #246eb9 !important;
 }
 
 .header-nordic {
-  background-color: #022C2F !important;
+  background-color: #022c2f !important;
+}
+
+.header-nordic .avatar {
+  background-color: #fff !important;
+  color: #022c2f !important;
 }
 
 .header-light-sea-green {
-  background-color: #2EC4B6 !important;
+  background-color: #2ec4b6 !important;
+}
+
+.header-light-sea-green .avatar {
+  background-color: #fff !important;
+  color: #2ec4b6 !important;
 }
 
 .header-toledo {
-  background-color: #3A3335 !important;
+  background-color: #3a3335 !important;
+}
+
+.header-toledo .avatar {
+  background-color: #fff !important;
+  color: #3a3335 !important;
 }
 
 .header-Pine-Green {
   background-color: rgb(14, 138, 139) !important;
 }
 
-.header-radical-red {
-  background-color: #C20114 !important;
-}
-
-.avatarbg-prussian-blue {
-  background-color: #FFF !important;
-  color: #03254E !important;
-}
-
-.avatarbg-eggplant {
-  background-color: #FFF !important;
-  color: #45062E !important;
-}
-
-.avatarbg-blackcurrant {
-  background-color: #FFF !important;
-  color: #320E3B !important;
-}
-
-.avatarbg-Dodger-Blue {
-  background-color: #FFF !important;
-  color: #246EB9 !important;
-}
-
-.avatarbg-nordic {
-  background-color: #FFF !important;
-  color: #022C2F !important;
-}
-
-.avatarbg-light-sea-green {
-  background-color: #FFF !important;
-  color: #2EC4B6 !important;
-}
-
-.avatarbg-toledo {
-  background-color: #FFF !important;
-  color: #3A3335 !important;
-}
-
-.avatarbg-Pine-Green {
-  background-color: #FFF !important;
+.header-Pine-Green .avatar {
+  background-color: #fff !important;
   color: rgb(14, 138, 139) !important;
 }
 
-.avatarbg-radical-red {
-  background-color: #FFF !important;
-  color: #7B0D1E !important;
+.header-radical-red {
+  background-color: #c20114 !important;
+}
+
+.header-radical-red .avatar {
+  background-color: #fff !important;
+  color: #7b0d1e !important;
 }
 
 button.close {
@@ -119,8 +119,13 @@ button.close {
 }
 
 .ant-picker-header > button:hover,
-.ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
-.cluster-rect, .connection, .cluster, .icon-color, .ant-tree li,
+.ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon,
+.ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
+.cluster-rect,
+.connection,
+.cluster,
+.icon-color,
+.ant-tree li,
 .ant-picker-header a:hover,
 .ant-time-picker-panel,
 .ant-picker-picker-container,
@@ -128,45 +133,57 @@ button.close {
 .ant-picker-month-panel-month,
 .ant-picker-date,
 .ant-tabs,
-.ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
+.ant-pagination-item a,
+.ant-pagination-prev a,
+.ant-pagination-next a,
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td,
+.ant-table,
+.ant-table-placeholder,
 .ant-pagination-disabled a,
 .ant-pagination-disabled:hover a,
 .ant-pagination-disabled:focus a,
 .ant-pagination-disabled .ant-pagination-item-link,
 .ant-pagination-disabled:hover .ant-pagination-item-link,
 .ant-pagination-disabled:focus .ant-pagination-item-link,
-.ant-select-arrow .ant-select-arrow-icon, .ant-result-title, .ant-result-subtitle,
+.ant-select-arrow .ant-select-arrow-icon,
+.ant-result-title,
+.ant-result-subtitle,
 .ant-select-dropdown-menu-item,
 .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
-.ant-select-dropdown-menu-item-selected, .ant-select-dropdown-menu-item:hover,
+.ant-select-dropdown-menu-item-selected,
+.ant-select-dropdown-menu-item:hover,
 .ant-dropdown-menu-submenu-title,
-.ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a,
-.anticon-calendar, .anticon-clock-circle {
+.ant-dropdown-menu-item > a,
+.ant-dropdown-menu-submenu-title > a,
+.anticon-calendar,
+.anticon-clock-circle {
   color: #3d464d;
 }
-.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
+.ant-checkbox-inner,
+.ant-radio-inner,
+.ant-tree-checkbox-inner {
   border: 1px solid #ccc;
 }
 
 .ant-checkbox-disabled .ant-checkbox-inner {
-  border-color:  #ccc !important;
+  border-color: #ccc !important;
 }
 
 .ant-picker-cell {
-  color: rgba(0, 0, 0, .25);
+  color: rgba(0, 0, 0, 0.25);
 }
 
 .ant-picker-header button {
-  color: rgba(0, 0, 0, .55);
+  color: rgba(0, 0, 0, 0.55);
 }
 
 .ant-picker-header button:hover {
-  color: rgba(0, 0, 0, .85);
+  color: rgba(0, 0, 0, 0.85);
 }
 
 .ant-picker-panel-container {
-  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 div.jsoneditor-tree button.jsoneditor-button {
@@ -195,11 +212,11 @@ div.jsoneditor-tree .jsoneditor-button.jsoneditor-schema-error {
 }
 
 .jsoneditor-text-errors tr .jsoneditor-schema-error {
-  background: url(../assets/images/jsoneditor-icons.svg) -168px -48px
+  background: url(../assets/images/jsoneditor-icons.svg) -168px -48px;
 }
 
 .jsoneditor-text-errors tr.parse-error .jsoneditor-schema-error {
-  background: url(../assets/images/jsoneditor-icons.svg) -25px 0
+  background: url(../assets/images/jsoneditor-icons.svg) -25px 0;
 }
 
 .jsoneditor-menu > .jsoneditor-modes > button,
@@ -216,13 +233,12 @@ div.jsoneditor-tree .jsoneditor-button.jsoneditor-schema-error {
 }
 
 .jsoneditor-statusbar > .jsoneditor-parse-error-icon {
-  background: url(../assets/images/jsoneditor-icons.svg) -25px 0
+  background: url(../assets/images/jsoneditor-icons.svg) -25px 0;
 }
 
 .jsoneditor-frame {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 .timelineWrapper .row .taskBar {
   background-color: #d8d8d8 !important;
 }
-

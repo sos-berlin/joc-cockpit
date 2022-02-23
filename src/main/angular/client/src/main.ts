@@ -14,6 +14,7 @@ import 'codemirror/addon/search/jump-to-line';
 import 'codemirror/addon/hint/javascript-hint';
 import 'codemirror/addon/hint/xml-hint';
 import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/scroll/simplescrollbars';
 
 if (environment.production) {
   enableProdMode();

@@ -28,31 +28,34 @@
               <span *ngIf="extraInfo.deployed" translate>xml.label.deployed</span>
               <span *ngIf="!extraInfo.deployed" translate>xml.label.notDeployed</span>
             </span>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="newFile()" *ngIf="permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
+             (objectType === 'OTHER' && permission.joc.others.manage))">
               <i class="fa fa-file m-r-xs"></i>
               <span translate>xml.button.new</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0" [disabled]="!extraInfo.hasReleases"
+            <button class="btn btn-sm btn-grey m-l-12" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0 && permission.joc && permission.joc.notification.manage" [disabled]="!extraInfo.hasReleases"
                     (click)="removeConf()">
               <i class="fa fa-trash m-r-xs"></i>
               <span translate>xml.button.remove</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" [disabled]="extraInfo.released" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0"
+            <button class="btn btn-sm btn-grey m-l-12" [disabled]="extraInfo.released" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0 && permission.joc && permission.joc.notification.manage"
               (click)="deleteConf()">
               <i class="fa fa-trash-o m-r-xs"></i>
               <span translate>xml.button.deleteDraft</span>
             </button>
-            <button *ngIf="objectType === 'OTHER' && nodes && nodes.length > 0"
+            <button *ngIf="objectType === 'OTHER' && nodes && nodes.length > 0 && permission.joc && permission.joc.others.manage"
               (click)="reassignSchemaFunc()" class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-recycle m-r-xs"></i>
               <span translate>xml.button.reassignSchema</span>
             </button>
-            <button *ngIf="nodes && nodes.length > 0 && objectType !== 'NOTIFICATION'"
+            <button *ngIf="nodes && nodes.length > 0 && objectType !== 'NOTIFICATION' && permission.joc && ((objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
+              (objectType === 'OTHER' && permission.joc.others.manage))"
                     class="btn btn-sm btn-grey m-l-12" (click)="deleteAllConf()">
               <i class="fa fa-trash m-r-xs"></i>
               <span translate>xml.button.deleteAll</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" (click)="importXML()">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="importXML()" *ngIf="permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
+              (objectType === 'OTHER' && permission.joc.others.manage))">
               <i class="fa fa-upload m-r-xs"></i>
               <span translate>xml.button.import</span>
             </button>
@@ -61,8 +64,9 @@
               <i class="fa fa-download m-r-xs"></i>
               <span translate>xml.button.export</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" *ngIf="nodes && nodes.length > 0"
-                    (click)="showXml()">
+            <button class="btn btn-sm btn-grey m-l-12" (click)="showXml()"
+             *ngIf="nodes && nodes.length > 0 && permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
+                    (objectType === 'OTHER' && permission.joc.others.manage))">
               <i class="fa fa-pencil m-r-xs"></i>
               <span translate>xml.button.editXML</span>
             </button>
@@ -71,7 +75,8 @@
               <i class="fa fa-check m-r-xs"></i>
               <span translate>xml.button.validate</span>
             </button>
-            <button class="btn btn-sm btn-grey m-l-12" [ngClass]="extraInfo.released ? 'btn-badge-success' : 'btn-badge-danger'" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0" [disabled]="extraInfo.released"
+            <button class="btn btn-sm btn-grey m-l-12" [ngClass]="extraInfo.released ? 'btn-badge-success' : 'btn-badge-danger'" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0
+              && permission.joc && permission.joc.notification.manage" [disabled]="extraInfo.released"
                     (click)="releaseXML()">
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>xml.button.release</span>
@@ -82,7 +87,7 @@
               <span translate>xml.button.check</span>
             </button>
             <button class="btn btn-sm btn-grey m-l-12" [ngClass]="extraInfo.isExist ? extraInfo.deployed ? 'btn-badge-success' : 'btn-badge-danger' : ''" [disabled]="!extraInfo.isExist || !validConfig" *ngIf="objectType === 'YADE' && nodes && nodes.length > 0
-                && permission.joc && permission.joc.inventory.deploy"
+                && permission.joc && permission.joc.fileTransfer.manage"
               (click)="deployXML()">
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>xml.button.deploy</span>
@@ -106,12 +111,12 @@
           <li class="nav-item dropdown-separator" *ngIf="permission.joc && permission.joc.fileTransfer.view && permission.joc.inventory.view">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="permission.joc && permission.joc.fileTransfer.view && permission.joc.inventory.view">
+          <li class="nav-item" *ngIf="permission.joc && permission.joc.fileTransfer.view">
             <a class="nav-link" [routerLink]="['/configuration/file_transfer']" [routerLinkActive]="['active']">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.fileTransfer</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.joc && permission.joc.inventory.view && permission.joc.notification.view">
+          <li class="nav-item dropdown-separator" *ngIf="permission.joc && permission.joc.notification.view && (permission.joc.fileTransfer.view || permission.joc.inventory.view)">
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.joc && permission.joc.notification.view">
@@ -119,7 +124,7 @@
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="permission.joc && permission.joc.others.view">
+          <li class="nav-item dropdown-separator" *ngIf="permission.joc && permission.joc.others.view && (permission.joc.notification.view || permission.joc.fileTransfer.view || permission.joc.inventory.view)">
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.joc && permission.joc.others.view">
