@@ -200,7 +200,7 @@
     "label.timeSpend": "Time Spent",
     "label.auditLogFound": "Audit Log entry found",
     "label.auditLogsFound": "Audit Log entries found",
-    "message.defaultAuditLog": "Default Audit Log",
+    "message.defaultAuditLog": "[automatically created]",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Reason",
