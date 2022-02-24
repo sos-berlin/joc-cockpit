@@ -141,7 +141,7 @@
                  <i class="cursor fa fa-caret-up fa-lg"
                  *ngIf="notify.show && filters.current && notify.hasMonitors"
                  (click)="notify.show = false;$event.stopPropagation()"></i>&nbsp;
-                  <i (click)="navToWorkflowTab(notify.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(notify.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span (click)="coreService.showWorkflow(notify.workflow);$event.stopPropagation()"
                         class="text-hover-primary" [innerHtml]="notify.workflow | highlight : filters.filter.searchText"></span>
               </span>

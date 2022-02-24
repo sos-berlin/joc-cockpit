@@ -1,12 +1,12 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {isEqual, clone} from 'underscore';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {AuthService} from '../../../components/guard';
-import {CoreService} from '../../../services/core.service';
-import {DataService} from '../data.service';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { isEqual, clone } from 'underscore';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { AuthService } from '../../../components/guard';
+import { CoreService } from '../../../services/core.service';
+import { DataService } from '../data.service';
 
 declare var $: any;
 declare var d3: any;
@@ -117,10 +117,10 @@ export class FolderModalComponent implements OnInit {
 
   nodes = [];
   submitted = false;
-  folderObj: any = {paths: []};
+  folderObj: any = { paths: [] };
   schedulerIds: any;
 
-  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
+  @ViewChild('treeSelectCtrl', { static: false }) treeSelectCtrl;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService) {
   }
@@ -129,6 +129,8 @@ export class FolderModalComponent implements OnInit {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (this.folderArr && this.folderArr.length > 0) {
       this.folderObj.paths = this.folderArr.map((folder) => folder.folder);
+    } else {
+      this.folderObj.paths = [];
     }
     this.getFolderTree();
   }
@@ -146,7 +148,7 @@ export class FolderModalComponent implements OnInit {
       this.folderArr = [];
       if (this.folderObj.paths && this.folderObj.paths.length > 0) {
         this.folderObj.paths.forEach((path) => {
-          this.folderArr.push({folder: path, recursive: obj.recursive});
+          this.folderArr.push({ folder: path, recursive: obj.recursive });
         });
       }
     }
@@ -214,16 +216,32 @@ export class FolderModalComponent implements OnInit {
     }
   }
 
-  getFolderTree(): void {
+  private getFolderTree(): void {
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      forInventory: true
+      controllerId: this.schedulerIds.selected
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);
       if (this.nodes.length > 0) {
         this.nodes[0].expanded = true;
       }
     });
+  }
+
+  selectFolder(node, $event): void {
+    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    $event.stopPropagation();
+  }
+
+  addFolder(path): void {
+    if (this.folderObj.paths.indexOf(path) === -1) {
+      this.folderObj.paths.push(path);
+      this.folderObj.paths = [...this.folderObj.paths];
+    }
+  }
+
+  remove(path): void {
+    this.folderObj.paths.splice(this.folderObj.paths.indexOf(path), 1);
+    this.folderObj.paths = [...this.folderObj.paths];
   }
 }
 
@@ -963,8 +981,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .transition()
         .duration(self.duration)
         .attr('d', (d) => {
-          let o = {x: source.x, y: (source.y + self.boxWidth / 2)};
-          return transitionElbow({source: o, target: o});
+          let o = { x: source.x, y: (source.y + self.boxWidth / 2) };
+          return transitionElbow({ source: o, target: o });
         })
         .remove();
       // Update nodes
@@ -1125,10 +1143,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     function calculateTopMost() {
       endNodes2 = {
-        leftMost: {x: 0, y: 0},
-        rightMost: {x: 0, y: 0},
-        topMost: {x: 0, y: 0},
-        lowerMost: {x: 0, y: 0}
+        leftMost: { x: 0, y: 0 },
+        rightMost: { x: 0, y: 0 },
+        topMost: { x: 0, y: 0 },
+        lowerMost: { x: 0, y: 0 }
       };
 
       nodes = self.tree.nodes(self.root);

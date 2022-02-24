@@ -344,7 +344,7 @@ export class UserComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
-              private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
+    private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
@@ -656,7 +656,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: GitModalComponent,
       nzComponentParams: {
-        display : this.preferences.auditLog
+        display: this.preferences.auditLog
       },
       nzFooter: null,
       nzAutofocus: null,
@@ -665,7 +665,7 @@ export class UserComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        
+
       }
     });
   }

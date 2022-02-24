@@ -822,7 +822,7 @@
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null)">
                 <span class="show-in-single-line w-full">
-                  <i (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
                         class="text-hover-primary" [innerHtml]="history.workflow | highlight : order.searchText"></span>
                 </span>
@@ -1004,7 +1004,7 @@
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null)">
                 <span class="show-in-single-line w-full">
-                  <i (click)="navToWorkflowTab(jobHistory.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(jobHistory.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span (click)="coreService.showWorkflow(jobHistory.workflow);$event.stopPropagation()"
                         class="text-hover-primary" [innerHtml]="jobHistory.workflow | highlight : task.searchText"></span>
                 </span>
@@ -1176,7 +1176,7 @@
                   [innerHtml]="transfer._operation | highlight : yade.searchText"></td>
               <td (click)="coreService.showLogWindow(null, transfer,null,transfer.controllerId,true)">
                 <span class="show-in-single-line w-full">
-                  <i (click)="navToWorkflowTab(transfer.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(transfer.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span (click)="coreService.showWorkflow(transfer.workflowPath);$event.stopPropagation()"
                         class="text-hover-primary" [innerHtml]="transfer.workflowPath | highlight : yade.searchText"></span>
                 </span>
@@ -1402,7 +1402,7 @@
                     <td><span [innerHtml]="child.deployType | translate"></span></td>
                     <td>
                       <span class="show-in-single-line w-full">
-                         <i *ngIf="child.operation === 'UPDATE'"
+                         <i *ngIf="child.operation === 'UPDATE' && permission.joc && permission.joc.inventory.view"
                             (click)="navToInventoryTab(child);$event.stopPropagation()"
                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                         <span
@@ -1549,7 +1549,7 @@
                             <td colspan="3"><span class="p-l-md" [ngClass]="{'p-l-lg' : !historyFilters.current }"
                                                   [innerHtml]="order.orderId | highlight: submission.searchText"></span></td>
                             <td colspan="3">
-                              <i *ngIf="order.workflowPath" (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                              <i *ngIf="order.workflowPath && permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                               <span *ngIf="order.workflowPath" (click)="coreService.showWorkflow(order.workflowPath);$event.stopPropagation()"
                                     class="text-hover-primary" [innerHtml]="order.workflowPath | highlight: submission.searchText"></span>
                             </td>

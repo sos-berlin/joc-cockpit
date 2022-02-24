@@ -91,10 +91,10 @@ export class SearchComponent implements OnInit {
     this.getFolderTree();
   }
 
-  getFolderTree(): void {
+  private getFolderTree(): void {
+    this.filter.paths = [];
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      types: ['FOLDER']
+      controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res) => {
         this.folders = this.coreService.prepareTree(res, true);
@@ -105,8 +105,25 @@ export class SearchComponent implements OnInit {
     });
   }
 
+  displayWith(data): string {
+    return data.key;
+  }
+
+  selectFolder(node, $event): void {
+    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    $event.stopPropagation();
+  }
+
+  addFolder(path): void {
+    if (this.filter.paths.indexOf(path) === -1) {
+      this.filter.paths.push(path);
+      this.filter.paths = [...this.filter.paths];
+    }
+  }
+
   remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+    this.filter.paths = [...this.filter.paths];
   }
 
   checkFilterName(): void {

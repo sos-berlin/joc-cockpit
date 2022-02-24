@@ -202,6 +202,7 @@
     "label.timeSpend": "作業時間",
     "label.auditLogFound": "操作ログがあります",
     "label.auditLogsFound": "操作ログがあります",
+    "message.defaultAuditLog": "Default Audit Log",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "理由",

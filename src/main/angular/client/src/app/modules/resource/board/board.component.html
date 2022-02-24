@@ -246,7 +246,7 @@
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
+                          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="board.path | highlight : boardsFilters.searchText"></span>
                         </span>
@@ -340,7 +340,7 @@
                                     <td></td>
                                     <td><span class="p-l">{{order.orderId}}</span></td>
                                     <td colspan="2">
-                                      <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                                      <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                                       <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">{{order.workflowId.path}} </a>
                                     </td>
                                     <td><span>{{order.positionString}}</span></td>

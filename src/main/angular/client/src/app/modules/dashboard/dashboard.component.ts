@@ -211,7 +211,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   setWidgetPreference(): void {
     this.dataService.refreshWidget(this.widgets);
-    this.preferences.dashboardLayout = this.widgets;
+    for (let i = 0; i < this.dashboardLayout.length; i++) {
+      for (let j = 0; j < this.widgets.length; j++) {
+        if (this.dashboardLayout[i].name === this.widgets[j].name) {
+          this.dashboardLayout[i] = this.widgets[j];
+          break;
+        }
+      }
+    }
+    this.preferences.dashboardLayout = this.dashboardLayout;
     sessionStorage.preferences = JSON.stringify(this.preferences);
     const configObj: any = {
       controllerId: this.schedulerIds.selected,
@@ -229,10 +237,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.isLoading = true;
-    this.initConfig(false);
-    this.initWidgets();
-    DashboardComponent.calculateHeight();
+    this.checkPermission();
+  }
+
+  private checkPermission(timeout = 0): void {
+    setTimeout(() => {
+      if (!this.permission.joc) {
+        this.checkPermission(50);
+      } else {
+        this.isLoading = true;
+        this.initConfig(false);
+        this.initWidgets();
+        DashboardComponent.calculateHeight();
+      }
+    }, timeout)
   }
 
   private initWidgets(): void {

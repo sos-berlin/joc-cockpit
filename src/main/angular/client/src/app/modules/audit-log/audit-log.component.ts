@@ -214,9 +214,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-              private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService, private router: Router,
-              private orderPipe: OrderPipe) {
+    private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
+    private translate: TranslateService, private excelService: ExcelService, private router: Router,
+    private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });

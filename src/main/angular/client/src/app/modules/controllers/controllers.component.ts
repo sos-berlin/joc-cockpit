@@ -238,20 +238,26 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   private getTokens(flag = true): void {
-    this.coreService.post('token/show', {}).subscribe({
-      next: (data: any) => {
-        this.tokens = data.tokens;
-        if (!flag) {
-          this.checkTokens();
-        } else {
-          this.getData();
+    if (this.permission.joc && this.permission.joc.administration.certificates.manage) {
+      this.coreService.post('token/show', {}).subscribe({
+        next: (data: any) => {
+          this.tokens = data.tokens;
+          if (!flag) {
+            this.checkTokens();
+          } else {
+            this.getData();
+          }
+        }, error: () => {
+          if (flag) {
+            this.getData();
+          }
         }
-      }, error: () => {
-        if (flag) {
-          this.getData();
-        }
+      });
+    } else {
+      if (flag) {
+        this.getData();
       }
-    });
+    }
   }
 
   getData(): void {

@@ -2,9 +2,9 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges,
 import {clone, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
-import {WorkflowService} from '../../../../services/workflow.service';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 
@@ -35,7 +35,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private workflowService: WorkflowService, public inventoryService: InventoryService,
+  constructor(public coreService: CoreService, private translate: TranslateService, public inventoryService: InventoryService,
               private dataService: DataService, private ref: ChangeDetectorRef, private router: Router) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -491,12 +491,19 @@ export class BoardComponent implements OnChanges, OnDestroy {
         this.history.push(JSON.stringify(this.board.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
-      this.coreService.post('inventory/store', {
+      const request: any = {
         configuration: this.board.configuration,
         valid: !!(this.board.configuration.postOrderToNoticeId && this.board.configuration.expectOrderToNoticeId && this.board.configuration.endOfLife),
         id: this.board.id,
         objectType: this.objectType
-      }).subscribe({
+      };
+  
+      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          request.auditLog = {comment: translatedValue};
+        });
+      }
+      this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.board.id === this.data.id) {
             this.board.actual = JSON.stringify(this.board.configuration);

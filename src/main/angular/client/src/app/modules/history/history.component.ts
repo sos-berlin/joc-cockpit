@@ -1,21 +1,21 @@
-import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { isEmpty, clone, extend } from 'underscore';
-import { takeUntil } from 'rxjs/operators';
-import { DataService } from '../../services/data.service';
-import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard';
-import { SaveService } from '../../services/save.service';
-import { ExcelService } from '../../services/excel.service';
-import { EditFilterModalComponent } from '../../components/filter-modal/filter.component';
-import { EditIgnoreListComponent } from './ignore-list-modal/ignore-list.component';
-import { SearchPipe, OrderPipe } from '../../pipes/core.pipe';
-import { FileTransferService } from '../../services/file-transfer.service';
-import { InventoryForHistory } from '../../models/enums';
+import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Subject, Subscription} from 'rxjs';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {TranslateService} from '@ngx-translate/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {isEmpty, clone, extend} from 'underscore';
+import {takeUntil} from 'rxjs/operators';
+import {DataService} from '../../services/data.service';
+import {CoreService} from '../../services/core.service';
+import {AuthService} from '../../components/guard';
+import {SaveService} from '../../services/save.service';
+import {ExcelService} from '../../services/excel.service';
+import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
+import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
+import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
+import {FileTransferService} from '../../services/file-transfer.service';
+import {InventoryForHistory} from '../../models/enums';
 
 declare const $;
 
@@ -166,9 +166,9 @@ export class OrderSearchComponent implements OnInit {
   }
 
   getFolderTree(): void {
+    this.filter.paths = [];
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      types: ['FOLDER']
+      controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res) => {
         this.folders = this.coreService.prepareTree(res, true);
@@ -177,6 +177,27 @@ export class OrderSearchComponent implements OnInit {
         }
       }
     });
+  }
+
+  displayWith(data): string {
+    return data.key;
+  }
+
+  selectFolder(node, $event): void {
+    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    $event.stopPropagation();
+  }
+
+  addFolder(path): void {
+    if (this.filter.paths.indexOf(path) === -1) {
+      this.filter.paths.push(path);
+      this.filter.paths = [...this.filter.paths];
+    }
+  }
+
+  remove(path): void {
+    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+    this.filter.paths = [...this.filter.paths];
   }
 
   checkFilterName(): void {
@@ -336,11 +357,9 @@ export class TaskSearchComponent implements OnInit {
   }
 
   getFolderTree(): void {
+    this.filter.paths = [];
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      onlyValidObjects: true,
-      forInventory: true,
-      types: ['FOLDER']
+      controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res) => {
         this.folders = this.coreService.prepareTree(res, true);
@@ -349,6 +368,27 @@ export class TaskSearchComponent implements OnInit {
         }
       }
     });
+  }
+
+  displayWith(data): string {
+    return data.key;
+  }
+  
+  selectFolder(node, $event): void {
+    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    $event.stopPropagation();
+  }
+
+  addFolder(path): void {
+    if (this.filter.paths.indexOf(path) === -1) {
+      this.filter.paths.push(path);
+      this.filter.paths = [...this.filter.paths];
+    }
+  }
+
+  remove(path): void {
+    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+    this.filter.paths = [...this.filter.paths];
   }
 
   checkFilterName(): void {
@@ -570,8 +610,8 @@ export class SubmissionSearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   checkOptions = [
-    { label: 'submitted', value: 'SUBMITTED', checked: false },
-    { label: 'notSubmitted', value: 'NOT_SUBMITTED', checked: false }
+    {label: 'submitted', value: 'SUBMITTED', checked: false},
+    {label: 'notSubmitted', value: 'NOT_SUBMITTED', checked: false}
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService) {
@@ -694,7 +734,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
-    private dataService: DataService, private route: ActivatedRoute) {
+              private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -729,7 +769,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
   private getOrderHistory(): void {
     this.coreService.post('orders/history', {
       controllerId: this.controllerId,
-      orders: [{ workflowPath: this.workflowPath, orderId: this.orderId }]
+      orders: [{workflowPath: this.workflowPath, orderId: this.orderId}]
     }).subscribe({
       next: (res: any) => {
         this.history = res.history;
@@ -938,7 +978,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   savedYadeHistoryFilter: any = {};
   savedDeploymentHistoryFilter: any = {};
   savedSubmissionHistoryFilter: any = {};
-  savedIgnoreList: any = { workflows: [], jobs: [] };
+  savedIgnoreList: any = {workflows: [], jobs: []};
   orderSearch: any = {};
   jobSearch: any = {};
   yadeSearch: any = {};
@@ -976,12 +1016,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private pendingHTTPRequests$ = new Subject<void>();
 
   filterBtn: any = [
-    { date: 'ALL', text: 'all' },
-    { date: 'today', text: 'today' },
-    { date: '-1h', text: 'last1' },
-    { date: '-12h', text: 'last12' },
-    { date: '-24h', text: 'last24' },
-    { date: '-7d', text: 'lastWeak' }
+    {date: 'ALL', text: 'all'},
+    {date: 'today', text: 'today'},
+    {date: '-1h', text: 'last1'},
+    {date: '-12h', text: 'last12'},
+    {date: '-24h', text: 'last24'},
+    {date: '-7d', text: 'lastWeak'}
   ];
 
   subMissionFilterBtn: any = [
@@ -1092,7 +1132,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.checkSharedFilters('ORDER');
         return;
       }
-      obj = { controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : '' };
+      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
     }
@@ -1195,7 +1235,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.checkSharedFilters('TASK');
         return;
       }
-      obj = { controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : '' };
+      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
     }
@@ -1270,7 +1310,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.checkSharedFilters('YADE');
         return;
       }
-      obj = { controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : '' };
+      obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
     }
@@ -1364,7 +1404,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         return;
       }
       if (this.historyFilters.current == true) {
-        obj = { controllerId: this.schedulerIds.selected };
+        obj = {controllerId: this.schedulerIds.selected};
       } else {
         obj = {};
       }
@@ -1383,7 +1423,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj.state = (this.deployment.filter.state && this.deployment.filter.state !== 'ALL') ? this.deployment.filter.state : undefined;
     }
     this.convertDeployRequestBody(obj);
-    this.coreService.post('inventory/deployment/history', { compactFilter: obj }).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+    this.coreService.post('inventory/deployment/history', {compactFilter: obj}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoading = true;
         this.deploymentHistorys = res.depHistory || [];
@@ -1449,7 +1489,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         return;
       }
       if (this.historyFilters.current == true) {
-        obj = { controllerId: this.schedulerIds.selected };
+        obj = {controllerId: this.schedulerIds.selected};
       } else {
         obj = {};
       }
@@ -2948,6 +2988,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    if (!this.permission.joc) {
+      setTimeout(() => {
+        this.initConf();
+      }, 50);
+      return;
+    }
     if (this.preferences.dateFormat) {
       this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     }

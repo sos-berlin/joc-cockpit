@@ -11,6 +11,7 @@ import {
 import {isEmpty, isArray, isEqual, clone, sortBy} from 'underscore';
 import {Subject, Subscription} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
@@ -49,7 +50,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   private subject: Subject<string> = new Subject<string>();
   @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
-  constructor(private coreService: CoreService,
+  constructor(private coreService: CoreService, private translate: TranslateService,
               private calendarService: CalendarService, private dataService: DataService,
               private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
@@ -690,13 +691,19 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.indexOfNextAdd = this.history.length - 1;
         }
         delete obj.workflowName1;
-
-        this.coreService.post('inventory/store', {
+        const request: any = {
           configuration: obj,
           valid: isValid,
           id: this.schedule.id,
           objectType: this.objectType
-        }).subscribe({
+        };
+    
+        if (sessionStorage.$SOS$FORCELOGING === 'true') {
+          this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+            request.auditLog = {comment: translatedValue};
+          });
+        }
+        this.coreService.post('inventory/store', request).subscribe({
           next: (res: any) => {
             if (res.id === this.data.id && this.schedule.id === this.data.id) {
               this.schedule.actual = JSON.stringify(obj);

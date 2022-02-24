@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import {isEmpty, isEqual, clone} from 'underscore';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
@@ -1340,7 +1341,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService,
-              private dataService: DataService, private ref: ChangeDetectorRef, private router: Router) {
+              private dataService: DataService, private ref: ChangeDetectorRef, private router: Router, private translate: TranslateService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.calendar.actual) {
@@ -1643,12 +1644,19 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.history.push(JSON.stringify(this.calendar.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
-      this.coreService.post('inventory/store', {
+      const request: any = {
         configuration: obj,
         id: this.calendar.id,
         valid: !!obj.includes,
         objectType: obj.type
-      }).subscribe({
+      };
+  
+      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          request.auditLog = {comment: translatedValue};
+        });
+      }
+      this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.calendar.id === this.data.id) {
             this.calendar.actual = JSON.stringify(this.calendar.configuration);

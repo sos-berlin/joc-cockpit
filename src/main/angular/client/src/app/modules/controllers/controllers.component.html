@@ -34,7 +34,7 @@
                         <i class="fa fa-ellipsis-h"></i></button>
                       <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                         <ul nz-menu>
-                          <li (click)="createToken(controller)" nz-menu-item>
+                          <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller)" nz-menu-item>
                             <a translate>agent.button.createToken</a>
                           </li>
                           <li (click)="addAgent(controller)" nz-menu-item>
@@ -169,7 +169,7 @@
                                       [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                 <ul nz-menu >
-                                  <li (click)="createToken(controller, agent)" nz-menu-item>
+                                  <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller, agent)" nz-menu-item>
                                     <a translate>agent.button.createToken</a>
                                   </li>
                                   <li (click)="editAgent(agent, controller)" nz-menu-item >
@@ -294,7 +294,7 @@
                                       <li (click)="navToController(controller.controllerId, clusterAgent)" nz-menu-item>
                                         <a translate>agent.button.manageCluster</a>
                                       </li>
-                                      <li (click)="createToken(controller, clusterAgent)" nz-menu-item>
+                                      <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller, clusterAgent)" nz-menu-item>
                                         <a translate>agent.button.createToken</a>
                                       </li>
                                       <li (click)="addSubagent(clusterAgent, controller)" nz-menu-item>

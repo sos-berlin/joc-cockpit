@@ -309,7 +309,7 @@ export class SettingModalComponent implements OnInit {
         } else if (self.data.identityServiceType.match('LDAP')) {
           if (data.simple) {
             self.userObj = data.simple;
-          } 
+          }
           if (data.expert) {
             self.currentObj = data.expert;
           }
@@ -565,7 +565,6 @@ export class IdentityServiceModalComponent implements OnInit {
   templateUrl: 'identity-service.component.html'
 })
 export class IdentityServiceComponent implements OnInit, OnDestroy {
-
   loading = true;
   preferences: any = {};
   permission: any = {};

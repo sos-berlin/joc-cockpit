@@ -9,10 +9,11 @@ import {
 } from '@angular/core';
 import {isEmpty, isEqual, clone, sortBy} from 'underscore';
 import {Subscription} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
-import {CalendarService} from '../../../../services/calendar.service';
 import {InventoryObject} from '../../../../models/enums';
+
 
 @Component({
   selector: 'app-script',
@@ -48,9 +49,8 @@ export class ScriptComponent implements OnDestroy, OnChanges {
 
   @ViewChild('codeMirror', {static: false}) cm: any;
 
-  constructor(private coreService: CoreService,
-              private calendarService: CalendarService, private dataService: DataService,
-              private ref: ChangeDetectorRef) {
+  constructor(private coreService: CoreService, private translate: TranslateService,
+             private dataService: DataService, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.script.actual) {
@@ -272,12 +272,20 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         this.indexOfNextAdd = this.history.length - 1;
       }
 
-      this.coreService.post('inventory/store', {
+      const request: any = {
         configuration: this.script.configuration,
         valid: !this.script.configuration.script,
         id: this.script.id,
         objectType: this.objectType
-      }).subscribe({
+      };
+  
+      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          request.auditLog = {comment: translatedValue};
+        });
+      }
+
+      this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.script.id === this.data.id) {
             this.script.actual = JSON.stringify(this.script.configuration);

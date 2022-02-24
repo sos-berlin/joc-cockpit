@@ -650,21 +650,6 @@ export class CoreService {
     message.success(msg);
   }
 
-  getDateFormatWithTime(dateFormat: string): string {
-    if (!dateFormat) {
-      return 'dd-MM-yyyy HH:mm:ss';
-    }
-    dateFormat = dateFormat.replace('YY', 'yy');
-    dateFormat = dateFormat.replace('YY', 'yy');
-    dateFormat = dateFormat.replace('D', 'd');
-    dateFormat = dateFormat.replace('D', 'd');
-    if (dateFormat.match('A')) {
-      dateFormat = dateFormat.replace('A', 'a');
-    }
-    dateFormat = dateFormat.trim();
-    return dateFormat;
-  }
-
   getDateFormat(dateFormat: string): string {
     if (!dateFormat) {
       return '';

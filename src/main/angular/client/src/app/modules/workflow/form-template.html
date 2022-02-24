@@ -37,14 +37,17 @@
           [nzHideUnMatched]="true"
           [nzDropdownStyle]="{ 'max-height': '300px' }"
           nzShowSearch
+          [nzDisplayWith]="displayWith"
           [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
           [(ngModel)]="filter.paths"
         >
           <ng-template #nzTreeTemplate let-node>
-            <div class="node-wrapper w-93">
+            <div class="node-wrapper w-93" (click)="selectFolder(node, $event);">
               <div class="node-content-wrapper" [class.node-content-wrapper-active]="filter.paths && filter.paths.indexOf(node.origin.path) > -1">
                 <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                 {{node.origin.name}}
+                <i *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
+                <i *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
               </div>
             </div>
           </ng-template>

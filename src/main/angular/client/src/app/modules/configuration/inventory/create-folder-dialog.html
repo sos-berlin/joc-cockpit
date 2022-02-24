@@ -10,6 +10,9 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
+    <div class="hide" [ngClass]="{'show': display}">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    </div>
     <div class="row" *ngIf="!rename">
       <label class="col-md-3 form-control-label" translate>inventory.label.folderName
         <sup class="text-danger text-sm">*</sup>
