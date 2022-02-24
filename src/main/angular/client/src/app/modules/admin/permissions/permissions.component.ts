@@ -129,6 +129,8 @@ export class FolderModalComponent implements OnInit {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (this.folderArr && this.folderArr.length > 0) {
       this.folderObj.paths = this.folderArr.map((folder) => folder.folder);
+    } else {
+      this.folderObj.paths = [];
     }
     this.getFolderTree();
   }
@@ -214,16 +216,32 @@ export class FolderModalComponent implements OnInit {
     }
   }
 
-  getFolderTree(): void {
+  private getFolderTree(): void {
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      types: ['FOLDER']
+      controllerId: this.schedulerIds.selected
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);
       if (this.nodes.length > 0) {
         this.nodes[0].expanded = true;
       }
     });
+  }
+
+  selectFolder(node, $event): void {
+    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    $event.stopPropagation();
+  }
+
+  addFolder(path): void {
+    if (this.folderObj.paths.indexOf(path) === -1) {
+      this.folderObj.paths.push(path);
+      this.folderObj.paths = [...this.folderObj.paths];
+    }
+  }
+
+  remove(path): void {
+    this.folderObj.paths.splice(this.folderObj.paths.indexOf(path), 1);
+    this.folderObj.paths = [...this.folderObj.paths];
   }
 }
 

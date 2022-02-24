@@ -200,6 +200,7 @@
     "label.timeSpend": "Zeitaufwand",
     "label.auditLogFound": "Prüfprotokoll Eintrag gefunden",
     "label.auditLogsFound": "Prüfprotokoll Einträge gefunden",
+    "message.defaultAuditLog": "Default Audit Log",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Grund",

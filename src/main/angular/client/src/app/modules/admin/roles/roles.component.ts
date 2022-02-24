@@ -99,49 +99,64 @@ export class RoleModalComponent implements OnInit {
     }
   }
 
+  private getUsersData(cb): void {
+    this.coreService.post('authentication/auth', {
+      identityServiceName: this.userDetail.identityServiceName
+    }).subscribe({
+      next: res => {
+        this.userDetail.accounts = res.accounts;
+        this.userDetail.main = res.main;
+        this.userDetail.roles = res.roles;
+        cb();
+      }
+    });
+  }
+
   onSubmit(obj): void {
     this.submitted = true;
-    if (this.newRole || this.copy) {
-      this.allRoles.push(obj.role);
-      this.userDetail.roles[obj.role] = {
-        permissions: obj.permissions
-      };
-    } else {
-      if (sessionStorage.identityServiceType !== 'SHIRO') {
-        this.rename(obj);
-        return;
-      }
-      this.updateRoleObject(this.oldName, obj.role);
-      for (let i = 0; i < this.userDetail.accounts.length; i++) {
-        for (let j = 0; j < this.userDetail.accounts[i].roles.length; j++) {
-          if (this.userDetail.accounts[i].roles[j] === this.oldName) {
-            this.userDetail.accounts[i].roles.splice(j, 1);
-            this.userDetail.accounts[i].roles.push(obj.role);
+    this.getUsersData(() => {
+      if (this.newRole || this.copy) {
+        this.allRoles.push(obj.role);
+        this.userDetail.roles[obj.role] = {
+          permissions: obj.permissions
+        };
+      } else {
+        if (sessionStorage.identityServiceType !== 'SHIRO') {
+          this.rename(obj);
+          return;
+        }
+        this.updateRoleObject(this.oldName, obj.role);
+        for (let i = 0; i < this.userDetail.accounts.length; i++) {
+          for (let j = 0; j < this.userDetail.accounts[i].roles.length; j++) {
+            if (this.userDetail.accounts[i].roles[j] === this.oldName) {
+              this.userDetail.accounts[i].roles.splice(j, 1);
+              this.userDetail.accounts[i].roles.push(obj.role);
+            }
+          }
+        }
+        for (let i = 0; i < this.allRoles.length; i++) {
+          if (this.allRoles[i] === this.oldName || isEqual(this.allRoles[i], this.oldName)) {
+            this.allRoles.splice(i, 1);
+            this.allRoles.push(obj.role);
+            break;
           }
         }
       }
-      for (let i = 0; i < this.allRoles.length; i++) {
-        if (this.allRoles[i] === this.oldName || isEqual(this.allRoles[i], this.oldName)) {
-          this.allRoles.splice(i, 1);
-          this.allRoles.push(obj.role);
-          break;
-        }
-      }
-    }
 
-    this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
-      accounts: this.userDetail.accounts,
-      roles: this.userDetail.roles,
-      identityServiceName: this.userDetail.identityServiceName,
-      main: this.userDetail.main
-    } : {
-      accounts: this.userDetail.accounts,
-      roles: this.userDetail.roles,
-      identityServiceName: this.userDetail.identityServiceName,
-    }).subscribe({
-      next: () => {
-        this.activeModal.close(this.userDetail);
-      }, error: () => this.submitted = false
+      this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
+        accounts: this.userDetail.accounts,
+        roles: this.userDetail.roles,
+        identityServiceName: this.userDetail.identityServiceName,
+        main: this.userDetail.main
+      } : {
+        accounts: this.userDetail.accounts,
+        roles: this.userDetail.roles,
+        identityServiceName: this.userDetail.identityServiceName,
+      }).subscribe({
+        next: () => {
+          this.activeModal.close(this.userDetail);
+        }, error: () => this.submitted = false
+      });
     });
   }
 }
@@ -207,45 +222,60 @@ export class ControllerModalComponent implements OnInit {
     }
   }
 
+  private getUsersData(cb): void {
+    this.coreService.post('authentication/auth', {
+      identityServiceName: this.userDetail.identityServiceName
+    }).subscribe({
+      next: res => {
+        this.userDetail.accounts = res.accounts;
+        this.userDetail.main = res.main;
+        this.userDetail.roles = res.roles;
+        cb();
+      }
+    });
+  }
+
   onSubmit(obj): void {
     if (obj.role) {
       this.submitted = true;
-      if (!this.userDetail.roles[obj.role].permissions) {
-        this.userDetail.roles[obj.role].permissions = {
-          joc: [{
-            path: 'sos:products:joc',
-            excluded: false
-          },
-          {
-            path: 'sos:products:controller:view',
-            excluded: false
-          }],
-          controllerDefaults: [],
-          controllers: {}
-        };
-      }
-      if (!this.copy) {
-        this.userDetail.roles[obj.role].permissions.controllers[obj.controller] = [];
-      } else {
-        if (obj.name) {
-          this.userDetail.roles[obj.role].permissions.controllers[obj.name] = obj.permissions;
-        } else {
-          this.userDetail.roles[obj.role].permissions.controllerDefaults = this.oldController.permissions.controllerDefaults;
+      this.getUsersData(() => {
+        if (!this.userDetail.roles[obj.role].permissions) {
+          this.userDetail.roles[obj.role].permissions = {
+            joc: [{
+              path: 'sos:products:joc',
+              excluded: false
+            },
+            {
+              path: 'sos:products:controller:view',
+              excluded: false
+            }],
+            controllerDefaults: [],
+            controllers: {}
+          };
         }
-      }
-      this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
-        accounts: this.userDetail.accounts,
-        roles: this.userDetail.roles,
-        identityServiceName: this.userDetail.identityServiceName,
-        main: this.userDetail.main
-      } : {
-        accounts: this.userDetail.accounts,
-        roles: this.userDetail.roles,
-        identityServiceName: this.userDetail.identityServiceName,
-      }).subscribe({
-        next: () => {
-          this.activeModal.close(this.userDetail);
-        }, error: () => this.submitted = false
+        if (!this.copy) {
+          this.userDetail.roles[obj.role].permissions.controllers[obj.controller] = [];
+        } else {
+          if (obj.name) {
+            this.userDetail.roles[obj.role].permissions.controllers[obj.name] = obj.permissions;
+          } else {
+            this.userDetail.roles[obj.role].permissions.controllerDefaults = this.oldController.permissions.controllerDefaults;
+          }
+        }
+        this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
+          accounts: this.userDetail.accounts,
+          roles: this.userDetail.roles,
+          identityServiceName: this.userDetail.identityServiceName,
+          main: this.userDetail.main
+        } : {
+          accounts: this.userDetail.accounts,
+          roles: this.userDetail.roles,
+          identityServiceName: this.userDetail.identityServiceName,
+        }).subscribe({
+          next: () => {
+            this.activeModal.close(this.userDetail);
+          }, error: () => this.submitted = false
+        });
       });
     }
   }

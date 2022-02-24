@@ -11,10 +11,11 @@ import {
 } from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {isEmpty, isEqual, sortBy} from 'underscore';
+import {debounceTime} from 'rxjs/operators';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
-import {debounceTime} from 'rxjs/operators';
 import {InventoryService} from '../inventory.service';
 
 @Component({
@@ -47,7 +48,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   private subject: Subject<string> = new Subject<string>();
   @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
-  constructor(public coreService: CoreService, private dataService: DataService,
+  constructor(public coreService: CoreService, private dataService: DataService, private translate: TranslateService,
               public inventoryService: InventoryService, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -469,12 +470,19 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       if (obj.directoryExpr) {
         this.coreService.addSlashToString(obj, 'directoryExpr');
       }
-      this.coreService.post('inventory/store', {
+      const request: any = {
         configuration: obj,
         valid: isValid,
         id: this.fileOrder.id,
         objectType: this.objectType
-      }).subscribe({
+      };
+  
+      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          request.auditLog = {comment: translatedValue};
+        });
+      }
+      this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.fileOrder.id === this.data.id) {
             this.fileOrder.actual = JSON.stringify(this.fileOrder.configuration);

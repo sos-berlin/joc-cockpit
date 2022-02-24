@@ -60,7 +60,7 @@ export class PostModalComponent implements OnInit {
       controllerId: this.controllerId,
       noticeBoardPath: this.board.path,
       noticeId: this.postObj.noticeId,
-      timeZone : this.postObj.timeZone
+      timeZone: this.postObj.timeZone
     };
     if (this.postObj.at === 'date') {
       if (this.postObj.fromDate) {

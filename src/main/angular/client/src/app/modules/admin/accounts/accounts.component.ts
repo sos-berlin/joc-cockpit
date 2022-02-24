@@ -166,39 +166,53 @@ export class AccountModalComponent implements OnInit {
     }
   }
 
+  private getUsersData(cb): void {
+    this.coreService.post('authentication/auth', {
+      identityServiceName: this.userDetail.identityServiceName
+    }).subscribe({
+      next: res => {
+        this.userDetail.accounts = res.accounts;
+        this.userDetail.main = res.main;
+        this.userDetail.roles = res.roles;
+        cb();
+      }
+    });
+  }
+
   onSubmit(obj): void {
     this.submitted = true;
-    this.isUnique = true;
+    this.getUsersData(() => {
+      this.isUnique = true;
+      if (obj.fakePassword !== '********') {
+        obj.password = obj.fakePassword || '';
+      }
 
-    if (obj.fakePassword !== '********') {
-      obj.password = obj.fakePassword || '';
-    }
-
-    if (this.newUser || this.copy) {
-      const data = {
-        account: obj.account,
-        password: obj.password,
-        disabled: obj.disabled,
-        forcePasswordChange: obj.forcePasswordChange,
-        roles: obj.roles
-      };
-      this.userDetail.accounts.push(data);
-      this.store(obj);
-    } else {
-      this.rename(() => {
-        for (let i = 0; i < this.userDetail.accounts.length; i++) {
-          if (this.userDetail.accounts[i] === this.oldUser || isEqual(this.userDetail.accounts[i], this.oldUser)) {
-            this.userDetail.accounts[i].account = obj.account;
-            this.userDetail.accounts[i].password = obj.password;
-            this.userDetail.accounts[i].roles = obj.roles;
-            this.userDetail.accounts[i].forcePasswordChange = obj.forcePasswordChange;
-            this.userDetail.accounts[i].disabled = obj.disabled;
-            break;
-          }
-        }
+      if (this.newUser || this.copy) {
+        const data = {
+          account: obj.account,
+          password: obj.password,
+          disabled: obj.disabled,
+          forcePasswordChange: obj.forcePasswordChange,
+          roles: obj.roles
+        };
+        this.userDetail.accounts.push(data);
         this.store(obj);
-      });
-    }
+      } else {
+        this.rename(() => {
+          for (let i = 0; i < this.userDetail.accounts.length; i++) {
+            if (this.userDetail.accounts[i] === this.oldUser || isEqual(this.userDetail.accounts[i], this.oldUser)) {
+              this.userDetail.accounts[i].account = obj.account;
+              this.userDetail.accounts[i].password = obj.password;
+              this.userDetail.accounts[i].roles = obj.roles;
+              this.userDetail.accounts[i].forcePasswordChange = obj.forcePasswordChange;
+              this.userDetail.accounts[i].disabled = obj.disabled;
+              break;
+            }
+          }
+          this.store(obj);
+        });
+      }
+    });
   }
 
   private store(obj) {
@@ -258,7 +272,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   subscription3: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService, private searchPipe: SearchPipe,
-              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
+    private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
       this.searchInResult();
@@ -290,7 +304,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.data = [];
-    this.usr = {currentPage: 1, sortBy: 'account', reverse: false};
+    this.usr = { currentPage: 1, sortBy: 'account', reverse: false };
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.username = this.authService.currentUserData;

@@ -103,7 +103,7 @@
             <span class="show-in-single-line w-full">
                 <span (click)="coreService.showWorkflow(child.order.workflow);$event.stopPropagation()"
                       class="text-hover-primary" [innerHtml]="child.order.workflow"></span>
-                <i (click)="navToWorkflowTab(child.order.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
+                <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(child.order.workflow);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-l-xs"></i>
               </span>
           </td>
           <td

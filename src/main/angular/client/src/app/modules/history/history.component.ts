@@ -166,9 +166,9 @@ export class OrderSearchComponent implements OnInit {
   }
 
   getFolderTree(): void {
+    this.filter.paths = [];
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      types: ['FOLDER']
+      controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res) => {
         this.folders = this.coreService.prepareTree(res, true);
@@ -177,6 +177,27 @@ export class OrderSearchComponent implements OnInit {
         }
       }
     });
+  }
+
+  displayWith(data): string {
+    return data.key;
+  }
+
+  selectFolder(node, $event): void {
+    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    $event.stopPropagation();
+  }
+
+  addFolder(path): void {
+    if (this.filter.paths.indexOf(path) === -1) {
+      this.filter.paths.push(path);
+      this.filter.paths = [...this.filter.paths];
+    }
+  }
+
+  remove(path): void {
+    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+    this.filter.paths = [...this.filter.paths];
   }
 
   checkFilterName(): void {
@@ -336,11 +357,9 @@ export class TaskSearchComponent implements OnInit {
   }
 
   getFolderTree(): void {
+    this.filter.paths = [];
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected,
-      onlyValidObjects: true,
-      forInventory: true,
-      types: ['FOLDER']
+      controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res) => {
         this.folders = this.coreService.prepareTree(res, true);
@@ -349,6 +368,27 @@ export class TaskSearchComponent implements OnInit {
         }
       }
     });
+  }
+
+  displayWith(data): string {
+    return data.key;
+  }
+  
+  selectFolder(node, $event): void {
+    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    $event.stopPropagation();
+  }
+
+  addFolder(path): void {
+    if (this.filter.paths.indexOf(path) === -1) {
+      this.filter.paths.push(path);
+      this.filter.paths = [...this.filter.paths];
+    }
+  }
+
+  remove(path): void {
+    this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
+    this.filter.paths = [...this.filter.paths];
   }
 
   checkFilterName(): void {
@@ -2948,6 +2988,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    if (!this.permission.joc) {
+      setTimeout(() => {
+        this.initConf();
+      }, 50);
+      return;
+    }
     if (this.preferences.dateFormat) {
       this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     }

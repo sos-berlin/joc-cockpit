@@ -342,7 +342,7 @@
               <td [innerHtml]="transfer._operation| highlight : yadeFilters.searchText"></td>
               <td>
                 <span class="show-in-single-line w-full">
-                  <i (click)="navToWorkflowTab(transfer.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                  <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="navToWorkflowTab(transfer.workflowPath);$event.stopPropagation()" class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span (click)="coreService.showWorkflow(transfer.workflowPath);$event.stopPropagation()"
                         class="text-hover-primary" [innerHtml]="transfer.workflowPath | highlight : yadeFilters.searchText"></span>
                 </span>

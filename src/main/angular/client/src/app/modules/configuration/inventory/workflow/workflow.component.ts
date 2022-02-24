@@ -9111,12 +9111,20 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       return;
     }
 
-    this.coreService.post('inventory/store', {
+    const request: any = {
       configuration: newObj,
       id: this.workflow.id,
       valid: this.workflow.valid,
       objectType: this.objectType
-    }).subscribe({
+    };
+
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        request.auditLog = {comment: translatedValue};
+      });
+    }
+
+    this.coreService.post('inventory/store', request).subscribe({
       next: (res: any) => {
         this.isStore = false;
         if (res.id === this.data.id && this.workflow.id === this.data.id) {

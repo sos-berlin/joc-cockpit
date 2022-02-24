@@ -85,6 +85,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   getFolderTree(): void {
+    this.searchObj.folders = [];
     this.coreService.post('tree', {
       forInventory: true
     }).subscribe(res => {
@@ -93,6 +94,23 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.folders[0].expanded = true;
       }
     });
+  }
+
+  selectFolder(node, $event): void {
+    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    $event.stopPropagation();
+  }
+
+  addFolder(path): void {
+    if (this.searchObj.folders.indexOf(path) === -1) {
+      this.searchObj.folders.push(path);
+      this.searchObj.folders = [...this.searchObj.folders];
+    }
+  }
+
+  remove(path): void {
+    this.searchObj.folders.splice(this.searchObj.folders.indexOf(path), 1);
+    this.searchObj.folders = [...this.searchObj.folders];
   }
 
   onChange(isActive): void {

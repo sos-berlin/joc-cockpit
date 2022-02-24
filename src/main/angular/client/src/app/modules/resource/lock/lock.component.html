@@ -240,7 +240,7 @@
                       </td>
                       <td>
                         <span class="show-in-single-line">
-                          <i (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
+                          <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
                              class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                           <span [innerHtml]="lock.path | highlight : locksFilters.searchText"></span>
                         </span>
@@ -276,7 +276,7 @@
                                   <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                                      *ngIf="workflow.show"
                                      (click)="workflow.show = false;"></i>
-                                  <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                                  <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                                   <a class="text-hover-primary" (click)="coreService.showWorkflow(workflow.path, workflow.versionId);">{{workflow.path}} </a>
                                 </td>
                               </tr>

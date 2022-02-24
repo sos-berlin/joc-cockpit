@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
@@ -42,7 +43,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private dataService: DataService, private router: Router,
+  constructor(public coreService: CoreService, private dataService: DataService, private router: Router, private translate: TranslateService,
               private modal: NzModalService, private ref: ChangeDetectorRef, public inventoryService: InventoryService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -489,12 +490,19 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.history.push(JSON.stringify(this.jobResource.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
-      this.coreService.post('inventory/store', {
+      const request: any = {
         configuration: obj,
         valid: (obj.env && obj.env.length > 0 || obj.arguments && obj.arguments.length > 0),
         id: this.jobResource.id,
         objectType: this.objectType
-      }).subscribe({
+      };
+  
+      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          request.auditLog = {comment: translatedValue};
+        });
+      }
+      this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.jobResource.id === this.data.id) {
             this.jobResource.actual = JSON.stringify(this.jobResource.configuration);

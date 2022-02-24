@@ -62,8 +62,8 @@
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (((from.dirty || from.touched) && from.invalid))}">
-              <nz-date-picker [nzDisabledDate]="disabledDate" [required]="true" [nzPlaceHolder]="dateFormat | uppercase"
-                              #from="ngModel" name="from" [nzFormat]="dateFormat" [(ngModel)]="order.from"></nz-date-picker>
+              <nz-date-picker [nzDisabledDate]="disabledDate" required #from="ngModel" [nzPlaceHolder]="dateFormat | uppercase" [nzFormat]="dateFormat" [(ngModel)]="order.fromDate"
+                  name="from"></nz-date-picker>
               <div *ngIf="from.invalid && (from.dirty || from.touched)" class="text-danger help-block">
                 <div *ngIf="from.errors.required">
                   <div translate>common.message.requiredError</div>

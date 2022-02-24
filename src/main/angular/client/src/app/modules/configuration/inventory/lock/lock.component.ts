@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges,
 import {isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
@@ -29,7 +30,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private dataService: DataService,
+  constructor(public coreService: CoreService, private dataService: DataService, private translate: TranslateService,
               private ref: ChangeDetectorRef, private router: Router, public inventoryService: InventoryService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
@@ -299,12 +300,19 @@ export class LockComponent implements OnChanges, OnDestroy {
         this.history.push(JSON.stringify(this.lock.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
-      this.coreService.post('inventory/store', {
+      const request: any = {
         configuration: this.lock.configuration,
         valid: true,
         id: this.lock.id,
         objectType: this.objectType
-      }).subscribe({
+      };
+  
+      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          request.auditLog = {comment: translatedValue};
+        });
+      }
+      this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.lock.id === this.data.id) {
             this.lock.actual = JSON.stringify(this.lock.configuration);
