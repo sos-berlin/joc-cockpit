@@ -12,6 +12,8 @@ export class DataService implements OnDestroy {
     roles: new Map()
   };
 
+  comments: any = {};
+
   // Observable string sources
   private dataAnnouncedSource = new Subject<any>();
   private searchKeySource = new Subject<string>();

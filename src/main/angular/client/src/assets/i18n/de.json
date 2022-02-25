@@ -2019,6 +2019,7 @@
     "label.forcePasswordChange": "Kennwortänderung erzwingen",
     "label.disable": "Deaktivieren",
     "label.folderNotExist": "Ordner nicht vorhanden",
+    "label.reuseReason": "Reuse reason",
     "button.addGroupRole": "Gruppen/Rollen hinzufügen",
     "button.addIdentityService": "Identitätsdienst hinzufügen",
     "button.addPermission": "Berechtigung hinzufügen",

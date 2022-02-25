@@ -9,6 +9,9 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentController)">
     <div class="modal-body p-a">
+        <div class="hide" [ngClass]="{'show': display}">
+          <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+        </div>
         <div class="form-group row" *ngIf="copy">
           <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
           <div class="col-sm-6">

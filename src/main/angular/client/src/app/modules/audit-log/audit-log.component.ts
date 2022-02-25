@@ -91,6 +91,7 @@ export class SearchComponent implements OnInit {
     'ORDER',
     'DOCUMENTATION'];
   categories = ['INVENTORY',
+    'IDENTITY',
     'CONTROLLER',
     'DAILYPLAN',
     'DEPLOYMENT',
