@@ -2019,7 +2019,7 @@
     "label.forcePasswordChange": "Forcer le changement de mot de passe",
     "label.disable": "Désactiver",
     "label.folderNotExist": "Le dossier n'existe pas",
-    "label.reuseReason": "Reuse reason",
+    "label.reuseReason": "Réutiliser la raison",
     "button.addGroupRole": "Ajouter Groupes/Rôles",
     "button.addIdentityService": "Ajouter un Service d'Identité",
     "button.addPermission": "Ajouter une Permission",
