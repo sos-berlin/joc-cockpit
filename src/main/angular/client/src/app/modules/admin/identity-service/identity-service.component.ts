@@ -7,14 +7,15 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FileUploader } from 'ng2-file-upload';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
 import { CoreService } from '../../../services/core.service';
 import { AuthService } from '../../../components/guard';
 import { DataService } from '../data.service';
-import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
 import { SaveService } from '../../../services/save.service';
 import { OrderPipe } from '../../../pipes/core.pipe';
-import { TranslateService } from '@ngx-translate/core';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-setting-modal-content',
@@ -47,11 +48,13 @@ export class SettingModalComponent implements OnInit {
     third: false
   };
   oldPassword: string;
+  display: any;
+  comments: any = {};
 
   uploader: FileUploader;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService,
-    private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService) {
+    private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
@@ -96,6 +99,13 @@ export class SettingModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if(this.dataService.comments && this.dataService.comments.comment){
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
@@ -362,13 +372,27 @@ export class SettingModalComponent implements OnInit {
         obj.sessionTimeout = SettingModalComponent.convertStringToDuration(obj.sessionTimeout);
       }
     }
-    this.coreService.post('configuration/save', {
+    const request: any = {
       id: 0,
       objectType: this.data ? this.data.identityServiceType : 'GENERAL',
       configurationType: 'IAM',
       name: this.data ? this.data.identityServiceName : undefined,
-      configurationItem: JSON.stringify(obj)
-    }).subscribe({
+      configurationItem: JSON.stringify(obj),
+      auditLog: {}
+    };
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if(this.comments.isChecked){
+      this.dataService.comments = this.comments;
+    }
+    this.coreService.post('configuration/save', request).subscribe({
       next: (res) => {
         this.activeModal.close(res);
       }, error: () => this.submitted = false
@@ -408,11 +432,21 @@ export class IdentityServiceModalComponent implements OnInit {
   currentObj: any = {};
   settingObj: any = {};
   removeSettingId = -1;
+  display: any;
+  comments: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
+    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    console.log(this.dataService.comments)
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if(this.dataService.comments && this.dataService.comments.comment){
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     this.currentObj.ordering = this.identityServices.length + 1 || 1;
     if (this.identityService) {
       this.currentObj = clone(this.identityService);
@@ -492,17 +526,33 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   private saveSettings(): void {
-    this.coreService.post('configuration/delete', {
+    const deleteRequest: any = {
       controllerId: '.',
       id: this.removeSettingId
-    }).subscribe();
-    this.coreService.post('configuration/save', {
+    };
+    const saveRequest: any = {
       id: 0,
       objectType: this.currentObj.identityServiceType,
       configurationType: 'IAM',
       name: this.currentObj.identityServiceName,
       configurationItem: this.settingObj
-    }).subscribe({
+    };
+    deleteRequest.auditLog = {};
+    saveRequest.auditLog = {};
+    if (this.comments.comment) {
+      deleteRequest.auditLog.comment = this.comments.comment;
+      saveRequest.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      deleteRequest.auditLog.timeSpent = this.comments.timeSpent;
+      saveRequest.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      deleteRequest.auditLog.ticketLink = this.comments.ticketLink;
+      saveRequest.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('configuration/delete', deleteRequest).subscribe();
+    this.coreService.post('configuration/save', saveRequest).subscribe({
       next: () => {
         this.removeSettingId = -1;
         this.store();
@@ -514,10 +564,21 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   rename(identityServiceOldName: string, identityServiceNewName: string, cb: any): void {
-    this.coreService.post('iam/identityservice/rename', {
+    const request: any = {
       identityServiceOldName,
       identityServiceNewName
-    }).subscribe({
+    };
+    request.auditLog = {};
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('iam/identityservice/rename', request).subscribe({
       next: (res) => {
         cb(res);
       }, error: () => {
@@ -547,9 +608,22 @@ export class IdentityServiceModalComponent implements OnInit {
 
   private store(): void {
     if (this.removeSettingId > -1) {
-      this.submitted = false;
+      //this.submitted = false;
       this.saveSettings();
       return;
+    }
+    this.currentObj.auditLog = {};
+    if (this.comments.comment) {
+      this.currentObj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      this.currentObj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      this.currentObj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if(this.comments.isChecked){
+      this.dataService.comments = this.comments;
     }
     this.coreService.post('iam/identityservice/store', this.currentObj).subscribe({
       next: (res) => {
@@ -730,32 +804,88 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
 
   private enableDisable(identityService, flag): void {
     identityService.disabled = flag;
-    this.coreService.post('iam/identityservice/store', identityService).subscribe({
-      next: () => this.checkTypes(), error: () => this.getIAMList()
-    });
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Identity Service',
+        operation: flag ? 'Deisable' : 'Enable',
+        name: identityService.identityServiceName
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj: identityService,
+          url: 'iam/identityservice/store'
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.checkTypes();
+        } else {
+          identityService.disabled = !identityService.disabled;
+        }
+      });
+    } else {
+      this.coreService.post('iam/identityservice/store', identityService).subscribe({
+        next: () => this.checkTypes(), error: () => this.getIAMList()
+      });
+    }
   }
 
   delete(identityService): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deleteIdentityService',
-        type: 'Delete',
-        objectName: identityService.identityServiceName,
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.coreService.post('iam/identityservice/delete', { identityServiceName: identityService.identityServiceName }).subscribe(() => {
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Identity Service',
+        operation: 'Delete',
+        name: identityService.identityServiceName
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj: { identityServiceName: identityService.identityServiceName },
+          url: 'iam/identityservice/delete'
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
           this.getIAMList();
-        });
-      }
-    });
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteIdentityService',
+          type: 'Delete',
+          objectName: identityService.identityServiceName,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post('iam/identityservice/delete', { identityServiceName: identityService.identityServiceName }).subscribe(() => {
+            this.getIAMList();
+          });
+        }
+      });
+    }
   }
 
   sort(key): void {

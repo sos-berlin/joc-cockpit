@@ -9,6 +9,9 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentPermission)">
   <div class="modal-body p-a">
+    <div class="hide" [ngClass]="{'show': display}">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    </div>
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>user.label.permission
         <sup class="text-danger text-sm">*</sup>

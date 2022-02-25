@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { isEqual, clone } from 'underscore';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
@@ -28,11 +28,16 @@ export class PermissionModalComponent implements OnInit {
 
   submitted = false;
   isCovered = false;
+  display: any;
+  comments: any = {};
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
     if (!this.add) {
       let flag = false;
       for (const i in this.permissionOptions) {
@@ -84,16 +89,26 @@ export class PermissionModalComponent implements OnInit {
       this.userDetail.roles[this.role].permissions.joc = clone(this.rolePermissions);
       this.userDetail.roles[this.role].permissions.controllerDefaults = [];
     }
-    this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
+    const request: any = {
+      identityServiceName: this.userDetail.identityServiceName,
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
-      identityServiceName: this.userDetail.identityServiceName,
-      main: this.userDetail.main
-    } : {
-      accounts: this.userDetail.accounts,
-      roles: this.userDetail.roles,
-      identityServiceName: this.userDetail.identityServiceName,
-    }).subscribe({
+      auditLog: {}
+    };
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
+    }
+
+    if(sessionStorage.identityServiceType === 'SHIRO'){
+      request.main = this.userDetail.main;
+    }
+    this.coreService.post('authentication/auth/store', request).subscribe({
       next: () => {
         this.activeModal.close(this.rolePermissions);
       }, error: () => this.submitted = false
@@ -119,6 +134,8 @@ export class FolderModalComponent implements OnInit {
   submitted = false;
   folderObj: any = { paths: [] };
   schedulerIds: any;
+  display: any;
+  comments: any = {};
 
   @ViewChild('treeSelectCtrl', { static: false }) treeSelectCtrl;
 
@@ -126,6 +143,9 @@ export class FolderModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (this.folderArr && this.folderArr.length > 0) {
       this.folderObj.paths = this.folderArr.map((folder) => folder.folder);
@@ -163,17 +183,27 @@ export class FolderModalComponent implements OnInit {
     } else {
       this.userDetail.roles[this.role].folders.joc = this.folderArr;
     }
+    const request: any = {
+      identityServiceName: this.userDetail.identityServiceName,
+      accounts: this.userDetail.accounts,
+      roles: this.userDetail.roles,
+      auditLog: {}
+    };
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
+    }
 
-    this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
-      accounts: this.userDetail.accounts,
-      roles: this.userDetail.roles,
-      identityServiceName: this.userDetail.identityServiceName,
-      main: this.userDetail.main
-    } : {
-      accounts: this.userDetail.accounts,
-      identityServiceName: this.userDetail.identityServiceName,
-      roles: this.userDetail.roles,
-    }).subscribe({
+    if(sessionStorage.identityServiceType === 'SHIRO'){
+      request.main = this.userDetail.main;
+    }
+
+    this.coreService.post('authentication/auth/store', request).subscribe({
       next: () => {
         this.activeModal.close(this.folderArr);
       }, error: () => {
@@ -286,7 +316,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   subscription3: Subscription;
 
-  constructor(private coreService: CoreService, private route: ActivatedRoute, private router: Router,
+  constructor(private coreService: CoreService, private route: ActivatedRoute,
     private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {

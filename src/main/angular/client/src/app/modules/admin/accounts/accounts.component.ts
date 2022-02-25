@@ -7,6 +7,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 
 @Component({
@@ -72,11 +73,16 @@ export class AccountModalComponent implements OnInit {
   isPasswordMatch = true;
   minimumPasswordLength = true;
   settings: any = {};
+  display: any;
+  comments: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
     const type = sessionStorage.identityServiceType || '';
     this.getConfiguration();
     if (this.oldUser) {
@@ -103,11 +109,22 @@ export class AccountModalComponent implements OnInit {
   }
 
   private getConfiguration(): void {
-    this.coreService.post('configuration', {
+    const obj: any = {
       id: 0,
       objectType: 'GENERAL',
       configurationType: 'IAM',
-    }).subscribe((res) => {
+      auditLog: {}
+    };
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('configuration', obj).subscribe((res) => {
       if (res.configuration.configurationItem) {
         this.settings = JSON.parse(res.configuration.configurationItem);
       }
@@ -150,11 +167,22 @@ export class AccountModalComponent implements OnInit {
 
   private rename(cb): void {
     if (this.oldUser.account !== this.currentUser.account) {
-      this.coreService.post('authentication/auth/account/rename', {
+      const obj: any = {
         identityServiceName: this.userDetail.identityServiceName,
         accountOldName: this.oldUser.account,
-        accountNewName: this.currentUser.account
-      }).subscribe({
+        accountNewName: this.currentUser.account,
+        auditLog: {}
+      };
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+      this.coreService.post('authentication/auth/account/rename', obj).subscribe({
         next: () => {
           cb('OK');
         }, error: () => {
@@ -216,16 +244,33 @@ export class AccountModalComponent implements OnInit {
   }
 
   private store(obj) {
-    this.coreService.post('authentication/auth/store', this.selectedIdentityServiceType === 'SHIRO' ? this.userDetail : {
+    const request: any = {
       identityServiceName: this.userDetail.identityServiceName,
-      accounts: [{
+      auditLog: {}
+    };
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if (this.selectedIdentityServiceType === 'SHIRO') {
+      request.accounts = this.userDetail.accounts;
+      request.roles = this.userDetail.roles;
+      request.main = this.userDetail.main;
+    } else {
+      request.accounts = [{
         account: obj.account,
         password: obj.password,
         disabled: obj.disabled,
         forcePasswordChange: obj.forcePasswordChange,
         roles: obj.roles
-      }]
-    }).subscribe({
+      }];
+    }
+    this.coreService.post('authentication/auth/store', request).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.accounts);
       }, error: () => {
@@ -328,6 +373,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.dataService.announceFunction('IS_ACCOUNT_PROFILES_FALSE');
   }
 
   saveInfo(accounts): void {
@@ -361,7 +407,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   showRole(account): void {
-    this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
+    this.router.navigate(['/users/identity_service/role'], { queryParams: { account } });
   }
 
   /* ---------------------------- Action ----------------------------------*/
@@ -474,44 +520,97 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   deleteUser(account): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deleteUser',
-        type: 'Delete',
-        objectName: account,
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.deleteAccount(account);
-      }
-    });
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Account',
+        operation: 'Delete',
+        name: account
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteAccount(account, result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteUser',
+          type: 'Delete',
+          objectName: account,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteAccount(account);
+        }
+      });
+    }
   }
 
   private deleteList(): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmationModalComponent,
-      nzComponentParams: {
-        delete: true
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    }).afterClose.subscribe(result => {
-      if (result) {
-        this.deleteAccount(null);
-      }
-    });
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Account',
+        operation: 'Delete',
+        name: ''
+      };
+      this.object.mapOfCheckedId.forEach((value, key) => {
+        comments.name = comments.name + key + ', ';
+      });
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteAccount(null, result);
+        }
+      });
+    } else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmationModalComponent,
+        nzComponentParams: {
+          delete: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.deleteAccount(null);
+        }
+      });
+    }
   }
 
-  private deleteAccount(account) {
+  private deleteAccount(account, comments = {}) {
     this.accounts = this.accounts.filter((item) => {
       if (account) {
         return item.account !== account;
@@ -527,10 +626,10 @@ export class AccountsComponent implements OnInit, OnDestroy {
         identityServiceName: this.userDetail.identityServiceName,
       };
       if (account) {
-        obj.accounts.push({account});
+        obj.accounts.push({ account });
       } else {
         this.object.mapOfCheckedId.forEach((value, key) => {
-          obj.accounts.push({account: key});
+          obj.accounts.push({ account: key });
         });
       }
       this.coreService.post('authentication/auth/accounts/delete', obj).subscribe(() => {

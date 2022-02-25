@@ -20,28 +20,33 @@ export class MainSectionModalComponent implements OnInit {
   mainSection: any = [];
   fullSection = false;
   mainText = '';
+  display: any;
+  comments: any = {};
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
     if (this.isUpdate) {
       this.userDetail.main.forEach((entry) => {
         const values = [];
         const comments = [];
         if (entry.entryValue && entry.entryValue.length > 0) {
           entry.entryValue.forEach((value) => {
-            values.push({value});
+            values.push({ value });
           });
         } else {
-          values.push({value: ''});
+          values.push({ value: '' });
         }
         if (entry.entryComment && entry.entryComment.length > 0) {
           entry.entryComment.forEach((comment) => {
-            comments.push({value: comment});
+            comments.push({ value: comment });
           });
         } else {
-          comments.push({value: ''});
+          comments.push({ value: '' });
         }
         this.mainSection.push({
           name: entry.entryName,
@@ -52,8 +57,8 @@ export class MainSectionModalComponent implements OnInit {
     } else {
       this.mainSection.push({
         name: '',
-        values: [{value: ''}],
-        comments: [{value: ''}]
+        values: [{ value: '' }],
+        comments: [{ value: '' }]
       });
     }
     this.toggleView(false);
@@ -109,7 +114,7 @@ export class MainSectionModalComponent implements OnInit {
 
   generateObject(): void {
     let main = [];
-    let obj: any = {entryName: '', entryValue: [], entryComment: []};
+    let obj: any = { entryName: '', entryValue: [], entryComment: [] };
     let arr = this.mainText.split('\n');
     let flag = false;
     for (let i = 0; i < arr.length; i++) {
@@ -140,7 +145,7 @@ export class MainSectionModalComponent implements OnInit {
           if (flag) {
             obj.entryValue.push(arr[i]);
             main.push(obj);
-            obj = {entryValue: [], entryComment: []};
+            obj = { entryValue: [], entryComment: [] };
             flag = false;
           } else {
             let index = arr[i].indexOf('=');
@@ -159,7 +164,7 @@ export class MainSectionModalComponent implements OnInit {
                 obj.entryValue.push(x.replace('\\', ''));
               }
               main.push(obj);
-              obj = {entryValue: [], entryComment: []};
+              obj = { entryValue: [], entryComment: [] };
             }
           }
         }
@@ -172,17 +177,17 @@ export class MainSectionModalComponent implements OnInit {
       let comments = [];
       if (entry.entryComment && entry.entryComment.length > 0) {
         entry.entryComment.forEach((comment) => {
-          comments.push({value: comment});
+          comments.push({ value: comment });
         });
       } else {
-        comments.push({value: ''});
+        comments.push({ value: '' });
       }
       if (entry.entryValue && entry.entryValue.length > 0) {
         entry.entryValue.forEach((value) => {
-          values.push({value});
+          values.push({ value });
         });
       } else {
-        values.push({value: ''});
+        values.push({ value: '' });
       }
 
       mainSection.push({
@@ -219,7 +224,17 @@ export class MainSectionModalComponent implements OnInit {
       }
     });
     this.userDetail.main = main;
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
+    let request: any = { auditLog: {} };
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('authentication/auth/store', { ...this.userDetail, ...request }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
       }, error: () => {
@@ -231,8 +246,8 @@ export class MainSectionModalComponent implements OnInit {
   addMainEntry(): void {
     const param = {
       name: '',
-      values: [{value: ''}],
-      comments: [{value: ''}]
+      values: [{ value: '' }],
+      comments: [{ value: '' }]
     };
     if (this.mainSection) {
       this.mainSection.push(param);
@@ -241,7 +256,7 @@ export class MainSectionModalComponent implements OnInit {
 
   addEntryValueField(index): void {
     if (this.mainSection[index].values) {
-      this.mainSection[index].values.push({value: ''});
+      this.mainSection[index].values.push({ value: '' });
     }
   }
 
@@ -255,7 +270,7 @@ export class MainSectionModalComponent implements OnInit {
 
   addEntryCommentField(index): void {
     if (this.mainSection[index].comments) {
-      this.mainSection[index].comments.push({value: ''});
+      this.mainSection[index].comments.push({ value: '' });
     }
   }
 
@@ -283,26 +298,31 @@ export class EditMainSectionModalComponent implements OnInit {
   entryComment: any = [];
   entry: any;
   existingEntry: string;
+  display: any;
+  comments: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
     this.entry = clone(this.oldEntry);
     this.existingEntry = this.oldEntry.entryName;
     if (this.entry.entryValue.length > 0) {
       this.entry.entryValue.forEach((val) => {
-        this.entryValue.push({value: clone(val)});
+        this.entryValue.push({ value: clone(val) });
       });
     } else {
-      this.entryValue.push({value: ''});
+      this.entryValue.push({ value: '' });
     }
     if (this.entry.entryComment.length > 0) {
       this.entry.entryComment.forEach((val) => {
-        this.entryComment.push({value: clone(val)});
+        this.entryComment.push({ value: clone(val) });
       });
     } else {
-      this.entryComment.push({value: ''});
+      this.entryComment.push({ value: '' });
     }
   }
 
@@ -336,8 +356,17 @@ export class EditMainSectionModalComponent implements OnInit {
         this.userDetail.main[index] = this.entry;
       }
     });
-
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
+    let request: any = { auditLog: {} };
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('authentication/auth/store', { ...this.userDetail, ...request }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
       }, error: () => this.submitted = false
@@ -382,11 +411,16 @@ export class LdapSectionModalComponent implements OnInit {
 
   submitted = false;
   mainSection: any = [];
+  display: any;
+  comments: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
     let mainSection;
     if (this.isldap) {
       mainSection = [
@@ -452,7 +486,17 @@ export class LdapSectionModalComponent implements OnInit {
       }
     }
     this.userDetail.main = this.userDetail.main.concat(this.mainSection);
-    this.coreService.post('authentication/auth/store', this.userDetail).subscribe({
+    let request: any = { auditLog: {} };
+    if (this.comments.comment) {
+      request.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      request.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      request.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('authentication/auth/store', { ...this.userDetail, ...request }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
       }, error: () => this.submitted = false
@@ -468,7 +512,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   loading = true;
   main: any = [];
-  usr: any = {currentPage: 1};
+  usr: any = { currentPage: 1 };
   preferences: any = {};
   permission: any = {};
   userDetail: any = {};
