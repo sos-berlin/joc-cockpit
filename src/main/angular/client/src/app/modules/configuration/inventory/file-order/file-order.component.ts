@@ -12,11 +12,13 @@ import {
 import {Subject, Subscription} from 'rxjs';
 import {isEmpty, isEqual, sortBy} from 'underscore';
 import {debounceTime} from 'rxjs/operators';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-file-order',
@@ -49,7 +51,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
   constructor(public coreService: CoreService, private dataService: DataService, private translate: TranslateService,
-              public inventoryService: InventoryService, private ref: ChangeDetectorRef) {
+              public inventoryService: InventoryService, private ref: ChangeDetectorRef, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.fileOrder.actual) {
@@ -243,28 +245,71 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   rename(inValid): void {
     if (this.data.id === this.fileOrder.id && this.data.name !== this.fileOrder.name) {
       if (!inValid) {
-        const data = this.coreService.clone(this.data);
-        const name = this.fileOrder.name;
-        this.coreService.post('inventory/rename', {
-          id: data.id,
-          newPath: name
-        }).subscribe({
-          next: () => {
-            if (data.id === this.data.id) {
-              this.data.name = name;
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: 'FileOrderSource',
+            operation: 'Rename',
+            name: this.data.name
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.renameFileOrder(result);
+            } else {
+              this.fileOrder.name = this.data.name;
+              this.ref.detectChanges();
             }
-            data.name = name;
-            this.dataService.reloadTree.next({rename: data});
-          }, error: () => {
-            this.fileOrder.name = this.data.name;
-            this.ref.detectChanges();
-          }
-        });
+          });
+        } else {
+          this.renameFileOrder();
+        }
       } else {
         this.fileOrder.name = this.data.name;
         this.ref.detectChanges();
       }
     }
+  }
+
+  private renameFileOrder(comments: any = {}): void {
+    const data = this.coreService.clone(this.data);
+    const name = this.fileOrder.name;
+    const obj: any = {
+      id: data.id,
+      newPath: name,
+      auditLog: {}
+    };
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    this.coreService.post('inventory/rename', obj).subscribe({
+      next: () => {
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({ rename: data });
+      }, error: () => {
+        this.fileOrder.name = this.data.name;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   private getDocumentations(): void {

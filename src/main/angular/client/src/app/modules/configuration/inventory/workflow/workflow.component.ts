@@ -27,6 +27,7 @@ import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
+import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {InventoryService} from '../inventory.service';
@@ -3683,28 +3684,71 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   rename(inValid): void {
     if (this.data.id === this.workflow.id && this.data.name !== this.workflow.name) {
       if (!inValid) {
-        const data = this.coreService.clone(this.data);
-        const name = this.workflow.name;
-        this.coreService.post('inventory/rename', {
-          id: data.id,
-          newPath: name
-        }).subscribe({
-          next: () => {
-            if (data.id === this.data.id) {
-              this.data.name = name;
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: 'Workflow',
+            operation: 'Rename',
+            name: this.data.name
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.renameWorkflow(result);
+            } else {
+              this.workflow.name = this.data.name;
+              this.ref.detectChanges();
             }
-            data.name = name;
-            this.dataService.reloadTree.next({rename: data});
-          }, error: () => {
-            this.workflow.name = this.data.name;
-            this.ref.detectChanges();
-          }
-        });
+          });
+        } else {
+          this.renameWorkflow();
+        }
       } else {
         this.workflow.name = this.data.name;
         this.ref.detectChanges();
       }
     }
+  }
+
+  private renameWorkflow(comments: any = {}): void {
+    const data = this.coreService.clone(this.data);
+    const name = this.workflow.name;
+    const obj: any = {
+      id: data.id,
+      newPath: name,
+      auditLog: {}
+    };
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    this.coreService.post('inventory/rename', obj).subscribe({
+      next: () => {
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({ rename: data });
+      }, error: () => {
+        this.workflow.name = this.data.name;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   private center(): void {
@@ -6858,8 +6902,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               delete copyObject.uuid;
             }
             if (json.instructions[x].id == source) {
-              targetObject = json;
-              targetIndex = x;
+              if (json.instructions[x].TYPE == 'Fork'  && target.value.tagName === 'Connection') {
+                for (let y = 0; y < json.instructions[x].branches.length; y++) {
+                  if (json.instructions[x].branches[y].id === target.getAttribute('label')) {
+                    targetObject = json.instructions[x].branches[y];
+                    targetIndex = y;
+                    break;
+                  }
+                }
+              } else {
+                targetObject = json;
+                targetIndex = x;
+              }
             }
             if (json.instructions[x].instructions) {
               getObject(json.instructions[x]);
@@ -6901,6 +6955,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           let branchId;
           if (!targetObj.branches) {
             targetObj.branches = [];
+          } else if (targetObj.branches.length > 0) {
+            targetObj.branches = targetObj.branches.filter(branch => {
+              return (branch.instructions && branch.instructions.length > 0);
+            });
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
           targetObj.branches.push({id: branchId, instructions: [copyObject]});
@@ -7888,6 +7946,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           let branchId;
           if (!targetObj.branches) {
             targetObj.branches = [];
+          } else if (targetObj.branches.length > 0) {
+            targetObj.branches = targetObj.branches.filter(branch => {
+              return (branch.instructions && branch.instructions.length > 0);
+            });
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
           targetObj.branches.push({id: branchId, instructions: [sourceObj]});
@@ -8744,7 +8806,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               return;
             }
             if (json.instructions[x].branches) {
+              const ids = [];
               json.instructions[x].branches = json.instructions[x].branches.filter((branch) => {
+                if (ids.indexOf(branch.id) == -1) {
+                  ids.push(branch.id);
+                } else {
+                  branch.id = branch.id + '_copy';
+                  ids.push(branch.id);
+                }
                 branch.workflow = {
                   instructions: branch.instructions,
                   result: branch.result

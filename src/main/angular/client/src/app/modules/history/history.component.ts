@@ -3427,7 +3427,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             data.push(this.orderHistoryFilterList[i]);
           }
         }
-        this.orderHistoryFilterList = data;
+        this.orderHistoryFilterList = data.concat(result.configurations);
       }
     } else {
       this.orderHistoryFilterList = result.configurations;
@@ -3488,7 +3488,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             data.push(this.jobHistoryFilterList[i]);
           }
         }
-        this.jobHistoryFilterList = data;
+        this.jobHistoryFilterList = data.concat(result.configurations);
       }
     } else {
       this.jobHistoryFilterList = result.configurations;
@@ -3548,7 +3548,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             data.push(this.yadeHistoryFilterList[i]);
           }
         }
-        this.yadeHistoryFilterList = data;
+        this.yadeHistoryFilterList = data.concat(result.configurations);
       }
     } else {
       this.yadeHistoryFilterList = result.configurations;
@@ -3609,7 +3609,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             data.push(this.deploymentHistoryFilterList[i]);
           }
         }
-        this.deploymentHistoryFilterList = data;
+        this.deploymentHistoryFilterList = data.concat(result.configurations);
       }
     } else {
       this.deploymentHistoryFilterList = result.configurations;
@@ -3669,7 +3669,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             data.push(this.submissionHistoryFilterList[i]);
           }
         }
-        this.submissionHistoryFilterList = data;
+        this.submissionHistoryFilterList = data.concat(result.configurations);
       }
     } else {
       this.submissionHistoryFilterList = result.configurations;

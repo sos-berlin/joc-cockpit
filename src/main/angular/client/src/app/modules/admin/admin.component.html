@@ -125,7 +125,7 @@
 </div>
 <!-- Admin Sub Header Ends -->
 <div class="scroll-y max-ht">
-  <div class="padding p-b-0">
+  <div class="padding p-b-0" *ngIf="isLoaded">
     <div class="row m-b m-t-xs" *ngIf="route !== '/users' && route !== '/users/identity_service'">
       <div class="col-md-12">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">

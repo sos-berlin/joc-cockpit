@@ -25,6 +25,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   identityService: string;
   identityServiceType: string;
   pageView: string;
+  isLoaded = false;
   filter = {
     searchKey: ''
   };
@@ -69,9 +70,16 @@ export class AdminComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    if (!this.permission.joc) {
+      setTimeout(() => {
+        this.ngOnInit();
+      }, 50);
+      return;
+    }
     if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).permission;
     }
+    this.isLoaded = true;
     if (!this.route) {
       this.checkUrl(this.router);
     }

@@ -242,6 +242,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private checkPermission(timeout = 0): void {
     setTimeout(() => {
+      this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
       if (!this.permission.joc) {
         this.checkPermission(50);
       } else {

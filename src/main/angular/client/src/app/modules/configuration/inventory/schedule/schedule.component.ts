@@ -10,11 +10,13 @@ import {
 } from '@angular/core';
 import {isEmpty, isArray, isEqual, clone, sortBy} from 'underscore';
 import {Subject, Subscription} from 'rxjs';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {debounceTime} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../../models/enums';
 
 @Component({
@@ -52,7 +54,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(private coreService: CoreService, private translate: TranslateService,
               private calendarService: CalendarService, private dataService: DataService,
-              private ref: ChangeDetectorRef) {
+              private ref: ChangeDetectorRef, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.schedule.actual) {
@@ -532,28 +534,71 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   rename(inValid): void {
     if (this.data.id === this.schedule.id && this.data.name !== this.schedule.name) {
       if (!inValid) {
-        const data = this.coreService.clone(this.data);
-        const name = this.schedule.name;
-        this.coreService.post('inventory/rename', {
-          id: data.id,
-          newPath: name
-        }).subscribe({
-          next: () => {
-            if (data.id === this.data.id) {
-              this.data.name = name;
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: 'Schedule',
+            operation: 'Rename',
+            name: this.data.name
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.renameSchedule(result);
+            } else {
+              this.schedule.name = this.data.name;
+              this.ref.detectChanges();
             }
-            data.name = name;
-            this.dataService.reloadTree.next({rename: data});
-          }, error: () => {
-            this.schedule.name = this.data.name;
-            this.ref.detectChanges();
-          }
-        });
+          });
+        } else {
+          this.renameSchedule();
+        }
       } else {
         this.schedule.name = this.data.name;
         this.ref.detectChanges();
       }
     }
+  }
+
+  private renameSchedule(comments: any = {}): void {
+    const data = this.coreService.clone(this.data);
+    const name = this.schedule.name;
+    const obj: any = {
+      id: data.id,
+      newPath: name,
+      auditLog: {}
+    };
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    this.coreService.post('inventory/rename', obj).subscribe({
+      next: () => {
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({ rename: data });
+      }, error: () => {
+        this.schedule.name = this.data.name;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   release(): void {
