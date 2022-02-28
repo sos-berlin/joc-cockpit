@@ -440,7 +440,6 @@ export class IdentityServiceModalComponent implements OnInit {
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    console.log(this.dataService.comments)
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if(this.dataService.comments && this.dataService.comments.comment){
@@ -577,6 +576,9 @@ export class IdentityServiceModalComponent implements OnInit {
     }
     if (this.comments.ticketLink) {
       request.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if(this.comments.isChecked){
+      this.dataService.comments = this.comments;
     }
     this.coreService.post('iam/identityservice/rename', request).subscribe({
       next: (res) => {
@@ -804,11 +806,11 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
 
   private enableDisable(identityService, flag): void {
     identityService.disabled = flag;
-    if (this.preferences.auditLog) {
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
         type: 'Identity Service',
-        operation: flag ? 'Deisable' : 'Enable',
+        operation: flag ? 'Disable' : 'Enable',
         name: identityService.identityServiceName
       };
       const modal = this.modal.create({
@@ -826,12 +828,27 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
+          if(result.isChecked){
+            this.dataService.comments = result;
+          }
           this.checkTypes();
         } else {
           identityService.disabled = !identityService.disabled;
         }
       });
     } else {
+      if (this.preferences.auditLog && this.dataService.comments.comment) {
+        identityService.auditLog = {};
+        if (this.dataService.comments.comment) {
+          identityService.auditLog.comment = this.dataService.comments.comment;
+        }
+        if (this.dataService.comments.timeSpent) {
+          identityService.auditLog.timeSpent = this.dataService.comments.timeSpent;
+        }
+        if (this.dataService.comments.ticketLink) {
+          identityService.auditLog.ticketLink = this.dataService.comments.ticketLink;
+        }
+      }
       this.coreService.post('iam/identityservice/store', identityService).subscribe({
         next: () => this.checkTypes(), error: () => this.getIAMList()
       });
@@ -839,7 +856,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   delete(identityService): void {
-    if (this.preferences.auditLog) {
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
         type: 'Identity Service',
@@ -861,6 +878,9 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
+          if(result.isChecked){
+            this.dataService.comments = result;
+          }
           this.getIAMList();
         }
       });
@@ -880,7 +900,19 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post('iam/identityservice/delete', { identityServiceName: identityService.identityServiceName }).subscribe(() => {
+          const auditLog: any = {};
+          if (this.preferences.auditLog && this.dataService.comments.comment) {
+            if (this.dataService.comments.comment) {
+              auditLog.comment = this.dataService.comments.comment;
+            }
+            if (this.dataService.comments.timeSpent) {
+              auditLog.timeSpent = this.dataService.comments.timeSpent;
+            }
+            if (this.dataService.comments.ticketLink) {
+              auditLog.ticketLink = this.dataService.comments.ticketLink;
+            }
+          }
+          this.coreService.post('iam/identityservice/delete', { identityServiceName: identityService.identityServiceName, auditLog }).subscribe(() => {
             this.getIAMList();
           });
         }

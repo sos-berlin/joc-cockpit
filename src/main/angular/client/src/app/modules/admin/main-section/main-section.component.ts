@@ -1,12 +1,12 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
-import {isEqual, isArray, clone} from 'underscore';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {DataService} from '../data.service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { isEqual, isArray, clone } from 'underscore';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { DataService } from '../data.service';
 import { AuthService } from '../../../components/guard';
-import {CoreService} from '../../../services/core.service';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import { CoreService } from '../../../services/core.service';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
 
 // Add and Edit main Section
 @Component({
@@ -23,13 +23,17 @@ export class MainSectionModalComponent implements OnInit {
   display: any;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (this.dataService.comments && this.dataService.comments.comment) {
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     if (this.isUpdate) {
       this.userDetail.main.forEach((entry) => {
         const values = [];
@@ -234,6 +238,9 @@ export class MainSectionModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       request.auditLog.ticketLink = this.comments.ticketLink;
     }
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
+    }
     this.coreService.post('authentication/auth/store', { ...this.userDetail, ...request }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
@@ -301,13 +308,17 @@ export class EditMainSectionModalComponent implements OnInit {
   display: any;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (this.dataService.comments && this.dataService.comments.comment) {
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     this.entry = clone(this.oldEntry);
     this.existingEntry = this.oldEntry.entryName;
     if (this.entry.entryValue.length > 0) {
@@ -366,6 +377,9 @@ export class EditMainSectionModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       request.auditLog.ticketLink = this.comments.ticketLink;
     }
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
+    }
     this.coreService.post('authentication/auth/store', { ...this.userDetail, ...request }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
@@ -414,13 +428,17 @@ export class LdapSectionModalComponent implements OnInit {
   display: any;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (this.dataService.comments && this.dataService.comments.comment) {
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     let mainSection;
     if (this.isldap) {
       mainSection = [
@@ -496,6 +514,9 @@ export class LdapSectionModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       request.auditLog.ticketLink = this.comments.ticketLink;
     }
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
+    }
     this.coreService.post('authentication/auth/store', { ...this.userDetail, ...request }).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
@@ -519,7 +540,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, private router: Router, public modal: NzModalService,
+  constructor(public coreService: CoreService, public modal: NzModalService,
     private authService: AuthService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
@@ -558,13 +579,27 @@ export class MainSectionComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
-  saveInfo(): void {
-    const obj = {
+  saveInfo(comments): void {
+    const obj: any = {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
       identityServiceName: this.userDetail.identityServiceName,
-      main: this.main
+      main: this.main,
+      auditLog: {}
     };
+
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    if (comments.isChecked) {
+      this.dataService.comments = comments;
+    }
 
     this.coreService.post('authentication/auth/store', obj).subscribe(() => {
       this.main = [...this.main];
@@ -594,25 +629,51 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   }
 
   deleteMain(main): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deleteMainSection',
-        type: 'Delete',
-        objectName: main.entryName
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.main.splice(this.main.indexOf(main), 1);
-        this.saveInfo();
-      }
-    });
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Main Section',
+        operation: 'Delete',
+        name: main.entryName
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.main.splice(this.main.indexOf(main), 1);
+          this.saveInfo(result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteMainSection',
+          type: 'Delete',
+          objectName: main.entryName
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.main.splice(this.main.indexOf(main), 1);
+          this.saveInfo(this.dataService.comments);
+        }
+      });
+    }
   }
 
   addMainSection(): void {

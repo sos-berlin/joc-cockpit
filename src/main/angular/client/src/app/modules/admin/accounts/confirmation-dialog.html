@@ -10,7 +10,10 @@
   </button>
 </div>
 <div class="modal-body p-a">
-  <div class="row text-center">
+  <div class="hide" [ngClass]="{'show': display}">
+    <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+  </div>
+  <div class="row text-center" *ngIf="!display">
     <div class="col-sm-12 text m-t m-b">
       <span *ngIf="delete" translate>
         <span *ngIf="!isRole" translate>user.message.deleteSelectedUser</span>

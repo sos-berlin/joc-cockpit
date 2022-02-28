@@ -33,13 +33,17 @@ export class RoleModalComponent implements OnInit {
   display: any;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if(this.dataService.comments && this.dataService.comments.comment){
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     if (this.oldRole) {
       this.currentRole = clone(this.oldRole.mainObj);
       this.oldName = this.oldRole.name;
@@ -104,6 +108,9 @@ export class RoleModalComponent implements OnInit {
       }
       if (this.comments.ticketLink) {
         request.auditLog.ticketLink = this.comments.ticketLink;
+      }
+      if(this.comments.isChecked){
+        this.dataService.comments = this.comments;
       }
       this.coreService.post('authentication/auth/role/rename', request).subscribe({
         next: () => {
@@ -176,7 +183,9 @@ export class RoleModalComponent implements OnInit {
       if (this.comments.ticketLink) {
         request.auditLog.ticketLink = this.comments.ticketLink;
       }
-
+      if(this.comments.isChecked){
+        this.dataService.comments = this.comments;
+      }
       if (sessionStorage.identityServiceType === 'SHIRO') {
         request.main = this.userDetail.main;
       }
@@ -211,13 +220,18 @@ export class ControllerModalComponent implements OnInit {
   comments: any = {};
   name = '';
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService,
+     private dataService: DataService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if(this.dataService.comments && this.dataService.comments.comment){
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     if (this.oldController) {
       this.currentController = clone(this.oldController);
@@ -310,6 +324,9 @@ export class ControllerModalComponent implements OnInit {
         }
         if (this.comments.ticketLink) {
           request.auditLog.ticketLink = this.comments.ticketLink;
+        }
+        if(this.comments.isChecked){
+          this.dataService.comments = this.comments;
         }
         if (sessionStorage.identityServiceType === 'SHIRO') {
           request.main = this.userDetail.main;
@@ -431,7 +448,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     this.dataService.preferences.roles.clear();
   }
 
-  saveInfo(comments: any = {}): void {
+  saveInfo(comments): void {
     const obj: any = {
       accounts: this.accounts,
       roles: this.userDetail.roles,
@@ -446,6 +463,9 @@ export class RolesComponent implements OnInit, OnDestroy {
     }
     if (comments.ticketLink) {
       obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    if(comments.isChecked){
+      this.dataService.comments = comments;
     }
     if (sessionStorage.identityServiceType === 'SHIRO') {
       obj.main = this.userDetail.main;
@@ -535,7 +555,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       }
     }
     if (!isAssigned) {
-      if (this.preferences.auditLog) {
+      if (this.preferences.auditLog && !this.dataService.comments.comment) {
         let comments = {
           radio: 'predefined',
           type: 'Role',
@@ -582,9 +602,9 @@ export class RolesComponent implements OnInit, OnDestroy {
           if (result) {
             delete this.userDetail.roles[role.name];
             if (sessionStorage.identityServiceType === 'SHIRO') {
-              this.saveInfo();
+              this.saveInfo(this.dataService.comments);
             } else {
-              this.removeRole(role.name);
+              this.removeRole(role.name, this.dataService.comments);
             }
             this.dataService.preferences.roles.delete(role.name);
           }
@@ -600,7 +620,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     }
   }
 
-  private removeRole(role, comments: any = {}) {
+  private removeRole(role, comments) {
     const obj: any = {
       roles: [
         { role }
@@ -616,6 +636,9 @@ export class RolesComponent implements OnInit, OnDestroy {
     }
     if (comments.ticketLink) {
       obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    if (comments.isChecked) {
+      this.dataService.comments = comments;
     }
     this.coreService.post('authentication/auth/roles/delete', obj).subscribe(() => {
       this.roles = this.roles.filter((item) => {
@@ -672,29 +695,55 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   deleteController(role, controller): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deleteController',
-        type: 'Delete',
-        objectName: controller.name || 'default'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        delete this.userDetail.roles[role.name].permissions.controllers[controller.name];
-        this.saveInfo();
-      }
-    });
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Controller',
+        operation: 'Delete',
+        name: controller.name || 'default'
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          delete this.userDetail.roles[role.name].permissions.controllers[controller.name];
+          this.saveInfo(result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteController',
+          type: 'Delete',
+          objectName: controller.name || 'default'
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          delete this.userDetail.roles[role.name].permissions.controllers[controller.name];
+          this.saveInfo(this.dataService.comments);
+        }
+      });
+    }
   }
 
   private deleteList(): void {
-    if (this.preferences.auditLog) {
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
         type: 'Role',
@@ -733,13 +782,13 @@ export class RolesComponent implements OnInit, OnDestroy {
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
         if (result) {
-          this.deleteRoles();
+          this.deleteRoles(this.dataService.comments);
         }
       });
     }
   }
 
-  private deleteRoles(comments: any = {}) {
+  private deleteRoles(comments) {
     const obj: any = {
       roles: [],
       identityServiceName: this.userDetail.identityServiceName,
@@ -756,6 +805,9 @@ export class RolesComponent implements OnInit, OnDestroy {
     }
     if (comments.ticketLink) {
       obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    if (comments.isChecked) {
+      this.dataService.comments = comments;
     }
     this.coreService.post('authentication/auth/roles/delete', obj).subscribe(() => {
       this.roles = this.roles.filter((item) => {
@@ -777,7 +829,9 @@ export class RolesComponent implements OnInit, OnDestroy {
       }
     }
     this.userDetail.roles = roles;
-    this.saveInfo();
+    this.saveInfo(this.dataService.comments.comment ? this.dataService.comments : {
+      comment : 'Rearrange roles'
+    });
   }
 
   private createRoleArray(res): void {
@@ -802,12 +856,46 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   private paste(): void {
-    this.dataService.copiedObject.roles.forEach((value, key) => {
-      if (!this.userDetail.roles[key]) {
-        this.userDetail.roles[key] = value;
-      }
-    });
-    this.saveInfo();
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      console.log(this.dataService.copiedObject.accounts)
+      let comments = {
+        radio: 'predefined',
+        type: 'Roles',
+        operation: 'Paste',
+        name: ''
+      };
+      this.dataService.copiedObject.accounts.forEach((value, key) => {
+        comments.name = comments.name + key + ', ';
+      });
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.dataService.copiedObject.roles.forEach((value, key) => {
+            if (!this.userDetail.roles[key]) {
+              this.userDetail.roles[key] = value;
+            }
+          });
+          this.saveInfo(result);
+        }
+      });
+    } else {
+      this.dataService.copiedObject.roles.forEach((value, key) => {
+        if (!this.userDetail.roles[key]) {
+          this.userDetail.roles[key] = value;
+        }
+      });
+      this.saveInfo(this.dataService.comments);
+    }
   }
 
   checkAll(value: boolean): void {

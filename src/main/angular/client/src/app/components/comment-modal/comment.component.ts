@@ -7,16 +7,21 @@ import {CoreService} from '../../services/core.service';
   templateUrl: './comment.component.html'
 })
 export class CommentModalComponent implements OnInit {
-  submitted = false;
   @Input() comments: any;
   @Input() obj: any;
   @Input() url: any;
+
+  submitted = false;
+  required = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
   }
 
   onSubmit(): void {
@@ -29,7 +34,7 @@ export class CommentModalComponent implements OnInit {
       };
       this.coreService.post(this.url, this.obj).subscribe({
         next: () => {
-          this.activeModal.close('Close');
+          this.activeModal.close(this.comments);
         }, error: () => this.submitted = false
       });
     } else {

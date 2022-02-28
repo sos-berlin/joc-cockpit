@@ -1,20 +1,20 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {isEqual, clone} from 'underscore';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard';
-import {DataService} from '../data.service';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { isEqual, clone } from 'underscore';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { CoreService } from '../../../services/core.service';
+import { AuthService } from '../../../components/guard';
+import { DataService } from '../data.service';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
 import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
-import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
+import { SearchPipe, OrderPipe } from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-confirmation-modal',
   templateUrl: './confirmation-dialog.html'
 })
-export class ConfirmationModalComponent {
+export class ConfirmationModalComponent implements OnInit {
   @Input() delete;
   @Input() reset;
   @Input() forceChange;
@@ -22,8 +22,20 @@ export class ConfirmationModalComponent {
   @Input() account;
   @Input() isRole;
   submitted = false;
+  display: any;
+  comments: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
+  }
+
+  ngOnInit(): void {
+    let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (this.dataService.comments && this.dataService.comments.comment) {
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
   }
 
   confirm(): void {
@@ -33,17 +45,31 @@ export class ConfirmationModalComponent {
     }
     const accounts = [];
     if (this.account) {
-      accounts.push({account: this.account.account})
+      accounts.push({ account: this.account.account })
     } else {
       this.accounts.forEach((value, key) => {
-        accounts.push({account: key})
+        accounts.push({ account: key })
       });
+    }
+    const auditLog: any = {};
+    if (this.comments.comment) {
+      auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
     }
     this.submitted = true;
     const URL = this.forceChange ? 'authentication/auth/forcepasswordchange' : 'authentication/auth/resetpassword';
     this.coreService.post(URL, {
       identityServiceName: sessionStorage.identityServiceName,
-      accounts
+      accounts,
+      auditLog
     }).subscribe({
       next: () => {
         this.activeModal.close('DONE');
@@ -76,13 +102,17 @@ export class AccountModalComponent implements OnInit {
   display: any;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
     let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (this.dataService.comments && this.dataService.comments.comment) {
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     const type = sessionStorage.identityServiceType || '';
     this.getConfiguration();
     if (this.oldUser) {
@@ -123,6 +153,9 @@ export class AccountModalComponent implements OnInit {
     }
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
     }
     this.coreService.post('configuration', obj).subscribe((res) => {
       if (res.configuration.configurationItem) {
@@ -181,6 +214,9 @@ export class AccountModalComponent implements OnInit {
       }
       if (this.comments.ticketLink) {
         obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+      if (this.comments.isChecked) {
+        this.dataService.comments = this.comments;
       }
       this.coreService.post('authentication/auth/account/rename', obj).subscribe({
         next: () => {
@@ -256,6 +292,9 @@ export class AccountModalComponent implements OnInit {
     }
     if (this.comments.ticketLink) {
       request.auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
     }
     if (this.selectedIdentityServiceType === 'SHIRO') {
       request.accounts = this.userDetail.accounts;
@@ -376,9 +415,10 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('IS_ACCOUNT_PROFILES_FALSE');
   }
 
-  saveInfo(accounts): void {
+  saveInfo(accounts, comments): void {
     const obj: any = {
       accounts: accounts,
+      auditLog: {},
       identityServiceName: this.userDetail.identityServiceName,
     };
     if (this.selectedIdentityServiceType === 'SHIRO') {
@@ -386,6 +426,22 @@ export class AccountsComponent implements OnInit, OnDestroy {
       obj.roles = this.userDetail.roles;
       obj.main = this.userDetail.main;
     }
+
+    if (comments) {
+      if (comments.comment) {
+        obj.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        obj.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        obj.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
+      }
+    }
+
     this.coreService.post('authentication/auth/store', obj).subscribe((res) => {
       this.reset();
       if (accounts) {
@@ -482,45 +538,92 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   disabledUser(account) {
-    account.disabled = !account.disabled;
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Identity Service',
+        operation: account ? (!account.disabled ? 'Disable' : 'Enable') : 'Disable',
+        name: account ? account.account : ''
+      };
+      this.object.mapOfCheckedId.forEach((value, key) => {
+        comments.name = comments.name + key + ', ';
+      });
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          const auditLog: any = {};
+          if (result.comment) {
+            auditLog.comment = result.comment;
+          }
+          if (result.timeSpent) {
+            auditLog.timeSpent = result.timeSpent;
+          }
+          if (result.ticketLink) {
+            auditLog.ticketLink = result.ticketLink;
+          }
+          if (result.isChecked) {
+            this.dataService.comments = result;
+          }
+          this.storeUser(account, auditLog);
+        } else if (account) {
+          account.disabled = !account.disabled;
+        }
+      });
+    } else {
+      this.storeUser(account, this.dataService.comments);
+    }
+  }
+
+  private storeUser(account, auditLog): void {
+    let accounts = [];
+    if (account) {
+      account.disabled = !account.disabled;
+    } else {
+      accounts = this.accounts.filter((item) => {
+        if (this.object.mapOfCheckedId.has(item.account)) {
+          item.disabled = true;
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
     this.coreService.post('authentication/auth/store', {
       identityServiceName: this.userDetail.identityServiceName,
-      accounts: [account]
+      accounts: account ? [account] : accounts,
+      auditLog
     }).subscribe({
       next: () => {
+        if (!account) {
+          this.reset();
+        }
         this.userDetail.accounts = this.accounts;
         this.dataService.announceFunction('RELOAD');
         this.searchInResult();
       }, error: () => {
-        account.disabled = !account.disabled;
+        if (account) {
+          account.disabled = !account.disabled;
+        }
       }
     });
   }
 
   private disableList(): void {
-    let accounts = this.accounts.filter((item) => {
-      if (this.object.mapOfCheckedId.has(item.account)) {
-        item.disabled = true;
-        return true;
-      } else {
-        return false;
-      }
-    });
-    this.coreService.post('authentication/auth/store', {
-      identityServiceName: this.userDetail.identityServiceName,
-      accounts: accounts
-    }).subscribe({
-      next: () => {
-        this.reset();
-        this.userDetail.accounts = this.accounts;
-        this.dataService.announceFunction('RELOAD');
-        this.searchInResult();
-      }
-    });
+    this.disabledUser(null);
   }
 
   deleteUser(account): void {
-    if (this.preferences.auditLog) {
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
         type: 'Account',
@@ -566,7 +669,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   private deleteList(): void {
-    if (this.preferences.auditLog) {
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
         type: 'Account',
@@ -604,13 +707,13 @@ export class AccountsComponent implements OnInit, OnDestroy {
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
         if (result) {
-          this.deleteAccount(null);
+          this.deleteAccount(null, this.dataService.comments);
         }
       });
     }
   }
 
-  private deleteAccount(account, comments = {}) {
+  private deleteAccount(account, comments: any = {}) {
     this.accounts = this.accounts.filter((item) => {
       if (account) {
         return item.account !== account;
@@ -619,11 +722,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
       }
     });
     if (this.selectedIdentityServiceType === 'SHIRO') {
-      this.saveInfo([]);
+      this.saveInfo([], comments);
     } else {
       const obj: any = {
         accounts: [],
         identityServiceName: this.userDetail.identityServiceName,
+        auditLog: {}
       };
       if (account) {
         obj.accounts.push({ account });
@@ -631,6 +735,18 @@ export class AccountsComponent implements OnInit, OnDestroy {
         this.object.mapOfCheckedId.forEach((value, key) => {
           obj.accounts.push({ account: key });
         });
+      }
+      if (comments.comment) {
+        obj.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        obj.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        obj.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
       }
       this.coreService.post('authentication/auth/accounts/delete', obj).subscribe(() => {
         this.reset();
@@ -698,6 +814,40 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   private paste(): void {
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      console.log(this.dataService.copiedObject.accounts)
+      let comments = {
+        radio: 'predefined',
+        type: 'Accounts',
+        operation: 'Paste',
+        name: ''
+      };
+      this.dataService.copiedObject.accounts.forEach((value, key) => {
+        comments.name = comments.name + key + ', ';
+      });
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.pasteUser(result);
+        }
+      });
+    } else {
+      this.pasteUser(this.dataService.comments);
+    }
+
+  }
+
+  private pasteUser(comments): void {
     const arr = [];
     this.dataService.copiedObject.accounts.forEach((value, key) => {
       let flag = false;
@@ -728,7 +878,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.saveInfo(arr);
+    this.saveInfo(arr, comments);
   }
 
   private reset(): void {

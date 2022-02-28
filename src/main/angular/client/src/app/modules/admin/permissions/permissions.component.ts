@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { isEqual, clone } from 'underscore';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
 import { AuthService } from '../../../components/guard';
 import { CoreService } from '../../../services/core.service';
 import { DataService } from '../data.service';
@@ -31,13 +32,17 @@ export class PermissionModalComponent implements OnInit {
   display: any;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private dataService: DataService, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (this.dataService.comments && this.dataService.comments.comment) {
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     if (!this.add) {
       let flag = false;
       for (const i in this.permissionOptions) {
@@ -104,8 +109,10 @@ export class PermissionModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       request.auditLog.ticketLink = this.comments.ticketLink;
     }
-
-    if(sessionStorage.identityServiceType === 'SHIRO'){
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
+    }
+    if (sessionStorage.identityServiceType === 'SHIRO') {
       request.main = this.userDetail.main;
     }
     this.coreService.post('authentication/auth/store', request).subscribe({
@@ -139,13 +146,18 @@ export class FolderModalComponent implements OnInit {
 
   @ViewChild('treeSelectCtrl', { static: false }) treeSelectCtrl;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService,
+    private authService: AuthService) {
   }
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (this.dataService.comments && this.dataService.comments.comment) {
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (this.folderArr && this.folderArr.length > 0) {
       this.folderObj.paths = this.folderArr.map((folder) => folder.folder);
@@ -198,8 +210,10 @@ export class FolderModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       request.auditLog.ticketLink = this.comments.ticketLink;
     }
-
-    if(sessionStorage.identityServiceType === 'SHIRO'){
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
+    }
+    if (sessionStorage.identityServiceType === 'SHIRO') {
       request.main = this.userDetail.main;
     }
 
@@ -286,6 +300,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   roles: any = [];
   permissionsObj: any;
   userPermission: any = {};
+  preferences: any = {};
   permissions;
   rolePermissions: any = [];
   permissionOptions = [];
@@ -343,6 +358,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.pageView = JSON.parse(localStorage.views).permission;
     this.userPermission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.subscription3 = this.route.params.subscribe(params => {
       this.controllerName = params['master.master'];
       if (this.controllerName === 'default') {
@@ -427,25 +443,51 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   deleteFolder(folder): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deleteFolder',
-        type: 'Delete',
-        objectName: folder.folder
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.folderArr.splice(this.folderArr.indexOf(folder), 1);
-        this.saveInfo();
-      }
-    });
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Folder',
+        operation: 'Delete',
+        name: folder.folder
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.folderArr.splice(this.folderArr.indexOf(folder), 1);
+          this.saveInfo(result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteFolder',
+          type: 'Delete',
+          objectName: folder.folder
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.folderArr.splice(this.folderArr.indexOf(folder), 1);
+          this.saveInfo(this.dataService.comments);
+        }
+      });
+    }
   }
 
   addPermission(): void {
@@ -492,27 +534,55 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   deletePermission(permission): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deletePermission',
-        type: 'Delete',
-        objectName: permission.path
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
-        this.updatePermissionList();
-        this.findPermissionObj(this.permissionNodes[0][0], permission.path);
-        this.updateDiagramData(this.permissionNodes[0][0]);
-      }
-    });
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Permission',
+        operation: 'Delete',
+        name: permission.path
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
+          this.updatePermissionList(result);
+          this.findPermissionObj(this.permissionNodes[0][0], permission.path);
+          this.updateDiagramData(this.permissionNodes[0][0]);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deletePermission',
+          type: 'Delete',
+          objectName: permission.path
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
+          this.updatePermissionList(this.dataService.comments);
+          this.findPermissionObj(this.permissionNodes[0][0], permission.path);
+          this.updateDiagramData(this.permissionNodes[0][0]);
+        }
+      });
+    }
   }
 
   loadPermission(): void {
@@ -766,22 +836,35 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveInfo(): void {
-    this.coreService.post('authentication/auth/store', sessionStorage.identityServiceType === 'SHIRO' ? {
+  saveInfo(comments): void {
+    const request: any = {
       accounts: this.userDetail.accounts,
-      roles: this.roles,
-      identityServiceName: this.userDetail.identityServiceName,
-      main: this.userDetail.main
-    } : {
-      accounts: this.userDetail.accounts,
-      roles: this.roles,
-      identityServiceName: this.userDetail.identityServiceName,
-    }).subscribe(() => {
+      roles: this.userDetail.roles,
+      identityServiceName: this.userDetail.identityServiceName
+    };
+
+    request.auditLog = {};
+    if (comments.comment) {
+      request.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      request.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      request.auditLog.ticketLink = comments.ticketLink;
+    }
+    if (comments.isChecked) {
+      this.dataService.comments = comments;
+    }
+    if (sessionStorage.identityServiceType === 'SHIRO') {
+      request.main = this.userDetail.main;
+    }
+    this.coreService.post('authentication/auth/store', request).subscribe(() => {
       this.dataService.announceFunction('RELOAD');
     });
   }
 
-  updatePermissionList(): void {
+  updatePermissionList(comments): void {
     this.unSelectedNode(this.permissionNodes[0][0], true);
     this.checkPermissionList(this.permissionNodes[0][0], clone(this.rolePermissions));
     this.updateDiagramData(this.permissionNodes[0][0]);
@@ -791,23 +874,81 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       this.roles[this.roleName].permissions.joc = clone(this.rolePermissions);
       this.roles[this.roleName].permissions.controllerDefaults = [];
     }
-    this.saveInfo();
+    this.saveInfo(comments);
   }
 
   undoPermission(): void {
-    this.rolePermissions = this.previousPermission[this.previousPermission.length - 1];
-    this.previousPermission.splice(this.previousPermission.length - 1, 1);
-    if (isEqual(this.originalPermission, this.rolePermissions)) {
-      this.isReset = false;
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Permission',
+        operation: 'Store',
+        name: 'sos:product:*'
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.rolePermissions = this.previousPermission[this.previousPermission.length - 1];
+          this.previousPermission.splice(this.previousPermission.length - 1, 1);
+          if (isEqual(this.originalPermission, this.rolePermissions)) {
+            this.isReset = false;
+          }
+          this.updatePermissionList(result);
+        }
+      });
+    } else {
+      this.rolePermissions = this.previousPermission[this.previousPermission.length - 1];
+      this.previousPermission.splice(this.previousPermission.length - 1, 1);
+      if (isEqual(this.originalPermission, this.rolePermissions)) {
+        this.isReset = false;
+      }
+      this.updatePermissionList(this.dataService.comments);
     }
-    this.updatePermissionList();
   }
 
   resetPermission(): void {
-    this.rolePermissions = clone(this.originalPermission);
-    this.previousPermission = [];
-    this.updatePermissionList();
-    this.isReset = false;
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Permission',
+        operation: 'Store',
+        name: 'sos:product:*'
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.rolePermissions = clone(this.originalPermission);
+          this.previousPermission = [];
+          this.updatePermissionList(result);
+          this.isReset = false;
+        }
+      });
+    } else {
+      this.rolePermissions = clone(this.originalPermission);
+      this.previousPermission = [];
+      this.updatePermissionList(this.dataService.comments);
+      this.isReset = false;
+    }
   }
 
   expandAll(): void {
@@ -1276,77 +1417,134 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     function selectPermission(permission_node) {
       if (self.userPermission.joc && self.userPermission.joc.administration.accounts.manage) {
-        let _previousPermissionObj = clone(self.rolePermissions);
-        if (!permission_node.greyed && permission_node.name != 'sos') {
-          permission_node.selected = !permission_node.selected;
-
-          if (permission_node.selected) {
-            permission_node.isSelected = true;
-            if (permission_node.parent && !permission_node.parent.isSelected) {
-              setParentSelected(permission_node);
+        if (self.preferences.auditLog && !self.dataService.comments.comment) {
+          let comments = {
+            radio: 'predefined',
+            type: 'Permission',
+            operation: 'Store',
+            name: 'sos:product:*'
+          };
+          const modal = self.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              savePermission(permission_node, result);
             }
-            self.selectedNode(permission_node, false);
-          } else {
-            permission_node.isSelected = false;
-            self.unSelectedNode(permission_node, false);
-          }
-
-          _temp = [];
-          generatePermissionList(self.permissionNodes[0][0]);
-          toggleRectangleColour(_temp);
-          self.rolePermissions = _temp;
-          updatePermissionAfterChange(_temp);
-          if (self.previousPermission.length === 10) {
-            self.previousPermission.splice(0, 1);
-          }
-          self.isReset = true;
-          self.previousPermission.push(_previousPermissionObj);
+          });
+        } else {
+          savePermission(permission_node, self.dataService.comments);
         }
+      }
+    }
+
+    function savePermission(permission_node, comments) {
+      let _previousPermissionObj = clone(self.rolePermissions);
+      if (!permission_node.greyed && permission_node.name != 'sos') {
+        permission_node.selected = !permission_node.selected;
+
+        if (permission_node.selected) {
+          permission_node.isSelected = true;
+          if (permission_node.parent && !permission_node.parent.isSelected) {
+            setParentSelected(permission_node);
+          }
+          self.selectedNode(permission_node, false);
+        } else {
+          permission_node.isSelected = false;
+          self.unSelectedNode(permission_node, false);
+        }
+
+        _temp = [];
+        generatePermissionList(self.permissionNodes[0][0]);
+        toggleRectangleColour(_temp);
+        self.rolePermissions = _temp;
+        updatePermissionAfterChange(_temp, comments);
+        if (self.previousPermission.length === 10) {
+          self.previousPermission.splice(0, 1);
+        }
+        self.isReset = true;
+        self.previousPermission.push(_previousPermissionObj);
       }
     }
 
     function toggleExclude(permission_node) {
       if (self.userPermission.joc && self.userPermission.joc.administration.accounts.manage) {
-        let _previousPermissionObj = clone(self.rolePermissions);
-        if (!permission_node.greyedBtn && permission_node.name != 'sos') {
-          permission_node.excluded = !permission_node.excluded;
-          permission_node.excludedParent = !permission_node.excludedParent;
-
-          if (permission_node.excluded) {
-            permission_node.isSelected = true;
-            if (permission_node.parent && !permission_node.parent.isSelected) {
-              setParentSelected(permission_node);
+        if (self.preferences.auditLog && !self.dataService.comments.comment) {
+          let comments = {
+            radio: 'predefined',
+            type: 'Permission',
+            operation: 'Store',
+            name: 'sos:product:*'
+          };
+          const modal = self.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              saveTogglezPermission(permission_node, result);
             }
-            self.selectedExcludeNode(permission_node);
-          } else {
-            if (!permission_node.selected) {
-              permission_node.isSelected = false;
-            }
-            self.unSelectedExcludeNode(permission_node);
-          }
-
-          _temp = [];
-          generatePermissionList(self.permissionNodes[0][0]);
-          toggleRectangleColour(_temp);
-          self.rolePermissions = _temp;
-          updatePermissionAfterChange(_temp);
-          if (self.previousPermission.length === 10) {
-            self.previousPermission.splice(0, 1);
-          }
-          self.isReset = true;
-          self.previousPermission.push(_previousPermissionObj);
+          });
+        } else {
+          saveTogglezPermission(permission_node, self.dataService.comments)
         }
       }
     }
+    function saveTogglezPermission(permission_node, comments) {
+      let _previousPermissionObj = clone(self.rolePermissions);
+      if (!permission_node.greyedBtn && permission_node.name != 'sos') {
+        permission_node.excluded = !permission_node.excluded;
+        permission_node.excludedParent = !permission_node.excludedParent;
 
-    function updatePermissionAfterChange(temp) {
+        if (permission_node.excluded) {
+          permission_node.isSelected = true;
+          if (permission_node.parent && !permission_node.parent.isSelected) {
+            setParentSelected(permission_node);
+          }
+          self.selectedExcludeNode(permission_node);
+        } else {
+          if (!permission_node.selected) {
+            permission_node.isSelected = false;
+          }
+          self.unSelectedExcludeNode(permission_node);
+        }
+
+        _temp = [];
+        generatePermissionList(self.permissionNodes[0][0]);
+        toggleRectangleColour(_temp);
+        self.rolePermissions = _temp;
+        updatePermissionAfterChange(_temp, comments);
+        if (self.previousPermission.length === 10) {
+          self.previousPermission.splice(0, 1);
+        }
+        self.isReset = true;
+        self.previousPermission.push(_previousPermissionObj);
+      }
+    }
+
+    function updatePermissionAfterChange(temp, comments) {
       if (self.controllerName) {
         self.roles[self.roleName].permissions.controllers[self.controllerName] = temp;
       } else {
         self.roles[self.roleName].permissions.joc = temp;
         self.roles[self.roleName].permissions.controllerDefaults = [];
       }
-      self.saveInfo();
+      self.saveInfo(comments);
     }
 
     function updateDiagramData(nData) {
