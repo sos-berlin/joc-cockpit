@@ -383,7 +383,7 @@ export class UserComponent implements OnInit, OnDestroy {
         this.getKeys();
       }
     } else if ($event.index === 3) {
-      if (this.permission.joc && this.permission.joc.administration.certificates.manage) {
+      if (this.permission.joc && this.permission.joc.administration.certificates.view) {
         this.getCA();
       }
     }
@@ -543,7 +543,7 @@ export class UserComponent implements OnInit, OnDestroy {
         this.keys = {};
       }
     });
-    if (this.permission.joc && this.permission.joc.administration.certificates.manage) {
+    if (this.permission.joc && this.permission.joc.administration.certificates.view) {
       this.coreService.post('profile/key/ca', {}).subscribe({
         next: (res: any) => {
           this.caCertificates = res;

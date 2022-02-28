@@ -1,11 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {CoreService} from '../../../services/core.service';
-import {DataService} from '../data.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { CoreService } from '../../../services/core.service';
+import { DataService } from '../data.service';
 import { AuthService } from '../../../components/guard';
+import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-profiles',
@@ -20,7 +21,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   users: any;
   searchKey: string;
-  prof: any = {currentPage: 1};
+  prof: any = { currentPage: 1 };
   order = 'user';
   loading = true;
   reverse = false;
@@ -29,7 +30,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   setOfCheckedId = new Set<string>();
 
   constructor(private dataService: DataService, private modal: NzModalService, private coreService: CoreService,
-     private router: Router, private authService: AuthService) {
+    private router: Router, private authService: AuthService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUserData(res);
@@ -94,50 +95,114 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   }
 
   resetProfile(profile): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'resetProfile',
-        message: 'resetSingleProfile',
-        type: 'Reset',
-        objectName: profile.account
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.deleteProfile(profile);
-      }
-    });
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Profile',
+        operation: 'Reset',
+        name: profile.account
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          const auditLog: any = {};
+          if (result.comment) {
+            auditLog.comment = result.comment;
+          }
+          if (result.timeSpent) {
+            auditLog.timeSpent = result.timeSpent;
+          }
+          if (result.ticketLink) {
+            auditLog.ticketLink = result.ticketLink;
+          }
+
+          if (result.isChecked) {
+            this.dataService.comments = result;
+          }
+          this.deleteProfile(profile, auditLog);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'resetProfile',
+          message: 'resetSingleProfile',
+          type: 'Reset',
+          objectName: profile.account
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteProfile(profile, this.dataService.comments);
+        }
+      });
+    }
   }
 
   resetMainProfile(): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'resetAllProfile',
-        message: 'resetDefaultProfile',
-        type: 'Reset',
-        resetProfiles: Array.from(this.setOfCheckedId)
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.deleteProfile(null);
-      }
-    });
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Profiles',
+        operation: 'Reset',
+        name: Array.from(this.setOfCheckedId)
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteProfile(null, result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'resetAllProfile',
+          message: 'resetDefaultProfile',
+          type: 'Reset',
+          resetProfiles: Array.from(this.setOfCheckedId)
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.deleteProfile(null, this.dataService.comments);
+        }
+      });
+    }
   }
 
   showMaster(account): void {
     if (sessionStorage.identityServiceType !== 'VAULT') {
-      this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
+      this.router.navigate(['/users/identity_service/role'], { queryParams: { account } });
     } else {
       this.router.navigate(['/users/identity_service/role']);
     }
@@ -161,12 +226,24 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private deleteProfile(profile): void {
-    const obj = {accounts: []};
+  private deleteProfile(profile, comments): void {
+    const obj: any = { accounts: [], auditLog: {}};
     if (profile) {
       obj.accounts.push(profile.account);
     } else {
       obj.accounts = Array.from(this.setOfCheckedId);
+    }
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    if (comments.isChecked) {
+      this.dataService.comments = comments;
     }
     this.coreService.post('configurations/delete', obj).subscribe(() => {
       if (profile) {
