@@ -10,6 +10,7 @@ import {DataService} from '../../../../services/data.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-job-resource',
@@ -111,28 +112,71 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   rename(inValid): void {
     if (this.data.id === this.jobResource.id && this.data.name !== this.jobResource.name) {
       if (!inValid) {
-        const data = this.coreService.clone(this.data);
-        const name = this.jobResource.name;
-        this.coreService.post('inventory/rename', {
-          id: data.id,
-          newPath: name
-        }).subscribe({
-          next: () => {
-            if (data.id === this.data.id) {
-              this.data.name = name;
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: 'JobResource',
+            operation: 'Rename',
+            name: this.data.name
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.renameJobResource(result);
+            } else {
+              this.jobResource.name = this.data.name;
+              this.ref.detectChanges();
             }
-            data.name = name;
-            this.dataService.reloadTree.next({rename: data});
-          }, error: () => {
-            this.jobResource.name = this.data.name;
-            this.ref.detectChanges();
-          }
-        });
+          });
+        } else {
+          this.renameJobResource();
+        }
       } else {
         this.jobResource.name = this.data.name;
         this.ref.detectChanges();
       }
     }
+  }
+
+  private renameJobResource(comments: any = {}): void {
+    const data = this.coreService.clone(this.data);
+    const name = this.jobResource.name;
+    const obj: any = {
+      id: data.id,
+      newPath: name,
+      auditLog: {}
+    };
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    this.coreService.post('inventory/rename', obj).subscribe({
+      next: () => {
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({ rename: data });
+      }, error: () => {
+        this.jobResource.name = this.data.name;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   private getDocumentations(): void {

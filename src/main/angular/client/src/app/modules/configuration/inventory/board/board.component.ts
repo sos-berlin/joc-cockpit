@@ -1,12 +1,14 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
-import {clone, isEmpty, isEqual} from 'underscore';
-import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
-import {CoreService} from '../../../../services/core.service';
-import {DataService} from '../../../../services/data.service';
-import {InventoryObject} from '../../../../models/enums';
-import {InventoryService} from '../inventory.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { clone, isEmpty, isEqual } from 'underscore';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { CoreService } from '../../../../services/core.service';
+import { DataService } from '../../../../services/data.service';
+import { InventoryObject } from '../../../../models/enums';
+import { InventoryService } from '../inventory.service';
+import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-board',
@@ -36,7 +38,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private translate: TranslateService, public inventoryService: InventoryService,
-              private dataService: DataService, private ref: ChangeDetectorRef, private router: Router) {
+    private dataService: DataService, private ref: ChangeDetectorRef, private router: Router, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.board.actual) {
@@ -209,28 +211,71 @@ export class BoardComponent implements OnChanges, OnDestroy {
   rename(inValid): void {
     if (this.data.id === this.board.id && this.data.name !== this.board.name) {
       if (!inValid) {
-        const data = this.coreService.clone(this.data);
-        const name = this.board.name;
-        this.coreService.post('inventory/rename', {
-          id: data.id,
-          newPath: name
-        }).subscribe({
-          next: () => {
-            if (data.id === this.data.id) {
-              this.data.name = name;
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: 'NoticeBoard',
+            operation: 'Rename',
+            name: this.data.name
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.renameBoard(result);
+            } else {
+              this.board.name = this.data.name;
+              this.ref.detectChanges();
             }
-            data.name = name;
-            this.dataService.reloadTree.next({rename: data});
-          }, error: () => {
-            this.board.name = this.data.name;
-            this.ref.detectChanges();
-          }
-        });
+          });
+        } else {
+          this.renameBoard();
+        }
       } else {
         this.board.name = this.data.name;
         this.ref.detectChanges();
       }
     }
+  }
+
+  private renameBoard(comments: any = {}): void {
+    const data = this.coreService.clone(this.data);
+    const name = this.board.name;
+    const obj: any = {
+      id: data.id,
+      newPath: name,
+      auditLog: {}
+    };
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    this.coreService.post('inventory/rename', obj).subscribe({
+      next: () => {
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({ rename: data });
+      }, error: () => {
+        this.board.name = this.data.name;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   private getDocumentations(): void {
@@ -246,7 +291,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
 
   updateList(node): void {
     const obj = {
-      folders: [{folder: node.key, recursive: false}],
+      folders: [{ folder: node.key, recursive: false }],
       onlyWithAssignReference: true
     };
     this.coreService.post('documentations', obj).subscribe((res: any) => {
@@ -310,11 +355,11 @@ export class BoardComponent implements OnChanges, OnDestroy {
 
 
   deploy(): void {
-    this.dataService.reloadTree.next({deploy: this.board});
+    this.dataService.reloadTree.next({ deploy: this.board });
   }
 
   backToListView(): void {
-    this.dataService.reloadTree.next({back: this.board});
+    this.dataService.reloadTree.next({ back: this.board });
   }
 
   navToBoardTab(): void {
@@ -497,10 +542,10 @@ export class BoardComponent implements OnChanges, OnDestroy {
         id: this.board.id,
         objectType: this.objectType
       };
-  
+
       if (sessionStorage.$SOS$FORCELOGING === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-          request.auditLog = {comment: translatedValue};
+          request.auditLog = { comment: translatedValue };
         });
       }
       this.coreService.post('inventory/store', request).subscribe({

@@ -9,6 +9,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
+import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
 
 declare const Holidays;
 declare const $;
@@ -1403,28 +1404,71 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   rename(inValid): void {
     if (this.data.id === this.calendar.id && this.data.name !== this.calendar.name) {
       if (!inValid) {
-        const data = this.coreService.clone(this.data);
-        const name = this.calendar.name;
-        this.coreService.post('inventory/rename', {
-          id: data.id,
-          newPath: name
-        }).subscribe({
-          next: () => {
-            if (data.id === this.data.id) {
-              this.data.name = name;
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: 'Calendar',
+            operation: 'Rename',
+            name: this.data.name
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.renameCalendar(result);
+            } else {
+              this.calendar.name = this.data.name;
+              this.ref.detectChanges();
             }
-            data.name = name;
-            this.dataService.reloadTree.next({rename: data});
-          }, error: () => {
-            this.calendar.name = this.data.name;
-            this.ref.detectChanges();
-          }
-        });
+          });
+        } else {
+          this.renameCalendar();
+        }
       } else {
         this.calendar.name = this.data.name;
         this.ref.detectChanges();
       }
     }
+  }
+
+  private renameCalendar(comments: any = {}): void {
+    const data = this.coreService.clone(this.data);
+    const name = this.calendar.name;
+    const obj: any = {
+      id: data.id,
+      newPath: name,
+      auditLog: {}
+    };
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    this.coreService.post('inventory/rename', obj).subscribe({
+      next: () => {
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({ rename: data });
+      }, error: () => {
+        this.calendar.name = this.data.name;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   private getDocumentations(): void {

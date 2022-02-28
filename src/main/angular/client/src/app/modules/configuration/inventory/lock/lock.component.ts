@@ -3,10 +3,12 @@ import {isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-lock',
@@ -31,7 +33,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, private translate: TranslateService,
-              private ref: ChangeDetectorRef, private router: Router, public inventoryService: InventoryService) {
+              private ref: ChangeDetectorRef, private router: Router, public inventoryService: InventoryService, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.lock.actual) {
@@ -119,28 +121,71 @@ export class LockComponent implements OnChanges, OnDestroy {
   rename(inValid): void {
     if (this.data.id === this.lock.id && this.data.name !== this.lock.name) {
       if (!inValid) {
-        const data = this.coreService.clone(this.data);
-        const name = this.lock.name;
-        this.coreService.post('inventory/rename', {
-          id: data.id,
-          newPath: name
-        }).subscribe({
-          next: () => {
-            if (data.id === this.data.id) {
-              this.data.name = name;
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: 'NoticeBoard',
+            operation: 'Rename',
+            name: this.data.name
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.renameLock(result);
+            } else {
+              this.lock.name = this.data.name;
+              this.ref.detectChanges();
             }
-            data.name = name;
-            this.dataService.reloadTree.next({rename: data});
-          }, error: () => {
-            this.lock.name = this.data.name;
-            this.ref.detectChanges();
-          }
-        });
+          });
+        } else {
+          this.renameLock();
+        }
       } else {
         this.lock.name = this.data.name;
         this.ref.detectChanges();
       }
     }
+  }
+
+  private renameLock(comments: any = {}): void {
+    const data = this.coreService.clone(this.data);
+    const name = this.lock.name;
+    const obj: any = {
+      id: data.id,
+      newPath: name,
+      auditLog: {}
+    };
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    this.coreService.post('inventory/rename', obj).subscribe({
+      next: () => {
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({ rename: data });
+      }, error: () => {
+        this.lock.name = this.data.name;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   private getDocumentations(): void {

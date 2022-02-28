@@ -7,13 +7,14 @@ import {
   OnDestroy,
   SimpleChanges, ViewChild
 } from '@angular/core';
-import {isEmpty, isEqual, clone, sortBy} from 'underscore';
-import {Subscription} from 'rxjs';
-import {TranslateService} from '@ngx-translate/core';
-import {CoreService} from '../../../../services/core.service';
-import {DataService} from '../../../../services/data.service';
-import {InventoryObject} from '../../../../models/enums';
-
+import { isEmpty, isEqual, clone, sortBy } from 'underscore';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { CoreService } from '../../../../services/core.service';
+import { DataService } from '../../../../services/data.service';
+import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
+import { InventoryObject } from '../../../../models/enums';
 
 @Component({
   selector: 'app-script',
@@ -42,15 +43,15 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     lineNumbers: true,
     autoRefresh: true,
     mode: 'shell',
-    extraKeys: {'Ctrl-Space': 'autocomplete'}
+    extraKeys: { 'Ctrl-Space': 'autocomplete' }
   };
   subscription1: Subscription;
   subscription2: Subscription;
 
-  @ViewChild('codeMirror', {static: false}) cm: any;
+  @ViewChild('codeMirror', { static: false }) cm: any;
 
   constructor(private coreService: CoreService, private translate: TranslateService,
-             private dataService: DataService, private ref: ChangeDetectorRef) {
+    private dataService: DataService, private ref: ChangeDetectorRef, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.script.actual) {
@@ -155,7 +156,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         return;
       }
       obj = {
-        folders: [{folder: node.key, recursive: false}],
+        folders: [{ folder: node.key, recursive: false }],
         onlyWithAssignReference: true
       };
     }
@@ -200,23 +201,35 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   rename(inValid): void {
     if (this.data.id === this.script.id && this.data.name !== this.script.name) {
       if (!inValid) {
-        const data = this.coreService.clone(this.data);
-        const name = this.script.name;
-        this.coreService.post('inventory/rename', {
-          id: data.id,
-          newPath: name
-        }).subscribe({
-          next: () => {
-            if (data.id === this.data.id) {
-              this.data.name = name;
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: 'Script',
+            operation: 'Rename',
+            name: this.data.name
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.renameScript(result);
+            } else {
+              this.script.name = this.data.name;
+              this.ref.detectChanges();
             }
-            data.name = name;
-            this.dataService.reloadTree.next({rename: data});
-          }, error: () => {
-            this.script.name = this.data.name;
-            this.ref.detectChanges();
-          }
-        });
+          });
+        } else {
+          this.renameScript();
+        }
       } else {
         this.script.name = this.data.name;
         this.ref.detectChanges();
@@ -224,12 +237,42 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     }
   }
 
+  private renameScript(comments: any = {}): void {
+    const data = this.coreService.clone(this.data);
+    const name = this.script.name;
+    const obj: any = {
+      id: data.id,
+      newPath: name,
+      auditLog: {}
+    };
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    this.coreService.post('inventory/rename', obj).subscribe({
+      next: () => {
+        if (data.id === this.data.id) {
+          this.data.name = name;
+        }
+        data.name = name;
+        this.dataService.reloadTree.next({ rename: data });
+      }, error: () => {
+        this.script.name = this.data.name;
+        this.ref.detectChanges();
+      }
+    });
+  }
   release(): void {
-    this.dataService.reloadTree.next({release: this.script});
+    this.dataService.reloadTree.next({ release: this.script });
   }
 
   backToListView(): void {
-    this.dataService.reloadTree.next({back: this.script});
+    this.dataService.reloadTree.next({ back: this.script });
   }
 
   /**
@@ -278,10 +321,10 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         id: this.script.id,
         objectType: this.objectType
       };
-  
+
       if (sessionStorage.$SOS$FORCELOGING === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-          request.auditLog = {comment: translatedValue};
+          request.auditLog = { comment: translatedValue };
         });
       }
 
