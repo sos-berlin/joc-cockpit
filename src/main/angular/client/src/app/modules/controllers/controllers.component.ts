@@ -23,6 +23,7 @@ export class DeployModalComponent implements OnInit {
   comments: any = {};
   preferences: any;
   display: any;
+  required = false;
   schedulingTypes = [
     'FIXED_PRIORITY',
     'ROUND_ROBIN'
@@ -38,6 +39,9 @@ export class DeployModalComponent implements OnInit {
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
   }
 
   onSubmit(): void {
@@ -86,6 +90,7 @@ export class CreateTokenModalComponent implements OnInit {
   comments: any = {};
   preferences: any;
   display: any;
+  required = false;
   viewDate = new Date();
   zones = [];
 
@@ -101,6 +106,9 @@ export class CreateTokenModalComponent implements OnInit {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.token.timezone = this.preferences.zone;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
   }
 
   selectTime(time, isEditor = false): void {
@@ -179,6 +187,7 @@ export class SubagentModalComponent implements OnInit {
   comments: any = {};
   preferences: any;
   display: any;
+  required = false;
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
   }
@@ -189,6 +198,9 @@ export class SubagentModalComponent implements OnInit {
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.data) {
       this.subagent = this.coreService.clone(this.data);
     } else {
@@ -247,6 +259,7 @@ export class AgentModalComponent implements OnInit {
   comments: any = {};
   preferences: any;
   display: any;
+  required = false;
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
   }
@@ -257,6 +270,9 @@ export class AgentModalComponent implements OnInit {
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
       this.agent.subagents = sortBy(this.agent.subagents, 'isDirector');

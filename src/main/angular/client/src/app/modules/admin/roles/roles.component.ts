@@ -31,6 +31,7 @@ export class RoleModalComponent implements OnInit {
   currentRole: any = {};
   oldName: string;
   display: any;
+  required = false;
   comments: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
@@ -40,7 +41,10 @@ export class RoleModalComponent implements OnInit {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
-    if(this.dataService.comments && this.dataService.comments.comment){
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
+    if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
     }
@@ -109,7 +113,7 @@ export class RoleModalComponent implements OnInit {
       if (this.comments.ticketLink) {
         request.auditLog.ticketLink = this.comments.ticketLink;
       }
-      if(this.comments.isChecked){
+      if (this.comments.isChecked) {
         this.dataService.comments = this.comments;
       }
       this.coreService.post('authentication/auth/role/rename', request).subscribe({
@@ -183,7 +187,7 @@ export class RoleModalComponent implements OnInit {
       if (this.comments.ticketLink) {
         request.auditLog.ticketLink = this.comments.ticketLink;
       }
-      if(this.comments.isChecked){
+      if (this.comments.isChecked) {
         this.dataService.comments = this.comments;
       }
       if (sessionStorage.identityServiceType === 'SHIRO') {
@@ -217,18 +221,22 @@ export class ControllerModalComponent implements OnInit {
   currentController: any = {};
   schedulerIds: any = {};
   display: any;
+  required = false;
   comments: any = {};
   name = '';
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-     private dataService: DataService, private authService: AuthService) {
+    private dataService: DataService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
-    if(this.dataService.comments && this.dataService.comments.comment){
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
+    if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
     }
@@ -325,7 +333,7 @@ export class ControllerModalComponent implements OnInit {
         if (this.comments.ticketLink) {
           request.auditLog.ticketLink = this.comments.ticketLink;
         }
-        if(this.comments.isChecked){
+        if (this.comments.isChecked) {
           this.dataService.comments = this.comments;
         }
         if (sessionStorage.identityServiceType === 'SHIRO') {
@@ -464,7 +472,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     if (comments.ticketLink) {
       obj.auditLog.ticketLink = comments.ticketLink;
     }
-    if(comments.isChecked){
+    if (comments.isChecked) {
       this.dataService.comments = comments;
     }
     if (sessionStorage.identityServiceType === 'SHIRO') {
@@ -743,47 +751,69 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   private deleteList(): void {
-    if (this.preferences.auditLog && !this.dataService.comments.comment) {
-      let comments = {
-        radio: 'predefined',
-        type: 'Role',
-        operation: 'Delete',
-        name: ''
-      };
-      this.object.mapOfCheckedId.forEach((value, key) => {
-        comments.name = comments.name + key + ', ';
-      });
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: CommentModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          comments
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this.deleteRoles(result);
+    let isAssigned: boolean;
+    let waringMessage = '';
+    for (const i in this.accounts) {
+      for (const j in this.accounts[i].roles) {
+        if (this.object.mapOfCheckedId.has(this.accounts[i].roles[j])) {
+          isAssigned = true;
+          break;
         }
-      });
+      }
+      if (isAssigned) {
+        break;
+      }
+    }
+    if (!isAssigned) {
+      if (this.preferences.auditLog && !this.dataService.comments.comment) {
+        let comments = {
+          radio: 'predefined',
+          type: 'Role',
+          operation: 'Delete',
+          name: ''
+        };
+        this.object.mapOfCheckedId.forEach((value, key) => {
+          comments.name = comments.name + key + ', ';
+        });
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            comments
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this.deleteRoles(result);
+          }
+        });
+      } else {
+        this.modal.create({
+          nzTitle: undefined,
+          nzContent: ConfirmationModalComponent,
+          nzComponentParams: {
+            delete: true,
+            isRole: true
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        }).afterClose.subscribe(result => {
+          if (result) {
+            this.deleteRoles(this.dataService.comments);
+          }
+        });
+      }
     } else {
-      this.modal.create({
-        nzTitle: undefined,
-        nzContent: ConfirmationModalComponent,
-        nzComponentParams: {
-          delete: true,
-          isRole: true
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      }).afterClose.subscribe(result => {
-        if (result) {
-          this.deleteRoles(this.dataService.comments);
-        }
+      this.translate.get('user.message.cannotDeleteRole').subscribe(translatedValue => {
+        waringMessage = translatedValue;
+      });
+      this.toasterService.warning(waringMessage, '', {
+        timeOut: 3000
       });
     }
   }
@@ -829,9 +859,11 @@ export class RolesComponent implements OnInit, OnDestroy {
       }
     }
     this.userDetail.roles = roles;
-    this.saveInfo(this.dataService.comments.comment ? this.dataService.comments : {
-      comment : 'Rearrange roles'
+    let comments = {};
+    this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+      comments = { comment: translatedValue };
     });
+    this.saveInfo(this.dataService.comments.comment ? this.dataService.comments : comments);
   }
 
   private createRoleArray(res): void {

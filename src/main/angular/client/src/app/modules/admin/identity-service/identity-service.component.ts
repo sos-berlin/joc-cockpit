@@ -49,6 +49,7 @@ export class SettingModalComponent implements OnInit {
   };
   oldPassword: string;
   display: any;
+  required = false;
   comments: any = {};
 
   uploader: FileUploader;
@@ -102,7 +103,10 @@ export class SettingModalComponent implements OnInit {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
-    if(this.dataService.comments && this.dataService.comments.comment){
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
+    if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
     }
@@ -389,7 +393,7 @@ export class SettingModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       request.auditLog.ticketLink = this.comments.ticketLink;
     }
-    if(this.comments.isChecked){
+    if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
     this.coreService.post('configuration/save', request).subscribe({
@@ -433,6 +437,7 @@ export class IdentityServiceModalComponent implements OnInit {
   settingObj: any = {};
   removeSettingId = -1;
   display: any;
+  required = false;
   comments: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
@@ -442,7 +447,10 @@ export class IdentityServiceModalComponent implements OnInit {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
-    if(this.dataService.comments && this.dataService.comments.comment){
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
+    if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
     }
@@ -577,7 +585,7 @@ export class IdentityServiceModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       request.auditLog.ticketLink = this.comments.ticketLink;
     }
-    if(this.comments.isChecked){
+    if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
     this.coreService.post('iam/identityservice/rename', request).subscribe({
@@ -624,7 +632,7 @@ export class IdentityServiceModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       this.currentObj.auditLog.ticketLink = this.comments.ticketLink;
     }
-    if(this.comments.isChecked){
+    if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
     this.coreService.post('iam/identityservice/store', this.currentObj).subscribe({
@@ -658,7 +666,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService,
-    private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
+    private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private translate: TranslateService,) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
     });
@@ -762,11 +770,63 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   disable(identityService): void {
-    this.enableDisable(identityService, true);
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Identity Service',
+        operation: 'Disable',
+        name: identityService.identityServiceName
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.enableDisable(identityService, true, result);
+        }
+      });
+    } else {
+      this.enableDisable(identityService, true, this.dataService.comments.comment);
+    }
   }
 
   enable(identityService): void {
-    this.enableDisable(identityService, false);
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Identity Service',
+        operation: 'Enable',
+        name: identityService.identityServiceName
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj: identityService,
+          url: 'iam/identityservice/store'
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.enableDisable(identityService, false, result);
+        }
+      });
+    } else {
+      this.enableDisable(identityService, false, this.dataService.comments.comment);
+    }
   }
 
   manageSetting(data): void {
@@ -787,72 +847,62 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   drop(event: CdkDragDrop<string[]>): void {
     const list = this.orderPipe.transform(this.identityServices, this.usr.sortBy, this.usr.reverse);
     moveItemInArray(list, event.previousIndex, event.currentIndex);
+    const changeArr = [];
     if (this.usr.reverse) {
       let j = 1;
       for (let i = list.length - 1; i >= 0; i--) {
+        if (list[i].ordering !== j) {
+          changeArr.push(list[i].identityServiceName)
+        }
         list[i].ordering = j;
         j++;
       }
     } else {
       for (let i = 0; i < list.length; i++) {
+        if (list[i].ordering !== i + 1) {
+          changeArr.push(list[i].identityServiceName)
+        }
         list[i].ordering = i + 1;
       }
     }
-    this.identityServices = list;
-    this.identityServices.forEach((identityService) => {
-      this.enableDisable(identityService, identityService.disabled);
-    });
-  }
 
-  private enableDisable(identityService, flag): void {
-    identityService.disabled = flag;
+    this.identityServices = list;
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
-      let comments = {
-        radio: 'predefined',
-        type: 'Identity Service',
-        operation: flag ? 'Disable' : 'Enable',
-        name: identityService.identityServiceName
-      };
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: CommentModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          comments,
-          obj: identityService,
-          url: 'iam/identityservice/store'
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
+      let comments = {};
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        comments = { comment: translatedValue };
       });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          if(result.isChecked){
-            this.dataService.comments = result;
-          }
-          this.checkTypes();
-        } else {
-          identityService.disabled = !identityService.disabled;
+      this.identityServices.forEach((identityService) => {
+        if (changeArr.indexOf(identityService.identityServiceName) > -1) {
+          this.enableDisable(identityService, identityService.disabled, comments);
         }
       });
     } else {
-      if (this.preferences.auditLog && this.dataService.comments.comment) {
-        identityService.auditLog = {};
-        if (this.dataService.comments.comment) {
-          identityService.auditLog.comment = this.dataService.comments.comment;
+      this.identityServices.forEach((identityService) => {
+        if (changeArr.indexOf(identityService.identityServiceName) > -1) {
+          this.enableDisable(identityService, identityService.disabled, this.dataService.comments.comment);
         }
-        if (this.dataService.comments.timeSpent) {
-          identityService.auditLog.timeSpent = this.dataService.comments.timeSpent;
-        }
-        if (this.dataService.comments.ticketLink) {
-          identityService.auditLog.ticketLink = this.dataService.comments.ticketLink;
-        }
-      }
-      this.coreService.post('iam/identityservice/store', identityService).subscribe({
-        next: () => this.checkTypes(), error: () => this.getIAMList()
       });
     }
+  }
+
+  private enableDisable(identityService, flag, comments): void {
+    identityService.disabled = flag;
+    if (comments.comment) {
+      identityService.auditLog = {};
+      if (comments.comment) {
+        identityService.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        identityService.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        identityService.auditLog.ticketLink = comments.ticketLink;
+      }
+    }
+    this.coreService.post('iam/identityservice/store', identityService).subscribe({
+      next: () => this.checkTypes(), error: () => this.getIAMList()
+    });
   }
 
   delete(identityService): void {
@@ -878,7 +928,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          if(result.isChecked){
+          if (result.isChecked) {
             this.dataService.comments = result;
           }
           this.getIAMList();

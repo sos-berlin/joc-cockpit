@@ -45,16 +45,20 @@ export class SingleDeployComponent implements OnInit {
   deployablesObject = [];
   loading = true;
   submitted = false;
-  comments: any = {radio: 'predefined'};
+  required = false;
+  comments: any = { radio: 'predefined' };
   object: any = {
-    store: {draftConfigurations: [], deployConfigurations: []},
-    delete: {deployConfigurations: []}
+    store: { draftConfigurations: [], deployConfigurations: [] },
+    delete: { deployConfigurations: [] }
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     this.init();
   }
@@ -214,7 +218,8 @@ export class DeployComponent implements OnInit {
     deleteObj: {deployConfigurations: []}
   };
   submitted = false;
-  comments: any = {radio: 'predefined'};
+  required = false;
+  comments: any = { radio: 'predefined' };
   isDeleted = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
@@ -222,6 +227,9 @@ export class DeployComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.data && this.data.deleted) {
       this.isDeleted = true;
     }
@@ -674,6 +682,7 @@ export class CronImportModalComponent implements OnInit {
   calendarTree: any = [];
   uploader: FileUploader;
   comments: any = {};
+  required = false;
   hasBaseDropZoneOver: any;
   requestObj: any = {
     systemCrontab: false,
@@ -684,6 +693,9 @@ export class CronImportModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.getTree();
     this.getAgents();
     this.getCalendars();
@@ -853,12 +865,12 @@ export class ExportComponent implements OnInit {
   loading = true;
   nodes: any = [];
   submitted = false;
-  comments: any = {radio: 'predefined'};
+  required = false;
+  comments: any = { radio: 'predefined' };
   inValid = false;
   exportType = 'BOTH';
   path: string;
   securityLevel: string;
-  REGEX = /^[0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
   exportObj = {
     isRecursive: false,
     controllerId: '',
@@ -886,6 +898,9 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.exportObj.controllerId = this.schedulerIds.selected;
     this.securityLevel = sessionStorage.securityLevel;
     if (this.origin) {
@@ -909,14 +924,15 @@ export class ExportComponent implements OnInit {
   checkFileName(): void {
     if (this.exportObj.filename) {
       const ext = this.exportObj.filename.split('.').pop();
-      if (ext) {
+      if (ext && this.exportObj.filename.indexOf('.') > -1) {
         if (this.exportObj.fileFormat === 'ZIP' && (ext === 'ZIP' || ext === 'zip')) {
           this.inValid = false;
         } else {
           this.inValid = !(this.exportObj.fileFormat === 'TAR_GZ' && (ext === 'tar' || ext === 'gz'));
         }
       } else {
-        this.inValid = true;
+        this.inValid = false;
+        this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
       }
     }
   }
@@ -1248,6 +1264,11 @@ export class ExportComponent implements OnInit {
       if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
         delete this.object.releaseDraftConfigurations;
       }
+      if (this.exportObj.filename) {
+        if (this.exportObj.filename.indexOf('.') === -1) {
+          this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
+        }
+      }
       const obj: any = {
         exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
       };
@@ -1322,7 +1343,8 @@ export class RepositoryComponent implements OnInit {
   type = 'ALL';
   nodes: any = [];
   submitted = false;
-  comments: any = {radio: 'predefined'};
+  required = false;
+  comments: any = { radio: 'predefined' };
   exportObj = {
     isRecursive: false
   };
@@ -1346,7 +1368,10 @@ export class RepositoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.category === 'LOCAL'){
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
+    if (this.category === 'LOCAL') {
       this.filter.envRelated = true;
       this.filter.envIndependent = false;
     } else {
@@ -1905,6 +1930,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   nodes: any = [];
   uploader: FileUploader;
   signatureAlgorithm: string;
+  required = false;
   comments: any = {};
   settings: any = {};
   hasBaseDropZoneOver: any;
@@ -1916,10 +1942,13 @@ export class ImportWorkflowModalComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
-              public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
+    public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.getTree();
     this.uploader = new FileUploader({
       url: this.isDeploy ? './api/inventory/deployment/import_deploy' : './api/inventory/import',
@@ -2254,8 +2283,9 @@ export class CreateObjectModalComponent implements OnInit {
   submitted = false;
   settings: any = {};
   display: any;
+  required = false;
   comments: any = {};
-  object = {name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: ''};
+  object = { name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: '' };
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
   }
@@ -2263,6 +2293,9 @@ export class CreateObjectModalComponent implements OnInit {
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.restore) {
       this.settings = JSON.parse(sessionStorage.$SOS$RESTORE);
     } else if (this.copy) {
@@ -2403,6 +2436,7 @@ export class CreateFolderModalComponent implements OnInit {
   @Input() oldName: any;
   @Input() display: any;
   submitted = false;
+  required = false;
   isUnique = true;
   isValid = true;
   folder = { error: false, name: '', deepRename: 'rename', search: '', replace: '' };
@@ -2413,6 +2447,9 @@ export class CreateFolderModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.origin) {
       if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
         this.folder.deepRename = 'replace';
@@ -3931,57 +3968,96 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.checkNewCopyObject(node, res);
         });
       } else if (this.copyObj.operation === 'CUT') {
-        const obj: any = { newPath: object.path };
-        if (this.copyObj.id) {
-          obj.id = this.copyObj.id;
-        } else {
-          obj.objectType = 'FOLDER';
-          obj.path = this.copyObj.path;
-        }
-        if (this.copyObj.path === obj.newPath) {
-          this.copyObj = undefined;
-          return;
-        } else {
-          const pathArr = [];
-          const arr = obj.newPath.split('/');
-          const len = arr.length;
-          if (len > 1) {
-            for (let i = 0; i < len; i++) {
-              if (arr[i]) {
-                if (i > 0 && pathArr[i - 1]) {
-                  pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
-                } else {
-                  pathArr.push('/' + arr[i]);
-                }
-              } else {
-                pathArr.push('/');
-              }
-            }
-          }
-          if (pathArr.length > 0 && pathArr.indexOf(this.copyObj.path) > -1 && obj.objectType === 'FOLDER') {
-            let msg = '';
-            this.translate.get('error.message.pasteInSubFolderNotAllowed').subscribe(translatedValue => {
-              msg = translatedValue;
-            });
-            this.toasterService.warning(msg);
-            return;
-          }
-        }
-        obj.newPath = obj.newPath + (obj.newPath === '/' ? '' : '/') + this.copyObj.name;
-        this.coreService.post('inventory/rename', obj).subscribe((res) => {
-          let obj: any = this.coreService.clone(this.copyObj);
-          this.updateFolders(this.copyObj.path, false, () => {
-            this.updateTree(false);
-            obj.path = res.path.substring(0, res.path.lastIndexOf('/')) || '/';
-            obj.name = res.path.substring(res.path.lastIndexOf('/') + 1);
-            this.type = obj.type;
-            this.selectedData = obj;
-            this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: object.type || object.object || 'Folder',
+            operation: 'Paste',
+            name: object.path || object.name
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzComponentParams: {
+              comments,
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
           });
-          this.copyObj = undefined;
-        });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.cutPaste(object, result);
+            }
+          });
+        } else {
+           this.cutPaste(object);
+        }
       }
     }
+  }
+
+  private cutPaste(object, comments: any = {}): void {
+    const obj: any = { newPath: object.path };
+    if (this.copyObj.id) {
+      obj.id = this.copyObj.id;
+    } else {
+      obj.objectType = 'FOLDER';
+      obj.path = this.copyObj.path;
+    }
+    if (this.copyObj.path === obj.newPath) {
+      this.copyObj = undefined;
+      return;
+    } else {
+      const pathArr = [];
+      const arr = obj.newPath.split('/');
+      const len = arr.length;
+      if (len > 1) {
+        for (let i = 0; i < len; i++) {
+          if (arr[i]) {
+            if (i > 0 && pathArr[i - 1]) {
+              pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+            } else {
+              pathArr.push('/' + arr[i]);
+            }
+          } else {
+            pathArr.push('/');
+          }
+        }
+      }
+      if (pathArr.length > 0 && pathArr.indexOf(this.copyObj.path) > -1 && obj.objectType === 'FOLDER') {
+        let msg = '';
+        this.translate.get('error.message.pasteInSubFolderNotAllowed').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        this.toasterService.warning(msg);
+        return;
+      }
+    }
+    if (comments.comment) {
+      obj.auditLog = {};
+      obj.auditLog.comment = comments.comment;
+      if (comments.timeSpent) {
+        obj.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        obj.auditLog.ticketLink = comments.ticketLink;
+      }
+    }
+    obj.newPath = obj.newPath + (obj.newPath === '/' ? '' : '/') + this.copyObj.name;
+    this.coreService.post('inventory/rename', obj).subscribe((res) => {
+      let obj: any = this.coreService.clone(this.copyObj);
+      this.updateFolders(this.copyObj.path, false, () => {
+        this.updateTree(false);
+        obj.path = res.path.substring(0, res.path.lastIndexOf('/')) || '/';
+        obj.name = res.path.substring(res.path.lastIndexOf('/') + 1);
+        this.type = obj.type;
+        this.selectedData = obj;
+        this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+      });
+      this.copyObj = undefined;
+    });
   }
 
   removeObject(node): void {
@@ -4327,13 +4403,51 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private releaseSingleObject(data): void {
-    const obj: any = {};
-    if (data.deleted) {
-      obj.delete = [{ id: data.id }];
+    if (this.preferences.auditLog) {
+      console.log(data)
+      let comments = {
+        radio: 'predefined',
+        type: data.type || data.objectType,
+        operation: 'Release',
+        name: data.name
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          const obj: any = {
+            auditLog: {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            }
+          };
+          if (data.deleted) {
+            obj.delete = [{ id: data.id }];
+          } else {
+            obj.update = [{ id: data.id }];
+          }
+          this.coreService.post('inventory/release', obj).subscribe();
+        }
+      });
     } else {
-      obj.update = [{ id: data.id }];
+      const obj: any = {};
+      if (data.deleted) {
+        obj.delete = [{ id: data.id }];
+      } else {
+        obj.update = [{ id: data.id }];
+      }
+      this.coreService.post('inventory/release', obj).subscribe();
     }
-    this.coreService.post('inventory/release', obj).subscribe();
   }
 
   private storeData(obj, result, reload): void {

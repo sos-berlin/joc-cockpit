@@ -30,6 +30,7 @@ export class PermissionModalComponent implements OnInit {
   submitted = false;
   isCovered = false;
   display: any;
+  required = false;
   comments: any = {};
 
   constructor(public activeModal: NzModalRef, private dataService: DataService, public coreService: CoreService) {
@@ -39,6 +40,9 @@ export class PermissionModalComponent implements OnInit {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
@@ -142,6 +146,7 @@ export class FolderModalComponent implements OnInit {
   folderObj: any = { paths: [] };
   schedulerIds: any;
   display: any;
+  required = false;
   comments: any = {};
 
   @ViewChild('treeSelectCtrl', { static: false }) treeSelectCtrl;
@@ -154,6 +159,9 @@ export class FolderModalComponent implements OnInit {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
@@ -262,7 +270,9 @@ export class FolderModalComponent implements OnInit {
 
   private getFolderTree(): void {
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected,
+      forInventory: true,
+      types: ['FOLDER']
     }).subscribe(res => {
       this.nodes = this.coreService.prepareTree(res, true);
       if (this.nodes.length > 0) {

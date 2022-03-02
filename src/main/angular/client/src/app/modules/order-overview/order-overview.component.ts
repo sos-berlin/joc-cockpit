@@ -289,6 +289,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     if (this.schedulerIds.selected) {
       this.coreService.post('tree', {
         controllerId: this.schedulerIds.selected,
+        forInventory: true,
         types: ['WORKFLOW']
       }).subscribe({
         next: res => {

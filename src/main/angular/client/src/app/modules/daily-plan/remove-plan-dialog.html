@@ -66,11 +66,11 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="!isSubmit" type="button" [disabled]="!myForm.form.valid || submitted" class="btn btn-danger btn-sm" (click)="onRemove()">
+    <button *ngIf="!isSubmit" type="button" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-danger btn-sm" (click)="onRemove()">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.remove' | translate}}
     </button>
-    <button *ngIf="isSubmit" type="button" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" (click)="onSubmit()">
+    <button *ngIf="isSubmit" type="button" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm" (click)="onSubmit()">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

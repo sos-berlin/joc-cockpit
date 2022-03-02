@@ -26,7 +26,7 @@
       </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" >
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" >
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
       {{'common.button.submit' | translate}}
     </button>

@@ -592,7 +592,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           controllerId: (!auditLog.controllerId || auditLog.controllerId === '-') ? this.schedulerIds.selected : auditLog.controllerId
         }
       });
-    } else {
+    } else if (auditLog.category === 'DAILYPLAN') {
       this.router.navigate(['/history/daily_plan'], {
         queryParams: {
           auditLogId: auditLog.id,
@@ -831,7 +831,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   private openFilterModal(filter, isCopy): void {
     if (this.schedulerIds.selected) {
       let filterObj: any = {};
-      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+      this.coreService.post('configuration', { controllerId: filter.controllerId, id: filter.id }).subscribe((conf: any) => {
         filterObj = JSON.parse(conf.configuration.configurationItem);
         filterObj.shared = filter.shared;
         if (isCopy) {

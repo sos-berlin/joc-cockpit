@@ -94,7 +94,7 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted" translate>
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || (required && !comments.comment)" translate>
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

@@ -70,11 +70,11 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" *ngIf="step === 2" translate>
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" *ngIf="step === 2" translate>
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" (click)="deploy()" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" *ngIf="step === 4" translate>
+    <button type="button" (click)="deploy()" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" *ngIf="step === 4" translate>
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'inventory.button.deploy' | translate}}
     </button>

@@ -41,9 +41,6 @@
                   <li nz-menu-item (click)="copyFilter(filter)" *ngIf="permission.joc.administration.customization.manage">
                     <a translate>customization.button.copy</a>
                   </li>
-                  <li nz-menu-item (click)="makePrivate(filter)" *ngIf="permission.joc.administration.customization.manage && filter.shared">
-                    <a translate>customization.button.makePrivate</a>
-                  </li>
                   <li nz-menu-item (click)="makeShare(filter)" *ngIf="permission.joc.administration.customization.share && filter.account==username && !filter.shared">
                     <a translate>customization.button.share</a>
                   </li>

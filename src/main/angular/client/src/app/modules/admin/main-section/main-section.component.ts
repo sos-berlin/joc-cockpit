@@ -21,6 +21,7 @@ export class MainSectionModalComponent implements OnInit {
   fullSection = false;
   mainText = '';
   display: any;
+  required = false;
   comments: any = {};
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private dataService: DataService) {
@@ -30,6 +31,9 @@ export class MainSectionModalComponent implements OnInit {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
@@ -306,6 +310,7 @@ export class EditMainSectionModalComponent implements OnInit {
   entry: any;
   existingEntry: string;
   display: any;
+  required = false;
   comments: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
@@ -315,6 +320,9 @@ export class EditMainSectionModalComponent implements OnInit {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
@@ -426,6 +434,7 @@ export class LdapSectionModalComponent implements OnInit {
   submitted = false;
   mainSection: any = [];
   display: any;
+  required = false;
   comments: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
@@ -435,6 +444,9 @@ export class LdapSectionModalComponent implements OnInit {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;

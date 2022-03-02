@@ -168,7 +168,9 @@ export class OrderSearchComponent implements OnInit {
   getFolderTree(): void {
     this.filter.paths = [];
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected,
+      forInventory: true,
+      types: ['FOLDER']
     }).subscribe({
       next: (res) => {
         this.folders = this.coreService.prepareTree(res, true);
@@ -359,7 +361,9 @@ export class TaskSearchComponent implements OnInit {
   getFolderTree(): void {
     this.filter.paths = [];
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected,
+      forInventory: true,
+      types: ['FOLDER']
     }).subscribe({
       next: (res) => {
         this.folders = this.coreService.prepareTree(res, true);
@@ -373,7 +377,7 @@ export class TaskSearchComponent implements OnInit {
   displayWith(data): string {
     return data.key;
   }
-  
+
   selectFolder(node, $event): void {
     if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
     $event.stopPropagation();
