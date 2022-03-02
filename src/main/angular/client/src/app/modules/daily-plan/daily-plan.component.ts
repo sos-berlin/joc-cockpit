@@ -274,6 +274,7 @@ export class CreatePlanModalComponent implements OnInit {
   submitted = false;
   dateFormat: any;
   display: any;
+  required = false;
   comments: any = {};
   schedules: any = [];
   workflowsTree: any = [];
@@ -286,6 +287,9 @@ export class CreatePlanModalComponent implements OnInit {
     this.display = this.preferences.auditLog;
     this.getWorkflowTree();
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
   }
 
   private getWorkflowTree(): void {
@@ -458,6 +462,7 @@ export class RemovePlanModalComponent implements OnInit {
 
   preferences: any;
   display: any;
+  required = false;
   comments: any = {};
 
   constructor(public activeModal: NzModalRef, public  coreService: CoreService) {
@@ -467,6 +472,9 @@ export class RemovePlanModalComponent implements OnInit {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.workflow && !this.order.key) {
       this.order.key = this.order.workflow;
     }

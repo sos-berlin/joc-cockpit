@@ -53,6 +53,7 @@ export class AddOrderModalComponent implements OnInit {
   forkListVariables: any = [];
   dateFormat: any;
   display: any;
+  required = false;
   comments: any = {};
   submitted = false;
   zones = [];
@@ -67,6 +68,9 @@ export class AddOrderModalComponent implements OnInit {
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.order.timeZone = this.preferences.zone;
     this.order.at = 'now';
     this.updateVariableList();

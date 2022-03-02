@@ -92,7 +92,7 @@
     </div>
   </div>
   <div class="modal-footer" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || !document.path" (click)="uploader.uploadAll();" >
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || !document.path || (required && !comments.comment)" (click)="uploader.uploadAll();" >
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
       {{'common.button.import' | translate}}
     </button>

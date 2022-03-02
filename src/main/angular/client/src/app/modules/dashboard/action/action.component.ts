@@ -7,16 +7,23 @@ import {AuthService} from '../../../components/guard';
   selector: 'app-comment-modal',
   templateUrl: './dialog.html',
 })
-export class CommentModalComponent {
+export class CommentModalComponent implements OnInit {
   @Input() action;
   @Input() comments: any;
   @Input() obj: any;
   @Input() performAction;
   @Input() controllerID;
   submitted = false;
+  required = false;
   show = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
   }
 
   onSubmit(result, obj): void {

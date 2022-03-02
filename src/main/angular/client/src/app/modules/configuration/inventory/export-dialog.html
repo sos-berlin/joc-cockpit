@@ -20,7 +20,7 @@
          <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-md-6" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || inValid}">
-          <input type="text" [pattern]="REGEX" class="form-control" required name="name" [appAutofocus]="true" #name="ngModel" (blur)="checkFileName()" (focus)="inValid=false"
+          <input type="text" class="form-control" required name="name" [appAutofocus]="true" #name="ngModel" (blur)="checkFileName()" (focus)="inValid=false"
                  placeholder="{{'inventory.placeholder.enterFileName' | translate}}" [(ngModel)]="exportObj.filename" />
           <div *ngIf="inValid || (name.invalid && name.errors && (name.dirty || name.touched))" class="text-danger help-block">
             <div *ngIf="name.errors && name.errors.required">
@@ -207,7 +207,7 @@
     </div>
   </div>
   <div class="modal-footer text-left" >
-    <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || inValid">
+    <button *ngIf="nodes.length > 0" type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || inValid || (required && !comments.comment)">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
       {{'common.button.submit' | translate}}
     </button>

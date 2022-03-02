@@ -24,6 +24,7 @@ export class DeployModalComponent implements OnInit {
   comments: any = {};
   preferences: any;
   display: any;
+  required = false;
   schedulingTypes = [
     'FIXED_PRIORITY',
     'ROUND_ROBIN'
@@ -39,6 +40,9 @@ export class DeployModalComponent implements OnInit {
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
   }
 
   onSubmit(): void {
@@ -87,6 +91,7 @@ export class CreateTokenModalComponent implements OnInit {
   comments: any = {};
   preferences: any;
   display: any;
+  required = false;
   viewDate = new Date();
   zones = [];
 
@@ -102,6 +107,9 @@ export class CreateTokenModalComponent implements OnInit {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.token.timezone = this.preferences.zone;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
   }
 
   selectTime(time, isEditor = false): void {
@@ -184,7 +192,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
-              private authService: AuthService, private dataService: DataService, private router: Router) {
+    private authService: AuthService, private dataService: DataService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });

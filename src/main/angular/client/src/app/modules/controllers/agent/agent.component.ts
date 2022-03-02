@@ -48,6 +48,7 @@ export class SubagentModalComponent implements OnInit {
   comments: any = {};
   preferences: any;
   display: any;
+  required = false;
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
   }
@@ -58,6 +59,9 @@ export class SubagentModalComponent implements OnInit {
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.data) {
       this.subagent = this.coreService.clone(this.data);
     } else {
@@ -116,6 +120,7 @@ export class AgentModalComponent implements OnInit {
   comments: any = {};
   preferences: any;
   display: any;
+  required = false;
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
   }
@@ -126,6 +131,9 @@ export class AgentModalComponent implements OnInit {
     }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
       this.agent.subagents = sortBy(this.agent.subagents, 'isDirector');

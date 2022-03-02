@@ -16,6 +16,7 @@ export class ResumeOrderModalComponent implements OnInit {
   workflow: any;
   display: any;
   submitted = false;
+  required = false;
   disabledDrag = false;
   comments: any = {};
   position: any;
@@ -29,6 +30,9 @@ export class ResumeOrderModalComponent implements OnInit {
   ngOnInit(): void {
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (!this.order && this.orders && this.orders.size > 0) {
       this.order = this.orders.values().next().value;
     }

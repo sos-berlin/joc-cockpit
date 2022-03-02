@@ -21,6 +21,7 @@ declare var $;
 export class GitModalComponent implements OnInit {
   @Input() display: any;
 
+  required = false;
   submitted = false;
   comments: any = {};
   gitObject: any = {};
@@ -29,7 +30,9 @@ export class GitModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
   }
 
   onSubmit(): void {
@@ -64,6 +67,7 @@ export class UpdateKeyModalComponent implements OnInit {
   @Input() type: string;
   @Input() display: any;
 
+  required = false;
   submitted = false;
   comments: any = {};
   algorithm: any = {};
@@ -74,6 +78,9 @@ export class UpdateKeyModalComponent implements OnInit {
   ngOnInit(): void {
     this.algorithm.keyAlg = this.securityLevel !== 'HIGH' ? 'RSA' : 'PGP';
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.type === 'ca') {
       this.algorithm.keyAlg = 'ECDSA';
     }
@@ -133,6 +140,7 @@ export class ImportKeyModalComponent implements OnInit {
 
   uploader: FileUploader;
   submitted = false;
+  required = false;
   hasBaseDropZoneOver: any;
   comments: any = {};
   key = {keyAlg: 'RSA'};
@@ -151,6 +159,9 @@ export class ImportKeyModalComponent implements OnInit {
   ngOnInit(): void {
     this.uploader.options.url = this.type === 'key' ? './api/profile/key/import' : this.type === 'certificate' ? './api/profile/key/ca/import' : './api/profile/ca/import';
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';
     }
@@ -259,6 +270,7 @@ export class GenerateKeyComponent implements OnInit {
   submitted = false;
   expiry: any = {dateValue: 'date'};
   caObj: any = {};
+  required = false;
   comments: any = {};
   key: any = {
     keyAlg: 'RSA'
@@ -270,6 +282,9 @@ export class GenerateKeyComponent implements OnInit {
 
   ngOnInit(): void {
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';
     }

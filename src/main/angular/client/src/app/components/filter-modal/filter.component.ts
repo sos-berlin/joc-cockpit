@@ -37,23 +37,6 @@ export class EditFilterModalComponent {
     });
   }
 
-  makePrivate(configObj): void {
-    this.coreService.post('configuration/private', {
-      controllerId: configObj.controllerId,
-      id: configObj.id
-    }).subscribe(() => {
-      configObj.shared = false;
-      if (this.permission.user != configObj.account) {
-        for (let i in this.filterList) {
-          if (this.filterList[i].id == configObj.id) {
-            this.filterList.splice(i, 1);
-            break;
-          }
-        }
-      }
-    });
-  }
-
   makeFavorite(filter): void {
     this.favorite = filter.id;
     this.action('MAKEFAV', filter, this.self);

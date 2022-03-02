@@ -592,7 +592,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
           controllerId: (!auditLog.controllerId || auditLog.controllerId === '-') ? this.schedulerIds.selected : auditLog.controllerId
         }
       });
-    } else {
+    } else if (auditLog.category === 'DAILYPLAN') {
       this.router.navigate(['/history/daily_plan'], {
         queryParams: {
           auditLogId: auditLog.id,

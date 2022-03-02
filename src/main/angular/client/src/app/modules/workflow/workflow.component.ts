@@ -94,7 +94,9 @@ export class SearchComponent implements OnInit {
   private getFolderTree(): void {
     this.filter.paths = [];
     this.coreService.post('tree', {
-      controllerId: this.schedulerIds.selected
+      controllerId: this.schedulerIds.selected,
+      forInventory: true,
+      types: [this.permission.joc.inventory.view ? 'FOLDER' : 'WORKFLOW']
     }).subscribe({
       next: (res) => {
         this.folders = this.coreService.prepareTree(res, true);

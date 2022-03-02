@@ -158,7 +158,7 @@
     </div>
   </div>
   <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || uploader.isUploading">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || uploader.isUploading || (required && !comments.comment)">
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
        <span translate>inventory.cronTab.button.convert</span>
     </button>
