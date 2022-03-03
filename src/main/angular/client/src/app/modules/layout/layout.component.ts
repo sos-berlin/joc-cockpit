@@ -420,6 +420,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private changePassword(): void {
+    if (!sessionStorage.$SOS$FORCELOGING) {
+      setTimeout(() => {
+        this.changePassword()
+      }, 50);
+      return;
+    }
     this.modal.create({
       nzTitle: undefined,
       nzContent: ChangePasswordComponent,

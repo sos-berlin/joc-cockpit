@@ -113,11 +113,11 @@
                     <a translate>inventory.button.release</a>
                   </li>
                   <li nz-menu-divider *ngIf="permission.joc.inventory.manage">
-                  <li nz-menu-item (click)="removeObject(data)" [nzDisabled]="!data.hasDeployments"
+                  <li nz-menu-item (click)="removeObject(data)"
                     *ngIf="permission.joc.inventory.manage && objectType !== 'CALENDAR' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
                     <a translate>inventory.button.remove</a>
                   </li>
-                  <li nz-menu-item (click)="removeObject(data)" [nzDisabled]="!data.hasReleases"
+                  <li nz-menu-item (click)="removeObject(data)"
                       *ngIf="permission.joc.inventory.manage && (objectType === 'CALENDAR' || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT')">
                     <a translate>inventory.button.remove</a>
                   </li>

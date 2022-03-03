@@ -3742,7 +3742,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         radio: 'predefined',
         type: object.type || object.object || 'Folder',
         operation: 'Redeploy',
-        name: object.path || object.path
+        name: object.name || object.path
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -3776,7 +3776,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         radio: 'predefined',
         type: object.type || object.object || 'Folder',
         operation: 'Synchronize',
-        name: object.path || object.path
+        name: object.name || object.path
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -3973,7 +3973,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             radio: 'predefined',
             type: object.type || object.object || 'Folder',
             operation: 'Paste',
-            name: object.path || object.name
+            name: object.name || object.path
           };
           const modal = this.modal.create({
             nzTitle: undefined,
@@ -3992,7 +3992,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }
           });
         } else {
-           this.cutPaste(object);
+          this.cutPaste(object);
         }
       }
     }
@@ -4074,7 +4074,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         radio: 'predefined',
         type: object.type || object.object || 'Folder',
         operation: 'Remove',
-        name: object.path || object.name
+        name: object.name || object.path
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -4091,11 +4091,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (result) {
           if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
             this.deleteObject(path, object, node, {
-              auditLog: {
-                comment: result.comment,
-                timeSpent: result.timeSpent,
-                ticketLink: result.ticketLink
-              }
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
             });
           } else {
             obj.auditLog = {
@@ -4157,7 +4155,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         radio: 'predefined',
         type: object.type || object.object || 'Folder',
         operation: 'Delete',
-        name: object.path || object.name
+        name: object.name || object.path
       };
       const modal = this.modal.create({
         nzTitle: undefined,

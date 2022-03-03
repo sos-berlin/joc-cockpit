@@ -142,11 +142,9 @@ export class TableComponent implements OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.removeApiCall(object, {
-            auditLog: {
               comment: result.comment,
               timeSpent: result.timeSpent,
               ticketLink: result.ticketLink
-            }
           });
         }
       });
@@ -210,11 +208,9 @@ export class TableComponent implements OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.deleteApiCall(object, {
-            auditLog: {
               comment: result.comment,
               timeSpent: result.timeSpent,
               ticketLink: result.ticketLink
-            }
           });
         }
       });
