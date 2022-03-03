@@ -70,7 +70,11 @@ export class LoginComponent implements OnInit {
         }
         this.authService.setUser(data);
         this.authService.save();
-        this.router.navigate([this.returnUrl]);
+        if (this.returnUrl.indexOf('?') > -1) {
+          this.router.navigateByUrl('/workflows/workflow?path=006&controllerId=testsuite');
+        } else {
+          this.router.navigate([this.returnUrl]);
+        }
       }, error: () => {
         this.submitted = false;
         this.errorMsg = true;

@@ -62,61 +62,62 @@ export class TableComponent implements OnDestroy {
         obj
       },
       nzFooter: null,
-      nzClosable: false
+      nzClosable: false,
+      nzMaskClosable: false
     });
     modal.afterClose.subscribe(res => {
       if (res) {
         let configuration = {};
         obj.name = res.name;
         if (obj.type === 'JOBCLASS') {
-          configuration = {maxProcesses: 1};
+          configuration = { maxProcesses: 1 };
         } else if (obj.type === InventoryObject.SCHEDULE) {
-          configuration = {controllerId: this.schedulerId};
+          configuration = { controllerId: this.schedulerId };
         } else if (obj.type === 'LOCK') {
-          configuration = {limit: 1, id: res.name};
+          configuration = { limit: 1, id: res.name };
         } else if (obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR') {
-          configuration = {type: obj.type};
+          configuration = { type: obj.type };
         }
         const path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + res.name;
-        this.store(obj, path, configuration);
+        this.store(obj, path, configuration, res.comments);
       }
     });
   }
 
   paste(): void {
-    this.dataService.reloadTree.next({paste: this.dataObj});
+    this.dataService.reloadTree.next({ paste: this.dataObj });
   }
 
   cutObject(data): void {
-    this.dataService.reloadTree.next({cut: data});
+    this.dataService.reloadTree.next({ cut: data });
   }
 
   copyObject(data): void {
-    this.dataService.reloadTree.next({copy: data});
+    this.dataService.reloadTree.next({ copy: data });
   }
 
   renameObject(data): void {
-    this.dataService.reloadTree.next({renameObject: data});
+    this.dataService.reloadTree.next({ renameObject: data });
   }
 
   editObject(data): void {
-    this.dataService.reloadTree.next({set: data});
+    this.dataService.reloadTree.next({ set: data });
   }
 
   showJson(data, isEdit): void {
-    this.dataService.reloadTree.next({showJson: data, edit: isEdit});
+    this.dataService.reloadTree.next({ showJson: data, edit: isEdit });
   }
 
   exportJSON(data): void {
-    this.dataService.reloadTree.next({exportJSON: data});
+    this.dataService.reloadTree.next({ exportJSON: data });
   }
 
   importJSON(data): void {
-    this.dataService.reloadTree.next({importJSON: data});
+    this.dataService.reloadTree.next({ importJSON: data });
   }
 
   deletePermanently(data): void {
-    this.dataService.reloadTree.next({delete: data});
+    this.dataService.reloadTree.next({ delete: data });
   }
 
   removeObject(object): void {
@@ -135,7 +136,8 @@ export class TableComponent implements OnDestroy {
           comments,
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -160,7 +162,8 @@ export class TableComponent implements OnDestroy {
           objectName: _path
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -171,7 +174,7 @@ export class TableComponent implements OnDestroy {
   }
 
   private removeApiCall(object, auditLog): void {
-    this.coreService.post('inventory/remove', {objects: [{id: object.id}], auditLog}).subscribe(() => {
+    this.coreService.post('inventory/remove', { objects: [{ id: object.id }], auditLog }).subscribe(() => {
       for (let i = 0; i < this.dataObj.children.length; i++) {
         if (this.dataObj.children[i].id === object.id) {
           this.dataObj.children.splice(i, 1);
@@ -179,7 +182,7 @@ export class TableComponent implements OnDestroy {
         }
       }
       this.dataObj.children = [...this.dataObj.children];
-      this.dataService.reloadTree.next({reload: true});
+      this.dataService.reloadTree.next({ reload: true });
       this.ref.detectChanges();
     });
   }
@@ -201,7 +204,8 @@ export class TableComponent implements OnDestroy {
           comments,
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -225,7 +229,8 @@ export class TableComponent implements OnDestroy {
           objectName: _path
         },
         nzFooter: null,
-        nzClosable: false
+        nzClosable: false,
+        nzMaskClosable: false
       });
       modal.afterClose.subscribe(result => {
         if (result) {
@@ -268,26 +273,26 @@ export class TableComponent implements OnDestroy {
         }
       }
       this.dataObj.children = [...this.dataObj.children];
-      this.dataService.reloadTree.next({reload: true});
+      this.dataService.reloadTree.next({ reload: true });
       this.ref.detectChanges();
     });
   }
 
 
   restoreObject(data): void {
-    this.dataService.reloadTree.next({restore: data});
+    this.dataService.reloadTree.next({ restore: data });
   }
 
   deployObject(data): void {
-    this.dataService.reloadTree.next({deploy: data});
+    this.dataService.reloadTree.next({ deploy: data });
   }
 
   revoke(data): void {
-    this.dataService.reloadTree.next({revoke: data});
+    this.dataService.reloadTree.next({ revoke: data });
   }
 
   releaseObject(data): void {
-    this.dataService.reloadTree.next({release: data});
+    this.dataService.reloadTree.next({ release: data });
   }
 
   sort(key): void {
@@ -295,21 +300,31 @@ export class TableComponent implements OnDestroy {
     this.filter.sortBy = key;
   }
 
-  private store(obj, path, configuration): void {
+  private store(obj, path, configuration, comments: any = {}): void {
     if (this.objectType === InventoryObject.WORKFLOW && !configuration.timeZone) {
       configuration.timeZone = this.preferences.zone;
     }
     const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.INCLUDESCRIPT
-        || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
+      || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
     if (!path) {
       return;
     }
-    this.coreService.post('inventory/store', {
+
+    const request: any = {
       objectType: this.objectType === 'CALENDAR' ? InventoryObject.WORKINGDAYSCALENDAR : this.objectType,
       path,
       valid,
       configuration
-    }).subscribe((res: any) => {
+    };
+    if (comments.comment) {
+      request.auditLog = {
+        comment: comments.comment,
+        timeSpent: comments.timeSpent,
+        ticketLink: comments.ticketLink
+      }
+    }
+
+    this.coreService.post('inventory/store', request).subscribe((res: any) => {
       obj.id = res.id;
       if (this.objectType.match(/CALENDAR/)) {
         obj.type = 'CALENDAR';
@@ -318,7 +333,7 @@ export class TableComponent implements OnDestroy {
       obj.valid = valid;
       this.dataObj.children.push(obj);
       this.dataObj.children = [...this.dataObj.children];
-      this.dataService.reloadTree.next({add: true});
+      this.dataService.reloadTree.next({ add: true });
       this.ref.detectChanges();
     });
   }
