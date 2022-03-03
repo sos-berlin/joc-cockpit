@@ -144,6 +144,9 @@ export class AccountModalComponent implements OnInit {
     if (this.copy && this.oldUser.hashedPassword) {
       this.currentUser.password = this.oldUser.hashedPassword;
     }
+    if (this.newUser && (this.selectedIdentityServiceType === 'JOC' || this.selectedIdentityServiceType === 'VAULT-JOC-ACTIVE')) {
+      this.currentUser.forcePasswordChange = true;
+    }
   }
 
   private getConfiguration(): void {

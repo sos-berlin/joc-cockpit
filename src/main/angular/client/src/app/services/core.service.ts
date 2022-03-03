@@ -1508,7 +1508,11 @@ export class CoreService {
           if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
           } else {
             data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
-            data[type] = endChar === "$" ? data[type] : '"' + data[type] + '"';
+            if (data[type].match(/\\/)) {
+              data[type] = JSON.stringify(data[type]);
+            } else {
+              data[type] = endChar === "$" ? data[type] : '"' + data[type] + '"';
+            }
           }
         } else {
           const mainStr = data[type].substring(1, data[type].length);

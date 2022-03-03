@@ -6902,17 +6902,34 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               delete copyObject.uuid;
             }
             if (json.instructions[x].id == source) {
-              if (json.instructions[x].TYPE == 'Fork'  && target.value.tagName === 'Connection') {
+              if (json.instructions[x].TYPE == 'Fork' && target.value.tagName === 'Connection') {
                 for (let y = 0; y < json.instructions[x].branches.length; y++) {
                   if (json.instructions[x].branches[y].id === target.getAttribute('label')) {
                     targetObject = json.instructions[x].branches[y];
-                    targetIndex = y;
+                    targetIndex = y - 1;
                     break;
                   }
                 }
               } else {
-                targetObject = json;
-                targetIndex = x;
+                if (self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
+                  targetObject = json;
+                  targetIndex = x;
+                  if (json.instructions[x].TYPE === 'If') {
+                    if (target.getAttribute('label') == 'then') {
+                      targetObject = json.instructions[x].then;
+                      targetIndex = -1;
+                    } else if (target.getAttribute('label') == 'else') {
+                      targetObject = json.instructions[x].else;
+                      targetIndex = -1;
+                    }
+                  } else if (json.instructions[x].TYPE !== 'Fork') {
+                    targetObject = json.instructions[x];
+                    targetIndex = -1;
+                  }
+                } else {
+                  targetObject = json;
+                  targetIndex = x;
+                }
               }
             }
             if (json.instructions[x].instructions) {
