@@ -2365,7 +2365,7 @@ export class CreateObjectModalComponent implements OnInit {
       request.id = this.copy.id;
     } else {
       request.objectType = 'FOLDER';
-      request.newPath = (obj.path || '/') + (!data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copy.name);
+      request.newPath = (obj.path || '/') + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copy.name);
       request.path = this.copy.path;
     }
     request.auditLog = {};

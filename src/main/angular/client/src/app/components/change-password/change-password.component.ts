@@ -1,7 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {isEqual} from 'underscore';
-import {NzModalRef} from 'ng-zorro-antd/modal';
-import {CoreService} from '../../services/core.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { isEqual } from 'underscore';
+import { TranslateService } from '@ngx-translate/core';
+import { NzModalRef } from 'ng-zorro-antd/modal';
+import { CoreService } from '../../services/core.service';
 
 @Component({
   selector: 'app-change-password',
@@ -21,11 +22,16 @@ export class ChangePasswordComponent implements OnInit {
   passwordShouldNotSame = true;
   minimumPasswordLength = true;
   settings: any = {};
-
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  comments: any = {};
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        this.comments = { comment: translatedValue };
+      });
+    }
     this.getConfiguration();
     this.passwordObj.account = this.username;
   }
@@ -71,7 +77,8 @@ export class ChangePasswordComponent implements OnInit {
       this.submitted = true;
       this.coreService.post('authentication/auth/changepassword', {
         identityServiceName: this.identityServiceName,
-        accounts: [this.passwordObj]
+        accounts: [this.passwordObj],
+        auditLog: { comment: this.comments.comment }
       }).subscribe({
         next: () => {
           this.activeModal.close('DONE');
