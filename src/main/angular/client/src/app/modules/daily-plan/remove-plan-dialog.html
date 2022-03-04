@@ -38,10 +38,10 @@
 </div>
 <form #myForm="ngForm">
   <div class="modal-body p-a">
-    <div class="hide" [ngClass]="{'show': display && !submissionsDelete}">
+    <div class="hide" [ngClass]="{'show': display}">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div class="text-center" *ngIf="!display || (display && submissionsDelete)">
+    <div class="text-center" *ngIf="!display">
       <div *ngIf="!submissionsDelete">
         <div class="m-t text" *ngIf="count === 0">
           <p class="m-t">
