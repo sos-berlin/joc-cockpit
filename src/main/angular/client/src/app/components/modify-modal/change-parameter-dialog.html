@@ -12,6 +12,9 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
+      <div class="hide" [ngClass]="{'show': display}" *ngIf="!(variableList.length === 0 && forkListVariables.length === 0) || (variables.length === 0 && forkListVariables.length === 0 && variable)">
+        <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="7"></app-audit-log-input>
+      </div>
       <div class="row">
         <div class="col-sm-12" *ngIf="forkListVariables && forkListVariables.length > 0">
           <div *ngFor="let listVariables of forkListVariables; let k = index">
@@ -168,7 +171,7 @@
       </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted" *ngIf="variableList.length > 0 || forkListVariables.length > 0" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" *ngIf="variableList.length > 0 || forkListVariables.length > 0" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

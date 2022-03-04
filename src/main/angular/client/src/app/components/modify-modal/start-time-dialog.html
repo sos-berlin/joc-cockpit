@@ -11,6 +11,9 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
+    <div class="hide" [ngClass]="{'show': display}">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    </div>
     <div class="row">
       <div class="col-sm-12">
         <div class="form-group row" *ngIf="plan && !errorMsg">
@@ -124,7 +127,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" *ngIf="order" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+    <button type="submit" *ngIf="order" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

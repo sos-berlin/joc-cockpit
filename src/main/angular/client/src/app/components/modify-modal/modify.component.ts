@@ -23,11 +23,20 @@ export class ChangeParameterModalComponent implements OnInit {
   variableList = [];
   forkListVariables = [];
   submitted = false;
+  display: any;
+  required = false;
+  comments: any = {};
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    const preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.display = preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (this.variable) {
       this.variables = Object.assign(this.variables, [this.coreService.clone(this.variable)]);
     } else if (this.order && (this.order.variables)) {
@@ -303,6 +312,16 @@ export class ChangeParameterModalComponent implements OnInit {
         }
       });
     }
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
     if (obj.variables || obj.removeVariables) {
       this.coreService.post('daily_plan/orders/modify', obj).subscribe({
         next: () => {
@@ -337,11 +356,19 @@ export class ModifyStartTimeModalComponent implements OnInit {
   period: any = {};
   n1 = 0;
   n2 = 0;
+  display: any;
+  required = false;
+  comments: any = {};
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     if (!this.order) {
       this.order = {};
     }
@@ -436,6 +463,16 @@ export class ModifyStartTimeModalComponent implements OnInit {
         end: ModifyStartTimeModalComponent.checkTime(this.period.end),
       };
       obj.timeZone = this.dateType.timeZone;
+    }
+    obj.auditLog = {};
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
     }
     this.submitted = true;
     this.coreService.post('daily_plan/orders/modify', obj).subscribe({
