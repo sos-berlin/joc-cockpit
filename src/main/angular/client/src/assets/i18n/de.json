@@ -1027,6 +1027,7 @@
     "label.storeToRollout": "Speichern in Depot für ausrollbare Objekte",
     "label.updateFromRollout": "Aktualisieren aus Depot für ausrollbare Objekte",
     "label.deleteFromRollout": "Löschen aus Depot für ausrollbare Objekte",
+    "label.lastModified": "Last modified at",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addVariableSet": "Variablensatz hinzufügen",
     "button.setVersion": "Version setzen",
@@ -1783,7 +1784,7 @@
     "label.showUsage": "Verwendung anzeigen",
     "button.showUsage": "Verwendung anzeigen",
     "agentJobExecution": {
-      "label.numberOfJobsExecuted": "Anzahl ausgeführter Jobs",
+      "label.numberOfJobsExecuted": "Anzahl ausgeführter Prozesse",
       "label.numberOfSuccessfullyExecutedTask": "Anzahl erfolgreich ausgeführter Prozesse",
       "label.agentTaskFound": "Eintrag für Agentenprozess gefunden",
       "label.agentTasksFound": "Einträge für Agentenprozesse gefunden",

@@ -2248,7 +2248,11 @@ export class UploadModalComponent implements OnInit {
   }
 
   private validateByURL(json, cb): void {
-    this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe({
+    let type = this.objectType;
+    if(this.objectType === 'CALENDAR'){
+      type = json.type || json.objectType;
+    }
+    this.coreService.post('inventory/' + type + '/validate', json).subscribe({
       next: (res: any) => {
         cb(res);
       }, error: (err) => {
@@ -4458,6 +4462,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       id: obj.id,
       objectType: obj.objectType || obj.type
     };
+    if (request.objectType === 'CALENDAR') {
+      request.objectType = result.type;
+    }
 
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {

@@ -45,6 +45,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     mode: 'shell',
     extraKeys: { 'Ctrl-Space': 'autocomplete' }
   };
+  lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -331,6 +332,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.script.id === this.data.id) {
+            this.lastModified = res.configurationDate;
             this.script.actual = JSON.stringify(this.script.configuration);
             this.script.valid = res.valid;
             this.data.valid = res.valid;
@@ -350,6 +352,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
+      this.lastModified = res.configurationDate;
       if (this.cm && this.cm.codeMirror) {
         this.cm.codeMirror.setValue('');
       }

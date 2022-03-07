@@ -46,6 +46,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
+  lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -751,6 +752,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.coreService.post('inventory/store', request).subscribe({
           next: (res: any) => {
             if (res.id === this.data.id && this.schedule.id === this.data.id) {
+              this.lastModified = res.configurationDate;
               this.schedule.actual = JSON.stringify(obj);
               this.schedule.valid = res.valid;
               this.data.valid = res.valid;
@@ -922,6 +924,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
+      this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();

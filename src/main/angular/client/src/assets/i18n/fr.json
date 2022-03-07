@@ -1027,6 +1027,7 @@
     "label.storeToRollout": "Stocker dans le dépôt des objets déployables",
     "label.updateFromRollout": "Mettre à jour à partir du dépôt des objets déployables",
     "label.deleteFromRollout": "Supprimer du dépôt des objets déployables",
+    "label.lastModified": "Last modified at",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addVariableSet": "Ajouter un Jeu de Variable",
     "button.setVersion": "Définir la Version",

@@ -1027,6 +1027,7 @@
     "label.storeToRollout": "Store to repository for rollout objects",
     "label.updateFromRollout": "Update from repository for rollout objects",
     "label.deleteFromRollout": "Delete from repository for rollout objects",
+    "label.lastModified": "Last modified at",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addVariableSet": "Add Variable Set",
     "button.setVersion": "Set Version",
@@ -1783,7 +1784,7 @@
     "label.showUsage": "Show Usage",
     "button.showUsage": "Show Usage",
     "agentJobExecution": {
-      "label.numberOfJobsExecuted": "Number of jobs executed",
+      "label.numberOfJobsExecuted": "Number of tasks executed",
       "label.numberOfSuccessfullyExecutedTask": "Number of successfully executed tasks",
       "label.agentTaskFound": "Agent task entry found",
       "label.agentTasksFound": "Agent task entries found",

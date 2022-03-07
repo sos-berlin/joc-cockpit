@@ -33,6 +33,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
   objectType = InventoryObject.NOTICEBOARD;
   documentationTree = [];
   indexOfNextAdd = 0;
+  lastModified: any = '';
   history = [];
   subscription1: Subscription;
   subscription2: Subscription;
@@ -96,6 +97,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       obj.controllerId = this.schedulerId;
     }
     this.coreService.post(URL, obj).subscribe((res: any) => {
+      this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();
@@ -551,6 +553,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.board.id === this.data.id) {
+            this.lastModified = res.configurationDate;
             this.board.actual = JSON.stringify(this.board.configuration);
             this.board.deployed = false;
             this.data.deployed = false;

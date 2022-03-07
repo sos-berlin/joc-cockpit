@@ -183,12 +183,11 @@ export class TimeEditorComponent implements OnInit {
   isNew: boolean;
   isExist: boolean;
 
-  defaultOpenValue = null;
   object: any = {};
 
-  @ViewChild('timePicker', {static: true}) tp;
+  @ViewChild('timePicker', { static: true }) tp;
 
-  constructor(public activeModal: NzModalRef, private workflowService: WorkflowService) {
+  constructor(public activeModal: NzModalRef, private workflowService: WorkflowService, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -196,7 +195,8 @@ export class TimeEditorComponent implements OnInit {
       const h = Math.floor(((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) / 3600);
       const m = Math.floor((((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) / 60);
       const s = Math.floor(((((((this.period.startTime % (3600 * 365 * 24)) % (3600 * 30 * 24)) % (3600 * 7 * 24)) % (3600 * 24)) % 3600) % 60));
-      this.object.startTime = new Date(new Date().setHours(h, m, s));
+      this.object.startTime = (h > 9 ? h : '0' + h) + ':' + (m > 9 ? m : '0' + m) + (s > 0 ? (':' + (s > 9 ? s : '0' + s)) : ':00');
+      this.object.startTime1 = new Date(new Date().setHours(h, m, s));
       this.object.duration = this.workflowService.convertDurationToHour(this.period.duration);
     }
   }
@@ -205,11 +205,15 @@ export class TimeEditorComponent implements OnInit {
     this.tp.close();
   }
 
+  selectTime(time, isEditor = false): void {
+    this.coreService.selectTime(time, isEditor, this.object, 'start');
+  }
+
   onSubmit(): void {
     const obj: any = {};
-    const h = this.object.startTime.getHours();
-    const m = this.object.startTime.getMinutes();
-    const s = this.object.startTime.getSeconds();
+    const h = this.object.startTime1.getHours();
+    const m = this.object.startTime1.getMinutes();
+    const s = this.object.startTime1.getSeconds();
     obj.startTime = (h * 60 * 60) + (m * 60) + s;
     obj.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
     this.isExist = false;
@@ -481,7 +485,6 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   };
   days = [];
   isValid = true;
-  defaultOpenValue = null;
   object: any = {};
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
@@ -551,6 +554,10 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.tp.close();
   }
 
+  selectTime(time, isEditor = false): void {
+    this.coreService.selectTime(time, isEditor, this.object, 'start');
+  }
+
   dayChange(value: string[]): void {
     this.frequency.days = value;
     this.onChangeDays();
@@ -587,9 +594,9 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     if (this.object.startTime || this.object.duration) {
       p = {};
       if (this.object.startTime) {
-        const h = this.object.startTime.getHours();
-        const m = this.object.startTime.getMinutes();
-        const s = this.object.startTime.getSeconds();
+        const h = this.object.startTime1.getHours();
+        const m = this.object.startTime1.getMinutes();
+        const s = this.object.startTime1.getSeconds();
         p.startTime = (h * 60 * 60) + (m * 60) + s;
       } else {
         p.startTime = 0;
@@ -2287,6 +2294,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
+  lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -3007,7 +3015,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
-    this.centered();
+    this.centered(true);
     this.checkGraphHeight();
   }
 
@@ -3082,12 +3090,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.handleWindowEvents();
       });
     } else {
-      const outln = document.getElementById('outlineContainer');
-      outln.innerHTML = '';
-      outln.style.border = '1px solid lightgray';
-      if (this.editor.graph) {
-        new mxOutline(this.editor.graph, outln);
-      }
       this.getWorkflowObject();
     }
     if (!this.isTrash) {
@@ -3177,9 +3179,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
       obj.controllerId = this.schedulerId;
     }
+    let isSame = false;
+    if (this.workflow.name === this.data.name) {
+      isSame = true;
+    }
+
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
+        this.lastModified = res.configurationDate;
         this.isLoading = false;
         if (this.data.id === res.id) {
           if (this.data.deployed !== res.deployed) {
@@ -3223,7 +3231,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.validateByURL(res.configuration);
             }
             this.updateXMLJSON(false);
-            this.centered();
+            if (!isSame) {
+              this.centered();
+            }
             this.checkGraphHeight();
             this.history.present = JSON.stringify(this.extendJsonObj(JSON.parse(this.workflow.actual)));
             if (this.editor) {
@@ -3975,6 +3985,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   private updateWorkflow(graph): void {
     const scrollValue: any = {};
+    const element = document.getElementById('graph');
+    scrollValue.scrollTop = element.scrollTop;
+    scrollValue.scrollLeft = element.scrollLeft;
     scrollValue.scale = graph.getView().getScale();
     graph.getModel().beginUpdate();
     try {
@@ -3989,11 +4002,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.skipXMLToJSONConversion = true;
     }
 
-    setTimeout(() => {
-      if (scrollValue.scale && scrollValue.scale != 1) {
-        graph.getView().setScale(scrollValue.scale);
-      }
-    }, 205);
+    const _element = document.getElementById('graph');
+    _element.scrollTop = scrollValue.scrollTop;
+    _element.scrollLeft = scrollValue.scrollLeft;
+    if (scrollValue.scale && scrollValue.scale != 1) {
+      graph.getView().setScale(scrollValue.scale);
+    }
+
   }
 
   /**
@@ -4051,7 +4066,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     });
 
     const el = $.fn['show'];
-    $.fn['show'] = function() {
+    $.fn['show'] = function () {
       this.trigger('show');
       return el.apply(this, arguments);
     };
@@ -4063,24 +4078,24 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const panel = $('.property-panel');
     $('.sidebar-open', panel).click(() => {
       self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
-      $('#outlineContainer').css({right: self.propertyPanelWidth + 10 + 'px'});
-      $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
-      $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
-      $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
-      $('#property-panel').css({width: self.propertyPanelWidth + 'px'}).show();
-      $('.sidebar-open').css({right: '-20px'});
-      self.centered();
+      $('#outlineContainer').css({ right: self.propertyPanelWidth + 10 + 'px' });
+      $('.graph-container').css({ 'margin-right': self.propertyPanelWidth + 'px' });
+      $('.toolbar').css({ 'margin-right': (self.propertyPanelWidth - 12) + 'px' });
+      $('.sidebar-close').css({ right: self.propertyPanelWidth + 'px' });
+      $('#property-panel').css({ width: self.propertyPanelWidth + 'px' }).show();
+      $('.sidebar-open').css({ right: '-20px' });
+      self.centered(true);
     });
 
     $('.sidebar-close', panel).click(() => {
       self.propertyPanelWidth = 0;
-      $('#outlineContainer').css({right: '10px'});
-      $('.graph-container').css({'margin-right': '0'});
-      $('.toolbar').css({'margin-right': '-12px'});
-      $('.sidebar-open').css({right: '0'});
+      $('#outlineContainer').css({ right: '10px' });
+      $('.graph-container').css({ 'margin-right': '0' });
+      $('.toolbar').css({ 'margin-right': '-12px' });
+      $('.sidebar-open').css({ right: '0' });
       $('#property-panel').hide();
-      $('.sidebar-close').css({right: '-20px'});
-      self.centered();
+      $('.sidebar-close').css({ right: '-20px' });
+      self.centered(true);
     });
 
     if (window.innerWidth > 1024) {
@@ -4093,10 +4108,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }, 10);
   }
 
-  private centered(): void {
+  private centered(flag = false): void {
     if (this.editor && this.editor.graph) {
       setTimeout(() => {
-        this.actual();
+        if (flag) {
+          this.center();
+        } else {
+          this.actual();
+        }
       }, 200);
     }
   }
@@ -6915,7 +6934,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               delete copyObject.uuid;
             }
             if (json.instructions[x].id == source) {
-              if (json.instructions[x].TYPE == 'Fork' && target.value.tagName === 'Connection' && !self.workflowService.checkClosingCell(target.source.value.tagName)) {
+              if (json.instructions[x].TYPE == 'Fork' && target.value.tagName === 'Connection' && (target.source && !self.workflowService.checkClosingCell(target.source.value.tagName))) {
                 for (let y = 0; y < json.instructions[x].branches.length; y++) {
                   if (json.instructions[x].branches[y].id === target.getAttribute('label')) {
                     targetObject = json.instructions[x].branches[y];
@@ -6924,7 +6943,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   }
                 }
               } else {
-                if (self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE) && !self.workflowService.checkClosingCell(target.source.value.tagName)) {
+                if (self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE) && (target.source && !self.workflowService.checkClosingCell(target.source.value.tagName))) {
                   targetObject = json;
                   targetIndex = x;
                   if (json.instructions[x].TYPE === 'If') {
@@ -6950,8 +6969,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
             if (json.instructions[x].catch) {
               if (json.instructions[x].catch.id == source) {
-                targetObject = json;
-                targetIndex = x;
+                targetObject = json.instructions[x].catch;
+                targetIndex = -1;
                 isCatch = true;
               }
               if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
@@ -9227,6 +9246,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       next: (res: any) => {
         this.isStore = false;
         if (res.id === this.data.id && this.workflow.id === this.data.id) {
+          this.lastModified = res.configurationDate;
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;
           this.workflow.valid = res.valid;

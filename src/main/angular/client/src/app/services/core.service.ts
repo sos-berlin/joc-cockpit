@@ -1673,7 +1673,7 @@ export class CoreService {
       const h = time.getHours() + '';
       const m = time.getMinutes() + '';
       const s = time.getSeconds() + '';
-      data[val === 'from' ? 'fromTime' : 'toTime'] = (h.length == 1 ? '0' + h : h) + ':' + (m.length == 1 ? '0' + m : m) + ':' + (s.length == 1 ? '0' + s : s);
+      data[val === 'from' ? 'fromTime' : val === 'start' ? 'startTime' : 'toTime'] = (h.length == 1 ? '0' + h : h) + ':' + (m.length == 1 ? '0' + m : m) + ':' + (s.length == 1 ? '0' + s : s);
     } else if (isEditor && time) {
       let d = new Date();
       const arr = time.split(':');
@@ -1690,7 +1690,7 @@ export class CoreService {
       } else {
         d.setSeconds(0);
       }
-      data[val === 'from' ? 'fromTime1' : 'toTime1'] = new Date(d);
+      data[val === 'from' ? 'fromTime1' : val === 'start' ? 'startTime1' : 'toTime1'] = new Date(d);
     }
   }
 }
