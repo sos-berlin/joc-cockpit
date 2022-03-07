@@ -1024,6 +1024,7 @@
     "label.storeToRollout": "Speichern in Depot für ausrollbare Objekte",
     "label.updateFromRollout": "Aktualisieren aus Depot für ausrollbare Objekte",
     "label.deleteFromRollout": "Löschen aus Depot für ausrollbare Objekte",
+    "label.lastModified": "Last modified at",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addVariableSet": "Variablensatz hinzufügen",
     "button.setVersion": "Version setzen",

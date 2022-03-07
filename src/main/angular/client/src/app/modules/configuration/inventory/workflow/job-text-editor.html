@@ -107,14 +107,13 @@
           </label>
           <div class="col-md-8 col-lg-9"
                [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
-            <input required name="agentName"
-               [placeholder]="'workflow.placeholder.selectAgentName' | translate"
+            <input required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate" id="agentId"
                class="form-control" [(ngModel)]="selectedNode.job.agentName" #agentName="ngModel" (blur)="onBlur(true);" (ngModelChange)="onAgentChange($event)"
                [nzAutocomplete]="auto"/>
             <nz-autocomplete #auto>
-                <nz-auto-option *ngFor="let agent of agentList" [nzValue]="agent" [nzLabel]="agent">
-                   <span>{{agent}}</span> <span *ngIf="notFound && agent == notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
-                </nz-auto-option>
+              <nz-auto-option *ngFor="let agent of agentList" [nzValue]="agent" [nzLabel]="agent">
+                 <span>{{agent}}</span> <span *ngIf="notFound && agent == notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
+              </nz-auto-option>
             </nz-autocomplete>
             <div *ngIf="obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)"
                  class="text-danger help-block">

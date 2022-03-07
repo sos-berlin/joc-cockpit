@@ -29,6 +29,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
+  lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -91,6 +92,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       obj.controllerId = this.schedulerId;
     }
     this.coreService.post(URL, obj).subscribe((res: any) => {
+      this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();
@@ -360,6 +362,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.lock.id === this.data.id) {
+            this.lastModified = res.configurationDate;
             this.lock.actual = JSON.stringify(this.lock.configuration);
             this.data.valid = res.valid;
             this.lock.valid = res.valid;

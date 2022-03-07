@@ -40,6 +40,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     indeterminate2: false,
     setOfCheckedEnv: new Set<string>()
   };
+  lastModified: any = '';
   copiedParamObjects: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
@@ -549,6 +550,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.jobResource.id === this.data.id) {
+            this.lastModified = res.configurationDate;
             this.jobResource.actual = JSON.stringify(this.jobResource.configuration);
             this.jobResource.valid = res.valid;
             this.jobResource.deployed = false;
@@ -590,6 +592,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       obj.controllerId = this.schedulerId;
     }
     this.coreService.post(URL, obj).subscribe((res: any) => {
+      this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();

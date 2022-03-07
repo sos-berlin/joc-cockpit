@@ -8,6 +8,11 @@
               <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
               <span class="_600" [ngClass]="{'cursor text-hover-primary': workflow.hasDeployments || data.deployed}" (click)="navToWorkflowTab()">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
               <span class="text-muted _400" *ngIf="title"> - {{title}}</span>
+              
+              <span class="text-dark text-sm _400" *ngIf="lastModified"> -
+                <b translate>inventory.label.lastModified</b>
+                <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
+              </span>
             </div>
           </div>
           <div class="inline pull-right" *ngIf="!isTrash">

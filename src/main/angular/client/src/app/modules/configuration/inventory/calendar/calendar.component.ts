@@ -1338,6 +1338,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
+  lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -1703,6 +1704,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.calendar.id === this.data.id) {
+            this.lastModified = res.configurationDate;
             this.calendar.actual = JSON.stringify(this.calendar.configuration);
             this.calendar.valid = res.valid;
             this.data.valid = res.valid;
@@ -1789,6 +1791,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     this.coreService.post(URL, {
       id: this.data.id
     }).subscribe((res: any) => {
+      this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();

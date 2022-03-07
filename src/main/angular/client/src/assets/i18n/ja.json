@@ -1024,6 +1024,7 @@
     "label.storeToRollout": "ロールアウトリポジトリに保存",
     "label.updateFromRollout": "ロールアウトリポジトリから更新",
     "label.deleteFromRollout": "ロールアウトリポジトリから削除",
+    "label.lastModified": "Last modified at",
     "button.modifyVariableSet": "変数設定変更",
     "button.addVariableSet": "変数設定追加",
     "button.setVersion": "バージョン設定",

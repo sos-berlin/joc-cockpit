@@ -104,8 +104,11 @@
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" translate>workflow.admissionTime.label.startTime</label>
         <div class="col-sm-6">
-          <nz-time-picker #timePicker [nzDefaultOpenValue]="defaultOpenValue" [(ngModel)]="object.startTime" name="startTime"
-                          (keydown.Tab)="onTab()" nzPlaceHolder="HH:MM:SS"></nz-time-picker>
+          <div class="time-picker m-l-0">
+            <input timevalidator type="text" #timePicker="ngModel" class="form-control"
+                name="startTime" [(ngModel)]="object.startTime" (ngModelChange)="selectTime(object.startTime, true)" placeholder="HH:MM:SS">
+            <nz-time-picker [nzAllowEmpty]="false" (keydown.Tab)="onTab()" (ngModelChange)="selectTime($event)" [(ngModel)]="object.startTime1" name="fromTimeIcon"></nz-time-picker>
+          </div>
         </div>
       </div>
       <div class="form-group row">

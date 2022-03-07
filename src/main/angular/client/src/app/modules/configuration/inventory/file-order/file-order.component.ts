@@ -44,6 +44,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
+  lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -164,6 +165,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       obj.controllerId = this.schedulerId;
     }
     this.coreService.post(URL, obj).subscribe((res: any) => {
+      this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();
@@ -530,6 +532,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
           if (res.id === this.data.id && this.fileOrder.id === this.data.id) {
+            this.lastModified = res.configurationDate;
             this.fileOrder.actual = JSON.stringify(this.fileOrder.configuration);
             this.data.valid = res.valid;
             this.fileOrder.valid = res.valid;
