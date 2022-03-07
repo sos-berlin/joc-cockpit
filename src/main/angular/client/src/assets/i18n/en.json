@@ -1027,7 +1027,7 @@
     "label.storeToRollout": "Store to repository for rollout objects",
     "label.updateFromRollout": "Update from repository for rollout objects",
     "label.deleteFromRollout": "Delete from repository for rollout objects",
-    "label.lastModified": "Last modified at",
+    "label.lastModified": "Last modified",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addVariableSet": "Add Variable Set",
     "button.setVersion": "Set Version",
