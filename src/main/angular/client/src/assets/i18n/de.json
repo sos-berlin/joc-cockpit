@@ -1772,7 +1772,7 @@
     "label.showUsage": "Verwendung anzeigen",
     "button.showUsage": "Verwendung anzeigen",
     "agentJobExecution": {
-      "label.numberOfJobsExecuted": "Anzahl ausgeführter Jobs",
+      "label.numberOfJobsExecuted": "Anzahl ausgeführter Prozesse",
       "label.numberOfSuccessfullyExecutedTask": "Anzahl erfolgreich ausgeführter Prozesse",
       "label.agentTaskFound": "Eintrag für Agentenprozess gefunden",
       "label.agentTasksFound": "Einträge für Agentenprozesse gefunden",

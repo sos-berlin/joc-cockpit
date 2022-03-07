@@ -1772,7 +1772,7 @@
     "label.showUsage": "Show Usage",
     "button.showUsage": "Show Usage",
     "agentJobExecution": {
-      "label.numberOfJobsExecuted": "Number of jobs executed",
+      "label.numberOfJobsExecuted": "Number of tasks executed",
       "label.numberOfSuccessfullyExecutedTask": "Number of successfully executed tasks",
       "label.agentTaskFound": "Agent task entry found",
       "label.agentTasksFound": "Agent task entries found",
