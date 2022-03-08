@@ -289,6 +289,7 @@ export class CreatePlanModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
   }
 
@@ -474,6 +475,7 @@ export class RemovePlanModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.workflow && !this.order.key) {
       this.order.key = this.order.workflow;

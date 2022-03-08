@@ -98,7 +98,7 @@
         </a>
       </div>
     </div>
-    <div class="col-md-3" *ngIf="!isTrash && type && type !== 'WORKFLOW' && permission.joc && permission.joc.inventory.manage">
+    <div class="col-md-3" *ngIf="!isTrash && type && type !== 'WORKFLOW' && selectedData.objectType && permission.joc && permission.joc.inventory.manage">
       <div class="inline pull-right" >
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
           <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate" >
@@ -132,7 +132,7 @@
     </div>
   </div>
 </div>
-<div class="scroll-y max-ht">
+<div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
       <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor " [ngClass]="{'bg-white' : isTrash}" [ngStyle]="{'width': sideView.inventory ? sideView.inventory.width +'px' : 'auto'}">

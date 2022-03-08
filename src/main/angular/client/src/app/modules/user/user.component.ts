@@ -80,6 +80,7 @@ export class UpdateKeyModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.type === 'ca') {
       this.algorithm.keyAlg = 'ECDSA';
@@ -161,6 +162,7 @@ export class ImportKeyModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';
@@ -284,6 +286,7 @@ export class GenerateKeyComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.type === 'ca') {
       this.key.keyAlg = 'ECDSA';

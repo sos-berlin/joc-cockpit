@@ -42,6 +42,7 @@ export class PermissionModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
@@ -161,6 +162,7 @@ export class FolderModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;

@@ -3027,7 +3027,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const dom = $('.graph-container');
       if (dom && dom.position()) {
         const top = (dom.position().top + $('#rightPanel').position().top);
-        const ht = 'calc(100vh - ' + (top + 16) + 'px)';
+        const ht = 'calc(100vh - ' + (top + 22) + 'px)';
         dom.css({height: ht, 'scroll-top': '0'});
         $('#graph').slimscroll({height: ht, scrollTo: '0'});
       }
@@ -4297,7 +4297,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function traversForkList(list, obj, edge, branchObj, parent, endNode): void {
       let callAgain = false;
       for (const i in list) {
-        if (list[i].value && ((list[i].getParent().id == parent.id) || (list[i].id == parent.getParent().id) || (self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId')))) {
+        if (list[i].value && ((list[i].getParent().id == parent.id) || (edge.target && list[i].id == edge.target.id) || (list[i].id == parent.getParent().id) || (self.workflowService.checkClosingCell(list[i].value.tagName)
+          && parent.id == list[i].getAttribute('targetId')))) {
           if ((self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId'))) {
             endNode.endNode = list[i];
           }
@@ -4354,7 +4355,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function traversIfList(list, obj, edge, data, parent, endNode): void {
       let callAgain = false;
       for (const i in list) {
-        if (list[i].value && ((list[i].getParent().id == parent.id) || (list[i].id == parent.getParent().id) ||  (self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId')))) {
+        if (list[i].value && ((list[i].getParent().id == parent.id) || (edge.target && list[i].id == edge.target.id) || (list[i].id == parent.getParent().id) || (self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId')))) {
           if (self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId')) {
             endNode.endNode = list[i];
           }
@@ -4908,10 +4909,21 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
             if (self.isCellDragging) {
               self.isCellDragging = false;
-              detachedInstruction(me.evt.target, self.movedCell);
+              if (self.movedCell) {
+                detachedInstruction(me.evt.target, self.movedCell);
+              }
               self.movedCell = null;
               if (self.droppedCell && me.getCell()) {
-                rearrangeCell(self.droppedCell);
+                let _result = 'valid';
+                if (!self.droppedCell.target.target) {
+                  const targetCell =graph.getModel().getCell(self.droppedCell.target);
+                  console.log(targetCell.getParent(), self.droppedCell.cell)
+                  _result = checkValidTarget(graph.getModel().getCell(self.droppedCell.target), self.droppedCell.cell.value.tagName);
+                }
+                
+                if (_result !== 'inValid') {
+                  rearrangeCell(self.droppedCell);
+                }
                 self.droppedCell = null;
               } else {
                 self.storeJSON();
