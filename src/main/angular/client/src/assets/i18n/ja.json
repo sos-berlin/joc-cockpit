@@ -200,7 +200,7 @@
     "label.timeSpend": "作業時間",
     "label.auditLogFound": "操作ログがあります",
     "label.auditLogsFound": "操作ログがあります",
-    "message.defaultAuditLog": "Default Audit Log",
+    "message.defaultAuditLog": "デフォルト操作ログ",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "理由",
@@ -312,7 +312,7 @@
     "label.selectController": "コントローラー選択",
     "placeholder.setEndDate": "終了日時設定",
     "placeholder.setStartDate": "開始日時設定",
-    "placeholder.regex": "Enter Regular expression",
+    "placeholder.regex": "正規表現入力",
     "--------ADVANCE SEARCH END------------": "",
     "--------AUDIT LOG POPUP WINDOW BEGIN------------": "操作ログ有効時にポップアップで使用",
     "label.predefined": "事前設定したコメント",
@@ -388,7 +388,7 @@
     "button.saveAs": "名前を付けて保存",
     "button.submit": "登録",
     "button.search": "検索",
-    "button.duplicate": "Duplicate",
+    "button.duplicate": "複製",
     "button.copy": "コピー",
     "button.cut": "切り取り",
     "button.paste": "ペースト",
@@ -1024,7 +1024,7 @@
     "label.storeToRollout": "ロールアウトリポジトリに保存",
     "label.updateFromRollout": "ロールアウトリポジトリから更新",
     "label.deleteFromRollout": "ロールアウトリポジトリから削除",
-    "label.lastModified": "Last modified at",
+    "label.lastModified": "最終更新",
     "button.modifyVariableSet": "変数設定変更",
     "button.addVariableSet": "変数設定追加",
     "button.setVersion": "バージョン設定",
@@ -1914,14 +1914,14 @@
       "welcome_do_not_remind_me": "後で通知しない"
     },
     "git": {
-      "git_hold_job_resources": "git_hold_job_resources",
-      "git_hold_workflows": "git_hold_workflows",
-      "git_hold_calendars": "git_hold_calendars",
-      "git_hold_schedules": "git_hold_schedules",
-      "git_hold_notice_boards": "git_hold_notice_boards",
-      "git_hold_resource_locks": "git_hold_resource_locks",
-      "git_hold_script_includes": "git_hold_script_includes",
-      "git_hold_file_order_sources": "git_hold_file_order_sources"
+      "git_hold_job_resources": "ジョブリソース保存ディレクトリ",
+      "git_hold_workflows": "ワークフロー保存ディレクトリ",
+      "git_hold_calendars": "カレンダー保存ディレクトリ",
+      "git_hold_schedules": "スケジュール保存ディレクトリ",
+      "git_hold_notice_boards": "通知ボード保存ディレクトリ",
+      "git_hold_resource_locks": "ロック保存ディレクトリ",
+      "git_hold_script_includes": "script_includes保存ディレクトリ",
+      "git_hold_file_order_sources": "ファイルオーダーソース保存ディレクトリ"
     }
   },
   "user": {
@@ -2019,8 +2019,8 @@
     "label.resetPassword": "パスワードリセット",
     "label.forcePasswordChange": "パスワード変更を強制",
     "label.disable": "無効化",
-    "label.folderNotExist": "Folder does not exist",
-    "label.reuseReason": "Reuse reason",
+    "label.folderNotExist": "フォルダーがありません",
+    "label.reuseReason": "再使用理由",
     "button.addGroupRole": "グループロールを追加",
     "button.addIdentityService": "IDサービス作成",
     "button.addPermission": "パーミッション追加",
@@ -2088,15 +2088,15 @@
     "message.moreThanOneVaultEnable": "VAULT* IDサービスは1つしか有効にできません",
     "message.moreThanOneLDAPEnable": "LDAP* IDサービスは1つしか有効にできません",
     "message.deleteSelectedUser": "本当に選択したアカウントをすべて削除しますか？",
-    "message.deleteSelectedRole": "Are you sure that you want to delete all selected roles?",
+    "message.deleteSelectedRole": "本当に選択したロールをすべて削除しますか？",
     "message.resetPasswordForUser": "本当にこのアカウントのパスワードをリセットしますか?",
     "message.forcePasswordChangeForUser": "本当にこのアカウントにパスワード変更を強制しますか?",
     "message.resetPasswordForSelectedUser": "本当に選択した全てのアカウントのパスワードをリセットしますか？",
     "message.forcePasswordChangeForSelectedUser": "本当に選択した全てのアカウントにパスワード変更を強制しますか?",
     "message.minPasswordLength": "パスワードは最少パスワード文字数より長い必要があります",
     "tab.simpleMode": "シンプルモード",
-    "tab.expertMode": "エキスパートモードe",
-    "tooltip.toAddNonExistFolders": "Press space bar or press enter to add non exist folder path",
+    "tab.expertMode": "エキスパートモード",
+    "tooltip.toAddNonExistFolders": "スペースまたはエンターキーで新しいフォルダーパスを追加できます",
     "usermode": {
       "label.iamLdapHost": "LDAPホスト",
       "label.iamLdapProtocol": "LDAPプロトコル",
@@ -2109,7 +2109,7 @@
       "label.iamLdapWithMemberOf": "LDAP with memberOf",
       "placeholder.iamLdapHost": "LDAPホストを入力",
       "placeholder.iamLdapPort": "LDAPポートを入力",
-      "placeholder.iamLdapProtocol": "一つ以上のオプションを選択"
+      "placeholder.iamLdapProtocol": "LDAPプロトコルを入力"
     },
     "tooltips": {
       "ldap": {
