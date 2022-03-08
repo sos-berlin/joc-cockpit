@@ -170,12 +170,6 @@
   }
 }
 
-@media (max-width: 1439px) {
-  .break-line {
-    margin-top: 8px
-  }
-}
-
 @media (max-width: 1280px) {
   .hidden-btn-group1 {
     display: none
@@ -183,6 +177,10 @@
 
   .hidden-dropdown1 {
     display: inline-block
+  }
+
+  .break-line {
+    margin-top: 8px
   }
 }
 

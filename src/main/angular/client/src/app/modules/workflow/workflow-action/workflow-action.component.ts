@@ -70,6 +70,7 @@ export class AddOrderModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     this.order.timeZone = this.preferences.zone;
     this.order.at = 'now';

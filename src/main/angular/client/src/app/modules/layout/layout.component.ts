@@ -90,7 +90,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     const headerHt = $('.fixed-top').height() || 70;
     $('.app-body').css({'margin-top': headerHt + 'px'});
     $('.max-ht').css({'max-height': 'calc(100vh - ' + (headerHt + 56) +'px)'});
-    $('.max-ht2').css({'max-height': 'calc(100vh - ' + (headerHt + 112) +'px)'});
+    $('.max-ht2').css({'max-height': 'calc(100vh - ' + (headerHt + 107) +'px)'});
   }
 
   static checkNavHeader(): void {

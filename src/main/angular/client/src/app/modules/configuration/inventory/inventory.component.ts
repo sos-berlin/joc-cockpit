@@ -58,6 +58,7 @@ export class SingleDeployComponent implements OnInit {
   ngOnInit(): void {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     this.init();
@@ -229,6 +230,7 @@ export class DeployComponent implements OnInit {
   ngOnInit(): void {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.data && this.data.deleted) {
       this.isDeleted = true;
@@ -695,6 +697,7 @@ export class CronImportModalComponent implements OnInit {
   ngOnInit(): void {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     this.getTree();
     this.getAgents();
@@ -900,6 +903,7 @@ export class ExportComponent implements OnInit {
   ngOnInit(): void {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     this.exportObj.controllerId = this.schedulerIds.selected;
     this.securityLevel = sessionStorage.securityLevel;
@@ -1337,7 +1341,7 @@ export class RepositoryComponent implements OnInit {
   @Input() origin: any;
   @Input() operation: string;
   @Input() category: string;
-  @Input() display: string;
+  @Input() display: boolean;
   loading = true;
   path: string;
   type = 'ALL';
@@ -1370,6 +1374,7 @@ export class RepositoryComponent implements OnInit {
   ngOnInit(): void {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.category === 'LOCAL') {
       this.filter.envRelated = true;
@@ -1948,6 +1953,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   ngOnInit(): void {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     this.getTree();
     this.uploader = new FileUploader({
@@ -2091,7 +2097,7 @@ export class JsonEditorModalComponent implements OnInit {
   @ViewChild('editor', {static: false}) editor: JsonEditorComponent;
 
   constructor(public coreService: CoreService, private clipboardService: ClipboardService, public activeModal: NzModalRef,
-              private translate: TranslateService, private message: NzMessageService, private ref: ChangeDetectorRef) {
+              private message: NzMessageService, private ref: ChangeDetectorRef) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
       return this.edit;
@@ -2117,7 +2123,6 @@ export class JsonEditorModalComponent implements OnInit {
     });
     this.options.modes = ['code', 'tree'];
     this.data = this.coreService.clone(this.object);
-    delete this.data.type;
     delete this.data.TYPE;
     delete this.data.versionId;
   }
@@ -2250,7 +2255,7 @@ export class UploadModalComponent implements OnInit {
   private validateByURL(json, cb): void {
     let type = this.objectType;
     if(this.objectType === 'CALENDAR'){
-      type = json.type || json.objectType;
+      type = json.type || json.objectType || 'WORKINGDAYSCALENDAR';
     }
     this.coreService.post('inventory/' + type + '/validate', json).subscribe({
       next: (res: any) => {
@@ -2299,6 +2304,7 @@ export class CreateObjectModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.restore) {
       this.settings = JSON.parse(sessionStorage.$SOS$RESTORE);
@@ -2453,6 +2459,7 @@ export class CreateFolderModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.origin) {
       if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
@@ -4463,7 +4470,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       objectType: obj.objectType || obj.type
     };
     if (request.objectType === 'CALENDAR') {
-      request.objectType = result.type;
+      request.objectType = result.type || 'WORKINGDAYSCALENDAR';
     }
 
     if (sessionStorage.$SOS$FORCELOGING === 'true') {

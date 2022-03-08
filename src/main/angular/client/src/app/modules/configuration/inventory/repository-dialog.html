@@ -17,7 +17,7 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
     <div>
-      <div class="hide" [ngClass]="{'show': display}">
+      <div class="hide" [ngClass]="{'show': display && nodes.length > 0}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
       <div class="form-group row" *ngIf="operation === 'store'">
