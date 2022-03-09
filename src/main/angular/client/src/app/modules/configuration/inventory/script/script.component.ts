@@ -200,7 +200,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.script.id && this.data.name !== this.script.name) {
+    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.script.path && this.data.name !== this.script.name) {
       if (!inValid) {
         if (this.preferences.auditLog) {
           let comments = {
@@ -242,7 +242,8 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     const data = this.coreService.clone(this.data);
     const name = this.script.name;
     const obj: any = {
-      id: data.id,
+      path: (data.path + (data.path === '/' ? '' : '/') + data.name),
+      objectType: this.objectType,
       newPath: name,
       auditLog: {}
     };
@@ -257,7 +258,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     }
     this.coreService.post('inventory/rename', obj).subscribe({
       next: () => {
-        if (data.id === this.data.id) {
+        if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
         data.name = name;
@@ -316,10 +317,11 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         this.indexOfNextAdd = this.history.length - 1;
       }
 
+      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
       const request: any = {
         configuration: this.script.configuration,
         valid: !this.script.configuration.script,
-        id: this.script.id,
+        path,
         objectType: this.objectType
       };
 
@@ -331,7 +333,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
 
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.id === this.data.id && this.script.id === this.data.id) {
+          if (res.path === path && this.script.path === path) {
             this.lastModified = res.configurationDate;
             this.script.actual = JSON.stringify(this.script.configuration);
             this.script.valid = res.valid;
@@ -350,7 +352,8 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
-      id: this.data.id
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.objectType,
     }).subscribe((res: any) => {
       this.lastModified = res.configurationDate;
       if (this.cm && this.cm.codeMirror) {
@@ -399,7 +402,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
     obj.path = this.data.path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
       this.script.valid = res.valid;
-      if (this.script.id === this.data.id) {
+      if (this.script.path === this.data.path) {
         this.data.valid = res.valid;
       }
       this.setErrorMessage(res);

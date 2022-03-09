@@ -2,9 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {isArray, isEmpty, sortBy} from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from '../../../../models/enums';
-import {WorkflowService} from '../../../../services/workflow.service';
 import {AuthService} from '../../../../components/guard';
 import {CalendarService} from "../../../../services/calendar.service";
 import {ValueEditorComponent} from "../../../../components/value-editor/value.component";
@@ -36,9 +36,10 @@ export class UpdateObjectComponent implements OnInit {
   variableList = [];
   object: any = {};
   workflow: any = {};
+  required = false;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
-              private workflowService: WorkflowService, private authService: AuthService, private modal: NzModalService) {
+              private authService: AuthService, private modal: NzModalService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -46,6 +47,9 @@ export class UpdateObjectComponent implements OnInit {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.selectedSchedulerIds.push(this.controllerId);
     this.init();
   }
@@ -611,12 +615,18 @@ export class UpdateObjectComponent implements OnInit {
   }
 
   updateObject(data, cb): void {
-    this.coreService.post('inventory/store', {
+    const request: any = {
       configuration: data.configuration,
       valid: true,
-      id: data.id,
+      path: data.path,
       objectType: this.type
-    }).subscribe({
+    };
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        request.auditLog = { comment: translatedValue };
+      });
+    }
+    this.coreService.post('inventory/store', request).subscribe({
       next: () => {
         if (cb) {
           cb();
@@ -820,7 +830,8 @@ export class UpdateObjectComponent implements OnInit {
   private findAndUpdate(cb): void {
     this.data.forEach((item, index) => {
       this.coreService.post('inventory/read/configuration', {
-        id: item.id
+        path: item.path,
+        objectType: item.objectType || item.type
       }).subscribe((res: any) => {
         res.configuration = this.updateProperties(res.configuration, this.object);
         this.updateObject(res, index === this.data.length - 1 ? cb : null);

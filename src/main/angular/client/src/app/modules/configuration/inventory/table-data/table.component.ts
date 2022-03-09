@@ -154,9 +154,9 @@ export class TableComponent implements OnDestroy {
         nzTitle: null,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
-          title: 'delete',
-          message: 'deleteObject',
-          type: 'Delete',
+          title: 'remove',
+          message: 'removeObject',
+          type: 'Remove',
           objectName: _path
         },
         nzFooter: null,
@@ -172,9 +172,10 @@ export class TableComponent implements OnDestroy {
   }
 
   private removeApiCall(object, auditLog): void {
-    this.coreService.post('inventory/remove', { objects: [{ id: object.id }], auditLog }).subscribe(() => {
+    this.coreService.post('inventory/remove', { objects: [{ objectType: object.objectType || object.type,
+      path: object.path + (object.path === '/' ? '' : '/') + object.name }], auditLog }).subscribe(() => {
       for (let i = 0; i < this.dataObj.children.length; i++) {
-        if (this.dataObj.children[i].id === object.id) {
+        if (this.dataObj.children[i].path === object.path && this.dataObj.children[i].name === object.name) {
           this.dataObj.children.splice(i, 1);
           break;
         }
@@ -250,12 +251,13 @@ export class TableComponent implements OnDestroy {
     this.coreService.post('inventory/delete_draft', {
       auditLog,
       objects: [{
-        id: object.id
+        objectType: object.objectType || object.type,
+        path: object.path + (object.path === '/' ? '' : '/') + object.name
       }]
     }).subscribe(() => {
       if (isDraftOnly) {
         for (let i = 0; i < this.dataObj.children.length; i++) {
-          if (this.dataObj.children[i].id === object.id) {
+          if (this.dataObj.children[i].path === object.path && this.dataObj.children[i].name === object.name) {
             this.dataObj.children.splice(i, 1);
             break;
           }
@@ -320,8 +322,7 @@ export class TableComponent implements OnDestroy {
       }
     }
 
-    this.coreService.post('inventory/store', request).subscribe((res: any) => {
-      obj.id = res.id;
+    this.coreService.post('inventory/store', request).subscribe(() => {
       if (this.objectType.match(/CALENDAR/)) {
         obj.type = 'CALENDAR';
         obj.objectType = InventoryObject.WORKINGDAYSCALENDAR;

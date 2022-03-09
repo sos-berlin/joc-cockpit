@@ -455,7 +455,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.coreService.post('authentication/auth/store', obj).subscribe((res) => {
+    this.coreService.post('authentication/auth/store', obj).subscribe(() => {
       this.reset();
       if (accounts) {
         this.accounts = this.accounts.concat(accounts)
@@ -828,7 +828,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   private paste(): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
-      console.log(this.dataService.copiedObject.accounts)
       let comments = {
         radio: 'predefined',
         type: 'Accounts',

@@ -56,6 +56,7 @@ export class ImportModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     this.document.path = this.selectedPath;
     this.uploader.onBeforeUploadItem = (item: any) => {
@@ -131,6 +132,7 @@ export class EditModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
   }
 

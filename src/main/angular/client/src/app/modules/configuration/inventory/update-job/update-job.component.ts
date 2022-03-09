@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
-import {sortBy, isEmpty, isArray} from 'underscore';
+import {isEmpty, isArray} from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from '../../../../models/enums';
 import {WorkflowService} from '../../../../services/workflow.service';
@@ -30,7 +31,9 @@ export class UpdateJobComponent implements OnInit {
     job: {}
   };
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef,
+  required = false;
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private translate: TranslateService,
               private workflowService: WorkflowService, private authService: AuthService) {
   }
 
@@ -114,6 +117,9 @@ export class UpdateJobComponent implements OnInit {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+    }
     this.selectedNode.obj.jobName = this.data.jobName;
     this.selectedSchedulerIds.push(this.controllerId);
     this.init();
@@ -192,12 +198,17 @@ export class UpdateJobComponent implements OnInit {
   }
 
   updateWorkflow(workflow, cb): void {
-    this.coreService.post('inventory/store', {
+    const request: any = {
       configuration: workflow.configuration,
-      valid: true,
-      id: workflow.id,
+      path: workflow.path,
       objectType: InventoryObject.WORKFLOW
-    }).subscribe({
+    };
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        request.auditLog = { comment: translatedValue };
+      });
+    }
+    this.coreService.post('inventory/store', request).subscribe({
       next: () => {
         if (cb) {
           cb();
@@ -251,7 +262,8 @@ export class UpdateJobComponent implements OnInit {
   private findAndUpdate(job, cb): void {
     this.data.workflows.forEach((workflow, index) => {
       this.coreService.post('inventory/read/configuration', {
-        id: workflow.id
+        path: workflow.path,
+        objectType: workflow.objectType || workflow.type
       }).subscribe((res: any) => {
         if (this.data.onlyUpdate) {
           if (!this.data.exactMatch) {

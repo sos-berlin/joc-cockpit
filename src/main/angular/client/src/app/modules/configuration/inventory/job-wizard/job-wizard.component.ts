@@ -4,8 +4,7 @@ import {CoreService} from '../../../../services/core.service';
 
 @Component({
   selector: 'app-job-wizard',
-  templateUrl: './job-wizard.component.html',
-  styleUrls: ['./job-wizard.component.scss']
+  templateUrl: './job-wizard.component.html'
 })
 export class JobWizardComponent implements OnInit {
   @Input() existingJob: any;

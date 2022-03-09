@@ -892,7 +892,6 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   private paste(): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
-      console.log(this.dataService.copiedObject.accounts)
       let comments = {
         radio: 'predefined',
         type: 'Roles',

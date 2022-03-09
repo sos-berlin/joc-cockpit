@@ -210,14 +210,12 @@ export class SettingModalComponent implements OnInit {
     } else if ((!this.userObj.iamLdapPort || this.userObj.iamLdapPort == 636)) {
       this.userObj.iamLdapPort = 389;
     }
-    const url = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
-    this.currentObj.iamLdapServerUrl = url;
+    this.currentObj.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
     this.currentObj.iamLdapUseStartTls = this.userObj.iamLdapProtocol === 'STARTTLS';
   }
 
   changeField(): void {
-    const url = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
-    this.currentObj.iamLdapServerUrl = url;
+    this.currentObj.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
   }
 
   checkConfirmation(isChecked, type): void {
@@ -890,7 +888,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
 
   private enableDisable(identityService, flag, comments): void {
     identityService.disabled = flag;
-    if (comments.comment) {
+    if (comments) {
       identityService.auditLog = {};
       if (comments.comment) {
         identityService.auditLog.comment = comments.comment;

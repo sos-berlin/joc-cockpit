@@ -9,7 +9,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
-import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
+import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
 
 declare const Holidays;
 declare const $;
@@ -1017,130 +1017,6 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
-  private checkDate(date): void {
-    const planData = {
-      startDate: date,
-      endDate: date,
-      color: 'blue'
-    };
-
-    let flag = false, isFound = false, flg = false;
-    if (this.calObj.frequency == 'all' || this.calObj.frequency.type == 'INCLUDE') {
-      if (this.planItems.length == 0) {
-        this.includedDates = [];
-        this.includedDates.push(planData);
-        this.planItems.push(planData);
-      } else {
-        for (let i = 0; i < this.planItems.length; i++) {
-          if ((new Date(this.planItems[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-            isFound = true;
-            if (this.planItems[i].color != 'orange') {
-              this.planItems[i].color = 'orange';
-              flag = true;
-            } else {
-              this.planItems[i].color = 'blue';
-            }
-            break;
-          }
-        }
-        if (!isFound) {
-          planData.color = 'blue';
-          this.includedDates.push(planData);
-          this.planItems.push(planData);
-        } else {
-          if (this.includedDates.length > 0) {
-            for (let i = 0; i < this.includedDates.length; i++) {
-              if ((new Date(this.includedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-                this.includedDates.splice(i, 1);
-                break;
-              }
-            }
-          }
-        }
-        if (isFound && !flag) {
-          this.includedDates.push(planData);
-        }
-      }
-
-      if (!flag) {
-        if (this.excludedDates.length > 0) {
-          for (let i = 0; i < this.excludedDates.length; i++) {
-            if ((new Date(this.excludedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-              this.excludedDates.splice(i, 1);
-              break;
-            }
-          }
-        }
-      } else {
-        for (let i = 0; i < this.excludedDates.length; i++) {
-          if ((new Date(this.excludedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-            flg = true;
-            break;
-          }
-        }
-        if (!flg) {
-          this.excludedDates.push(planData);
-        }
-      }
-
-    } else if (this.calObj.frequency.type == 'EXCLUDE') {
-      if (this.planItems.length == 0) {
-        this.excludedDates = [];
-        this.excludedDates.push(planData);
-        this.planItems.push(planData);
-      } else {
-        for (let i = 0; i < this.planItems.length; i++) {
-          if ((new Date(this.planItems[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-            isFound = true;
-            if (this.planItems[i].color != 'orange') {
-              this.planItems[i].color = 'orange';
-            } else {
-              this.planItems[i].color = 'blue';
-              flag = true;
-            }
-            break;
-          }
-        }
-        if (!isFound) {
-          planData.color = 'orange';
-          this.excludedDates.push(planData);
-          this.planItems.push(planData);
-        } else {
-          if (this.excludedDates.length > 0) {
-            for (let i = 0; i < this.excludedDates.length; i++) {
-              if ((new Date(this.excludedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-                this.excludedDates.splice(i, 1);
-                break;
-              }
-            }
-          }
-        }
-      }
-      if (!flag) {
-        if (this.includedDates.length > 0) {
-          for (let i = 0; i < this.includedDates.length; i++) {
-            if ((new Date(this.includedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-              this.includedDates.splice(i, 1);
-              break;
-            }
-          }
-        }
-      } else {
-        for (let i = 0; i < this.includedDates.length; i++) {
-          if ((new Date(this.includedDates[i].startDate).setHours(0, 0, 0, 0) == new Date(planData.startDate).setHours(0, 0, 0, 0))) {
-            flg = true;
-            break;
-          }
-        }
-        if (!flg) {
-          this.includedDates.push(planData);
-        }
-      }
-    }
-
-    $('#full-calendar').data('calendar').setDataSource(this.planItems);
-  }
-
   private selectDate(e): void {
     const obj = {
       startDate: e.date,
@@ -1366,7 +1242,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.copyObj && !changes.data){
+    if (changes.copyObj && !changes.data) {
       return;
     }
     if (changes.reload) {
@@ -1403,7 +1279,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.calendar.id && this.data.name !== this.calendar.name) {
+    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.calendar.path && this.data.name !== this.calendar.name) {
       if (!inValid) {
         if (this.preferences.auditLog) {
           let comments = {
@@ -1445,7 +1321,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     const data = this.coreService.clone(this.data);
     const name = this.calendar.name;
     const obj: any = {
-      id: data.id,
+      path: (data.path + (data.path === '/' ? '' : '/') + data.name),
+      objectType: this.data.objectType || this.data.type,
       newPath: name,
       auditLog: {}
     };
@@ -1460,11 +1337,11 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     }
     this.coreService.post('inventory/rename', obj).subscribe({
       next: () => {
-        if (data.id === this.data.id) {
+        if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
         data.name = name;
-        this.dataService.reloadTree.next({ rename: data });
+        this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.calendar.name = this.data.name;
         this.ref.detectChanges();
@@ -1689,13 +1566,14 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.history.push(JSON.stringify(this.calendar.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
+      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
       const request: any = {
         configuration: obj,
-        id: this.calendar.id,
+        path,
         valid: !!obj.includes,
         objectType: obj.type
       };
-  
+
       if (sessionStorage.$SOS$FORCELOGING === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = {comment: translatedValue};
@@ -1703,7 +1581,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       }
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.id === this.data.id && this.calendar.id === this.data.id) {
+          if (res.path === path && this.calendar.path === path) {
             this.lastModified = res.configurationDate;
             this.calendar.actual = JSON.stringify(this.calendar.configuration);
             this.calendar.valid = res.valid;
@@ -1789,7 +1667,8 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
-      id: this.data.id
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.data.objectType || this.data.type,
     }).subscribe((res: any) => {
       this.lastModified = res.configurationDate;
       this.history = [];
@@ -1800,10 +1679,10 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         res.configuration = {};
       }
-      if (this.data.released !== res.released){
+      if (this.data.released !== res.released) {
         this.data.released = res.released;
       }
-      if (this.data.valid !== res.valid){
+      if (this.data.valid !== res.valid) {
         this.data.valid = res.valid;
       }
       this.calendar = res;
