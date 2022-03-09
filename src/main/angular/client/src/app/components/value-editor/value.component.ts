@@ -33,9 +33,9 @@ export class ValueEditorComponent implements AfterViewInit {
   }
 
   do_resize() {
-    var maxrows = 10;
-    var arraytxt = this.data.split('\n');
-    var rows = arraytxt.length;
+    const maxrows = 10;
+    const arraytxt = this.data.split('\n');
+    let rows = arraytxt.length;
     for (let i = 0; i < arraytxt.length; i++) {
       if (arraytxt[i].length > 110) {
         rows += 1;

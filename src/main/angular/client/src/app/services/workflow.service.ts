@@ -1239,7 +1239,6 @@ export class WorkflowService {
       mapObj.nodeMap.set(target.id.toString(), v1.id.toString());
       let flag = true;
       if (branches.then && branches.then.instructions) {
-        flag = false;
         const x = branches.then.instructions[branches.then.instructions.length - 1];
         if (x) {
           let endNode;
@@ -1248,11 +1247,11 @@ export class WorkflowService {
           } else {
             endNode = vertexMap.get(x.uuid);
           }
+          flag = false;
           connectInstruction(endNode, v1, 'endIf', 'endIf', parent);
         }
       }
       if (branches.else && branches.else.instructions) {
-        flag = false;
         const x = branches.else.instructions[branches.else.instructions.length - 1];
         if (x) {
           let endNode;
@@ -1261,10 +1260,10 @@ export class WorkflowService {
           } else {
             endNode = vertexMap.get(x.uuid);
           }
+          flag = false;
           connectInstruction(endNode, v1, 'endIf', 'endIf', parent);
         }
       }
-
       if (flag) {
         connectInstruction(target, v1, '', '', parent);
       }

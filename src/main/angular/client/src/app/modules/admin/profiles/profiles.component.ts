@@ -10,8 +10,7 @@ import { CommentModalComponent } from '../../../components/comment-modal/comment
 
 @Component({
   selector: 'app-profiles',
-  templateUrl: './profiles.component.html',
-  styleUrls: ['./profiles.component.css']
+  templateUrl: './profiles.component.html'
 })
 export class ProfilesComponent implements OnInit, OnDestroy {
   preferences: any = {};
@@ -227,23 +226,25 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   }
 
   private deleteProfile(profile, comments): void {
-    const obj: any = { accounts: [], auditLog: {}};
+    const obj: any = { accounts: [], auditLog: {} };
     if (profile) {
       obj.accounts.push(profile.account);
     } else {
       obj.accounts = Array.from(this.setOfCheckedId);
     }
-    if (comments.comment) {
-      obj.auditLog.comment = comments.comment;
-    }
-    if (comments.timeSpent) {
-      obj.auditLog.timeSpent = comments.timeSpent;
-    }
-    if (comments.ticketLink) {
-      obj.auditLog.ticketLink = comments.ticketLink;
-    }
-    if (comments.isChecked) {
-      this.dataService.comments = comments;
+    if (comments) {
+      if (comments.comment) {
+        obj.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        obj.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        obj.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
+      }
     }
     this.coreService.post('configurations/delete', obj).subscribe(() => {
       if (profile) {

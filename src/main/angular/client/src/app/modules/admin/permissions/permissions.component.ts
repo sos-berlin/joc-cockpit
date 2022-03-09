@@ -855,18 +855,20 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       identityServiceName: this.userDetail.identityServiceName
     };
 
-    request.auditLog = {};
-    if (comments.comment) {
-      request.auditLog.comment = comments.comment;
-    }
-    if (comments.timeSpent) {
-      request.auditLog.timeSpent = comments.timeSpent;
-    }
-    if (comments.ticketLink) {
-      request.auditLog.ticketLink = comments.ticketLink;
-    }
-    if (comments.isChecked) {
-      this.dataService.comments = comments;
+    if (comments) {
+      request.auditLog = {};
+      if (comments.comment) {
+        request.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        request.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        request.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
+      }
     }
     if (sessionStorage.identityServiceType === 'SHIRO') {
       request.main = this.userDetail.main;

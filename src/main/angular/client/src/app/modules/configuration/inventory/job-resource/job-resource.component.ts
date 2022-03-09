@@ -111,7 +111,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.jobResource.id && this.data.name !== this.jobResource.name) {
+    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.jobResource.path && this.data.name !== this.jobResource.name) {
       if (!inValid) {
         if (this.preferences.auditLog) {
           let comments = {
@@ -153,7 +153,8 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     const data = this.coreService.clone(this.data);
     const name = this.jobResource.name;
     const obj: any = {
-      id: data.id,
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.objectType,
       newPath: name,
       auditLog: {}
     };
@@ -168,7 +169,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     }
     this.coreService.post('inventory/rename', obj).subscribe({
       next: () => {
-        if (data.id === this.data.id) {
+        if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
         data.name = name;
@@ -193,7 +194,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   updateList(node): void {
     const obj = {
-      folders: [{folder: node.key, recursive: false}],
+      folders: [{ folder: node.key, recursive: false }],
       onlyWithAssignReference: true
     };
     this.coreService.post('documentations', obj).subscribe((res: any) => {
@@ -256,11 +257,11 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   deploy(): void {
-    this.dataService.reloadTree.next({deploy: this.jobResource});
+    this.dataService.reloadTree.next({ deploy: this.jobResource });
   }
 
   backToListView(): void {
-    this.dataService.reloadTree.next({back: this.jobResource});
+    this.dataService.reloadTree.next({ back: this.jobResource });
   }
 
   /**
@@ -535,21 +536,23 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.history.push(JSON.stringify(this.jobResource.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
+
+      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
       const request: any = {
         configuration: obj,
         valid: (obj.env && obj.env.length > 0 || obj.arguments && obj.arguments.length > 0),
-        id: this.jobResource.id,
+        path,
         objectType: this.objectType
       };
-  
+
       if (sessionStorage.$SOS$FORCELOGING === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-          request.auditLog = {comment: translatedValue};
+          request.auditLog = { comment: translatedValue };
         });
       }
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.id === this.data.id && this.jobResource.id === this.data.id) {
+          if (res.path === path && this.jobResource.path === path) {
             this.lastModified = res.configurationDate;
             this.jobResource.actual = JSON.stringify(this.jobResource.configuration);
             this.jobResource.valid = res.valid;
@@ -575,7 +578,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
-    } else if(res.configuration) {
+    } else if (res.configuration) {
       if (!res.configuration.arguments && !res.configuration.env) {
         this.invalidMsg = 'inventory.message.envOrArgumentIsMissing';
       }
@@ -586,7 +589,8 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     const obj: any = {
-      id: this.data.id
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.objectType,
     };
     if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
       obj.controllerId = this.schedulerId;

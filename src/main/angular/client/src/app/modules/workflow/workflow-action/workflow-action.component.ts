@@ -6,15 +6,21 @@ import {isEmpty, isArray} from 'underscore';
 import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
+import {AuthService} from '../../../components/guard';
 
 @Component({
   selector: 'app-show-dependency',
   templateUrl: './show-dependency-dialog.html'
 })
-export class ShowDependencyComponent {
+export class ShowDependencyComponent implements OnInit {
   @Input() workflow: any;
+  permission: any = {}
 
-  constructor(private coreService: CoreService, private activeModal: NzModalRef) {
+  constructor(private coreService: CoreService, private activeModal: NzModalRef, private authService: AuthService) {
+  }
+
+  ngOnInit(): void {
+    this.permission = JSON.parse(this.authService.permission) || {};
   }
 
   close(): void {

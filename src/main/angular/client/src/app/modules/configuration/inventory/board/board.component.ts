@@ -91,7 +91,8 @@ export class BoardComponent implements OnChanges, OnDestroy {
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     const obj: any = {
-      id: this.data.id
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.objectType
     };
     if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
       obj.controllerId = this.schedulerId;
@@ -183,7 +184,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
     obj.path = this.data.path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
       this.board.valid = res.valid;
-      if (this.board.id === this.data.id) {
+      if (this.board.path === this.data.path) {
         if (this.data.valid !== res.valid) {
           this.saveJSON(false, true);
         }
@@ -211,7 +212,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.board.id && this.data.name !== this.board.name) {
+    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.board.path && this.data.name !== this.board.name) {
       if (!inValid) {
         if (this.preferences.auditLog) {
           let comments = {
@@ -253,7 +254,8 @@ export class BoardComponent implements OnChanges, OnDestroy {
     const data = this.coreService.clone(this.data);
     const name = this.board.name;
     const obj: any = {
-      id: data.id,
+      path: (data.path + (data.path === '/' ? '' : '/') + data.name),
+      objectType: this.objectType,
       newPath: name,
       auditLog: {}
     };
@@ -268,7 +270,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
     }
     this.coreService.post('inventory/rename', obj).subscribe({
       next: () => {
-        if (data.id === this.data.id) {
+        if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
         data.name = name;
@@ -538,10 +540,12 @@ export class BoardComponent implements OnChanges, OnDestroy {
         this.history.push(JSON.stringify(this.board.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
+
+      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
       const request: any = {
         configuration: this.board.configuration,
         valid: !!(this.board.configuration.postOrderToNoticeId && this.board.configuration.expectOrderToNoticeId && this.board.configuration.endOfLife),
-        id: this.board.id,
+        path,
         objectType: this.objectType
       };
 
@@ -552,7 +556,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       }
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.id === this.data.id && this.board.id === this.data.id) {
+          if (res.path === path && this.board.path === path) {
             this.lastModified = res.configurationDate;
             this.board.actual = JSON.stringify(this.board.configuration);
             this.board.deployed = false;

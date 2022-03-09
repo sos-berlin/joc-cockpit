@@ -213,7 +213,7 @@ export class MainSectionModalComponent implements OnInit {
     let main = [];
     this.mainSection.forEach((val) => {
       if (val.name && val.name != '') {
-        var obj = {
+        const obj = {
           entryName: val.name,
           entryValue: [],
           entryComment: []
@@ -603,17 +603,19 @@ export class MainSectionComponent implements OnInit, OnDestroy {
       auditLog: {}
     };
 
-    if (comments.comment) {
-      obj.auditLog.comment = comments.comment;
-    }
-    if (comments.timeSpent) {
-      obj.auditLog.timeSpent = comments.timeSpent;
-    }
-    if (comments.ticketLink) {
-      obj.auditLog.ticketLink = comments.ticketLink;
-    }
-    if (comments.isChecked) {
-      this.dataService.comments = comments;
+    if (comments) {
+      if (comments.comment) {
+        obj.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        obj.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        obj.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
+      }
     }
 
     this.coreService.post('authentication/auth/store', obj).subscribe(() => {

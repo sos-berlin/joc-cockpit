@@ -65,7 +65,10 @@ export class SingleDeployComponent implements OnInit {
   }
 
   init(): void {
-    const obj: any = {onlyValidObjects: true, withVersions: true, id: this.data.id};
+    const obj: any = {
+      onlyValidObjects: true, withVersions: true, path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.data.objectType || this.data.type
+    };
     if (this.isRevoke) {
       obj.withoutDeployed = false;
       obj.latest = true;
@@ -2329,9 +2332,7 @@ export class CreateObjectModalComponent implements OnInit {
         data.suffix = this.object.suffix;
       } else if (this.object.type === 'prefix') {
         data.prefix = this.object.prefix;
-      } else if (this.object.type === 'existing') {
-
-      } else {
+      } else if (this.object.type !== 'existing') {
         data.newName = this.object.newName;
       }
       if (this.object.originalName) {
@@ -2372,11 +2373,12 @@ export class CreateObjectModalComponent implements OnInit {
     };
     if (this.copy.id) {
       request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.originalName ? data.originalName : this.copy.name);
-      request.id = this.copy.id;
+      request.objectType = this.copy.objectType || this.copy.type;
+      request.path = this.copy.path + (this.copy.path === '/' ? '' : '/') + this.copy.name;
     } else {
       request.objectType = 'FOLDER';
-      request.newPath = (obj.path || '/') + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copy.name);
       request.path = this.copy.path;
+      request.newPath = (obj.path || '/') + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copy.name);
     }
     request.auditLog = {};
     if (this.comments.comment) {
@@ -2405,7 +2407,7 @@ export class CreateObjectModalComponent implements OnInit {
     };
     if (this.obj.id) {
       request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.newName ? data.newName : obj.name);
-      request.id = this.obj.id;
+      request.objectType = this.obj.type || this.obj.objectType;
     } else {
       request.objectType = 'FOLDER';
       const tempPath = obj.path.substring(0, obj.path.lastIndexOf('/'));
@@ -2520,10 +2522,11 @@ export class CreateFolderModalComponent implements OnInit {
         newPath: this.folder.name
       };
       if (this.origin.id) {
-        obj.id = this.origin.id;
+        obj.objectType = this.origin.objectType || this.origin.type;
+        obj.path = this.origin.path + (this.origin.path === '/' ? '' : '/') + this.origin.name;
       } else {
-        obj.path = this.origin.path;
         obj.objectType = 'FOLDER';
+        obj.path = this.origin.path;
       }
 
       let URL = this.folder.deepRename === 'replace' ? 'inventory/replace' : 'inventory/rename';
@@ -2589,10 +2592,10 @@ export class CreateFolderModalComponent implements OnInit {
     object.children.forEach((item) => {
       if (item.children) {
         item.children.forEach((data) => {
-          obj.objects.push({ id: data.id });
+          obj.objects.push({ objectType: data.objectType, path: data.path + (data.path === '/' ? '' : '/') + data.name });
         });
       } else {
-        obj.objects.push({ id: item.id });
+        obj.objects.push({ objectType: item.objectType, path: item.path + (item.path === '/' ? '' : '/') + item.name });
       }
     });
     return obj;
@@ -2840,7 +2843,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (this.selectedObj.type.match(/CALENDAR/)) {
             this.selectedObj.type = 'CALENDAR';
           }
-          this.selectedObj.id = res.id;
           this.findObjectByPath(res.path);
         }, error: () => {
           this.updateObjects(this.tree[0], this.isTrash, (children) => {
@@ -3128,7 +3130,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
       this.type = node.origin.object || node.origin.type;
       this.selectedData = node.origin;
-      this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+      this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin.type ? '$ID' : undefined);
     }
   }
 
@@ -3662,7 +3664,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.selectedObj.type === InventoryObject.WORKFLOW) {
       this.dataService.reloadTree.next({ saveObject: origin });
     }
-    if (releasable && origin.id) {
+    if (releasable && origin.type) {
       this.releaseSingleObject(origin);
       return;
     }
@@ -3870,7 +3872,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   showJson(obj: any): void {
     this.coreService.post('inventory/read/configuration', {
-      id: obj.showJson.id,
+      objectType: obj.showJson.objectType,
+      path: (obj.showJson.path + (obj.showJson.path === '/' ? '' : '/') + obj.showJson.name)
     }).subscribe((res: any) => {
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -3924,7 +3927,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   exportJSON(obj): void {
     if (obj.id) {
       this.coreService.post('inventory/read/configuration', {
-        id: obj.id,
+        path: (obj.path + (obj.path === '/' ? '' : '/') + obj.name),
+        objectType: obj.objectType,
       }).subscribe((res: any) => {
         const name = obj.name + (obj.type ? '.' + obj.type.toLowerCase() : '') + '.json';
         const fileType = 'application/octet-stream';
@@ -4012,7 +4016,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   private cutPaste(object, comments: any = {}): void {
     const obj: any = { newPath: object.path };
     if (this.copyObj.id) {
-      obj.id = this.copyObj.id;
+      obj.objectType = this.copyObj.objectType || this.copyObj.type;
+      obj.path = (this.copyObj.path + (this.copyObj.path === '/' ? '' : '/') + this.copyObj.name);
     } else {
       obj.objectType = 'FOLDER';
       obj.path = this.copyObj.path;
@@ -4127,10 +4132,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           title: 'remove',
           message: 'removeObject',
-          type: 'Reset',
+          type: 'Remove',
           objectName: path,
-          countMessage: (obj.objects || object.type) ? 'removeAllObject' : undefined,
-          count: (obj.objects || object.type) ? obj.objects.length : undefined
+          countMessage: (obj.objects && !object.type) ? 'removeAllObject' : undefined,
+          count: (obj.objects && !object.type) ? obj.objects.length : undefined
         },
         nzFooter: null,
         nzClosable: false,
@@ -4199,8 +4204,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           message: 'deleteDraftObject',
           type: 'Delete',
           objectName: path,
-          countMessage: (obj.objects || object.type) ? 'deleteAllDraftObject' : undefined,
-          count: (obj.objects || object.type) ? obj.objects.length : undefined
+          countMessage: (obj.objects && !object.type) ? 'deleteAllDraftObject' : undefined,
+          count: (obj.objects && !object.type) ? obj.objects.length : undefined
         },
         nzFooter: null,
         nzClosable: false,
@@ -4263,27 +4268,58 @@ export class InventoryComponent implements OnInit, OnDestroy {
       object = node.origin;
     }
     const obj = this.getObjectArr(object, false);
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        title: 'delete',
-        message: 'deleteObject',
-        type: 'Delete',
-        objectName: object.type ? object.path + (object.path === '/' ? '' : '/') + object.name : object.path,
-        countMessage: (obj.objects || object.type) ? 'deleteAllObject' : undefined,
-        count: (obj.objects || object.type) ? obj.objects.length : undefined
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        const URL = (object.type || object.object || object.controller || object.dailyPlan) ? 'inventory/trash/delete' : 'inventory/trash/delete/folder';
-        this.coreService.post(URL, obj).subscribe();
-      }
-    });
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: object.type || object.object || 'Folder',
+        operation: 'Delete',
+        name: object.name || object.path
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          const URL = (object.type || object.object || object.controller || object.dailyPlan) ? 'inventory/trash/delete' : 'inventory/trash/delete/folder';
+          this.coreService.post(URL, obj).subscribe();
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteObject',
+          type: 'Delete',
+          objectName: object.type ? object.path + (object.path === '/' ? '' : '/') + object.name : object.path,
+          countMessage: (obj.objects || object.type) ? 'deleteAllObject' : undefined,
+          count: (obj.objects || object.type) ? obj.objects.length : undefined
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          const URL = (object.type || object.object || object.controller || object.dailyPlan) ? 'inventory/trash/delete' : 'inventory/trash/delete/folder';
+          this.coreService.post(URL, obj).subscribe();
+        }
+      });
+    }
   }
 
   restoreObject(node: any): void {
@@ -4295,6 +4331,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
       nzAutofocus: null,
+      nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         preferences: this.preferences,
@@ -4441,9 +4478,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }
           };
           if (data.deleted) {
-            obj.delete = [{ id: data.id }];
+            obj.delete = [{ objectType: data.objectType, path: (data.path + (data.path === '/' ? '' : '/') + data.name) }];
           } else {
-            obj.update = [{ id: data.id }];
+            obj.update = [{ objectType: data.objectType, path: (data.path + (data.path === '/' ? '' : '/') + data.name) }];
           }
           this.coreService.post('inventory/release', obj).subscribe();
         }
@@ -4451,9 +4488,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       const obj: any = {};
       if (data.deleted) {
-        obj.delete = [{ id: data.id }];
+        obj.delete = [{ objectType: data.objectType, path: (data.path + (data.path === '/' ? '' : '/') + data.name) }];
       } else {
-        obj.update = [{ id: data.id }];
+        obj.update = [{ objectType: data.objectType, path: (data.path + (data.path === '/' ? '' : '/') + data.name) }];
       }
       this.coreService.post('inventory/release', obj).subscribe();
     }
@@ -4463,10 +4500,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (!obj.id) {
       return;
     }
+    const path = (obj.path + (obj.path === '/' ? '' : '/') + obj.name);
     const request: any = {
       configuration: result,
       valid: true,
-      id: obj.id,
+      path,
       objectType: obj.objectType || obj.type
     };
     if (request.objectType === 'CALENDAR') {
@@ -4554,7 +4592,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       let obj: any = {
         type: this.copyObj.type,
         objectType: this.copyObj.type,
-        id: res.id,
         path: res.path.substring(0, res.path.lastIndexOf('/')) || '/',
         name: res.path.substring(res.path.lastIndexOf('/') + 1),
         valid: this.copyObj.valid
@@ -4562,7 +4599,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       object.expanded = true;
       this.type = obj.type;
       this.selectedData = obj;
-      this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+      this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, '$ID');
     }
   }
 
@@ -4770,12 +4807,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
           obj.objectType = obj.type;
           obj.type = 'CALENDAR';
         }
-        obj.id = res.id;
         obj.valid = obj.valid ? obj.valid : valid;
         list.push(obj);
         this.type = obj.type;
         this.selectedData = obj;
-        this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+        this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, '$ID');
         this.updateTree(false);
       });
     }
@@ -4804,18 +4840,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
           if (item.children) {
             item.children.forEach((data) => {
               if (!isDraft || (!data.deployed && !data.released)) {
-                obj.objects.push({ id: data.id });
+                obj.objects.push({ objectType: data.objectType, path: data.path + (data.path === '/' ? '' : '/') + data.name });
               }
             });
           } else if (!isDraft || (!item.deployed && !item.released)) {
-            obj.objects.push({ id: item.id });
+            obj.objects.push({ objectType: item.objectType, path: item.path + (item.path === '/' ? '' : '/') + item.name });
           }
         });
       } else {
         obj = { path: object.path };
       }
     } else {
-      obj.objects.push({ id: object.id });
+      obj.objects.push({ objectType: object.objectType, path: object.path + (object.path === '/' ? '' : '/') + object.name });
     }
     return obj;
   }

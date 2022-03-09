@@ -533,7 +533,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.schedule.id && this.data.name !== this.schedule.name) {
+    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.schedule.path && this.data.name !== this.schedule.name) {
       if (!inValid) {
         if (this.preferences.auditLog) {
           let comments = {
@@ -575,7 +575,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     const data = this.coreService.clone(this.data);
     const name = this.schedule.name;
     const obj: any = {
-      id: data.id,
+      path: (data.path + (data.path === '/' ? '' : '/') + data.name),
+      objectType: this.objectType,
       newPath: name,
       auditLog: {}
     };
@@ -590,7 +591,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
     this.coreService.post('inventory/rename', obj).subscribe({
       next: () => {
-        if (data.id === this.data.id) {
+        if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
         data.name = name;
@@ -737,10 +738,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.indexOfNextAdd = this.history.length - 1;
         }
         delete obj.workflowName1;
+        const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         const request: any = {
           configuration: obj,
           valid: isValid,
-          id: this.schedule.id,
+          path,
           objectType: this.objectType
         };
     
@@ -751,7 +753,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
         this.coreService.post('inventory/store', request).subscribe({
           next: (res: any) => {
-            if (res.id === this.data.id && this.schedule.id === this.data.id) {
+            if (res.path === path && this.schedule.path === path) {
               this.lastModified = res.configurationDate;
               this.schedule.actual = JSON.stringify(obj);
               this.schedule.valid = res.valid;
@@ -922,7 +924,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
-      id: this.data.id
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.objectType,
     }).subscribe((res: any) => {
       this.lastModified = res.configurationDate;
       this.history = [];
@@ -989,7 +992,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe({
       next: (res: any) => {
         this.schedule.valid = res.valid;
-        if (this.schedule.id === this.data.id) {
+        if (this.schedule.path === this.data.path) {
           if (this.data.valid !== res.valid) {
             this.saveJSON(true, true);
           }

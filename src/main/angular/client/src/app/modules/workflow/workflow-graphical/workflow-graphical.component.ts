@@ -802,8 +802,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
 
     mxIconSet.prototype.destroy = function() {
       if (this.images != null) {
-        for (var i = 0; i < this.images.length; i++) {
-          var img = this.images[i];
+        for (let i = 0; i < this.images.length; i++) {
+          let img = this.images[i];
           img.parentNode.removeChild(img);
         }
       }

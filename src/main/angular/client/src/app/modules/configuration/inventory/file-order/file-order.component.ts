@@ -159,7 +159,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   private getObject(): void {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     const obj: any = {
-      id: this.data.id
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.objectType
     };
     if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
       obj.controllerId = this.schedulerId;
@@ -219,7 +220,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     obj.path = this.data.path;
     this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
       this.fileOrder.valid = res.valid;
-      if (this.fileOrder.id === this.data.id) {
+      if (this.fileOrder.path === this.data.path) {
         if (this.data.valid !== res.valid) {
           this.saveJSON(true, true);
         }
@@ -245,7 +246,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.fileOrder.id && this.data.name !== this.fileOrder.name) {
+    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.fileOrder.path && this.data.name !== this.fileOrder.name) {
       if (!inValid) {
         if (this.preferences.auditLog) {
           let comments = {
@@ -287,7 +288,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     const data = this.coreService.clone(this.data);
     const name = this.fileOrder.name;
     const obj: any = {
-      id: data.id,
+      path: (data.path + (data.path === '/' ? '' : '/') + data.name),
+      objectType: this.objectType,
       newPath: name,
       auditLog: {}
     };
@@ -302,7 +304,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }
     this.coreService.post('inventory/rename', obj).subscribe({
       next: () => {
-        if (data.id === this.data.id) {
+        if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
         data.name = name;
@@ -517,10 +519,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       if (obj.directoryExpr) {
         this.coreService.addSlashToString(obj, 'directoryExpr');
       }
+      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
       const request: any = {
         configuration: obj,
         valid: isValid,
-        id: this.fileOrder.id,
+        path,
         objectType: this.objectType
       };
   
@@ -531,7 +534,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       }
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.id === this.data.id && this.fileOrder.id === this.data.id) {
+          if (res.path === path && this.fileOrder.path === path) {
             this.lastModified = res.configurationDate;
             this.fileOrder.actual = JSON.stringify(this.fileOrder.configuration);
             this.data.valid = res.valid;

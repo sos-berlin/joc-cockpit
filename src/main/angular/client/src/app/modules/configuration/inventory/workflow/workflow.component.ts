@@ -27,7 +27,7 @@ import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
-import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {InventoryService} from '../inventory.service';
@@ -185,7 +185,7 @@ export class TimeEditorComponent implements OnInit {
 
   object: any = {};
 
-  @ViewChild('timePicker', { static: true }) tp;
+  @ViewChild('timePicker', {static: true}) tp;
 
   constructor(public activeModal: NzModalRef, private workflowService: WorkflowService, private coreService: CoreService) {
   }
@@ -1767,7 +1767,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.selectedNode.job.jobResourceNames && this.selectedNode.job.jobResourceNames.length > 0) {
       this.selectedNode.job.jobResourceNames = [...this.selectedNode.job.jobResourceNames];
     }
-    this.jobResourcesTree = this.coreService.getNotExistJobResource({ arr: this.jobResourcesTree, jobResources: this.selectedNode.job.jobResourceNames });
+    this.jobResourcesTree = this.coreService.getNotExistJobResource({
+      arr: this.jobResourcesTree,
+      jobResources: this.selectedNode.job.jobResourceNames
+    });
     this.onBlur();
     const dom = $('#agentId');
     let flag = false;
@@ -2467,7 +2470,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
         const xhr = mxUtils.load(this.configXml);
-        xhr.request.onreadystatechange = function() {
+        xhr.request.onreadystatechange = function () {
           if (this.readyState === this.DONE) {
             const node = xhr.getDocumentElement();
             editor = new mxEditor(node);
@@ -2734,7 +2737,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private updateToolbar(operation, cell, name = ''): void {
-    $('#toolbar').find('img').each(function(index) {
+    $('#toolbar').find('img').each(function (index) {
       if (index === 15) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
@@ -3022,7 +3025,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.checkGraphHeight();
   }
 
-  checkGraphHeight(): void {
+  private checkGraphHeight(): void {
     if (this.editor) {
       const dom = $('.graph-container');
       if (dom && dom.position()) {
@@ -3177,7 +3180,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.isLoading = true;
     this.invalidMsg = '';
     const obj: any = {
-      id: this.data.id
+      objectType: this.objectType,
+      path: this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name
     };
     if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
       obj.controllerId = this.schedulerId;
@@ -3192,7 +3196,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       next: (res: any) => {
         this.lastModified = res.configurationDate;
         this.isLoading = false;
-        if (this.data.id === res.id) {
+        if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === res.path) {
           if (this.data.deployed !== res.deployed) {
             this.data.deployed = res.deployed;
           }
@@ -3243,12 +3247,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.updateJobs(this.editor.graph, true);
               this.ref.detectChanges();
             }
-            if(this.workflowService.getJobValue()) {
+            if (this.workflowService.getJobValue()) {
               this.navToJob(this.workflow.configuration, this.workflowService.getJobValue());
               this.workflowService.setJobValue('')
             }
 
-            this.jobResourcesTree = this.coreService.getNotExistJobResource({ arr: this.jobResourcesTree, jobResources: this.extraConfiguration.jobResourceNames });
+            this.jobResourcesTree = this.coreService.getNotExistJobResource({
+              arr: this.jobResourcesTree,
+              jobResources: this.extraConfiguration.jobResourceNames
+            });
           } catch (e) {
             console.error(e);
           }
@@ -3706,7 +3713,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.workflow.id && this.data.name !== this.workflow.name) {
+    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.workflow.path && this.data.name !== this.workflow.name) {
       if (!inValid) {
         if (this.preferences.auditLog) {
           let comments = {
@@ -3748,7 +3755,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const data = this.coreService.clone(this.data);
     const name = this.workflow.name;
     const obj: any = {
-      id: data.id,
+      path: (data.path + (data.path === '/' ? '' : '/') + data.name),
+      objectType: this.objectType,
       newPath: name,
       auditLog: {}
     };
@@ -3763,11 +3771,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     this.coreService.post('inventory/rename', obj).subscribe({
       next: () => {
-        if (data.id === this.data.id) {
+        if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
         data.name = name;
-        this.dataService.reloadTree.next({ rename: data });
+        this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.workflow.name = this.data.name;
         this.ref.detectChanges();
@@ -3995,7 +4003,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     graph.getModel().beginUpdate();
     try {
       graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-      const mapObj = { nodeMap: this.nodeMap };
+      const mapObj = {nodeMap: this.nodeMap};
       this.workflowService.createWorkflow(this.workflow.configuration, this.editor, mapObj);
       this.nodeMap = mapObj.nodeMap;
     } finally {
@@ -4081,23 +4089,23 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const panel = $('.property-panel');
     $('.sidebar-open', panel).click(() => {
       self.propertyPanelWidth = localStorage.propertyPanelWidth ? parseInt(localStorage.propertyPanelWidth, 10) : 460;
-      $('#outlineContainer').css({ right: self.propertyPanelWidth + 10 + 'px' });
-      $('.graph-container').css({ 'margin-right': self.propertyPanelWidth + 'px' });
-      $('.toolbar').css({ 'margin-right': (self.propertyPanelWidth - 12) + 'px' });
-      $('.sidebar-close').css({ right: self.propertyPanelWidth + 'px' });
-      $('#property-panel').css({ width: self.propertyPanelWidth + 'px' }).show();
-      $('.sidebar-open').css({ right: '-20px' });
+      $('#outlineContainer').css({right: self.propertyPanelWidth + 10 + 'px'});
+      $('.graph-container').css({'margin-right': self.propertyPanelWidth + 'px'});
+      $('.toolbar').css({'margin-right': (self.propertyPanelWidth - 12) + 'px'});
+      $('.sidebar-close').css({right: self.propertyPanelWidth + 'px'});
+      $('#property-panel').css({width: self.propertyPanelWidth + 'px'}).show();
+      $('.sidebar-open').css({right: '-20px'});
       self.centered(true);
     });
 
     $('.sidebar-close', panel).click(() => {
       self.propertyPanelWidth = 0;
-      $('#outlineContainer').css({ right: '10px' });
-      $('.graph-container').css({ 'margin-right': '0' });
-      $('.toolbar').css({ 'margin-right': '-12px' });
-      $('.sidebar-open').css({ right: '0' });
+      $('#outlineContainer').css({right: '10px'});
+      $('.graph-container').css({'margin-right': '0'});
+      $('.toolbar').css({'margin-right': '-12px'});
+      $('.sidebar-open').css({right: '0'});
       $('#property-panel').hide();
-      $('.sidebar-close').css({ right: '-20px' });
+      $('.sidebar-close').css({right: '-20px'});
       self.centered(true);
     });
 
@@ -4348,7 +4356,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         result: result ? JSON.parse(result) : result,
         instructions: []
       };
-      traversForkList(list, { lastId: '' }, edge, branchObj, parent, main);
+      traversForkList(list, {lastId: ''}, edge, branchObj, parent, main);
       obj.branches.push(branchObj);
     }
 
@@ -4409,7 +4417,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
 
-      traversIfList(list, { lastId: '' }, edge, obj, parent, main);
+      traversIfList(list, {lastId: ''}, edge, obj, parent, main);
     }
 
     function createObject(cell: any): any {
@@ -4423,7 +4431,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (attr[j].name && attr[j].value && (attr[j].name !== 'label' || (attr[j].name === 'label' && obj.TYPE === 'Job'))) {
           let val = attr[j].value;
           if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome')) {
-            val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? { returnCode: 0 } : {};
+            val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
           } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable') {
             val = val == 'true';
           }
@@ -4445,7 +4453,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork') {
           const edges = getOutgoingEdges(cell);
-          const main = { endNode: '' };
+          const main = {endNode: ''};
           for (const j in edges) {
             if (cell.value.tagName === 'Fork') {
               traversForkInstruction(edges[j], obj, list, cell, main);
@@ -4788,7 +4796,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             img.style.top = y + 'px';
             mxEvent.addListener(img, 'click',
               mxUtils.bind(this, function (evt) {
-                self.node = { cell: state.cell, isCloseable: self.workflowService.isInstructionCollapsible(state.cell.value.tagName) };
+                self.node = {
+                  cell: state.cell,
+                  isCloseable: self.workflowService.isInstructionCollapsible(state.cell.value.tagName)
+                };
                 if (self.menu) {
                   setTimeout(() => {
                     self.nzContextMenuService.create(evt, self.menu);
@@ -4856,17 +4867,23 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (self.isTrash) {
               return;
             }
-            if (me.consumed && me.getCell()) {
+            const cell = me.getCell();
+            if (me.consumed && cell) {
               if (!self.display) {
                 if (!self.isCellDragging && !dragStart) {
-                  const cell = me.getCell();
                   const selectedCell = graph.getSelectionCell();
-                  if (selectedCell && selectedCell.id !== cell.id) {
-                    graph.setSelectionCell(cell);
+                  if (cell && self.workflowService.checkClosingCell(cell.value.tagName)) {
+                    graph.clearSelection();
+                    self.movedCell = null;
+                    self.droppedCell = null;
+                  } else {
+                    if (selectedCell && selectedCell.id !== cell.id) {
+                      graph.setSelectionCell(cell);
+                    }
                   }
                 }
                 self.isCellDragging = true;
-                if (self.movedCell) {
+                if (self.movedCell && graph.getSelectionCell()) {
                   self.display = true;
                   $('#dropContainer2').show();
                   $('#toolbar-icons').hide();
@@ -4916,11 +4933,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (self.droppedCell && me.getCell()) {
                 let _result = 'valid';
                 if (!self.droppedCell.target.target) {
-                  const targetCell =graph.getModel().getCell(self.droppedCell.target);
-                  console.log(targetCell.getParent(), self.droppedCell.cell)
-                  _result = checkValidTarget(graph.getModel().getCell(self.droppedCell.target), self.droppedCell.cell.value.tagName);
+                  const targetCell = graph.getModel().getCell(self.droppedCell.target);
+                  if (targetCell.getParent().id === self.droppedCell.cell.id) {
+                    _result = 'inValid';
+                  } else {
+                    _result = checkValidTarget(graph.getModel().getCell(self.droppedCell.target), self.droppedCell.cell.value.tagName);
+                  }
                 }
-                
                 if (_result !== 'inValid') {
                   rearrangeCell(self.droppedCell);
                 }
@@ -5573,8 +5592,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   if (cell.source && cell.target) {
                     let sourceId = cell.source.id;
                     let targetId = cell.target.id;
+                    let isOutside = false;
                     if (self.workflowService.checkClosingCell(cell.source.value.tagName)) {
                       sourceId = cell.source.value.getAttribute('targetId');
+                      isOutside = true;
                     } else if (cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start') {
                       sourceId = 'start';
                     }
@@ -5586,7 +5607,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.droppedCell = {
                       target: { source: sourceId, target: targetId },
                       cell: self.movedCell,
-                      type: cell.value.getAttribute('type')
+                      type: cell.value.getAttribute('type'),
+                      isOutside
+
                     };
                     return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
                   }
@@ -8196,64 +8219,50 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   }
                 }
               }
-              const isSameObj = connection.source === connection.target;
-              if (targetObj.TYPE === 'If') {
-                if (obj.type || isSameObj) {
-                  if (!obj.type.match('else')) {
-                    if (!targetObj.then || targetObj.then.instructions.length === 0) {
-                      targetObj.then = { instructions: [sourceObj] };
-                      booleanObj.isMatch = true;
-                    } else {
-                      dropAndAdd(targetObj.then.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                    }
-                  } else {
-                    if (!targetObj.else || targetObj.else.instructions.length === 0) {
-                      targetObj.else = { instructions: [sourceObj] };
-                      booleanObj.isMatch = true;
-                    } else {
-                      dropAndAdd(targetObj.else.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                    }
-                  }
-                }
-              } else if (targetObj.TYPE === 'Fork') {
-                if (obj.type || isSameObj) {
-                  if (!targetObj.branches || targetObj.branches.length === 0) {
-                    targetObj.branches = [{ id: 'branch1', instructions: [sourceObj] }];
-                    booleanObj.isMatch = true;
-                  } else if (targetObj.branches && targetObj.branches.length > 0) {
-                    for (let j = 0; j < targetObj.branches.length; j++) {
-                      dropAndAdd(targetObj.branches[j].instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                      if (booleanObj.isMatch) {
-                        break;
+              if (obj.isOutside) {
+                targetObject.instructions.splice(targetIndex + 1, 0, sourceObj);
+              } else {
+                const isSameObj = connection.source === connection.target;
+                if (targetObj.TYPE === 'If') {
+                  if (obj.type || isSameObj) {
+                    if (!obj.type.match('else')) {
+                      if (!targetObj.then || targetObj.then.instructions.length === 0) {
+                        targetObj.then = { instructions: [sourceObj] };
+                        booleanObj.isMatch = true;
+                      } else {
+                        dropAndAdd(targetObj.then.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
                       }
-                    }
-                    for (let j = 0; j < targetObj.branches.length; j++) {
-                      if (targetObj.branches[j].instructions.length === 0) {
-                        targetObj.branches.splice(j, 1);
-                        break;
+                    } else {
+                      if (!targetObj.else || targetObj.else.instructions.length === 0) {
+                        targetObj.else = { instructions: [sourceObj] };
+                        booleanObj.isMatch = true;
+                      } else {
+                        dropAndAdd(targetObj.else.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
                       }
                     }
                   }
-                }
-              } else if (targetObj.TYPE === 'Retry' || targetObj.TYPE === 'Lock' || targetObj.TYPE === 'Cycle' || targetObj.TYPE === 'ForkList') {
-                if (obj.type || isSameObj) {
-                  if (!targetObj.instructions || targetObj.instructions.length === 0) {
-                    targetObj.instructions = [sourceObj];
-                    booleanObj.isMatch = true;
-                  } else if (targetObj.instructions && targetObj.instructions.length > 0) {
-                    dropAndAdd(targetObj.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                  }
-                }
-              } else if (targetObj.TYPE === 'Try') {
-                if (obj.type || isSameObj) {
-                  if (isCatch) {
-                    if (!targetObj.catch.instructions || targetObj.catch.instructions.length === 0) {
-                      targetObj.catch.instructions = [sourceObj];
+                } else if (targetObj.TYPE === 'Fork') {
+                  if (obj.type || isSameObj) {
+                    if (!targetObj.branches || targetObj.branches.length === 0) {
+                      targetObj.branches = [{ id: 'branch1', instructions: [sourceObj] }];
                       booleanObj.isMatch = true;
-                    } else if (targetObj.catch.instructions && targetObj.catch.instructions.length > 0) {
-                      dropAndAdd(targetObj.catch.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
+                    } else if (targetObj.branches && targetObj.branches.length > 0) {
+                      for (let j = 0; j < targetObj.branches.length; j++) {
+                        dropAndAdd(targetObj.branches[j].instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
+                        if (booleanObj.isMatch) {
+                          break;
+                        }
+                      }
+                      for (let j = 0; j < targetObj.branches.length; j++) {
+                        if (targetObj.branches[j].instructions.length === 0) {
+                          targetObj.branches.splice(j, 1);
+                          break;
+                        }
+                      }
                     }
-                  } else {
+                  }
+                } else if (targetObj.TYPE === 'Retry' || targetObj.TYPE === 'Lock' || targetObj.TYPE === 'Cycle' || targetObj.TYPE === 'ForkList') {
+                  if (obj.type || isSameObj) {
                     if (!targetObj.instructions || targetObj.instructions.length === 0) {
                       targetObj.instructions = [sourceObj];
                       booleanObj.isMatch = true;
@@ -8261,10 +8270,28 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       dropAndAdd(targetObj.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
                     }
                   }
+                } else if (targetObj.TYPE === 'Try') {
+                  if (obj.type || isSameObj) {
+                    if (isCatch) {
+                      if (!targetObj.catch.instructions || targetObj.catch.instructions.length === 0) {
+                        targetObj.catch.instructions = [sourceObj];
+                        booleanObj.isMatch = true;
+                      } else if (targetObj.catch.instructions && targetObj.catch.instructions.length > 0) {
+                        dropAndAdd(targetObj.catch.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
+                      }
+                    } else {
+                      if (!targetObj.instructions || targetObj.instructions.length === 0) {
+                        targetObj.instructions = [sourceObj];
+                        booleanObj.isMatch = true;
+                      } else if (targetObj.instructions && targetObj.instructions.length > 0) {
+                        dropAndAdd(targetObj.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
+                      }
+                    }
+                  }
                 }
-              }
-              if (!booleanObj.isMatch) {
-                targetObject.instructions.splice(targetIndex + 1, 0, sourceObj);
+                if (!booleanObj.isMatch) {
+                  targetObject.instructions.splice(targetIndex + 1, 0, sourceObj);
+                }
               }
             }
           }
@@ -9046,7 +9073,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
       this.workflow.valid = res.valid;
-      if (this.workflow.id === this.data.id) {
+      if (this.workflow.path === this.data.path) {
         if (this.data.valid !== res.valid) {
           const data = JSON.parse(this.workflow.actual);
           this.storeData(data, true);
@@ -9062,7 +9089,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (res.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
         this.workflow.valid = false;
-        if (this.workflow.id === this.data.id) {
+        if (this.workflow.path === this.data.path) {
           this.data.valid = false;
         }
         if (isOpen) {
@@ -9226,7 +9253,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private storeData(data, onlyStore = false): void {
-    if (this.isTrash || !this.workflow || !this.workflow.id || !this.permission.joc.inventory.manage) {
+    if (this.isTrash || !this.workflow || !this.workflow.path || !this.permission.joc.inventory.manage) {
       return;
     }
     const newObj = this.extendJsonObj(data);
@@ -9246,13 +9273,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.history.type = 'new';
       }
     }
-    if (!this.workflow.id) {
+    if (!this.workflow.path) {
       return;
     }
-
+    const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
     const request: any = {
       configuration: newObj,
-      id: this.workflow.id,
+      path,
       valid: this.workflow.valid,
       objectType: this.objectType
     };
@@ -9266,7 +9293,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.coreService.post('inventory/store', request).subscribe({
       next: (res: any) => {
         this.isStore = false;
-        if (res.id === this.data.id && this.workflow.id === this.data.id) {
+
+        if (res.path === path && this.workflow.path === path) {
           this.lastModified = res.configurationDate;
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;
