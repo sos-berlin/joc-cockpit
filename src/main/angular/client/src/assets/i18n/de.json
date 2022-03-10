@@ -797,6 +797,7 @@
     "label.history": "HISTORIE",
     "label.auditLog": "PRÜFPROTOKOLL",
     "label.configuration": "KONFIGURATION",
+    "label.administration": "ADMINISTRATION",
     "button.settings": "Einstellungen",
     "button.profile": "Anwenderprofil",
     "button.logging": "Protokollierung",

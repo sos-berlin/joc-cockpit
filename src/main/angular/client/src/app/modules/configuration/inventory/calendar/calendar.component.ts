@@ -1242,6 +1242,9 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if(this.data.objectType || this.data.type){
+      this.objectType = this.data.objectType || this.data.type;
+    }
     if (changes.copyObj && !changes.data) {
       return;
     }
@@ -1340,7 +1343,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
-        data.name = name;
+        data.name1 = name;
         this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.calendar.name = this.data.name;

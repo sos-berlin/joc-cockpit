@@ -797,6 +797,7 @@
     "label.history": "HISTORY",
     "label.auditLog": "AUDIT LOG",
     "label.configuration": "CONFIGURATION",
+    "label.administration": "ADMINISTRATION",
     "button.settings": "Settings",
     "button.profile": "Profile",
     "button.logging": "Logging",

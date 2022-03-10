@@ -594,7 +594,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
-        data.name = name;
+        data.name1 = name;
         this.dataService.reloadTree.next({ rename: data });
       }, error: () => {
         this.schedule.name = this.data.name;

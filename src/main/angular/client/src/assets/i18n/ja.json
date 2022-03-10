@@ -797,6 +797,7 @@
     "label.history": "履歴",
     "label.auditLog": "操作ログ",
     "label.configuration": "ジョブ定義",
+    "label.administration": "ADMINISTRATION",
     "button.settings": "設定",
     "button.profile": "プロファイル",
     "button.logging": "ログ設定",
