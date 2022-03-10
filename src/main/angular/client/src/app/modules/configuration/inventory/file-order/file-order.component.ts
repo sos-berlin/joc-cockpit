@@ -307,7 +307,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {
           this.data.name = name;
         }
-        data.name = name;
+        data.name1 = name;
         this.dataService.reloadTree.next({ rename: data });
       }, error: () => {
         this.fileOrder.name = this.data.name;
@@ -526,7 +526,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         path,
         objectType: this.objectType
       };
-  
+
       if (sessionStorage.$SOS$FORCELOGING === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = {comment: translatedValue};

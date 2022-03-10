@@ -964,7 +964,7 @@ export class ExportComponent implements OnInit {
       ));
     } else {
       if (this.origin && this.origin.object) {
-        obj.objectTypes = this.origin.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.origin.object];
+        obj.objectTypes = this.origin.object.match('CALENDAR') ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.origin.object];
       }
       if (this.filter.dailyPlan) {
         obj.withoutReleased = !this.filter.release;
@@ -2256,11 +2256,7 @@ export class UploadModalComponent implements OnInit {
   }
 
   private validateByURL(json, cb): void {
-    let type = this.objectType;
-    if(this.objectType === 'CALENDAR'){
-      type = json.type || json.objectType || 'WORKINGDAYSCALENDAR';
-    }
-    this.coreService.post('inventory/' + type + '/validate', json).subscribe({
+    this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe({
       next: (res: any) => {
         cb(res);
       }, error: (err) => {
@@ -2272,7 +2268,7 @@ export class UploadModalComponent implements OnInit {
   private showErrorMsg(errorMsg): void {
     let msg = errorMsg;
     if (!errorMsg) {
-      this.translate.get('inventory.message.invalidFile', {objectType: this.object.objectType}).subscribe(translatedValue => {
+      this.translate.get('inventory.message.invalidFile', { objectType: this.object.objectType }).subscribe(translatedValue => {
         msg = translatedValue;
       });
     }
@@ -2371,15 +2367,16 @@ export class CreateObjectModalComponent implements OnInit {
       suffix: data.suffix,
       prefix: data.prefix
     };
-    if (this.copy.id) {
+    if (this.copy.objectType) {
       request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.originalName ? data.originalName : this.copy.name);
-      request.objectType = this.copy.objectType || this.copy.type;
+      request.objectType = this.copy.objectType;
       request.path = this.copy.path + (this.copy.path === '/' ? '' : '/') + this.copy.name;
     } else {
       request.objectType = 'FOLDER';
       request.path = this.copy.path;
       request.newPath = (obj.path || '/') + (data.noFolder ? '' : (obj.path === '/' ? '' : '/') + this.copy.name);
     }
+
     request.auditLog = {};
     if (this.comments.comment) {
       request.auditLog.comment = this.comments.comment;
@@ -2405,15 +2402,17 @@ export class CreateObjectModalComponent implements OnInit {
       suffix: data.suffix,
       prefix: data.prefix
     };
-    if (this.obj.id) {
+    if (this.obj.objectType) {
       request.newPath = obj.path + (obj.path === '/' ? '' : '/') + (data.newName ? data.newName : obj.name);
-      request.objectType = this.obj.type || this.obj.objectType;
+      request.path = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
+      request.objectType = this.obj.objectType;
     } else {
       request.objectType = 'FOLDER';
       const tempPath = obj.path.substring(0, obj.path.lastIndexOf('/'));
       request.newPath = data.newName ? (tempPath + (tempPath === '/' ? '' : '/') + data.newName) : obj.path;
       request.path = obj.path;
     }
+
     request.auditLog = {};
     if (this.comments.comment) {
       request.auditLog.comment = this.comments.comment;
@@ -2480,7 +2479,6 @@ export class CreateFolderModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-
     if (!this.rename) {
       const PATH = this.origin.path + (this.origin.path === '/' ? '' : '/') + this.folder.name;
       const obj: any = {
@@ -2517,12 +2515,11 @@ export class CreateFolderModalComponent implements OnInit {
         this.activeModal.close('NO');
         return;
       }
-
       let obj: any = {
         newPath: this.folder.name
       };
-      if (this.origin.id) {
-        obj.objectType = this.origin.objectType || this.origin.type;
+      if (this.origin.objectType) {
+        obj.objectType = this.origin.objectType;
         obj.path = this.origin.path + (this.origin.path === '/' ? '' : '/') + this.origin.name;
       } else {
         obj.objectType = 'FOLDER';
@@ -2840,9 +2837,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         path: this.selectedObj.name
       }).subscribe({
         next: (res) => {
-          if (this.selectedObj.type.match(/CALENDAR/)) {
-            this.selectedObj.type = 'CALENDAR';
-          }
           this.findObjectByPath(res.path);
         }, error: () => {
           this.updateObjects(this.tree[0], this.isTrash, (children) => {
@@ -3127,10 +3121,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (this.preferences.expandOption === 'both' && !node.origin.type) {
         node.isExpanded = !node.isExpanded;
       }
-
-      this.type = node.origin.object || node.origin.type;
+      this.type = node.origin.objectType || node.origin.object || node.origin.type;
       this.selectedData = node.origin;
-      this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin.type ? '$ID' : undefined);
+      console.log(this.selectedData, this.type)
+      this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin.objectType ? '$ID' : undefined);
     }
   }
 
@@ -3324,7 +3318,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           conf[0].expanded = true;
           conf[1].expanded = true;
         }
-        if(this.selectedData.reload){
+        if (this.selectedData.reload) {
           this.selectedData.reload = false;
         }
         cb(conf);
@@ -3862,8 +3856,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   rename(data): void {
-    if (data.id === this.selectedObj.id) {
-      this.selectedObj.name = data.name;
+    if (data.name === this.selectedObj.name && data.path === this.selectedObj.path) {
+      this.selectedObj.name = data.name1;
     }
     this.updateFolders(data.path, false, () => {
       this.updateTree(false);
@@ -3925,10 +3919,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   exportJSON(obj): void {
-    if (obj.id) {
+    if (obj.path && obj.name) {
       this.coreService.post('inventory/read/configuration', {
         path: (obj.path + (obj.path === '/' ? '' : '/') + obj.name),
-        objectType: obj.objectType,
+        objectType: obj.objectType || obj.type,
       }).subscribe((res: any) => {
         const name = obj.name + (obj.type ? '.' + obj.type.toLowerCase() : '') + '.json';
         const fileType = 'application/octet-stream';
@@ -4014,20 +4008,20 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private cutPaste(object, comments: any = {}): void {
-    const obj: any = { newPath: object.path };
+    const request: any = { newPath: object.path };
     if (this.copyObj.id) {
-      obj.objectType = this.copyObj.objectType || this.copyObj.type;
-      obj.path = (this.copyObj.path + (this.copyObj.path === '/' ? '' : '/') + this.copyObj.name);
+      request.objectType = this.copyObj.objectType || this.copyObj.type;
+      request.path = (this.copyObj.path + (this.copyObj.path === '/' ? '' : '/') + this.copyObj.name);
     } else {
-      obj.objectType = 'FOLDER';
-      obj.path = this.copyObj.path;
+      request.objectType = 'FOLDER';
+      request.path = this.copyObj.path;
     }
-    if (this.copyObj.path === obj.newPath) {
+    if (this.copyObj.path === request.newPath) {
       this.copyObj = undefined;
       return;
     } else {
       const pathArr = [];
-      const arr = obj.newPath.split('/');
+      const arr = request.newPath.split('/');
       const len = arr.length;
       if (len > 1) {
         for (let i = 0; i < len; i++) {
@@ -4042,7 +4036,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
         }
       }
-      if (pathArr.length > 0 && pathArr.indexOf(this.copyObj.path) > -1 && obj.objectType === 'FOLDER') {
+      if (pathArr.length > 0 && pathArr.indexOf(this.copyObj.path) > -1 && request.objectType === 'FOLDER') {
         let msg = '';
         this.translate.get('error.message.pasteInSubFolderNotAllowed').subscribe(translatedValue => {
           msg = translatedValue;
@@ -4052,25 +4046,25 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
     }
     if (comments.comment) {
-      obj.auditLog = {};
-      obj.auditLog.comment = comments.comment;
+      request.auditLog = {};
+      request.auditLog.comment = comments.comment;
       if (comments.timeSpent) {
-        obj.auditLog.timeSpent = comments.timeSpent;
+        request.auditLog.timeSpent = comments.timeSpent;
       }
       if (comments.ticketLink) {
-        obj.auditLog.ticketLink = comments.ticketLink;
+        request.auditLog.ticketLink = comments.ticketLink;
       }
     }
-    obj.newPath = obj.newPath + (obj.newPath === '/' ? '' : '/') + this.copyObj.name;
-    this.coreService.post('inventory/rename', obj).subscribe((res) => {
+    request.newPath = request.newPath + (request.newPath === '/' ? '' : '/') + this.copyObj.name;
+    this.coreService.post('inventory/rename', request).subscribe((res) => {
       let obj: any = this.coreService.clone(this.copyObj);
       this.updateFolders(this.copyObj.path, false, () => {
         this.updateTree(false);
         obj.path = res.path.substring(0, res.path.lastIndexOf('/')) || '/';
         obj.name = res.path.substring(res.path.lastIndexOf('/') + 1);
-        this.type = obj.type;
+        this.type = obj.objectType || obj.type;
         this.selectedData = obj;
-        this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
+        this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, obj.objectType ? '$ID' : undefined);
       });
       this.copyObj = undefined;
     });
@@ -4118,7 +4112,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
               ticketLink: result.ticketLink
             };
             this.coreService.post('inventory/remove', obj).subscribe(() => {
-              if (this.selectedData.id === object.id) {
+              if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                 this.clearSelection();
               }
             });
@@ -4147,7 +4141,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.deleteObject(path, object, node, undefined);
           } else {
             this.coreService.post('inventory/remove', obj).subscribe(() => {
-              if (this.selectedData.id === object.id) {
+              if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                 this.clearSelection();
               }
             });
@@ -4222,7 +4216,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   private deleteApiCall(object, node, obj): void {
     const URL = (object.type || object.object || object.controller || object.dailyPlan) ? 'inventory/delete_draft' : 'inventory/delete_draft/folder';
     this.coreService.post(URL, obj).subscribe(() => {
-      if (object.id) {
+      if (object.objectType) {
         let isDraftOnly = true;
         let isDeployObj = true;
         if (object.type.match(/CALENDAR/) || object.type === InventoryObject.SCHEDULE || object.type === InventoryObject.INCLUDESCRIPT) {
@@ -4436,10 +4430,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
   private backToListView(): void {
     const parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
     if (parent && parent.origin.children) {
-      const index = (this.selectedObj.type === 'CALENDAR' || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.INCLUDESCRIPT) ? 1 : 0;
+      const index = (this.selectedObj.type.match('CALENDAR') || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.INCLUDESCRIPT) ? 1 : 0;
       const child = parent.origin.children[index];
       for (let i = 0; i < child.children.length; i++) {
-        if (child.children[i].object === this.selectedObj.type) {
+        if (child.children[i].object === this.selectedObj.type || this.selectedObj.type.match('CALENDAR') === child.children[i].object.match('CALENDAR')) {
           this.selectedData = child.children[i];
           this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
           break;
@@ -4450,7 +4444,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   private releaseSingleObject(data): void {
     if (this.preferences.auditLog) {
-      console.log(data)
       let comments = {
         radio: 'predefined',
         type: data.type || data.objectType,
@@ -4497,7 +4490,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private storeData(obj, result, reload): void {
-    if (!obj.id) {
+    if (!obj.path && !obj.name) {
       return;
     }
     const path = (obj.path + (obj.path === '/' ? '' : '/') + obj.name);
@@ -4518,7 +4511,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('inventory/store', request).subscribe((res: any) => {
       obj.valid = res.valid;
-      if (obj.id === this.selectedObj.id) {
+      if (obj.path === this.selectedObj.path && obj.name === this.selectedObj.name) {
         this.type = undefined;
         this.selectedData.valid = res.valid;
         this.selectedData.deployed = res.deployed;
@@ -4591,13 +4584,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
       let obj: any = {
         type: this.copyObj.type,
-        objectType: this.copyObj.type,
+        objectType: this.copyObj.objectType || this.copyObj.type,
         path: res.path.substring(0, res.path.lastIndexOf('/')) || '/',
         name: res.path.substring(res.path.lastIndexOf('/') + 1),
         valid: this.copyObj.valid
       };
       object.expanded = true;
-      this.type = obj.type;
+      this.type = obj.objectType;
       this.selectedData = obj;
       this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, '$ID');
     }
@@ -4684,6 +4677,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private setSelectedObj(type, name, path, id): void {
+    console.log('setSelectedObj', id);
+    console.log('type', type,'name', name, 'path', path);
     if (this.selectedObj.id) {
       this.pushObjectInHistory();
     }
@@ -4714,7 +4709,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         delete child.match;
         return true;
       } else if (this.type) {
-        if (this.selectedObj.type === child.type && child.name === this.selectedObj.name) {
+        if ((this.selectedObj.type === child.type || this.selectedObj.type === child.objectType) && child.name === this.selectedObj.name && child.path === this.selectedObj.path) {
           this.clearSelection();
         }
       }
@@ -4727,12 +4722,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
         dest.children.push({
           name: sour[j].name,
           title: sour[j].title || sour[j].name,
-          id: sour[j].id,
           path,
           deleted: sour[j].deleted,
           deployed: sour[j].deployed,
           released: sour[j].released,
           valid: sour[j].valid,
+          objectType: sour[j].objectType,
           hasDeployments: sour[j].hasDeployments,
           hasReleases: sour[j].hasReleases,
           type: dest.object,
@@ -4805,7 +4800,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.coreService.post('inventory/store', request).subscribe((res: any) => {
         if ((obj.type === InventoryObject.WORKINGDAYSCALENDAR || obj.type === InventoryObject.NONWORKINGDAYSCALENDAR)) {
           obj.objectType = obj.type;
-          obj.type = 'CALENDAR';
         }
         obj.valid = obj.valid ? obj.valid : valid;
         list.push(obj);
@@ -4897,13 +4891,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   download(): void {
-    if (this.selectedObj && this.selectedObj.id) {
+    if (this.selectedObj && this.selectedObj.name) {
       this.exportJSON(this.selectedObj);
     }
   }
 
   upload(): void {
-    if (this.selectedObj && this.selectedObj.id) {
+    if (this.selectedObj && this.selectedObj.name) {
       this.importJSON(this.selectedObj);
     }
   }
@@ -4922,7 +4916,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.pushObjectInHistory();
     this.selectedObj.type = data.objectType;
     this.selectedObj.name = data.name;
-    this.selectedObj.id = data.id;
+    this.selectedObj.id = '$ID';
     this.findObjectByPath(data.path);
   }
 }

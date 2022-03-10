@@ -37,27 +37,10 @@
                 {{'header.button.profile' | translate}}
               </a>
             </li>
-            <li nz-menu-item routerLink="/settings" [nzDisabled]="!schedulerIds.selected" *ngIf="permission && permission.joc && permission.joc.administration.settings.view">
-              <a>
-                <i class="fa fa-cog"></i>
-                {{'header.button.settings' | translate}}
-              </a>
-            </li>
             <li nz-menu-item  routerLink="/logging">
               <a>
                 <i class="fa fa-file"></i>
                 {{'header.button.logging' | translate}}
-              </a>
-            </li>
-            <li nz-menu-item routerLink="/users/identity_service" *ngIf="permission && permission.joc && permission.joc.administration.accounts.view">
-              <a><i class="fa fa-users"></i>
-                {{'header.button.manageAccount' | translate}}
-              </a>
-            </li>
-            <li nz-menu-item routerLink="/controllers" *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
-              <a>
-                <i class="fa fa-id-card-o"></i>
-                {{'header.button.manageControllersAndAgents' | translate}}
               </a>
             </li>
             <li nz-menu-item (click)="logout()">
@@ -83,7 +66,7 @@
             </span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="(showViews && showViews.monitor != undefined) ? showViews.monitor : (permission.currentController && (permission.currentController.view || 
+        <li class="nav-item" *ngIf="(showViews && showViews.monitor != undefined) ? showViews.monitor : (permission.currentController && (permission.currentController.view ||
         permission.currentController.agents.view || permission.currentController.orders.view))">
           <a class="nav-link" routerLink="/monitor" [routerLinkActive]="['active']">
             <span class="nav-text">
@@ -156,6 +139,37 @@
               <span class="ico text-white _600" translate>header.label.configuration</span>
             </span>
           </a>
+        </li>
+        <li class="nav-item"
+            *ngIf="permission.joc && (permission.joc.administration.accounts.view || permission.joc.administration.controllers.view || permission.joc.administration.settings.view)">
+          <a class="nav-link" [routerLinkActive]="['active']" nz-dropdown [nzDropdownMenu]="submenu" [nzOverlayClassName]="'dropdown-center'">
+            <span class="nav-text">
+              <i class="icon3-administration-icon text-white"></i>
+              <span class="ico text-white _600" translate>header.label.administration</span>
+            </span>
+          </a>
+          <nz-dropdown-menu #submenu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item routerLink="/controllers" [routerLinkActive]="['active']"
+                  *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
+                <a><i class="fa fa-id-card-o"></i>
+                  {{'header.button.manageControllersAndAgents' | translate}}
+                </a>
+              </li>
+              <li nz-menu-item routerLink="/users/identity_service" [routerLinkActive]="['active']"
+                  *ngIf="permission && permission.joc && permission.joc.administration.accounts.view">
+                <a><i class="fa fa-users"></i>
+                  {{'header.button.manageAccount' | translate}}
+                </a>
+              </li>
+              <li nz-menu-item routerLink="/settings" [routerLinkActive]="['active']" [nzDisabled]="!schedulerIds.selected"
+                  *ngIf="permission && permission.joc && permission.joc.administration.settings.view">
+                <a><i class="fa fa-cog" style="font-size: 16px !important;"></i>
+                  {{'header.button.settings' | translate}}
+                </a>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
         </li>
       </ul>
       <!-- end link -->
