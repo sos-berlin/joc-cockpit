@@ -185,7 +185,7 @@
                           type="button">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
-                  <div class="node-content-wrapper" [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.origin.name && copyObj.type === node.origin.type), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
+                  <div class="node-content-wrapper" [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.origin.name && copyObj.type === node.origin.type && copyObj.path === node.origin.path), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
                   node.origin.type === selectedObj.type) ||
                   (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === selectedObj.path) ||
                   (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}"

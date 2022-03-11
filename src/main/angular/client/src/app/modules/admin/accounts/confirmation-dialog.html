@@ -3,7 +3,7 @@
     <span *ngIf="delete" translate>common.label.delete</span>
     <span *ngIf="reset" translate>user.label.resetPassword</span>
     <span *ngIf="forceChange" translate>user.label.forcePasswordChange</span>
-    <span *ngIf="account">: {{account.account}}</span>?
+    <span *ngIf="account">: {{account.accountName}}</span>?
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>

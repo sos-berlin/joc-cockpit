@@ -357,7 +357,7 @@ export class LockComponent implements OnChanges, OnDestroy {
         path,
         objectType: this.objectType
       };
-  
+
       if (sessionStorage.$SOS$FORCELOGING === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
           request.auditLog = {comment: translatedValue};

@@ -113,8 +113,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('DELETE');
   }
 
-  disableList(): void {
-    this.dataService.announceFunction('DISABLE');
+  disableList(flag = false): void {
+    this.dataService.announceFunction(flag ? 'ENABLE' : 'DISABLE');
   }
 
   resetPassword(): void {
@@ -214,22 +214,24 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private getUsersData(flag): void {
-    this.coreService.post('authentication/auth', {
-      identityServiceName: this.identityService
-    }).subscribe({
-      next: res => {
-        this.userObj = res;
-        delete this.userObj.deliveryDate;
-        this.userObj.identityServiceName = this.identityService;
-        if (flag) {
+    if(this.identityServiceType === 'SHIRO') {
+      this.coreService.post('authentication/auth', {
+        identityServiceName: this.identityService
+      }).subscribe({
+        next: res => {
+          this.userObj = res;
+          delete this.userObj.deliveryDate;
+          this.userObj.identityServiceName = this.identityService;
+          if (flag) {
+            this.dataService.announceData(this.userObj);
+            this.checkLdapConf();
+          }
+        }, error: () => {
+          this.userObj = {accounts: [], identityServiceName: this.identityService};
           this.dataService.announceData(this.userObj);
-          this.checkLdapConf();
         }
-      }, error: () => {
-        this.userObj = {accounts: [], identityServiceName: this.identityService};
-        this.dataService.announceData(this.userObj);
-      }
-    });
+      });
+    }
   }
 
   private checkLdapConf(): void {

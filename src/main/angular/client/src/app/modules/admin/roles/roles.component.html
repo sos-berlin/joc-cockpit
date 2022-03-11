@@ -20,7 +20,7 @@
             <i class="fa fa-bars" aria-hidden="true"></i>
           </div>
           <div class="pull-left m-l p-l-sm m-r-xs" *ngIf="permission.joc && permission.joc.administration.accounts.manage">
-            <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(role.name)" (nzCheckedChange)="checkMappedObject($event, role)"></label>
+            <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(role.roleName)" (nzCheckedChange)="checkMappedObject($event, role)"></label>
           </div>
           <div class="btn-group dropdown pull-left m-r-xs" *ngIf="permission.joc && permission.joc.administration.accounts.manage">
             <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
@@ -40,25 +40,25 @@
               </ul>
             </nz-dropdown-menu>
           </div>
-          <h5 class="text-dark">{{role.name}}
-            <i (click)="collapseRole(role.name)" *ngIf="dataService.preferences.roles.has(role.name)"
+          <h5 class="text-dark">{{role.roleName}}
+            <i (click)="collapseRole(role.roleName)" *ngIf="dataService.preferences.roles.has(role.roleName)"
                class="cursor fa fa-caret-up m-l-xs"></i>
-            <i (click)="expandRole(role.name)" *ngIf="!dataService.preferences.roles.has(role.name)"
+            <i (click)="expandRole(role.roleName)" *ngIf="!dataService.preferences.roles.has(role.roleName)"
                class="cursor fa fa-caret-down m-l-xs"></i>
           </h5>
         </div>
       </div>
-      <div *ngIf="dataService.preferences.roles.has(role.name)" class="row">
+      <div *ngIf="dataService.preferences.roles.has(role.roleName)" class="row">
         <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-4 col-sm-4"><span class="p-l-lg m-l"
                                                                         translate>user.label.controllers</span></div>
         <div class="col-xxl-11 col-xl-10 col-lg-3 col-md-4 col-sm-8">
           <div *ngFor="let controller of role.controllers" class="role">
             <span class="fa fa-circle p-r-xs font9"></span>
-            <a [routerLink]="['/users/identity_service/permissions',controller.name || 'default', role.name]" class="text-primary">
-              {{controller.name || 'default'}}
+            <a [routerLink]="['/users/identity_service/permissions',controller || 'default', role.roleName]" class="text-primary">
+              {{controller || 'default'}}
             </a>
             <i (click)="copyController(role, controller)" class="fa fa-copy m-l-xs p-l-xs"></i>
-            <i *ngIf="controller.name" (click)="deleteController(role,controller)"
+            <i *ngIf="controller" (click)="deleteController(role,controller)"
                class="fa fa-times m-l-xs p-l-xs"></i>
           </div>
         </div>

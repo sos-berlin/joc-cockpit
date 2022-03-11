@@ -552,9 +552,9 @@ small {
     left: 47%;
     display: inline-block;
     border-right: 9px solid transparent;
-    border-bottom: 9px solid #ccc;
+    border-bottom: 9px solid var(--border-color);
     border-left: 9px solid transparent;
-    border-bottom-color: rgba(0, 0, 0, 0.2);
+    border-bottom-color: var(--border-color);
     content: '';
   }
 
@@ -564,7 +564,7 @@ small {
     left: 47%;
     display: inline-block;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid #ffffff;
+    border-bottom: 8px solid var(--bg-box);
     border-left: 8px solid transparent;
     content: '';
   }
@@ -581,7 +581,7 @@ small {
     }
   }
   .ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title{
-    padding: 9px 22px;
+    padding: 8px 20px;
   }
 }
 .ant-dropdown-placement-bottomRight {

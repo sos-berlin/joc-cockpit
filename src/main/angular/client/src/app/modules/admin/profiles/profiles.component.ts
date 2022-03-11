@@ -1,12 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
-import { CoreService } from '../../../services/core.service';
-import { DataService } from '../data.service';
-import { AuthService } from '../../../components/guard';
-import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {CoreService} from '../../../services/core.service';
+import {DataService} from '../data.service';
+import {AuthService} from '../../../components/guard';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-profiles',
@@ -20,16 +20,18 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   users: any;
   searchKey: string;
-  prof: any = { currentPage: 1 };
+  prof: any = {currentPage: 1};
   order = 'user';
   loading = true;
   reverse = false;
   checked = false;
   indeterminate = false;
+  identityServiceName: string;
+  identityServiceType: string;
   setOfCheckedId = new Set<string>();
 
   constructor(private dataService: DataService, private modal: NzModalService, private coreService: CoreService,
-    private router: Router, private authService: AuthService) {
+              private router: Router, private authService: AuthService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUserData(res);
@@ -46,6 +48,11 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.identityServiceName = sessionStorage.identityServiceName;
+    this.identityServiceType = sessionStorage.identityServiceType;
+    if (this.identityServiceType !== 'SHIRO') {
+      this.getList();
+    }
   }
 
   ngOnDestroy(): void {
@@ -53,13 +60,26 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  setUserData(res): void {
-    this.users = res;
-    if (res) {
-      this.profiles = res.profiles;
-      setTimeout(() => {
+  private getList(): void {
+    this.coreService.post('configurations/profiles', {identityServiceName: this.identityServiceName}).subscribe({
+      next: (res: any) => {
+        this.profiles = res.profiles;
         this.loading = false;
-      }, 300);
+      }, error: () => {
+        this.loading = false;
+      }
+    })
+  }
+
+  setUserData(res): void {
+    if(this.identityServiceType === 'SHIRO') {
+      this.users = res;
+      if (res) {
+        this.profiles = res.profiles;
+        setTimeout(() => {
+          this.loading = false;
+        }, 300);
+      }
     }
   }
 
@@ -201,7 +221,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
 
   showMaster(account): void {
     if (sessionStorage.identityServiceType !== 'VAULT') {
-      this.router.navigate(['/users/identity_service/role'], { queryParams: { account } });
+      this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
     } else {
       this.router.navigate(['/users/identity_service/role']);
     }
@@ -226,7 +246,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   }
 
   private deleteProfile(profile, comments): void {
-    const obj: any = { accounts: [], auditLog: {} };
+    const obj: any = {accounts: [], auditLog: {}};
     if (profile) {
       obj.accounts.push(profile.account);
     } else {

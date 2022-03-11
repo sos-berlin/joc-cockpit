@@ -12,8 +12,7 @@ import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../../components/guard';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
-import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
-
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 
 // Role Actions
 @Component({
@@ -26,6 +25,8 @@ export class RoleModalComponent implements OnInit {
   @Input() allRoles: any;
   @Input() newRole: boolean;
   @Input() copy: boolean;
+  @Input() identityServiceType: string;
+  @Input() identityServiceName: string;
 
   submitted = false;
   isUnique = true;
@@ -39,12 +40,13 @@ export class RoleModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
       this.display = true;
+    } else {
+      const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      this.display = preferences.auditLog;
     }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
@@ -101,27 +103,28 @@ export class RoleModalComponent implements OnInit {
   private rename(obj): void {
     if (this.oldRole.name !== this.currentRole.role) {
       const request: any = {
-        identityServiceName: this.userDetail.identityServiceName,
+        identityServiceName: this.identityServiceName,
         roleOldName: this.oldRole.name,
         roleNewName: this.currentRole.role,
         auditLog: {}
       };
-      if (this.comments.comment) {
-        request.auditLog.comment = this.comments.comment;
+      if (this.comments) {
+        if (this.comments.comment) {
+          request.auditLog.comment = this.comments.comment;
+        }
+        if (this.comments.timeSpent) {
+          request.auditLog.timeSpent = this.comments.timeSpent;
+        }
+        if (this.comments.ticketLink) {
+          request.auditLog.ticketLink = this.comments.ticketLink;
+        }
+        if (this.comments.isChecked) {
+          this.dataService.comments = this.comments;
+        }
       }
-      if (this.comments.timeSpent) {
-        request.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        request.auditLog.ticketLink = this.comments.ticketLink;
-      }
-      if (this.comments.isChecked) {
-        this.dataService.comments = this.comments;
-      }
-      this.coreService.post('authentication/auth/role/rename', request).subscribe({
+      this.coreService.post('iam/role/rename', request).subscribe({
         next: () => {
-          this.updateRoleObject(this.oldName, obj.role);
-          this.activeModal.close(this.userDetail);
+          this.activeModal.close('DONE');
         }, error: () => this.submitted = false
       });
     } else {
@@ -129,57 +132,45 @@ export class RoleModalComponent implements OnInit {
     }
   }
 
-  private getUsersData(cb): void {
-    this.coreService.post('authentication/auth', {
-      identityServiceName: this.userDetail.identityServiceName
-    }).subscribe({
-      next: res => {
-        this.userDetail.accounts = res.accounts;
-        this.userDetail.main = res.main;
-        this.userDetail.roles = res.roles;
-        cb();
-      }
-    });
-  }
-
   onSubmit(obj): void {
     this.submitted = true;
-    this.getUsersData(() => {
-      if (this.newRole || this.copy) {
-        this.allRoles.push(obj.role);
-        this.userDetail.roles[obj.role] = {
-          permissions: obj.permissions
-        };
-      } else {
-        if (sessionStorage.identityServiceType !== 'SHIRO') {
-          this.rename(obj);
-          return;
-        }
-        this.updateRoleObject(this.oldName, obj.role);
-        for (let i = 0; i < this.userDetail.accounts.length; i++) {
-          for (let j = 0; j < this.userDetail.accounts[i].roles.length; j++) {
-            if (this.userDetail.accounts[i].roles[j] === this.oldName) {
-              this.userDetail.accounts[i].roles.splice(j, 1);
-              this.userDetail.accounts[i].roles.push(obj.role);
-            }
-          }
-        }
-        for (let i = 0; i < this.allRoles.length; i++) {
-          if (this.allRoles[i] === this.oldName || isEqual(this.allRoles[i], this.oldName)) {
-            this.allRoles.splice(i, 1);
-            this.allRoles.push(obj.role);
-            break;
+    if (this.newRole || this.copy) {
+      this.allRoles.push(obj.role);
+      this.userDetail.roles[obj.role] = {
+        permissions: obj.permissions
+      };
+    } else {
+      if (this.identityServiceType !== 'SHIRO') {
+        this.rename(obj);
+        return;
+      }
+      this.updateRoleObject(this.oldName, obj.role);
+      for (let i = 0; i < this.userDetail.accounts.length; i++) {
+        for (let j = 0; j < this.userDetail.accounts[i].roles.length; j++) {
+          if (this.userDetail.accounts[i].roles[j] === this.oldName) {
+            this.userDetail.accounts[i].roles.splice(j, 1);
+            this.userDetail.accounts[i].roles.push(obj.role);
           }
         }
       }
+      for (let i = 0; i < this.allRoles.length; i++) {
+        if (this.allRoles[i] === this.oldName || isEqual(this.allRoles[i], this.oldName)) {
+          this.allRoles.splice(i, 1);
+          this.allRoles.push(obj.role);
+          break;
+        }
+      }
+    }
 
-      const request: any = {
-        accounts: this.userDetail.accounts,
-        roles: this.userDetail.roles,
-        identityServiceName: this.userDetail.identityServiceName
-      };
+    const request: any = {
+      accounts: this.userDetail.accounts,
+      roles: this.userDetail.roles,
+      main: this.userDetail.main,
+      identityServiceName: this.identityServiceName,
+      auditLog: {}
+    };
 
-      request.auditLog = {};
+    if (this.comments) {
       if (this.comments.comment) {
         request.auditLog.comment = this.comments.comment;
       }
@@ -192,15 +183,12 @@ export class RoleModalComponent implements OnInit {
       if (this.comments.isChecked) {
         this.dataService.comments = this.comments;
       }
-      if (sessionStorage.identityServiceType === 'SHIRO') {
-        request.main = this.userDetail.main;
-      }
+    }
 
-      this.coreService.post('authentication/auth/store', request).subscribe({
-        next: () => {
-          this.activeModal.close(this.userDetail);
-        }, error: () => this.submitted = false
-      });
+    this.coreService.post('authentication/auth/store', request).subscribe({
+      next: () => {
+        this.activeModal.close(this.userDetail);
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -228,7 +216,7 @@ export class ControllerModalComponent implements OnInit {
   name = '';
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-    private dataService: DataService, private authService: AuthService) {
+              private dataService: DataService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -304,10 +292,10 @@ export class ControllerModalComponent implements OnInit {
               path: 'sos:products:joc',
               excluded: false
             },
-            {
-              path: 'sos:products:controller:view',
-              excluded: false
-            }],
+              {
+                path: 'sos:products:controller:view',
+                excluded: false
+              }],
             controllerDefaults: [],
             controllers: {}
           };
@@ -365,6 +353,8 @@ export class RolesComponent implements OnInit, OnDestroy {
   preferences: any = {};
   roles: any = [];
   controllerRoles = [];
+  identityServiceName: string;
+  identityServiceType: string;
   object = {
     checked: false,
     indeterminate: false,
@@ -375,7 +365,7 @@ export class RolesComponent implements OnInit, OnDestroy {
   subscription3: Subscription;
 
   constructor(private coreService: CoreService, private router: Router, private authService: AuthService, private activeRoute: ActivatedRoute, private modal: NzModalService,
-    private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
+              private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUsersData(res);
@@ -404,6 +394,11 @@ export class RolesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.identityServiceName = sessionStorage.identityServiceName;
+    this.identityServiceType = sessionStorage.identityServiceType;
+    if (this.identityServiceType !== 'SHIRO') {
+      this.getList();
+    }
   }
 
   ngOnDestroy(): void {
@@ -414,13 +409,21 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   setUsersData(res): void {
-    this.userDetail = res;
-    this.accounts = res.accounts;
-    this.createRoleArray(res);
-    this.checkUrl(null, true);
-    if (this.dataService.preferences.roles.size === 0 && this.controllerRoles.length > 0) {
-      this.dataService.preferences.roles.add(this.controllerRoles[0].name);
+    if (this.identityServiceType === 'SHIRO') {
+      this.userDetail = res;
+      this.accounts = res.accounts;
+      this.createRoleArray(res);
+      this.checkUrl(null, true);
+      if (this.dataService.preferences.roles.size === 0 && this.controllerRoles.length > 0) {
+        this.dataService.preferences.roles.add(this.controllerRoles[0].name);
+      }
     }
+  }
+
+  private getList(): void {
+    this.coreService.post('iam/roles', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
+      this.controllerRoles = res.roles;
+    })
   }
 
   selectUser(account): void {
@@ -493,6 +496,8 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzContent: RoleModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
+        identityServiceType: this.identityServiceType,
+        identityServiceName: this.identityServiceName,
         allRoles: this.roles,
         userDetail: this.userDetail,
         newRole: true
@@ -503,7 +508,11 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.createRoleArray(result);
+        if(this.identityServiceType === 'SHIRO') {
+          this.createRoleArray(result);
+        } else{
+          this.getList();
+        }
       }
     });
   }
@@ -514,6 +523,8 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzContent: RoleModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
+        identityServiceType: this.identityServiceType,
+        identityServiceName: this.identityServiceName,
         allRoles: this.roles,
         userDetail: this.userDetail,
         oldRole: role
@@ -524,7 +535,11 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.createRoleArray(result);
+        if(this.identityServiceType === 'SHIRO') {
+          this.createRoleArray(result);
+        } else{
+          this.getList();
+        }
       }
     });
   }
@@ -535,6 +550,8 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzContent: RoleModalComponent,
       nzAutofocus: null,
       nzComponentParams: {
+        identityServiceType: this.identityServiceType,
+        identityServiceName: this.identityServiceName,
         allRoles: this.roles,
         userDetail: this.userDetail,
         oldRole: role,
@@ -546,7 +563,11 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.createRoleArray(result);
+        if(this.identityServiceType === 'SHIRO') {
+          this.createRoleArray(result);
+        } else{
+          this.getList();
+        }
       }
     });
   }
@@ -634,30 +655,27 @@ export class RolesComponent implements OnInit, OnDestroy {
   private removeRole(role, comments) {
     const obj: any = {
       roles: [
-        { role }
+        {role}
       ],
       identityServiceName: this.userDetail.identityServiceName,
     };
     obj.auditLog = {};
-    if (comments.comment) {
-      obj.auditLog.comment = comments.comment;
+    if (comments) {
+      if (comments.comment) {
+        obj.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        obj.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        obj.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
+      }
     }
-    if (comments.timeSpent) {
-      obj.auditLog.timeSpent = comments.timeSpent;
-    }
-    if (comments.ticketLink) {
-      obj.auditLog.ticketLink = comments.ticketLink;
-    }
-    if (comments.isChecked) {
-      this.dataService.comments = comments;
-    }
-    this.coreService.post('authentication/auth/roles/delete', obj).subscribe(() => {
-      this.roles = this.roles.filter((item) => {
-        return role != item;
-      });
-      this.controllerRoles = this.controllerRoles.filter((item) => {
-        return role != item.name;
-      });
+    this.coreService.post('iam/roles/delete', obj).subscribe(() => {
+      this.getList();
       this.reset();
     });
   }
@@ -827,7 +845,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       identityServiceName: this.userDetail.identityServiceName,
     };
     this.object.mapOfCheckedId.forEach((value, key) => {
-      obj.roles.push({ role: key });
+      obj.roles.push({role: key});
     });
     obj.auditLog = {};
     if (comments.comment) {
@@ -864,7 +882,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     this.userDetail.roles = roles;
     let comments = {};
     this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-      comments = { comment: translatedValue };
+      comments = {comment: translatedValue};
     });
     this.saveInfo(this.dataService.comments.comment ? this.dataService.comments : comments);
   }
@@ -874,14 +892,19 @@ export class RolesComponent implements OnInit, OnDestroy {
     this.roles = [];
     for (const role in res.roles) {
       let obj = {
-        name: role,
-        controllers: [{ name: '', permissions: res.roles[role].permissions }],
+        roleName: role,
+        controllers: [''],
+        controllersPermission: [{name: '', permissions: res.roles[role].permissions}],
         mainObj: res.roles[role]
       };
       if (res.roles[role].permissions && res.roles[role].permissions.controllers) {
         for (const controller in res.roles[role].permissions.controllers) {
           if (res.roles[role].permissions.controllers[controller]) {
-            obj.controllers.push({ name: controller, permissions: res.roles[role].permissions.controllers[controller] });
+            obj.controllers.push(controller);
+            obj.controllersPermission.push({
+              name: controller,
+              permissions: res.roles[role].permissions.controllers[controller]
+            });
           }
         }
       }

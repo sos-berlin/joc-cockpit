@@ -1,14 +1,14 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { isEqual, clone } from 'underscore';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard';
-import { DataService } from '../data.service';
-import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
-import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
-import { SearchPipe, OrderPipe } from '../../../pipes/core.pipe';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {isEqual, clone} from 'underscore';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {DataService} from '../data.service';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -21,6 +21,7 @@ export class ConfirmationModalComponent implements OnInit {
   @Input() accounts;
   @Input() account;
   @Input() isRole;
+  @Input() identityServiceName: string;
   submitted = false;
   display: any;
   required = false;
@@ -48,12 +49,12 @@ export class ConfirmationModalComponent implements OnInit {
       this.activeModal.close('DONE');
       return;
     }
-    const accounts = [];
+    const accountNames = [];
     if (this.account) {
-      accounts.push({ account: this.account.account })
+      accountNames.push(this.account.accountName)
     } else {
       this.accounts.forEach((value, key) => {
-        accounts.push({ account: key })
+        accountNames.push(key)
       });
     }
     const auditLog: any = {};
@@ -70,10 +71,10 @@ export class ConfirmationModalComponent implements OnInit {
       this.dataService.comments = this.comments;
     }
     this.submitted = true;
-    const URL = this.forceChange ? 'authentication/auth/forcepasswordchange' : 'authentication/auth/resetpassword';
+    const URL = this.forceChange ? 'iam/accounts/forcepasswordchange' : 'iam/accounts/resetpassword';
     this.coreService.post(URL, {
-      identityServiceName: sessionStorage.identityServiceName,
-      accounts,
+      identityServiceName: this.identityServiceName,
+      accountNames,
       auditLog
     }).subscribe({
       next: () => {
@@ -93,9 +94,10 @@ export class AccountModalComponent implements OnInit {
   @Input() newUser = false;
   @Input() copy = false;
   @Input() userDetail: any;
+  @Input() accountList: any = [];
   @Input() oldUser: any;
-  @Input() allRoles: any;
-  @Input() selectedIdentityServiceType: string;
+  @Input() identityServiceType: string;
+  @Input() identityServiceName: string;
 
   submitted = false;
   isUnique = true;
@@ -104,6 +106,7 @@ export class AccountModalComponent implements OnInit {
   isPasswordMatch = true;
   minimumPasswordLength = true;
   settings: any = {};
+  allRoles = [];
   display: any;
   required = false;
   comments: any = {};
@@ -112,13 +115,15 @@ export class AccountModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
       this.display = true;
+    } else {
+      let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      this.display = preferences.auditLog;
     }
+    this.getRoles();
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
@@ -128,13 +133,13 @@ export class AccountModalComponent implements OnInit {
     if (this.oldUser) {
       this.currentUser = clone(this.oldUser);
       this.currentUser.fakePassword = '********';
-      this.currentUser.userName = this.currentUser.account;
+      this.currentUser.userName = this.currentUser.accountName;
       if (this.copy) {
-        this.currentUser.account = '';
+        this.currentUser.accountName = '';
       }
     } else {
       this.currentUser = {
-        account: '',
+        accountName: '',
         fakePassword: '',
         roles: []
       };
@@ -143,11 +148,24 @@ export class AccountModalComponent implements OnInit {
       this.isPasswordVisible = false;
       delete this.currentUser.password;
     }
-    if (this.copy && this.oldUser.hashedPassword) {
-      this.currentUser.password = this.oldUser.hashedPassword;
-    }
-    if (this.newUser && (this.selectedIdentityServiceType === 'JOC' || this.selectedIdentityServiceType === 'VAULT-JOC-ACTIVE')) {
+    if (this.newUser && (this.identityServiceType === 'JOC' || this.identityServiceType === 'VAULT-JOC-ACTIVE')) {
       this.currentUser.forcePasswordChange = true;
+    }
+  }
+
+  private getRoles(): void {
+    if (this.identityServiceType !== 'SHIRO') {
+      this.coreService.post('iam/roles', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
+        for (const i in res.roles) {
+          this.allRoles.push(res.roles[i].roleName);
+        }
+      })
+    } else {
+      if (this.userDetail.roles) {
+        for (const prop in this.userDetail.roles) {
+          this.allRoles.push(prop);
+        }
+      }
     }
   }
 
@@ -179,8 +197,8 @@ export class AccountModalComponent implements OnInit {
 
   checkUser(newUser, existingUser): void {
     this.isUnique = true;
-    for (let i = 0; i < this.userDetail.accounts.length; i++) {
-      if (this.userDetail.accounts[i].account === newUser && newUser !== existingUser) {
+    for (let i = 0; i < this.accountList.length; i++) {
+      if (this.accountList[i].accountName === newUser && newUser !== existingUser) {
         this.isUnique = false;
         break;
       }
@@ -212,11 +230,11 @@ export class AccountModalComponent implements OnInit {
   }
 
   private rename(cb): void {
-    if (this.oldUser.account !== this.currentUser.account) {
+    if (this.oldUser.accountName !== this.currentUser.accountName) {
       const obj: any = {
-        identityServiceName: this.userDetail.identityServiceName,
-        accountOldName: this.oldUser.account,
-        accountNewName: this.currentUser.account,
+        identityServiceName: this.identityServiceName,
+        accountOldName: this.oldUser.accountName,
+        accountNewName: this.currentUser.accountName,
         auditLog: {}
       };
       if (this.comments.comment) {
@@ -231,70 +249,62 @@ export class AccountModalComponent implements OnInit {
       if (this.comments.isChecked) {
         this.dataService.comments = this.comments;
       }
-      this.coreService.post('authentication/auth/account/rename', obj).subscribe({
+      this.coreService.post('iam/account/rename', obj).subscribe({
         next: () => {
-          cb('OK');
+          cb();
+          this.activeModal.close('DONE');
         }, error: () => {
           cb();
         }
       });
     } else {
-      cb();
+      cb('OK');
     }
-  }
-
-  private getUsersData(cb): void {
-    this.coreService.post('authentication/auth', {
-      identityServiceName: this.userDetail.identityServiceName
-    }).subscribe({
-      next: res => {
-        this.userDetail.accounts = res.accounts;
-        this.userDetail.main = res.main;
-        this.userDetail.roles = res.roles;
-        cb();
-      }
-    });
   }
 
   onSubmit(obj): void {
     this.submitted = true;
-    this.getUsersData(() => {
-      this.isUnique = true;
-      if (obj.fakePassword !== '********') {
-        obj.password = obj.fakePassword || '';
-      }
+    this.isUnique = true;
+    if (obj.fakePassword !== '********') {
+      obj.password = obj.fakePassword || '';
+    }
 
-      if (this.newUser || this.copy) {
+    if (this.newUser || this.copy) {
+      if (this.identityServiceType === 'SHIRO') {
         const data = {
-          account: obj.account,
+          accountName: obj.accountName,
           password: obj.password,
-          disabled: obj.disabled,
-          forcePasswordChange: obj.forcePasswordChange,
           roles: obj.roles
         };
         this.userDetail.accounts.push(data);
+      }
+      this.store(obj);
+    } else {
+      if (this.identityServiceType === 'SHIRO') {
+        for (let i = 0; i < this.userDetail.accounts.length; i++) {
+          if (this.userDetail.accounts[i] === this.oldUser || isEqual(this.userDetail.accounts[i], this.oldUser)) {
+            this.userDetail.accounts[i].accountName = obj.accountName;
+            this.userDetail.accounts[i].password = obj.password;
+            this.userDetail.accounts[i].roles = obj.roles;
+            this.userDetail.accounts[i].forcePasswordChange = obj.forcePasswordChange;
+            this.userDetail.accounts[i].disabled = obj.disabled;
+            break;
+          }
+        }
         this.store(obj);
       } else {
-        this.rename(() => {
-          for (let i = 0; i < this.userDetail.accounts.length; i++) {
-            if (this.userDetail.accounts[i] === this.oldUser || isEqual(this.userDetail.accounts[i], this.oldUser)) {
-              this.userDetail.accounts[i].account = obj.account;
-              this.userDetail.accounts[i].password = obj.password;
-              this.userDetail.accounts[i].roles = obj.roles;
-              this.userDetail.accounts[i].forcePasswordChange = obj.forcePasswordChange;
-              this.userDetail.accounts[i].disabled = obj.disabled;
-              break;
-            }
+        this.rename((result) => {
+          if (result) {
+            this.store(obj);
           }
-          this.store(obj);
         });
       }
-    });
+    }
   }
 
   private store(obj) {
     const request: any = {
-      identityServiceName: this.userDetail.identityServiceName,
+      identityServiceName: this.identityServiceName,
       auditLog: {}
     };
     if (this.comments.comment) {
@@ -309,29 +319,34 @@ export class AccountModalComponent implements OnInit {
     if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
-    if (this.selectedIdentityServiceType === 'SHIRO') {
+    if (this.identityServiceType === 'SHIRO') {
       request.accounts = this.userDetail.accounts;
       request.roles = this.userDetail.roles;
       request.main = this.userDetail.main;
+      this.coreService.post('authentication/auth/store', request).subscribe({
+        next: () => {
+          this.activeModal.close(this.userDetail.accounts);
+        }, error: () => {
+          this.userDetail.accounts = this.userDetail.accounts.filter((account) => {
+            return account.accountName !== obj.accountName;
+          });
+          this.submitted = false;
+        }
+      });
     } else {
-      request.accounts = [{
-        account: obj.account,
-        password: obj.password,
-        disabled: obj.disabled,
-        forcePasswordChange: obj.forcePasswordChange,
-        roles: obj.roles
-      }];
+      request.accountName = obj.accountName;
+      request.password = obj.password;
+      request.disabled = obj.disabled;
+      request.forcePasswordChange = obj.forcePasswordChange;
+      request.roles = obj.roles;
+      this.coreService.post('iam/account/store', request).subscribe({
+        next: () => {
+          this.activeModal.close('DONE');
+        }, error: () => {
+          this.submitted = false;
+        }
+      });
     }
-    this.coreService.post('authentication/auth/store', request).subscribe({
-      next: () => {
-        this.activeModal.close(this.userDetail.accounts);
-      }, error: () => {
-        this.userDetail.accounts = this.userDetail.accounts.filter((account) => {
-          return account.account !== obj.account;
-        });
-        this.submitted = false;
-      }
-    });
   }
 }
 
@@ -341,20 +356,17 @@ export class AccountModalComponent implements OnInit {
   templateUrl: 'accounts.component.html'
 })
 export class AccountsComponent implements OnInit, OnDestroy {
-
   loading = true;
   preferences: any = {};
   permission: any = {};
   accounts: any = [];
   data: any = [];
-  roles: any = [];
   userDetail: any = {};
   temp: any = 0;
   searchKey: string;
   username: string;
   userIdentityService: string;
   selectedIdentityService: string;
-  selectedIdentityServiceType: string;
   usr: any = {};
   object = {
     checked: false,
@@ -362,14 +374,15 @@ export class AccountsComponent implements OnInit, OnDestroy {
     mapOfCheckedId: new Map()
   };
 
-  searchableProperties = ['account', 'roles'];
-
+  searchableProperties = ['accountName', 'roles'];
+  identityServiceName: string;
+  identityServiceType: string;
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService, private searchPipe: SearchPipe,
-    private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
       this.searchInResult();
@@ -387,8 +400,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
         this.reset();
       } else if (res === 'DELETE') {
         this.deleteList();
-      } else if (res === 'DISABLE') {
-        this.disableList();
+      } else if (res === 'DISABLE' || res === 'ENABLE') {
+        this.disableList(res === 'ENABLE');
       } else if (res === 'RESET_PASSWORD') {
         this.resetPassword(null);
       } else if (res === 'FORCE_PASSWORD_CHANGE') {
@@ -401,13 +414,26 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.data = [];
-    this.usr = { currentPage: 1, sortBy: 'account', reverse: false };
+    this.usr = {currentPage: 1, sortBy: 'accountName', reverse: false};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.username = this.authService.currentUserData;
-    this.selectedIdentityServiceType = sessionStorage.identityServiceType;
     this.selectedIdentityService = sessionStorage.identityServiceType + ':' + sessionStorage.identityServiceName;
     this.userIdentityService = this.authService.currentUserIdentityService;
+    this.identityServiceName = sessionStorage.identityServiceName;
+    this.identityServiceType = sessionStorage.identityServiceType;
+    if (this.identityServiceType !== 'SHIRO') {
+      this.getList();
+    }
+  }
+
+  private getList(): void {
+    this.coreService.post('iam/accounts', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
+      this.accounts = res.accountItems;
+      this.loading = false;
+      this.searchInResult();
+      console.log(this.accounts)
+    })
   }
 
   setUserData(res): void {
@@ -418,7 +444,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
       this.loading = false;
       this.searchInResult();
     }, 300);
-    this.getRoles();
   }
 
   ngOnDestroy(): void {
@@ -429,54 +454,43 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   saveInfo(accounts, comments): void {
-    const obj: any = {
-      accounts: accounts,
-      auditLog: {},
-      identityServiceName: this.userDetail.identityServiceName,
-    };
-    if (this.selectedIdentityServiceType === 'SHIRO') {
-      obj.accounts = this.accounts;
-      obj.roles = this.userDetail.roles;
-      obj.main = this.userDetail.main;
-    }
+    if (this.identityServiceType === 'SHIRO') {
+      const obj: any = {
+        accounts: this.accounts,
+        roles: this.userDetail.roles,
+        main: this.userDetail.main,
+        auditLog: {},
+        identityServiceName: this.userDetail.identityServiceName,
+      };
 
-    if (comments) {
-      if (comments.comment) {
-        obj.auditLog.comment = comments.comment;
+      if (comments) {
+        if (comments.comment) {
+          obj.auditLog.comment = comments.comment;
+        }
+        if (comments.timeSpent) {
+          obj.auditLog.timeSpent = comments.timeSpent;
+        }
+        if (comments.ticketLink) {
+          obj.auditLog.ticketLink = comments.ticketLink;
+        }
+        if (comments.isChecked) {
+          this.dataService.comments = comments;
+        }
       }
-      if (comments.timeSpent) {
-        obj.auditLog.timeSpent = comments.timeSpent;
-      }
-      if (comments.ticketLink) {
-        obj.auditLog.ticketLink = comments.ticketLink;
-      }
-      if (comments.isChecked) {
-        this.dataService.comments = comments;
-      }
-    }
-
-    this.coreService.post('authentication/auth/store', obj).subscribe(() => {
-      this.reset();
-      if (accounts) {
-        this.accounts = this.accounts.concat(accounts)
-      }
-      this.userDetail.accounts = this.accounts;
-      this.dataService.announceFunction('RELOAD');
-      this.searchInResult();
-    });
-  }
-
-  private getRoles(): void {
-    this.roles = [];
-    if (this.userDetail.roles) {
-      for (const prop in this.userDetail.roles) {
-        this.roles.push(prop);
-      }
+      this.coreService.post('authentication/auth/store', obj).subscribe(() => {
+        this.reset();
+        if (accounts) {
+          this.accounts = this.accounts.concat(accounts)
+        }
+        this.userDetail.accounts = this.accounts;
+        this.dataService.announceFunction('RELOAD');
+        this.searchInResult();
+      });
     }
   }
 
   showRole(account): void {
-    this.router.navigate(['/users/identity_service/role'], { queryParams: { account } });
+    this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
   }
 
   /* ---------------------------- Action ----------------------------------*/
@@ -488,8 +502,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         userDetail: this.userDetail,
-        allRoles: this.roles,
-        selectedIdentityServiceType: this.selectedIdentityServiceType,
+        identityServiceType: this.identityServiceType,
+        identityServiceName: this.identityServiceName,
+        accountList: this.accounts,
         newUser: true,
       },
       nzFooter: null,
@@ -498,8 +513,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.accounts = result;
-        this.searchInResult();
+        if (this.identityServiceType === 'SHIRO') {
+          this.accounts = result;
+          this.searchInResult();
+        } else {
+          this.getList();
+        }
       }
     });
   }
@@ -511,8 +530,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         userDetail: this.userDetail,
-        allRoles: this.roles,
-        selectedIdentityServiceType: this.selectedIdentityServiceType,
+        identityServiceType: this.identityServiceType,
+        identityServiceName: this.identityServiceName,
+        accountList: this.accounts,
         oldUser: account,
       },
       nzFooter: null,
@@ -521,8 +541,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.accounts = result;
-        this.searchInResult();
+        if (this.identityServiceType === 'SHIRO') {
+          this.accounts = result;
+          this.searchInResult();
+        } else {
+          this.getList();
+        }
       }
     });
   }
@@ -534,7 +558,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         userDetail: this.userDetail,
-        selectedIdentityServiceType: this.selectedIdentityServiceType,
+        identityServiceType: this.identityServiceType,
+        identityServiceName: this.identityServiceName,
+        accountList: this.accounts,
         copy: true,
         oldUser: account,
       },
@@ -544,19 +570,23 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.accounts = result;
-        this.searchInResult();
+        if (this.identityServiceType === 'SHIRO') {
+          this.accounts = result;
+          this.searchInResult();
+        } else {
+          this.getList();
+        }
       }
     });
   }
 
-  disabledUser(account) {
+  disabledUser(account, isEnable) {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
-        type: 'Identity Service',
-        operation: account ? (!account.disabled ? 'Disable' : 'Enable') : 'Disable',
-        name: account ? account.account : ''
+        type: 'Account',
+        operation: isEnable ? 'Enable' : 'Disable',
+        name: account ? account.accountName : ''
       };
       this.object.mapOfCheckedId.forEach((value, key) => {
         comments.name = comments.name + key + ', ';
@@ -587,52 +617,42 @@ export class AccountsComponent implements OnInit, OnDestroy {
           if (result.isChecked) {
             this.dataService.comments = result;
           }
-          this.storeUser(account, auditLog);
-        } else if (account) {
-          account.disabled = !account.disabled;
+          this.storeUser(account, auditLog, isEnable);
         }
       });
     } else {
-      this.storeUser(account, this.dataService.comments);
+      this.storeUser(account, this.dataService.comments, isEnable);
     }
   }
 
-  private storeUser(account, auditLog): void {
+  private storeUser(account, auditLog, isEnable): void {
     let accounts = [];
-    if (account) {
-      account.disabled = !account.disabled;
-    } else {
-      accounts = this.accounts.filter((item) => {
-        if (this.object.mapOfCheckedId.has(item.account)) {
-          item.disabled = true;
+    if (!account && this.object.mapOfCheckedId.size > 0) {
+      this.accounts.forEach((item) => {
+        if (this.object.mapOfCheckedId.has(item.accountName)) {
+          accounts.push(item.accountName);
           return true;
-        } else {
-          return false;
         }
       });
     }
-    this.coreService.post('authentication/auth/store', {
-      identityServiceName: this.userDetail.identityServiceName,
-      accounts: account ? [account] : accounts,
+    this.coreService.post(isEnable ? 'iam/accounts/enable' : 'iam/accounts/disable', {
+      identityServiceName: this.identityServiceName,
+      accountNames: account ? [account.accountName] : accounts,
       auditLog
     }).subscribe({
       next: () => {
         if (!account) {
           this.reset();
         }
-        this.userDetail.accounts = this.accounts;
-        this.dataService.announceFunction('RELOAD');
-        this.searchInResult();
+        this.getList();
       }, error: () => {
-        if (account) {
-          account.disabled = !account.disabled;
-        }
+        this.getList();
       }
     });
   }
 
-  private disableList(): void {
-    this.disabledUser(null);
+  private disableList(flag): void {
+    this.disabledUser(null, flag);
   }
 
   deleteUser(account): void {
@@ -713,7 +733,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
         nzComponentParams: {
-          delete: true
+          delete: true,
+          identityServiceName: this.identityServiceName
         },
         nzFooter: null,
         nzClosable: false,
@@ -727,26 +748,26 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   private deleteAccount(account, comments: any = {}) {
-    this.accounts = this.accounts.filter((item) => {
-      if (account) {
-        return item.account !== account;
-      } else {
-        return !this.object.mapOfCheckedId.has(item.account);
-      }
-    });
-    if (this.selectedIdentityServiceType === 'SHIRO') {
+    if (this.identityServiceType === 'SHIRO') {
+      this.accounts = this.accounts.filter((item) => {
+        if (account) {
+          return item.accountName !== account;
+        } else {
+          return !this.object.mapOfCheckedId.has(item.accountName);
+        }
+      });
       this.saveInfo([], comments);
     } else {
       const obj: any = {
-        accounts: [],
-        identityServiceName: this.userDetail.identityServiceName,
+        accountNames: [],
+        identityServiceName: this.identityServiceName,
         auditLog: {}
       };
       if (account) {
-        obj.accounts.push({ account });
+        obj.accountNames.push(account);
       } else {
         this.object.mapOfCheckedId.forEach((value, key) => {
-          obj.accounts.push({ account: key });
+          obj.accountNames.push(key);
         });
       }
       if (comments.comment) {
@@ -761,11 +782,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
       if (comments.isChecked) {
         this.dataService.comments = comments;
       }
-      this.coreService.post('authentication/auth/accounts/delete', obj).subscribe(() => {
+      this.coreService.post('iam/accounts/delete', obj).subscribe(() => {
         this.reset();
-        this.userDetail.accounts = this.accounts;
-        this.dataService.announceFunction('RELOAD');
-        this.searchInResult();
+        this.getList();
       });
     }
   }
@@ -775,6 +794,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
       nzComponentParams: {
+        identityServiceName: this.identityServiceName,
         reset: true,
         account,
         accounts: this.object.mapOfCheckedId
@@ -784,15 +804,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe((res) => {
       if (res) {
-        if (account) {
-          account.forcePasswordChange = true;
-        } else {
-          this.accounts.forEach((item) => {
-            if (this.object.mapOfCheckedId.has(item.account)) {
-              item.forcePasswordChange = true;
-            }
-          });
-        }
+        this.getList();
         this.reset();
       }
     });
@@ -803,6 +815,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ConfirmationModalComponent,
       nzComponentParams: {
+        identityServiceName: this.identityServiceName,
         forceChange: true,
         account,
         accounts: this.object.mapOfCheckedId
@@ -812,15 +825,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe((res) => {
       if (res) {
-        if (account) {
-          account.forcePasswordChange = true;
-        } else {
-          this.accounts.forEach((item) => {
-            if (this.object.mapOfCheckedId.has(item.account)) {
-              item.forcePasswordChange = true;
-            }
-          });
-        }
+        this.getList();
         this.reset();
       }
     });
@@ -865,7 +870,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       let flag = false;
       for (const i in this.userDetail.accounts) {
         if (this.userDetail.accounts[i]) {
-          if (this.userDetail.accounts[i].account === key) {
+          if (this.userDetail.accounts[i].accountName === key) {
             flag = true;
             break;
           }
@@ -883,7 +888,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
         value.roles = roles;
         value.identityServiceId = 0;
         delete value.password;
-        if (this.selectedIdentityServiceType === 'SHIRO') {
+        if (this.identityServiceType === 'SHIRO') {
           this.userDetail.accounts.push(value);
         } else {
           arr.push(value);
@@ -946,14 +951,14 @@ export class AccountsComponent implements OnInit, OnDestroy {
       if (users.length < this.data.length) {
         this.object.mapOfCheckedId.clear();
         users.forEach(item => {
-          this.object.mapOfCheckedId.set(item.account, item);
+          this.object.mapOfCheckedId.set(item.accountName, item);
         });
       }
     }
     if (checked) {
-      this.object.mapOfCheckedId.set(account.account, account);
+      this.object.mapOfCheckedId.set(account.accountName, account);
     } else {
-      this.object.mapOfCheckedId.delete(account.account);
+      this.object.mapOfCheckedId.delete(account.accountName);
     }
     const users = this.getCurrentData(this.data, this.usr);
     this.object.checked = this.object.mapOfCheckedId.size === users.length;
@@ -964,7 +969,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     if (value && this.accounts.length > 0) {
       const users = this.getCurrentData(this.data, this.usr);
       users.forEach(item => {
-        this.object.mapOfCheckedId.set(item.account, item);
+        this.object.mapOfCheckedId.set(item.accountName, item);
       });
     } else {
       this.object.mapOfCheckedId.clear();

@@ -3052,7 +3052,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             if (data.children[i].controller || data.children[i].dailyPlan) {
               for (let j = 0; j < data.children[i].children.length; j++) {
                 const x = data.children[i].children[j];
-                if (x.object === self.selectedObj.type &&
+                if (self.selectedObj.type && (x.object === self.selectedObj.type || (x.object.match('CALENDAR') === self.selectedObj.type.match('CALENDAR'))) &&
                   x.path === self.selectedObj.path && cb) {
                   flag = true;
                   let isMatch = false;
@@ -3658,7 +3658,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.selectedObj.type === InventoryObject.WORKFLOW) {
       this.dataService.reloadTree.next({ saveObject: origin });
     }
-    if (releasable && origin.type) {
+    if (releasable && origin.objectType) {
       this.releaseSingleObject(origin);
       return;
     }
@@ -4429,7 +4429,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   private backToListView(): void {
     const parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
-    if (parent && parent.origin.children) {
+    if (parent && parent.origin.children && this.selectedObj.type) {
       const index = (this.selectedObj.type.match('CALENDAR') || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.INCLUDESCRIPT) ? 1 : 0;
       const child = parent.origin.children[index];
       for (let i = 0; i < child.children.length; i++) {
@@ -4443,6 +4443,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private releaseSingleObject(data): void {
+    const PATH = data.path1 ? ((data.path1 + (data.path1 === '/' ? '' : '/') + data.name)) : ((data.path + (data.path === '/' ? '' : '/') + data.name));
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
@@ -4471,9 +4472,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }
           };
           if (data.deleted) {
-            obj.delete = [{ objectType: data.objectType, path: (data.path + (data.path === '/' ? '' : '/') + data.name) }];
+            obj.delete = [{ objectType: data.objectType, path: PATH }];
           } else {
-            obj.update = [{ objectType: data.objectType, path: (data.path + (data.path === '/' ? '' : '/') + data.name) }];
+            obj.update = [{ objectType: data.objectType, path: PATH }];
           }
           this.coreService.post('inventory/release', obj).subscribe();
         }
@@ -4481,9 +4482,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       const obj: any = {};
       if (data.deleted) {
-        obj.delete = [{ objectType: data.objectType, path: (data.path + (data.path === '/' ? '' : '/') + data.name) }];
+        obj.delete = [{ objectType: data.objectType, path: PATH }];
       } else {
-        obj.update = [{ objectType: data.objectType, path: (data.path + (data.path === '/' ? '' : '/') + data.name) }];
+        obj.update = [{ objectType: data.objectType, path: PATH }];
       }
       this.coreService.post('inventory/release', obj).subscribe();
     }
@@ -4511,7 +4512,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('inventory/store', request).subscribe((res: any) => {
       obj.valid = res.valid;
-      if (obj.path === this.selectedObj.path && obj.name === this.selectedObj.name) {
+      if (obj.path === this.selectedObj.path && obj.name === this.selectedObj.name && obj.objectType === this.selectedObj.type) {
         this.type = undefined;
         this.selectedData.valid = res.valid;
         this.selectedData.deployed = res.deployed;
