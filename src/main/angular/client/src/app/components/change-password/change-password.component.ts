@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { isEqual } from 'underscore';
-import { TranslateService } from '@ngx-translate/core';
-import { NzModalRef } from 'ng-zorro-antd/modal';
-import { CoreService } from '../../services/core.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {isEqual} from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
+import {NzModalRef} from 'ng-zorro-antd/modal';
+import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-change-password',
@@ -13,7 +13,7 @@ export class ChangePasswordComponent implements OnInit {
   @Input() identityServiceName: string;
   submitted = false;
   passwordObj: any = {
-    account: '',
+    accountName: '',
     oldPassword: '',
     password: '',
     repeatedPassword: ''
@@ -23,17 +23,18 @@ export class ChangePasswordComponent implements OnInit {
   minimumPasswordLength = true;
   settings: any = {};
   comments: any = {};
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        this.comments = { comment: translatedValue };
+        this.comments = {comment: translatedValue};
       });
     }
     this.getConfiguration();
-    this.passwordObj.account = this.username;
+    this.passwordObj.accountName = this.username;
   }
 
   private getConfiguration(): void {
@@ -75,10 +76,13 @@ export class ChangePasswordComponent implements OnInit {
   onSubmit(): void {
     if (this.isPasswordMatch) {
       this.submitted = true;
-      this.coreService.post('authentication/auth/changepassword', {
+      this.coreService.post('iam/account/changepassword', {
         identityServiceName: this.identityServiceName,
-        accounts: [this.passwordObj],
-        auditLog: { comment: this.comments.comment }
+        accountName: this.passwordObj.accountName,
+        oldPassword: this.passwordObj.oldPassword,
+        password: this.passwordObj.password,
+        repeatedPassword: this.passwordObj.repeatedPassword,
+        auditLog: {comment: this.comments.comment}
       }).subscribe({
         next: () => {
           this.activeModal.close('DONE');

@@ -25,7 +25,7 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="name" [(ngModel)]="currentUser.account" required
+        <input type="text" class="form-control" name="name" [(ngModel)]="currentUser.accountName" required
                #account="ngModel" [appAutofocus]="true" autocomplete="off"
                (blur)="checkUser(account.value, currentUser.userName)"/>
 
@@ -62,13 +62,13 @@
     </div>
     <div class="form-group row" *ngIf="!copy">
       <label class="col-sm-4 form-control-label" translate>user.label.roles
-        <sup class="text-danger text-sm">*</sup>
+        <sup class="text-danger text-sm" *ngIf="identityServiceType === 'SHIRO'">*</sup>
       </label>
       <div class="col-sm-6" [ngClass]="{'has-error' : ((roles.dirty || roles.touched) && roles.invalid)}">
         <nz-select
           name="roles"
           #roles="ngModel"
-          required
+          [required]="identityServiceType === 'SHIRO'"
           nzShowSearch
           nzMode="multiple"
           nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
@@ -82,14 +82,14 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="(selectedIdentityServiceType === 'JOC' || selectedIdentityServiceType === 'VAULT-JOC-ACTIVE')">
+    <div class="form-group row" *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')">
       <label class="col-sm-4" translate>user.label.forcePasswordChange</label>
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="currentUser.forcePasswordChange" [nzDisabled]="currentUser.isDisabled || newUser"
                name="forcePasswordChange"></label>
       </div>
     </div>
-    <div class="form-group row" *ngIf="!newUser && !copy && selectedIdentityServiceType && selectedIdentityServiceType.match('JOC')">
+    <div class="form-group row" *ngIf="!newUser && !copy && identityServiceType && identityServiceType.match('JOC')">
       <label class="col-sm-4" translate>user.label.disable</label>
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="currentUser.disabled"
