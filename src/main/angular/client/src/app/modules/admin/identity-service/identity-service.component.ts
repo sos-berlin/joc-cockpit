@@ -457,6 +457,8 @@ export class IdentityServiceModalComponent implements OnInit {
     this.currentObj.ordering = this.identityServices.length + 1 || 1;
     if (this.identityService) {
       this.currentObj = clone(this.identityService);
+    } else {
+      this.currentObj.serviceAuthenticationScheme = 'SINGLE-FACTOR';
     }
     let flag = true;
     for (const i in this.identityServices) {
@@ -537,6 +539,9 @@ export class IdentityServiceModalComponent implements OnInit {
       controllerId: '.',
       id: this.removeSettingId
     };
+    if (this.currentObj.identityServiceType === 'SHIRO') {
+      delete this.currentObj.serviceAuthenticationScheme;
+    }
     const saveRequest: any = {
       id: 0,
       objectType: this.currentObj.identityServiceType,
@@ -618,7 +623,6 @@ export class IdentityServiceModalComponent implements OnInit {
 
   private store(): void {
     if (this.removeSettingId > -1) {
-      //this.submitted = false;
       this.saveSettings();
       return;
     }

@@ -185,7 +185,7 @@
                           type="button">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
-                  <div class="node-content-wrapper" [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.origin.name && copyObj.type === node.origin.type), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
+                  <div class="node-content-wrapper" [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.name === node.origin.name && copyObj.type === node.origin.type && copyObj.path === node.origin.path), 'node-content-wrapper-active' : (node.origin.name === selectedObj.name &&
                   node.origin.type === selectedObj.type) ||
                   (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === selectedObj.path) ||
                   (node.origin.object && node.origin.object === selectedObj.type && node.origin.path === selectedObj.path)}"
@@ -274,7 +274,7 @@
 <nz-dropdown-menu #menu="nzDropdownMenu">
   <ul nz-menu *ngIf="!isTrash && node.origin && permission.joc">
     <li nz-menu-item *ngIf="node.origin.object && permission.joc.inventory.manage"
-      (click)="addObject(node, node.origin.object);">
+      (click)="addObject(node, node.origin.object === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : node.origin.object);">
       <a translate>inventory.button.new</a>
     </li>
     <li nz-submenu [nzTitle]="'inventory.button.new' | translate"

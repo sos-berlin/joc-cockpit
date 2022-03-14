@@ -4574,7 +4574,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
               let state = graph.getView().getState(target);
               let highlight = false;
-              if (state != null && (clone || this.isValidDropTarget(target, me))) {
+              if (state != null && (clone || this.isValidDropTarget(target, me) || (target && target.value.tagName === 'Try'))) {
                 if (this.target != target) {
                   this.target = target;
                   this.setHighlightColor(mxConstants.DROP_TARGET_COLOR);
@@ -4598,12 +4598,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 }
               }
 
-              if (state != null && highlight) {
+              if (state != null && highlight && state.cell) {
                 if (state.cell.value.tagName === 'Connection' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName) || state.cell.value.tagName === 'Catch') {
                   if (state.cell.value.tagName !== 'Connection') {
                     if (state.cell.value.tagName !== 'Fork') {
                       const edges = graph.getOutgoingEdges(state.cell);
-                      if ((state.cell.value.tagName !== 'If' && edges.length === 1 && !self.workflowService.checkClosingCell(edges[0].target.value.tagName))
+                      if ((state.cell.value.tagName !== 'If' && edges.length === 1 && !self.workflowService.checkClosingCell(edges[0].target.value.tagName) &&
+                          !(state.cell.value.tagName === 'Try' && edges[0].target.value.tagName === 'Catch'))
                         || (state.cell.value.tagName === 'If' && edges.length === 2)) {
                         this.setHighlightColor('#ff0000');
                       }
