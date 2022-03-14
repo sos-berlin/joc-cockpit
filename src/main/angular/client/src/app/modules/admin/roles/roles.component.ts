@@ -4,7 +4,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
-import {isEqual, clone} from 'underscore';
+import {clone} from 'underscore';
 import {filter} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
 import {DataService} from '../data.service';
@@ -53,21 +53,23 @@ export class RoleModalComponent implements OnInit {
       this.display = false;
     }
     if (this.oldRole) {
-      this.currentRole = clone(this.oldRole.mainObj);
-      this.oldName = this.oldRole.name;
+      if (this.oldRole.mainObj) {
+        this.currentRole = clone(this.oldRole.mainObj);
+      }
+      this.oldName = this.oldRole.roleName;
       if (!this.copy) {
-        this.currentRole.role = this.oldRole.name;
+        this.currentRole.roleName = this.oldRole.roleName;
       }
     } else {
       this.currentRole = {
         permissions: {
           joc: [
             {
-              path: 'sos:products:joc',
+              permissionPath: 'sos:products:joc',
               excluded: false
             },
             {
-              path: 'sos:products:controller:view',
+              permissionPath: 'sos:products:controller:view',
               excluded: false
             }
           ],
@@ -81,7 +83,7 @@ export class RoleModalComponent implements OnInit {
   checkRole(newRole): void {
     this.isUnique = true;
     for (let i = 0; i < this.allRoles.length; i++) {
-      if (this.allRoles[i] === newRole && ((this.oldRole && newRole !== this.oldRole.name) || !this.oldRole)) {
+      if (this.allRoles[i].roleName === newRole && ((this.oldRole && newRole !== this.oldRole.roleName) || !this.oldRole)) {
         this.isUnique = false;
         break;
       }
@@ -100,12 +102,12 @@ export class RoleModalComponent implements OnInit {
     this.userDetail.roles = obj;
   }
 
-  private rename(obj): void {
-    if (this.oldRole.name !== this.currentRole.role) {
+  private rename(): void {
+    if (this.oldRole.roleName !== this.currentRole.roleName) {
       const request: any = {
         identityServiceName: this.identityServiceName,
-        roleOldName: this.oldRole.name,
-        roleNewName: this.currentRole.role,
+        roleOldName: this.oldRole.roleName,
+        roleNewName: this.currentRole.roleName,
         auditLog: {}
       };
       if (this.comments) {
@@ -132,43 +134,42 @@ export class RoleModalComponent implements OnInit {
     }
   }
 
-  onSubmit(obj): void {
+  onSubmit(): void {
     this.submitted = true;
     if (this.newRole || this.copy) {
-      this.allRoles.push(obj.role);
-      this.userDetail.roles[obj.role] = {
-        permissions: obj.permissions
-      };
+      if (this.identityServiceType === 'SHIRO') {
+        this.userDetail.roles[this.currentRole.roleName] = {
+          permissions: this.currentRole.permissions
+        };
+      }
     } else {
       if (this.identityServiceType !== 'SHIRO') {
-        this.rename(obj);
+        this.rename();
         return;
       }
-      this.updateRoleObject(this.oldName, obj.role);
+      this.updateRoleObject(this.oldName, this.currentRole.roleName);
       for (let i = 0; i < this.userDetail.accounts.length; i++) {
         for (let j = 0; j < this.userDetail.accounts[i].roles.length; j++) {
           if (this.userDetail.accounts[i].roles[j] === this.oldName) {
             this.userDetail.accounts[i].roles.splice(j, 1);
-            this.userDetail.accounts[i].roles.push(obj.role);
+            this.userDetail.accounts[i].roles.push(this.currentRole.roleName);
           }
-        }
-      }
-      for (let i = 0; i < this.allRoles.length; i++) {
-        if (this.allRoles[i] === this.oldName || isEqual(this.allRoles[i], this.oldName)) {
-          this.allRoles.splice(i, 1);
-          this.allRoles.push(obj.role);
-          break;
         }
       }
     }
 
     const request: any = {
-      accounts: this.userDetail.accounts,
-      roles: this.userDetail.roles,
-      main: this.userDetail.main,
       identityServiceName: this.identityServiceName,
       auditLog: {}
     };
+
+    if (this.identityServiceType !== 'SHIRO') {
+      request.roleName = this.currentRole.roleName;
+    } else {
+      request.accounts = this.userDetail.accounts;
+      request.roles = this.userDetail.roles;
+      request.main = this.userDetail.main;
+    }
 
     if (this.comments) {
       if (this.comments.comment) {
@@ -185,7 +186,7 @@ export class RoleModalComponent implements OnInit {
       }
     }
 
-    this.coreService.post('authentication/auth/store', request).subscribe({
+    this.coreService.post(this.identityServiceType !== 'SHIRO' ? 'iam/role/store' : 'authentication/auth/store', request).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail);
       }, error: () => this.submitted = false
@@ -199,7 +200,6 @@ export class RoleModalComponent implements OnInit {
   templateUrl: 'controller-dialog.html'
 })
 export class ControllerModalComponent implements OnInit {
-  @Input() controllerRoles: any;
   @Input() allRoles: any;
   @Input() oldController: any;
   @Input() copy: boolean;
@@ -220,13 +220,15 @@ export class ControllerModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
       this.display = true;
+    } else {
+      const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      this.display = preferences.auditLog;
     }
+
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
       this.display = false;
@@ -234,13 +236,10 @@ export class ControllerModalComponent implements OnInit {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     if (this.oldController) {
       this.currentController = clone(this.oldController);
-      this.allRoles = this.allRoles.filter((role) => {
-        return this.role.name !== role;
-      });
     } else {
       this.currentController = {
         controller: '',
-        role: ''
+        roleName: ''
       };
     }
     if (this.copy) {
@@ -256,10 +255,10 @@ export class ControllerModalComponent implements OnInit {
 
   checkController(controller, role): void {
     this.isUnique = true;
-    for (let i = 0; i < this.controllerRoles.length; i++) {
-      if (this.controllerRoles[i].name === role && this.controllerRoles[i].controllers) {
-        for (let j = 0; j < this.controllerRoles[i].controllers.length; j++) {
-          if (this.controllerRoles[i].controllers[j].name === controller) {
+    for (let i = 0; i < this.allRoles.length; i++) {
+      if (this.allRoles[i].roleName === role && this.allRoles[i].controllers) {
+        for (let j = 0; j < this.allRoles[i].controllers.length; j++) {
+          if (this.allRoles[i].controllers[j] === controller) {
             this.isUnique = false;
             break;
           }
@@ -269,52 +268,14 @@ export class ControllerModalComponent implements OnInit {
     }
   }
 
-  private getUsersData(cb): void {
-    this.coreService.post('authentication/auth', {
-      identityServiceName: this.userDetail.identityServiceName
-    }).subscribe({
-      next: res => {
-        this.userDetail.accounts = res.accounts;
-        this.userDetail.main = res.main;
-        this.userDetail.roles = res.roles;
-        cb();
-      }
-    });
-  }
-
-  onSubmit(obj): void {
-    if (obj.role) {
+  onSubmit(): void {
+    if (this.currentController.roleName) {
       this.submitted = true;
-      this.getUsersData(() => {
-        if (!this.userDetail.roles[obj.role].permissions) {
-          this.userDetail.roles[obj.role].permissions = {
-            joc: [{
-              path: 'sos:products:joc',
-              excluded: false
-            },
-              {
-                path: 'sos:products:controller:view',
-                excluded: false
-              }],
-            controllerDefaults: [],
-            controllers: {}
-          };
-        }
-        if (!this.copy) {
-          this.userDetail.roles[obj.role].permissions.controllers[obj.controller] = [];
-        } else {
-          if (obj.name) {
-            this.userDetail.roles[obj.role].permissions.controllers[obj.name] = obj.permissions;
-          } else {
-            this.userDetail.roles[obj.role].permissions.controllerDefaults = this.oldController.permissions.controllerDefaults;
-          }
-        }
-        const request: any = {
-          identityServiceName: this.userDetail.identityServiceName,
-          accounts: this.userDetail.accounts,
-          roles: this.userDetail.roles,
-          auditLog: {}
-        };
+      const request: any = {
+        identityServiceName: sessionStorage.identityServiceName,
+        auditLog: {}
+      };
+      if (this.comments) {
         if (this.comments.comment) {
           request.auditLog.comment = this.comments.comment;
         }
@@ -327,15 +288,50 @@ export class ControllerModalComponent implements OnInit {
         if (this.comments.isChecked) {
           this.dataService.comments = this.comments;
         }
-        if (sessionStorage.identityServiceType === 'SHIRO') {
-          request.main = this.userDetail.main;
+      }
+      if (sessionStorage.identityServiceType === 'SHIRO') {
+        if (!this.userDetail.roles[this.currentController.roleName].permissions) {
+          this.userDetail.roles[this.currentController.roleName].permissions = {
+            joc: [{
+              permissionPath: 'sos:products:joc',
+              excluded: false
+            },
+              {
+                permissionPath: 'sos:products:controller:view',
+                excluded: false
+              }],
+            controllerDefaults: [],
+            controllers: {}
+          };
         }
+        if (!this.copy) {
+          this.userDetail.roles[this.currentController.roleName].permissions.controllers[this.currentController.controller] = [];
+        } else {
+          if (this.currentController.name) {
+            this.userDetail.roles[this.currentController.roleName].permissions.controllers[this.currentController.name] = this.currentController.permissions;
+          } else {
+            this.userDetail.roles[this.currentController.roleName].permissions.controllerDefaults = this.oldController.permissions.controllerDefaults;
+          }
+        }
+
+        request.accounts = this.userDetail.accounts;
+        request.roles = this.userDetail.roles;
+        request.main = this.userDetail.main;
         this.coreService.post('authentication/auth/store', request).subscribe({
           next: () => {
             this.activeModal.close(this.userDetail);
           }, error: () => this.submitted = false
         });
-      });
+      } else {
+        request.controllerId = this.currentController.controller;
+        request.roleName = this.currentController.roleName;
+        request.permissions = [{permissionPath: 'sos:products:controller:view', excluded: false}];
+        this.coreService.post('iam/permissions/store', request).subscribe({
+          next: () => {
+            this.activeModal.close('DONE');
+          }, error: () => this.submitted = false
+        });
+      }
     }
   }
 }
@@ -351,7 +347,6 @@ export class RolesComponent implements OnInit, OnDestroy {
   showMsg: any;
   permission: any = {};
   preferences: any = {};
-  roles: any = [];
   controllerRoles = [];
   identityServiceName: string;
   identityServiceType: string;
@@ -415,7 +410,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       this.createRoleArray(res);
       this.checkUrl(null, true);
       if (this.dataService.preferences.roles.size === 0 && this.controllerRoles.length > 0) {
-        this.dataService.preferences.roles.add(this.controllerRoles[0].name);
+        this.dataService.preferences.roles.add(this.controllerRoles[0].roleName);
       }
     }
   }
@@ -433,7 +428,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         if (this.accounts[i].account === account && this.accounts[i].roles) {
           const selectedRoles = this.accounts[i].roles || [];
           this.controllerRoles = this.controllerRoles.filter((role) => {
-            return selectedRoles.includes(role.name);
+            return selectedRoles.includes(role.roleName);
           });
           break;
         }
@@ -454,7 +449,7 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   expandAll() {
     this.controllerRoles.forEach(role => {
-      this.dataService.preferences.roles.add(role.name);
+      this.dataService.preferences.roles.add(role.roleName);
     });
   }
 
@@ -498,7 +493,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
-        allRoles: this.roles,
+        allRoles: this.controllerRoles,
         userDetail: this.userDetail,
         newRole: true
       },
@@ -508,9 +503,9 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        if(this.identityServiceType === 'SHIRO') {
+        if (this.identityServiceType === 'SHIRO') {
           this.createRoleArray(result);
-        } else{
+        } else {
           this.getList();
         }
       }
@@ -525,7 +520,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
-        allRoles: this.roles,
+        allRoles: this.controllerRoles,
         userDetail: this.userDetail,
         oldRole: role
       },
@@ -535,9 +530,9 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        if(this.identityServiceType === 'SHIRO') {
+        if (this.identityServiceType === 'SHIRO') {
           this.createRoleArray(result);
-        } else{
+        } else {
           this.getList();
         }
       }
@@ -552,7 +547,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
-        allRoles: this.roles,
+        allRoles: this.controllerRoles,
         userDetail: this.userDetail,
         oldRole: role,
         copy: true
@@ -563,9 +558,9 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        if(this.identityServiceType === 'SHIRO') {
+        if (this.identityServiceType === 'SHIRO') {
           this.createRoleArray(result);
-        } else{
+        } else {
           this.getList();
         }
       }
@@ -577,7 +572,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     let waringMessage = '';
     for (const i in this.accounts) {
       for (const j in this.accounts[i].roles) {
-        if (this.accounts[i].roles[j] === role.name) {
+        if (this.accounts[i].roles[j] === role.roleName) {
           isAssigned = true;
           break;
         }
@@ -592,7 +587,7 @@ export class RolesComponent implements OnInit, OnDestroy {
           radio: 'predefined',
           type: 'Role',
           operation: 'Delete',
-          name: role.name
+          name: role.roleName
         };
         const modal = this.modal.create({
           nzTitle: undefined,
@@ -607,13 +602,13 @@ export class RolesComponent implements OnInit, OnDestroy {
         });
         modal.afterClose.subscribe(result => {
           if (result) {
-            delete this.userDetail.roles[role.name];
             if (sessionStorage.identityServiceType === 'SHIRO') {
+              delete this.userDetail.roles[role.roleName];
               this.saveInfo(result);
             } else {
-              this.removeRole(role.name, result);
+              this.removeRole(role.roleName, result);
             }
-            this.dataService.preferences.roles.delete(role.name);
+            this.dataService.preferences.roles.delete(role.roleName);
           }
         });
       } else {
@@ -624,7 +619,7 @@ export class RolesComponent implements OnInit, OnDestroy {
             title: 'delete',
             message: 'deleteRole',
             type: 'Delete',
-            objectName: role.name
+            objectName: role.roleName
           },
           nzFooter: null,
           nzClosable: false,
@@ -632,13 +627,13 @@ export class RolesComponent implements OnInit, OnDestroy {
         });
         modal.afterClose.subscribe(result => {
           if (result) {
-            delete this.userDetail.roles[role.name];
             if (sessionStorage.identityServiceType === 'SHIRO') {
+              delete this.userDetail.roles[role.roleName];
               this.saveInfo(this.dataService.comments);
             } else {
-              this.removeRole(role.name, this.dataService.comments);
+              this.removeRole(role.roleName, this.dataService.comments);
             }
-            this.dataService.preferences.roles.delete(role.name);
+            this.dataService.preferences.roles.delete(role.roleName);
           }
         });
       }
@@ -654,10 +649,8 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   private removeRole(role, comments) {
     const obj: any = {
-      roles: [
-        {role}
-      ],
-      identityServiceName: this.userDetail.identityServiceName,
+      roleNames: [role],
+      identityServiceName: this.identityServiceName,
     };
     obj.auditLog = {};
     if (comments) {
@@ -685,8 +678,7 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ControllerModalComponent,
       nzComponentParams: {
-        controllerRoles: this.controllerRoles,
-        allRoles: this.roles,
+        allRoles: this.controllerRoles,
         userDetail: this.userDetail
       },
       nzFooter: null,
@@ -695,7 +687,11 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.createRoleArray(result);
+        if (this.identityServiceType === 'SHIRO') {
+          this.createRoleArray(result);
+        } else {
+          this.getList();
+        }
       }
     });
   }
@@ -705,10 +701,9 @@ export class RolesComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: ControllerModalComponent,
       nzComponentParams: {
-        controllerRoles: this.controllerRoles,
+        allRoles: this.controllerRoles,
         oldController: controller,
         role,
-        allRoles: this.roles,
         copy: true,
         userDetail: this.userDetail
       },
@@ -718,7 +713,11 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.createRoleArray(result);
+        if (this.identityServiceType === 'SHIRO') {
+          this.createRoleArray(result);
+        } else {
+          this.getList();
+        }
       }
     });
   }
@@ -729,7 +728,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         radio: 'predefined',
         type: 'Controller',
         operation: 'Delete',
-        name: controller.name || 'default'
+        name: controller || 'default'
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -744,8 +743,12 @@ export class RolesComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          delete this.userDetail.roles[role.name].permissions.controllers[controller.name];
-          this.saveInfo(result);
+          if (this.identityServiceType === 'SHIRO') {
+            delete this.userDetail.roles[role.roleName].permissions.controllers[controller];
+            this.saveInfo(result);
+          } else {
+            this.deleteControllerAPI(role.roleName, controller, result);
+          }
         }
       });
     } else {
@@ -756,7 +759,7 @@ export class RolesComponent implements OnInit, OnDestroy {
           title: 'delete',
           message: 'deleteController',
           type: 'Delete',
-          objectName: controller.name || 'default'
+          objectName: controller || 'default'
         },
         nzFooter: null,
         nzClosable: false,
@@ -764,11 +767,50 @@ export class RolesComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          delete this.userDetail.roles[role.name].permissions.controllers[controller.name];
-          this.saveInfo(this.dataService.comments);
+          if (this.identityServiceType === 'SHIRO') {
+            delete this.userDetail.roles[role.roleName].permissions.controllers[controller];
+            this.saveInfo(this.dataService.comments);
+          } else {
+            this.deleteControllerAPI(role.roleName, controller, this.dataService.comments);
+          }
         }
       });
     }
+  }
+
+  private deleteControllerAPI(roleName, controllerName, comments): void {
+    this.coreService.post('iam/permissions', {
+      controllerId: controllerName,
+      roleName: roleName,
+      identityServiceName: this.identityServiceName,
+    }).subscribe((res) => {
+      console.log(res)
+      const request: any = {
+        controllerId: controllerName,
+        roleName: roleName,
+        identityServiceName: this.identityServiceName,
+        permissionPaths: res.permissions.map((item) => item.permissionPath)
+      };
+
+      if (comments) {
+        request.auditLog = {};
+        if (comments.comment) {
+          request.auditLog.comment = comments.comment;
+        }
+        if (comments.timeSpent) {
+          request.auditLog.timeSpent = comments.timeSpent;
+        }
+        if (comments.ticketLink) {
+          request.auditLog.ticketLink = comments.ticketLink;
+        }
+        if (comments.isChecked) {
+          this.dataService.comments = comments;
+        }
+      }
+      this.coreService.post('iam/permissions/delete', request).subscribe(() => {
+        this.getList();
+      });
+    });
   }
 
   private deleteList(): void {
@@ -860,12 +902,9 @@ export class RolesComponent implements OnInit, OnDestroy {
     if (comments.isChecked) {
       this.dataService.comments = comments;
     }
-    this.coreService.post('authentication/auth/roles/delete', obj).subscribe(() => {
-      this.roles = this.roles.filter((item) => {
-        return !this.object.mapOfCheckedId.has(item);
-      });
+    this.coreService.post('iam/roles/delete', obj).subscribe(() => {
       this.controllerRoles = this.controllerRoles.filter((item) => {
-        return !this.object.mapOfCheckedId.has(item.name);
+        return !this.object.mapOfCheckedId.has(item.roleName);
       });
       this.reset();
     });
@@ -873,23 +912,26 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.controllerRoles, event.previousIndex, event.currentIndex);
-    const roles: any = {};
-    for (const index in this.controllerRoles) {
-      if (this.controllerRoles[index]) {
-        roles[this.controllerRoles[index].name] = this.controllerRoles[index].mainObj;
+    if (this.identityServiceType === 'SHIRO') {
+      const roles: any = {};
+      for (const index in this.controllerRoles) {
+        if (this.controllerRoles[index]) {
+          roles[this.controllerRoles[index].roleName] = this.controllerRoles[index].mainObj;
+        }
       }
+      this.userDetail.roles = roles;
+      let comments = {};
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        comments = {comment: translatedValue};
+      });
+      this.saveInfo(this.dataService.comments.comment ? this.dataService.comments : comments);
+    } else {
+      console.log(this.controllerRoles)
     }
-    this.userDetail.roles = roles;
-    let comments = {};
-    this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-      comments = {comment: translatedValue};
-    });
-    this.saveInfo(this.dataService.comments.comment ? this.dataService.comments : comments);
   }
 
   private createRoleArray(res): void {
     this.controllerRoles = [];
-    this.roles = [];
     for (const role in res.roles) {
       let obj = {
         roleName: role,
@@ -908,7 +950,6 @@ export class RolesComponent implements OnInit, OnDestroy {
           }
         }
       }
-      this.roles.push(role);
       this.controllerRoles.push(obj);
     }
   }
@@ -958,7 +999,7 @@ export class RolesComponent implements OnInit, OnDestroy {
   checkAll(value: boolean): void {
     if (value && this.controllerRoles.length > 0) {
       this.controllerRoles.forEach(item => {
-        this.object.mapOfCheckedId.set(item.name, item.mainObj);
+        this.object.mapOfCheckedId.set(item.roleName, item.mainObj);
       });
     } else {
       this.object.mapOfCheckedId.clear();
@@ -986,9 +1027,9 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   checkMappedObject(isChecked: boolean, role): void {
     if (isChecked) {
-      this.object.mapOfCheckedId.set(role.name, role.mainObj);
+      this.object.mapOfCheckedId.set(role.roleName, role.mainObj);
     } else {
-      this.object.mapOfCheckedId.delete(role.name);
+      this.object.mapOfCheckedId.delete(role.roleName);
     }
     this.object.checked = this.object.mapOfCheckedId.size === this.controllerRoles.length;
     this.checkCheckBoxState();

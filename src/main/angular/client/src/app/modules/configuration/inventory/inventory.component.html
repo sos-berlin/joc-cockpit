@@ -274,7 +274,7 @@
 <nz-dropdown-menu #menu="nzDropdownMenu">
   <ul nz-menu *ngIf="!isTrash && node.origin && permission.joc">
     <li nz-menu-item *ngIf="node.origin.object && permission.joc.inventory.manage"
-      (click)="addObject(node, node.origin.object);">
+      (click)="addObject(node, node.origin.object === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : node.origin.object);">
       <a translate>inventory.button.new</a>
     </li>
     <li nz-submenu [nzTitle]="'inventory.button.new' | translate"

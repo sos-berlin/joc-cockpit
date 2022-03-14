@@ -7,7 +7,7 @@
       <span aria-hidden="true" class="fa fa-times-circle"></span>
     </button>
 </div>
-<form #myForm="ngForm" (ngSubmit)="onSubmit(currentController)">
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
     <div class="modal-body p-a">
         <div class="hide" [ngClass]="{'show': display}">
           <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
@@ -15,7 +15,7 @@
         <div class="form-group row" *ngIf="copy">
           <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
           <div class="col-sm-6">
-            <input type="text" class="form-control" name="schedulerId" [(ngModel)]="name" readonly>
+            <input type="text" class="form-control" name="controllerId" [(ngModel)]="name" readonly>
           </div>
         </div>
         <div class="form-group row">
@@ -25,8 +25,8 @@
             <div class="col-sm-6">
               <nz-select name="role" nzShowSearch
                          nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}"
-                         [(ngModel)]="currentController.role" (ngModelChange)="checkRole($event)">
-                <nz-option *ngFor="let option of allRoles" [nzLabel]="option" [nzValue]="option"></nz-option>
+                         [(ngModel)]="currentController.roleName" (ngModelChange)="checkRole($event)">
+                <nz-option *ngFor="let option of allRoles" [nzLabel]="option.roleName" [nzValue]="option.roleName"></nz-option>
               </nz-select>
             </div>
         </div>
@@ -35,7 +35,7 @@
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6" [ngClass]="{'has-error' : !isUnique || ((controllerName.dirty || controllerName.touched) && controllerName.invalid)}">
-            <nz-select [nzDisabled]="!currentController.role" nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
+            <nz-select [nzDisabled]="!currentController.roleName" nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
                        required #controllerName="ngModel" name="schedulerIds" (ngModelChange)="checkController($event, currentController.role)"
                        [(ngModel)]="currentController.controller">
               <ng-container *ngFor="let id of schedulerIds.controllerIds">

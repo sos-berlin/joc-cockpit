@@ -17,7 +17,7 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <nz-select nzShowSearch [(ngModel)]="currentPermission.path" name="path1" required nzPlaceHolder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
+        <nz-select nzShowSearch [(ngModel)]="currentPermission.permissionPath" name="path1" required nzPlaceHolder="{{'user.placeholder.enterOrSelectPermission' | translate}}"
                    (ngModelChange)="checkCovered(currentPermission)">
           <nz-option *ngFor="let per of permissionOptions" [nzLabel]="per" [nzValue]="per"
                      [nzDisabled]="per.indexOf('-----')!=-1">

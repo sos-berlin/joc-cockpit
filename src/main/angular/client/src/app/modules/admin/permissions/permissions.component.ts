@@ -20,8 +20,8 @@ declare var d3: any;
 export class PermissionModalComponent implements OnInit {
   @Input() rolePermissions: any;
   @Input() userDetail: any;
-  @Input() master: any;
-  @Input() role: any;
+  @Input() controllerName: any;
+  @Input() roleName: any;
   @Input() oldPermission: any;
   @Input() currentPermission: any;
   @Input() permissionOptions: any;
@@ -51,27 +51,27 @@ export class PermissionModalComponent implements OnInit {
     if (!this.add) {
       let flag = false;
       for (const i in this.permissionOptions) {
-        if (this.permissionOptions[i] === this.currentPermission.path) {
+        if (this.permissionOptions[i] === this.currentPermission.permissionPath) {
           flag = true;
           break;
         }
       }
       if (!flag) {
-        this.permissionOptions = [this.currentPermission.path].concat(this.permissionOptions)
+        this.permissionOptions = [this.currentPermission.permissionPath].concat(this.permissionOptions)
       }
     }
   }
 
   checkCovered(currentPermission): void {
     if (!this.add) {
-      if (currentPermission.path.indexOf(currentPermission.permissionLabel) > -1) {
+      if (currentPermission.permissionPath.indexOf(currentPermission.permissionLabel) > -1) {
         return;
       }
     }
     this.isCovered = false;
     this.rolePermissions.forEach((permission1) => {
-      if (currentPermission.path.trim() && currentPermission.path.trim().indexOf(permission1.path) !== -1 &&
-        ((currentPermission.path.trim().length > permission1.path.length && currentPermission.path.trim().substring(permission1.path.length, permission1.path.length + 1) === ':') || currentPermission.path.trim().length == permission1.path.length) &&
+      if (currentPermission.permissionPath.trim() && currentPermission.permissionPath.trim().indexOf(permission1.permissionPath) !== -1 &&
+        ((currentPermission.permissionPath.trim().length > permission1.permissionPath.length && currentPermission.permissionPath.trim().substring(permission1.permissionPath.length, permission1.permissionPath.length + 1) === ':') || currentPermission.permissionPath.trim().length == permission1.permissionPath.length) &&
         ((currentPermission.excluded && permission1.excluded) || (!currentPermission.excluded && !permission1.excluded))) {
         this.isCovered = true;
       }
@@ -82,27 +82,8 @@ export class PermissionModalComponent implements OnInit {
     const _obj = clone(obj);
     delete _obj.permissionLabel;
     this.submitted = true;
-    if (this.add) {
-      this.rolePermissions.push(_obj);
-    } else {
-      for (let i = 0; i < this.rolePermissions.length; i++) {
-        if (this.oldPermission === this.rolePermissions[i] || isEqual(this.oldPermission, this.rolePermissions[i])) {
-          this.rolePermissions[i] = _obj;
-          break;
-        }
-      }
-    }
-
-    if (this.master) {
-      this.userDetail.roles[this.role].permissions.controllers[this.master] = clone(this.rolePermissions);
-    } else {
-      this.userDetail.roles[this.role].permissions.joc = clone(this.rolePermissions);
-      this.userDetail.roles[this.role].permissions.controllerDefaults = [];
-    }
     const request: any = {
-      identityServiceName: this.userDetail.identityServiceName,
-      accounts: this.userDetail.accounts,
-      roles: this.userDetail.roles,
+      identityServiceName: sessionStorage.identityServiceName,
       auditLog: {}
     };
     if (this.comments.comment) {
@@ -118,13 +99,49 @@ export class PermissionModalComponent implements OnInit {
       this.dataService.comments = this.comments;
     }
     if (sessionStorage.identityServiceType === 'SHIRO') {
+      if (this.add) {
+        this.rolePermissions.push(_obj);
+      } else {
+        for (let i = 0; i < this.rolePermissions.length; i++) {
+          if (this.oldPermission === this.rolePermissions[i] || isEqual(this.oldPermission, this.rolePermissions[i])) {
+            this.rolePermissions[i] = _obj;
+            break;
+          }
+        }
+      }
+      if (this.controllerName) {
+        this.userDetail.roles[this.roleName].permissions.controllers[this.controllerName] = clone(this.rolePermissions);
+      } else {
+        this.userDetail.roles[this.roleName].permissions.joc = clone(this.rolePermissions);
+        this.userDetail.roles[this.roleName].permissions.controllerDefaults = [];
+      }
+      request.accounts = this.userDetail.accounts;
       request.main = this.userDetail.main;
+      request.roles = this.userDetail.roles;
+      this.coreService.post('authentication/auth/store', request).subscribe({
+        next: () => {
+          this.activeModal.close(this.rolePermissions);
+        }, error: () => this.submitted = false
+      });
+    } else {
+      console.log(_obj);
+      const URL = this.add ? 'iam/permissions/store' : 'iam/permission/rename';
+      request.controllerId = this.controllerName;
+      request.roleName = this.roleName;
+      if (this.add) {
+        request.permissions = [_obj];
+      } else {
+        request.oldPermissionPath = obj.permissionLabel;
+        request.newPermission = _obj;
+      }
+      this.coreService.post(URL, request).subscribe({
+        next: () => {
+          this.activeModal.close('DONE');
+        }, error: () => {
+          this.submitted = false;
+        }
+      });
     }
-    this.coreService.post('authentication/auth/store', request).subscribe({
-      next: () => {
-        this.activeModal.close(this.rolePermissions);
-      }, error: () => this.submitted = false
-    });
   }
 }
 
@@ -136,33 +153,34 @@ export class PermissionModalComponent implements OnInit {
 export class FolderModalComponent implements OnInit {
   @Input() userDetail: any;
   @Input() currentFolder: any;
-  @Input() master: any;
-  @Input() role: any;
+  @Input() controllerName: any;
+  @Input() roleName: any;
   @Input() folderArr: any;
   @Input() oldFolder: any;
   @Input() newFolder = false;
 
   nodes = [];
   submitted = false;
-  folderObj: any = { paths: [] };
+  folderObj: any = {paths: []};
   schedulerIds: any;
   display: any;
   required = false;
   comments: any = {};
 
-  @ViewChild('treeSelectCtrl', { static: false }) treeSelectCtrl;
+  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService,
-    private authService: AuthService) {
+              private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
       this.display = true;
+    } else {
+      const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      this.display = preferences.auditLog;
     }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
@@ -179,36 +197,8 @@ export class FolderModalComponent implements OnInit {
 
   onSubmit(obj): void {
     this.submitted = true;
-    if (!this.newFolder) {
-      for (let i = 0; i < this.folderArr.length; i++) {
-        if (this.oldFolder === this.folderArr[i] || isEqual(this.oldFolder, this.folderArr[i])) {
-          this.folderArr[i] = obj;
-          break;
-        }
-      }
-    } else {
-      this.folderArr = [];
-      if (this.folderObj.paths && this.folderObj.paths.length > 0) {
-        this.folderObj.paths.forEach((path) => {
-          this.folderArr.push({ folder: path, recursive: obj.recursive });
-        });
-      }
-    }
-    if (!this.userDetail.roles[this.role].folders) {
-      this.userDetail.roles[this.role].folders = {};
-    }
-    if (this.master) {
-      if (!this.userDetail.roles[this.role].folders.controllers) {
-        this.userDetail.roles[this.role].folders.controllers = {};
-      }
-      this.userDetail.roles[this.role].folders.controllers[this.master] = this.folderArr;
-    } else {
-      this.userDetail.roles[this.role].folders.joc = this.folderArr;
-    }
     const request: any = {
-      identityServiceName: this.userDetail.identityServiceName,
-      accounts: this.userDetail.accounts,
-      roles: this.userDetail.roles,
+      identityServiceName: sessionStorage.identityServiceName,
       auditLog: {}
     };
     if (this.comments.comment) {
@@ -224,16 +214,67 @@ export class FolderModalComponent implements OnInit {
       this.dataService.comments = this.comments;
     }
     if (sessionStorage.identityServiceType === 'SHIRO') {
-      request.main = this.userDetail.main;
-    }
-
-    this.coreService.post('authentication/auth/store', request).subscribe({
-      next: () => {
-        this.activeModal.close(this.folderArr);
-      }, error: () => {
-        this.submitted = false;
+      if (!this.newFolder) {
+        for (let i = 0; i < this.folderArr.length; i++) {
+          if (this.oldFolder === this.folderArr[i] || isEqual(this.oldFolder, this.folderArr[i])) {
+            this.folderArr[i] = obj;
+            break;
+          }
+        }
+      } else {
+        this.folderArr = [];
+        if (this.folderObj.paths && this.folderObj.paths.length > 0) {
+          this.folderObj.paths.forEach((path) => {
+            this.folderArr.push({folder: path, recursive: obj.recursive});
+          });
+        }
       }
-    });
+      if (!this.userDetail.roles[this.roleName].folders) {
+        this.userDetail.roles[this.roleName].folders = {};
+      }
+      if (this.controllerName) {
+        if (!this.userDetail.roles[this.roleName].folders.controllers) {
+          this.userDetail.roles[this.roleName].folders.controllers = {};
+        }
+        this.userDetail.roles[this.roleName].folders.controllers[this.controllerName] = this.folderArr;
+      } else {
+        this.userDetail.roles[this.roleName].folders.joc = this.folderArr;
+      }
+
+      request.accounts = this.userDetail.accounts;
+      request.main = this.userDetail.main;
+      request.roles = this.userDetail.roles;
+
+      this.coreService.post('authentication/auth/store', request).subscribe({
+        next: () => {
+          this.activeModal.close(this.folderArr);
+        }, error: () => {
+          this.submitted = false;
+        }
+      });
+    } else {
+      const URL = this.newFolder ? 'iam/folders/store' : 'iam/folder/rename';
+      request.controllerId = this.controllerName;
+      request.roleName = this.roleName;
+      if (this.newFolder) {
+        request.folders = [];
+        if (this.folderObj.paths && this.folderObj.paths.length > 0) {
+          this.folderObj.paths.forEach((path) => {
+            request.folders.push({folder: path, recursive: obj.recursive});
+          });
+        }
+      } else {
+        request.oldFolderName = this.oldFolder.folder;
+        request.newFolder = [{folder: obj.folder, recursive: obj.recursive}];
+      }
+      this.coreService.post(URL, request).subscribe({
+        next: () => {
+          this.activeModal.close('DONE');
+        }, error: () => {
+          this.submitted = false;
+        }
+      });
+    }
   }
 
   displayWith(data): string {
@@ -242,7 +283,7 @@ export class FolderModalComponent implements OnInit {
 
   onKeyPress($event): void {
     if ($event.which === '13' || $event.which === 13 || $event.which === '32' || $event.which === 32) {
-      const path = $event.target.value;
+      let path = $event.target.value;
       if (this.folderObj.paths.indexOf(path) === -1) {
         if (this.treeSelectCtrl) {
           const node = this.treeSelectCtrl.getTreeNodeByKey(path);
@@ -250,6 +291,10 @@ export class FolderModalComponent implements OnInit {
             this.folderObj.paths.push(path);
             node.isSelected = true;
           } else {
+            console.log(path)
+            if (path.substring(0, 1) != '/') {
+              path = '/' + path;
+            }
             const obj = {
               name: path,
               title: path,
@@ -284,7 +329,9 @@ export class FolderModalComponent implements OnInit {
   }
 
   selectFolder(node, $event): void {
-    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    if (!node.origin.isLeaf) {
+      node.isExpanded = !node.isExpanded;
+    }
     $event.stopPropagation();
   }
 
@@ -338,13 +385,15 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   isReset = false;
   nodes: any;
   tree: any;
+  identityServiceName: string;
+  identityServiceType: string;
 
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute,
-    private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
+              private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUserData(res);
@@ -371,20 +420,47 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.pageView = JSON.parse(localStorage.views).permission;
     this.userPermission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.identityServiceName = sessionStorage.identityServiceName;
+    this.identityServiceType = sessionStorage.identityServiceType;
     this.subscription3 = this.route.params.subscribe(params => {
-      this.controllerName = params['master.master'];
+      this.controllerName = params['controller.controller'];
       if (this.controllerName === 'default') {
         this.controllerName = '';
       }
       this.roleName = params['role.role'];
     });
-
+    if (this.identityServiceType !== 'SHIRO') {
+      this.getPermissions();
+    }
   }
 
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+  }
+
+  private getFolderList(): void {
+    this.coreService.post('iam/folders', {
+      identityServiceName: this.identityServiceName,
+      controllerId: this.controllerName,
+      roleName: this.roleName
+    }).subscribe((res: any) => {
+      this.folderArr = res.folders;
+    });
+  }
+
+  private getPermissionList(): void {
+    this.coreService.post('iam/permissions', {
+      identityServiceName: this.identityServiceName,
+      controllerId: this.controllerName,
+      roleName: this.roleName
+    }).subscribe((res: any) => {
+      this.rolePermissions = res.permissions;
+      this.preparePermissionJSON();
+      this.preparePermissionOptions();
+      this.switchTree();
+    })
   }
 
   getPermissions(): void {
@@ -397,15 +473,21 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         });
 
       }
-      this.loadPermission();
-      this.preparePermissionJSON();
-      this.preparePermissionOptions();
-      this.switchTree();
+
+      if (this.identityServiceType !== 'SHIRO') {
+        this.getFolderList();
+        this.getPermissionList();
+      } else {
+        this.loadPermission();
+        this.preparePermissionJSON();
+        this.preparePermissionOptions();
+        this.switchTree();
+      }
     });
   }
 
   addFolder(): void {
-    let folder = { folder: '', recursive: true };
+    let folder = {folder: '', recursive: true};
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: FolderModalComponent,
@@ -413,9 +495,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         currentFolder: folder,
         userDetail: this.userDetail,
         newFolder: true,
-        master: this.controllerName,
-        role: this.roleName,
-        folderArr: this.folderArr
+        controllerName: this.controllerName,
+        roleName: this.roleName,
+        folderArr: []
       },
       nzFooter: null,
       nzClosable: false,
@@ -423,7 +505,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.folderArr = result;
+        if (result !== 'DONE') {
+          this.folderArr = result;
+        } else {
+          this.getFolderList();
+        }
       }
     });
   }
@@ -438,8 +524,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         currentFolder: tempFolder,
         userDetail: this.userDetail,
-        master: this.controllerName,
-        role: this.roleName,
+        controllerName: this.controllerName,
+        roleName: this.roleName,
         folderArr: this.folderArr,
         oldFolder: folder
       },
@@ -449,7 +535,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.folderArr = result;
+        if (result !== 'DONE') {
+          this.folderArr = result;
+        } else {
+          this.getFolderList();
+        }
       }
     });
   }
@@ -476,7 +566,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.folderArr.splice(this.folderArr.indexOf(folder), 1);
-          this.saveInfo(result);
+          if (this.identityServiceType === 'SHIRO') {
+            this.saveInfo(result);
+          } else {
+            this.deleteFolderAPI(folder.folder, result);
+          }
         }
       });
     } else {
@@ -496,14 +590,43 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.folderArr.splice(this.folderArr.indexOf(folder), 1);
-          this.saveInfo(this.dataService.comments);
+          if (this.identityServiceType === 'SHIRO') {
+            this.saveInfo(this.dataService.comments);
+          } else {
+            this.deleteFolderAPI(folder.folder, this.dataService.comments);
+          }
         }
       });
     }
   }
 
+  private deleteFolderAPI(path, comments): void {
+    const request: any = {
+      identityServiceName: this.identityServiceName,
+      controllerId: this.controllerName,
+      roleName: this.roleName,
+      folderNames: [path]
+    };
+    if (comments) {
+      request.auditLog = {};
+      if (comments.comment) {
+        request.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        request.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        request.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
+      }
+    }
+    this.coreService.post('iam/folders/delete', request).subscribe();
+  }
+
   addPermission(): void {
-    let permission = { path: '', excluded: false };
+    let permission = {permissionPath: '', excluded: false};
     this.modal.create({
       nzTitle: undefined,
       nzContent: PermissionModalComponent,
@@ -513,19 +636,23 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         permissionOptions: this.permissionOptions,
         rolePermissions: this.rolePermissions,
         userDetail: this.userDetail,
-        master: this.controllerName,
-        role: this.roleName,
+        controllerName: this.controllerName,
+        roleName: this.roleName,
         add: true
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
+    }).afterClose.subscribe(result => {
+      if (result === 'DONE') {
+        this.getPermissions();
+      }
+    })
   }
 
   editPermission(permission): void {
     let tempPermission = clone(permission);
-    tempPermission.permissionLabel = permission.path;
+    tempPermission.permissionLabel = permission.permissionPath;
     this.modal.create({
       nzTitle: undefined,
       nzContent: PermissionModalComponent,
@@ -536,13 +663,17 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         permissionOptions: this.permissionOptions,
         rolePermissions: this.rolePermissions,
         userDetail: this.userDetail,
-        master: this.controllerName,
-        role: this.roleName
+        controllerName: this.controllerName,
+        roleName: this.roleName
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
+    }).afterClose.subscribe(result => {
+      if (result === 'DONE') {
+        this.getPermissions();
+      }
+    })
   }
 
   deletePermission(permission): void {
@@ -551,7 +682,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         radio: 'predefined',
         type: 'Permission',
         operation: 'Delete',
-        name: permission.path
+        name: permission.permissionPath
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -567,8 +698,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
-          this.updatePermissionList(result);
-          this.findPermissionObj(this.permissionNodes[0][0], permission.path);
+          if (this.identityServiceType === 'SHIRO') {
+            this.updatePermissionList(result);
+          } else {
+            this.deletePermissionAPI(permission, result);
+          }
+          this.findPermissionObj(this.permissionNodes[0][0], permission.permissionPath);
           this.updateDiagramData(this.permissionNodes[0][0]);
         }
       });
@@ -580,7 +715,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           title: 'delete',
           message: 'deletePermission',
           type: 'Delete',
-          objectName: permission.path
+          objectName: permission.permissionPath
         },
         nzFooter: null,
         nzClosable: false,
@@ -589,12 +724,42 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.rolePermissions.splice(this.rolePermissions.indexOf(permission), 1);
-          this.updatePermissionList(this.dataService.comments);
-          this.findPermissionObj(this.permissionNodes[0][0], permission.path);
+          if (this.identityServiceType === 'SHIRO') {
+            this.updatePermissionList(this.dataService.comments);
+          } else {
+            this.deletePermissionAPI(permission, this.dataService.comments);
+          }
+          this.findPermissionObj(this.permissionNodes[0][0], permission.permissionPath);
           this.updateDiagramData(this.permissionNodes[0][0]);
         }
       });
     }
+  }
+
+  private deletePermissionAPI(permission, comments): void {
+    const request: any = {
+      controllerId: this.controllerName,
+      roleName: this.roleName,
+      identityServiceName: this.identityServiceName,
+      permissionPaths: [permission.permissionPath]
+    };
+
+    if (comments) {
+      request.auditLog = {};
+      if (comments.comment) {
+        request.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        request.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        request.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
+      }
+    }
+    this.coreService.post('iam/permissions/delete', request).subscribe();
   }
 
   loadPermission(): void {
@@ -618,7 +783,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         let obj = {
           id: ++this.count,
           name: nodes[j],
-          path: this.permissionArr[i].substring(0, this.permissionArr[i].lastIndexOf(nodes[j])),
+          permissionPath: this.permissionArr[i].substring(0, this.permissionArr[i].lastIndexOf(nodes[j])),
           icon: j < nodes.length - 1 ? './assets/images/minus.png' : '',
           _parents: j < nodes.length - 1 ? [] : null
         };
@@ -688,7 +853,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   findPermissionObj(permissionNodes, permission): void {
     if (permissionNodes._parents) {
       for (let i = 0; i < permissionNodes._parents.length; i++) {
-        if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
+        if ((permissionNodes._parents[i].permissionPath + permissionNodes._parents[i].name) == permission) {
           permissionNodes._parents[i].selected = false;
           this.unSelectedNode(permissionNodes._parents[i], permissionNodes._parents[i].excluded);
           if (permissionNodes._parents[i].excluded) {
@@ -700,7 +865,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         this.findPermissionObj(permissionNodes._parents[i], permission);
       }
     } else {
-      if ((permissionNodes.path + permissionNodes.name) == permission) {
+      if ((permissionNodes.permissionPath + permissionNodes.name) == permission) {
         permissionNodes.selected = false;
         if (permissionNodes.excluded) {
           permissionNodes.greyedBtn = false;
@@ -775,10 +940,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       if (permission_node && permission_node._parents) {
         for (let j = 0; j < permission_node._parents.length; j++) {
           for (let i = 0; i < list.length; i++) {
-            if (list[i].path.match(permission_node._parents[j].path + permission_node._parents[j].name)) {
+            if (list[i].permissionPath.match(permission_node._parents[j].permissionPath + permission_node._parents[j].name)) {
               permission_node._parents[j].isSelected = true;
             }
-            if (list[i].path == (permission_node._parents[j].path + '' + permission_node._parents[j].name)) {
+            if (list[i].permissionPath == (permission_node._parents[j].permissionPath + '' + permission_node._parents[j].name)) {
               permission_node._parents[j].greyed = false;
               permission_node._parents[j].selected = !list[i].excluded;
               permission_node._parents[j].excluded = list[i].excluded;
@@ -794,10 +959,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         }
       } else {
         for (let i = 0; i < list.length; i++) {
-          if (list[i].path.match(permission_node.path + permission_node.name)) {
+          if (list[i].permissionPath.match(permission_node.permissionPath + permission_node.name)) {
             permission_node.isSelected = true;
           }
-          if (list[i].path == (permission_node.path + '' + permission_node.name)) {
+          if (list[i].permissionPath == (permission_node.permissionPath + '' + permission_node.name)) {
             permission_node.greyed = false;
             permission_node.selected = !list[i].excluded;
             permission_node.excluded = list[i].excluded;
@@ -852,7 +1017,37 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     const request: any = {
       accounts: this.userDetail.accounts,
       roles: this.userDetail.roles,
+      main: this.userDetail.main,
       identityServiceName: this.userDetail.identityServiceName
+    };
+    if (comments) {
+      request.auditLog = {};
+      if (comments.comment) {
+        request.auditLog.comment = comments.comment;
+      }
+      if (comments.timeSpent) {
+        request.auditLog.timeSpent = comments.timeSpent;
+      }
+      if (comments.ticketLink) {
+        request.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
+      }
+    }
+    this.coreService.post('authentication/auth/store', request).subscribe(() => {
+      this.dataService.announceFunction('RELOAD');
+    });
+  }
+
+  private savePermission(comments): void {
+    console.log(this.previousPermission);
+    console.log(this.rolePermissions);
+    const request: any = {
+      controllerId: this.controllerName,
+      roleName: this.roleName,
+      identityServiceName: this.identityServiceName,
+      permissions: this.rolePermissions
     };
 
     if (comments) {
@@ -870,25 +1065,26 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         this.dataService.comments = comments;
       }
     }
-    if (sessionStorage.identityServiceType === 'SHIRO') {
-      request.main = this.userDetail.main;
-    }
-    this.coreService.post('authentication/auth/store', request).subscribe(() => {
-      this.dataService.announceFunction('RELOAD');
-    });
+    this.coreService.post('iam/permission/rename', request).subscribe();
+    //this.coreService.post('iam/permissions/delete', request).subscribe();
+    //this.coreService.post('iam/permissions/store', request).subscribe();
   }
 
   updatePermissionList(comments): void {
     this.unSelectedNode(this.permissionNodes[0][0], true);
     this.checkPermissionList(this.permissionNodes[0][0], clone(this.rolePermissions));
     this.updateDiagramData(this.permissionNodes[0][0]);
-    if (this.controllerName) {
-      this.roles[this.roleName].permissions.controllers[this.controllerName] = clone(this.rolePermissions);
+    if (this.identityServiceType === 'SHIRO') {
+      if (this.controllerName) {
+        this.roles[this.roleName].permissions.controllers[this.controllerName] = clone(this.rolePermissions);
+      } else {
+        this.roles[this.roleName].permissions.joc = clone(this.rolePermissions);
+        this.roles[this.roleName].permissions.controllerDefaults = [];
+      }
+      this.saveInfo(comments);
     } else {
-      this.roles[this.roleName].permissions.joc = clone(this.rolePermissions);
-      this.roles[this.roleName].permissions.controllerDefaults = [];
+      this.savePermission(comments);
     }
-    this.saveInfo(comments);
   }
 
   undoPermission(): void {
@@ -990,10 +1186,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     const self = this;
     let _temp = [];
     let endNodes2 = {
-      leftMost: { x: 0, y: 0 },
-      rightMost: { x: 0, y: 0 },
-      topMost: { x: 0, y: 0 },
-      lowerMost: { x: 0, y: 0 }
+      leftMost: {x: 0, y: 0},
+      rightMost: {x: 0, y: 0},
+      topMost: {x: 0, y: 0},
+      lowerMost: {x: 0, y: 0}
     };
     if (type === 'EXPANDALL') {
 
@@ -1153,8 +1349,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       link.enter().append('path')
         .attr('class', 'link')
         .attr('d', (d) => {
-          let o = { x: source.x0, y: (source.y0 + self.boxWidth / 2) };
-          return transitionElbow({ source: o, target: o });
+          let o = {x: source.x0, y: (source.y0 + self.boxWidth / 2)};
+          return transitionElbow({source: o, target: o});
         });
 
       // Update the old links positions
@@ -1166,8 +1362,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         .transition()
         .duration(self.duration)
         .attr('d', (d) => {
-          let o = { x: source.x, y: (source.y + self.boxWidth / 2) };
-          return transitionElbow({ source: o, target: o });
+          let o = {x: source.x, y: (source.y + self.boxWidth / 2)};
+          return transitionElbow({source: o, target: o});
         })
         .remove();
       // Update nodes
@@ -1219,8 +1415,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         })
         .attr('class', 'img exclude-img')
         .attr('id', (d) => {
-          if (d.path) {
-            return d.path.replace(/:/g, '-') + d.name.replace(/-/g, '');
+          if (d.permissionPath) {
+            return d.permissionPath.replace(/:/g, '-') + d.name.replace(/-/g, '');
           } else {
             return d.name.replace(/-/g, '');
           }
@@ -1328,10 +1524,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     function calculateTopMost() {
       endNodes2 = {
-        leftMost: { x: 0, y: 0 },
-        rightMost: { x: 0, y: 0 },
-        topMost: { x: 0, y: 0 },
-        lowerMost: { x: 0, y: 0 }
+        leftMost: {x: 0, y: 0},
+        rightMost: {x: 0, y: 0},
+        topMost: {x: 0, y: 0},
+        lowerMost: {x: 0, y: 0}
       };
 
       nodes = self.tree.nodes(self.root);
@@ -1408,7 +1604,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           if (permission._parents[i]) {
             if (permission._parents[i].selected || (permission._parents[i].excluded && !permission._parents[i].greyedBtn)) {
               let obj = {
-                path: permission._parents[i].path + '' + permission._parents[i].name,
+                permissionPath: permission._parents[i].permissionPath + '' + permission._parents[i].name,
                 excluded: permission._parents[i].excluded
               };
 
@@ -1462,9 +1658,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     function savePermission(permission_node, comments) {
       let _previousPermissionObj = clone(self.rolePermissions);
+
       if (!permission_node.greyed && permission_node.name != 'sos') {
         permission_node.selected = !permission_node.selected;
-
         if (permission_node.selected) {
           permission_node.isSelected = true;
           if (permission_node.parent && !permission_node.parent.isSelected) {
@@ -1475,7 +1671,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           permission_node.isSelected = false;
           self.unSelectedNode(permission_node, false);
         }
-
         _temp = [];
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
@@ -1511,20 +1706,20 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           });
           modal.afterClose.subscribe(result => {
             if (result) {
-              saveTogglezPermission(permission_node, result);
+              saveTogglePermission(permission_node, result);
             }
           });
         } else {
-          saveTogglezPermission(permission_node, self.dataService.comments)
+          saveTogglePermission(permission_node, self.dataService.comments)
         }
       }
     }
-    function saveTogglezPermission(permission_node, comments) {
+
+    function saveTogglePermission(permission_node, comments) {
       let _previousPermissionObj = clone(self.rolePermissions);
       if (!permission_node.greyedBtn && permission_node.name != 'sos') {
         permission_node.excluded = !permission_node.excluded;
         permission_node.excludedParent = !permission_node.excludedParent;
-
         if (permission_node.excluded) {
           permission_node.isSelected = true;
           if (permission_node.parent && !permission_node.parent.isSelected) {
@@ -1537,7 +1732,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           }
           self.unSelectedExcludeNode(permission_node);
         }
-
         _temp = [];
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
@@ -1552,13 +1746,17 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function updatePermissionAfterChange(temp, comments) {
-      if (self.controllerName) {
-        self.roles[self.roleName].permissions.controllers[self.controllerName] = temp;
+      if (self.identityServiceType === 'SHIRO') {
+        if (self.controllerName) {
+          self.roles[self.roleName].permissions.controllers[self.controllerName] = temp;
+        } else {
+          self.roles[self.roleName].permissions.joc = temp;
+          self.roles[self.roleName].permissions.controllerDefaults = [];
+        }
+        self.saveInfo(comments);
       } else {
-        self.roles[self.roleName].permissions.joc = temp;
-        self.roles[self.roleName].permissions.controllerDefaults = [];
+        self.savePermission(comments);
       }
-      self.saveInfo(comments);
     }
 
     function updateDiagramData(nData) {
@@ -1605,19 +1803,20 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function checkNodes(_nodes, rolePermissions) {
+      console.log(rolePermissions)
       let arr = [];
       for (let i = _nodes.length - 1; i >= 0; i--) {
         let flag = false;
         _nodes[i].isAnyChildSelected = false;
-        const name = _nodes[i].path + '' + _nodes[i].name;
+        const name = _nodes[i].permissionPath + '' + _nodes[i].name;
         for (let j = 0; j < rolePermissions.length; j++) {
-          if (name === rolePermissions[j].path) {
+          if (name === rolePermissions[j].permissionPath) {
             flag = true;
             arr.push(name);
             break;
           }
           if (!_nodes[i].greyed && !_nodes[i].selected && !flag) {
-            if (!rolePermissions[j].excluded && rolePermissions[j].path.indexOf(name + ':') > -1) {
+            if (!rolePermissions[j].excluded && rolePermissions[j].permissionPath.indexOf(name + ':') > -1) {
               _nodes[i].isAnyChildSelected = true;
               break;
             }
@@ -1626,7 +1825,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       }
       if (arr.length > 0) {
         for (let i = 0; i < _nodes.length; i++) {
-          const name = _nodes[i].path + '' + _nodes[i].name;
+          const name = _nodes[i].permissionPath + '' + _nodes[i].name;
           for (let j = 0; j < arr.length; j++) {
             if (arr[j].indexOf(name + ':') > -1) {
               _nodes[i].isAnyChildSelected = false;
@@ -1679,9 +1878,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   private setUserData(res): void {
-    this.userDetail = res;
-    this.roles = res.roles;
-    this.getPermissions();
+    if (this.identityServiceType === 'SHIRO') {
+      this.userDetail = res;
+      this.roles = res.roles;
+      this.getPermissions();
+    }
   }
 }
 
