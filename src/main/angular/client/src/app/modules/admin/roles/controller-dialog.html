@@ -1,7 +1,7 @@
 <div class="modal-header">
     <h4 class="modal-title">
         <span *ngIf="!copy" translate>user.label.addController</span>
-        <span *ngIf="copy" ><span translate>user.label.copyController</span> : {{currentController.name || 'default'}}</span>
+        <span *ngIf="copy" ><span translate>user.label.copyController</span> : {{currentController.controller || 'default'}}</span>
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
       <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -15,7 +15,7 @@
         <div class="form-group row" *ngIf="copy">
           <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
           <div class="col-sm-6">
-            <input type="text" class="form-control" name="controllerId" [(ngModel)]="name" readonly>
+            <input type="text" class="form-control" name="controllerId" [(ngModel)]="currentController.name" readonly>
           </div>
         </div>
         <div class="form-group row">

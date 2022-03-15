@@ -1984,11 +1984,11 @@ export class ScriptEditorComponent implements AfterViewInit {
           if (this.cm && this.cm.codeMirror) {
             const doc = this.cm.codeMirror.getDoc();
             const cursor = doc.getCursor(); // gets the line number in the cursor position
-            doc.replaceRange(this.script, cursor);
+            doc.replaceRange(this.script || '', cursor);
             this.cm.codeMirror.focus();
             doc.setCursor(cursor);
           }
-        }, 200);
+        }, 400);
 
         this.cm.codeMirror.on('inputRead', (editor, e) => {
           const cursor = editor.getCursor();
@@ -2012,8 +2012,11 @@ export class ScriptEditorComponent implements AfterViewInit {
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e): void {
-    if (this.dragEle && e && e.target) {
-      this.dragEle.disabled = !((e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
+    try {
+      if (this.dragEle && e && e.target) {
+        this.dragEle.disabled = !((e.target.getAttribute('class') === 'modal-header' || e.target.getAttribute('class') === 'drag-text'));
+      }
+    } catch (e) {
     }
   }
 
@@ -4081,10 +4084,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.trigger('show');
       return el.apply(this, arguments);
     };
-
-    $('#property-panel').on('resizestop', () => {
-      self.checkGraphHeight();
-    });
 
     const panel = $('.property-panel');
     $('.sidebar-open', panel).click(() => {

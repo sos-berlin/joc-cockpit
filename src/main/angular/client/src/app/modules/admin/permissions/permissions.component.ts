@@ -124,7 +124,6 @@ export class PermissionModalComponent implements OnInit {
         }, error: () => this.submitted = false
       });
     } else {
-      console.log(_obj);
       const URL = this.add ? 'iam/permissions/store' : 'iam/permission/rename';
       request.controllerId = this.controllerName;
       request.roleName = this.roleName;
@@ -291,7 +290,6 @@ export class FolderModalComponent implements OnInit {
             this.folderObj.paths.push(path);
             node.isSelected = true;
           } else {
-            console.log(path)
             if (path.substring(0, 1) != '/') {
               path = '/' + path;
             }
@@ -457,6 +455,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       roleName: this.roleName
     }).subscribe((res: any) => {
       this.rolePermissions = res.permissions;
+      this.originalPermission = clone(this.rolePermissions);
       this.preparePermissionJSON();
       this.preparePermissionOptions();
       this.switchTree();
@@ -471,7 +470,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         this.permissions.SOSPermission = this.permissions.SOSPermission.filter((val) => {
           return !val.match(':joc:');
         });
-
       }
 
       if (this.identityServiceType !== 'SHIRO') {
@@ -645,7 +643,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result === 'DONE') {
-        this.getPermissions();
+        this.getPermissionList();
       }
     })
   }
@@ -671,7 +669,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result === 'DONE') {
-        this.getPermissions();
+        this.getPermissionList();
       }
     })
   }
@@ -1040,14 +1038,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private savePermission(comments): void {
-    console.log(this.previousPermission);
-    console.log(this.rolePermissions);
+  private savePermission(comments, temp = []): void {
     const request: any = {
       controllerId: this.controllerName,
       roleName: this.roleName,
-      identityServiceName: this.identityServiceName,
-      permissions: this.rolePermissions
+      identityServiceName: this.identityServiceName
     };
 
     if (comments) {
@@ -1065,12 +1060,33 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         this.dataService.comments = comments;
       }
     }
-    this.coreService.post('iam/permission/rename', request).subscribe();
-    //this.coreService.post('iam/permissions/delete', request).subscribe();
-    //this.coreService.post('iam/permissions/store', request).subscribe();
+    if (this.previousPermission.length > 0 || temp.length > 0) {
+      const permissionPaths = [];
+      const arr = temp.length > 0 ? temp : this.previousPermission[this.previousPermission.length - 1];
+      if (arr && arr.length > 0) {
+        for (let i in arr) {
+          let flag = false;
+          for (let j in this.rolePermissions) {
+            if (arr[i].permissionPath === this.rolePermissions[j].permissionPath) {
+              flag = true;
+              break;
+            }
+          }
+          if (!flag && permissionPaths.indexOf(arr[i].permissionPath) === -1) {
+            permissionPaths.push(arr[i].permissionPath)
+          }
+        }
+      }
+      if (permissionPaths.length > 0) {
+        this.coreService.post('iam/permissions/delete', {...request, permissionPaths}).subscribe();
+      }
+    }
+    if (this.rolePermissions.length > 0) {
+      this.coreService.post('iam/permissions/store', {...request, permissions: this.rolePermissions}).subscribe();
+    }
   }
 
-  updatePermissionList(comments): void {
+  updatePermissionList(comments, temp = []): void {
     this.unSelectedNode(this.permissionNodes[0][0], true);
     this.checkPermissionList(this.permissionNodes[0][0], clone(this.rolePermissions));
     this.updateDiagramData(this.permissionNodes[0][0]);
@@ -1083,7 +1099,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       }
       this.saveInfo(comments);
     } else {
-      this.savePermission(comments);
+      this.savePermission(comments, temp);
     }
   }
 
@@ -1095,7 +1111,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         operation: 'Store',
         name: 'sos:product:*'
       };
-      const modal = this.modal.create({
+      this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
@@ -1105,25 +1121,24 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
+      }).afterClose.subscribe(result => {
         if (result) {
-          this.rolePermissions = this.previousPermission[this.previousPermission.length - 1];
-          this.previousPermission.splice(this.previousPermission.length - 1, 1);
-          if (isEqual(this.originalPermission, this.rolePermissions)) {
-            this.isReset = false;
-          }
-          this.updatePermissionList(result);
+          this._undoPermission(result);
         }
       });
     } else {
-      this.rolePermissions = this.previousPermission[this.previousPermission.length - 1];
-      this.previousPermission.splice(this.previousPermission.length - 1, 1);
-      if (isEqual(this.originalPermission, this.rolePermissions)) {
-        this.isReset = false;
-      }
-      this.updatePermissionList(this.dataService.comments);
+      this._undoPermission(this.dataService.comments);
     }
+  }
+
+  private _undoPermission(comments): void {
+    const tempPermission = this.coreService.clone(this.rolePermissions);
+    this.rolePermissions = this.previousPermission[this.previousPermission.length - 1];
+    this.previousPermission.splice(this.previousPermission.length - 1, 1);
+    if (isEqual(this.originalPermission, this.rolePermissions)) {
+      this.isReset = false;
+    }
+    this.updatePermissionList(comments, tempPermission);
   }
 
   resetPermission(): void {
@@ -1134,7 +1149,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         operation: 'Store',
         name: 'sos:product:*'
       };
-      const modal = this.modal.create({
+      this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
@@ -1144,21 +1159,22 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
+      }).afterClose.subscribe(result => {
         if (result) {
-          this.rolePermissions = clone(this.originalPermission);
-          this.previousPermission = [];
-          this.updatePermissionList(result);
-          this.isReset = false;
+          this._resetPermission(result);
         }
       });
     } else {
-      this.rolePermissions = clone(this.originalPermission);
-      this.previousPermission = [];
-      this.updatePermissionList(this.dataService.comments);
-      this.isReset = false;
+      this._resetPermission(this.dataService.comments);
     }
+  }
+
+  private _resetPermission(comments): void {
+    const tempPermission = this.coreService.clone(this.rolePermissions);
+    this.rolePermissions = clone(this.originalPermission);
+    this.previousPermission = [];
+    this.isReset = false;
+    this.updatePermissionList(comments, tempPermission);
   }
 
   expandAll(): void {
@@ -1675,12 +1691,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
-        updatePermissionAfterChange(_temp, comments);
         if (self.previousPermission.length === 10) {
           self.previousPermission.splice(0, 1);
         }
         self.isReset = true;
         self.previousPermission.push(_previousPermissionObj);
+        updatePermissionAfterChange(_temp, comments);
       }
     }
 
@@ -1736,12 +1752,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         generatePermissionList(self.permissionNodes[0][0]);
         toggleRectangleColour(_temp);
         self.rolePermissions = _temp;
-        updatePermissionAfterChange(_temp, comments);
         if (self.previousPermission.length === 10) {
           self.previousPermission.splice(0, 1);
         }
         self.isReset = true;
         self.previousPermission.push(_previousPermissionObj);
+        updatePermissionAfterChange(_temp, comments);
       }
     }
 
@@ -1803,7 +1819,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function checkNodes(_nodes, rolePermissions) {
-      console.log(rolePermissions)
       let arr = [];
       for (let i = _nodes.length - 1; i >= 0; i--) {
         let flag = false;

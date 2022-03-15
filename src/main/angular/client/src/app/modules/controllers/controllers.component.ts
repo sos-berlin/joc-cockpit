@@ -42,6 +42,7 @@ export class DeployModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
   }
 

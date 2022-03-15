@@ -460,6 +460,7 @@ export class IdentityServiceModalComponent implements OnInit {
       this.currentObj = clone(this.identityService);
     } else {
       this.currentObj.serviceAuthenticationScheme = 'SINGLE-FACTOR';
+      this.currentObj.singleFactorPwd = true;
     }
     let flag = true;
     for (const i in this.identityServices) {

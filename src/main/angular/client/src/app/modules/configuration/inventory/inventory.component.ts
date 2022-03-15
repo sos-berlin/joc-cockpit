@@ -2893,7 +2893,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 data.children.splice(0, index, children[0]);
                 data.children.splice(1, index, children[1]);
 
-                const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type === InventoryObject.INCLUDESCRIPT || self.selectedObj.type.match(/CALENDAR/)) ? children[1] : children[0];
+                const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type === InventoryObject.INCLUDESCRIPT || (self.selectedObj.type && self.selectedObj.type.match(/CALENDAR/))) ? children[1] : children[0];
                 if (self.selectedObj.path === parentNode.path) {
                   parentNode.expanded = true;
                   for (let j = 0; j < parentNode.children.length; j++) {
@@ -3123,7 +3123,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }
       this.type = node.origin.objectType || node.origin.object || node.origin.type;
       this.selectedData = node.origin;
-      console.log(this.selectedData, this.type)
       this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, node.origin.objectType ? '$ID' : undefined);
     }
   }
@@ -3653,7 +3652,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   deployObject(node, releasable): void {
-    const origin = node.origin ? node.origin : node;
+    const origin = this.coreService.clone(node.origin ? node.origin : node);
     if (this.selectedObj && this.selectedObj.id &&
       this.selectedObj.type === InventoryObject.WORKFLOW) {
       this.dataService.reloadTree.next({ saveObject: origin });
@@ -4678,8 +4677,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private setSelectedObj(type, name, path, id): void {
-    console.log('setSelectedObj', id);
-    console.log('type', type,'name', name, 'path', path);
     if (this.selectedObj.id) {
       this.pushObjectInHistory();
     }

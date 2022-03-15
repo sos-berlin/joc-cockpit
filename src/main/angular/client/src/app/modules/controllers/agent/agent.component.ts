@@ -61,6 +61,7 @@ export class SubagentModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.data) {
       this.subagent = this.coreService.clone(this.data);
@@ -133,6 +134,7 @@ export class AgentModalComponent implements OnInit {
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
@@ -695,7 +697,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       let tip = null;
       if (cell != null && cell.getTooltip != null) {
         tip = cell.getTooltip();
-      } else {
+      } else if (cell) {
         if (!(cell.value.tagName === 'Connection' || cell.value.tagName === 'Connector' || cell.value.tagName === 'Box')) {
           tip = "<div class='vertex-text2'>";
           if (cell.getAttribute('label')) {

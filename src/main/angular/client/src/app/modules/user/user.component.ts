@@ -32,6 +32,7 @@ export class GitModalComponent implements OnInit {
   ngOnInit(): void {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
+      this.display = true;
     }
   }
 

@@ -271,7 +271,7 @@
                         <tr *ngFor="let item of node.origin.values">
                           <td style="padding: 3px;"><span> {{item.name}}</span></td>
                           <td style="padding: 3px;"
-                              [innerHTML]="(item.data && (item.name && item.name !== 'password' || (item.base && item.base !== 'password'))) ? (item.data | safeHtml) : passwordLabel(item.data)">
+                              [innerHTML]="(item.data && ((item.name && item.name !== 'password') || (item.base && item.base !== 'password') || (item.parent && item.parent !== 'Password'))) ? (item.data | safeHtml) : passwordLabel(item.data)">
                           </td>
                         </tr>
                       </table>
@@ -288,7 +288,7 @@
                       </span>
                     <span class="text-sm pl-2"
                           (click)="selectNode(node);addContent(node.origin.values);"
-                          *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && node.origin.values[0].base !== 'password')">
+                          *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && ((node.origin.values[0].base && node.origin.values[0].base !== 'password') || node.origin.values[0].parent !== 'Password'))">
                         {{node.origin.values[0].base === 'html' ? removeTag(node.origin.values[0]) : node.origin.values[0].data}}
                       </span>
                     <span class="text-sm pl-2"

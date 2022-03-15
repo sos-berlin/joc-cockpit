@@ -20,7 +20,7 @@ const routes: Routes = [
       {path: 'identity_service/role', component: RolesComponent, data: {breadcrumb: 'breadcrumb.label.manageRoles'}},
       {path: 'identity_service/main_section', component: MainSectionComponent, data: {breadcrumb: 'breadcrumb.label.mainSetting'}},
       {path: 'identity_service/profiles', component: ProfilesComponent, data: {breadcrumb: 'breadcrumb.label.profiles'}},
-      {path: 'identity_service/permissions/:master.master/:role.role', component: PermissionsComponent, data: {breadcrumb: 'breadcrumb.label.permissions'}}
+      {path: 'identity_service/permissions/:controller.controller/:role.role', component: PermissionsComponent, data: {breadcrumb: 'breadcrumb.label.permissions'}}
     ]
   }
 ];
