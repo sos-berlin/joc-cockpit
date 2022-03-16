@@ -16,11 +16,11 @@
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #account="nzDropdownMenu" >
-                <ul nz-menu >
-                  <li nz-menu-item (click)="selectUser(account.account)" [ngClass]="{orange: selectedUser === account.account}" *ngFor="let account of userObj.accounts | orderBy: 'name'">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="selectUser(account.accountName)" [ngClass]="{orange: selectedUser === account.accountName}" *ngFor="let account of accounts | orderBy: 'name'">
                     <a>
-                      <span>{{account.account | decodeSpace}}</span>
-                      <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === account.account"
+                      <span>{{account.accountName | decodeSpace}}</span>
+                      <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === account.accountName"
                         class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>

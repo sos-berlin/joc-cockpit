@@ -1076,12 +1076,13 @@ export class RolesComponent implements OnInit, OnDestroy {
       }
     });
     roles.forEach((role, index) => {
-      this.coreService.post('iam/roles/store', {
-        roleName: role,
+      this.coreService.post('iam/role/store', {
+        roleName: role.roleName,
         auditLog: comments,
         identityServiceName: this.identityServiceName
       }).subscribe({
         next: () => {
+          this.getAndStorePermission(role, comments);
           if (index === roles.length - 1) {
             this.getList();
           }
@@ -1090,10 +1091,31 @@ export class RolesComponent implements OnInit, OnDestroy {
     })
   }
 
+  private getAndStorePermission(role, comments) {
+    role.controllers.forEach((id) => {
+      this.coreService.post('iam/permissions', {
+        roleName: role.roleName,
+        controllerId: id,
+        identityServiceName: role.identityServiceName
+      }).subscribe({
+        next: (res) => {
+          this.coreService.post('iam/permissions/store', {
+            roleName: role.roleName,
+            controllerId: id,
+            permissions: res.permissions,
+            identityServiceName: this.identityServiceName,
+            auditLog: comments
+          }).subscribe();
+        }
+      });
+    });
+  }
+
   checkAll(value: boolean): void {
     if (value && this.controllerRoles.length > 0) {
       this.controllerRoles.forEach(item => {
-        this.object.mapOfCheckedId.set(item.roleName, item.mainObj);
+        item.identityServiceName = this.identityServiceName;
+        this.object.mapOfCheckedId.set(item.roleName, item.mainObj || item);
       });
     } else {
       this.object.mapOfCheckedId.clear();
@@ -1121,7 +1143,8 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   checkMappedObject(isChecked: boolean, role): void {
     if (isChecked) {
-      this.object.mapOfCheckedId.set(role.roleName, role.mainObj);
+      role.identityServiceName = this.identityServiceName;
+      this.object.mapOfCheckedId.set(role.roleName, role.mainObj || role);
     } else {
       this.object.mapOfCheckedId.delete(role.roleName);
     }

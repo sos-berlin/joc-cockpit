@@ -20,6 +20,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   isLdapRealmEnable = true;
   isJOCClusterEnable = true;
   selectedUser: string;
+  accounts: any = [];
   route: string;
   userObj: any = {};
   identityService: string;
@@ -220,6 +221,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       }).subscribe({
         next: res => {
           this.userObj = res;
+          this.accounts = res.accounts;
           delete this.userObj.deliveryDate;
           this.userObj.identityServiceName = this.identityService;
           if (flag) {

@@ -432,7 +432,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
       this.accounts = res.accountItems;
       this.loading = false;
       this.searchInResult();
-      console.log(this.accounts)
     })
   }
 
@@ -877,25 +876,44 @@ export class AccountsComponent implements OnInit, OnDestroy {
         }
       }
       if (!flag) {
-        const roles = [];
-        for (const i in value.roles) {
-          if (value.roles[i]) {
-            if (this.userDetail.roles[value.roles[i]]) {
-              roles.push(value.roles[i]);
+        if (this.identityServiceType === 'SHIRO') {
+          const roles = [];
+          for (const i in value.roles) {
+            if (value.roles[i]) {
+              if (this.userDetail.roles[value.roles[i]]) {
+                roles.push(value.roles[i]);
+              }
             }
           }
-        }
-        value.roles = roles;
-        value.identityServiceId = 0;
-        delete value.password;
-        if (this.identityServiceType === 'SHIRO') {
+          value.roles = roles;
+          value.identityServiceId = 0;
+          delete value.password;
           this.userDetail.accounts.push(value);
         } else {
+          value.forcePasswordChange = true;
+          value.identityServiceName = this.identityServiceName;
           arr.push(value);
         }
       }
     });
-    this.saveInfo(arr, comments);
+    if (this.identityServiceType === 'SHIRO') {
+      this.saveInfo(arr, comments);
+    } else {
+      this.pasteUsers(arr, comments);
+    }
+  }
+
+  private pasteUsers(accounts, comments): void {
+    accounts.forEach((account, index) => {
+      account.auditLog = comments;
+      this.coreService.post('iam/account/store', account).subscribe({
+        next: () => {
+          if (index === accounts.length - 1) {
+            this.getList();
+          }
+        }
+      });
+    })
   }
 
   private reset(): void {
