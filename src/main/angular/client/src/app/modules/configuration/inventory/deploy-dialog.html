@@ -14,11 +14,11 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
-    <div *ngIf="nodes.length>0 && !loading">
-        <div class="hide" [ngClass]="{'show': display}">
+    <div *ngIf="!loading">
+        <div class="hide" [ngClass]="{'show': display && nodes.length > 0}">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
         </div>
-        <div class="form-group row" *ngIf="!releasable && !isRemove">
+        <div class="form-group row" *ngIf="!releasable && !isRemove && nodes.length > 0">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.controllers</label>
           </label>
@@ -34,7 +34,20 @@
             </nz-select>
           </div>
         </div>
-        <div class="form-group row" *ngIf="(!data || !data.object) && !isDeleted && !isRemove">
+        <div class="form-group row" *ngIf="!isRevoke && !isDeleted && !releasable">
+        <div class="col-md-3">
+          <label translate>inventory.export.label.filter</label>
+        </div>
+        <div class="col-md-9">
+          <label nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
+            {{'inventory.export.label.draft'| translate}}
+          </label>
+          <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
+            {{'inventory.export.label.deployed'| translate}}
+          </label>
+        </div>
+      </div>
+        <div class="form-group row" *ngIf="(!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0">
           <div class="col-md-3">
             <label translate>inventory.label.handleRecursively</label>
           </div>
@@ -42,7 +55,7 @@
             <label nz-checkbox [(ngModel)]="object.isRecursive" name="isRecursive" (ngModelChange)="handleRecursive()"></label>
           </div>
         </div>
-        <div class="row m-b-sm" *ngIf="!isDeleted && !isRemove">
+        <div class="row m-b-sm" *ngIf="!isDeleted && !isRemove && nodes.length > 0">
           <div class="col-md-12">
             <a class="text" (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate">
               <i class="fa fa-angle-double-down fa-lg"></i>

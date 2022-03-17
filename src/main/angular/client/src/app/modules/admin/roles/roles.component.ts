@@ -4,7 +4,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
-import {clone} from 'underscore';
+import {clone, isArray} from 'underscore';
 import {catchError, filter} from 'rxjs/operators';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {DataService} from '../data.service';
@@ -397,6 +397,7 @@ export class RolesComponent implements OnInit, OnDestroy {
   showMsg: any;
   permission: any = {};
   preferences: any = {};
+  roles = [];
   controllerRoles = [];
   identityServiceName: string;
   identityServiceType: string;
@@ -412,8 +413,12 @@ export class RolesComponent implements OnInit, OnDestroy {
   constructor(private coreService: CoreService, private router: Router, private authService: AuthService, private activeRoute: ActivatedRoute, private modal: NzModalService,
               private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
-      if (res && res.accounts) {
-        this.setUsersData(res);
+      if (res) {
+        if (res.accounts) {
+          this.setUsersData(res);
+        } else if (isArray(res)) {
+          this.accounts = res;
+        }
       }
     });
     this.subscription2 = dataService.functionAnnounced$.subscribe(res => {
@@ -467,7 +472,9 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   private getList(): void {
     this.coreService.post('iam/roles', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
+      this.roles = res.roles;
       this.controllerRoles = res.roles;
+      this.checkUrl(null, true);
     })
   }
 
@@ -475,17 +482,25 @@ export class RolesComponent implements OnInit, OnDestroy {
     this.showMsg = false;
     if (account) {
       for (let i = 0; i < this.accounts.length; i++) {
-        if (this.accounts[i].account === account && this.accounts[i].roles) {
+        if (this.accounts[i].accountName === account) {
           const selectedRoles = this.accounts[i].roles || [];
-          this.controllerRoles = this.controllerRoles.filter((role) => {
-            return selectedRoles.includes(role.roleName);
-          });
+          if (this.identityServiceType !== 'SHIRO') {
+            this.controllerRoles = this.roles.filter((role) => {
+              return selectedRoles.includes(role.roleName);
+            });
+          } else {
+            this.controllerRoles = this.controllerRoles.filter((role) => {
+              return selectedRoles.includes(role.roleName);
+            });
+          }
           break;
         }
       }
       if (this.controllerRoles.length === 0) {
         this.showMsg = true;
       }
+    } else if (this.identityServiceType !== 'SHIRO') {
+      this.controllerRoles = this.coreService.clone(this.roles);
     }
   }
 
@@ -962,7 +977,7 @@ export class RolesComponent implements OnInit, OnDestroy {
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.controllerRoles, event.previousIndex, event.currentIndex);
     let comments = {};
-    if (this.preferences.auditLog) {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         comments = {comment: translatedValue};
       });

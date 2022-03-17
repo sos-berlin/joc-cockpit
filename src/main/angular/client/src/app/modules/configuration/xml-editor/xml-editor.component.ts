@@ -1219,14 +1219,22 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       res.configuration.env[obj.env] = '$' + obj.variable;
     }
     res.configuration.title = 'Job Resource for File Transfer: '+ this.activeTab.name;
-    this.coreService.post('inventory/store', {
+    const request = {
       configuration: res.configuration,
       valid: true,
       id: data.id,
-      objectType: res.objectType
-    }).subscribe(() => {
+      objectType: res.objectType,
+      auditLog: {}
+    };
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        request.auditLog = {comment: translatedValue};
+      });
+    }
+    this.coreService.post('inventory/store', request).subscribe(() => {
       this.coreService.post('inventory/deployment/deploy', {
         controllerIds: [this.schedulerIds.selected],
+        auditLog: request.auditLog,
         store: {
           draftConfigurations: [{
             configuration: {

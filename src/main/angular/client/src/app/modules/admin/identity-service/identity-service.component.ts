@@ -857,39 +857,28 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     if (this.usr.reverse) {
       let j = 1;
       for (let i = list.length - 1; i >= 0; i--) {
-        if (list[i].ordering !== j) {
-          changeArr.push(list[i].identityServiceName)
-        }
         list[i].ordering = j;
+        changeArr.push(list[i].identityServiceName)
         j++;
       }
     } else {
       for (let i = 0; i < list.length; i++) {
-        if (list[i].ordering !== i + 1) {
-          changeArr.push(list[i].identityServiceName)
-        }
         list[i].ordering = i + 1;
+        changeArr.push(list[i].identityServiceName)
       }
     }
 
     this.identityServices = list;
-    if (this.preferences.auditLog && !this.dataService.comments.comment) {
-      let comments = {};
+    let comments = {};
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        comments = { comment: translatedValue };
-      });
-      this.identityServices.forEach((identityService) => {
-        if (changeArr.indexOf(identityService.identityServiceName) > -1) {
-          this.enableDisable(identityService, identityService.disabled, comments);
-        }
-      });
-    } else {
-      this.identityServices.forEach((identityService) => {
-        if (changeArr.indexOf(identityService.identityServiceName) > -1) {
-          this.enableDisable(identityService, identityService.disabled, this.dataService.comments.comment);
-        }
+        comments = {comment: translatedValue};
       });
     }
+    this.coreService.post('iam/identityservices/reorder', {
+      identityServiceNames: changeArr,
+      auditLog: this.dataService.comments.comment ? this.dataService.comments : comments
+    }).subscribe();
   }
 
   private enableDisable(identityService, flag, comments): void {

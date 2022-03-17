@@ -1066,8 +1066,16 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (this.scriptObj.show) {
       const doc = this.cm.codeMirror.getDoc();
       const cursor = this.cm.codeMirror.getCursor(); // gets the line number in the cursor position
-      doc.replaceRange(this.scriptObj.name, cursor);
-      cursor.ch = cursor.ch + this.scriptObj.name.length;
+      const currentLine = this.cm.codeMirror.getLine(cursor.line);
+      const isSpace = currentLine.substring(cursor.ch, cursor.ch + 1) == ' ';
+      let str = (!isSpace ? ' ' : '');
+      if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
+        str = str + '##!include ' + this.scriptObj.name + ' ';
+      } else {
+        str = str + this.scriptObj.name + ' ';
+      }
+      doc.replaceRange(str, cursor);
+      cursor.ch = cursor.ch + str.length;
       this.cm.codeMirror.focus();
       doc.setCursor(cursor);
       this.scriptObj.name = '';
@@ -1736,20 +1744,27 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     } else {
-      if (type === 'DOCUMENTATION') {
-        if (this.selectedNode.job.documentationName1) {
-          if (this.selectedNode.job.documentationName !== this.selectedNode.job.documentationName1) {
-            this.selectedNode.job.documentationName = this.selectedNode.job.documentationName1;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.selectedNode.job.documentationName !== node.key) {
-            this.selectedNode.job.documentationName = node.key;
+      if (type === InventoryObject.INCLUDESCRIPT) {
+        console.log(node.origin)
+        setTimeout(() => {
+          this.closeScriptTree();
+        }, 10);
+      } else {
+        if (type === 'DOCUMENTATION') {
+          if (this.selectedNode.job.documentationName1) {
+            if (this.selectedNode.job.documentationName !== this.selectedNode.job.documentationName1) {
+              this.selectedNode.job.documentationName = this.selectedNode.job.documentationName1;
+            }
+          } else if (node.key && !node.key.match('/')) {
+            if (this.selectedNode.job.documentationName !== node.key) {
+              this.selectedNode.job.documentationName = node.key;
+            }
           }
         }
+        setTimeout(() => {
+          this.saveToHistory();
+        }, 10);
       }
-      setTimeout(() => {
-        this.saveToHistory();
-      }, 10);
     }
   }
 
@@ -1988,7 +2003,7 @@ export class ScriptEditorComponent implements AfterViewInit {
             this.cm.codeMirror.focus();
             doc.setCursor(cursor);
           }
-        }, 400);
+        }, 450);
 
         this.cm.codeMirror.on('inputRead', (editor, e) => {
           const cursor = editor.getCursor();
@@ -2038,6 +2053,10 @@ export class ScriptEditorComponent implements AfterViewInit {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
       }
+    } else {
+      setTimeout(() => {
+        this.closeScriptTree();
+      }, 10)
     }
   }
 
@@ -2071,14 +2090,23 @@ export class ScriptEditorComponent implements AfterViewInit {
     if (this.scriptObj.show) {
       const doc = this.cm.codeMirror.getDoc();
       const cursor = this.cm.codeMirror.getCursor(); // gets the line number in the cursor position
-      doc.replaceRange(this.scriptObj.name, cursor);
-      cursor.ch = cursor.ch + this.scriptObj.name.length;
+      const currentLine = this.cm.codeMirror.getLine(cursor.line);
+      const isSpace = currentLine.substring(cursor.ch, cursor.ch + 1) == ' ';
+      let str = (!isSpace ? ' ' : '');
+      if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
+        str = str + '##!include ' + this.scriptObj.name + ' ';
+      } else {
+        str = str + this.scriptObj.name + ' ';
+      }
+      doc.replaceRange(str, cursor);
+      cursor.ch = cursor.ch + str.length;
       this.cm.codeMirror.focus();
       doc.setCursor(cursor);
       this.scriptObj.name = '';
     }
     this.scriptObj.show = false;
   }
+
 }
 
 @Component({

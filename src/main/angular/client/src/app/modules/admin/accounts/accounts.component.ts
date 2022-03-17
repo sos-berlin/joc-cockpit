@@ -251,8 +251,7 @@ export class AccountModalComponent implements OnInit {
       }
       this.coreService.post('iam/account/rename', obj).subscribe({
         next: () => {
-          cb();
-          this.activeModal.close('DONE');
+          cb('OK');
         }, error: () => {
           cb();
         }

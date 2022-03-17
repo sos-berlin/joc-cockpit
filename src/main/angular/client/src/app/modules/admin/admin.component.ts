@@ -215,7 +215,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private getUsersData(flag): void {
-    if(this.identityServiceType === 'SHIRO') {
+    if (this.identityServiceType === 'SHIRO') {
       this.coreService.post('authentication/auth', {
         identityServiceName: this.identityService
       }).subscribe({
@@ -233,6 +233,11 @@ export class AdminComponent implements OnInit, OnDestroy {
           this.dataService.announceData(this.userObj);
         }
       });
+    } else if (this.identityServiceType && this.identityService && this.route.match(/role/)) {
+      this.coreService.post('iam/accounts', {identityServiceName: this.identityService}).subscribe((res: any) => {
+        this.accounts = res.accountItems;
+        this.dataService.announceData(this.accounts);
+      })
     }
   }
 

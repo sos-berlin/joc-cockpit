@@ -221,6 +221,10 @@ export class DeployComponent implements OnInit {
     store: {draftConfigurations: [], deployConfigurations: []},
     deleteObj: {deployConfigurations: []}
   };
+  filter = {
+    draft: true,
+    deploy: true
+  };
   submitted = false;
   required = false;
   comments: any = { radio: 'predefined' };
@@ -287,6 +291,12 @@ export class DeployComponent implements OnInit {
     this.ref.detectChanges();
   }
 
+  filterList(): void {
+    this.nodes = [];
+    this.loading = true;
+    this.buildTree(this.path);
+  }
+
   checkBoxChange(e: NzFormatEmitEvent): void {
     if (!this.object.isRecursive) {
       const node = e.node;
@@ -347,6 +357,10 @@ export class DeployComponent implements OnInit {
     }
     if (this.isChecked && !this.releasable) {
       obj.controllerId = this.schedulerIds.selected;
+    }
+    if (!this.isRemove && !this.isDeleted && !this.releasable) {
+      obj.withoutDrafts = !this.filter.draft;
+      obj.withoutDeployed = !this.filter.deploy;
     }
     const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
     this.coreService.post(URL, obj).subscribe({
@@ -494,13 +508,19 @@ export class DeployComponent implements OnInit {
                   }
                 }
                 if (!isEmpty) {
-                  self.object.store.deployConfigurations.push(objDep);
-                  self.object.store.draftConfigurations.push(objDep);
+                  if (self.filter.deploy) {
+                    self.object.store.deployConfigurations.push(objDep);
+                  }
+                  if (self.filter.draft) {
+                    self.object.store.draftConfigurations.push(objDep);
+                  }
                 }
               } else {
                 if (objDep.configuration.commitId) {
-                  self.object.store.deployConfigurations.push(objDep);
-                } else {
+                  if (self.filter.deploy) {
+                    self.object.store.deployConfigurations.push(objDep);
+                  }
+                } else if (self.filter.draft) {
                   self.object.store.draftConfigurations.push(objDep);
                 }
               }
@@ -738,13 +758,13 @@ export class CronImportModalComponent implements OnInit {
       this.uploader.options.additionalParameter = obj;
     };
 
-    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
+    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
       if (status === 200) {
         this.activeModal.close(this.requestObj.folder || '/');
       }
     };
 
-    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+    this.uploader.onErrorItem = (fileItem, response: any) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
         this.toasterService.error(res.error.message, res.error.code);
@@ -1356,7 +1376,7 @@ export class RepositoryComponent implements OnInit {
     isRecursive: false
   };
   filter = {
-    envRelated: false,
+    envRelated: true,
     envIndependent: false,
     draft: true,
     deploy: true,
@@ -1371,7 +1391,7 @@ export class RepositoryComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-    private inventoryService: InventoryService) {
+              private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
@@ -1379,16 +1399,10 @@ export class RepositoryComponent implements OnInit {
       this.required = true;
       this.display = true;
     }
-    if (this.category === 'LOCAL') {
-      this.filter.envRelated = true;
-      this.filter.envIndependent = false;
-    } else {
-      this.filter.envRelated = false;
-      this.filter.envIndependent = true;
-    }
+    this.filter.envIndependent = this.category !== 'LOCAL';
     if (this.origin) {
       this.path = this.origin.path;
-      if(this.origin.object) {
+      if (this.origin.object) {
         if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')) {
           this.type = this.origin.object;
           this.filter.envIndependent = false;
@@ -1428,6 +1442,9 @@ export class RepositoryComponent implements OnInit {
         APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
           catchError(error => of(error))
         ));
+      }
+      if  (this.category !== 'LOCAL'){
+        obj.objectTypes = ['INCLUDESCRIPT'];
       }
       obj.withoutReleased = !this.filter.release;
       APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
@@ -1832,6 +1849,9 @@ export class RepositoryComponent implements OnInit {
                 if (self.filter.draft) {
                   self.object.draftConfigurations.push(objDep);
                 }
+                if (self.filter.release) {
+                  self.object.releasedConfigurations.push(objDep);
+                }
               }
               if (self.filter.envRelated) {
                 if (self.filter.deploy) {
@@ -1894,10 +1914,11 @@ export class RepositoryComponent implements OnInit {
           draftConfigurations: this.object.releaseDraftConfigurations
         };
       }
-      if (this.object.draftConfigurations || this.object.deployConfigurations) {
+      if (this.object.draftConfigurations || this.object.deployConfigurations || this.object.releasedConfigurations) {
         obj.rollout = {
           draftConfigurations: this.object.draftConfigurations,
-          deployConfigurations: this.object.deployConfigurations
+          deployConfigurations: this.object.deployConfigurations,
+          releasedConfigurations: this.object.releasedConfigurations
         };
       }
 
@@ -2012,13 +2033,13 @@ export class ImportWorkflowModalComponent implements OnInit {
       this.uploader.options.additionalParameter = obj;
     };
 
-    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
+    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
       if (status === 200) {
         this.activeModal.close(this.requestObj.targetFolder || '/');
       }
     };
 
-    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+    this.uploader.onErrorItem = (fileItem, response: any) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
         this.toasterService.error(res.error.message, res.error.code);
@@ -2195,13 +2216,13 @@ export class UploadModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
+    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
       if (status === 200) {
         this.activeModal.close('success');
       }
     };
 
-    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+    this.uploader.onErrorItem = (fileItem, response: any) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
         this.toasterService.error(res.error.message, res.error.code);
@@ -2268,7 +2289,7 @@ export class UploadModalComponent implements OnInit {
   private showErrorMsg(errorMsg): void {
     let msg = errorMsg;
     if (!errorMsg) {
-      this.translate.get('inventory.message.invalidFile', { objectType: this.object.objectType }).subscribe(translatedValue => {
+      this.translate.get('inventory.message.invalidFile', {objectType: this.object.objectType}).subscribe(translatedValue => {
         msg = translatedValue;
       });
     }
@@ -2293,7 +2314,7 @@ export class CreateObjectModalComponent implements OnInit {
   display: any;
   required = false;
   comments: any = {};
-  object = { name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: '' };
+  object = {name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: ''};
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
   }
@@ -2450,7 +2471,7 @@ export class CreateFolderModalComponent implements OnInit {
   required = false;
   isUnique = true;
   isValid = true;
-  folder = { error: false, name: '', deepRename: 'rename', search: '', replace: '' };
+  folder = {error: false, name: '', deepRename: 'rename', search: '', replace: ''};
   comments: any = {};
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
@@ -2531,7 +2552,7 @@ export class CreateFolderModalComponent implements OnInit {
         if (this.origin.object || this.origin.controller || this.origin.dailyPlan) {
           obj = this.getObjectArr(this.origin);
         } else {
-          obj = { path: this.origin.path };
+          obj = {path: this.origin.path};
           URL = 'inventory/replace/folder';
         }
         obj.search = this.folder.search;
@@ -2585,14 +2606,14 @@ export class CreateFolderModalComponent implements OnInit {
   }
 
   private getObjectArr(object): any {
-    const obj: any = { objects: [] };
+    const obj: any = {objects: []};
     object.children.forEach((item) => {
       if (item.children) {
         item.children.forEach((data) => {
-          obj.objects.push({ objectType: data.objectType, path: data.path + (data.path === '/' ? '' : '/') + data.name });
+          obj.objects.push({objectType: data.objectType, path: data.path + (data.path === '/' ? '' : '/') + data.name});
         });
       } else {
-        obj.objects.push({ objectType: item.objectType, path: item.path + (item.path === '/' ? '' : '/') + item.name });
+        obj.objects.push({objectType: item.objectType, path: item.path + (item.path === '/' ? '' : '/') + item.name});
       }
     });
     return obj;
@@ -3684,7 +3705,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: DeployComponent,
-        nzClassName: releasable ? 'sm' : 'lg',
+        nzClassName: 'lg',
         nzComponentParams: {
           schedulerIds: this.getAllowedControllerOnly(),
           preferences: this.preferences,
@@ -4795,7 +4816,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         }
       }
 
-      this.coreService.post('inventory/store', request).subscribe((res: any) => {
+      this.coreService.post('inventory/store', request).subscribe(() => {
         if ((obj.type === InventoryObject.WORKINGDAYSCALENDAR || obj.type === InventoryObject.NONWORKINGDAYSCALENDAR)) {
           obj.objectType = obj.type;
         }
