@@ -165,7 +165,7 @@
     "label.deployAgent": "Agent ausrollen",
     "label.schedulingType": "Ausführungstyp",
     "label.agentClusters": "Agenten-Cluster",
-    "label.agentGroups": "Agent Groups",
+    "label.agentGroups": "Agenten-Gruppe",
     "label.addClusterAgent": "Agenten-Cluster hinzufügen",
     "label.editClusterAgent": "Agenten-Cluster editieren",
     "button.createToken": "Einmaliges Token erstellen",
@@ -183,7 +183,7 @@
     "button.reset": "Zurücksetzen",
     "button.resetForced": "Zurücksetzen erzwingen",
     "button.resetting": "beim Zurücksetzen",
-    "button.manageCluster": "Manage Cluster",
+    "button.manageCluster": "Agenten-Cluster verwalten",
     "placeholder.enterAgentId": "Kennung des Agenten angeben",
     "placeholder.enterSubagentId": "Kennung des Subagenten angeben",
     "placeholder.enterAgentName": "Name des Agenten angeben",
@@ -256,7 +256,7 @@
     "label.setting": "Einstellungen",
     "label.permissions": "Berechtigungen",
     "label.manageIdentityServices": "Identitätsdienste verwalten",
-    "label.clusterAgents": "Cluster Agents"
+    "label.clusterAgents": "Cluster Agenten"
   },
   "configuration": {
     "tab.inventory": "Inventar",
@@ -1453,7 +1453,7 @@
       },
       "menu": {
         "acknowledge": "Quittieren",
-        "bulkAcknowledge": "Acknowledge"
+        "bulkAcknowledge": "Quittieren"
       }
     }
   },
@@ -1571,7 +1571,7 @@
     "label.oldPassword": "Altes Kennwort",
     "label.newPassword": "Neues Kennwort",
     "label.confirmPassword": "Kennwort bestätigen",
-    "label.gitManagement": "Git Management",
+    "label.gitManagement": "Git Verwaltung",
     "button.resetProfile": "Profil zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -1665,7 +1665,7 @@
       "tooltip.updateCertificate": "Zertifikat aktualisieren"
     },
     "gitManagement": {
-      "label.manageGitCredentials": "Manage Git Credentials",
+      "label.manageGitCredentials": "Git Zugangsdaten verwalten",
       "label.gitAccount": "Git Account",
       "label.gitPassword": "Git Password",
       "label.gitPrivateKey": "Git Private Key",

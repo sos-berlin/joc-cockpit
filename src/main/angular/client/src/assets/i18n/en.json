@@ -183,7 +183,7 @@
     "button.reset": "Reset",
     "button.resetForced": "Reset forced",
     "button.resetting": "Resetting",
-    "button.manageCluster": "Manage Cluster",
+    "button.manageCluster": "Manage Agent Cluster",
     "placeholder.enterAgentId": "Enter Agent ID",
     "placeholder.enterSubagentId": "Enter Subagent ID",
     "placeholder.enterAgentName": "Enter Agent name",
