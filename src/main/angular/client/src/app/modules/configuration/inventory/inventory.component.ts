@@ -3073,7 +3073,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             if (data.children[i].controller || data.children[i].dailyPlan) {
               for (let j = 0; j < data.children[i].children.length; j++) {
                 const x = data.children[i].children[j];
-                if (self.selectedObj.type && (x.object === self.selectedObj.type || (x.object.match('CALENDAR') === self.selectedObj.type.match('CALENDAR'))) &&
+                if (self.selectedObj.type && (x.object === self.selectedObj.type || (x.object.match('CALENDAR') && self.selectedObj.type.match('CALENDAR'))) &&
                   x.path === self.selectedObj.path && cb) {
                   flag = true;
                   let isMatch = false;
@@ -3836,7 +3836,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.coreService.post(sync ? 'inventory/deployment/synchronize' : 'inventory/deployment/redeploy', {
         controllerId: this.schedulerIds.selected,
         folder: origin.path,
-        recursive: false
+        recursive: false,
+        auditLog
       }).subscribe();
     } else {
       const obj = {
@@ -4028,8 +4029,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private cutPaste(object, comments: any = {}): void {
-    const request: any = { newPath: object.path };
-    if (this.copyObj.id) {
+    const request: any = {newPath: object.path};
+    if (this.copyObj.objectType || this.copyObj.type) {
       request.objectType = this.copyObj.objectType || this.copyObj.type;
       request.path = (this.copyObj.path + (this.copyObj.path === '/' ? '' : '/') + this.copyObj.name);
     } else {
@@ -4453,7 +4454,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const index = (this.selectedObj.type.match('CALENDAR') || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.INCLUDESCRIPT) ? 1 : 0;
       const child = parent.origin.children[index];
       for (let i = 0; i < child.children.length; i++) {
-        if (child.children[i].object === this.selectedObj.type || this.selectedObj.type.match('CALENDAR') === child.children[i].object.match('CALENDAR')) {
+        if (child.children[i].object === this.selectedObj.type || (this.selectedObj.type && this.selectedObj.type.match('CALENDAR') && child.children[i].object && child.children[i].object.match('CALENDAR'))) {
           this.selectedData = child.children[i];
           this.setSelectedObj(this.type, this.selectedData.name, this.selectedData.path, this.selectedData.id);
           break;

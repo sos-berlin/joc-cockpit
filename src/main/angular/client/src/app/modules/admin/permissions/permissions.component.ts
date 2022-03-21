@@ -264,7 +264,7 @@ export class FolderModalComponent implements OnInit {
         }
       } else {
         request.oldFolderName = this.oldFolder.folder;
-        request.newFolder = [{folder: obj.folder, recursive: obj.recursive}];
+        request.newFolder = {folder: obj.folder, recursive: obj.recursive};
       }
       this.coreService.post(URL, request).subscribe({
         next: () => {

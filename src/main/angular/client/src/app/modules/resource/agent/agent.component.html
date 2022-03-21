@@ -109,7 +109,7 @@
                     <span class="text-left ">
                       <span class="fa fa-stop pos-abt m-t-xs text-xs"
                             [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>&nbsp;
-                      <i class="fa fa-server m-l m-r-xs" style="position: relative;top:1px"></i>&nbsp;
+                      <i class="fa fa-server m-l-12 m-r-xs" style="position: relative;top:1px"></i>&nbsp;
                       <span [nz-tooltip]="cluster.path"
                         class="text text-ellipsis1"
                         [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>

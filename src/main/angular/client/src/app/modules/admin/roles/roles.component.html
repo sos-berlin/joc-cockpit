@@ -12,8 +12,8 @@
       <i class="fa fa-angle-double-up fa-lg"></i>
     </a>
   </div>
-  <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-    <div *ngFor="let role of controllerRoles" class="box-body p-b-0" cdkDrag>
+  <div cdkDropList class="role-list" (cdkDropListDropped)="drop($event)">
+    <div *ngFor="let role of controllerRoles" class="box-body role-box p-b-0" cdkDrag>
       <div class="row">
         <div class="col-sm-12">
           <div class="pos-abt drag-handler" cdkDragHandle *ngIf="permission.joc && permission.joc.administration.accounts.manage">

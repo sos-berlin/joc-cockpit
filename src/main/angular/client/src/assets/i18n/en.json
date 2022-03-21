@@ -168,10 +168,12 @@
     "label.agentGroups": "Agent Groups",
     "label.addClusterAgent": "Add Agent Cluster",
     "label.editClusterAgent": "Update Agent Cluster",
+    "label.createCluster": "Create Cluster",
+    "label.updateCluster": "Update Cluster",
     "button.createToken": "Create One-time Token",
     "button.addAgent": "Add Stanalone Agent",
     "button.addSubagent": "Add Subagent",
-    "button.addSecondarySubagent": "Add Secondary Director",
+    "button.addSecondaryDirector": "Add Secondary Director",
     "button.addClusterAgent": "Add Agent Cluster",
     "button.allAgent": "All Agent",
     "button.coupled": "Coupled",
@@ -184,10 +186,12 @@
     "button.resetForced": "Reset forced",
     "button.resetting": "Resetting",
     "button.manageCluster": "Manage Agent Cluster",
+    "button.createCluster": "Create Cluster",
     "placeholder.enterAgentId": "Enter Agent ID",
     "placeholder.enterSubagentId": "Enter Subagent ID",
     "placeholder.enterAgentName": "Enter Agent name",
-    "placeholder.enterAgentNameAlias": "Enter alias name"
+    "placeholder.enterAgentNameAlias": "Enter alias name",
+    "placeholder.enterClusterName": "Enter Cluster name"
   },
   "auditLog": {
     "label.auditLog": "Audit Log",

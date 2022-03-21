@@ -94,7 +94,7 @@
                          style="white-space: normal;word-wrap: break-word;">{{param.name}}</label>
                 </div>
                 <div class="col-sm-5 m-b-sm p-r-0" [ngClass]="{ 'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                  <input type="text" autocomplete="off" #value="ngModel" [required]="param.required" class="form-control" name="newValue{{i}}" [(ngModel)]="param.newValue">
+                  <input type="text" autocomplete="off" #value="ngModel" [required]="param.required" class="form-control" name="newValue{{i}}" (blur)="checkCheckbox(param)" [(ngModel)]="param.newValue">
                 </div>
                 <div class="col-sm-1" *ngIf="param.description">
                   <i class="cursor fa fa-info-circle m-t-sm"

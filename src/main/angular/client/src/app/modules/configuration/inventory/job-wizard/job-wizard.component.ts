@@ -89,6 +89,12 @@ export class JobWizardComponent implements OnInit {
     }
   }
 
+  checkCheckbox(param): void{
+    if(param.newValue && param.newValue !== param.defaultValue) {
+      this.wizard.setOfCheckedValue.add(param.name);
+    }
+  }
+
   showDoc(docName): void {
     this.coreService.showDocumentation(docName, this.preferences);
   }

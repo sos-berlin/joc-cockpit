@@ -1,7 +1,8 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { NzModalRef } from "ng-zorro-antd/modal";
-import { isEmpty, sortBy } from "underscore";
-import { CoreService } from "../../../services/core.service";
+import {Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {isEmpty, sortBy} from "underscore";
+import {CoreService} from "../../../services/core.service";
 
 declare const $;
 declare const mxEditor;
@@ -79,7 +80,7 @@ export class SubagentModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    const obj: any = { controllerId: this.controllerId, agentId: this.clusterAgent.agentId };
+    const obj: any = {controllerId: this.controllerId, agentId: this.clusterAgent.agentId};
     const subagent: any = this.coreService.clone(this.subagent);
     if (this.display) {
       obj.auditLog = {};
@@ -96,7 +97,61 @@ export class SubagentModalComponent implements OnInit {
 
     obj.subagents = [subagent];
 
-    this.coreService.post('agent/subagents/store', obj).subscribe({
+    this.coreService.post('agents/inventory/cluster/subagents/store', obj).subscribe({
+      next: () => {
+        this.activeModal.close('close');
+      }, error: () => this.submitted = false
+    });
+  }
+}
+
+@Component({
+  selector: 'add-cluster-agent-modal',
+  templateUrl: './add-cluster.dialog.html'
+})
+export class AddClusterModalComponent implements OnInit {
+  @Input() clusterAgent: any;
+  @Input() data: any;
+  @Input() new: boolean;
+  @Input() controllerId: any;
+  cluster: any = {};
+  submitted = false;
+  isUniqueId = true;
+  comments: any = {};
+  preferences: any;
+  display: any;
+  required = false;
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj: any = {controllerId: this.controllerId, agentId: this.clusterAgent.agentId};
+    if (this.display) {
+      obj.auditLog = {};
+      if (this.comments.comment) {
+        obj.auditLog.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.auditLog.ticketLink = this.comments.ticketLink;
+      }
+    }
+
+    this.coreService.post('agents/cluster/store', obj).subscribe({
       next: () => {
         this.activeModal.close('close');
       }, error: () => this.submitted = false
@@ -144,10 +199,10 @@ export class AgentModalComponent implements OnInit {
       delete this.agent.show;
     }
     if (!this.agent.agentNameAliases || this.agent.agentNameAliases.length === 0) {
-      this.agentNameAliases = [{ name: '' }];
+      this.agentNameAliases = [{name: ''}];
     } else {
       this.agent.agentNameAliases.filter((val) => {
-        this.agentNameAliases.push({ name: val });
+        this.agentNameAliases.push({name: val});
       });
     }
   }
@@ -164,7 +219,7 @@ export class AgentModalComponent implements OnInit {
 
   addAlise(): void {
     if (this.agentNameAliases[this.agentNameAliases.length - 1].name) {
-      this.agentNameAliases.push({ name: '' });
+      this.agentNameAliases.push({name: ''});
     }
   }
 
@@ -182,12 +237,12 @@ export class AgentModalComponent implements OnInit {
       this.isSecondary = isSecordary;
     }
     if (!this.coreService.isLastEntryEmpty(this.agent.subagents, 'subagentId', 'url')) {
-      this.agent.subagents.push({ isDirector: isSecordary ? 'SECONDARY_DIRECTOR' : 'NO_DIRECTOR', subagentId: '' });
+      this.agent.subagents.push({isDirector: isSecordary ? 'SECONDARY_DIRECTOR' : 'NO_DIRECTOR', subagentId: ''});
     }
   }
 
   private removeSubagents(obj, cb): void {
-    this.coreService.post('agent/subagents/remove', obj).subscribe({
+    this.coreService.post('agents/inventory/cluster/subagents/delete', obj).subscribe({
       next: () => {
         cb();
       }, error: () => {
@@ -199,7 +254,7 @@ export class AgentModalComponent implements OnInit {
   onSubmit(): void {
     let flag = true;
     this.submitted = true;
-    const obj: any = { controllerId: this.controllerId };
+    const obj: any = {controllerId: this.controllerId};
     const _agent: any = this.coreService.clone(this.agent);
     if (this.display) {
       obj.auditLog = {};
@@ -277,7 +332,7 @@ export class AgentModalComponent implements OnInit {
   }
 
   private store(obj): void {
-    this.coreService.post(this.isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe({
+    this.coreService.post(this.isCluster ? 'agents/inventory/cluster/store' : 'agents/inventory/store', obj).subscribe({
       next: () => {
         this.activeModal.close('close');
       }, error: () => this.submitted = false
@@ -291,16 +346,25 @@ export class AgentModalComponent implements OnInit {
   styleUrls: ['./agent.component.scss']
 })
 export class AgentComponent implements OnInit, OnDestroy {
-
   isLoading = true;
-  agents = [];
+  agentList = [];
   pageView: string;
   preferences: any = {};
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
+  controllerId: string;
+  agentId: string;
 
+  constructor(private coreService: CoreService, private route: ActivatedRoute, private modal: NzModalService) {
+  }
 
-  constructor() {
+  static setHeight(): void {
+    let top = Math.round($('.scroll-y').position().top) + 24;
+    console.log(top, ' top')
+    let ht = 'calc(100vh - ' + top + 'px)';
+    $('.graph-container').css({'height': ht, 'scroll-top': '0'});
+    $('#graph').slimscroll({height: ht});
+    $('#toolbarContainer').css({'max-height': ht});
   }
 
   ngOnInit(): void {
@@ -321,6 +385,8 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   private init() {
+    this.controllerId = this.route.snapshot.paramMap.get('controllerId');
+    this.agentId = this.route.snapshot.paramMap.get('agentId');
     if (this.editor && !isEmpty(this.editor)) {
       this.editor.destroy();
       mxOutline.prototype.destroy()
@@ -329,95 +395,93 @@ export class AgentComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    this.createEditor(() => {
-      this.isLoading = false;
+    this.getClusters();
+    this.getClusterAgents(() => {
+      this.createEditor(() => {
+        this.isLoading = false;
+        let dom = $('#graph');
+        dom.css({opacity: 1});
 
-
-      let top = Math.round($('.scroll-y').position().top + 98);
-      let ht = 'calc(100vh - ' + top + 'px)';
-      $('.graph-container').css({ 'height': ht, 'scroll-top': '0' });
-
-      let dom = $('#graph');
-      dom.css({ opacity: 1 });
-      dom.slimscroll({ height: ht });
-      dom.on('drop', function (event) {
-        this.dropTarget = window['selectedAgent'];
-        if (this.dropTarget) {
-          if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
-            //createAgentNode(this.dropTarget, event, 'agent');
-          } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
-            let type, className = '';
-            if (event.target.className && (event.target.className.match(/agent/) || event.target.className.match(/event1/) || event.target.className.match(/in-condition/))) {
-              className = event.target.className;
-            } else if (event.target.childNodes && event.target.childNodes.length > 0) {
-              className = event.target.childNodes[0].className;
-            }
-            type = className.match(/agent/) ? 'agent' : 'cluster';
-            if (type) {
-              // createAgentNode(this.dropTarget, event, type, className);
-            }
-          }
-        }
-        event.preventDefault();
-      });
-      $('#toolbarContainer').css({ 'max-height': 'calc(100vh - ' + (top - 42) + 'px)' });
-      const panel = $('.property-panel');
-      $('.sidebar-open', panel).click(function () {
-        $('.sidebar').css({ 'width': '300px', opacity: 1 });
-        $('.sidebar-open').css('right', '-20px');
-        if (window.innerWidth > 1024) {
-          $('#outlineContainer').animate({ 'right': '312px' }, 'fast', 'linear');
-          $('.graph-container').animate({ 'margin-right': '300px' }, 'fast', 'linear');
-          $('#toolbar').animate({ 'margin-right': '300px' }, 'fast', 'linear');
-          $('.scrolltop-btn').css('right', '340px');
-          $('.scrollBottom-btn').css('right', '340px');
-        } else {
-          $('#outlineContainer').animate({ 'right': '13px', 'z-index': 0 }, 'fast', 'linear');
-          $('.graph-container').animate({ 'margin-right': '0' }, 'fast', 'linear');
-          $('#toolbar').animate({ 'margin-right': '0' }, 'fast', 'linear');
-        }
-        $('.sidebar-close').animate({ right: '300px' }, 'fast', 'linear', function () {
-          // checkToolbarWidth();
-        });
-      });
-
-      $('.sidebar-close', panel).click(function () {
-        $('.sidebar-open').css('right', '0');
-        $('.sidebar').css({ 'width': '0', opacity: 0 });
-        $('#outlineContainer').animate({ 'right': '14px' }, 'fast', 'linear');
-        $('.graph-container').animate({ 'margin-right': '0' }, 'fast', 'linear');
-        $('#toolbar').animate({ 'margin-right': '0' }, 'fast', 'linear');
-        $('.sidebar-close').css('right', '-20px');
-        $('.scrolltop-btn').css('right', '44px');
-        $('.scrollBottom-btn').css('right', '44px');
-      });
-
-      /**
-       * Changes the zoom on mouseWheel events
-       */
-      dom.bind('mousewheel DOMMouseScroll', function (event) {
-        if (this.editor) {
-          if (event.ctrlKey) {
-            event.preventDefault();
-            if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-              this.editor.execute('zoomIn');
+        /**
+         * Changes the zoom on mouseWheel events
+         */
+        dom.bind('mousewheel DOMMouseScroll', (event) => {
+          if (this.editor) {
+            if (event.ctrlKey) {
+              event.preventDefault();
+              if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+                this.editor.execute('zoomIn');
+              } else {
+                this.editor.execute('zoomOut');
+              }
             } else {
-              this.editor.execute('zoomOut');
-            }
-          } else {
-            const bounds = this.editor.graph.getGraphBounds();
-            if (bounds.y < -0.05 && bounds.height > dom.height()) {
-              this.editor.graph.center(true, true, 0.5, -0.02);
+              const bounds = this.editor.graph.getGraphBounds();
+              if (bounds.y < -0.05 && bounds.height > dom.height()) {
+                this.editor.graph.center(true, true, 0.5, -0.02);
+              }
             }
           }
-        }
+        });
+        setTimeout(() => {
+          AgentComponent.setHeight();
+        }, 100);
       });
     });
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    this.center();
+    AgentComponent.setHeight();
+  }
+
+  private getClusterAgents(cb): void {
+    this.coreService.post('agents/inventory/cluster', {
+      controllerId: this.controllerId,
+      agentIds: [this.agentId]
+    }).subscribe({
+      next: (data: any) => {
+        data.agents.forEach((agent) => {
+          this.agentList = agent.subagents;
+        });
+        cb();
+      }, error: () => {
+        cb();
+      }
+    });
+  }
+
+  private getClusters(): void {
+    this.coreService.post('agents/cluster', {
+      controllerId: this.controllerId,
+      agentIds: [this.agentId]
+    }).subscribe({
+      next: (data: any) => {
+        console.log(data.subagentClusters)
+      }
+    });
+  }
+
+  createCluster(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddClusterModalComponent,
+      nzComponentParams: {
+        new: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  drop($event): void {
+    console.log(this.agentList[$event.previousIndex]);
+  }
+
   /**
-     * Constructs a new application (returns an mxEditor instance)
-     */
+   * Constructs a new application (returns an mxEditor instance)
+   */
   private createEditor(cb): void {
     let editor = null;
     const self = this;
@@ -499,7 +563,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       let s = h * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
       let arcSize = mxUtils.getValue(this.style, mxConstants.STYLE_ARCSIZE, mxConstants.LINE_ARCSIZE) / 2;
       this.addPoints(c, [new mxPoint(0, 0), new mxPoint(w, 0), new mxPoint(w, h - s), new mxPoint(w / 2, h),
-      new mxPoint(0, h - s)], this.isRounded, arcSize, true);
+        new mxPoint(0, h - s)], this.isRounded, arcSize, true);
       c.end();
     };
 
@@ -732,7 +796,7 @@ export class AgentComponent implements OnInit, OnDestroy {
           movedAgent = null;
           setTimeout(function () {
             if (isAgentDraging)
-              $('#dropContainer').css({ display: 'block' });
+              $('#dropContainer').css({display: 'block'});
           }, 10);
         }
         if (this.currentState != null && (me.getState() == this.currentState ||

@@ -7,7 +7,12 @@ import {
   CreateTokenModalComponent,
   DeployModalComponent
 } from './controllers.component';
-import {AgentComponent, AgentModalComponent, SubagentModalComponent} from './agent/agent.component';
+import {
+  AddClusterModalComponent,
+  AgentComponent,
+  AgentModalComponent,
+  SubagentModalComponent
+} from './agent/agent.component';
 import {SharedModule} from '../shared/shared.module';
 
 const routes: Routes = [
@@ -16,14 +21,14 @@ const routes: Routes = [
     component: ControllersComponent
   },
   {
-    path: 'cluster_agent',
+    path: 'cluster_agent/:controllerId/:agentId',
     component: AgentComponent,
     data: {breadcrumb: 'breadcrumb.label.clusterAgents'}
   }
 ];
 
 @NgModule({
-    declarations: [ControllersComponent, DeployModalComponent, SubagentModalComponent, AgentModalComponent, CreateTokenModalComponent, AgentComponent],
+    declarations: [ControllersComponent, DeployModalComponent, SubagentModalComponent, AddClusterModalComponent, AgentModalComponent, CreateTokenModalComponent, AgentComponent],
     imports: [
         RouterModule.forChild(routes),
         SharedModule,

@@ -21,6 +21,39 @@
       <li class="nav-item dropdown">
         <app-info-menu [isHeader]="true"></app-info-menu>
       </li>
+      <li class="nav-item dropdown"
+            *ngIf="permission.joc && (permission.joc.administration.accounts.view || permission.joc.administration.controllers.view || permission.joc.administration.settings.view)">
+          <a class="nav-link text-white pointer" style="top: 6px">
+            <span class="p-l-xs cursor" nzTrigger="click" nz-dropdown [nzDropdownMenu]="submenu">
+              <i class="icon3-administration-icon text-20" style="line-height: 0"></i>
+            </span>
+            <nz-dropdown-menu #submenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item routerLink="/controllers" [routerLinkActive]="['active']"
+                    *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
+                  <a>
+                    <i class="fa fa-id-card-o"></i>
+                    {{'header.button.manageControllersAndAgents' | translate}}
+                  </a>
+                </li>
+                <li nz-menu-item routerLink="/users/identity_service" [routerLinkActive]="['active']"
+                    *ngIf="permission && permission.joc && permission.joc.administration.accounts.view">
+                  <a>
+                    <i class="fa fa-users"></i>
+                    {{'header.button.manageAccount' | translate}}
+                  </a>
+                </li>
+                <li nz-menu-item routerLink="/settings" [routerLinkActive]="['active']" [nzDisabled]="!schedulerIds.selected"
+                    *ngIf="permission && permission.joc && permission.joc.administration.settings.view">
+                  <a>
+                    <i class="fa fa-cog"></i>
+                    {{'header.button.settings' | translate}}
+                  </a>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
+          </a>
+        </li>
       <li class="nav-item dropdown">
         <a class="nav-link text-white pointer">
           <span class="avatar" [innerHtml]="username | slice:0:1"></span>
@@ -139,37 +172,6 @@
               <span class="ico text-white _600" translate>header.label.configuration</span>
             </span>
           </a>
-        </li>
-        <li class="nav-item"
-            *ngIf="permission.joc && (permission.joc.administration.accounts.view || permission.joc.administration.controllers.view || permission.joc.administration.settings.view)">
-          <a class="nav-link" [routerLinkActive]="['active']" nz-dropdown [nzDropdownMenu]="submenu" [nzOverlayClassName]="'dropdown-center'">
-            <span class="nav-text">
-              <i class="icon3-administration-icon text-white"></i>
-              <span class="ico text-white _600" translate>header.label.administration</span>
-            </span>
-          </a>
-          <nz-dropdown-menu #submenu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item routerLink="/controllers" [routerLinkActive]="['active']"
-                  *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
-                <a><i class="fa fa-id-card-o"></i>
-                  {{'header.button.manageControllersAndAgents' | translate}}
-                </a>
-              </li>
-              <li nz-menu-item routerLink="/users/identity_service" [routerLinkActive]="['active']"
-                  *ngIf="permission && permission.joc && permission.joc.administration.accounts.view">
-                <a><i class="fa fa-users"></i>
-                  {{'header.button.manageAccount' | translate}}
-                </a>
-              </li>
-              <li nz-menu-item routerLink="/settings" [routerLinkActive]="['active']" [nzDisabled]="!schedulerIds.selected"
-                  *ngIf="permission && permission.joc && permission.joc.administration.settings.view">
-                <a><i class="fa fa-cog" style="font-size: 16px !important;"></i>
-                  {{'header.button.settings' | translate}}
-                </a>
-              </li>
-            </ul>
-          </nz-dropdown-menu>
         </li>
       </ul>
       <!-- end link -->

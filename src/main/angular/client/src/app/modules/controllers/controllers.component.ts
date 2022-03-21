@@ -65,7 +65,7 @@ export class DeployModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-    this.coreService.post('agents/cluster/deploy', obj).subscribe({
+    this.coreService.post('agents/inventory/cluster/deploy', obj).subscribe({
       next: res => {
         this.activeModal.close(res);
       }, error: () => this.submitted = false
@@ -194,7 +194,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
-    private authService: AuthService, private dataService: DataService, private router: Router) {
+              private authService: AuthService, private dataService: DataService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -285,7 +285,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         this.getClusterAgents(controller);
       }
       controller.loading = true;
-      this.coreService.post('agents/p', {
+      this.coreService.post('agents/inventory', {
         controllerId: controller.controllerId
       }).subscribe({
         next: (data: any) => {
@@ -312,7 +312,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   getClusterAgents(controller): void {
     controller.isLoading = true;
-    this.coreService.post('agents/cluster/p', {
+    this.coreService.post('agents/inventory/cluster', {
       controllerId: controller.controllerId
     }).subscribe({
       next: (data: any) => {
@@ -357,7 +357,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       for (let i = 0; i < list.length; i++) {
         list[i].position = i + 1;
       }
-      this.coreService.post('agent/subagents/store', {
+      this.coreService.post('agents/inventory/cluster/subagents/store', {
         controllerId: clusterAgents[index].controllerId,
         agentId: clusterAgents[index].agentId,
         subagents: list
@@ -365,8 +365,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  navToController(controller): void{
-    this.router.navigate(['/controllers/cluster_agent'])
+  navToController(controllerId, agentId): void {
+    this.router.navigate(['/controllers/cluster_agent', controllerId, agentId]);
   }
 
   addController(): void {
@@ -468,6 +468,16 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
   }
 
+  deleteAll(): void {
+    console.log(this.object.mapOfCheckedId);
+    console.log(this.object.mapOfCheckedId2);
+  }
+
+  deployAll(): void {
+    console.log(this.object.mapOfCheckedId);
+    console.log(this.object.mapOfCheckedId2);
+  }
+
   addAgent(controller): void {
     this.getAgents(controller, () => {
       this.modal.create({
@@ -523,7 +533,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       const comments = {
         radio: 'predefined',
         type: 'Agent',
-        operation: 'Remove',
+        operation: 'Delete',
         name: agent.agentId
       };
       this.modal.create({
@@ -533,7 +543,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           comments,
           obj,
-          url: 'agent/remove'
+          url: 'agent/delete'
         },
         nzFooter: null,
         nzClosable: false,
@@ -544,9 +554,9 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
-          title: 'remove',
+          title: 'delete',
           message: 'removeAgent',
-          type: 'Remove',
+          type: 'Delete',
           objectName: agent.agentId,
         },
         nzFooter: null,
@@ -555,7 +565,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post('agent/remove', obj).subscribe();
+          this.coreService.post('agent/delete', obj).subscribe();
         }
       });
     }
@@ -635,7 +645,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       const comments = {
         radio: 'predefined',
         type: 'Agent',
-        operation: 'Remove',
+        operation: 'Delete',
         name: sub.subagentId
       };
       const modal = this.modal.create({
@@ -645,7 +655,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           comments,
           obj,
-          url: 'agent/subagents/remove'
+          url: 'agents/inventory/cluster/subagents/delete'
         },
         nzFooter: null,
         nzClosable: false,
@@ -661,9 +671,9 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
-          title: 'remove',
+          title: 'delete',
           message: 'removeSubagent',
-          type: 'Remove',
+          type: 'Delete',
           objectName: sub.subagentId,
         },
         nzFooter: null,
@@ -672,7 +682,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post('agent/subagents/remove', obj).subscribe(() => {
+          this.coreService.post('agents/inventory/cluster/subagents/delete', obj).subscribe(() => {
             this.getClusterAgents(controller);
           });
         }
@@ -729,7 +739,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     } else {
       obj.agents = controller.agents;
     }
-    this.coreService.post(isCluster ? 'agents/cluster/store' : 'agents/store', obj).subscribe({
+    this.coreService.post(isCluster ? 'agents/inventory/cluster/store' : 'agents/inventory/store', obj).subscribe({
       error: () => {
         agent.disabled = !flag;
       }
