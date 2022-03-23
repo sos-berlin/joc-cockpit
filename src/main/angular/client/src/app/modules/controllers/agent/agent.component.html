@@ -7,9 +7,12 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <button class="btn btn-grey btn-sm" (click)="createCluster()" translate>
-               <i class="fa fa-plus"></i>&nbsp;
-              agent.button.createCluster</button>
+            <button class="btn btn-grey btn-sm" *ngIf="object.mapOfCheckedId.size === 0" (click)="createCluster()"
+                    translate>
+              <i class="fa fa-plus"></i>&nbsp;
+              agent.button.createCluster
+            </button>
+       
           </div>
         </div>
       </div>
@@ -18,12 +21,76 @@
 </div>
 <div class="scroll-y max-ht1">
   <div class="padding p-b-0">
-    <div class="row">
+    <div class="row m-t-xs cluster-list" *ngIf="!selectedCluster || !selectedCluster.subagentClusterId">
+      <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 cluster-box"
+           *ngFor="let cluster of clusters">
+        <div class="box card" [ngClass]="!cluster.deployed ? 'orange-box' : 'dark-blue-box'">
+          <div class="box-body">
+            <label class="pos-abt" style="margin-top: -2px">
+              <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
+                     (nzCheckedChange)="onItemChecked(cluster, $event);"></label>
+            </label>
+            <div class="text-left block-ellipsis m-l-md">
+               <span class="text-left cursor" (click)="selectedClusterFn(cluster)">
+                 <i class="fa fa-server text-sm p-r-xs"></i>
+                 <span [innerHtml]="cluster.subagentClusterId"></span>
+               </span>
+            </div>
+            <div class="btn-group dropdown pull-right abt-dropdown">
+              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+                      type="button">
+                <i class="fa fa-ellipsis-h"></i>
+              </button>
+              <nz-dropdown-menu #option="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="edit(cluster);$event.stopPropagation();">
+                    <a translate>common.button.edit</a>
+                  </li>
+                  <li nz-menu-item (click)="deploy(cluster);$event.stopPropagation();">
+                    <a translate>inventory.button.deploy</a>
+                  </li>
+                  <li nz-menu-item (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color">
+                    <a translate>common.button.delete</a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div class="text-sm text-left text-muted p-t-xs">
+              <span translate>common.label.status </span>:
+              <span *ngIf="cluster.syncState" [ngClass]="coreService.getColor(cluster.syncState.severity, 'text')"
+                    [innerHtml]="cluster.syncState._text | translate"></span>
+            </div>
+          </div>
+          <div class="box-footer b-t">
+            <a class="text-left primary-text-hover-color" (click)="deploy(cluster)">
+              <i class="fa fa-rocket text-black-lt p-r-xs"></i>
+              <span class="text-black-lt" translate>inventory.button.deploy</span>
+            </a>
+            <a class="pull-right text-hover-color" (click)="delete(cluster)">
+              <i class="fa fa-trash text-black-lt p-r-xs"></i>
+              <span class="text-black-lt" translate>common.button.delete</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12" *ngIf="clusters.length === 0 && !isLoading">
+        <div class="text-center m-t-md text-md" >
+          <span translate>agent.message.noClusterFound</span>.
+          <a class="text-hover-primary text-u-l" (click)="createCluster()" translate>agent.message.clickHereToAdd</a>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="selectedCluster && selectedCluster.subagentClusterId">
       <div class="col-sm-2">
-        <div class="agent-list box-shadow" id="toolbarContainer" cdkDropList #listOne="cdkDropList" [cdkDropListConnectedTo]="[listTwo]">
+        <div class="agent-list box-shadow" id="toolbarContainer" cdkDropList #listOne="cdkDropList"
+             [cdkDropListConnectedTo]="[listTwo]">
           <ul class="p-a-0 m-0 agent-box" *ngFor="let agent of agentList" cdkDrag>
             <li>
-              <div class="draggable" cdkDragHandle [nz-tooltip]="agent.url">
+              <ng-template #contentTemplate>
+                <div>{{agent.url}}</div>
+                <div *ngIf="agent.title" class="text-muted">{{agent.title}}</div>
+              </ng-template>
+              <div class="draggable" cdkDragHandle [nz-tooltip]="contentTemplate">
                 <span>{{agent.subagentId}}</span>
               </div>
             </li>
@@ -33,9 +100,36 @@
       <div class="col-sm-10">
         <div id="toolbar" class="hide"></div>
         <div class="graph-container">
+          <div class="m-b-12 b-b">
+            <div class="inline m-b">
+              <div style="position: relative; top: 4px">
+                <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}"
+                                                 class="fa fa-arrow-circle-left config-back-btn"></i></a>
+                <span class="_600">{{selectedCluster.subagentClusterId}}</span>
+                <span class="text-muted _400" *ngIf="selectedCluster.title"> - {{selectedCluster.title}}</span>
+              </div>
+            </div>
+            <div class="inline pull-right">
+              <span>
+                <span class="badge"
+                      [ngClass]="!selectedCluster.deployed ? 'badge-danger':'badge-success'">
+                  <span *ngIf="!selectedCluster.deployed" translate>inventory.label.notDeployed</span>
+                  <span *ngIf="selectedCluster.deployed" translate>inventory.label.deployed</span>
+                </span>
+                <span *ngIf="selectedCluster.syncState" class="badge badge-sync m-l-12"
+                      [ngClass]="coreService.getColor(selectedCluster.syncState.severity, 'bg')">
+                  {{selectedCluster.syncState._text | translate}}
+                </span>
+              </span>
+              <button type="button" [disabled]="selectedCluster.deployed"
+                      class="btn btn-sm btn-grey m-l-12" (click)="deploy(selectedCluster)">
+                <i class="fa fa-rocket p-r-xs"></i>
+                <span translate>inventory.button.deploy</span>
+              </button>
+            </div>
+          </div>
           <div class="inline" id="toolbar-icons">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-
               <li class="nav-item">
                 <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.zoomIn' | translate}}" (click)="zoomIn()">
                   <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
@@ -78,7 +172,8 @@
               </li>
             </ul>
           </div>
-          <div class="box-shadow-z1" id="graph" cdkDropList #listTwo="cdkDropList" [cdkDropListConnectedTo]="[listOne]"  (cdkDropListDropped)="drop($event)"></div>
+          <div class="box-shadow-z1" id="graph" cdkDropList #listTwo="cdkDropList" [cdkDropListConnectedTo]="[listOne]"
+               (cdkDropListDropped)="drop($event)"></div>
           <div id="dropContainer" class="dropContainer">
             <div class="dropContainer" translate>agent.message.dropHereToDetach</div>
           </div>

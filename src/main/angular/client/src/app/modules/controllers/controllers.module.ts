@@ -2,10 +2,10 @@ import {NgModule} from '@angular/core';
 import {NzPopoverModule} from 'ng-zorro-antd/popover';
 import {ClipboardModule} from 'ngx-clipboard';
 import {RouterModule, Routes} from '@angular/router';
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {
   ControllersComponent,
   CreateTokenModalComponent,
-  DeployModalComponent
 } from './controllers.component';
 import {
   AddClusterModalComponent,
@@ -28,13 +28,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [ControllersComponent, DeployModalComponent, SubagentModalComponent, AddClusterModalComponent, AgentModalComponent, CreateTokenModalComponent, AgentComponent],
-    imports: [
-        RouterModule.forChild(routes),
-        SharedModule,
-        ClipboardModule,
-        NzPopoverModule
-    ]
+  declarations: [ControllersComponent, SubagentModalComponent, AddClusterModalComponent, AgentModalComponent, CreateTokenModalComponent, AgentComponent],
+  imports: [
+    RouterModule.forChild(routes),
+    SharedModule,
+    ClipboardModule,
+    NzDrawerModule,
+    NzPopoverModule
+  ]
 })
 export class ControllersModule {
 }

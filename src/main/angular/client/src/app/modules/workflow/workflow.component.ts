@@ -527,7 +527,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         };
         let flag = true;
         let panelObj;
-        res.workflows = this.orderPipe.transform(res.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
         for (const i in res.workflows) {
           const path = res.workflows[i].path;
           res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
@@ -560,6 +559,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
         this.loading = false;
         this.workflows = res.workflows;
+        this.workflows = this.orderPipe.transform(this.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
         this.searchInResult();
         if (request.workflowIds.length > 0) {
           this.getOrders(request);

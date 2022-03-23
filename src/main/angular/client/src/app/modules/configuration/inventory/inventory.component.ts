@@ -1460,6 +1460,9 @@ export class RepositoryComponent implements OnInit {
       APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
         catchError(error => of(error))
       ));
+    } else {
+      this.loading = false;
+      return;
     }
     forkJoin(APIs).subscribe({
       next: (res: any) => {

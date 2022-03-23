@@ -2,7 +2,10 @@ import {Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {CoreService} from "../../../services/core.service";
+import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
+import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 
 declare const $;
 declare const mxEditor;
@@ -13,9 +16,8 @@ declare const mxHierarchicalLayout;
 declare const mxTooltipHandler;
 declare const mxConstants;
 declare const mxEdgeHandler;
-declare const mxActor;
+declare const saveSvgAsPng: any;
 declare const mxPoint;
-declare const mxCellRenderer;
 declare const mxGraphHandler;
 declare const mxRectangleShape;
 declare const mxRectangle;
@@ -25,7 +27,6 @@ declare const mxEventObject;
 declare const mxDictionary;
 declare const mxCodecRegistry;
 declare const mxUtils;
-declare const mxEllipse;
 declare const mxCellOverlay;
 
 @Component({
@@ -39,7 +40,6 @@ export class SubagentModalComponent implements OnInit {
   @Input() controllerId: any;
   subagent: any = {};
   submitted = false;
-  isUniqueId = true;
   agentNameAliases: any = [];
   directors: any = [
     'NO_DIRECTOR',
@@ -110,10 +110,10 @@ export class SubagentModalComponent implements OnInit {
   templateUrl: './add-cluster.dialog.html'
 })
 export class AddClusterModalComponent implements OnInit {
-  @Input() clusterAgent: any;
+  @Input() subagentClusters: any;
+  @Input() agentId: any;
   @Input() data: any;
   @Input() new: boolean;
-  @Input() controllerId: any;
   cluster: any = {};
   submitted = false;
   isUniqueId = true;
@@ -133,11 +133,29 @@ export class AddClusterModalComponent implements OnInit {
       this.required = true;
       this.display = true;
     }
+    if (this.data) {
+      this.cluster = this.coreService.clone(this.data);
+    } else {
+      this.cluster.agentId = this.agentId;
+      this.cluster.subagentIds = [];
+    }
+  }
+
+  checkUnique(value): void {
+    this.isUniqueId = true;
+    for (let i = 0; i < this.subagentClusters.length; i++) {
+      if (this.subagentClusters[i].subagentClusterId === value && value !== this.data.subagentClusterId) {
+        this.isUniqueId = false;
+        break;
+      }
+    }
   }
 
   onSubmit(): void {
     this.submitted = true;
-    const obj: any = {controllerId: this.controllerId, agentId: this.clusterAgent.agentId};
+    const obj: any = {
+      subagentClusters: []
+    };
     if (this.display) {
       obj.auditLog = {};
       if (this.comments.comment) {
@@ -150,12 +168,18 @@ export class AddClusterModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-
-    this.coreService.post('agents/cluster/store', obj).subscribe({
-      next: () => {
-        this.activeModal.close('close');
-      }, error: () => this.submitted = false
-    });
+    if (this.new) {
+      obj.subagentClusters = this.coreService.clone(this.subagentClusters);
+      obj.subagentClusters.push(this.cluster);
+    } else {
+      for (let i = 0; i < this.subagentClusters.length; i++) {
+        if (this.subagentClusters[i].subagentClusterId === this.data.subagentClusterId) {
+          this.subagentClusters[i].title = this.cluster.title;
+          break;
+        }
+      }
+    }
+    this.activeModal.close(obj);
   }
 }
 
@@ -171,7 +195,6 @@ export class AgentModalComponent implements OnInit {
   agent: any = {};
   isSecondary = false;
   submitted = false;
-  isUniqueId = true;
   agentNameAliases: any = [];
   comments: any = {};
   preferences: any;
@@ -282,6 +305,7 @@ export class AgentModalComponent implements OnInit {
           isDirector: 'PRIMARY_DIRECTOR',
           subagentId: _agent.subagentId,
           url: _agent.url,
+          title: _agent.subtitle,
           position: _agent.position
         }];
         if (_agent.subagentId2) {
@@ -289,6 +313,7 @@ export class AgentModalComponent implements OnInit {
             isDirector: 'SECONDARY_DIRECTOR',
             subagentId: _agent.subagentId2,
             url: _agent.url2,
+            title: _agent.subtitle2,
             position: _agent.position2
           });
         }
@@ -347,6 +372,7 @@ export class AgentModalComponent implements OnInit {
 })
 export class AgentComponent implements OnInit, OnDestroy {
   isLoading = true;
+  isVisible = false;
   agentList = [];
   pageView: string;
   preferences: any = {};
@@ -354,17 +380,32 @@ export class AgentComponent implements OnInit, OnDestroy {
   editor: any;
   controllerId: string;
   agentId: string;
+  clusters = [];
+  selectedCluster: any = {};
+  auditLog = {};
+  object = {
+    checked: false,
+    indeterminate: false,
+    mapOfCheckedId: new Set()
+  }
 
-  constructor(private coreService: CoreService, private route: ActivatedRoute, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private route: ActivatedRoute, private modal: NzModalService) {
   }
 
   static setHeight(): void {
     let top = Math.round($('.scroll-y').position().top) + 24;
-    console.log(top, ' top')
     let ht = 'calc(100vh - ' + top + 'px)';
     $('.graph-container').css({'height': ht, 'scroll-top': '0'});
-    $('#graph').slimscroll({height: ht});
+    $('#graph').slimscroll({height: 'calc(100vh - ' + (top + 54) + 'px)'});
     $('#toolbarContainer').css({'max-height': ht});
+  }
+
+  /**
+   * Reformat the layout
+   */
+  static executeLayout(graph: any): void {
+    const layout = new mxHierarchicalLayout(graph);
+    layout.execute(graph.getDefaultParent());
   }
 
   ngOnInit(): void {
@@ -396,9 +437,276 @@ export class AgentComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     this.getClusters();
-    this.getClusterAgents(() => {
-      this.createEditor(() => {
+    this.getClusterAgents();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    this.center();
+    AgentComponent.setHeight();
+  }
+
+  private getClusters(): void {
+    this.coreService.post('agents/cluster', {
+      controllerId: this.controllerId,
+      agentIds: [this.agentId]
+    }).subscribe({
+      next: (data: any) => {
+        this.clusters = data.subagentClusters;
         this.isLoading = false;
+      }, error: () => {
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private getClusterAgents(): void {
+    this.coreService.post('agents/inventory/cluster', {
+      controllerId: this.controllerId,
+      agentIds: [this.agentId]
+    }).subscribe({
+      next: (data: any) => {
+        data.agents.forEach((agent) => {
+          this.agentList = agent.subagents;
+        });
+      }
+    });
+  }
+
+  createCluster(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddClusterModalComponent,
+      nzComponentParams: {
+        agentId: this.agentId,
+        subagentClusters: this.clusters,
+        new: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        if (result.auditLog) {
+          this.auditLog = result;
+        }
+        this.clusters = result.subagentClusters;
+        this.selectedClusterFn(this.clusters[this.clusters.length - 1]);
+      }
+    });
+  }
+
+  edit(cluster): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddClusterModalComponent,
+      nzComponentParams: {
+        agentId: this.agentId,
+        subagentClusters: this.clusters,
+        data: cluster
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        if (result.auditLog) {
+          this.auditLog = result;
+        }
+        this.clusters = result.subagentClusters;
+        this.storeCluster();
+      }
+    });
+  }
+
+  delete(cluster): void {
+    const obj = {
+      controllerId: cluster.controllerId,
+      subagentClusterIds: [cluster.subagentClusterId]
+    };
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Cluster Agent',
+        operation: 'Delete',
+        name: cluster.agentId
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'agent/cluster/delete'
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteClusterAgent',
+          type: 'Delete',
+          objectName: cluster.subagentClusterId,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post('agent/cluster/delete', obj).subscribe();
+        }
+      });
+    }
+  }
+
+  deleteAll(): void {
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Cluster Agent',
+        operation: 'Delete',
+        name: ''
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteAll(result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteSelectedClusterAgents',
+          type: 'Delete',
+          objectName: '',
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteAll();
+        }
+      });
+    }
+  }
+
+  private _deleteAll(auditLog = {}): void {
+    const obj: any = {
+      controllerId: this.controllerId,
+      subagentClusterIds: Array.from(this.object.mapOfCheckedId),
+      auditLog
+    };
+    this.coreService.post('agent/cluster/delete', obj).subscribe();
+    this.object.mapOfCheckedId.clear();
+    this.object.checked = false;
+    this.object.indeterminate = false;
+  }
+
+  deployAll(): void {
+    const obj: any = {
+      controllerId: this.controllerId,
+      subagentClusterIds: Array.from(this.object.mapOfCheckedId)
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Cluster Agent',
+        operation: 'Deploy',
+        name: ''
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this.coreService.post('agents/cluster/deploy', obj).subscribe();
+        }
+      });
+    } else {
+      this.coreService.post('agents/cluster/deploy', obj).subscribe();
+    }
+  }
+
+  deploy(cluster): void {
+    const obj: any = {
+      controllerId: this.controllerId,
+      subagentClusterIds: [cluster.subagentClusterId]
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Cluster Agent',
+        operation: 'Deploy',
+        name: cluster.subagentClusterId
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this.coreService.post('agents/cluster/deploy', obj).subscribe();
+        }
+      });
+    } else {
+      this.coreService.post('agents/cluster/deploy', obj).subscribe();
+    }
+  }
+
+  selectedClusterFn(cluster): void {
+    this.selectedCluster = this.coreService.clone(cluster);
+    if (this.editor && this.editor.graph) {
+      this.updateCluster();
+    } else {
+      this.createEditor(() => {
+        this.updateCluster();
         let dom = $('#graph');
         dom.css({opacity: 1});
 
@@ -422,61 +730,87 @@ export class AgentComponent implements OnInit, OnDestroy {
             }
           }
         });
-        setTimeout(() => {
-          AgentComponent.setHeight();
-        }, 100);
+        AgentComponent.setHeight();
       });
-    });
+    }
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(): void {
-    this.center();
-    AgentComponent.setHeight();
+  backToListView(): void {
+    this.selectedCluster = {};
+    this.ngOnDestroy();
   }
 
-  private getClusterAgents(cb): void {
-    this.coreService.post('agents/inventory/cluster', {
-      controllerId: this.controllerId,
-      agentIds: [this.agentId]
-    }).subscribe({
-      next: (data: any) => {
-        data.agents.forEach((agent) => {
-          this.agentList = agent.subagents;
-        });
-        cb();
-      }, error: () => {
-        cb();
-      }
-    });
-  }
-
-  private getClusters(): void {
-    this.coreService.post('agents/cluster', {
-      controllerId: this.controllerId,
-      agentIds: [this.agentId]
-    }).subscribe({
-      next: (data: any) => {
-        console.log(data.subagentClusters)
-      }
-    });
-  }
-
-  createCluster(): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: AddClusterModalComponent,
-      nzComponentParams: {
-        new: true
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+  drop2(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.clusters, event.previousIndex, event.currentIndex);
   }
 
   drop($event): void {
-    console.log(this.agentList[$event.previousIndex]);
+    const subagentId = this.agentList[$event.previousIndex].subagentId;
+    const _node = this.getCellNode('Agent', subagentId);
+    this.editor.graph.insertVertex(this.editor.graph.getDefaultParent(), null, _node, 0, 0, 180, 50, 'job');
+    this.selectedCluster.subagentIds.push({
+      subagentId,
+      priority: '1'
+    })
+    this.actual();
+    this.storeCluster(subagentId);
+  }
+
+  private storeCluster(subagentId?) {
+    const obj: any = {
+      auditLog: this.auditLog,
+      subagentClusters: []
+    }
+    this.clusters.forEach((cluster) => {
+      if (subagentId && this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
+        cluster.subagentIds.push({
+          subagentId,
+          priority: '1'
+        });
+      }
+      if (cluster.subagentIds && cluster.subagentIds.length > 0) {
+        obj.subagentClusters.push(cluster);
+      }
+    })
+    if (obj.subagentClusters.length > 0) {
+      this.coreService.post('agents/cluster/store', obj).subscribe();
+    }
+  }
+
+  /**
+   * Function to create dom element
+   */
+  private getCellNode(name, label) {
+    const doc = mxUtils.createXmlDocument();
+    // Create new node object
+    const _node = doc.createElement(name);
+    _node.setAttribute('label', label.trim());
+    return _node;
+  }
+
+  onAllChecked(isCheck: boolean): void {
+    if (isCheck) {
+      this.clusters.forEach(item => {
+        this.object.mapOfCheckedId.add(item.subagentClusterId);
+      });
+    } else {
+      this.object.mapOfCheckedId.clear();
+    }
+    this.refreshCheckedStatus();
+  }
+
+  onItemChecked(cluster: any, checked: boolean): void {
+    if (checked) {
+      this.object.mapOfCheckedId.add(cluster.subagentClusterId);
+    } else {
+      this.object.mapOfCheckedId.delete(cluster.subagentClusterId);
+    }
+    this.object.checked = this.object.mapOfCheckedId.size === this.clusters.length;
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(): void {
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
   /**
@@ -516,6 +850,9 @@ export class AgentComponent implements OnInit, OnDestroy {
    * Function to override Mxgraph properties and functions
    */
   private initEditorConf(editor) {
+    if (!editor) {
+      return;
+    }
     const graph = editor.graph;
     mxGraph.prototype.cellsResizable = false;
     mxGraph.prototype.multigraph = false;
@@ -528,15 +865,21 @@ export class AgentComponent implements OnInit, OnDestroy {
     mxConstants.EDGE_SELECTION_COLOR = null;
     mxConstants.GUIDE_COLOR = null;
 
-    let style = graph.getStylesheet().getDefaultVertexStyle();
-    let style2 = graph.getStylesheet().getDefaultEdgeStyle();
+
     if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
+      const style = graph.getStylesheet().getDefaultEdgeStyle();
       style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
-      style2[mxConstants.STYLE_STROKECOLOR] = '#aaa';
-      style2[mxConstants.STYLE_FONTCOLOR] = '#f2f2f2';
+      const style2 = graph.getStylesheet().getDefaultEdgeStyle();
+      if (this.preferences.theme === 'blue-lt') {
+        style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(70, 82, 95, 0.6)';
+      } else if (this.preferences.theme === 'blue') {
+        style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(50, 70, 90, 0.61)';
+      } else if (this.preferences.theme === 'cyan') {
+        style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(29, 29, 28, 0.5)';
+      } else if (this.preferences.theme === 'grey') {
+        style2[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = 'rgba(78, 84, 92, 0.62)';
+      }
     }
-    style[mxConstants.STYLE_FILLCOLOR] = this.preferences.theme === 'dark' ? '#333332' : this.preferences.theme === 'grey' ? '#535a63' :
-      this.preferences.theme === 'blue' ? '#344d68' : this.preferences.theme === 'blue-lt' ? '#4e5c6a' : this.preferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';
 
     // Enables snapping waypoints to terminals
     mxEdgeHandler.prototype.snapToTerminals = true;
@@ -548,26 +891,6 @@ export class AgentComponent implements OnInit, OnDestroy {
     graph.constrainChildren = false;
     graph.extendParentsOnAdd = false;
     graph.extendParents = false;
-
-    // Off page connector
-    function OffPageConnectorShape() {
-      mxActor.call(this);
-    }
-
-    mxUtils.extend(OffPageConnectorShape, mxActor);
-    OffPageConnectorShape.prototype.size = 3 / 8;
-    OffPageConnectorShape.prototype.isRoundable = function () {
-      return true;
-    };
-    OffPageConnectorShape.prototype.redrawPath = function (c, x, y, w, h) {
-      let s = h * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
-      let arcSize = mxUtils.getValue(this.style, mxConstants.STYLE_ARCSIZE, mxConstants.LINE_ARCSIZE) / 2;
-      this.addPoints(c, [new mxPoint(0, 0), new mxPoint(w, 0), new mxPoint(w, h - s), new mxPoint(w / 2, h),
-        new mxPoint(0, h - s)], this.isRounded, arcSize, true);
-      c.end();
-    };
-
-    mxCellRenderer.registerShape('offPageConnector', OffPageConnectorShape);
 
     /**
      * Function: createPreviewShape
@@ -597,66 +920,6 @@ export class AgentComponent implements OnInit, OnDestroy {
     if (excludes.indexOf('overlays') > 0) {
       excludes.splice(excludes.indexOf('overlays'), 1);
     }
-
-    // Parallelogram
-    function Parallelogram() {
-      mxActor.call(this);
-    }
-
-    mxUtils.extend(Parallelogram, mxActor);
-    Parallelogram.prototype.size = .18;
-    Parallelogram.prototype.isRoundable = function () {
-      return true;
-    };
-    Parallelogram.prototype.redrawPath = function (c, x, y, w, h) {
-      var dx = w * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
-      let arcSize = mxUtils.getValue(this.style, mxConstants.STYLE_ARCSIZE, mxConstants.LINE_ARCSIZE) / 2;
-      this.addPoints(c, [new mxPoint(0, h), new mxPoint(dx, 0), new mxPoint(w, 0), new mxPoint(w - dx, h)], this.isRounded, arcSize, true);
-      c.end();
-    };
-
-    // Parallelogram2
-    function Parallelogram2() {
-      mxActor.call(this);
-    }
-
-    mxUtils.extend(Parallelogram2, mxActor);
-    Parallelogram2.prototype.size = .18;
-    Parallelogram2.prototype.isRoundable = function () {
-      return true;
-    };
-    Parallelogram2.prototype.redrawPath = function (c, x, y, w, h) {
-      var dx = w * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
-      let arcSize = mxUtils.getValue(this.style, mxConstants.STYLE_ARCSIZE, mxConstants.LINE_ARCSIZE) / 2;
-      this.addPoints(c, [new mxPoint(0, 0), new mxPoint(dx, h), new mxPoint(w, h), new mxPoint(w - dx, 0)], this.isRounded, arcSize, true);
-      c.end();
-    };
-
-    // SumEllipseShape
-    function SumEllipseShape() {
-      mxEllipse.call(this);
-    }
-
-    mxUtils.extend(SumEllipseShape, mxEllipse);
-    SumEllipseShape.prototype.paintVertexShape = function (c, x, y, w, h) {
-      mxEllipse.prototype.paintVertexShape.apply(this, arguments);
-      let s2 = 0.145;
-      c.setShadow(false);
-      c.begin();
-      c.moveTo(x + w * s2, y + h * s2);
-      c.lineTo(x + w * (1 - s2), y + h * (1 - s2));
-      c.end();
-      c.stroke();
-      c.begin();
-      c.moveTo(x + w * (1 - s2), y + h * s2);
-      c.lineTo(x + w * s2, y + h * (1 - s2));
-      c.end();
-      c.stroke();
-    };
-
-    mxCellRenderer.registerShape('sumEllipse', SumEllipseShape);
-    mxCellRenderer.registerShape('Parallelogram', Parallelogram);
-    mxCellRenderer.registerShape('Parallelogram2', Parallelogram2);
 
     /**
      * Overrides method to provide a cell label in the display
@@ -774,7 +1037,6 @@ export class AgentComponent implements OnInit, OnDestroy {
       return tip;
     };
 
-
     // Defines the tolerance before removing the icons
     var iconTolerance = 10;
     let isAgentDraging = false, movedAgent = null;
@@ -795,8 +1057,10 @@ export class AgentComponent implements OnInit, OnDestroy {
           isAgentDraging = true;
           movedAgent = null;
           setTimeout(function () {
-            if (isAgentDraging)
-              $('#dropContainer').css({display: 'block'});
+            if (isAgentDraging) {
+              $('#dropContainer2').show();
+              $('#toolbar-icons').hide();
+            }
           }, 10);
         }
         if (this.currentState != null && (me.getState() == this.currentState ||
@@ -828,7 +1092,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       mouseUp: function (sender, me) {
         if (isAgentDraging) {
           isAgentDraging = false;
-          // detachedAgent(me.evt.target, movedAgent)
+          detachedAgent(me.evt.target, movedAgent)
         }
       },
       dragEnter: function (evt, state) {
@@ -843,6 +1107,15 @@ export class AgentComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    function detachedAgent(target, cell): void {
+      if (target && target.getAttribute('class') === 'dropContainer' && cell) {
+        movedAgent = null;
+        graph.removeCells([cell], null);
+      }
+      $('#dropContainer').hide();
+      $('#toolbar-icons').show();
+    }
 
     graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
       if (cells && cells[0]) {
@@ -938,18 +1211,73 @@ export class AgentComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Reformat the layout
-   */
-  private executeLayout(graph) {
-    const layout = new mxHierarchicalLayout(graph);
-    layout.execute(graph.getDefaultParent());
-  }
-
   exportInPng() {
     if (this.editor && this.editor.graph) {
-
+      const dom = $('#graph');
+      let ht = $(document).height();
+      let wt = $(document).width();
+      if (wt < dom.first()[0].scrollWidth) {
+        wt = dom.first()[0].scrollWidth;
+      }
+      if (ht < dom.first()[0].scrollHeight) {
+        ht = dom.first()[0].scrollHeight;
+      }
+      let bg = dom.css('background-color');
+      bg = bg.substring(0, bg.length - 4);
+      saveSvgAsPng(dom.first()[0].firstChild, this.selectedCluster.subagentClusterId + '.png', {
+        backgroundColor: bg + '1)',
+        height: ht + 200,
+        width: wt + 200,
+        left: -50,
+        top: -80
+      });
     }
+  }
+
+  private updateCluster(): void {
+    if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
+      const graph = this.editor.graph;
+      const scrollValue: any = {};
+      const element = document.getElementById('graph');
+      scrollValue.scrollTop = element.scrollTop;
+      scrollValue.scrollLeft = element.scrollLeft;
+      scrollValue.scale = graph.getView().getScale();
+      graph.getModel().beginUpdate();
+      try {
+        graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
+        this.createClusterWorkflow();
+      } finally {
+        // Updates the display
+        graph.getModel().endUpdate();
+        AgentComponent.executeLayout(graph);
+      }
+
+      const _element = document.getElementById('graph');
+      _element.scrollTop = scrollValue.scrollTop;
+      _element.scrollLeft = scrollValue.scrollLeft;
+      if (scrollValue.scale && scrollValue.scale != 1) {
+        graph.getView().setScale(scrollValue.scale);
+      }
+    }
+  }
+
+  private createClusterWorkflow(): void {
+    const graph = this.editor.graph;
+    const doc = mxUtils.createXmlDocument();
+    const defaultParent = graph.getDefaultParent();
+    let v1;
+    this.selectedCluster.subagentIds.forEach((subagent) => {
+      console.log(subagent)
+      const _node = this.getCellNode('Agent', subagent.subagentId);
+      let source = '';
+      if (v1) {
+        source = v1;
+      }
+      v1 = this.editor.graph.insertVertex(defaultParent, null, _node, 0, 0, 180, 50, 'job');
+      if (source) {
+        graph.insertEdge(defaultParent, null, doc.createElement('Connection'), source, v1, 'edgeStyle');
+      }
+    })
   }
 
   /* ---------------------------- Broadcast messages ----------------------------------*/
@@ -996,6 +1324,10 @@ export class AgentComponent implements OnInit, OnDestroy {
       }
       this.editor.graph.center(true, true, x, y);
     }
+  }
+
+  close(): void {
+    this.isVisible = false;
   }
 
 }

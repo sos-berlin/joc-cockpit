@@ -14,67 +14,6 @@ import {CommentModalComponent} from '../../components/comment-modal/comment.comp
 import {AgentModalComponent, SubagentModalComponent} from "./agent/agent.component";
 
 @Component({
-  selector: 'app-deploy-modal',
-  templateUrl: './deploy.dialog.html'
-})
-export class DeployModalComponent implements OnInit {
-  @Input() agent: any;
-  @Input() controllerId: any;
-  submitted = false;
-  comments: any = {};
-  preferences: any;
-  display: any;
-  required = false;
-  schedulingTypes = [
-    'FIXED_PRIORITY',
-    'ROUND_ROBIN'
-  ];
-  schedulingType = '';
-
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
-  }
-
-  ngOnInit(): void {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    this.display = this.preferences.auditLog;
-    this.comments.radio = 'predefined';
-    if (sessionStorage.$SOS$FORCELOGING === 'true') {
-      this.required = true;
-      this.display = true;
-    }
-  }
-
-  onSubmit(): void {
-    this.submitted = true;
-    const obj: any = {
-      controllerId: this.controllerId,
-      clusterAgents: [{agentId: this.agent.agentId, schedulingType: this.schedulingType}]
-    };
-
-    if (this.display) {
-      obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
-    }
-    this.coreService.post('agents/inventory/cluster/deploy', obj).subscribe({
-      next: res => {
-        this.activeModal.close(res);
-      }, error: () => this.submitted = false
-    });
-  }
-
-}
-
-@Component({
   selector: 'app-create-token-modal',
   templateUrl: './create-token.dialog.html'
 })
@@ -186,8 +125,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
   isLoaded = false;
   hasLicense = false;
   object = {
-    mapOfCheckedId2: new Set(),
-    mapOfCheckedId: new Set()
+    mapOfCheckedId2: new Map(),
+    mapOfCheckedId: new Map()
   };
 
   subscription1: Subscription;
@@ -355,7 +294,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       const list = clusterAgents[index].subagents;
       moveItemInArray(list, event.previousIndex, event.currentIndex);
       for (let i = 0; i < list.length; i++) {
-        list[i].position = i + 1;
+        list[i].ordering = i + 1;
       }
       this.coreService.post('agents/inventory/cluster/subagents/store', {
         controllerId: clusterAgents[index].controllerId,
@@ -469,7 +408,68 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   deleteAll(): void {
-    console.log(this.object.mapOfCheckedId);
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Agent',
+        operation: 'Delete',
+        name: ''
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteAll(result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteSelectedAgents',
+          type: 'Delete',
+          objectName: '',
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteAll();
+        }
+      });
+    }
+  }
+
+  private _deleteAll(auditLog = {}): void {
+    this.object.mapOfCheckedId.forEach((k, v) => {
+      this.coreService.post('agent/delete', {
+        controllerId: k,
+        agentId: v,
+        auditLog
+      }).subscribe();
+    })
+    this.object.mapOfCheckedId2.forEach((k, v) => {
+      this.coreService.post('agents/inventory/cluster/subagents/delete', {
+        controllerId: k,
+        subagentIds: [v],
+        auditLog
+      }).subscribe();
+    });
+    this.object.mapOfCheckedId.clear();
+    this.object.mapOfCheckedId2.clear();
     console.log(this.object.mapOfCheckedId2);
   }
 
@@ -555,7 +555,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title: 'delete',
-          message: 'removeAgent',
+          message: 'deleteAgent',
           type: 'Delete',
           objectName: agent.agentId,
         },
@@ -672,7 +672,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title: 'delete',
-          message: 'removeSubagent',
+          message: 'deleteSubagent',
           type: 'Delete',
           objectName: sub.subagentId,
         },
@@ -721,48 +721,129 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  disableAgent(agent, controller, isCluster = false): void {
-    this.enableDisable(agent, controller, isCluster, true);
+  disableAgent(agent, controller): void {
+    this.enableDisable(agent, controller, true);
   }
 
   enableAgent(agent, controller, isCluster = false): void {
-    this.enableDisable(agent, controller, isCluster, false);
+    this.enableDisable(agent, controller, false);
   }
 
-  private enableDisable(agent, controller, isCluster, flag): void {
-    agent.disabled = flag;
+  private enableDisable(agent, controller, flag): void {
     const obj: any = {
-      controllerId: controller.controllerId
+      controllerId: controller.controllerId,
+      agents: controller.agents
     };
-    if (isCluster) {
-      obj.clusterAgents = controller.agentClusters;
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Subagent',
+        operation: flag ? 'Enable' : 'Disable',
+        name: ''
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          agent.disabled = flag;
+          this.coreService.post('agents/inventory/store', obj).subscribe({
+            error: () => {
+              agent.disabled = !flag;
+            }
+          });
+        }
+      });
     } else {
-      obj.agents = controller.agents;
+      agent.disabled = flag;
+      this.coreService.post('agents/inventory/store', obj).subscribe({
+        error: () => {
+          agent.disabled = !flag;
+        }
+      });
     }
-    this.coreService.post(isCluster ? 'agents/inventory/cluster/store' : 'agents/inventory/store', obj).subscribe({
-      error: () => {
-        agent.disabled = !flag;
-      }
-    });
   }
 
-  deployAgent(agent, controller): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: DeployModalComponent,
-      nzComponentParams: {
+  disableEnableSubagent(subagent, controller, isEnable): void {
+    const URL = isEnable ? '/agents/inventory/cluster/subagents/enable' : 'agents/inventory/cluster/subagents/disable';
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Subagent',
+        operation: isEnable ? 'Enable' : 'Disable',
+        name: subagent.subagentId
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post(URL, {
+            controllerId: controller.controllerId,
+            subagentIds: [subagent.subagentId],
+            auditLog: result
+          }).subscribe();
+        }
+      });
+    } else {
+      this.coreService.post(URL, {
         controllerId: controller.controllerId,
-        agent,
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.getClusterAgents(controller);
-      }
-    });
+        subagentIds: [subagent.subagentId]
+      }).subscribe();
+    }
+  }
+
+  deployAgent(agent, controller, isAgent = false): void {
+    const obj: any = {
+      controllerId: controller.controllerId,
+      clusterAgentIds: [agent.agentId]
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Agent Group',
+        operation: 'Deploy',
+        name: agent.agentId
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this.coreService.post('agents/inventory/cluster/deploy', obj).subscribe(() => this.getClusterAgents(controller));
+        }
+      });
+    } else {
+      this.coreService.post('agents/inventory/cluster/deploy', obj).subscribe(() => this.getClusterAgents(controller));
+    }
   }
 
   private getSecurity(): void {
@@ -780,7 +861,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       if (value && controller.agentClusters.length > 0) {
         controller.agentClusters.forEach(item => {
           if (!item.disabled) {
-            this.object.mapOfCheckedId2.add(item.agentId);
+            this.object.mapOfCheckedId2.set(item.agentId, controller.controllerId);
           }
         });
       } else {
@@ -792,7 +873,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       if (value && controller.agents.length > 0) {
         controller.agents.forEach(item => {
           if (!item.disabled) {
-            this.object.mapOfCheckedId.add(item.agentId);
+            this.object.mapOfCheckedId.set(item.agentId, controller.controllerId);
           }
         });
       } else {
@@ -826,9 +907,9 @@ export class ControllersComponent implements OnInit, OnDestroy {
   onItemChecked(controller: any, agent: any, checked: boolean, isCluster = false): void {
     if (checked) {
       if (isCluster) {
-        this.object.mapOfCheckedId2.add(agent.agentId);
+        this.object.mapOfCheckedId2.set(agent.agentId, controller.controllerId);
       } else {
-        this.object.mapOfCheckedId.add(agent.agentId);
+        this.object.mapOfCheckedId.set(agent.agentId, controller.controllerId);
       }
     } else {
       if (isCluster) {
