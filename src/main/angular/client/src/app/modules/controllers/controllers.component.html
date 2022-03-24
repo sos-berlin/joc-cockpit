@@ -58,7 +58,6 @@
                     <h5 class="text-dark">
                       <a *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel" (click)="editController(controller.controllerId)">{{controller.controllerId}}</a>
                       <span  *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">{{controller.controllerId}}</span>
-
                       <i (click)="showPanel[id] = true;getAgents(controller, null)" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
                       <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
                          class="cursor fa fa-caret-down m-l-xs"></i>
@@ -405,12 +404,12 @@
                                         <li (click)="resetAgent(sub, clusterAgent, controller, true)" nz-menu-item >
                                           <a translate>agent.button.resetForced</a>
                                         </li>-->
-  <!--                                      <li (click)="disableEnableSubagent(sub, controller, false)" nz-menu-item *ngIf="!sub.disabled">
+                                       <li (click)="disableEnableSubagent(sub, controller, false)" nz-menu-item *ngIf="!sub.disabled">
                                           <a translate>agent.button.disable</a>
                                         </li>
                                         <li (click)="disableEnableSubagent(sub, controller, true)" nz-menu-item *ngIf="sub.disabled">
                                           <a translate>agent.button.enable</a>
-                                        </li>-->
+                                        </li>
                                         <li (click)="removeSubagent(sub, clusterAgent, controller)" nz-menu-item class="bg-hover-color">
                                           <a translate="">common.button.delete</a>
                                         </li>

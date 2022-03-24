@@ -86,7 +86,14 @@
 
 #toolbarContainer {
   overflow: auto;
-  min-height: 200px;
+  min-height: 260px;
+
+  .vert-middle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 236px;
+  }
 }
 
 #toolbarContainer div.draggable:hover {
@@ -125,4 +132,8 @@
 
 .agent-list.cdk-drop-list-dragging .agent-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.bottom-btn {
+  color: #fff !important;
 }

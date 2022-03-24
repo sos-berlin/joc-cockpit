@@ -2,6 +2,7 @@ import {Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
+import {TranslateService} from "@ngx-translate/core";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {CoreService} from "../../../services/core.service";
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
@@ -16,11 +17,12 @@ declare const mxHierarchicalLayout;
 declare const mxTooltipHandler;
 declare const mxConstants;
 declare const mxEdgeHandler;
-declare const saveSvgAsPng: any;
+declare const saveSvgAsPng;
 declare const mxPoint;
 declare const mxGraphHandler;
 declare const mxRectangleShape;
 declare const mxRectangle;
+declare const mxCellHighlight;
 declare const mxCell;
 declare const mxEvent;
 declare const mxEventObject;
@@ -179,7 +181,13 @@ export class AddClusterModalComponent implements OnInit {
         }
       }
     }
-    this.activeModal.close(obj);
+    this.coreService.post('agents/cluster/store', obj).subscribe({
+      next: () => {
+        this.activeModal.close(obj);
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
   }
 }
 
@@ -374,6 +382,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   isLoading = true;
   isVisible = false;
   agentList = [];
+  clusterAgents = [];
   pageView: string;
   preferences: any = {};
   configXml = './assets/mxgraph/config/diagrameditor.xml';
@@ -381,15 +390,15 @@ export class AgentComponent implements OnInit, OnDestroy {
   controllerId: string;
   agentId: string;
   clusters = [];
+  dropTarget: number;
   selectedCluster: any = {};
-  auditLog = {};
   object = {
     checked: false,
     indeterminate: false,
     mapOfCheckedId: new Set()
   }
 
-  constructor(public coreService: CoreService, private route: ActivatedRoute, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private route: ActivatedRoute, private translate: TranslateService, private modal: NzModalService) {
   }
 
   static setHeight(): void {
@@ -398,14 +407,6 @@ export class AgentComponent implements OnInit, OnDestroy {
     $('.graph-container').css({'height': ht, 'scroll-top': '0'});
     $('#graph').slimscroll({height: 'calc(100vh - ' + (top + 54) + 'px)'});
     $('#toolbarContainer').css({'max-height': ht});
-  }
-
-  /**
-   * Reformat the layout
-   */
-  static executeLayout(graph: any): void {
-    const layout = new mxHierarchicalLayout(graph);
-    layout.execute(graph.getDefaultParent());
   }
 
   ngOnInit(): void {
@@ -467,7 +468,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (data: any) => {
         data.agents.forEach((agent) => {
-          this.agentList = agent.subagents;
+          this.clusterAgents = agent.subagents;
         });
       }
     });
@@ -487,9 +488,6 @@ export class AgentComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        if (result.auditLog) {
-          this.auditLog = result;
-        }
         this.clusters = result.subagentClusters;
         this.selectedClusterFn(this.clusters[this.clusters.length - 1]);
       }
@@ -510,11 +508,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        if (result.auditLog) {
-          this.auditLog = result;
-        }
         this.clusters = result.subagentClusters;
-        this.storeCluster();
       }
     });
   }
@@ -636,7 +630,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         operation: 'Deploy',
         name: ''
       };
-      const modal = this.modal.create({
+      this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
@@ -646,8 +640,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
+      }).afterClose.subscribe(result => {
         if (result) {
           obj.auditLog = {
             comment: result.comment,
@@ -674,7 +667,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         operation: 'Deploy',
         name: cluster.subagentClusterId
       };
-      const modal = this.modal.create({
+      this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
@@ -684,8 +677,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
+      }).afterClose.subscribe(result => {
         if (result) {
           obj.auditLog = {
             comment: result.comment,
@@ -704,9 +696,11 @@ export class AgentComponent implements OnInit, OnDestroy {
     this.selectedCluster = this.coreService.clone(cluster);
     if (this.editor && this.editor.graph) {
       this.updateCluster();
+      this.updateList();
     } else {
       this.createEditor(() => {
         this.updateCluster();
+        this.updateList();
         let dom = $('#graph');
         dom.css({opacity: 1});
 
@@ -731,6 +725,9 @@ export class AgentComponent implements OnInit, OnDestroy {
           }
         });
         AgentComponent.setHeight();
+        setTimeout(() => {
+          this.actual();
+        }, 0)
       });
     }
   }
@@ -745,36 +742,82 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   drop($event): void {
-    const subagentId = this.agentList[$event.previousIndex].subagentId;
-    const _node = this.getCellNode('Agent', subagentId);
-    this.editor.graph.insertVertex(this.editor.graph.getDefaultParent(), null, _node, 0, 0, 180, 50, 'job');
-    this.selectedCluster.subagentIds.push({
-      subagentId,
-      priority: '1'
-    })
-    this.actual();
-    this.storeCluster(subagentId);
+    if ($event.isPointerOverContainer && this.dropTarget) {
+      const dropTargetCell = this.editor.graph.getModel().getCell(this.dropTarget);
+      if (dropTargetCell) {
+        const subagentId = this.agentList[$event.previousIndex].subagentId;
+        this.agentList.splice($event.previousIndex, 1);
+        const obj = {
+          subagentId,
+          priority: parseInt(dropTargetCell.getAttribute('priority'), 10)
+        };
+        this.selectedCluster.subagentIds.push(obj);
+        this.updateCluster()
+        this.storeCluster(obj);
+      }
+    }
   }
 
-  private storeCluster(subagentId?) {
+  private storeCluster(subagent?) {
     const obj: any = {
-      auditLog: this.auditLog,
       subagentClusters: []
+    }
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        obj.auditLog = {comment: translatedValue};
+      });
+    }
+    this.clusters.forEach((cluster) => {
+      if (subagent && this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
+        cluster.subagentIds.push(subagent);
+      }
+      obj.subagentClusters.push({
+        controllerId: cluster.controllerId,
+        title: cluster.title,
+        agentId: cluster.agentId,
+        subagentIds: cluster.subagentIds,
+        subagentClusterId: cluster.subagentClusterId,
+      });
+    })
+    this.coreService.post('agents/cluster/store', obj).subscribe();
+  }
+
+  private removeSubagent(cell): void {
+    const subagentId = cell.getAttribute('label');
+    const obj: any = {
+      subagentClusters: []
+    }
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        obj.auditLog = {comment: translatedValue};
+      });
     }
     this.clusters.forEach((cluster) => {
       if (subagentId && this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
-        cluster.subagentIds.push({
-          subagentId,
-          priority: '1'
-        });
+        for (let i in cluster.subagentIds) {
+          if (cluster.subagentIds[i].subagentId === subagentId) {
+            cluster.subagentIds.splice(i, 1);
+            break;
+          }
+        }
+        for (let i in this.selectedCluster.subagentIds) {
+          if (this.selectedCluster.subagentIds[i].subagentId === subagentId) {
+            this.selectedCluster.subagentIds.splice(i, 1);
+            break;
+          }
+        }
       }
-      if (cluster.subagentIds && cluster.subagentIds.length > 0) {
-        obj.subagentClusters.push(cluster);
-      }
-    })
-    if (obj.subagentClusters.length > 0) {
-      this.coreService.post('agents/cluster/store', obj).subscribe();
-    }
+      obj.subagentClusters.push({
+        controllerId: cluster.controllerId,
+        title: cluster.title,
+        agentId: cluster.agentId,
+        subagentIds: cluster.subagentIds,
+        subagentClusterId: cluster.subagentClusterId,
+      });
+    });
+    this.updateList();
+    this.updateCluster();
+    this.coreService.post('agents/cluster/store', obj).subscribe();
   }
 
   /**
@@ -864,7 +907,9 @@ export class AgentComponent implements OnInit, OnDestroy {
     mxConstants.VERTEX_SELECTION_COLOR = null;
     mxConstants.EDGE_SELECTION_COLOR = null;
     mxConstants.GUIDE_COLOR = null;
-
+    const self = this;
+    let isAgentDraging = false;
+    let movingAgent = null;
 
     if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
       const style = graph.getStylesheet().getDefaultEdgeStyle();
@@ -891,6 +936,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     graph.constrainChildren = false;
     graph.extendParentsOnAdd = false;
     graph.extendParents = false;
+    mxConstants.DROP_TARGET_COLOR = 'green';
 
     /**
      * Function: createPreviewShape
@@ -899,6 +945,7 @@ export class AgentComponent implements OnInit, OnDestroy {
      */
     mxGraphHandler.prototype.createPreviewShape = function (bounds) {
       const _shape = graph.view.getState(this.cell).shape;
+      movingAgent = this.cell;
       let shape = new mxRectangleShape(bounds, _shape.fill, _shape.stroke, _shape.strokewidth);
       shape.isRounded = _shape.isRounded;
       shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
@@ -914,31 +961,27 @@ export class AgentComponent implements OnInit, OnDestroy {
       return shape;
     };
 
-    // remove overlays from exclude list for mxCellCodec so that overlays are encoded into XML
-    let cellCodec = mxCodecRegistry.getCodec(mxCell);
-    let excludes = cellCodec.exclude;
-    if (excludes.indexOf('overlays') > 0) {
-      excludes.splice(excludes.indexOf('overlays'), 1);
-    }
-
     /**
      * Overrides method to provide a cell label in the display
      * @param cell
      */
     graph.convertValueToString = function (cell) {
-      if (cell.value.tagName === 'Connection' || cell.value.tagName === 'Box') {
-        return '';
+      let str = '';
+      if (cell.value.tagName === 'Process') {
+        const title = cell.getAttribute('label');
+        if (title != null && title.length > 0) {
+          self.translate.get('agent.label.' + title).subscribe(translatedValue => {
+            str = translatedValue;
+          });
+        }
+      } else if (cell.value.tagName !== 'Connection') {
+        let className;
+        if (cell.value.tagName === 'Agent') {
+          className = 'vertex-text agent ' + cell.id;
+        }
+        str = '<div class="' + className + '">' + cell.getAttribute('label');
+        str = str + '</div>';
       }
-      let className;
-      if (cell.value.tagName === 'Agent') {
-        className = 'vertex-text agent ' + cell.id;
-      }
-
-      let str = '<div class="' + className + '">' + cell.getAttribute('label');
-      if (cell.value.tagName === 'Agent') {
-
-      }
-      str = str + '</div>';
       return str;
     };
 
@@ -1025,7 +1068,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       if (cell != null && cell.getTooltip != null) {
         tip = cell.getTooltip();
       } else if (cell) {
-        if (!(cell.value.tagName === 'Connection' || cell.value.tagName === 'Connector' || cell.value.tagName === 'Box')) {
+        if (!(cell.value.tagName === 'Connection' || cell.value.tagName === 'Connector' || cell.value.tagName === 'Process')) {
           tip = "<div class='vertex-text2'>";
           if (cell.getAttribute('label')) {
             tip = tip + cell.getAttribute('label');
@@ -1037,14 +1080,9 @@ export class AgentComponent implements OnInit, OnDestroy {
       return tip;
     };
 
-    // Defines the tolerance before removing the icons
-    var iconTolerance = 10;
-    let isAgentDraging = false, movedAgent = null;
-
     // Shows icons if the mouse is over a cell
     graph.addMouseListener({
       currentState: null,
-      currentIconSet: null,
       mouseDown: function (sender, me) {
         // Hides icons on mouse down
         if (this.currentState != null) {
@@ -1055,28 +1093,20 @@ export class AgentComponent implements OnInit, OnDestroy {
       mouseMove: function (sender, me) {
         if (me.consumed && !me.getCell()) {
           isAgentDraging = true;
-          movedAgent = null;
           setTimeout(function () {
-            if (isAgentDraging) {
-              $('#dropContainer2').show();
+            if (isAgentDraging && movingAgent) {
+              $('#dropContainer').show();
               $('#toolbar-icons').hide();
             }
           }, 10);
         }
-        if (this.currentState != null && (me.getState() == this.currentState ||
-          me.getState() == null)) {
-          let tol = iconTolerance;
-          let tmp = new mxRectangle(me.getGraphX() - tol,
-            me.getGraphY() - tol, 2 * tol, 2 * tol);
-
-          if (mxUtils.intersects(tmp, this.currentState)) {
-            return;
-          }
+        if (this.currentState != null && me.getState() == this.currentState) {
+          return;
         }
 
         let tmp = graph.view.getState(me.getCell());
         // Ignores everything but vertices
-        if (graph.isMouseDown || (tmp != null && !graph.getModel().isVertex(tmp.cell))) {
+        if (graph.isMouseDown) {
           tmp = null;
         }
         if (tmp != this.currentState) {
@@ -1092,120 +1122,70 @@ export class AgentComponent implements OnInit, OnDestroy {
       mouseUp: function (sender, me) {
         if (isAgentDraging) {
           isAgentDraging = false;
-          detachedAgent(me.evt.target, movedAgent)
+          if (movingAgent) {
+            detachedAgent(me.evt.target, movingAgent)
+          }
         }
       },
       dragEnter: function (evt, state) {
-        if (this.currentIconSet == null) {
-
+        if (state != null) {
+          this.previousStyle = state.style;
+          state.style = mxUtils.clone(state.style);
+          if (state.style) {
+            if (state.cell && state.cell.value.tagName === 'Process') {
+              const classList = $('#graph').attr('class');
+              if (classList.indexOf('cdk-drop-list-dragging') > -1) {
+                this.currentHighlight = new mxCellHighlight(graph, 'green');
+                this.currentHighlight.highlight(state);
+                self.dropTarget = state.cell.id;
+              }
+            }
+          }
+          if (state.shape) {
+            state.shape.apply(state);
+            state.shape.redraw();
+          }
+          if (state.text != null) {
+            state.text.apply(state);
+            state.text.redraw();
+          }
         }
       },
       dragLeave: function (evt, state) {
-        if (this.currentIconSet != null) {
-          this.currentIconSet.destroy();
-          this.currentIconSet = null;
+        if (state != null) {
+          self.dropTarget = null;
+          state.style = this.previousStyle;
+          if (state.style && this.currentHighlight != null) {
+            this.currentHighlight.destroy();
+            this.currentHighlight = null;
+          }
+          if (state.shape) {
+            state.shape.apply(state);
+            state.shape.redraw();
+          }
+
+          if (state.text != null) {
+            state.text.apply(state);
+            state.text.redraw();
+          }
         }
       }
     });
 
     function detachedAgent(target, cell): void {
       if (target && target.getAttribute('class') === 'dropContainer' && cell) {
-        movedAgent = null;
         graph.removeCells([cell], null);
+        self.removeSubagent(cell);
       }
+      movingAgent = null;
       $('#dropContainer').hide();
       $('#toolbar-icons').show();
     }
 
-    graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
-      if (cells && cells[0]) {
-        movedAgent = cells[0];
-        if (movedAgent.getAttribute('isStarterAgent') && movedAgent.getAttribute('isStarterAgent') != 'undefined') {
-          movedAgent = null;
-        }
-      }
-      dx = 0;
-      dy = (dy != null) ? dy : 0;
-      clone = (clone != null) ? clone : false;
-      if (cells != null && (dx != 0 || dy != 0 || clone || target != null)) {
-        // Removes descendants with ancestors in cells to avoid multiple moving
-        cells = this.model.getTopmostCells(cells);
-        if (cells && cells[0] && cells && cells[0].value && cells[0].value.tagName === 'Agent') {
-          dy = 0;
-        }
-
-        this.model.beginUpdate();
-        try {
-          // Faster cell lookups to remove relative edge labels with selected
-          // terminals to avoid explicit and implicit move at same time
-          var dict = new mxDictionary();
-          for (let i = 0; i < cells.length; i++) {
-            dict.put(cells[i], true);
-          }
-
-          var isSelected = mxUtils.bind(this, function (cell) {
-            while (cell != null) {
-              if (dict.get(cell)) {
-                return true;
-              }
-
-              cell = this.model.getParent(cell);
-            }
-            return false;
-          });
-
-          // Removes relative edge labels with selected terminals
-          var checked = [];
-
-          for (let i = 0; i < cells.length; i++) {
-            let geo = this.getCellGeometry(cells[i]);
-            let parent = this.model.getParent(cells[i]);
-
-            if ((geo == null || !geo.relative) || !this.model.isEdge(parent) ||
-              (!isSelected(this.model.getTerminal(parent, true)) &&
-                !isSelected(this.model.getTerminal(parent, false)))) {
-              checked.push(cells[i]);
-            }
-          }
-
-          cells = checked;
-
-          if (clone) {
-            cells = this.cloneCells(cells, this.isCloneInvalidEdges(), mapping);
-            if (target == null) {
-              target = this.getDefaultParent();
-            }
-          }
-
-          // to avoid forward references in sessions.
-          // Need to disable allowNegativeCoordinates if target not null to
-          // allow for temporary negative numbers until cellsAdded is called.
-          var previous = this.isAllowNegativeCoordinates();
-
-          if (target != null) {
-            this.setAllowNegativeCoordinates(true);
-          }
-
-          this.cellsMoved(cells, dx, dy, !clone && this.isDisconnectOnMove()
-            && this.isAllowDanglingEdges(), target == null,
-            this.isExtendParentsOnMove() && target == null);
-
-          this.setAllowNegativeCoordinates(previous);
-
-          if (target != null) {
-            let index = this.model.getChildCount(target);
-            this.cellsAdded(cells, target, index, null, null, true);
-          }
-
-          // Dispatches a move event
-          this.fireEvent(new mxEventObject(mxEvent.MOVE_CELLS, 'cells', cells,
-            'dx', dx, 'dy', dy, 'clone', clone, 'target', target, 'event', evt));
-        } finally {
-          this.model.endUpdate();
-        }
-      }
+    graph.moveCells = function (cells) {
       return cells;
     };
+
     graph.isValidDropTarget = function (cell, cells, evt) {
       return false;
     }
@@ -1234,30 +1214,40 @@ export class AgentComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateCluster(): void {
-    if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
-      const graph = this.editor.graph;
-      const scrollValue: any = {};
-      const element = document.getElementById('graph');
-      scrollValue.scrollTop = element.scrollTop;
-      scrollValue.scrollLeft = element.scrollLeft;
-      scrollValue.scale = graph.getView().getScale();
-      graph.getModel().beginUpdate();
-      try {
-        graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-        this.createClusterWorkflow();
-      } finally {
-        // Updates the display
-        graph.getModel().endUpdate();
-        AgentComponent.executeLayout(graph);
+  private updateList(): void {
+    this.agentList = this.clusterAgents.filter((item) => {
+      let flag = true;
+      for (let i in this.selectedCluster.subagentIds) {
+        if (this.selectedCluster.subagentIds[i].subagentId === item.subagentId) {
+          flag = false;
+          break;
+        }
       }
+      return flag;
+    });
+  }
 
-      const _element = document.getElementById('graph');
-      _element.scrollTop = scrollValue.scrollTop;
-      _element.scrollLeft = scrollValue.scrollLeft;
-      if (scrollValue.scale && scrollValue.scale != 1) {
-        graph.getView().setScale(scrollValue.scale);
-      }
+  private updateCluster(): void {
+    const graph = this.editor.graph;
+    const scrollValue: any = {};
+    const element = document.getElementById('graph');
+    scrollValue.scrollTop = element.scrollTop;
+    scrollValue.scrollLeft = element.scrollLeft;
+    scrollValue.scale = graph.getView().getScale();
+    graph.getModel().beginUpdate();
+    try {
+      graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
+      this.createClusterWorkflow();
+    } finally {
+      // Updates the display
+      graph.getModel().endUpdate();
+    }
+
+    const _element = document.getElementById('graph');
+    _element.scrollTop = scrollValue.scrollTop;
+    _element.scrollLeft = scrollValue.scrollLeft;
+    if (scrollValue.scale && scrollValue.scale != 1) {
+      graph.getView().setScale(scrollValue.scale);
     }
   }
 
@@ -1265,19 +1255,70 @@ export class AgentComponent implements OnInit, OnDestroy {
     const graph = this.editor.graph;
     const doc = mxUtils.createXmlDocument();
     const defaultParent = graph.getDefaultParent();
+
+    function compare(a, b) {
+      if (a.priority < b.priority) {
+        return -1;
+      }
+      if (a.priority > b.priority) {
+        return 1;
+      }
+      return 0;
+    }
+
+    let i = 0;
+    let priority = -1;
     let v1;
-    this.selectedCluster.subagentIds.forEach((subagent) => {
-      console.log(subagent)
-      const _node = this.getCellNode('Agent', subagent.subagentId);
-      let source = '';
-      if (v1) {
-        source = v1;
-      }
-      v1 = this.editor.graph.insertVertex(defaultParent, null, _node, 0, 0, 180, 50, 'job');
-      if (source) {
-        graph.insertEdge(defaultParent, null, doc.createElement('Connection'), source, v1, 'edgeStyle');
-      }
-    })
+    if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
+      this.selectedCluster.subagentIds.sort(compare).forEach((subagent, index) => {
+        const _node = this.getCellNode('Agent', subagent.subagentId);
+        let source;
+        let flag = this.selectedCluster.subagentIds.length === 1;
+        let y = 70 * subagent.priority;
+        if (priority === subagent.priority) {
+          i++;
+          if (v1) {
+            source = v1;
+          }
+        } else {
+          i = 0;
+        }
+        if (!flag) {
+          if (this.selectedCluster.subagentIds[index + 1]) {
+            if (subagent.priority !== this.selectedCluster.subagentIds[index + 1].priority) {
+              flag = true;
+            }
+          } else {
+            flag = true;
+          }
+        }
+        priority = subagent.priority;
+        let x = (230 * i) + 10;
+        v1 = this.editor.graph.insertVertex(defaultParent, null, _node, x, y, 180, 40, 'job');
+        if (source) {
+          graph.insertEdge(defaultParent, null, doc.createElement('Connection'), source, v1, 'edgeStyle');
+        }
+        if (flag) {
+          const mainNode = doc.createElement('Process');
+          mainNode.setAttribute('label', 'dragAndDropForRoundRobin');
+          mainNode.setAttribute('priority', 'priority');
+          const v2 = graph.insertVertex(defaultParent, null, mainNode, x + 230, y - 5, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
+          graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle;dashed=1;');
+        }
+
+        if (this.selectedCluster.subagentIds.length - 1 === index) {
+          const mainNode = doc.createElement('Process');
+          mainNode.setAttribute('label', 'dragAndDropFixedPriority');
+          mainNode.setAttribute('priority', (priority + 1));
+          graph.insertVertex(defaultParent, null, mainNode, 0, y + 70, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
+        }
+      })
+    } else {
+      const mainNode = doc.createElement('Process');
+      mainNode.setAttribute('label', 'dragAndDropFixedPriority');
+      mainNode.setAttribute('priority', 0);
+      graph.insertVertex(defaultParent, null, mainNode, 0, 0, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
+    }
   }
 
   /* ---------------------------- Broadcast messages ----------------------------------*/

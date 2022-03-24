@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
-import { ToastrService } from 'ngx-toastr';
+import {ToastrService} from 'ngx-toastr';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';

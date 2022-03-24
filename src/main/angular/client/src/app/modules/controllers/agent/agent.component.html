@@ -21,8 +21,8 @@
 </div>
 <div class="scroll-y max-ht1">
   <div class="padding p-b-0">
-    <div class="row m-t-xs cluster-list" *ngIf="!selectedCluster || !selectedCluster.subagentClusterId">
-      <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 cluster-box"
+    <div class="row m-t-xs" *ngIf="!selectedCluster || !selectedCluster.subagentClusterId">
+      <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12"
            *ngFor="let cluster of clusters">
         <div class="box card" [ngClass]="!cluster.deployed ? 'orange-box' : 'dark-blue-box'">
           <div class="box-body">
@@ -56,7 +56,7 @@
               </nz-dropdown-menu>
             </div>
             <div class="text-sm text-left text-muted p-t-xs">
-              <span translate>common.label.status </span>:
+              <span translate>agent.label.syncStatus </span>:
               <span *ngIf="cluster.syncState" [ngClass]="coreService.getColor(cluster.syncState.severity, 'text')"
                     [innerHtml]="cluster.syncState._text | translate"></span>
             </div>
@@ -81,7 +81,7 @@
       </div>
     </div>
     <div class="row" *ngIf="selectedCluster && selectedCluster.subagentClusterId">
-      <div class="col-sm-2">
+      <div class="col-md-2 col-sm-3">
         <div class="agent-list box-shadow" id="toolbarContainer" cdkDropList #listOne="cdkDropList"
              [cdkDropListConnectedTo]="[listTwo]">
           <ul class="p-a-0 m-0 agent-box" *ngFor="let agent of agentList" cdkDrag>
@@ -95,9 +95,14 @@
               </div>
             </li>
           </ul>
+          <div *ngIf="agentList.length === 0">
+            <div class="vert-middle">
+              <app-empty-data></app-empty-data>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col-sm-10">
+      <div class="col-md-10 col-sm-9">
         <div id="toolbar" class="hide"></div>
         <div class="graph-container">
           <div class="m-b-12 b-b">
@@ -131,54 +136,46 @@
           <div class="inline" id="toolbar-icons">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
               <li class="nav-item">
-                <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.zoomIn' | translate}}" (click)="zoomIn()">
-                  <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
+                <a class="nav-link" [nz-tooltip]="'workflow.button.zoomIn' | translate"
+                  (click)="zoomIn()">
+                  <span class="nav-text"> <i nz-icon nzType="zoom-in" nzTheme="outline"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"
+                  [nz-tooltip]="'workflow.button.zoomOut' | translate" (click)="zoomOut()">
+                  <span class="nav-text"> <i nz-icon nzType="zoom-out" nzTheme="outline"></i></span>
                 </a>
               </li>
               <li class="nav-item dropdown-separator">
                 <span class="separator"></span>
               </li>
               <li class="nav-item">
-                <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.zoomOut' | translate}}" (click)="zoomOut()">
-                  <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
+                <a class="nav-link" [nz-tooltip]="'workflow.button.actual' | translate"
+                  (click)="actual()">
+                  <span class="nav-text"> <i nz-icon nzType="fullscreen-exit" nzTheme="outline"></i></span>
                 </a>
-              </li>
-              <li class="nav-item dropdown-separator">
-                <span class="separator"></span>
               </li>
               <li class="nav-item">
-                <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.default' | translate}}" (click)="actual()">
-                  <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
+                <a class="nav-link" [nz-tooltip]="'workflow.button.fit' | translate"
+                  (click)="fit()">
+                  <span class="nav-text"> <i nz-icon nzType="column-width" nzTheme="outline"></i></span>
                 </a>
               </li>
-              <li class="nav-item dropdown-separator">
-                <span class="separator"></span>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-toggle="tooltip" title="{{'tooltip.fit' | translate}}" (click)="fit()">
-                  <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
-                </a>
-              </li>
-              <li class="nav-item dropdown-separator">
-                <span class="separator"></span>
-              </li>
-              <li class="nav-item" data-toggle="tooltip" title="{{'button.export' | translate}}">
-                <a class="nav-link" data-toggle="dropdown">
-                  <span class="nav-text"> <i class="fa fa-download" style="opacity: .8"></i></span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                  <a class="dropdown-item" (click)="exportInPng()" translate>label.png</a>
-                </div>
-              </li>
+
             </ul>
           </div>
           <div class="box-shadow-z1" id="graph" cdkDropList #listTwo="cdkDropList" [cdkDropListConnectedTo]="[listOne]"
-               (cdkDropListDropped)="drop($event)"></div>
+               (cdkDropListDropped)="drop($event)">
+          </div>
           <div id="dropContainer" class="dropContainer">
             <div class="dropContainer" translate>agent.message.dropHereToDetach</div>
           </div>
           <div id="outlineContainer"></div>
         </div>
+      </div>
+      <div class="bottom-btn primary" *ngIf="!isVisible" (click)="isVisible = true">
+        <i nz-icon nzType="menu-unfold" nzTheme="outline"></i>
       </div>
     </div>
   </div>
@@ -188,3 +185,90 @@
   <div class="cssload-inner cssload-two"></div>
   <div class="cssload-inner cssload-three"></div>
 </div>
+<nz-drawer [nzVisible]="isVisible" nzWidth="500px !important" nzPlacement="right" (nzOnClose)="close()">
+  <ng-container *nzDrawerContent>
+    <div class="close-btn" (click)="close()"></div>
+    <div *ngIf="isVisible">
+      <div class="pos-abt" style="top:12px;right:8px" *ngIf="object.mapOfCheckedId.size > 0">
+        <button class="btn btn-grey btn-sm m-l-12" (click)="deleteAll()" translate>
+          <i class="fa fa-trash m-r-xs"></i>
+          common.button.delete
+        </button>
+        <button class="btn btn-grey btn-sm m-l-12" (click)="deployAll()" translate>
+          <i class="fa fa-rocket m-r-xs"></i>
+          inventory.button.deploy
+        </button>
+      </div>
+      <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm"
+                                                 translate>agent.label.clusterAgents</span></div>
+      <div class="p-a">
+        <perfect-scrollbar style="max-height: calc(100vh - 101px); overflow: auto">
+          <nz-table
+            #ajaxTable
+            [nzSize]="'small'"
+            [nzBordered]="true"
+            [nzShowPagination]="false"
+            [nzData]="clusters"
+            [nzPageSize]="clusters.length"
+          >
+            <thead>
+            <tr>
+              <th
+                [nzShowCheckbox]="true"
+                [(nzChecked)]="object.checked"
+                [nzIndeterminate]="object.indeterminate"
+                (nzCheckedChange)="onAllChecked($event)"
+              ></th>
+              <th class="menu"><span translate>common.label.action</span></th>
+              <th><span class="p-r-xs" translate>agent.label.clusterName</span></th>
+              <th><span class="p-r-xs" translate>common.label.status</span></th>
+              <th><span class="p-r-xs" translate>agent.label.syncStatus</span></th>
+            </tr>
+            </thead>
+            <tbody class="move-on-hover" cdkDropList
+                   (cdkDropListDropped)="drop2($event)">
+            <tr class="cursor" *ngFor="let cluster of ajaxTable.data" cdkDrag (click)="selectedClusterFn(cluster);$event.preventDefault()">
+              <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
+                  (nzCheckedChange)="onItemChecked(cluster.subagentClusterId, $event)">
+              </td>
+              <td>
+                <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"
+                        type="button" (click)="$event.stopPropagation();">
+                  <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <nz-dropdown-menu #option="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="edit(cluster);$event.stopPropagation();">
+                      <a translate>common.button.edit</a>
+                    </li>
+                    <li nz-menu-item (click)="deploy(cluster);$event.stopPropagation();">
+                      <a translate>inventory.button.deploy</a>
+                    </li>
+                    <li nz-menu-item (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color">
+                      <a translate>common.button.delete</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </td>
+              <td>
+                <span [innerHtml]="cluster.subagentClusterId"></span>
+                <i *ngIf="cluster.title"> - </i>
+                <i class="text-muted">{{cluster.title}}</i>
+              </td>
+              <td>
+                <span class="label bg-dark-blue" *ngIf="cluster.deployed" translate>inventory.label.deployed</span>
+                <span class="label bg-orange" *ngIf="!cluster.deployed" translate>inventory.label.notDeployed</span>
+              </td>
+              <td>
+                <label class="label" *ngIf="cluster.syncState"
+                       [ngClass]="coreService.getColor(cluster.syncState.severity, 'bg')"
+                       [innerHtml]="cluster.syncState._text | translate"></label>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </perfect-scrollbar>
+      </div>
+    </div>
+  </ng-container>
+</nz-drawer>
