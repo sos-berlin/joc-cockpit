@@ -192,7 +192,7 @@
     "button.resetting": "en cours de réinitialisation",
     "button.manageCluster": "Gérer le Cluster d'Agents",
     "button.createCluster": "Créer un Cluster d'Agents",
-    "button.revoke": "Revoke",
+    "button.revoke": "Révoquer",
     "message.dropHereToDetach": "Cliquez ici pour supprimer Sous-agent",
     "message.noClusterFound": "Aucun Cluster trouvé",
     "message.clickHereToAdd": "Cliquez ici pour ajouter",
