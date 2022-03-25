@@ -470,12 +470,53 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
     this.object.mapOfCheckedId.clear();
     this.object.mapOfCheckedId2.clear();
-    console.log(this.object.mapOfCheckedId2);
   }
 
   deployAll(): void {
-    console.log(this.object.mapOfCheckedId);
-    console.log(this.object.mapOfCheckedId2);
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Agent',
+        operation: 'Deploy',
+        name: ''
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this._deployAll(result);
+        }
+      });
+    } else {
+      this._deployAll();
+    }
+  }
+
+  private _deployAll(auditLog = {}): void {
+    this.object.mapOfCheckedId.forEach((k, v) => {
+      this.coreService.post('agents/inventory/deploy', {
+        controllerId: k,
+        agentIds: [v],
+        auditLog
+      }).subscribe();
+    })
+    this.object.mapOfCheckedId2.forEach((k, v) => {
+      this.coreService.post('agents/inventory/cluster/deploy', {
+        controllerId: k,
+        subagentIds: [v],
+        auditLog
+      }).subscribe();
+    });
+    this.object.mapOfCheckedId.clear();
+    this.object.mapOfCheckedId2.clear();
   }
 
   addAgent(controller): void {
@@ -809,15 +850,23 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
+  deploySubagent(sub, clusterAgent, controller): void{
+    //TODO
+  }
+
   deployAgent(agent, controller, isAgent = false): void {
     const obj: any = {
       controllerId: controller.controllerId,
-      clusterAgentIds: [agent.agentId]
     };
+    if (isAgent) {
+      obj.agentIds = [agent.agentId];
+    } else {
+      obj.clusterAgentIds = [agent.agentId];
+    }
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
-        type: 'Agent Group',
+        type: isAgent ? 'Standalone Agent' : 'Agent Cluster',
         operation: 'Deploy',
         name: agent.agentId
       };
@@ -838,11 +887,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post('agents/inventory/cluster/deploy', obj).subscribe(() => this.getClusterAgents(controller));
+          this.coreService.post(isAgent ? 'agents/inventory/deploy' : 'agents/inventory/cluster/deploy', obj).subscribe(() => this.getClusterAgents(controller));
         }
       });
     } else {
-      this.coreService.post('agents/inventory/cluster/deploy', obj).subscribe(() => this.getClusterAgents(controller));
+      this.coreService.post(isAgent ? 'agents/inventory/deploy' : 'agents/inventory/cluster/deploy', obj).subscribe(() => this.getClusterAgents(controller));
     }
   }
 

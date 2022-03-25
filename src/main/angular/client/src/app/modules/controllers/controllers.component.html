@@ -196,7 +196,7 @@
                                   <li (click)="enableAgent(agent, controller)" nz-menu-item *ngIf="agent.disabled">
                                     <a translate>agent.button.enable</a>
                                   </li>
-                                  <li nzDisabled (click)="deployAgent(agent, controller, true)" nz-menu-item>
+                                  <li (click)="deployAgent(agent, controller, true)" nz-menu-item>
                                     <a translate>inventory.button.deploy</a>
                                   </li>
                                   <li (click)="removeAgent(agent, controller)" nz-menu-item class="bg-hover-color">
@@ -409,6 +409,9 @@
                                         </li>
                                         <li (click)="disableEnableSubagent(sub, controller, true)" nz-menu-item *ngIf="sub.disabled">
                                           <a translate>agent.button.enable</a>
+                                        </li>
+                                        <li nz-menu-item (click)="deploySubagent(sub, clusterAgent, controller);$event.stopPropagation();">
+                                          <a translate>inventory.button.deploy</a>
                                         </li>
                                         <li (click)="removeSubagent(sub, clusterAgent, controller)" nz-menu-item class="bg-hover-color">
                                           <a translate="">common.button.delete</a>

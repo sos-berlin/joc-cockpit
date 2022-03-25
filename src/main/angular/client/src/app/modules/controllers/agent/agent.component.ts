@@ -454,6 +454,19 @@ export class AgentComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (data: any) => {
         this.clusters = data.subagentClusters;
+        if (this.selectedCluster.subagentClusterId) {
+          let isFound = false;
+          for (let i in this.clusters) {
+            if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
+              this.selectedCluster = this.coreService.clone(this.clusters[i]);
+              isFound = true;
+              break;
+            }
+          }
+          if (!isFound) {
+            this.selectedCluster = {};
+          }
+        }
         this.isLoading = false;
       }, error: () => {
         this.isLoading = false;
@@ -532,7 +545,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           comments,
           obj,
-          url: 'agent/cluster/delete'
+          url: 'agents/cluster/delete'
         },
         nzFooter: null,
         nzClosable: false,
@@ -554,7 +567,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post('agent/cluster/delete', obj).subscribe();
+          this.coreService.post('agents/cluster/delete', obj).subscribe(() => this.getClusters());
         }
       });
     }
@@ -612,7 +625,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       subagentClusterIds: Array.from(this.object.mapOfCheckedId),
       auditLog
     };
-    this.coreService.post('agent/cluster/delete', obj).subscribe();
+    this.coreService.post('agents/cluster/delete', obj).subscribe(() => this.getClusters());
     this.object.mapOfCheckedId.clear();
     this.object.checked = false;
     this.object.indeterminate = false;
@@ -647,11 +660,11 @@ export class AgentComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post('agents/cluster/deploy', obj).subscribe();
+          this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.getClusters());
         }
       });
     } else {
-      this.coreService.post('agents/cluster/deploy', obj).subscribe();
+      this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.getClusters());
     }
   }
 
@@ -684,11 +697,11 @@ export class AgentComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post('agents/cluster/deploy', obj).subscribe();
+          this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.getClusters());
         }
       });
     } else {
-      this.coreService.post('agents/cluster/deploy', obj).subscribe();
+      this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.getClusters());
     }
   }
 
@@ -779,7 +792,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         subagentClusterId: cluster.subagentClusterId,
       });
     })
-    this.coreService.post('agents/cluster/store', obj).subscribe();
+    this.store(obj);
   }
 
   private removeSubagent(cell): void {
@@ -817,7 +830,57 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
     this.updateList();
     this.updateCluster();
-    this.coreService.post('agents/cluster/store', obj).subscribe();
+    this.store(obj);
+  }
+
+  private store(obj): void {
+    this.coreService.post('agents/cluster/store', obj).subscribe(() => {
+      this.selectedCluster.deployed = false;
+      for (let i in this.clusters) {
+        if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
+          this.clusters[i].deployed = false;
+          break;
+        }
+      }
+    });
+  }
+
+  private rearrange(sour, target): void {
+    if (this.selectedCluster.subagentIds.length > 1) {
+      const label = target.getAttribute('label');
+      this.clusters.forEach((cluster) => {
+        if (this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
+          console.log(label, 'label', target.getAttribute('priority'));
+          let subagentIds = [];
+          let obj;
+          let priority;
+          let index;
+          for (let i in cluster.subagentIds) {
+            if (label === cluster.subagentIds[i].subagentId) {
+              index = i;
+              priority = cluster.subagentIds[i].priority;
+            }
+            if (sour.getAttribute('label') === cluster.subagentIds[i].subagentId) {
+              obj = cluster.subagentIds[i];
+            } else {
+              subagentIds.push(cluster.subagentIds[i]);
+            }
+          }
+          if (target.getAttribute('priority')) {
+            obj.priority = parseInt(target.getAttribute('priority'), 10);
+            subagentIds.push(obj);
+          } else if (index > -1) {
+            console.log('index', index)
+            obj.priority = priority;
+            subagentIds.splice(index, 0, obj);
+          }
+          this.selectedCluster.subagentIds = subagentIds;
+          this.updateCluster();
+          this.storeCluster();
+          console.log(subagentIds)
+        }
+      })
+    }
   }
 
   /**
@@ -887,7 +950,6 @@ export class AgentComponent implements OnInit, OnDestroy {
       cb();
     }
   }
-
 
   /**
    * Function to override Mxgraph properties and functions
@@ -1186,7 +1248,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       return cells;
     };
 
-    graph.isValidDropTarget = function (cell, cells, evt) {
+    graph.isValidDropTarget = function () {
       return false;
     }
   }
@@ -1301,11 +1363,10 @@ export class AgentComponent implements OnInit, OnDestroy {
         if (flag) {
           const mainNode = doc.createElement('Process');
           mainNode.setAttribute('label', 'dragAndDropForRoundRobin');
-          mainNode.setAttribute('priority', 'priority');
+          mainNode.setAttribute('priority', priority);
           const v2 = graph.insertVertex(defaultParent, null, mainNode, x + 230, y - 5, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
           graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle;dashed=1;');
         }
-
         if (this.selectedCluster.subagentIds.length - 1 === index) {
           const mainNode = doc.createElement('Process');
           mainNode.setAttribute('label', 'dragAndDropFixedPriority');
