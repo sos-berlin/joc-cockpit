@@ -314,7 +314,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
     this.permission = JSON.parse(this.authService.permission) || {};
-    this.getFileTransferById(7);
+    this.getFileTransferById(this.transferId);
   }
 
   private refresh(args): void {

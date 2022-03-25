@@ -49,10 +49,12 @@
   border: 2px dashed #d3d3d3;
   width: 190px;
   text-align: center;
+
   &:hover {
     opacity: .7;
     border-color: var(--primary) !important;
   }
+
   div {
     text-transform: uppercase;
     margin: 55px auto;

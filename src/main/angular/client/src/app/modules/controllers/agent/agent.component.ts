@@ -1,9 +1,10 @@
-import {Component, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
 import {TranslateService} from "@ngx-translate/core";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
 import {CoreService} from "../../../services/core.service";
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
@@ -23,11 +24,7 @@ declare const mxGraphHandler;
 declare const mxRectangleShape;
 declare const mxRectangle;
 declare const mxCellHighlight;
-declare const mxCell;
 declare const mxEvent;
-declare const mxEventObject;
-declare const mxDictionary;
-declare const mxCodecRegistry;
 declare const mxUtils;
 declare const mxCellOverlay;
 
@@ -392,13 +389,17 @@ export class AgentComponent implements OnInit, OnDestroy {
   clusters = [];
   dropTarget: number;
   selectedCluster: any = {};
+  node: any;
   object = {
     checked: false,
     indeterminate: false,
     mapOfCheckedId: new Set()
   }
 
-  constructor(public coreService: CoreService, private route: ActivatedRoute, private translate: TranslateService, private modal: NzModalService) {
+  @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
+
+  constructor(public coreService: CoreService, private route: ActivatedRoute, private nzContextMenuService: NzContextMenuService,
+              private translate: TranslateService, private modal: NzModalService) {
   }
 
   static setHeight(): void {
@@ -407,6 +408,16 @@ export class AgentComponent implements OnInit, OnDestroy {
     $('.graph-container').css({'height': ht, 'scroll-top': '0'});
     $('#graph').slimscroll({height: 'calc(100vh - ' + (top + 54) + 'px)'});
     $('#toolbarContainer').css({'max-height': ht});
+  }
+
+  static compare(a, b) {
+    if (a.priority > b.priority) {
+      return -1;
+    }
+    if (a.priority < b.priority) {
+      return 1;
+    }
+    return 0;
   }
 
   ngOnInit(): void {
@@ -526,8 +537,8 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
-  delete(cluster): void {
-    const obj = {
+  delete(cluster, isRevoke = false): void {
+    const obj: any = {
       controllerId: cluster.controllerId,
       subagentClusterIds: [cluster.subagentClusterId]
     };
@@ -535,7 +546,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       const comments = {
         radio: 'predefined',
         type: 'Cluster Agent',
-        operation: 'Delete',
+        operation: isRevoke ? 'Revoke' : 'Delete',
         name: cluster.agentId
       };
       this.modal.create({
@@ -544,41 +555,59 @@ export class AgentComponent implements OnInit, OnDestroy {
         nzClassName: 'lg',
         nzComponentParams: {
           comments,
-          obj,
-          url: 'agents/cluster/delete'
         },
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
-      });
-    } else {
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: ConfirmModalComponent,
-        nzComponentParams: {
-          title: 'delete',
-          message: 'deleteClusterAgent',
-          type: 'Delete',
-          objectName: cluster.subagentClusterId,
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
+      }).afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post('agents/cluster/delete', obj).subscribe(() => this.getClusters());
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(() => this.getClusters());
         }
       });
+    } else {
+      if (isRevoke) {
+        this.coreService.post('agents/cluster/delete', obj).subscribe(() => this.getClusters());
+      } else {
+        this.modal.create({
+          nzTitle: undefined,
+          nzContent: ConfirmModalComponent,
+          nzComponentParams: {
+            title: 'delete',
+            message: 'deleteClusterAgent',
+            type: 'Delete',
+            objectName: cluster.subagentClusterId,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        }).afterClose.subscribe(result => {
+          if (result) {
+            this.coreService.post('agents/cluster/delete', obj).subscribe(() => this.getClusters());
+          }
+        });
+      }
     }
   }
 
-  deleteAll(): void {
+  revoke(cluster): void {
+    this.delete(cluster, true);
+  }
+
+  revokeAll(): void {
+    this.deleteAll(true);
+  }
+
+  deleteAll(isRevoke = false): void {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
         type: 'Cluster Agent',
-        operation: 'Delete',
+        operation: isRevoke ? 'Revoke' : 'Delete',
         name: ''
       };
       const modal = this.modal.create({
@@ -594,38 +623,42 @@ export class AgentComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this._deleteAll(result);
+          this._deleteAll(isRevoke, result);
         }
       });
     } else {
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: ConfirmModalComponent,
-        nzComponentParams: {
-          title: 'delete',
-          message: 'deleteSelectedClusterAgents',
-          type: 'Delete',
-          objectName: '',
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this._deleteAll();
-        }
-      });
+      if (isRevoke) {
+        this._deleteAll(isRevoke);
+      } else {
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: ConfirmModalComponent,
+          nzComponentParams: {
+            title: 'delete',
+            message: 'deleteSelectedClusterAgents',
+            type: 'Delete',
+            objectName: '',
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this._deleteAll(isRevoke);
+          }
+        });
+      }
     }
   }
 
-  private _deleteAll(auditLog = {}): void {
+  private _deleteAll(isRevoke, auditLog = {}): void {
     const obj: any = {
       controllerId: this.controllerId,
       subagentClusterIds: Array.from(this.object.mapOfCheckedId),
       auditLog
     };
-    this.coreService.post('agents/cluster/delete', obj).subscribe(() => this.getClusters());
+    this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(() => this.getClusters());
     this.object.mapOfCheckedId.clear();
     this.object.checked = false;
     this.object.indeterminate = false;
@@ -764,6 +797,20 @@ export class AgentComponent implements OnInit, OnDestroy {
           subagentId,
           priority: parseInt(dropTargetCell.getAttribute('priority'), 10)
         };
+        if (obj.priority == -1) {
+          obj.priority = 0
+          for (let i in this.clusters) {
+            if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
+              this.selectedCluster.subagentIds.forEach((item) => {
+                item.priority = item.priority + 1;
+              });
+              this.clusters[i].subagentIds.forEach((item) => {
+                item.priority = item.priority + 1;
+              });
+              break;
+            }
+          }
+        }
         this.selectedCluster.subagentIds.push(obj);
         this.updateCluster()
         this.storeCluster(obj);
@@ -848,38 +895,47 @@ export class AgentComponent implements OnInit, OnDestroy {
   private rearrange(sour, target): void {
     if (this.selectedCluster.subagentIds.length > 1) {
       const label = target.getAttribute('label');
-      this.clusters.forEach((cluster) => {
-        if (this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
-          console.log(label, 'label', target.getAttribute('priority'));
+      for (let x in this.clusters) {
+        if (this.selectedCluster.subagentClusterId === this.clusters[x].subagentClusterId) {
           let subagentIds = [];
           let obj;
           let priority;
           let index;
-          for (let i in cluster.subagentIds) {
-            if (label === cluster.subagentIds[i].subagentId) {
+          for (let i in this.clusters[x].subagentIds) {
+            if (label === this.clusters[x].subagentIds[i].subagentId) {
               index = i;
-              priority = cluster.subagentIds[i].priority;
+              priority = this.clusters[x].subagentIds[i].priority;
             }
-            if (sour.getAttribute('label') === cluster.subagentIds[i].subagentId) {
-              obj = cluster.subagentIds[i];
+            if (sour.getAttribute('label') === this.clusters[x].subagentIds[i].subagentId) {
+              obj = this.clusters[x].subagentIds[i];
             } else {
-              subagentIds.push(cluster.subagentIds[i]);
+              subagentIds.push(this.clusters[x].subagentIds[i]);
             }
           }
           if (target.getAttribute('priority')) {
             obj.priority = parseInt(target.getAttribute('priority'), 10);
             subagentIds.push(obj);
           } else if (index > -1) {
-            console.log('index', index)
             obj.priority = priority;
             subagentIds.splice(index, 0, obj);
           }
-          this.selectedCluster.subagentIds = subagentIds;
+          subagentIds = subagentIds.sort(AgentComponent.compare);
+          let j = 0;
+          const tempList = this.coreService.clone(subagentIds);
+          for (let i = subagentIds.length - 1; i >= 0; i--) {
+            tempList[i].priority = j;
+            if (subagentIds[i - 1] && subagentIds[i].priority != subagentIds[i - 1].priority) {
+              j++;
+            }
+          }
+          console.log(tempList)
+          this.selectedCluster.subagentIds = tempList;
+          this.clusters[x].subagentIds = tempList;
           this.updateCluster();
           this.storeCluster();
-          console.log(subagentIds)
+          break;
         }
-      })
+      }
     }
   }
 
@@ -999,6 +1055,160 @@ export class AgentComponent implements OnInit, OnDestroy {
     graph.extendParentsOnAdd = false;
     graph.extendParents = false;
     mxConstants.DROP_TARGET_COLOR = 'green';
+
+    // Defines a new class for all icons
+    function mxIconSet(state) {
+      this.images = [];
+      let img;
+      if (state.cell && (state.cell.value.tagName === 'Agent')) {
+        img = mxUtils.createImage('./assets/images/menu.svg');
+        let x = state.x - (20 * state.shape.scale);
+        let y = state.y - (8 * state.shape.scale);
+        img.style.left = (x + 5) + 'px';
+        img.style.top = y + 'px';
+        mxEvent.addListener(img, 'click',
+          mxUtils.bind(this, function (evt) {
+            self.node = {
+              cell: state.cell
+            };
+            if (self.menu) {
+              setTimeout(() => {
+                self.nzContextMenuService.create(evt, self.menu);
+              }, 0);
+            }
+            this.destroy();
+          })
+        );
+      }
+      if (img) {
+        img.style.position = 'absolute';
+        img.style.cursor = 'pointer';
+        img.style.width = (18 * state.shape.scale) + 'px';
+        img.style.height = (18 * state.shape.scale) + 'px';
+        state.view.graph.container.appendChild(img);
+        this.images.push(img);
+      }
+    }
+
+    mxIconSet.prototype.destroy = function () {
+      if (this.images != null) {
+        for (let i = 0; i < this.images.length; i++) {
+          const img = this.images[i];
+          img.parentNode.removeChild(img);
+        }
+      }
+
+      this.images = null;
+    };
+
+    /**
+     * Function: mouseMove
+     *
+     * Handles the event by highlighting possible drop targets and updating the
+     * preview.
+     */
+    mxGraphHandler.prototype.mouseMove = function (sender, me) {
+      if (!me.isConsumed() && graph.isMouseDown && this.cell != null &&
+        this.first != null && this.bounds != null && !this.suspended) {
+        // Stops moving if a multi touch event is received
+        if (mxEvent.isMultiTouchEvent(me.getEvent())) {
+          this.reset();
+          return;
+        }
+        let delta = this.getDelta(me);
+        let tol = graph.tolerance;
+        if (this.shape != null || this.livePreviewActive || Math.abs(delta.x) > tol || Math.abs(delta.y) > tol) {
+          // Highlight is used for highlighting drop targets
+          if (this.highlight == null) {
+            this.highlight = new mxCellHighlight(this.graph,
+              mxConstants.DROP_TARGET_COLOR, 3);
+          }
+
+          let clone = graph.isCloneEvent(me.getEvent()) && graph.isCellsCloneable() && this.isCloneEnabled();
+          let gridEnabled = graph.isGridEnabledEvent(me.getEvent());
+          let cell = me.getCell();
+          let hideGuide = true;
+          let target = null;
+          this.cloning = clone;
+
+          if (graph.isDropEnabled() && this.highlightEnabled) {
+            // Contains a call to getCellAt to find the cell under the mouse
+            target = graph.getDropTarget(this.cells, me.getEvent(), cell, clone);
+          }
+
+          let state = graph.getView().getState(target);
+          let highlight = false;
+          if (state != null && (clone || this.isValidDropTarget(target, me) || (target && target.value.tagName === 'Process'))) {
+            if (this.target != target) {
+              this.target = target;
+              this.setHighlightColor(mxConstants.DROP_TARGET_COLOR);
+            }
+            highlight = true;
+          } else {
+            this.target = null;
+          }
+          if (!state && self.selectedCluster.subagentIds.length > 1) {
+            if (this.cells.length > 0 && cell && this.cells[0].id != cell.id) {
+              state = graph.getView().getState(cell);
+              highlight = true;
+            }
+          }
+
+          if (state != null && highlight && state.cell) {
+            this.highlight.highlight(state);
+          } else {
+            this.highlight.hide();
+          }
+
+          if (this.guide != null && this.useGuidesForEvent(me)) {
+            delta = this.guide.move(this.bounds, delta, gridEnabled, clone);
+            hideGuide = false;
+          } else {
+            delta = this.graph.snapDelta(delta, this.bounds, !gridEnabled, false, false);
+          }
+
+          if (this.guide != null && hideGuide) {
+            this.guide.hide();
+          }
+
+          // Constrained movement if shift key is pressed
+          if (graph.isConstrainedEvent(me.getEvent())) {
+            if (Math.abs(delta.x) > Math.abs(delta.y)) {
+              delta.y = 0;
+            } else {
+              delta.x = 0;
+            }
+          }
+          this.checkPreview();
+          if (this.currentDx != delta.x || this.currentDy != delta.y) {
+            this.currentDx = delta.x;
+            this.currentDy = delta.y;
+            this.updatePreview();
+          }
+        }
+        this.updateHint(me);
+        this.consumeMouseEvent(mxEvent.MOUSE_MOVE, me);
+        // Cancels the bubbling of events to the container so
+        // that the droptarget is not reset due to an mouseMove
+        // fired on the container with no associated state.
+        mxEvent.consume(me.getEvent());
+      } else if ((this.isMoveEnabled() || this.isCloneEnabled()) && this.updateCursor && !me.isConsumed() &&
+        (me.getState() != null || me.sourceState != null) && !graph.isMouseDown) {
+        let cursor = graph.getCursorForMouseEvent(me);
+        if (cursor == null && graph.isEnabled() && graph.isCellMovable(me.getCell())) {
+          if (graph.getModel().isEdge(me.getCell())) {
+            cursor = mxConstants.CURSOR_MOVABLE_EDGE;
+          } else {
+            cursor = mxConstants.CURSOR_MOVABLE_VERTEX;
+          }
+        }
+        // Sets the cursor on the original source state under the mouse
+        // instead of the event source state which can be the parent
+        if (cursor != null && me.sourceState != null) {
+          me.sourceState.setCursor(cursor);
+        }
+      }
+    };
 
     /**
      * Function: createPreviewShape
@@ -1145,6 +1355,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     // Shows icons if the mouse is over a cell
     graph.addMouseListener({
       currentState: null,
+      currentIconSet: null,
       mouseDown: function (sender, me) {
         // Hides icons on mouse down
         if (this.currentState != null) {
@@ -1180,12 +1391,25 @@ export class AgentComponent implements OnInit, OnDestroy {
             this.dragEnter(me.getEvent(), this.currentState);
           }
         }
+        if (this.currentIconSet != null) {
+          this.currentIconSet.destroy();
+          this.currentIconSet = null;
+        }
+        if (tmp) {
+          this.currentIconSet = new mxIconSet(tmp);
+        }
       },
       mouseUp: function (sender, me) {
         if (isAgentDraging) {
           isAgentDraging = false;
           if (movingAgent) {
-            detachedAgent(me.evt.target, movingAgent)
+            const targetCell = me.getCell();
+            if (targetCell && (targetCell.value.tagName === 'Agent' || targetCell.value.tagName === 'Process')) {
+              self.rearrange(movingAgent, targetCell);
+              movingAgent = null;
+            } else {
+              detachedAgent(me.evt.target, movingAgent);
+            }
           }
         }
       },
@@ -1253,6 +1477,17 @@ export class AgentComponent implements OnInit, OnDestroy {
     }
   }
 
+  closeMenu(): void {
+    this.node = null;
+  }
+
+  deleteNode(): void {
+    if (this.editor && this.editor.graph && this.node && this.node.cell) {
+      this.editor.graph.removeCells([this.node.cell], null);
+      this.removeSubagent(this.node.cell);
+    }
+  }
+
   exportInPng() {
     if (this.editor && this.editor.graph) {
       const dom = $('#graph');
@@ -1317,26 +1552,18 @@ export class AgentComponent implements OnInit, OnDestroy {
     const graph = this.editor.graph;
     const doc = mxUtils.createXmlDocument();
     const defaultParent = graph.getDefaultParent();
-
-    function compare(a, b) {
-      if (a.priority < b.priority) {
-        return -1;
-      }
-      if (a.priority > b.priority) {
-        return 1;
-      }
-      return 0;
-    }
-
-    let i = 0;
+    let i = 0, j = 1;
     let priority = -1;
     let v1;
     if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
-      this.selectedCluster.subagentIds.sort(compare).forEach((subagent, index) => {
+      this.selectedCluster.subagentIds.sort(AgentComponent.compare).forEach((subagent, index) => {
         const _node = this.getCellNode('Agent', subagent.subagentId);
         let source;
         let flag = this.selectedCluster.subagentIds.length === 1;
-        let y = 70 * subagent.priority;
+        if (priority > -1 && priority !== subagent.priority) {
+          j++;
+        }
+        let y = j * 70;
         if (priority === subagent.priority) {
           i++;
           if (v1) {
@@ -1367,10 +1594,16 @@ export class AgentComponent implements OnInit, OnDestroy {
           const v2 = graph.insertVertex(defaultParent, null, mainNode, x + 230, y - 5, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
           graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle;dashed=1;');
         }
-        if (this.selectedCluster.subagentIds.length - 1 === index) {
+        if (0 === index) {
           const mainNode = doc.createElement('Process');
           mainNode.setAttribute('label', 'dragAndDropFixedPriority');
           mainNode.setAttribute('priority', (priority + 1));
+          graph.insertVertex(defaultParent, null, mainNode, 0, -10, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
+        }
+        if (this.selectedCluster.subagentIds.length - 1 === index) {
+          const mainNode = doc.createElement('Process');
+          mainNode.setAttribute('label', 'dragAndDropFixedPriority');
+          mainNode.setAttribute('priority', -1);
           graph.insertVertex(defaultParent, null, mainNode, 0, y + 70, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
         }
       })

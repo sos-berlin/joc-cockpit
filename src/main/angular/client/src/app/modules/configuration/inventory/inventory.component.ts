@@ -3275,7 +3275,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
           if (resObject) {
             if (!flag) {
-              this.mergeFolderData(resObject, controllerObj.controllerArr[i], res.path);
+              this.mergeFolderData(resObject, controllerObj.controllerArr[i], res.path, controllerObj.controllerArr[i].object);
             } else {
               controllerObj.controllerArr[i].children = resObject;
               controllerObj.controllerArr[i].children.forEach((child, index) => {
@@ -3300,7 +3300,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
           if (resObject) {
             if (!flag) {
-              this.mergeFolderData(resObject, dailyPlanObj.dailyPlanArr[i], res.path);
+              this.mergeFolderData(resObject, dailyPlanObj.dailyPlanArr[i], res.path, dailyPlanObj.dailyPlanArr[i].object);
             } else {
               dailyPlanObj.dailyPlanArr[i].children = resObject;
               dailyPlanObj.dailyPlanArr[i].children.forEach((child, index) => {
@@ -3531,7 +3531,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (res) {
         setTimeout(() => {
           if (this.tree && this.tree.length > 0) {
-            if (this.selectedData.path && origin.path.indexOf(this.selectedData.path) > -1) {
+            if (this.selectedData.path && (origin.path.indexOf(this.selectedData.path) > -1 || origin.path === this.selectedData.path)) {
               this.selectedData.reload = true;
             }
             this.initTree(origin.path, null);
@@ -4708,7 +4708,22 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.selectedObj = { type, name, path, id };
   }
 
-  private mergeFolderData(sour, dest, path): void {
+  private checkAndUpdateSelectedObj(sour): void {
+    if (this.selectedData.name === sour.name) {
+      this.selectedData.deployed = sour.deployed;
+      this.selectedData.released = sour.released;
+      this.selectedData.hasReleases = sour.hasReleases;
+      this.selectedData.hasDeployments = sour.hasDeployments;
+      this.selectedData.valid = sour.valid;
+    }
+  }
+
+  private mergeFolderData(sour, dest, path, objectType): void {
+    let isSelectedObjCheck = false;
+    if (path === this.selectedData.path && this.selectedData.objectType &&
+      (objectType === this.selectedData.objectType || (objectType === 'CALENDAR' && this.selectedData.objectType.match('CALENDAR')))) {
+      isSelectedObjCheck = true;
+    }
     for (let i = 0; i < dest.children.length; i++) {
       for (let j = 0; j < sour.length; j++) {
         if (dest.children[i].name === sour[j].name) {
@@ -4721,6 +4736,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
           dest.children[i].valid = sour[j].valid;
           dest.children[i] = extend(dest.children[i], sour[j]);
           dest.children[i].match = true;
+          if(isSelectedObjCheck) {
+            this.checkAndUpdateSelectedObj(sour[j]);
+          }
           sour.splice(j, 1);
           break;
         }
@@ -4755,6 +4773,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
           hasReleases: sour[j].hasReleases,
           type: dest.object,
         });
+        if (isSelectedObjCheck) {
+          this.checkAndUpdateSelectedObj(sour[j]);
+        }
       }
     }
     dest.children = sortBy(dest.children, 'name');

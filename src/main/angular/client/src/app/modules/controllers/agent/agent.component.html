@@ -12,6 +12,10 @@
               <i class="fa fa-plus"></i>&nbsp;
               agent.button.createCluster
             </button>
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.mapOfCheckedId.size > 0" (click)="revokeAll()" translate>
+              <i class="fa fa-refresh m-r-xs"></i>
+              agent.button.revoke
+            </button>
             <button class="btn btn-grey btn-sm m-l-12" *ngIf="object.mapOfCheckedId.size > 0" (click)="deleteAll()"
                     translate>
               <i class="fa fa-trash"></i>&nbsp;
@@ -54,6 +58,9 @@
                 <ul nz-menu>
                   <li nz-menu-item (click)="edit(cluster);$event.stopPropagation();">
                     <a translate>common.button.edit</a>
+                  </li>
+                  <li nz-menu-item (click)="revoke(cluster);$event.stopPropagation();">
+                    <a translate>agent.button.revoke</a>
                   </li>
                   <li nz-menu-item (click)="deploy(cluster);$event.stopPropagation();">
                     <a translate>inventory.button.deploy</a>
@@ -199,6 +206,10 @@
     <div class="close-btn" (click)="close()"></div>
     <div *ngIf="isVisible">
       <div class="pos-abt" style="top:12px;right:8px" *ngIf="object.mapOfCheckedId.size > 0">
+        <button class="btn btn-grey btn-sm m-l-12" (click)="revokeAll()" translate>
+          <i class="fa fa-refresh m-r-xs"></i>
+          agent.button.revoke
+        </button>
         <button class="btn btn-grey btn-sm m-l-12" (click)="deleteAll()" translate>
           <i class="fa fa-trash m-r-xs"></i>
           common.button.delete
@@ -249,6 +260,9 @@
                   <ul nz-menu>
                     <li nz-menu-item (click)="edit(cluster);$event.stopPropagation();">
                       <a translate>common.button.edit</a>
+                    </li>
+                    <li nz-menu-item (click)="revoke(cluster);$event.stopPropagation();">
+                      <a translate>agent.button.revoke</a>
                     </li>
                     <li nz-menu-item (click)="deploy(cluster);$event.stopPropagation();">
                       <a translate>inventory.button.deploy</a>

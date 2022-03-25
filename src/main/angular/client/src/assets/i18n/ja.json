@@ -192,6 +192,7 @@
     "button.resetting": "リセット中",
     "button.manageCluster": "Manage Cluster",
     "button.createCluster": "Create Cluster",
+    "button.revoke": "Revoke",
     "message.dropHereToDetach": "Drop here to remove Subagent",
     "message.noClusterFound": "No Cluster Found",
     "message.clickHereToAdd": "Click Here To Add",

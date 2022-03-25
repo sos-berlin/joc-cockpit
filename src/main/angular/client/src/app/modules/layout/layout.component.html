@@ -22,8 +22,8 @@
         <nz-dropdown-menu #option="nzDropdownMenu">
           <ul nz-menu >
             <li nz-menu-item [ngClass]="{'ant-select-dropdown-menu-item-active':schedulerIds.selected == controller}"
-                *ngFor="let controller of schedulerIds.controllerIds">
-              <a (click)="changeScheduler(controller);$event.stopPropagation()">
+                *ngFor="let controller of schedulerIds.controllerIds" (click)="changeScheduler(controller);$event.stopPropagation()">
+              <a>
                 {{controller}}
               </a>
             </li>

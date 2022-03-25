@@ -2347,8 +2347,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (res.reloadTree && this.workflow.actual) {
           this.ref.detectChanges();
         } else if (res.saveObject && this.selectedNode) {
-          if (res.saveObject.id) {
-            if (res.saveObject.id && res.saveObject.id === this.data.id) {
+          if (res.saveObject.id || res.saveObject.objectType) {
+            if ((res.saveObject.id && res.saveObject.id === this.data.id)
+              || (res.saveObject.name === this.data.name && res.saveObject.path === this.data.path)) {
               this.initEditorConf(this.editor, false, true);
             }
           } else {
