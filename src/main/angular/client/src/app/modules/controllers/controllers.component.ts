@@ -814,7 +814,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   disableEnableSubagent(subagent, controller, isEnable): void {
-    const URL = isEnable ? '/agents/inventory/cluster/subagents/enable' : 'agents/inventory/cluster/subagents/disable';
+    const URL = isEnable ? 'agents/inventory/cluster/subagents/enable' : 'agents/inventory/cluster/subagents/disable';
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
