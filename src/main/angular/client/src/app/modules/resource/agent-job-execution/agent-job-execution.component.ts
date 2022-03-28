@@ -506,7 +506,9 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       fromDate: new Date(),
-      toDate: new Date()
+      fromTime: '00:00:00',
+      toDate: new Date(),
+      toTime: '23:59:59',
     };
   }
 

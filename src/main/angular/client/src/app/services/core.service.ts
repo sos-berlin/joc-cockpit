@@ -22,6 +22,11 @@ export class CoreService {
   tempTabs: any = {};
   dashboard: any = {};
   locales: any = [];
+
+  preferences = {
+    isFirst: true,
+    controllers: new Set()
+  }
   sideView = {
     workflow: {width: 270, show: true},
     job: {width: 270, show: true},
@@ -206,7 +211,7 @@ export class CoreService {
     this.tabs._resource.agents = {};
     this.tabs._resource.agents.filter = {};
     this.tabs._resource.agents.filter.state = 'ALL';
-    this.tabs._resource.agents.filter.sortBy = 'path';
+    this.tabs._resource.agents.filter.sortBy = 'agentId';
     this.tabs._resource.agents.reverse = false;
     this.tabs._resource.agents.currentPage = '1';
     this.tabs._resource.agentJobExecution = {};
@@ -255,6 +260,12 @@ export class CoreService {
     this.tabs._configuration.inventory = {};
     this.tabs._configuration.copiedParamObjects = {};
     this.tabs._configuration.copiedInstuctionObject = {};
+
+    this.tabs._agentCluster = {};
+    this.tabs._agentCluster.filter = {};
+    this.tabs._agentCluster.filter.sortBy = 'subagentClusterId';
+    this.tabs._agentCluster.reverse = false;
+    this.tabs._agentCluster.currentPage = '1';
 
     this.tempTabs._workflow = {};
     this.tempTabs._workflow.filter = {};
@@ -399,7 +410,7 @@ export class CoreService {
     this.tempTabs._resource.agents = {};
     this.tempTabs._resource.agents.filter = {};
     this.tempTabs._resource.agents.filter.state = 'ALL';
-    this.tempTabs._resource.agents.filter.sortBy = 'path';
+    this.tempTabs._resource.agents.filter.sortBy = 'agentId';
     this.tempTabs._resource.agents.reverse = false;
     this.tempTabs._resource.agents.currentPage = '1';
     this.tempTabs._resource.agentJobExecution = {};
@@ -448,6 +459,12 @@ export class CoreService {
     this.tempTabs._configuration.inventory = {};
     this.tempTabs._configuration.copiedParamObjects = {};
     this.tempTabs._configuration.copiedInstuctionObject = {};
+
+    this.tempTabs._agentCluster = {};
+    this.tempTabs._agentCluster.filter = {};
+    this.tempTabs._agentCluster.filter.sortBy = 'subagentClusterId';
+    this.tempTabs._agentCluster.reverse = false;
+    this.tempTabs._agentCluster.currentPage = '1';
 
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
@@ -539,6 +556,10 @@ export class CoreService {
 
   getAuditLogTab(): any {
     return this.tabs._auditLog;
+  }
+
+  getAgentClusterTab(): any {
+    return this.tabs._agentCluster;
   }
 
   getYadeTab(): any {

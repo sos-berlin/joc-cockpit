@@ -800,7 +800,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      this.enableDisable(identityService, true, this.dataService.comments.comment);
+      this.enableDisable(identityService, true, this.dataService.comments);
     }
   }
 
@@ -831,7 +831,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      this.enableDisable(identityService, false, this.dataService.comments.comment);
+      this.enableDisable(identityService, false, this.dataService.comments);
     }
   }
 

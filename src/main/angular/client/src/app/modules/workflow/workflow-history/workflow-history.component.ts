@@ -234,12 +234,14 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   navToHistory(type: string): void {
     const filter = this.coreService.getHistoryTab();
     filter.type = type;
-    if(type === 'ORDER') {
+    if (type === 'ORDER') {
       filter.order.selectedView = false;
       filter.order.workflow = this.workflow.path;
-    } else{
+      filter.order.fromDate = new Date(this.orderHistory[this.orderHistory.length - 1].plannedTime);
+    } else {
       filter.task.selectedView = false;
       filter.task.workflow = this.workflow.path;
+      filter.task.fromDate = new Date(this.taskHistory[this.taskHistory.length - 1].plannedTime);
     }
     this.router.navigate(['/history']);
   }

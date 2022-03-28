@@ -117,7 +117,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
   controllers: any = [];
   tokens: any = [];
   currentSecurityLevel: string;
-  showPanel = [true];
   permission: any = {};
   preferences: any = {};
   modalInstance: NzModalRef;
@@ -169,8 +168,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
           || ((args.eventSnapshots[j].eventType === 'ProxyCoupled' || args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType.match(/Item/))
             && args.eventSnapshots[j].objectType === 'AGENT')) {
           if (this.controllers.length > 0) {
-            for (let i = 0; i < this.showPanel.length; i++) {
-              if (this.controllers[i]) {
+            for (let i = 0; i < this.controllers.length; i++) {
+              if (this.controllers[i] && this.coreService.preferences.controllers.has(this.controllers[i].controllerId)) {
                 this.getAgents(this.controllers[i], null);
               }
             }
@@ -213,6 +212,10 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.coreService.post('controller/ids', {}).subscribe({
       next: (data: any) => {
         this.data = data.controllerIds;
+        if(this.coreService.preferences.isFirst && this.coreService.preferences.controllers.size === 0){
+          this.coreService.preferences.isFirst = false;
+          this.coreService.preferences.controllers.add(data.selected);
+        }
         this.getSecurity();
       }, error: () => this.loading = true
     });
@@ -275,6 +278,15 @@ export class ControllersComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  expand(controllerId: string): void {
+    this.coreService.preferences.controllers.add(controllerId);
+  }
+
+  collapse(controllerId: string): void {
+    this.coreService.preferences.controllers.delete(controllerId);
+  }
+
 
   sort(controller, key, isCluster = false): void {
     if (isCluster) {
@@ -1057,8 +1069,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
       }
     }
     if (this.controllers.length > 0) {
-      for (let i = 0; i < this.showPanel.length; i++) {
-        if (this.controllers[i]) {
+      for (let i = 0; i < this.controllers.length; i++) {
+        if (this.controllers[i] && this.coreService.preferences.controllers.has(this.controllers[i].controllerId)) {
           this.getAgents(this.controllers[i], null);
         }
       }

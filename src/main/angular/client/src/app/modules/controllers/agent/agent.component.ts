@@ -3,11 +3,12 @@ import {ActivatedRoute} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
 import {TranslateService} from "@ngx-translate/core";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
 import {CoreService} from "../../../services/core.service";
+import {AuthService} from "../../../components/guard";
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
+import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
 
 declare const $;
 declare const mxEditor;
@@ -174,8 +175,8 @@ export class AddClusterModalComponent implements OnInit {
       for (let i = 0; i < this.subagentClusters.length; i++) {
         if (this.subagentClusters[i].subagentClusterId === this.data.subagentClusterId) {
           this.subagentClusters[i].title = this.cluster.title;
-          break;
         }
+        obj.subagentClusters.push(this.subagentClusters[i]);
       }
     }
     this.coreService.post('agents/cluster/store', obj).subscribe({
@@ -382,13 +383,17 @@ export class AgentComponent implements OnInit, OnDestroy {
   clusterAgents = [];
   pageView: string;
   preferences: any = {};
+  permission: any = {};
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   controllerId: string;
   agentId: string;
   clusters = [];
+  data = [];
+  searchableProperties = ['subagentClusterId', 'state', '_text'];
   dropTarget: number;
   selectedCluster: any = {};
+  clusterFilter: any = {};
   node: any;
   object = {
     checked: false,
@@ -399,7 +404,8 @@ export class AgentComponent implements OnInit, OnDestroy {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(public coreService: CoreService, private route: ActivatedRoute, private nzContextMenuService: NzContextMenuService,
-              private translate: TranslateService, private modal: NzModalService) {
+              private translate: TranslateService, private modal: NzModalService, private authService: AuthService,
+              private orderPipe: OrderPipe, private searchPipe: SearchPipe) {
   }
 
   static setHeight(): void {
@@ -440,13 +446,18 @@ export class AgentComponent implements OnInit, OnDestroy {
   private init() {
     this.controllerId = this.route.snapshot.paramMap.get('controllerId');
     this.agentId = this.route.snapshot.paramMap.get('agentId');
+    this.clusterFilter = this.coreService.getAgentClusterTab();
+    this.permission = JSON.parse(this.authService.permission) || {};
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).agentCluster;
+    }
     if (this.editor && !isEmpty(this.editor)) {
       this.editor.destroy();
       mxOutline.prototype.destroy()
       this.editor = null;
-    }
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     this.getClusters();
     this.getClusterAgents();
@@ -479,6 +490,8 @@ export class AgentComponent implements OnInit, OnDestroy {
           }
         }
         this.isLoading = false;
+        this.clusters = this.orderPipe.transform(this.clusters, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
+        this.searchInResult();
       }, error: () => {
         this.isLoading = false;
       }
@@ -498,6 +511,36 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
+  sort(propertyName): void {
+    this.clusterFilter.reverse = !this.clusterFilter.reverse;
+    this.clusterFilter.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
+    this.reset();
+  }
+
+  getCurrentData(list, filter): Array<any> {
+    if (this.selectedCluster.subagentClusterId) {
+      return this.clusters;
+    } else {
+      const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+      return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
+    }
+  }
+
+  pageIndexChange($event): void {
+    this.clusterFilter.currentPage = $event;
+  }
+
+  pageSizeChange($event): void {
+    this.clusterFilter.entryPerPage = $event;
+  }
+
+  searchInResult(): void {
+    this.data = this.clusterFilter.searchText ? this.searchPipe.transform(this.clusters, this.clusterFilter.searchText, this.searchableProperties) : this.clusters;
+    this.data = [...this.data];
+    this.reset();
+  }
+
   createCluster(): void {
     this.modal.create({
       nzTitle: undefined,
@@ -514,6 +557,8 @@ export class AgentComponent implements OnInit, OnDestroy {
       if (result) {
         this.clusters = result.subagentClusters;
         this.selectedClusterFn(this.clusters[this.clusters.length - 1]);
+        this.data = this.orderPipe.transform(this.data, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
+        this.searchInResult();
       }
     });
   }
@@ -533,6 +578,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     }).afterClose.subscribe(result => {
       if (result) {
         this.clusters = result.subagentClusters;
+        this.searchInResult();
       }
     });
   }
@@ -571,7 +617,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       });
     } else {
       if (isRevoke) {
-        this.coreService.post('agents/cluster/delete', obj).subscribe(() => this.getClusters());
+        this.coreService.post('agents/cluster/revoke', obj).subscribe(() => this.getClusters());
       } else {
         this.modal.create({
           nzTitle: undefined,
@@ -659,9 +705,6 @@ export class AgentComponent implements OnInit, OnDestroy {
       auditLog
     };
     this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(() => this.getClusters());
-    this.object.mapOfCheckedId.clear();
-    this.object.checked = false;
-    this.object.indeterminate = false;
   }
 
   deployAll(): void {
@@ -739,52 +782,51 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   selectedClusterFn(cluster): void {
-    this.selectedCluster = this.coreService.clone(cluster);
-    if (this.editor && this.editor.graph) {
-      this.updateCluster();
-      this.updateList();
-    } else {
-      this.createEditor(() => {
+    if(this.permission.joc && this.permission.joc.administration.controllers.manage) {
+      this.reset();
+      this.selectedCluster = this.coreService.clone(cluster);
+      if (this.editor && this.editor.graph) {
         this.updateCluster();
         this.updateList();
-        let dom = $('#graph');
-        dom.css({opacity: 1});
+      } else {
+        this.createEditor(() => {
+          this.updateCluster();
+          this.updateList();
+          let dom = $('#graph');
+          dom.css({opacity: 1});
 
-        /**
-         * Changes the zoom on mouseWheel events
-         */
-        dom.bind('mousewheel DOMMouseScroll', (event) => {
-          if (this.editor) {
-            if (event.ctrlKey) {
-              event.preventDefault();
-              if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-                this.editor.execute('zoomIn');
+          /**
+           * Changes the zoom on mouseWheel events
+           */
+          dom.bind('mousewheel DOMMouseScroll', (event) => {
+            if (this.editor) {
+              if (event.ctrlKey) {
+                event.preventDefault();
+                if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+                  this.editor.execute('zoomIn');
+                } else {
+                  this.editor.execute('zoomOut');
+                }
               } else {
-                this.editor.execute('zoomOut');
-              }
-            } else {
-              const bounds = this.editor.graph.getGraphBounds();
-              if (bounds.y < -0.05 && bounds.height > dom.height()) {
-                this.editor.graph.center(true, true, 0.5, -0.02);
+                const bounds = this.editor.graph.getGraphBounds();
+                if (bounds.y < -0.05 && bounds.height > dom.height()) {
+                  this.editor.graph.center(true, true, 0.5, -0.02);
+                }
               }
             }
-          }
+          });
+          AgentComponent.setHeight();
+          setTimeout(() => {
+            this.actual();
+          }, 0)
         });
-        AgentComponent.setHeight();
-        setTimeout(() => {
-          this.actual();
-        }, 0)
-      });
+      }
     }
   }
 
   backToListView(): void {
     this.selectedCluster = {};
     this.ngOnDestroy();
-  }
-
-  drop2(event: CdkDragDrop<string[]>): void {
-    moveItemInArray(this.clusters, event.previousIndex, event.currentIndex);
   }
 
   drop($event): void {
@@ -928,7 +970,6 @@ export class AgentComponent implements OnInit, OnDestroy {
               j++;
             }
           }
-          console.log(tempList)
           this.selectedCluster.subagentIds = tempList;
           this.clusters[x].subagentIds = tempList;
           this.updateCluster();
@@ -950,9 +991,24 @@ export class AgentComponent implements OnInit, OnDestroy {
     return _node;
   }
 
+  selectAll(): void {
+    this.data.forEach(item => {
+      this.object.mapOfCheckedId.add(item.subagentClusterId);
+    });
+  }
+
+  reset(): void {
+    this.object = {
+      mapOfCheckedId: new Set(),
+      checked: false,
+      indeterminate: false
+    };
+  }
+
   onAllChecked(isCheck: boolean): void {
-    if (isCheck) {
-      this.clusters.forEach(item => {
+    if (isCheck && this.clusters.length > 0) {
+      const data = this.getCurrentData(this.data, this.clusterFilter);
+      data.forEach(item => {
         this.object.mapOfCheckedId.add(item.subagentClusterId);
       });
     } else {
@@ -962,13 +1018,25 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   onItemChecked(cluster: any, checked: boolean): void {
+    if (!checked && this.pageView != 'grid' && this.object.mapOfCheckedId.size > (this.clusterFilter.entryPerPage || this.preferences.entryPerPage)) {
+      const data = this.getCurrentData(this.data, this.clusterFilter);
+      if (data.length < this.data.length) {
+        this.object.mapOfCheckedId.clear();
+        data.forEach(item => {
+          this.object.mapOfCheckedId.add(item.subagentClusterId);
+        });
+      }
+    }
     if (checked) {
       this.object.mapOfCheckedId.add(cluster.subagentClusterId);
     } else {
       this.object.mapOfCheckedId.delete(cluster.subagentClusterId);
     }
-    this.object.checked = this.object.mapOfCheckedId.size === this.clusters.length;
-    this.refreshCheckedStatus();
+    if (this.pageView != 'grid') {
+      const data = this.getCurrentData(this.data, this.clusterFilter);
+      this.object.checked = this.object.mapOfCheckedId.size === data.length;
+      this.refreshCheckedStatus();
+    }
   }
 
   refreshCheckedStatus(): void {

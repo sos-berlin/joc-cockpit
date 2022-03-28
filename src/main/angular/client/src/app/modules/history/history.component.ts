@@ -1835,7 +1835,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       fromDate: new Date(),
-      toDate: new Date()
+      fromTime: '00:00:00',
+      toDate: new Date(),
+      toTime: '23:59:59'
     };
 
     this.jobSearch = {
@@ -1844,21 +1846,27 @@ export class HistoryComponent implements OnInit, OnDestroy {
       operation: 'ALL',
       state: 'ALL',
       fromDate: new Date(),
-      toDate: new Date()
+      fromTime: '00:00:00',
+      toDate: new Date(),
+      toTime: '23:59:59'
     };
 
     this.yadeSearch = {
       radio: 'current',
       planned: 'today',
       fromDate: new Date(),
-      toDate: new Date()
+      fromTime: '00:00:00',
+      toDate: new Date(),
+      toTime: '23:59:59',
     };
 
     this.deploymentSearch = {
       radio: 'current',
       planned: 'today',
       fromDate: new Date(),
-      toDate: new Date()
+      fromTime: '00:00:00',
+      toDate: new Date(),
+      toTime: '23:59:59',
     };
 
     this.submissionSearch = {
@@ -3127,6 +3135,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         if (this.order.workflow) {
           this.advancedSearch();
           this.orderSearch.workflowPath = this.order.workflow;
+          if(this.order.fromDate) {
+            this.orderSearch.fromDate = this.order.fromDate;
+            delete this.order.fromDate
+          }
           delete this.order.workflow;
           this.search(this.orderSearch);
         } else {
@@ -3136,6 +3148,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
          if (this.task.workflow) {
           this.advancedSearch();
           this.jobSearch.workflowPath = this.task.workflow;
+           if(this.task.fromDate) {
+            this.jobSearch.fromDate = this.task.fromDate;
+            delete this.task.fromDate
+          }
           delete this.task.workflow;
           this.search(this.jobSearch);
         } else {

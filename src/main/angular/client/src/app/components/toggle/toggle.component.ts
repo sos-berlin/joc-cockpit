@@ -48,6 +48,7 @@ export class ToggleComponent implements OnInit {
       agent: this.view,
       documentation: this.view,
       calendar: this.view,
+      agentCluster: this.view,
       permission: 'grid'
     };
     if (!localStorage.views) {
@@ -78,6 +79,8 @@ export class ToggleComponent implements OnInit {
       this.pageView = this.views.documentation || this.view;
     } else if (this.router.url.match('/users/')) {
       this.pageView = this.views.permission || this.view;
+    } else if (this.router.url.match('/controllers/cluster_agent/')) {
+      this.pageView = this.views.agentCluster || this.view;
     } else {
       this.pageView = this.view;
     }
@@ -105,6 +108,8 @@ export class ToggleComponent implements OnInit {
       this.views.documentation = view;
     } else if (this.router.url.match('/users/')) {
       this.views.permission = view;
+    } else if (this.router.url.match('/controllers/cluster_agent/')) {
+      this.views.agentCluster = view;
     }
     localStorage.views = JSON.stringify(this.views);
     this.messageEvent.emit(this.pageView);

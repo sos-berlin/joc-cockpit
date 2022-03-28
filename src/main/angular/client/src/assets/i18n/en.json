@@ -173,6 +173,8 @@
     "label.clusterName": "Cluster Name",
     "label.clusterAgents": "Cluster Agents",
     "label.syncStatus": "Sync Status",
+    "label.noClusterFound": "Cluster Agent entry found",
+    "label.noClustersFound": "Cluster Agent entries found",
     "label.dragAndDropForRoundRobin": "Drop here for round-robin mode",
     "label.dragAndDropFixedPriority": "Drop here for fixed-priority mode",
     "button.createToken": "Create one-time Token",

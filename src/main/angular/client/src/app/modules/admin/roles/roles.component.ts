@@ -212,7 +212,7 @@ export class RoleModalComponent implements OnInit {
             const APIs = [];
             this.controllerArr.forEach((result) => {
               result.roleName = this.currentRole.roleName;
-              APIs.push(this.coreService.post('iam/permissions/store', result).pipe(
+              APIs.push(this.coreService.post('iam/permissions/store', {...result, ...{auditLog: request.auditLog}}).pipe(
                 catchError(error => of(error))
               ));
             });

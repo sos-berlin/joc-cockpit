@@ -58,8 +58,8 @@
                     <h5 class="text-dark">
                       <a *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel" (click)="editController(controller.controllerId)">{{controller.controllerId}}</a>
                       <span  *ngIf="currentSecurityLevel && currentSecurityLevel !== controller.securityLevel">{{controller.controllerId}}</span>
-                      <i (click)="showPanel[id] = true;getAgents(controller, null)" [hidden]="showPanel[id]" class="cursor fa fa-caret-up m-l-xs"></i>
-                      <i (click)="showPanel[id]  = false" *ngIf="showPanel[id]"
+                      <i (click)="collapse(controller.controllerId);" *ngIf="coreService.preferences.controllers.has(controller.controllerId)" class="cursor fa fa-caret-up m-l-xs"></i>
+                      <i (click)="expand(controller.controllerId);getAgents(controller, null)" *ngIf="!coreService.preferences.controllers.has(controller.controllerId)"
                          class="cursor fa fa-caret-down m-l-xs"></i>
                       <span class="text-sm pull-right m-r-sm" *ngIf="controller.token && controller.token.validUntil">
                           <span translate>agent.label.validityDate</span>:
@@ -88,7 +88,7 @@
                     </h5>
                   </div>
                 </div>
-                <div *ngIf="showPanel[id]" class="row">
+                <div *ngIf="coreService.preferences.controllers.has(controller.controllerId)" class="row">
                   <div class="col-md-12">
                     <perfect-scrollbar class="p-a-sm p-b-0" style="max-height: 450px;overflow: auto">
                       <label class="p-b-xs" translate>agent.label.agents</label>
@@ -249,7 +249,7 @@
                               [nzIndeterminate]="controller.indeterminate2"
                               (nzCheckedChange)="checkAll($event, controller, true)"
                           ></th>
-                          <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
+                          <th class="menu"><span translate>common.label.action</span></th>
                           <th nzWidth="15%" (click)="sort(controller, 'agentId', true)">
                             <a><span class="p-r-xs" translate>agent.label.agentId</span>
                               <i *ngIf="controller.sortBy2 == 'agentId' && !controller.reverse2"
@@ -306,7 +306,7 @@
                             <tr [ngClass]="{'disabled-row': clusterAgent.disabled}" class="cursor">
                               <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                                   [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId2.has(clusterAgent.agentId)" (nzCheckedChange)="onItemChecked(controller, clusterAgent, $event, true)"></td>
-                              <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
+                              <td class="menu">
                                 <div class="btn-group dropdown pull-left m-r-sm">
                                   <button type="button" class="btn-drop more-option-h" [nzDisabled]="controller.checked2 || controller.indeterminate2" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
@@ -317,17 +317,17 @@
                                       <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller, clusterAgent)" nz-menu-item>
                                         <a translate>agent.button.createToken</a>
                                       </li>
-                                      <li (click)="addSubagent(clusterAgent, controller)" nz-menu-item>
+                                      <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="addSubagent(clusterAgent, controller)" nz-menu-item>
                                         <a translate>agent.button.addSubagent</a>
                                       </li>
-                                      <li nz-menu-divider></li>
-                                      <li (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
+                                      <li nz-menu-divider *ngIf="permission.joc && permission.joc.administration.controllers.manage"></li>
+                                      <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
                                         <a translate>common.button.edit</a>
                                       </li>
-                                      <li (click)="deployAgent(clusterAgent, controller)" nz-menu-item>
+                                      <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="deployAgent(clusterAgent, controller)" nz-menu-item>
                                         <a translate>inventory.button.deploy</a>
                                       </li>
-                                      <li (click)="removeAgent(clusterAgent, controller)" nz-menu-item class="bg-hover-color">
+                                      <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="removeAgent(clusterAgent, controller)" nz-menu-item class="bg-hover-color">
                                         <a translate>common.button.delete</a>
                                       </li>
                                     </ul>
@@ -371,7 +371,7 @@
                               <tr class="order-history-template0">
                                 <td></td>
                                 <td><span class="_600" translate>common.label.action</span></td>
-                                <td colspan="2"><span class="_600" translate>agent.label.subagentId</span></td>
+                                <td [colSpan]="permission.joc && permission.joc.administration.controllers.manage ? '2' : '1'"><span class="_600" translate>agent.label.subagentId</span></td>
                                 <td><span class="_600" translate>agent.label.role</span></td>
                                 <td colspan="2"><span class="_600" translate>agent.label.url</span></td>
                                 <td><span class="_600" translate>common.label.status</span></td>
@@ -440,7 +440,7 @@
                     </perfect-scrollbar>
                   </div>
                 </div>
-                <hr *ngIf="showPanel[id]">
+                <hr *ngIf="coreService.preferences.controllers.has(controller.controllerId)">
               </ng-container>
             </div>
           </div>

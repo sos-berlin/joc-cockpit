@@ -1,5 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {Router} from "@angular/router";
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
@@ -23,7 +24,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService,
+  constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
               private searchPipe: SearchPipe, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -181,5 +182,14 @@ export class AgentComponent implements OnInit, OnDestroy {
   hideAgents(cluster): void {
     this.agentsFilters.expandedObjects.splice(this.agentsFilters.expandedObjects.indexOf(cluster.agentId), 1);
     cluster.show = false;
+  }
+
+  navToController(agent): void {
+    if (this.permission.joc && this.permission.joc.administration.controllers.view) {
+      this.coreService.preferences.isFirst = false;
+      this.coreService.preferences.controllers.clear();
+      this.coreService.preferences.controllers.add(agent.controllerId);
+      this.router.navigate(['/controllers']);
+    }
   }
 }

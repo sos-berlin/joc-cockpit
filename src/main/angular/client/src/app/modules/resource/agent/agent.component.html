@@ -193,8 +193,8 @@
                          (click)="hideAgents(cluster)"></i>
                       <span [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
                     </td>
-                    <td><span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
-                    <td>
+                    <td class="cursor" (click)="navToController(cluster)"><span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
+                    <td class="cursor" (click)="navToController(cluster)">
                         <span [nz-tooltip]="cluster.errorMessage" class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">
                           <span [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
                         </span>

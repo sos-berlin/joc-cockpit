@@ -361,7 +361,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   permissions;
   rolePermissions: any = [];
   permissionOptions = [];
-  temp = ['1', '2', '3', '4'];
   pageView: string;
   permissionNodes: any = [];
   permissionArr: any = [];
@@ -772,6 +771,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   preparePermissionJSON(): void {
+    this.count = 0;
     this.permissionArr = this.permissions.SOSPermission;
     for (let i = 0; i < this.permissionArr.length; i++) {
       let nodes = this.permissionArr[i].split(':');
