@@ -165,7 +165,7 @@
     "label.deployAgent": "Deploy Agent",
     "label.schedulingType": "Scheduling Type",
     "label.agentClusters": "Agent Clusters",
-    "label.agentGroups": "Agent Clusters",
+    "label.agentGroups": "Cluster Agents",
     "label.addClusterAgent": "Add Agent Cluster",
     "label.editClusterAgent": "Update Agent Cluster",
     "label.createCluster": "Create Agent Cluster",
