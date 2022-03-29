@@ -46,10 +46,10 @@ export class SingleDeployComponent implements OnInit {
   loading = true;
   submitted = false;
   required = false;
-  comments: any = { radio: 'predefined' };
+  comments: any = {radio: 'predefined'};
   object: any = {
-    store: { draftConfigurations: [], deployConfigurations: [] },
-    delete: { deployConfigurations: [] }
+    store: {draftConfigurations: [], deployConfigurations: []},
+    delete: {deployConfigurations: []}
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
@@ -66,7 +66,9 @@ export class SingleDeployComponent implements OnInit {
 
   init(): void {
     const obj: any = {
-      onlyValidObjects: true, withVersions: true, path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      onlyValidObjects: true,
+      withVersions: true,
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
       objectType: this.data.objectType || this.data.type
     };
     if (this.isRevoke) {
@@ -227,11 +229,11 @@ export class DeployComponent implements OnInit {
   };
   submitted = false;
   required = false;
-  comments: any = { radio: 'predefined' };
+  comments: any = {radio: 'predefined'};
   isDeleted = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
-    private inventoryService: InventoryService) {
+              private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
@@ -702,8 +704,8 @@ export class DeployComponent implements OnInit {
 export class CronImportModalComponent implements OnInit {
   @Input() display: any;
   @Input() controllerId;
+  @Input() agents: any = [];
   nodes: any = [];
-  agents: any = [];
   calendarTree: any = [];
   uploader: FileUploader;
   comments: any = {};
@@ -723,7 +725,6 @@ export class CronImportModalComponent implements OnInit {
       this.display = true;
     }
     this.getTree();
-    this.getAgents();
     this.getCalendars();
     this.uploader = new FileUploader({
       url: './api/inventory/convert/cron',
@@ -782,14 +783,6 @@ export class CronImportModalComponent implements OnInit {
           res.folders.push({name: '', path: '/'});
         }
         this.nodes = this.coreService.prepareTree(res, true);
-      }
-    });
-  }
-
-  private getAgents(): void {
-    this.coreService.post('agents/names', {controllerId: this.controllerId}).subscribe({
-      next: (res: any) => {
-        this.agents = res.agentNames ? res.agentNames.sort() : [];
       }
     });
   }
@@ -892,7 +885,7 @@ export class ExportComponent implements OnInit {
   nodes: any = [];
   submitted = false;
   required = false;
-  comments: any = { radio: 'predefined' };
+  comments: any = {radio: 'predefined'};
   inValid = false;
   exportType = 'BOTH';
   path: string;
@@ -920,7 +913,7 @@ export class ExportComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-    private inventoryService: InventoryService) {
+              private inventoryService: InventoryService) {
   }
 
   ngOnInit(): void {
@@ -1116,6 +1109,7 @@ export class ExportComponent implements OnInit {
           }
         }
       }
+
       recursive(this.nodes);
       this.nodes = [...this.nodes];
     }, true);
@@ -1371,7 +1365,7 @@ export class RepositoryComponent implements OnInit {
   nodes: any = [];
   submitted = false;
   required = false;
-  comments: any = { radio: 'predefined' };
+  comments: any = {radio: 'predefined'};
   exportObj = {
     isRecursive: false
   };
@@ -1443,14 +1437,14 @@ export class RepositoryComponent implements OnInit {
           catchError(error => of(error))
         ));
       }
-      if  (this.category !== 'LOCAL'){
+      if (this.category !== 'LOCAL') {
         obj.objectTypes = ['INCLUDESCRIPT'];
       }
       obj.withoutReleased = !this.filter.release;
       APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
         catchError(error => of(error))
       ));
-    } else if(this.filter.envIndependent) {
+    } else if (this.filter.envIndependent) {
       obj.withVersions = !this.filter.deploy;
       if (this.type !== 'ALL') {
         obj.objectTypes = [this.type];
@@ -1557,7 +1551,7 @@ export class RepositoryComponent implements OnInit {
     }).subscribe((res) => {
       let tree = [];
       if (res.folders && res.folders.length > 0 || res.items && res.items.length > 0) {
-        if(this.type !== 'ALL') {
+        if (this.type !== 'ALL') {
           if (res.folders && res.folders.length > 0) {
             res.folders.forEach((folder) => {
               if (folder.items && folder.items.length > 0) {
@@ -1583,7 +1577,7 @@ export class RepositoryComponent implements OnInit {
         }, false);
         this.inventoryService.updateTree(tree[0]);
       }
-      if(!merge && tree[0] && tree[0].children && tree[0].children.length === 0) {
+      if (!merge && tree[0] && tree[0].children && tree[0].children.length === 0) {
         tree = [];
       }
       if (merge) {
@@ -1623,6 +1617,7 @@ export class RepositoryComponent implements OnInit {
 
   expandAll(): void {
     const self = this;
+
     function recursive(node): void {
       for (const i in node) {
         if (!node[i].isLeaf) {
@@ -1744,7 +1739,7 @@ export class RepositoryComponent implements OnInit {
               objectType: nodes[i].type
             };
           }
-          if(objDep.configuration) {
+          if (objDep.configuration) {
             obj.configurations.push(objDep);
           }
         }
@@ -1974,7 +1969,7 @@ export class ImportWorkflowModalComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
-    public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
+              public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -2748,6 +2743,26 @@ export class InventoryComponent implements OnInit, OnDestroy {
     $('.scroll-y').remove();
   }
 
+  private getAgents(): void {
+    this.coreService.post('agents/names', {controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
+      this.inventoryService.agentList = [{
+        title: 'agents',
+        children: res.agentNames
+      }];
+      let obj = {
+        title: 'agentGroups',
+        children: []
+      };
+      for(let prop in res.subagentClusterIds){
+        obj.children.push({
+          title: prop,
+          children: res.subagentClusterIds[prop]
+        });
+      }
+      this.inventoryService.agentList.push(obj);
+    });
+  }
+
   initTree(path, mainPath, redirect = false): void {
     if (!path) {
       this.isLoading = true;
@@ -3157,8 +3172,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
       return;
     }
     let flag = true;
-    const controllerObj: any = { controllerArr: [], isArrow: false };
-    const dailyPlanObj: any = { dailyPlanArr: [], isArrow: false };
+    const controllerObj: any = {controllerArr: [], isArrow: false};
+    const dailyPlanObj: any = {dailyPlanArr: [], isArrow: false};
     const KEY = data.path === '/' ? '/' : (data.path + '/');
     if (!data.children) {
       data.children = [];
@@ -3621,6 +3636,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         display: this.preferences.auditLog,
+        agents: this.inventoryService.agentList,
         controllerId: this.schedulerIds.selected
       },
       nzFooter: null,
@@ -4386,6 +4402,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }, 50);
       return;
     }
+    this.getAgents();
     this.securityLevel = sessionStorage.securityLevel;
     if (isReload) {
       this.sideView = this.coreService.getSideView();
@@ -4665,6 +4682,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' && args.eventSnapshots[j].objectType === 'AGENT') {
+          this.getAgents();
+        }
         if (args.eventSnapshots[j].path) {
           if (args.eventSnapshots[j].eventType.match(/Inventory/)) {
             const isTrash = args.eventSnapshots[j].eventType.match(/Trash/);

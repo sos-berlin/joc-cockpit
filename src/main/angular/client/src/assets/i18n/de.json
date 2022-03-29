@@ -177,6 +177,7 @@
     "label.noClustersFound": "Cluster Agenten Einträge gefunden",
     "label.dragAndDropForRoundRobin": "Hierher ziehen und ablegen für round-robin Modus",
     "label.dragAndDropFixedPriority": "Hierher ziehen und ablegen für fixed-priority Modus",
+    "label.duplicateCluster": "Duplicate Cluster",
     "button.createToken": "Einmaliges Token erstellen",
     "button.addAgent": "Autonomen Agenten hinzufügent",
     "button.addSubagent": "Subagenten hinzufügen",
@@ -994,6 +995,7 @@
     "label.priority": "Priorität",
     "label.capacity": "Kapazität",
     "label.workflowName": "Name Arbeitsablauf",
+    "label.workflowNames": "Workflow Names",
     "label.planOrderAutomatically": "Aufträge automatisch planen",
     "label.deployMarkDelete": "Ausgerolltes Objekt zum Löschen vorgemerkt",
     "label.markForDelete": "zum Löschen vorgemerkt",
@@ -1115,6 +1117,7 @@
     "placeholder.searchWorkingCalendars": "Arbeitstagekalender suchen",
     "placeholder.orderName": "Auftragsnamen angeben",
     "placeholder.workflowName": "Arbeitsablauf auswählen",
+    "placeholder.workflowNames": "Select Workflows",
     "placeholder.documentationName": "Dokumentation auswählen",
     "placeholder.enterFolderPath": "Pfad des Ordners angeben",
     "placeholder.signatureAlgorithm": "Signieralgorithmus angeben",
@@ -1142,6 +1145,8 @@
     "message.endOfLifeIsMissing": "Verfallsfrist muss angegeben werden",
     "message.nameIsNotValid": "Ungültiger Name",
     "message.invalidFile": "Keine gültige {{objectType}} Datei",
+    "message.workflowsWithoutVariables": "Only workflows without order variables are allowed",
+    "message.workflowWithVariables": "Only single workflow with order variables is allowed",
     "cronTab": {
       "label.convertCron": "crontab konvertieren",
       "label.folder": "Ordner",
@@ -1632,7 +1637,8 @@
       "label.switchOver": "umschalten",
       "label.downloadLog": "Protokoll herunterladen",
       "label.jocCockpit": "JOC Cockpit",
-      "label.suspendResume": "unterbrechen und fortsetzen"
+      "label.suspendResume": "unterbrechen und fortsetzen",
+      "label.controller": "Controller"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Schlüssel und Zertifikate",
@@ -2050,6 +2056,7 @@
     "label.disable": "Deaktivieren",
     "label.folderNotExist": "Ordner nicht vorhanden",
     "label.reuseReason": "Begründung wiederverwenden",
+    "label.showPermission": "Show Permission",
     "button.addGroupRole": "Gruppen/Rollen hinzufügen",
     "button.addIdentityService": "Identitätsdienst hinzufügen",
     "button.addPermission": "Berechtigung hinzufügen",
@@ -2078,6 +2085,7 @@
     "button.delete": "Löschen",
     "button.resetPassword": "Kennwort zurücksetzen",
     "button.forcePasswordChange": "Kennwortänderung erzwingen",
+    "button.showPermission": "Show Permission",
     "placeholder.role": "Name der Rolle angeben",
     "placeholder.selectRoles": "Rollen auswählen",
     "placeholder.user": "Konto angeben",

@@ -37,7 +37,7 @@
     </div>
   </div>
 </div>
-<div class="scroll-y max-ht1">
+<div class="scroll-y max-ht">
   <div class="padding p-b-0">
     <div *ngIf="!selectedCluster || !selectedCluster.subagentClusterId">
       <div class="row m-b-12 m-t-xs">
@@ -80,6 +80,9 @@
                   <ul nz-menu>
                     <li nz-menu-item (click)="edit(cluster)">
                       <a translate>common.button.edit</a>
+                    </li>
+                    <li nz-menu-item (click)="duplicate(cluster)">
+                      <a translate>common.button.duplicate</a>
                     </li>
                     <li nz-menu-item (click)="revoke(cluster)">
                       <a translate>agent.button.revoke</a>
@@ -184,6 +187,9 @@
                   <ul nz-menu>
                     <li nz-menu-item (click)="edit(cluster);$event.stopPropagation();">
                       <a translate>common.button.edit</a>
+                    </li>
+                    <li nz-menu-item (click)="duplicate(cluster);$event.stopPropagation();">
+                      <a translate>common.button.duplicate</a>
                     </li>
                     <li nz-menu-item (click)="revoke(cluster);$event.stopPropagation();">
                       <a translate>agent.button.revoke</a>
@@ -410,6 +416,9 @@
                   <ul nz-menu>
                     <li nz-menu-item (click)="edit(cluster);$event.stopPropagation();">
                       <a translate>common.button.edit</a>
+                    </li>
+                    <li nz-menu-item (click)="duplicate(cluster);$event.stopPropagation();">
+                      <a translate>common.button.duplicate</a>
                     </li>
                     <li nz-menu-item (click)="revoke(cluster);$event.stopPropagation();">
                       <a translate>agent.button.revoke</a>

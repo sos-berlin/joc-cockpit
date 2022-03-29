@@ -786,16 +786,16 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() scriptTree = [];
   @Input() scriptList = [];
   @Input() orderPreparation;
-  @Input() agents = [];
+  @Input() agents: any = [];
   @Input() isTooltipVisible: boolean;
   @Input() isModal: boolean;
   @Input() exactMatch: boolean;
   agentList = [];
+  nonExistAgents = [];
   history = [];
   list: Array<string> = [];
   indexOfNextAdd = 0;
   error: boolean;
-  notFound: string;
   errorMsg: string;
   obj: any = {};
   isDisplay = true;
@@ -949,21 +949,39 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private checkIsAgentExist(): void {
-    this.agentList = [];
+    this.nonExistAgents = [];
     if (this.selectedNode.job.agentName) {
       let isFound = false;
       for (const i in this.agents) {
-        if (this.agents[i] === this.selectedNode.job.agentName) {
-          isFound = true;
-          break;
+        if (this.agents[i].title === 'agents') {
+          for (const j in this.agents[i].children) {
+            if (this.agents[i].children[j] === this.selectedNode.job.agentName) {
+              isFound = true;
+              break;
+            }
+          }
+        } else {
+          if (!isFound) {
+            for (const prop in this.agents[i].children) {
+              if(this.agents[i].children[prop].children) {
+                for (const j in this.agents[i].children[prop].children) {
+                  if (this.agents[i].children[prop].children[j] === this.selectedNode.job.agentName) {
+                    isFound = true;
+                    break;
+                  }
+                }
+              }
+              if(isFound){
+                break;
+              }
+            }
+          }
         }
       }
       if (!isFound) {
-        this.notFound = this.selectedNode.job.agentName;
-        this.agentList.push(this.selectedNode.job.agentName);
+        this.nonExistAgents.push(this.selectedNode.job.agentName);
       }
     }
-    this.agentList = this.agentList.concat(this.agents);
     this.ref.detectChanges();
   }
 
@@ -1473,7 +1491,35 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onAgentChange(value: string): void {
-    this.agentList = this.agents.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) > -1);
+    let temp = this.coreService.clone(this.agents);
+    this.agentList = temp.filter(option => {
+      let flag = false;
+      option.children = option.children.filter(option2 => {
+        let isCheck = false;
+        if (option2.children) {
+          option2.children = option2.children.filter(option3 => {
+            let isCheck2 = option3.toLowerCase().indexOf(value.toLowerCase()) > -1;
+            if (isCheck2) {
+              flag = true;
+            }
+            if (!isCheck && isCheck2) {
+              isCheck = true;
+            }
+            return isCheck2;
+          });
+        } else {
+          let isCheck3 = option2.toLowerCase().indexOf(value.toLowerCase()) > -1;
+          if (isCheck3) {
+            flag = true;
+          }
+          if (!isCheck && isCheck3) {
+            isCheck = true;
+          }
+        }
+        return isCheck;
+      });
+      return flag;
+    })
     this.agentList = [...this.agentList];
   }
 
@@ -1745,7 +1791,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       }
     } else {
       if (type === InventoryObject.INCLUDESCRIPT) {
-        console.log(node.origin)
         setTimeout(() => {
           this.closeScriptTree();
         }, 10);
@@ -1774,6 +1819,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   private init(): void {
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
+    this.agentList = this.coreService.clone(this.agents);
     this.getJobInfo();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length === 0) {
@@ -2282,7 +2328,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @Input() reload: any;
   @Input() isTrash: any;
 
-  agents = [];
   jobResourcesTree = [];
   documentationTree = [];
   workflowTree = [];
@@ -2334,7 +2379,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
-  subscription3: Subscription;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
@@ -2358,12 +2402,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
     });
-    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
-      setTimeout(() => {
-        this.getAgents();
-      }, 0);
-    });
-    this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription2 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
     this.zones = coreService.getTimeZoneList();
@@ -2442,7 +2481,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
-    this.subscription3.unsubscribe();
     if (this.data.type) {
       this.saveCopyInstruction();
       this.saveJSON(false);
@@ -3179,16 +3217,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.documentationTree = this.coreService.prepareTree(res, false);
         });
       }
-      if (this.agents.length === 0) {
-        this.getAgents();
-      }
     }
-  }
-
-  private getAgents(): void {
-    this.coreService.post('agents/names', {controllerId: this.schedulerId}).subscribe((res: any) => {
-      this.agents = res.agentNames ? res.agentNames.sort() : [];
-    });
   }
 
   private getJobResources(): void {
@@ -5634,7 +5663,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       targetId = 'start';
                     }
                     self.droppedCell = {
-                      target: { source: sourceId, target: targetId },
+                      target: {source: sourceId, target: targetId},
                       cell: self.movedCell,
                       type: cell.value.getAttribute('type'),
                       isOutside
@@ -5643,7 +5672,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
                   }
                 } else {
-                  self.droppedCell = { target: cell.id, cell: self.movedCell };
+                  self.droppedCell = {target: cell.id, cell: self.movedCell};
                   return true;
                 }
               } else {
@@ -5928,7 +5957,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      * Function: Get first and last cell from the user selected cells
      */
     function isCellSelectedValid(cells): any {
-      const obj = { firstCell: null, lastCell: null, ids: [], invalid: false };
+      const obj = {firstCell: null, lastCell: null, ids: [], invalid: false};
       if (cells.length === 2) {
         if (!checkClosedCellWithSourceCell(cells[0], cells[1])) {
           const x = graph.getEdgesBetween(cells[0], cells[1]);
@@ -6732,7 +6761,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
         self.cutOperation();
         self.error = false;
-        self.dataService.reloadWorkflowError.next({ error: self.error });
+        self.dataService.reloadWorkflowError.next({error: self.error});
         self.selectedNode.newObj = self.coreService.clone(self.selectedNode.obj);
         if (self.selectedNode && self.selectedNode.type === 'Job') {
           self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
@@ -6854,7 +6883,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             argument = [];
           } else {
             argument = JSON.parse(argument);
-            argument = self.coreService.convertObjectToArray({ argument }, 'argument');
+            argument = self.coreService.convertObjectToArray({argument}, 'argument');
             argument.filter((arg) => {
               if (isArray(arg.value)) {
                 arg.value.forEach((item, index) => {
@@ -6880,7 +6909,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const arr = obj.retryDelays.split(',');
             obj.retryDelays = [];
             arr.forEach((item) => {
-              obj.retryDelays.push({ value: self.workflowService.convertDurationToHour(item) || '0s' });
+              obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '0s'});
             });
           } else {
             obj.retryDelays = [];
@@ -6936,14 +6965,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               let resultObj = edges[i].getAttribute('result');
               if (resultObj) {
                 resultObj = JSON.parse(resultObj);
-                resultObj = self.coreService.convertObjectToArray({ result: resultObj }, 'result');
+                resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
                 resultObj.filter((arg) => {
                   self.coreService.removeSlashToString(arg, 'value');
                 });
               } else {
                 resultObj = [];
               }
-              obj.branches.push({ id: edges[i].id, label: edges[i].getAttribute('label'), result: resultObj });
+              obj.branches.push({id: edges[i].id, label: edges[i].getAttribute('label'), result: resultObj});
             }
           }
         }
@@ -7063,9 +7092,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         const targetObj = targetObject.instructions[targetIndex];
         if (target.value.tagName === 'If') {
           if (!targetObj.then) {
-            targetObj.then = { instructions: [copyObject] };
+            targetObj.then = {instructions: [copyObject]};
           } else if (!targetObj.else) {
-            targetObj.else = { instructions: [copyObject] };
+            targetObj.else = {instructions: [copyObject]};
           }
         } else if (target.value.tagName === 'Fork') {
           let branchId;
@@ -7077,7 +7106,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             });
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
-          targetObj.branches.push({ id: branchId, instructions: [copyObject] });
+          targetObj.branches.push({id: branchId, instructions: [copyObject]});
         } else if (target.value.tagName === 'Retry' || target.value.tagName === 'Lock' || target.value.tagName === 'Cycle') {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
@@ -7170,15 +7199,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           break;
         }
         if (name === self.jobs[i].name) {
-          job = { name: newName, value: self.jobs[i].value };
+          job = {name: newName, value: self.jobs[i].value};
         }
       }
       if (flag) {
         if (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.jobName === name) {
-          job = { name: newName, value: self.inventoryConf.copiedInstuctionObject.jobObject };
+          job = {name: newName, value: self.inventoryConf.copiedInstuctionObject.jobObject};
         }
         if (!job.name) {
-          job = { name: newName, value: {} };
+          job = {name: newName, value: {}};
           if (self.inventoryConf.copiedInstuctionObject.jobs) {
             updateMissingJobs(self.inventoryConf.copiedInstuctionObject.jobs, job, name);
           }
@@ -7340,12 +7369,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 targetId = 'start';
               }
               self.droppedCell = {
-                target: { source: sourceId, target: targetId },
+                target: {source: sourceId, target: targetId},
                 cell: self.cutCell,
                 type: targetCell.value.getAttribute('type')
               };
             } else {
-              self.droppedCell = { target: targetCell.id, cell: self.cutCell };
+              self.droppedCell = {target: targetCell.id, cell: self.cutCell};
             }
           }
         }
@@ -8040,10 +8069,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         let isDone = false;
         if (targetObj.TYPE === 'If') {
           if (!targetObj.then) {
-            targetObj.then = { instructions: [sourceObj] };
+            targetObj.then = {instructions: [sourceObj]};
             isDone = true;
           } else if (!targetObj.else) {
-            targetObj.else = { instructions: [sourceObj] };
+            targetObj.else = {instructions: [sourceObj]};
             isDone = true;
           }
           if (!isDone) {
@@ -8068,7 +8097,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             });
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
-          targetObj.branches.push({ id: branchId, instructions: [sourceObj] });
+          targetObj.branches.push({id: branchId, instructions: [sourceObj]});
           isDone = true;
         } else if (targetObj.TYPE === 'Retry' || targetObj.TYPE === 'Lock' || targetObj.TYPE === 'Cycle') {
           if (!targetObj.instructions) {
@@ -8256,14 +8285,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   if (obj.type || isSameObj) {
                     if (!obj.type.match('else')) {
                       if (!targetObj.then || targetObj.then.instructions.length === 0) {
-                        targetObj.then = { instructions: [sourceObj] };
+                        targetObj.then = {instructions: [sourceObj]};
                         booleanObj.isMatch = true;
                       } else {
                         dropAndAdd(targetObj.then.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
                       }
                     } else {
                       if (!targetObj.else || targetObj.else.instructions.length === 0) {
-                        targetObj.else = { instructions: [sourceObj] };
+                        targetObj.else = {instructions: [sourceObj]};
                         booleanObj.isMatch = true;
                       } else {
                         dropAndAdd(targetObj.else.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
@@ -8273,7 +8302,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 } else if (targetObj.TYPE === 'Fork') {
                   if (obj.type || isSameObj) {
                     if (!targetObj.branches || targetObj.branches.length === 0) {
-                      targetObj.branches = [{ id: 'branch1', instructions: [sourceObj] }];
+                      targetObj.branches = [{id: 'branch1', instructions: [sourceObj]}];
                       booleanObj.isMatch = true;
                     } else if (targetObj.branches && targetObj.branches.length > 0) {
                       for (let j = 0; j < targetObj.branches.length; j++) {
@@ -8545,7 +8574,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (flag) {
       delete job.jobName;
-      this.jobs.push({ name: data.job.jobName, value: job });
+      this.jobs.push({name: data.job.jobName, value: job});
     }
     return isChange;
   }
@@ -8606,7 +8635,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private openSideBar(id): void {
     this.error = true;
     if (this.editor.graph && id) {
-      this.dataService.reloadWorkflowError.next({ error: this.error, msg: this.invalidMsg });
+      this.dataService.reloadWorkflowError.next({error: this.error, msg: this.invalidMsg});
       this.editor.graph.setSelectionCells([this.editor.graph.getModel().getCell(id)]);
       this.initEditorConf(this.editor, false, true);
     }
@@ -8617,6 +8646,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       return;
     }
     const self = this;
+
     function recursive(json): void {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -9221,7 +9251,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         flag = true;
       }
     } else if (type === 'variable') {
-      const variableDeclarations = { parameters: [], allowUndeclared: false };
+      const variableDeclarations = {parameters: [], allowUndeclared: false};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         if (value.value.type === 'List' || value.value.type === 'Final') {
@@ -9315,7 +9345,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        request.auditLog = { comment: translatedValue };
+        request.auditLog = {comment: translatedValue};
       });
     }
 
@@ -9347,7 +9377,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: FindAndReplaceComponent,
       nzComponentParams: {
-        agents: this.agents
+        agents: this.inventoryService.agentList
       },
       nzFooter: null,
       nzClosable: false,

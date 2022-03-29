@@ -250,7 +250,7 @@
                               (nzCheckedChange)="checkAll($event, controller, true)"
                           ></th>
                           <th class="menu"><span translate>common.label.action</span></th>
-                          <th nzWidth="15%" (click)="sort(controller, 'agentId', true)">
+                          <th (click)="sort(controller, 'agentId', true)">
                             <a><span class="p-r-xs" translate>agent.label.agentId</span>
                               <i *ngIf="controller.sortBy2 == 'agentId' && !controller.reverse2"
                                  class="fa fa-caret-up "></i>
@@ -276,13 +276,6 @@
                               <i *ngIf="controller.sortBy2 == 'deployed' && !controller.reverse2"
                                  class="fa fa-caret-up "></i>
                               <i *ngIf="controller.sortBy2 == 'deployed' && controller.reverse2"
-                                 class="fa fa-caret-down "></i></a>
-                          </th>
-                          <th nzWidth="140px" (click)="sort(controller, 'clusterWatcher', true)">
-                            <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
-                              <i *ngIf="controller.sortBy2 == 'clusterWatcher' && !controller.reverse2"
-                                 class="fa fa-caret-up "></i>
-                              <i *ngIf="controller.sortBy2 == 'clusterWatcher' && controller.reverse2"
                                  class="fa fa-caret-down "></i></a>
                           </th>
                           <th nzWidth="150px" (click)="sort(controller, 'validityDate', true)">
@@ -314,11 +307,11 @@
                                       <li (click)="navToController(controller.controllerId, clusterAgent.agentId)" nz-menu-item>
                                         <a translate>agent.button.manageCluster</a>
                                       </li>
-                                      <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller, clusterAgent)" nz-menu-item>
-                                        <a translate>agent.button.createToken</a>
-                                      </li>
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="addSubagent(clusterAgent, controller)" nz-menu-item>
                                         <a translate>agent.button.addSubagent</a>
+                                      </li>
+                                      <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller, clusterAgent)" nz-menu-item>
+                                        <a translate>agent.button.createToken</a>
                                       </li>
                                       <li nz-menu-divider *ngIf="permission.joc && permission.joc.administration.controllers.manage"></li>
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
@@ -350,7 +343,6 @@
                                 <span class="label bg-dark-blue" *ngIf="clusterAgent.deployed" translate>inventory.label.deployed</span>
                                 <span class="label bg-orange" *ngIf="!clusterAgent.deployed" translate>inventory.label.notDeployed</span>
                               </td>
-                              <td (click)="editAgent(clusterAgent, controller, true)">{{clusterAgent.isClusterWatcher ? 'Yes' : 'No'}}</td>
                               <td>
                                 <span *ngIf="!clusterAgent.token">-</span>
                                 <span *ngIf="clusterAgent.token">{{clusterAgent.token.validUntil | stringToDate}}</span>
@@ -371,15 +363,15 @@
                               <tr class="order-history-template0">
                                 <td></td>
                                 <td><span class="_600" translate>common.label.action</span></td>
-                                <td [colSpan]="permission.joc && permission.joc.administration.controllers.manage ? '2' : '1'"><span class="_600" translate>agent.label.subagentId</span></td>
+                                <td><span class="_600" translate>agent.label.subagentId</span></td>
                                 <td><span class="_600" translate>agent.label.role</span></td>
-                                <td colspan="2"><span class="_600" translate>agent.label.url</span></td>
+                                <td [colSpan]="permission.joc && permission.joc.administration.controllers.manage ? '2' : '1'"><span class="_600" translate>agent.label.url</span></td>
                                 <td><span class="_600" translate>common.label.status</span></td>
                                 <td><span class="_600" translate>agent.label.disabled</span></td>
                               </tr>
                               <tr class="order-history-template0" *ngIf="!clusterAgent.subagents || clusterAgent.subagents.length === 0">
                                 <td></td>
-                                <td colspan="9">
+                                <td [colSpan]="permission.joc && permission.joc.administration.controllers.manage ? '8' : '7'">
                                   <span translate>common.message.noDataAvailable</span>
                                 </td>
                               </tr>
@@ -420,13 +412,13 @@
                                     </nz-dropdown-menu>
                                   </div>
                                 </td>
-                                <td colspan="2">
+                                <td>
                                   {{sub.subagentId}}
                                   <i *ngIf="sub.title"> - </i>
                                   <i class="text-muted">{{sub.title}}</i>
                                 </td>
                                 <td>{{sub.isDirector | translate}}</td>
-                                <td colspan="2">{{sub.url}}</td>
+                                <td [colSpan]="permission.joc && permission.joc.administration.controllers.manage ? '2' : '1'">{{sub.url}}</td>
                                 <td>
                                   <span class="label bg-dark-blue" *ngIf="sub.deployed" translate>inventory.label.deployed</span>
                                   <span class="label bg-orange" *ngIf="!sub.deployed" translate>inventory.label.notDeployed</span>

@@ -5,8 +5,9 @@ import {InventoryObject} from '../../../models/enums';
 @Injectable()
 export class InventoryService {
   checkDeploymentStatus = {
-    isChecked : false
+    isChecked: false
   };
+  agentList: any = [];
 
   sortList(arr: any[]): any {
     for (const i in arr) {
@@ -43,7 +44,7 @@ export class InventoryService {
         }
       }
     }
-    if ((data.deployables && data.deployables.length > 0) || (data.releasables && data.releasables.length > 0)  || (data.items && data.items.length > 0)) {
+    if ((data.deployables && data.deployables.length > 0) || (data.releasables && data.releasables.length > 0) || (data.items && data.items.length > 0)) {
       if (!data.children) {
         data.children = [];
       }

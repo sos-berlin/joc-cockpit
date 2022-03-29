@@ -7752,6 +7752,12 @@ tr.tr-border td:first-child {
   padding-bottom: 1px;
   min-height: auto;
   padding-left: 16px;
+  background: none !important;
+}
+
+.not-disabled{
+  cursor: default !important;
+  opacity: 1 !important;
 }
 
 .ant-select-item-option-grouped {

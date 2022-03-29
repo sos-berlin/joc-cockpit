@@ -1,6 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!new" translate>agent.label.updateCluster</span>
+    <span *ngIf="!new" translate>
+      <span *ngIf="!isCopy" translate>agent.label.updateCluster</span>
+      <span *ngIf="isCopy" translate>agent.label.duplicateCluster</span>
+      <span *ngIf="isCopy" translate>: {{data.subagentClusterId}}</span>
+    </span>
     <span *ngIf="new" translate>agent.label.createCluster</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
@@ -17,9 +21,9 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8" [ngClass]="{'has-error' : ((subagentClusterId.dirty || subagentClusterId.touched) && subagentClusterId.invalid) || !isUniqueId}">
-        <input type="text" identifierValidation class="form-control" name="subagentClusterId" [readOnly]="!new"
+        <input type="text" identifierValidation class="form-control" name="subagentClusterId" [readOnly]="!new && !isCopy"
                required [(ngModel)]="cluster.subagentClusterId" #subagentClusterId="ngModel"
-               placeholder="{{'agent.placeholder.enterClusterName' | translate}}" (blur)="checkUnique(cluster.subagentClusterId)">
+               placeholder="{{'agent.placeholder.enterClusterName' | translate}}" (blur)="checkUnique()">
         <div *ngIf="subagentClusterId.invalid && (subagentClusterId.dirty || subagentClusterId.touched)" class="text-danger help-block">
           <div *ngIf="subagentClusterId.errors.required">
             <div translate>common.message.requiredError</div>
@@ -40,7 +44,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || !isUniqueId || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

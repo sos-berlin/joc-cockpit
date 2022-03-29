@@ -177,6 +177,7 @@
     "label.noClustersFound": "Cluster Agent entries found",
     "label.dragAndDropForRoundRobin": "Drop here for round-robin mode",
     "label.dragAndDropFixedPriority": "Drop here for fixed-priority mode",
+    "label.duplicateCluster": "Duplicate Cluster",
     "button.createToken": "Create one-time Token",
     "button.addAgent": "Add Standalone Agent",
     "button.addSubagent": "Add Subagent",
@@ -994,6 +995,7 @@
     "label.priority": "Priority",
     "label.capacity": "Capacity",
     "label.workflowName": "Workflow Name",
+    "label.workflowNames": "Workflow Names",
     "label.planOrderAutomatically": "Plan Order automatically",
     "label.deployMarkDelete": "Deployed object marked for deletion",
     "label.markForDelete": "marked for deletion",
@@ -1115,6 +1117,7 @@
     "placeholder.searchWorkingCalendars": "Search Working Day Calendars",
     "placeholder.orderName": "Enter Order Name",
     "placeholder.workflowName": "Select Workflow",
+    "placeholder.workflowNames": "Select Workflows",
     "placeholder.documentationName": "Select Documentation",
     "placeholder.enterFolderPath": "Enter Folder Path",
     "placeholder.signatureAlgorithm": "Enter the signature algorithm used",
@@ -1142,6 +1145,8 @@
     "message.endOfLifeIsMissing": "End of Life is missing, but is required",
     "message.nameIsNotValid": "Invalid name",
     "message.invalidFile": "Not a valid {{objectType}} file",
+    "message.workflowsWithoutVariables": "Only workflows without order variables are allowed",
+    "message.workflowWithVariables": "Only single workflow with order variables is allowed",
     "cronTab": {
       "label.convertCron": "Convert crontab",
       "label.folder": "Folder",
@@ -1632,7 +1637,8 @@
       "label.switchOver": "switch-over",
       "label.downloadLog": "download log",
       "label.jocCockpit": "JOC Cockpit",
-      "label.suspendResume": "suspend and resume"
+      "label.suspendResume": "suspend and resume",
+      "label.controller": "Controller"
     },
     "keyManagement": {
       "label.keysAndCertificates": "Keys and Certificates",
@@ -2050,6 +2056,7 @@
     "label.disable": "Disable",
     "label.folderNotExist": "Folder does not exist",
     "label.reuseReason": "Reuse reason",
+    "label.showPermission": "Show Permission",
     "button.addGroupRole": "Add Group/Roles",
     "button.addIdentityService": "Add Identity Service",
     "button.addPermission": "Add Permission",
@@ -2078,6 +2085,7 @@
     "button.delete": "Delete",
     "button.resetPassword": "Reset Password",
     "button.forcePasswordChange": "Force Password Change",
+    "button.showPermission": "Show Permission",
     "placeholder.role": "Enter role name",
     "placeholder.selectRoles": "Select Roles",
     "placeholder.user": "Enter account",

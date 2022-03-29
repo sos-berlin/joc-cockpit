@@ -3,12 +3,14 @@ import {ActivatedRoute} from "@angular/router";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
 import {TranslateService} from "@ngx-translate/core";
+import {Subscription} from "rxjs";
 import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
 import {CoreService} from "../../../services/core.service";
 import {AuthService} from "../../../components/guard";
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
+import {DataService} from "../../../services/data.service";
 
 declare const $;
 declare const mxEditor;
@@ -114,6 +116,7 @@ export class AddClusterModalComponent implements OnInit {
   @Input() agentId: any;
   @Input() data: any;
   @Input() new: boolean;
+  @Input() isCopy: boolean;
   cluster: any = {};
   submitted = false;
   isUniqueId = true;
@@ -135,16 +138,25 @@ export class AddClusterModalComponent implements OnInit {
     }
     if (this.data) {
       this.cluster = this.coreService.clone(this.data);
+      if (this.isCopy) {
+        this.cluster.subagentClusterId = this.cluster.subagentClusterId + '-copy';
+        for (let i = 0; i < this.subagentClusters.length; i++) {
+          if (this.subagentClusters[i].subagentClusterId === this.cluster.subagentClusterId) {
+            this.cluster.subagentClusterId = this.cluster.subagentClusterId + '2';
+            break;
+          }
+        }
+      }
     } else {
       this.cluster.agentId = this.agentId;
       this.cluster.subagentIds = [];
     }
   }
 
-  checkUnique(value): void {
+  checkUnique(): void {
     this.isUniqueId = true;
     for (let i = 0; i < this.subagentClusters.length; i++) {
-      if (this.subagentClusters[i].subagentClusterId === value && value !== this.data.subagentClusterId) {
+      if (this.subagentClusters[i].subagentClusterId === this.cluster.subagentClusterId && ((this.data && this.cluster.subagentClusterId !== this.data.subagentClusterId) || !this.data)) {
         this.isUniqueId = false;
         break;
       }
@@ -168,17 +180,20 @@ export class AddClusterModalComponent implements OnInit {
         obj.auditLog.ticketLink = this.comments.ticketLink;
       }
     }
-    if (this.new) {
-      obj.subagentClusters = this.coreService.clone(this.subagentClusters);
-      obj.subagentClusters.push(this.cluster);
-    } else {
+    if (!this.new && !this.isCopy) {
       for (let i = 0; i < this.subagentClusters.length; i++) {
         if (this.subagentClusters[i].subagentClusterId === this.data.subagentClusterId) {
           this.subagentClusters[i].title = this.cluster.title;
         }
-        obj.subagentClusters.push(this.subagentClusters[i]);
       }
     }
+    obj.subagentClusters.push({
+      agentId: this.cluster.agentId,
+      controllerId: this.cluster.controllerId,
+      subagentClusterId: this.cluster.subagentClusterId,
+      subagentIds: this.cluster.subagentIds,
+      title: this.cluster.title
+    });
     this.coreService.post('agents/cluster/store', obj).subscribe({
       next: () => {
         this.activeModal.close(obj);
@@ -395,17 +410,22 @@ export class AgentComponent implements OnInit, OnDestroy {
   selectedCluster: any = {};
   clusterFilter: any = {};
   node: any;
+  colors = ['#90C7F5', '#FFEE73', '#FFCF8c', '#Aaf0d1', '#D4af37', '#8c92ac', '#B2beb5', '#CDEB8B', '#FFC7C7', '#C2b280', '#8B8BB4', '#B38b6d', '#Eedc82', '#B87333', '#97B0FF', '#D4af37', '#856088'];
   object = {
     checked: false,
     indeterminate: false,
     mapOfCheckedId: new Set()
   }
+  subscription: Subscription;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(public coreService: CoreService, private route: ActivatedRoute, private nzContextMenuService: NzContextMenuService,
               private translate: TranslateService, private modal: NzModalService, private authService: AuthService,
-              private orderPipe: OrderPipe, private searchPipe: SearchPipe) {
+              private dataService: DataService, private orderPipe: OrderPipe, private searchPipe: SearchPipe) {
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+      this.refresh(res);
+    });
   }
 
   static setHeight(): void {
@@ -431,6 +451,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.subscription.unsubscribe();
     try {
       if (this.editor) {
         this.editor.destroy();
@@ -440,6 +461,17 @@ export class AgentComponent implements OnInit, OnDestroy {
       }
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  private refresh(args): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' && args.eventSnapshots[j].objectType === 'AGENT') {
+          this.getClusters();
+          break;
+        }
+      }
     }
   }
 
@@ -555,32 +587,40 @@ export class AgentComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        this.clusters = result.subagentClusters;
-        this.selectedClusterFn(this.clusters[this.clusters.length - 1]);
-        this.data = this.orderPipe.transform(this.data, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
+        this.clusters = this.clusters.concat(result.subagentClusters);
+        this.selectedClusterFn(result.subagentClusters[0]);
+        this.clusters = this.orderPipe.transform(this.clusters, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
         this.searchInResult();
       }
     });
   }
 
-  edit(cluster): void {
+  edit(cluster, isCopy = false): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: AddClusterModalComponent,
       nzComponentParams: {
         agentId: this.agentId,
         subagentClusters: this.clusters,
-        data: cluster
+        data: cluster,
+        isCopy
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        this.clusters = result.subagentClusters;
+        if (isCopy) {
+          this.clusters = this.clusters.concat(result.subagentClusters);
+          this.clusters = this.orderPipe.transform(this.clusters, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
+        }
         this.searchInResult();
       }
     });
+  }
+
+  duplicate(cluster): void {
+    this.edit(cluster, true);
   }
 
   delete(cluster, isRevoke = false): void {
@@ -782,7 +822,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   selectedClusterFn(cluster): void {
-    if(this.permission.joc && this.permission.joc.administration.controllers.manage) {
+    if (this.permission.joc && this.permission.joc.administration.controllers.manage) {
       this.reset();
       this.selectedCluster = this.coreService.clone(cluster);
       if (this.editor && this.editor.graph) {
@@ -854,7 +894,7 @@ export class AgentComponent implements OnInit, OnDestroy {
           }
         }
         this.selectedCluster.subagentIds.push(obj);
-        this.updateCluster()
+        this.updateCluster();
         this.storeCluster(obj);
       }
     }
@@ -869,18 +909,21 @@ export class AgentComponent implements OnInit, OnDestroy {
         obj.auditLog = {comment: translatedValue};
       });
     }
-    this.clusters.forEach((cluster) => {
-      if (subagent && this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
-        cluster.subagentIds.push(subagent);
+    for (let i in this.clusters) {
+      if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
+        if (subagent) {
+          this.clusters[i].subagentIds.push(subagent);
+        }
+        obj.subagentClusters.push({
+          controllerId: this.clusters[i].controllerId,
+          title: this.clusters[i].title,
+          agentId: this.clusters[i].agentId,
+          subagentIds: this.clusters[i].subagentIds,
+          subagentClusterId: this.clusters[i].subagentClusterId,
+        });
+        break;
       }
-      obj.subagentClusters.push({
-        controllerId: cluster.controllerId,
-        title: cluster.title,
-        agentId: cluster.agentId,
-        subagentIds: cluster.subagentIds,
-        subagentClusterId: cluster.subagentClusterId,
-      });
-    })
+    }
     this.store(obj);
   }
 
@@ -894,11 +937,12 @@ export class AgentComponent implements OnInit, OnDestroy {
         obj.auditLog = {comment: translatedValue};
       });
     }
-    this.clusters.forEach((cluster) => {
-      if (subagentId && this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
-        for (let i in cluster.subagentIds) {
-          if (cluster.subagentIds[i].subagentId === subagentId) {
-            cluster.subagentIds.splice(i, 1);
+
+    for (let x in this.clusters) {
+      if (subagentId && this.selectedCluster.subagentClusterId === this.clusters[x].subagentClusterId) {
+        for (let i in this.clusters[x].subagentIds) {
+          if (this.clusters[x].subagentIds[i].subagentId === subagentId) {
+            this.clusters[x].subagentIds.splice(i, 1);
             break;
           }
         }
@@ -908,15 +952,17 @@ export class AgentComponent implements OnInit, OnDestroy {
             break;
           }
         }
+
+        obj.subagentClusters.push({
+          controllerId: this.clusters[x].controllerId,
+          title: this.clusters[x].title,
+          agentId: this.clusters[x].agentId,
+          subagentIds: this.clusters[x].subagentIds,
+          subagentClusterId: this.clusters[x].subagentClusterId,
+        });
+        break;
       }
-      obj.subagentClusters.push({
-        controllerId: cluster.controllerId,
-        title: cluster.title,
-        agentId: cluster.agentId,
-        subagentIds: cluster.subagentIds,
-        subagentClusterId: cluster.subagentClusterId,
-      });
-    });
+    }
     this.updateList();
     this.updateCluster();
     this.store(obj);
@@ -1319,8 +1365,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         if (cell.value.tagName === 'Agent') {
           className = 'vertex-text agent ' + cell.id;
         }
-        str = '<div class="' + className + '">' + cell.getAttribute('label');
-        str = str + '</div>';
+        str = cell.getAttribute('label');
       }
       return str;
     };
@@ -1624,9 +1669,11 @@ export class AgentComponent implements OnInit, OnDestroy {
     let priority = -1;
     let v1;
     if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
+      let colorIndex = 0;
       this.selectedCluster.subagentIds.sort(AgentComponent.compare).forEach((subagent, index) => {
         const _node = this.getCellNode('Agent', subagent.subagentId);
         let source;
+        let colorCode;
         let flag = this.selectedCluster.subagentIds.length === 1;
         if (priority > -1 && priority !== subagent.priority) {
           j++;
@@ -1639,7 +1686,14 @@ export class AgentComponent implements OnInit, OnDestroy {
           }
         } else {
           i = 0;
+          if (priority > -1) {
+            colorIndex++;
+          }
         }
+        if(this.colors.length - 1 > colorIndex){
+          colorIndex = 0;
+        }
+        colorCode = this.colors[colorIndex];
         if (!flag) {
           if (this.selectedCluster.subagentIds[index + 1]) {
             if (subagent.priority !== this.selectedCluster.subagentIds[index + 1].priority) {
@@ -1651,7 +1705,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         }
         priority = subagent.priority;
         let x = (230 * i) + 10;
-        v1 = this.editor.graph.insertVertex(defaultParent, null, _node, x, y, 180, 40, 'job');
+        v1 = this.editor.graph.insertVertex(defaultParent, null, _node, x, y, 180, 40, 'rectangle;strokeColor=' + colorCode + ';fillColor=' + colorCode + ';gradientColor=#fff;whiteSpace=wrap;html=1');
         if (source) {
           graph.insertEdge(defaultParent, null, doc.createElement('Connection'), source, v1, 'edgeStyle');
         }
