@@ -1146,7 +1146,7 @@
     "message.nameIsNotValid": "Invalid name",
     "message.invalidFile": "Not a valid {{objectType}} file",
     "message.workflowsWithoutVariables": "Only workflows without order variables are allowed",
-    "message.workflowWithVariables": "Only single workflow with order variables is allowed",
+    "message.workflowWithVariables": "Only a single workflow with order variables is allowed",
     "cronTab": {
       "label.convertCron": "Convert crontab",
       "label.folder": "Folder",
