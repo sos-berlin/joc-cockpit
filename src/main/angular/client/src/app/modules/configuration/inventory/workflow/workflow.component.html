@@ -8,7 +8,7 @@
               <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
               <span class="_600" [ngClass]="{'cursor text-hover-primary': workflow.hasDeployments || data.deployed}" (click)="navToWorkflowTab()">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
               <span class="text-muted _400" *ngIf="title"> - {{title}}</span>
-              
+
               <span class="text-dark text-sm _400" *ngIf="lastModified"> -
                 <b translate>inventory.label.lastModified</b>
                 <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
@@ -152,7 +152,7 @@
     </div>
     <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
       <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-        <app-job-content [selectedNode]="selectedNode" [scriptList]="scriptList" [isTooltipVisible]="!preferences.showTooltipInfo" [orderPreparation]="orderPreparation" [jobs]="jobs" [agents]="agents"
+        <app-job-content [selectedNode]="selectedNode" [scriptList]="scriptList" [isTooltipVisible]="!preferences.showTooltipInfo" [orderPreparation]="orderPreparation" [jobs]="jobs" [agents]="inventoryService.agentList"
                          [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [scriptTree]="scriptTree" [schedulerId]="schedulerId"></app-job-content>
       </div>
       <div class="box-body" *ngIf="selectedNode.type === 'If'">
@@ -945,7 +945,7 @@
                    *ngFor="let param of variable.value.listParameters; let j = index">
                 <div class="col-md-12">
                   <div *ngIf="j === variable.value.listParameters.length - 1" class="pos-abt cursor" style="margin-top: 5px;left:6px;font-size:16px" (click)="addVariableToList(variable.value)">
-                    <a class="text-primary-hover"><i class="fa fa-plus"></i></a>
+                    <a class="text-primary-hover cursor"><i class="fa fa-plus"></i></a>
                   </div>
                   <div class="col-md-4 col-lg-4 m-b-sm p-r-0"
                        [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">

@@ -697,7 +697,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
-        type: 'Agent',
+        type: 'Subagent',
         operation: 'Delete',
         name: sub.subagentId
       };

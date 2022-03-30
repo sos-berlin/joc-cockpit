@@ -631,7 +631,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
-        type: 'Cluster Agent',
+        type: 'Subagent Cluster',
         operation: isRevoke ? 'Revoke' : 'Delete',
         name: cluster.agentId
       };
@@ -652,12 +652,12 @@ export class AgentComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(() => this.getClusters());
+          this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe();
         }
       });
     } else {
       if (isRevoke) {
-        this.coreService.post('agents/cluster/revoke', obj).subscribe(() => this.getClusters());
+        this.coreService.post('agents/cluster/revoke', obj).subscribe();
       } else {
         this.modal.create({
           nzTitle: undefined,
@@ -673,7 +673,7 @@ export class AgentComponent implements OnInit, OnDestroy {
           nzMaskClosable: false
         }).afterClose.subscribe(result => {
           if (result) {
-            this.coreService.post('agents/cluster/delete', obj).subscribe(() => this.getClusters());
+            this.coreService.post('agents/cluster/delete', obj).subscribe();
           }
         });
       }
@@ -692,7 +692,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
-        type: 'Cluster Agent',
+        type: 'Subagent Cluster',
         operation: isRevoke ? 'Revoke' : 'Delete',
         name: ''
       };
@@ -744,7 +744,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       subagentClusterIds: Array.from(this.object.mapOfCheckedId),
       auditLog
     };
-    this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(() => this.getClusters());
+    this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe();
   }
 
   deployAll(): void {
@@ -755,7 +755,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
-        type: 'Cluster Agent',
+        type: 'Subagent Cluster',
         operation: 'Deploy',
         name: ''
       };
@@ -776,11 +776,11 @@ export class AgentComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.getClusters());
+          this.coreService.post('agents/cluster/deploy', obj).subscribe();
         }
       });
     } else {
-      this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.getClusters());
+      this.coreService.post('agents/cluster/deploy', obj).subscribe();
     }
   }
 
@@ -792,7 +792,7 @@ export class AgentComponent implements OnInit, OnDestroy {
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
-        type: 'Cluster Agent',
+        type: 'Subagent Cluster',
         operation: 'Deploy',
         name: cluster.subagentClusterId
       };
@@ -813,11 +813,11 @@ export class AgentComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.getClusters());
+          this.coreService.post('agents/cluster/deploy', obj).subscribe();
         }
       });
     } else {
-      this.coreService.post('agents/cluster/deploy', obj).subscribe(() => this.getClusters());
+      this.coreService.post('agents/cluster/deploy', obj).subscribe();
     }
   }
 
@@ -1690,7 +1690,7 @@ export class AgentComponent implements OnInit, OnDestroy {
             colorIndex++;
           }
         }
-        if(this.colors.length - 1 > colorIndex){
+        if(this.colors.length - 1 === colorIndex){
           colorIndex = 0;
         }
         colorCode = this.colors[colorIndex];

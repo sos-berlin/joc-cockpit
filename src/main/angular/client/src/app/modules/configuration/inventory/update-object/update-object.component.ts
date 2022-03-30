@@ -24,7 +24,9 @@ export class UpdateObjectComponent implements OnInit {
   comments: any = {};
   selectedSchedulerIds = [];
   zones = [];
-  agents = [];
+  agents = {
+    agentList: []
+  };
   workflowTree = [];
   jobResourcesTree = [];
   documentationTree = [];
@@ -85,10 +87,8 @@ export class UpdateObjectComponent implements OnInit {
         this.documentationTree = this.coreService.prepareTree(res, true);
       });
     }
-    if (this.agents.length === 0 && this.type === InventoryObject.FILEORDERSOURCE) {
-      this.coreService.post('agents/names', {controllerId: this.controllerId}).subscribe((res: any) => {
-        this.agents = res.agentNames ? res.agentNames.sort() : [];
-      });
+    if (this.type === InventoryObject.FILEORDERSOURCE) {
+      this.coreService.getAgents(this.agents, this.controllerId);
     }
   }
 

@@ -20,7 +20,9 @@ export class UpdateJobComponent implements OnInit {
   schedulerIds: any = {};
   comments: any = {};
   selectedSchedulerIds = [];
-  agents = [];
+  agents = {
+    agentList: []
+  };
   jobResourcesTree = [];
   documentationTree = [];
   renameFailedJobs = [];
@@ -137,14 +139,13 @@ export class UpdateJobComponent implements OnInit {
         this.documentationTree = this.coreService.prepareTree(res, false);
       });
     }
-    if (this.agents.length === 0) {
-      this.coreService.post('agents/names', {controllerId: this.controllerId}).subscribe((res: any) => {
-        this.agents = res.agentNames ? res.agentNames.sort() : [];
-        if (this.data.onlyUpdate) {
+    if (this.agents.agentList.length === 0) {
+      this.coreService.getAgents(this.agents, this.controllerId, () => {
+         if (this.data.onlyUpdate) {
           this.selectedNode.job = {};
           this.step = 2;
         }
-      });
+      })
     } else {
       if (this.data.onlyUpdate) {
         setTimeout(() => {

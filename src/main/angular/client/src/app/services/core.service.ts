@@ -593,26 +593,37 @@ export class CoreService {
     return this.http.post(url, options, headers);
   }
 
-  getAgents(data, controllerId): void{
-     this.post('agents/names', {controllerId}).subscribe((res: any) => {
-      data.agentList = [{
-        title: 'agents',
-        hide: false,
-        children: res.agentNames
-      }];
-      let obj = {
-        title: 'agentGroups',
-        hide: false,
-        children: []
-      };
-      for(let prop in res.subagentClusterIds){
-        obj.children.push({
-          title: prop,
-          hide: true,
-          children: res.subagentClusterIds[prop]
-        });
+  getAgents(data, controllerId, cb?): void {
+    this.post('agents/names', {controllerId}).subscribe({
+      next: (res: any) => {
+        data.agentList = [{
+          title: 'agents',
+          hide: false,
+          children: res.agentNames
+        }];
+        if (res.clusterAgentNames && res.clusterAgentNames.length > 0) {
+          let obj = {
+            title: 'agentGroups',
+            hide: false,
+            children: []
+          };
+          for (let prop in res.subagentClusterIds) {
+            obj.children.push({
+              title: prop,
+              hide: true,
+              children: res.subagentClusterIds[prop]
+            });
+          }
+          data.agentList.push(obj);
+        }
+        if (cb) {
+          cb();
+        }
+      }, error: () => {
+        if (cb) {
+          cb();
+        }
       }
-      data.agentList.push(obj);
     });
   }
 
@@ -646,7 +657,7 @@ export class CoreService {
       return flag;
     }) : list;
   }
-  
+
   download(url: string, options: any, fileName: string, cb: any): void {
     const headers: any = {
       Accept: 'application/octet-stream',
@@ -1644,7 +1655,7 @@ export class CoreService {
         res.jobResources = sortBy(res.jobResources, (i: any) => {
           return i.name.toLowerCase();
         });
-        if(obj) {
+        if (obj) {
           obj.list = res.jobResources;
         }
         let entries = [];
@@ -1695,7 +1706,7 @@ export class CoreService {
       }
       tempARr = tempARr.concat(items.list);
     });
-    if(typeof data.jobResources === 'string'){
+    if (typeof data.jobResources === 'string') {
       let x = data.jobResources;
       data.jobResources = [x];
     }
@@ -1708,12 +1719,12 @@ export class CoreService {
         }
       }
       if (flag) {
-        obj.list = [{ name: data.jobResources[i], path: '/', notFound: true }].concat(obj.list);
+        obj.list = [{name: data.jobResources[i], path: '/', notFound: true}].concat(obj.list);
       }
     }
     if (obj.notFound && obj.list.length > 0) {
       data.arr = [obj].concat(data.arr);
-    } else if(data.arr[0]) {
+    } else if (data.arr[0]) {
       if (data.arr[0].name === '/' && data.arr[0].notFound && data.arr[0].list.length === 0) {
         data.arr.splice(0, 1);
       }

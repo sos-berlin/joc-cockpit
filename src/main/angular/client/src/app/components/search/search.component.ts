@@ -23,7 +23,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   deployTypes: Array<string> = [];
   results: any;
   folders = [];
-  agents = [];
+  agents = {
+    agentList: []
+  };
   searchObj: any = {
     advanced: {}
   };
@@ -75,9 +77,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   private getAgents(): void {
-    this.coreService.post('agents/names', {controllerId: ''}).subscribe((res: any) => {
-      this.agents = res.agentNames ? res.agentNames.sort() : [];
-    });
+    this.coreService.getAgents(this.agents,  '');
   }
 
   displayWith(data): string {
