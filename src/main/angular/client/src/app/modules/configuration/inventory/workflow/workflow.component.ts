@@ -1054,6 +1054,14 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.obj.script = false;
   }
 
+  selectSubagentCluster(cluster): void {
+    if (cluster) {
+      this.selectedNode.job.agentName1 = cluster.title;
+    } else {
+      delete this.selectedNode.job.agentName1;
+    }
+  }
+
   openJobWizard(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -1854,6 +1862,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       dom.blur();
       flag = true;
     }
+    if(this.selectedNode.job.subagentClusterId) {
+      this.selectedNode.job.agentName1 = this.selectedNode.job.agentName;
+      this.selectedNode.job.agentName = this.selectedNode.job.subagentClusterId;
+      delete this.selectedNode.job.subagentClusterId;
+    }
     this.checkIsAgentExist();
     if (flag) {
       setTimeout(() => {
@@ -2454,7 +2467,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (changes.copyObj && !changes.data) {
       return;
     }
-
     if (changes.reload) {
       if (changes.reload.previousValue === true && changes.reload.currentValue === false) {
         return;
@@ -8453,7 +8465,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private updateJobProperties(data): boolean {
-    const job = this.coreService.clone(data.job);
+    let job = this.coreService.clone(data.job);
     if (!job.executable) {
       return false;
     }
@@ -8462,6 +8474,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (isEmpty(job.executable.login)) {
       delete job.executable.login;
+    }
+    if (job.agentName1) {
+      job.subagentClusterId = job.agentName;
+      job.agentName = job.agentName1;
+      job = {
+        ...{
+          agentName: job.agentName1,
+          subagentClusterId: job.agentName
+        }, ...job
+      }
+      delete job.agentName1
     }
     if (job.notification && isEmpty(job.notification.mail)) {
       if (!job.notification.types || job.notification.types.length === 0) {

@@ -72,49 +72,26 @@
                 <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.agent' | translate"
                        translate>inventory.search.label.agent</label>
                 <div class="col-md-8 col-lg-9">
-                  <nz-select nzAllowClear nzShowSearch name="agentName" [nzDropdownClassName]="'group-list'"
-                   nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}" [(ngModel)]="searchObj.advanced.agentName">
-                 <ng-container *ngFor="let item of agents.agentList">
-                    <ng-container *ngIf="!item.title">
-                      <nz-option [nzHide]="item === '*'" nzCustomContent [nzLabel]="item"
-                                 [nzValue]="item">
-                        <span class="_600" style="font-size: 12px;">
-                          {{item}}
-                        </span>
-                      </nz-option>
-                    </ng-container>
-                    <ng-container *ngIf="item.title == 'agents'">
-                      <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
+                  <input required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate" id="agentId"
+                     class="form-control" [(ngModel)]="searchObj.advanced.agentName" (blur)="onAgentChange('');" (ngModelChange)="onAgentChange($event)"
+                     [nzAutocomplete]="auto"/>
+                  <nz-autocomplete #auto>
+                    <ng-container>
+                      <nz-auto-optgroup *ngFor="let group of agentList" [nzLabel]="groupTitle">
                         <ng-template #groupTitle>
                           <span class="_600">
                             {{ 'agent.label.' + group.title | translate }}
+                            <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="group.hide = !group.hide;$event.stopPropagation()"></i>
                           </span>
                         </ng-template>
-                        <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
-                                 [nzValue]="agent"></nz-option>
-                      </nz-option-group>
+                        <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents.title ? agents.title : agents" [nzValue]="agents.title ? agents.title : agents">
+                          <span *ngIf="!agents.title">{{ agents }}</span>
+                          <span *ngIf="agents.title">{{agents.title}}</span>
+                        </nz-auto-option>
+                      </nz-auto-optgroup>
                     </ng-container>
-                    <ng-container
-                      *ngIf="item.title == 'agentGroups'">
-                      <nz-option nzCustomContent nzDisabled>
-                        <span class="_600" style="font-size: 12px;">
-                          {{'agent.label.agentGroups' | translate}}
-                        </span>
-                      </nz-option>
-                      <nz-option-group *ngFor="let group of item.children" [nzLabel]="groupTitle">
-                        <ng-template #groupTitle>
-                          <span class="_600 pl-20">
-                            {{ group.title }}
-                          </span>
-                        </ng-template>
-                        <nz-option nzCustomContent *ngFor="let agent of group.children" [nzLabel]="agent"
-                                 [nzValue]="agent">
-                          <span class="pl-20">{{ agent }}</span>
-                        </nz-option>
-                      </nz-option-group>
-                    </ng-container>
-                  </ng-container>
-               </nz-select>
+
+                  </nz-autocomplete>
                 </div>
               </div>
               <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.WORKFLOW">

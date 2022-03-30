@@ -706,6 +706,7 @@ export class CronImportModalComponent implements OnInit {
   @Input() controllerId;
   @Input() agents: any = [];
   nodes: any = [];
+  agentList: any = [];
   calendarTree: any = [];
   uploader: FileUploader;
   comments: any = {};
@@ -772,6 +773,13 @@ export class CronImportModalComponent implements OnInit {
       }
     };
   }
+
+  onAgentChange(value: string): void {
+    let temp = this.coreService.clone(this.agents);
+    this.agentList = this.coreService.getFilterAgentList(temp, value);
+    this.agentList = [...this.agentList];
+  }
+
 
   private getTree(): void {
     this.coreService.post('tree', {

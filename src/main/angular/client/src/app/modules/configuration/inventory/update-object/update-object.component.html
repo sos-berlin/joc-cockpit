@@ -646,7 +646,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" *ngIf="step === 1" translate>
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" *ngIf="step === 1" translate>
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>

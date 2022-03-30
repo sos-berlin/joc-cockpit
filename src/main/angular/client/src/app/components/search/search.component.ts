@@ -23,6 +23,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   deployTypes: Array<string> = [];
   results: any;
   folders = [];
+  agentList = [];
   agents = {
     agentList: []
   };
@@ -78,6 +79,12 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   private getAgents(): void {
     this.coreService.getAgents(this.agents,  '');
+  }
+
+  onAgentChange(value: string): void {
+    let temp = this.coreService.clone(this.agents.agentList);
+    this.agentList = this.coreService.getFilterAgentList(temp, value);
+    this.agentList = [...this.agentList];
   }
 
   displayWith(data): string {

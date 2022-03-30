@@ -36,8 +36,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
   invalidMsg: string;
   zones = [];
-  nonExistAgents = [];
-  agentList = [];
+  agents = [];
+  notFound: string;
   workflowTree = [];
   fileOrder: any = {};
   objectType = InventoryObject.FILEORDERSOURCE;
@@ -111,66 +111,24 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  onAgentChange(value: string): void {
-    let temp = this.coreService.clone(this.inventoryService.agentList);
-    this.agentList = this.coreService.getFilterAgentList(temp, value);
-    this.agentList = [...this.agentList];
-    console.log(this.agentList)
-  }
 
-  expandCollapse(data, isCluster = false) {
-    data.hide = !data.hide;
-    if (isCluster) {
-      if (this.inventoryService.agentList[1]) {
-        for (let i in this.inventoryService.agentList[1].children) {
-          if (this.inventoryService.agentList[1].children[i].title === data.title) {
-            this.inventoryService.agentList[1].children[i].hide = data.hide;
-            break;
-          }
-        }
-      }
-    } else {
-      for (let i in this.inventoryService.agentList) {
-        if (this.inventoryService.agentList[i].title === data.title) {
-          this.inventoryService.agentList[i].hide = data.hide;
+  private checkIsAgentExist(): void {
+    if (this.notFound) {
+      this.agents = this.agents.filter((item) => {
+        return item !== this.notFound;
+      });
+    }
+    if (this.fileOrder.configuration.agentName) {
+      let isFound = false;
+      for (const i in this.agents) {
+        if (this.agents[i] === this.fileOrder.configuration.agentName) {
+          isFound = true;
           break;
         }
       }
-    }
-  }
-
-  private checkIsAgentExist(): void {
-    this.nonExistAgents = [];
-    if (this.fileOrder.configuration.agentName) {
-      let isFound = false;
-      for (const i in this.inventoryService.agentList) {
-        if (this.inventoryService.agentList[i].title === 'agents') {
-          for (const j in this.inventoryService.agentList[i].children) {
-            if (this.inventoryService.agentList[i].children[j] === this.fileOrder.configuration.agentName) {
-              isFound = true;
-              break;
-            }
-          }
-        } else {
-          if (!isFound) {
-            for (const prop in this.inventoryService.agentList[i].children) {
-              if (this.inventoryService.agentList[i].children[prop].children) {
-                for (const j in this.inventoryService.agentList[i].children[prop].children) {
-                  if (this.inventoryService.agentList[i].children[prop].children[j] === this.fileOrder.configuration.agentName) {
-                    isFound = true;
-                    break;
-                  }
-                }
-              }
-              if (isFound) {
-                break;
-              }
-            }
-          }
-        }
-      }
       if (!isFound) {
-        this.nonExistAgents.push(this.fileOrder.configuration.agentName);
+        this.notFound = this.fileOrder.configuration.agentName;
+        this.agents.push(this.fileOrder.configuration.agentName);
       }
     }
     this.ref.detectChanges();
@@ -228,7 +186,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       if (!this.fileOrder.configuration.timeZone) {
         this.fileOrder.configuration.timeZone = this.preferences.zone;
       }
-      this.agentList = this.coreService.clone(this.inventoryService.agentList);
+      let agentList = this.coreService.clone(this.inventoryService.agentList);
+   
+      if(agentList.length > 0){
+        this.agents = agentList[0].children;
+      }
       this.checkIsAgentExist();
       this.getWorkflows();
       if (!res.valid) {

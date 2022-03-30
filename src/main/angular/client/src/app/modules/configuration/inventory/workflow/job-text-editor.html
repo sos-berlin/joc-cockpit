@@ -20,7 +20,7 @@
         <div class="form-group row" [hidden]="fullScreen || (!exactMatch && isModal)">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.name' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.name
-           <sup class="text-danger text-sm">*</sup>
+           <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
             <label class="w-full">
@@ -40,7 +40,7 @@
         <div class="form-group row" *ngIf="!isModal" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.label
-           <sup class="text-danger text-sm">*</sup>
+           <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (obj.label || errorMsg || (label.dirty || label.touched) && label.invalid)}">
             <label class="w-full">
@@ -103,7 +103,7 @@
         <div class="form-group row" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.agent
-           <sup class="text-danger text-sm">*</sup>
+           <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
           <div class="col-md-8 col-lg-9"
                [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
@@ -111,7 +111,7 @@
                class="form-control" [(ngModel)]="selectedNode.job.agentName" #agentName="ngModel" (blur)="onBlur(true);" (ngModelChange)="onAgentChange($event)"
                [nzAutocomplete]="auto"/>
             <nz-autocomplete #auto>
-              <nz-auto-option *ngFor="let agent of nonExistAgents" [nzValue]="agent" [nzLabel]="agent">
+              <nz-auto-option (click)="selectSubagentCluster(null)" *ngFor="let agent of nonExistAgents" [nzValue]="agent" [nzLabel]="agent">
                  <span class="p-l-xs">{{agent}}</span> <span class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
               </nz-auto-option>
               <ng-container *ngIf="agentList[0] && agentList[0].title == 'agents'">
@@ -122,7 +122,7 @@
                       <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(group);$event.stopPropagation()"></i>
                     </span>
                   </ng-template>
-                  <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
+                  <nz-auto-option (click)="selectSubagentCluster(null)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
                     {{ agents }}
                   </nz-auto-option>
                 </nz-auto-optgroup>
@@ -141,7 +141,7 @@
                       <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(group, true);$event.stopPropagation()"></i>
                     </span>
                   </ng-template>
-                  <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
+                  <nz-auto-option (click)="selectSubagentCluster(group)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
                     <span class="pl-20">{{ agents }}</span>
                   </nz-auto-option>
                 </nz-auto-optgroup>
@@ -241,7 +241,7 @@
               <nz-tab [nzTitle]="titleTemplate" (nzClick)="reloadScript()" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE !== 'InternalExecutable'">
                 <ng-template #titleTemplate>
                     <span translate>workflow.label.script</span>
-                    <sup class="text-danger text-sm">*</sup>
+                    <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div class="row" *ngIf="isDisplay">
                   <div class="col-md-12 role">
@@ -288,7 +288,7 @@
               <nz-tab [nzTitle]="titleTemplate" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'InternalExecutable'">
                 <ng-template #titleTemplate>
                     <span translate>workflow.label.className</span>
-                    <sup class="text-danger text-sm">*</sup>
+                    <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div class="row">
                   <div class="col-md-12" [ngClass]="{'has-error': obj.className || (className.invalid && (className.dirty && className.touched))}">

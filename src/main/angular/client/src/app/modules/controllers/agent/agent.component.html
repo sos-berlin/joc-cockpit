@@ -228,7 +228,7 @@
         </div>
       </div>
     </div>
-    <div class="row m-t-xs" *ngIf="clusters.length === 0 && !isLoading">
+    <div class="row m-t-xs" *ngIf="clusters.length === 0 && pageView =='grid' && !isLoading">
       <div class="col-sm-12">
         <div class="text-center m-t-md text-md">
           <span translate>agent.message.noClusterFound</span>.

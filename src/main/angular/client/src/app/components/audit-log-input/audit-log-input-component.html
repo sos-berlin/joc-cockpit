@@ -57,7 +57,7 @@
            [(ngModel)]="comments.ticketLink">
   </div>
 </div>
-<div class="form-group row" *ngIf="router.url.match('/users/')">
+<div class="form-group row" *ngIf="router.url.match('/users/') || router.url.match('/settings')">
   <label class="col-sm-{{sizeX}}" translate>user.label.reuseReason</label>
   <div class="col-sm-{{sizeY}}">
     <label nz-checkbox [(ngModel)]="comments.isChecked"

@@ -164,7 +164,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'AgentChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged'
+        if (args.eventSnapshots[j].eventType === 'AgentChanged' || args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' || args.eventSnapshots[j].eventType === 'AgentStateChanged'
           || ((args.eventSnapshots[j].eventType === 'ProxyCoupled' || args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType.match(/Item/))
             && args.eventSnapshots[j].objectType === 'AGENT')) {
           if (this.controllers.length > 0) {
@@ -212,7 +212,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.coreService.post('controller/ids', {}).subscribe({
       next: (data: any) => {
         this.data = data.controllerIds;
-        if(this.coreService.preferences.isFirst && this.coreService.preferences.controllers.size === 0){
+        if (this.coreService.preferences.isFirst && this.coreService.preferences.controllers.size === 0) {
           this.coreService.preferences.isFirst = false;
           this.coreService.preferences.controllers.add(data.selected);
         }
@@ -474,9 +474,9 @@ export class ControllersComponent implements OnInit, OnDestroy {
       }).subscribe();
     })
     this.object.mapOfCheckedId2.forEach((k, v) => {
-      this.coreService.post('agents/inventory/cluster/subagents/delete', {
+      this.coreService.post('agents/delete', {
         controllerId: k,
-        subagentIds: [v],
+        agentId: v,
         auditLog
       }).subscribe();
     });
@@ -577,15 +577,16 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeAgent(agent, controller): void {
-    const obj = {
+  removeAgent(agent, controller, isCluster = false): void {
+    const obj: any = {
       controllerId: controller.controllerId,
       agentId: agent.agentId
     };
+ 
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
-        type: 'Agent',
+        type: isCluster ? 'Agent Cluster' : 'Agent',
         operation: 'Delete',
         name: agent.agentId
       };
@@ -608,7 +609,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title: 'delete',
-          message: 'deleteAgent',
+          message: isCluster ? 'deleteAgentCluster' : 'deleteAgent',
           type: 'Delete',
           objectName: agent.agentId,
         },
@@ -862,7 +863,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  deploySubagent(sub, clusterAgent, controller): void{
+  deploySubagent(sub, clusterAgent, controller): void {
     //TODO
   }
 

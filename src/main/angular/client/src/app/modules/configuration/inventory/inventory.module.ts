@@ -3,7 +3,6 @@ import {FileUploadModule} from 'ng2-file-upload';
 import {NzMentionModule} from 'ng-zorro-antd/mention';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
-import {NzAutocompleteModule} from 'ng-zorro-antd/auto-complete';
 import {NgJsonEditorModule} from 'ang-jsoneditor';
 import {DatePipe} from '@angular/common';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
@@ -57,7 +56,6 @@ const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployCompon
     FileUploadModule,
     CodemirrorModule,
     NzMentionModule,
-    NzAutocompleteModule,
     NzTabsModule,
     NzDrawerModule,
     NgJsonEditorModule

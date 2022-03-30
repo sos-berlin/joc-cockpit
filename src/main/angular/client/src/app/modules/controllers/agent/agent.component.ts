@@ -785,39 +785,41 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   deploy(cluster): void {
-    const obj: any = {
-      controllerId: this.controllerId,
-      subagentClusterIds: [cluster.subagentClusterId]
-    };
-    if (this.preferences.auditLog) {
-      let comments = {
-        radio: 'predefined',
-        type: 'Subagent Cluster',
-        operation: 'Deploy',
-        name: cluster.subagentClusterId
+    if (cluster.subagentIds.length > 0) {
+      const obj: any = {
+        controllerId: this.controllerId,
+        subagentClusterIds: [cluster.subagentClusterId]
       };
-      this.modal.create({
-        nzTitle: undefined,
-        nzContent: CommentModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          comments,
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      }).afterClose.subscribe(result => {
-        if (result) {
-          obj.auditLog = {
-            comment: result.comment,
-            timeSpent: result.timeSpent,
-            ticketLink: result.ticketLink
-          };
-          this.coreService.post('agents/cluster/deploy', obj).subscribe();
-        }
-      });
-    } else {
-      this.coreService.post('agents/cluster/deploy', obj).subscribe();
+      if (this.preferences.auditLog) {
+        let comments = {
+          radio: 'predefined',
+          type: 'Subagent Cluster',
+          operation: 'Deploy',
+          name: cluster.subagentClusterId
+        };
+        this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            comments,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        }).afterClose.subscribe(result => {
+          if (result) {
+            obj.auditLog = {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            };
+            this.coreService.post('agents/cluster/deploy', obj).subscribe();
+          }
+        });
+      } else {
+        this.coreService.post('agents/cluster/deploy', obj).subscribe();
+      }
     }
   }
 
