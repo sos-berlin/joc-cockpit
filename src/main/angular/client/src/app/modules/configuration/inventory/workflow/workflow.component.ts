@@ -763,7 +763,28 @@ export class FindAndReplaceComponent implements OnInit {
   }
 
   onChange(value: string): void {
-    this.listOfAllAgents = this.agents.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.listOfAllAgents = this.coreService.getFilterAgentList(this.coreService.clone(this.agents), value);
+  }
+
+  expandCollapse(data, isCluster = false) {
+    data.hide = !data.hide;
+    if (isCluster) {
+      if (this.agents[1]) {
+        for (let i in this.agents[1].children) {
+          if (this.agents[1].children[i].title === data.title) {
+            this.agents[1].children[i].hide = data.hide;
+            break;
+          }
+        }
+      }
+    } else {
+      for (let i in this.agents) {
+        if (this.agents[i].title === data.title) {
+          this.agents[i].hide = data.hide;
+          break;
+        }
+      }
+    }
   }
 
   onSubmit(): void {
@@ -903,6 +924,27 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }, 100);
   }
 
+  expandCollapse(data, isCluster = false) {
+    data.hide = !data.hide;
+    if (isCluster) {
+      if (this.agents[1]) {
+        for (let i in this.agents[1].children) {
+          if (this.agents[1].children[i].title === data.title) {
+            this.agents[1].children[i].hide = data.hide;
+            break;
+          }
+        }
+      }
+    } else {
+      for (let i in this.agents) {
+        if (this.agents[i].title === data.title) {
+          this.agents[i].hide = data.hide;
+          break;
+        }
+      }
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.selectedNode) {
       this.history = [];
@@ -963,7 +1005,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         } else {
           if (!isFound) {
             for (const prop in this.agents[i].children) {
-              if(this.agents[i].children[prop].children) {
+              if (this.agents[i].children[prop].children) {
                 for (const j in this.agents[i].children[prop].children) {
                   if (this.agents[i].children[prop].children[j] === this.selectedNode.job.agentName) {
                     isFound = true;
@@ -971,7 +1013,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
                   }
                 }
               }
-              if(isFound){
+              if (isFound) {
                 break;
               }
             }
@@ -1492,34 +1534,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   onAgentChange(value: string): void {
     let temp = this.coreService.clone(this.agents);
-    this.agentList = temp.filter(option => {
-      let flag = false;
-      option.children = option.children.filter(option2 => {
-        let isCheck = false;
-        if (option2.children) {
-          option2.children = option2.children.filter(option3 => {
-            let isCheck2 = option3.toLowerCase().indexOf(value.toLowerCase()) > -1;
-            if (isCheck2) {
-              flag = true;
-            }
-            if (!isCheck && isCheck2) {
-              isCheck = true;
-            }
-            return isCheck2;
-          });
-        } else {
-          let isCheck3 = option2.toLowerCase().indexOf(value.toLowerCase()) > -1;
-          if (isCheck3) {
-            flag = true;
-          }
-          if (!isCheck && isCheck3) {
-            isCheck = true;
-          }
-        }
-        return isCheck;
-      });
-      return flag;
-    })
+    this.agentList = this.coreService.getFilterAgentList(temp, value);
     this.agentList = [...this.agentList];
   }
 

@@ -174,7 +174,7 @@ export class ImportKeyModalComponent implements OnInit {
         name: item.file.name,
         importKeyFilter: JSON.stringify({keyAlgorithm: this.key.keyAlg})
       };
-      if (this.type === 'certificate'){
+      if (this.type === 'certificate') {
         obj = {};
       }
       if (this.comments.comment) {
@@ -207,7 +207,7 @@ export class ImportKeyModalComponent implements OnInit {
     };
   }
 
-  fileOverBase(e:any): void {
+  fileOverBase(e: any): void {
     this.hasBaseDropZoneOver = e;
   }
 
@@ -280,7 +280,7 @@ export class GenerateKeyComponent implements OnInit {
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-              private translate: TranslateService,  private toasterService: ToastrService) {
+              private translate: TranslateService, private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {

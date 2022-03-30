@@ -2744,23 +2744,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private getAgents(): void {
-    this.coreService.post('agents/names', {controllerId: this.schedulerIds.selected}).subscribe((res: any) => {
-      this.inventoryService.agentList = [{
-        title: 'agents',
-        children: res.agentNames
-      }];
-      let obj = {
-        title: 'agentGroups',
-        children: []
-      };
-      for(let prop in res.subagentClusterIds){
-        obj.children.push({
-          title: prop,
-          children: res.subagentClusterIds[prop]
-        });
-      }
-      this.inventoryService.agentList.push(obj);
-    });
+    this.coreService.getAgents(this.inventoryService, this.schedulerIds.selected);
   }
 
   initTree(path, mainPath, redirect = false): void {
@@ -3695,7 +3679,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     const origin = this.coreService.clone(node.origin ? node.origin : node);
     if (this.selectedObj && this.selectedObj.id &&
       this.selectedObj.type === InventoryObject.WORKFLOW) {
-      this.dataService.reloadTree.next({ saveObject: origin });
+      this.dataService.reloadTree.next({saveObject: origin});
     }
     if (releasable && origin.objectType) {
       this.releaseSingleObject(origin);
@@ -3935,7 +3919,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   editJson(data: any, isEdit: boolean): void {
-    this.showJson({ showJson: data, edit: isEdit });
+    this.showJson({showJson: data, edit: isEdit});
   }
 
   importJSON(obj: any): void {
@@ -3968,7 +3952,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         const fileType = 'application/octet-stream';
         delete res.configuration.TYPE;
         const data = JSON.stringify(res.configuration, undefined, 2);
-        const blob = new Blob([data], { type: fileType });
+        const blob = new Blob([data], {type: fileType});
         saveAs(blob, name);
       });
     }
@@ -4424,7 +4408,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (this.tree.length > 0) {
       function traverseTree(data) {
         if (data.children && data.children.length > 0) {
-          const obj: any = { name: data.name, path: data.path };
+          const obj: any = {name: data.name, path: data.path};
           if (data.children[0].controller) {
             obj.child1 = data.children[0];
             obj.child2 = data.children[1];
@@ -4513,9 +4497,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }
           };
           if (data.deleted) {
-            obj.delete = [{ objectType: data.objectType, path: PATH }];
+            obj.delete = [{objectType: data.objectType, path: PATH}];
           } else {
-            obj.update = [{ objectType: data.objectType, path: PATH }];
+            obj.update = [{objectType: data.objectType, path: PATH}];
           }
           this.coreService.post('inventory/release', obj).subscribe();
         }
@@ -4523,9 +4507,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       const obj: any = {};
       if (data.deleted) {
-        obj.delete = [{ objectType: data.objectType, path: PATH }];
+        obj.delete = [{objectType: data.objectType, path: PATH}];
       } else {
-        obj.update = [{ objectType: data.objectType, path: PATH }];
+        obj.update = [{objectType: data.objectType, path: PATH}];
       }
       this.coreService.post('inventory/release', obj).subscribe();
     }
@@ -4548,7 +4532,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        request.auditLog = { comment: translatedValue };
+        request.auditLog = {comment: translatedValue};
       });
     }
     this.coreService.post('inventory/store', request).subscribe((res: any) => {
@@ -4725,7 +4709,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (this.selectedObj.id) {
       this.pushObjectInHistory();
     }
-    this.selectedObj = { type, name, path, id };
+    this.selectedObj = {type, name, path, id};
   }
 
   private checkAndUpdateSelectedObj(sour): void {
@@ -4756,7 +4740,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           dest.children[i].valid = sour[j].valid;
           dest.children[i] = extend(dest.children[i], sour[j]);
           dest.children[i].match = true;
-          if(isSelectedObjCheck) {
+          if (isSelectedObjCheck) {
             this.checkAndUpdateSelectedObj(sour[j]);
           }
           sour.splice(j, 1);
@@ -4827,11 +4811,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
         let configuration = {};
         obj.name = res.name;
         if (type === InventoryObject.SCHEDULE) {
-          configuration = { controllerId: this.schedulerIds.selected };
+          configuration = {controllerId: this.schedulerIds.selected};
         } else if (type === 'LOCK') {
-          configuration = { limit: 1, id: res.name };
+          configuration = {limit: 1, id: res.name};
         } else if (type === InventoryObject.WORKINGDAYSCALENDAR || type === InventoryObject.NONWORKINGDAYSCALENDAR) {
-          configuration = { type };
+          configuration = {type};
         }
         this.storeObject(obj, list, configuration, res.comments);
       }
@@ -4876,7 +4860,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private deleteObject(path, object, node, auditLog): void {
-    this.coreService.post('inventory/remove/folder', { path, auditLog }).subscribe(() => {
+    this.coreService.post('inventory/remove/folder', {path, auditLog}).subscribe(() => {
       object.deleted = true;
       if (node && node.parentNode && node.parentNode.origin) {
         node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
@@ -4891,25 +4875,34 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private getObjectArr(object, isDraft): any {
-    let obj: any = { objects: [] };
+    let obj: any = {objects: []};
     if (!object.type) {
       if (object.object || object.controller || object.dailyPlan) {
         object.children.forEach((item) => {
           if (item.children) {
             item.children.forEach((data) => {
               if (!isDraft || (!data.deployed && !data.released)) {
-                obj.objects.push({ objectType: data.objectType, path: data.path + (data.path === '/' ? '' : '/') + data.name });
+                obj.objects.push({
+                  objectType: data.objectType,
+                  path: data.path + (data.path === '/' ? '' : '/') + data.name
+                });
               }
             });
           } else if (!isDraft || (!item.deployed && !item.released)) {
-            obj.objects.push({ objectType: item.objectType, path: item.path + (item.path === '/' ? '' : '/') + item.name });
+            obj.objects.push({
+              objectType: item.objectType,
+              path: item.path + (item.path === '/' ? '' : '/') + item.name
+            });
           }
         });
       } else {
-        obj = { path: object.path };
+        obj = {path: object.path};
       }
     } else {
-      obj.objects.push({ objectType: object.objectType, path: object.path + (object.path === '/' ? '' : '/') + object.name });
+      obj.objects.push({
+        objectType: object.objectType,
+        path: object.path + (object.path === '/' ? '' : '/') + object.name
+      });
     }
     return obj;
   }
@@ -4923,7 +4916,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         if (this.selectedData.children) {
           this.selectedData.children = [...this.selectedData.children];
         }
-        this.dataService.reloadTree.next({ reloadTree: this.selectedData });
+        this.dataService.reloadTree.next({reloadTree: this.selectedData});
       }
     }
   }

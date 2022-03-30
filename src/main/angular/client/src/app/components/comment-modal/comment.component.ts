@@ -26,19 +26,27 @@ export class CommentModalComponent implements OnInit {
 
   onSubmit(): void {
     if (this.url) {
-      this.submitted = true;
       this.obj.auditLog = {
         comment: this.comments.comment,
         timeSpent: this.comments.timeSpent,
         ticketLink: this.comments.ticketLink
       };
+      this.submitted = true;
       this.coreService.post(this.url, this.obj).subscribe({
         next: () => {
-          this.activeModal.close(this.comments);
+          this.activeModal.close(this.obj.auditLog);
         }, error: () => this.submitted = false
       });
     } else {
-      this.activeModal.close(this.comments);
+      const obj: any = {
+        comment: this.comments.comment,
+        timeSpent: this.comments.timeSpent,
+        ticketLink: this.comments.ticketLink
+      };
+      if (this.comments.isChecked) {
+        obj.reuse = true;
+      }
+      this.activeModal.close(obj);
     }
   }
 }

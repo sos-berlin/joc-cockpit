@@ -593,6 +593,60 @@ export class CoreService {
     return this.http.post(url, options, headers);
   }
 
+  getAgents(data, controllerId): void{
+     this.post('agents/names', {controllerId}).subscribe((res: any) => {
+      data.agentList = [{
+        title: 'agents',
+        hide: false,
+        children: res.agentNames
+      }];
+      let obj = {
+        title: 'agentGroups',
+        hide: false,
+        children: []
+      };
+      for(let prop in res.subagentClusterIds){
+        obj.children.push({
+          title: prop,
+          hide: true,
+          children: res.subagentClusterIds[prop]
+        });
+      }
+      data.agentList.push(obj);
+    });
+  }
+
+  getFilterAgentList(list, value: string): any {
+    return value ? list.filter(option => {
+      let flag = false;
+      option.children = option.children.filter(option2 => {
+        let isCheck = false;
+        if (option2.children) {
+          option2.children = option2.children.filter(option3 => {
+            let isCheck2 = option3.toLowerCase().indexOf(value.toLowerCase()) > -1;
+            if (isCheck2) {
+              flag = true;
+            }
+            if (!isCheck && isCheck2) {
+              isCheck = true;
+            }
+            return isCheck2;
+          });
+        } else {
+          let isCheck3 = option2.toLowerCase().indexOf(value.toLowerCase()) > -1;
+          if (isCheck3) {
+            flag = true;
+          }
+          if (!isCheck && isCheck3) {
+            isCheck = true;
+          }
+        }
+        return isCheck;
+      });
+      return flag;
+    }) : list;
+  }
+  
   download(url: string, options: any, fileName: string, cb: any): void {
     const headers: any = {
       Accept: 'application/octet-stream',

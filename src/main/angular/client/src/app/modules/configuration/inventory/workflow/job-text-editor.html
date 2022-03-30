@@ -119,7 +119,7 @@
                   <ng-template #groupTitle>
                     <span class="_600">
                       {{ 'agent.label.' + group.title | translate }}
-                      <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="group.hide= !group.hide;$event.stopPropagation()"></i>
+                      <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(group);$event.stopPropagation()"></i>
                     </span>
                   </ng-template>
                   <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
@@ -131,14 +131,14 @@
                 <nz-auto-option nzDisabled nzValue="" class="ant-select-item-group not-disabled" (click)="$event.stopPropagation();">
                   <span class="_600" style="font-size: 12px;">
                     {{'agent.label.' + agentList[agentList.length - 1].title | translate}}
-                    <i class="fa p-r-xs cursor text-16"  [ngClass]="agentList[agentList.length - 1].hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="agentList[1].hide= !agentList[1].hide;$event.stopPropagation()"></i>
+                    <i class="fa p-r-xs cursor text-16"  [ngClass]="agentList[agentList.length - 1].hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(agentList[agentList.length - 1]);$event.stopPropagation()"></i>
                   </span>
                 </nz-auto-option>
                 <nz-auto-optgroup [hidden]="agentList[agentList.length - 1].hide" *ngFor="let group of agentList[agentList.length - 1].children" [nzLabel]="groupTitle">
                   <ng-template #groupTitle>
                     <span class="_600 pl-20">
                       {{ group.title }}
-                      <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="group.hide = !group.hide;$event.stopPropagation()"></i>
+                      <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(group, true);$event.stopPropagation()"></i>
                     </span>
                   </ng-template>
                   <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">

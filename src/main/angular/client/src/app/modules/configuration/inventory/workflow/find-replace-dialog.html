@@ -13,11 +13,49 @@
       <label class="col-md-4 col-lg-3 form-control-label"
              translate>workflow.findAndReplace.label.find</label>
       <div class="col-md-8 col-lg-9">
-        <nz-select #selectBox nzMode="multiple" nzAllowClear nzShowSearch name="find"
+        <nz-select #selectBox nzMode="multiple" nzAllowClear nzShowSearch name="find" [nzDropdownClassName]="'group-list'"
                    nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
                    [(ngModel)]="object.finds" (keypress)="onKeyPress($event)" (nzBlur)="focusOut()">
-          <nz-option [nzHide]="agent === '*'" *ngFor="let agent of listOfAgents" [nzLabel]="agent"
-                     [nzValue]="agent"></nz-option>
+          <ng-container *ngFor="let item of listOfAgents">
+            <ng-container *ngIf="!item.title">
+              <nz-option [nzHide]="item === '*'" nzCustomContent [nzLabel]="item"
+                         [nzValue]="item">
+                <span class="_600" style="font-size: 12px;">
+                  {{item}}
+                </span>
+              </nz-option>
+            </ng-container>
+            <ng-container *ngIf="item.title == 'agents'">
+              <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
+                <ng-template #groupTitle>
+                  <span class="_600">
+                    {{ 'agent.label.' + group.title | translate }}
+                  </span>
+                </ng-template>
+                <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
+                         [nzValue]="agent"></nz-option>
+              </nz-option-group>
+            </ng-container>
+            <ng-container
+              *ngIf="item.title == 'agentGroups'">
+              <nz-option nzCustomContent nzDisabled>
+                <span class="_600" style="font-size: 12px;">
+                  {{'agent.label.agentGroups' | translate}}
+                </span>
+              </nz-option>
+              <nz-option-group *ngFor="let group of item.children" [nzLabel]="groupTitle">
+                <ng-template #groupTitle>
+                  <span class="_600 pl-20">
+                    {{ group.title }}
+                  </span>
+                </ng-template>
+                <nz-option nzCustomContent *ngFor="let agent of group.children" [nzLabel]="agent"
+                         [nzValue]="agent">
+                  <span class="pl-20">{{ agent }}</span>
+                </nz-option>
+              </nz-option-group>
+            </ng-container>
+          </ng-container>
         </nz-select>
       </div>
     </div>
@@ -28,11 +66,53 @@
       </label>
       <div class="col-md-8 col-lg-9"
            [ngClass]="{'has-error' : ((replace.dirty || replace.touched) && replace.invalid)}">
-        <input required name="replace" #replace="ngModel"
-               [placeholder]="'workflow.findAndReplace.placeholder.selectReplace' | translate"
-               class="form-control" [(ngModel)]="object.replace" (ngModelChange)="onChange($event)"
+        <input required name="agentName" [placeholder]="'workflow.findAndReplace.placeholder.selectReplace' | translate"
+               class="form-control" [(ngModel)]="object.replace" #replace="ngModel" (ngModelChange)="onChange($event)"
                [nzAutocomplete]="auto"/>
-        <nz-autocomplete [nzDataSource]="listOfAllAgents" #auto></nz-autocomplete>
+        <nz-autocomplete #auto>
+          <ng-container *ngIf="listOfAllAgents[0] && listOfAllAgents[0].title == 'agents'">
+            <nz-auto-optgroup *ngFor="let group of [listOfAllAgents[0]]" [nzLabel]="groupTitle">
+              <ng-template #groupTitle>
+                    <span class="_600">
+                      {{ 'agent.label.' + group.title | translate }}
+                      <i class="fa p-r-xs cursor text-16" [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'"
+                         (click)="expandCollapse(group);$event.stopPropagation()"></i>
+                    </span>
+              </ng-template>
+              <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents"
+                              [nzValue]="agents">
+                {{ agents }}
+              </nz-auto-option>
+            </nz-auto-optgroup>
+          </ng-container>
+          <ng-container
+            *ngIf="(listOfAllAgents[1] && listOfAllAgents[1].title == 'agentGroups') || (listOfAllAgents[0] && listOfAllAgents[0].title == 'agentGroups')">
+            <nz-auto-option nzDisabled class="ant-select-item-group not-disabled"
+                            (click)="$event.stopPropagation();">
+              <span class="_600" style="font-size: 12px;">
+                {{'agent.label.' + listOfAllAgents[listOfAllAgents.length - 1].title | translate}}
+                <i class="fa p-r-xs cursor text-16"
+                   [ngClass]="listOfAllAgents[listOfAllAgents.length - 1].hide ? 'fa-caret-down' : 'fa-caret-up'"
+                   (click)="expandCollapse(listOfAllAgents[listOfAllAgents.length - 1]);$event.stopPropagation()"></i>
+              </span>
+            </nz-auto-option>
+            <nz-auto-optgroup [hidden]="listOfAllAgents[listOfAllAgents.length - 1].hide"
+                              *ngFor="let group of listOfAllAgents[listOfAllAgents.length - 1].children"
+                              [nzLabel]="groupTitle">
+              <ng-template #groupTitle>
+                <span class="_600 pl-20">
+                  {{ group.title }}
+                  <i class="fa p-r-xs cursor text-16" [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'"
+                     (click)="expandCollapse(group, true);$event.stopPropagation()"></i>
+                </span>
+              </ng-template>
+              <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents"
+                              [nzValue]="agents">
+                <span class="pl-20">{{ agents }}</span>
+              </nz-auto-option>
+            </nz-auto-optgroup>
+          </ng-container>
+        </nz-autocomplete>
       </div>
     </div>
   </div>
