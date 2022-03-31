@@ -23,6 +23,7 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
   @Input() predicate: any;
   @Input() admissionTime: any;
   @Input() agentName: string;
+  @Input() subagentClusterId: string;
   @Input() timezone: string;
 
   dragEle: any;

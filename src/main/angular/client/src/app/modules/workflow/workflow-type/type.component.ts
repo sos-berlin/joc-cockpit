@@ -338,6 +338,7 @@ export class TypeComponent implements OnChanges {
         nzComponentParams = {
           data,
           agentName: job.agentName,
+          subagentClusterId: job.subagentClusterId,
           workflowPath: this.path,
           admissionTime: job.admissionTimeScheme,
           timezone: this.timezone,

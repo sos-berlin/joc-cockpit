@@ -66,7 +66,7 @@
       </label>
       <div class="col-md-8 col-lg-9"
            [ngClass]="{'has-error' : ((replace.dirty || replace.touched) && replace.invalid)}">
-        <input required name="agentName" [placeholder]="'workflow.findAndReplace.placeholder.selectReplace' | translate"
+        <input id="agentId" required name="agentName" [placeholder]="'workflow.findAndReplace.placeholder.selectReplace' | translate"
                class="form-control" [(ngModel)]="object.replace" #replace="ngModel" (ngModelChange)="onChange($event)"
                [nzAutocomplete]="auto"/>
         <nz-autocomplete #auto>
@@ -79,7 +79,7 @@
                          (click)="expandCollapse(group);$event.stopPropagation()"></i>
                     </span>
               </ng-template>
-              <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents"
+              <nz-auto-option (click)="selectSubagentCluster( null)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents"
                               [nzValue]="agents">
                 {{ agents }}
               </nz-auto-option>
@@ -106,7 +106,7 @@
                      (click)="expandCollapse(group, true);$event.stopPropagation()"></i>
                 </span>
               </ng-template>
-              <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents"
+              <nz-auto-option (click)="selectSubagentCluster(group)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents"
                               [nzValue]="agents">
                 <span class="pl-20">{{ agents }}</span>
               </nz-auto-option>

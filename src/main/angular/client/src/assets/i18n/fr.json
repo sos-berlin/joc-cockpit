@@ -178,6 +178,7 @@
     "label.dragAndDropForRoundRobin": "Glisser-déposer ici pour le mode round-robin",
     "label.dragAndDropFixedPriority": "Glisser-déposer ici pour le mode fixed-priority",
     "label.duplicateCluster": "Dupliquer le Cluster",
+    "label.withGenerateSubagentCluster": "Generate Subagent Cluster",
     "button.createToken": "Créer un Jeton à usage unique",
     "button.addAgent": "Ajouter un Agent Autonome",
     "button.addSubagent": "Ajouter un Sous-agent",

@@ -130,6 +130,13 @@
           </div>
         </div>
       </div>
+      <div class="form-group row">
+        <label class="col-sm-3" translate>agent.label.withGenerateSubagentCluster</label>
+        <div class="col-sm-6">
+          <label nz-checkbox [(ngModel)]="agent.withGenerateSubagentCluster"
+                 name="withGenerateSubagentCluster"></label>
+        </div>
+      </div>
     </div>
     <div class="form-group row" *ngIf="isCluster && new">
       <div class="col-sm-12 m-t" translate>SECONDARY_DIRECTOR</div>

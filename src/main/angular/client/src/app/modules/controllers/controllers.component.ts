@@ -174,7 +174,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
               }
             }
           }
-          break;
         } else if (args.eventSnapshots[j].eventType === 'ControllerStateChanged' || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
           || args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType.match(/Item/)) && args.eventSnapshots[j].objectType === 'CONTROLLER')) {
           this.isLoaded = false;

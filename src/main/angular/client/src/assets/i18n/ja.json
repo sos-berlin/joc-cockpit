@@ -178,6 +178,7 @@
     "label.dragAndDropForRoundRobin": "Drop here for round-robin mode",
     "label.dragAndDropFixedPriority": "Drop here for fixed-priority mode",
     "label.duplicateCluster": "Duplicate Cluster",
+    "label.withGenerateSubagentCluster": "Generate Subagent Cluster",
     "button.createToken": "ワンタイムトークン作成",
     "button.addAgent": "単独エージェント追加",
     "button.addSubagent": "サブエージェント追加",

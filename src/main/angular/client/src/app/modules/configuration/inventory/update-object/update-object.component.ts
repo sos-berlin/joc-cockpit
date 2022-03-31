@@ -24,6 +24,7 @@ export class UpdateObjectComponent implements OnInit {
   comments: any = {};
   selectedSchedulerIds = [];
   zones = [];
+  agentList = [];
   agents = {
     agentList: []
   };
@@ -88,8 +89,16 @@ export class UpdateObjectComponent implements OnInit {
       });
     }
     if (this.type === InventoryObject.FILEORDERSOURCE) {
-      this.coreService.getAgents(this.agents, this.controllerId);
+      this.coreService.getAgents(this.agents, this.controllerId, () =>{
+        this.agentList = this.coreService.clone(this.agents.agentList);
+      });
     }
+  }
+
+  onAgentChange(value: string): void {
+    let temp = this.coreService.clone(this.agents.agentList);
+    this.agentList = this.coreService.getFilterAgentList(temp, value, true);
+    this.agentList = [...this.agentList];
   }
 
   private getJobResources(): void {

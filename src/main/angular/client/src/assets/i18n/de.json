@@ -178,6 +178,7 @@
     "label.dragAndDropForRoundRobin": "Hierher ziehen und ablegen für round-robin Modus",
     "label.dragAndDropFixedPriority": "Hierher ziehen und ablegen für fixed-priority Modus",
     "label.duplicateCluster": "Cluster duplizieren",
+    "label.withGenerateSubagentCluster": "Generate Subagent Cluster",
     "button.createToken": "Einmaliges Token erstellen",
     "button.addAgent": "Autonomen Agenten hinzufügent",
     "button.addSubagent": "Subagenten hinzufügen",

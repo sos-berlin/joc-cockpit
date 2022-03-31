@@ -9,15 +9,16 @@ import {
   SimpleChanges, ViewChild
 } from '@angular/core';
 import {isEmpty, isArray, isEqual, clone, sortBy} from 'underscore';
-import {Subject, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {debounceTime} from 'rxjs/operators';
+import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../../models/enums';
+
 
 @Component({
   selector: 'app-schedule',
@@ -50,10 +51,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  private subject: Subject<string> = new Subject<string>();
   @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
-  constructor(private coreService: CoreService, private translate: TranslateService,
+  constructor(private coreService: CoreService, private translate: TranslateService, private toasterService: ToastrService,
               private calendarService: CalendarService, private dataService: DataService,
               private ref: ChangeDetectorRef, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
@@ -69,11 +69,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       } else if (res === 'UNDO') {
         this.undo();
       }
-    });
-    this.subject.pipe(
-      debounceTime(250)
-    ).subscribe(searchTextValue => {
-      this.checkWorkflowExist(searchTextValue);
     });
   }
 
@@ -121,7 +116,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
-    this.subject.complete();
     if (this.schedule.name) {
       this.saveJSON();
     }
@@ -259,7 +253,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  loadData(node, type, $event, reload = false): void {
+  loadData(node, type, $event): void {
     if (!node || !node.origin) {
       return;
     }
@@ -273,7 +267,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         flag = false;
       }
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
-        this.updateList(node, type, reload);
+        this.updateList(node, type);
       }
     } else {
       if (type === 'DOCUMENTATION') {
@@ -287,23 +281,17 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       } else {
-        if (this.schedule.configuration.workflowName1) {
-          if (this.schedule.configuration.workflowName !== this.schedule.configuration.workflowName1) {
-            this.schedule.configuration.workflowName = this.schedule.configuration.workflowName1;
+        if (node.key && !node.key.match('/')) {
+          if (this.schedule.configuration.workflowNames.indexOf(node.key) === -1) {
+            this.schedule.configuration.workflowNames.push(node.key);
+            this.getWorkflowInfo(node.key, true, null);
           }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.schedule.configuration.workflowName !== node.key) {
-            this.schedule.configuration.workflowName = node.key;
-          }
-        }
-        if (this.schedule.configuration.workflowName) {
-          this.getWorkflowInfo(this.schedule.configuration.workflowName, true, null);
         }
       }
     }
   }
 
-  updateList(node, type, reload): void {
+  updateList(node, type): void {
     let obj: any = {
       path: node.key,
       objectTypes: [type]
@@ -348,15 +336,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.documentationTree = [...this.documentationTree];
       } else if (type === InventoryObject.WORKFLOW) {
         this.workflowTree = [...this.workflowTree];
-        if (reload) {
-          const text = this.treeCtrl.inputValue;
-          if (text) {
-            this.treeCtrl.nzSelectSearchComponent.onValueChange(text + 1);
-            setTimeout(() => {
-              this.treeCtrl.nzSelectSearchComponent.onValueChange(text);
-            }, 0);
-          }
-        }
+        this.schedule.configuration.workflowNames = [...this.schedule.configuration.workflowNames];
       }
       this.ref.detectChanges();
     });
@@ -366,8 +346,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.loadData(e.node, type, null);
   }
 
-  navToWorkflow(): void {
-    this.dataService.reloadTree.next({navigate: {name: this.schedule.configuration.workflowName, type: InventoryObject.WORKFLOW}});
+  onRemoved(data): void {
+    this.schedule.configuration.workflowNames.splice(this.schedule.configuration.workflowNames.indexOf(data.key), 1);
+    this.saveJSON();
   }
 
   private setForkListVariables(sour, target): void {
@@ -453,22 +434,18 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             }
             if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
               if (!val.final) {
-                this.schedule.configuration.variableSets[prop].variables.push({name: k, type: val.type, isRequired: true});
+                this.schedule.configuration.variableSets[prop].variables.push({
+                  name: k,
+                  type: val.type,
+                  isRequired: true
+                });
               }
             }
           }
         }
         return {name: k, value: v};
       });
-/*      if (this.workflow.orderPreparation.allowUndeclared) {
-        for (const prop in this.schedule.configuration.variableSets) {
-          for (let i = 0; i < this.schedule.configuration.variableSets[prop].length; i++) {
-            if (!this.schedule.configuration.variableSets[prop][i].type) {
-              this.schedule.configuration.variableSets[prop][i].isTextField = true;
-            }
-          }
-        }
-      }*/
+
       this.variableList = this.variableList.filter((item) => {
         if (item.value.type === 'List') {
           return false;
@@ -700,7 +677,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               obj.calendars[i].frequencyList.forEach((val) => {
                 this.calendarService.generateCalendarObj(val, obj.calendars[i]);
               });
-            } else{
+            } else {
               delete obj.calendars[i].includes;
             }
             delete obj.calendars[i].frequencyList;
@@ -713,7 +690,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           delete obj.nonWorkingDayCalendars[i].type;
         }
       }
-      if (!(obj.workflowName && obj.calendars.length > 0)) {
+      if (obj.workflowNames.length === 0 || obj.calendars.length === 0) {
         isValid = false;
       }
       if (isValid) {
@@ -737,7 +714,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.history.push(JSON.stringify(this.schedule.configuration));
           this.indexOfNextAdd = this.history.length - 1;
         }
-        delete obj.workflowName1;
         const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         const request: any = {
           configuration: obj,
@@ -745,7 +721,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           path,
           objectType: this.objectType
         };
-    
+
         if (sessionStorage.$SOS$FORCELOGING === 'true') {
           this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
             request.auditLog = {comment: translatedValue};
@@ -770,24 +746,17 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  onKeyPressFunc($event): void {
-    this.subject.next($event.target.value);
-  }
-
-  private checkWorkflowExist(name): void {
-    this.coreService.post('inventory/path', {
-      name,
-      objectType: InventoryObject.WORKFLOW
-    }).subscribe((res: any) => {
-      this.loadWorkflowList(res.path);
-    });
-  }
-
   private loadWorkflowList(path): void {
     const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
     if (node && node.origin) {
-      this.loadData(node, 'WORKFLOW', null, true);
+      this.loadData(node, 'WORKFLOW', null);
     }
+  }
+
+  private removeSelection(name): void {
+    this.schedule.configuration.workflowNames.splice(this.schedule.configuration.workflowNames.indexOf(name), 1);
+    this.schedule.configuration.workflowNames = [...this.schedule.configuration.workflowNames];
+    this.ref.detectChanges();
   }
 
   private getWorkflowInfo(name, flag = false, cb): void {
@@ -795,6 +764,21 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       path: name,
       objectType: InventoryObject.WORKFLOW
     }).subscribe((conf: any) => {
+      if (this.schedule.configuration.workflowNames.length > 1) {
+        let msg;
+        if (conf.configuration.orderPreparation) {
+          msg = 'inventory.message.workflowsWithoutVariables';
+        } else if (this.workflow.orderPreparation) {
+          msg = 'inventory.message.workflowWithVariables';
+        }
+        if (msg) {
+          this.removeSelection(name);
+          this.translate.get(msg).subscribe(translatedValue => {
+            this.toasterService.warning(translatedValue);
+          });
+          return;
+        }
+      }
       this.workflow = conf.configuration;
       if (flag) {
         this.schedule.configuration.variableSets = [];
@@ -946,9 +930,17 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.data.valid = res.valid;
       }
       this.schedule = this.coreService.clone(res);
-
       if (!this.schedule.configuration.variableSets) {
         this.schedule.configuration.variableSets = [];
+      }
+      if (this.schedule.configuration.workflowName) {
+        if (!this.schedule.configuration.workflowNames) {
+          this.schedule.configuration.workflowNames = [this.schedule.configuration.workflowName];
+        }
+        delete this.schedule.configuration.workflowName
+      }
+      if (!this.schedule.configuration.workflowNames) {
+        this.schedule.configuration.workflowNames = [];
       }
       this.schedule.actual = JSON.stringify(this.schedule.configuration);
       this.schedule.path1 = this.data.path;
@@ -963,11 +955,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (!this.schedule.configuration.nonWorkingDayCalendars) {
         this.schedule.configuration.nonWorkingDayCalendars = [];
       }
-      if (this.schedule.configuration.workflowName) {
-        this.getWorkflowInfo(this.schedule.configuration.workflowName, false, (path) => {
-          if (path) {
-            this.loadWorkflowList(path);
-          }
+      if (this.schedule.configuration.workflowNames.length > 0) {
+        this.schedule.configuration.workflowNames.forEach((workflow) => {
+          this.getWorkflowInfo(workflow, false, (path) => {
+            if (path) {
+              this.loadWorkflowList(path);
+            }
+          });
         });
       }
 
@@ -978,7 +972,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
       this.history.push(this.schedule.actual);
       if (!res.valid) {
-        if (this.schedule.configuration.workflowName && this.schedule.configuration.calendars.length > 0) {
+        if (this.schedule.configuration.workflowNames && this.schedule.configuration.workflowNames.length > 0 && this.schedule.configuration.calendars.length > 0) {
           this.validateJSON(res.configuration);
         }
       }

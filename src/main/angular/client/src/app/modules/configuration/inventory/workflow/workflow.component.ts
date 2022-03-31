@@ -728,6 +728,7 @@ export class FindAndReplaceComponent implements OnInit {
   listOfAgents = [];
   object = {
     replace: '',
+    agentName: '',
     finds: []
   };
 
@@ -786,6 +787,16 @@ export class FindAndReplaceComponent implements OnInit {
       }
     }
   }
+
+  selectSubagentCluster(cluster): void {
+    if (cluster) {
+      this.object.agentName = cluster.title;
+    } else {
+      delete this.object.agentName;
+    }
+    $('#agentId').blur();
+  }
+
 
   onSubmit(): void {
     this.activeModal.close(this.object);
@@ -9425,15 +9436,26 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.jobs.forEach((job) => {
-          if (result.finds.length === 0 && !job.value.agentName) {
-            job.value.agentName = result.replace;
-          } else if (result.finds.length > 0 && result.finds[0] === '*') {
-            job.value.agentName = result.replace;
+          if ((result.finds.length === 0 && !job.value.agentName) || (result.finds.length > 0 && result.finds[0] === '*')) {
+            if(result.agentName){
+              job.value.agentName = result.agentName;
+              job.value.subagentClusterId = result.replace;
+            } else{
+              job.value.agentName = result.replace;
+              delete job.value.subagentClusterId;
+            }
           } else if (result.finds.length > 0 && job.value.agentName) {
             for (const i in result.finds) {
               if (result.finds[i]) {
-                if (result.finds[i].toLowerCase() === job.value.agentName.toLowerCase()) {
-                  job.value.agentName = result.replace;
+                if ((result.finds[i].toLowerCase() === job.value.agentName.toLowerCase())
+                  || (job.value.subagentClusterId && result.finds[i].toLowerCase() === job.value.subagentClusterId.toLowerCase())) {
+                  if (result.agentName) {
+                    job.value.agentName = result.agentName;
+                    job.value.subagentClusterId = result.replace;
+                  } else {
+                    job.value.agentName = result.replace;
+                    delete job.value.subagentClusterId;
+                  }
                   break;
                 }
               }

@@ -124,6 +124,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
         nzComponentParams = {
           data,
           agentName: job.agentName,
+          subagentClusterId: job.subagentClusterId,
           jobName: instruction.jobName,
           admissionTime: job.admissionTimeScheme,
           timezone: this.timezone,

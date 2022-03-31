@@ -46,9 +46,14 @@ export class UpdateJobComponent implements OnInit {
     if (job.documentationName) {
       obj.documentationName = job.documentationName;
     }
-    if (job.agentName) {
+    if (job.agentName1) {
+      obj.subagentClusterId = job.agentName;
+      job.agentName = job.agentName1;
+    } else {
       obj.agentName = job.agentName;
+      delete obj.subagentClusterId;
     }
+
     if (job.jobResourceNames) {
       obj.jobResourceNames = job.jobResourceNames;
     }
@@ -298,7 +303,13 @@ export class UpdateJobComponent implements OnInit {
     if (isEmpty(job.executable.login)) {
       delete job.executable.login;
     }
-
+    if (job.agentName1) {
+      job.subagentClusterId = job.agentName;
+      job.agentName = job.agentName1;
+      delete job.agentName1
+    } else {
+       delete job.subagentClusterId
+    }
     if (!job.executable.v1Compatible) {
       if (job.executable.TYPE === 'ShellScriptExecutable') {
         job.executable.v1Compatible = false;

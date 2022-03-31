@@ -63,14 +63,14 @@ export class MainSectionModalComponent implements OnInit {
           comments
         });
       });
+      this.toggleView(false);
     } else {
       this.mainSection.push({
         name: '',
-        values: [{ value: '' }],
-        comments: [{ value: '' }]
+        values: [{value: ''}],
+        comments: [{value: ''}]
       });
     }
-    this.toggleView(false);
   }
 
   toggleView(value): void {
@@ -232,8 +232,12 @@ export class MainSectionModalComponent implements OnInit {
         main.push(obj);
       }
     });
-    this.userDetail.main = main;
-    let request: any = { auditLog: {} };
+    if (!this.isUpdate) {
+      this.userDetail.main = this.userDetail.main.concat(main);
+    } else {
+      this.userDetail.main = main;
+    }
+    let request: any = {auditLog: {}};
     if (this.comments.comment) {
       request.auditLog.comment = this.comments.comment;
     }

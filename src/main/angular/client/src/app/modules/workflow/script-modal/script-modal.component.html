@@ -18,6 +18,8 @@
       <div class="col-sm-3 m-b-10" *ngIf="agentName" translate>workflow.label.agent</div>
       <div class="col-sm-8 m-b-10 _600" *ngIf="agentName">
         {{agentName}}
+        <i *ngIf="subagentClusterId">-</i>
+        <span class="_500 text-muted">{{subagentClusterId}}</span>
       </div>
       <div class="col-md-12" *ngIf="isScript">
         <label class="_600 m-b-xs" *ngIf="!predicate" translate>workflow.label.script</label>

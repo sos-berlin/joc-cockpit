@@ -327,6 +327,7 @@ export class AgentModalComponent implements OnInit {
           subagentId: _agent.subagentId,
           url: _agent.url,
           title: _agent.subtitle,
+          withGenerateSubagentCluster: _agent.withGenerateSubagentCluster,
           position: _agent.position
         }];
         if (_agent.subagentId2) {
@@ -343,6 +344,7 @@ export class AgentModalComponent implements OnInit {
         delete _agent.subagentId2;
         delete _agent.url;
         delete _agent.url2;
+        delete _agent.withGenerateSubagentCluster;
       }
       if (this.data) {
         const obj2 = {

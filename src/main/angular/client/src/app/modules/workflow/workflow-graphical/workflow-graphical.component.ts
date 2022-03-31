@@ -1306,6 +1306,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         nzComponentParams = {
           data,
           agentName: job.agentName,
+          subagentClusterId: job.subagentClusterId,
           jobName: argu.jobName,
           workflowPath:this.workFlowJson.path,
           admissionTime: job.admissionTimeScheme,
