@@ -178,7 +178,7 @@
     "label.dragAndDropForRoundRobin": "Drop here for round-robin mode",
     "label.dragAndDropFixedPriority": "Drop here for fixed-priority mode",
     "label.duplicateCluster": "Duplicate Cluster",
-    "label.withGenerateSubagentCluster": "Generate Subagent Cluster",
+    "label.withGenerateSubagentCluster": "As own Cluster",
     "button.createToken": "Create one-time Token",
     "button.addAgent": "Add Standalone Agent",
     "button.addSubagent": "Add Subagent",
