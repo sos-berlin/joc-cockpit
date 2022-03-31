@@ -85,7 +85,7 @@
             </label>
           </label>
           <div class="col-md-9" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
-            <input required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate"
+            <input id="agentId" required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate"
                    class="form-control" [(ngModel)]="requestObj.agentName" #agentName="ngModel" (blur)="onAgentChange('');" (ngModelChange)="onAgentChange($event)"
                    [nzAutocomplete]="auto"/>
             <nz-autocomplete #auto>
@@ -97,7 +97,7 @@
                       <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="group.hide = !group.hide;$event.stopPropagation()"></i>
                     </span>
                   </ng-template>
-                  <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
+                  <nz-auto-option (click)="selectSubagentCluster(null)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
                     {{ agents }}
                   </nz-auto-option>
                 </nz-auto-optgroup>
@@ -116,7 +116,7 @@
                       <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="group.hide = !group.hide;$event.stopPropagation()"></i>
                     </span>
                   </ng-template>
-                  <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
+                  <nz-auto-option (click)="selectSubagentCluster(group)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
                     <span class="pl-20">{{ agents }}</span>
                   </nz-auto-option>
                 </nz-auto-optgroup>

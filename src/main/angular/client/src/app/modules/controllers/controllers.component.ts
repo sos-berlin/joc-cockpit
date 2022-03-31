@@ -609,7 +609,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
           title: 'delete',
-          message: isCluster ? 'deleteAgentCluster' : 'deleteAgent',
+          message: isCluster ? 'deleteClusterAgent' : 'deleteAgent',
           type: 'Delete',
           objectName: agent.agentId,
         },
@@ -865,6 +865,43 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   deploySubagent(sub, clusterAgent, controller): void {
     //TODO
+  }
+
+  revoke(clusterAgent, controller) {
+    const obj: any = {
+      controllerId: controller.controllerId,
+      clusterAgentIds: [clusterAgent.agentId]
+    };
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Agent Cluster',
+        operation: 'Revoke',
+        name: clusterAgent.agentId
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this.coreService.post('agents/inventory/cluster/revoke', obj).subscribe();
+        }
+      });
+    } else {
+      this.coreService.post('agents/inventory/cluster/revoke', obj).subscribe();
+    }
   }
 
   deployAgent(agent, controller, isAgent = false): void {

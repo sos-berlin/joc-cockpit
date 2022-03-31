@@ -725,6 +725,7 @@ export class CronImportModalComponent implements OnInit {
       this.required = true;
       this.display = true;
     }
+    this.agentList = this.coreService.clone(this.agents);
     this.getTree();
     this.getCalendars();
     this.uploader = new FileUploader({
@@ -756,6 +757,10 @@ export class CronImportModalComponent implements OnInit {
       obj.systemCrontab = this.requestObj.systemCrontab;
       obj.agentName = this.requestObj.agentName;
       obj.calendarName = this.requestObj.calendarName;
+      if(this.requestObj.agentName1) {
+        obj.subagentClusterId = this.requestObj.agentName;
+        obj.agentName = this.requestObj.agentName1;
+      }
       item.file.name = encodeURIComponent(item.file.name);
       this.uploader.options.additionalParameter = obj;
     };
@@ -780,6 +785,14 @@ export class CronImportModalComponent implements OnInit {
     this.agentList = [...this.agentList];
   }
 
+  selectSubagentCluster(cluster): void {
+    if (cluster) {
+      this.requestObj.agentName1 = cluster.title;
+    } else {
+      delete this.requestObj.agentName1;
+    }
+    $('#agentId').blur();
+  }
 
   private getTree(): void {
     this.coreService.post('tree', {

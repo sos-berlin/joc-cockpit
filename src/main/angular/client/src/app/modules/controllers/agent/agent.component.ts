@@ -664,7 +664,7 @@ export class AgentComponent implements OnInit, OnDestroy {
           nzContent: ConfirmModalComponent,
           nzComponentParams: {
             title: 'delete',
-            message: 'deleteClusterAgent',
+            message: 'deleteSubagentCluster',
             type: 'Delete',
             objectName: cluster.subagentClusterId,
           },

@@ -1060,6 +1060,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       delete this.selectedNode.job.agentName1;
     }
+    $('#agentId').blur();
   }
 
   openJobWizard(): void {

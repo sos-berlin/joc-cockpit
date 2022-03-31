@@ -492,6 +492,7 @@
     "message.deleteIdentityService": "ID サービスを削除すると、ID サービスリストからその ID サービスが永久に削除されます",
     "message.deleteAgent": "Are you sure you want to delete this Agent?",
     "message.deleteClusterAgent": "Are you sure you want to delete this Cluster Agent?",
+    "message.deleteSubagentCluster": "Are you sure you want to delete this Subagent Cluster?",
     "message.deleteSubagent": "Are you sure you want to delete this Subagent from agent cluster list?",
     "message.deleteSelectedAgents": "Are you sure you want to delete the selected agents?",
     "message.deleteSelectedClusterAgents": "Are you sure you want to delete the selected agent clusters?",

@@ -14,6 +14,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onNavigate: EventEmitter<any> = new EventEmitter();
   @Input() controllerId: any;
+  @Input() agentData: any = [];
   @Input() isWorkflow: boolean;
   @Input() isBoard: boolean;
   @Input() isLock: boolean;
@@ -78,12 +79,19 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   private getAgents(): void {
-    this.coreService.getAgents(this.agents,  '');
+    if(this.agentData){
+      this.agents.agentList = this.agentData;
+      this.agentList = this.coreService.clone(this.agents.agentList);
+    } else {
+      this.coreService.getAgents(this.agents, '', () => {
+        this.agentList = this.coreService.clone(this.agents.agentList);
+      });
+    }
   }
 
   onAgentChange(value: string): void {
     let temp = this.coreService.clone(this.agents.agentList);
-    this.agentList = this.coreService.getFilterAgentList(temp, value);
+    this.agentList = this.coreService.getFilterAgentList(temp, value, true);
     this.agentList = [...this.agentList];
   }
 

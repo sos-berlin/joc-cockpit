@@ -988,6 +988,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.coreService.setSideView(this.sideView);
+    if(this.activeTab) {
+      if (this.objectType === 'YADE') {
+        this.coreService.xmlEditorPreferences.fileTransferActiveTab = this.activeTab.name;
+      } else if (this.objectType === 'OTHER') {
+        this.coreService.xmlEditorPreferences.otherActiveTab = this.activeTab.name;
+      }
+    }
     if (this.nodes && this.nodes.length > 0 && !this.isStore) {
       this.storeXML();
     }
@@ -1332,16 +1339,16 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.newFile();
         } else {
           this.tabsArray = clone(res.configurations);
-          if (sessionStorage.tabName) {
+          if ((this.objectType == 'YADE' && this.coreService.xmlEditorPreferences.fileTransferActiveTab) || (this.objectType == 'OTHER' && this.coreService.xmlEditorPreferences.otherActiveTab)) {
             if (this.tabsArray.length > 1) {
               for (const i in this.tabsArray) {
-                if (this.tabsArray[i].name == sessionStorage.tabName || (' ' + this.tabsArray[i].name == sessionStorage.tabName)) {
+                if ((this.objectType == 'YADE' && this.tabsArray[i].name == this.coreService.xmlEditorPreferences.fileTransferActiveTab)
+                  || (this.objectType == 'OTHER' && this.tabsArray[i].name == this.coreService.xmlEditorPreferences.otherActiveTab)) {
                   this.selectedTabIndex = parseInt(i, 10);
                   break;
                 }
               }
             }
-            sessionStorage.tabName = undefined;
           }
           this.activeTab = this.tabsArray[this.selectedTabIndex];
           if (this.activeTab) {

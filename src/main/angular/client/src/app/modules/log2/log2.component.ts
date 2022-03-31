@@ -459,8 +459,11 @@ export class Log2Component implements OnInit {
         if (dt[i].agentUrl) {
           col += 'url=' + dt[i].agentUrl + ', ';
         }
-        if (dt[i].agentId) {
-          col += 'id=' + dt[i].agentId + ', ';
+        if (dt[i].agentName) {
+          col += 'name=' + dt[i].agentName + ', ';
+        }
+        if (dt[i].subagentClusterId) {
+          col += 'clusterId=' + dt[i].subagentClusterId + ', ';
         }
         if (dt[i].agentDatetime) {
           const dateTime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].agentDatetime, this.preferences.zone) : dt[i].agentDatetime;

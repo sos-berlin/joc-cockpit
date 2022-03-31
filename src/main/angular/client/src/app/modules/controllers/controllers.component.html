@@ -135,11 +135,11 @@
                               <i *ngIf="controller.sortBy == 'url' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
-                          <th nzWidth="100px" (click)="sort(controller, 'deployed')">
+                          <th nzWidth="100px" (click)="sort(controller, 'syncState._text')">
                             <a><span class="p-r-xs" translate>common.label.status</span>
-                              <i *ngIf="controller.sortBy == 'deployed' && !controller.reverse"
+                              <i *ngIf="controller.sortBy == 'syncState._text' && !controller.reverse"
                                  class="fa fa-caret-up "></i>
-                              <i *ngIf="controller.sortBy == 'deployed' && controller.reverse"
+                              <i *ngIf="controller.sortBy == 'syncState._text' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
                           <th nzWidth="100px" (click)="sort(controller, 'disabled')">
@@ -219,8 +219,9 @@
                           <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
                           <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url"></span></td>
                           <td (click)="editAgent(agent, controller)">
-                            <span class="label bg-dark-blue" *ngIf="agent.deployed" translate>inventory.label.deployed</span>
-                            <span class="label bg-orange" *ngIf="!agent.deployed" translate>inventory.label.notDeployed</span>
+                            <label class="label" *ngIf="agent.syncState"
+                                   [ngClass]="coreService.getColor(agent.syncState.severity, 'bg')"
+                                   [innerHtml]="agent.syncState._text | translate"></label>
                           </td>
                           <td (click)="editAgent(agent, controller)">{{agent.disabled ? 'Yes' : 'No'}}</td>
                           <td (click)="editAgent(agent, controller)">{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
@@ -279,11 +280,11 @@
                               <i *ngIf="controller.sortBy2 == 'agentNameAliases' && controller.reverse2"
                                  class="fa fa-caret-down "></i></a>
                           </th>
-                          <th nzWidth="100px" (click)="sort(controller, 'deployed', true)">
+                          <th nzWidth="100px" (click)="sort(controller, 'syncState._text', true)">
                             <a><span class="p-r-xs" translate>common.label.status</span>
-                              <i *ngIf="controller.sortBy2 == 'deployed' && !controller.reverse2"
+                              <i *ngIf="controller.sortBy2 == 'syncState._text' && !controller.reverse2"
                                  class="fa fa-caret-up "></i>
-                              <i *ngIf="controller.sortBy2 == 'deployed' && controller.reverse2"
+                              <i *ngIf="controller.sortBy2 == 'syncState._text' && controller.reverse2"
                                  class="fa fa-caret-down "></i></a>
                           </th>
                           <th nzWidth="150px" (click)="sort(controller, 'validityDate', true)">
@@ -325,6 +326,9 @@
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
                                         <a translate>common.button.edit</a>
                                       </li>
+                                      <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" nz-menu-item (click)="revoke(clusterAgent, controller)">
+                                        <a translate>agent.button.revoke</a>
+                                      </li>
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="deployAgent(clusterAgent, controller)" nz-menu-item>
                                         <a translate>inventory.button.deploy</a>
                                       </li>
@@ -355,8 +359,9 @@
                               <td (click)="editAgent(clusterAgent, controller, true)"><span [innerHtml]="clusterAgent.agentNameAliases || '-'"></span></td>
                               <!--<td (click)="editAgent(clusterAgent, controller, true)"><span [innerHtml]="clusterAgent.url"></span></td>-->
                               <td (click)="editAgent(clusterAgent, controller, true)">
-                                <span class="label bg-dark-blue" *ngIf="clusterAgent.deployed" translate>inventory.label.deployed</span>
-                                <span class="label bg-orange" *ngIf="!clusterAgent.deployed" translate>inventory.label.notDeployed</span>
+                                <label class="label" *ngIf="clusterAgent.syncState"
+                                     [ngClass]="coreService.getColor(clusterAgent.syncState.severity, 'bg')"
+                                     [innerHtml]="clusterAgent.syncState._text | translate"></label>
                               </td>
                               <td>
                                 <span *ngIf="!clusterAgent.token">-</span>
@@ -435,8 +440,9 @@
                                 <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.isDirector | translate}}</td>
                                 <td (click)="editSubagent(sub, clusterAgent, controller)" [colSpan]="permission.joc && permission.joc.administration.controllers.manage ? '2' : '1'">{{sub.url}}</td>
                                 <td (click)="editSubagent(sub, clusterAgent, controller)">
-                                  <span class="label bg-dark-blue" *ngIf="sub.deployed" translate>inventory.label.deployed</span>
-                                  <span class="label bg-orange" *ngIf="!sub.deployed" translate>inventory.label.notDeployed</span>
+                                  <label class="label" *ngIf="sub.syncState"
+                                     [ngClass]="coreService.getColor(sub.syncState.severity, 'bg')"
+                                     [innerHtml]="sub.syncState._text | translate"></label>
                                 </td>
                                 <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.disabled ? 'Yes' : 'No'}}</td>
                               </tr>

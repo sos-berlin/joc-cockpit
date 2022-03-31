@@ -27,6 +27,10 @@ export class CoreService {
     isFirst: true,
     controllers: new Set()
   }
+  xmlEditorPreferences = {
+    fileTransferActiveTab: '',
+    otherActiveTab: ''
+  };
   sideView = {
     workflow: {width: 270, show: true},
     job: {width: 270, show: true},
@@ -627,12 +631,12 @@ export class CoreService {
     });
   }
 
-  getFilterAgentList(list, value: string): any {
+  getFilterAgentList(list, value: string, skip = false): any {
     return value ? list.filter(option => {
       let flag = false;
       option.children = option.children.filter(option2 => {
         let isCheck = false;
-        if (option2.children) {
+        if (option2.children && !skip) {
           option2.children = option2.children.filter(option3 => {
             let isCheck2 = option3.toLowerCase().indexOf(value.toLowerCase()) > -1;
             if (isCheck2) {
@@ -644,7 +648,12 @@ export class CoreService {
             return isCheck2;
           });
         } else {
-          let isCheck3 = option2.toLowerCase().indexOf(value.toLowerCase()) > -1;
+          let isCheck3 = false;
+          if (option2.title) {
+            isCheck3 = option2.title.toLowerCase().indexOf(value.toLowerCase()) > -1
+          } else {
+            isCheck3 = option2.toLowerCase().indexOf(value.toLowerCase()) > -1
+          }
           if (isCheck3) {
             flag = true;
           }

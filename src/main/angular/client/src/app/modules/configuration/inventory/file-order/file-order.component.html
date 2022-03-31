@@ -147,16 +147,26 @@
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6"
                [ngClass]="{'has-error' : (agentName.dirty || agentName.touched) && agentName.invalid}">
-            <nz-select nzShowSearch name="agentName" (ngModelChange)="changeValue($event, 'agentName')"
-                       nzPlaceHolder="{{'workflow.placeholder.selectAgentName' | translate}}"
-                       [(ngModel)]="fileOrder.configuration.agentName" #agentName="ngModel">
-              <nz-option nzCustomContent *ngFor="let agent of agents" [nzValue]="agent" [nzLabel]="agent">
-                <div>
-                  <span>{{agent}}</span> <span *ngIf="notFound && agent == notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
-                </div>
-              </nz-option>
-            </nz-select>
-           
+            <input required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate"
+               class="form-control" [(ngModel)]="fileOrder.configuration.agentName" #agentName="ngModel" (blur)="onAgentChange('');saveJSON();" (ngModelChange)="onAgentChange($event)"
+               [nzAutocomplete]="auto"/>
+            <nz-autocomplete #auto>
+              <nz-auto-option *ngFor="let agent of nonExistAgents" [nzValue]="agent" [nzLabel]="agent">
+                 <span class="p-l-xs">{{agent}}</span> <span class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
+              </nz-auto-option>
+              <nz-auto-optgroup *ngFor="let group of agentList" [nzLabel]="groupTitle">
+                <ng-template #groupTitle>
+                  <span class="_600">
+                    {{ 'agent.label.' + group.title | translate }}
+                    <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(group);$event.stopPropagation()"></i>
+                  </span>
+                </ng-template>
+                <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents.title ? agents.title : agents" [nzValue]="agents.title ? agents.title : agents">
+                  <span *ngIf="!agents.title">{{ agents }}</span>
+                  <span *ngIf="agents.title">{{agents.title}}</span>
+                </nz-auto-option>
+              </nz-auto-optgroup>
+            </nz-autocomplete>
             <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
                  class="text-danger help-block">
               <div *ngIf="(agentName.errors && agentName.errors.required)">

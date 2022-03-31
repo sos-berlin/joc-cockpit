@@ -492,6 +492,7 @@
     "message.deleteIdentityService": "Der Identitätsdienst wird permanent aus der Liste der Identitätsdienste entfernt.",
     "message.deleteAgent": "Sind Sie sicher, dass Sie diesen Agenten löschen wollen?",
     "message.deleteClusterAgent": "Sind Sie sicher, dass Sie diesen Agenten-Cluster löschen wollen?",
+    "message.deleteSubagentCluster": "Are you sure you want to delete this Subagent Cluster?",
     "message.deleteSubagent": "Sind Sie sicher, dass Sie diesen Subagenten aus der Liste Agenten-Cluster löschen wollen?",
     "message.deleteSelectedAgents": "Sind Sie sicher, dass Sie die ausgewählten Agenten löschen wollen?",
     "message.deleteSelectedClusterAgents": "Sind Sie sicher, dass Sie die ausgewählten Agenten-Cluster löschen wollen?",
