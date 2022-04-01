@@ -28,7 +28,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     this.subscription2 = dataService.refreshWidgetAnnounced$.subscribe((res) => {
       if (res) {
         for (let i = 0; i < res.length; i++) {
-          if (res[i].name === 'agentClusterRunningTasks') {
+          if (res[i].name === 'agentRunningJobs') {
             this.layout = res[i];
             this.setViewSize(window);
             this.getRunningTask();
@@ -58,7 +58,6 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     } else {
       this.isLoaded = true;
     }
-    this.setViewSize(window);
   }
 
   onResize(event): void {
@@ -68,7 +67,8 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   private setViewSize(target): void {
     const w = target.innerWidth / 12;
     this.view[0] = w * this.layout.cols - 90;
-    this.view[1] = (this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50)) - 6;
+    this.view[1] = ((this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50)) - 6) + (this.data.length > 5 ? ((this.data.length- 4) * 5) : 1);
+    
   }
 
   ngOnDestroy(): void {
@@ -79,14 +79,17 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   agentClusterRunningTaskGraph(res): void {
     this.data = [];
     for (let i = 0; i < res.agents.length; i++) {
-      this.data.push({name: res.agents[i].agentName, value: res.agents[i].runningTasks});
+      this.data.push({name: res.agents[i].agentName || res.agents[i].subagentId, value: res.agents[i].runningTasks});
     }
+    this.setViewSize(window);
+ 
   }
 
   getRunningTask(): void {
     this.coreService.post('agents', {
       controllerId: this.schedulerIds.selected,
       compact: true,
+      flat: true,
       states: ['COUPLED', 'RESETTING', 'RESET']
     }).subscribe({
       next: (res: any) => {

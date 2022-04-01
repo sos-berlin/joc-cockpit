@@ -19,6 +19,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   pageView: any;
   agentClusters: any = [];
   data: any = [];
+  selectedAgentId = '';
   searchableProperties = ['agentId', 'agentName', 'state', 'url', '_text'];
   agentsFilters: any = {};
   subscription1: Subscription;
@@ -83,7 +84,7 @@ export class AgentComponent implements OnInit, OnDestroy {
                   }
                 })
               } else {
-                 value.show = true;
+                value.show = true;
               }
             }
           });
@@ -116,6 +117,9 @@ export class AgentComponent implements OnInit, OnDestroy {
   /* ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
     this.pageView = $event;
+    if (this.selectedAgentId) {
+      this.backToList();
+    }
   }
 
   private refresh(args): void {
@@ -183,6 +187,18 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
+  showSubagentList(cluster): void {
+    if (cluster.subagents) {
+      this.selectedAgentId = cluster.agentId;
+      this.data = cluster.subagents;
+    }
+  }
+
+  backToList(): void {
+    this.selectedAgentId = '';
+    this.searchInResult();
+  }
+
   showAgents(cluster, isSubagent = false): void {
     cluster.show = true;
     this.agentsFilters.expandedObjects.push(isSubagent ? cluster.subagentId : cluster.agentId);
@@ -202,7 +218,7 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   showSubagents(cluster): void {
     cluster.showSubagent = true;
-    if(!cluster.sortBy){
+    if (!cluster.sortBy) {
       cluster.sortBy = 'subagentId';
       cluster.reverse = false;
     }
@@ -216,8 +232,8 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   navToController(agent, cluster): void {
     if (this.permission.joc && this.permission.joc.administration.controllers.view) {
-      if(cluster){
-         this.router.navigate(['/controllers/cluster_agent', cluster.controllerId, cluster.agentId]);
+      if (cluster) {
+        this.router.navigate(['/controllers/cluster_agent', cluster.controllerId, cluster.agentId]);
       } else {
         this.coreService.preferences.controllers.clear();
         this.coreService.preferences.controllers.add(agent.controllerId);

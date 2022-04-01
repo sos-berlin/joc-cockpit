@@ -1,12 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { isEqual, isArray, clone } from 'underscore';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { DataService } from '../data.service';
-import { AuthService } from '../../../components/guard';
-import { CoreService } from '../../../services/core.service';
-import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
-import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {isEqual, isArray, clone} from 'underscore';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {DataService} from '../data.service';
+import {AuthService} from '../../../components/guard';
+import {CoreService} from '../../../services/core.service';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 
 // Add and Edit main Section
 @Component({
@@ -29,11 +29,12 @@ export class MainSectionModalComponent implements OnInit {
 
   ngOnInit(): void {
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
       this.display = true;
+    } else {
+      this.display = preferences.auditLog;
     }
     if (this.dataService.comments && this.dataService.comments.comment) {
       this.comments = this.dataService.comments;
@@ -45,17 +46,17 @@ export class MainSectionModalComponent implements OnInit {
         const comments = [];
         if (entry.entryValue && entry.entryValue.length > 0) {
           entry.entryValue.forEach((value) => {
-            values.push({ value });
+            values.push({value});
           });
         } else {
-          values.push({ value: '' });
+          values.push({value: ''});
         }
         if (entry.entryComment && entry.entryComment.length > 0) {
           entry.entryComment.forEach((comment) => {
-            comments.push({ value: comment });
+            comments.push({value: comment});
           });
         } else {
-          comments.push({ value: '' });
+          comments.push({value: ''});
         }
         this.mainSection.push({
           name: entry.entryName,
@@ -123,7 +124,7 @@ export class MainSectionModalComponent implements OnInit {
 
   generateObject(): void {
     let main = [];
-    let obj: any = { entryName: '', entryValue: [], entryComment: [] };
+    let obj: any = {entryName: '', entryValue: [], entryComment: []};
     let arr = this.mainText.split('\n');
     let flag = false;
     for (let i = 0; i < arr.length; i++) {
@@ -154,7 +155,7 @@ export class MainSectionModalComponent implements OnInit {
           if (flag) {
             obj.entryValue.push(arr[i]);
             main.push(obj);
-            obj = { entryValue: [], entryComment: [] };
+            obj = {entryValue: [], entryComment: []};
             flag = false;
           } else {
             let index = arr[i].indexOf('=');
@@ -173,7 +174,7 @@ export class MainSectionModalComponent implements OnInit {
                 obj.entryValue.push(x.replace('\\', ''));
               }
               main.push(obj);
-              obj = { entryValue: [], entryComment: [] };
+              obj = {entryValue: [], entryComment: []};
             }
           }
         }
@@ -186,17 +187,17 @@ export class MainSectionModalComponent implements OnInit {
       let comments = [];
       if (entry.entryComment && entry.entryComment.length > 0) {
         entry.entryComment.forEach((comment) => {
-          comments.push({ value: comment });
+          comments.push({value: comment});
         });
       } else {
-        comments.push({ value: '' });
+        comments.push({value: ''});
       }
       if (entry.entryValue && entry.entryValue.length > 0) {
         entry.entryValue.forEach((value) => {
-          values.push({ value });
+          values.push({value});
         });
       } else {
-        values.push({ value: '' });
+        values.push({value: ''});
       }
 
       mainSection.push({
@@ -250,7 +251,7 @@ export class MainSectionModalComponent implements OnInit {
     if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
-    this.coreService.post('authentication/auth/store', { ...this.userDetail, ...request }).subscribe({
+    this.coreService.post('authentication/auth/store', {...this.userDetail, ...request}).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
       }, error: () => {
@@ -262,8 +263,8 @@ export class MainSectionModalComponent implements OnInit {
   addMainEntry(): void {
     const param = {
       name: '',
-      values: [{ value: '' }],
-      comments: [{ value: '' }]
+      values: [{value: ''}],
+      comments: [{value: ''}]
     };
     if (this.mainSection) {
       this.mainSection.push(param);
@@ -272,7 +273,7 @@ export class MainSectionModalComponent implements OnInit {
 
   addEntryValueField(index): void {
     if (this.mainSection[index].values) {
-      this.mainSection[index].values.push({ value: '' });
+      this.mainSection[index].values.push({value: ''});
     }
   }
 
@@ -286,7 +287,7 @@ export class MainSectionModalComponent implements OnInit {
 
   addEntryCommentField(index): void {
     if (this.mainSection[index].comments) {
-      this.mainSection[index].comments.push({ value: '' });
+      this.mainSection[index].comments.push({value: ''});
     }
   }
 
@@ -337,17 +338,17 @@ export class EditMainSectionModalComponent implements OnInit {
     this.existingEntry = this.oldEntry.entryName;
     if (this.entry.entryValue.length > 0) {
       this.entry.entryValue.forEach((val) => {
-        this.entryValue.push({ value: clone(val) });
+        this.entryValue.push({value: clone(val)});
       });
     } else {
-      this.entryValue.push({ value: '' });
+      this.entryValue.push({value: ''});
     }
     if (this.entry.entryComment.length > 0) {
       this.entry.entryComment.forEach((val) => {
-        this.entryComment.push({ value: clone(val) });
+        this.entryComment.push({value: clone(val)});
       });
     } else {
-      this.entryComment.push({ value: '' });
+      this.entryComment.push({value: ''});
     }
   }
 
@@ -381,7 +382,7 @@ export class EditMainSectionModalComponent implements OnInit {
         this.userDetail.main[index] = this.entry;
       }
     });
-    let request: any = { auditLog: {} };
+    let request: any = {auditLog: {}};
     if (this.comments.comment) {
       request.auditLog.comment = this.comments.comment;
     }
@@ -394,7 +395,7 @@ export class EditMainSectionModalComponent implements OnInit {
     if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
-    this.coreService.post('authentication/auth/store', { ...this.userDetail, ...request }).subscribe({
+    this.coreService.post('authentication/auth/store', {...this.userDetail, ...request}).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
       }, error: () => this.submitted = false
@@ -523,7 +524,7 @@ export class LdapSectionModalComponent implements OnInit {
       }
     }
     this.userDetail.main = this.userDetail.main.concat(this.mainSection);
-    let request: any = { auditLog: {} };
+    let request: any = {auditLog: {}};
     if (this.comments.comment) {
       request.auditLog.comment = this.comments.comment;
     }
@@ -536,7 +537,7 @@ export class LdapSectionModalComponent implements OnInit {
     if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
-    this.coreService.post('authentication/auth/store', { ...this.userDetail, ...request }).subscribe({
+    this.coreService.post('authentication/auth/store', {...this.userDetail, ...request}).subscribe({
       next: () => {
         this.activeModal.close(this.userDetail.main);
       }, error: () => this.submitted = false
@@ -552,7 +553,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
 
   loading = true;
   main: any = [];
-  usr: any = { currentPage: 1 };
+  usr: any = {currentPage: 1};
   preferences: any = {};
   permission: any = {};
   userDetail: any = {};
@@ -560,7 +561,7 @@ export class MainSectionComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, public modal: NzModalService,
-    private authService: AuthService, private dataService: DataService) {
+              private authService: AuthService, private dataService: DataService) {
     this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
       if (res && res.accounts) {
         this.setUserData(res);

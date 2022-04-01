@@ -253,7 +253,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  loadData(node, type, $event): void {
+  loadData(node, type, $event, isExpand = false): void {
     if (!node || !node.origin) {
       return;
     }
@@ -261,12 +261,15 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if ($event) {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
+      } else if(isExpand){
+        node.isExpanded = true;
       }
+
       let flag = true;
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
         flag = false;
       }
-      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+      if ((node.isExpanded || node.origin.isLeaf) && flag) {
         this.updateList(node, type);
       }
     } else {
@@ -749,7 +752,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   private loadWorkflowList(path): void {
     const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
     if (node && node.origin) {
-      this.loadData(node, 'WORKFLOW', null);
+      this.loadData(node, 'WORKFLOW', null, true);
     }
   }
 

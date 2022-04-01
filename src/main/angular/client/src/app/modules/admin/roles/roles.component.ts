@@ -207,23 +207,39 @@ export class RoleModalComponent implements OnInit {
 
     this.coreService.post(this.identityServiceType !== 'SHIRO' ? 'iam/role/store' : 'authentication/auth/store', request).subscribe({
       next: () => {
-        if (this.copy && this.identityServiceType !== 'SHIRO') {
-          if (this.controllerArr.length > 0) {
-            const APIs = [];
-            this.controllerArr.forEach((result) => {
-              result.roleName = this.currentRole.roleName;
-              APIs.push(this.coreService.post('iam/permissions/store', {...result, ...{auditLog: request.auditLog}}).pipe(
-                catchError(error => of(error))
-              ));
-            });
-            forkJoin(APIs).subscribe({
+        if (this.identityServiceType !== 'SHIRO') {
+          if (this.copy) {
+            if (this.controllerArr.length > 0) {
+              const APIs = [];
+              this.controllerArr.forEach((result) => {
+                result.roleName = this.currentRole.roleName;
+                APIs.push(this.coreService.post('iam/permissions/store', {...result, ...{auditLog: request.auditLog}}).pipe(
+                  catchError(error => of(error))
+                ));
+              });
+              forkJoin(APIs).subscribe({
+                next: () => {
+                  this.activeModal.close('DONE');
+                }
+              });
+            }
+          } else {
+            this.coreService.post('iam/permissions/store', {
+              roleName: this.currentRole.roleName,
+              identityServiceName: this.identityServiceName,
+              controllerId: '',
+              permissions: [{permissionPath: 'sos:products:controller:view', excluded: false}],
+              auditLog: request.auditLog
+            }).subscribe({
               next: () => {
+                this.activeModal.close('DONE');
+              }, error: () => {
                 this.activeModal.close('DONE');
               }
             });
           }
         } else {
-          this.activeModal.close(this.identityServiceType !== 'SHIRO' ? 'DONE' : this.userDetail);
+          this.activeModal.close(this.userDetail);
         }
       }, error: () => this.submitted = false
     });
@@ -667,6 +683,9 @@ export class RolesComponent implements OnInit, OnDestroy {
         });
         modal.afterClose.subscribe(result => {
           if (result) {
+              if (result.isChecked) {
+                this.dataService.comments = result;
+              }
             if (sessionStorage.identityServiceType === 'SHIRO') {
               delete this.userDetail.roles[role.roleName];
               this.saveInfo(result);
@@ -1048,29 +1067,27 @@ export class RolesComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          if (this.identityServiceType === 'SHIRO') {
-            this.dataService.copiedObject.roles.forEach((value, key) => {
-              if (!this.userDetail.roles[key]) {
-                this.userDetail.roles[key] = value;
-              }
-            });
-            this.saveInfo(result);
-          } else {
-            this.pasteRole(result);
+          if (result.isChecked) {
+            this.dataService.comments = result;
           }
+          this._paste(result);
         }
       });
     } else {
-      if (this.identityServiceType === 'SHIRO') {
-        this.dataService.copiedObject.roles.forEach((value, key) => {
-          if (!this.userDetail.roles[key]) {
-            this.userDetail.roles[key] = value;
-          }
-        });
-        this.saveInfo(this.dataService.comments);
-      } else {
-        this.pasteRole(this.dataService.comments);
-      }
+      this._paste(this.dataService.comments);
+    }
+  }
+
+  private _paste(comments): void {
+    if (this.identityServiceType === 'SHIRO') {
+      this.dataService.copiedObject.roles.forEach((value, key) => {
+        if (!this.userDetail.roles[key]) {
+          this.userDetail.roles[key] = value;
+        }
+      });
+      this.saveInfo(comments);
+    } else {
+      this.pasteRole(comments);
     }
   }
 
@@ -1087,6 +1104,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         }
       }
       if (!flag) {
+        value.roleName = key;
         roles.push(value);
       }
     });
@@ -1107,23 +1125,37 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   private getAndStorePermission(role, comments) {
-    role.controllers.forEach((id) => {
-      this.coreService.post('iam/permissions', {
-        roleName: role.roleName,
-        controllerId: id,
-        identityServiceName: role.identityServiceName
-      }).subscribe({
-        next: (res) => {
-          this.coreService.post('iam/permissions/store', {
-            roleName: role.roleName,
-            controllerId: id,
-            permissions: res.permissions,
-            identityServiceName: this.identityServiceName,
-            auditLog: comments
-          }).subscribe();
-        }
+    if (role.controllers) {
+      role.controllers.forEach((id) => {
+        this.coreService.post('iam/permissions', {
+          roleName: role.roleName,
+          controllerId: id,
+          identityServiceName: role.identityServiceName
+        }).subscribe({
+          next: (res) => {
+            this.storePermission({
+              roleName: role.roleName,
+              controllerId: id,
+              permissions: res.permissions,
+              identityServiceName: this.identityServiceName,
+              auditLog: comments
+            });
+          }
+        });
       });
-    });
+    } else if (role.permissions) {
+      this.storePermission({
+        roleName: role.roleName,
+        controllerId: '',
+        permissions: role.permissions.joc.concat(role.permissions.controllerDefaults),
+        identityServiceName: this.identityServiceName,
+        auditLog: comments
+      });
+    }
+  }
+
+  private storePermission(obj): void {
+    this.coreService.post('iam/permissions/store', obj).subscribe();
   }
 
   checkAll(value: boolean): void {

@@ -12,6 +12,7 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {OrderPipe} from "../../pipes/core.pipe";
+import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 
 @Component({
   selector: 'app-import-setting-content',
@@ -86,11 +87,14 @@ export class ImportSettingComponent implements OnInit {
 export class SettingComponent implements OnInit {
   zones: any = {};
   permission: any = {};
+  preferences: any = {};
   object: any = {};
   schedulerIds: any = {};
   selectedController: any = {};
+  orignalSetting: any = {};
   defaultGlobals: any = {};
   settings: any = {};
+  auditLog: any = {};
   settingArr: any = [];
   loading: boolean;
   configId: number;
@@ -159,6 +163,9 @@ export class SettingComponent implements OnInit {
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
     this.zones = this.coreService.getTimeZoneList();
     this.loadSetting();
   }
@@ -187,6 +194,9 @@ export class SettingComponent implements OnInit {
       return;
     } else if (value && value.value && value.value.type === 'TIME') {
       value.value.value = SettingComponent.checkTime(value.value.value);
+    }
+    if(value.name === 'force_comments_for_audit_log'){
+      sessionStorage.$SOS$FORCELOGING = value.value.value;
     }
     this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc);
   }
@@ -256,6 +266,7 @@ export class SettingComponent implements OnInit {
         this.defaultGlobals = res.defaultGlobals;
         if (res.configurations[0]) {
           this.configId = res.configurations[0].id || 0;
+          this.orignalSetting = JSON.parse(res.configurations[0].configurationItem);
           this.settings = JSON.parse(res.configurations[0].configurationItem);
           this.mergeData(this.defaultGlobals);
           this.loading = true;
@@ -274,8 +285,8 @@ export class SettingComponent implements OnInit {
       let isExist = false;
       for (let setProp in this.settings) {
         if (setProp === prop) {
-          if(this.settings[setProp].ordering > -1){
-          } else{
+          if (this.settings[setProp].ordering > -1) {
+          } else {
             this.settings[setProp].ordering = this.defaultGlobals[setProp].ordering;
           }
           isExist = true;
@@ -289,12 +300,12 @@ export class SettingComponent implements OnInit {
                     this.settings[setProp][i].ordering = defaultGlobals[prop][i].ordering;
                     this.settings[setProp][i].type = defaultGlobals[prop][i].type;
                     this.settings[setProp][i].default = defaultGlobals[prop][i].default;
-                    if(defaultGlobals[prop][i].values){
+                    if (defaultGlobals[prop][i].values) {
                       this.settings[setProp][i].values = defaultGlobals[prop][i].values;
                     }
                     break;
                   }
-                } else if (!defaultGlobals[prop][i] && this.settings[prop][i] && i !== 'ordering'){
+                } else if (!defaultGlobals[prop][i] && this.settings[prop][i] && i !== 'ordering') {
                   delete this.settings[prop][i];
                 }
               }
@@ -306,13 +317,14 @@ export class SettingComponent implements OnInit {
           break;
         }
       }
-      if(!isExist){
+      if (!isExist) {
         this.settings[prop] = defaultGlobals[prop];
       }
     }
+    const temp = this.coreService.clone(this.settingArr);
     this.settingArr = [];
     for (let prop in this.settings) {
-      const obj = {
+      const obj: any = {
         name: prop,
         ordering: this.settings[prop].ordering,
         value: []
@@ -339,6 +351,15 @@ export class SettingComponent implements OnInit {
         }
         return {name: k, value: _v, ordering: _v.ordering};
       });
+      if (temp.length > 0) {
+        for (let x = 0; x < temp.length; x++) {
+          if (temp[x].name === obj.name) {
+            obj.show = temp[x].show;
+            temp.slice(x, 1);
+            break;
+          }
+        }
+      }
       this.settingArr.push(obj);
     }
     this.settingArr = this.orderPipe.transform(this.settingArr, 'ordering', false);
@@ -359,19 +380,55 @@ export class SettingComponent implements OnInit {
 
   private savePreferences(tempSetting, isJoc): void {
     if (this.permission.joc.administration.settings.manage) {
-      if (this.schedulerIds.selected) {
-        this.coreService.post('configuration/save', {
-          controllerId: this.schedulerIds.selected,
-          account: this.authService.currentUserData,
-          id: this.configId || 0,
-          configurationType: 'GLOBALS',
-          configurationItem: JSON.stringify(tempSetting)
-        }).subscribe(() => {
-          if (isJoc) {
-            this.getProperties();
+      if ((this.preferences.auditLog || sessionStorage.$SOS$FORCELOGING == 'true') && !this.auditLog.comment ) {
+        let comments = {
+          radio: 'predefined',
+          type: 'Settings',
+          operation: 'Store'
+        };
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            comments
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            if (result.isChecked) {
+              this.auditLog = result;
+            }
+            this._savePreferences(tempSetting, isJoc, result);
+          } else {
+            this.settings = this.coreService.clone(this.orignalSetting);
+            this.mergeData(this.defaultGlobals);
           }
         });
+      } else {
+        this._savePreferences(tempSetting, isJoc, this.auditLog);
       }
+    }
+  }
+
+  private _savePreferences(tempSetting, isJoc, auditLog): void {
+    if (this.schedulerIds.selected) {
+      this.coreService.post('configuration/save', {
+        controllerId: this.schedulerIds.selected,
+        account: this.authService.currentUserData,
+        id: this.configId || 0,
+        configurationType: 'GLOBALS',
+        auditLog,
+        configurationItem: JSON.stringify(tempSetting)
+      }).subscribe(() => {
+        this.orignalSetting = tempSetting;
+        if (isJoc) {
+          this.getProperties();
+        }
+      });
     }
   }
 
@@ -385,6 +442,8 @@ export class SettingComponent implements OnInit {
       sessionStorage.$SOS$COPY = JSON.stringify(result.copy);
       sessionStorage.$SOS$RESTORE = JSON.stringify(result.restore);
       sessionStorage.$SOS$IMPORT = JSON.stringify(result.import);
+      sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
+      sessionStorage.welcomeGotIt = result.welcomeGotIt;
       this.dataService.isProfileReload.next(true);
     });
   }

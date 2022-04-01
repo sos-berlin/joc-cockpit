@@ -748,11 +748,17 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
       configuration.configurationItem.user.welcome_got_it.value = true;
       configuration.configurationItem.user.welcome_do_not_remind_me.value = true;
-      this.coreService.post('configuration/save', {
+      const request: any = {
         id: configuration.id || 0,
         configurationType: 'GLOBALS',
         configurationItem: JSON.stringify(configuration.configurationItem)
-      }).subscribe(() => {
+      };
+      if (sessionStorage.$SOS$FORCELOGING === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          request.auditLog = {comment: translatedValue};
+        });
+      }
+      this.coreService.post('configuration/save', request).subscribe(() => {
         sessionStorage.welcomeDoNotRemindMe = true;
         sessionStorage.welcomeGotIt = true;
       });

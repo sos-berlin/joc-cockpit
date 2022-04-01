@@ -25,11 +25,15 @@ export class GitModalComponent implements OnInit {
   submitted = false;
   comments: any = {};
   gitObject: any = {};
+  object: any = {
+    type: 'password'
+  };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
       this.display = true;
@@ -38,7 +42,9 @@ export class GitModalComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    let obj: any = {};
+    let obj: any = {
+      credentials: [this.gitObject]
+    };
     obj.auditLog = {};
     if (this.comments.comment) {
       obj.auditLog.comment = this.comments.comment;
@@ -49,9 +55,22 @@ export class GitModalComponent implements OnInit {
     if (this.comments.ticketLink) {
       obj.auditLog.ticketLink = this.comments.ticketLink;
     }
-    this.coreService.post('profile/key/store', obj).subscribe({
+    if (this.object.type === 'password') {
+      delete obj.credentials[0].keyfilePath;
+      delete obj.credentials[0].personalAccessToken;
+    } else if (this.object.type === 'accessToken') {
+      delete obj.credentials[0].password;
+      delete obj.credentials[0].keyfilePath;
+    } else {
+      delete obj.credentials[0].password;
+      delete obj.credentials[0].personalAccessToken;
+      if (obj.credentials[0].keyfilePath) {
+        obj.credentials[0].keyfilePath = '';
+      }
+    }
+    this.coreService.post('inventory/repository/git/credentials/add', obj).subscribe({
       next: () => {
-        this.activeModal.close();
+        this.activeModal.close('Done');
       }, error: () => this.submitted = false
     });
   }
@@ -351,19 +370,19 @@ export class UserComponent implements OnInit, OnDestroy {
   keys: any;
   caCertificates: any;
   certificates: any;
+  gitCredenitals: any;
   configObj: any = {};
   timeZone: any = {};
   forceLoging = false;
   isGroupBtnActive = false;
-  prevMenuTheme: string;
-  prevMenuAvatorColor: string;
+  selectedController = '';
   securityLevel: string;
   identityServiceType: string;
   subscription1: Subscription;
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
-    private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
+              private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
@@ -380,7 +399,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.forceLoging = true;
       this.preferences.auditLog = true;
     }
-    this.identityServiceType  = this.authService.currentUserIdentityService.substring(0, this.authService.currentUserIdentityService.lastIndexOf(':'));
+    this.identityServiceType = this.authService.currentUserIdentityService.substring(0, this.authService.currentUserIdentityService.lastIndexOf(':'));
     this.setIds();
     this.setPreferences();
     this.zones = this.coreService.getTimeZoneList();
@@ -397,13 +416,28 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   tabChange($event): void {
-    if ($event.index === 2) {
-      if (this.permission.joc && this.permission.joc.administration.certificates.view) {
-        this.getKeys();
-      }
-    } else if ($event.index === 3) {
-      if (this.permission.joc && this.permission.joc.administration.certificates.view) {
-        this.getCA();
+    
+    if (this.permission.joc) {
+      if ($event.index === 2) {
+        if (this.permission.joc.administration.certificates.view) {
+          if (this.securityLevel !== 'LOW') {
+            this.getKeys();
+          } else {
+            this.getCA();
+          }
+        } else if (this.permission.joc.administration.certificates.view) {
+          this.getGit();
+        }
+      } else if ($event.index === 3) {
+        if (this.permission.joc.administration.certificates.view) {
+          this.getCA();
+        } else if (this.securityLevel !== 'LOW' && this.permission.joc.inventory.view) {
+          this.getGit();
+        }
+      } else if ($event.index === 4) {
+        if (this.permission.joc.administration.certificates.view) {
+          this.getGit();
+        }
       }
     }
   }
@@ -590,6 +624,17 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
+  getGit(): void {
+    this.gitCredenitals = {};
+    this.coreService.post('inventory/repository/git/credentials', {}).subscribe({
+      next: (res: any) => {
+        this.gitCredenitals = res;
+      }, error: () => {
+        this.gitCredenitals = {};
+      }
+    });
+  }
+
   pasteKey(type = 'key'): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -674,6 +719,7 @@ export class UserComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: GitModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         display: this.preferences.auditLog
       },
@@ -684,7 +730,7 @@ export class UserComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-
+        this.getGit();
       }
     });
   }

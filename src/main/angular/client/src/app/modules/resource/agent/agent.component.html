@@ -101,17 +101,22 @@
       <div class="col-sm-12">
         <div>
           <div class="row " *ngIf="pageView=='grid' && data.length>0" [hidden]="loading">
+            <div class="col-md-12 m-b" *ngIf="selectedAgentId">
+              <a (click)="backToList()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}"
+                                                 class="fa fa-arrow-circle-left config-back-btn"></i></a>
+              {{selectedAgentId}}
+            </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                  *ngFor="let cluster of data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
               <div class="box card" [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'border') : ''">
-                <div class="box-body">
+                <div class="box-body" [ngClass]="{'cursor' : cluster.subagents}" (click)="showSubagentList(cluster)">
                   <div>
                     <span class="text-left ">
                       <span class="fa fa-stop pos-abt m-t-xs text-xs"
                             [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'text'): ''"></span>&nbsp;
                       <i class="fa fa-server m-l-12 m-r-xs" style="position: relative;top:1px"></i>&nbsp;
                       <span [nz-tooltip]="cluster.path"
-                        class="text text-ellipsis1 cursor" (click)="navToController(cluster, null)"
+                        class="text text-ellipsis1 cursor" (click)="navToController(cluster, null);$event.stopPropagation()"
                         [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
                     </span>
                   </div>

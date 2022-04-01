@@ -565,6 +565,9 @@ export class IdentityServiceModalComponent implements OnInit {
       deleteRequest.auditLog.ticketLink = this.comments.ticketLink;
       saveRequest.auditLog.ticketLink = this.comments.ticketLink;
     }
+     if (this.comments.isChecked) {
+       this.dataService.comments = this.comments;
+     }
     this.coreService.post('configuration/delete', deleteRequest).subscribe();
     this.coreService.post('configuration/save', saveRequest).subscribe({
       next: () => {
@@ -893,6 +896,9 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       }
       if (comments.ticketLink) {
         identityService.auditLog.ticketLink = comments.ticketLink;
+      }
+      if (comments.isChecked) {
+        this.dataService.comments = comments;
       }
     }
     this.coreService.post('iam/identityservice/store', identityService).subscribe({

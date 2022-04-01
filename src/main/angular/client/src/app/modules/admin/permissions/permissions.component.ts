@@ -701,7 +701,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             this.deletePermissionAPI(permission, result);
           }
           this.findPermissionObj(this.permissionNodes[0][0], permission.permissionPath);
-          this.updateDiagramData(this.permissionNodes[0][0]);
+          this.updateDiagramData();
         }
       });
     } else {
@@ -727,7 +727,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             this.deletePermissionAPI(permission, this.dataService.comments);
           }
           this.findPermissionObj(this.permissionNodes[0][0], permission.permissionPath);
-          this.updateDiagramData(this.permissionNodes[0][0]);
+          this.updateDiagramData();
         }
       });
     }
@@ -1089,7 +1089,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   updatePermissionList(comments, temp = []): void {
     this.unSelectedNode(this.permissionNodes[0][0], true);
     this.checkPermissionList(this.permissionNodes[0][0], clone(this.rolePermissions));
-    this.updateDiagramData(this.permissionNodes[0][0]);
+    this.updateDiagramData();
     if (this.identityServiceType === 'SHIRO') {
       if (this.controllerName) {
         this.roles[this.roleName].permissions.controllers[this.controllerName] = clone(this.rolePermissions);
@@ -1193,8 +1193,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.drawTree(this.permissionNodes[0][0], 'COLLAPSEUNSELECTED');
   }
 
-  updateDiagramData(json): void {
-    this.drawTree(json, 'UPDATEDDIAGRAM');
+  updateDiagramData(): void {
+    this.drawTree(this.permissionNodes[0][0], 'UPDATEDDIAGRAM');
   }
 
   drawTree(json, type): void {
@@ -1208,7 +1208,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       lowerMost: {x: 0, y: 0}
     };
     if (type === 'EXPANDALL') {
-
       nodes = this.nodes;
       expandAll();
       return;
@@ -1776,16 +1775,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     function updateDiagramData(nData) {
-      self.tree = d3.layout.tree()
-        .nodeSize([100, 250])
-        .separation(() => {
-          return .5;
-        });
-      let nodes = self.tree.nodes(nData);
-      self.svg.selectAll('g.permission_node')
-        .data(nodes, (permission_node) => {
-          return permission_node.id;
-        });
       toggleRectangleColour(self.rolePermissions);
     }
 

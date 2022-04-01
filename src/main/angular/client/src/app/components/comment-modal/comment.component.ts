@@ -25,6 +25,12 @@ export class CommentModalComponent implements OnInit {
   }
 
   onSubmit(): void {
+    const auditLog = {
+      comment: this.comments.comment,
+      timeSpent: this.comments.timeSpent,
+      ticketLink: this.comments.ticketLink,
+      isChecked: this.comments.isChecked
+    }
     if (this.url) {
       this.obj.auditLog = {
         comment: this.comments.comment,
@@ -34,19 +40,11 @@ export class CommentModalComponent implements OnInit {
       this.submitted = true;
       this.coreService.post(this.url, this.obj).subscribe({
         next: () => {
-          this.activeModal.close(this.comments);
+          this.activeModal.close(auditLog);
         }, error: () => this.submitted = false
       });
     } else {
-      const obj: any = {
-        comment: this.comments.comment,
-        timeSpent: this.comments.timeSpent,
-        ticketLink: this.comments.ticketLink
-      };
-      if (this.comments.isChecked) {
-        obj.reuse = true;
-      }
-      this.activeModal.close(obj);
+      this.activeModal.close(auditLog);
     }
   }
 }

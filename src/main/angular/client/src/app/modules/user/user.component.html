@@ -879,7 +879,7 @@
               </div>
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.gitManagement' | translate"
-                    *ngIf="permission.joc && securityLevel !== 'HIGH'">
+                    *ngIf="securityLevel !== 'LOW' && permission.joc && permission.joc.inventory.view">
               <div class="m-l-12">
                 <div class="row m-t-xs p-b-xs">
                   <div class="col-sm-12">
