@@ -326,11 +326,11 @@
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
                                         <a translate>common.button.edit</a>
                                       </li>
-                                      <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" nz-menu-item (click)="revoke(clusterAgent, controller)">
-                                        <a translate>agent.button.revoke</a>
-                                      </li>
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="deployAgent(clusterAgent, controller)" nz-menu-item>
                                         <a translate>inventory.button.deploy</a>
+                                      </li>
+                                      <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" nz-menu-item (click)="revoke(clusterAgent, controller)">
+                                        <a translate>agent.button.revoke</a>
                                       </li>
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="removeAgent(clusterAgent, controller, true)" nz-menu-item class="bg-hover-color">
                                         <a translate>common.button.delete</a>

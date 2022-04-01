@@ -15,11 +15,13 @@
 <form spellcheck="false">
   <div class="modal-body p-a" style="min-height: 112px">
     <div class="row">
-      <div class="col-sm-3 m-b-10" *ngIf="agentName" translate>workflow.label.agent</div>
-      <div class="col-sm-8 m-b-10 _600" *ngIf="agentName">
+      <div class="col-sm-12 m-b-10" *ngIf="agentName">
+        <span class="_600" translate>agent.label.agentName</span>:&nbsp;
         {{agentName}}
-        <i *ngIf="subagentClusterId">-</i>
-        <span class="_500 text-muted">{{subagentClusterId}}</span>
+        <span *ngIf="subagentClusterId">
+          <span class="m-l _600" translate>agent.label.subagentClusterId</span>:&nbsp;
+          {{subagentClusterId}}
+        </span>
       </div>
       <div class="col-md-12" *ngIf="isScript">
         <label class="_600 m-b-xs" *ngIf="!predicate" translate>workflow.label.script</label>

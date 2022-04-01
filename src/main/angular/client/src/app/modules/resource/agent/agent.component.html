@@ -103,15 +103,15 @@
           <div class="row " *ngIf="pageView=='grid' && data.length>0" [hidden]="loading">
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                  *ngFor="let cluster of data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
-              <div class="box card" [ngClass]="coreService.getColor(cluster.state.severity,'border')">
+              <div class="box card" [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'border') : ''">
                 <div class="box-body">
                   <div>
                     <span class="text-left ">
                       <span class="fa fa-stop pos-abt m-t-xs text-xs"
-                            [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>&nbsp;
+                            [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'text'): ''"></span>&nbsp;
                       <i class="fa fa-server m-l-12 m-r-xs" style="position: relative;top:1px"></i>&nbsp;
                       <span [nz-tooltip]="cluster.path"
-                        class="text text-ellipsis1"
+                        class="text text-ellipsis1 cursor" (click)="navToController(cluster, null)"
                         [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
                     </span>
                   </div>
@@ -121,7 +121,8 @@
                   </div>
                   <div class="text-sm text-left text-muted p-t-sm">
                     <span translate>agent.label.url</span>:
-                    <span [innerHtml]="cluster.url | highlight : agentsFilters.searchText"></span>
+                    <a class="text-hover-primary" [href]="cluster.url+'/agent/api'" target="_blank"
+                         [innerHtml]="cluster.url | highlight : agentsFilters.searchText"></a>
                   </div>
                   <div class="text-sm text-left text-muted p-t-sm">
                     <span class="text-black _600" [innerHtml]="cluster.runningTasks"></span>
@@ -168,13 +169,13 @@
                     <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
-                  <th *ngIf="!agentsFilters.isCompact" (click)="sort('url')"><a><span class="p-r-xs" translate>agent.label.url</span>
+                  <th (click)="sort('url')"><a><span class="p-r-xs" translate>agent.label.url</span>
                     <i *ngIf="agentsFilters.filter.sortBy == 'url' && !agentsFilters.reverse"
                        class="fa fa-caret-up "></i>
                     <i *ngIf="agentsFilters.filter.sortBy == 'url' && agentsFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
-                  <th *ngIf="!agentsFilters.isCompact" (click)="sort('runningTasks')"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
+                  <th (click)="sort('runningTasks')"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
                     <i *ngIf="agentsFilters.filter.sortBy == 'runningTasks' && !agentsFilters.reverse"
                        class="fa fa-caret-up "></i>
                     <i *ngIf="agentsFilters.filter.sortBy == 'runningTasks' && agentsFilters.reverse"
@@ -187,17 +188,21 @@
                              [ngForOf]="ajaxTable.data">
                   <tr [ngClass]="{'light-bg':cluster.show}">
                     <td>
-                      <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="!cluster.show"
+                      <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="cluster.state && !cluster.show"
                          (click)="showAgents(cluster)"></i>
-                      <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="cluster.show"
+                      <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="cluster.state && cluster.show"
                          (click)="hideAgents(cluster)"></i>
+                      <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="!cluster.state && !cluster.showSubagent"
+                         (click)="showSubagents(cluster)"></i>
+                      <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="!cluster.state && cluster.showSubagent"
+                         (click)="hideSubagents(cluster)"></i>
                       <span [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
                     </td>
-                    <td class="cursor" (click)="navToController(cluster)"><span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
-                    <td class="cursor" (click)="navToController(cluster)">
-                        <span [nz-tooltip]="cluster.errorMessage" class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">
-                          <span [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
-                        </span>
+                    <td class="cursor" (click)="navToController(cluster, null)"><span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
+                    <td class="cursor" (click)="navToController(cluster, null)">
+                      <span *ngIf="cluster.state" [nz-tooltip]="cluster.errorMessage" class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">
+                        <span [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
+                      </span>
                     </td>
                     <td>
                       <a class="text-hover-primary" [href]="cluster.url+'/agent/api'" target="_blank"
@@ -205,6 +210,100 @@
                     </td>
                     <td>{{cluster.runningTasks}}</td>
                   </tr>
+                  <ng-container *ngIf="cluster.showSubagent">
+                    <tr>
+                      <td colspan="2" class="custom-th" (click)="sort('subagentId', cluster)"><a><span class="p-l p-r-xs" translate>agent.label.subagentId</span>
+                        <i *ngIf="cluster.sortBy == 'subagentId' && !cluster.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="cluster.sortBy == 'subagentId' && cluster.reverse"
+                           class="fa fa-caret-down "></i></a>
+                      </td>
+                      <td class="custom-th" (click)="sort('state._text', cluster)"><a><span class="p-r-xs"
+                                                                                translate>common.label.status</span>
+                        <i *ngIf="cluster.sortBy == 'state._text' && !cluster.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="cluster.sortBy == 'state._text' && cluster.reverse"
+                           class="fa fa-caret-down "></i></a>
+                      </td>
+                      <td class="custom-th" (click)="sort('url', cluster)"><a><span class="p-r-xs" translate>agent.label.url</span>
+                        <i *ngIf="cluster.sortBy == 'url' && !cluster.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="cluster.sortBy == 'url' && cluster.reverse"
+                           class="fa fa-caret-down "></i></a>
+                      </td>
+                      <td class="custom-th" (click)="sort('runningTasks', cluster)"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
+                        <i *ngIf="cluster.sortBy == 'runningTasks' && !cluster.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="cluster.sortBy == 'runningTasks' && cluster.reverse"
+                           class="fa fa-caret-down "></i></a>
+                      </td>
+                    </tr>
+                    <ng-template ngFor let-subagent
+                             [ngForOf]="cluster.subagents | orderBy: cluster.sortBy: cluster.reverse">
+                      <tr [ngClass]="{'light-bg':cluster.show || cluster.showSubagent}">
+                        <td colspan="2">
+                          <i class="cursor fa fa-caret-down fa-lg p-r-xs m-l p-l-xs" *ngIf="!subagent.show"
+                             (click)="showAgents(subagent, true)"></i>
+                          <i class="cursor fa fa-caret-up fa-lg p-r-xs m-l p-l-xs" *ngIf="subagent.show"
+                             (click)="hideAgents(subagent, true)"></i>
+                          <span [innerHtml]="subagent.subagentId | highlight : agentsFilters.searchText"></span>
+                        </td>
+                        <td class="cursor" (click)="navToController(subagent, cluster)">
+                          <span *ngIf="subagent.state" [nz-tooltip]="subagent.errorMessage" class="label" [ngClass]="coreService.getColor(subagent.state.severity,'bg')">
+                            <span [innerHtml]="subagent.state._text | translate | highlight : agentsFilters.searchText"></span>
+                          </span>
+                        </td>
+                        <td>
+                          <a class="text-hover-primary" [href]="subagent.url+'/agent/api'" target="_blank"
+                             [innerHtml]="subagent.url | highlight : agentsFilters.searchText"></a>
+                        </td>
+                        <td>{{subagent.runningTasks}}</td>
+                      </tr>
+                      <ng-container *ngIf="subagent.show">
+                        <tr>
+                          <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                          <td class="custom-th"><span translate>order.label.workflow</span></td>
+                          <td class="custom-th"><span translate>order.label.position</span></td>
+                          <td class="custom-th"><span translate>order.label.state</span></td>
+                          <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                        </tr>
+                        <ng-container *ngIf="!subagent.loading">
+                          <tr *ngFor="let order of subagent.orders">
+                            <td> <span class="p-l">{{order.orderId}}</span> </td>
+                            <td>
+                              <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');" class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                              <a class="text-hover-primary" (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);">{{order.workflowId.path}} </a>
+                            </td>
+                            <td>
+                              <span>{{order.positionString}}</span>
+                            </td>
+                            <td>
+                              <span class="label" [ngClass]="coreService.getColor(order.state.severity,'bg')">{{order.state._text | translate}}</span>
+                            </td>
+                            <td>{{order.scheduledFor | stringToDate}}</td>
+                          </tr>
+                        </ng-container>
+                        <ng-container *ngIf="subagent.loading">
+                          <tr>
+                            <td colspan="5">
+                              <div class="text-center m-t m-b">
+                                <nz-spin nzSimple></nz-spin>
+                              </div>
+                            </td>
+                          </tr>
+                        </ng-container>
+                        <ng-container *ngIf="!subagent.loading && (!subagent.orders || subagent.orders.length  === 0)">
+                          <tr>
+                            <td colspan="5">
+                              <div style="margin-top: 8px; margin-bottom: 5px">
+                                <app-empty-data></app-empty-data>
+                              </div>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </ng-template>
+                  </ng-container>
                   <ng-container *ngIf="cluster.show">
                     <tr>
                       <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>

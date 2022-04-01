@@ -104,35 +104,37 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
     data.forEach((value) => {
       const result = {count: 1, _text: '', color: '', hoverColor: ''};
       let label: string;
-      if (value.state._text === 'COUPLED') {
-        label = 'agent.label.coupled';
-      } else if (value.state._text === 'RESETTING') {
-        label = 'agent.label.resetting';
-      } else if (value.state._text === 'RESET') {
-        label = 'agent.label.reset';
-      } else if (value.state._text === 'SHUTDOWN') {
-        label = 'agent.label.shutdown';
-      } else if (value.state._text === 'UNKNOWN') {
-        label = 'agent.label.unknown';
-      } else {
-        label = 'agent.label.couplingFailed';
-      }
-      result.color = this.coreService.getColorBySeverity(value.state.severity, false);
-      result.hoverColor = this.coreService.getColorBySeverity(value.state.severity, true);
-      this.translate.get(label).subscribe(translatedValue => {
-        result._text = translatedValue;
-      });
-      if (results.length > 0) {
-        for (let i = 0; i < results.length; i++) {
-          if (results[i]._text === result._text) {
-            result.count = result.count + results[i].count;
-            results.splice(i, 1);
-            break;
+      if (value.state) {
+        if (value.state._text === 'COUPLED') {
+          label = 'agent.label.coupled';
+        } else if (value.state._text === 'RESETTING') {
+          label = 'agent.label.resetting';
+        } else if (value.state._text === 'RESET') {
+          label = 'agent.label.reset';
+        } else if (value.state._text === 'SHUTDOWN') {
+          label = 'agent.label.shutdown';
+        } else if (value.state._text === 'UNKNOWN') {
+          label = 'agent.label.unknown';
+        } else {
+          label = 'agent.label.couplingFailed';
+        }
+        result.color = this.coreService.getColorBySeverity(value.state.severity, false);
+        result.hoverColor = this.coreService.getColorBySeverity(value.state.severity, true);
+        this.translate.get(label).subscribe(translatedValue => {
+          result._text = translatedValue;
+        });
+        if (results.length > 0) {
+          for (let i = 0; i < results.length; i++) {
+            if (results[i]._text === result._text) {
+              result.count = result.count + results[i].count;
+              results.splice(i, 1);
+              break;
+            }
           }
         }
+        this.mapObj.set(result.count + ' ' + result._text, value.state._text);
+        results.push(result);
       }
-      this.mapObj.set(result.count + ' ' + result._text, value.state._text);
-      results.push(result);
     });
     return results;
   }

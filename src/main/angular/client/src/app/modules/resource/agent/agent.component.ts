@@ -72,8 +72,19 @@ export class AgentComponent implements OnInit, OnDestroy {
           result.agents.forEach((value) => {
             const index = this.agentsFilters.expandedObjects.indexOf(value.agentId);
             if (index > -1) {
-              value.show = true;
               this.agentsFilters.expandedObjects.slice(index, 1);
+              if (value.subagents) {
+                value.showSubagent = true;
+                value.subagents.forEach((item) => {
+                  const index = this.agentsFilters.expandedObjects.indexOf(item.subagentId);
+                  if (index > -1) {
+                    value.show = true;
+                    this.agentsFilters.expandedObjects.slice(index, 1);
+                  }
+                })
+              } else {
+                 value.show = true;
+              }
             }
           });
         }
@@ -110,7 +121,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   private refresh(args): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated' ||
+        if (args.eventSnapshots[j].eventType === 'AgentAdded' || args.eventSnapshots[j].eventType === 'AgentUpdated' || args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' ||
           args.eventSnapshots[j].eventType === 'JobStateChanged' || args.eventSnapshots[j].eventType === 'AgentStateChanged' ||
           args.eventSnapshots[j].eventType === 'ProxyCoupled' ||
           args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
@@ -131,9 +142,14 @@ export class AgentComponent implements OnInit, OnDestroy {
     this.agentsFilters.entryPerPage = $event;
   }
 
-  sort(propertyName): void {
-    this.agentsFilters.reverse = !this.agentsFilters.reverse;
-    this.agentsFilters.filter.sortBy = propertyName;
+  sort(propertyName, isSubagent?): void {
+    if (isSubagent) {
+      isSubagent.reverse = !isSubagent.reverse;
+      isSubagent.sortBy = propertyName;
+    } else {
+      this.agentsFilters.reverse = !this.agentsFilters.reverse;
+      this.agentsFilters.filter.sortBy = propertyName;
+    }
   }
 
   expandDetails(): void {
@@ -167,9 +183,9 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
-  showAgents(cluster): void {
+  showAgents(cluster, isSubagent = false): void {
     cluster.show = true;
-    this.agentsFilters.expandedObjects.push(cluster.agentId);
+    this.agentsFilters.expandedObjects.push(isSubagent ? cluster.subagentId : cluster.agentId);
     cluster.loading = true;
     this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agentIds: [cluster.agentId]}).subscribe({
       next: (result: any) => {
@@ -179,17 +195,35 @@ export class AgentComponent implements OnInit, OnDestroy {
     });
   }
 
-  hideAgents(cluster): void {
-    this.agentsFilters.expandedObjects.splice(this.agentsFilters.expandedObjects.indexOf(cluster.agentId), 1);
+  hideAgents(cluster, isSubagent = false): void {
+    this.agentsFilters.expandedObjects.splice(this.agentsFilters.expandedObjects.indexOf(isSubagent ? cluster.subagentId : cluster.agentId), 1);
     cluster.show = false;
   }
 
-  navToController(agent): void {
+  showSubagents(cluster): void {
+    cluster.showSubagent = true;
+    if(!cluster.sortBy){
+      cluster.sortBy = 'subagentId';
+      cluster.reverse = false;
+    }
+    this.agentsFilters.expandedObjects.push(cluster.agentId);
+  }
+
+  hideSubagents(cluster): void {
+    this.agentsFilters.expandedObjects.splice(this.agentsFilters.expandedObjects.indexOf(cluster.agentId), 1);
+    cluster.showSubagent = false;
+  }
+
+  navToController(agent, cluster): void {
     if (this.permission.joc && this.permission.joc.administration.controllers.view) {
-      this.coreService.preferences.isFirst = false;
-      this.coreService.preferences.controllers.clear();
-      this.coreService.preferences.controllers.add(agent.controllerId);
-      this.router.navigate(['/controllers']);
+      if(cluster){
+         this.router.navigate(['/controllers/cluster_agent', cluster.controllerId, cluster.agentId]);
+      } else {
+        this.coreService.preferences.controllers.clear();
+        this.coreService.preferences.controllers.add(agent.controllerId);
+        this.coreService.preferences.controllers.add(agent.controllerId + (agent.subagents ? '$standalone$' : '$cluster$'));
+        this.router.navigate(['/controllers']);
+      }
     }
   }
 }

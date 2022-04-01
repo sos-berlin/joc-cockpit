@@ -179,6 +179,7 @@
     "label.dragAndDropFixedPriority": "Drop here for fixed-priority mode",
     "label.duplicateCluster": "Duplicate Cluster",
     "label.withGenerateSubagentCluster": "As own Cluster",
+    "label.subagentClusterId": "Subagent Cluster ID",
     "button.createToken": "Create one-time Token",
     "button.addAgent": "Add Standalone Agent",
     "button.addSubagent": "Add Subagent",
