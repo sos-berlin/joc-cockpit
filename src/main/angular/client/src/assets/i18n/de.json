@@ -1692,19 +1692,19 @@
     },
     "gitManagement": {
       "label.manageGitCredentials": "Git Zugangsdaten verwalten",
-      "label.gitAccount": "Git Account",
+      "label.gitAccount": "Git Konto",
       "label.gitServer": "Git Server",
-      "label.gitPassword": "Git Password",
-      "label.keyfilePath": "Path to Git Private Key",
-      "label.gitAccessToken": "Git Access Token",
-      "label.authenticationType": "Authentication Type",
-      "label.password": "Password",
-      "label.key": "Key",
-      "label.accessToken": "Access Token",
-      "label.credentials": "Credentials",
-      "label.remoteUris": "Remote Uris",
-      "message.deleteGitCredentials": "Deleting an git credential will permanently remove it from the credential list.",
-      "message.noCredenitalFound": "No Credenital is present"
+      "label.gitPassword": "Git Kennwort",
+      "label.keyfilePath": "Pfad zum privaten Schlüssel",
+      "label.gitAccessToken": "Git Zugangstoken",
+      "label.authenticationType": "Art der Authentifizierung",
+      "label.password": "Kennwort",
+      "label.key": "Privater Schlüssel",
+      "label.accessToken": "Zugangstoken",
+      "label.credentials": "Zugangsdaten",
+      "label.remoteUris": "Ferne URIs",
+      "message.deleteGitCredentials": "Wenn Git Zugangdaten entfernt werden, dann werden sie dauerhaft aus der Liste der Zugangsdaten gelöscht.",
+      "message.noCredenitalFound": "Keine Zugangsdaten verfügbar"
     }
   },
   "runtime": {

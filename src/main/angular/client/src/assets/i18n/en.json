@@ -1699,12 +1699,12 @@
       "label.gitAccessToken": "Git Access Token",
       "label.authenticationType": "Authentication Type",
       "label.password": "Password",
-      "label.key": "Key",
+      "label.key": "Private Key",
       "label.accessToken": "Access Token",
       "label.credentials": "Credentials",
-      "label.remoteUris": "Remote Uris",
-      "message.deleteGitCredentials": "Deleting an git credential will permanently remove it from the credential list.",
-      "message.noCredenitalFound": "No Credenital is present"
+      "label.remoteUris": "Remote URIs",
+      "message.deleteGitCredentials": "Deleting Git credentials will permanently remove them from the credentials list.",
+      "message.noCredenitalFound": "No credentials present"
     }
   },
   "runtime": {

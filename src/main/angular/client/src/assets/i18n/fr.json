@@ -1691,20 +1691,20 @@
       "tooltip.updateCertificate": "mettre à jour le certificat"
     },
     "gitManagement": {
-      "label.manageGitCredentials": "Gérer les identifiants Git",
+      "label.manageGitCredentials": "Gérer les Identifiants Git",
       "label.gitAccount": "Git Compte",
       "label.gitServer": "Git Server",
-      "label.gitPassword": "Git Mot de Passe",
-      "label.keyfilePath": "Path to Git Private Key",
+      "label.gitPassword": "Git Mot de passe",
+      "label.keyfilePath": "Chemin d'accès à la clé privée",
       "label.gitAccessToken": "Git Jeton d'accès",
-      "label.authenticationType": "Authentication Type",
-      "label.password": "Password",
-      "label.key": "Key",
-      "label.accessToken": "Access Token",
-      "label.credentials": "Credentials",
-      "label.remoteUris": "Remote Uris",
-      "message.deleteGitCredentials": "Deleting an git credential will permanently remove it from the credential list.",
-      "message.noCredenitalFound": "No Credenital is present"
+      "label.authenticationType": "Type d'authentification",
+      "label.password": "Mot de passe",
+      "label.key": "Clé privée",
+      "label.accessToken": "Jeton d'accès",
+      "label.credentials": "Identifiants",
+      "label.remoteUris": "URI distants",
+      "message.deleteGitCredentials": "La suppression des identifiants Git entraîne leur suppression définitive de la liste des identifiants.",
+      "message.noCredenitalFound": "Pas d'identifiants présents"
     }
   },
   "runtime": {
