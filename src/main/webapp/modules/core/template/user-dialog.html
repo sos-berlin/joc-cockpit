@@ -39,7 +39,7 @@
                <div class="col-sm-6">
                    <ui-select multiple ng-model="user.roles" name="role" required on-remove="removed($item, $model)" theme="bootstrap" close-on-select="false" >
                     <ui-select-match placeholder="{{'placeholder.selectRoles' | translate}}">{{$item}}</ui-select-match>
-                    <ui-select-choices repeat="role as role in roles">
+                    <ui-select-choices repeat="role as role in roles | filter: $select.search">
                       <div ng-bind-html="role | highlight: $select.search"></div>
                     </ui-select-choices>
                    </ui-select>
