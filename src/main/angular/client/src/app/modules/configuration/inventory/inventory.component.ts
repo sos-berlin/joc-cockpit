@@ -3709,7 +3709,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
     if (origin.type || this.inventoryService.isControllerObject(origin.objectType)) {
       if (!node.origin) {
-        origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
+        if (origin.configuration) {
+          origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
+        }
       }
 
       this.modal.create({

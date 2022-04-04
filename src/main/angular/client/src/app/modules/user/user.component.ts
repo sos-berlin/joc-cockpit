@@ -11,6 +11,7 @@ import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.comp
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
+import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 
 declare var $;
 
@@ -370,7 +371,7 @@ export class UserComponent implements OnInit, OnDestroy {
   keys: any;
   caCertificates: any;
   certificates: any;
-  gitCredenitals: any;
+  gitCredentials: any = {};
   configObj: any = {};
   timeZone: any = {};
   forceLoging = false;
@@ -416,7 +417,6 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   tabChange($event): void {
-    
     if (this.permission.joc) {
       if ($event.index === 2) {
         if (this.permission.joc.administration.certificates.view) {
@@ -448,7 +448,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzContent: ChangePasswordComponent,
       nzComponentParams: {
         username: this.username,
-        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':')+1)
+        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1)
       },
       nzFooter: null,
       nzClosable: false,
@@ -467,7 +467,7 @@ export class UserComponent implements OnInit, OnDestroy {
     }
   }
 
-  groupLimit(): void{
+  groupLimit(): void {
     this.isGroupBtnActive = true;
   }
 
@@ -625,12 +625,12 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   getGit(): void {
-    this.gitCredenitals = {};
+    this.gitCredentials = {};
     this.coreService.post('inventory/repository/git/credentials', {}).subscribe({
       next: (res: any) => {
-        this.gitCredenitals = res;
+        this.gitCredentials = res;
       }, error: () => {
-        this.gitCredenitals = {};
+        this.gitCredentials = {};
       }
     });
   }
@@ -642,7 +642,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         securityLevel: this.securityLevel,
-        display : this.preferences.auditLog,
+        display: this.preferences.auditLog,
         paste: true,
         type,
         data: {}
@@ -663,7 +663,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzContent: GenerateKeyComponent,
       nzComponentParams: {
-        display : this.preferences.auditLog,
+        display: this.preferences.auditLog,
         type
       },
       nzFooter: null,
@@ -684,7 +684,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzClassName: 'lg',
       nzComponentParams: {
         securityLevel: this.securityLevel,
-        display : this.preferences.auditLog,
+        display: this.preferences.auditLog,
         type
       },
       nzFooter: null,
@@ -730,6 +730,75 @@ export class UserComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
+        this.getGit();
+      }
+    });
+  }
+
+  deleteCredential(data): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true' || this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Git Credential',
+        operation: 'Delete',
+        name: data.gitAccount
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteCredentials(data, result);
+        }
+      });
+    } else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'delete',
+          message: 'deleteGitCredentials',
+          type: 'Delete',
+          objectName: data.gitAccount,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this._deleteCredentials(data, {});
+        }
+      });
+    }
+  }
+
+  private _deleteCredentials(data, comments): void {
+    let obj: any = {
+      credentials: [{
+        gitAccount: data.gitAccount,
+        gitServer: data.gitServer,
+      }]
+    };
+    obj.auditLog = {};
+    if (comments.comment) {
+      obj.auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      obj.auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      obj.auditLog.ticketLink = comments.ticketLink;
+    }
+    this.coreService.post('inventory/repository/git/credentials/remove', obj).subscribe({
+      next: () => {
         this.getGit();
       }
     });

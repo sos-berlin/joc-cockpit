@@ -1693,9 +1693,18 @@
     "gitManagement": {
       "label.manageGitCredentials": "Manage Git Credentials",
       "label.gitAccount": "Git Account",
+      "label.gitServer": "Git Server",
       "label.gitPassword": "Git Password",
-      "label.gitPrivateKey": "Git Private Key",
-      "label.gitAccessToken": "Git Access Token"
+      "label.keyfilePath": "Path to Git Private Key",
+      "label.gitAccessToken": "Git Access Token",
+      "label.authenticationType": "Authentication Type",
+      "label.password": "Password",
+      "label.key": "Key",
+      "label.accessToken": "Access Token",
+      "label.credentials": "Credentials",
+      "label.remoteUris": "Remote Uris",
+      "message.deleteGitCredentials": "Deleting an git credential will permanently remove it from the credential list.",
+      "message.noCredenitalFound": "No Credenital is present"
     }
   },
   "runtime": {

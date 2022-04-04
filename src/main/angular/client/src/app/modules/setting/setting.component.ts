@@ -183,6 +183,14 @@ export class SettingComponent implements OnInit {
     this.savePreferences(SettingComponent.generateStoreObject(tempSetting), false)
   }
 
+  checkSemicolon(e, data): boolean {
+    if (e && e.key === ';' && data.name === 'comments_for_audit_log') { // disallow semicolon
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  }
+
   changeConfiguration(form, value, isJoc): void {
     const tempSetting = this.coreService.clone(this.settings);
     if (form && form.invalid) {
@@ -195,7 +203,7 @@ export class SettingComponent implements OnInit {
     } else if (value && value.value && value.value.type === 'TIME') {
       value.value.value = SettingComponent.checkTime(value.value.value);
     }
-    if(value.name === 'force_comments_for_audit_log'){
+    if (value.name === 'force_comments_for_audit_log') {
       sessionStorage.$SOS$FORCELOGING = value.value.value;
     }
     this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc);

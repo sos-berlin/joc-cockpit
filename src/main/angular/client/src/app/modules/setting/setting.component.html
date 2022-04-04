@@ -203,7 +203,7 @@
                           <div class="m-b-n-8" *ngFor="let item of val.value.value;let m = index"
                              [ngClass]="{ 'has-error' : (((arr.dirty || arr.touched) && arr.invalid))}">
                             <input autocomplete="off" type="text" class="form-control w-xxxl" required placeholder="{{'common.placeholder.value' | translate}}{{m + 1}}"
-                                   name="{{val.name}}{{i}}{{m + 1}}" (blur)="changeConfiguration(arr, val, setting.name === 'joc')" #arr="ngModel"
+                                   name="{{val.name}}{{i}}{{m + 1}}" (keypress)="checkSemicolon($event, val)" (blur)="changeConfiguration(arr, val, setting.name === 'joc')" #arr="ngModel"
                                    [(ngModel)]="item.name">
                             <i class="text-hover-color fa fa-trash setting-cancel-btn-390"
                                (click)="removeValInArr(val, m)"></i>
