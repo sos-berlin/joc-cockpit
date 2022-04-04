@@ -65,7 +65,7 @@ export class GitModalComponent implements OnInit {
     } else {
       delete obj.credentials[0].password;
       delete obj.credentials[0].personalAccessToken;
-      if (obj.credentials[0].keyfilePath) {
+      if (!obj.credentials[0].keyfilePath) {
         obj.credentials[0].keyfilePath = '';
       }
     }

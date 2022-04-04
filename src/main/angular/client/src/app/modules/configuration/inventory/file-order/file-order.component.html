@@ -147,11 +147,11 @@
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6"
                [ngClass]="{'has-error' : (agentName.dirty || agentName.touched) && agentName.invalid}">
-            <input required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate"
+            <input required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate" id="agentId"
                class="form-control" [(ngModel)]="fileOrder.configuration.agentName" #agentName="ngModel" (blur)="onAgentChange('');saveJSON();" (ngModelChange)="onAgentChange($event)"
                [nzAutocomplete]="auto"/>
             <nz-autocomplete #auto>
-              <nz-auto-option *ngFor="let agent of nonExistAgents" [nzValue]="agent" [nzLabel]="agent">
+              <nz-auto-option (click)="selectSubagentCluster('#agentId')" *ngFor="let agent of nonExistAgents" [nzValue]="agent" [nzLabel]="agent">
                  <span class="p-l-xs">{{agent}}</span> <span class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
               </nz-auto-option>
               <nz-auto-optgroup *ngFor="let group of agentList" [nzLabel]="groupTitle">
@@ -161,7 +161,7 @@
                     <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(group);$event.stopPropagation()"></i>
                   </span>
                 </ng-template>
-                <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents.title ? agents.title : agents" [nzValue]="agents.title ? agents.title : agents">
+                <nz-auto-option (click)="selectSubagentCluster('#agentId')" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents.title ? agents.title : agents" [nzValue]="agents.title ? agents.title : agents">
                   <span *ngIf="!agents.title">{{ agents }}</span>
                   <span *ngIf="agents.title">{{agents.title}}</span>
                 </nz-auto-option>
@@ -173,6 +173,8 @@
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
+            <a class="pos-abt r-24 refresh-icon" style="top: 5px" [ngClass]="{'disabled-link': isReloading}" (click)="refreshAgents()"><i
+              class="fa fa-refresh" [ngClass]="{'fa-spin': isReloading}"></i></a>
           </div>
         </div>
         <div class="form-group row">
@@ -181,7 +183,7 @@
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6" [ngClass]="{'has-error' : (directory.dirty || directory.touched) && directory.invalid}">
-            <input type="text" #directory="ngModel" [readonly]="isTrash" class="form-control" autocomplete="off" maxlength="255"
+            <input type="text" #directory="ngModel" [readonly]="isTrash" class="form-control" autocomplete="off"
                    placeholder="{{'inventory.placeholder.directory' | translate}}"
                    name="directory" [(ngModel)]="fileOrder.configuration.directoryExpr" (blur)="saveJSON()">
           </div>
@@ -190,7 +192,7 @@
           <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.pattern' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.pattern</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input type="text" [readonly]="isTrash" class="form-control" autocomplete="off" maxlength="255"
+            <input type="text" [readonly]="isTrash" class="form-control" autocomplete="off"
                    placeholder="{{'inventory.placeholder.pattern' | translate}}"
                    name="pattern" [(ngModel)]="fileOrder.configuration.pattern" (blur)="saveJSON()">
           </div>

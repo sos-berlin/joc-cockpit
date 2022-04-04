@@ -224,7 +224,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logout(timeout: any): void {
     this.isLogout = true;
-    this.child.isLogout = true;
+    if(this.child) {
+      this.child.isLogout = true;
+    }
     this.coreService.post('authentication/logout', {}).subscribe({
       next: () => this._logout(timeout),
       error: () => this._logout(timeout)
@@ -240,9 +242,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.translate.use(preferences.locale);
   }
 
-  private getComments(): void {
+  private getComments(flag = false): void {
     if (!this.permission) {
-      this.getPermissions();
+      this.getPermissions(flag);
     }
     if (this.schedulerIds && this.schedulerIds.selected) {
       if (!this.isProfileLoaded) {
@@ -281,24 +283,29 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getPermissions(): void {
-    this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission: any) => {
-      permission.currentController = LayoutComponent.setControllerPermission(permission, this.schedulerIds);
-      this.authService.setPermission(permission);
-      this.authService.save();
-      this.permission = permission;
-      if (!sessionStorage.preferenceId) {
-        this.ngOnInit();
-      }
-      if (this.child) {
-        this.child.reloadSettings();
-      }
-      setTimeout(() => {
-        if (!this.loading) {
-          this.loadInit(false);
+  private getPermissions(flag = false): void {
+    if (!this.permission) {
+      this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission: any) => {
+        permission.currentController = LayoutComponent.setControllerPermission(permission, this.schedulerIds);
+        this.authService.setPermission(permission);
+        this.authService.save();
+        this.permission = permission;
+        if (!sessionStorage.preferenceId) {
+          this.ngOnInit();
         }
-      }, 10);
-    });
+        if (this.child) {
+          this.child.reloadSettings();
+        }
+        if(flag){
+          this.loading = true;
+        }
+        setTimeout(() => {
+          if (!this.loading) {
+            this.loadInit(false);
+          }
+        }, 10);
+      });
+    }
   }
 
   private getSchedulerIds(): void {
@@ -330,7 +337,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         }
       }, error: (err) => {
         if (err.error && (err.message === 'Access denied' || err.error.message === 'Access denied')) {
-          this.loadInit(true);
+          this.getComments(true);
         } else {
           this.getComments();
           this.router.navigate(['/start-up']);

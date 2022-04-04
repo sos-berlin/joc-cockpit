@@ -5016,6 +5016,17 @@ input[type=text][disabled] {
   }
 }
 
+.refresh-icon{
+  i {
+    opacity: 0.7;
+  }
+
+  &:hover i {
+    opacity: 1;
+    cursor: pointer;
+  }
+}
+
 .permission-node rect {
   fill: var(--white);
   stroke: #069;

@@ -832,6 +832,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   obj: any = {};
   isDisplay = true;
   isRuntimeVisible = false;
+  isReloading = false;
   fullScreen = false;
   isLengthExceed = false;
   index = 0;
@@ -982,6 +983,15 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   checkLength(): void {
     const len = JSON.stringify(this.selectedNode.job.notification).length;
     this.isLengthExceed = len > 1000;
+  }
+
+  refreshAgents(): void {
+    this.isReloading = true;
+    this.dataService.reloadTree.next({reloadAgents: true});
+    setTimeout(() => {
+      this.isReloading = false;
+      this.ref.detectChanges();
+    }, 2000)
   }
 
   updateSelectItems(): void {

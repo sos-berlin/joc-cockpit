@@ -449,7 +449,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
     let obj: any = {
       controllerId: this.yadeFilters.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxFileTransferRecords, 10),
+      limit: parseInt(this.preferences.maxFileTransferRecords, 10) || 5000,
       compact: true
     };
     if (this.showFiles) {
@@ -548,7 +548,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.isLoaded = false;
     let filter: any = {
       controllerId: this.yadeFilters.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxFileTransferRecords, 10),
+      limit: parseInt(this.preferences.maxFileTransferRecords, 10) || 5000,
       compact: true
     };
 

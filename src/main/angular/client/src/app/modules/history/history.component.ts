@@ -825,7 +825,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     const obj = {
       controllerId: this.controllerId,
       auditLogId: this.auditLogId,
-      limit: parseInt(this.preferences.maxRecords, 10)
+      limit: parseInt(this.preferences.maxRecords, 10) || 5000
     };
     this.coreService.post('daily_plan/history', obj).subscribe({
       next: (res: any) => {
@@ -920,7 +920,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     const obj = {
       date: history.date,
       controllerId: controller.controllerId,
-      limit: parseInt(this.preferences.maxRecords, 10)
+      limit: parseInt(this.preferences.maxRecords, 10) || 5000
     };
     this.coreService.post('daily_plan/history/submissions', obj).subscribe({
       next: (res) => {
@@ -935,7 +935,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
         date: history.date,
         controllerId: controller.controllerId,
         submissionTime: submission.submissionTime,
-        limit: parseInt(this.preferences.maxRecords, 10)
+        limit: parseInt(this.preferences.maxRecords, 10) || 5000
       }).subscribe({
         next: (res) => {
           submission.orderIds = res.orders || [];
@@ -1553,7 +1553,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     controller.submissions = [];
     const obj: any = {
       date: history.date,
-      limit: parseInt(this.preferences.maxRecords, 10),
+      limit: parseInt(this.preferences.maxRecords, 10) || 5000,
       controllerId: controller.controllerId
     };
     if (this.selectedFiltered5 && !isEmpty(this.selectedFiltered5)) {
@@ -1582,7 +1582,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         date: history.date,
         controllerId: controller.controllerId,
         submissionTime: submission.submissionTime,
-        limit: parseInt(this.preferences.maxRecords, 10)
+        limit: parseInt(this.preferences.maxRecords, 10) || 5000
       };
       if (this.selectedFiltered5 && !isEmpty(this.selectedFiltered5)) {
         if (this.selectedFiltered5.type && this.selectedFiltered5.type.length === 1) {
@@ -1615,7 +1615,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.isLoading = false;
     }
     let filter: any = {
-      limit: parseInt(this.preferences.maxRecords, 10)
+      limit: parseInt(this.preferences.maxRecords, 10) || 5000
     };
     let fromDate;
     let toDate;
@@ -2167,7 +2167,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       detailFilter: {
         controllerId: data.controllerId || this.schedulerIds.selected,
         commitId: data.commitId,
-        limit: parseInt(this.preferences.maxRecords, 10)
+        limit: parseInt(this.preferences.maxRecords, 10) || 5000
       }
     };
     this.coreService.post('inventory/deployment/history', obj).subscribe({
@@ -2585,7 +2585,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private convertDeployRequestBody(obj): void {
-    obj.limit = parseInt(this.preferences.maxRecords, 10);
+    obj.limit = parseInt(this.preferences.maxRecords, 10) || 5000;
     obj.timeZone = this.preferences.zone;
     if ((obj.from && typeof obj.from.getMonth === 'function')) {
       obj.from = this.coreService.convertTimeToLocalTZ(this.preferences, obj.from)._d;

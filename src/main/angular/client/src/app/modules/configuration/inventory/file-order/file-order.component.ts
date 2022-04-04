@@ -20,6 +20,8 @@ import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 
+declare const $;
+
 @Component({
   selector: 'app-file-order',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +47,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   indexOfNextAdd = 0;
   history = [];
   lastModified: any = '';
+  isReloading = false;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -127,7 +130,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-
   private checkIsAgentExist(): void {
     this.nonExistAgents = [];
     if (this.fileOrder.configuration.agentName) {
@@ -151,6 +153,20 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       }
     }
     this.ref.detectChanges();
+  }
+
+  selectSubagentCluster(id): void {
+    $(id).blur();
+    console.log('id', id)
+  }
+
+  refreshAgents(): void {
+    this.isReloading = true;
+    this.dataService.reloadTree.next({reloadAgents: true});
+    setTimeout(() => {
+      this.isReloading = false;
+      this.ref.detectChanges();
+    }, 2000)
   }
 
   private getWorkflows(): void {

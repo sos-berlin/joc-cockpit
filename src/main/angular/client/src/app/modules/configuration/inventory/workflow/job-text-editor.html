@@ -147,6 +147,8 @@
                 </nz-auto-optgroup>
               </ng-container>
             </nz-autocomplete>
+            <a class="pos-abt r-24 refresh-icon" style="top: 5px" [ngClass]="{'disabled-link': isReloading}" (click)="refreshAgents()"><i
+              class="fa fa-refresh" [ngClass]="{'fa-spin': isReloading}"></i></a>
             <div *ngIf="obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)"
                  class="text-danger help-block">
               <div *ngIf="(agentName.errors && agentName.errors.required) || obj.agent">

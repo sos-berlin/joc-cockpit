@@ -139,8 +139,8 @@ export class SettingModalComponent implements OnInit {
         if (this.data) {
           if (data) {
             this.currentObj = data.vault || {};
-            if (data.ldap) {
-              if (data.ldap.simple) {
+            if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
+              if (data.ldap && data.ldap.simple) {
                 this.userObj = data.ldap.simple;
                 if (this.userObj.iamLdapHost && (!data.ldap.expert || !data.ldap.iamLdapServerUrl)) {
                   data.ldap.iamLdapServerUrl = (this.userObj.iamLdapProtocol === 'SSL' ? 'ldaps://' : 'ldap://') + this.userObj.iamLdapHost + ':' + this.userObj.iamLdapPort;
@@ -149,7 +149,7 @@ export class SettingModalComponent implements OnInit {
                 this.userObj.iamLdapProtocol = 'PLAIN';
                 this.userObj.iamLdapPort = 389;
               }
-              if (data.ldap.expert) {
+              if (data.ldap && data.ldap.expert) {
                 this.currentObj = data.ldap.expert;
                 if (!this.userObj.iamLdapHost && this.currentObj.iamLdapServerUrl) {
                   const from = this.currentObj.iamLdapServerUrl.indexOf('//') + 2;
@@ -322,9 +322,13 @@ export class SettingModalComponent implements OnInit {
         } else if (self.data.identityServiceType.match('LDAP')) {
           if (data.simple) {
             self.userObj = data.simple;
+          } else if (data.expert) {
+            self.sync(false);
           }
           if (data.expert) {
             self.currentObj = data.expert;
+          } else if (data.simple) {
+            self.sync(true);
           }
         }
       } catch (e) {
@@ -333,6 +337,19 @@ export class SettingModalComponent implements OnInit {
         });
       }
       self.uploader.clearQueue();
+    }
+  }
+
+  private sync(isSimple): void {
+    if (isSimple) {
+      this.changeField();
+      this.changeConfiguration(this.userObj.iamLdapProtocol);
+      this.checkConfirmation(this.userObj.iamLdapAD, 'AD');
+      this.checkConfirmation(this.userObj.iamLdapADwithSamAccount, 'samAccount');
+      this.checkConfirmation(this.userObj.iamLdapWithMemberOf, 'MemberOf');
+    } else {
+      this.changeInput('URL');
+      this.checkConfirmation(this.currentObj.iamLdapUseStartTls, 'StartTls');
     }
   }
 

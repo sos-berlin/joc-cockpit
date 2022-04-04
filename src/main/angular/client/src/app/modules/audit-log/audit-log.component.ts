@@ -642,7 +642,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   exportToExcel(): void {
     let created = '', controllerId = '', category = '', account = '',
-      request = '', comment = '', timeSpend = '', ticketLink = '';
+      request = '', comment = '', timeSpend = '', ticketLink = '', requestBody = '';
     this.translate.get('auditLog.label.created').subscribe(translatedValue => {
       created = translatedValue;
     });
@@ -667,6 +667,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.translate.get('auditLog.label.ticketLink').subscribe(translatedValue => {
       ticketLink = translatedValue;
     });
+    this.translate.get('auditLog.label.requestBody').subscribe(translatedValue => {
+      requestBody = translatedValue;
+    });
     const data = [];
     for (let i = 0; i < this.auditLogs.length; i++) {
       const obj: any = {};
@@ -680,6 +683,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       obj[comment] = this.auditLogs[i].comment;
       obj[timeSpend] = this.auditLogs[i].timeSpend;
       obj[ticketLink] = this.auditLogs[i].ticketLink;
+      obj[requestBody] = this.auditLogs[i].parameters;
 
       data.push(obj);
     }
@@ -728,7 +732,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     }
     let filter: any = {
       controllerId: this.adtLog.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxAuditLogRecords, 10),
+      limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000,
       account: this.searchFilter.account ? this.searchFilter.account : undefined,
       timeZone: this.preferences.zone
     };
