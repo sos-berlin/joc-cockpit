@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>user.label.showPermission</span>:
+    {{account.accountName}}
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<div class="modal-body p-a">
+  <div *ngIf="permission.joc">
+    <app-permission-view [schedulerIds]="schedulerIds" [permission]="permission"></app-permission-view>
+  </div>
+  <div *ngIf="!isLoaded" class="loading-center text-primary text ht-260">
+    <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+  </div>
+  <div *ngIf="!permission.joc && isLoaded" class="vert-middle ht-260">
+    <div>
+      <app-empty-data></app-empty-data>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    common.button.close
+  </button>
+</div>
+

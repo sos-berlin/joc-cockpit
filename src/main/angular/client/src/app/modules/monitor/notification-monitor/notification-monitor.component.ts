@@ -12,24 +12,45 @@ import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
   selector: 'app-acknowledge-modal',
   templateUrl: './acknowledge.dialog.html'
 })
-export class AcknowledgeModalComponent {
+export class AcknowledgeModalComponent implements OnInit {
   @Input() data: any;
   submitted = false;
   comment: string;
+  display = false;
+  required = false;
+  comments: any = {};
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
   }
 
-  onSubmit(): void {
-    this.submitted = true;
-    this.coreService.post('monitoring/notification/acknowledge', {
-      ...this.data, comment: this.comment
-    }).subscribe({next: res => {
-      this.activeModal.close(res);
-    }, error: () => this.submitted = false
-    });
+  ngOnInit(): void {
+    this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    }
   }
 
+  onSubmit(): void {
+    this.submitted = true;
+    const auditLog: any = {};
+    if (this.comments.comment) {
+      auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      auditLog.ticketLink = this.comments.ticketLink;
+    }
+    this.coreService.post('monitoring/notification/acknowledge', {
+      ...this.data, ...{comment: this.comment, auditLog}
+    }).subscribe({
+      next: res => {
+        this.activeModal.close(res);
+      }, error: () => this.submitted = false
+    });
+  }
 }
 
 @Component({
@@ -212,7 +233,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
   searchInResult(): void {
     this.data = this.filters.filter.searchText ? this.searchPipe.transform(this.notifications, this.filters.filter.searchText, this.searchableProperties) : this.notifications;
     this.data = [...this.data];
-    if (this.notifications.length === 0){
+    if (this.notifications.length === 0) {
       this.filters.filter.currentPage = 1;
     }
     this.totalNotification = 0;
@@ -243,7 +264,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectAll(): void{
+  selectAll(): void {
     this.data.forEach(item => {
       if (item.type === 'ERROR') {
         this.filters.mapOfCheckedId.add(item.notificationId);
@@ -255,10 +276,10 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
     if (value && this.notifications.length > 0) {
       const notifications = this.getCurrentData(this.data, this.filters);
       notifications.forEach(item => {
-          if (item.type === 'ERROR') {
-            this.filters.mapOfCheckedId.add(item.notificationId);
-          }
-        });
+        if (item.type === 'ERROR') {
+          this.filters.mapOfCheckedId.add(item.notificationId);
+        }
+      });
     } else {
       this.filters.mapOfCheckedId.clear();
     }

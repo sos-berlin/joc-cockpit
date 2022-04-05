@@ -9,6 +9,7 @@ import {DataService} from '../data.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
+import {ShowPermissionComponent} from "../show-permission/show-permission.component";
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -492,6 +493,22 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   /* ---------------------------- Action ----------------------------------*/
+
+  showPermission(account): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowPermissionComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        identityServiceName: this.identityServiceName,
+        account
+      },
+      nzAutofocus: null,
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
 
   addUser(): void {
     const modal = this.modal.create({

@@ -20,6 +20,7 @@ import {
   SettingModalComponent
 } from './identity-service/identity-service.component';
 import {SessionTimeRegexValidator} from '../../directives/core.directive';
+import {ShowPermissionComponent} from './show-permission/show-permission.component';
 
 @NgModule({
   imports: [
@@ -48,7 +49,8 @@ import {SessionTimeRegexValidator} from '../../directives/core.directive';
     ProfilesComponent,
     PermissionsComponent,
     SessionTimeRegexValidator,
-    ConfirmationModalComponent
+    ConfirmationModalComponent,
+    ShowPermissionComponent
   ],
   providers: [
     DataService

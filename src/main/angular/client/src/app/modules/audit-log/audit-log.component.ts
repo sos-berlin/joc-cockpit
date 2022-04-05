@@ -96,7 +96,9 @@ export class SearchComponent implements OnInit {
     'DAILYPLAN',
     'DEPLOYMENT',
     'DOCUMENTATIONS',
-    'CERTIFICATES'];
+    'CERTIFICATES',
+    "SETTINGS",
+    "MONITORING"];
 
   constructor(public coreService: CoreService, private authService: AuthService) {
   }

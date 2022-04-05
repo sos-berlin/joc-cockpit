@@ -61,6 +61,9 @@
             <button type="button" class="btn-drop more-option-h" [nzDisabled]="object.checked || object.indeterminate" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
               <ul nz-menu >
+                <li nz-menu-item (click)="showPermission(account)">
+                  <a translate>user.button.showPermission</a>
+                </li>
                 <li nz-menu-item (click)="editUser(account)">
                   <a translate>common.button.edit</a>
                 </li>

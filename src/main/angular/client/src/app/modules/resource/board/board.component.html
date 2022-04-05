@@ -313,11 +313,11 @@
                                       </button>
                                       <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                         <ul nz-menu>
-                                          <li nz-menu-item (click)="delete(board, notice)" [nzDisabled]="notice.state._text === 'EXPECTED'" *ngIf="permission.currentController.noticeBoards.delete">
-                                            <a translate>resource.board.button.delete</a>
-                                          </li>
                                           <li nz-menu-item (click)="post(board, notice)" [nzDisabled]="notice.state._text !== 'EXPECTED'" *ngIf="permission.currentController.noticeBoards.post">
                                             <a translate>resource.board.button.post</a>
+                                          </li>
+                                          <li nz-menu-item (click)="delete(board, notice)" [nzDisabled]="notice.state._text === 'EXPECTED'" *ngIf="permission.currentController.noticeBoards.delete">
+                                            <a translate>resource.board.button.delete</a>
                                           </li>
                                         </ul>
                                       </nz-dropdown-menu>

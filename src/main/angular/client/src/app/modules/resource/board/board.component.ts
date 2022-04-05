@@ -10,6 +10,7 @@ import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 
 declare const $: any;
 
@@ -29,6 +30,9 @@ export class PostModalComponent implements OnInit {
   postObj: any = {};
   dateFormat: any;
   zones = [];
+  display = false;
+  required = false;
+  comments: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -38,6 +42,13 @@ export class PostModalComponent implements OnInit {
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
     this.postObj.at = 'date';
+    this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    } else {
+      this.display = this.preferences.auditLog;
+    }
     if (this.notice) {
       this.postObj.noticeId = this.notice.id;
     } else {
@@ -60,8 +71,18 @@ export class PostModalComponent implements OnInit {
       controllerId: this.controllerId,
       noticeBoardPath: this.board.path,
       noticeId: this.postObj.noticeId,
-      timeZone: this.postObj.timeZone
+      timeZone: this.postObj.timeZone,
+      auditLog: {}
     };
+    if (this.comments.comment) {
+      obj.auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      obj.auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      obj.auditLog.ticketLink = this.comments.ticketLink;
+    }
     if (this.postObj.at === 'date') {
       if (this.postObj.fromDate) {
         this.coreService.getDateAndTime(this.postObj);
@@ -74,9 +95,7 @@ export class PostModalComponent implements OnInit {
       next: (res) => {
         this.submitted = false;
         this.activeModal.close(res);
-      }, error: () => {
-        this.submitted = false;
-      }
+      }, error: () => this.submitted = false
     });
   }
 }
@@ -95,7 +114,7 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-    private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
+              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -150,35 +169,64 @@ export class SingleBoardComponent implements OnInit, OnDestroy {
   }
 
   delete(board, notice): void {
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        type: 'Delete',
-        title: 'delete',
-        message: 'deleteNotice',
-        objectName: notice.id
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        this.coreService.post('notice/delete', {
-          controllerId: this.controllerId,
-          noticeBoardPath: board.path,
-          noticeId: notice.id
-        }).subscribe(() => {
-          for (let i = 0; i < board.notices.length; i++) {
-            if (board.notices[i].id === notice.id) {
-              board.notices.splice(i, 1);
-              break;
-            }
-          }
-          board.notices = [...board.notices];
-        });
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Notice Board',
+        operation: 'Delete',
+        name: notice.id
+      };
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._delete(board, notice, result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          type: 'Delete',
+          title: 'delete',
+          message: 'deleteNotice',
+          objectName: notice.id
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe((result) => {
+        if (result) {
+          this._delete(board, notice, {});
+        }
+      });
+    }
+  }
+
+  private _delete(board, notice, comments): void {
+    this.coreService.post('notice/delete', {
+      controllerId: this.controllerId,
+      noticeBoardPath: board.path,
+      noticeId: notice.id,
+      auditLog: comments
+    }).subscribe(() => {
+      for (let i = 0; i < board.notices.length; i++) {
+        if (board.notices[i].id === notice.id) {
+          board.notices.splice(i, 1);
+          break;
+        }
       }
+      board.notices = [...board.notices];
     });
   }
 
@@ -228,10 +276,10 @@ export class BoardComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
-  @ViewChild(TreeComponent, { static: false }) child;
+  @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-    private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
+              private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -298,7 +346,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       paths = this.boardsFilters.selectedkeys;
     }
     for (let x = 0; x < paths.length; x++) {
-      obj.folders.push({ folder: paths[x], recursive: false });
+      obj.folders.push({folder: paths[x], recursive: false});
     }
     this.getBoardsList(obj);
   }
@@ -312,7 +360,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     data.isSelected = true;
     this.loading = true;
     const obj = {
-      folders: [{ folder: data.path, recursive }],
+      folders: [{folder: data.path, recursive}],
       controllerId: this.schedulerIds.selected
     };
     this.getBoardsList(obj);
@@ -498,7 +546,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.boardsFilters.expandedObjects = [data.path];
     const obj = {
       controllerId: this.schedulerIds.selected,
-      folders: [{ folder: PATH, recursive: false }]
+      folders: [{folder: PATH, recursive: false}]
     };
     this.boards = [];
     this.loading = true;
@@ -600,35 +648,64 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   delete(board, notice): void {
-    const modal = this.modal.create({
-      nzTitle: null,
-      nzContent: ConfirmModalComponent,
-      nzComponentParams: {
-        type: 'Delete',
-        title: 'delete',
-        message: 'deleteNotice',
-        objectName: notice.id
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        this.coreService.post('notice/delete', {
-          controllerId: this.schedulerIds.selected,
-          noticeBoardPath: board.path,
-          noticeId: notice.id
-        }).subscribe(() => {
-          for (let i = 0; i < board.notices.length; i++) {
-            if (board.notices[i].id === notice.id) {
-              board.notices.splice(i, 1);
-              break;
-            }
-          }
-          board.notices = [...board.notices];
-        });
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Notice Board',
+        operation: 'Delete',
+        name: notice.id
+      };
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._delete(board, notice, result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          type: 'Delete',
+          title: 'delete',
+          message: 'deleteNotice',
+          objectName: notice.id
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe((result) => {
+        if (result) {
+          this._delete(board, notice, {});
+        }
+      });
+    }
+  }
+
+  private _delete(board, notice, comments): void {
+    this.coreService.post('notice/delete', {
+      controllerId: this.schedulerIds.selected,
+      noticeBoardPath: board.path,
+      noticeId: notice.id,
+      auditLog: comments
+    }).subscribe(() => {
+      for (let i = 0; i < board.notices.length; i++) {
+        if (board.notices[i].id === notice.id) {
+          board.notices.splice(i, 1);
+          break;
+        }
       }
+      board.notices = [...board.notices];
     });
   }
 

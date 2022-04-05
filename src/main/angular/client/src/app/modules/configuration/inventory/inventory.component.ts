@@ -4724,7 +4724,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     this.coreService.post('inventory/store', request).subscribe((res: any) => {
       obj.valid = res.valid;
-      if (obj.path === this.selectedObj.path && obj.name === this.selectedObj.name && obj.objectType === this.selectedObj.type) {
+      if (obj.path === this.selectedObj.path && obj.name === this.selectedObj.name && request.objectType === this.selectedObj.type) {
         this.type = undefined;
         this.selectedData.valid = res.valid;
         this.selectedData.deployed = res.deployed;
