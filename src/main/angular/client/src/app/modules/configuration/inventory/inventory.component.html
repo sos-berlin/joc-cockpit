@@ -337,9 +337,9 @@
         [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
       <a translate>inventory.button.export</a>
     </li>
-    <li nz-submenu [nzTitle]="'inventory.button.repository' | translate" *ngIf="(!node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
+    <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu [nzTitle]="'inventory.button.repository' | translate" *ngIf="(!node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
       <ul>
-        <li nz-submenu [nzTitle]="'inventory.button.local' | translate">
+        <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu [nzTitle]="'inventory.button.local' | translate">
           <ul>
             <li nz-menu-item (click)="repositoryOperation(node, 'store', 'LOCAL');">
               <a translate>inventory.button.storeTo</a>
@@ -350,9 +350,23 @@
             <li nz-menu-item (click)="repositoryOperation(node, 'delete', 'LOCAL');">
               <a translate>inventory.button.deleteFrom</a>
             </li>
+            <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
+                *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')" [nzTitle]="'inventory.button.git' | translate">
+              <ul>
+                <li nz-menu-item (click)="gitClone(node.origin, 'LOCAL');">
+                  <a translate>inventory.button.clone</a>
+                </li>
+                <li nz-menu-item (click)="gitPull(node.origin, 'LOCAL');">
+                  <a translate>inventory.button.pull</a>
+                </li>
+                <li nz-menu-item (click)="gitPush(node.origin, 'LOCAL');">
+                  <a translate>inventory.button.push</a>
+                </li>
+              </ul>
+            </li>
           </ul>
         </li>
-        <li nz-submenu [nzTitle]="'inventory.button.rollout' | translate">
+        <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu [nzTitle]="'inventory.button.rollout' | translate">
           <ul>
             <li nz-menu-item (click)="repositoryOperation(node, 'store', 'ROLLOUT');">
               <a translate>inventory.button.storeTo</a>
@@ -362,6 +376,20 @@
             </li>
             <li nz-menu-item (click)="repositoryOperation(node, 'delete', 'ROLLOUT');">
               <a translate>inventory.button.deleteFrom</a>
+            </li>
+            <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
+                *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')" [nzTitle]="'inventory.button.git' | translate">
+              <ul>
+                <li nz-menu-item (click)="gitClone(node, 'ROLLOUT');">
+                  <a translate>inventory.button.clone</a>
+                </li>
+                <li nz-menu-item (click)="gitPull(node.origin, 'ROLLOUT');">
+                  <a translate>inventory.button.pull</a>
+                </li>
+                <li nz-menu-item (click)="gitPush(node.origin, 'ROLLOUT');">
+                  <a translate>inventory.button.push</a>
+                </li>
+              </ul>
             </li>
           </ul>
         </li>

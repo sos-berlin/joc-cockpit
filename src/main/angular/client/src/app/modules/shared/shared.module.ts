@@ -51,6 +51,7 @@ import {FileTransferSearchComponent} from '../file-transfer/file-transfer.compon
 import {AuditLogInputComponent} from '../../components/audit-log-input/audit-log-input.component';
 import {WorkflowTreeStructureComponent} from '../../components/workflow-tree-structure/workflow-tree-structure.component';
 import {SearchComponent} from '../../components/search/search.component';
+import {PermissionViewComponent} from "../../components/permission-view/permission-view.component";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule, NzAutocompleteModule,
@@ -63,7 +64,7 @@ const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFrom
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator, RelativeDateRegexValidator,
   ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
-  StartUpModalComponent, TreeComponent, ValueEditorComponent, WorkflowTreeStructureComponent, SearchComponent];
+  StartUpModalComponent, TreeComponent, ValueEditorComponent, WorkflowTreeStructureComponent, SearchComponent, PermissionViewComponent];
 
 @NgModule({
   imports: [

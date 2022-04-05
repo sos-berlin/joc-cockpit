@@ -388,7 +388,7 @@ export class SettingComponent implements OnInit {
 
   private savePreferences(tempSetting, isJoc): void {
     if (this.permission.joc.administration.settings.manage) {
-      if ((this.preferences.auditLog || sessionStorage.$SOS$FORCELOGING == 'true') && !this.auditLog.comment ) {
+      if ((this.preferences.auditLog || sessionStorage.$SOS$FORCELOGING == 'true') && !this.auditLog.comment) {
         let comments = {
           radio: 'predefined',
           type: 'Settings',

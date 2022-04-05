@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="operation === 'clone' && category === 'LOCAL'" translate>inventory.label.cloneToLocal</span>
+    <span *ngIf="operation === 'push' && category === 'LOCAL'" translate>inventory.label.pushToLocal</span>
+    <span *ngIf="operation === 'clone' && category !== 'LOCAL'" translate>inventory.label.cloneToRollout</span>
+    <span *ngIf="operation === 'push' && category !== 'LOCAL'" translate>inventory.label.pushToRollout</span>:
+    {{data.path}}
+  </h4>
+  <button type="button" class="close" (click)="activeModal.destroy()" aria-label="Close">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="hide" [ngClass]="{'show': display}">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div class="form-group row" *ngIf="operation === 'clone'">
+      <label class="col-md-3 form-control-label" translate>inventory.label.gitUri
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-md-6" [ngClass]="{'has-error' : ((remoteUri.dirty || remoteUri.touched) && remoteUri.invalid)}">
+        <input type="text" required class="form-control" name="remoteUri"
+               placeholder="{{'inventory.placeholder.enterRemoteUri' | translate}}"
+               #remoteUri="ngModel" [(ngModel)]="object.remoteUri" [appAutofocus]="true" autocomplete="off">
+        <div *ngIf="remoteUri.invalid && (remoteUri.dirty || remoteUri.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(remoteUri.errors && remoteUri.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="operation === 'push'">
+      <label class="col-sm-3 form-control-label" translate>inventory.label.gitMessage</label>
+      <div class="col-sm-6">
+        <textarea rows="5" class="form-control" maxlength="255" name="message"
+                  [(ngModel)]="message"
+                  placeholder="{{'inventory.placeholder.enterGitMessage' | translate}}"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)"
+            class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

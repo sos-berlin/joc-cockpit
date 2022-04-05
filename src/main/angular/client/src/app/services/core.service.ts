@@ -1606,7 +1606,11 @@ export class CoreService {
             if (data[type].match(/\\/)) {
               data[type] = JSON.stringify(data[type]);
             } else {
-              data[type] = endChar === "$" ? data[type] : '"' + data[type] + '"';
+              if(data[type].match(/\s+env\(/) || data[type].match(/\s+scheduledOrEmpty\(/) ||
+              data[type].match(/\s+jobResourceVariable\(/) || data[type].match(/\s+replaceAll\(/) || data[type].match(/\s+toFile\(/)){
+              } else {
+                data[type] = endChar === "$" ? data[type] : '"' + data[type] + '"';
+              }
             }
           }
         } else {

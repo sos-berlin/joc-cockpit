@@ -757,7 +757,7 @@ export class CronImportModalComponent implements OnInit {
       obj.systemCrontab = this.requestObj.systemCrontab;
       obj.agentName = this.requestObj.agentName;
       obj.calendarName = this.requestObj.calendarName;
-      if(this.requestObj.agentName1) {
+      if (this.requestObj.agentName1) {
         obj.subagentClusterId = this.requestObj.agentName;
         obj.agentName = this.requestObj.agentName1;
       }
@@ -1968,6 +1968,94 @@ export class RepositoryComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-git-modal',
+  templateUrl: './git-dialog.html'
+})
+export class GitComponent implements OnInit {
+  @Input() controllerId;
+  @Input() preferences;
+  @Input() data: any;
+  @Input() operation: string;
+  @Input() category: string;
+  @Input() display: boolean;
+  submitted = false;
+  required = false;
+  comments: any = {radio: 'predefined'};
+  object: any = {
+    folder: '',
+    category: ''
+  };
+  message = '';
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    this.object.folder = this.data.path;
+    this.object.category = this.category;
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    if (this.comments.comment) {
+      this.object.auditLog = {};
+      this.object.auditLog.comment = this.comments.comment;
+      if (this.comments.timeSpent) {
+        this.object.auditLog.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        this.object.auditLog.ticketLink = this.comments.ticketLink;
+      }
+    }
+    if (this.operation == 'clone') {
+      this.coreService.post('inventory/repository/git/clone', this.object).subscribe({
+        next: (res) => {
+          console.log(res)
+          this.activeModal.close('Done');
+        }, error: () => {
+          this.submitted = false;
+        }
+      });
+    } else {
+      this.coreService.post('inventory/repository/git/add', this.object).subscribe({
+        next: (res) => {
+          console.log(res)
+          this.commitAndPush();
+        }, error: () => {
+          this.submitted = false;
+        }
+      });
+    }
+  }
+
+  private commitAndPush(): void {
+    this.coreService.post('inventory/repository/git/commit', {
+      ...this.object, message: this.message
+    }).subscribe({
+      next: (res) => {
+        this.coreService.post('inventory/repository/git/push', this.object).subscribe({
+          next: (res) => {
+            this.activeModal.close('Done');
+          }, error: () => {
+            this.submitted = false;
+          }
+        });
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
+
+@Component({
   selector: 'app-import-modal-content',
   templateUrl: './import-dialog.html'
 })
@@ -2735,6 +2823,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.selectedObj.type = res.navigate.type;
           this.selectedObj.name = res.navigate.name;
           this.recursivelyExpandTree();
+        } else if (res.reloadAgents) {
+          this.getAgents();
         }
       }
     });
@@ -2744,6 +2834,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
     this.initConf(true);
   }
 
@@ -3558,6 +3649,79 @@ export class InventoryComponent implements OnInit, OnDestroy {
           }
         }, 750);
       }
+    });
+  }
+
+  gitClone(data, category): void {
+    this.openGitModal(data, category, 'clone');
+  }
+
+  gitPull(data, category): void {
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Folder',
+        operation: 'Git pull',
+        name: data.path
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._gitPull(data, category, {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          });
+        }
+      });
+    } else {
+      this._gitPull(data, category, {});
+    }
+  }
+
+  private _gitPull(data, category, auditLog): void {
+    this.coreService.post('inventory/repository/git/pull', {
+      folder: data.path,
+      category,
+      auditLog
+    }).subscribe((res: any) => {
+      console.log(res)
+    });
+  }
+
+  gitPush(data, category): void {
+    this.openGitModal(data, category, 'push');
+  }
+
+  private openGitModal(data, category, operation): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: GitComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzComponentParams: {
+        controllerId: this.schedulerIds.selected,
+        preferences: this.preferences,
+        display: this.preferences.auditLog,
+        data,
+        operation,
+        category
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe((res) => {
+
     });
   }
 

@@ -13,7 +13,7 @@ import {CalendarService} from '../../../services/calendar.service';
 import {
   CreateFolderModalComponent, CreateObjectModalComponent, CronImportModalComponent,
   DeployComponent,
-  ExportComponent, ImportWorkflowModalComponent,
+  ExportComponent, GitComponent, ImportWorkflowModalComponent,
   InventoryComponent, JsonEditorModalComponent, RepositoryComponent,
   SingleDeployComponent, UploadModalComponent
 } from './inventory.component';
@@ -44,8 +44,8 @@ import {UpdateJobComponent} from './update-job/update-job.component';
 import {UpdateObjectComponent} from './update-object/update-object.component';
 import {ScriptComponent} from './script/script.component';
 
-const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent, RepositoryComponent,
-  CreateFolderModalComponent, CreateObjectModalComponent, ImportWorkflowModalComponent, CronImportModalComponent, JsonEditorModalComponent,
+const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
+  CreateObjectModalComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, JsonEditorModalComponent,
   UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent,
   AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
 
