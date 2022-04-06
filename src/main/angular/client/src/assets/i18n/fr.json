@@ -549,7 +549,8 @@
     "tooltip.useDefault": "Utiliser comme personnalisation par défaut"
   },
   "dashboard": {
-    "label.agentClusterStatus": "État des Agents",
+    "label.agentStatus": "Agent Status",
+    "label.agentClusterStatus": "Agent Cluster Status",
     "label.agentRunningJobs": "Tâches en cours d'exécution",
     "label.clusterStatus": "État du Cluster",
     "label.componentStatus": "État des Composants",
@@ -618,7 +619,8 @@
     "button.removeFromInventory": "supprimer de l'inventaire",
     "button.viewAllAgentsDetails": "Voir tous les détails de l'Agent",
     "message.noWidgetFound": "Aucun widget à ajouter",
-    "message.agentClusterStatus": "Le widget graphique circulaire identifie le statut actuel des Agents.",
+    "message.agentStatus": "The Pie Chart widget identifies the current status of Agents",
+    "message.agentClusterStatus": "The Pie Chart widget identifies the current status of Agent clusters",
     "message.agentClusterRunningTasks": "Le widget Diagramme à barres identifie les tâches en cours sur les Agents.",
     "message.js7ClusterStatus": "Le widget Flow Chart identifie l'état actuel des Clusters Contrôleurs",
     "message.js7Status": "Ce widget affiche l'état des instances du Contrôleur/JOC Cockpit",

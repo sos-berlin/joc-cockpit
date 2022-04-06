@@ -549,7 +549,8 @@
     "tooltip.useDefault": "Use as default customization"
   },
   "dashboard": {
-    "label.agentClusterStatus": "Agent Status",
+    "label.agentStatus": "Agent Status",
+    "label.agentClusterStatus": "Agent Cluster Status",
     "label.agentRunningJobs": "Agent Running Jobs",
     "label.clusterStatus": "Cluster Status",
     "label.componentStatus": "Component Status",
@@ -618,7 +619,8 @@
     "button.removeFromInventory": "Remove from Inventory",
     "button.viewAllAgentsDetails": "View all Agent details",
     "message.noWidgetFound": "No widget found to add",
-    "message.agentClusterStatus": "The Pie Chart widget identifies the current status of Agents",
+    "message.agentStatus": "The Pie Chart widget identifies the current status of Agents",
+    "message.agentClusterStatus": "The Pie Chart widget identifies the current status of Agent clusters",
     "message.agentClusterRunningTasks": "The Bar Chart widget identifies running Tasks on Agents",
     "message.js7ClusterStatus": "The Flow Chart widget identifies the current status of Controller Clusters",
     "message.js7Status": "This widget displays the status of Controller/JOC Cockpit instances",

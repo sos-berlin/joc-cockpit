@@ -549,7 +549,8 @@
     "tooltip.useDefault": "デフォルトカスタマイズとして使用"
   },
   "dashboard": {
-    "label.agentClusterStatus": "エージェントステータス",
+    "label.agentStatus": "Agent Status",
+    "label.agentClusterStatus": "Agent Cluster Status",
     "label.agentRunningJobs": "ジョブ実行中エージェント",
     "label.clusterStatus": "クラスターステータス",
     "label.componentStatus": "システムステータス",
@@ -618,7 +619,8 @@
     "button.removeFromInventory": " インベントリーから削除",
     "button.viewAllAgentsDetails": "エージェント詳細表示",
     "message.noWidgetFound": "追加できるウィジェットはありません",
-    "message.agentClusterStatus": "エージェントクラスターステータス・パイチャート",
+    "message.agentStatus": "The Pie Chart widget identifies the current status of Agents",
+    "message.agentClusterStatus": "The Pie Chart widget identifies the current status of Agent clusters",
     "message.agentClusterRunningTasks": "エージェント毎の実行タスク棒グラフ",
     "message.js7ClusterStatus": "コントローラークラスターステータス表示チャート",
     "message.js7Status": "コントローラー/JOC表示",

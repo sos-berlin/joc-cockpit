@@ -549,7 +549,8 @@
     "tooltip.useDefault": "Personalisierung als Voreinstellung verwenden"
   },
   "dashboard": {
-    "label.agentClusterStatus": "Agenten - Status",
+    "label.agentStatus": "Agent Status",
+    "label.agentClusterStatus": "Agent Cluster Status",
     "label.agentRunningJobs": "Agenten - Jobs in Ausführung",
     "label.clusterStatus": "Cluster Status",
     "label.componentStatus": "Komponenten-Status",
@@ -618,7 +619,8 @@
     "button.removeFromInventory": "Aus dem Inventar entfernen",
     "button.viewAllAgentsDetails": "Details aller Agenten",
     "message.noWidgetFound": "Keine Darstellungskomponente zum Hinzufügen gefunden",
-    "message.agentClusterStatus": "Tortendiagramm zur Anzeige des aktuellen Agent Cluster Status",
+    "message.agentStatus": "The Pie Chart widget identifies the current status of Agents",
+    "message.agentClusterStatus": "The Pie Chart widget identifies the current status of Agent clusters",
     "message.agentClusterRunningTasks": "Balkendiagramm zur Anzeige laufender Prozesse mit Agenten",
     "message.js7ClusterStatus": "Flussdiagramm zur Anzeige des aktuellen Controller Cluster Status",
     "message.js7Status": "Das Steuerelement zeigt die Übersicht der Controller und JOC Cockpit Instanzen",
