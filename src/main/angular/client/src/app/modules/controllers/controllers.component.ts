@@ -774,6 +774,10 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
+  resetSubagent(sub, clusterAgent, controller, force = false): void {
+
+  }
+
   disableAgent(agent, controller): void {
     this.enableDisable(agent, controller, true);
   }

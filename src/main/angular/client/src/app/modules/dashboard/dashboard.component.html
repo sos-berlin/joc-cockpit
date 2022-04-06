@@ -47,8 +47,11 @@
               <div class="destroy-button">
                   <i *ngIf="editLayoutObj" (mousedown)="$event.stopPropagation()" class="fa fa-times-circle" [nz-tooltip]="'common.button.remove' | translate" (click)="removeWidget($event, item)"></i>
               </div>
-              <div *ngIf="item.name === 'agentClusterStatus'">
+              <div *ngIf="item.name === 'agentStatus'">
                   <app-agent-status [layout]="item"></app-agent-status>
+              </div>
+              <div *ngIf="item.name === 'agentClusterStatus'">
+                  <app-agent-cluster-status [layout]="item"></app-agent-cluster-status>
               </div>
               <div *ngIf="item.name === 'componentStatus'">
                   <app-controller-cluster [sizeY]="item.rows" [permission]="permission"></app-controller-cluster>

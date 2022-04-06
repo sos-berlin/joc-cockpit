@@ -6,7 +6,7 @@
 </div>
 <div class="modal-body p-a-md min-ht-200">
   <div class="form-group row p-b b-b" *ngFor="let widget of widgets" [hidden]="widget.visible">
-    <img class="pull-left m-l" src="./assets/images/{{widget.name}}.png" alt="" width="120px" height="60px">
+    <img class="pull-left m-l" src="./assets/images/{{widget.name == 'agentStatus' ? 'agentClusterStatus' : widget.name}}.png" alt="" width="120px" height="60px">
     <div class="col-sm-6">
       <label class="font14 text-dark m-b-0" [innerHtml]="'dashboard.label.'+widget.name | translate"></label>
       <p class="text-sm text-muted" >{{'dashboard.'+widget.message | translate}}</p>

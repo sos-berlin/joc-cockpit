@@ -42,6 +42,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   dashboardLayout: Array<any> = [];
   widgets: Array<any> = [];
   subscription: any;
+  hasLicense = false;
   isLoading = false;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
@@ -237,6 +238,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.hasLicense = sessionStorage.hasLicense == 'true';
     this.checkPermission();
   }
 
@@ -260,20 +262,42 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboard = [];
     if (this.preferences.dashboardLayout) {
       this.dashboardLayout = this.preferences.dashboardLayout;
+      if (this.dashboardLayout.length > 0 && !this.dashboardLayout[0].id) {
+        for (const i in this.dashboardLayout) {
+          if (this.dashboardLayout[i].name === 'agentClusterStatus') {
+            this.dashboardLayout[i].id = 'agentStatus';
+            this.dashboardLayout[i].name = 'agentStatus';
+            this.dashboardLayout[i].message = 'message.agentStatus';
+            this.dashboardLayout.push({
+              'cols': 4,
+              'rows': 3,
+              'y': 11,
+              'x': 4,
+              'id': 'agentClusterStatus',
+              'name': 'agentClusterStatus',
+              'visible': false,
+              'message': 'message.agentClusterStatus'
+            });
+            break;
+          }
+        }
+      }
     } else {
       this.dashboardLayout = [{
         'cols': 4,
         'rows': 3,
         'y': 6,
         'x': 4,
-        'name': 'agentClusterStatus',
+        'id': 'agentStatus',
+        'name': 'agentStatus',
         'visible': true,
-        'message': 'message.agentClusterStatus'
+        'message': 'message.agentStatus'
       }, {
         'cols': 4,
         'rows': 3,
         'y': 6,
         'x': 8,
+        'id': 'agentRunningJobs',
         'name': 'agentRunningJobs',
         'visible': true,
         'message': 'message.agentClusterRunningTasks'
@@ -282,6 +306,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 6,
         'y': 0,
         'x': 4,
+        'id': 'componentStatus',
         'name': 'componentStatus',
         'visible': true,
         'message': 'message.js7ClusterStatus'
@@ -290,6 +315,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 3,
         'y': 9,
         'x': 0,
+        'id': 'JS7Status',
         'name': 'JS7Status',
         'visible': true,
         'message': 'message.js7Status'
@@ -298,6 +324,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 3,
         'y': 0,
         'x': 0,
+        'id': 'orders',
         'name': 'orders',
         'visible': true,
         'message': 'message.ordersOverview'
@@ -306,6 +333,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 2,
         'y': 3,
         'x': 0,
+        'id': 'history',
         'name': 'history',
         'visible': true,
         'message': 'message.historySummary'
@@ -314,6 +342,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 2,
         'y': 7,
         'x': 0,
+        'id': 'inventory',
         'name': 'inventory',
         'visible': true,
         'message': 'message.inventoryStatistics'
@@ -322,6 +351,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 2,
         'y': 5,
         'x': 0,
+        'id': 'dailyPlan',
         'name': 'dailyPlan',
         'visible': true,
         'message': 'message.dailyPlanOverview'
@@ -330,15 +360,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
         'rows': 2,
         'y': 11,
         'x': 0,
+        'id': 'fileTransferSummary',
         'name': 'fileTransferSummary',
         'visible': false,
         'message': 'message.fileTransferHistorySummary'
+      }, {
+        'cols': 4,
+        'rows': 3,
+        'y': 11,
+        'x': 4,
+        'id': 'agentClusterStatus',
+        'name': 'agentClusterStatus',
+        'visible': false,
+        'message': 'message.agentClusterStatus'
       }];
     }
 
     if (this.permission.joc) {
       for (let i = 0; i < this.dashboardLayout.length; i++) {
-        if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.currentController.agents.view) {
+        if (this.dashboardLayout[i].name === 'agentStatus' && this.permission.currentController.agents.view) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.currentController.agents.view && this.hasLicense) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'agentRunningJobs' && this.permission.currentController.agents.view) {
           this.widgets.push(this.dashboardLayout[i]);

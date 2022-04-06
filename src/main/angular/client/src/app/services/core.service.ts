@@ -1567,8 +1567,9 @@ export class CoreService {
                 return;
               } else if (mainStr === 'true' || mainStr === 'false') {
                 return;
-              } else if (/^(now\()/i.test(mainStr) || /^(env\()/i.test(mainStr) || /^(toFile\()/i.test(mainStr) || /^(replaceAll\()/i.test(mainStr)
-                || /^(jobResourceVariable\()/g.test(mainStr) || /^(scheduledOrEmpty\()/g.test(mainStr)) {
+              } else if (/^(now\()/i.test(mainStr) || /^(variable\()/i.test(data[type]) || /^(env\()/i.test(mainStr)
+                || /^(toFile\()/i.test(mainStr) || /^(replaceAll\()/i.test(mainStr) || /^(jobResourceVariable\()/g.test(mainStr)
+                || /^(scheduledOrEmpty\()/g.test(mainStr) || /^([0-9])+(.toString)$/g.test(data[type]) || /^(JobResource:)/g.test(data[type])) {
                 return;
               } else if (mainStr.substring(0, 1) === '$') {
                 const str = mainStr.substring(1, data[type].length);
@@ -1594,22 +1595,27 @@ export class CoreService {
     if (data[type]) {
       if (data[type] === 'true' || data[type] === 'false') {
       } else if (/^\d+$/.test(data[type])) {
-      } else if (/^(now\()/i.test(data[type]) || /^(env\()/i.test(data[type]) || /^(toFile\()/i.test(data[type]) || /^(replaceAll\()/i.test(data[type])
-        || /^(jobResourceVariable\()/g.test(data[type]) || /^(scheduledOrEmpty\()/g.test(data[type])) {
+      } else if (/^(now\()/i.test(data[type]) || /^(variable\()/i.test(data[type]) || /^(env\()/i.test(data[type])
+        || /^(toFile\()/i.test(data[type]) || /^(replaceAll\()/i.test(data[type]) || /^(jobResourceVariable\()/g.test(data[type])
+        || /^(scheduledOrEmpty\()/g.test(data[type]) || /^([0-9])+(.toString)$/g.test(data[type]) || /^(JobResource:)/g.test(data[type])) {
       } else if (typeof data[type] == 'string') {
         const startChar = data[type].substring(0, 1);
         const endChar = data[type].substring(data[type].length - 1);
         if (startChar !== '$') {
           if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
           } else {
-            data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
-            if (data[type].match(/\\/)) {
-              data[type] = JSON.stringify(data[type]);
+            if (/\s+(\++)\s+/g.test(data[type])) {
+
             } else {
-              if(data[type].match(/\s+env\(/) || data[type].match(/\s+scheduledOrEmpty\(/) ||
-              data[type].match(/\s+jobResourceVariable\(/) || data[type].match(/\s+replaceAll\(/) || data[type].match(/\s+toFile\(/)){
+              if (data[type].match('.toNumber')) {
+
               } else {
-                data[type] = endChar === "$" ? data[type] : '"' + data[type] + '"';
+                data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
+                if (data[type].match(/\\/)) {
+                  data[type] = JSON.stringify(data[type]);
+                } else {
+                  data[type] = endChar === "$" ? data[type] : '"' + data[type] + '"';
+                }
               }
             }
           }

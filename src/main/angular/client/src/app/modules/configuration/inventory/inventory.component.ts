@@ -1016,11 +1016,11 @@ export class ExportComponent implements OnInit {
       next: (res: any) => {
         let mergeObj: any = {};
         if (res.length > 1) {
-          if (res[0].name && res[1].name) {
+          if (res[0].path && res[1].path) {
             mergeObj = this.mergeDeep(res[0], res[1]);
-          } else if (res[0].name && !res[1].name) {
+          } else if (res[0].path && !res[1].path) {
             mergeObj = res[0];
-          } else if (!res[0].name && res[1].name) {
+          } else if (!res[0].path && res[1].path) {
             mergeObj = res[1];
           }
         } else {
@@ -1483,11 +1483,11 @@ export class RepositoryComponent implements OnInit {
       next: (res: any) => {
         let mergeObj: any = {};
         if (res.length > 1) {
-          if (res[0].name && res[1].name) {
+          if (res[0].path && res[1].path) {
             mergeObj = this.mergeDeep(res[0], res[1]);
-          } else if (res[0].name && !res[1].name) {
+          } else if (res[0].path && !res[1].path) {
             mergeObj = res[0];
-          } else if (!res[0].name && res[1].name) {
+          } else if (!res[0].path && res[1].path) {
             mergeObj = res[1];
           }
         } else {

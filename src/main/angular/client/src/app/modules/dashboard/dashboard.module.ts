@@ -15,6 +15,7 @@ import {ActionComponent, CommentModalComponent} from './action/action.component'
 import {ControllerClusterComponent} from './controller-cluster/controller-cluster.component';
 import {InventoryStatisticsComponent} from './inventory-statistics/inventory-statistics.component';
 import {FileTransferHistorySummaryComponent} from './file-transfer-history-summary/file-transfer-history-summary.component';
+import {AgentClusterStatusComponent} from "./agent-cluster-status/agent-cluster-status.component";
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import {FileTransferHistorySummaryComponent} from './file-transfer-history-summa
     FileTransferHistorySummaryComponent,
     OrderOverviewComponent,
     AgentStatusComponent,
+    AgentClusterStatusComponent,
     AgentRunningTaskComponent,
     ControllerClusterComponent,
     SchedulerInstanceComponent,

@@ -678,6 +678,8 @@
                             <div class="col-sm-5">
                               <span class="_600" translate>profile.gitManagement.label.gitServer</span>:
                               <span class="p-l-xs">{{cred.gitServer}}</span>
+                              <i (click)="editCredential(cred)" nz-icon nzType="edit" nzTheme="outline"
+                                 class="text-hover-color m-l-12"></i>
                               <i (click)="deleteCredential(cred)" nz-icon nzType="delete" nzTheme="outline"
                                  class="text-hover-color m-l-12"></i>
                             </div>

@@ -13,7 +13,10 @@
         <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
       </div>
       <div class="form-group row" [ngClass]="{'has-error' : ((noticeId.dirty || noticeId.touched) && noticeId.invalid)}">
-        <label class="col-sm-4 form-control-label" translate>resource.board.label.noticeId</label>
+        <label class="col-sm-4 form-control-label" translate>
+          resource.board.label.noticeId
+          <sup class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-6">
           <input type="text" class="form-control" [readOnly]="notice" name="noticeId" placeholder="{{'resource.board.placeholder.enterNoticeId' | translate}}"
                  [(ngModel)]="postObj.noticeId" required [appAutofocus]="true" autocomplete="off" #noticeId="ngModel"/>
@@ -34,7 +37,10 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="postObj.at == 'later'">
-        <label class="col-sm-4 form-control-label" translate>common.label.time</label>
+        <label class="col-sm-4 form-control-label" translate>
+          common.label.time
+          <sup class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
           <input relativeDateValidatorRegex type="text" #time="ngModel" class="form-control" required
                  name="atTime" [(ngModel)]="postObj.atTime" placeholder="+1(s|m|h|d|w|M|y)">
@@ -47,7 +53,10 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="postObj.at == 'date'">
-        <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime</label>
+        <label class="col-sm-4 form-control-label" translate>
+          workflow.label.enterDateAndTime
+          <sup class="text-danger text-sm">*</sup>
+        </label>
         <div class="col-sm-6" [ngClass]="{ 'has-error' : (date.dirty || date.touched) && date.invalid}">
           <nz-date-picker required [nzDisabledDate]="disabledDate" [nzFormat]="dateFormat" name="date"
                           #date="ngModel" [(ngModel)]="postObj.fromDate"></nz-date-picker>

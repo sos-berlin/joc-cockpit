@@ -461,7 +461,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
         auditLog: {},
         identityServiceName: this.userDetail.identityServiceName,
       };
-
       if (comments) {
         if (comments.comment) {
           obj.auditLog.comment = comments.comment;
@@ -509,6 +508,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     });
   }
+
 
   addUser(): void {
     const modal = this.modal.create({

@@ -21,9 +21,10 @@ declare var $;
 })
 export class GitModalComponent implements OnInit {
   @Input() display: any;
-
+  @Input() data: any;
   required = false;
   submitted = false;
+  isShow = false;
   comments: any = {};
   gitObject: any = {};
   object: any = {
@@ -38,6 +39,16 @@ export class GitModalComponent implements OnInit {
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.required = true;
       this.display = true;
+    }
+    if (this.data) {
+      this.gitObject = this.coreService.clone(this.data);
+      if (this.data.password) {
+        this.object.type = 'password';
+      } else if (this.data.personalAccessToken) {
+        this.object.type = 'accessToken';
+      } else {
+        this.object.type = 'key';
+      }
     }
   }
 
@@ -68,6 +79,12 @@ export class GitModalComponent implements OnInit {
       if (!obj.credentials[0].keyfilePath) {
         obj.credentials[0].keyfilePath = '';
       }
+    }
+    if(this.data){
+      this.coreService.post('inventory/repository/git/credentials/remove', {
+        auditLog: obj.auditLog,
+        gitServers: [this.data.gitServer]
+      }).subscribe();
     }
     this.coreService.post('inventory/repository/git/credentials/add', obj).subscribe({
       next: () => {
@@ -716,12 +733,21 @@ export class UserComponent implements OnInit, OnDestroy {
   /* ------------- Git Management-------------- */
 
   addGitCredential(): void {
+    this.openCredentialModal(null);
+  }
+
+  editCredential(data): void {
+    this.openCredentialModal(data);
+  }
+
+  private openCredentialModal(data): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: GitModalComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        display: this.preferences.auditLog
+        display: this.preferences.auditLog,
+        data
       },
       nzFooter: null,
       nzAutofocus: null,
@@ -782,10 +808,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   private _deleteCredentials(data, comments): void {
     let obj: any = {
-      credentials: [{
-        gitAccount: data.gitAccount,
-        gitServer: data.gitServer,
-      }]
+      gitServers: [data.gitServer]
     };
     obj.auditLog = {};
     if (comments.comment) {

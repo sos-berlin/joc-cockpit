@@ -159,9 +159,13 @@ export class AgentComponent implements OnInit, OnDestroy {
   expandDetails(): void {
     const ids = [];
     this.data.forEach((value) => {
-      value.show = true;
+      if (value.subagents) {
+        value.showSubagent = true;
+      } else {
+        value.show = true;
+        ids.push(value.agentId);
+      }
       value.loading = true;
-      ids.push(value.agentId);
       this.agentsFilters.expandedObjects = ids;
     });
     this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agents: ids}).subscribe({
@@ -183,7 +187,11 @@ export class AgentComponent implements OnInit, OnDestroy {
   collapseDetails(): void {
     this.agentsFilters.expandedObjects = [];
     this.data.forEach((value) => {
-      value.show = false;
+      if (value.subagents) {
+        value.showSubagent = false;
+      } else {
+        value.show = false;
+      }
     });
   }
 
@@ -205,7 +213,16 @@ export class AgentComponent implements OnInit, OnDestroy {
     cluster.loading = true;
     this.coreService.post('agents', {controllerId: this.schedulerIds.selected, agentIds: [cluster.agentId]}).subscribe({
       next: (result: any) => {
-        cluster.orders = result.agents[0].orders;
+        if (isSubagent) {
+          for (let i in result.agents[0].subagents) {
+            if (cluster.subagentId == result.agents[0].subagents[i].subagentId) {
+               cluster.orders = result.agents[0].subagents[i].orders;
+              break
+            }
+          }
+        } else {
+          cluster.orders = result.agents[0].orders;
+        }
         cluster.loading = false;
       }, error: () => cluster.loading = false
     });

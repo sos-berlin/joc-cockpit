@@ -108,21 +108,26 @@
             </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                  *ngFor="let cluster of data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
-              <div class="box card" [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'border') : ''">
+              <div class="box card" [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'border') : cluster.healthState ? coreService.getColor(cluster.healthState.severity,'border') : ''">
                 <div class="box-body" [ngClass]="{'cursor' : cluster.subagents}" (click)="showSubagentList(cluster)">
                   <div>
                     <span class="text-left ">
                       <span class="fa fa-stop pos-abt m-t-xs text-xs"
-                            [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'text'): ''"></span>&nbsp;
+                            [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'text'): cluster.healthState ? coreService.getColor(cluster.healthState.severity,'text') : ''"></span>&nbsp;
                       <i class="fa fa-server m-l-12 m-r-xs" style="position: relative;top:1px"></i>&nbsp;
                       <span [nz-tooltip]="cluster.path"
                         class="text text-ellipsis1 cursor" (click)="navToController(cluster, null);$event.stopPropagation()"
                         [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
                     </span>
                   </div>
-                  <div class="text-sm text-left text-muted p-t-sm">
+                  <div class="text-sm text-left text-muted p-t-xs">
                     <span translate>agent.label.agentName</span>:
                     <span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span>
+                  </div>
+                  <div class="text-sm text-left text-muted p-t-xs">
+                    <span translate>common.label.status</span>:
+                    <span *ngIf="cluster.state" [innerHtml]="cluster.state._text | highlight : agentsFilters.searchText"></span>
+                    <span *ngIf="!cluster.state && cluster.healthState" [innerHtml]="cluster.healthState._text | highlight : agentsFilters.searchText"></span>
                   </div>
                   <div class="text-sm text-left text-muted p-t-sm">
                     <span translate>agent.label.url</span>:
@@ -191,22 +196,26 @@
                 <tbody>
                 <ng-template ngFor let-cluster
                              [ngForOf]="ajaxTable.data">
-                  <tr [ngClass]="{'light-bg':cluster.show}">
+                  <tr [ngClass]="{'light-bg':cluster.show, 'disabled-row': cluster.disabled}">
                     <td>
-                      <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="cluster.state && !cluster.show"
+                      <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="cluster.url && !cluster.show"
                          (click)="showAgents(cluster)"></i>
-                      <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="cluster.state && cluster.show"
+                      <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="cluster.url && cluster.show"
                          (click)="hideAgents(cluster)"></i>
-                      <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="!cluster.state && !cluster.showSubagent"
+                      <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="!cluster.url && !cluster.showSubagent"
                          (click)="showSubagents(cluster)"></i>
-                      <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="!cluster.state && cluster.showSubagent"
+                      <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="!cluster.url && cluster.showSubagent"
                          (click)="hideSubagents(cluster)"></i>
                       <span [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
+                      <i class="text-muted" *ngIf="cluster.disabled">agent.label.disabled</i>
                     </td>
                     <td class="cursor" (click)="navToController(cluster, null)"><span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
                     <td class="cursor" (click)="navToController(cluster, null)">
                       <span *ngIf="cluster.state" [nz-tooltip]="cluster.errorMessage" class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">
                         <span [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
+                      </span>
+                      <span *ngIf="!cluster.state && cluster.healthState" [nz-tooltip]="cluster.errorMessage" class="label" [ngClass]="coreService.getColor(cluster.healthState.severity,'bg')">
+                        <span [innerHtml]="cluster.healthState._text | translate | highlight : agentsFilters.searchText"></span>
                       </span>
                     </td>
                     <td>
@@ -309,7 +318,7 @@
                       </ng-container>
                     </ng-template>
                   </ng-container>
-                  <ng-container *ngIf="cluster.show">
+                  <ng-container *ngIf="cluster.show && !cluster.subagents">
                     <tr>
                       <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
                       <td class="custom-th"><span translate>order.label.workflow</span></td>
