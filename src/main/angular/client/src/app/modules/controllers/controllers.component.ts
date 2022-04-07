@@ -411,8 +411,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.object.mapOfCheckedId.clear();
-        this.object.mapOfCheckedId2.clear();
+        this.resetCheckbox();
         this.getTokens(false);
       }
     });
@@ -479,8 +478,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         auditLog
       }).subscribe();
     });
-    this.object.mapOfCheckedId.clear();
-    this.object.mapOfCheckedId2.clear();
+    this.resetCheckbox();
   }
 
   deployAll(): void {
@@ -522,12 +520,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.object.mapOfCheckedId2.forEach((k, v) => {
       this.coreService.post('agents/inventory/cluster/deploy', {
         controllerId: k,
-        subagentIds: [v],
+        clusterAgentIds: [v],
         auditLog
       }).subscribe();
     });
-    this.object.mapOfCheckedId.clear();
-    this.object.mapOfCheckedId2.clear();
+    this.resetCheckbox();
   }
 
   addAgent(controller): void {
@@ -1042,6 +1039,17 @@ export class ControllersComponent implements OnInit, OnDestroy {
       controller.checked = count === controller.agents.length;
       controller.indeterminate = count > 0 && !controller.checked;
     }
+  }
+
+  private resetCheckbox(): void {
+    this.object.mapOfCheckedId.clear();
+    this.object.mapOfCheckedId2.clear();
+    this.controllers.forEach((controller) => {
+      controller.checked = false;
+      controller.checked2 = false;
+      controller.indeterminate = false;
+      controller.indeterminate2 = false;
+    });
   }
 
   private mergeTokenData(controllerId, agentId, obj): void {

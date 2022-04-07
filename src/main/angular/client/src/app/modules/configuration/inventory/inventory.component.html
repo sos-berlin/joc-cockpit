@@ -353,13 +353,13 @@
             <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
                 *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')" [nzTitle]="'inventory.button.git' | translate">
               <ul>
-                <li nz-menu-item (click)="gitClone(node.origin, 'LOCAL');">
+                <li [nzDisabled]="node.origin.repoControlled" nz-menu-item (click)="gitClone(node.origin, 'LOCAL');">
                   <a translate>inventory.button.clone</a>
                 </li>
-                <li nz-menu-item (click)="gitPull(node.origin, 'LOCAL');">
+                <li [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPull(node.origin, 'LOCAL');">
                   <a translate>inventory.button.pull</a>
                 </li>
-                <li nz-menu-item (click)="gitPush(node.origin, 'LOCAL');">
+                <li [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPush(node.origin, 'LOCAL');">
                   <a translate>inventory.button.push</a>
                 </li>
               </ul>
@@ -380,13 +380,13 @@
             <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
                 *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')" [nzTitle]="'inventory.button.git' | translate">
               <ul>
-                <li nz-menu-item (click)="gitClone(node, 'ROLLOUT');">
+                <li [nzDisabled]="node.origin.repoControlled" nz-menu-item (click)="gitClone(node.origin, 'ROLLOUT');">
                   <a translate>inventory.button.clone</a>
                 </li>
-                <li nz-menu-item (click)="gitPull(node.origin, 'ROLLOUT');">
+                <li [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPull(node.origin, 'ROLLOUT');">
                   <a translate>inventory.button.pull</a>
                 </li>
-                <li nz-menu-item (click)="gitPush(node.origin, 'ROLLOUT');">
+                <li [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPush(node.origin, 'ROLLOUT');">
                   <a translate>inventory.button.push</a>
                 </li>
               </ul>
