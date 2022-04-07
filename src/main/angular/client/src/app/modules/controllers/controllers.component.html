@@ -142,11 +142,11 @@
                               <i *ngIf="controller.sortBy == 'syncState._text' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
-                          <th nzWidth="100px" (click)="sort(controller, 'disabled')">
-                            <a><span class="p-r-xs" translate>agent.label.disabled</span>
-                              <i *ngIf="controller.sortBy == 'disabled' && !controller.reverse"
+                          <th nzWidth="100px" (click)="sort(controller, 'hidden')">
+                            <a><span class="p-r-xs" translate>agent.label.hidden</span>
+                              <i *ngIf="controller.sortBy == 'hidden' && !controller.reverse"
                                  class="fa fa-caret-up "></i>
-                              <i *ngIf="controller.sortBy == 'disabled' && controller.reverse"
+                              <i *ngIf="controller.sortBy == 'hidden' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
                           <th nzWidth="140px" (click)="sort(controller, 'clusterWatcher')">
@@ -194,11 +194,11 @@
                                   <li (click)="resetAgent(agent, controller, true)" nz-menu-item >
                                     <a translate>agent.button.resetForced</a>
                                   </li>
-                                  <li (click)="disableAgent(agent, controller)" nz-menu-item *ngIf="!agent.disabled">
-                                    <a translate>agent.button.disable</a>
+                                  <li (click)="disableAgent(agent, controller)" nz-menu-item *ngIf="!agent.hidden">
+                                    <a translate>agent.button.hide</a>
                                   </li>
-                                  <li (click)="enableAgent(agent, controller)" nz-menu-item *ngIf="agent.disabled">
-                                    <a translate>agent.button.enable</a>
+                                  <li (click)="enableAgent(agent, controller)" nz-menu-item *ngIf="agent.hidden">
+                                    <a translate>agent.button.show</a>
                                   </li>
                                   <li (click)="deployAgent(agent, controller, true)" nz-menu-item>
                                     <a translate>inventory.button.deploy</a>
@@ -223,7 +223,7 @@
                                    [ngClass]="coreService.getColor(agent.syncState.severity, 'bg')"
                                    [innerHtml]="agent.syncState._text | translate"></label>
                           </td>
-                          <td (click)="editAgent(agent, controller)">{{agent.disabled ? 'Yes' : 'No'}}</td>
+                          <td (click)="editAgent(agent, controller)">{{agent.hidden ? 'Yes' : 'No'}}</td>
                           <td (click)="editAgent(agent, controller)">{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
                           <td>
                             <span *ngIf="!agent.token">-</span>

@@ -48,7 +48,7 @@
           <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}">{{'dashboard.button.terminate' | translate}}</a>
         </li>
         <li nz-menu-item
-            (click)="clusterAction('terminateAndRestart', controller,false)" *ngIf="controllerPermission && controllerPermission.restart && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
+            (click)="clusterAction('terminateAndRestart', controller,false)" *ngIf="controllerPermission && controllerPermission.restart && controllerPermission.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')">
           <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}">{{'dashboard.button.terminateAndRestart' | translate}}</a>
         </li>
         <li nz-menu-item

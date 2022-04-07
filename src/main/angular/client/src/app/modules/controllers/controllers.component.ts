@@ -808,19 +808,19 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          agent.disabled = flag;
+          agent.hidden = flag;
           this.coreService.post('agents/inventory/store', obj).subscribe({
             error: () => {
-              agent.disabled = !flag;
+              agent.hidden = !flag;
             }
           });
         }
       });
     } else {
-      agent.disabled = flag;
+      agent.hidden = flag;
       this.coreService.post('agents/inventory/store', obj).subscribe({
         error: () => {
-          agent.disabled = !flag;
+          agent.hidden = !flag;
         }
       });
     }
@@ -971,7 +971,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     } else {
       if (value && controller.agents.length > 0) {
         controller.agents.forEach(item => {
-          if (!item.disabled) {
+          if (!item.hidden) {
             this.object.mapOfCheckedId.set(item.agentId, controller.controllerId);
           }
         });

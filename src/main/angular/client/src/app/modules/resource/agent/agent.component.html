@@ -196,8 +196,9 @@
                 <tbody>
                 <ng-template ngFor let-cluster
                              [ngForOf]="ajaxTable.data">
-                  <tr [ngClass]="{'light-bg':cluster.show, 'disabled-row': cluster.disabled}">
+                  <tr [ngClass]="{'light-bg':cluster.show}">
                     <td>
+                      <i nz-tooltip="{{'agent.label.disabled' | translate}}" *ngIf="!cluster.url" class="fa fa-server pos-abt font11" style="left: -1px;top:-1px"></i>
                       <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="cluster.url && !cluster.show"
                          (click)="showAgents(cluster)"></i>
                       <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="cluster.url && cluster.show"
@@ -207,7 +208,6 @@
                       <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="!cluster.url && cluster.showSubagent"
                          (click)="hideSubagents(cluster)"></i>
                       <span [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
-                      <i class="text-muted" *ngIf="cluster.disabled">agent.label.disabled</i>
                     </td>
                     <td class="cursor" (click)="navToController(cluster, null)"><span [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
                     <td class="cursor" (click)="navToController(cluster, null)">
@@ -226,10 +226,16 @@
                   </tr>
                   <ng-container *ngIf="cluster.showSubagent">
                     <tr>
-                      <td colspan="2" class="custom-th" (click)="sort('subagentId', cluster)"><a><span class="p-l p-r-xs" translate>agent.label.subagentId</span>
+                      <td class="custom-th" (click)="sort('subagentId', cluster)"><a><span class="p-l p-r-xs" translate>agent.label.subagentId</span>
                         <i *ngIf="cluster.sortBy == 'subagentId' && !cluster.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="cluster.sortBy == 'subagentId' && cluster.reverse"
+                           class="fa fa-caret-down "></i></a>
+                      </td>
+                      <td class="custom-th" (click)="sort('isDirector', cluster)"><a><span class="p-r-xs" translate>agent.label.role</span>
+                        <i *ngIf="cluster.sortBy == 'isDirector' && !cluster.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="cluster.sortBy == 'isDirector' && cluster.reverse"
                            class="fa fa-caret-down "></i></a>
                       </td>
                       <td class="custom-th" (click)="sort('state._text', cluster)"><a><span class="p-r-xs"
@@ -255,7 +261,7 @@
                     <ng-template ngFor let-subagent
                              [ngForOf]="cluster.subagents | orderBy: cluster.sortBy: cluster.reverse">
                       <tr [ngClass]="{'light-bg':cluster.show || cluster.showSubagent, 'disabled-row': subagent.disabled}">
-                        <td colspan="2">
+                        <td>
                           <i [nz-tooltip]="'agent.label.disabled' | translate" *ngIf="subagent.disabled" class="fa fa-ban pos-abt t-1" style="left: 0"></i>
                           <i class="cursor fa fa-caret-down fa-lg p-r-xs m-l p-l-xs" *ngIf="!subagent.show"
                              (click)="showAgents(subagent, true)"></i>
@@ -263,6 +269,7 @@
                              (click)="hideAgents(subagent, true)"></i>
                           <span [innerHtml]="subagent.subagentId | highlight : agentsFilters.searchText"></span>
                         </td>
+                        <td class="cursor" (click)="navToController(subagent, cluster)">{{subagent.isDirector | translate}}</td>
                         <td class="cursor" (click)="navToController(subagent, cluster)">
                           <span *ngIf="subagent.state" [nz-tooltip]="subagent.errorMessage" class="label" [ngClass]="coreService.getColor(subagent.state.severity,'bg')">
                             <span [innerHtml]="subagent.state._text | translate | highlight : agentsFilters.searchText"></span>

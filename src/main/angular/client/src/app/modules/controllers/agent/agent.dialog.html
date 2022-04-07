@@ -177,9 +177,9 @@
       </div>
     </div>
     <div class="row" *ngIf="!new && !isCluster">
-      <label class="col-sm-3" translate>agent.label.disabled</label>
+      <label class="col-sm-3" translate>agent.label.hidden</label>
       <div class="col-sm-6">
-        <label nz-checkbox [(ngModel)]="agent.disabled" name="disabled"></label>
+        <label nz-checkbox [(ngModel)]="agent.hidden" name="hidden"></label>
       </div>
     </div>
     <ng-container *ngIf="isCluster && !new">

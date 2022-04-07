@@ -5342,7 +5342,13 @@ div.min-ht-widget-controller-status {
 tr.disabled-row td:not(.menu) {
   opacity: .7;
   pointer-events: none !important;
-  cursor: not-allowed !important
+  cursor: not-allowed !important;
+
+  i.fa {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
 }
 
 #clusterStatusContainer {
