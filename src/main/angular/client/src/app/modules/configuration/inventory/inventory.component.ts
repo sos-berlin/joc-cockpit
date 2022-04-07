@@ -2856,7 +2856,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private getAgents(): void {
-    this.coreService.getAgents(this.inventoryService, this.schedulerIds.selected);
+  
+    if (this.permission.controllerDefaults && this.permission.controllerDefaults.agents.view) {
+      this.coreService.getAgents(this.inventoryService, this.schedulerIds.selected);
+    }
   }
 
   initTree(path, mainPath, redirect = false): void {
@@ -3707,7 +3710,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: undefined,
       nzContent: GitComponent,
-      nzClassName: 'lg',
       nzAutofocus: null,
       nzComponentParams: {
         controllerId: this.schedulerIds.selected,
@@ -3877,7 +3879,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
           origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
         }
       }
-
       this.modal.create({
         nzTitle: undefined,
         nzContent: SingleDeployComponent,

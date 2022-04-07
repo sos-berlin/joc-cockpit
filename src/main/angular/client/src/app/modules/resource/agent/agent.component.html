@@ -254,8 +254,9 @@
                     </tr>
                     <ng-template ngFor let-subagent
                              [ngForOf]="cluster.subagents | orderBy: cluster.sortBy: cluster.reverse">
-                      <tr [ngClass]="{'light-bg':cluster.show || cluster.showSubagent}">
+                      <tr [ngClass]="{'light-bg':cluster.show || cluster.showSubagent, 'disabled-row': subagent.disabled}">
                         <td colspan="2">
+                          <i [nz-tooltip]="'agent.label.disabled' | translate" *ngIf="subagent.disabled" class="fa fa-ban pos-abt t-1" style="left: 0"></i>
                           <i class="cursor fa fa-caret-down fa-lg p-r-xs m-l p-l-xs" *ngIf="!subagent.show"
                              (click)="showAgents(subagent, true)"></i>
                           <i class="cursor fa fa-caret-up fa-lg p-r-xs m-l p-l-xs" *ngIf="subagent.show"

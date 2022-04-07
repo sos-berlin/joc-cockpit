@@ -473,7 +473,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       }).subscribe();
     })
     this.object.mapOfCheckedId2.forEach((k, v) => {
-      this.coreService.post('agents/delete', {
+      this.coreService.post('agent/delete', {
         controllerId: k,
         agentId: v,
         auditLog

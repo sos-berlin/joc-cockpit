@@ -84,8 +84,15 @@ export class GitModalComponent implements OnInit {
       this.coreService.post('inventory/repository/git/credentials/remove', {
         auditLog: obj.auditLog,
         gitServers: [this.data.gitServer]
-      }).subscribe();
+      }).subscribe(() => {
+        this.store(obj);
+      });
+    } else {
+      this.store(obj);
     }
+  }
+
+  private store(obj): void {
     this.coreService.post('inventory/repository/git/credentials/add', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
@@ -642,7 +649,6 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   getGit(): void {
-    this.gitCredentials = {};
     this.coreService.post('inventory/repository/git/credentials', {}).subscribe({
       next: (res: any) => {
         this.gitCredentials = res;
