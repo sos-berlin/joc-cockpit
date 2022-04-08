@@ -90,7 +90,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       minRows: 1,
       maxRows: 100,
       maxItemCols: 100,
-      minItemCols: 4,
+      minItemCols: 2,
       maxItemRows: 100,
       minItemRows: 1,
       maxItemArea: 2400,

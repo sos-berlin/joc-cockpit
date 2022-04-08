@@ -20,7 +20,7 @@
       </label>
       <div class="col-sm-6">
         <input type="text" class="form-control" name="name" [(ngModel)]="gitObject.gitServer" required
-          #server="ngModel" autocomplete="off" />
+          #server="ngModel" [appAutofocus]="true" autocomplete="off" />
         <div *ngIf="server.invalid && (server.dirty || server.touched)" class="text-danger help-block">
           <div *ngIf="server.errors.required">
             <div translate>common.message.requiredError</div>
@@ -35,9 +35,39 @@
       </label>
       <div class="col-sm-6">
         <input type="text" class="form-control" name="accountName" [(ngModel)]="gitObject.gitAccount" required
-          #accountName="ngModel" [appAutofocus]="true" autocomplete="off" />
+          #accountName="ngModel" autocomplete="off" />
         <div *ngIf="accountName.invalid && (accountName.dirty || accountName.touched)" class="text-danger help-block">
           <div *ngIf="accountName.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+        <div class="form-group row"
+      [ngClass]="{'has-error' : ((username.dirty || username.touched) && username.invalid)}">
+      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.userName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" name="username" [(ngModel)]="gitObject.username" required
+          #username="ngModel" autocomplete="off" />
+        <div *ngIf="username.invalid && (username.dirty || username.touched)" class="text-danger help-block">
+          <div *ngIf="username.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row"
+      [ngClass]="{'has-error' : ((email.dirty || email.touched) && email.invalid)}">
+      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.emailAddress
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <input type="email" class="form-control" name="email" [(ngModel)]="gitObject.email" required
+          #email="ngModel" autocomplete="off" />
+        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger help-block">
+          <div *ngIf="email.errors.required">
             <div translate>common.message.requiredError</div>
           </div>
         </div>

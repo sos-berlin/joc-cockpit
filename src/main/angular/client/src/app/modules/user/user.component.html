@@ -660,7 +660,7 @@
                     <div class="m-t-xs">
                       <div class="row">
                         <div class="col-md-12">
-                          <div class="pos-abt r-12 z-index-99">
+                          <div class="pos-abt r-12 t-n-xs z-index-99">
                             <button class="btn btn-sm btn-grey" (click)="addGitCredential()">
                               <i nz-icon nzType="plus" nzTheme="outline"></i>
                             </button>
@@ -670,19 +670,42 @@
                           <span class="text-dark _600 font14" translate>profile.gitManagement.label.credentials</span>
                         </div>
                         <div class="col-md-12 m-t-sm" *ngIf="gitCredentials.credentials">
-                          <div class="role" *ngFor="let cred of gitCredentials.credentials">
-                            <div class="col-sm-4">
-                              <span class="_600" translate>profile.gitManagement.label.gitAccount</span>:
-                              <span class="p-l-xs">{{cred.gitAccount}}</span>
-                            </div>
-                            <div class="col-sm-5">
-                              <span class="_600" translate>profile.gitManagement.label.gitServer</span>:
-                              <span class="p-l-xs">{{cred.gitServer}}</span>
-                              <i (click)="editCredential(cred)" nz-icon nzType="edit" nzTheme="outline"
-                                 class="text-hover-color m-l-12"></i>
-                              <i (click)="deleteCredential(cred)" nz-icon nzType="delete" nzTheme="outline"
-                                 class="text-hover-color m-l-12"></i>
-                            </div>
+                          <div class="table-responsive m-t-xs">
+                            <table class="table table-hover">
+                              <thead>
+                              <tr>
+                                <th class="no-borders" style="width: 60px"><span translate>common.label.action</span></th>
+                                <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitServer</span></th>
+                                <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitAccount</span></th>
+                                <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.userName</span></th>
+                                <th class="no-borders"><span translate>profile.gitManagement.label.emailAddress</span></th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr *ngFor="let cred of gitCredentials.credentials | orderBy:'gitAccount'; let i = index">
+                                <td>
+                                  <div class="btn-group dropdown">
+                                    <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i
+                                      class="fa fa-ellipsis-h"></i></button>
+                                    <nz-dropdown-menu #option="nzDropdownMenu">
+                                      <ul nz-menu >
+                                        <li nz-menu-item (click)="editCredential(cred)">
+                                          <a translate>common.button.edit</a>
+                                        </li>
+                                        <li nz-menu-item (click)="deleteCredential(cred)" class="bg-hover-color">
+                                          <a translate>common.button.delete</a>
+                                        </li>
+                                      </ul>
+                                    </nz-dropdown-menu>
+                                  </div>
+                                </td>
+                                <td class="cursor" (click)="editCredential(cred)">{{cred.gitServer}}</td>
+                                <td class="cursor" (click)="editCredential(cred)">{{cred.gitAccount}}</td>
+                                <td class="cursor" (click)="editCredential(cred)">{{cred.username}}</td>
+                                <td class="cursor" (click)="editCredential(cred)">{{cred.email}}</td>
+                              </tr>
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                         <div class="m-l-12 p-l-xs"

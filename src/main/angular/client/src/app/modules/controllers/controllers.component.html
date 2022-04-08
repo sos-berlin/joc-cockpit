@@ -182,11 +182,21 @@
                                       [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                 <ul nz-menu >
+                                  <li (click)="editAgent(agent, controller)" nz-menu-item >
+                                    <a translate>common.button.edit</a>
+                                  </li>
+                                  <li (click)="deployAgent(agent, controller, true)" nz-menu-item>
+                                    <a translate>inventory.button.deploy</a>
+                                  </li>
                                   <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller, agent)" nz-menu-item>
                                     <a translate>agent.button.createToken</a>
                                   </li>
-                                  <li (click)="editAgent(agent, controller)" nz-menu-item >
-                                    <a translate>common.button.edit</a>
+                                  <li nz-menu-divider></li>
+                                  <li (click)="disableAgent(agent, controller)" nz-menu-item *ngIf="!agent.hidden">
+                                    <a translate>agent.button.hide</a>
+                                  </li>
+                                  <li (click)="enableAgent(agent, controller)" nz-menu-item *ngIf="agent.hidden">
+                                    <a translate>agent.button.show</a>
                                   </li>
                                   <li (click)="resetAgent(agent, controller)" nz-menu-item >
                                     <a translate>agent.button.reset</a>
@@ -194,15 +204,7 @@
                                   <li (click)="resetAgent(agent, controller, true)" nz-menu-item >
                                     <a translate>agent.button.resetForced</a>
                                   </li>
-                                  <li (click)="disableAgent(agent, controller)" nz-menu-item *ngIf="!agent.hidden">
-                                    <a translate>agent.button.hide</a>
-                                  </li>
-                                  <li (click)="enableAgent(agent, controller)" nz-menu-item *ngIf="agent.hidden">
-                                    <a translate>agent.button.show</a>
-                                  </li>
-                                  <li (click)="deployAgent(agent, controller, true)" nz-menu-item>
-                                    <a translate>inventory.button.deploy</a>
-                                  </li>
+                                  <li nz-menu-divider></li>
                                   <li (click)="removeAgent(agent, controller)" nz-menu-item class="bg-hover-color">
                                     <a translate>common.button.delete</a>
                                   </li>
@@ -313,25 +315,26 @@
                                   <button type="button" class="btn-drop more-option-h" [nzDisabled]="controller.checked2 || controller.indeterminate2" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                     <ul nz-menu >
-                                      <li (click)="navToController(controller.controllerId, clusterAgent.agentId)" nz-menu-item>
-                                        <a translate>agent.button.manageCluster</a>
+                                      <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
+                                        <a translate>common.button.edit</a>
                                       </li>
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="addSubagent(clusterAgent, controller)" nz-menu-item>
                                         <a translate>agent.button.addSubagent</a>
+                                      </li>
+                                      <li (click)="navToController(controller.controllerId, clusterAgent.agentId)" nz-menu-item>
+                                        <a translate>agent.button.manageCluster</a>
                                       </li>
                                       <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller, clusterAgent)" nz-menu-item>
                                         <a translate>agent.button.createToken</a>
                                       </li>
                                       <li nz-menu-divider *ngIf="permission.joc && permission.joc.administration.controllers.manage"></li>
-                                      <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
-                                        <a translate>common.button.edit</a>
-                                      </li>
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="deployAgent(clusterAgent, controller)" nz-menu-item>
                                         <a translate>inventory.button.deploy</a>
                                       </li>
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" nz-menu-item (click)="revoke(clusterAgent, controller)">
                                         <a translate>agent.button.revoke</a>
                                       </li>
+                                      <li nz-menu-divider *ngIf="permission.joc && permission.joc.administration.controllers.manage"></li>
                                       <li *ngIf="permission.joc && permission.joc.administration.controllers.manage" (click)="removeAgent(clusterAgent, controller, true)" nz-menu-item class="bg-hover-color">
                                         <a translate>common.button.delete</a>
                                       </li>
@@ -410,21 +413,20 @@
                                         <li (click)="editSubagent(sub, clusterAgent, controller)" nz-menu-item >
                                           <a translate>common.button.edit</a>
                                         </li>
+                                        <li nz-menu-divider></li>
+                                        <li (click)="disableEnableSubagent(sub, controller, false)" nz-menu-item *ngIf="!sub.disabled">
+                                          <a translate>agent.button.disable</a>
+                                        </li>
+                                        <li (click)="disableEnableSubagent(sub, controller, true)" nz-menu-item *ngIf="sub.disabled">
+                                          <a translate>agent.button.enable</a>
+                                        </li>
                                         <li (click)="resetSubagent(sub, clusterAgent, controller)" nz-menu-item >
                                           <a translate>agent.button.reset</a>
                                         </li>
                                         <li (click)="resetSubagent(sub, clusterAgent, controller, true)" nz-menu-item >
                                           <a translate>agent.button.resetForced</a>
                                         </li>
-                                       <li (click)="disableEnableSubagent(sub, controller, false)" nz-menu-item *ngIf="!sub.disabled">
-                                          <a translate>agent.button.disable</a>
-                                        </li>
-                                        <li (click)="disableEnableSubagent(sub, controller, true)" nz-menu-item *ngIf="sub.disabled">
-                                          <a translate>agent.button.enable</a>
-                                        </li>
-<!--                                        <li nz-menu-item (click)="deploySubagent(sub, clusterAgent, controller);$event.stopPropagation();">
-                                          <a translate>inventory.button.deploy</a>
-                                        </li>-->
+                                        <li nz-menu-divider></li>
                                         <li (click)="removeSubagent(sub, clusterAgent, controller)" nz-menu-item class="bg-hover-color">
                                           <a translate="">common.button.delete</a>
                                         </li>

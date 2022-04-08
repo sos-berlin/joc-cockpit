@@ -142,8 +142,6 @@
     "label.url": "URL",
     "label.clusterWatcher": "クラスター監視",
     "label.disabled": "無効化",
-    "label.hide": "Hide",
-    "label.show": "Show",
     "label.hidden": "Hidden",
     "label.agents": "エージェント",
     "label.agentNameAliases": "エイリアス名",
@@ -204,6 +202,8 @@
     "button.manageCluster": "Manage Cluster",
     "button.createCluster": "Create Cluster",
     "button.revoke": "Revoke",
+    "button.hide": "Hide",
+    "button.show": "Show",
     "message.dropHereToDetach": "Drop here to remove Subagent",
     "message.noClusterFound": "No Cluster Found",
     "message.clickHereToAdd": "Click Here To Add",
@@ -320,6 +320,7 @@
     "label.timeZone": "タイムゾーン",
     "label.progress": "進行",
     "label.remove": "削除",
+    "label.resetForced": "Reset Forced",
     "label.remainingSessionTime": "セッション残時間",
     "label.currentController": "現在のコントローラー",
     "label.controllerId": "コントローラーID",
@@ -513,6 +514,7 @@
     "message.deleteDocumentFolder": "本当にこのフォルダーを削除しますか？",
     "message.deleteAllDocument": "本当に全てのドキュメントを削除しますか?",
     "message.deleteNotice": "本当にこの通知を削除しますか？",
+    "message.resetAgentConfirmation": "You are about to take over an Agent that is not dedicated to the current Controller. Are you sure you want to continue?",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xlsx形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",
@@ -1714,6 +1716,8 @@
       "label.manageGitCredentials": "Manage Git Credentials",
       "label.gitAccount": "Git Account",
       "label.gitServer": "Git Server",
+      "label.userName": "User name",
+      "label.emailAddress": "Email Address",
       "label.gitPassword": "Git Password",
       "label.keyfilePath": "Path to Git Private Key",
       "label.gitAccessToken": "Git Access Token",
@@ -1723,7 +1727,7 @@
       "label.accessToken": "Access Token",
       "label.credentials": "Credentials",
       "message.deleteGitCredentials": "Deleting an git credential will permanently remove it from the credential list.",
-      "message.noCredentialFound": "No Credenital is present"
+      "message.noCredentialFound": "No Credential is present"
     }
   },
   "runtime": {

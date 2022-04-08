@@ -578,7 +578,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       controllerId: controller.controllerId,
       agentId: agent.agentId
     };
- 
+
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
@@ -746,12 +746,25 @@ export class ControllersComponent implements OnInit, OnDestroy {
       agentId: agent.agentId,
       force
     };
+    this._reset(obj, agent.agentId);
+  }
+
+  resetSubagent(sub, clusterAgent, controller, force = false): void {
+    const obj = {
+      controllerId: controller.controllerId,
+      subagentIds: [sub.subagentId],
+      force
+    };
+    this._reset(obj, sub.subagentId, true);
+  }
+
+  private _reset(obj, name, subagent = false) {
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
         type: 'Agent',
         operation: 'Reset',
-        name: agent.agentId
+        name: name
       };
       this.modal.create({
         nzTitle: undefined,
@@ -760,19 +773,35 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           comments,
           obj,
-          url: 'agent/reset'
+          url: subagent ? 'agents/inventory/cluster/subagents/reset' : 'agent/reset'
         },
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
       });
+    } else if (obj.force) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'resetForced',
+          message: 'resetAgentConfirmation',
+          type: 'Reset',
+          objectName: obj.agentId,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post(subagent ? 'agents/inventory/cluster/subagents/reset' : 'agent/reset', obj).subscribe();
+        }
+      });
+
     } else {
-      this.coreService.post('agent/reset', obj).subscribe();
+      this.coreService.post(subagent ? 'agents/inventory/cluster/subagents/reset' : 'agent/reset', obj).subscribe();
     }
-  }
-
-  resetSubagent(sub, clusterAgent, controller, force = false): void {
-
   }
 
   disableAgent(agent, controller): void {

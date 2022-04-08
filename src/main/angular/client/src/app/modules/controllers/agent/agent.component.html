@@ -79,19 +79,21 @@
                 </button>
                 <nz-dropdown-menu #option="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item (click)="edit(cluster)">
+                    <li nz-menu-item (click)="edit(cluster);$event.stopPropagation();">
                       <a translate>common.button.edit</a>
                     </li>
-                    <li nz-menu-item (click)="deploy(cluster)">
-                      <a translate>inventory.button.deploy</a>
-                    </li>
-                    <li nz-menu-item (click)="duplicate(cluster)">
+                    <li nz-menu-item (click)="duplicate(cluster);$event.stopPropagation();">
                       <a translate>common.button.duplicate</a>
                     </li>
-                    <li nz-menu-item (click)="revoke(cluster)">
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="deploy(cluster);$event.stopPropagation();">
+                      <a translate>inventory.button.deploy</a>
+                    </li>
+                    <li nz-menu-item (click)="revoke(cluster);$event.stopPropagation();">
                       <a translate>agent.button.revoke</a>
                     </li>
-                    <li nz-menu-item (click)="delete(cluster)" class="bg-hover-color">
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color">
                       <a translate>common.button.delete</a>
                     </li>
                   </ul>
@@ -183,15 +185,17 @@
                     <li nz-menu-item (click)="edit(cluster);$event.stopPropagation();">
                       <a translate>common.button.edit</a>
                     </li>
-                    <li nz-menu-item (click)="deploy(cluster);$event.stopPropagation();">
-                      <a translate>inventory.button.deploy</a>
-                    </li>
                     <li nz-menu-item (click)="duplicate(cluster);$event.stopPropagation();">
                       <a translate>common.button.duplicate</a>
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="deploy(cluster);$event.stopPropagation();">
+                      <a translate>inventory.button.deploy</a>
                     </li>
                     <li nz-menu-item (click)="revoke(cluster);$event.stopPropagation();">
                       <a translate>agent.button.revoke</a>
                     </li>
+                    <li nz-menu-divider></li>
                     <li nz-menu-item (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color">
                       <a translate>common.button.delete</a>
                     </li>
@@ -304,7 +308,7 @@
                   <span class="nav-text"> <i nz-icon nzType="column-width" nzTheme="outline"></i></span>
                 </a>
               </li>
-
+      
             </ul>
           </div>
           <div class="box-shadow-z1" id="graph" cdkDropList #listTwo="cdkDropList" [cdkDropListConnectedTo]="[listOne]"
@@ -397,15 +401,17 @@
                     <li nz-menu-item (click)="edit(cluster);$event.stopPropagation();">
                       <a translate>common.button.edit</a>
                     </li>
-                     <li nz-menu-item (click)="deploy(cluster);$event.stopPropagation();">
-                      <a translate>inventory.button.deploy</a>
-                    </li>
                     <li nz-menu-item (click)="duplicate(cluster);$event.stopPropagation();">
                       <a translate>common.button.duplicate</a>
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="deploy(cluster);$event.stopPropagation();">
+                      <a translate>inventory.button.deploy</a>
                     </li>
                     <li nz-menu-item (click)="revoke(cluster);$event.stopPropagation();">
                       <a translate>agent.button.revoke</a>
                     </li>
+                    <li nz-menu-divider></li>
                     <li nz-menu-item (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color">
                       <a translate>common.button.delete</a>
                     </li>
