@@ -1154,7 +1154,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             this.validConfig = true;
           }
         }, error: (error) => {
-          this.showErrorToast(error.error.message, '');
+          if (error && error.error) {
+            this.showErrorToast(error.error.message, '');
+          }
         }
       });
     } else {
@@ -5538,7 +5540,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           this.afterDelete(res, tab);
         }
       }, error: (error) => {
-        this.showErrorToast(error.error.message, '');
+        if (error && error.error) {
+          this.showErrorToast(error.error.message, '');
+        }
       }
     });
   }
@@ -5658,7 +5662,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             }
           }, error: (error) => {
             this.isStore = false;
-            this.showErrorToast(error.error.message, '');
+            if (error && error.error) {
+              this.showErrorToast(error.error.message, '');
+            }
           }
         });
       }

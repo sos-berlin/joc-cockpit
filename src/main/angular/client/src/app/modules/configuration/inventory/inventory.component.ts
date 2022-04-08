@@ -2012,7 +2012,13 @@ export class GitComponent implements OnInit {
       }
     }
     if (this.operation == 'clone') {
-      this.coreService.post('inventory/repository/git/clone', this.object).subscribe({
+      let folder = this.object.folder === '/' ? ('/' + this.object.folderName) : this.object.folder;
+      this.coreService.post('inventory/repository/git/clone', {
+        auditLog: this.object.auditLog,
+        folder,
+        remoteUri: this.object.remoteUri,
+        category: this.object.category
+      }).subscribe({
         next: (res) => {
           console.log(res)
           this.activeModal.close('Done');
@@ -2036,9 +2042,9 @@ export class GitComponent implements OnInit {
     this.coreService.post('inventory/repository/git/commit', {
       ...this.object, message: this.message
     }).subscribe({
-      next: (res) => {
+      next: () => {
         this.coreService.post('inventory/repository/git/push', this.object).subscribe({
-          next: (res) => {
+          next: () => {
             this.activeModal.close('Done');
           }, error: () => {
             this.submitted = false;
@@ -2048,6 +2054,25 @@ export class GitComponent implements OnInit {
         this.submitted = false;
       }
     });
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
+
+@Component({
+  selector: 'app-notification-modal',
+  templateUrl: './notification-dialog.html'
+})
+export class NotificationComponent implements OnInit {
+  @Input() result: any;
+
+  constructor(public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+
   }
 
   cancel(): void {
@@ -3697,8 +3722,24 @@ export class InventoryComponent implements OnInit, OnDestroy {
       folder: data.path,
       category,
       auditLog
-    }).subscribe((res: any) => {
-      console.log(res)
+    }).subscribe({
+      next: (res: any) => {
+        this.showResult(res);
+      }, error: (err) => this.showResult(err)
+    });
+  }
+
+  private showResult(result): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NotificationComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        result,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 

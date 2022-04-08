@@ -73,7 +73,7 @@
                 *ngIf="permission.currentController && permission.currentController.switchOver && cluster">
               <a>{{'dashboard.button.switchOver' | translate}}</a>
             </li>
-            <li nz-menu-item (click)="restartService('cluster')" *ngIf="joc && joc.current && joc.clusterNodeState && joc.clusterNodeState._text == 'active' && permission.joc.administration.controllers.manage" >
+            <li nz-menu-item (click)="restartService('cluster')" *ngIf="joc && joc.current && joc.clusterNodeState && joc.clusterNodeState._text == 'active' && permission.joc.cluster.manage" >
               <a translate>dashboard.button.restartCluster</a>
             </li>
             <li nz-submenu nzTitle="{{'dashboard.button.restartService' | translate}}" *ngIf="joc && joc.current && (!joc.clusterNodeState || joc.clusterNodeState._text == 'active') && permission.joc.administration.controllers.manage">
@@ -95,10 +95,10 @@
                 </li>
               </ul>
             </li>
-            <li nz-menu-item (click)="switchOver()" *ngIf="joc && joc.clusterNodeState && joc.clusterNodeState._text !== 'active' && permission.joc && permission.joc.administration.controllers.manage" >
+            <li nz-menu-item (click)="switchOver()" *ngIf="joc && joc.clusterNodeState && joc.clusterNodeState._text !== 'active' && permission.joc && permission.joc.cluster.manage" >
               <a translate>dashboard.button.switchOver</a>
             </li>
-            <li nz-menu-item (click)="removeFromInventory()" *ngIf="joc && !joc.current && joc.clusterNodeState._text !== 'active' && joc.componentState._text === 'unknown'">
+            <li nz-menu-item (click)="removeFromInventory()" *ngIf="joc && !joc.current && joc.clusterNodeState._text !== 'active' && joc.componentState._text === 'unknown' && permission.joc && permission.joc.cluster.manage">
               <a translate>dashboard.button.removeFromInventory</a>
             </li>
             <li nz-menu-item (click)="downloadJocLog()" *ngIf="joc && joc.current && permission.joc && permission.joc.getLog" >

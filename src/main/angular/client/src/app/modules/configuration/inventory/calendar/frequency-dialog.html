@@ -172,20 +172,20 @@
                         (click)="selectMonthDaysUFunc('6')">-5</a></td>
                     </tr>
                     <tr *ngFor="let count of countArrU;">
-                      <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) - 1) +'')}"><a
-                        (click)="selectMonthDaysUFunc(((7 * count) - 1) +'')">-{{(7 * count) - 1 }}</a></td>
                       <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) +'')}"><a
-                        (click)="selectMonthDaysUFunc(((7 * count)) +'')">-{{(7 * count) }}</a></td>
-                      <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 1) +'')}"><a
-                        (click)="selectMonthDaysUFunc(((7 * count) + 1) +'')">-{{(7 * count) + 1 }}</a></td>
+                        (click)="selectMonthDaysUFunc(((7 * count)) +'')">-{{(7 * count) - 1 }}</a></td>
+                      <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) + 1)}"><a
+                        (click)="selectMonthDaysUFunc(((7 * count)) + 1 + '')">-{{(7 * count) }}</a></td>
                       <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 2) +'')}"><a
-                        (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')">-{{(7 * count) + 2 }}</a></td>
-                      <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}"><a
-                        (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')">-{{(7 * count) + 3 }}</a></td>
-                      <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 4) +'')}"><a
-                        (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')">-{{(7 * count) + 4 }}</a></td>
+                        (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')">-{{(7 * count) + 1 }}</a></td>
+                      <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}"><a
+                        (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')">-{{(7 * count) + 2 }}</a></td>
+                      <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) +4) +'')}"><a
+                        (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')">-{{(7 * count) + 3 }}</a></td>
                       <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 5) +'')}"><a
-                        (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')">-{{(7 * count) + 5 }}</a></td>
+                        (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')">-{{(7 * count) + 4 }}</a></td>
+                      <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 6) +'')}"><a
+                        (click)="selectMonthDaysUFunc(((7 * count) + 6) +'')">-{{(7 * count) + 5 }}</a></td>
                     </tr>
                     </tbody>
                   </table>
@@ -276,25 +276,19 @@
                   <div class="col-sm-6 p-l-0">
                     <div class="col-sm-12 p-l-0"
                          *ngFor="let holiday of holidayList.slice(0,Math.floor(holidayList.length/2));let i=index">
-                       <label class="md-check">
-                         <input type="checkbox" name="nationalHoliday{{i+1}}"
-                                   [(checklist)]="frequency.nationalHoliday"
-                                   [checklistValue]="holiday.date" (change)="onChangeHolidays()"><i class="primary"></i>
+                       <label nz-checkbox [nzChecked]="frequency.nationalHoliday.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
                          {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
                          {{holiday.name}}
-                        </label>
+                       </label>
                     </div>
                   </div>
                   <div class="col-sm-6 p-l-0">
                     <div class="col-sm-12 p-l-0"
                          *ngFor="let holiday of holidayList.slice(Math.floor(holidayList.length/2),holidayList.length);let i=index">
-                      <label class="md-check">
-                        <input type="checkbox" name="nationalHoliday2{{i+1}}"
-                               [(checklist)]="frequency.nationalHoliday"
-                               [checklistValue]="holiday.date" (change)="onChangeHolidays()"><i class="primary"></i>
-                        {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
-                        {{holiday.name}}
-                      </label>
+                      <label nz-checkbox [nzChecked]="frequency.nationalHoliday.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
+                         {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
+                         {{holiday.name}}
+                       </label>
                     </div>
                   </div>
                 </div>

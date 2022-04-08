@@ -356,10 +356,10 @@
                 <li [nzDisabled]="node.origin.repoControlled" nz-menu-item (click)="gitClone(node.origin, 'LOCAL');">
                   <a translate>inventory.button.clone</a>
                 </li>
-                <li [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPull(node.origin, 'LOCAL');">
+                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPull(node.origin, 'LOCAL');">
                   <a translate>inventory.button.pull</a>
                 </li>
-                <li [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPush(node.origin, 'LOCAL');">
+                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPush(node.origin, 'LOCAL');">
                   <a translate>inventory.button.push</a>
                 </li>
               </ul>
@@ -383,10 +383,10 @@
                 <li [nzDisabled]="node.origin.repoControlled" nz-menu-item (click)="gitClone(node.origin, 'ROLLOUT');">
                   <a translate>inventory.button.clone</a>
                 </li>
-                <li [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPull(node.origin, 'ROLLOUT');">
+                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPull(node.origin, 'ROLLOUT');">
                   <a translate>inventory.button.pull</a>
                 </li>
-                <li [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPush(node.origin, 'ROLLOUT');">
+                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPush(node.origin, 'ROLLOUT');">
                   <a translate>inventory.button.push</a>
                 </li>
               </ul>

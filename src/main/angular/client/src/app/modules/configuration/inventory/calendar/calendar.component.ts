@@ -329,6 +329,15 @@ export class FrequencyModalComponent implements OnInit {
     }
   }
 
+  onItemChecked(date: any, checked: boolean): void {
+    if (checked) {
+      this.frequency.nationalHoliday.push(date);
+    } else {
+      this.frequency.nationalHoliday.splice(this.frequency.nationalHoliday.indexOf(date), 1)
+    }
+    this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
+  }
+
   addCalendarDates(): void {
     if (this.excludedDates.length > 0) {
       this.checkExclude(this.excludedDates);

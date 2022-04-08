@@ -26,7 +26,10 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
-import {ChangeParameterModalComponent, ModifyStartTimeModalComponent} from '../../components/modify-modal/modify.component';
+import {
+  ChangeParameterModalComponent,
+  ModifyStartTimeModalComponent
+} from '../../components/modify-modal/modify.component';
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -143,6 +146,7 @@ export class SelectOrderTemplatesComponent implements OnInit {
       }
     }
   }
+
   remove(path, flag = false): void {
     if (flag) {
       this.object.scheduleFolders.splice(this.object.scheduleFolders.indexOf(path), 1);
@@ -386,7 +390,7 @@ export class CreatePlanModalComponent implements OnInit {
       }
     }
     if ((this.object.workflowPaths && this.object.workflowPaths.length > 0) ||
-    (this.object.paths && this.object.paths.length > 0)) {
+      (this.object.paths && this.object.paths.length > 0)) {
       obj.workflowPaths = {};
       if (this.object.workflowPaths.length > 0) {
         obj.workflowPaths.singles = this.object.workflowPaths;
@@ -466,7 +470,7 @@ export class RemovePlanModalComponent implements OnInit {
   required = false;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, public  coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -619,7 +623,8 @@ export class RemovePlanModalComponent implements OnInit {
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'app-gantt',
-  template: `<div #jsgantt class='jsgantt-chart'></div>`,
+  template: `
+    <div #jsgantt class='jsgantt-chart'></div>`,
 })
 export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('jsgantt', {static: true}) editor: ElementRef;
@@ -649,10 +654,10 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private initConfig(): void {
-    $(this.editor.nativeElement).on('mouseover', '.my-tooltip', function() {
+    $(this.editor.nativeElement).on('mouseover', '.my-tooltip', function () {
       $(this).tooltip('show');
     });
-    $(this.editor.nativeElement).on('mouseout', '.my-tooltip', function() {
+    $(this.editor.nativeElement).on('mouseout', '.my-tooltip', function () {
       $('.tooltip').tooltip('hide');
     });
     this.editor.nativeElement.style.height = 'calc(100vh - 248px)';
@@ -919,6 +924,7 @@ export class SearchComponent implements OnInit {
           }
         }
       }
+
       if (this.workflowTree[0].path === path) {
         self.loadWorkflowObjects(this.workflowTree[0], {
           path,
@@ -981,7 +987,7 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  private loadWorkflowObjects(node, obj): void{
+  private loadWorkflowObjects(node, obj): void {
     this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
       let data = res.workflows;
       data = sortBy(data, (i: any) => {
@@ -1224,7 +1230,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       ids = order.value.map((val) => val.orderId);
     } else if (order.state && order.state._text === 'SUBMITTED') {
       ids = [order.orderId];
-    } else{
+    } else {
       ids = order;
     }
     if (ids.length > 0) {
@@ -1393,7 +1399,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       let state;
       if (orders && orders.length > 0) {
         for (let i in orders) {
-          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING'  && orders[i].state._text !== 'BLOCKED') {
+          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING' && orders[i].state._text !== 'BLOCKED') {
             state = orders[i].state._text;
             break;
           }
@@ -1482,22 +1488,32 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   cancelSelectedOrder(): void {
     if (this.dateRanges && this.dateRanges.length > 0) {
-      let apiArr = [];
-      const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
-      this.isProcessing = true;
-      dates.forEach((date) => {
-        let obj = {
-          controllerId: this.schedulerIds.selected,
-          dailyPlanDate: this.coreService.getStringDate(date),
+      if (this.preferences.auditLog) {
+        const comments = {
+          radio: 'predefined',
+          type: 'Order',
+          operation: 'Cancel',
+          name: ''
         };
-        apiArr.push(this.coreService.post('orders/daily_plan/cancel', this.coreService.clone(obj)));
-      });
-      this.resetCheckBox();
-      forkJoin(apiArr).subscribe({
-        next: () => {
-          this.resetAction(5000);
-        }, error: () => this.resetAction()
-      });
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            comments,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this.cancelByDateRange(result);
+          }
+        });
+      } else {
+        this.cancelByDateRange({});
+      }
     } else {
       const orderIds = [];
       this.object.mapOfCheckedId.forEach((value) => {
@@ -1505,6 +1521,26 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       });
       this.cancelCyclicOrder(orderIds, true);
     }
+  }
+
+  private cancelByDateRange(auditLog): void {
+    let apiArr = [];
+    const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
+    this.isProcessing = true;
+    dates.forEach((date) => {
+      let obj = {
+        controllerId: this.schedulerIds.selected,
+        dailyPlanDate: this.coreService.getStringDate(date),
+        auditLog
+      };
+      apiArr.push(this.coreService.post('orders/daily_plan/cancel', this.coreService.clone(obj)));
+    });
+    this.resetCheckBox();
+    forkJoin(apiArr).subscribe({
+      next: () => {
+        this.resetAction(5000);
+      }, error: () => this.resetAction()
+    });
   }
 
   cancelOrder(order, plan): void {
@@ -1649,7 +1685,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   exportToExcel(): void {
-    let workflow = '', workflowAndOrder = '', schedule = '', scheduleAndOrder = '', order = '', state = '', late = '', plannedStart = '',
+    let workflow = '', workflowAndOrder = '', schedule = '', scheduleAndOrder = '', order = '', state = '', late = '',
+      plannedStart = '',
       exceptedEnd = '', expectedDuration = '',
       startTime = '', endTime = '', duration = '', repeatInterval = '';
     this.translate.get('dailyPlan.label.workflow').subscribe(translatedValue => {
@@ -2026,7 +2063,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             this.loadOrderPlan();
           }
         });
-      } else if (state){
+      } else if (state) {
         this.showInfoMsg(state);
       }
     });
@@ -2450,7 +2487,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.selectedDate = new Date(d);
     }
     this.selectedYear = this.selectedDate.getFullYear();
-    this.selectedMonth  = this.selectedDate.getMonth();
+    this.selectedMonth = this.selectedDate.getMonth();
 
     if (this.dailyPlanFilters.selectedView) {
       this.savedFilter.selected = this.savedFilter.selected || this.savedFilter.favorite;
@@ -2496,7 +2533,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         const year = e.currentYear || new Date().getFullYear();
         const month = (e.currentMonth || e.currentMonth === 0) ? e.currentMonth : new Date().getMonth();
         this.selectedYear = year;
-        this.selectedMonth  = month;
+        this.selectedMonth = month;
         this.load(new Date(year, month, 1));
         if (this.dateRanges && this.dateRanges.length > 1) {
           $('#full-calendar').data('calendar').checkRange({from: this.dateRanges[0], to: this.dateRanges[1]});
@@ -2508,7 +2545,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         if (this.dateRanges && this.dateRanges.length > 0) {
           this.resetCheckBox(true);
           this.isPastDate = new Date(this.dateRanges[0]).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
-        } else{
+        } else {
           this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
         }
       }
@@ -2811,7 +2848,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private openFilterModal(filter, isCopy): void {
     if (this.schedulerIds.selected) {
       let filterObj: any = {};
-      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+      this.coreService.post('configuration', {
+        controllerId: filter.controllerId,
+        id: filter.id
+      }).subscribe((conf: any) => {
         filterObj = JSON.parse(conf.configuration.configurationItem);
         filterObj.shared = filter.shared;
         if (isCopy) {

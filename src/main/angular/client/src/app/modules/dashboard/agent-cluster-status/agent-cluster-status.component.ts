@@ -163,15 +163,7 @@ export class AgentClusterStatusComponent implements OnInit, OnDestroy {
   }
 
   navToAgentView(text): void {
-    let status = this.mapObj.get(text);
-    if(status === 'ALL_SUBAGENTS_ARE_COUPLED' || status === 'ONLY_SOME_SUBAGENTS_ARE_COUPLED'){
-      status = 'COUPLED';
-    } else if(status === 'ALL_SUBAGENTS_ARE_RESET' || status === 'ONLY_SOME_SUBAGENTS_ARE_RESET'){
-      status = 'RESET';
-    } else {
-      status = 'COUPLINGFAILED';
-    }
-    this.coreService.getResourceTab().agents.filter.state = status;
+    this.coreService.getResourceTab().agents.filter.state = 'ALL';
     this.router.navigate(['/resources/agents']);
   }
 }

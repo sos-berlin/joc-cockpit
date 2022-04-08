@@ -168,20 +168,20 @@
                   (click)="selectMonthDaysUFunc('6')">-5</a></td>
               </tr>
               <tr *ngFor="let count of countArrU;">
-                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) - 1) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) - 1) +'')">-{{(7 * count) - 1 }}</a></td>
                 <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count)) +'')">-{{(7 * count) }}</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 1) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 1) +'')">-{{(7 * count) + 1 }}</a></td>
+                  (click)="selectMonthDaysUFunc(((7 * count)) +'')">-{{(7 * count) - 1 }}</a></td>
+                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) + 1)}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count)) + 1 + '')">-{{(7 * count) }}</a></td>
                 <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 2) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')">-{{(7 * count) + 2 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')">-{{(7 * count) + 3 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 4) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')">-{{(7 * count) + 4 }}</a></td>
+                  (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')">-{{(7 * count) + 1 }}</a></td>
+                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')">-{{(7 * count) + 2 }}</a></td>
+                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) +4) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')">-{{(7 * count) + 3 }}</a></td>
                 <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 5) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')">-{{(7 * count) + 5 }}</a></td>
+                  (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')">-{{(7 * count) + 4 }}</a></td>
+                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 6) +'')}"><a
+                  (click)="selectMonthDaysUFunc(((7 * count) + 6) +'')">-{{(7 * count) + 5 }}</a></td>
               </tr>
               </tbody>
             </table>

@@ -14,7 +14,7 @@ import {
   CreateFolderModalComponent, CreateObjectModalComponent, CronImportModalComponent,
   DeployComponent,
   ExportComponent, GitComponent, ImportWorkflowModalComponent,
-  InventoryComponent, JsonEditorModalComponent, RepositoryComponent,
+  InventoryComponent, JsonEditorModalComponent, NotificationComponent, RepositoryComponent,
   SingleDeployComponent, UploadModalComponent
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
@@ -44,8 +44,8 @@ import {UpdateJobComponent} from './update-job/update-job.component';
 import {UpdateObjectComponent} from './update-object/update-object.component';
 import {ScriptComponent} from './script/script.component';
 
-const COMPONENTS = [FrequencyModalComponent, ImportComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
-  CreateObjectModalComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, JsonEditorModalComponent,
+const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
+  CreateObjectModalComponent, NotificationComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, ImportComponent,
   UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent,
   AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
 

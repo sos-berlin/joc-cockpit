@@ -31,6 +31,22 @@
         </div>
       </div>
     </div>
+    <div class="form-group row" *ngIf="operation === 'clone' && data.path === '/'">
+      <label class="col-md-3 form-control-label" translate>inventory.label.folderName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-md-8" [ngClass]="{'has-error' : ((folderName.dirty || folderName.touched) && folderName.invalid)}">
+        <input identifierValidation type="text" required class="form-control" name="folderName"
+               #folderName="ngModel" [(ngModel)]="object.folderName"  autocomplete="off">
+        <div *ngIf="folderName.invalid && folderName.errors && (folderName.dirty || folderName.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(folderName.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
+          <div *ngIf="folderName.errors.invalidIdentifier" translate>common.message.invalid</div>
+        </div>
+      </div>
+    </div>
     <div class="form-group row" *ngIf="operation === 'push'">
       <label class="col-sm-3 form-control-label" translate>inventory.label.gitMessage</label>
       <div class="col-sm-8">
