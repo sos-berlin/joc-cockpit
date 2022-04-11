@@ -752,7 +752,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   resetSubagent(sub, clusterAgent, controller, force = false): void {
     const obj = {
       controllerId: controller.controllerId,
-      subagentIds: [sub.subagentId],
+      subagentId: sub.subagentId,
       force
     };
     this._reset(obj, sub.subagentId, true);
@@ -773,7 +773,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           comments,
           obj,
-          url: subagent ? 'agents/inventory/cluster/subagents/reset' : 'agent/reset'
+          url: subagent ? 'agents/inventory/cluster/subagent/reset' : 'agent/reset'
         },
         nzFooter: null,
         nzClosable: false,
@@ -795,12 +795,12 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post(subagent ? 'agents/inventory/cluster/subagents/reset' : 'agent/reset', obj).subscribe();
+          this.coreService.post(subagent ? 'agents/inventory/cluster/subagent/reset' : 'agent/reset', obj).subscribe();
         }
       });
 
     } else {
-      this.coreService.post(subagent ? 'agents/inventory/cluster/subagents/reset' : 'agent/reset', obj).subscribe();
+      this.coreService.post(subagent ? 'agents/inventory/cluster/subagent/reset' : 'agent/reset', obj).subscribe();
     }
   }
 

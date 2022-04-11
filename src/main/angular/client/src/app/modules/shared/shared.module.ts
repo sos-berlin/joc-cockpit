@@ -39,7 +39,7 @@ import {
   ResizableDirective,
   MaximumDirective,
   AutofocusDirective,
-  TimeValidatorDirective, TimeRegexValidator, RelativeDateValidator, RelativeDateRegexValidator
+  TimeValidatorDirective, TimeRegexValidator, RelativeDateValidator, RelativeDateRegexValidator, FacetValidator
 } from '../../directives/core.directive';
 import {StartUpModalComponent} from '../start-up/start-up.component';
 import {CalendarModalComponent} from '../../components/calendar-modal/calendar.component';
@@ -62,7 +62,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
   ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator, RelativeDateRegexValidator,
-  ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, AutofocusDirective];
+  ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, ValueEditorComponent, WorkflowTreeStructureComponent, SearchComponent, PermissionViewComponent];
 

@@ -133,20 +133,20 @@
                    [hidden]="frequency.isUltimos!=='months'">
               <tbody>
               <tr *ngFor="let count of countArr;">
-                <td [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 1) +'')}"><a
-                  (click)="selectMonthDaysFunc(((7 * count) + 1) +'')">{{(7 * count) + 1 }}</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 2) +'')}"><a
-                  (click)="selectMonthDaysFunc(((7 * count) + 2) +'')">{{(7 * count) + 2 }}</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 3) +'')}"><a
-                  (click)="selectMonthDaysFunc(((7 * count) + 3) +'')">{{(7 * count) + 3 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 4) +'')}"><a
-                  (click)="selectMonthDaysFunc(((7 * count) + 4) +'')">{{(7 * count) + 4 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 5) +'')}"><a
-                  (click)="selectMonthDaysFunc(((7 * count) + 5) +'')">{{(7 * count) + 5 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 6) +'')}"><a
-                  (click)="selectMonthDaysFunc(((7 * count) + 6) +'')">{{(7 * count) + 6 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 7) +'')}"><a
-                  (click)="selectMonthDaysFunc(((7 * count) + 7) +'')">{{(7 * count) + 7 }}</a></td>
+                <td (click)="selectMonthDaysFunc(((7 * count) + 1) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 1) +'')}"><a
+                >{{(7 * count) + 1 }}</a></td>
+                <td (click)="selectMonthDaysFunc(((7 * count) + 2) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 2) +'')}"><a
+                >{{(7 * count) + 2 }}</a></td>
+                <td (click)="selectMonthDaysFunc(((7 * count) + 3) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 3) +'')}"><a
+                >{{(7 * count) + 3 }}</a></td>
+                <td (click)="selectMonthDaysFunc(((7 * count) + 4) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 4) +'')}"><a
+                >{{(7 * count) + 4 }}</a></td>
+                <td (click)="selectMonthDaysFunc(((7 * count) + 5) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 5) +'')}"><a
+                >{{(7 * count) + 5 }}</a></td>
+                <td (click)="selectMonthDaysFunc(((7 * count) + 6) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 6) +'')}"><a
+                >{{(7 * count) + 6 }}</a></td>
+                <td (click)="selectMonthDaysFunc(((7 * count) + 7) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 7) +'')}"><a
+                >{{(7 * count) + 7 }}</a></td>
               </tr>
               </tbody>
             </table>
@@ -154,34 +154,47 @@
                    [hidden]="frequency.isUltimos=='months'">
               <tbody>
               <tr>
-                <td colspan="2" [ngClass]="{'primary': getSelectedMonthDaysU('1')}"><a
-                  (click)="selectMonthDaysUFunc('1')" translate>runtime.label.lastDay</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('2')}"><a
-                  (click)="selectMonthDaysUFunc('2')">-1</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('3')}"><a
-                  (click)="selectMonthDaysUFunc('3')">-2</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('4')}"><a
-                  (click)="selectMonthDaysUFunc('4')">-3</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('5')}"><a
-                  (click)="selectMonthDaysUFunc('5')">-4</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU('6')}"><a
-                  (click)="selectMonthDaysUFunc('6')">-5</a></td>
+                <td colspan="2" (click)="selectMonthDaysUFunc('1')" [ngClass]="{'primary': getSelectedMonthDaysU('1')}"><a
+                  translate>runtime.label.lastDay</a></td>
+                <td (click)="selectMonthDaysUFunc('2')" [ngClass]="{'primary': getSelectedMonthDaysU('2')}"><a
+                >-1</a></td>
+                <td (click)="selectMonthDaysUFunc('3')" [ngClass]="{'primary': getSelectedMonthDaysU('3')}"><a
+                >-2</a></td>
+                <td (click)="selectMonthDaysUFunc('4')" [ngClass]="{'primary': getSelectedMonthDaysU('4')}"><a
+                >-3</a></td>
+                <td (click)="selectMonthDaysUFunc('5')" [ngClass]="{'primary': getSelectedMonthDaysU('5')}"><a
+                >-4</a></td>
+                <td (click)="selectMonthDaysUFunc('6')" [ngClass]="{'primary': getSelectedMonthDaysU('6')}"><a
+                >-5</a></td>
               </tr>
               <tr *ngFor="let count of countArrU;">
-                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count)) +'')">-{{(7 * count) - 1 }}</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) + 1)}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count)) + 1 + '')">-{{(7 * count) }}</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 2) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')">-{{(7 * count) + 1 }}</a></td>
-                <td [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')">-{{(7 * count) + 2 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) +4) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')">-{{(7 * count) + 3 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 5) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')">-{{(7 * count) + 4 }}</a></td>
-                <td *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 6) +'')}"><a
-                  (click)="selectMonthDaysUFunc(((7 * count) + 6) +'')">-{{(7 * count) + 5 }}</a></td>
+                <td (click)="selectMonthDaysUFunc(((7 * count)) +'')"
+                    [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) +'')}">
+                  <a>-{{(7 * count) - 1 }}</a></td>
+                <td (click)="selectMonthDaysUFunc(((7 * count) + 1) + '')"
+                    [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 1) + '')}">
+                  <a>-{{(7 * count) }}</a>
+                </td>
+                <td (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')"
+                    [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 2) +'')}">
+                  <a>-{{(7 * count) + 1 }}</a>
+                </td>
+                <td (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')"
+                    [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}">
+                  <a>-{{(7 * count) + 2 }}</a>
+                </td>
+                <td (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')" *ngIf="count !== 4"
+                    [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) +4) +'')}">
+                  <a>-{{(7 * count) + 3 }}</a>
+                </td>
+                <td (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')" *ngIf="count !== 4"
+                    [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 5) +'')}">
+                  <a>-{{(7 * count) + 4 }}</a>
+                </td>
+                <td (click)="selectMonthDaysUFunc(((7 * count) + 6) +'')" *ngIf="count !== 4"
+                    [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 6) +'')}">
+                  <a>-{{(7 * count) + 5 }}</a>
+                </td>
               </tr>
               </tbody>
             </table>

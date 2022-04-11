@@ -797,7 +797,6 @@ export class FindAndReplaceComponent implements OnInit {
     $('#agentId').blur();
   }
 
-
   onSubmit(): void {
     this.activeModal.close(this.object);
   }
@@ -1884,7 +1883,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       dom.blur();
       flag = true;
     }
-    if(this.selectedNode.job.subagentClusterId) {
+    if (this.selectedNode.job.subagentClusterId) {
       this.selectedNode.job.agentName1 = this.selectedNode.job.agentName;
       this.selectedNode.job.agentName = this.selectedNode.job.subagentClusterId;
       delete this.selectedNode.job.subagentClusterId;
@@ -2422,7 +2421,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
   inventoryConf: any;
-  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
+  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List', 'Facet'];
   variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
@@ -3434,6 +3433,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             } else if (val.type === 'Boolean') {
               val.default = (val.default === true || val.default === 'true');
             }
+          } else if (val.facet) {
+            val.type = 'Facet';
           }
           return {name: k, value: val};
         });
@@ -9281,6 +9282,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
+  checkRegularExp(data): void {
+    data.invalid = false;
+    try {
+      new RegExp(data.facet);
+    } catch (e) {
+      data.invalid = true;
+    }
+  }
+
   updateOtherProperties(type): void {
     let flag = false;
     if (type === 'title') {
@@ -9314,7 +9324,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const variableDeclarations = {parameters: [], allowUndeclared: false};
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
-        if (value.value.type === 'List' || value.value.type === 'Final') {
+        delete value.value.invalid;
+        if (value.value.type !== 'Facet') {
+          delete value.value.facet;
+          delete value.value.message;
+        }
+        if (value.value.type === 'List' || value.value.type === 'Final' || value.value.type === 'Facet') {
           delete value.value.default;
         }
         if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
@@ -9325,6 +9340,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
         } else if (value.value.type === 'Final') {
           delete value.value.type;
+        } else if (value.value.type === 'Facet') {
+          value.value.type = 'String';
+          delete value.value.final;
+          delete value.value.default;
         } else {
           delete value.value.final;
           if (value.value.type === 'String') {
@@ -9447,10 +9466,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (result) {
         this.jobs.forEach((job) => {
           if ((result.finds.length === 0 && !job.value.agentName) || (result.finds.length > 0 && result.finds[0] === '*')) {
-            if(result.agentName){
+            if (result.agentName) {
               job.value.agentName = result.agentName;
               job.value.subagentClusterId = result.replace;
-            } else{
+            } else {
               job.value.agentName = result.replace;
               delete job.value.subagentClusterId;
             }

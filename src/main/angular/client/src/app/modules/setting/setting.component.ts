@@ -203,7 +203,7 @@ export class SettingComponent implements OnInit {
     } else if (value && value.value && value.value.type === 'TIME') {
       value.value.value = SettingComponent.checkTime(value.value.value);
     }
-    if (value.name === 'force_comments_for_audit_log') {
+    if (value && value.name === 'force_comments_for_audit_log') {
       sessionStorage.$SOS$FORCELOGING = value.value.value;
     }
     this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc);

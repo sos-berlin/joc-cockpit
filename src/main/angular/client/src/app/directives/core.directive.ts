@@ -8,7 +8,7 @@ import {
   OnChanges,
   OnInit
 } from '@angular/core';
-import {AbstractControl, NG_VALIDATORS, NgModel, Validator} from '@angular/forms';
+import {AbstractControl, NG_VALIDATORS, NgModel, ValidationErrors, Validator} from '@angular/forms';
 import {SaveService} from '../services/save.service';
 
 declare const $: any;
@@ -332,6 +332,24 @@ export class IdentifierValidator implements Validator {
     } else {
       return null;
     }
+  }
+}
+
+@Directive({
+  selector: '[facetValidation]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => FacetValidator), multi: true}
+  ]
+})
+export class FacetValidator implements Validator {
+  @Input('facetValidation') facetValidation = '';
+
+  validate(c: AbstractControl): ValidationErrors | null {
+    let v = c.value;
+    return this.facetValidation && v ? (new RegExp(this.facetValidation).test(v)) ? null : {
+        invalidFacet: true
+      }
+      : null;
   }
 }
 

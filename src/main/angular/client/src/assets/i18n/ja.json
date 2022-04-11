@@ -1979,7 +1979,8 @@
       "show_view_configuration": "ユーザーの権限とは無関係に、ジョブ定義表示が利用可能（＝true）か、非表示（＝false）かを指定します。この設定を空にすると、ユーザーの権限によって表示されるかどうかが決まります。",
       "show_view_monitor": "show_view_configuration",
       "controller_connection_joc_password": "コントローラー接続JOCパスワード",
-      "controller_connection_history_password": "コントローラー接続履歴パスワード"
+      "controller_connection_history_password": "コントローラー接続履歴パスワード",
+      "encoding": "Encoding"
     },
     "user": {
       "welcome_got_it": "了解",

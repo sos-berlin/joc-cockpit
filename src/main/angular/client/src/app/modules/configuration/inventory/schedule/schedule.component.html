@@ -298,13 +298,13 @@
               </ng-container>
               <ng-container *ngSwitchDefault>
                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                  <input #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event, variableSet)"
-                         name="value{{i}}{{j}}" [(ngModel)]="variable.value" (blur)="saveJSON()" placeholder="{{'common.placeholder.value' | translate}}">
+                  <input [facetValidation]="variable.facet" #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event, variableSet)"
+                         name="value{{i}}{{j}}" [(ngModel)]="variable.value" (blur)="saveJSON(false, false, value, variable)" placeholder="{{'common.placeholder.value' | translate}}">
+                  <i class="pos-abt cursor fa fa-info-circle" *ngIf="variable.message" [nz-tooltip]="variable.message" style="right: -10px;top:8px;"></i>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
-                    <div *ngIf="value.errors.required">
-                      <div translate>common.message.requiredError</div>
-                    </div>
+                    <div *ngIf="value.errors.required" translate>common.message.requiredError</div>
+                    <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
                   </div>
                   <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
                     <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>

@@ -21,7 +21,6 @@ declare const mxHierarchicalLayout;
 declare const mxTooltipHandler;
 declare const mxConstants;
 declare const mxEdgeHandler;
-declare const saveSvgAsPng;
 declare const mxPoint;
 declare const mxGraphHandler;
 declare const mxRectangleShape;
@@ -1604,29 +1603,6 @@ export class AgentComponent implements OnInit, OnDestroy {
     if (this.editor && this.editor.graph && this.node && this.node.cell) {
       this.editor.graph.removeCells([this.node.cell], null);
       this.removeSubagent(this.node.cell);
-    }
-  }
-
-  exportInPng() {
-    if (this.editor && this.editor.graph) {
-      const dom = $('#graph');
-      let ht = $(document).height();
-      let wt = $(document).width();
-      if (wt < dom.first()[0].scrollWidth) {
-        wt = dom.first()[0].scrollWidth;
-      }
-      if (ht < dom.first()[0].scrollHeight) {
-        ht = dom.first()[0].scrollHeight;
-      }
-      let bg = dom.css('background-color');
-      bg = bg.substring(0, bg.length - 4);
-      saveSvgAsPng(dom.first()[0].firstChild, this.selectedCluster.subagentClusterId + '.png', {
-        backgroundColor: bg + '1)',
-        height: ht + 200,
-        width: wt + 200,
-        left: -50,
-        top: -80
-      });
     }
   }
 

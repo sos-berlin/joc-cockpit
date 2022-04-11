@@ -1,19 +1,33 @@
 <div class="modal-body p-a">
   <div class="form-group row">
-    <div class="col-sm-12">
-      <span class="_600" translate>inventory.label.command</span>:&nbsp;
+    <div class="col-sm-2">
+      <span class="_600" translate>inventory.label.command</span>:
+    </div>
+    <div class="col-sm-10">
       {{result.command}}
     </div>
-    <div class="col-sm-12 m-t-sm">
-      <span class="_600" translate>log.label.stdout</span>:&nbsp;
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-2">
+      <span class="_600" translate>log.label.stdout</span>:
+    </div>
+    <div class="col-sm-10">
       {{result.stdOut}}
     </div>
-    <div class="col-sm-12 m-t-sm">
-      <span class="_600" translate>log.label.stderr</span>:&nbsp;
-      {{result.stdErr}}
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-2">
+      <span class="_600" translate>log.label.stderr</span>:
     </div>
-    <div class="col-sm-12 m-t-sm">
-      <span class="_600" translate>inventory.label.exitCode</span>:&nbsp;
+    <div class="col-sm-10 text-danger">
+      {{result.stderr}}
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-2">
+      <span class="_600" translate>inventory.label.exitCode</span>:
+    </div>
+    <div class="col-sm-10">
       {{result.exitCode}}
     </div>
   </div>

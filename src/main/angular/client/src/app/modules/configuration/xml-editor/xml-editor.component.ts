@@ -3320,11 +3320,13 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 // Remove Node
   removeNode(node): void {
     this.dRefFlag = 0;
-    if (node.parent === '#') {
+    if (node.origin.parent === '#') {
     } else {
-      this.getParent(node, this.nodes[0]);
+      if(node.parentNode.origin){
+        this.deleteData(node.parentNode.origin.children, node.origin, node.parentNode.origin);
+      }
     }
-    if (this.selectedNode.ref === node.ref) {
+    if (this.selectedNode.ref === node.origin.ref) {
       this.selectedNode = this.nodes[0];
       this.selectedNodeDoc = this.checkText(this.nodes[0]);
       this.getIndividualData(this.selectedNode, undefined);
@@ -3451,7 +3453,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.copyItem = {};
     this.copyItem = Object.assign(this.copyItem, node);
     this.cutData = true;
-    // this.searchAndRemoveNode(node);
   }
 
   // searchNode
@@ -3543,12 +3544,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           }
         } else if (copyNode.maxOccurs === undefined) {
           if (pasteNode.children.length > 0) {
+            let flag = true;
             for (let i = 0; i < pasteNode.children.length; i++) {
               if (copyNode.ref === pasteNode.children[i].ref) {
-                this.checkRule = false;
+                flag = false;
                 break;
               }
             }
+            this.checkRule = flag;
           } else if (pasteNode.children.length === 0) {
             this.checkRule = true;
           }

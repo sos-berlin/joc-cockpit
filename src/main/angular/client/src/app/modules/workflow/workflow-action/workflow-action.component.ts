@@ -90,7 +90,7 @@ export class AddOrderModalComponent implements OnInit {
         if (val.type !== 'List') {
           if (!val.final) {
             if (!val.default && val.default !== false && val.default !== 0) {
-              this.arguments.push({name: k, type: val.type, isRequired: true});
+              this.arguments.push({name: k, type: val.type, isRequired: true, facet: val.facet, message: val.message});
             } else if (val.default) {
               if (val.type === 'String') {
                 this.coreService.removeSlashToString(val, 'default');

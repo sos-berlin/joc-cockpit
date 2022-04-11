@@ -140,14 +140,16 @@
                 </ng-container>
                 <ng-container *ngSwitchDefault>
                   <div class="col-md-6 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <input #value="ngModel" [required]="item.isRequired" autocomplete="off" type="text" class="form-control"
+                    <input [facetValidation]="item.facet" #value="ngModel" [required]="item.isRequired" autocomplete="off" type="text" class="form-control"
                            name="value{{i}}" (keypress)="onKeyPress($event)"
                            [(ngModel)]="item.value" placeholder="{{'common.placeholder.value' | translate}}">
+                    <i class="pos-abt cursor fa fa-info-circle" *ngIf="item.message" [nz-tooltip]="item.message" style="right: -10px;top:8px;"></i>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">
                       <div *ngIf="value.errors.required">
                         <div translate>common.message.requiredError</div>
                       </div>
+                      <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
                     </div>
                   </div>
                 </ng-container>

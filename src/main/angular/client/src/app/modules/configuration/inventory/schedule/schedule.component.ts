@@ -261,7 +261,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if ($event) {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
-      } else if(isExpand){
+      } else if (isExpand) {
         node.isExpanded = true;
       }
 
@@ -351,6 +351,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   onRemoved(data): void {
     this.schedule.configuration.workflowNames.splice(this.schedule.configuration.workflowNames.indexOf(data.key), 1);
+    this.schedule.configuration.variableSets = [];
     this.saveJSON();
   }
 
@@ -428,6 +429,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             for (let i = 0; i < this.schedule.configuration.variableSets[prop].variables.length; i++) {
               if (this.schedule.configuration.variableSets[prop].variables[i].name === k) {
                 this.schedule.configuration.variableSets[prop].variables[i].type = val.type;
+                this.schedule.configuration.variableSets[prop].variables[i].facet = val.facet;
+                this.schedule.configuration.variableSets[prop].variables[i].message = val.message;
                 if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
                   this.schedule.configuration.variableSets[prop].variables[i].isRequired = true;
                 }
@@ -440,7 +443,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                 this.schedule.configuration.variableSets[prop].variables.push({
                   name: k,
                   type: val.type,
-                  isRequired: true
+                  isRequired: true,
+                  facet: val.facet,
+                  message: val.message
                 });
               }
             }
@@ -575,7 +580,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.data.name = name;
         }
         data.name1 = name;
-        this.dataService.reloadTree.next({ rename: data });
+        this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.schedule.name = this.data.name;
         this.ref.detectChanges();
@@ -618,7 +623,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  saveJSON(flag = false, skip = false): void {
+  saveJSON(flag = false, skip = false, form?, data?): void {
+    if (form && form.invalid) {
+      data.value = '';
+      return;
+    }
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
@@ -977,9 +986,10 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (!res.valid) {
         if (this.schedule.configuration.workflowNames && this.schedule.configuration.workflowNames.length > 0 && this.schedule.configuration.calendars.length > 0) {
           this.validateJSON(res.configuration);
+        } else {
+          this.setErrorMessage(res);
         }
       }
-      this.setErrorMessage(res);
     });
   }
 

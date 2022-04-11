@@ -2020,7 +2020,7 @@ export class GitComponent implements OnInit {
         category: this.object.category
       }).subscribe({
         next: (res) => {
-          console.log(res)
+          this.showResult(res);
           this.activeModal.close('Done');
         }, error: () => {
           this.submitted = false;

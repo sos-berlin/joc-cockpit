@@ -278,7 +278,7 @@
                     </ng-template>
                     <span
                       (click)="selectNode(node);addContent(node.origin.values);"
-                      [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'disabled' : ''" nzTooltipPlacement="right" nzTooltipOverlayClassName="custom-tooltip"
+                      [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'cut-row' : ''" nzTooltipPlacement="right" nzTooltipOverlayClassName="custom-tooltip"
                       [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''">{{node.origin.ref}}
                       </span>
                     <span class="text-sm pl-2"
@@ -381,7 +381,7 @@
                             <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name" [nzLabel]="option.name">
                               <div>
                                 <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                                 {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>                      
+                                 {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
                               </div>
                             </nz-option>
                           </nz-option-group>
@@ -690,7 +690,7 @@
       <a translate>xml.button.showAllChildNodes</a>
     </li>
     <li nz-menu-divider>
-    <li nz-menu-item (click)="cutNode(menuNode.origin)" [nzDisabled]="cutData" *ngIf="menuNode.origin && menuNode.origin.parent !=='#'">
+    <li nz-menu-item (click)="cutNode(menuNode.origin)" [nzDisabled]="cutData && menuNode.origin.uuid === copyItem.uuid" *ngIf="menuNode.origin && menuNode.origin.parent !=='#'">
       <a translate>xml.button.cut</a>
     </li>
     <li nz-menu-item (click)="copyNode(menuNode.origin)"><a translate>xml.button.copy</a></li>
@@ -698,7 +698,7 @@
       <a translate>xml.button.paste</a>
     </li>
     <li nz-menu-divider>
-    <li nz-menu-item (click)="removeNode(menuNode.origin)" [nzDisabled]="!(menuNode.origin && menuNode.origin.parent !== '#')">
+    <li nz-menu-item (click)="removeNode(menuNode)" [nzDisabled]="!(menuNode.origin && menuNode.origin.parent !== '#')">
       <a translate>xml.button.remove</a>
     </li>
   </ul>

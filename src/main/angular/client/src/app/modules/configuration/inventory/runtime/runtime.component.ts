@@ -523,9 +523,6 @@ export class AddRestrictionComponent implements OnInit {
   }
 
   editFrequency(data): void {
-    if(data.tab === 'every'){
-      return;
-    }
     this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
     this.isRuntimeEdit = true;
@@ -989,9 +986,6 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   editRestrictionInCalendar(data, frequency): void {
-    if(frequency.tab === 'every'){
-      return;
-    }
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddRestrictionComponent,

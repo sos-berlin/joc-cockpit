@@ -741,9 +741,6 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   editFrequency(data): void {
-    if(data.tab === 'every'){
-      return;
-    }
     this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
 
@@ -1836,7 +1833,6 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       for (let x = 0; x < data[type].repetitions.length; x++) {
         obj = {};
         this.iterateData(obj, data[type].repetitions[x], null, 'every', TYPE, null, null);
-
       }
     }
   }

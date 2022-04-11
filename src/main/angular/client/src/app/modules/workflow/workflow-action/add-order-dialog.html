@@ -196,15 +196,17 @@
             </ng-container>
             <ng-container *ngSwitchDefault>
               <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <input #value="ngModel" [required]="argument.isRequired" autocomplete="off" type="text" class="form-control"
+                <input [facetValidation]="argument.facet" #value="ngModel" [required]="argument.isRequired" autocomplete="off" type="text" class="form-control"
                        name="value{{i}}" (keypress)="onKeyPress($event)"
                        [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
-                <i *ngSwitchDefault class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
+                <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
+                <i class="pos-abt cursor fa fa-info-circle" *ngIf="argument.message" [nz-tooltip]="argument.message" style="right: -10px;top:8px;"></i>
                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                      class="text-danger help-block">
                   <div *ngIf="value.errors.required">
                     <div translate>common.message.requiredError</div>
                   </div>
+                  <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
                 </div>
               </div>
             </ng-container>
