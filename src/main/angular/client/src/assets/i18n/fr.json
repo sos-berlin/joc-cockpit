@@ -1067,6 +1067,8 @@
     "label.pushToRollout": "Pousser les objets du rollout vers le dépôt",
     "label.gitUri": "Git URI",
     "label.gitMessage": "Message",
+    "label.command": "Command",
+    "label.exitCode": "Exit Code",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addVariableSet": "Ajouter un Jeu de Variable",
     "button.setVersion": "Définir la Version",

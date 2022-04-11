@@ -1067,6 +1067,8 @@
     "label.pushToRollout": "Ausrollbare Objekte ins Depot hochladen",
     "label.gitUri": "Git URI",
     "label.gitMessage": "Mitteilung",
+    "label.command": "Command",
+    "label.exitCode": "Exit Code",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addVariableSet": "Variablensatz hinzufügen",
     "button.setVersion": "Version setzen",

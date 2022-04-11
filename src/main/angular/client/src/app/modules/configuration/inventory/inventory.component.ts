@@ -2029,8 +2029,7 @@ export class GitComponent implements OnInit {
     } else {
       this.coreService.post('inventory/repository/git/add', this.object).subscribe({
         next: (res) => {
-          console.log(res)
-          this.commitAndPush();
+          this.commitAndPush(res);
         }, error: () => {
           this.submitted = false;
         }
@@ -2038,21 +2037,23 @@ export class GitComponent implements OnInit {
     }
   }
 
-  private commitAndPush(): void {
+  private commitAndPush(result): void {
     this.coreService.post('inventory/repository/git/commit', {
       ...this.object, message: this.message
     }).subscribe({
-      next: () => {
+      next: (result2) => {
         this.coreService.post('inventory/repository/git/push', this.object).subscribe({
           next: (res) => {
             this.showResult(res);
             this.activeModal.close('Done');
           }, error: () => {
             this.submitted = false;
+            this.showResult(result2);
           }
         });
       }, error: () => {
         this.submitted = false;
+        this.showResult(result);
       }
     });
   }
@@ -3740,7 +3741,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         this.showResult(res);
-      }, error: (err) => this.showResult(err)
+      }
     });
   }
 

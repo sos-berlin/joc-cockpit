@@ -831,6 +831,7 @@ export class CoreService {
           path,
           key: path,
           permitted: data.folders[i].permitted,
+          repoControlled: data.folders[i].repoControlled,
           isLeaf: isLeaf ? !data.folders[i].folders || data.folders[i].folders.length === 0 : false,
           children: [],
           items: data.folders[i].items,

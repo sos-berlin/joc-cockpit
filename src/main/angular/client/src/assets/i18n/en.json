@@ -1067,6 +1067,8 @@
     "label.pushToRollout": "Push rollout objects to repository",
     "label.gitUri": "Git URI",
     "label.gitMessage": "Message",
+    "label.command": "Command",
+    "label.exitCode": "Exit Code",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addVariableSet": "Add Variable Set",
     "button.setVersion": "Set Version",

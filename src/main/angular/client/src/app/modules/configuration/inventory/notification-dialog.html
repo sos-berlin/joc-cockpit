@@ -1,12 +1,25 @@
 <div class="modal-body p-a">
   <div class="form-group row">
     <div class="col-sm-12">
-      {{result}}
+      <span class="_600" translate>inventory.label.command</span>:&nbsp;
+      {{result.command}}
+    </div>
+    <div class="col-sm-12 m-t-sm">
+      <span class="_600" translate>log.label.stdout</span>:&nbsp;
+      {{result.stdOut}}
+    </div>
+    <div class="col-sm-12 m-t-sm">
+      <span class="_600" translate>log.label.stderr</span>:&nbsp;
+      {{result.stdErr}}
+    </div>
+    <div class="col-sm-12 m-t-sm">
+      <span class="_600" translate>inventory.label.exitCode</span>:&nbsp;
+      {{result.exitCode}}
     </div>
   </div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
-    common.button.ok
+    common.button.close
   </button>
 </div>
