@@ -164,8 +164,8 @@ export class AuthService {
             ifPermissionPassed = true;
           }
         } else {
-         
-          if (permission.joc && (permission.joc.inventory.view && (url == '/configuration' || url == '/configuration/inventory')) || (permission.joc.fileTransfer.view && (url == '/configuration' || url == '/configuration/file_transfer'))
+
+          if (permission.joc && (permission.joc.inventory.view && (url == '/configuration' || url.match('/configuration/inventory'))) || (permission.joc.fileTransfer.view && (url == '/configuration' || url == '/configuration/file_transfer'))
             || (permission.joc.notification.view && (url == '/configuration' || url == '/configuration/notification')) || (permission.joc.others.view && (url == '/configuration' || url == '/configuration/other'))) {
             ifPermissionPassed = true;
           }

@@ -478,8 +478,8 @@ export class ModifyStartTimeModalComponent implements OnInit {
     }
     this.submitted = true;
     this.coreService.post('daily_plan/orders/modify', obj).subscribe({
-      next: () => {
-        this.activeModal.close('Done');
+      next: (res) => {
+        this.activeModal.close(res);
       }, error: () => this.submitted = false
     });
   }

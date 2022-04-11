@@ -1024,7 +1024,7 @@ export class ExportComponent implements OnInit {
             mergeObj = res[1];
           }
         } else {
-          if (res[0].name) {
+          if (res[0].path) {
             mergeObj = res[0];
           }
         }
@@ -1448,7 +1448,7 @@ export class RepositoryComponent implements OnInit {
     const APIs = [];
     if (this.filter.envRelated) {
       if (this.type !== 'ALL') {
-        obj.objectTypes = [this.type];
+        obj.objectTypes = this.type === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.type];
       } else {
         const obj2 = clone(obj);
         if (!this.filter.envIndependent && this.type === 'ALL') {
@@ -1491,7 +1491,7 @@ export class RepositoryComponent implements OnInit {
             mergeObj = res[1];
           }
         } else {
-          if (res[0].name) {
+          if (res[0].path) {
             mergeObj = res[0];
           }
         }
@@ -1987,7 +1987,7 @@ export class GitComponent implements OnInit {
   };
   message = '';
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -2044,7 +2044,8 @@ export class GitComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.coreService.post('inventory/repository/git/push', this.object).subscribe({
-          next: () => {
+          next: (res) => {
+            this.showResult(res);
             this.activeModal.close('Done');
           }, error: () => {
             this.submitted = false;
@@ -2053,6 +2054,20 @@ export class GitComponent implements OnInit {
       }, error: () => {
         this.submitted = false;
       }
+    });
+  }
+
+  private showResult(result): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NotificationComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        result,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
