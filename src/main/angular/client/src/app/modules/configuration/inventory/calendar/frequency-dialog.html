@@ -238,9 +238,11 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
-                <div class="col-sm-5">
-                  <nz-date-picker [(ngModel)]="frequency.startingWith" name="startingWith"></nz-date-picker>
+                <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-sm-5" [ngClass]="{'has-error' : ((startingWith.dirty || startingWith.touched) && startingWith.invalid)}">
+                  <nz-date-picker #startingWith="ngModel" required [(ngModel)]="frequency.startingWith" name="startingWith"></nz-date-picker>
                 </div>
               </div>
               <div class="form-group row">

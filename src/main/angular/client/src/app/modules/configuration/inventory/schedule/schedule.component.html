@@ -300,7 +300,7 @@
                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                   <input [facetValidation]="variable.facet" #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event, variableSet)"
                          name="value{{i}}{{j}}" [(ngModel)]="variable.value" (blur)="saveJSON(false, false, value, variable)" placeholder="{{'common.placeholder.value' | translate}}">
-                  <i class="pos-abt cursor fa fa-info-circle" *ngIf="variable.message" [nz-tooltip]="variable.message" style="right: -10px;top:8px;"></i>
+                  <i class="pos-abt cursor fa fa-info-circle" *ngIf="variable.message" [nz-tooltip]="variable.message" style="right: 18px;top:9px;"></i>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
                     <div *ngIf="value.errors.required" translate>common.message.requiredError</div>

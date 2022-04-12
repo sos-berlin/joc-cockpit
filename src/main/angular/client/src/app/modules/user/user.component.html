@@ -708,9 +708,11 @@
                             </table>
                           </div>
                         </div>
-                        <div class="m-l-12 p-l-xs"
+                        <div class="col-md-12"
                              *ngIf="!gitCredentials.credentials || gitCredentials.credentials.length === 0" translate>
-                          profile.gitManagement.message.noCredentialFound
+                          <div class="text-center">
+                            <app-empty-data title="profile.gitManagement.message.noCredentialFound"></app-empty-data>
+                          </div>
                         </div>
                       </div>
                     </div>

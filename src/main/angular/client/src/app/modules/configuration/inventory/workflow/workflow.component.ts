@@ -141,6 +141,41 @@ export class OffsetValidator implements Validator {
 }
 
 @Component({
+  selector: 'app-facet-editor-modal',
+  templateUrl: './facet-editor-dialog.html'
+})
+export class FacetEditorComponent implements OnInit {
+  @Input() data: any = {};
+  variable: any = {};
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.variable = this.coreService.clone(this.data)
+  }
+
+  checkRegularExp(data): void {
+    data.invalid = false;
+    try {
+      new RegExp(data.facet);
+    } catch (e) {
+      console.log(e)
+      data.invalid = true;
+    }
+  }
+
+  onSubmit(): void {
+    delete this.variable.invalid;
+    this.activeModal.close(this.variable);
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
+
+@Component({
   selector: 'app-repeat-editor-modal',
   templateUrl: './repeat-editor-dialog.html'
 })
@@ -2421,7 +2456,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
   inventoryConf: any;
-  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List', 'Facet'];
+  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
   variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
@@ -2928,6 +2963,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       let data = this.coreService.clone(this.workflow.configuration);
       const flag = this.modifyJSON(data, true, true);
       if (!flag) {
+        this.workflow.valid = false;
         return;
       }
       if (typeof data === 'object') {
@@ -3433,8 +3469,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             } else if (val.type === 'Boolean') {
               val.default = (val.default === true || val.default === 'true');
             }
-          } else if (val.facet) {
-            val.type = 'Facet';
           }
           return {name: k, value: val};
         });
@@ -3798,6 +3832,27 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       });
     }
+  }
+
+  addFacet(data: any): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: FacetEditorComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        data
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data.value = result.value;
+        this.ref.detectChanges();
+        this.updateOtherProperties('variable');
+      }
+    });
   }
 
   openEditor(data: any, type = 'default'): void {
@@ -9161,7 +9216,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   this.invalidMsg = 'workflow.message.agentIsMissing';
                 } else if (this.jobs[n].value.executable && this.jobs[n].value.executable.login &&
                   this.jobs[n].value.executable.login.withUserProfile && !this.jobs[n].value.executable.login.credentialKey) {
-                  this.invalidMsg = 'workflow.message.credentialKeyIsMissing';
+                  this.invalidMsg = 'inventory.message.credentialKeyIsMissing';
                 }
               }
             }
@@ -9285,15 +9340,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  checkRegularExp(data): void {
-    data.invalid = false;
-    try {
-      new RegExp(data.facet);
-    } catch (e) {
-      data.invalid = true;
-    }
-  }
-
   updateOtherProperties(type): void {
     let flag = false;
     if (type === 'title') {
@@ -9328,12 +9374,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       let temp = this.coreService.clone(this.variableDeclarations.parameters);
       variableDeclarations.parameters = temp.filter((value) => {
         delete value.value.invalid;
-        if (value.value.type !== 'Facet') {
+        if (value.value.type === 'List' || value.value.type === 'Final') {
+          delete value.value.default;
+        } else if (value.value.type !== 'String') {
           delete value.value.facet;
           delete value.value.message;
-        }
-        if (value.value.type === 'List' || value.value.type === 'Final' || value.value.type === 'Facet') {
-          delete value.value.default;
         }
         if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
           delete value.value.default;
@@ -9343,10 +9388,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
         } else if (value.value.type === 'Final') {
           delete value.value.type;
-        } else if (value.value.type === 'Facet') {
-          value.value.type = 'String';
-          delete value.value.final;
-          delete value.value.default;
         } else {
           delete value.value.final;
           if (value.value.type === 'String') {

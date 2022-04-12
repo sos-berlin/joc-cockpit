@@ -1,0 +1,45 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span class="drag-text" translate>workflow.label.facetEditor</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close"
+          (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label class="col-md-4 col-lg-3 form-control-label"
+             translate>workflow.label.facet</label>
+      <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || variable.value.invalid}">
+        <textarea #facet="ngModel" name="facet" (keypress)="checkRegularExp(variable.value)" (blur)="checkRegularExp(variable.value)"
+                  [(ngModel)]="variable.value.facet"  nz-input placeholder="{{'common.placeholder.regex' | translate}}" nzAutosize></textarea>
+        <div *ngIf="(facet.invalid && facet.errors && (facet.dirty || facet.touched)) || variable.value.invalid"
+             class="text-danger help-block">
+          <div *ngIf="variable.value.invalid">
+            <div translate>workflow.message.invalidRegularExpression</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-4 col-lg-3 form-control-label"
+             translate>workflow.label.message</label>
+      <div class="col-md-8 col-lg-9">
+        <textarea rows="3" class="form-control" name="message"
+               [(ngModel)]="variable.value.message" placeholder="{{'workflow.placeholder.enterMessage' | translate}}">
+        </textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
+      common.button.submit
+    </button>
+    <button type="button" class="btn btn-grey btn-sm"
+            (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

@@ -107,14 +107,14 @@
                               (nzCheckedChange)="checkAll($event, controller)"
                           ></th>
                           <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span translate>common.label.action</span></th>
-                          <th nzWidth="15%" (click)="sort(controller, 'agentId')">
+                          <th (click)="sort(controller, 'agentId')">
                             <a><span class="p-r-xs" translate>agent.label.agentId</span>
                               <i *ngIf="controller.sortBy == 'agentId' && !controller.reverse"
                                  class="fa fa-caret-up "></i>
                               <i *ngIf="controller.sortBy == 'agentId' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
-                          <th nzWidth="15%" (click)="sort(controller, 'agentName')">
+                          <th (click)="sort(controller, 'agentName')">
                             <a><span class="p-r-xs" translate>agent.label.agentName</span>
                               <i *ngIf="controller.sortBy == 'agentName' && !controller.reverse"
                                  class="fa fa-caret-up "></i>
@@ -128,7 +128,7 @@
                               <i *ngIf="controller.sortBy == 'agentNameAliases' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
-                          <th nzWidth="20%" (click)="sort(controller, 'url')">
+                          <th (click)="sort(controller, 'url')">
                             <a><span class="p-r-xs" translate>agent.label.url</span>
                               <i *ngIf="controller.sortBy == 'url' && !controller.reverse"
                                  class="fa fa-caret-up "></i>
@@ -147,6 +147,13 @@
                               <i *ngIf="controller.sortBy == 'hidden' && !controller.reverse"
                                  class="fa fa-caret-up "></i>
                               <i *ngIf="controller.sortBy == 'hidden' && controller.reverse"
+                                 class="fa fa-caret-down "></i></a>
+                          </th>
+                          <th nzWidth="100px" (click)="sort(controller, 'disabled')">
+                            <a><span class="p-r-xs" translate>agent.label.disabled</span>
+                              <i *ngIf="controller.sortBy == 'disabled' && !controller.reverse"
+                                 class="fa fa-caret-up "></i>
+                              <i *ngIf="controller.sortBy == 'disabled' && controller.reverse"
                                  class="fa fa-caret-down "></i></a>
                           </th>
                           <th nzWidth="140px" (click)="sort(controller, 'clusterWatcher')">
@@ -192,10 +199,16 @@
                                     <a translate>agent.button.createToken</a>
                                   </li>
                                   <li nz-menu-divider></li>
-                                  <li (click)="disableAgent(agent, controller)" nz-menu-item *ngIf="!agent.hidden">
+                                  <li (click)="disableEnableSubagent(agent, controller, false, true)" nz-menu-item *ngIf="!agent.disabled">
+                                    <a translate>agent.button.disable</a>
+                                  </li>
+                                  <li (click)="disableEnableSubagent(agent, controller, true, true)" nz-menu-item *ngIf="agent.disabled">
+                                    <a translate>agent.button.enable</a>
+                                  </li>
+                                  <li (click)="hideAgent(agent, controller)" nz-menu-item *ngIf="!agent.hidden">
                                     <a translate>agent.button.hide</a>
                                   </li>
-                                  <li (click)="enableAgent(agent, controller)" nz-menu-item *ngIf="agent.hidden">
+                                  <li (click)="showAgent(agent, controller)" nz-menu-item *ngIf="agent.hidden">
                                     <a translate>agent.button.show</a>
                                   </li>
                                   <li (click)="resetAgent(agent, controller)" nz-menu-item >
@@ -226,6 +239,7 @@
                                    [innerHtml]="agent.syncState._text | translate"></label>
                           </td>
                           <td (click)="editAgent(agent, controller)">{{agent.hidden ? 'Yes' : 'No'}}</td>
+                          <td (click)="editAgent(agent, controller)">{{agent.disabled ? 'Yes' : 'No'}}</td>
                           <td (click)="editAgent(agent, controller)">{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
                           <td>
                             <span *ngIf="!agent.token">-</span>

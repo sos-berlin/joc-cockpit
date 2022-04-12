@@ -114,7 +114,7 @@
                     <span class="text-left ">
                       <span class="fa fa-stop pos-abt m-t-xs text-xs"
                             [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'text'): cluster.healthState ? coreService.getColor(cluster.healthState.severity,'text') : ''"></span>&nbsp;
-                      <i nz-tooltip="{{'agent.label.cluster' | translate}}" *ngIf="!cluster.url" class="fa fa-server m-l-12" style="position: relative;top:1px"></i>&nbsp;
+                      <i nz-tooltip="{{'agent.label.cluster' | translate}}" *ngIf="!cluster.url" nz-icon nzType="cluster" nzTheme="outline" class="m-l-12" style="position: relative;top:1px"></i>&nbsp;
                       <span [nz-tooltip]="cluster.path"
                         class="text text-ellipsis1 cursor m-l-xs" (click)="navToController(cluster, null);$event.stopPropagation()"
                         [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"></span>
@@ -198,7 +198,7 @@
                              [ngForOf]="ajaxTable.data">
                   <tr [ngClass]="{'light-bg':cluster.show}">
                     <td>
-                      <i nz-tooltip="{{'agent.label.cluster' | translate}}" *ngIf="!cluster.url" class="fa fa-server pos-abt font11" style="left: -1px;top:-1px"></i>
+                      <i nz-tooltip="{{'agent.label.cluster' | translate}}" *ngIf="!cluster.url" nz-icon nzType="cluster" class="pos-abt font11" style="left: -1px;top:-1px"></i>
                       <i class="cursor fa fa-caret-down fa-lg p-r-xs p-l-xs" *ngIf="cluster.url && !cluster.show"
                          (click)="showAgents(cluster)"></i>
                       <i class="cursor fa fa-caret-up fa-lg p-r-xs p-l-xs" *ngIf="cluster.url && cluster.show"

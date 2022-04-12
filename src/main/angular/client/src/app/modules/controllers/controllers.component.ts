@@ -804,15 +804,15 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  disableAgent(agent, controller): void {
-    this.enableDisable(agent, controller, true);
+  hideAgent(agent, controller): void {
+    this.hideAndShow(agent, controller, true);
   }
 
-  enableAgent(agent, controller, isCluster = false): void {
-    this.enableDisable(agent, controller, false);
+  showAgent(agent, controller): void {
+    this.hideAndShow(agent, controller, false);
   }
 
-  private enableDisable(agent, controller, flag): void {
+  private hideAndShow(agent, controller, flag): void {
     const obj: any = {
       controllerId: controller.controllerId,
       agents: controller.agents
@@ -820,8 +820,8 @@ export class ControllersComponent implements OnInit, OnDestroy {
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
-        type: 'Subagent',
-        operation: flag ? 'Enable' : 'Disable',
+        type: 'Agent',
+        operation: flag ? 'Hide' : 'Show',
         name: ''
       };
       const modal = this.modal.create({
@@ -855,14 +855,23 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  disableEnableSubagent(subagent, controller, isEnable): void {
-    const URL = isEnable ? 'agents/inventory/cluster/subagents/enable' : 'agents/inventory/cluster/subagents/disable';
+  disableEnableSubagent(subagent, controller, isEnable, isAgent = false): void {
+    let URL = isEnable ? 'agents/inventory/cluster/subagents/enable' : 'agents/inventory/cluster/subagents/disable';
+    const obj: any = {
+      controllerId: controller.controllerId
+    }
+    if (isAgent) {
+      URL = isEnable ? 'agents/inventory/enable' : 'agents/inventory/disable';
+      obj.agentIds = [subagent.agentId];
+    } else {
+      obj.subagentIds = [subagent.subagentId];
+    }
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
-        type: 'Subagent',
+        type: isAgent ? 'Agent' : 'Subagent',
         operation: isEnable ? 'Enable' : 'Disable',
-        name: subagent.subagentId
+        name: isAgent ? subagent.agentId : subagent.subagentId
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -877,23 +886,13 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.coreService.post(URL, {
-            controllerId: controller.controllerId,
-            subagentIds: [subagent.subagentId],
-            auditLog: result
-          }).subscribe();
+          obj.auditLog = result;
+          this.coreService.post(URL, obj).subscribe();
         }
       });
     } else {
-      this.coreService.post(URL, {
-        controllerId: controller.controllerId,
-        subagentIds: [subagent.subagentId]
-      }).subscribe();
+      this.coreService.post(URL, obj).subscribe();
     }
-  }
-
-  deploySubagent(sub, clusterAgent, controller): void {
-    //TODO
   }
 
   revoke(clusterAgent, controller) {

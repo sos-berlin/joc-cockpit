@@ -3320,13 +3320,20 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 // Remove Node
   removeNode(node): void {
     this.dRefFlag = 0;
-    if (node.origin.parent === '#') {
+    if (node.origin) {
+      if (node.origin.parent === '#') {
+      } else {
+        if (node.parentNode.origin) {
+          this.deleteData(node.parentNode.origin.children, node.origin, node.parentNode.origin);
+        }
+      }
     } else {
-      if(node.parentNode.origin){
-        this.deleteData(node.parentNode.origin.children, node.origin, node.parentNode.origin);
+      if (node.parent === '#') {
+      } else {
+        this.getParent(node, this.nodes[0]);
       }
     }
-    if (this.selectedNode.ref === node.origin.ref) {
+    if ((node.origin && this.selectedNode.ref === node.origin.ref) || (this.selectedNode.ref === node.ref)) {
       this.selectedNode = this.nodes[0];
       this.selectedNodeDoc = this.checkText(this.nodes[0]);
       this.getIndividualData(this.selectedNode, undefined);

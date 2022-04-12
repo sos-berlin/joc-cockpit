@@ -29,7 +29,9 @@ import {
   TimeEditorComponent,
   DurationValidator,
   CycleInstructionComponent,
-  RepeatEditorComponent, OffsetValidator
+  RepeatEditorComponent,
+  OffsetValidator,
+  FacetEditorComponent
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
@@ -46,8 +48,8 @@ import {ScriptComponent} from './script/script.component';
 
 const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
   CreateObjectModalComponent, NotificationComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, ImportComponent,
-  UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent,
-  AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, PeriodComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent];
+  UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent, PeriodComponent,
+  AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent, FacetEditorComponent];
 
 @NgModule({
   imports: [
