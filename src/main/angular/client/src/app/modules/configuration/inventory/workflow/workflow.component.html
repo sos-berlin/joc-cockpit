@@ -917,11 +917,17 @@
                   <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                   <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                 </nz-select>
-                <input *ngSwitchDefault [disabled]="variable.value.type === 'List'" autocomplete="off" type="text" class="form-control" name="value{{i}}"
-                      (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
-                      [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
-                <i *ngSwitchDefault [hidden]="variable.value.type === 'List'" class="pos-abt cursor" nz-icon nzType="edit" nzTheme="outline"
-                  (click)="openEditor(variable.value)" style="right: 1px;top:1px;"></i>
+                <ng-container *ngSwitchDefault>
+                  <input #value="ngModel" [facetValidation]="variable.value.facet" [disabled]="variable.value.type === 'List'" autocomplete="off" type="text" class="form-control" name="value{{i}}"
+                         (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
+                         [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
+                  <i [hidden]="variable.value.type === 'List'" class="pos-abt cursor" nz-icon nzType="edit" nzTheme="outline"
+                     (click)="openEditor(variable.value)" style="right: 1px;top:1px;"></i>
+                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                       class="text-danger help-block">
+                    <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
+                  </div>
+                </ng-container>
               </div>
               <div class="col-md-4 col-lg-4 m-b-sm p-r-0" *ngIf="variable.value.type === 'Final'" [ngClass]="{'has-error' : ((final.dirty || final.touched) && final.invalid)}">
                 <input required autocomplete="off" type="text" class="form-control" #final="ngModel" name="final{{i}}"

@@ -8,6 +8,12 @@
 <div class="pos-abt" style="top:12px;right:8px" *ngIf="setOfCheckedId.size > 0">
   <button class="btn btn-grey btn-sm m-l-12"
           *ngIf="permission.currentController.orders.modify" [ngClass]="{'disable-link': !object.isModify }"
+          (click)="modifyAllStartTime()"><i
+    class="fa fa-calendar"></i>&nbsp;
+    <span class="hidden-sm-down" translate>dailyPlan.button.setStartTime</span>
+  </button>
+  <button class="btn btn-grey btn-sm m-l-12"
+          *ngIf="permission.currentController.orders.modify" [ngClass]="{'disable-link': !object.isModify }"
           (click)="modifyAllOrder()"><i class="fa fa-edit p-r-xs"></i>
     <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span></button>
   <button class="btn btn-grey btn-sm m-l-12"  *ngIf="!object.isCancel && permission.currentController.orders.cancel"

@@ -346,6 +346,7 @@ export class ChangeParameterModalComponent implements OnInit {
 export class ModifyStartTimeModalComponent implements OnInit {
   @Input() schedulerId;
   @Input() order: any;
+  @Input() orders: any;
   @Input() plan: any;
   @Input() preferences: any;
   @Input() isDailyPlan: boolean;
@@ -365,6 +366,9 @@ export class ModifyStartTimeModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(this.orders){
+      this.n1 = this.orders.size;
+    }
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
@@ -443,8 +447,12 @@ export class ModifyStartTimeModalComponent implements OnInit {
       this.plan.value.forEach((order) => {
         obj.orderIds.push(order.orderId);
       });
-    } else {
+    } else if(this.order.orderId){
       obj.orderIds.push(this.order.orderId);
+    } else if(this.orders){
+      this.orders.forEach((order, k) => {
+        obj.orderIds.push(k);
+      });
     }
     if (isEmpty(this.period)) {
       if (this.dateType.at === 'now') {

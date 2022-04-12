@@ -13,10 +13,18 @@
 <form (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="row">
-      <div class="col-md-12 mono-font">
-        <textarea nz-input name="value" #myinput (keyup)="do_resize()" [(ngModel)]="data" rows="10"
+      <div class="col-md-12 mono-font" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+        <textarea [facetValidation]="object.facet" #value="ngModel" nz-input name="value" #myinput (keyup)="do_resize()" [(ngModel)]="data" rows="10"
                   placeholder="{{'common.placeholder.value' | translate}}"
         ></textarea>
+        <i class="pos-abt cursor fa fa-info-circle" *ngIf="object.message" [nz-tooltip]="object.message" style="right: 22px;top:9px;"></i>
+        <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+             class="text-danger help-block">
+          <div *ngIf="value.errors.required">
+            <div translate>common.message.requiredError</div>
+          </div>
+          <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
+        </div>
       </div>
     </div>
   </div>

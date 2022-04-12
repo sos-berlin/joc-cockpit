@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>dailyPlan.label.setStartTime</span>
-    <span *ngIf="order || plan">:</span>
+    <span *ngIf="(order || plan) && !orders">:</span>
     <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
     <i *ngIf="plan" class="text-muted p-l-xs text">{{plan.key}}</i>
   </h4>
@@ -16,7 +16,7 @@
     </div>
     <div class="row">
       <div class="col-sm-12">
-        <div class="form-group row" *ngIf="plan && !errorMsg">
+        <div class="form-group row" *ngIf="(plan && !errorMsg) || orders">
           <div class="col-md-12 font14">
             <span *ngIf="n2 === 0" translate [translateParams]="{n1}">dailyPlan.popup.modifyOrdersCount</span>
             <span *ngIf="n2>0" translate [translateParams]="{n1, n2}">dailyPlan.popup.modifyCyclicOrdersCount</span>

@@ -3861,7 +3861,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        data: data[type]
+        data: data[type],
+        object: data
       },
       nzFooter: null,
       nzClosable: false,

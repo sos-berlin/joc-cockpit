@@ -298,7 +298,8 @@ export class AddOrderModalComponent implements OnInit {
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        data: data.value
+        data: data.value,
+        object: data
       },
       nzFooter: null,
       nzClosable: false,

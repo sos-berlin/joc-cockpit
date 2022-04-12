@@ -11,6 +11,7 @@ declare const $;
 export class ValueEditorComponent implements AfterViewInit {
   @ViewChild('myinput') myInputField: ElementRef;
   @Input() data: any;
+  @Input() object: any = {};
   height = 10;
 
   constructor(public activeModal: NzModalRef) {
@@ -34,7 +35,7 @@ export class ValueEditorComponent implements AfterViewInit {
 
   do_resize() {
     const maxrows = 10;
-    const arraytxt = this.data.split('\n');
+    const arraytxt = this.data ? this.data.split('\n') : [];
     let rows = arraytxt.length;
     for (let i = 0; i < arraytxt.length; i++) {
       if (arraytxt[i].length > 110) {

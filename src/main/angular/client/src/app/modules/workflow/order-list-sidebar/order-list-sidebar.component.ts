@@ -3,7 +3,10 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
-import {ChangeParameterModalComponent} from '../../../components/modify-modal/modify.component';
+import {
+  ChangeParameterModalComponent,
+  ModifyStartTimeModalComponent
+} from '../../../components/modify-modal/modify.component';
 import {OrderActionComponent} from '../../order-overview/order-action/order-action.component';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 
@@ -179,6 +182,34 @@ export class OrderListSidebarComponent implements OnChanges {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.isProcessing = true;
+        this.resetAction(5000);
+        this.resetCheckBox();
+      }
+    });
+  }
+
+  modifyAllStartTime(): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ModifyStartTimeModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerId: this.schedulerId,
+        preferences: this.preferences,
+        orders: this.setOfCheckedId,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.isProcessing = true;
+        this.resetAction(5000);
+        this.resetCheckBox();
+      }
     });
   }
 

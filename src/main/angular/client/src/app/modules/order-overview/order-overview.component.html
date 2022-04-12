@@ -89,7 +89,11 @@
             <app-toggle [type]="'ORDER'" (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
           <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}">
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isModify" (click)="modifyAllOrder()"><i
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.modify" [disabled]="!object.isModifyStartTime" (click)="modifyAllStartTime()"><i
+              class="fa fa-calendar"></i>&nbsp;
+              <span class="hidden-sm-down" translate>dailyPlan.button.setStartTime</span>
+            </button>
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController.orders.modify" [disabled]="!object.isModify" (click)="modifyAllOrder()"><i
               class="fa fa-edit"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
             </button>

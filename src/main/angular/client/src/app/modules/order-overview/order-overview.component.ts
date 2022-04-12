@@ -13,7 +13,10 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {AuthService} from '../../components/guard';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
-import {ChangeParameterModalComponent} from '../../components/modify-modal/modify.component';
+import {
+  ChangeParameterModalComponent,
+  ModifyStartTimeModalComponent
+} from '../../components/modify-modal/modify.component';
 import {ResumeOrderModalComponent} from '../../components/resume-modal/resume.component';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 
@@ -183,6 +186,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     checked: false,
     indeterminate: false,
     isModify: false,
+    isModifyStartTime: false,
     isTerminate: false,
     isCancel: false,
     isCancelWithKill: false,
@@ -832,6 +836,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.isCancel = false;
     this.object.isCancelWithKill = false;
     this.object.isModify = true;
+    this.object.isModifyStartTime = true;
     this.object.isSuspend = true;
     this.object.isSuspendWithKill = true;
     this.object.isTerminate = true;
@@ -860,6 +865,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         }
         if (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING' && order.state._text !== 'BLOCKED') {
           this.object.isModify = false;
+          this.object.isModifyStartTime = false;
         }
         if (!workflow) {
           workflow = order.workflowId.path;
@@ -885,6 +891,28 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+  }
+
+  modifyAllStartTime(): void {
+    this.modal.create({
+      nzTitle: null,
+      nzContent: ModifyStartTimeModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        schedulerId: this.schedulerIds.selected,
+        preferences: this.preferences,
+        orders: this.object.mapOfCheckedId,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.isProcessing = true;
+        this.resetAction(5000);
+        this.resetCheckBox();
+      }
     });
   }
 
@@ -1052,6 +1080,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       checked: false,
       indeterminate: false,
       isModify: false,
+      isModifyStartTime: false,
       isTerminate: false,
       isCancel: false,
       isCancelWithKill: false,
