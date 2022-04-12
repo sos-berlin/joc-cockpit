@@ -335,7 +335,7 @@ export class FrequencyModalComponent implements OnInit {
     } else {
       this.frequency.nationalHoliday.splice(this.frequency.nationalHoliday.indexOf(date), 1)
     }
-    this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
+    this.onChangeHolidays();
   }
 
   addCalendarDates(): void {

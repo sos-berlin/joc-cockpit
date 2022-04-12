@@ -9159,6 +9159,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   this.invalidMsg = 'workflow.message.classNameIsMissing';
                 } else if (!this.jobs[n].value.agentName) {
                   this.invalidMsg = 'workflow.message.agentIsMissing';
+                } else if (this.jobs[n].value.executable && this.jobs[n].value.executable.login &&
+                  this.jobs[n].value.executable.login.withUserProfile && !this.jobs[n].value.executable.login.credentialKey) {
+                  this.invalidMsg = 'workflow.message.credentialKeyIsMissing';
                 }
               }
             }

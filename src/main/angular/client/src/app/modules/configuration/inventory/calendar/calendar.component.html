@@ -178,7 +178,7 @@
                     <a class="text-hover-primary">
                       <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
                     </a>
-                    <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage || data.tab=='every'}"><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                    <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
                     <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="text-hover-color">
                       <i (click)="removeFrequency(i)" class="fa fa-times "></i>
                     </a>

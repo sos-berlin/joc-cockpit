@@ -393,6 +393,9 @@ export class WorkflowService {
           || (!value.executable.script && value.executable.TYPE === 'ShellScriptExecutable') || !value.agentName) {
           return false;
         }
+        if (value.executable && value.executable.login && value.executable.login.withUserProfile && !value.executable.login.credentialKey) {
+          return false;
+        }
       }
       if (type === 'ExpectNotice' || type === 'PostNotice') {
         if (!value.noticeBoardName) {

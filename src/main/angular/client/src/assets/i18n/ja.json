@@ -1168,6 +1168,7 @@
     "message.uriIsMissing": "URLが必要です",
     "message.scriptIsMissing": "スクリプトインクルードが必要です",
     "message.toNoticeIsMissing": "通知先が必要です",
+    "message.credentialKeyIsMissing": "Credential key is missing, but is required",
     "message.readingOrderToNoticeIdIsMissing": "読取順の通知IDが必要です",
     "message.endOfLifeIsMissing": "有効期限が必要です",
     "message.nameIsNotValid": "無効な名称です",
@@ -2440,6 +2441,7 @@
     "placeholder.mailCC": "メールcc宛先入力",
     "placeholder.mailBcc": "メールbcc宛先入力",
     "placeholder.mailOn": "一つ以上の値を選択してください",
+    "placeholder.enterMessage": "Enter facet message",
     "findAndReplace": {
       "label.find": "検索",
       "label.replace": "置換",

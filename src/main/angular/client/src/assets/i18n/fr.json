@@ -1168,6 +1168,7 @@
     "message.uriIsMissing": "L'URL est manquant, mais il est nécessaire",
     "message.scriptIsMissing": "Le Script Élément est manquant, mail il est nécessaire",
     "message.toNoticeIsMissing": "A noter, mais est nécessaire",
+    "message.credentialKeyIsMissing": "Credential key is missing, but is required",
     "message.readingOrderToNoticeIdIsMissing": "L'ID Condition pour l'ordre en attente est manquant, mais est requis",
     "message.endOfLifeIsMissing": "La fin de vie est absent, mais il est nécessaire",
     "message.nameIsNotValid": "Nom invalide",
@@ -2440,6 +2441,7 @@
     "placeholder.mailCC": "Entrer l'adresse e-mail de la copie",
     "placeholder.mailBcc": "Entrer l'adresse e-mail de la copie cachée",
     "placeholder.mailOn": "Sélectionnez un ou plusieurs valeurs",
+    "placeholder.enterMessage": "Enter facet message",
     "findAndReplace": {
       "label.find": "Trouver",
       "label.replace": "Remplacer",
