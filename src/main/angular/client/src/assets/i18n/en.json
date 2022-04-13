@@ -1177,7 +1177,7 @@
     "message.invalidFile": "Not a valid {{objectType}} file",
     "message.workflowsWithoutVariables": "Only workflows without order variables are allowed",
     "message.workflowWithVariables": "Only a single workflow with order variables is allowed",
-    "message.deleteCurrentDraftObject": "Your are about to clear the object. Are you sure you want to continue?",
+    "message.deleteCurrentDraftObject": "Your are about to replace the draft. Are you sure you want to continue?",
     "cronTab": {
       "label.convertCron": "Convert crontab",
       "label.folder": "Folder",
