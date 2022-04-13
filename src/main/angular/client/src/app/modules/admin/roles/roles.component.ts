@@ -61,7 +61,7 @@ export class RoleModalComponent implements OnInit {
       if (!this.copy) {
         this.currentRole.roleName = this.oldRole.roleName;
       } else if (this.identityServiceType !== 'SHIRO') {
-        if (this.oldRole.controllers && this.oldRole.controllers.length > 1) {
+        if (this.oldRole.controllers && this.oldRole.controllers.length > 0) {
           this.submitted = true;
           this.oldRole.controllers.forEach((controller) => {
             this.coreService.post('iam/permissions', {
