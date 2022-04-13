@@ -2805,6 +2805,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private updateWorkflowJSONObj(data): void {
     if (data.orderPreparation) {
       this.orderPreparation = data.orderPreparation;
+      this.updateOrderPreparation();
     }
     this.extraConfiguration = {
       title: data.title,
@@ -3442,6 +3443,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (!this.orderPreparation && this.variableDeclarations.parameters && this.variableDeclarations.parameters.length === 0) {
       this.addVariable();
     }
+    this.updateOrderPreparation();
+  }
+
+  private updateOrderPreparation(): void {
     if (this.orderPreparation && !isEmpty(this.orderPreparation)) {
       // this.variableDeclarations.allowUndeclared = this.orderPreparation.allowUndeclared;
       if (this.orderPreparation.parameters && !isEmpty(this.orderPreparation.parameters)) {

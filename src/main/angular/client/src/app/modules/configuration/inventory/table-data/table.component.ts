@@ -100,6 +100,10 @@ export class TableComponent implements OnDestroy {
     this.dataService.reloadTree.next({ renameObject: data });
   }
 
+  newDraft(data): void{
+    this.dataService.reloadTree.next({ newDraft: data });
+  }
+
   editObject(data): void {
     this.dataService.reloadTree.next({ set: data });
   }

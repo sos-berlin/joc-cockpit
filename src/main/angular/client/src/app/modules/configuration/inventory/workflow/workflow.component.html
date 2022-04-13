@@ -944,7 +944,7 @@
               </div>
               <div class="col-md-1 col-lg-1">
                 <a [nz-tooltip]="'workflow.label.facetEditor' | translate" class="pos-abt" style="margin-left: -6px" *ngIf="variable.value.type === 'String'"><i (click)="addFacet(variable)" nz-icon nzType="snippets" nzTheme="outline" class="m-t-sm text-primary-hover"></i></a>
-                <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm m-l-12 text-hover-color"></i></a>
+                <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm m-l text-hover-color"></i></a>
               </div>
               <ng-container class="b-b p-b-sm" *ngIf="variable.value.type === 'List'">
                 <div class="row col-md-12">

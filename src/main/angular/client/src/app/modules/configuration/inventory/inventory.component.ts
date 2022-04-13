@@ -31,7 +31,100 @@ import {InventoryObject} from '../../../models/enums';
 declare const $: any;
 
 @Component({
-  selector: 'app-deploy-draft-modal',
+  selector: 'app-new-draft-modal',
+  templateUrl: './new-draft-dialog.html'
+})
+export class NewDraftComponent implements OnInit {
+  @Input() data;
+  deployablesObject = [];
+  loading = true;
+  submitted = false;
+  display = false;
+  required = false;
+  comments: any = {radio: 'predefined'};
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    this.init();
+  }
+
+  init(): void {
+    const obj: any = {
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.data.objectType
+    };
+    if (this.data.hasDeployments) {
+      this.getSingleObject(obj);
+    } else {
+      this.loading = false;
+    }
+  }
+
+  private getSingleObject(obj): void {
+    this.coreService.post('inventory/deployable', obj).subscribe({
+      next: (res: any) => {
+        const result = res.deployable;
+        result.deployId = 'new';
+        if (!result.deployablesVersions) {
+          result.deployablesVersions = [];
+        }
+        this.loading = false;
+        this.deployablesObject = [result];
+      }, error: () => this.loading = false
+    });
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj: any = {
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.data.objectType,
+    }
+    if (this.deployablesObject && this.deployablesObject.length > 0 && this.deployablesObject[0].deployId && this.deployablesObject[0].deployId != 'new') {
+      for (let j = 0; j < this.deployablesObject[0].deployablesVersions.length; j++) {
+        if (this.deployablesObject[0].deployablesVersions[j].deploymentId === this.deployablesObject[0].deployId) {
+          obj.commitId = this.deployablesObject[0].deployablesVersions[j].commitId;
+          break;
+        }
+      }
+      this.coreService.post('inventory/read/configuration', obj).subscribe({
+        next: (res) => {
+          obj.configuration = res.configuration;
+          delete obj.commitId;
+          this.store(obj);
+        }, error: () => {
+          this.submitted = false;
+        }
+      });
+    } else {
+      obj.configuration = {};
+      this.store(obj);
+    }
+  }
+
+  private store(obj): void {
+    this.coreService.post('inventory/store', obj).subscribe({
+      next: (res) => {
+        this.activeModal.close(res);
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
+
+@Component({
+  selector: 'app-single-deploy-modal',
   templateUrl: './single-deploy-dialog.html'
 })
 export class SingleDeployComponent implements OnInit {
@@ -1453,13 +1546,17 @@ export class RepositoryComponent implements OnInit {
         const obj2 = clone(obj);
         if (!this.filter.envIndependent && this.type === 'ALL') {
           obj2.objectTypes = [InventoryObject.JOBRESOURCE];
+        } else {
+          obj2.objectTypes = [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.LOCK, InventoryObject.NOTICEBOARD];
         }
         APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
           catchError(error => of(error))
         ));
       }
       if (this.category !== 'LOCAL') {
-        obj.objectTypes = ['INCLUDESCRIPT'];
+        obj.objectTypes = [InventoryObject.INCLUDESCRIPT];
+      } else {
+        obj.objectTypes = [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.SCHEDULE];
       }
       obj.withoutReleased = !this.filter.release;
       APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
@@ -2869,6 +2966,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.recursivelyExpandTree();
         } else if (res.reloadAgents) {
           this.getAgents();
+        } else if (res.newDraft) {
+          this.newDraft(res.newDraft);
         }
       }
     });
@@ -4161,6 +4260,32 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.storeData(obj.showJson, result, false);
         }
       });
+    });
+  }
+
+  newDraft(data): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NewDraftComponent,
+      nzComponentParams: {
+        data
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(res => {
+      if (res) {
+        console.log(res);
+        if (data.path === this.selectedObj.path && data.name === this.selectedObj.name && data.objectType === this.selectedObj.type) {
+          this.type = undefined;
+          this.selectedData.valid = res.valid;
+          this.selectedData.deployed = res.deployed;
+          this.selectedData.released = res.released;
+          setTimeout(() => {
+            this.type = data.objectType;
+          }, 5);
+        }
+      }
     });
   }
 

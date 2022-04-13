@@ -430,6 +430,11 @@
       <a translate>inventory.button.deleteDraft</a>
     </li>
     <li nz-menu-divider *ngIf="node.origin.type"></li>
+    <li nz-menu-item (click)="newDraft(node.origin)"
+        *ngIf="node.origin.type">
+      <a translate>inventory.button.newDraft</a>
+    </li>
+    <li nz-menu-divider *ngIf="node.origin.type"></li>
     <li nz-menu-item (click)="editJson(node.origin, false)"
         *ngIf="node.origin.type">
       <a translate>inventory.button.showJSON</a>

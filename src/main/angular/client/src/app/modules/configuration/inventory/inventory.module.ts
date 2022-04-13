@@ -12,10 +12,9 @@ import {SharedModule} from '../../shared/shared.module';
 import {CalendarService} from '../../../services/calendar.service';
 import {
   CreateFolderModalComponent, CreateObjectModalComponent, CronImportModalComponent,
-  DeployComponent,
-  ExportComponent, GitComponent, ImportWorkflowModalComponent,
-  InventoryComponent, JsonEditorModalComponent, NotificationComponent, RepositoryComponent,
-  SingleDeployComponent, UploadModalComponent
+  DeployComponent, ExportComponent, GitComponent, ImportWorkflowModalComponent,
+  InventoryComponent, JsonEditorModalComponent, NewDraftComponent, NotificationComponent,
+  RepositoryComponent, SingleDeployComponent, UploadModalComponent
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
 import {
@@ -49,7 +48,7 @@ import {ScriptComponent} from './script/script.component';
 const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
   CreateObjectModalComponent, NotificationComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, ImportComponent,
   UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent, PeriodComponent,
-  AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent, FacetEditorComponent];
+  AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent, FacetEditorComponent, NewDraftComponent];
 
 @NgModule({
   imports: [

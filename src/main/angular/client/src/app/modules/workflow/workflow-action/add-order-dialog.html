@@ -196,7 +196,7 @@
             </ng-container>
             <ng-container *ngSwitchDefault>
               <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                <input [facetValidation]="argument.facet" #value="ngModel" [required]="argument.isRequired" autocomplete="off" type="text" class="form-control"
+                <input [facetValidation]="argument.facet" #value="ngModel" [required]="argument.isRequired || argument.facet" autocomplete="off" type="text" class="form-control"
                        name="value{{i}}" (keypress)="onKeyPress($event)"
                        [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                 <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
