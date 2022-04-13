@@ -1986,6 +1986,7 @@ export class GitComponent implements OnInit {
     category: ''
   };
   message = '';
+  results = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService) {
   }
@@ -2020,7 +2021,8 @@ export class GitComponent implements OnInit {
         category: this.object.category
       }).subscribe({
         next: (res) => {
-          this.showResult(res);
+          this.results.push(res);
+          this.showResult();
           this.activeModal.close('Done');
         }, error: () => {
           this.submitted = false;
@@ -2029,7 +2031,8 @@ export class GitComponent implements OnInit {
     } else {
       this.coreService.post('inventory/repository/git/add', this.object).subscribe({
         next: (res) => {
-          this.commitAndPush(res);
+          this.results.push(res);
+          this.commitAndPush();
         }, error: () => {
           this.submitted = false;
         }
@@ -2037,38 +2040,42 @@ export class GitComponent implements OnInit {
     }
   }
 
-  private commitAndPush(result): void {
+  private commitAndPush(): void {
     this.coreService.post('inventory/repository/git/commit', {
       ...this.object, message: this.message
     }).subscribe({
-      next: (result2) => {
+      next: (result) => {
+        this.results.push(result);
         this.coreService.post('inventory/repository/git/push', this.object).subscribe({
-          next: (res) => {
-            this.showResult(res);
+          next: (result2) => {
+            this.results.push(result2);
+            this.showResult();
             this.activeModal.close('Done');
           }, error: () => {
             this.submitted = false;
-            this.showResult(result2);
+            this.showResult();
           }
         });
       }, error: () => {
         this.submitted = false;
-        this.showResult(result);
+        this.showResult();
       }
     });
   }
 
-  private showResult(result): void {
+  private showResult(): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: NotificationComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        result,
+        results: this.results,
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe((res) => {
+      this.results = [];
     });
   }
 
@@ -2081,14 +2088,10 @@ export class GitComponent implements OnInit {
   selector: 'app-notification-modal',
   templateUrl: './notification-dialog.html'
 })
-export class NotificationComponent implements OnInit {
-  @Input() result: any;
+export class NotificationComponent {
+  @Input() results: any;
 
   constructor(public activeModal: NzModalRef) {
-  }
-
-  ngOnInit(): void {
-
   }
 
   cancel(): void {
@@ -3751,7 +3754,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzContent: NotificationComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        result,
+        results: [result],
       },
       nzFooter: null,
       nzClosable: false,
@@ -3779,9 +3782,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    }).afterClose.subscribe((res) => {
-
-    });
+    })
   }
 
   exportObject(node): void {

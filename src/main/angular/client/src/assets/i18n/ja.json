@@ -1069,6 +1069,7 @@
     "label.gitMessage": "Message",
     "label.command": "Command",
     "label.exitCode": "Exit Code",
+    "label.newDraft": "New Draft",
     "button.modifyVariableSet": "変数設定変更",
     "button.addVariableSet": "変数設定追加",
     "button.setVersion": "バージョン設定",
@@ -1124,6 +1125,7 @@
     "button.clone": "Clone",
     "button.pull": "Pull",
     "button.push": "Push",
+    "button.newDraft": "New Draft",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
     "placeholder.enterFileName": "ファイル名を入力",
@@ -1175,6 +1177,7 @@
     "message.invalidFile": "無効な{{objectType}}ファイルです",
     "message.workflowsWithoutVariables": "Only workflows without order variables are allowed",
     "message.workflowWithVariables": "Only single workflow with order variables is allowed",
+    "message.deleteCurrentDraftObject": "Your are about to clear the object. Are you sure you want to continue?",
     "cronTab": {
       "label.convertCron": "crontab変換",
       "label.folder": "フォルダー",

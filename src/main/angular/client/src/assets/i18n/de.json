@@ -1069,6 +1069,7 @@
     "label.gitMessage": "Mitteilung",
     "label.command": "Kommando",
     "label.exitCode": "Rückgabewert",
+    "label.newDraft": "New Draft",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addVariableSet": "Variablensatz hinzufügen",
     "button.setVersion": "Version setzen",
@@ -1124,6 +1125,7 @@
     "button.clone": "Klonen",
     "button.pull": "Herunterladen",
     "button.push": "Hochladen",
+    "button.newDraft": "New Draft",
     "tooltip.setVersion": "Version setzen",
     "placeholder.enterUniqueName": "Eindeutigen Objektnamen angeben",
     "placeholder.enterFileName": "Dateinamen angeben",
@@ -1175,6 +1177,7 @@
     "message.invalidFile": "Keine gültige {{objectType}} Datei",
     "message.workflowsWithoutVariables": "Nur Arbeitsabläufe ohne Auftragsvariablen sind zulässig",
     "message.workflowWithVariables": "Nur ein einzelner Arbeitsablauf mit Auftragsvariablen ist zulässig",
+    "message.deleteCurrentDraftObject": "Your are about to clear the object. Are you sure you want to continue?",
     "cronTab": {
       "label.convertCron": "crontab konvertieren",
       "label.folder": "Ordner",

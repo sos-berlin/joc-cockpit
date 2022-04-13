@@ -492,6 +492,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         if (obj.type === 'String') {
           this.coreService.removeSlashToString(obj, 'default');
+          argument.value = obj.default;
         } else if (obj.type === 'Boolean') {
           argument.value = (obj.default === true || obj.default === 'true');
         } else {
