@@ -242,7 +242,7 @@
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-sm-5" [ngClass]="{'has-error' : ((startingWith.dirty || startingWith.touched) && startingWith.invalid)}">
-                  <nz-date-picker #startingWith="ngModel" required [(ngModel)]="frequency.startingWith" name="startingWith"></nz-date-picker>
+                  <nz-date-picker #startingWith="ngModel" [required]="frequency.tab == 'every'" [(ngModel)]="frequency.startingWith" name="startingWith"></nz-date-picker>
                 </div>
               </div>
               <div class="form-group row">

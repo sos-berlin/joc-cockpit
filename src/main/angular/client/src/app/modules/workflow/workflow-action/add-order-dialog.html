@@ -200,7 +200,7 @@
                        name="value{{i}}" (keypress)="onKeyPress($event)"
                        [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                 <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
-                <i class="pos-abt cursor fa fa-info-circle" *ngIf="argument.message" [nz-tooltip]="argument.message" style="right: 22px;top:9px;"></i>
+                <i class="pos-abt cursor fa fa-info-circle" *ngIf="argument.message" [nz-tooltip]="argument.message" style="right: 24px;top:9px;"></i>
                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                      class="text-danger help-block">
                   <div *ngIf="value.errors.required">

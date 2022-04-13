@@ -146,6 +146,10 @@ export class AddOrderModalComponent implements OnInit {
           argument.value = obj.default;
         }
       }
+      if(obj.facet){
+        argument.facet = obj.facet;
+        argument.message = obj.message;
+      }
     }
     this.updateSelectItems();
   }

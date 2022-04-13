@@ -485,6 +485,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     const obj = this.workflow.orderPreparation.parameters[argument.name];
     if (obj) {
       argument.type = obj.type;
+      argument.facet = obj.facet;
+      argument.message = obj.message;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         argument.isRequired = true;
       } else {
