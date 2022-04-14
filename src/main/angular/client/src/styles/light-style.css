@@ -242,3 +242,6 @@ div.jsoneditor-tree .jsoneditor-button.jsoneditor-schema-error {
 .timelineWrapper .row .taskBar {
   background-color: #d8d8d8 !important;
 }
+#toolbarContainer div.draggable:hover {
+  background: #f5f7fb !important;
+}

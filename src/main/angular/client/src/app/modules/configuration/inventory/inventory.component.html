@@ -341,13 +341,13 @@
       <ul>
         <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu [nzTitle]="'inventory.button.local' | translate">
           <ul>
-            <li nz-menu-item (click)="repositoryOperation(node, 'store', 'LOCAL');">
+            <li *ngIf="node.origin.path !== '/'" nz-menu-item (click)="repositoryOperation(node, 'store', 'LOCAL');">
               <a translate>inventory.button.storeTo</a>
             </li>
-            <li nz-menu-item (click)="repositoryOperation(node, 'update', 'LOCAL');">
+            <li *ngIf="node.origin.path !== '/'"  nz-menu-item (click)="repositoryOperation(node, 'update', 'LOCAL');">
               <a translate>inventory.button.updateFrom</a>
             </li>
-            <li nz-menu-item (click)="repositoryOperation(node, 'delete', 'LOCAL');">
+            <li *ngIf="node.origin.path !== '/'" nz-menu-item (click)="repositoryOperation(node, 'delete', 'LOCAL');">
               <a translate>inventory.button.deleteFrom</a>
             </li>
             <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
@@ -368,13 +368,13 @@
         </li>
         <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu [nzTitle]="'inventory.button.rollout' | translate">
           <ul>
-            <li nz-menu-item (click)="repositoryOperation(node, 'store', 'ROLLOUT');">
+            <li *ngIf="node.origin.path !== '/'" nz-menu-item (click)="repositoryOperation(node, 'store', 'ROLLOUT');">
               <a translate>inventory.button.storeTo</a>
             </li>
-            <li nz-menu-item (click)="repositoryOperation(node, 'update', 'ROLLOUT');">
+            <li *ngIf="node.origin.path !== '/'" nz-menu-item (click)="repositoryOperation(node, 'update', 'ROLLOUT');">
               <a translate>inventory.button.updateFrom</a>
             </li>
-            <li nz-menu-item (click)="repositoryOperation(node, 'delete', 'ROLLOUT');">
+            <li *ngIf="node.origin.path !== '/'" nz-menu-item (click)="repositoryOperation(node, 'delete', 'ROLLOUT');">
               <a translate>inventory.button.deleteFrom</a>
             </li>
             <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu

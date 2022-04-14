@@ -99,7 +99,7 @@
 }
 
 #toolbarContainer div.draggable:hover {
-  background: #f5f7fa;
+  background: var(--box-color);
   cursor: move;
 }
 

@@ -999,7 +999,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     } else {
       if (value && controller.agents.length > 0) {
         controller.agents.forEach(item => {
-          if (!item.hidden) {
+          if (!item.disabled) {
             this.object.mapOfCheckedId.set(item.agentId, controller.controllerId);
           }
         });
