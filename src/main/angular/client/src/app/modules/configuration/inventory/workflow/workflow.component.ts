@@ -4473,7 +4473,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function traversForkList(list, obj, edge, branchObj, parent, endNode): void {
       let callAgain = false;
       for (const i in list) {
-        if (list[i].value && ((list[i].getParent().id == parent.id) || (edge.target && list[i].id == edge.target.id) || (list[i].id == parent.getParent().id) || (self.workflowService.checkClosingCell(list[i].value.tagName)
+        if (list[i].value && ((list[i].getParent().id == parent.id) || (list[i].getAttribute('parentId') == parent.id) || (edge.target && list[i].id == edge.target.id) || (list[i].id == parent.getParent().id) || (self.workflowService.checkClosingCell(list[i].value.tagName)
           && parent.id == list[i].getAttribute('targetId')))) {
           if ((self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId'))) {
             endNode.endNode = list[i];
@@ -4531,7 +4531,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function traversIfList(list, obj, edge, data, parent, endNode): void {
       let callAgain = false;
       for (const i in list) {
-        if (list[i].value && ((list[i].getParent().id == parent.id) || (edge.target && list[i].id == edge.target.id) || (list[i].id == parent.getParent().id) || (self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId')))) {
+        if (list[i].value && ((list[i].getParent().id == parent.id) || (list[i].getAttribute('parentId') == parent.id) || (edge.target && list[i].id == edge.target.id) || (list[i].id == parent.getParent().id) || (self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId')))) {
           if (self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId')) {
             endNode.endNode = list[i];
           }
@@ -4548,6 +4548,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               obj.lastId = edges[j].target.id;
               flag = true;
               break;
+            }
+            if (!flag && obj.lastId && edges[j].source && self.workflowService.checkClosingCell(edges[j].source.value.tagName)) {
+              if (obj.lastId == edges[j].source.getAttribute('targetId')) {
+                flag = true;
+                break;
+              }
             }
           }
           if (flag) {
@@ -4618,7 +4624,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (cell.collapsed) {
           obj.isCollapsed = cell.collapsed;
         }
-
         if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork') {
           const edges = getOutgoingEdges(cell);
           const main = {endNode: ''};
@@ -6492,6 +6497,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
       if (!isChange) {
         const label = _dropTarget.getAttribute('type') || _dropTarget.getAttribute('label');
+        if (_dropTarget.edge && _dropTarget.source && cell.getParent() && cell.getParent().id == '1') {
+          const parent = _dropTarget.source.getParent();
+          if (parent && parent.id != '1') {
+            cell.setAttribute('parentId', parent.id);
+          }
+        }
         if (label && (label === 'join' || label === 'branch' || label === 'endIf'
           || label === 'endRetry' || label === 'endCycle' || label === 'endTry' || label === 'endLock')) {
           let _label1, _label2;

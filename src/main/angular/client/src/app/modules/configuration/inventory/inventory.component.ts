@@ -1874,8 +1874,16 @@ export class RepositoryComponent implements OnInit {
         }
       }
     }
-
-    recursive(this.nodes);
+    if(this.nodes.length > 0) {
+      recursive(this.nodes);
+    } else if(this.operation === 'delete' && !this.origin.object) {
+      obj.configurations.push({
+        configuration: {
+          path: this.path,
+          objectType: 'FOLDER'
+        }
+      });
+    }
     if (obj.configurations.length > 0) {
       if (this.comments.comment) {
         obj.auditLog = {};
@@ -3881,6 +3889,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result && operation === 'clone' && data.path == '/') {
+        this.initTree(data.path, null);
+      }
     })
   }
 
@@ -4275,7 +4287,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(res => {
       if (res) {
-        console.log(res);
         if (data.path === this.selectedObj.path && data.name === this.selectedObj.name && data.objectType === this.selectedObj.type) {
           this.type = undefined;
           this.selectedData.valid = res.valid;
@@ -5218,7 +5229,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
       this.coreService.post('inventory/store', request).subscribe(() => {
         if ((obj.type === InventoryObject.WORKINGDAYSCALENDAR || obj.type === InventoryObject.NONWORKINGDAYSCALENDAR)) {
-          obj.objectType = obj.type;
+          obj.objectType = clone(obj.type);
+          obj.type = 'CALENDAR';
         }
         obj.valid = obj.valid ? obj.valid : valid;
         list.push(obj);

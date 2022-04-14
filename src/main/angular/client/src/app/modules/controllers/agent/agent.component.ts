@@ -1650,6 +1650,11 @@ export class AgentComponent implements OnInit, OnDestroy {
     let i = 0, j = 1;
     let priority = -1;
     let v1;
+    let styleColor = '#fafafa';
+    if (this.preferences.theme === 'light' || this.preferences.theme === 'lighter') {
+      styleColor = '#3d464d';
+    }
+
     if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
       let colorIndex = 0;
       this.selectedCluster.subagentIds.sort(AgentComponent.compare).forEach((subagent, index) => {
@@ -1695,27 +1700,27 @@ export class AgentComponent implements OnInit, OnDestroy {
           const mainNode = doc.createElement('Process');
           mainNode.setAttribute('label', 'dragAndDropForRoundRobin');
           mainNode.setAttribute('priority', priority);
-          const v2 = graph.insertVertex(defaultParent, null, mainNode, x + 230, y - 5, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
+          const v2 = graph.insertVertex(defaultParent, null, mainNode, x + 230, y - 5, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
           graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle;dashed=1;');
         }
         if (0 === index) {
           const mainNode = doc.createElement('Process');
           mainNode.setAttribute('label', 'dragAndDropFixedPriority');
           mainNode.setAttribute('priority', (priority + 1));
-          graph.insertVertex(defaultParent, null, mainNode, 0, -10, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
+          graph.insertVertex(defaultParent, null, mainNode, 0, -10, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
         }
         if (this.selectedCluster.subagentIds.length - 1 === index) {
           const mainNode = doc.createElement('Process');
           mainNode.setAttribute('label', 'dragAndDropFixedPriority');
           mainNode.setAttribute('priority', -1);
-          graph.insertVertex(defaultParent, null, mainNode, 0, y + 70, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
+          graph.insertVertex(defaultParent, null, mainNode, 0, y + 70, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
         }
       })
     } else {
       const mainNode = doc.createElement('Process');
       mainNode.setAttribute('label', 'dragAndDropFixedPriority');
       mainNode.setAttribute('priority', 0);
-      graph.insertVertex(defaultParent, null, mainNode, 0, 0, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
+      graph.insertVertex(defaultParent, null, mainNode, 0, 0, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
     }
   }
 
