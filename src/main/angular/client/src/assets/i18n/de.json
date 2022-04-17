@@ -25,7 +25,7 @@
   "INCOMPLETE": "in Arbeit",
   "INITIALIZED": "initialisiert",
   "COUPLED": "gekoppelt",
-  "SHUTDOWN": "beim Herunterfahren",
+  "SHUTDOWN": "heruntergefahren",
   "RESET": "zurückgesetzt",
   "RESETTING": "beim Zurücksetzen",
   "COUPLINGFAILED": "Kopplung fehlgeschlagen",
