@@ -1722,7 +1722,7 @@
       "label.manageGitCredentials": "Manage Git Credentials",
       "label.gitAccount": "Git Account",
       "label.gitServer": "Git Server",
-      "label.userName": "User name",
+      "label.userName": "User Name",
       "label.emailAddress": "E-Mail Address",
       "label.gitPassword": "Git Password",
       "label.keyfilePath": "Path to Git Private Key",
