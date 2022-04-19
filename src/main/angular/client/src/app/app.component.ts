@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {CoreService} from './services/core.service';
+import {registerLocaleData} from "@angular/common";
 
 declare const $: any;
 
@@ -47,6 +48,12 @@ export class AppComponent implements OnInit {
     if (this.locales.indexOf(lang) <= -1) {
       lang = 'en';
     }
+    if (!localStorage.$SOS$LANG && lang !== 'en') {
+      import(`../../node_modules/@angular/common/locales/${lang}.mjs`).then(locale => {
+        registerLocaleData(locale.default);
+      });
+    }
+    
     localStorage.$SOS$LANG = lang;
     this.translate.setDefaultLang(lang);
     this.translate.use(lang).subscribe((res) => {
