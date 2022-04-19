@@ -368,7 +368,12 @@
                     $(cells[i]).removeClass('range');
                   }
                   if (!_this.options.dateTo) {
-                    _this.options.dateTo = parseInt($(this).attr('currentDate'))
+                    if ($(this).attr('class') && $(this).attr('class').indexOf('new') == -1) {
+                      _this.options.dateTo = parseInt($(this).attr('currentDate'))
+                    } else{
+                      const d = new Date(parseInt($(this).attr('currentDate')));
+                      _this.options.dateTo = d.setDate(d.getDate() - 1);
+                    }
                   }
                   if (date == _this.options.dateTo) {
                     $(cells[i]).addClass('range-end');

@@ -1,4 +1,4 @@
-<form id="freq-modal" (ngSubmit)="save()">
+<form id="freq-modal" #myForm="ngForm" (ngSubmit)="save()">
   <div class="modal-body p-a min-ht-460">
     <div [hidden]="editor.showYearView">
       <div>
@@ -415,7 +415,7 @@
       </div>
     </div>
     <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm b-85"
-            [disabled]="!editor.isEnable"
+            [disabled]="!editor.isEnable || !myForm.form.valid"
             (click)="addFrequency()">
       <span *ngIf="editor.create" translate>runtime.button.addNewFrequency</span>
       <span *ngIf="!editor.create" translate>runtime.button.updateFrequency</span>

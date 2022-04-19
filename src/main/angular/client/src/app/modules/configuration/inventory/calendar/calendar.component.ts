@@ -475,6 +475,9 @@ export class FrequencyModalComponent implements OnInit {
     this.holidayDays.checked = false;
     this.holidayList = [];
     let holidays = [];
+    if (!this.frequency.nationalHoliday) {
+      this.frequency.nationalHoliday = [];
+    }
     if (this.frequency.country && this.frequency.year) {
       this.hd.init(this.frequency.country);
       holidays = this.hd.getHolidays(this.frequency.year);
@@ -779,6 +782,12 @@ export class FrequencyModalComponent implements OnInit {
   }
 
   deleteFrequency(data): void {
+    if(this.isRuntimeEdit) {
+      if (this.frequency.str === data.str) {
+        this.isRuntimeEdit = false;
+        this.editor.create = true;
+      }
+    }
     for (let i = 0; i < this.frequencyList.length; i++) {
       if (this.frequencyList[i] == data || isEqual(this.frequencyList[i], data)) {
         this.frequencyList.splice(i, 1);

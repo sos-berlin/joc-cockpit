@@ -2141,7 +2141,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (!date) {
       this.isLoaded = false;
     }
-    const d = date || new Date();
+    let d;
+    if (date) {
+      d = date;
+    } else if (this.selectedYear && this.selectedMonth) {
+      d = new Date(this.selectedYear, this.selectedMonth, 1);
+    } else {
+      d = new Date();
+    }
     const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
     const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 0);
     const obj: any = {
