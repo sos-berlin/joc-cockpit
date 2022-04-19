@@ -3187,7 +3187,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                   parentNode.expanded = true;
                   for (let j = 0; j < parentNode.children.length; j++) {
                     const x = parentNode.children[j];
-                    if (x.object === self.selectedObj.type) {
+                    if (x.object === self.selectedObj.type || (x.object && x.object.match(/CALENDAR/) && self.selectedObj.type && self.selectedObj.type.match(/CALENDAR/))) {
                       x.expanded = true;
                       for (let k = 0; k < x.children.length; k++) {
                         if (x.children[k].name === self.selectedObj.name) {
