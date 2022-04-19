@@ -980,7 +980,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.saveRestriction(result);
+        data.frequencyList = result.frequencyList;
+        this.ref.detectChanges();
       }
     });
   }
@@ -1004,7 +1005,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.saveRestriction(result);
+        data.frequencyList = result.frequencyList;
+        this.ref.detectChanges();
       }
     });
   }
@@ -1151,16 +1153,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     return calendars;
   }
 
-  private saveRestriction(data): void {
-    for (let i = 0; i < this.calendars.length; i++) {
-      if (data.calendarName === this.calendars[i].calendarName) {
-        this.calendars[i].frequencyList = data.frequencyList;
-        this.ref.detectChanges();
-        break;
-      }
-    }
-  }
-
 }
+
 
 
