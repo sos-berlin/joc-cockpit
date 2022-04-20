@@ -26,7 +26,7 @@
           <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
           <div class="col-md-9">
             <span *ngIf="order.plannedStartTime">{{order.plannedStartTime}}</span>
-            <span *ngIf="!order.plannedStartTime">{{order.scheduledFor | stringToDate}}</span>
+            <span *ngIf="!order.plannedStartTime && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
           </div>
         </div>
         <div class="form-group row" *ngIf="plan && !errorMsg">
