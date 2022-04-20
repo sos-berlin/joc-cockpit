@@ -270,21 +270,27 @@ export class SettingComponent implements OnInit {
         account: this.authService.currentUserData,
         configurationType: 'GLOBALS'
       };
-      this.coreService.post('configurations', configObj).subscribe((res: any) => {
-        this.defaultGlobals = res.defaultGlobals;
-        if (res.configurations[0]) {
-          this.configId = res.configurations[0].id || 0;
-          this.orignalSetting = JSON.parse(res.configurations[0].configurationItem);
-          this.settings = JSON.parse(res.configurations[0].configurationItem);
-          this.mergeData(this.defaultGlobals);
-          this.loading = true;
-        } else {
-          this.settings = {};
-          this.mergeData(this.defaultGlobals);
-          this.changeConfiguration(null, null, null);
+      this.coreService.post('configurations', configObj).subscribe({
+        next: (res: any) => {
+          this.defaultGlobals = res.defaultGlobals;
+          if (res.configurations[0]) {
+            this.configId = res.configurations[0].id || 0;
+            this.orignalSetting = JSON.parse(res.configurations[0].configurationItem);
+            this.settings = JSON.parse(res.configurations[0].configurationItem);
+            this.mergeData(this.defaultGlobals);
+            this.loading = true;
+          } else {
+            this.settings = {};
+            this.mergeData(this.defaultGlobals);
+            this.changeConfiguration(null, null, null);
+            this.loading = true;
+          }
+        }, error: () => {
           this.loading = true;
         }
       });
+    } else {
+      this.loading = true;
     }
   }
 

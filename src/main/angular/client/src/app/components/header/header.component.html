@@ -43,7 +43,7 @@
                   {{'header.button.manageAccount' | translate}}
                 </a>
               </li>
-              <li nz-menu-item routerLink="/settings" [routerLinkActive]="['active']" [nzDisabled]="!schedulerIds.selected"
+              <li nz-menu-item routerLink="/settings" [routerLinkActive]="['active']"
                   *ngIf="permission && permission.joc && permission.joc.administration.settings.view">
                 <a>
                   <i class="fa fa-cog"></i>

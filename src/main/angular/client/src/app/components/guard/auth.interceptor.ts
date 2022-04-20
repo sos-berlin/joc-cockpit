@@ -71,6 +71,9 @@ export class AuthInterceptor implements HttpInterceptor {
               if (req.url.match('inventory/path') && err.status === 420) {
                 return;
               }
+              if (req.url.match('controller/ids') && err.status === 403) {
+                return;
+              }
               if (err.error.error) {
                 if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
                   this.toasterService.error( '', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));

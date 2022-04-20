@@ -386,7 +386,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'JS7Status' && this.permission.currentController.view) {
           this.widgets.push(this.dashboardLayout[i]);
-        } else if (this.dashboardLayout[i].name === 'componentStatus') {
+        } else if (this.dashboardLayout[i].name === 'componentStatus' && this.permission.currentController.view) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'orders' && this.permission.currentController.orders.view) {
           this.widgets.push(this.dashboardLayout[i]);
