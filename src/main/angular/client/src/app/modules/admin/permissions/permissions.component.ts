@@ -494,7 +494,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         newFolder: true,
         controllerName: this.controllerName,
         roleName: this.roleName,
-        folderArr: []
+        folderArr: this.identityServiceType === 'SHIRO' ? this.folderArr : []
       },
       nzFooter: null,
       nzClosable: false,

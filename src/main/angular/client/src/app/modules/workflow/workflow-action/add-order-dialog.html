@@ -220,9 +220,7 @@
     <div class="form-group row">
       <div class="col-sm-12" *ngIf="variableList.length > arguments.length">
         <a class="text-u-l" (click)="addArgument()" translate>order.button.modifyVariable</a>
-      </div>
-      <div class="col-sm-12 m-t-sm" *ngIf="variableList.length > arguments.length">
-        <a class="text-u-l" (click)="addArguments()" translate>dailyPlan.label.setParameters</a>
+        <a class="text-u-l m-l" (click)="addArguments()" translate>dailyPlan.label.setParameters</a>
       </div>
       <div class="col-sm-12" *ngIf="variableList.length <= arguments.length && (workflow.orderPreparation && workflow.orderPreparation.allowUndeclared)">
         <a class="text-u-l" (click)="addArgument(true)" translate>order.button.addVariable</a>

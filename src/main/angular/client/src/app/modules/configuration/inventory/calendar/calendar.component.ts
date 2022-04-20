@@ -9,7 +9,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
-import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 
 declare const Holidays;
 declare const $;
@@ -1257,7 +1257,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.data.objectType || this.data.type){
+    if (this.data.objectType || this.data.type) {
       this.objectType = this.data.objectType || this.data.type;
     }
     if (changes.copyObj && !changes.data) {
