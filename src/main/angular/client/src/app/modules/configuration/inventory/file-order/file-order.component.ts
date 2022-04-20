@@ -157,7 +157,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
   selectSubagentCluster(id): void {
     $(id).blur();
-    console.log('id', id)
   }
 
   refreshAgents(): void {

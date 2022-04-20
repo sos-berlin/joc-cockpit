@@ -32,7 +32,7 @@ export class ShowDependencyComponent implements OnInit {
     this.close();
   }
 
-  showBoard(board): void{
+  showBoard(board): void {
     this.coreService.showBoard(board);
     this.close();
   }
@@ -139,14 +139,14 @@ export class AddOrderModalComponent implements OnInit {
       argument.type = obj.type;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
         argument.isRequired = true;
-      } else{
+      } else {
         if (obj.type === 'Boolean') {
           argument.value = (obj.default === true || obj.default === 'true');
         } else {
           argument.value = obj.default;
         }
       }
-      if(obj.facet){
+      if (obj.facet) {
         argument.facet = obj.facet;
         argument.message = obj.message;
       }
@@ -276,6 +276,19 @@ export class AddOrderModalComponent implements OnInit {
     }
   }
 
+  addArguments(): void {
+    this.variableList.forEach(variable => {
+      if (!variable.isSelected) {
+        const param: any = {
+          name: variable.name,
+          value: ''
+        };
+        this.arguments.push(param);
+        this.checkVariableType(param)
+      }
+    });
+  }
+
   removeArgument(index): void {
     this.arguments.splice(index, 1);
     this.updateSelectItems();
@@ -311,7 +324,7 @@ export class AddOrderModalComponent implements OnInit {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        data.value =  result;
+        data.value = result;
         this.ref.detectChanges();
       }
     });

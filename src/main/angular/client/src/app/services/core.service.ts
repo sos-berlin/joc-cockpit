@@ -19,18 +19,11 @@ declare const $: any;
 })
 export class CoreService {
   tabs: any = {};
-  tempTabs: any = {};
   dashboard: any = {};
   locales: any = [];
 
-  preferences = {
-    isFirst: true,
-    controllers: new Set()
-  }
-  xmlEditorPreferences = {
-    fileTransferActiveTab: '',
-    otherActiveTab: ''
-  };
+  preferences: any = {};
+  xmlEditorPreferences: any = {};
   sideView = {
     workflow: {width: 270, show: true},
     job: {width: 270, show: true},
@@ -43,35 +36,83 @@ export class CoreService {
     xml: {width: 500, show: true}
   };
 
-  searchResults = {
-    inventory: {
-      panel: false,
-      result: [],
-      request: {}
-    },
-    workflow: {
-      panel: false,
-      result: [],
-      request: {}
-    },
-    board: {
-      panel: false,
-      result: [],
-      request: {}
-    },
-    lock: {
-      panel: false,
-      result: [],
-      request: {}
-    }
-  };
+  searchResults = {};
 
   newWindow: any;
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
               private clipboardService: ClipboardService, private translate: TranslateService) {
+    this.init();
+    this.dashboard._dashboard = {};
+    this.dashboard._dashboard.order = {};
+    this.dashboard._dashboard.history = {};
+    this.dashboard._dashboard.file = {};
+    this.dashboard._dashboard.dailyplan = {};
+    this.dashboard._dashboard.dailyplan.date = '0d';
+    this.dashboard._dashboard.dailyplan.label = 'filters.button.today';
+    this.dashboard._dashboard.history.date = '0d';
+    this.dashboard._dashboard.history.label = 'filters.button.today';
+    this.dashboard._dashboard.order.date = '1d';
+    this.dashboard._dashboard.order.label = 'today';
+    this.dashboard._dashboard.file.date = '0d';
+    this.dashboard._dashboard.file.label = 'today';
 
+    if (localStorage.$SOS$DASHBOARDTABS) {
+      try {
+        const obj = JSON.parse(localStorage.$SOS$DASHBOARDTABS);
+        if (obj && obj.order) {
+          this.dashboard = obj;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    if (!sessionStorage.$SOS$SIDEVIEW || typeof JSON.parse(sessionStorage.$SOS$SIDEVIEW) !== 'object') {
+      sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this.sideView);
+    } else {
+      this.sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
+    }
+  }
+
+  private init(): void {
+    this.preferences = {
+      isFirst: true,
+      controllers: new Set()
+    };
+    this.xmlEditorPreferences = {
+      fileTransferActiveTab: '',
+      otherActiveTab: ''
+    }
+    this.searchResults = {};
+    this.searchResults = {
+      inventory: {
+        panel: false,
+        result: [],
+        request: {}
+      },
+      workflow: {
+        panel: false,
+        result: [],
+        request: {}
+      },
+      board: {
+        panel: false,
+        result: [],
+        request: {}
+      },
+      lock: {
+        panel: false,
+        result: [],
+        request: {}
+      },
+      calendar: {
+        panel: false,
+        result: [],
+        request: {}
+      }
+    };
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
     this.tabs._workflow.filter.date = '1d';
@@ -270,236 +311,6 @@ export class CoreService {
     this.tabs._agentCluster.filter.sortBy = 'subagentClusterId';
     this.tabs._agentCluster.reverse = false;
     this.tabs._agentCluster.currentPage = '1';
-
-    this.tempTabs._workflow = {};
-    this.tempTabs._workflow.filter = {};
-    this.tempTabs._workflow.filter.date = '1d';
-    this.tempTabs._workflow.filter.sortBy = 'name';
-    this.tempTabs._workflow.reverse = false;
-    this.tempTabs._workflow.currentPage = '1';
-    this.tempTabs._workflow.expandedKeys = ['/'];
-    this.tempTabs._workflow.selectedkeys = ['/'];
-    this.tempTabs._workflow.selectedView = true;
-    this.tempTabs._workflow.isCompact = true;
-
-    this.tempTabs._workflowDetail = {};
-    this.tempTabs._workflowDetail.date = '1d';
-    this.tempTabs._workflowDetail.panelSize = 0;
-    this.tempTabs._workflowDetail.panelSize2 = 450;
-    this.tempTabs._workflowDetail.pageView = 'list';
-
-    this.tempTabs._daliyPlan = {};
-    this.tempTabs._daliyPlan.filter = {};
-    this.tempTabs._daliyPlan.filter.status = 'ALL';
-    this.tempTabs._daliyPlan.filter.groupBy = 'ORDER';
-    this.tempTabs._daliyPlan.filter.late = false;
-    this.tempTabs._daliyPlan.filter.sortBy = 'plannedStartTime';
-    this.tempTabs._daliyPlan.reverse = true;
-    this.tempTabs._daliyPlan.currentPage = '1';
-    this.tempTabs._daliyPlan.selectedView = true;
-
-    this.tempTabs._monitor = {};
-    this.tempTabs._monitor.tabIndex = 0;
-    this.tempTabs._monitor.currentDate = new Date();
-    this.tempTabs._monitor.controller = {
-      filter: {
-        view: 'Week',
-        startYear: this.tempTabs._monitor.currentDate.getFullYear(),
-        startMonth: this.tempTabs._monitor.currentDate.getMonth(),
-        currentYear: this.tempTabs._monitor.currentDate.getFullYear(),
-        currentMonth: this.tempTabs._monitor.currentDate.getMonth(),
-        startDate: new Date().setHours(0, 0, 0, 0),
-        endDate: new Date().setHours(0, 0, 0, 0),
-      }
-    };
-    this.tempTabs._monitor.agent = {
-      filter: {
-        view: 'Week',
-        groupBy: 'DATE',
-        startYear: this.tabs._monitor.currentDate.getFullYear(),
-        startMonth: this.tabs._monitor.currentDate.getMonth(),
-        currentYear: this.tabs._monitor.currentDate.getFullYear(),
-        currentMonth: this.tabs._monitor.currentDate.getMonth(),
-        startDate: new Date().setHours(0, 0, 0, 0),
-        endDate: new Date().setHours(0, 0, 0, 0)
-      }
-    };
-    this.tempTabs._monitor.notification = {
-      filter: {
-        types: ['ERROR', 'WARNING', 'RECOVERED'],
-        date: '0d',
-        sortBy: 'created',
-        reverse: true,
-        currentPage: '1'
-      }
-    };
-
-    this.tempTabs._orderOverview = {};
-    this.tempTabs._orderOverview.overview = true;
-    this.tempTabs._orderOverview.filter = {};
-    this.tempTabs._orderOverview.filter.date = '1d';
-    this.tempTabs._orderOverview.filter.dateLabel = 'today';
-    this.tempTabs._orderOverview.filter.sortBy = 'orderId';
-    this.tempTabs._orderOverview.reverse = false;
-    this.tempTabs._orderOverview.currentPage = '1';
-    this.tempTabs._orderOverview.pageView = 'grid';
-    this.tempTabs._orderOverview.expandedKeys = ['/'];
-    this.tempTabs._orderOverview.selectedkeys = ['/'];
-    this.tempTabs._orderOverview.showErrorNodes = true;
-    this.tempTabs._orderOverview.isNodePanelVisible = true;
-    this.tempTabs._orderOverview.showLogPanel = undefined;
-    this.tempTabs._orderOverview.panelSize = 0;
-
-    this.tempTabs._history = {};
-    this.tempTabs._history.order = {};
-    this.tempTabs._history.type = 'ORDER';
-    this.tempTabs._history.order.filter = {};
-    this.tempTabs._history.order.filter.historyStates = 'ALL';
-    this.tempTabs._history.order.filter.date = 'today';
-    this.tempTabs._history.order.filter.sortBy = 'startTime';
-    this.tempTabs._history.order.reverse = true;
-    this.tempTabs._history.order.currentPage = '1';
-    this.tempTabs._history.order.selectedView = true;
-    this.tempTabs._history.task = {};
-    this.tempTabs._history.task.filter = {};
-    this.tempTabs._history.task.filter.historyStates = 'ALL';
-    this.tempTabs._history.task.filter.date = 'today';
-    this.tempTabs._history.task.filter.sortBy = 'startTime';
-    this.tempTabs._history.task.reverse = true;
-    this.tempTabs._history.task.currentPage = '1';
-    this.tempTabs._history.task.selectedView = true;
-    this.tempTabs._history.yade = {};
-    this.tempTabs._history.yade.filter = {};
-    this.tempTabs._history.yade.filter.states = 'ALL';
-    this.tempTabs._history.yade.filter.date = 'today';
-    this.tempTabs._history.yade.filter.sortBy = 'start';
-    this.tempTabs._history.yade.reverse = true;
-    this.tempTabs._history.yade.currentPage = '1';
-    this.tempTabs._history.yade.selectedView = true;
-    this.tempTabs._history.deployment = {};
-    this.tempTabs._history.deployment.filter = {};
-    this.tempTabs._history.deployment.filter.state = 'ALL';
-    this.tempTabs._history.deployment.filter.date = 'today';
-    this.tempTabs._history.deployment.filter.sortBy = 'deploymentDate';
-    this.tempTabs._history.deployment.reverse = true;
-    this.tempTabs._history.deployment.currentPage = '1';
-    this.tempTabs._history.deployment.selectedView = true;
-    this.tempTabs._history.submission = {};
-    this.tempTabs._history.submission.filter = {};
-    this.tempTabs._history.submission.filter.category = 'ALL';
-    this.tempTabs._history.submission.filter.date = 'today';
-    this.tempTabs._history.submission.filter.sortBy = 'date';
-    this.tempTabs._history.submission.reverse = true;
-    this.tempTabs._history.submission.currentPage = '1';
-    this.tempTabs._history.submission.selectedView = true;
-
-    this.tempTabs._yade = {};
-    this.tempTabs._yade.filter = {};
-    this.tempTabs._yade.filter.states = 'ALL';
-    this.tempTabs._yade.filter.date = 'today';
-    this.tempTabs._yade.filter.sortBy = 'start';
-    this.tempTabs._yade.reverse = true;
-    this.tempTabs._yade.currentPage = '1';
-    this.tempTabs._yade.selectedView = true;
-
-    this.tempTabs._auditLog = {};
-    this.tempTabs._auditLog.filter = {};
-    this.tempTabs._auditLog.filter.historyStates = 'ALL';
-    this.tempTabs._auditLog.filter.date = 'today';
-    this.tempTabs._auditLog.filter.sortBy = 'created';
-    this.tempTabs._auditLog.reverse = true;
-    this.tempTabs._auditLog.currentPage = '1';
-
-    this.tempTabs._resource = {};
-    this.tempTabs._resource.agents = {};
-    this.tempTabs._resource.agents.filter = {};
-    this.tempTabs._resource.agents.filter.state = 'ALL';
-    this.tempTabs._resource.agents.filter.sortBy = 'agentId';
-    this.tempTabs._resource.agents.reverse = false;
-    this.tempTabs._resource.agents.currentPage = '1';
-    this.tempTabs._resource.agentJobExecution = {};
-    this.tempTabs._resource.agentJobExecution.filter = {};
-    this.tempTabs._resource.agentJobExecution.filter.date = 'today';
-    this.tempTabs._resource.agentJobExecution.filter.sortBy = 'agentId';
-    this.tempTabs._resource.agentJobExecution.reverse = false;
-    this.tempTabs._resource.agentJobExecution.currentPage = '1';
-    this.tempTabs._resource.locks = {};
-    this.tempTabs._resource.locks.filter = {};
-    this.tempTabs._resource.locks.filter.state = 'ALL';
-    this.tempTabs._resource.locks.filter.sortBy = 'id';
-    this.tempTabs._resource.locks.reverse = false;
-    this.tempTabs._resource.locks.currentPage = '1';
-    this.tempTabs._resource.locks.expandedKeys = ['/'];
-    this.tempTabs._resource.locks.selectedkeys = ['/'];
-    this.tempTabs._resource.boards = {};
-    this.tempTabs._resource.boards.filter = {};
-    this.tempTabs._resource.boards.filter.state = 'ALL';
-    this.tempTabs._resource.boards.filter.sortBy = 'name';
-    this.tempTabs._resource.boards.reverse = false;
-    this.tempTabs._resource.boards.currentPage = '1';
-    this.tempTabs._resource.boards.expandedKeys = ['/'];
-    this.tempTabs._resource.boards.selectedkeys = ['/'];
-    this.tempTabs._resource.calendars = {};
-    this.tempTabs._resource.calendars.filter = {};
-    this.tempTabs._resource.calendars.filter.type = 'ALL';
-    this.tempTabs._resource.calendars.filter.sortBy = 'name';
-    this.tempTabs._resource.calendars.reverse = false;
-    this.tempTabs._resource.calendars.currentPage = '1';
-    this.tempTabs._resource.calendars.expandedKeys = ['/'];
-    this.tempTabs._resource.calendars.selectedkeys = ['/'];
-    this.tempTabs._resource.documents = {};
-    this.tempTabs._resource.documents.filter = {};
-    this.tempTabs._resource.documents.filter.type = 'ALL';
-    this.tempTabs._resource.documents.filter.sortBy = 'name';
-    this.tempTabs._resource.documents.reverse = false;
-    this.tempTabs._resource.documents.currentPage = '1';
-    this.tempTabs._resource.documents.expandedKeys = ['/'];
-    this.tempTabs._resource.documents.selectedkeys = ['/'];
-    this.tempTabs._resource.documents.selectedView = true;
-    this.tempTabs._resource.state = 'agent';
-
-    this.tempTabs._configuration = {};
-    this.tempTabs._configuration.state = 'inventory';
-    this.tempTabs._configuration.inventory = {};
-    this.tempTabs._configuration.copiedParamObjects = {};
-    this.tempTabs._configuration.copiedInstuctionObject = {};
-
-    this.tempTabs._agentCluster = {};
-    this.tempTabs._agentCluster.filter = {};
-    this.tempTabs._agentCluster.filter.sortBy = 'subagentClusterId';
-    this.tempTabs._agentCluster.reverse = false;
-    this.tempTabs._agentCluster.currentPage = '1';
-
-    this.dashboard._dashboard = {};
-    this.dashboard._dashboard.order = {};
-    this.dashboard._dashboard.history = {};
-    this.dashboard._dashboard.file = {};
-    this.dashboard._dashboard.dailyplan = {};
-    this.dashboard._dashboard.dailyplan.date = '0d';
-    this.dashboard._dashboard.dailyplan.label = 'filters.button.today';
-    this.dashboard._dashboard.history.date = '0d';
-    this.dashboard._dashboard.history.label = 'filters.button.today';
-    this.dashboard._dashboard.order.date = '1d';
-    this.dashboard._dashboard.order.label = 'today';
-    this.dashboard._dashboard.file.date = '0d';
-    this.dashboard._dashboard.file.label = 'today';
-
-    if (localStorage.$SOS$DASHBOARDTABS) {
-      try {
-        const obj = JSON.parse(localStorage.$SOS$DASHBOARDTABS);
-        if (obj && obj.order) {
-          this.dashboard = obj;
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    if (!sessionStorage.$SOS$SIDEVIEW || typeof JSON.parse(sessionStorage.$SOS$SIDEVIEW) !== 'object') {
-      sessionStorage.$SOS$SIDEVIEW = JSON.stringify(this.sideView);
-    } else {
-      this.sideView = JSON.parse(sessionStorage.$SOS$SIDEVIEW);
-    }
   }
 
   setSearchResult(type, result): void {
@@ -511,7 +322,7 @@ export class CoreService {
   }
 
   setDefaultTab(): void {
-    this.tabs = this.tempTabs;
+    this.init();
   }
 
   setTabs(tempTabs: any): void {

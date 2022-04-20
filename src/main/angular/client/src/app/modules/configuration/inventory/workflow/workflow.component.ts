@@ -2504,12 +2504,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           executable: v.executable,
           defaultArguments: v.defaultArguments,
           jobResourceNames: v.jobResourceNames,
+          jobClass: v.jobClass,
           title: v.title,
+          documentationName: v.documentationName,
           admissionTimeScheme: v.admissionTimeScheme,
+          skipIfNoAdmissionForOrderDay: v.skipIfNoAdmissionForOrderDay,
+          returnCodeMeaning: v.returnCodeMeaning,
           logLevel: v.logLevel,
           criticality: v.criticality,
           timeout: v.timeout,
           graceTimeout: v.graceTimeout,
+          failOnErrWritten: v.failOnErrWritten,
           warnIfShorter: v.warnIfShorter,
           warnIfLonger: v.warnIfLonger,
           notification: v.notification,
@@ -3005,34 +3010,31 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         WorkflowComponent.parseWorkflowJSON(result);
-        if (result.orderPreparation) {
-          this.orderPreparation = this.coreService.clone(result.orderPreparation);
+        const res = {
+          configuration: result
         }
-        if (result.title) {
-          this.title = this.coreService.clone(result.title);
-        }
-        if (result.timeZone) {
-          this.timeZone = this.coreService.clone(result.timeZone);
-        }
-        if (result.documentationName) {
-          this.documentationName = this.coreService.clone(result.documentationName);
-        }
-        if (result.jobResourceNames) {
-          this.jobResourceNames = this.coreService.clone(result.jobResourceNames);
-        }
+        this.initObjects(res);
         this.workflow.configuration = this.coreService.clone(result);
-        if (result.jobs && !isEmpty(result.jobs)) {
-          this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
-            return {name: k, value: v};
-          });
+        this.workflow.actual = JSON.stringify(res.configuration);
+
+        if (this.workflow.configuration.jobs) {
+          if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
+            this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
+              return {name: k, value: v};
+            });
+          }
         }
-        delete this.workflow.configuration.orderPreparation;
-        delete this.workflow.configuration.jobResourceNames;
-        delete this.workflow.configuration.title;
-        delete this.workflow.configuration.timeZone;
-        delete this.workflow.configuration.documentationName;
-        this.history = {past: [], present: {}, future: [], type: 'new'};
+        if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
+          this.invalidMsg = 'workflow.message.emptyWorkflow';
+        } else {
+          this.validateByURL(res.configuration);
+        }
         this.updateXMLJSON(false);
+        this.jobResourcesTree = this.coreService.getNotExistJobResource({
+          arr: this.jobResourcesTree,
+          jobResources: this.extraConfiguration.jobResourceNames
+        });
+        this.history = {past: [], present: {}, future: [], type: 'new'};
         this.storeData(result);
       }
     });

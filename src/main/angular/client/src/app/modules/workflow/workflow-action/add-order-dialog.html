@@ -200,7 +200,7 @@
                        name="value{{i}}" (keypress)="onKeyPress($event)"
                        [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                 <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
-                <i class="pos-abt cursor fa fa-info-circle" *ngIf="argument.message" [nz-tooltip]="argument.message" style="right: 24px;top:9px;"></i>
+                <i class="pos-abt cursor fa fa-info-circle" *ngIf="argument.message" [nz-tooltip]="argument.message" style="right: 32px;top:1px;"></i>
                 <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                      class="text-danger help-block">
                   <div *ngIf="value.errors.required">
@@ -220,6 +220,9 @@
     <div class="form-group row">
       <div class="col-sm-12" *ngIf="variableList.length > arguments.length">
         <a class="text-u-l" (click)="addArgument()" translate>order.button.modifyVariable</a>
+      </div>
+      <div class="col-sm-12 m-t-sm" *ngIf="variableList.length > arguments.length">
+        <a class="text-u-l" (click)="addArguments()" translate>dailyPlan.label.setParameters</a>
       </div>
       <div class="col-sm-12" *ngIf="variableList.length <= arguments.length && (workflow.orderPreparation && workflow.orderPreparation.allowUndeclared)">
         <a class="text-u-l" (click)="addArgument(true)" translate>order.button.addVariable</a>

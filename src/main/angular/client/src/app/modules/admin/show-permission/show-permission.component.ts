@@ -29,7 +29,6 @@ export class ShowPermissionComponent implements OnInit {
     }).subscribe({
       next: (res) => {
         this.permission = res;
-        console.log(res);
         this.isLoaded = true;
       }, error: () => {
         this.isLoaded = true;

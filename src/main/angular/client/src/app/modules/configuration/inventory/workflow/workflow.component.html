@@ -921,6 +921,7 @@
                   <input #value="ngModel" [facetValidation]="variable.value.facet" [disabled]="variable.value.type === 'List'" autocomplete="off" type="text" class="form-control" name="value{{i}}"
                          (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
                          [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
+                  <i class="pos-abt cursor text-primary-hover" style="right: 18px;top:1px;" *ngIf="variable.value.type === 'String'" (click)="addFacet(variable)" nz-icon nzType="snippets" nzTheme="outline"></i>
                   <i [hidden]="variable.value.type === 'List'" class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
                      (click)="openEditor(variable.value)" style="right: 1px;top:1px;"></i>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -943,8 +944,7 @@
                 </div>
               </div>
               <div class="col-md-1 col-lg-1">
-                <a [nz-tooltip]="'workflow.label.facetEditor' | translate" class="pos-abt" style="margin-left: -6px" *ngIf="variable.value.type === 'String'"><i (click)="addFacet(variable)" nz-icon nzType="snippets" nzTheme="outline" class="m-t-sm text-primary-hover"></i></a>
-                <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm m-l text-hover-color"></i></a>
+                <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
               </div>
               <ng-container class="b-b p-b-sm" *ngIf="variable.value.type === 'List'">
                 <div class="row col-md-12">
