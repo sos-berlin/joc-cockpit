@@ -909,6 +909,10 @@
   },
   "info": {
     "label.welcome": "Welcome",
+    "label.allRightReserved": "All right reserved.",
+    "label.licenseType": "License Type",
+    "label.commercialLicense": "Commercial License",
+    "label.openSourceLicense": "Open Source License",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "JS7について",
     "button.js7Download": "JS7ダウンロード",

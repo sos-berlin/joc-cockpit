@@ -40,7 +40,7 @@
       <li (click)="showLog(order)" nz-menu-item *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
         <a>{{'order.button.showLog' | translate}}</a>
       </li>
-      <li (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" nz-menu-item *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')">
+      <li (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" nz-menu-item>
         <a translate>common.button.copyLinkToObject</a>
       </li>
     </ul>
