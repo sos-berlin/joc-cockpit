@@ -2,7 +2,7 @@ import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output}
 import {Subject, Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {isEmpty, clone, extend} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
@@ -751,6 +751,9 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     this.commitId = this.route.snapshot.queryParamMap.get('commitId');
     this.auditLogId = this.route.snapshot.queryParamMap.get('auditLogId');
     this.controllerId = this.route.snapshot.queryParamMap.get('controllerId');
+    if (this.router.url.match('/history/order?')) {
+      this.isOrderExist();
+    }
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
@@ -764,6 +767,23 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
     } else if (this.auditLogId) {
       this.getSubmissionHistory();
     }
+  }
+
+  private isOrderExist(): void {
+    this.coreService.post('order', {
+      orderId: this.orderId,
+      controllerId: this.controllerId,
+      compact: true
+    }).subscribe({
+      next: (res) => {
+        this.router.navigate(['/workflows/workflow'], {
+          queryParams: {
+            path: this.workflowPath,
+            controllerId: this.controllerId
+          }
+        });
+      }
+    });
   }
 
   ngOnDestroy(): void {

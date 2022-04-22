@@ -18,10 +18,10 @@ import {CoreService} from '../../services/core.service';
     <div class="modal-body p-a">
       <div class="row">
         <div class="col-sm-3">
-          <img class="p-l logo-for-default" src="./assets/images/JS7-logo-default-theme.png" alt="JS7" width="100">
-          <img class="p-l logo-for-light" src="./assets/images/JS7-logo-light-theme.png" alt="JS7" width="100">
-          <img class="p-l logo-for-dark" src="./assets/images/JS7-light-dark-theme.png" alt="JS7" width="100">
-          <img class="p-l logo-for-grey" src="./assets/images/JS7-logo-grey-theme.png" alt="JS7" width="100">
+          <img class="p-t-xs m-l logo-for-default" src="./assets/images/JS7-logo-default-theme.png" alt="JS7" width="100">
+          <img class="p-t-xs m-l logo-for-light" src="./assets/images/JS7-logo-light-theme.png" alt="JS7" width="100">
+          <img class="p-t-xs m-l logo-for-dark" src="./assets/images/JS7-light-dark-theme.png" alt="JS7" width="100">
+          <img class="p-t-xs m-l logo-for-grey" src="./assets/images/JS7-logo-grey-theme.png" alt="JS7" width="100">
         </div>
         <div class=" col-sm-9">
           <div class="row">
@@ -30,9 +30,16 @@ import {CoreService} from '../../services/core.service';
             </div>
           </div>
           <div class="p-b-xs row">
-            <div class="col-sm-12 text-black-lt">All right reserved.</div>
+            <div class="col-sm-12 text-black-lt" translate>info.label.allRightReserved</div>
           </div>
           <div class="row">
+            <label class="col-sm-3" translate>info.label.licenseType</label>
+            <div class="col-sm-9">
+              <span *ngIf="hasLicense" translate>info.label.commercialLicense</span>
+              <span *ngIf="!hasLicense" translate>info.label.openSourceLicense</span>
+            </div>
+          </div>
+          <div class="row m-t-xs">
             <label class="col-sm-3">JOC Cockpit</label>
             <div class=" col-sm-9">
               <span>{{versionData.gitHash}}</span>&nbsp;
@@ -46,10 +53,12 @@ import {CoreService} from '../../services/core.service';
 })
 export class AboutModalComponent implements OnInit {
   versionData: any = {};
+  hasLicense = false;
   constructor(public modalService: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
+    this.hasLicense = sessionStorage.hasLicense == 'true';
     this.coreService.get('version.json').subscribe((data) => {
       this.versionData = data;
       this.ref.detectChanges();

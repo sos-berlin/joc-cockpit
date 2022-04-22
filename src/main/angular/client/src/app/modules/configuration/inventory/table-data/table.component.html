@@ -6,7 +6,7 @@
           <span *ngIf="objectType === 'FILEORDERSOURCE'" translate>inventory.label.fileOrderSources</span>
           <!--<span *ngIf="objectType === 'JOBCLASS'" translate>inventory.label.jobClasses</span>-->
           <span *ngIf="objectType === 'JOBRESOURCE'" translate>inventory.label.jobResources</span>
-          <span *ngIf="objectType === 'BOARD'" translate>inventory.label.boards</span>
+          <span *ngIf="objectType === 'NOTICEBOARD'" translate>inventory.label.boards</span>
           <span *ngIf="objectType === 'LOCK'" translate>inventory.label.locks</span>
           <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.label.orders</span>
           <span *ngIf="objectType === 'INCLUDESCRIPT'" translate>inventory.label.scripts</span>
@@ -25,7 +25,7 @@
         <span *ngIf="objectType === 'FILEORDERSOURCE'" translate>inventory.button.newFileOrderSource</span>
         <!--<span *ngIf="objectType === 'JOBCLASS'" translate>inventory.button.newJobClass</span>-->
         <span *ngIf="objectType === 'JOBRESOURCE'" translate>inventory.button.newJobResource</span>
-        <span *ngIf="objectType === 'BOARD'" translate>inventory.button.newBoard</span>
+        <span *ngIf="objectType === 'NOTICEBOARD'" translate>inventory.button.newBoard</span>
         <span *ngIf="objectType === 'LOCK'" translate>inventory.button.newLock</span>
         <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.button.newOrder</span>
         <span *ngIf="objectType === 'INCLUDESCRIPT'" translate>inventory.button.newScript</span>
@@ -113,12 +113,7 @@
                     <a translate>inventory.button.release</a>
                   </li>
                   <li nz-menu-divider *ngIf="permission.joc.inventory.manage">
-                  <li nz-menu-item (click)="removeObject(data)"
-                    *ngIf="permission.joc.inventory.manage && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
-                    <a translate>inventory.button.remove</a>
-                  </li>
-                  <li nz-menu-item (click)="removeObject(data)"
-                      *ngIf="permission.joc.inventory.manage && (objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT')">
+                  <li nz-menu-item (click)="removeObject(data)" *ngIf="permission.joc.inventory.manage">
                     <a translate>inventory.button.remove</a>
                   </li>
                   <li nz-menu-item (click)="deleteDraft(data)" *ngIf="permission.joc.inventory.manage" [nzDisabled]="data.deployed || data.released">
@@ -142,6 +137,9 @@
                   </li>
                   <li nz-menu-item (click)="importJSON(data)" *ngIf="permission.joc.inventory.manage">
                     <a translate>inventory.button.uploadJSON</a>
+                  </li>
+                  <li (click)="coreService.copyLink('configuration', (data.path + (data.path === '/' ? '' : '/') + data.name), data.type)" nz-menu-item>
+                    <a translate>common.button.copyLinkToObject</a>
                   </li>
                 </ul>
                 <ul nz-menu *ngIf="isTrash && permission.joc">

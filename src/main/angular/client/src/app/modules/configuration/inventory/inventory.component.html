@@ -452,6 +452,10 @@
         *ngIf="node.origin.type && permission.joc.inventory.manage">
       <a translate>inventory.button.uploadJSON</a>
     </li>
+    <li *ngIf="!node.origin.controller && !node.origin.dailyPlan && !node.origin.object"
+        (click)="coreService.copyLink('configuration', (node.origin.path + (node.origin.path === '/' ? '' : '/') + node.origin.name), node.origin.type)" nz-menu-item>
+      <a translate>common.button.copyLinkToObject</a>
+    </li>
   </ul>
   <ul nz-menu *ngIf="isTrash && node.origin && permission.joc">
     <li nz-menu-item (click)="deletePermanently(node);" *ngIf="permission.joc.inventory.manage" class="bg-hover-color"

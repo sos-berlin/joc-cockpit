@@ -934,6 +934,12 @@ export class CoreService {
       link = host + 'resources/calendars/calendar?name=' + encodeURIComponent(name);
     } else if (objType === 'document' && name) {
       link = host + 'resources/documentations/documentation?name=' + encodeURIComponent(name);
+    } else if (objType === 'configuration') {
+      if (workflow) {
+        this.clipboardService.copyFromContent(host + 'configuration/inventory?objectType=' + workflow + '&path=' + encodeURIComponent(name));
+      } else {
+        this.clipboardService.copyFromContent(host + 'configuration/inventory?path=' + encodeURIComponent(name));
+      }
     }
     if (link !== '') {
       this.clipboardService.copyFromContent(link + '&controllerId=' + JSON.parse(this.authService.scheduleIds).selected);
