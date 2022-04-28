@@ -19,6 +19,7 @@ import {saveAs} from 'file-saver';
 import {catchError} from 'rxjs/operators';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import {ActivatedRoute} from "@angular/router";
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
@@ -2903,6 +2904,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   isTrash = false;
   isSearchVisible = false;
   tempObjSelection: any = {};
+  objectType: string;
+  path: string;
   indexOfNextAdd = 0;
   objectHistory = [];
   subscription1: Subscription;
@@ -2920,6 +2923,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     private modal: NzModalService,
     private translate: TranslateService,
     private toasterService: ToastrService,
+    private route: ActivatedRoute,
     private nzContextMenuService: NzContextMenuService,
     private message: NzMessageService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -2985,7 +2989,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
+    this.objectType = this.route.snapshot.queryParamMap.get('objectType');
+    this.path = this.route.snapshot.queryParamMap.get('path');
     this.initConf(true);
   }
 
@@ -3007,10 +3012,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private getAgents(): void {
-  
-    if (this.permission.controllerDefaults && this.permission.controllerDefaults.agents.view) {
-      this.coreService.getAgents(this.inventoryService, this.schedulerIds.selected);
-    }
+    this.coreService.getAgents(this.inventoryService, this.schedulerIds.selected);
   }
 
   initTree(path, mainPath, redirect = false): void {
@@ -3061,9 +3063,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
             } else {
               this.isLoading = false;
             }
-          } else if (!isEmpty(this.inventoryConfig.selectedObj)) {
+          } else if (!isEmpty(this.inventoryConfig.selectedObj) || (this.objectType && this.path)) {
             this.tree = tree;
             this.selectedObj = this.inventoryConfig.selectedObj;
+            if (this.objectType && this.path) {
+              this.selectedObj = {
+                name: this.path.substring(this.path.lastIndexOf('/') + 1),
+                path: this.path.substring(0, this.path.lastIndexOf('/')) || '/',
+                type: this.objectType
+              };
+            }
+         
             this.recursivelyExpandTree();
           } else {
             this.tree = tree;

@@ -29,8 +29,10 @@
 #toolbar {
   padding-top: 6px;
   padding-bottom: 6px;
-  width: 52px;
+  width: 52px !important;
   position: absolute;
+  overflow: hidden;
+  overflow-y: auto !important;
 }
 #outlineContainer {
   z-index: 9;

@@ -244,15 +244,19 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         addWorkflowInArrays(workflow.addOrderFromWorkflows);
       }
     }
-
-    this.callAPI(APIs, () => {
+    if (APIs.length) {
+      this.callAPI(APIs, () => {
+        setTimeout(() => {
+          if (this.isAllLoaded) {
+            this.isLoading = true;
+          }
+        }, 1000);
+      });
+    } else {
       setTimeout(() => {
-        if (this.isAllLoaded) {
-          this.isLoading = true;
-        }
-      }, 1000);
-    });
-
+        this.isAllLoaded = true;
+      }, 80);
+    }
   }
 
   showDependency(workflow): void {

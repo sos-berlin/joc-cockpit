@@ -9,7 +9,7 @@ import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
-import {SearchPipe} from '../../pipes/core.pipe';
+import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 
 declare const $;
@@ -100,6 +100,45 @@ export class FileTransferSearchComponent implements OnInit {
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.allhosts = this.coreService.getProtocols();
+    if (!this.filter.profiles) {
+      this.filter.profiles = [];
+    } else {
+      let profiles = [];
+      this.filter.profiles.forEach((name) => {
+        profiles.push({name});
+      });
+      this.filter.profiles = profiles;
+    }
+    if (this.filter.profiles.length === 0) {
+      this.addProfile();
+    }
+
+    if (!this.filter.sourceFiles) {
+      this.filter.sourceFiles = [];
+    } else {
+      let sourceFiles = [];
+      this.filter.sourceFiles.forEach((name) => {
+        sourceFiles.push({name});
+      });
+      this.filter.sourceFiles = sourceFiles;
+    }
+    if (this.filter.sourceFiles.length === 0) {
+      this.addSourcePath();
+    }
+
+    if (!this.filter.targetFiles) {
+      this.filter.targetFiles = [];
+    } else {
+      let targetFiles = [];
+      this.filter.targetFiles.forEach((name) => {
+        targetFiles.push({name});
+      });
+      this.filter.targetFiles = targetFiles;
+    }
+    if (this.filter.targetFiles.length === 0) {
+      this.addTargetPath();
+    }
+
     if (this.filter.states && this.filter.states.length > 0) {
       this.stateOptions = this.stateOptions.map(item => {
         return {
@@ -116,6 +155,36 @@ export class FileTransferSearchComponent implements OnInit {
         };
       });
     }
+  }
+
+  addProfile(): void {
+    if (!this.coreService.isLastEntryEmpty(this.filter.profiles, 'name', '')) {
+      this.filter.profiles.push({name: ''});
+    }
+  }
+
+  removeProfile(index): void {
+    this.filter.profiles.splice(index, 1)
+  }
+
+  addSourcePath(): void {
+    if (!this.coreService.isLastEntryEmpty(this.filter.sourceFiles, 'name', '')) {
+      this.filter.sourceFiles.push({name: ''});
+    }
+  }
+
+  removeSourcePath(index): void {
+    this.filter.sourceFiles.splice(index, 1)
+  }
+
+  addTargetPath(): void {
+    if (!this.coreService.isLastEntryEmpty(this.filter.targetFiles, 'name', '')) {
+      this.filter.targetFiles.push({name: ''});
+    }
+  }
+
+  removeTargetPath(index): void {
+    this.filter.targetFiles.splice(index, 1)
   }
 
   selectTime(time, isEditor = false, val = 'from'): void {
@@ -188,6 +257,30 @@ export class FileTransferSearchComponent implements OnInit {
       obj.to1 = toDate;
     } else {
       obj.to1 = '0d';
+    }
+    if (obj.profiles && obj.profiles.length > 0) {
+      obj.profiles = [];
+      result.profiles.forEach((item) => {
+        if(item.name) {
+          obj.profiles.push(item.name);
+        }
+      })
+    }
+    if (obj.sourceFiles && obj.sourceFiles.length > 0) {
+      obj.sourceFiles = [];
+      result.sourceFiles.forEach((item) => {
+        if(item.name) {
+          obj.sourceFiles.push(item.name);
+        }
+      })
+    }
+    if (obj.targetFiles && obj.targetFiles.length > 0) {
+      obj.targetFiles = [];
+      result.targetFiles.forEach((item) => {
+        if(item.name) {
+          obj.targetFiles.push(item.name);
+        }
+      })
     }
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
@@ -286,7 +379,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
       value.widthArr = this.coreService.calFileTransferRowWidth();
       setTimeout(() => {
         const dom = $('#fileTransferMainTable');
-        dom.find('thead tr.main-header-row th').each(function(i) {
+        dom.find('thead tr.main-header-row th').each(function (i) {
           $(this).css('width', self.widthArr[i] + 'px');
         });
       }, 0);
@@ -303,7 +396,7 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       self.widthArr = [];
       const dom = $('#fileTransferMainTable');
-      dom.find('thead tr.main-header-row th').each(function() {
+      dom.find('thead tr.main-header-row th').each(function () {
         self.widthArr.push($(this).outerWidth());
       });
     }, 0);
@@ -378,7 +471,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   searchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
-              private router: Router, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
+              private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -403,6 +496,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   sort(propertyName): void {
     this.yadeFilters.reverse = !this.yadeFilters.reverse;
     this.yadeFilters.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.yadeFilters.filter.sortBy, this.yadeFilters.reverse);
   }
 
   pageIndexChange($event): void {
@@ -414,9 +508,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   searchInResult(): void {
+    this.fileTransfers = this.orderPipe.transform(this.fileTransfers, this.yadeFilters.filter.sortBy, this.yadeFilters.reverse);
     this.data = this.yadeFilters.searchText ? this.searchPipe.transform(this.fileTransfers, this.yadeFilters.searchText, this.searchableProperties) : this.fileTransfers;
     this.data = [...this.data];
-    if (this.fileTransfers.length === 0){
+    if (this.fileTransfers.length === 0) {
       this.yadeFilters.currentPage = 1;
     }
   }
@@ -554,7 +649,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
     this.yadeFilters.filter.states = '';
     this.yadeFilters.filter.date = '';
-
     this.fileTransferService.getRequestForSearch(this.searchFilter, filter, this.preferences);
     this.coreService.post('yade/transfers', filter).subscribe({
       next: (res: any) => {
@@ -802,7 +896,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.isCustomizationSelected(false);
       this.savedFilter.selected = filter;
       this.yadeFilters.selectedView = false;
-      this.selectedFiltered = filter;
+      this.selectedFiltered = {};
       this.load();
     }
 
@@ -825,7 +919,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       self.widthArr = [];
       const dom = $('#fileTransferMainTable');
-      dom.find('thead tr.main-header-row th').each(function() {
+      dom.find('thead tr.main-header-row th').each(function () {
         self.widthArr.push($(this).outerWidth());
       });
     }, 0);
@@ -875,7 +969,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   private openFilterModal(filter, isCopy): void {
     let filterObj: any = {};
-    this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+    this.coreService.post('configuration', {
+      controllerId: filter.controllerId,
+      id: filter.id
+    }).subscribe((conf: any) => {
       filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       if (isCopy) {

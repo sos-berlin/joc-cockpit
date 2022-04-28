@@ -782,18 +782,14 @@
       "label.targetFilePaths": "Chemin d'accès cible",
       "label.sourceProtocol": "Protocole source",
       "label.targetProtocol": "Protocole cible",
-      "label.sourceFileRegex": "Expression règulière fichier source",
-      "label.targetFileRegex": "Expression règulière fichier cible",
-      "placeholder.targetFilesRegex": "Entrer une expression règulière fichier cible",
-      "placeholder.sourceFilesRegex": "Entrer une expression règulière fichier source",
       "placeholder.sourceProtocol": "Protocole source",
       "placeholder.targetProtocol": "Protocole cible",
-      "placeholder.targetFilePaths": "Entrer les chemins d'àccès des fichiers cible séparés par une virgule",
-      "placeholder.sourceFilePaths": "Entrer les chemins d'àccès des fichiers source séparés par une virgule",
+      "placeholder.sourceFilePath": "Enter source file path",
+      "placeholder.targetFilePath": "Enter target file path",
       "placeholder.sourceHost": "Hôte source",
       "placeholder.targetHost": "Hôte cible",
       "placeholder.protocol": "Protocole",
-      "placeholder.enterProfileNames": "Entrer les noms des profiles separés par une virgule"
+      "placeholder.enterProfileName": "Enter profile name"
     },
     "--------ADVANCE SEARCH END------------": ""
   },

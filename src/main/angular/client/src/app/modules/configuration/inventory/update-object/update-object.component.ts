@@ -88,7 +88,7 @@ export class UpdateObjectComponent implements OnInit {
         this.documentationTree = this.coreService.prepareTree(res, true);
       });
     }
-    if (this.type === InventoryObject.FILEORDERSOURCE) {
+    if (this.type === InventoryObject.FILEORDERSOURCE && this.permission.joc.inventory.view) {
       this.coreService.getAgents(this.agents, this.controllerId, () =>{
         this.agentList = this.coreService.clone(this.agents.agentList);
       });
