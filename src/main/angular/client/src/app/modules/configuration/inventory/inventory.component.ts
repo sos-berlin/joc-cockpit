@@ -27,6 +27,7 @@ import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../models/enums';
+import {ActivatedRoute} from "@angular/router";
 
 declare const $: any;
 
@@ -1876,7 +1877,7 @@ export class RepositoryComponent implements OnInit {
     }
     if(this.nodes.length > 0) {
       recursive(this.nodes);
-    } else if(this.operation === 'delete' && !this.origin.object) {
+    } else if (this.operation === 'delete' && !this.origin.object) {
       obj.configurations.push({
         configuration: {
           path: this.path,
@@ -2903,6 +2904,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   isTrash = false;
   isSearchVisible = false;
   tempObjSelection: any = {};
+  objectType: string;
+  path: string;
   indexOfNextAdd = 0;
   objectHistory = [];
   subscription1: Subscription;
@@ -2920,6 +2923,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     private modal: NzModalService,
     private translate: TranslateService,
     private toasterService: ToastrService,
+    private route: ActivatedRoute,
     private nzContextMenuService: NzContextMenuService,
     private message: NzMessageService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -2985,7 +2989,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
+    this.objectType = this.route.snapshot.queryParamMap.get('objectType');
+    this.path = this.route.snapshot.queryParamMap.get('path');
     this.initConf(true);
   }
 
@@ -3007,17 +3012,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private getAgents(): void {
-  
-    if (this.permission.controllerDefaults && this.permission.controllerDefaults.agents.view) {
-      this.coreService.getAgents(this.inventoryService, this.schedulerIds.selected);
-    }
+    this.coreService.getAgents(this.inventoryService, this.schedulerIds.selected);
   }
 
   initTree(path, mainPath, redirect = false): void {
     if (!path) {
       this.isLoading = true;
     }
-
     this.coreService.post('tree', {
       forInventory: true,
       types: ['INVENTORY']
@@ -3061,9 +3062,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
             } else {
               this.isLoading = false;
             }
-          } else if (!isEmpty(this.inventoryConfig.selectedObj)) {
+          } else if (!isEmpty(this.inventoryConfig.selectedObj) || (this.objectType && this.path)) {
             this.tree = tree;
             this.selectedObj = this.inventoryConfig.selectedObj;
+            if (this.objectType && this.path) {
+              this.selectedObj = {
+                name: this.path.substring(this.path.lastIndexOf('/') + 1),
+                path: this.path.substring(0, this.path.lastIndexOf('/')) || '/',
+                type: this.objectType
+              };
+            }
+           
             this.recursivelyExpandTree();
           } else {
             this.tree = tree;

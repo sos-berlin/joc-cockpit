@@ -782,18 +782,14 @@
       "label.targetFilePaths": "ターゲットファイルパス",
       "label.sourceProtocol": "ソースプロトコル",
       "label.targetProtocol": "ターゲットプロトコル",
-      "label.sourceFileRegex": "ソースファイル正規表現",
-      "label.targetFileRegex": "ターゲットファイル正規表現",
-      "placeholder.targetFilesRegex": "ターゲットファイル正規表現を入力",
-      "placeholder.sourceFilesRegex": "ソースファイル正規表現を入力",
       "placeholder.sourceProtocol": "ソースプロトコル",
       "placeholder.targetProtocol": "ターゲットプロトコル",
-      "placeholder.targetFilePaths": "コンマ区切りでターゲットファイルパスを入力",
-      "placeholder.sourceFilePaths": "コンマ区切りでソースファイルパスを入力",
+      "placeholder.sourceFilePath": "Enter source file path",
+      "placeholder.targetFilePath": "Enter target file path",
       "placeholder.sourceHost": "ソースホスト",
       "placeholder.targetHost": "ターゲットホスト",
       "placeholder.protocol": "プロトコル",
-      "placeholder.enterProfileNames": "コンマ区切りでプロファイル名を入力"
+      "placeholder.enterProfileName": "Enter profile name"
     },
     "--------ADVANCE SEARCH END------------": ""
   },

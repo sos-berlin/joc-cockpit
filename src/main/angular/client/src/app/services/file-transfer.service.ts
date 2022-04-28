@@ -137,29 +137,36 @@ export class FileTransferService {
     if (data.operations && data.operations.length > 0) {
       filter.operations = data.operations;
     }
-    if (data.profileId) {
-      data.profileId = data.profileId.replace(/\s*(,|^|$)\s*/g, '$1');
-      filter.profiles = data.profileId.split(',');
-    }
 
     if (data.mandator) {
       filter.mandator = data.mandator;
     }
-
-    if (data.sourceFileRegex) {
-      filter.sourceFile = data.sourceFileRegex;
+    if (data.profiles && data.profiles.length > 0) {
+      let profiles = [];
+      data.profiles.forEach((item) => {
+        if(item.name || typeof item === "string") {
+          profiles.push(item.name || item);
+        }
+      });
+      filter.profiles = profiles;
     }
-    if (data.targetFileRegex) {
-      filter.targetFile = data.targetRegex;
+    if (data.sourceFiles && data.sourceFiles.length > 0) {
+      let sourceFiles = [];
+      data.sourceFiles.forEach((item) => {
+        if(item.name || typeof item === "string") {
+          sourceFiles.push(item.name || item);
+        }
+      })
+      filter.sourceFiles = sourceFiles;
     }
-
-    if (data.sourceFileName) {
-      data.sourceFileName = data.sourceFileName.replace(/\s*(,|^|$)\s*/g, '$1');
-      filter.sourceFiles = data.sourceFileName.split(',');
-    }
-    if (data.targetFileName) {
-      data.targetFileName = data.targetFileName.replace(/\s*(,|^|$)\s*/g, '$1');
-      filter.targetFiles = data.targetFileName.split(',');
+    if (data.targetFiles && data.targetFiles.length > 0) {
+      let targetFiles = [];
+      data.targetFiles.forEach((item) => {
+        if(item.name || typeof item === "string") {
+          targetFiles.push(item.name || item);
+        }
+      })
+      filter.targetFiles = targetFiles;
     }
     if (data.sourceHost || data.sourceProtocol) {
       let hosts = [];

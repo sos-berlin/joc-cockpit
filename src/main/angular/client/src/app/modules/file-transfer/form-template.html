@@ -21,7 +21,11 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.profileNames</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.enterProfileNames' | translate}}" name="profileId" [(ngModel)]="filter.profileId">
+        <div *ngFor="let profile of filter.profiles;let i = index">
+          <input class="form-control" [ngClass]="{'m-b-sm': i != filter.profiles.length - 1}" placeholder="{{'fileTransfer.search.placeholder.enterProfileName' | translate}} {{i + 1}}" name="profileId{{i}}" [(ngModel)]="profile.name">
+          <i class="text-hover-color fa fa-trash pos-abt" *ngIf="i != filter.profiles.length - 1" style="margin-top: -29px;right: -10px;" (click)="removeProfile(i)"></i>
+        </div>
+        <i class="text-hover-primary fa fa-plus pos-abt" style="margin-top: -20px;right: -10px;" (click)="addProfile()"></i>
       </div>
     </div>
     <div class="form-group row " *ngIf="isSearch">
@@ -48,7 +52,7 @@
     <div class="form-group row" *ngIf="filter.radio == 'current'">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.to</label>
       <div class="col-sm-6">
-        <nz-date-picker [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" 
+        <nz-date-picker [nzFormat]="dateFormat" [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
                [(ngModel)]="filter.toDate" name="to" ></nz-date-picker>
         <div class="time-picker">
           <input timevalidator [disabled]="!filter.toDate" type="text" #time="ngModel" class="form-control"
@@ -98,29 +102,23 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceFilePaths</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.sourceFilePaths' | translate}}" name="sourceFileName" [(ngModel)]="filter.sourceFileName">
+        <div *ngFor="let sourceFile of filter.sourceFiles;let i = index">
+          <input class="form-control" [ngClass]="{'m-b-sm': i != filter.sourceFiles.length - 1}" placeholder="{{'fileTransfer.search.placeholder.sourceFilePath' | translate}} {{i + 1}}" name="sourceFile{{i}}" [(ngModel)]="sourceFile.name">
+          <i class="text-hover-color fa fa-trash pos-abt" *ngIf="i != filter.sourceFiles.length - 1" style="margin-top: -29px;right: -10px;" (click)="removeSourcePath(i)"></i>
+        </div>
+        <i class="text-hover-primary fa fa-plus pos-abt" style="margin-top: -20px;right: -10px;" (click)="addSourcePath()"></i>
       </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceFileRegex</label>
-         <div class="col-sm-6">
-             <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.sourceFilesRegex' | translate}}" name="sourceFilesRegex"
-                    [(ngModel)]="filter.sourceFileRegex">
-         </div>
-     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.targetFilePaths</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.targetFilePaths' | translate}}" name="targetFileName" [(ngModel)]="filter.targetFileName">
+        <div *ngFor="let targetFile of filter.targetFiles;let i = index">
+          <input class="form-control" [ngClass]="{'m-b-sm': i != filter.targetFiles.length - 1}" placeholder="{{'fileTransfer.search.placeholder.targetFilePath' | translate}} {{i + 1}}" name="targetFile{{i}}" [(ngModel)]="targetFile.name">
+          <i class="text-hover-color fa fa-trash pos-abt" *ngIf="i != filter.targetFiles.length - 1" style="margin-top: -29px;right: -10px;" (click)="removeTargetPath(i)"></i>
+        </div>
+        <i class="text-hover-primary fa fa-plus pos-abt" style="margin-top: -20px;right: -10px;" (click)="addTargetPath()"></i>
       </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.targetFileRegex</label>
-         <div class="col-sm-6">
-             <input class="form-control" placeholder="{{'fileTransfer.search.placeholder.targetFilesRegex' | translate}}" name="targetFilesRegex"
-                    [(ngModel)]="filter.targetFileRegex">
-         </div>
-     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>fileTransfer.search.label.sourceHost</label>
       <div class=" col-sm-6">

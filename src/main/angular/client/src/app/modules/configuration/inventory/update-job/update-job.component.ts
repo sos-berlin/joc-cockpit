@@ -144,7 +144,7 @@ export class UpdateJobComponent implements OnInit {
         this.documentationTree = this.coreService.prepareTree(res, false);
       });
     }
-    if (this.agents.agentList.length === 0) {
+    if (this.agents.agentList.length === 0 && this.permission.joc.inventory.view) {
       this.coreService.getAgents(this.agents, this.controllerId, () => {
          if (this.data.onlyUpdate) {
           this.selectedNode.job = {};

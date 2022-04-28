@@ -782,18 +782,14 @@
       "label.targetFilePaths": "Pfade der Zieldateien",
       "label.sourceProtocol": "Protokoll Quellsystem",
       "label.targetProtocol": "Protokoll Zielsystem",
-      "label.sourceFileRegex": "Muster für Quelldatei",
-      "label.targetFileRegex": "Muser für Zieldatei",
-      "placeholder.targetFilesRegex": "Muster für Zieldatei angeben",
-      "placeholder.sourceFilesRegex": "Muster für Quelldatei angeben",
       "placeholder.sourceProtocol": "Protokoll Quellsystem",
       "placeholder.targetProtocol": "Protokoll Quellsystem",
-      "placeholder.targetFilePaths": "Pfade der Zieldateien durch Komma getrennt angeben",
-      "placeholder.sourceFilePaths": "Pfade der Quelldatei durch Komma getrennt angeben",
+      "placeholder.sourceFilePath": "Enter source file path",
+      "placeholder.targetFilePath": "Enter target file path",
       "placeholder.sourceHost": "Quellsystem",
       "placeholder.targetHost": "Zielsystem",
       "placeholder.protocol": "Protokoll",
-      "placeholder.enterProfileNames": "Namen der Profile durch Komma getrennt angeben"
+      "placeholder.enterProfileName": "Enter profile name"
     },
     "--------ADVANCE SEARCH END------------": ""
   },

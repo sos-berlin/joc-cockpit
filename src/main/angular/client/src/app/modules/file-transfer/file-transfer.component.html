@@ -199,11 +199,11 @@
         <nz-table
           #ajaxTable
           [nzSize]="'small'"
-          [nzPageSize]="yadeFilters.entryPerPage || preferences.entryPerPage"
+          [nzPageSize]="yadeFilters.entryPerPage || preferences.entryPerPage || 25"
           [nzPageIndex]="yadeFilters.currentPage"
           [nzBordered]="true"
           [nzShowPagination]="data.length > 0"
-          [nzData]="data | orderBy: yadeFilters.filter.sortBy:yadeFilters.reverse"
+          [nzData]="data"
           [nzLoading]="!isLoaded"
           [nzShowSizeChanger]="true"
           (nzPageIndexChange)="pageIndexChange($event)"

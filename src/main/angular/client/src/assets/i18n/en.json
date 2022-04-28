@@ -782,18 +782,14 @@
       "label.targetFilePaths": "Target File Paths",
       "label.sourceProtocol": "Source Protocol",
       "label.targetProtocol": "Target Protocol",
-      "label.sourceFileRegex": "Source File Pattern",
-      "label.targetFileRegex": "Target File Pattern",
-      "placeholder.targetFilesRegex": "Enter target file pattern",
-      "placeholder.sourceFilesRegex": "Enter source file pattern",
       "placeholder.sourceProtocol": "Source Protocol",
       "placeholder.targetProtocol": "Target Protocol",
-      "placeholder.targetFilePaths": "Enter target file paths separated by comma",
-      "placeholder.sourceFilePaths": "Enter source file paths separated by comma",
+      "placeholder.sourceFilePath": "Enter source file path",
+      "placeholder.targetFilePath": "Enter target file path",
       "placeholder.sourceHost": "Source Host",
       "placeholder.targetHost": "Target Host",
       "placeholder.protocol": "Protocol",
-      "placeholder.enterProfileNames": "Enter profile names separated by comma"
+      "placeholder.enterProfileName": "Enter profile name"
     },
     "--------ADVANCE SEARCH END------------": ""
   },
