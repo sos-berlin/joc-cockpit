@@ -786,8 +786,8 @@
       "placeholder.targetProtocol": "Sélectionnez le protocole cible",
       "placeholder.sourceFilePath": "Entrez le chemin du fichier source, utilisez les caractères de remplacement * pour tout nombre de caractères, ? pour un seul caractère, préfixe */ pour un nom de fichier",
       "placeholder.targetFilePath": "Entrez le chemin du fichier cible, utilisez les caractères de remplacement * pour tout nombre de caractères, ? pour un seul caractère, préfixe */ pour un nom de fichier",
-      "placeholder.sourceHost": "Entrez le hôte source, utilisez les caractères de remplacement * pour tout nombre de caractères, ? pour un seul caractère",
-      "placeholder.targetHost": "Entrez le hôte cible, utilisez les caractères de remplacement * pour tout nombre de caractères, ? pour un seul caractère",
+      "placeholder.sourceHost": "Entrez le hôte sourc",
+      "placeholder.targetHost": "Entrez le hôte cible",
       "placeholder.protocol": "Protocole",
       "placeholder.enterProfileName": "Entrez le nom du profil"
     },

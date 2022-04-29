@@ -786,10 +786,10 @@
       "placeholder.targetProtocol": "Select target protocol",
       "placeholder.sourceFilePath": "Enter source file path, use placeholders * for any number of characters, ? for a single character, prefix */ for a file name",
       "placeholder.targetFilePath": "Enter target file path, use placeholders * for any number of characters, ? for a single character, prefix */ for a file name",
-      "placeholder.sourceHost": "Source Host, use placeholders * for any number of characters, ? for a single character",
-      "placeholder.targetHost": "Target Host, use placeholders * for any number of characters, ? for a single character",
+      "placeholder.sourceHost": "Enter Source Host name",
+      "placeholder.targetHost": "Enter Target Host name",
       "placeholder.protocol": "Protocol",
-      "placeholder.enterProfileName": "Enter profile name, use placeholders * for any number of characters, ? for a single character"
+      "placeholder.enterProfileName": "Enter Profile name, use placeholders * for any number of characters, ? for a single character"
     },
     "--------ADVANCE SEARCH END------------": ""
   },
