@@ -1,0 +1,75 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>inventory.button.upload</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="import()">
+  <div class="modal-body p-a min-ht-300">
+    <div class="row">
+      <div class="col-md-12 hide" [ngClass]="{'show': display}">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
+      </div>
+      <div class="col-md-12" *ngIf="uploader.queue.length === 0">
+          <div ng2FileDrop (onFileDrop)="onFileSelected($event)" [uploader]="uploader" class="drop-box-full"
+               [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)">
+            <div><i class="icon-upload-icon"></i></div>
+            <div translate>common.button.dragAndDropFileToUpload</div>
+          </div>
+          <div class="p-t-sm" [hidden]="uploader.queue.length>0">
+            <div class="upload-btn-wrapper">
+              <button type="button" class="btn btn-grey btn-sm" >
+                <span translate>common.button.chooseFileToUpload</span>
+              </button>
+              <input type="file" accept=".json" ng2FileSelect (onFileSelected)="onFileSelected($event)" [uploader]="uploader">
+            </div>
+          </div>
+      </div>
+      <div class="col-md-12" *ngIf="uploader.queue.length>0">
+        <div class="table-responsive import-set-table">
+          <table class="table table-hover table-bordered  ">
+            <thead>
+            <tr>
+              <th><span translate>common.label.name</span></th>
+              <th><span translate>common.label.size</span></th>
+              <th><span translate>common.label.progress</span></th>
+              <th><span translate>common.label.status</span></th>
+              <th *ngIf="uploader.queue[0].isError"><span translate>common.label.action</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of uploader.queue">
+              <td><strong>{{item.file.name }}</strong></td>
+              <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
+              <td nowrap>
+                <div class="progress m-b-0">
+                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                </div>
+              </td>
+              <td>
+                <span class="text-success" *ngIf="item.isSuccess"><i class="fa fa-check"></i></span>
+                <span class="text-warn" *ngIf="item.isCancel"><i class="fa fa-ban"></i></span>
+                <span class="text-danger" *ngIf="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
+              </td>
+              <td *ngIf="item.isError">
+                <a class="text-hover-color" (click)="item.remove();uploader.isUploading = false;"><i class="fa fa-remove"></i></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || uploader.isUploading || (required && !comments.comment)">
+      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="uploader.isUploading"></i>
+       <span translate>common.button.import</span>
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

@@ -294,8 +294,8 @@ export class SettingModalComponent implements OnInit {
     const self = this;
     let item = event['0'];
 
-    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
-    if (fileExt != 'JSON') {
+    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
+    if (!fileExt || fileExt.toUpperCase() != 'JSON') {
       let msg = '';
       this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
         msg = translatedValue;

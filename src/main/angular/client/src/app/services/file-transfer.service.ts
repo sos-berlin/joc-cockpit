@@ -144,7 +144,7 @@ export class FileTransferService {
     if (data.profiles && data.profiles.length > 0) {
       let profiles = [];
       data.profiles.forEach((item) => {
-        if(item.name || typeof item === "string") {
+        if (item.name || typeof item === "string") {
           profiles.push(item.name || item);
         }
       });
@@ -153,7 +153,7 @@ export class FileTransferService {
     if (data.sourceFiles && data.sourceFiles.length > 0) {
       let sourceFiles = [];
       data.sourceFiles.forEach((item) => {
-        if(item.name || typeof item === "string") {
+        if (item.name || typeof item === "string") {
           sourceFiles.push(item.name || item);
         }
       })
@@ -162,11 +162,14 @@ export class FileTransferService {
     if (data.targetFiles && data.targetFiles.length > 0) {
       let targetFiles = [];
       data.targetFiles.forEach((item) => {
-        if(item.name || typeof item === "string") {
+        if (item.name || typeof item === "string") {
           targetFiles.push(item.name || item);
         }
       })
       filter.targetFiles = targetFiles;
+    }
+    if (data.workflowNames && data.workflowNames.length > 0) {
+      filter.workflowNames = data.workflowNames;
     }
     if (data.sourceHost || data.sourceProtocol) {
       let hosts = [];

@@ -7,12 +7,14 @@ import {TranslateService} from '@ngx-translate/core';
 import {clone, isArray} from 'underscore';
 import {catchError, filter} from 'rxjs/operators';
 import {forkJoin, of, Subscription} from 'rxjs';
+import {saveAs} from 'file-saver';
 import {DataService} from '../data.service';
 import {CoreService} from '../../../services/core.service';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {AuthService} from '../../../components/guard';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import {UploadModalComponent} from "../upload/upload.component";
 
 // Role Actions
 @Component({
@@ -449,6 +451,10 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.paste();
       } else if (res === 'DELETE') {
         this.deleteList();
+      } else if (res === 'EXPORT_ROLE') {
+        this.exportRole();
+      } else if (res === 'IMPORT_ROLE') {
+        this.importRole();
       }
     });
     this.subscription3 = router.events
@@ -683,9 +689,9 @@ export class RolesComponent implements OnInit, OnDestroy {
         });
         modal.afterClose.subscribe(result => {
           if (result) {
-              if (result.isChecked) {
-                this.dataService.comments = result;
-              }
+            if (result.isChecked) {
+              this.dataService.comments = result;
+            }
             if (sessionStorage.identityServiceType === 'SHIRO') {
               delete this.userDetail.roles[role.roleName];
               this.saveInfo(result);
@@ -993,6 +999,87 @@ export class RolesComponent implements OnInit, OnDestroy {
     });
   }
 
+  private exportRole(): void {
+    const json = {};
+    const APIs = [];
+    this.object.mapOfCheckedId.forEach((value, key) => {
+      json[key] = {
+        controllers: []
+      }
+      value.controllers.forEach((controllerId) => {
+        json[key].controllers.push({
+          controllerId: controllerId,
+        })
+        APIs.push(this.coreService.post('iam/folders', {
+          identityServiceName: value.identityServiceName,
+          controllerId: controllerId,
+          roleName: key
+        }));
+        APIs.push(this.coreService.post('iam/permissions', {
+          identityServiceName: value.identityServiceName,
+          controllerId: controllerId,
+          roleName: key
+        }))
+      });
+    });
+    forkJoin(APIs).subscribe({
+      next: (results) => {
+        results.forEach((item) => {
+          console.log(item)
+          json[item.roleName].controllers.forEach((controller) => {
+            if (controller.controllerId == item.controllerId) {
+              if (item.folders) {
+                controller.folders = item.folders;
+              } else {
+                controller.permissions = item.permissions;
+              }
+            }
+          })
+          if (json[item.roleName].controllers.length === 0) {
+            json[item.roleName].controllers.push({
+              controllerId: item.controllerId,
+              folders: item.folders,
+              permissions: item.permissions
+            })
+          }
+        });
+        this.saveRoles(json);
+      }
+    });
+  }
+
+  private saveRoles(obj) {
+    const name = this.identityServiceName + '_roles.json';
+    const fileType = 'application/octet-stream';
+    const data = JSON.stringify(obj, undefined, 2);
+    const blob = new Blob([data], {type: fileType});
+    saveAs(blob, name);
+    this.reset();
+  }
+
+  private importRole() {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: UploadModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzComponentParams: {
+        identityServiceType: this.identityServiceType,
+        identityServiceName: this.identityServiceName,
+        display: this.preferences.auditLog,
+        isRole: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getList();
+      }
+    });
+  }
+
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.controllerRoles, event.previousIndex, event.currentIndex);
     let comments = {};
@@ -1051,7 +1138,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         operation: 'Paste',
         name: ''
       };
-      this.dataService.copiedObject.accounts.forEach((value, key) => {
+      this.dataService.copiedObject.roles.forEach((value, key) => {
         comments.name = comments.name + key + ', ';
       });
       const modal = this.modal.create({

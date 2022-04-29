@@ -1,7 +1,8 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {forkJoin, Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
+import {saveAs} from 'file-saver';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -10,6 +11,7 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {ShowPermissionComponent} from "../show-permission/show-permission.component";
+import {UploadModalComponent} from "../upload/upload.component";
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -408,6 +410,10 @@ export class AccountsComponent implements OnInit, OnDestroy {
         this.forcePasswordChange(null);
       } else if (res === 'PASTE_ACCOUNT') {
         this.paste();
+      } else if (res === 'EXPORT_USER') {
+        this.exportAccount();
+      } else if (res === 'IMPORT_USER') {
+        this.importAccount();
       }
     });
   }
@@ -493,7 +499,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   /* ---------------------------- Action ----------------------------------*/
 
-  showPermission(account): void{
+  showPermission(account): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ShowPermissionComponent,
@@ -930,6 +936,45 @@ export class AccountsComponent implements OnInit, OnDestroy {
         }
       });
     })
+  }
+
+  private exportAccount(): void {
+    const json = {
+      accounts: []
+    };
+    this.object.mapOfCheckedId.forEach((value, key) => {
+      delete value.identityServiceName;
+      json.accounts.push(value);
+    });
+
+    const name = this.identityServiceName + '_accounts.json';
+    const fileType = 'application/octet-stream';
+    const data = JSON.stringify(json, undefined, 2);
+    const blob = new Blob([data], {type: fileType});
+    saveAs(blob, name);
+    this.reset();
+  }
+
+  private importAccount(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: UploadModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzComponentParams: {
+        identityServiceType: this.identityServiceType,
+        identityServiceName: this.identityServiceName,
+        display: this.preferences.auditLog
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getList();
+      }
+    });
   }
 
   private reset(): void {
