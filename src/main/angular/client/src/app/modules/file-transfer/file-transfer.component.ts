@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
-import {isEmpty, extend, clone} from 'underscore';
+import {isEmpty, extend, clone, sortBy} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ActivatedRoute, Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -80,6 +80,7 @@ export class FileTransferSearchComponent implements OnInit {
   allhosts: any;
   sourceProtocol: any = [];
   targetProtocol: any = [];
+  workflowTree: any = [];
 
   stateOptions = [
     {status: 'SUCCESSFUL', text: 'successful', checked: false},
@@ -100,6 +101,7 @@ export class FileTransferSearchComponent implements OnInit {
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.allhosts = this.coreService.getProtocols();
+    this.getFolderTree();
     if (!this.filter.profiles) {
       this.filter.profiles = [];
     } else {
@@ -155,6 +157,105 @@ export class FileTransferSearchComponent implements OnInit {
         };
       });
     }
+  }
+
+  getFolderTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.schedulerIds.selected,
+      forInventory: true,
+      types: ['WORKFLOW']
+    }).subscribe((res) => {
+      this.workflowTree = this.coreService.prepareTree(res, false);
+      if (this.filter.workflowNames && this.filter.workflowNames.length > 0) {
+        const paths = [];
+        this.filter.workflowNames.forEach((path) => {
+          const path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
+          if (paths.indexOf(path1) === -1) {
+            paths.push(path1);
+          }
+        });
+        this.checkPaths(paths);
+      }
+    });
+  }
+
+  private checkPaths(paths) {
+    const self = this;
+    paths.forEach((path) => {
+      function traverseTree1(data) {
+        for (let i in data.children) {
+          if (data.children[i].path === path) {
+            self.loadWorkflowObjects(data.children[i], {
+              path,
+              objectTypes: ['WORKFLOW']
+            });
+            break;
+          }
+          if (data.children[i].children && data.children[i].children.length > 0) {
+            traverseTree1(data.children[i]);
+          }
+        }
+      }
+
+      if (this.workflowTree[0].path === path) {
+        self.loadWorkflowObjects(this.workflowTree[0], {
+          path,
+          objectTypes: ['WORKFLOW']
+        });
+      }
+      traverseTree1(this.workflowTree[0]);
+    });
+  }
+
+  loadWorkflow(node, $event): void {
+    if (!node || !node.origin) {
+      return;
+    }
+    if (!node.origin.type) {
+      if ($event) {
+        node.isExpanded = !node.isExpanded;
+        $event.stopPropagation();
+      }
+      let flag = true;
+      if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
+        flag = false;
+      }
+      if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
+        this.loadWorkflowObjects(node.origin, {
+          path: node.key,
+          objectTypes: ['WORKFLOW']
+        });
+      }
+    }
+  }
+
+  private loadWorkflowObjects(node, obj): void {
+    this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
+      let data = res.workflows;
+      data = sortBy(data, (i: any) => {
+        return i.name.toLowerCase();
+      });
+      for (let i = 0; i < data.length; i++) {
+        const path = obj.path + (obj.path === '/' ? '' : '/') + data[i].name;
+        data[i].title = path;
+        data[i].path = path;
+        data[i].type = 'WORKFLOW';
+        data[i].key = path;
+        data[i].isLeaf = true;
+      }
+      if (node.children && node.children.length > 0) {
+        data = data.concat(node.children);
+      }
+      if (node.isLeaf) {
+        node.expanded = true;
+      }
+      node.isLeaf = false;
+      node.children = data;
+      this.workflowTree = [...this.workflowTree];
+      if (this.filter.workflowNames) {
+        this.filter.workflowNames = [...this.filter.workflowNames];
+      }
+    });
   }
 
   addProfile(): void {

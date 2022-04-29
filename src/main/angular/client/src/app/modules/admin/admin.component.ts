@@ -184,6 +184,22 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('RESET_PROFILES');
   }
 
+  exportObject(): void {
+    if (this.route.match('/users/identity_service/account')) {
+      this.dataService.announceFunction('EXPORT_USER');
+    } else {
+      this.dataService.announceFunction('EXPORT_ROLE');
+    }
+  }
+
+  importObject(): void {
+    if (this.route.match('/users/identity_service/account')) {
+      this.dataService.announceFunction('IMPORT_USER');
+    }  else {
+      this.dataService.announceFunction('IMPORT_ROLE');
+    }
+  }
+
   receiveMessage($event): void {
     this.pageView = $event;
     this.dataService.announceFunction('CHANGE_VIEW');

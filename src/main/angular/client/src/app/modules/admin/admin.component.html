@@ -28,6 +28,14 @@
               </nz-dropdown-menu>
             </div>
             <!-- Sorting via Account Name Ends -->
+            <button *ngIf="isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="exportObject()">
+              <i class="fa fa-download"></i>&nbsp;
+              <span translate>inventory.button.export</span>
+            </button>
+            <button *ngIf="!isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="importObject()">
+              <i class="fa fa-upload"></i>&nbsp;
+              <span translate>inventory.button.import</span>
+            </button>
             <button *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.manageGeneralSetting</span>

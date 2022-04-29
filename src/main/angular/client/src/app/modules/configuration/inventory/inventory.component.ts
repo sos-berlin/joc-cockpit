@@ -29,6 +29,7 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../models/enums';
 
+
 declare const $: any;
 
 @Component({
@@ -1877,7 +1878,7 @@ export class RepositoryComponent implements OnInit {
     }
     if(this.nodes.length > 0) {
       recursive(this.nodes);
-    } else if(this.operation === 'delete' && !this.origin.object) {
+    } else if (this.operation === 'delete' && !this.origin.object) {
       obj.configurations.push({
         configuration: {
           path: this.path,
@@ -3019,7 +3020,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (!path) {
       this.isLoading = true;
     }
-
     this.coreService.post('tree', {
       forInventory: true,
       types: ['INVENTORY']
@@ -3073,7 +3073,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 type: this.objectType
               };
             }
-         
             this.recursivelyExpandTree();
           } else {
             this.tree = tree;
