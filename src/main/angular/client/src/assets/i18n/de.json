@@ -69,7 +69,7 @@
   "WAITINGFORRESOURCE": "wartend auf Ressource",
   "ALL_SUBAGENTS_ARE_COUPLED_AND_ENABLED": "Agenten gekoppelt und aktiv",
   "ONLY_SOME_SUBAGENTS_ARE_COUPLED_AND_ENABLED": "Agenten gekoppelt und aktiv",
-  "NO_SUBAGENTS_ARE_COUPLED_AND_ENABLED": "keine Agenten gekoppelt und aktiv",
+  "NO_SUBAGENTS_ARE_COUPLED_AND_ENABLED": "Agenten nicht gekoppelt und aktiv",
   "SUPPRESS": "Ausführung verhindern (Voreinstellung)",
   "IGNORE": "Nicht-Arbeitstag ignorieren",
   "PREVIOUSNONWORKINGDAY": "vor Nicht-Arbeitstag",

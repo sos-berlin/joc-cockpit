@@ -69,7 +69,7 @@
   "WAITINGFORRESOURCE": "waiting for resource",
   "ALL_SUBAGENTS_ARE_COUPLED_AND_ENABLED": "agents coupled and enabled",
   "ONLY_SOME_SUBAGENTS_ARE_COUPLED_AND_ENABLED": "agents coupled and enabled",
-  "NO_SUBAGENTS_ARE_COUPLED_AND_ENABLED": "no agents coupled and enabled",
+  "NO_SUBAGENTS_ARE_COUPLED_AND_ENABLED": "agents not coupled and enabled",
   "SUPPRESS": "suppress execution (default)",
   "IGNORE": "ignore non-working day",
   "PREVIOUSNONWORKINGDAY": "before non-working day",
