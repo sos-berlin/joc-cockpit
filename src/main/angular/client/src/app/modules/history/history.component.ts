@@ -70,7 +70,7 @@ export class OrderTemplateComponent {
 }
 
 @Component({
-  selector: 'app-ngbd-modal-content',
+  selector: 'app-filter-modal-content',
   templateUrl: './filter-dialog.html'
 })
 export class FilterModalComponent implements OnInit {

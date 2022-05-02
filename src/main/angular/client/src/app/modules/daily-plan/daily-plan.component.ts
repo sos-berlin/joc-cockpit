@@ -1010,6 +1010,7 @@ export class SearchComponent implements OnInit {
       node.isLeaf = false;
       node.children = data;
       this.workflowTree = [...this.workflowTree];
+      this.filter.workflowPaths = [...this.filter.workflowPaths];
     });
   }
 
@@ -2159,22 +2160,27 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         dateTo: this.coreService.getStringDate(lastDay)
       }
     };
-    this.coreService.post('daily_plan/submissions', obj).subscribe((result: any) => {
-      this.submissionHistoryItems = [];
-      this.submissionHistory = [];
-      if (result.submissionHistoryItems.length > 0) {
-        for (let i = 0; i < result.submissionHistoryItems.length; i++) {
-          result.submissionHistoryItems[i].startDate = new Date(result.submissionHistoryItems[i].dailyPlanDate).setHours(0, 0, 0, 0);
-          result.submissionHistoryItems[i].endDate = result.submissionHistoryItems[i].startDate;
-          this.submissionHistoryItems.push(result.submissionHistoryItems[i]);
-          if (this.selectedDate && this.selectedDate.getTime() === result.submissionHistoryItems[i].startDate) {
-            this.submissionHistory.push(result.submissionHistoryItems[i]);
+    this.coreService.post('daily_plan/submissions', obj).subscribe({
+      next: (result: any) => {
+        this.submissionHistoryItems = [];
+        this.submissionHistory = [];
+        this.isLoaded = true;
+        if (result.submissionHistoryItems.length > 0) {
+          for (let i = 0; i < result.submissionHistoryItems.length; i++) {
+            result.submissionHistoryItems[i].startDate = new Date(result.submissionHistoryItems[i].dailyPlanDate).setHours(0, 0, 0, 0);
+            result.submissionHistoryItems[i].endDate = result.submissionHistoryItems[i].startDate;
+            this.submissionHistoryItems.push(result.submissionHistoryItems[i]);
+            if (this.selectedDate && this.selectedDate.getTime() === result.submissionHistoryItems[i].startDate) {
+              this.submissionHistory.push(result.submissionHistoryItems[i]);
+            }
           }
         }
-      }
-      const calendar = $('#full-calendar').data('calendar');
-      if (calendar) {
-        calendar.setDataSource(this.submissionHistoryItems);
+        const calendar = $('#full-calendar').data('calendar');
+        if (calendar) {
+          calendar.setDataSource(this.submissionHistoryItems);
+        }
+      }, error: () => {
+        this.isLoaded = false;
       }
     });
   }
@@ -2566,7 +2572,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           if (args.eventSnapshots[j].message) {
             const d = new Date(args.eventSnapshots[j].message);
             if (d.getFullYear() == this.selectedYear && d.getMonth() == this.selectedMonth) {
-              this.load(this.selectedDate);
+              this.load(null);
             }
           }
           if (!args.eventSnapshots[j].message || (args.eventSnapshots[j].message === this.coreService.getStringDate(this.selectedDate))) {

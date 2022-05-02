@@ -5,6 +5,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
 import {CoreService} from "../../../services/core.service";
 import {AuthService} from "../../../components/guard";
+import {DataService} from "../data.service";
 
 @Component({
   selector: 'app-upload-modal-content',
@@ -13,6 +14,7 @@ import {AuthService} from "../../../components/guard";
 export class UploadModalComponent implements OnInit {
   @Input() display: any;
   @Input() isRole: any;
+  @Input() userDetail: any;
   @Input() identityServiceType: string;
   @Input() identityServiceName: string;
   uploader: FileUploader;
@@ -22,7 +24,7 @@ export class UploadModalComponent implements OnInit {
   roles = [];
   accounts = [];
 
-  constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
+  constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService, private dataService: DataService,
               public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
   }
 
@@ -128,37 +130,100 @@ export class UploadModalComponent implements OnInit {
     }
     if (this.isRole) {
       for (let role in this.roles) {
-        this.coreService.post('iam/role/store', {
-          roleName: role,
-          auditLog: auditLog,
-          identityServiceName: this.identityServiceName
-        }).subscribe({
-          next: () => {
-            this.getAndStorePermission(role, this.roles[role].controllers, auditLog);
-            setTimeout(() => {
-              this.activeModal.close('DONE');
-            }, 500);
+        if (this.identityServiceType === 'SHIRO') {
+          this.userDetail.roles[role] = {
+            permissions: {}
           }
-        });
-      }
-    } else {
-      this.accounts.forEach((account, index) => {
-        account.auditLog = auditLog;
-        account.identityServiceName = this.identityServiceName;
-        this.coreService.post('iam/account/store', account).subscribe({
-          next: () => {
-            if (index === this.accounts.length - 1) {
-              this.activeModal.close('DONE');
+          for (let x in this.roles[role].controllers) {
+            if (this.roles[role].controllers[x].controllerId == '') {
+              this.userDetail.roles[role].permissions.joc = this.roles[role].controllers[x].permissions;
+              if (this.roles[role].controllers[x].folders) {
+                if (!this.userDetail.roles[role].folders) {
+                  this.userDetail.roles[role].folders = {};
+                }
+                this.userDetail.roles[role].folders.joc = this.roles[role].controllers[x].folders;
+              }
+            } else {
+              this.userDetail.roles[role].permissions.controllers = {};
+              this.userDetail.roles[role].permissions.controllers[this.roles[role].controllers[x].controllerId] = this.roles[role].controllers[x].permissions;
+              if (this.roles[role].controllers[x].folders) {
+                if (!this.userDetail.roles[role].folders) {
+                  this.userDetail.roles[role].folders = {controllers: {}};
+                } else if (!this.userDetail.roles[role].folders.controllers) {
+                  this.userDetail.roles[role].folders.controllers = {};
+                }
+                this.userDetail.roles[role].folders.controllers[this.roles[role].controllers[x].controllerId] = this.roles[role].controllers[x].folders;
+              }
             }
           }
-        });
-      })
+        } else {
+          this.coreService.post('iam/role/store', {
+            roleName: role,
+            auditLog: auditLog,
+            identityServiceName: this.identityServiceName
+          }).subscribe({
+            next: () => {
+              this.getAndStorePermission(role, this.roles[role].controllers, auditLog);
+              setTimeout(() => {
+                this.activeModal.close('DONE');
+              }, 500);
+            }
+          });
+        }
+      }
+    } else {
+      if (this.identityServiceType === 'SHIRO') {
+        if (this.userDetail.accounts) {
+          let accounts = this.accounts;
+          this.userDetail.accounts.forEach(account => {
+            let flag = true;
+            for (let i in accounts) {
+              if (account.accountName == accounts[i].accountName) {
+                flag = false;
+                break;
+              }
+            }
+            if (flag) {
+              accounts.push(account);
+            }
+          });
+          this.userDetail.accounts = accounts;
+        }
+      } else {
+        this.accounts.forEach((account, index) => {
+          account.auditLog = auditLog;
+          account.identityServiceName = this.identityServiceName;
+          this.coreService.post('iam/account/store', account).subscribe({
+            next: () => {
+              if (index === this.accounts.length - 1) {
+                this.activeModal.close('DONE');
+              }
+            }
+          });
+        })
+      }
+    }
+
+    if (this.identityServiceType === 'SHIRO') {
+      const obj: any = {
+        accounts: this.userDetail.accounts,
+        roles: this.userDetail.roles,
+        main: this.userDetail.main,
+        identityServiceName: this.identityServiceName,
+        auditLog
+      };
+
+      this.coreService.post('authentication/auth/store', obj).subscribe(() => {
+        this.dataService.announceFunction('RELOAD');
+        this.activeModal.close('DONE');
+      });
+
     }
   }
 
-  private getAndStorePermission(role, controllers,  comments) {
+  private getAndStorePermission(role, controllers, comments) {
     controllers.forEach((controller) => {
-      if(controller.folders && controller.folders.length > 0) {
+      if (controller.folders && controller.folders.length > 0) {
         this.store('iam/folders/store', {
           roleName: role,
           controllerId: controller.controllerId,

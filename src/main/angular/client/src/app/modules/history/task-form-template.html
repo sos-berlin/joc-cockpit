@@ -32,12 +32,12 @@
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.from</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-                        [(ngModel)]="filter.fromDate" [nzFormat]="dateFormat" name="from"></nz-date-picker>		
+                        [(ngModel)]="filter.fromDate" [nzFormat]="dateFormat" name="from"></nz-date-picker>
 		    <div class="time-picker">
           <input timevalidator [disabled]="!filter.fromDate" type="text" #time="ngModel" class="form-control"
               name="fromTime" [(ngModel)]="filter.fromTime" (ngModelChange)="selectTime(filter.fromTime, true)" placeholder="HH:MM:SS">
           <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="filter.fromTime1" name="fromTimeIcon"></nz-time-picker>
-        </div>	
+        </div>
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'current'">
@@ -94,7 +94,7 @@
                 <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                 {{node.origin.name}}
                 <i *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
-                <i *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path, true);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
+                <i *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
               </div>
             </div>
           </ng-template>

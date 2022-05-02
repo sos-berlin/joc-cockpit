@@ -468,9 +468,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.identityServiceName = sessionStorage.identityServiceName;
     this.identityServiceType = sessionStorage.identityServiceType;
-    if (this.identityServiceType !== 'SHIRO') {
-      this.getList();
-    }
+    this.getList();
   }
 
   ngOnDestroy(): void {
@@ -493,11 +491,13 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   private getList(): void {
-    this.coreService.post('iam/roles', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
-      this.roles = res.roles;
-      this.controllerRoles = res.roles;
-      this.checkUrl(null, true);
-    })
+    if (this.identityServiceType !== 'SHIRO') {
+      this.coreService.post('iam/roles', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
+        this.roles = res.roles;
+        this.controllerRoles = res.roles;
+        this.checkUrl(null, true);
+      })
+    }
   }
 
   selectUser(account): void {
@@ -563,7 +563,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     if (comments.isChecked) {
       this.dataService.comments = comments;
     }
-    if (sessionStorage.identityServiceType === 'SHIRO') {
+    if (this.identityServiceType === 'SHIRO') {
       obj.main = this.userDetail.main;
     }
     this.coreService.post('authentication/auth/store', obj).subscribe(() => {
@@ -692,7 +692,7 @@ export class RolesComponent implements OnInit, OnDestroy {
             if (result.isChecked) {
               this.dataService.comments = result;
             }
-            if (sessionStorage.identityServiceType === 'SHIRO') {
+            if (this.identityServiceType === 'SHIRO') {
               delete this.userDetail.roles[role.roleName];
               this.saveInfo(result);
             } else {
@@ -717,7 +717,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         });
         modal.afterClose.subscribe(result => {
           if (result) {
-            if (sessionStorage.identityServiceType === 'SHIRO') {
+            if (this.identityServiceType === 'SHIRO') {
               delete this.userDetail.roles[role.roleName];
               this.saveInfo(this.dataService.comments);
             } else {
@@ -1006,46 +1006,73 @@ export class RolesComponent implements OnInit, OnDestroy {
       json[key] = {
         controllers: []
       }
-      value.controllers.forEach((controllerId) => {
-        json[key].controllers.push({
-          controllerId: controllerId,
-        })
-        APIs.push(this.coreService.post('iam/folders', {
-          identityServiceName: value.identityServiceName,
-          controllerId: controllerId,
-          roleName: key
-        }));
-        APIs.push(this.coreService.post('iam/permissions', {
-          identityServiceName: value.identityServiceName,
-          controllerId: controllerId,
-          roleName: key
-        }))
-      });
-    });
-    forkJoin(APIs).subscribe({
-      next: (results) => {
-        results.forEach((item) => {
-          console.log(item)
-          json[item.roleName].controllers.forEach((controller) => {
-            if (controller.controllerId == item.controllerId) {
-              if (item.folders) {
-                controller.folders = item.folders;
-              } else {
-                controller.permissions = item.permissions;
-              }
-            }
+      if (this.identityServiceType != 'SHIRO') {
+        value.controllers.forEach((controllerId) => {
+          json[key].controllers.push({
+            controllerId: controllerId,
           })
-          if (json[item.roleName].controllers.length === 0) {
-            json[item.roleName].controllers.push({
-              controllerId: item.controllerId,
-              folders: item.folders,
-              permissions: item.permissions
-            })
-          }
+          APIs.push(this.coreService.post('iam/folders', {
+            identityServiceName: value.identityServiceName,
+            controllerId: controllerId,
+            roleName: key
+          }));
+          APIs.push(this.coreService.post('iam/permissions', {
+            identityServiceName: value.identityServiceName,
+            controllerId: controllerId,
+            roleName: key
+          }))
         });
-        this.saveRoles(json);
+      } else {
+        let obj: any = {controllerId: ''};
+        if (value.folders && value.folders.joc) {
+          obj.folders = value.folders.joc;
+        }
+        if (value.permissions) {
+          obj.permissions = value.permissions.joc.concat(value.permissions.controllerDefaults);
+          json[key].controllers.push(obj);
+
+          if (value.permissions.controllers) {
+            for (let controller in value.permissions.controllers) {
+              let obj2: any = {
+                controllerId: controller,
+                permissions: value.permissions.controllers[controller]
+              };
+              if (value.folders && value.folders.controllers && value.folders.controllers[controller]) {
+                obj2.folders = value.folders.controllers[controller];
+              }
+              json[key].controllers.push(obj2);
+            }
+          }
+        }
       }
     });
+    if (APIs.length > 0) {
+      forkJoin(APIs).subscribe({
+        next: (results) => {
+          results.forEach((item) => {
+            json[item.roleName].controllers.forEach((controller) => {
+              if (controller.controllerId == item.controllerId) {
+                if (item.folders) {
+                  controller.folders = item.folders;
+                } else {
+                  controller.permissions = item.permissions;
+                }
+              }
+            })
+            if (json[item.roleName].controllers.length === 0) {
+              json[item.roleName].controllers.push({
+                controllerId: item.controllerId,
+                folders: item.folders,
+                permissions: item.permissions
+              })
+            }
+          });
+          this.saveRoles(json);
+        }
+      });
+    } else {
+      this.saveRoles(json);
+    }
   }
 
   private saveRoles(obj) {
@@ -1067,6 +1094,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
         display: this.preferences.auditLog,
+        userDetail: this.userDetail,
         isRole: true
       },
       nzFooter: null,
@@ -1076,6 +1104,9 @@ export class RolesComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.getList();
+        if (this.identityServiceType === 'SHIRO') {
+          this.createRoleArray(this.userDetail)
+        }
       }
     });
   }

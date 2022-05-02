@@ -93,10 +93,11 @@
           nzShowSearch
           [nzPlaceHolder]="'dailyPlan.placeholder.workflowPath' | translate"
           [(ngModel)]="filter.workflowNames"
+          (keypress)="onKeyPress($event)"
           (nzExpandChange)="loadWorkflow($event.node, null)"
         >
           <ng-template #nzTreeTemplate let-node>
-            <div class="node-wrapper w-93" (click)="loadWorkflow(node, $event);">
+            <div class="node-wrapper w-93" (click)="loadWorkflow(node, $event);" [hidden]="node.origin.notExist">
               <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
                 <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                 <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
