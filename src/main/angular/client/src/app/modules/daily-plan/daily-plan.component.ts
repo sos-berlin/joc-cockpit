@@ -1010,6 +1010,7 @@ export class SearchComponent implements OnInit {
       node.isLeaf = false;
       node.children = data;
       this.workflowTree = [...this.workflowTree];
+      this.filter.workflowPaths = [...this.filter.workflowPaths];
     });
   }
 

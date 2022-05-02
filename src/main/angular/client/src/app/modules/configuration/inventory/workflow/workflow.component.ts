@@ -4499,7 +4499,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 break;
               }
             }
+            if (!flag) {
+              if (edges[j].source && branchObj.instructions[branchObj.instructions.length - 1] && branchObj.instructions[branchObj.instructions.length - 1].id == edges[j].source.id) {
+                flag = true;
+                break;
+              }
+            }
           }
+
           if (flag) {
             const cell = list[i];
             list.splice(i, 1);
@@ -4555,6 +4562,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (obj.lastId == edges[j].source.getAttribute('targetId')) {
                 flag = true;
                 break;
+              }
+            }
+            if (!flag && edges[j].source) {
+              if (edge.getAttribute('label') === 'then' && data.then.instructions[data.then.instructions.length - 1]) {
+                if (data.then.instructions[data.then.instructions.length - 1].id == edges[j].source.id) {
+                  flag = true;
+                  break;
+                }
+              } else if (edge.getAttribute('label') === 'else' && data.else.instructions[data.else.instructions.length - 1]) {
+                if (data.else.instructions[data.else.instructions.length - 1].id == edges[j].source.id) {
+                  flag = true;
+                  break;
+                }
               }
             }
           }
@@ -4861,7 +4881,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (this.cell.value.tagName === 'Job') {
             shape = new mxLabel(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
             shape.image = originalShape.image;
-          } else if (this.cell.value.tagName === 'If' || this.cell.value.tagName === 'Cycle' || this.cell.value.tagName.match(/try/)) {
+          } else if (this.cell.value.tagName === 'If' || this.cell.value.tagName === 'Cycle' || this.cell.value.tagName === 'Try' || this.cell.value.tagName=== 'Retry') {
             shape = new mxRhombus(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
           } else {
             shape = new mxImageShape(originalShape.bounds, self.workflowService.getStyleOfSymbol(this.cell.value.tagName, originalShape.image), null, originalShape.stroke + 1);
@@ -5809,8 +5829,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       }
                     }
                   }
+                  const parent = cell.getParent() || graph.getDefaultParent();
+                  cells[0].setAttribute('parentId', parent.id)
                   if (self.workflowService.isInstructionCollapsible(cells[0].value.tagName)) {
-                    const parent = cell.getParent() || graph.getDefaultParent();
                     let v1, v2, label = '';
                     const attr = cell.value.attributes;
                     if (attr) {
@@ -6473,13 +6494,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function changeLabelOfConnection(cell, data): void {
       graph.getModel().beginUpdate();
       try {
-        const label = new mxCellAttributeChange(
-          cell, 'label',
-          data);
         const type = new mxCellAttributeChange(
           cell, 'type',
           data);
-        graph.getModel().execute(label);
         graph.getModel().execute(type);
       } finally {
         graph.getModel().endUpdate();
@@ -6498,40 +6515,27 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         graph.getModel().endUpdate();
       }
       if (!isChange) {
-        const label = _dropTarget.getAttribute('type') || _dropTarget.getAttribute('label');
-        if (_dropTarget.edge && _dropTarget.source && cell.getParent() && cell.getParent().id == '1') {
-          const parent = _dropTarget.source.getParent();
-          if (parent && parent.id != '1') {
-            cell.setAttribute('parentId', parent.id);
-          }
-        }
-        if (label && (label === 'join' || label === 'branch' || label === 'endIf'
-          || label === 'endRetry' || label === 'endCycle' || label === 'endTry' || label === 'endLock')) {
+        const label = _dropTarget.getAttribute('type');
+        if (label && (label === 'join' || label === 'branch' || label === 'endIf' || label === 'endRetry'
+          || label === 'endCycle' || label === 'endTry' || label === 'endLock')) {
           let _label1, _label2;
           if (label === 'join') {
             _label1 = 'join';
             _label2 = 'branch';
           } else if (label === 'branch') {
             _label1 = 'branch';
-            _label2 = 'branch';
           } else if (label === 'endIf') {
             _label1 = 'endIf';
-            _label2 = 'endIf';
           } else if (label === 'endRetry') {
             _label1 = 'endRetry';
-            _label2 = 'endRetry';
           } else if (label === 'endCycle') {
             _label1 = 'endCycle';
-            _label2 = 'endCycle';
           } else if (label === 'endLock') {
             _label1 = 'endLock';
-            _label2 = 'endLock';
           } else if (label === 'try') {
             _label1 = 'try';
-            _label2 = 'try';
           } else if (label === 'endTry') {
             _label1 = 'endTry';
-            _label2 = 'endTry';
           }
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target !== cell.id) {
@@ -6545,7 +6549,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   }
                 }
               } else if (self.workflowService.isInstructionCollapsible(cell.edges[i].target.value.tagName)) {
-                changeLabelOfConnection(cell.edges[i], _label2);
+                changeLabelOfConnection(cell.edges[i], _label2 || _label1);
               } else if (cell.edges[i].target.value.tagName === 'Catch') {
                 changeLabelOfConnection(cell.edges[i], 'try');
               }
@@ -6602,13 +6606,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 if (attrs[0].value && (attrs[0].value === 'then' || attrs[0].value === 'else')) {
                   graph.getModel().beginUpdate();
                   try {
-                    const label = new mxCellAttributeChange(
-                      cell.edges[i], 'label',
-                      '');
                     const type = new mxCellAttributeChange(
                       cell.edges[i], 'type',
                       '');
-                    graph.getModel().execute(label);
                     graph.getModel().execute(type);
                   } finally {
                     graph.getModel().endUpdate();
@@ -6622,13 +6622,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   if (cell.edges[i].target.value.tagName !== 'If' && cell.edges[i].source.value.tagName !== 'If' && cell.value.tagName !== 'If') {
                     graph.getModel().beginUpdate();
                     try {
-                      const label = new mxCellAttributeChange(
-                        cell.edges[i], 'label',
-                        '');
                       const type = new mxCellAttributeChange(
                         cell.edges[i], 'type',
                         '');
-                      graph.getModel().execute(label);
                       graph.getModel().execute(type);
                     } finally {
                       graph.getModel().endUpdate();

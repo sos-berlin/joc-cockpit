@@ -19,6 +19,7 @@ import {saveAs} from 'file-saver';
 import {catchError} from 'rxjs/operators';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import {ActivatedRoute} from "@angular/router";
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
@@ -27,7 +28,7 @@ import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../models/enums';
-import {ActivatedRoute} from "@angular/router";
+
 
 declare const $: any;
 
@@ -3072,7 +3073,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 type: this.objectType
               };
             }
-           
             this.recursivelyExpandTree();
           } else {
             this.tree = tree;

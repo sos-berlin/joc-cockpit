@@ -428,17 +428,17 @@ export class AccountsComponent implements OnInit, OnDestroy {
     this.userIdentityService = this.authService.currentUserIdentityService;
     this.identityServiceName = sessionStorage.identityServiceName;
     this.identityServiceType = sessionStorage.identityServiceType;
-    if (this.identityServiceType !== 'SHIRO') {
-      this.getList();
-    }
+    this.getList();
   }
 
   private getList(): void {
-    this.coreService.post('iam/accounts', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
-      this.accounts = res.accountItems;
-      this.loading = false;
-      this.searchInResult();
-    })
+    if (this.identityServiceType !== 'SHIRO') {
+      this.coreService.post('iam/accounts', {identityServiceName: this.identityServiceName}).subscribe((res: any) => {
+        this.accounts = res.accountItems;
+        this.loading = false;
+        this.searchInResult();
+      })
+    }
   }
 
   setUserData(res): void {
@@ -944,6 +944,10 @@ export class AccountsComponent implements OnInit, OnDestroy {
     };
     this.object.mapOfCheckedId.forEach((value, key) => {
       delete value.identityServiceName;
+      if (this.identityServiceType === 'SHIRO') {
+        delete value.identityServiceId;
+        delete value.password;
+      }
       json.accounts.push(value);
     });
 
@@ -964,7 +968,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         identityServiceType: this.identityServiceType,
         identityServiceName: this.identityServiceName,
-        display: this.preferences.auditLog
+        display: this.preferences.auditLog,
+        userDetail: this.userDetail
       },
       nzFooter: null,
       nzClosable: false,
@@ -973,6 +978,10 @@ export class AccountsComponent implements OnInit, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.getList();
+        if (this.identityServiceType === 'SHIRO') {
+          this.accounts = this.userDetail.accounts;
+          this.searchInResult();
+        }
       }
     });
   }

@@ -33,9 +33,9 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
-    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
-    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
       this.filter = {
         radio: 'planned',
@@ -167,43 +167,21 @@ export class FileTransferSearchComponent implements OnInit {
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, false);
       if (this.filter.workflowNames && this.filter.workflowNames.length > 0) {
-        const paths = [];
-        this.filter.workflowNames.forEach((path) => {
-          const path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
-          if (paths.indexOf(path1) === -1) {
-            paths.push(path1);
-          }
-        });
-        this.checkPaths(paths);
+        this.filter.workflowNames.forEach(name => {
+          const obj = {
+            name: name,
+            title: name,
+            key: name,
+            isSelected: true,
+            isLeaf: true,
+            type: 'WORKFLOW',
+            objectType: 'WORKFLOW',
+            notExist: true,
+            path: '/' + name
+          };
+          this.workflowTree[0].children.push(obj);
+        })
       }
-    });
-  }
-
-  private checkPaths(paths) {
-    const self = this;
-    paths.forEach((path) => {
-      function traverseTree1(data) {
-        for (let i in data.children) {
-          if (data.children[i].path === path) {
-            self.loadWorkflowObjects(data.children[i], {
-              path,
-              objectTypes: ['WORKFLOW']
-            });
-            break;
-          }
-          if (data.children[i].children && data.children[i].children.length > 0) {
-            traverseTree1(data.children[i]);
-          }
-        }
-      }
-
-      if (this.workflowTree[0].path === path) {
-        self.loadWorkflowObjects(this.workflowTree[0], {
-          path,
-          objectTypes: ['WORKFLOW']
-        });
-      }
-      traverseTree1(this.workflowTree[0]);
     });
   }
 
@@ -229,6 +207,33 @@ export class FileTransferSearchComponent implements OnInit {
     }
   }
 
+  onKeyPress($event): void {
+    if ($event.which === '13' || $event.which === 13 || $event.which === '32' || $event.which === 32) {
+      let val = $event.target.value;
+      if (!this.filter.workflowNames) {
+        this.filter.workflowNames = [];
+      }
+      if (this.filter.workflowNames.indexOf(val) === -1) {
+        const obj = {
+          name: val,
+          title: val,
+          key: val,
+          isSelected: true,
+          isLeaf: true,
+          type: 'WORKFLOW',
+          objectType: 'WORKFLOW',
+          notExist: true,
+          path: '/' + val
+        };
+        this.workflowTree[0].children.push(obj);
+        this.filter.workflowNames.push(val);
+        this.filter.workflowNames = [...this.filter.workflowNames];
+        this.workflowTree = [...this.workflowTree];
+      }
+      $event.preventDefault();
+    }
+  }
+
   private loadWorkflowObjects(node, obj): void {
     this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
       let data = res.workflows;
@@ -237,10 +242,10 @@ export class FileTransferSearchComponent implements OnInit {
       });
       for (let i = 0; i < data.length; i++) {
         const path = obj.path + (obj.path === '/' ? '' : '/') + data[i].name;
-        data[i].title = path;
+        data[i].title = data[i].name;
         data[i].path = path;
         data[i].type = 'WORKFLOW';
-        data[i].key = path;
+        data[i].key = data[i].name;
         data[i].isLeaf = true;
       }
       if (node.children && node.children.length > 0) {
@@ -362,7 +367,7 @@ export class FileTransferSearchComponent implements OnInit {
     if (obj.profiles && obj.profiles.length > 0) {
       obj.profiles = [];
       result.profiles.forEach((item) => {
-        if(item.name) {
+        if (item.name) {
           obj.profiles.push(item.name);
         }
       })
@@ -370,7 +375,7 @@ export class FileTransferSearchComponent implements OnInit {
     if (obj.sourceFiles && obj.sourceFiles.length > 0) {
       obj.sourceFiles = [];
       result.sourceFiles.forEach((item) => {
-        if(item.name) {
+        if (item.name) {
           obj.sourceFiles.push(item.name);
         }
       })
@@ -378,7 +383,7 @@ export class FileTransferSearchComponent implements OnInit {
     if (obj.targetFiles && obj.targetFiles.length > 0) {
       obj.targetFiles = [];
       result.targetFiles.forEach((item) => {
-        if(item.name) {
+        if (item.name) {
           obj.targetFiles.push(item.name);
         }
       })
@@ -810,7 +815,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         } else {
           this.filterList = res.configurations;
         }
-
         if (this.savedFilter.selected) {
           let flag = true;
           this.filterList.forEach((value) => {
@@ -885,23 +889,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
 
     this.load();
-  }
-
-  saveAsFilter(): void {
-    const configObj = {
-      controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'CUSTOMIZATION',
-      objectType: 'YADE',
-      id: 0,
-      name: this.searchFilter.name,
-      configurationItem: JSON.stringify(this.searchFilter)
-    };
-    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-      configObj.id = res.id;
-      this.searchFilter.name = '';
-      this.filterList.push(configObj);
-    });
   }
 
   /* ---- Customization Begin------ */

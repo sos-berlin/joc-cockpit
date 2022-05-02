@@ -1366,10 +1366,6 @@ export class AgentComponent implements OnInit, OnDestroy {
           });
         }
       } else if (cell.value.tagName !== 'Connection') {
-        let className;
-        if (cell.value.tagName === 'Agent') {
-          className = 'vertex-text agent ' + cell.id;
-        }
         str = cell.getAttribute('label');
       }
       return str;
