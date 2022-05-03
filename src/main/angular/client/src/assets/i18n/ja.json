@@ -784,12 +784,12 @@
       "label.targetProtocol": "ターゲットプロトコル",
       "placeholder.sourceProtocol": "ソースプロトコル",
       "placeholder.targetProtocol": "ターゲットプロトコル",
-      "placeholder.sourceFilePath": "Enter source file path",
-      "placeholder.targetFilePath": "Enter target file path",
+      "placeholder.sourceFilePath": "ソースファイルパスを入力",
+      "placeholder.targetFilePath": "ターゲットファイルパスを入力",
       "placeholder.sourceHost": "ソースホスト",
       "placeholder.targetHost": "ターゲットホスト",
       "placeholder.protocol": "プロトコル",
-      "placeholder.enterProfileName": "Enter profile name"
+      "placeholder.enterProfileName": "プロファイル名を入力"
     },
     "--------ADVANCE SEARCH END------------": ""
   },
