@@ -544,11 +544,11 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       if (obj.directoryExpr) {
         this.coreService.addSlashToString(obj, 'directoryExpr');
       }
-      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
+
       const request: any = {
         configuration: obj,
         valid: isValid,
-        path,
+        path: this.fileOrder.path,
         objectType: this.objectType
       };
 
@@ -559,7 +559,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       }
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.path === path && this.fileOrder.path === path) {
+          if (res.path === this.fileOrder.path) {
             this.lastModified = res.configurationDate;
             this.fileOrder.actual = JSON.stringify(this.fileOrder.configuration);
             this.data.valid = res.valid;

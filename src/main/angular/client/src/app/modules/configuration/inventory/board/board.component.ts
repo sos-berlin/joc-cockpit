@@ -541,11 +541,10 @@ export class BoardComponent implements OnChanges, OnDestroy {
         this.indexOfNextAdd = this.history.length - 1;
       }
 
-      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
       const request: any = {
         configuration: this.board.configuration,
         valid: !!(this.board.configuration.postOrderToNoticeId && this.board.configuration.expectOrderToNoticeId && this.board.configuration.endOfLife),
-        path,
+        path: this.board.path,
         objectType: this.objectType
       };
 
@@ -556,7 +555,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       }
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.path === path && this.board.path === path) {
+          if (res.path === this.board.path) {
             this.lastModified = res.configurationDate;
             this.board.actual = JSON.stringify(this.board.configuration);
             this.board.deployed = false;

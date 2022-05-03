@@ -1584,10 +1584,10 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.history.push(JSON.stringify(this.calendar.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
-      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
+
       const request: any = {
         configuration: obj,
-        path,
+        path: this.calendar.path,
         valid: !!obj.includes,
         objectType: obj.type
       };
@@ -1599,7 +1599,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       }
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.path === path && this.calendar.path === path) {
+          if (res.path === this.calendar.path) {
             this.lastModified = res.configurationDate;
             this.calendar.actual = JSON.stringify(this.calendar.configuration);
             this.calendar.valid = res.valid;
