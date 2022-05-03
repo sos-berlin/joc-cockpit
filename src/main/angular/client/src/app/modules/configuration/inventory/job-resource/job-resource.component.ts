@@ -537,11 +537,10 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.indexOfNextAdd = this.history.length - 1;
       }
 
-      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
       const request: any = {
         configuration: obj,
         valid: (obj.env && obj.env.length > 0 || obj.arguments && obj.arguments.length > 0),
-        path,
+        path: this.jobResource.path,
         objectType: this.objectType
       };
 
@@ -552,7 +551,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
       }
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.path === path && this.jobResource.path === path) {
+          if (res.path === this.jobResource.path) {
             this.lastModified = res.configurationDate;
             this.jobResource.actual = JSON.stringify(this.jobResource.configuration);
             this.jobResource.valid = res.valid;

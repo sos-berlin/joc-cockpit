@@ -160,7 +160,7 @@ export class FacetEditorComponent implements OnInit {
     try {
       new RegExp(data.facet);
     } catch (e) {
-      console.log(e)
+      console.error(e)
       data.invalid = true;
     }
   }
@@ -2422,7 +2422,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
-  // Declare Map object to store fork and join Ids
+  // Declare Map object to store closeable instructions Ids
   nodeMap = new Map();
   droppedCell: any;
   movedCell: any;
@@ -4171,8 +4171,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private updateWorkflow(graph): void {
     const scrollValue: any = {};
     const element = document.getElementById('graph');
-    scrollValue.scrollTop = element.scrollTop;
-    scrollValue.scrollLeft = element.scrollLeft;
+    if (element) {
+      scrollValue.scrollTop = element.scrollTop;
+      scrollValue.scrollLeft = element.scrollLeft;
+    }
     scrollValue.scale = graph.getView().getScale();
     graph.getModel().beginUpdate();
     try {
@@ -4188,12 +4190,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
 
     const _element = document.getElementById('graph');
-    _element.scrollTop = scrollValue.scrollTop;
-    _element.scrollLeft = scrollValue.scrollLeft;
+    if (element) {
+      _element.scrollTop = scrollValue.scrollTop;
+      _element.scrollLeft = scrollValue.scrollLeft;
+    }
     if (scrollValue.scale && scrollValue.scale != 1) {
       graph.getView().setScale(scrollValue.scale);
     }
-
   }
 
   /**
@@ -4699,6 +4702,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const graph = editor.graph;
     let result: string;
     let dropTarget;
+    let parentOfEdge;
     let movedTarget;
     let selectedCellsObj;
     let isVertexDrop = false;
@@ -4741,7 +4745,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         mxGraphHandler.prototype.mouseMove = function (sender, me) {
           if (!me.isConsumed() && graph.isMouseDown && this.cell != null &&
             this.first != null && this.bounds != null && !this.suspended) {
-            // Stops moving if a multi touch event is received
+            if (!graph.getSelectionCell()) {
+              return;
+            }
+            // Stops moving if a multitouch event is received
             if (mxEvent.isMultiTouchEvent(me.getEvent())) {
               this.reset();
               return;
@@ -4779,9 +4786,27 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 this.target = null;
               }
               if (self.droppedCell && self.droppedCell.target) {
+                if (target && target.value && target.value.tagName == 'Fork') {
+                  if (self.droppedCell.cell && self.droppedCell.cell.value) {
+                    const edges = graph.getIncomingEdges(self.droppedCell.cell);
+                    let isFound = false;
+                    for (let i in edges) {
+                      if (edges[i].source && edges[i].source.id === target.id) {
+                        isFound = true;
+                        break;
+                      }
+                    }
+                    if (!isFound) {
+                      highlight = true;
+                    } else{
+                      self.droppedCell = null;
+                      highlight = false;
+                    }
+                  }
+                }
                 if (!target && !cell) {
                   self.droppedCell = null;
-                } else if (!self.droppedCell.type) {
+                } else if (self.droppedCell && !self.droppedCell.type) {
                   if (target && cell && target.id !== cell.id) {
                     self.droppedCell.target = cell.id;
                   }
@@ -4881,7 +4906,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (this.cell.value.tagName === 'Job') {
             shape = new mxLabel(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
             shape.image = originalShape.image;
-          } else if (this.cell.value.tagName === 'If' || this.cell.value.tagName === 'Cycle' || this.cell.value.tagName === 'Try' || this.cell.value.tagName=== 'Retry') {
+          } else if (this.cell.value.tagName === 'If' || this.cell.value.tagName === 'Cycle' || this.cell.value.tagName === 'Try' || this.cell.value.tagName === 'Retry') {
             shape = new mxRhombus(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
           } else {
             shape = new mxImageShape(originalShape.bounds, self.workflowService.getStyleOfSymbol(this.cell.value.tagName, originalShape.image), null, originalShape.stroke + 1);
@@ -5095,7 +5120,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               tmp = null;
             }
             if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
-
               if (tmp != this.currentState) {
                 if (this.currentState != null) {
                   this.dragLeave(me.getEvent(), this.currentState);
@@ -5128,7 +5152,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               self.movedCell = null;
               if (self.droppedCell && me.getCell()) {
                 let _result = 'valid';
-                if (!self.droppedCell.target.target) {
+                if (self.droppedCell.target && !self.droppedCell.target.target) {
                   const targetCell = graph.getModel().getCell(self.droppedCell.target);
                   if (targetCell.getParent().id === self.droppedCell.cell.id) {
                     _result = 'inValid';
@@ -5137,6 +5161,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   }
                 }
                 if (_result !== 'inValid') {
+                  if (self.droppedCell.cell) {
+                    const incomingEdge = graph.getIncomingEdges(self.droppedCell.cell);
+                    let flag = true;
+                    for (let i in incomingEdge) {
+                      if (self.droppedCell.target === incomingEdge[i].source.id) {
+                        flag = false;
+                        break;
+                      }
+                    }
+                    if (!flag) {
+                      return;
+                    }
+                  }
                   rearrangeCell(self.droppedCell);
                 }
                 self.droppedCell = null;
@@ -5377,7 +5414,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               x += this.previewOffset.x;
               y += this.previewOffset.y;
             }
-
             this.previewElement.style.left = Math.round(x) + 'px';
             this.previewElement.style.top = Math.round(y) + 'px';
             this.previewElement.style.visibility = 'visible';
@@ -5389,6 +5425,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
          * Check the drop target on drop event
          */
         mxDragSource.prototype.drop = function (_graph, evt, drpTargt, x, y) {
+          parentOfEdge = null;
           dropTarget = null;
           movedTarget = null;
           selectedCellsObj = null;
@@ -5579,10 +5616,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     return;
                   }
                 }
+                parentOfEdge = drpTargt.getParent();
                 flag = true;
               }
               setTimeout(() => {
                 self.storeJSON();
+                parentOfEdge = null;
               }, 10);
             } else {
               movedTarget = drpTargt;
@@ -5744,23 +5783,25 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           vertex.setGeometry(geo);
 
           if (parent == null) {
-            parent = this.graph.getDefaultParent();
+            if (parentOfEdge) {
+              parent = parentOfEdge;
+            } else {
+              parent = this.graph.getDefaultParent();
+            }
           }
-
           this.cycleAttribute(vertex);
           this.fireEvent(new mxEventObject(mxEvent.BEFORE_ADD_VERTEX,
             'vertex', vertex, 'parent', parent));
-
           model.beginUpdate();
           try {
             vertex = this.graph.addCell(vertex, parent);
 
             if (vertex != null) {
               this.graph.constrainChild(vertex);
-
               this.fireEvent(new mxEventObject(mxEvent.ADD_VERTEX, 'vertex', vertex));
             }
           } finally {
+            parentOfEdge = null;
             model.endUpdate();
           }
           if (vertex != null) {
@@ -7927,7 +7968,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         label = 'try';
       } else if (dropTargetName === 'Catch') {
         label = 'catch';
-        // cell.setParent(_dropTarget);
       } else if (dropTargetName === 'Fork') {
         label = '$TYPE$' + 'branch' + (getBranchLabel(_dropTarget) + 1);
       }
@@ -9341,7 +9381,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       data = noValidate;
     }
     this.checkJobInstruction(data);
-    if (this.workflow.actual && !isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
+    if (this.workflow.path && !isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
       this.isStore = true;
       this.storeData(data);
     }
@@ -9473,10 +9513,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (!this.workflow.path) {
       return;
     }
-    const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
+
     const request: any = {
       configuration: newObj,
-      path,
+      path: this.workflow.path,
       valid: this.workflow.valid,
       objectType: this.objectType
     };
@@ -9486,12 +9526,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         request.auditLog = {comment: translatedValue};
       });
     }
-
     this.coreService.post('inventory/store', request).subscribe({
       next: (res: any) => {
         this.isStore = false;
-
-        if (res.path === path && this.workflow.path === path) {
+        if (res.path === this.workflow.path) {
           this.lastModified = res.configurationDate;
           this.workflow.actual = JSON.stringify(data);
           this.workflow.deployed = false;

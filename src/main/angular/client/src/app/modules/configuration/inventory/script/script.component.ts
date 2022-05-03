@@ -317,11 +317,10 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         this.indexOfNextAdd = this.history.length - 1;
       }
 
-      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
       const request: any = {
         configuration: this.script.configuration,
         valid: !this.script.configuration.script,
-        path,
+        path: this.script.path,
         objectType: this.objectType
       };
 
@@ -333,7 +332,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
 
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.path === path && this.script.path === path) {
+          if (res.path === this.script.path) {
             this.lastModified = res.configurationDate;
             this.script.actual = JSON.stringify(this.script.configuration);
             this.script.valid = res.valid;

@@ -729,11 +729,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           this.history.push(JSON.stringify(this.schedule.configuration));
           this.indexOfNextAdd = this.history.length - 1;
         }
-        const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
+
         const request: any = {
           configuration: obj,
           valid: isValid,
-          path,
+          path: this.schedule.path,
           objectType: this.objectType
         };
 
@@ -744,7 +744,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
         this.coreService.post('inventory/store', request).subscribe({
           next: (res: any) => {
-            if (res.path === path && this.schedule.path === path) {
+            if (res.path === this.schedule.path) {
               this.lastModified = res.configurationDate;
               this.schedule.actual = JSON.stringify(obj);
               this.schedule.valid = res.valid;
@@ -762,9 +762,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private loadWorkflowList(path): void {
-    const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
-    if (node && node.origin) {
-      this.loadData(node, 'WORKFLOW', null, true);
+    if (this.treeCtrl) {
+      const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
+      if (node && node.origin) {
+        this.loadData(node, 'WORKFLOW', null, true);
+      }
     }
   }
 
@@ -779,7 +781,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       path: name,
       objectType: InventoryObject.WORKFLOW
     }).subscribe((conf: any) => {
-      if (this.schedule.configuration.workflowNames.length > 1) {
+      if (this.schedule.configuration && this.schedule.configuration.workflowNames.length > 1) {
         let msg;
         if (conf.configuration.orderPreparation) {
           msg = 'inventory.message.workflowsWithoutVariables';
@@ -795,7 +797,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
       this.workflow = conf.configuration;
-      if (flag) {
+      if (flag && this.schedule.configuration) {
         this.schedule.configuration.variableSets = [];
       }
       this.updateVariableList();

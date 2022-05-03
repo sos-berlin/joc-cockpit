@@ -350,11 +350,10 @@ export class LockComponent implements OnChanges, OnDestroy {
         this.indexOfNextAdd = this.history.length - 1;
       }
 
-      const path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
       const request: any = {
         configuration: this.lock.configuration,
         valid: true,
-        path,
+        path: this.lock.path,
         objectType: this.objectType
       };
 
@@ -365,7 +364,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       }
       this.coreService.post('inventory/store', request).subscribe({
         next: (res: any) => {
-          if (res.path === path && this.lock.path === path) {
+          if (res.path === this.lock.path) {
             this.lastModified = res.configurationDate;
             this.lock.actual = JSON.stringify(this.lock.configuration);
             this.data.valid = res.valid;
