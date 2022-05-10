@@ -1459,6 +1459,9 @@ export class WorkflowService {
         } else {
           str = str + data.orderId + '</div>';
         }
+        if (data.question) {
+          str = str + '<div>Prompt: ' + data.question + '</div>';
+        }
         if (data.scheduledFor) {
           if (!data.scheduledNever) {
             str = str + ' <span class="text-xs" >' + this.stringDatePipe.transform(data.scheduledFor) + '</span>';

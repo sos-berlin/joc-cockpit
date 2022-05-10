@@ -333,6 +333,14 @@
     "label.dateRange": "Plage de dates",
     "label.to": "au",
     "label.from": "du",
+    "label.startDateRange": "Start Date Range",
+    "label.startTo": "Start To",
+    "label.startFrom": "Start From",
+    "label.endDateRange": "End Date Range",
+    "label.endTo": "End To",
+    "label.endFrom": "End From",
+    "label.processStarted": "Process Started",
+    "label.processCompleted": "Process Completed",
     "label.specificDate": "Date spécifique",
     "label.relativeDate": "Date relative",
     "label.relativeTime": "Heure relative",
@@ -907,6 +915,7 @@
     "label.welcome": "Bienvenue",
     "label.allRightReserved": "Tous droits réservés",
     "label.licenseType": "Type de Licence",
+    "label.licenseValidity": "License Validity",
     "label.commercialLicense": "Licence Commerciale",
     "label.openSourceLicense": "Licence Open Source",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
@@ -1431,6 +1440,10 @@
         "updateSuccessfully": "{{count}} objets mis à jour avec succès."
       }
     }
+  },
+  "license": {
+    "firstWarning": "The JS7 license expires on {{date}}. Get in contact with %Sales Team% for license renewal.",
+    "secondWarning": "The JS7 license expired on {{date}}. Cluster instances of JOC Cockpit, Controller and Agents are out of service."
   },
   "log": {
     "--------COMMENT BOX BEGIN------------": "Client Logging and Log window",

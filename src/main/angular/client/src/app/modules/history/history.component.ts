@@ -103,6 +103,12 @@ export class FilterModalComponent implements OnInit {
       this.filter.radio = 'planned';
       this.name = clone(this.filter.name);
     }
+    if (this.type === 'ORDER' || this.type === 'TASK') {
+      this.filter.radio1 = 'planned';
+      if (this.new) {
+        this.filter.processCompleted = 'today';
+      }
+    }
   }
 
   cancel(obj): void {
@@ -233,15 +239,26 @@ export class OrderSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
+    let endFromDate: any;
+    let endToDate: any;
     const obj: any = this.coreService.clone(result);
     delete obj.shared;
     delete obj.radio;
+    delete obj.radio1;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
       }
       if (result.to1) {
         toDate = this.coreService.parseProcessExecuted(result.to1);
+      }
+    }
+    if (result.radio1 != 'current') {
+      if (result.endFrom1) {
+        endFromDate = this.coreService.parseProcessExecuted(result.endFrom1);
+      }
+      if (result.endTo1) {
+        endToDate = this.coreService.parseProcessExecuted(result.endTo1);
       }
     }
 
@@ -254,6 +271,17 @@ export class OrderSearchComponent implements OnInit {
       obj.to1 = toDate;
     } else {
       obj.to1 = '0d';
+    }
+
+    if (endFromDate) {
+      obj.endFrom1 = endFromDate;
+    } else {
+      obj.endFrom1 = '0d';
+    }
+    if (endToDate) {
+      obj.endTo1 = endToDate;
+    } else {
+      obj.endTo1 = '0d';
     }
 
     configObj.configurationItem = JSON.stringify(obj);
@@ -426,9 +454,12 @@ export class TaskSearchComponent implements OnInit {
     };
     let fromDate: any;
     let toDate: any;
+    let endFromDate: any;
+    let endToDate: any;
     const obj: any = this.coreService.clone(result);
     delete obj.shared;
     delete obj.radio;
+    delete obj.radio1;
     if (result.radio != 'current') {
       if (result.from1) {
         fromDate = this.coreService.parseProcessExecuted(result.from1);
@@ -437,6 +468,15 @@ export class TaskSearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
+    if (result.radio1 != 'current') {
+      if (result.endFrom1) {
+        endFromDate = this.coreService.parseProcessExecuted(result.endFrom1);
+      }
+      if (result.endTo1) {
+        endToDate = this.coreService.parseProcessExecuted(result.endTo1);
+      }
+    }
+
     if (fromDate) {
       obj.from1 = fromDate;
     } else {
@@ -447,6 +487,18 @@ export class TaskSearchComponent implements OnInit {
     } else {
       obj.to1 = '0d';
     }
+
+    if (endFromDate) {
+      obj.endFrom1 = endFromDate;
+    } else {
+      obj.endFrom1 = '0d';
+    }
+    if (endToDate) {
+      obj.endTo1 = endToDate;
+    } else {
+      obj.endTo1 = '0d';
+    }
+
     configObj.configurationItem = JSON.stringify(obj);
     this.coreService.post('configuration/save', configObj).subscribe({
       next: (res: any) => {
@@ -1657,6 +1709,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.dateTo = new Date(obj.toDate);
         }
       }
+      if (obj.radio1 === 'planned') {
+        filter = this.coreService.parseProcessExecutedRegex(obj.processCompleted, filter, true);
+      } else {
+        if (obj.endFromDate) {
+          this.coreService.getDateAndTime(obj);
+          filter.endDateFrom = new Date(obj.endFromDate);
+        }
+        if (obj.endToDate) {
+          this.coreService.getDateAndTime(obj, 'to');
+          filter.endDateTo = new Date(obj.endToDate);
+        }
+      }
 
       if (obj.orderId) {
         filter.orderId = obj.orderId;
@@ -1711,7 +1775,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
           filter.dateTo = new Date(obj.toDate);
         }
       }
-
+      if (obj.radio1 === 'planned') {
+        filter = this.coreService.parseProcessExecutedRegex(obj.processCompleted, filter, true);
+      } else {
+        if (obj.endFromDate) {
+          this.coreService.getDateAndTime(obj);
+          filter.endDateFrom = new Date(obj.endFromDate);
+        }
+        if (obj.endToDate) {
+          this.coreService.getDateAndTime(obj, 'to');
+          filter.endDateTo = new Date(obj.endToDate);
+        }
+      }
       if (obj.jobName) {
         filter.jobName = obj.jobName;
       }
@@ -1857,7 +1932,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       fromDate: new Date(),
       fromTime: '00:00:00',
       toDate: new Date(),
-      toTime: '23:59:59'
+      toTime: '23:59:59',
+      radio1: 'current',
+      processCompleted: 'today',
+      endFromDate: new Date(),
+      endFromTime: '00:00:00',
+      endToDate: new Date(),
+      endToTime: '23:59:59'
     };
 
     this.jobSearch = {
@@ -1868,7 +1949,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       fromDate: new Date(),
       fromTime: '00:00:00',
       toDate: new Date(),
-      toTime: '23:59:59'
+      toTime: '23:59:59',
+      radio1: 'current',
+      processCompleted: 'today',
+      endFromDate: new Date(),
+      endFromTime: '00:00:00',
+      endToDate: new Date(),
+      endToTime: '23:59:59'
     };
 
     this.yadeSearch = {

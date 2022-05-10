@@ -38,6 +38,7 @@ declare const mxUtils;
 declare const mxEvent;
 declare const mxClient;
 declare const mxEdgeHandler;
+declare const mxRectangleShape;
 declare const mxAutoSaveManager;
 declare const mxGraphHandler;
 declare const mxCellAttributeChange;
@@ -2425,7 +2426,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   // Declare Map object to store closeable instructions Ids
   nodeMap = new Map();
   droppedCell: any;
-  movedCell: any;
+  movedCells: any = [];
   isCellDragging = false;
   display = false;
   propertyPanelWidth: number;
@@ -2460,6 +2461,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
+  keyHandler: any;
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
@@ -2577,6 +2579,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (this.editor) {
         this.editor.destroy();
         mxOutline.prototype.destroy();
+        this.keyHandler.destroy();
         this.editor = null;
         $('.mxTooltip').remove();
       }
@@ -4745,13 +4748,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         mxGraphHandler.prototype.mouseMove = function (sender, me) {
           if (!me.isConsumed() && graph.isMouseDown && this.cell != null &&
             this.first != null && this.bounds != null && !this.suspended) {
-            if (!graph.getSelectionCell()) {
-              return;
-            }
             // Stops moving if a multitouch event is received
             if (mxEvent.isMultiTouchEvent(me.getEvent())) {
               this.reset();
               return;
+            }
+            if (!graph.getSelectionCell()) {
+              let cell = me.getCell();
+              if (cell && !self.workflowService.checkClosingCell(cell.value.tagName) && cell.value.tagName !== 'Process') {
+                graph.setSelectionCell(cell)
+              } else {
+                return;
+              }
             }
             let delta = this.getDelta(me);
             let tol = graph.tolerance;
@@ -4762,21 +4770,33 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   mxConstants.DROP_TARGET_COLOR, 3);
               }
 
-              let clone = graph.isCloneEvent(me.getEvent()) && graph.isCellsCloneable() && this.isCloneEnabled();
               let gridEnabled = graph.isGridEnabledEvent(me.getEvent());
               let cell = me.getCell();
               let hideGuide = true;
               let target = null;
-              this.cloning = clone;
+              this.cloning = false;
 
               if (graph.isDropEnabled() && this.highlightEnabled) {
                 // Contains a call to getCellAt to find the cell under the mouse
-                target = graph.getDropTarget(this.cells, me.getEvent(), cell, clone);
+                target = graph.getDropTarget(this.cells, me.getEvent(), cell, false);
+              }
+
+              if (!target && cell) {
+                let flag = true;
+                for (let i in this.cells) {
+                  if (this.cells[i].id == cell.id) {
+                    flag = false;
+                    break;
+                  }
+                }
+                if (flag) {
+                  target = cell;
+                }
               }
 
               let state = graph.getView().getState(target);
               let highlight = false;
-              if (state != null && (clone || this.isValidDropTarget(target, me) || (target && target.value.tagName === 'Try'))) {
+              if (state != null && (this.isValidDropTarget(target, me) || (target && target.value.tagName === 'Try'))) {
                 if (this.target != target) {
                   this.target = target;
                   this.setHighlightColor(mxConstants.DROP_TARGET_COLOR);
@@ -4787,8 +4807,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
               if (self.droppedCell && self.droppedCell.target) {
                 if (target && target.value && target.value.tagName == 'Fork') {
-                  if (self.droppedCell.cell && self.droppedCell.cell.value) {
-                    const edges = graph.getIncomingEdges(self.droppedCell.cell);
+                  if (self.droppedCell.cells && self.droppedCell.cells[0].value) {
+                    const edges = graph.getIncomingEdges(self.droppedCell.cells[0]);
                     let isFound = false;
                     for (let i in edges) {
                       if (edges[i].source && edges[i].source.id === target.id) {
@@ -4798,7 +4818,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     }
                     if (!isFound) {
                       highlight = true;
-                    } else{
+                    } else {
                       self.droppedCell = null;
                       highlight = false;
                     }
@@ -4808,7 +4828,30 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   self.droppedCell = null;
                 } else if (self.droppedCell && !self.droppedCell.type) {
                   if (target && cell && target.id !== cell.id) {
-                    self.droppedCell.target = cell.id;
+                    if (cell.value.tagName === 'Connection') {
+                      let sourceId = cell.source.id;
+                      let targetId = cell.target.id;
+                      let isOutside = false;
+                      if (self.workflowService.checkClosingCell(cell.source.value.tagName)) {
+                        sourceId = cell.source.value.getAttribute('targetId');
+                        isOutside = true;
+                      } else if (cell.source.value.tagName === 'Process' && cell.source.getAttribute('title') === 'start') {
+                        sourceId = 'start';
+                      }
+                      if (self.workflowService.checkClosingCell(cell.target.value.tagName)) {
+                        targetId = cell.target.value.getAttribute('targetId');
+                      } else if (cell.target.value.tagName === 'Process' && cell.target.getAttribute('title') === 'start') {
+                        targetId = 'start';
+                      }
+                      self.droppedCell = {
+                        target: {source: sourceId, target: targetId},
+                        cells: self.movedCells,
+                        type: cell.value.getAttribute('type'),
+                        isOutside
+                      };
+                    } else {
+                      self.droppedCell.target = cell.id;
+                    }
                   }
                 }
                 if (this.cells.length > 0 && cell && this.cells[0].id != cell.id) {
@@ -4817,7 +4860,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   }
                 }
               }
-
               if (state != null && highlight && state.cell) {
                 if (state.cell.value.tagName === 'Connection' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName) || state.cell.value.tagName === 'Catch') {
                   if (state.cell.value.tagName !== 'Connection') {
@@ -4839,7 +4881,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
 
               if (this.guide != null && this.useGuidesForEvent(me)) {
-                delta = this.guide.move(this.bounds, delta, gridEnabled, clone);
+                delta = this.guide.move(this.bounds, delta, gridEnabled, false);
                 hideGuide = false;
               } else {
                 delta = this.graph.snapDelta(delta, this.bounds, !gridEnabled, false, false);
@@ -4895,35 +4937,52 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
          */
         mxGraphHandler.prototype.createPreviewShape = function (bounds) {
           let shape;
-          const selectionCell = graph.getSelectionCell();
-          if (selectionCell && selectionCell.id !== this.cell.id) {
-            this.cell = selectionCell;
-            this.cells = [this.cell];
-          }
-          self.movedCell = this.cell;
-          const originalShape = graph.getView().getState(this.cell).shape;
-          this.pBounds = originalShape.bounds;
-          if (this.cell.value.tagName === 'Job') {
-            shape = new mxLabel(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
-            shape.image = originalShape.image;
-          } else if (this.cell.value.tagName === 'If' || this.cell.value.tagName === 'Cycle' || this.cell.value.tagName === 'Try' || this.cell.value.tagName === 'Retry') {
-            shape = new mxRhombus(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
+          this.cells = graph.getSelectionCells();
+          self.movedCells = this.cells;
+          if ((this.cells.length == 2 && !self.workflowService.checkClosingCell(this.cells[0].value.tagName) && !self.workflowService.checkClosingCell(this.cells[1].value.tagName)) ||
+            (this.cells.length > 2)) {
+            shape = new mxRectangleShape(bounds, null, this.previewColor);
+            if (this.htmlPreview) {
+              shape.dialect = mxConstants.DIALECT_STRICTHTML;
+              shape.init(this.graph.container);
+            } else {
+              shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
+                mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+              shape.init(this.graph.getView().getOverlayPane());
+              shape.pointerEvents = false;
+
+              // Workaround for artifacts on iOS
+              if (mxClient.IS_IOS) {
+                shape.getSvgScreenOffset = function () {
+                  return 0;
+                };
+              }
+            }
           } else {
-            shape = new mxImageShape(originalShape.bounds, self.workflowService.getStyleOfSymbol(this.cell.value.tagName, originalShape.image), null, originalShape.stroke + 1);
-          }
-          shape.isRounded = originalShape.isRounded;
-          shape.gradient = originalShape.gradient;
-          shape.boundingBox = originalShape.boundingBox;
-          shape.style = originalShape.style;
-          shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
-            mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
-          shape.init(this.graph.getView().getOverlayPane());
-          shape.pointerEvents = false;
-          // Workaround for artifacts on iOS
-          if (mxClient.IS_IOS) {
-            shape.getSvgScreenOffset = function () {
-              return 0;
-            };
+            const originalShape = graph.getView().getState(this.cells[0]).shape;
+            this.pBounds = originalShape.bounds;
+            if (this.cells[0].value.tagName === 'Job') {
+              shape = new mxLabel(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
+              shape.image = originalShape.image;
+            } else if (this.cells[0].value.tagName === 'If' || this.cells[0].value.tagName === 'Cycle' || this.cells[0].value.tagName === 'Try' || this.cells[0].value.tagName === 'Retry') {
+              shape = new mxRhombus(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
+            } else {
+              shape = new mxImageShape(originalShape.bounds, self.workflowService.getStyleOfSymbol(this.cells[0].value.tagName, originalShape.image), null, originalShape.stroke + 1);
+            }
+            shape.isRounded = originalShape.isRounded;
+            shape.gradient = originalShape.gradient;
+            shape.boundingBox = originalShape.boundingBox;
+            shape.style = originalShape.style;
+            shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
+              mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+            shape.init(this.graph.getView().getOverlayPane());
+            shape.pointerEvents = false;
+            // Workaround for artifacts on iOS
+            if (mxClient.IS_IOS) {
+              shape.getSvgScreenOffset = function () {
+                return 0;
+              };
+            }
           }
           return shape;
         };
@@ -4960,31 +5019,66 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         graph.extendParentsOnAdd = false;
         graph.extendParents = false;
 
-        const keyHandler = new mxKeyHandler(graph);
+        self.keyHandler = new mxKeyHandler(graph);
 
         // Handle Delete: delete key
-        keyHandler.bindKey(46, function () {
+        self.keyHandler.bindKey(46, function () {
           self.delete();
         });
 
         // Handle Undo: Ctrl + z
-        keyHandler.bindControlKey(90, function () {
+        self.keyHandler.bindControlKey(90, function () {
           self.undo();
         });
 
         // Handle Redo: Ctrl + y
-        keyHandler.bindControlKey(89, function () {
+        self.keyHandler.bindControlKey(89, function () {
           self.redo();
         });
 
         // Handle Copy: Ctrl + c
-        keyHandler.bindControlKey(67, function () {
+        self.keyHandler.bindControlKey(67, function () {
           self.copy(null);
         });
 
         // Handle Cut: Ctrl + x
-        keyHandler.bindControlKey(88, function () {
+        self.keyHandler.bindControlKey(88, function () {
           self.cut(null);
+        });
+
+        // Handle Cut: Ctrl + a
+        self.keyHandler.bindControlKey(65, function () {
+          selectAll()
+        });
+
+
+
+        // Handle Scroll to left: Arrow Left
+        self.keyHandler.bindKey(37, function () {
+          const scale = graph.view.scale;
+          const bounds = graph.getGraphBounds();
+          graph.view.setTranslate(bounds.x / scale - 40, bounds.y / scale);
+        });
+
+        // Handle Scroll to up: Arrow Up
+        self.keyHandler.bindKey(38, function () {
+          const scale = graph.view.scale;
+          const bounds = graph.getGraphBounds();
+          graph.view.setTranslate(bounds.x / scale, bounds.y / scale - 40);
+        });
+
+        // Handle Scroll to right: Arrow Right
+        self.keyHandler.bindKey(39, function () {
+          const scale = graph.view.scale;
+          const bounds = graph.getGraphBounds();
+          graph.view.setTranslate(bounds.x / scale + 40, bounds.y / scale);
+        });
+
+        // Handle Scroll to down: Arrow Down
+        self.keyHandler.bindKey(40, function () {
+          const scale = graph.view.scale;
+          const bounds = graph.getGraphBounds();
+          graph.view.setTranslate(bounds.x / scale, bounds.y / scale + 40);
         });
 
 
@@ -5092,19 +5186,24 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (me.consumed && cell) {
               if (!self.display) {
                 if (!self.isCellDragging && !dragStart) {
-                  const selectedCell = graph.getSelectionCell();
-                  if (cell && self.workflowService.checkClosingCell(cell.value.tagName)) {
-                    graph.clearSelection();
-                    self.movedCell = null;
-                    self.droppedCell = null;
+                  const selectedCells = graph.getSelectionCells();
+                  if ((selectedCells.length == 2 && !self.workflowService.checkClosingCell(selectedCells[0].value.tagName) && !self.workflowService.checkClosingCell(selectedCells[1].value.tagName)) ||
+                    (selectedCells.length > 2)) {
+
                   } else {
-                    if (selectedCell && selectedCell.id !== cell.id) {
-                      graph.setSelectionCell(cell);
+                    if (cell && self.workflowService.checkClosingCell(cell.value.tagName)) {
+                      graph.clearSelection();
+                      self.movedCells = [];
+                      self.droppedCell = null;
+                    } else {
+                      if (selectedCells.length > 0 && selectedCells[0].id !== cell.id) {
+                        graph.setSelectionCell(cell);
+                      }
                     }
                   }
                 }
                 self.isCellDragging = true;
-                if (self.movedCell && graph.getSelectionCell()) {
+                if (self.movedCells.length > 0 && graph.getSelectionCell()) {
                   self.display = true;
                   $('#dropContainer2').show();
                   $('#toolbar-icons').hide();
@@ -5146,31 +5245,48 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
             if (self.isCellDragging) {
               self.isCellDragging = false;
-              if (self.movedCell) {
-                detachedInstruction(me.evt.target, self.movedCell);
+              if (self.movedCells.length) {
+                detachedInstruction(me.evt.target, self.movedCells);
               }
-              self.movedCell = null;
+              self.movedCells = [];
               if (self.droppedCell && me.getCell()) {
                 let _result = 'valid';
                 if (self.droppedCell.target && !self.droppedCell.target.target) {
                   const targetCell = graph.getModel().getCell(self.droppedCell.target);
-                  if (targetCell.getParent().id === self.droppedCell.cell.id) {
-                    _result = 'inValid';
-                  } else {
-                    _result = checkValidTarget(graph.getModel().getCell(self.droppedCell.target), self.droppedCell.cell.value.tagName);
-                  }
-                }
-                if (_result !== 'inValid') {
-                  if (self.droppedCell.cell) {
-                    const incomingEdge = graph.getIncomingEdges(self.droppedCell.cell);
-                    let flag = true;
-                    for (let i in incomingEdge) {
-                      if (self.droppedCell.target === incomingEdge[i].source.id) {
-                        flag = false;
+                  if (self.droppedCell.cells && self.droppedCell.cells.length > 0) {
+                    self.droppedCell.cells = self.droppedCell.cells.filter((cell) => {
+                      return !self.workflowService.checkClosingCell(cell.value.tagName);
+                    });
+                    for (let i in self.droppedCell.cells) {
+                      if (targetCell.getParent().id === self.droppedCell.cells[i].id) {
+                        _result = 'inValid';
+                      } else {
+                        _result = checkValidTarget(graph.getModel().getCell(self.droppedCell.target), self.droppedCell.cells[i].value.tagName);
+                      }
+                      if (_result === 'inValid') {
                         break;
                       }
                     }
-                    if (!flag) {
+                  }
+                }
+                if (_result !== 'inValid') {
+                  if (self.droppedCell.cells && self.droppedCell.cells.length > 0) {
+                    let isExist = false;
+                    for (let i in self.droppedCell.cells) {
+                      const incomingEdge = graph.getIncomingEdges(self.droppedCell.cells[i]);
+                      let flag = true;
+                      for (let i in incomingEdge) {
+                        if (self.droppedCell.target === incomingEdge[i].source.id) {
+                          flag = false;
+                          break;
+                        }
+                      }
+                      if (!flag) {
+                        isExist = true;
+                        break;
+                      }
+                    }
+                    if (isExist) {
                       return;
                     }
                   }
@@ -5226,14 +5342,25 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         });
 
-        function detachedInstruction(target, cell): void {
-          if (target && target.getAttribute('class') === 'dropContainer' && cell) {
+        function detachedInstruction(target, cells): void {
+          if (target && target.getAttribute('class') === 'dropContainer' && cells && cells.length > 0) {
             self.droppedCell = null;
-            self.editor.graph.removeCells([cell], null);
+            self.editor.graph.removeCells(cells, null);
           }
           self.display = false;
           $('#dropContainer2').hide();
           $('#toolbar-icons').show();
+        }
+
+        /**
+         * Function: Select all parent nodes
+         */
+        function selectAll() {
+          const cells = graph.getModel().getChildren(graph.getDefaultParent());
+          const filterCells = cells.filter(cell => {
+            return cell.vertex && cell.value && cell.value.tagName !== 'Process';
+          });
+          graph.setSelectionCells(filterCells);
         }
 
         /**
@@ -5280,23 +5407,67 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (me.isConsumed()) {
             mxe.consume();
           }
-
           if (!cell || (cell && cell.value.tagName !== 'Connection')) {
-            graph.clearSelection();
+            if (evt.target && evt.target.href && evt.target.getAttribute('xlink:href')) {
+              if (evt.target.getAttribute('xlink:href').match('.png')) {
+                return;
+              }
+            }
+            if (!cell || !evt.ctrlKey) {
+              graph.clearSelection();
+            }
           }
 
           // Handles the event if it has not been consumed
           if (cell) {
-            if (cell.value.tagName === 'Job' || cell.value.tagName === 'AddOrder' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
-              cell.value.tagName === 'ExpectNotice' || cell.value.tagName === 'PostNotice' || cell.value.tagName === 'Prompt') {
-              graph.setSelectionCell(cell);
-            } else {
-              if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
-                graph.setSelectionCells([cell]);
+            if (self.workflowService.checkClosingCell(cell.value.tagName)) {
+              return;
+            }
+            let isProceed = true;
+            if (evt.ctrlKey) {
+              const cells = graph.getSelectionCells();
+              for (let i in cells) {
+                if (cells[i].id == cell.id) {
+                  graph.removeSelectionCell(cells[i]);
+                  if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+                    graph.removeSelectionCell(graph.getModel().getCell(self.nodeMap.get(cell.id)));
+                  }
+                  isProceed = false;
+                  break;
+                }
+              }
+            }
+            if (isProceed) {
+              if (cell.value.tagName === 'Job' || cell.value.tagName === 'AddOrder' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
+                cell.value.tagName === 'ExpectNotice' || cell.value.tagName === 'PostNotice' || cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+                if (!evt.ctrlKey) {
+                  graph.setSelectionCell(cell);
+                } else {
+                  const cells = graph.getSelectionCells();
+                  if (cells && cells.length > 0) {
+                    if (cells[0].getParent().id !== cell.getParent().id) {
+                      return
+                    }
+                  }
+                  graph.addSelectionCell(cell);
+                }
+                if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+                  const targetId = self.nodeMap.get(cell.id);
+                  if (targetId) {
+                    const lastCell = graph.getModel().getCell(targetId);
+                    if (lastCell) {
+                      graph.addSelectionCell(graph.getModel().getCell(targetId));
+                    }
+                  }
+                }
               }
             }
           }
-          customizedChangeEvent();
+          if (!evt.ctrlKey) {
+            customizedChangeEvent();
+          } else {
+            selectionChanged();
+          }
           self.closeMenu();
         };
 
@@ -5320,12 +5491,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
          * Overrides method to provide a cell collapse/expandable on double click
          */
         graph.dblClick = function (evt, cell) {
-          if (cell != null && cell.vertex == 1) {
-            if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
-              const flag = cell.collapsed != true;
-              graph.foldCells(flag, false, [cell], null, evt);
-            }
-          }
+          // if (cell != null && cell.vertex == 1) {
+          //   if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+          //     const flag = cell.collapsed != true;
+          //     graph.foldCells(flag, false, [cell], null, evt);
+          //   }
+          // }
         };
 
         /**
@@ -5365,10 +5536,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const state = _graph.getView().getState(this.currentDropTarget);
             if (state && state.cell) {
               result = checkValidTarget(state.cell, this.dragElement.getAttribute('src'));
-              this.currentHighlight.highlightColor = 'green';
-              if (result === 'inValid') {
-                this.currentHighlight.highlightColor = '#ff0000';
-              }
+              this.currentHighlight.highlightColor = result === 'inValid' ? '#ff0000' : 'green';
               if (result === 'return') {
                 return;
               }
@@ -5438,6 +5606,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             self.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
               title = translatedValue;
             });
+            if (drpTargt.value && self.workflowService.checkClosingCell(drpTargt.value.tagName)) {
+              self.toasterService.error(msg, title + '!!');
+              return;
+            }
             if (this.dragElement && this.dragElement.getAttribute('src')) {
               dragElement = this.dragElement.getAttribute('src');
               if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('try') || dragElement.match('if')) {
@@ -5705,7 +5877,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
          * evt - Optional native event that triggered the invocation.
          */
         mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable) {
-          graph.clearSelection();
           recurse = (recurse != null) ? recurse : true;
           this.stopEditing(false);
           this.model.beginUpdate();
@@ -5820,7 +5991,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (cell && cell.value) {
             self.droppedCell = null;
             if (self.isCellDragging && cells && cells.length > 0) {
-              if (!self.movedCell) {
+              if (self.movedCells.length === 0) {
                 return;
               }
               const tagName = cell.value.tagName;
@@ -5843,7 +6014,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     }
                     self.droppedCell = {
                       target: {source: sourceId, target: targetId},
-                      cell: self.movedCell,
+                      cells: self.movedCells,
                       type: cell.value.getAttribute('type'),
                       isOutside
 
@@ -5851,7 +6022,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
                   }
                 } else {
-                  self.droppedCell = {target: cell.id, cell: self.movedCell};
+                  self.droppedCell = {target: cell.id, cells: self.movedCells};
                   return true;
                 }
               } else {
@@ -5971,31 +6142,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         };
 
-        /**
-         * Implements a properties panel that uses
-         * mxCellAttributeChange to change properties
-         */
-        graph.getSelectionModel().addListener(mxEvent.CHANGE, function (evt) {
-          let cell;
-          if (evt.cells && evt.cells.length > 0) {
-            cell = evt.cells[0];
-          }
-          if (cell && (self.workflowService.checkClosingCell(cell.value.tagName) ||
-            cell.value.tagName === 'Connection' || cell.value.tagName === 'Process' || cell.value.tagName === 'Catch')) {
-            graph.clearSelection();
-            return;
-          }
-          if (cell && self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
-            const targetId = self.nodeMap.get(cell.id);
-            if (targetId) {
-              const lastCell = graph.getModel().getCell(targetId);
-              if (lastCell) {
-                graph.addSelectionCell(graph.getModel().getCell(targetId));
-              }
-            }
-          }
-        });
-
         initGraph();
         self.centered();
 
@@ -6047,13 +6193,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      * Function: Remove selected cells from JSON
      */
     function deleteInstructionFromJSON(cells): void {
-      deleteRecursively(self.workflow.configuration, cells[0], '', () => {
-        setTimeout(() => {
-          if (self.editor && self.editor.graph) {
-            self.updateXMLJSON(true);
-            self.updateJobs(graph, false);
-          }
-        }, 1);
+      cells.forEach((cell, index) => {
+        deleteRecursively(self.workflow.configuration, cell, '', (index === cells.length - 1) ? () => {
+          setTimeout(() => {
+            if (self.editor && self.editor.graph) {
+              self.updateXMLJSON(true);
+              self.updateJobs(graph, false);
+            }
+          }, 1);
+        } : null);
       });
     }
 
@@ -6130,7 +6278,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
 
       iterateJson(_json, _cell, _type);
-      cb();
+      if (cb) {
+        cb();
+      }
     }
 
     /**
@@ -7012,12 +7162,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           updateProperties(self.selectedNode);
         }
       }
-
       // Gets the selection cell
       const cell = graph.getSelectionCell();
       if (cell == null) {
         self.selectedNode = null;
       } else {
+        const selectedCells = graph.getSelectionCells();
+        if ((selectedCells.length == 2 && !self.workflowService.checkClosingCell(selectedCells[0].value.tagName) && !self.workflowService.checkClosingCell(selectedCells[1].value.tagName)) ||
+          (selectedCells.length > 2)) {
+          self.selectedNode = null;
+          self.ref.detectChanges();
+          return;
+        }
         if (cell.value.tagName === 'Try' || cell.value.tagName === 'Catch' || cell.value.tagName === 'Finish') {
           self.selectedNode = null;
           self.ref.detectChanges();
@@ -7454,20 +7610,22 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const cells = graph.getSelectionCells();
       if (cells.length > 0) {
         const lastCell = cells[cells.length - 1];
-        const targetId = self.nodeMap.get(lastCell.id);
-        if (targetId) {
-          graph.addSelectionCell(graph.getModel().getCell(targetId));
-        } else if (lastCell) {
-          let flag = false;
-          if (cells.length > 1) {
-            const secondLastCell = cells[cells.length - 2];
-            const lName = secondLastCell.value.tagName;
-            if (self.workflowService.isInstructionCollapsible(lName) || lName === 'Catch') {
-              flag = true;
+        if (lastCell) {
+          const targetId = self.nodeMap.get(lastCell.id);
+          if (targetId) {
+            graph.addSelectionCell(graph.getModel().getCell(targetId));
+          } else {
+            let flag = false;
+            if (cells.length > 1) {
+              const secondLastCell = cells[cells.length - 2];
+              const lName = secondLastCell.value.tagName;
+              if (self.workflowService.isInstructionCollapsible(lName) || lName === 'Catch') {
+                flag = true;
+              }
             }
-          }
-          if (!flag && (self.workflowService.checkClosingCell(lastCell.value.tagName))) {
-            graph.removeSelectionCell(lastCell);
+            if (!flag && (self.workflowService.checkClosingCell(lastCell.value.tagName))) {
+              graph.removeSelectionCell(lastCell);
+            }
           }
         }
       }
@@ -7531,11 +7689,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
               self.droppedCell = {
                 target: {source: sourceId, target: targetId},
-                cell: self.cutCell,
+                cells: [self.cutCell],
                 type: targetCell.value.getAttribute('type')
               };
             } else {
-              self.droppedCell = {target: targetCell.id, cell: self.cutCell};
+              self.droppedCell = {target: targetCell.id, cells: [self.cutCell]};
             }
           }
         }
@@ -7760,7 +7918,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (targetCell.getAttribute('title') === 'start' || targetCell.getAttribute('title') === 'end') {
           return 'return';
         }
-      } else if (tagName === 'Connector' || title === 'Connect') {
+      } else if (tagName === 'Connector' || title === 'Connect' || self.workflowService.checkClosingCell(tagName)) {
         return 'return';
       }
       let flg = false;
@@ -8222,7 +8380,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
     }
 
-    function dropOnObject(source, target, sourceIndex, targetIndex, isCatch, tempJson) {
+    function dropOnObject(source, target, sourceIndex, targetIndex, isCatch) {
       if (source && source.instructions.length > 0) {
         const sourceObj = source.instructions[sourceIndex];
         const targetObj = target.instructions[targetIndex];
@@ -8286,9 +8444,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
         if (isDone) {
           source.instructions.splice(sourceIndex, 1);
-          if (!isEqual(tempJson, JSON.stringify(self.workflow.configuration))) {
-            self.updateXMLJSON(true);
-          }
         }
       }
     }
@@ -8351,176 +8506,182 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      */
     function rearrangeCell(obj): void {
       const connection = obj.target;
-      const droppedCell = obj.cell;
-      if (connection.source === droppedCell.id || connection.target === droppedCell.id ||
-        connection === droppedCell.id) {
-        self.updateXMLJSON(true);
-        return;
-      } else {
-        let dropObject: any, targetObject: any, index = 0, targetIndex = 0, isCatch = false;
-        const source = connection.source || connection;
-        const tempJson = JSON.stringify(self.workflow.configuration);
+      const droppedCells = obj.cells;
+      for (let i in droppedCells) {
+        let proceed = true;
+        if (connection.source === droppedCells[i].id || connection.target === droppedCells[i].id ||
+          connection === droppedCells[i].id) {
 
-        function getObject(json, cell): void {
-          if (json.instructions) {
-            for (let x = 0; x < json.instructions.length; x++) {
-              if (dropObject && targetObject) {
-                break;
-              }
-              if (json.instructions[x].id == cell.id) {
-                dropObject = json;
-                index = x;
-              }
-              if (json.instructions[x].id == source) {
-                targetObject = json;
-                targetIndex = x;
-              }
-              if (json.instructions[x].instructions) {
-                getObject(json.instructions[x], cell);
-              }
-              if (json.instructions[x].catch) {
-                if (json.instructions[x].catch.id == source) {
+        } else {
+          let dropObject: any, targetObject: any, index = 0, targetIndex = 0, isCatch = false;
+          const source = connection.source || connection;
+
+          function getObject(json, cell): void {
+            if (json.instructions) {
+              for (let x = 0; x < json.instructions.length; x++) {
+                if (dropObject && targetObject) {
+                  break;
+                }
+                if (json.instructions[x].id == cell.id) {
+                  dropObject = json;
+                  index = x;
+                }
+                if (json.instructions[x].id == source) {
                   targetObject = json;
                   targetIndex = x;
-                  isCatch = true;
                 }
-                if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-                  getObject(json.instructions[x].catch, cell);
+                if (json.instructions[x].instructions) {
+                  getObject(json.instructions[x], cell);
                 }
-              }
-              if (json.instructions[x].then) {
-                getObject(json.instructions[x].then, cell);
-              }
-              if (json.instructions[x].else) {
-                getObject(json.instructions[x].else, cell);
-              }
-              if (json.instructions[x].branches) {
-                for (let i = 0; i < json.instructions[x].branches.length; i++) {
-                  getObject(json.instructions[x].branches[i], cell);
-                }
-              }
-            }
-          }
-        }
-
-        getObject(self.workflow.configuration, droppedCell);
-        if (!targetObject && connection.source === 'start') {
-          targetObject = self.workflow.configuration;
-        }
-        const booleanObj = {
-          isMatch: false
-        };
-        if (targetObject && dropObject) {
-          if (targetObject.instructions) {
-            const sourceObj = dropObject.instructions[index];
-            const targetObj = targetObject.instructions[targetIndex];
-            if (!checkParent(sourceObj, targetObj)) {
-              return;
-            }
-
-            if (!connection.source && !connection.target) {
-              dropOnObject(dropObject, targetObject, index, targetIndex, isCatch, tempJson);
-              return;
-            }
-
-            if (dropObject && dropObject.instructions) {
-              dropObject.instructions.splice(index, 1);
-            }
-            if ((connection.source === 'start')) {
-              targetObject.instructions.splice(0, 0, sourceObj);
-            } else {
-              if (targetObject.instructions) {
-                for (let x = 0; x < targetObject.instructions.length; x++) {
-                  if (targetObject.instructions[x].uuid == targetObj.uuid) {
+                if (json.instructions[x].catch) {
+                  if (json.instructions[x].catch.id == source) {
+                    targetObject = json;
                     targetIndex = x;
-                    break;
+                    isCatch = true;
+                  }
+                  if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                    getObject(json.instructions[x].catch, cell);
                   }
                 }
-              }
-              if (obj.isOutside) {
-                targetObject.instructions.splice(targetIndex + 1, 0, sourceObj);
-              } else {
-                const isSameObj = connection.source === connection.target;
-                if (targetObj.TYPE === 'If') {
-                  if (obj.type || isSameObj) {
-                    if (!obj.type.match('else')) {
-                      if (!targetObj.then || targetObj.then.instructions.length === 0) {
-                        targetObj.then = {instructions: [sourceObj]};
-                        booleanObj.isMatch = true;
-                      } else {
-                        dropAndAdd(targetObj.then.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                      }
-                    } else {
-                      if (!targetObj.else || targetObj.else.instructions.length === 0) {
-                        targetObj.else = {instructions: [sourceObj]};
-                        booleanObj.isMatch = true;
-                      } else {
-                        dropAndAdd(targetObj.else.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                      }
-                    }
-                  }
-                } else if (targetObj.TYPE === 'Fork') {
-                  if (obj.type || isSameObj) {
-                    if (!targetObj.branches || targetObj.branches.length === 0) {
-                      targetObj.branches = [{id: 'branch1', instructions: [sourceObj]}];
-                      booleanObj.isMatch = true;
-                    } else if (targetObj.branches && targetObj.branches.length > 0) {
-                      for (let j = 0; j < targetObj.branches.length; j++) {
-                        dropAndAdd(targetObj.branches[j].instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                        if (booleanObj.isMatch) {
-                          break;
-                        }
-                      }
-                      for (let j = 0; j < targetObj.branches.length; j++) {
-                        if (targetObj.branches[j].instructions.length === 0) {
-                          targetObj.branches.splice(j, 1);
-                          break;
-                        }
-                      }
-                    }
-                  }
-                } else if (targetObj.TYPE === 'Retry' || targetObj.TYPE === 'Lock' || targetObj.TYPE === 'Cycle' || targetObj.TYPE === 'ForkList') {
-                  if (obj.type || isSameObj) {
-                    if (!targetObj.instructions || targetObj.instructions.length === 0) {
-                      targetObj.instructions = [sourceObj];
-                      booleanObj.isMatch = true;
-                    } else if (targetObj.instructions && targetObj.instructions.length > 0) {
-                      dropAndAdd(targetObj.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                    }
-                  }
-                } else if (targetObj.TYPE === 'Try') {
-                  if (obj.type || isSameObj) {
-                    if (isCatch) {
-                      if (!targetObj.catch.instructions || targetObj.catch.instructions.length === 0) {
-                        targetObj.catch.instructions = [sourceObj];
-                        booleanObj.isMatch = true;
-                      } else if (targetObj.catch.instructions && targetObj.catch.instructions.length > 0) {
-                        dropAndAdd(targetObj.catch.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                      }
-                    } else {
-                      if (!targetObj.instructions || targetObj.instructions.length === 0) {
-                        targetObj.instructions = [sourceObj];
-                        booleanObj.isMatch = true;
-                      } else if (targetObj.instructions && targetObj.instructions.length > 0) {
-                        dropAndAdd(targetObj.instructions, droppedCell.id, connection.target, sourceObj, booleanObj);
-                      }
-                    }
-                  }
+                if (json.instructions[x].then) {
+                  getObject(json.instructions[x].then, cell);
                 }
-                if (!booleanObj.isMatch) {
-                  targetObject.instructions.splice(targetIndex + 1, 0, sourceObj);
+                if (json.instructions[x].else) {
+                  getObject(json.instructions[x].else, cell);
+                }
+                if (json.instructions[x].branches) {
+                  for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                    getObject(json.instructions[x].branches[i], cell);
+                  }
                 }
               }
             }
           }
 
-          if (dropObject && dropObject.instructions && dropObject.instructions.length === 0) {
-            delete dropObject.instructions;
+          getObject(self.workflow.configuration, droppedCells[i]);
+          if (!targetObject && connection.source === 'start') {
+            targetObject = self.workflow.configuration;
           }
+          const booleanObj = {
+            isMatch: false
+          };
+          if (targetObject && dropObject) {
+            if (targetObject.instructions) {
+              const sourceObj = dropObject.instructions[index];
+              const targetObj = targetObject.instructions[targetIndex];
 
-          self.updateXMLJSON(true);
+              if (!checkParent(sourceObj, targetObj)) {
+                proceed = false;
+              }
+
+              if (!connection.source && !connection.target) {
+                dropOnObject(dropObject, targetObject, index, targetIndex, isCatch);
+                proceed = false;
+              }
+
+              if (proceed) {
+                if (dropObject && dropObject.instructions) {
+                  dropObject.instructions.splice(index, 1);
+                }
+                if ((connection.source === 'start')) {
+                  targetObject.instructions.splice(0, 0, sourceObj);
+                } else {
+                  if (targetObject.instructions) {
+                    for (let x = 0; x < targetObject.instructions.length; x++) {
+                      if (targetObject.instructions[x].uuid == targetObj.uuid) {
+                        targetIndex = x;
+                        break;
+                      }
+                    }
+                  }
+                  if (obj.isOutside) {
+                    targetObject.instructions.splice(targetIndex + 1, 0, sourceObj);
+                  } else {
+                    const isSameObj = connection.source === connection.target;
+                    if (targetObj.TYPE === 'If') {
+                      if (obj.type || isSameObj) {
+                        if (!obj.type.match('else')) {
+                          if (!targetObj.then || targetObj.then.instructions.length === 0) {
+                            targetObj.then = {instructions: [sourceObj]};
+                            booleanObj.isMatch = true;
+                          } else {
+                            dropAndAdd(targetObj.then.instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
+                          }
+                        } else {
+                          if (!targetObj.else || targetObj.else.instructions.length === 0) {
+                            targetObj.else = {instructions: [sourceObj]};
+                            booleanObj.isMatch = true;
+                          } else {
+                            dropAndAdd(targetObj.else.instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
+                          }
+                        }
+                      }
+                    } else if (targetObj.TYPE === 'Fork') {
+                      if (obj.type || isSameObj) {
+                        if (!targetObj.branches || targetObj.branches.length === 0) {
+                          targetObj.branches = [{id: 'branch1', instructions: [sourceObj]}];
+                          booleanObj.isMatch = true;
+                        } else if (targetObj.branches && targetObj.branches.length > 0) {
+                          for (let j = 0; j < targetObj.branches.length; j++) {
+                            dropAndAdd(targetObj.branches[j].instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
+                            if (booleanObj.isMatch) {
+                              break;
+                            }
+                          }
+                          for (let j = 0; j < targetObj.branches.length; j++) {
+                            if (targetObj.branches[j].instructions.length === 0) {
+                              targetObj.branches.splice(j, 1);
+                              break;
+                            }
+                          }
+                        }
+                      }
+                    } else if (targetObj.TYPE === 'Retry' || targetObj.TYPE === 'Lock' || targetObj.TYPE === 'Cycle' || targetObj.TYPE === 'ForkList') {
+                      if (obj.type || isSameObj) {
+                        if (!targetObj.instructions || targetObj.instructions.length === 0) {
+                          targetObj.instructions = [sourceObj];
+                          booleanObj.isMatch = true;
+                        } else if (targetObj.instructions && targetObj.instructions.length > 0) {
+                          dropAndAdd(targetObj.instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
+                        }
+                      }
+                    } else if (targetObj.TYPE === 'Try') {
+                      if (obj.type || isSameObj) {
+                        if (isCatch) {
+                          if (!targetObj.catch.instructions || targetObj.catch.instructions.length === 0) {
+                            targetObj.catch.instructions = [sourceObj];
+                            booleanObj.isMatch = true;
+                          } else if (targetObj.catch.instructions && targetObj.catch.instructions.length > 0) {
+                            dropAndAdd(targetObj.catch.instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
+                          }
+                        } else {
+                          if (!targetObj.instructions || targetObj.instructions.length === 0) {
+                            targetObj.instructions = [sourceObj];
+                            booleanObj.isMatch = true;
+                          } else if (targetObj.instructions && targetObj.instructions.length > 0) {
+                            dropAndAdd(targetObj.instructions, droppedCells[i].id, connection.target, sourceObj, booleanObj);
+                          }
+                        }
+                      }
+                    }
+                    if (!booleanObj.isMatch) {
+                      targetObject.instructions.splice(targetIndex + 1, 0, sourceObj);
+                    }
+                  }
+                }
+              }
+            }
+
+            if (proceed) {
+              if (dropObject && dropObject.instructions && dropObject.instructions.length === 0) {
+                delete dropObject.instructions;
+              }
+            }
+          }
         }
       }
+
+      self.updateXMLJSON(true);
     }
 
     if (callFun) {

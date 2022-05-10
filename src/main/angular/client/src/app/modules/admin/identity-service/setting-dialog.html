@@ -281,12 +281,7 @@
                 <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.ldap.iamLdapHostNameVerification' | translate"
                        [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapHostNameVerification</label>
                 <div class="col-sm-6">
-                  <nz-select nzAllowClear name="iamLdapHostNameVerification"
-                             [(ngModel)]="userObj.iamLdapHostNameVerification">
-                    <nz-option [nzLabel]="''" [nzValue]="''"></nz-option>
-                    <nz-option [nzLabel]="'user.label.on' | translate" [nzValue]="'on'"></nz-option>
-                    <nz-option [nzLabel]="'user.label.off' | translate" [nzValue]="'off'"></nz-option>
-                  </nz-select>
+                  <label nz-checkbox [(ngModel)]="currentObj.iamLdapHostNameVerification" name="iamLdapHostNameVerification"></label>
                 </div>
               </div>
               <div class="form-group row">

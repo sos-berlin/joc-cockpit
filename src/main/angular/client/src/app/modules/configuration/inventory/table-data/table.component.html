@@ -1,25 +1,31 @@
 <div class="box p-a">
-  <div class="b-b p-b m-b text-right">
-        <span class="text text-dark pos-abt" style="left: 18px;top:22px">
-          <span class="text-primary">{{dataObj.path}}<span *ngIf="dataObj.path !=='/'">/</span></span> -
-          <span *ngIf="objectType === 'WORKFLOW'" translate>inventory.label.workflows</span>
-          <span *ngIf="objectType === 'FILEORDERSOURCE'" translate>inventory.label.fileOrderSources</span>
-          <!--<span *ngIf="objectType === 'JOBCLASS'" translate>inventory.label.jobClasses</span>-->
-          <span *ngIf="objectType === 'JOBRESOURCE'" translate>inventory.label.jobResources</span>
-          <span *ngIf="objectType === 'NOTICEBOARD'" translate>inventory.label.boards</span>
-          <span *ngIf="objectType === 'LOCK'" translate>inventory.label.locks</span>
-          <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.label.orders</span>
-          <span *ngIf="objectType === 'INCLUDESCRIPT'" translate>inventory.label.scripts</span>
-          <span *ngIf="objectType && objectType.match('CALENDAR')" translate>inventory.label.calendars</span>
-        </span>
-    <div class="inline">
-      <input type="search" placeholder="{{'common.placeholder.search' | translate}}"
-             [(ngModel)]="searchKey" style="width: 180px" name="search">
-      <button *ngIf="permission.joc && permission.joc.inventory.manage && !isTrash" type="button" [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12" (click)="paste()" >
+  <div class="b-b p-b-sm m-b text-right">
+    <span class="text text-dark pos-abt" style="left: 18px;top:22px">
+      <span class="text-primary">{{dataObj.path}}<span *ngIf="dataObj.path !=='/'">/</span></span> -
+      <span *ngIf="objectType === 'WORKFLOW'" translate>inventory.label.workflows</span>
+      <span *ngIf="objectType === 'FILEORDERSOURCE'" translate>inventory.label.fileOrderSources</span>
+      <!--<span *ngIf="objectType === 'JOBCLASS'" translate>inventory.label.jobClasses</span>-->
+      <span *ngIf="objectType === 'JOBRESOURCE'" translate>inventory.label.jobResources</span>
+      <span *ngIf="objectType === 'NOTICEBOARD'" translate>inventory.label.boards</span>
+      <span *ngIf="objectType === 'LOCK'" translate>inventory.label.locks</span>
+      <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.label.orders</span>
+      <span *ngIf="objectType === 'INCLUDESCRIPT'" translate>inventory.label.scripts</span>
+      <span *ngIf="objectType && objectType.match('CALENDAR')" translate>inventory.label.calendars</span>
+    </span>
+    <div class="inline" >
+      <div class="search-box-field" [ngClass]="{'opacity0': mapOfCheckedId.size > 0}">
+        <label>
+          <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
+                 [(ngModel)]="searchKey">
+        </label>
+        <i [hidden]="!searchKey || mapOfCheckedId.size > 0" class="fa fa-times search-close"
+           (click)="searchKey = '';searchInResult()"></i>
+      </div>
+      <button *ngIf="mapOfCheckedId.size === 0 && permission.joc && permission.joc.inventory.manage && !isTrash" type="button" [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12" (click)="paste()" >
         <i class="fa fa-paste p-r-xs"></i>
         <span translate>inventory.button.paste</span>
       </button>
-      <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" *ngIf="permission.joc && permission.joc.inventory.manage && !isTrash">
+      <button type="button" class="btn btn-sm btn-grey m-l-12" (click)="add()" *ngIf="mapOfCheckedId.size === 0 && permission.joc && permission.joc.inventory.manage && !isTrash">
         <i class="fa fa-plus p-r-xs"></i>
         <span *ngIf="objectType === 'WORKFLOW'" translate>inventory.button.newWorkflow</span>
         <span *ngIf="objectType === 'FILEORDERSOURCE'" translate>inventory.button.newFileOrderSource</span>
@@ -31,22 +37,38 @@
         <span *ngIf="objectType === 'INCLUDESCRIPT'" translate>inventory.button.newScript</span>
         <span *ngIf="objectType && objectType.match('CALENDAR')" translate>inventory.button.newCalendar</span>
       </button>
+      <button *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12" (click)="removeAll()" >
+        <i class="fa fa-trash p-r-xs"></i>
+        <span translate>inventory.button.remove</span>
+      </button>
+      <button *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12" (click)="deleteAll()" >
+        <i class="fa fa-times p-r-xs"></i>
+        <span translate>inventory.button.deleteDraft</span>
+      </button>
     </div>
   </div>
   <div class="table-responsive">
   <nz-table
     #ajaxTable
     [nzSize]="'small'"
-    [nzPageSize]="preferences.entryPerPage"
-    [nzPageIndex]="1"
+    [nzPageSize]="filter.entryPerPage || preferences.entryPerPage || 25"
+    [nzPageIndex]="filter.currentPage"
     [nzBordered]="true"
-    [nzShowPagination]="(dataObj.children | filter: searchKey: ['name']).length > 0"
-    [nzData]="(dataObj.children | filter: searchKey:['name']) | orderBy: filter.sortBy:filter.reverse"
+    [nzShowPagination]="data.length > 0"
+    [nzData]="data"
     [nzShowSizeChanger]="true"
+    (nzPageIndexChange)="pageIndexChange($event)"
+    (nzPageSizeChange)="pageSizeChange($event)"
     [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
-
     <thead>
       <tr>
+        <th class="chk"
+          *ngIf="permission.joc.inventory.manage"
+          [nzShowCheckbox]="true"
+          [(nzChecked)]="checked"
+          [nzIndeterminate]="indeterminate"
+          (nzCheckedChange)="onAllChecked($event)"
+        ></th>
         <th class="menu"><span translate>common.label.action</span></th>
         <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
           <i *ngIf="filter.sortBy == 'name' && !filter.reverse"
@@ -86,9 +108,10 @@
     <tbody>
       <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
         <tr [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === data.path && copyObj.name === data.name && copyObj.type === data.type)}">
-          <td class="menu">
+          <td *ngIf="permission.joc.inventory.manage" [nzShowCheckbox]="true" [nzChecked]="mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
+          <td>
             <div class="btn-group dropdown">
-              <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
+              <button class="btn-drop more-option-h" [disabled]="mapOfCheckedId.size > 0" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
                 type="button">
                 <i class="fa fa-ellipsis-h"></i>
               </button>
@@ -186,7 +209,7 @@
   </div>
   <div class="w-half label-top"
        *ngIf="ajaxTable.data.length >0"><span
-    translate>common.label.total</span> {{(dataObj.children | filter: searchKey:['name']).length}}
+    translate>common.label.total</span> {{data.length}}
     <span *ngIf="ajaxTable.data.length >1" translate>inventory.label.entriesFound</span>
     <span *ngIf="ajaxTable.data.length ==1" translate>inventory.label.entryFound</span>
   </div>
