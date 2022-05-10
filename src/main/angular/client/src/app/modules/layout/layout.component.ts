@@ -43,6 +43,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   isChangePasswordPopupOpen = false;
   count = 0;
   count2 = 0;
+  currentDate = new Date();
+  licenseDate: Date;
+  warningMessage: string;
+  warningMessage2: string;
 
   @ViewChild(HeaderComponent, {static: false}) child: any;
   @ViewChild('customTpl', {static: true}) customTpl: any;
@@ -153,6 +157,46 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkLicenseExpireDate() {
+    if (sessionStorage.getItem('licenseValidUntil')) {
+      const date = localStorage.getItem('$SOS$LICENSEREMINDER');
+      if (date) {
+        if (parseInt(date, 10) > new Date().getTime()) {
+          return;
+        }
+      }
+      this.licenseDate = new Date(sessionStorage.getItem('licenseValidUntil'));
+      const differenceInTime = this.licenseDate.getTime() - this.currentDate.getTime();
+      const remainingDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+      if (remainingDays < 61) {
+        if (differenceInTime < 0) {
+          this.translate.get('license.secondWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
+            this.warningMessage2 = translatedValue;
+          });
+        } else {
+          if (remainingDays == 0) {
+            this.warningMessage2 = 'Hide';
+          }
+          this.translate.get('license.firstWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
+            this.warningMessage = this.coreService.convertTextToLink(translatedValue, 'mailto:sales@sos-berlin.com');
+          });
+        }
+      }
+    } else{
+      localStorage.removeItem('$SOS$LICENSEREMINDER')
+    }
+  }
+
+  remindLater() {
+    localStorage.setItem('$SOS$LICENSEREMINDER', (new Date().setDate(new Date().getDate() + 1)).toString());
+    this.warningMessage = '';
+  }
+
+  gotIt() {
+    localStorage.setItem('$SOS$LICENSEREMINDER', (new Date(this.licenseDate).setDate(new Date().getDate() - 1)).toString());
+    this.warningMessage = '';
+  }
+
   ngOnDestroy(): void {
     clearInterval(this.interval);
     this.subscription1.unsubscribe();
@@ -224,7 +268,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logout(timeout: any): void {
     this.isLogout = true;
-    if(this.child) {
+    if (this.child) {
       this.child.isLogout = true;
     }
     this.coreService.post('authentication/logout', {}).subscribe({
@@ -274,8 +318,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
           sessionStorage.welcomeGotIt = result.welcomeGotIt;
           sessionStorage.hasLicense = result.clusterLicense;
+          sessionStorage.licenseValidFrom = result.licenseValidFrom;
+          sessionStorage.licenseValidUntil = result.licenseValidUntil;
           if (!this.loading) {
             this.init();
+          } else {
+            if (result.clusterLicense) {
+              this.checkLicenseExpireDate();
+            }
           }
           this.isPropertiesLoaded = false;
         }, error: () => this.ngOnInit()
@@ -296,7 +346,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (this.child) {
           this.child.reloadSettings();
         }
-        if(flag){
+        if (flag) {
           this.loading = true;
         }
         setTimeout(() => {
@@ -377,7 +427,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (returnUrl === '/error' || returnUrl === 'error') {
           returnUrl = '/';
         }
-        this.router.navigate(['login'], { queryParams: { returnUrl } });
+        this.router.navigate(['login'], {queryParams: {returnUrl}});
       }
     });
   }
@@ -438,7 +488,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       nzContent: ChangePasswordComponent,
       nzComponentParams: {
         username: this.authService.currentUserData,
-        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':')+1)
+        identityServiceName: this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1)
       },
       nzFooter: null,
       nzClosable: false,
@@ -448,7 +498,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (result) {
         this.authService.forcePasswordChange = false;
         this.authService.save();
-      } else{
+      } else {
         this.logout(null);
       }
     });
@@ -499,6 +549,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       if (!this.preferences || !this.preferences.zone && sessionStorage.preferences) {
         this.preferences = JSON.parse(sessionStorage.preferences) || {};
+        if (sessionStorage.hasLicense == 'true') {
+          this.checkLicenseExpireDate();
+        }
       }
       this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
       if (this.sessionTimeout > 0) {

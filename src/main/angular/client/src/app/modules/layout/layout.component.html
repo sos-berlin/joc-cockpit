@@ -34,6 +34,23 @@
     <app-header (myLogout)="logout(null)"></app-header>
   </div>
   <div class="app-body">
+    <div *ngIf="warningMessage || warningMessage2">
+      <div class="license-box card">
+        <div class="pl-1 pr-1 row">
+          <div class="col-1">
+            <i class="fa fa-exclamation-triangle text-18" [ngClass]="warningMessage ? 'text-warning' : 'text-danger'" aria-hidden="true"></i>
+          </div>
+          <div class="p-0 col-10" *ngIf="warningMessage">
+            <p class="p-2 p-b-0 m-b-sm _400" [innerHTML]="warningMessage"></p>
+            <a *ngIf="!warningMessage2" (click)="gotIt()" style="margin-left: -5px" class="btn-text text-primary" translate>info.button.gotIt</a>
+            <a *ngIf="!warningMessage2" (click)="remindLater()" style="margin-left: -4px" class="btn-text text-primary" translate>info.button.remindMeLater</a>
+          </div>
+          <div class="p-0 col-10" *ngIf="!warningMessage && warningMessage2">
+            <p class="p-2 p-b-0 m-b-sm _500" [innerHTML]="warningMessage2"></p>
+          </div>
+        </div>
+      </div>
+    </div>
     <router-outlet></router-outlet>
   </div>
 </div>

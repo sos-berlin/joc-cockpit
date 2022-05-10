@@ -333,6 +333,14 @@
     "label.dateRange": "期間",
     "label.to": "至",
     "label.from": "自",
+    "label.startDateRange": "Start Date Range",
+    "label.startTo": "Start To",
+    "label.startFrom": "Start From",
+    "label.endDateRange": "End Date Range",
+    "label.endTo": "End To",
+    "label.endFrom": "End From",
+    "label.processStarted": "Process Started",
+    "label.processCompleted": "Process Completed",
     "label.specificDate": "特定日付",
     "label.relativeDate": "相対日付",
     "label.relativeTime": "相対時刻",
@@ -907,6 +915,7 @@
     "label.welcome": "Welcome",
     "label.allRightReserved": "All right reserved.",
     "label.licenseType": "License Type",
+    "label.licenseValidity": "License Validity",
     "label.commercialLicense": "Commercial License",
     "label.openSourceLicense": "Open Source License",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
@@ -1431,6 +1440,10 @@
         "updateSuccessfully": "{{count}}オブジェクトが更新されました"
       }
     }
+  },
+  "license": {
+    "firstWarning": "The JS7 license expires on {{date}}. Get in contact with %Sales Team% for license renewal.",
+    "secondWarning": "The JS7 license expired on {{date}}. Cluster instances of JOC Cockpit, Controller and Agents are out of service."
   },
   "log": {
     "--------COMMENT BOX BEGIN------------": "Client Logging and Log window",

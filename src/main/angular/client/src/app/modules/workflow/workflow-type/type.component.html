@@ -9,6 +9,10 @@
       <span translate> common.label.comment </span>:
       <span class="_600"> {{order.state._reason}}</span>
     </div>
+    <div class="p-l-sm" *ngIf="order.question">
+      <span translate> workflow.label.prompt </span>:
+      <span class="_600"> {{order.question}}</span>
+    </div>
     <div class="p-l-sm" *ngIf="order.obstacles && order.obstacles.length > 0">
       <div *ngFor="let obstacle of order.obstacles">
         <span translate> {{obstacle.type | translate}} </span>

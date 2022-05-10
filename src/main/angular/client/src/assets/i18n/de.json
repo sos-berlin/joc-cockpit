@@ -333,6 +333,14 @@
     "label.dateRange": "Datumsbereich",
     "label.to": "Bis",
     "label.from": "Von",
+    "label.startDateRange": "Start Date Range",
+    "label.startTo": "Start To",
+    "label.startFrom": "Start From",
+    "label.endDateRange": "End Date Range",
+    "label.endTo": "End To",
+    "label.endFrom": "End From",
+    "label.processStarted": "Process Started",
+    "label.processCompleted": "Process Completed",
     "label.specificDate": "Bestimmtes Datum",
     "label.relativeDate": "Relatives Datum",
     "label.relativeTime": "Relative Uhrzeit",
@@ -907,6 +915,7 @@
     "label.welcome": "Willkommen",
     "label.allRightReserved": "Alle Rechte vorbehalten",
     "label.licenseType": "Lizenztyp",
+    "label.licenseValidity": "License Validity",
     "label.commercialLicense": "Kommerzielle Lizenz",
     "label.openSourceLicense": "Open Source Lizenz",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
@@ -1431,6 +1440,10 @@
         "updateSuccessfully": "{{count}} Objekte erfolgreich aktualisiert."
       }
     }
+  },
+  "license": {
+    "firstWarning": "The JS7 license expires on {{date}}. Get in contact with %Sales Team% for license renewal.",
+    "secondWarning": "The JS7 license expired on {{date}}. Cluster instances of JOC Cockpit, Controller and Agents are out of service."
   },
   "log": {
     "--------COMMENT BOX BEGIN------------": "Client Logging and Log window",

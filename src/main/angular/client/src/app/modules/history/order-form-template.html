@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="isSearch">
-      <label class="col-md-2 col-sm-4" translate>common.label.dateRange</label>
+      <label class="col-md-2 col-sm-4" translate>common.label.startDateRange</label>
       <div class="col-md-6 col-sm-8">
         <nz-radio-group name="date" [(ngModel)]="filter.radio">
           <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'current'">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.from</label>
+      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.startFrom</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat"
          [(ngModel)]="filter.fromDate" name="from"></nz-date-picker>
@@ -41,7 +41,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'current'">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.to</label>
+      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.startTo</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [(ngModel)]="filter.toDate" [nzFormat]="dateFormat" name="to"></nz-date-picker>
 		    <div class="time-picker">
@@ -52,12 +52,55 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.processExecuted</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.processStarted</label>
       <div class=" col-sm-6">
         <input autocomplete="off" validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
                placeholder="{{'common.placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
         <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
           <div translate *ngIf="!processExc1.valid">common.message.invalid</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row" *ngIf="isSearch">
+      <label class="col-md-2 col-sm-4" translate>common.label.endDateRange</label>
+      <div class="col-md-6 col-sm-8">
+        <nz-radio-group name="date1" [(ngModel)]="filter.radio1">
+          <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
+          <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+        </nz-radio-group>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio1 == 'current'">
+      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endFrom</label>
+      <div class="col-sm-6">
+        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat"
+                        [(ngModel)]="filter.endFromDate" name="endFrom"></nz-date-picker>
+        <div class="time-picker">
+          <input timevalidator [disabled]="!filter.endFromDate" type="text" class="form-control"
+                 name="endFromTime" [(ngModel)]="filter.endFromTime" (ngModelChange)="selectTime(filter.endFromTime, true, 'endFromTime1')" placeholder="HH:MM:SS">
+          <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event, false, 'endFromTime')" [(ngModel)]="filter.endFromTime1" name="endFromTimeIcon"></nz-time-picker>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio1 == 'current'">
+      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endTo</label>
+      <div class="col-sm-6">
+        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [(ngModel)]="filter.endToDate" [nzFormat]="dateFormat" name="to"></nz-date-picker>
+        <div class="time-picker">
+          <input timevalidator [disabled]="!filter.endToDate" type="text" class="form-control"
+                 name="endToTime1" [(ngModel)]="filter.endToTime" (ngModelChange)="selectTime(filter.endToTime, true, 'endToTime1')" placeholder="HH:MM:SS">
+          <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event, false, 'endToTime')" [(ngModel)]="filter.endToTime1" name="endToTimeIcon"></nz-time-picker>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio1 == 'planned'" [ngClass]="{ 'has-error' : (processCompleted.dirty || processCompleted.touched) && processCompleted.invalid}">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.processCompleted</label>
+      <div class=" col-sm-6">
+        <input autocomplete="off" validateReqex type="text" name="processCompleted" #processCompleted="ngModel" class="form-control"
+               placeholder="{{'common.placeholder.processExecuted' | translate}}" [(ngModel)]="filter.processCompleted">
+        <div *ngIf="processCompleted.errors && (processCompleted.dirty || processCompleted.touched)" class="help-block text-danger">
+          <div translate *ngIf="!processCompleted.valid">common.message.invalid</div>
         </div>
       </div>
     </div>

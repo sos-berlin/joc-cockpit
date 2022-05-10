@@ -245,3 +245,6 @@ div.jsoneditor-tree .jsoneditor-button.jsoneditor-schema-error {
 #toolbarContainer div.draggable:hover {
   background: #f5f7fb !important;
 }
+img.mxToolbarModeSelected {
+  background: #e6f7ff;
+}

@@ -824,7 +824,7 @@ export class CoreService {
     return date;
   }
 
-  parseProcessExecutedRegex(regex: string, obj: any): any {
+  parseProcessExecutedRegex(regex: string, obj: any, endDate?): any {
     let fromDate;
     let toDate;
     let date;
@@ -879,10 +879,10 @@ export class CoreService {
       toDate = moment.utc(toTime);
     }
     if (fromDate) {
-      obj.dateFrom = fromDate;
+      obj[endDate ? 'endDateFrom' : 'dateFrom'] = fromDate;
     }
     if (toDate) {
-      obj.dateTo = toDate;
+      obj[endDate ? 'endDateTo' : 'dateTo'] = toDate;
     }
     return obj;
   }
@@ -1597,7 +1597,7 @@ export class CoreService {
       const h = time.getHours() + '';
       const m = time.getMinutes() + '';
       const s = time.getSeconds() + '';
-      data[val === 'from' ? 'fromTime' : val === 'start' ? 'startTime' : 'toTime'] = (h.length == 1 ? '0' + h : h) + ':' + (m.length == 1 ? '0' + m : m) + ':' + (s.length == 1 ? '0' + s : s);
+      data[val === 'from' ? 'fromTime' : val === 'start' ? 'startTime' : val.match('end') ? val : 'toTime'] = (h.length == 1 ? '0' + h : h) + ':' + (m.length == 1 ? '0' + m : m) + ':' + (s.length == 1 ? '0' + s : s);
     } else if (isEditor && time) {
       let d = new Date();
       const arr = time.split(':');
@@ -1614,7 +1614,7 @@ export class CoreService {
       } else {
         d.setSeconds(0);
       }
-      data[val === 'from' ? 'fromTime1' : val === 'start' ? 'startTime1' : 'toTime1'] = new Date(d);
+      data[val === 'from' ? 'fromTime1' : val === 'start' ? 'startTime1' : val.match('end') ? val : 'toTime1'] = new Date(d);
     }
   }
 }
