@@ -5071,7 +5071,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         // Handle Cut: Ctrl + v
         self.keyHandler.bindControlKey(86, function () {
           if (dropTargetForPaste) {
-            console.log(dropTargetForPaste)
             createClickInstruction('paste', dropTargetForPaste);
           }
         });
@@ -7411,7 +7410,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       function getObject(json, id) {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
-            if (copyObject && targetObject) {
+            if (copyObject.length > 0 && targetObject) {
               break;
             }
             if (json.instructions[x].uuid == id) {
@@ -7482,9 +7481,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         const targetObj = targetObject.instructions[targetIndex];
         if (target.value.tagName === 'If') {
           if (!targetObj.then) {
-            targetObj.then = {instructions: [copyObject]};
+            targetObj.then = {instructions: copyObject};
           } else if (!targetObj.else) {
-            targetObj.else = {instructions: [copyObject]};
+            targetObj.else = {instructions: copyObject};
           }
         } else if (target.value.tagName === 'Fork') {
           let branchId;
@@ -7496,27 +7495,27 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             });
           }
           branchId = 'branch' + (targetObj.branches.length + 1);
-          targetObj.branches.push({id: branchId, instructions: [copyObject]});
+          targetObj.branches.push({id: branchId, instructions: copyObject});
         } else if (target.value.tagName === 'Retry' || target.value.tagName === 'Lock' || target.value.tagName === 'Cycle') {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
           }
-          targetObj.instructions.push(copyObject);
+          targetObj.instructions = targetObj.instructions.concat(copyObject);
         } else if (target.value.tagName === 'ForkList') {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
           }
-          targetObj.instructions.push(copyObject);
+          targetObj.instructions = targetObj.instructions.concat(copyObject);
         } else if (target.value.tagName === 'Try' && !isCatch) {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
           }
-          targetObj.instructions.push(copyObject);
+          targetObj.instructions = targetObj.instructions.concat(copyObject);
         } else if (isCatch) {
           if (!targetObj.catch.instructions) {
             targetObj.catch.instructions = [];
           }
-          targetObj.catch.instructions.push(copyObject);
+          targetObj.catch.instructions = targetObj.catch.instructions.concat(copyObject);
         }
       }
 
