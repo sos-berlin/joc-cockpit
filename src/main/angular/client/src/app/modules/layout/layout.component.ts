@@ -93,8 +93,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
     const headerHt = $('.fixed-top').height() || 70;
     $('.app-body').css({'margin-top': headerHt + 'px'});
-    $('.max-ht').css({'max-height': 'calc(100vh - ' + (headerHt + 56) +'px)'});
-    $('.max-ht2').css({'max-height': 'calc(100vh - ' + (headerHt + 107) +'px)'});
+    $('.max-ht').css({'max-height': 'calc(100vh - ' + (headerHt + 56) + 'px)'});
+    $('.max-ht2').css({'max-height': 'calc(100vh - ' + (headerHt + 107) + 'px)'});
   }
 
   static checkNavHeader(): void {
@@ -182,7 +182,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           });
         }
       }
-    } else{
+    } else {
       localStorage.removeItem('$SOS$LICENSEREMINDER')
     }
   }
@@ -318,14 +318,20 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
           sessionStorage.welcomeGotIt = result.welcomeGotIt;
           sessionStorage.hasLicense = result.clusterLicense;
-          sessionStorage.licenseValidFrom = result.licenseValidFrom;
-          sessionStorage.licenseValidUntil = result.licenseValidUntil;
+          if (result.licenseValidFrom) {
+            sessionStorage.licenseValidFrom = result.licenseValidFrom;
+          }
+          if (result.licenseValidUntil) {
+            sessionStorage.licenseValidUntil = result.licenseValidUntil;
+            if (result.clusterLicense) {
+              setTimeout(() => {
+                this.checkLicenseExpireDate();
+              }, 1500);
+            }
+          }
+
           if (!this.loading) {
             this.init();
-          } else {
-            if (result.clusterLicense) {
-              this.checkLicenseExpireDate();
-            }
           }
           this.isPropertiesLoaded = false;
         }, error: () => this.ngOnInit()

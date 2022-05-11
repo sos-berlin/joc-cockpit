@@ -62,8 +62,10 @@
                   <tr *ngFor="let item of ajaxTable.data"
                       (click)="selectJob(item)" class="cursor" [ngClass]="{'light-bg' : item.javaClass == job.javaClass}">
                     <td>
-                      <i *ngIf="item.docPath" class="fa fa-book p-r-sm" (click)="showDoc(item.docPath);$event.stopPropagation()"></i>
-                      <span [innerHTML]="item.assignReference | highlight:wizard.searchText"></span>
+                      <span class="show-in-single-line">
+                        <i *ngIf="item.docPath" class="fa fa-book p-r-sm" (click)="showDoc(item.docPath);$event.stopPropagation()"></i>
+                        <span [innerHTML]="item.assignReference | highlight:wizard.searchText"></span>
+                      </span>
                     </td>
                     <td><span [innerHTML]="item.title | highlight:wizard.searchText"></span></td>
                     <td><span [innerHTML]="item.javaClass | highlight:wizard.searchText"></span></td>

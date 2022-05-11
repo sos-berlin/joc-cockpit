@@ -773,7 +773,7 @@
             </label>
             <div class="col-md-8 col-lg-9">
               <input type="text" [readonly]="isTrash" class="form-control" identifierValidation name="name" (blur)="rename(name.invalid)"
-                    [(ngModel)]="workflow.name" required #name="ngModel" [appAutofocus]="!isTrash" autocomplete="off"
+                    [(ngModel)]="workflow.name" required #name="ngModel" autocomplete="off"
               />
               <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
                 <div *ngIf="name.errors.required">
