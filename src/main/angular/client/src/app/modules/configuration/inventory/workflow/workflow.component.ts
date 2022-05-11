@@ -42,6 +42,7 @@ declare const mxRectangleShape;
 declare const mxAutoSaveManager;
 declare const mxGraphHandler;
 declare const mxCellAttributeChange;
+declare const mxGraphSelectionModel;
 declare const mxGraph;
 declare const mxImage;
 declare const mxOutline;
@@ -2451,8 +2452,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   isUpdate: boolean;
   isStore = false;
   error: boolean;
-  cutCell: any;
-  copyId: any;
+  cutCell: any = [];
+  copyId: any = [];
   skipXMLToJSONConversion = false;
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
@@ -2654,25 +2655,27 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private saveCopyInstruction(): void {
-    if (this.copyId) {
-      let obj = this.getObject(this.workflow.configuration);
-      if (obj.TYPE) {
-        if (obj.TYPE === 'Job') {
-          for (let i in this.jobs) {
-            if (this.jobs[i] && this.jobs[i].name === obj.jobName) {
-              obj.jobObject = this.jobs[i].value;
-              break;
+    if (this.copyId.length > 0) {
+      this.copyId.forEach(id => {
+        let obj = this.getObject(this.workflow.configuration, id);
+        if (obj.TYPE) {
+          if (obj.TYPE === 'Job') {
+            for (let i in this.jobs) {
+              if (this.jobs[i] && this.jobs[i].name === obj.jobName) {
+                obj.jobObject = this.jobs[i].value;
+                break;
+              }
             }
           }
+          delete obj.id;
+          delete obj.uuid;
+          if (this.workflowService.isInstructionCollapsible(obj.TYPE)) {
+            this.getJobsArray(obj);
+          }
+          this.inventoryConf.copiedInstuctionObject.push(obj);
         }
-        delete obj.id;
-        delete obj.uuid;
-        this.copyId = null;
-        if (this.workflowService.isInstructionCollapsible(obj.TYPE)) {
-          this.getJobsArray(obj);
-        }
-        this.inventoryConf.copiedInstuctionObject = obj;
-      }
+      });
+      this.copyId = [];
     }
   }
 
@@ -2857,21 +2860,25 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   copy(node): void {
     if (this.editor && this.editor.graph) {
-      let cell;
+      let cells;
       if (node) {
-        cell = node.cell;
+        cells = [node.cell];
       } else {
-        cell = this.editor.graph.getSelectionCell();
+        cells = this.editor.graph.getSelectionCells();
       }
-      if (cell) {
-        if (this.cutCell) {
-          this.changeCellStyle(this.editor.graph, this.cutCell, false);
-          this.cutCell = null;
+      if (cells && cells.length > 0) {
+        if (this.cutCell.length > 0) {
+          this.cutCell.forEach(cell => {
+            this.changeCellStyle(this.editor.graph, cell, false);
+          });
+          this.cutCell = [];
         }
-        this.copyId = cell.getAttribute('uuid');
-        if (this.copyId) {
-          this.updateToolbar('copy', cell);
-        }
+        this.copyId = [];
+        cells.forEach(cell => {
+          this.copyId.push(cell.getAttribute('uuid'));
+        });
+
+        this.updateToolbar('copy', node ? node.cell : null, 'multiple instructions');
         this.coreService.showCopyMessage(this.message);
       }
     }
@@ -2880,20 +2887,25 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   cut(node): void {
     if (this.editor && this.editor.graph) {
       const graph = this.editor.graph;
-      let cell;
+      let cells;
       if (node) {
-        cell = node.cell;
+        cells = [node.cell];
       } else {
-        cell = graph.getSelectionCell();
+        cells = graph.getSelectionCells();
       }
-      if (cell) {
-        this.copyId = null;
-        if (this.cutCell) {
-          this.changeCellStyle(graph, this.cutCell, false);
+      if (cells && cells.length > 0) {
+        this.copyId = [];
+        if (this.cutCell.length > 0) {
+          this.cutCell.forEach(cell => {
+            this.changeCellStyle(graph, cell, false);
+          });
         }
-        this.changeCellStyle(graph, cell, true);
-        this.cutCell = cell;
-        this.updateToolbar('cut', cell);
+        this.cutCell = [];
+        cells.forEach(cell => {
+          this.changeCellStyle(graph, cell, true);
+          this.cutCell.push(cell);
+        });
+        this.updateToolbar('cut', node ? node.cell : null, 'multiple instructions');
       }
     }
   }
@@ -3321,10 +3333,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private getWorkflowObject(): void {
-    if (!this.inventoryConf.copiedInstuctionObject || !this.inventoryConf.copiedInstuctionObject.TYPE) {
+    if (!this.inventoryConf.copiedInstuctionObject || this.inventoryConf.copiedInstuctionObject.length === 0) {
       this.updateToolbar('copy', null);
-    } else {
-      this.updateToolbar('copy', null, this.inventoryConf.copiedInstuctionObject.TYPE);
+    } else if (this.inventoryConf.copiedInstuctionObject.length > 0) {
+      if (this.inventoryConf.copiedInstuctionObject.length > 1) {
+        this.updateToolbar('copy', null, 'multiple instructions');
+      } else {
+        this.updateToolbar('copy', null, this.inventoryConf.copiedInstuctionObject[0].TYPE);
+      }
     }
     this.error = false;
     this.history = {past: [], present: {}, future: [], type: 'new'};
@@ -4710,6 +4726,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     let selectedCellsObj;
     let isVertexDrop = false;
     let dragStart = false;
+    let dropTargetForPaste = null;
     let _iterateId = 0;
     const doc = mxUtils.createXmlDocument();
     if (!callFun) {
@@ -5019,6 +5036,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         graph.extendParentsOnAdd = false;
         graph.extendParents = false;
 
+        // Transfer initial focus to graph container for keystroke handling
+        graph.container.focus();
+
         self.keyHandler = new mxKeyHandler(graph);
 
         // Handle Delete: delete key
@@ -5039,11 +5059,21 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         // Handle Copy: Ctrl + c
         self.keyHandler.bindControlKey(67, function () {
           self.copy(null);
+          $('#toolbar').find('img:last-child').click();
         });
 
         // Handle Cut: Ctrl + x
         self.keyHandler.bindControlKey(88, function () {
           self.cut(null);
+          $('#toolbar').find('img:last-child').click();
+        });
+
+        // Handle Cut: Ctrl + v
+        self.keyHandler.bindControlKey(86, function () {
+          if (dropTargetForPaste) {
+            console.log(dropTargetForPaste)
+            createClickInstruction('paste', dropTargetForPaste);
+          }
         });
 
         // Handle Cut: Ctrl + a
@@ -5055,38 +5085,47 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         // Handle Scroll to left: Arrow Left
         self.keyHandler.bindKey(37, function () {
-          const scale = graph.view.scale;
-          const bounds = graph.getGraphBounds();
-          graph.view.setTranslate(bounds.x / scale - 40, bounds.y / scale);
+          nudge(37);
         });
 
         // Handle Scroll to up: Arrow Up
         self.keyHandler.bindKey(38, function () {
-          const scale = graph.view.scale;
-          const bounds = graph.getGraphBounds();
-          graph.view.setTranslate(bounds.x / scale, bounds.y / scale - 40);
+          nudge(38);
         });
 
         // Handle Scroll to right: Arrow Right
         self.keyHandler.bindKey(39, function () {
-          const scale = graph.view.scale;
-          const bounds = graph.getGraphBounds();
-          graph.view.setTranslate(bounds.x / scale + 40, bounds.y / scale);
+          nudge(39);
         });
 
         // Handle Scroll to down: Arrow Down
         self.keyHandler.bindKey(40, function () {
+          nudge(40);
+        });
+
+        // Handles cursor keys
+        function nudge(keyCode) {
           const scale = graph.view.scale;
           const bounds = graph.getGraphBounds();
-          graph.view.setTranslate(bounds.x / scale, bounds.y / scale + 40);
-        });
+          if (keyCode == 37) {
+            graph.view.setTranslate(bounds.x / scale - 40, bounds.y / scale);
+          } else if (keyCode == 38) {
+            graph.view.setTranslate(bounds.x / scale, bounds.y / scale - 40);
+          } else if (keyCode == 39) {
+            graph.view.setTranslate(bounds.x / scale + 40, bounds.y / scale);
+          } else if (keyCode == 40) {
+            graph.view.setTranslate(bounds.x / scale, bounds.y / scale + 40);
+          }
+        }
 
 
         function clearClipboard(): void {
-          if (self.cutCell) {
-            self.changeCellStyle(self.editor.graph, self.cutCell, false);
+          if (self.cutCell.length > 0) {
+            self.cutCell.forEach(cell => {
+              self.changeCellStyle(self.editor.graph, cell, false);
+            })
           }
-          self.cutCell = null;
+          self.cutCell = [];
           $('#toolbar').find('img').each(function (index) {
             if (index === 15) {
               $(this).addClass('disable-link');
@@ -5219,13 +5258,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               tmp = null;
             }
             if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
-              if (tmp != this.currentState) {
-                if (this.currentState != null) {
-                  this.dragLeave(me.getEvent(), this.currentState);
-                }
-                this.currentState = tmp;
-                if (this.currentState != null) {
-                  this.dragEnter(me.getEvent(), this.currentState, me.getCell());
+              if (!dropTargetForPaste) {
+                if (tmp != this.currentState) {
+                  if (this.currentState != null) {
+                    this.dragLeave(me.getEvent(), this.currentState);
+                  }
+                  this.currentState = tmp;
+                  if (this.currentState != null) {
+                    this.dragEnter(me.getEvent(), this.currentState, me.getCell());
+                  }
                 }
               }
             } else {
@@ -5385,6 +5426,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
          *
          */
         graph.click = function (me) {
+          checkState();
+          dropTargetForPaste = null;
           const evt = me.getEvent();
           const cell = me.getCell();
           const mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
@@ -5398,8 +5441,24 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   result = _result;
                 }
               }
-              createClickInstruction(sourceCell.attr('src'), cell);
-              mxToolbar.prototype.resetMode(true);
+              if (sourceCell.attr('src') && sourceCell.attr('src').match(/paste/) && result == 'valid') {
+                if (cell.value.tagName === 'Connection') {
+                  let state = graph.getView().getState(cell);
+                  this.currentHighlight = new mxCellHighlight(graph, 'green');
+                  this.currentHighlight.highlight(state);
+                  state.shape.redraw();
+                } else if (self.workflowService.checkClosingCell(cell.value.tagName) || cell.value.tagName === 'Process') {
+                  return;
+                }
+                dropTargetForPaste = cell;
+                graph.setSelectionCell(cell);
+                self.selectedNode = null;
+                //mxToolbar.prototype.resetMode(true);
+                return;
+              } else {
+                createClickInstruction(sourceCell.attr('src'), cell);
+                mxToolbar.prototype.resetMode(true);
+              }
             }
           } else {
             dragStart = false;
@@ -5529,6 +5588,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
             mxToolbar.prototype.resetMode(true);
           }
+
+          checkState();
 
           // Highlights the drop target under the mouse
           if (this.currentHighlight != null && _graph.isDropEnabled()) {
@@ -5801,9 +5862,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
             if (dragElement) {
               if (dragElement.match('paste')) {
-                if (self.copyId || (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.TYPE)) {
+                if (self.copyId.length > 0 || (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0)) {
                   pasteInstruction(drpTargt);
-                } else if (self.cutCell) {
+                } else if (self.cutCell.length > 0) {
                   createClickInstruction(dragElement, drpTargt);
                 }
                 return;
@@ -6149,7 +6210,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         const mgr = new mxAutoSaveManager(graph);
         mgr.save = function () {
-          if (self.cutCell) {
+          if (self.cutCell.length > 0) {
             clearClipboard();
           }
           if (!self.isLoading && !self.isTrash) {
@@ -6186,6 +6247,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         };
       } else {
         this.updateXMLJSON(false);
+      }
+    }
+
+    /**
+     * Function: check the shape of selected cell
+     */
+    function checkState() {
+      if (dropTargetForPaste && graph.currentHighlight) {
+        graph.currentHighlight.destroy();
       }
     }
 
@@ -7325,10 +7395,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
 
-      let copyObject: any, targetObject: any, targetIndex = 0, isCatch = false;
-      if (!self.copyId) {
+      let copyObject: any = [], targetObject: any, targetIndex = 0, isCatch = false;
+      if (self.copyId.length == 0) {
         copyObject = self.coreService.clone(self.inventoryConf.copiedInstuctionObject);
-        delete copyObject.jobObject;
+        copyObject.forEach(cObject => {
+          delete cObject.jobObject;
+        })
       }
       if (target.value.tagName === 'Process') {
         if (self.workflow.configuration && !self.workflow.configuration.instructions) {
@@ -7336,15 +7408,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
 
-      function getObject(json) {
+      function getObject(json, id) {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (copyObject && targetObject) {
               break;
             }
-            if (json.instructions[x].uuid == self.copyId) {
-              copyObject = self.coreService.clone(json.instructions[x]);
-              delete copyObject.uuid;
+            if (json.instructions[x].uuid == id) {
+              let copyObj = self.coreService.clone(json.instructions[x]);
+              delete copyObj.uuid;
+              copyObject.push(copyObj);
             }
             if (json.instructions[x].id == source) {
               if (json.instructions[x].TYPE == 'Fork' && target.value.tagName === 'Connection' && (target.source && !self.workflowService.checkClosingCell(target.source.value.tagName))) {
@@ -7378,7 +7451,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
             }
             if (json.instructions[x].instructions) {
-              getObject(json.instructions[x]);
+              getObject(json.instructions[x], id);
             }
             if (json.instructions[x].catch) {
               if (json.instructions[x].catch.id == source) {
@@ -7387,18 +7460,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 isCatch = true;
               }
               if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-                getObject(json.instructions[x].catch);
+                getObject(json.instructions[x].catch, id);
               }
             }
             if (json.instructions[x].then) {
-              getObject(json.instructions[x].then);
+              getObject(json.instructions[x].then, id);
             }
             if (json.instructions[x].else) {
-              getObject(json.instructions[x].else);
+              getObject(json.instructions[x].else, id);
             }
             if (json.instructions[x].branches) {
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
-                getObject(json.instructions[x].branches[i]);
+                getObject(json.instructions[x].branches[i], id);
               }
             }
           }
@@ -7448,32 +7521,41 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
 
       if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
-        getObject(self.workflow.configuration);
+        if (self.copyId.length > 0) {
+          self.copyId.forEach(id => {
+            getObject(self.workflow.configuration, id);
+          });
+        }
       }
 
       if (!targetObject) {
         targetIndex = -1;
         targetObject = self.workflow.configuration;
       }
-      if (copyObject) {
-        generateCopyObject(copyObject);
-        if (copyObject.jobs) {
-          delete copyObject.jobs;
-        }
-        if (target.value.tagName !== 'Connection' && copyObject && targetIndex > -1) {
-          _dropOnObject();
-        } else {
-          if (targetObject && targetObject.instructions && copyObject) {
-            targetObject.instructions.splice(targetIndex + 1, 0, copyObject);
+      if (copyObject && copyObject.length > 0) {
+        copyObject.forEach((copyObj, index) => {
+          generateCopyObject(copyObj);
+          if (copyObj.jobs) {
+            delete copyObj.jobs;
           }
-        }
-        self.updateXMLJSON(true);
-        if (copyObject.id) {
-          setTimeout(() => {
-            graph.setSelectionCell(graph.getModel().getCell(copyObject.id));
-            customizedChangeEvent();
-          }, 0);
-        }
+          if (target.value.tagName !== 'Connection' && copyObj && targetIndex > -1) {
+            _dropOnObject();
+          } else {
+            if (targetObject && targetObject.instructions && copyObj) {
+              targetObject.instructions.splice(targetIndex + 1, 0, copyObj);
+            }
+          }
+
+          if (index == copyObject.length - 1) {
+            self.updateXMLJSON(true);
+            if (copyObj.id) {
+              setTimeout(() => {
+                graph.setSelectionCell(graph.getModel().getCell(copyObj.id));
+                customizedChangeEvent();
+              }, 0);
+            }
+          }
+        });
       }
     }
 
@@ -7505,7 +7587,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       return str;
     }
 
-    function getJob(name): string {
+    function getJob(name, copiedInstuctionObject): string {
       let job: any = {};
       let newName;
       let flag = true;
@@ -7520,13 +7602,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
       if (flag) {
-        if (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.jobName === name) {
-          job = {name: newName, value: self.inventoryConf.copiedInstuctionObject.jobObject};
+        if (copiedInstuctionObject && copiedInstuctionObject.jobName === name) {
+          job = {name: newName, value: copiedInstuctionObject.jobObject};
         }
         if (!job.name) {
           job = {name: newName, value: {}};
-          if (self.inventoryConf.copiedInstuctionObject.jobs) {
-            updateMissingJobs(self.inventoryConf.copiedInstuctionObject.jobs, job, name);
+          if (copiedInstuctionObject.jobs) {
+            updateMissingJobs(copiedInstuctionObject.jobs, job, name);
           }
         }
         self.jobs.push(job);
@@ -7552,7 +7634,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           for (let x = 0; x < json.instructions.length; x++) {
             json.instructions[x].uuid = undefined;
             if (json.instructions[x].TYPE === 'Job') {
-              json.instructions[x].jobName = getJob(json.instructions[x].jobName);
+              json.instructions[x].jobName = getJob(json.instructions[x].jobName, copyObject);
               json.instructions[x].label = json.instructions[x].jobName;
             }
             if (json.instructions[x].instructions) {
@@ -7583,7 +7665,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
 
       if (copyObject.TYPE === 'Job') {
-        copyObject.jobName = getJob(copyObject.jobName);
+        copyObject.jobName = getJob(copyObject.jobName, copyObject);
         copyObject.label = copyObject.jobName;
       } else if (copyObject.TYPE === 'Fork') {
         if (copyObject.branches) {
@@ -7669,9 +7751,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      */
     function createClickInstruction(title, targetCell) {
       if (title.match('paste')) {
-        if (self.copyId) {
+        if (self.copyId.length > 0) {
           pasteInstruction(targetCell);
-        } else if (self.cutCell) {
+        } else if (self.cutCell.length > 0) {
           const tagName = targetCell.value.tagName;
           if (tagName === 'Connection' || self.workflowService.isInstructionCollapsible(tagName) || tagName === 'Catch') {
             if (tagName === 'Connection') {
@@ -7689,11 +7771,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
               self.droppedCell = {
                 target: {source: sourceId, target: targetId},
-                cells: [self.cutCell],
+                cells: self.cutCell,
                 type: targetCell.value.getAttribute('type')
               };
             } else {
-              self.droppedCell = {target: targetCell.id, cells: [self.cutCell]};
+              self.droppedCell = {target: targetCell.id, cells: self.cutCell};
             }
           }
         }
@@ -8689,14 +8771,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  private getObject(mainJson): any {
+  private getObject(mainJson, copyId): any {
     const self = this;
     let obj: any = {};
 
     function recursion(json): void {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          if (json.instructions[x].uuid == self.copyId) {
+          if (json.instructions[x].uuid == copyId) {
             obj = self.coreService.clone(json.instructions[x]);
           }
           if (json.instructions[x].instructions) {

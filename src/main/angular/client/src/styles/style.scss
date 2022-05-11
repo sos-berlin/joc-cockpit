@@ -8666,14 +8666,8 @@ td .ver-top {
     height: 40px;
   }
 
-  a.btn-text {
-    padding: 4px 12px;
-  }
-
   a.btn-text:hover {
-    background-color: var(--default-btn);
-    border-color: var(--default-btn);
-    color: var(--text-color) !important;
+    text-decoration: underline !important;
   }
 }
 

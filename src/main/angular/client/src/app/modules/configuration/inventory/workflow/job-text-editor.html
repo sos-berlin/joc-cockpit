@@ -188,7 +188,7 @@
             </nz-select>
           </div>
         </div>
-        <div class="form-group row" *ngIf="selectedNode.job.executable.TYPE === 'ShellScriptExecutable'" [hidden]="fullScreen">
+        <div class="form-group row" *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'" [hidden]="fullScreen">
           <div class="col-md-4 col-lg-3" translate [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5">workflow.label.returnCode</div>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveToHistory();">
