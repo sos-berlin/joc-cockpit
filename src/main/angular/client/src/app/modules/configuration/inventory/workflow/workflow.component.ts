@@ -42,7 +42,6 @@ declare const mxRectangleShape;
 declare const mxAutoSaveManager;
 declare const mxGraphHandler;
 declare const mxCellAttributeChange;
-declare const mxGraphSelectionModel;
 declare const mxGraph;
 declare const mxImage;
 declare const mxOutline;
@@ -7385,7 +7384,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      */
     function pasteInstruction(target): void {
       let source = target.id;
-
+      let isFound = false;
       if (target.value.tagName === 'Connection') {
         if (self.workflowService.checkClosingCell(target.source.value.tagName)) {
           source = target.source.value.getAttribute('targetId');
@@ -7396,7 +7395,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
       let copyObject: any = [], targetObject: any, targetIndex = 0, isCatch = false;
       if (self.copyId.length == 0) {
-        copyObject = self.coreService.clone(self.inventoryConf.copiedInstuctionObject);
+        copyObject = [...self.inventoryConf.copiedInstuctionObject];
         copyObject.forEach(cObject => {
           delete cObject.jobObject;
         })
@@ -7410,20 +7409,21 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       function getObject(json, id) {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
-            if (copyObject.length > 0 && targetObject) {
+            if (isFound && targetObject) {
               break;
             }
             if (json.instructions[x].uuid == id) {
               let copyObj = self.coreService.clone(json.instructions[x]);
               delete copyObj.uuid;
+              isFound = true;
               copyObject.push(copyObj);
             }
-            if (json.instructions[x].id == source) {
+            if (json.instructions[x].id == source && !targetObject) {
               if (json.instructions[x].TYPE == 'Fork' && target.value.tagName === 'Connection' && (target.source && !self.workflowService.checkClosingCell(target.source.value.tagName))) {
                 for (let y = 0; y < json.instructions[x].branches.length; y++) {
                   if (json.instructions[x].branches[y].id === target.getAttribute('label')) {
                     targetObject = json.instructions[x].branches[y];
-                    targetIndex = y - 1;
+                    targetIndex = -1;
                     break;
                   }
                 }
@@ -7453,7 +7453,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               getObject(json.instructions[x], id);
             }
             if (json.instructions[x].catch) {
-              if (json.instructions[x].catch.id == source) {
+              if (json.instructions[x].catch.id == source && !targetObject) {
                 targetObject = json.instructions[x].catch;
                 targetIndex = -1;
                 isCatch = true;
@@ -7522,6 +7522,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
         if (self.copyId.length > 0) {
           self.copyId.forEach(id => {
+            isFound = false;
             getObject(self.workflow.configuration, id);
           });
         }
@@ -7541,7 +7542,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             _dropOnObject();
           } else {
             if (targetObject && targetObject.instructions && copyObj) {
-              targetObject.instructions.splice(targetIndex + 1, 0, copyObj);
+              targetObject.instructions.splice(targetIndex + 1 + index, 0, copyObj);
             }
           }
 
@@ -7586,7 +7587,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       return str;
     }
 
-    function getJob(name, copiedInstuctionObject): string {
+    function getJob(name): string {
       let job: any = {};
       let newName;
       let flag = true;
@@ -7601,13 +7602,23 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
       if (flag) {
-        if (copiedInstuctionObject && copiedInstuctionObject.jobName === name) {
-          job = {name: newName, value: copiedInstuctionObject.jobObject};
+        if (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0) {
+          for(let x in self.inventoryConf.copiedInstuctionObject) {
+            if(self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
+              job = {name: newName, value: self.inventoryConf.copiedInstuctionObject[x].jobObject || {}};
+              break;
+            }
+          }
         }
         if (!job.name) {
           job = {name: newName, value: {}};
-          if (copiedInstuctionObject.jobs) {
-            updateMissingJobs(copiedInstuctionObject.jobs, job, name);
+          if (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0) {
+            for(let x in self.inventoryConf.copiedInstuctionObject) {
+              if(self.inventoryConf.copiedInstuctionObject[x].jobs && self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
+                updateMissingJobs(self.inventoryConf.copiedInstuctionObject[x].jobs, job, name);
+                break;
+              }
+            }
           }
         }
         self.jobs.push(job);
@@ -7633,7 +7644,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           for (let x = 0; x < json.instructions.length; x++) {
             json.instructions[x].uuid = undefined;
             if (json.instructions[x].TYPE === 'Job') {
-              json.instructions[x].jobName = getJob(json.instructions[x].jobName, copyObject);
+              json.instructions[x].jobName = getJob(json.instructions[x].jobName);
               json.instructions[x].label = json.instructions[x].jobName;
             }
             if (json.instructions[x].instructions) {
@@ -7664,7 +7675,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
 
       if (copyObject.TYPE === 'Job') {
-        copyObject.jobName = getJob(copyObject.jobName, copyObject);
+        copyObject.jobName = getJob(copyObject.jobName);
         copyObject.label = copyObject.jobName;
       } else if (copyObject.TYPE === 'Fork') {
         if (copyObject.branches) {
@@ -8967,7 +8978,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (this.jobs[i].name === job.jobName) {
         flag = false;
         delete job.jobName;
-        if (this.jobs[i].value.executable.returnCodeMeaning) {
+        if (this.jobs[i].value.executable && this.jobs[i].value.executable.returnCodeMeaning) {
           if (this.jobs[i].value.executable.TYPE === 'ShellScriptExecutable') {
             if (typeof this.jobs[i].value.executable.returnCodeMeaning.success == 'string') {
               this.jobs[i].value.executable.returnCodeMeaning.success = this.jobs[i].value.executable.returnCodeMeaning.success.split(',').map(Number);

@@ -524,6 +524,9 @@ export class UserComponent implements OnInit, OnDestroy {
       this.preferences.maxBoardRecords = this.preferences.maxRecords;
       this.isGroupBtnActive = false;
     }
+    if(!this.preferences.licenseExpirationWarning){
+      delete this.preferences.licenseReminderDate;
+    }
     sessionStorage.preferences = JSON.stringify(this.preferences);
     this.dataService.resetProfileSetting.next(true);
     this.savePreferences();
