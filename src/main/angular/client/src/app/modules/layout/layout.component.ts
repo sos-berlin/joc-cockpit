@@ -159,15 +159,27 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   checkLicenseExpireDate() {
     if (sessionStorage.getItem('licenseValidUntil')) {
-      const date = localStorage.getItem('$SOS$LICENSEREMINDER');
-      if (date) {
+      const date = this.preferences.licenseReminderDate;
+      this.licenseDate = new Date(sessionStorage.getItem('licenseValidUntil'));
+      const differenceInTime = this.licenseDate.getTime() - this.currentDate.getTime();
+      const remainingDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+      if (date && remainingDays !== 0 && differenceInTime > 0) {
         if (parseInt(date, 10) > new Date().getTime()) {
           return;
         }
       }
-      this.licenseDate = new Date(sessionStorage.getItem('licenseValidUntil'));
-      const differenceInTime = this.licenseDate.getTime() - this.currentDate.getTime();
-      const remainingDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+      if (this.preferences.licenseExpirationWarning && !date) {
+        if (remainingDays > 30) {
+          this.preferences.licenseReminderDate = new Date().setMonth(new Date().getMonth() + 1);
+        } else if (remainingDays > 7) {
+          this.preferences.licenseReminderDate = new Date().setDate(new Date().getDate() + 7);
+        } else {
+          this.preferences.licenseReminderDate = new Date(this.licenseDate).setDate(new Date(this.licenseDate).getDate() - 1);
+        }
+        if (remainingDays !== 30 && remainingDays !== 7) {
+          return;
+        }
+      }
       if (remainingDays < 61) {
         if (differenceInTime < 0) {
           this.translate.get('license.secondWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
@@ -182,19 +194,45 @@ export class LayoutComponent implements OnInit, OnDestroy {
           });
         }
       }
-    } else {
-      localStorage.removeItem('$SOS$LICENSEREMINDER')
+    } else if (this.preferences.licenseReminderDate) {
+      this.preferences.licenseReminderDate = null;
+      this.preferences.licenseExpirationWarning = false;
+      this.saveLicenseReminderDate();
     }
   }
 
   remindLater() {
-    localStorage.setItem('$SOS$LICENSEREMINDER', (new Date().setDate(new Date().getDate() + 1)).toString());
+    this.preferences.licenseReminderDate = new Date().setDate(new Date().getDate() + 1);
+    this.preferences.licenseExpirationWarning = true;
     this.warningMessage = '';
+    this.saveLicenseReminderDate();
   }
 
   gotIt() {
-    localStorage.setItem('$SOS$LICENSEREMINDER', (new Date(this.licenseDate).setDate(new Date().getDate() - 1)).toString());
+    const differenceInTime = this.licenseDate.getTime() - this.currentDate.getTime();
+    const remainingDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+    if (remainingDays > 30) {
+      this.preferences.licenseReminderDate = new Date().setMonth(new Date().getMonth() + 1);
+    } else if (remainingDays > 7) {
+      this.preferences.licenseReminderDate = new Date().setDate(new Date().getDate() + 7);
+    } else {
+      this.preferences.licenseReminderDate = new Date(this.licenseDate).setDate(new Date(this.licenseDate).getDate() - 1);
+    }
+    this.preferences.licenseExpirationWarning = true;
+    this.saveLicenseReminderDate();
     this.warningMessage = '';
+  }
+
+  private saveLicenseReminderDate(): void {
+    const configObj = {
+      id: parseInt(sessionStorage.preferenceId, 10),
+      controllerId: this.schedulerIds.selected,
+      account: this.authService.currentUserData,
+      configurationType: 'PROFILE',
+      configurationItem: JSON.stringify(this.preferences)
+    };
+    sessionStorage.preferences = configObj.configurationItem;
+    this.coreService.post('configuration/save', configObj).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -318,6 +356,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           sessionStorage.welcomeDoNotRemindMe = result.welcomeDoNotRemindMe;
           sessionStorage.welcomeGotIt = result.welcomeGotIt;
           sessionStorage.hasLicense = result.clusterLicense;
+          sessionStorage.licenseType = result.licenseType;
           if (result.licenseValidFrom) {
             sessionStorage.licenseValidFrom = result.licenseValidFrom;
           }

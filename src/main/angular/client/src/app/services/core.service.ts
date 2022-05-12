@@ -304,7 +304,7 @@ export class CoreService {
     this.tabs._configuration.state = 'inventory';
     this.tabs._configuration.inventory = {};
     this.tabs._configuration.copiedParamObjects = {};
-    this.tabs._configuration.copiedInstuctionObject = {};
+    this.tabs._configuration.copiedInstuctionObject = [];
 
     this.tabs._agentCluster = {};
     this.tabs._agentCluster.filter = {};
