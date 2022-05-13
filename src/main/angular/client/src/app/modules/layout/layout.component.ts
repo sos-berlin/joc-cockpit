@@ -380,11 +380,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
           }
           if (result.licenseValidUntil) {
             sessionStorage.licenseValidUntil = result.licenseValidUntil;
-            if (result.clusterLicense) {
-              setTimeout(() => {
-                this.checkLicenseExpireDate();
-              }, 1500);
-            }
+            setTimeout(() => {
+              this.checkLicenseExpireDate();
+            }, 1500);
           }
 
           if (!this.loading) {
@@ -612,7 +610,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       if (!this.preferences || !this.preferences.zone && sessionStorage.preferences) {
         this.preferences = JSON.parse(sessionStorage.preferences) || {};
-        if (sessionStorage.hasLicense == 'true') {
+        if (sessionStorage.licenseValidUntil) {
           this.checkLicenseExpireDate();
         }
       }
