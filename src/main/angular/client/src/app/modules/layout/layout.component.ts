@@ -161,11 +161,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (sessionStorage.getItem('licenseValidUntil')) {
       this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
         next: (res) => {
-          console.log(res)
           if (res.configurations[0]) {
             let configuration = res.configurations[0];
             configuration = JSON.parse(res.configurations[0].configurationItem);
-            console.log(configuration.joc)
             this._checkLicenseExpireDate(configuration.joc.disable_warning_on_license_expiration || false);
           }
         }, error: () => {

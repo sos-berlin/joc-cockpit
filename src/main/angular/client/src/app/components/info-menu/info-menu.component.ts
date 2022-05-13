@@ -41,9 +41,13 @@ import {StringDatePipe} from "../../pipes/core.pipe";
           <div class="row">
             <label class="col-sm-3" translate>info.label.licenseType</label>
             <div class="col-sm-9">
-              <span *ngIf="licenseType === 'COMMERCIAL'" translate>info.label.commercialLicense</span>
-              <span *ngIf="licenseType !== 'COMMERCIAL'" translate>info.label.openSourceLicense</span>
-              <a *ngIf="licenseType === 'COMMERCIAL'" class="text-primary text-hover-primary m-l-md"
+              <span *ngIf="licenseType !== 'OPENSOURCE'">
+                <i *ngIf="licenseType == 'COMMERCIAL_INVALID'" [nz-tooltip]="'info.tooltip.invalidLicense' | translate"
+                   class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                {{'info.label.commercialLicense' | translate}}
+              </span>
+              <span *ngIf="licenseType === 'OPENSOURCE'" translate>info.label.openSourceLicense</span>
+              <a *ngIf="licenseType !== 'OPENSOURCE'" class="text-primary text-hover-primary m-l-md"
                  (click)="checkLicense()">
                 <i *ngIf="!isCompleted" class="fa fa-refresh m-r-xs" [ngClass]="{'fa-spin': isLoading}"></i>
                 <i *ngIf="isCompleted" class="fa fa-check p-r-xs"></i>
@@ -51,7 +55,7 @@ import {StringDatePipe} from "../../pipes/core.pipe";
               </a>
             </div>
           </div>
-          <div class="row m-t-xs" *ngIf="validUntil">
+          <div class="row m-t-xs" *ngIf="licenseType !== 'OPENSOURCE'">
             <label class="col-sm-3" translate>info.label.licenseValidity</label>
             <div class="col-sm-9"
                  [ngClass]="remainingDays < 1 ? 'text-danger' : remainingDays < 7 ? 'text-warning' : ''">
@@ -90,7 +94,7 @@ export class AboutModalComponent implements OnInit {
     this.licenseType = sessionStorage.licenseType;
     let validFrom = sessionStorage.licenseValidFrom;
     let validUntil = sessionStorage.licenseValidUntil;
-    if (validUntil && (this.hasLicense || this.licenseType === 'COMMERCIAL')) {
+    if (validUntil && (this.hasLicense || this.licenseType !== 'OPENSOURCE')) {
       this.formatDate(validFrom, validUntil);
     }
     this.coreService.get('version.json').subscribe((data) => {
@@ -103,6 +107,7 @@ export class AboutModalComponent implements OnInit {
     this.isLoading = true;
     this.coreService.post('joc/license', {}).subscribe({
       next: (data) => {
+        this.licenseType = data.licenseType;
         this.formatDate(data.validFrom, data.validUntil);
         this.isCompleted = true;
         this.ref.detectChanges();

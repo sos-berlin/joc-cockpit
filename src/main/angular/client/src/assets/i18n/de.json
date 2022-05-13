@@ -950,6 +950,7 @@
     "tooltip.globalVariablesAndEmailSettings": "Job-Ressourcen Voreinstellungen für globale Variablen und E-Mail",
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
     "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows",
+    "tooltip.invalidLicense": "License is not valid",
     "message.line1": "Um den Start zu erleichtern, schlagen wir vor einige Voreinstellungen herunterzuladen und in der Konfigurationsansicht von JOC Cockpit zu importieren. Der Import des Defaults.zip Archivs erzeugt einen Ordner mit demselben Namen, der Job-Ressourcen für globale %Job Environment Variables% in Shell Jobs enthält.",
     "message.line2": "Die Archive Examples.tar.gz und Examples.zip enthalten Beispiele für Arbeitsabläufe und Jobs zum Betrieb mit Agenten unter Unix und Windows. Die Beispiele können hilfreich sein, um eigene Arbeitsabläufe und Job-Abhängigkeiten zu konfigurieren. Die Beispiele entsprechen der Erläuterungen für %JS7 - Online Demo%.",
     "link": {
