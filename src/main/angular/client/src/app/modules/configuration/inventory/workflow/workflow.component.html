@@ -918,11 +918,11 @@
                   <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                 </nz-select>
                 <ng-container *ngSwitchDefault>
-                  <input #value="ngModel" [facetValidation]="variable.value.facet" [disabled]="variable.value.type === 'List' || variable.value.type === 'Array'" autocomplete="off" type="text" class="form-control" name="value{{i}}"
+                  <input #value="ngModel" [facetValidation]="variable.value.facet" [disabled]="variable.value.type === 'List'" autocomplete="off" type="text" class="form-control" name="value{{i}}"
                          (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
                          [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
                   <i class="pos-abt cursor text-primary-hover" style="right: 18px;top:1px;" *ngIf="variable.value.type === 'String'" (click)="addFacet(variable)" nz-icon nzType="snippets" nzTheme="outline"></i>
-                  <i [hidden]="variable.value.type === 'List' || variable.value.type === 'Array'" class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
+                  <i [hidden]="variable.value.type === 'List'" class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
                      (click)="openEditor(variable.value)" style="right: 1px;top:1px;"></i>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
@@ -982,10 +982,7 @@
                   </div>
                 </div>
               </ng-container>
-              <ng-container class="b-b p-b-sm" *ngIf="variable.value.type === 'Array'">
-                <div class="row col-md-12">
-                  <div class="col-md-11 col-lg-11 m-b-sm" translate>common.label.name</div>
-                </div>
+              <ng-container class="b-b p-b-sm" *ngIf="variable.value.list && variable.value.list.length > 0">
                 <div class="form-group row p-r-0" style="width: 105%" [ngClass]="{'m-b-0': j !== variable.value.list.length - 1}"
                      *ngFor="let param of variable.value.list; let j = index">
                   <div class="col-md-12">
