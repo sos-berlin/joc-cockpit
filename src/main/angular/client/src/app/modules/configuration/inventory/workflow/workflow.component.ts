@@ -2457,7 +2457,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
   inventoryConf: any;
-  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
+  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'Array', 'List'];
   variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
@@ -3245,8 +3245,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (type === 'List') {
       delete variable.value.default;
       delete variable.value.final;
+      delete variable.value.list;
       variable.value.listParameters = [];
       this.addVariableToList(variable.value);
+    } if (type === 'Array') {
+      delete variable.value.final;
+      delete variable.value.listParameters;
+      variable.value.list = [];
+      this.addVariableToArray(variable.value);
     } else {
       variable.value.default = '';
       variable.value.final = '';
@@ -3385,10 +3391,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
 
           try {
+            if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
+              this.invalidMsg = 'workflow.message.emptyWorkflow';
+            } else if (!res.valid) {
+              this.validateByURL(res.configuration);
+            }
             this.initObjects(res);
             this.workflow = res;
             this.workflow.actual = JSON.stringify(res.configuration);
-
             this.workflow.name = this.data.name;
             if (this.workflow.configuration.jobs) {
               if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
@@ -3398,11 +3408,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
             }
 
-            if (!res.configuration.instructions || res.configuration.instructions.length === 0) {
-              this.invalidMsg = 'workflow.message.emptyWorkflow';
-            } else if (!res.valid) {
-              this.validateByURL(res.configuration);
-            }
             this.updateXMLJSON(false);
             if (!isSame) {
               this.centered();
@@ -3476,12 +3481,26 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (val.type === 'List') {
             delete val.default;
             delete val.final;
+ 	          delete val.list;
             if (val.listParameters) {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 return {name: k1, value: v1};
               });
             } else {
               this.addVariableToList(val);
+            }
+          } else if (val.list) {
+            delete val.listParameters;
+            val.type = 'Array';
+            let list = [];
+            val.list.forEach((val) => {
+              let obj = {name: val};
+              this.coreService.removeSlashToString(obj, 'name');
+              list.push(obj);
+            });
+            val.list = list;
+            if (list.length == 0) {
+              this.addVariableToArray(val);
             }
           } else if (val.final) {
             delete val.listParameters;
@@ -3513,6 +3532,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (!this.coreService.isLastEntryEmpty(variable.listParameters, 'name', '')) {
       variable.listParameters.push(param);
+    }
+  }
+
+  addVariableToArray(variable): void {
+    const param = {
+      name: '',
+    };
+    if (!variable.list) {
+      variable.list = [];
+    }
+    if (!this.coreService.isLastEntryEmpty(variable.list, 'name', '')) {
+      variable.list.push(param);
     }
   }
 
@@ -3809,6 +3840,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (flag) {
       this.updateOtherProperties('variable');
     }
+  }
+
+  removeVariableFromArray(list, index): void {
+    list.splice(index, 1);
+    this.updateOtherProperties('variable');
   }
 
   onKeyPress($event, isOrder = false): void {
@@ -5078,8 +5114,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         self.keyHandler.bindControlKey(65, function () {
           selectAll()
         });
-
-
 
         // Handle Scroll to left: Arrow Left
         self.keyHandler.bindKey(37, function () {
@@ -7603,8 +7637,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
       if (flag) {
         if (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0) {
-          for(let x in self.inventoryConf.copiedInstuctionObject) {
-            if(self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
+          for (let x in self.inventoryConf.copiedInstuctionObject) {
+            if (self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
               job = {name: newName, value: self.inventoryConf.copiedInstuctionObject[x].jobObject || {}};
               break;
             }
@@ -7613,8 +7647,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (!job.name) {
           job = {name: newName, value: {}};
           if (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0) {
-            for(let x in self.inventoryConf.copiedInstuctionObject) {
-              if(self.inventoryConf.copiedInstuctionObject[x].jobs && self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
+            for (let x in self.inventoryConf.copiedInstuctionObject) {
+              if (self.inventoryConf.copiedInstuctionObject[x].jobs && self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
                 updateMissingJobs(self.inventoryConf.copiedInstuctionObject[x].jobs, job, name);
                 break;
               }
@@ -9684,6 +9718,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         delete value.value.invalid;
         if (value.value.type === 'List' || value.value.type === 'Final') {
           delete value.value.default;
+        } if (value.value.type === 'Array') {
+          delete value.value.listParameters;
+          delete value.value.final;
+          delete value.value.type;
+          let list = [];
+          value.value.list.forEach((obj) => {
+            this.coreService.addSlashToString(obj, 'name');
+            list.push(obj.name);
+          });
+          value.value.list = list;
         } else if (value.value.type !== 'String') {
           delete value.value.facet;
           delete value.value.message;

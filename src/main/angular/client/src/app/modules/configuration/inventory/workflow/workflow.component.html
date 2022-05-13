@@ -918,11 +918,11 @@
                   <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                 </nz-select>
                 <ng-container *ngSwitchDefault>
-                  <input #value="ngModel" [facetValidation]="variable.value.facet" [disabled]="variable.value.type === 'List'" autocomplete="off" type="text" class="form-control" name="value{{i}}"
+                  <input #value="ngModel" [facetValidation]="variable.value.facet" [disabled]="variable.value.type === 'List' || variable.value.type === 'Array'" autocomplete="off" type="text" class="form-control" name="value{{i}}"
                          (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
                          [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
                   <i class="pos-abt cursor text-primary-hover" style="right: 18px;top:1px;" *ngIf="variable.value.type === 'String'" (click)="addFacet(variable)" nz-icon nzType="snippets" nzTheme="outline"></i>
-                  <i [hidden]="variable.value.type === 'List'" class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
+                  <i [hidden]="variable.value.type === 'List' || variable.value.type === 'Array'" class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
                      (click)="openEditor(variable.value)" style="right: 1px;top:1px;"></i>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
@@ -978,6 +978,33 @@
                     </div>
                     <div class="col-md-1 col-lg-1" *ngIf="variable.value.listParameters.length > 1">
                       <a><i (click)="removeVariableFromList(variable.value.listParameters, j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container class="b-b p-b-sm" *ngIf="variable.value.type === 'Array'">
+                <div class="row col-md-12">
+                  <div class="col-md-11 col-lg-11 m-b-sm" translate>common.label.name</div>
+                </div>
+                <div class="form-group row p-r-0" style="width: 105%" [ngClass]="{'m-b-0': j !== variable.value.list.length - 1}"
+                     *ngFor="let param of variable.value.list; let j = index">
+                  <div class="col-md-12">
+                    <div *ngIf="j === variable.value.list.length - 1" class="pos-abt cursor" style="margin-top: 5px;left:6px;font-size:16px" >
+                      <a (click)="addVariableToArray(variable.value)" class="text-primary-hover cursor"><i class="fa fa-plus"></i></a>
+                    </div>
+                    <div class="col-md-11 col-lg-11 m-b-sm p-r-0"
+                         [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                      <input [readonly]="isTrash" identifierValidation #name="ngModel" autocomplete="off" type="text"
+                             class="form-control" name="list{{i}}{{j}}"
+                             [(ngModel)]="param.name" placeholder="{{'common.placeholder.name' | translate}}"
+                             (blur)="checkDuplicateEntries(param, j, variable.value.list)">
+                      <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
+                           class="text-danger help-block">
+                        <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+                      </div>
+                    </div>
+                    <div class="col-md-1 col-lg-1" *ngIf="variable.value.list.length > 1">
+                      <a><i (click)="removeVariableFromArray(variable.value.list, j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                     </div>
                   </div>
                 </div>
