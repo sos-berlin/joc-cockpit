@@ -2457,7 +2457,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
   inventoryConf: any;
-  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'Array', 'List'];
+  allowedDatatype = ['String', 'Number', 'Boolean', 'Final', 'List'];
   variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
@@ -3248,11 +3248,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       delete variable.value.list;
       variable.value.listParameters = [];
       this.addVariableToList(variable.value);
-    } if (type === 'Array') {
-      delete variable.value.final;
-      delete variable.value.listParameters;
-      variable.value.list = [];
-      this.addVariableToArray(variable.value);
     } else {
       variable.value.default = '';
       variable.value.final = '';
@@ -3489,19 +3484,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             } else {
               this.addVariableToList(val);
             }
-          } else if (val.list) {
-            delete val.listParameters;
-            val.type = 'Array';
-            let list = [];
-            val.list.forEach((val) => {
-              let obj = {name: val};
-              this.coreService.removeSlashToString(obj, 'name');
-              list.push(obj);
-            });
-            val.list = list;
-            if (list.length == 0) {
-              this.addVariableToArray(val);
-            }
           } else if (val.final) {
             delete val.listParameters;
             val.type = 'Final';
@@ -3512,6 +3494,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.coreService.removeSlashToString(val, 'default');
             } else if (val.type === 'Boolean') {
               val.default = (val.default === true || val.default === 'true');
+            }
+          }
+          if (val.list) {
+            let list = [];
+            val.list.forEach((val) => {
+              let obj = {name: val};
+              this.coreService.removeSlashToString(obj, 'name');
+              list.push(obj);
+            });
+            val.list = list;
+            if (list.length == 0) {
+              this.addVariableToArray(val);
             }
           }
           return {name: k, value: val};
@@ -9718,16 +9712,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         delete value.value.invalid;
         if (value.value.type === 'List' || value.value.type === 'Final') {
           delete value.value.default;
-        } if (value.value.type === 'Array') {
-          delete value.value.listParameters;
-          delete value.value.final;
-          delete value.value.type;
-          let list = [];
-          value.value.list.forEach((obj) => {
-            this.coreService.addSlashToString(obj, 'name');
-            list.push(obj.name);
-          });
-          value.value.list = list;
         } else if (value.value.type !== 'String') {
           delete value.value.facet;
           delete value.value.message;
@@ -9745,6 +9729,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (value.value.type === 'String') {
             this.coreService.addSlashToString(value.value, 'default');
           }
+        }
+        if (value.value.list) {
+          let list = [];
+          value.value.list.forEach((obj) => {
+            this.coreService.addSlashToString(obj, 'name');
+            list.push(obj.name);
+          });
+          value.value.list = list;
         }
         return !!value.name;
       });
