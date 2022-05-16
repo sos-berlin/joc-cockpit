@@ -147,13 +147,17 @@ export class OffsetValidator implements Validator {
 })
 export class FacetEditorComponent implements OnInit {
   @Input() data: any = {};
+  @Input() isList: boolean;
   variable: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
-    this.variable = this.coreService.clone(this.data)
+    this.variable = this.coreService.clone(this.data);
+    if (this.isList && this.variable.value && (!this.variable.value.list || this.variable.value.list.length === 0)) {
+      this.addVariableToArray(this.variable.value);
+    }
   }
 
   checkRegularExp(data): void {
@@ -169,6 +173,22 @@ export class FacetEditorComponent implements OnInit {
   onSubmit(): void {
     delete this.variable.invalid;
     this.activeModal.close(this.variable);
+  }
+
+  addVariableToArray(variable): void {
+    const param = {
+      name: '',
+    };
+    if (!variable.list) {
+      variable.list = [];
+    }
+    if (!this.coreService.isLastEntryEmpty(variable.list, 'name', '')) {
+      variable.list.push(param);
+    }
+  }
+
+  removeVariableFromArray(list, index): void {
+    list.splice(index, 1);
   }
 
   cancel(): void {
@@ -3476,7 +3496,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (val.type === 'List') {
             delete val.default;
             delete val.final;
- 	          delete val.list;
+            delete val.list;
             if (val.listParameters) {
               val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                 return {name: k1, value: v1};
@@ -3889,13 +3909,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  addFacet(data: any): void {
+  addFacet(data: any, isList = false): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: FacetEditorComponent,
-      nzClassName: 'lg',
+      nzClassName: isList ? 'sm' : 'lg',
       nzComponentParams: {
-        data
+        data,
+        isList
       },
       nzFooter: null,
       nzClosable: false,
@@ -3908,6 +3929,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.updateOtherProperties('variable');
       }
     });
+  }
+
+  addList(data: any): void {
+    this.addFacet(data, true);
   }
 
   openEditor(data: any, type = 'default'): void {

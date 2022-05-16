@@ -115,7 +115,7 @@ export class AboutModalComponent implements OnInit {
   }
 
   checkLicense(): void {
-    if (this.isLoading) {
+    if (!this.isLoading) {
       this.isLoading = true;
       this.coreService.post('joc/license', {}).subscribe({
         next: (data) => {
