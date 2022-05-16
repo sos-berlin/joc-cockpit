@@ -1167,7 +1167,7 @@ export class WorkflowService {
       // Create new Connection object
       const connNode = doc.createElement('Connection');
       let str = label;
-      if (label.substring(0, 6) === '$TYPE$') {
+      if (label && label.substring(0, 6) === '$TYPE$') {
         type = 'branch';
         str = label.substring(6);
       }
