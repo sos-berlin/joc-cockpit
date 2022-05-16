@@ -431,6 +431,16 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                 this.schedule.configuration.variableSets[prop].variables[i].type = val.type;
                 this.schedule.configuration.variableSets[prop].variables[i].facet = val.facet;
                 this.schedule.configuration.variableSets[prop].variables[i].message = val.message;
+                let list;
+                if (val.list) {
+                  list = [];
+                  val.list.forEach((item) => {
+                    let obj = {name: item}
+                    this.coreService.removeSlashToString(obj, 'name');
+                    list.push(obj);
+                  });
+                }
+                this.schedule.configuration.variableSets[prop].variables[i].list = list;
                 if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
                   this.schedule.configuration.variableSets[prop].variables[i].isRequired = true;
                 }
@@ -440,13 +450,22 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             }
             if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
               if (!val.final) {
-                this.schedule.configuration.variableSets[prop].variables.push({
+                let obj: any = {
                   name: k,
                   type: val.type,
                   isRequired: true,
                   facet: val.facet,
                   message: val.message
-                });
+                };
+                if (val.list) {
+                  obj.list = [];
+                  val.list.forEach((item) => {
+                    let obj1 = {name: item}
+                    this.coreService.removeSlashToString(obj1, 'name');
+                    obj.list.push(obj1);
+                  });
+                }
+                this.schedule.configuration.variableSets[prop].variables.push(obj);
               }
             }
           }
@@ -497,6 +516,21 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           argument.value = (obj.default === true || obj.default === 'true');
         } else {
           argument.value = obj.default;
+        }
+      }
+      if (obj.list) {
+        argument.list = [];
+        let isFound = false;
+        obj.list.forEach((item) => {
+          let obj = {name: item};
+          if (argument.value === item) {
+            isFound = true;
+          }
+          this.coreService.removeSlashToString(obj, 'name');
+          argument.list.push(obj);
+        });
+        if (!isFound) {
+          argument.list.push({name: argument.value, default: true});
         }
       }
     }

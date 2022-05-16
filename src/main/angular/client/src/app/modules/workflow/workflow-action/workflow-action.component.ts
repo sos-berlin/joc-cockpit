@@ -89,8 +89,17 @@ export class AddOrderModalComponent implements OnInit {
         const val: any = v;
         if (val.type !== 'List') {
           if (!val.final) {
+            let list;
+            if(val.list){
+              list = [];
+              val.list.forEach((item) => {
+                let obj = {name : item}
+                this.coreService.removeSlashToString(obj, 'name');
+                list.push(obj);
+              });
+            }
             if (!val.default && val.default !== false && val.default !== 0) {
-              this.arguments.push({name: k, type: val.type, isRequired: true, facet: val.facet, message: val.message});
+              this.arguments.push({name: k, type: val.type, isRequired: true, facet: val.facet, message: val.message, list: list});
             } else if (val.default) {
               if (val.type === 'String') {
                 this.coreService.removeSlashToString(val, 'default');
@@ -149,6 +158,21 @@ export class AddOrderModalComponent implements OnInit {
       if (obj.facet) {
         argument.facet = obj.facet;
         argument.message = obj.message;
+      }
+      if(obj.list){
+        argument.list = [];
+        let isFound = false;
+        obj.list.forEach((item) => {
+          let obj = {name : item};
+          if(argument.value === item){
+            isFound = true;
+          }
+          this.coreService.removeSlashToString(obj, 'name');
+          argument.list.push(obj);
+        });
+        if(!isFound){
+          argument.list.push({name: argument.value, default: true});
+        }
       }
     }
     this.updateSelectItems();

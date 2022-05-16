@@ -2879,6 +2879,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   copy(node): void {
     if (this.editor && this.editor.graph) {
+      $('#toolbar').find('img:last-child').click();
       let cells;
       if (node) {
         cells = [node.cell];
@@ -5113,13 +5114,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         // Handle Copy: Ctrl + c
         self.keyHandler.bindControlKey(67, function () {
           self.copy(null);
-          $('#toolbar').find('img:last-child').click();
         });
 
         // Handle Cut: Ctrl + x
         self.keyHandler.bindControlKey(88, function () {
           self.cut(null);
-          $('#toolbar').find('img:last-child').click();
         });
 
         // Handle Cut: Ctrl + v
@@ -7586,16 +7585,20 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         targetObject = self.workflow.configuration;
       }
       if (copyObject && copyObject.length > 0) {
+        let ignore = false;
         copyObject.forEach((copyObj, index) => {
           generateCopyObject(copyObj);
           if (copyObj.jobs) {
             delete copyObj.jobs;
           }
-          if (target.value.tagName !== 'Connection' && copyObj && targetIndex > -1) {
-            _dropOnObject();
-          } else {
-            if (targetObject && targetObject.instructions && copyObj) {
-              targetObject.instructions.splice(targetIndex + 1 + index, 0, copyObj);
+          if (!ignore) {
+            if (target.value.tagName !== 'Connection' && copyObj && targetIndex > -1) {
+              ignore = true;
+              _dropOnObject();
+            } else {
+              if (targetObject && targetObject.instructions && copyObj) {
+                targetObject.instructions.splice(targetIndex + 1 + index, 0, copyObj);
+              }
             }
           }
 
