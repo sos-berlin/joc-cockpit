@@ -2000,7 +2000,8 @@
       "show_view_monitor": "ユーザーの権限とは無関係に、モニター表示が利用可能（＝true）か、非表示（＝false）かを指定します。この設定を空にすると、ユーザーの権限によって表示されるかどうかが決まります。",
       "controller_connection_joc_password": "コントローラー接続JOCパスワード",
       "controller_connection_history_password": "コントローラー接続履歴パスワード",
-      "encoding": "エンコーディング"
+      "encoding": "エンコーディング",
+      "disable_warning_on_license_expiration": "Disable warning on license expiration"
     },
     "user": {
       "welcome_got_it": "了解",
@@ -2373,6 +2374,7 @@
     "label.mailOn": "Mail on",
     "label.facetEditor": "ファセットエディター",
     "label.facet": "ファセット",
+    "label.listEditor": "List Editor",
     "button.addScheme": "スキーマ追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
@@ -2464,6 +2466,9 @@
     "placeholder.mailBcc": "メールbcc宛先入力",
     "placeholder.mailOn": "一つ以上の値を選択してください",
     "placeholder.enterMessage": "ファセットメッセージ入力",
+    "tooltip.listEntryMode": "List entry mode",
+    "tooltip.facetEntryMode": "Facet entry mode",
+    "tooltip.editorEntryMode": "Editor entry mode",
     "findAndReplace": {
       "label.find": "検索",
       "label.replace": "置換",

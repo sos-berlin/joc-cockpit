@@ -11,6 +11,7 @@ export class DataService implements OnDestroy {
   private switchSchedulerSource = new Subject<any>();
   public isCalendarReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isProfileReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public reloadLicenseCheck: BehaviorSubject<any> = new BehaviorSubject<boolean>(false);
   public isThemeReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public resetProfileSetting: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public closeModal: BehaviorSubject<string> = new BehaviorSubject<string>('');
@@ -53,7 +54,7 @@ export class DataService implements OnDestroy {
     this.switchSchedulerSource.unsubscribe();
     this.functionSource.unsubscribe();
     this.refreshWidgetSource.unsubscribe();
-    this.reloadTree.unsubscribe();
+    this.reloadLicenseCheck.unsubscribe();
     this.isCalendarReload.unsubscribe();
     this.isProfileReload.unsubscribe();
     this.isThemeReload.unsubscribe();

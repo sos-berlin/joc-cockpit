@@ -33,6 +33,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   subscription3: any = Subscription;
   subscription4: any = Subscription;
   subscription5: any = Subscription;
+  subscription6: any = Subscription;
   isLogout = false;
   loading = false;
   sessionTimeout = 0;
@@ -83,6 +84,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
           LayoutComponent.calculateHeight();
         }
       });
+    this.subscription6 = dataService.reloadLicenseCheck.subscribe(res => {
+      if (res == true) {
+        this.checkLicenseExpireDate();
+      }
+    });
   }
 
   static calculateHeight(): void {
@@ -162,8 +168,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
         next: (res) => {
           if (res.configurations[0]) {
-            let configuration = res.configurations[0];
-            configuration = JSON.parse(res.configurations[0].configurationItem);
+            const configuration = JSON.parse(res.configurations[0].configurationItem);
             this._checkLicenseExpireDate(configuration.joc.disable_warning_on_license_expiration || false);
           }
         }, error: () => {
@@ -260,6 +265,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.subscription3.unsubscribe();
     this.subscription4.unsubscribe();
     this.subscription5.unsubscribe();
+    this.subscription6.unsubscribe();
   }
 
   @HostListener('window:resize', ['$event'])

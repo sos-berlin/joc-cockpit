@@ -3,6 +3,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../services/core.service';
 import {StringDatePipe} from "../../pipes/core.pipe";
+import {DataService} from "../../services/data.service";
 
 @Component({
   selector: 'app-about',
@@ -17,7 +18,7 @@ import {StringDatePipe} from "../../pipes/core.pipe";
       </button>
     </div>
     <div class="modal-body p-a">
-      <div class="row">
+      <div class="row" *ngIf="isLoaded">
         <div class="col-sm-3">
           <img class="p-t-xs m-l logo-for-default" [ngClass]="{'m-l-sm': validUntil}"
                src="./assets/images/JS7-logo-default-theme.png" alt="JS7" [width]="validUntil ? 122 : 100">
@@ -73,12 +74,20 @@ import {StringDatePipe} from "../../pipes/core.pipe";
           </div>
         </div>
       </div>
+      <div class="row" *ngIf="!isLoaded">
+        <div class="col-md-12">
+          <div class="loading-center text-primary text min-ht-128">
+            <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+          </div>
+        </div>
+      </div>
     </div>
   `
 })
 export class AboutModalComponent implements OnInit {
   versionData: any = {};
   isLoading = false;
+  isLoaded = false;
   isCompleted = false;
   hasLicense = false;
   licenseType = '';
@@ -86,7 +95,8 @@ export class AboutModalComponent implements OnInit {
   validUntil = '';
   remainingDays: number;
 
-  constructor(public modalService: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef, private datePipe: StringDatePipe) {
+  constructor(public modalService: NzModalRef, private coreService: CoreService, private dataService: DataService,
+              private ref: ChangeDetectorRef, private datePipe: StringDatePipe) {
   }
 
   ngOnInit(): void {
@@ -99,22 +109,30 @@ export class AboutModalComponent implements OnInit {
     }
     this.coreService.get('version.json').subscribe((data) => {
       this.versionData = data;
+      this.isLoaded = true;
       this.ref.detectChanges();
     });
   }
 
   checkLicense(): void {
-    this.isLoading = true;
-    this.coreService.post('joc/license', {}).subscribe({
-      next: (data) => {
-        this.licenseType = data.licenseType;
-        this.formatDate(data.validFrom, data.validUntil);
-        this.isCompleted = true;
-        this.ref.detectChanges();
-      }, error: () => {
-        this.isLoading = false;
-      }
-    });
+    if (this.isLoading) {
+      this.isLoading = true;
+      this.coreService.post('joc/license', {}).subscribe({
+        next: (data) => {
+          this.licenseType = data.licenseType;
+          this.isCompleted = true;
+          if (sessionStorage.licenseValidUntil != data.validUntil) {
+            this.dataService.reloadLicenseCheck.next(true);
+          }
+          sessionStorage.licenseValidFrom = data.validFrom;
+          sessionStorage.licenseValidUntil = data.validUntil;
+          this.formatDate(data.validFrom, data.validUntil);
+        }, error: () => {
+          this.isLoading = false;
+          this.ref.detectChanges();
+        }
+      });
+    }
   }
 
   private formatDate(validFrom, validUntil): void {
@@ -128,6 +146,7 @@ export class AboutModalComponent implements OnInit {
     } else {
       this.remainingDays = 0;
     }
+    this.ref.detectChanges();
   }
 }
 
