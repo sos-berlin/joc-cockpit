@@ -13,12 +13,11 @@ import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
+import {InventoryObject} from '../../../../models/enums';
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-import {InventoryObject} from '../../../../models/enums';
-
 
 @Component({
   selector: 'app-schedule',
@@ -170,7 +169,23 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             let val = variableSet.variableList[i].value;
             if (!val.default && val.default !== false && val.default !== 0) {
               if (!val.final) {
-                variableSet.variables.push({name: variableSet.variableList[i].name, type: val.type, isRequired: true});
+                let list;
+                if (val.list) {
+                  list = [];
+                  val.list.forEach((item) => {
+                    let obj = {name: item}
+                    this.coreService.removeSlashToString(obj, 'name');
+                    list.push(obj);
+                  });
+                }
+                variableSet.variables.push({
+                  name: variableSet.variableList[i].name,
+                  type: val.type,
+                  isRequired: true,
+                  facet: val.facet,
+                  message: val.message,
+                  list
+                });
               }
             }
           }
@@ -352,6 +367,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   onRemoved(data): void {
     this.schedule.configuration.workflowNames.splice(this.schedule.configuration.workflowNames.indexOf(data.key), 1);
     this.schedule.configuration.variableSets = [];
+    this.variableList = [];
+    this.forkListVariables = [];
     this.saveJSON();
   }
 
@@ -428,17 +445,25 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             let isExist = false;
             for (let i = 0; i < this.schedule.configuration.variableSets[prop].variables.length; i++) {
               if (this.schedule.configuration.variableSets[prop].variables[i].name === k) {
+                this.schedule.configuration.variableSets[prop].variables[i].isExist = true;
                 this.schedule.configuration.variableSets[prop].variables[i].type = val.type;
                 this.schedule.configuration.variableSets[prop].variables[i].facet = val.facet;
                 this.schedule.configuration.variableSets[prop].variables[i].message = val.message;
                 let list;
                 if (val.list) {
                   list = [];
+                  let isFound = false;
                   val.list.forEach((item) => {
-                    let obj = {name: item}
+                    let obj = {name: item};
+                    if (this.schedule.configuration.variableSets[prop].variables[i].value === item) {
+                      isFound = true;
+                    }
                     this.coreService.removeSlashToString(obj, 'name');
                     list.push(obj);
                   });
+                  if (!isFound) {
+                    list.push({name: this.schedule.configuration.variableSets[prop].variables[i].value, default: true});
+                  }
                 }
                 this.schedule.configuration.variableSets[prop].variables[i].list = list;
                 if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
@@ -465,6 +490,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                     obj.list.push(obj1);
                   });
                 }
+
                 this.schedule.configuration.variableSets[prop].variables.push(obj);
               }
             }
@@ -473,13 +499,23 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         return {name: k, value: v};
       });
 
+      for (const prop in this.schedule.configuration.variableSets) {
+        this.schedule.configuration.variableSets[prop].variables = this.schedule.configuration.variableSets[prop].variables.filter((item) => {
+          if (item.isExist) {
+            delete item.isExist;
+            return true;
+          } else {
+            return false;
+          }
+        });
+      }
+
       this.variableList = this.variableList.filter((item) => {
         if (item.value.type === 'List') {
           return false;
         }
         return !item.value.final;
       });
-
 
       for (const prop in this.schedule.configuration.variableSets) {
         this.schedule.configuration.variableSets[prop].forkListVariables = this.coreService.clone(this.forkListVariables);
@@ -550,7 +586,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
     }
-
     this.ref.detectChanges();
   }
 

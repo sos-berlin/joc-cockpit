@@ -178,6 +178,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     } else if (this.preferences.licenseReminderDate) {
       this.preferences.licenseReminderDate = null;
       this.preferences.licenseExpirationWarning = false;
+      this.warningMessage = '';
       this.saveLicenseReminderDate();
     }
   }
@@ -221,6 +222,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.warningMessage = this.coreService.convertTextToLink(translatedValue, 'mailto:sales@sos-berlin.com');
         });
       }
+    } else {
+      this.warningMessage = '';
     }
   }
 
