@@ -2001,7 +2001,7 @@
       "controller_connection_joc_password": "Le mot de passe est utilisé pour l'authentification du service JOC (exécuté dans JOC Cockpit) avec le Contrôleur. Si des connexions HTTP sont utilisées, le mot de passe est le seul moyen d'authentification. Si des connexions HTTPS avec authentification mutuelle sont utilisées, le mot de passe n'est pas pertinent car une authentification basée sur un certificat est en place. Un mot de passe vide peut être spécifié, le mot de passe correspondant dans le fichier private.conf du Contrôleur étant \"plain:\". Si le mot de passe est modifié dans la page des Paramètres de JOC Cockpit, il doit également être modifié dans le fichier private.conf du Contrôleur pour que les mots de passe correspondent. Il est recommandé de modifier d'abord le mot de passe dans le fichier private.conf de l'instance active du Contrôleur, puis dans la page des paramètres. Ensuite, redémarrez l'instance du Contrôleur à partir de la vue TABLEAU DE BORD. JOC Cockpit se reconnectera à l'instance active du Contrôleur. Si un Contrôleur Cluster est utilisé, il faut appliquer la même modification au fichier private.conf de l'instance passive du Contrôleur.",
       "controller_connection_history_password": "Le mot de passe est utilisé pour l'authentification du History Service (exécuté dans JOC Cockpit) avec le Contrôleur. Si des connexions HTTP sont utilisées, le mot de passe est le seul moyen d'authentification. Si des connexions HTTPS avec authentification mutuelle sont utilisées, le mot de passe n'est pas pertinent car une authentification basée sur un certificat est en place. Un mot de passe vide peut être spécifié, le mot de passe correspondant dans le fichier private.conf du Contrôleur étant \"plain:\". Si le mot de passe est modifié dans la page des Paramètres de JOC Cockpit, il doit également être modifié dans le fichier private.conf du Contrôleur pour que les mots de passe correspondent. Il est recommandé de modifier d'abord le mot de passe dans le fichier private.conf de l'instance active du Contrôleur, puis dans la page des paramètres. Ensuite, redémarrez l'instance du Contrôleur à partir de la vue TABLEAU DE BORD. JOC Cockpit se reconnectera à l'instance active du Contrôleur. Si un Contrôleur Cluster est utilisé, il faut appliquer la même modification au fichier private.conf de l'instance passive du Contrôleur.",
       "encoding": "L'Encodage est appliqué si JOC Cockpit est utilisé dans des environnements Windows. Windows ne supporte pas Unicode mais utilise des pages de code. Dans le cas où la page de code de Windows ne peut pas être détectée automatiquement, l'utilisateur peut spécifier la page de code, pour plus de détails voir https://kb.sos-berlin.com/x/h7J2B.",
-      "disable_warning_on_license_expiration": "Disable warning on license expiration"
+      "disable_warning_on_license_expiration": "Désactiver l'avertissement d'expiration de licence"
     },
     "user": {
       "welcome_got_it": "Spécifie que la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger ne doit plus être affichée.",
@@ -2374,7 +2374,7 @@
     "label.mailOn": "Mail en cas de",
     "label.facetEditor": "Éditeur de contrôle des entrées",
     "label.facet": "Contrôle des entrées",
-    "label.listEditor": "List Editor",
+    "label.listEditor": "Éditeur de listes",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
@@ -2466,9 +2466,9 @@
     "placeholder.mailBcc": "Entrer l'adresse e-mail de la copie cachée",
     "placeholder.mailOn": "Sélectionnez un ou plusieurs valeurs",
     "placeholder.enterMessage": "Entrer le message de contrôle des entrées",
-    "tooltip.listEntryMode": "List entry mode",
-    "tooltip.facetEntryMode": "Facet entry mode",
-    "tooltip.editorEntryMode": "Editor entry mode",
+    "tooltip.listEntryMode": "Mode d'entrée de liste",
+    "tooltip.facetEntryMode": "Mode contrôle des entrées",
+    "tooltip.editorEntryMode": "Mode d'entrée directe",
     "findAndReplace": {
       "label.find": "Trouver",
       "label.replace": "Remplacer",
