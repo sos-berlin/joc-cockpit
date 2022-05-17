@@ -1097,7 +1097,6 @@ export class CoreService {
     return b;
   }
 
-
   downloadLog(data: any, id: string): void {
     let url = 'order/log/download';
     let obj: any;
@@ -1196,10 +1195,6 @@ export class CoreService {
 
   convertTimeToLocalTZ(preferences: any, date: any): any {
     return moment(date).tz(preferences.zone);
-  }
-
-  getUTC(date: any): any {
-    return moment.utc(date);
   }
 
   getDate(date: any): any {
@@ -1309,7 +1304,7 @@ export class CoreService {
   }
 
   clone(json: any): any {
-    return JSON.parse(JSON.stringify(json));
+    return json ? JSON.parse(JSON.stringify(json)) : {};
   }
 
   convertObjectToArray(obj: any, type: string): Array<object> {

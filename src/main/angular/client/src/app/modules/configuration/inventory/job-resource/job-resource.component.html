@@ -31,7 +31,7 @@
           </button>
         </div>
       </div>
-      <form *ngIf="jobResource.configuration">
+      <div *ngIf="jobResource.configuration">
         <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
           <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.name' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>common.label.name
@@ -56,7 +56,7 @@
                    name="title" [(ngModel)]="jobResource.configuration.title" (blur)="saveJSON()">
             <div *ngIf="jobResource.configuration.title && jobResource.configuration.title.match('Job Resource for File Transfer:')" class="pos-abt r-n-8 m-t-n-25">
                 <i (click)="navToYade(jobResource.configuration.title)" class="fa fa-pencil cursor"></i>
-            </div>     
+            </div>
           </div>
         </div>
         <div class="form-group row">
@@ -134,7 +134,7 @@
                         </div>
                         <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm"
                              [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
-                          <input autocomplete="off" identifierValidation type="text" name="argu_name{{i}}" class="form-control" [(ngModel)]="argu.name"
+                          <input autocomplete="off" identifierValidation type="text" class="form-control" [(ngModel)]="argu.name"
                                  #aname="ngModel" (blur)="isStringValid(argu, aname.invalid);"
                                  placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                           <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
@@ -143,7 +143,7 @@
                           </div>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="argu.value" name="argu_value{{i}}" (keypress)="onKeyPress($event, 'ARGU')" (blur)="saveJSON()"
+                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="argu.value" (keypress)="onKeyPress($event, 'ARGU')" (blur)="saveJSON()"
                                  placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                           <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)"></i>
                           <div class="pos-abt r-t-n-6">
@@ -198,7 +198,7 @@
                         </div>
                         <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm"
                              [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}">
-                          <input type="text" envVariableValidation name="name{{i}}" class="form-control" [(ngModel)]="env.name" (blur)="isStringValid(env, ename.invalid);upperCase(env)"
+                          <input type="text" envVariableValidation class="form-control" [(ngModel)]="env.name" (blur)="isStringValid(env, ename.invalid);upperCase(env)"
                                  #ename="ngModel"
                                  placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
                           <div *ngIf="ename.invalid && ename.errors && (ename.dirty || ename.touched)"
@@ -207,7 +207,7 @@
                           </div>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}" (keypress)="onKeyPress($event, 'ENV')" (blur)="saveJSON()"
+                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" (keypress)="onKeyPress($event, 'ENV')" (blur)="saveJSON()"
                                  placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                           <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)"></i>
                           <div class="pos-abt r-t-n-6">
@@ -228,7 +228,7 @@
             </nz-tabset>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   </div>
   <div class="col-md-12" *ngIf="data.object">

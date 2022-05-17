@@ -44,6 +44,7 @@ declare const mxGraphHandler;
 declare const mxCellAttributeChange;
 declare const mxGraph;
 declare const mxImage;
+declare const mxRubberband;
 declare const mxOutline;
 declare const mxDragSource;
 declare const mxConstants;
@@ -2656,6 +2657,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const node = xhr.getDocumentElement();
             editor = new mxEditor(node);
             self.editor = editor;
+            new mxRubberband(editor.graph);
             self.initEditorConf(editor, false, false);
             self.workflowService.init(!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? 'dark' : 'light', editor.graph);
             const outln = document.getElementById('outlineContainer');
@@ -2938,7 +2940,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           $(this).attr('title', '');
         } else {
           $(this).removeClass('disable-link');
-          $(this).attr('title', (operation === 'copy' ? 'Copy of ' : '') + (cell ? cell.value.tagName : name));
+          $(this).attr('title', (operation === 'copy' ? 'Paste of ' : '') + (cell ? cell.value.tagName : name));
         }
       }
     });
@@ -3225,6 +3227,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         const ht = 'calc(100vh - ' + (top + 22) + 'px)';
         dom.css({height: ht, 'scroll-top': '0'});
         $('#graph').slimscroll({height: ht, scrollTo: '0'});
+        $('#toolbar').css({height: 'calc(100vh - ' + (top - 26) + 'px)', scrollTo: '0'});
       }
     }
   }
@@ -3525,9 +3528,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               list.push(obj);
             });
             val.list = list;
-            if (list.length == 0) {
-              this.addVariableToArray(val);
-            }
           }
           return {name: k, value: val};
         });
@@ -3547,18 +3547,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (!this.coreService.isLastEntryEmpty(variable.listParameters, 'name', '')) {
       variable.listParameters.push(param);
-    }
-  }
-
-  addVariableToArray(variable): void {
-    const param = {
-      name: '',
-    };
-    if (!variable.list) {
-      variable.list = [];
-    }
-    if (!this.coreService.isLastEntryEmpty(variable.list, 'name', '')) {
-      variable.list.push(param);
     }
   }
 
@@ -3857,11 +3845,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  removeVariableFromArray(list, index): void {
-    list.splice(index, 1);
-    this.updateOtherProperties('variable');
-  }
-
   onKeyPress($event, isOrder = false): void {
     if ($event.which === '13' || $event.which === 13) {
       $event.preventDefault();
@@ -4051,6 +4034,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const data = this.coreService.clone(this.workflow.configuration);
     this.modifyJSON(data, false, false);
     this.workflow.configuration = obj;
+    this.copyId = [];
+    this.updateToolbar('', null);
     let flag = false;
     if (this.workflow.configuration.jobs) {
       if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
@@ -4812,6 +4797,35 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         mxUndoManager.prototype.size = 1;
 
         /**
+         * Function: execute
+         *
+         * Resets the state of this handler and selects the current region
+         * for the given event.
+         */
+        mxRubberband.prototype.execute = function (evt) {
+          let rect = new mxRectangle(this.x, this.y, this.width, this.height);
+          let cells = this.graph.selectRegion(rect, evt);
+          if (cells && cells.length > 0) {
+            let endNodes = [];
+            cells = cells.filter((cell) => {
+              if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+                const targetId = self.nodeMap.get(cell.id);
+                if (targetId) {
+                  const lastCell = graph.getModel().getCell(targetId);
+                  if (lastCell) {
+                    endNodes.push(graph.getModel().getCell(targetId));
+                  }
+                }
+              }
+              return cell.vertex;
+            })
+            setTimeout(() => {
+              graph.setSelectionCells([...cells, ...endNodes]);
+            }, 1)
+          }
+        };
+
+        /**
          * Function: mouseMove
          *
          * Handles the event by highlighting possible drop targets and updating the
@@ -5479,7 +5493,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           checkState();
           dropTargetForPaste = null;
           const evt = me.getEvent();
-          const cell = me.getCell();
+          let cell = me.getCell();
           const mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
           if (cell && !dragStart) {
             const dom = $('#toolbar');
@@ -5555,7 +5569,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   const cells = graph.getSelectionCells();
                   if (cells && cells.length > 0) {
                     if (cells[0].getParent().id !== cell.getParent().id) {
-                      return
+                      let parentCell = {cell: cell.getParent()};
+                      checkParentRecursively(parentCell, cells[0]);
+                      cell = parentCell.cell;
                     }
                   }
                   graph.addSelectionCell(cell);
@@ -5580,6 +5596,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           self.closeMenu();
         };
 
+        function checkParentRecursively(parentCell, selectedCell): void {
+          if (parentCell && parentCell.cell) {
+            if (parentCell.cell.getParent().id !== selectedCell.getParent().id) {
+              parentCell.cell = parentCell.cell.getParent();
+              checkParentRecursively(parentCell, selectedCell);
+            }
+          }
+        }
+
         /**
          * Function: resetMode
          *
@@ -5588,8 +5613,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
          */
         mxToolbar.prototype.resetMode = function (forced) {
           if (forced) {
-            this.defaultMode = $('#toolbar').find('img:first-child')[0];
-            this.selectedMode = $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0];
+            $('#toolbar').find('img:first-child').click();
+            this.selectedMode = undefined;
           }
           if ((forced || !this.noReset) && this.selectedMode != this.defaultMode) {
             this.selectMode(this.defaultMode, this.defaultFunction);
@@ -5638,9 +5663,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
             mxToolbar.prototype.resetMode(true);
           }
-
           checkState();
-
           // Highlights the drop target under the mouse
           if (this.currentHighlight != null && _graph.isDropEnabled()) {
             this.currentDropTarget = this.getDropTarget(_graph, x, y, evt);
@@ -6316,6 +6339,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       cells.forEach((cell, index) => {
         deleteRecursively(self.workflow.configuration, cell, '', (index === cells.length - 1) ? () => {
           setTimeout(() => {
+            if (!self.workflow.configuration.instructions) {
+              self.workflow.configuration.instructions = [];
+            }
             if (self.editor && self.editor.graph) {
               self.updateXMLJSON(true);
               self.updateJobs(graph, false);
@@ -6352,12 +6378,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
 
     function deleteRecursively(_json, _cell, _type, cb) {
+      if (self.selectedNode && self.selectedNode.cell.id === _cell.id) {
+        self.selectedNode = null;
+      }
+
       function iterateJson(json, cell, type) {
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == cell.id) {
               if (self.node && self.node.isCloseable && !self.node.deleteAll) {
                 mergeInternalInstructions(json.instructions, x);
+              }
+              if (self.copyId && self.copyId.length > 0 && self.copyId.indexOf(json.instructions[x].uuid) > -1) {
+                self.copyId.splice(self.copyId.indexOf(json.instructions[x].uuid), 1);
               }
               json.instructions.splice(x, 1);
               if (json.instructions.length === 0 && type !== 'catch') {
@@ -7447,7 +7480,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
       let copyObject: any = [], targetObject: any, targetIndex = 0, isCatch = false;
       if (self.copyId.length == 0) {
-        copyObject = [...self.inventoryConf.copiedInstuctionObject];
+        copyObject = self.coreService.clone(self.inventoryConf.copiedInstuctionObject);
         copyObject.forEach(cObject => {
           delete cObject.jobObject;
         })
@@ -7816,6 +7849,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      * Function: Check and create clicked instructions
      */
     function createClickInstruction(title, targetCell) {
+      mxToolbar.prototype.selectedMode = undefined;
       if (title.match('paste')) {
         if (self.copyId.length > 0) {
           pasteInstruction(targetCell);
@@ -9090,7 +9124,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
       this.workflow.actual = JSON.stringify(_temp);
     } else {
-      this.storeJSON();
+      if (this.workflow.configuration.instructions && this.workflow.configuration.instructions.length === 0) {
+        const data = this.coreService.clone(this.workflow.configuration);
+        const valid = this.modifyJSON(data, true, false);
+        this.saveJSON(valid ? data : 'false');
+      } else {
+        this.storeJSON();
+      }
     }
   }
 

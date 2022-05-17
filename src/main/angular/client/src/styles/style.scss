@@ -6173,6 +6173,15 @@ body div.mxPopupMenu {
   background: var(--bg-box);
 }
 
+div.mxRubberband {
+  position: absolute;
+  overflow: hidden;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #0000FF;
+  background: #0077FF;
+}
+
 .mxDisabled {
   filter: alpha(opacity=20) !important;
   opacity: 0.2 !important;

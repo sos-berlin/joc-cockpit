@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Input, Output, OnDestroy} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty} from 'underscore';
+import {AuthService} from "../guard";
 import {InventorySearch} from '../../models/enums';
 import {CoreService} from '../../services/core.service';
 import {UpdateJobComponent} from '../../modules/configuration/inventory/update-job/update-job.component';
@@ -18,6 +19,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   @Input() isWorkflow: boolean;
   @Input() isBoard: boolean;
   @Input() isLock: boolean;
+  permission: any = {};
   submitted = false;
   isControllerId = false;
   isJobSearch = false;
@@ -43,10 +45,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   };
   type: string;
 
-  constructor(public coreService: CoreService, public modal: NzModalService) {
+  constructor(public coreService: CoreService, public modal: NzModalService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.ENUM = InventorySearch;
     this.deployTypes = Object.keys(this.ENUM).filter(key => isNaN(+key));
     this.getAgents();
@@ -79,13 +82,15 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   private getAgents(): void {
-    if(this.agentData){
+    if (this.agentData) {
       this.agents.agentList = this.agentData;
       this.agentList = this.coreService.clone(this.agents.agentList);
     } else {
-      this.coreService.getAgents(this.agents, '', () => {
-        this.agentList = this.coreService.clone(this.agents.agentList);
-      });
+      if (this.permission.joc && this.permission.joc.inventory.view) {
+        this.coreService.getAgents(this.agents, '', () => {
+          this.agentList = this.coreService.clone(this.agents.agentList);
+        });
+      }
     }
   }
 

@@ -162,7 +162,7 @@
               <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
                 <div *ngIf="orderName.errors.invalidIdentifier" translate>common.message.invalid</div>
               </div>
-              <div class="pos-abt r-t-n-28" [hidden]="j === schedule.configuration.variableSets.length - 1 && variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
+              <div class="pos-abt r-t-n-28" [hidden]="schedule.configuration.variableSets.length == 1 && variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
                 <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariableSet(j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
               </div>
             </div>
@@ -316,7 +316,7 @@
             </ng-container>
             <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" *ngIf="variable.list" [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}">
               <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                         #list="ngModel" [required]="variable.isRequired" name="list{{i}}" [(ngModel)]="variable.value">
+                         #list="ngModel" [required]="variable.isRequired" name="list{{i}}{{j}}" [(ngModel)]="variable.value">
                 <ng-container *ngFor="let option of variable.list">
                   <nz-option nzCustomContent [nzValue]="option.name" [nzLabel]="option.name">
                     <div>
@@ -330,6 +330,9 @@
                 <div *ngIf="list.errors.required">
                   <div translate>common.message.requiredError</div>
                 </div>
+              </div>
+              <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
+                <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>
               </div>
             </div>
           </div>

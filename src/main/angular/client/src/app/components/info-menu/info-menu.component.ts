@@ -121,11 +121,15 @@ export class AboutModalComponent implements OnInit {
         next: (data) => {
           this.licenseType = data.licenseType;
           this.isCompleted = true;
+          let recheckWarningFunc = false;
           if (sessionStorage.licenseValidUntil != data.validUntil) {
-            this.dataService.reloadLicenseCheck.next(true);
+            recheckWarningFunc = true;
           }
           sessionStorage.licenseValidFrom = data.validFrom;
           sessionStorage.licenseValidUntil = data.validUntil;
+          if (recheckWarningFunc) {
+            this.dataService.reloadLicenseCheck.next(true);
+          }
           this.formatDate(data.validFrom, data.validUntil);
         }, error: () => {
           this.isLoading = false;
