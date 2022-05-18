@@ -5182,21 +5182,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         }
 
-
-        function clearClipboard(): void {
-          if (self.cutCell.length > 0) {
-            self.cutCell.forEach(cell => {
-              self.changeCellStyle(self.editor.graph, cell, false);
-            })
-          }
-          self.cutCell = [];
-          $('#toolbar').find('img').each(function (index) {
-            if (index === 15) {
-              $(this).addClass('disable-link');
-            }
-          });
-        }
-
         // Defines a new class for all icons
         function mxIconSet(state) {
           this.images = [];
@@ -5321,7 +5306,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (graph.isMouseDown) {
               tmp = null;
             }
-            if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
+            if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0] || (self.copyId.length > 0 || self.cutCell.length > 0)) {
               if (!dropTargetForPaste) {
                 if (tmp != this.currentState) {
                   if (this.currentState != null) {
@@ -5522,6 +5507,22 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               } else {
                 createClickInstruction(sourceCell.attr('src'), cell);
                 mxToolbar.prototype.resetMode(true);
+              }
+            } else if (self.copyId.length > 0 || self.cutCell.length > 0) {
+              if (result == 'valid') {
+                if (self.workflowService.checkClosingCell(cell.value.tagName) || cell.value.tagName === 'Process') {
+                  dropTargetForPaste = cell;
+                }
+                if (cell.value.tagName === 'Connection') {
+                  let state = graph.getView().getState(cell);
+                  this.currentHighlight = new mxCellHighlight(graph, 'green');
+                  this.currentHighlight.highlight(state);
+                  state.shape.redraw();
+                  dropTargetForPaste = cell;
+                  graph.setSelectionCell(cell);
+                  self.selectedNode = null;
+                  return;
+                }
               }
             }
           } else {
@@ -6283,9 +6284,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         const mgr = new mxAutoSaveManager(graph);
         mgr.save = function () {
-          if (self.cutCell.length > 0) {
-            clearClipboard();
-          }
           if (!self.isLoading && !self.isTrash) {
             setTimeout(() => {
               if (self.workflow.actual) {
@@ -9846,9 +9844,26 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     return newObj;
   }
 
+  private clearClipboard(): void {
+    if (this.cutCell.length > 0) {
+      this.cutCell.forEach(cell => {
+        this.changeCellStyle(this.editor.graph, cell, false);
+      })
+    }
+    this.cutCell = [];
+    $('#toolbar').find('img').each(function (index) {
+      if (index === 15) {
+        $(this).addClass('disable-link');
+      }
+    });
+  }
+
   private storeData(data, onlyStore = false): void {
     if (this.isTrash || !this.workflow || !this.workflow.path || !this.permission.joc.inventory.manage) {
       return;
+    }
+    if (this.cutCell.length > 0) {
+      this.clearClipboard();
     }
     const newObj = this.extendJsonObj(data);
     if (!onlyStore) {

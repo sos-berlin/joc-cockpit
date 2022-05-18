@@ -50,8 +50,8 @@ import {DataService} from "../../services/data.service";
               <span *ngIf="licenseType === 'OPENSOURCE'" translate>info.label.openSourceLicense</span>
               <a *ngIf="licenseType !== 'OPENSOURCE'" class="text-primary text-hover-primary m-l-md"
                  (click)="checkLicense()">
-                <i *ngIf="!isCompleted" class="fa fa-refresh m-r-xs" [ngClass]="{'fa-spin': isLoading}"></i>
-                <i *ngIf="isCompleted" class="fa fa-check p-r-xs"></i>
+                <i *ngIf="!isCompleted || isLoading" class="fa fa-refresh m-r-xs" [ngClass]="{'fa-spin': isLoading}"></i>
+                <i *ngIf="isCompleted && !isLoading" class="fa fa-check p-r-xs"></i>
                 {{'info.button.checkLicense' | translate}}
               </a>
             </div>
@@ -105,12 +105,10 @@ export class AboutModalComponent implements OnInit {
     let validFrom = sessionStorage.licenseValidFrom;
     let validUntil = sessionStorage.licenseValidUntil;
     if (validUntil && (this.hasLicense || this.licenseType !== 'OPENSOURCE')) {
-      this.formatDate(validFrom, validUntil);
+      this.checkLicense()
     }
     this.coreService.get('version.json').subscribe((data) => {
       this.versionData = data;
-      this.isLoaded = true;
-      this.ref.detectChanges();
     });
   }
 
@@ -130,16 +128,20 @@ export class AboutModalComponent implements OnInit {
           if (recheckWarningFunc) {
             this.dataService.reloadLicenseCheck.next(true);
           }
+          this.isLoading = false;
           this.formatDate(data.validFrom, data.validUntil);
         }, error: () => {
+          let validFrom = sessionStorage.licenseValidFrom;
+          let validUntil = sessionStorage.licenseValidUntil;
+          this.formatDate(validFrom, validUntil);
           this.isLoading = false;
-          this.ref.detectChanges();
         }
       });
     }
   }
 
   private formatDate(validFrom, validUntil): void {
+    this.isLoaded = true;
     if (validFrom) {
       this.validFrom = this.datePipe.transform(validFrom);
     }

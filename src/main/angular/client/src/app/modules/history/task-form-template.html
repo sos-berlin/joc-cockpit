@@ -75,9 +75,9 @@
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endFrom</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat"
-                        [(ngModel)]="filter.endFromDate" name="endFrom"></nz-date-picker>
+                        [(ngModel)]="filter.completedDateFrom" name="endFrom"></nz-date-picker>
         <div class="time-picker">
-          <input timevalidator [disabled]="!filter.endFromDate" type="text" class="form-control"
+          <input timevalidator [disabled]="!filter.completedDateFrom" type="text" class="form-control"
                  name="endFromTime" [(ngModel)]="filter.endFromTime" (ngModelChange)="selectTime(filter.endFromTime, true, 'endFromTime1')" placeholder="HH:MM:SS">
           <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event, false, 'endFromTime')" [(ngModel)]="filter.endFromTime1" name="endFromTimeIcon"></nz-time-picker>
         </div>
@@ -86,9 +86,9 @@
     <div class="form-group row" *ngIf="filter.radio1 == 'current'">
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endTo</label>
       <div class="col-sm-6">
-        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [(ngModel)]="filter.endToDate" [nzFormat]="dateFormat" name="to"></nz-date-picker>
+        <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [(ngModel)]="filter.completedDateTo" [nzFormat]="dateFormat" name="to"></nz-date-picker>
         <div class="time-picker">
-          <input timevalidator [disabled]="!filter.endToDate" type="text" class="form-control"
+          <input timevalidator [disabled]="!filter.completedDateTo" type="text" class="form-control"
                  name="endToTime1" [(ngModel)]="filter.endToTime" (ngModelChange)="selectTime(filter.endToTime, true, 'endToTime1')" placeholder="HH:MM:SS">
           <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event, false, 'endToTime')" [(ngModel)]="filter.endToTime1" name="endToTimeIcon"></nz-time-picker>
         </div>

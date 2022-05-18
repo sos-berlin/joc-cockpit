@@ -950,7 +950,7 @@
     "tooltip.globalVariablesAndEmailSettings": "Job-Ressourcen Voreinstellungen für globale Variablen und E-Mail",
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
     "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows",
-    "tooltip.invalidLicense": "Licenz ungültig. Dies kann darauf zurückgehen, dass das Startdatum der Gültigkeitsperiode nicht erreicht ist oder das Ablaufdatum überschritten ist.",
+    "tooltip.invalidLicense": "Lizenz ungültig. Dies kann darauf zurückgehen, dass das Startdatum der Gültigkeitsperiode nicht erreicht ist oder das Ablaufdatum überschritten ist.",
     "message.line1": "Um den Start zu erleichtern, schlagen wir vor einige Voreinstellungen herunterzuladen und in der Konfigurationsansicht von JOC Cockpit zu importieren. Der Import des Defaults.zip Archivs erzeugt einen Ordner mit demselben Namen, der Job-Ressourcen für globale %Job Environment Variables% in Shell Jobs enthält.",
     "message.line2": "Die Archive Examples.tar.gz und Examples.zip enthalten Beispiele für Arbeitsabläufe und Jobs zum Betrieb mit Agenten unter Unix und Windows. Die Beispiele können hilfreich sein, um eigene Arbeitsabläufe und Job-Abhängigkeiten zu konfigurieren. Die Beispiele entsprechen der Erläuterungen für %JS7 - Online Demo%.",
     "link": {
@@ -1640,7 +1640,7 @@
     "label.newPassword": "Neues Kennwort",
     "label.confirmPassword": "Kennwort bestätigen",
     "label.gitManagement": "Git Verwaltung",
-    "label.licenseWarningGotIt": "Lizenzwarnung verstanden",
+    "label.licenseWarningGotIt": "Lizenzwarnung akzeptiert",
     "button.resetProfile": "Profil zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -2001,7 +2001,7 @@
       "controller_connection_joc_password": "Das Kennwort wird für die Authentifizierung des JOC Dienstes (der in JOC Cockpit abläuft) gegenüber dem Controller verwendet. Wenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung. Wenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist. Es kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei private.conf des Controller's \"plain:\" lautet. Wenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei private.conf des Controllers geändert werden, damit die Kennwörter übereinstimmen. Es wird empfohlen, das Kennwort zunächst in der Datei private.conf der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu. JOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz. Wenn ein Controller Cluster verwendet wird, nehmen Sie die gleiche Änderung in der Datei private.conf der passiven Controller Instanz vor.",
       "controller_connection_history_password": "Das Kennwort wird für die Authentifizierung des Historiendienstes (der in JOC Cockpit abläuft) gegenüber dem Controller verwendet. Wenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung. Wenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist. Es kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei private.conf des Controller's \"plain:\" lautet. Wenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei private.conf des Controllers geändert werden, damit die Kennwörter übereinstimmen. Es wird empfohlen, das Kennwort zunächst in der Datei private.conf der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu. JOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz. Wenn ein Controller Cluster verwendet wird, nehmen Sie die gleiche Änderung in der Datei private.conf der passiven Controller Instanz vor.",
       "encoding": "Die Kodierung wird verwendet, wenn JOC Cockpit für Windows Umgebungen betrieben wird. Windows unterstützt kein Unicode, sondern verwendet Code Pages. Für den Fall, dass die Windows Code Page nicht automatisch erkannt werden kann, kann der Benutzer die Code Page angeben, weitere Details siehe https://kb.sos-berlin.com/x/h7J2B",
-      "disable_warning_on_license_expiration": "Disable warning on license expiration"
+      "disable_warning_on_license_expiration": "Warnungen vor Ablauf der Lizenz abschalten."
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
@@ -2372,9 +2372,9 @@
     "label.mailCC": "Kopie senden an",
     "label.mailBcc": "Blindkopie senden an",
     "label.mailOn": "Mail bei",
-    "label.facetEditor": "Editor für Eingaben",
+    "label.facetEditor": "Editor für Eingabeprüfungen",
     "label.facet": "Eingabeprüfung",
-    "label.listEditor": "List Editor",
+    "label.listEditor": "Editor für Listen",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
@@ -2466,9 +2466,9 @@
     "placeholder.mailBcc": "Adresse für E-Mail Blindkopie angeben",
     "placeholder.mailOn": "Einen oder mehrere Werte auswählen",
     "placeholder.enterMessage": "Mitteilung für Eingabeprüfüung angeben",
-    "tooltip.listEntryMode": "List entry mode",
-    "tooltip.facetEntryMode": "Facet entry mode",
-    "tooltip.editorEntryMode": "Editor entry mode",
+    "tooltip.listEntryMode": "Eingabemodus für Listen",
+    "tooltip.facetEntryMode": "Eingabemodus für Prüfungen",
+    "tooltip.editorEntryMode": "Direkter Eingabemodus",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",

@@ -6,6 +6,8 @@ import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Injector } from '@angular/core';
 import { LoginComponent } from './login.component';
+import { By } from '@angular/platform-browser';
+
 
 declare var require: any;
 const ENGLISH = require('../../../assets/i18n/en.json')
@@ -14,11 +16,12 @@ class HttpLoaderFactory implements TranslateLoader {
       return of(ENGLISH);
     }
 }
-fdescribe('LoginComponent', () => {
+describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let translate: TranslateService;
   let injector: Injector;
+  let element: HTMLElement;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -50,30 +53,37 @@ fdescribe('LoginComponent', () => {
   it('should create the login', waitForAsync(() => {
     expect(component).toBeTruthy();
   }));
-
+ 
   it('should render title', waitForAsync(() => {
     const compiled = fixture.nativeElement as HTMLElement;
     console.log(compiled.querySelector('button')?.textContent)
     expect(compiled.querySelector('button')?.textContent).toContain('Log In');
   }));
+
   it('should have three input fields', waitForAsync(() => {
     const compiled = fixture.nativeElement as HTMLElement;
     console.log(compiled.querySelectorAll('input'))
     expect(compiled.querySelectorAll('input')?.length).toEqual(3);
   }));
+
   it('should have email field', waitForAsync(() => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('#account')).toBeDefined();
   }));
+
   it('Should have initial form values for login', waitForAsync(() => {
     const user = component.user;
     expect(user).toEqual({});
   }));
-  it('Perform login', waitForAsync(() => {
-    const user = {
-        userName: 'root',
-        password: ''
-    };
-    expect(component.onSubmit(user))
+
+  it('Should call onSubmit method', waitForAsync(() => {
+    fixture.detectChanges();
+    spyOn(component,'onSubmit');
+    element=fixture.debugElement.query(By.css('Login')).nativeElement;
+    element.click();
+    expect(component.onSubmit).toHaveBeenCalledTimes(0);
   }));
+
+  
+
 });

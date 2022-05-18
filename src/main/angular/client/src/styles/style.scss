@@ -7723,6 +7723,14 @@ tr.tr-border td:first-child {
 .ant-dropdown-menu-submenu-title:hover,
 .ant-dropdown-menu-submenu-title:hover > a {
   color: var(--text-hover) !important;
+  .anticon{
+    color: var(--text-hover) !important;
+  }
+}
+
+.ant-dropdown-menu-item .ant-dropdown-menu-submenu-expand-icon .ant-dropdown-menu-submenu-arrow-icon,
+.ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-expand-icon .ant-dropdown-menu-submenu-arrow-icon {
+  color: var(--text-color);
 }
 
 .ant-dropdown-menu-item:hover,

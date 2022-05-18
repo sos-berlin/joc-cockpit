@@ -100,7 +100,7 @@ gridster-item {
 .bg-white {
   background-color: var(--bg-box) !important;
 }
-.bg-gold, .bg-yellow-green, .bg-light-blue, .bg-calling, .badge-danger, .bg-orange, .bg-red {
+.bg-gold, .bg-yellow-green, .bg-light-blue, .bg-calling, .badge-danger, .bg-orange {
   color: rgba(0, 0, 0, .87);
 }
 .dark-white {
