@@ -1640,7 +1640,7 @@
     "label.newPassword": "Nouveau mot de passe",
     "label.confirmPassword": "Confirmer le mot de passe",
     "label.gitManagement": "Gestion Git",
-    "label.licenseWarningGotIt": "Avertissement compris",
+    "label.licenseWarningGotIt": "Avertissement reconnu",
     "button.resetProfile": "Rétablir le profil par défaut",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",

@@ -1640,7 +1640,7 @@
     "label.newPassword": "Neues Kennwort",
     "label.confirmPassword": "Kennwort bestätigen",
     "label.gitManagement": "Git Verwaltung",
-    "label.licenseWarningGotIt": "Lizenzwarnung verstanden",
+    "label.licenseWarningGotIt": "Lizenzwarnung akzeptiert",
     "button.resetProfile": "Profil zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
