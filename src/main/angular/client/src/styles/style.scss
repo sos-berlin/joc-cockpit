@@ -976,7 +976,7 @@ button.close {
   border-bottom: 3px solid transparent;
 }
 
-#navbar1 {
+#navbarId {
   .nav-link:not(.active) {
     &:hover:before {
       border-bottom: 3px solid transparent !important;
@@ -8707,3 +8707,9 @@ td .ver-top {
     bottom: 0;
   }
 }
+
+.collapse.in {
+  -webkit-animation: .2s linear 0s fadeInDown;
+  animation: .2s linear 0s fadeInDown;
+}
+

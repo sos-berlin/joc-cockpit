@@ -231,4 +231,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  toggle(): void {
+    const dom = document.getElementById('navbarId');
+    if (dom && dom.classList.contains('in')) {
+      dom.classList.remove('in');
+    } else {
+      dom.classList.add('in');
+    }
+  }
 }

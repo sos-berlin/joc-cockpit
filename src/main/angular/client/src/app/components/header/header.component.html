@@ -1,7 +1,7 @@
 <div class="app-header white box-shadow bg-blue-color {{preferences.headerColor}}"
      [ngClass]="{'backup': (isBackUp === 'YES')}">
   <div class="navbar box-shadow-z0 p-l-0 p-r-20">
-    <a data-toggle="collapse" data-target="#navbar1" class="navbar-item pull-right hide-menubar m-a-0 m-l">
+    <a (click)="toggle()" class="navbar-item pull-right hide-menubar m-a-0 m-l">
       <i class="fa fa-navicon text-white"></i>
     </a>
     <!-- brand -->
@@ -87,7 +87,7 @@
       </li>
     </ul>
     <!-- navbar collapse -->
-    <div class="collapse navbar-toggleable-custom" id="navbar1">
+    <div class="navbar-toggleable-custom collapse" id="navbarId">
       <!-- link -->
       <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
         <li class="nav-item" *ngIf="(showViews && showViews.dashboard != undefined) ? showViews.dashboard : true">

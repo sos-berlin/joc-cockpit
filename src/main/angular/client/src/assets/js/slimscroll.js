@@ -272,7 +272,6 @@
         me.bind('touchstart', function(e,b){
           if (e.originalEvent.touches.length)
           {
-            // record where touch started
             touchDif = e.originalEvent.touches[0].pageY;
           }
         });

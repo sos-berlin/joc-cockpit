@@ -548,9 +548,9 @@ export class CoreService {
     }
   }
 
-  showCopyMessage(message: any): void {
+  showCopyMessage(message: any, type = 'copied'): void {
     let msg = '';
-    this.translate.get('common.message.copied').subscribe(translatedValue => {
+    this.translate.get('common.message.' + type).subscribe(translatedValue => {
       msg = translatedValue;
     });
     message.success(msg);
@@ -824,7 +824,7 @@ export class CoreService {
     return date;
   }
 
-  parseProcessExecutedRegex(regex: string, obj: any, endDate?): any {
+  parseProcessExecutedRegex(regex: string, obj: any, completedDate?): any {
     let fromDate;
     let toDate;
     let date;
@@ -879,10 +879,10 @@ export class CoreService {
       toDate = moment.utc(toTime);
     }
     if (fromDate) {
-      obj[endDate ? 'endDateFrom' : 'dateFrom'] = fromDate;
+      obj[completedDate ? 'completedDateFrom' : 'dateFrom'] = fromDate;
     }
     if (toDate) {
-      obj[endDate ? 'endDateTo' : 'dateTo'] = toDate;
+      obj[completedDate ? 'completedDateTo' : 'dateTo'] = toDate;
     }
     return obj;
   }
@@ -1566,24 +1566,24 @@ export class CoreService {
   }
 
   getDateAndTime(data, val = 'from'): any {
-    if (data[val === 'from' ? 'fromDate' : 'toDate'] && data[val === 'from' ? 'fromTime' : 'toTime']) {
-      const arr = data[val === 'from' ? 'fromTime' : 'toTime'].split(':');
+    if (data[val + 'Date'] && data[val + 'Time']) {
+      const arr = data[val + 'Time'].split(':');
       if (arr[0] && arr[0].length === 2) {
-        data[val === 'from' ? 'fromDate' : 'toDate'].setHours(arr[0])
+        data[val + 'Date'].setHours(arr[0])
       } else {
-        data[val === 'from' ? 'fromDate' : 'toDate'].setHours(0)
+        data[val + 'Date'].setHours(0)
       }
       if (arr[1] && arr[1].length === 2) {
-        data[val === 'from' ? 'fromDate' : 'toDate'].setMinutes(arr[1])
+        data[val + 'Date'].setMinutes(arr[1])
       } else {
-        data[val === 'from' ? 'fromDate' : 'toDate'].setMinutes(0)
+        data[val + 'Date'].setMinutes(0)
       }
       if (arr[2] && arr[2].length === 2) {
-        data[val === 'from' ? 'fromDate' : 'toDate'].setSeconds(arr[2])
+        data[val + 'Date'].setSeconds(arr[2])
       } else {
-        data[val === 'from' ? 'fromDate' : 'toDate'].setSeconds(0);
+        data[val + 'Date'].setSeconds(0);
       }
-      data[val === 'from' ? 'fromDate' : 'toDate'].setMilliseconds(0);
+      data[val + 'Date'].setMilliseconds(0);
     }
   }
 
