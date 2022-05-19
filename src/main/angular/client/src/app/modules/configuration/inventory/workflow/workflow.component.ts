@@ -935,7 +935,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(private coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
-              private workflowService: WorkflowService, private dataService: DataService) {
+              private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       if (res.error) {
         this.error = res.error;
@@ -1487,6 +1487,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     this.copiedParamObjects = {operation, type, data: arr, name: this.selectedNode.obj.jobName};
     this.coreService.tabs._configuration.copiedParamObjects = this.coreService.clone(this.copiedParamObjects);
+    if (arr.length > 0) {
+      this.coreService.showCopyMessage(this.message, operation === 'CUT' ? 'cut' : 'copied');
+    }
   }
 
   private getList(type): Array<any> {
@@ -2676,6 +2679,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   private saveCopyInstruction(): void {
+    this.cutCell = [];
     if (this.copyId.length > 0) {
       this.copyId.forEach(id => {
         let obj = this.getObject(this.workflow.configuration, id);
@@ -2893,8 +2897,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.cutCell.forEach(cell => {
             this.changeCellStyle(this.editor.graph, cell, false);
           });
-          this.cutCell = [];
         }
+        this.cutCell = [];
         this.copyId = [];
         cells.forEach(cell => {
           this.copyId.push(cell.getAttribute('uuid'));
@@ -2908,6 +2912,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   cut(node): void {
     if (this.editor && this.editor.graph) {
+      $('#toolbar').find('img:last-child').click();
       const graph = this.editor.graph;
       let cells;
       if (node) {
@@ -2928,6 +2933,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.cutCell.push(cell);
         });
         this.updateToolbar('cut', node ? node.cell : null, 'multiple instructions');
+        this.coreService.showCopyMessage(this.message, 'cut');
       }
     }
   }
@@ -5306,7 +5312,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (graph.isMouseDown) {
               tmp = null;
             }
-            if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0] || (self.copyId.length > 0 || self.cutCell.length > 0)) {
+            if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0] || ((self.copyId.length > 0 || self.cutCell.length > 0) && dropTargetForPaste)) {
               if (!dropTargetForPaste) {
                 if (tmp != this.currentState) {
                   if (this.currentState != null) {
@@ -5510,9 +5516,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
             } else if (self.copyId.length > 0 || self.cutCell.length > 0) {
               if (result == 'valid') {
-                if (self.workflowService.checkClosingCell(cell.value.tagName) || cell.value.tagName === 'Process') {
-                  dropTargetForPaste = cell;
-                }
                 if (cell.value.tagName === 'Connection') {
                   let state = graph.getView().getState(cell);
                   this.currentHighlight = new mxCellHighlight(graph, 'green');
@@ -5522,6 +5525,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   graph.setSelectionCell(cell);
                   self.selectedNode = null;
                   return;
+                } else {
+                  if (!self.workflowService.checkClosingCell(cell.value.tagName) && cell.value.tagName !== 'Process') {
+                    dropTargetForPaste = cell;
+                  }
                 }
               }
             }
@@ -5692,7 +5699,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
             // Grid and guides
             if (this.currentGuide != null && this.currentGuide.isEnabledForEvent(evt)) {
-              // LATER: HTML preview appears smaller than SVG preview
+              // HTML preview appears smaller than SVG preview
               const w = parseInt(this.previewElement.style.width, 10);
               const h = parseInt(this.previewElement.style.height, 10);
               const bounds = new mxRectangle(0, 0, w, h);

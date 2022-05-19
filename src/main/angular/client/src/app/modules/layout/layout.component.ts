@@ -92,10 +92,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   static calculateHeight(): void {
-    const navBar = $('#navbar1');
+    const navBar = $('#navbarId');
     if (navBar.hasClass('in')) {
       navBar.removeClass('in');
-      $('a.navbar-item').addClass('collapsed');
     }
     const headerHt = $('.fixed-top').height() || 70;
     $('.app-body').css({'margin-top': headerHt + 'px'});
@@ -104,10 +103,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   static checkNavHeader(): void {
-    const dom = $('#navbar1');
+    const dom = $('#navbarId');
     if (dom && dom.hasClass('in')) {
       dom.removeClass('in');
-      $('a.navbar-item').addClass('collapsed');
     }
   }
 
@@ -167,10 +165,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (sessionStorage.getItem('licenseValidUntil')) {
       this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
         next: (res) => {
-          if (res.configurations[0]) {
+          let flag = false;
+          if (res.configurations[0] && res.configurations[0].configurationItem) {
             const configuration = JSON.parse(res.configurations[0].configurationItem);
-            this._checkLicenseExpireDate(configuration.joc.disable_warning_on_license_expiration || false);
+            flag = configuration.joc.disable_warning_on_license_expiration;
           }
+          this._checkLicenseExpireDate(flag);
         }, error: () => {
           this._checkLicenseExpireDate();
         }

@@ -496,15 +496,76 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }).subscribe({
         next: res => {
           this.tree = this.coreService.prepareTree(res, true);
+          if (this.selectedFiltered && this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
+            this.workflowFilters.expandedKeys = this.selectedFiltered.paths;
+            this.expandTreeNode(this.selectedFiltered.paths);
+          }
           this.isLoading = true;
           if (this.tree.length && !reload) {
             this.loadWorkflow();
+          }
+          let isFound = false;
+          for (let x in this.workflowFilters.expandedKeys) {
+            if (this.workflowFilters.expandedKeys[x] == '/') {
+              isFound = true;
+              break;
+            }
+          }
+          if (!isFound) {
+            this.workflowFilters.expandedKeys.push('/');
           }
         }, error: () => this.isLoading = true
       });
     } else {
       this.isLoading = true;
     }
+  }
+
+  private expandTreeNode(paths): void {
+    const self = this;
+    this.workflowFilters.selectedkeys = [];
+
+    function pushSelectPath(data) {
+      for (let i in data.children) {
+        self.workflowFilters.selectedkeys.push(data.children[i].path);
+        if (data.children[i].children) {
+          pushSelectPath(data.children[i]);
+        }
+      }
+    }
+
+    function traverseTree(data) {
+      for (let i in data.children) {
+        let isMatch = false;
+        if (!data.children[i].isLeaf) {
+          if (paths.indexOf(data.children[i].path) > -1) {
+            self.workflowFilters.selectedkeys.push(data.children[i].path);
+            isMatch = true;
+            if (data.children[i].children && data.children[i].children.length > 0) {
+              pushSelectPath(data.children[i]);
+            }
+          }
+        }
+        if (data.children[i].children && !isMatch) {
+          traverseTree(data.children[i]);
+        }
+      }
+    }
+
+    function navFullTree() {
+      for (let i in self.tree) {
+        if (!self.tree[i].isLeaf) {
+          if (paths.indexOf(self.tree[i].path) > -1) {
+            self.workflowFilters.selectedkeys.push(self.tree[i].path);
+          }
+        }
+        if (self.tree[i].children) {
+          traverseTree(self.tree[i]);
+        }
+      }
+    }
+
+    navFullTree();
   }
 
   private getWorkflowList(obj): void {
@@ -554,7 +615,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
         if (flag) {
           this.hidePanel();
-        } else if(panelObj) {
+        } else if (panelObj) {
           this.showPanelFunc(panelObj);
         }
         this.loading = false;

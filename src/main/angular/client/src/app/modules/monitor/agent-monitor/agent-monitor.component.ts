@@ -605,7 +605,6 @@ export class AgentMonitorComponent implements OnInit, OnDestroy {
   }
 
   disabledDate = (current: Date): boolean => {
-    // Can not select days before today and today
     return differenceInCalendarDays(current, this.viewDate) > 0;
   }
 
