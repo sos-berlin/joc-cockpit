@@ -2043,7 +2043,7 @@
     "label.editEntry": "Mettre à jour la section Main",
     "label.updateMainSection": "Editer la section Main",
     "label.resetAllProfile": "Réinitialiser les profils par défaut",
-    "label.lastLogin": "Dernière connexion",
+    "label.lastLogin": "Dernière Modification",
     "label.addController": "Ajouter un Contrôleur",
     "label.copyController": "Copier un Contrôleur",
     "label.entryName": "Nom",

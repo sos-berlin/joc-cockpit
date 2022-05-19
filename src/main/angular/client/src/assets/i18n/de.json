@@ -2043,7 +2043,7 @@
     "label.editEntry": "Main-Sektion ändern",
     "label.updateMainSection": "Main-Sektion ändern",
     "label.resetAllProfile": "Profile auf Voreinstellung zurücksetzen",
-    "label.lastLogin": "Letzte Anmeldung",
+    "label.lastLogin": "Letzte Änderung",
     "label.addController": "Controller hinzufügen",
     "label.copyController": "Controller kopieren",
     "label.entryName": "Name",
