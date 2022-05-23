@@ -2044,7 +2044,7 @@
     "label.editEntry": "Update Main Section",
     "label.updateMainSection": "Edit Main Section",
     "label.resetAllProfile": "Reset profiles to default",
-    "label.lastLogin": "Last Modification",
+    "label.lastLogin":  "Letzte Änderung",
     "label.addController": "Add Controller",
     "label.copyController": "Copy Controller",
     "label.entryName": "Name",

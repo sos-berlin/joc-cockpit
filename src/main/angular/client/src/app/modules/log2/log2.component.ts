@@ -541,7 +541,7 @@ export class Log2Component implements OnInit {
         if (arr && arr.length > 0) {
           date = arr[0];
         }
-        if (date && /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/.test(date)) {
+        if (date && /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.(\d+)([+,-]){1}(\d+)$/.test(date)) {
           const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(date, this.preferences.zone) : date;
           match = match.replace(timestampRegex, datetime);
         }

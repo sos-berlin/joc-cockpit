@@ -12,6 +12,7 @@ import {DataService} from '../../../services/data.service';
 export class WorkflowTemplateComponent {
   @Input() history: any;
   @Input() schedulerId: any;
+  @Input() permission: any;
 
   constructor(public coreService: CoreService) {
   }

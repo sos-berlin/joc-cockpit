@@ -116,7 +116,7 @@ export class OrderListSidebarComponent implements OnChanges {
     this.object.isCancelWithKill = false;
     this.object.isModify = true;
     this.object.isSuspend = true;
-    this.object.isSuspendWithKill = true;
+    this.object.isSuspendWithKill = false;
     this.object.isResume = true;
     this.object.isTerminate = true;
     this.orders.forEach(item => {
@@ -128,18 +128,16 @@ export class OrderListSidebarComponent implements OnChanges {
           if ((item.state._text !== 'FINISHED' && item.state._text !== 'CANCELLED') || (item.positionString && item.positionString.match('/fork'))) {
             this.object.isTerminate = false;
           }
-          if (item.state._text !== 'RUNNING' && item.state._text !== 'INPROGRESS' && item.state._text !== 'WAITING' && item.state._text !== 'PENDING' && item.state._text !== 'SCHEDULED') {
+          if (item.state._text !== 'RUNNING' && item.state._text !== 'INPROGRESS' && item.state._text !== 'WAITING'
+            && item.state._text !== 'PENDING' && item.state._text !== 'SCHEDULED' && item.state._text !== 'PROMPTING') {
             this.object.isSuspend = false;
-          }
-          if (item.state._text !== 'RUNNING' && item.state._text !== 'INPROGRESS' && item.state._text !== 'WAITING') {
-            this.object.isSuspendWithKill = false;
           }
           if (item.state._text === 'FINISHED' || item.state._text === 'CANCELLED') {
             this.object.isCancel = true;
-            this.object.isCancelWithKill = true;
           }
-          if (item.state._text === 'PENDING' || item.state._text === 'SCHEDULED') {
+          if (item.state._text === 'RUNNING') {
             this.object.isCancelWithKill = true;
+            this.object.isSuspendWithKill = true;
           }
           if (item.state._text !== 'SCHEDULED' && item.state._text !== 'PENDING' && item.state._text !== 'BLOCKED') {
             this.object.isModify = false;

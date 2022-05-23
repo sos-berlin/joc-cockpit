@@ -2044,7 +2044,7 @@
     "label.editEntry": "メインセクション更新",
     "label.updateMainSection": "メインセクション編集",
     "label.resetAllProfile": "プロファイルリセット",
-    "label.lastLogin": "Last Profile Change",
+    "label.lastLogin": "Last Modification",
     "label.addController": "コントローラー追加",
     "label.copyController": "コントローラーコピー",
     "label.entryName": "名称",

@@ -28,6 +28,7 @@ export class OrderTemplateComponent {
   @Input() historyView: any;
   @Input() schedulerId: any;
   @Input() orderSearch: any;
+  @Input() permission: any;
 
   constructor(public coreService: CoreService, private router: Router) {
   }

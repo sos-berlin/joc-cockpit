@@ -33,6 +33,7 @@
   position: absolute;
   overflow: hidden;
   overflow-y: auto !important;
+  max-height: calc(100vh - 190px);
 }
 #outlineContainer {
   z-index: 9;

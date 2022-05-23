@@ -89,7 +89,7 @@
             </tr>
             <tr *ngIf="history.show">
               <td colspan="11" style="padding:0 !important;">
-              <app-order-history-template class="order-history-template0" style="display: block" [history]="history" [schedulerId]="controllerId"
+              <app-order-history-template [permission]="permission" class="order-history-template0" style="display: block" [history]="history" [schedulerId]="controllerId"
                                           [historyView]="{}"
               ></app-order-history-template>
               </td>
