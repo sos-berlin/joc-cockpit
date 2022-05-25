@@ -495,7 +495,7 @@
     "message.removeAllObject": "Êtes-vous sûr de vouloir supprimer les {{count}} objets?",
     "message.deleteAllObject": "Êtes-vous sûr de vouloir supprimer les {{count}} objets? Cette opération ne peut être annulée.",
     "message.copied": "Copié!",
-    "message.cut": "Ready for paste!",
+    "message.cut": "Prêt à être collé!",
     "message.inValidUserName": "Les noms d'utilisateur avec des espaces ne sont pas autorisés avec l'authentification Shiro.",
     "message.deleteProfiles": "Êtes-vous sûr de vouloir supprimer les profils sélectionnés ?",
     "message.deleteAllProfiles": "Êtes-vous sûr de vouloir supprimer les profils sélectionnés ?",
