@@ -495,7 +495,7 @@
     "message.removeAllObject": "Sind Sie sicher, dass Sie {{count}} Objekte entfernen wollen?",
     "message.deleteAllObject": "Sind Sie sicher, dass Sie {{count}} Objekte löschen wollen? Dieser Vorgang kann nicht rückgängig gemacht werden.",
     "message.copied": "Kopiert!",
-    "message.cut": "Ready for paste!",
+    "message.cut": "Bereit zum Einfügen!",
     "message.inValidUserName": "Benutzerkonten mit Leerzeichen sind für die Authentifizierung mit Shiro nicht zugelassen",
     "message.deleteProfiles": "Sind Sie sicher, dass Sie die ausgewählten Profile löschen wollen?",
     "message.deleteAllProfiles": "Sind Sie sicher, dass Sie alle Profile löschen wollen?",

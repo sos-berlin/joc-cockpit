@@ -124,6 +124,11 @@
   background: var(--bg-box);
 }
 
+tr.cdk-drag-preview {
+  justify-content: space-between;
+  align-content: flex-start;
+}
+
 .cdk-drag-placeholder {
   opacity: 0;
 }

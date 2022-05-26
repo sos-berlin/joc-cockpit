@@ -3229,7 +3229,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (this.editor) {
       const dom = $('.graph-container');
       if (dom && dom.position()) {
-        const top = (dom.position().top + $('#rightPanel').position().top);
+        let _top = dom.position().top;
+        if(_top > 40){
+          _top = 35;
+        }
+        const top = (_top + $('#rightPanel').position().top);
         const ht = 'calc(100vh - ' + (top + 22) + 'px)';
         dom.css({height: ht, 'scroll-top': '0'});
         $('#graph').slimscroll({height: ht, scrollTo: '0'});

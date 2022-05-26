@@ -6765,6 +6765,12 @@ tr.tr-border td {
   border: none !important;
 }
 
+.inner-table {
+  .ant-table-container {
+    border: none !important;
+  }
+}
+
 .vert-middle {
   display: table;
   width: 100%;
@@ -8713,3 +8719,24 @@ td .ver-top {
   animation: .2s linear 0s fadeInDown;
 }
 
+.fav-list-search-box {
+  background-color: var(--bg-box);
+  position: absolute;
+  margin-top: 10px;
+  right: 12px;
+  opacity: 0;
+  max-width: 96.3%;
+}
+
+.fav-list-search-box.ant-select-open {
+  opacity: 1;
+  margin-top: -20px;
+}
+
+.ant-select-dropdown {
+  margin-top: 2px;
+}
+
+.ant-popover-title {
+  min-width: 300px;
+}

@@ -90,7 +90,7 @@
                 </div>
                 <div *ngIf="coreService.preferences.controllers.has(controller.controllerId)" class="row">
                   <div class="col-md-12">
-                    <perfect-scrollbar class="p-a-sm p-b-0" style="max-height: 450px;overflow: auto">
+                    <div class="p-a-sm p-b-0 max-ht-450 overflow-y">
                       <div class="p-b-xs" translate>
                         agent.label.agents
                         <i (click)="collapse(controller.controllerId + '$standalone$');" *ngIf="coreService.preferences.controllers.has(controller.controllerId+ '$standalone$')" class="cursor fa fa-caret-down m-l-xs"></i>
@@ -179,10 +179,15 @@
                           </th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of ajaxTable.data" class="cursor">
+                        <tbody cdkDropList (cdkDropListDropped)="agentsReordering($event, controller.agents)">
+                        <tr [ngClass]="{'disabled-row': agent.disabled}" *ngFor="let agent of ajaxTable.data" class="cursor move-on-hover" cdkDrag>
                           <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
-                              [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(agent.agentId)" (nzCheckedChange)="onItemChecked(controller, agent, $event)"></td>
+                              [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(agent.agentId)"
+                              (nzCheckedChange)="onItemChecked(controller, agent, $event)">
+                            <div class="pos-abt move-icon text-16 cur-m t-1" style="left: -1px;overflow: hidden;max-width: 12px" cdkDragHandle>
+                              <i class="fa fa-bars" aria-hidden="true"></i>
+                            </div>
+                          </td>
                           <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
                             <div class="btn-group dropdown pull-left m-r-sm">
                               <button type="button" class="btn-drop more-option-h" [nzDisabled]="controller.checked || controller.indeterminate" nz-dropdown nzTrigger="click"
@@ -319,11 +324,16 @@
                           </th>
                         </tr>
                         </thead>
-                        <tbody cdkDropList (cdkDropListDropped)="drop($event, controller.agentClusters)">
+                        <tbody cdkDropList (cdkDropListDropped)="clusterAgentsReordering($event, controller.agentClusters)">
                           <ng-container *ngFor="let clusterAgent of agentClusterTable.data; let i = index">
-                            <tr [ngClass]="{'disabled-row': clusterAgent.disabled}" class="cursor">
+                            <tr [ngClass]="{'disabled-row': clusterAgent.disabled}" class="cursor move-on-hover" cdkDrag>
                               <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
-                                  [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId2.has(clusterAgent.agentId)" (nzCheckedChange)="onItemChecked(controller, clusterAgent, $event, true)"></td>
+                                  [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId2.has(clusterAgent.agentId)"
+                                  (nzCheckedChange)="onItemChecked(controller, clusterAgent, $event, true)">
+                                <div class="pos-abt move-icon text-16 cur-m t-1" style="left: -1px;overflow: hidden;max-width: 12px" cdkDragHandle>
+                                  <i class="fa fa-bars" aria-hidden="true"></i>
+                                </div>
+                              </td>
                               <td class="menu">
                                 <div class="btn-group dropdown pull-left m-r-sm">
                                   <button type="button" class="btn-drop more-option-h" [nzDisabled]="controller.checked2 || controller.indeterminate2" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
@@ -396,77 +406,81 @@
                                 <span *ngIf="!clusterAgent.token">-</span>
                               </td>
                             </tr>
-                            <ng-container *ngIf="clusterAgent.show">
-                              <tr class="order-history-template0">
-                                <td></td>
-                                <td><span class="_600" translate>common.label.action</span></td>
-                                <td><span class="_600" translate>agent.label.subagentId</span></td>
-                                <td><span class="_600" translate>agent.label.role</span></td>
-                                <td [colSpan]="permission.joc && permission.joc.administration.controllers.manage ? '2' : '1'"><span class="_600" translate>agent.label.url</span></td>
-                                <td><span class="_600" translate>common.label.status</span></td>
-                                <td><span class="_600" translate>agent.label.disabled</span></td>
-                              </tr>
-                              <tr class="order-history-template0" *ngIf="!clusterAgent.subagents || clusterAgent.subagents.length === 0">
-                                <td></td>
-                                <td [colSpan]="permission.joc && permission.joc.administration.controllers.manage ? '8' : '7'">
-                                  <span translate>common.message.noDataAvailable</span>
-                                </td>
-                              </tr>
-                              <tr id="main{{i}}" class="order-history-template0 move-on-hover cursor" cdkDrag *ngFor="let sub of clusterAgent.subagents | orderBy: 'ordering'"
-                                [ngClass]="{'disabled-row': sub.disabled}">
-                                <td>
-                                  <div class="pos-abt move-icon text-16 cur-m t-1" style="left: -1px;" cdkDragHandle>
-                                    <i class="fa fa-bars" aria-hidden="true"></i>
-                                  </div>
-                                </td>
-                                <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
-                                  <div class="btn-group dropdown pull-left m-r-sm">
-                                    <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
-                                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                                      <ul nz-menu >
-                                        <li (click)="editSubagent(sub, clusterAgent, controller)" nz-menu-item >
-                                          <a translate>common.button.edit</a>
-                                        </li>
-                                        <li nz-menu-divider></li>
-                                        <li (click)="disableEnableSubagent(sub, controller, false)" nz-menu-item *ngIf="!sub.disabled">
-                                          <a translate>agent.button.disable</a>
-                                        </li>
-                                        <li (click)="disableEnableSubagent(sub, controller, true)" nz-menu-item *ngIf="sub.disabled">
-                                          <a translate>agent.button.enable</a>
-                                        </li>
-                                        <li (click)="resetSubagent(sub, clusterAgent, controller)" nz-menu-item >
-                                          <a translate>agent.button.reset</a>
-                                        </li>
-                                        <li (click)="resetSubagent(sub, clusterAgent, controller, true)" nz-menu-item >
-                                          <a translate>agent.button.resetForced</a>
-                                        </li>
-                                        <li nz-menu-divider></li>
-                                        <li (click)="removeSubagent(sub, clusterAgent, controller)" nz-menu-item class="bg-hover-color">
-                                          <a translate="">common.button.delete</a>
-                                        </li>
-                                      </ul>
-                                    </nz-dropdown-menu>
-                                  </div>
-                                </td>
-                                <td (click)="editSubagent(sub, clusterAgent, controller)">
-                                  {{sub.subagentId}}
-                                  <i *ngIf="sub.title"> - </i>
-                                  <i class="text-muted">{{sub.title}}</i>
-                                </td>
-                                <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.isDirector | translate}}</td>
-                                <td (click)="editSubagent(sub, clusterAgent, controller)" [colSpan]="permission.joc && permission.joc.administration.controllers.manage ? '2' : '1'">{{sub.url}}</td>
-                                <td (click)="editSubagent(sub, clusterAgent, controller)">
-                                  <label class="label" *ngIf="sub.syncState"
-                                     [ngClass]="coreService.getColor(sub.syncState.severity, 'bg')"
-                                     [innerHtml]="sub.syncState._text | translate"></label>
-                                </td>
-                                <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.disabled ? 'Yes' : 'No'}}</td>
-                              </tr>
-                            </ng-container>
+                            <tr *ngIf="clusterAgent.show">
+                              <td colspan="8" style="padding: 0 !important;border-top: none!important;">
+                                <nz-table class="m-a-0 inner-table" #subagentClusterTable nzSize="small" [nzBordered]="true"
+                                          [nzData]="clusterAgent.subagents | orderBy: 'ordering'" [nzShowPagination]="false" [nzFrontPagination]="false">
+                                  <thead>
+                                  <tr class="order-history-template0">
+                                    <th nzWidth="46px"></th>
+                                    <th nzWidth="56px"><span translate>common.label.action</span></th>
+                                    <th><span translate>agent.label.subagentId</span></th>
+                                    <th><span translate>agent.label.role</span></th>
+                                    <th><span translate>agent.label.url</span></th>
+                                    <th nzWidth="150px"><span translate>common.label.status</span></th>
+                                    <th nzWidth="140px"><span translate>agent.label.disabled</span></th>
+                                  </tr>
+                                  </thead>
+                                  <tbody cdkDropList (cdkDropListDropped)="drop($event, clusterAgent)">
+                                  <tr class="order-history-template0 move-on-hover cursor" cdkDrag *ngFor="let sub of subagentClusterTable.data"
+                                      [ngClass]="{'disabled-row': sub.disabled}">
+                                    <td>
+                                      <div class="pos-abt move-icon text-16 cur-m t-1" style="left: -1px;" cdkDragHandle>
+                                        <i class="fa fa-bars" aria-hidden="true"></i>
+                                      </div>
+                                    </td>
+                                    <td class="menu" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
+                                      <div class="btn-group dropdown pull-left m-r-sm">
+                                        <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                                        <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                                          <ul nz-menu >
+                                            <li (click)="editSubagent(sub, clusterAgent, controller)" nz-menu-item >
+                                              <a translate>common.button.edit</a>
+                                            </li>
+                                            <li nz-menu-divider></li>
+                                            <li (click)="disableEnableSubagent(sub, controller, false)" nz-menu-item *ngIf="!sub.disabled">
+                                              <a translate>agent.button.disable</a>
+                                            </li>
+                                            <li (click)="disableEnableSubagent(sub, controller, true)" nz-menu-item *ngIf="sub.disabled">
+                                              <a translate>agent.button.enable</a>
+                                            </li>
+                                            <li (click)="resetSubagent(sub, clusterAgent, controller)" nz-menu-item >
+                                              <a translate>agent.button.reset</a>
+                                            </li>
+                                            <li (click)="resetSubagent(sub, clusterAgent, controller, true)" nz-menu-item >
+                                              <a translate>agent.button.resetForced</a>
+                                            </li>
+                                            <li nz-menu-divider></li>
+                                            <li (click)="removeSubagent(sub, clusterAgent, controller)" nz-menu-item class="bg-hover-color">
+                                              <a translate="">common.button.delete</a>
+                                            </li>
+                                          </ul>
+                                        </nz-dropdown-menu>
+                                      </div>
+                                    </td>
+                                    <td (click)="editSubagent(sub, clusterAgent, controller)">
+                                      {{sub.subagentId}}
+                                      <i *ngIf="sub.title"> - </i>
+                                      <i class="text-muted">{{sub.title}}</i>
+                                    </td>
+                                    <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.isDirector | translate}}</td>
+                                    <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.url}}</td>
+                                    <td (click)="editSubagent(sub, clusterAgent, controller)">
+                                      <label class="label" *ngIf="sub.syncState"
+                                             [ngClass]="coreService.getColor(sub.syncState.severity, 'bg')"
+                                             [innerHtml]="sub.syncState._text | translate"></label>
+                                    </td>
+                                    <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.disabled ? 'Yes' : 'No'}}</td>
+                                  </tr>
+                                  </tbody>
+                                </nz-table>
+                              </td>
+                            </tr>
+
                           </ng-container>
                         </tbody>
                       </nz-table>
-                    </perfect-scrollbar>
+                    </div>
                   </div>
                 </div>
                 <hr *ngIf="coreService.preferences.controllers.has(controller.controllerId)">
