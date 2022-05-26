@@ -838,7 +838,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     this.object.isModify = true;
     this.object.isModifyStartTime = true;
     this.object.isSuspend = true;
-    this.object.isSuspendWithKill = true;
+    this.object.isSuspendWithKill = false;
     this.object.isTerminate = true;
     this.object.isResume = true;
     let workflow = null;
@@ -850,18 +850,16 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
         if ((order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') || (order.positionString && order.positionString.match('/fork'))) {
           this.object.isTerminate = false;
         }
-        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING' && order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED') {
+        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING'
+          && order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED' && order.state._text !== 'PROMPTING') {
           this.object.isSuspend = false;
-        }
-        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING') {
-          this.object.isSuspendWithKill = false;
         }
         if (order.state._text === 'FINISHED' || order.state._text === 'CANCELLED') {
           this.object.isCancel = true;
-          this.object.isCancelWithKill = true;
         }
-        if (order.state._text === 'PENDING' || order.state._text === 'SCHEDULED') {
+        if (order.state._text === 'RUNNING') {
           this.object.isCancelWithKill = true;
+          this.object.isSuspendWithKill = true;
         }
         if (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING' && order.state._text !== 'BLOCKED') {
           this.object.isModify = false;

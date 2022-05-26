@@ -297,21 +297,43 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  drop(event: CdkDragDrop<string[]>, clusterAgents: any[]): void {
-    let id = event.item.element.nativeElement.getAttribute('id');
-    if (id) {
-      id = id.replace('main', '');
-      const index = parseInt(id, 10);
-      const list = clusterAgents[index].subagents;
-      moveItemInArray(list, event.previousIndex, event.currentIndex);
-      for (let i = 0; i < list.length; i++) {
-        list[i].ordering = i + 1;
-      }
-      this.coreService.post('agents/inventory/cluster/subagents/store', {
-        controllerId: clusterAgents[index].controllerId,
-        agentId: clusterAgents[index].agentId,
-        subagents: list
+  drop(event: CdkDragDrop<string[]>, clusterAgents: any): void {
+    if (event.previousIndex != event.currentIndex) {
+      this.coreService.post('agents/cluster/ordering', {
+        subagentClusterId: clusterAgents.subagents[event.previousIndex].subagentId,
+        predecessorSubagentClusterId: clusterAgents.subagents[event.currentIndex].subagentId
       }).subscribe();
+      moveItemInArray(clusterAgents.subagents, event.previousIndex, event.currentIndex);
+      for (let i = 0; i < clusterAgents.subagents.length; i++) {
+        clusterAgents.subagents[i].ordering = i + 1;
+      }
+
+    }
+  }
+
+  agentsReordering(event: CdkDragDrop<string[]>, agents: any[]): void {
+    if (event.previousIndex != event.currentIndex) {
+      this.coreService.post('agents/inventory/ordering', {
+        agentId: agents[event.previousIndex].agentId,
+        predecessorAgentId: agents[event.currentIndex].agentId
+      }).subscribe();
+      moveItemInArray(agents, event.previousIndex, event.currentIndex);
+      for (let i = 0; i < agents.length; i++) {
+        agents[i].ordering = i + 1;
+      }
+    }
+  }
+
+  clusterAgentsReordering(event: CdkDragDrop<string[]>, clusterAgents: any[]): void {
+    if (event.previousIndex != event.currentIndex) {
+      this.coreService.post('agents/inventory/cluster/ordering', {
+        agentId: clusterAgents[event.previousIndex].agentId,
+        predecessorAgentId: clusterAgents[event.currentIndex].agentId
+      }).subscribe();
+      moveItemInArray(clusterAgents, event.previousIndex, event.currentIndex);
+      for (let i = 0; i < clusterAgents.length; i++) {
+        clusterAgents[i].ordering = i + 1;
+      }
     }
   }
 
@@ -1123,6 +1145,12 @@ export class ControllersComponent implements OnInit, OnDestroy {
         const obj: any = {
           controllerId: this.data[i]
         };
+
+        if(this.coreService.preferences.controllers.has(this.data[i])) {
+          obj.sortBy2 = "ordering";
+          obj.sortBy = "ordering";
+        }
+
         if (securityData) {
           for (let j = 0; j < securityData.controllers.length; j++) {
             if (this.data[i] === securityData.controllers[j].controllerId) {

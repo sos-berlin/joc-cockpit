@@ -4,6 +4,7 @@ import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
 import {TranslateService} from "@ngx-translate/core";
 import {Subscription} from "rxjs";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {NzContextMenuService, NzDropdownMenuComponent} from "ng-zorro-antd/dropdown";
 import {CoreService} from "../../../services/core.service";
 import {AuthService} from "../../../components/guard";
@@ -872,6 +873,10 @@ export class AgentComponent implements OnInit, OnDestroy {
   backToListView(): void {
     this.selectedCluster = {};
     this.ngOnDestroy();
+  }
+
+  sortByDrop(event: CdkDragDrop<string[]>, agents: any[]): void {
+      moveItemInArray(agents, event.previousIndex, event.currentIndex);
   }
 
   drop($event): void {

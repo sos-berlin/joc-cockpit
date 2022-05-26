@@ -308,7 +308,7 @@ export class CoreService {
 
     this.tabs._agentCluster = {};
     this.tabs._agentCluster.filter = {};
-    this.tabs._agentCluster.filter.sortBy = 'subagentClusterId';
+    this.tabs._agentCluster.filter.sortBy = 'ordering';
     this.tabs._agentCluster.reverse = false;
     this.tabs._agentCluster.currentPage = '1';
   }
