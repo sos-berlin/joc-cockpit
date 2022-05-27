@@ -167,12 +167,15 @@
               </th>
             </tr>
             </thead>
-            <tbody>
-            <tr class="cursor" *ngFor="let cluster of ajaxTable.data"
-                (click)="selectedClusterFn(cluster);$event.preventDefault()">
+            <tbody cdkDropList (cdkDropListDropped)="sortByDrop($event, ajaxTable.data)">
+            <tr class="cursor move-on-hover" *ngFor="let cluster of ajaxTable.data"
+                (click)="selectedClusterFn(cluster);$event.preventDefault()" cdkDrag>
               <td *ngIf="permission.joc && permission.joc.administration.controllers.manage" [nzShowCheckbox]="true"
                   [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
                   (nzCheckedChange)="onItemChecked(cluster, $event)">
+                <div class="pos-abt move-icon text-16 cur-m t-1" style="left: -1px;overflow: hidden;max-width: 12px" cdkDragHandle>
+                  <i class="fa fa-bars" aria-hidden="true"></i>
+                </div>
               </td>
               <td *ngIf="permission.joc && permission.joc.administration.controllers.manage">
                 <button class="btn-drop more-option-h" [nzDisabled]="object.mapOfCheckedId.size > 0" nz-dropdown
