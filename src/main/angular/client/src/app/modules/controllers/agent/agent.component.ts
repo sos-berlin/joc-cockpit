@@ -875,8 +875,18 @@ export class AgentComponent implements OnInit, OnDestroy {
     this.ngOnDestroy();
   }
 
-  sortByDrop(event: CdkDragDrop<string[]>, agents: any[]): void {
-      moveItemInArray(agents, event.previousIndex, event.currentIndex);
+  sortByDrop(event: CdkDragDrop<string[]>, subagents: any[]): void {
+    if (event.previousIndex != event.currentIndex) {
+      let index = event.currentIndex - 1;
+      this.coreService.post('agents/cluster/ordering', {
+        subagentClusterId: subagents[event.previousIndex].subagentClusterId,
+        predecessorSubagentClusterId: index > -1 ? subagents[index].subagentClusterId : undefined
+      }).subscribe();
+      moveItemInArray(subagents, event.previousIndex, event.currentIndex);
+      for (let i = 0; i < subagents.length; i++) {
+        subagents[i].ordering = i + 1;
+      }
+    }
   }
 
   drop($event): void {

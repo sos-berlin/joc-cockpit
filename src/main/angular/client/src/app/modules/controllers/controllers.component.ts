@@ -299,23 +299,24 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>, clusterAgents: any): void {
     if (event.previousIndex != event.currentIndex) {
-      this.coreService.post('agents/cluster/ordering', {
-        subagentClusterId: clusterAgents.subagents[event.previousIndex].subagentId,
-        predecessorSubagentClusterId: clusterAgents.subagents[event.currentIndex].subagentId
-      }).subscribe();
       moveItemInArray(clusterAgents.subagents, event.previousIndex, event.currentIndex);
       for (let i = 0; i < clusterAgents.subagents.length; i++) {
         clusterAgents.subagents[i].ordering = i + 1;
       }
-
+      this.coreService.post('agents/inventory/cluster/subagents/store', {
+        controllerId: clusterAgents.controllerId,
+        agentId: clusterAgents.agentId,
+        subagents: clusterAgents.subagents
+      }).subscribe();
     }
   }
 
   agentsReordering(event: CdkDragDrop<string[]>, agents: any[]): void {
     if (event.previousIndex != event.currentIndex) {
+      let index = event.currentIndex - 1;
       this.coreService.post('agents/inventory/ordering', {
         agentId: agents[event.previousIndex].agentId,
-        predecessorAgentId: agents[event.currentIndex].agentId
+        predecessorAgentId: index > -1 ? agents[index].agentId : undefined
       }).subscribe();
       moveItemInArray(agents, event.previousIndex, event.currentIndex);
       for (let i = 0; i < agents.length; i++) {
@@ -326,9 +327,10 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   clusterAgentsReordering(event: CdkDragDrop<string[]>, clusterAgents: any[]): void {
     if (event.previousIndex != event.currentIndex) {
+      let index = event.currentIndex - 1;
       this.coreService.post('agents/inventory/cluster/ordering', {
         agentId: clusterAgents[event.previousIndex].agentId,
-        predecessorAgentId: clusterAgents[event.currentIndex].agentId
+        predecessorAgentId: index > -1 ? clusterAgents[index].agentId : undefined
       }).subscribe();
       moveItemInArray(clusterAgents, event.previousIndex, event.currentIndex);
       for (let i = 0; i < clusterAgents.length; i++) {
