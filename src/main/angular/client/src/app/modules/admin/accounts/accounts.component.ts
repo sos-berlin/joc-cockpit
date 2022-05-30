@@ -338,16 +338,10 @@ export class AccountModalComponent implements OnInit {
     } else {
       request.accountName = obj.accountName;
       request.password = obj.password;
-      delete request.disabled;
+      request.disabled = obj.disabled;
+      request.enabled = obj.enabled;
       request.forcePasswordChange = obj.forcePasswordChange;
       request.roles = obj.roles;
-      if (this.oldUser && this.oldUser.disabled !== obj.disabled) {
-        this.coreService.post(!obj.disabled ? 'iam/accounts/enable' : 'iam/accounts/disable', {
-          identityServiceName: this.identityServiceName,
-          accountNames: [obj.accountName],
-          auditLog: obj.auditLog
-        }).subscribe();
-      }
       this.coreService.post('iam/account/store', request).subscribe({
         next: () => {
           this.activeModal.close('DONE');
@@ -935,7 +929,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
   private pasteUsers(accounts, comments): void {
     accounts.forEach((account, index) => {
       account.auditLog = comments;
-      delete account.disabled;
       this.coreService.post('iam/account/store', account).subscribe({
         next: () => {
           if (index === accounts.length - 1) {
