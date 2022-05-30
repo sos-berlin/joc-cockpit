@@ -5004,7 +5004,7 @@ input[type=text][disabled] {
   width: 95.8% !important;
 }
 
-.role {
+.role, .fav-icon-on-hover {
   i {
     opacity: 0;
   }
@@ -5890,6 +5890,10 @@ General CSS
   top: 4px;
 }
 
+.t-6 {
+  top: 6px;
+}
+
 .t-sm {
   top: 8px;
 }
@@ -6599,7 +6603,7 @@ tr.cdk-drag-preview {
     border: 1px solid var(--hover-primary);
     background: var(--bg-box) !important;
     padding-right: 0;
-    width: 97%;
+    width: calc(100% - 24px);
     height: 29px;
   }
 }
@@ -8737,6 +8741,7 @@ td .ver-top {
   margin-top: 2px;
 }
 
-.ant-popover-title {
-  min-width: 300px;
+.ant-popover{
+  left: 12px;
+  width: 280px;
 }

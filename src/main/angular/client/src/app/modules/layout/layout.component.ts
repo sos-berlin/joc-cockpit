@@ -168,7 +168,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
           let flag = false;
           if (res.configurations[0] && res.configurations[0].configurationItem) {
             const configuration = JSON.parse(res.configurations[0].configurationItem);
-            flag = configuration.joc.disable_warning_on_license_expiration;
+            if(configuration) {
+              flag = configuration.joc.disable_warning_on_license_expiration;
+            }
           }
           this._checkLicenseExpireDate(flag);
         }, error: () => {
