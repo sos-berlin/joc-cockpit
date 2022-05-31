@@ -1,0 +1,30 @@
+<div class="w-full">
+  <input autocomplete="off" type="text" class="form-control" (click)="showList()"
+         placeholder="{{'inventory.placeholder.documentationName' | translate}}"
+         name="documentationPath" [(ngModel)]="data.documentationName">
+  <i class="pos-abt arrow-down" nz-icon nzType="down" nzTheme="outline"></i>
+  <nz-tree-select #docInput class="doc-list-box"
+    name="documentationName"
+    [nzAllowClear]="false"
+    [nzNodes]="documentationTree"
+    [nzHideUnMatched]="true"
+    [nzDropdownStyle]="{ 'max-height': '300px' }"
+    nzShowSearch
+    [(ngModel)]="data.documentationName1"
+    (nzExpandChange)="onExpand($event)"
+  >
+    <ng-template #nzTreeTemplate let-node>
+      <div class="node-wrapper w-93" (click)="loadData(node, $event);">
+        <div class="node-content-wrapper"
+             [class.node-content-wrapper-active]="node.origin.assignReference == data.documentationName && data.documentationName">
+          <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+             class="w-14"></i>
+          <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+          {{node.origin.key}}
+        </div>
+      </div>
+    </ng-template>
+  </nz-tree-select>
+  <i class="tree-search-clear ant-select-clear" (click)="data.documentationName = '';data.documentationName1=''"
+     *ngIf="data.documentationName" nz-icon nzType="close-circle" nzTheme="fill"></i>
+</div>

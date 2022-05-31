@@ -1,0 +1,32 @@
+.arrow-down {
+  right: 23px;
+  top: 8px;
+  cursor: pointer;
+  opacity: .4;
+}
+
+.doc-list-box {
+  background-color: var(--bg-box);
+  position: absolute;
+  opacity: 0;
+  max-width: calc(100% - 24px);
+}
+
+.doc-list-box.ant-select-open {
+  opacity: 1;
+  margin-top: -29px;
+
+  .ant-select-selector {
+    height: 28px;
+  }
+}
+
+.w-full:hover {
+  .tree-search-clear {
+    opacity: .8;
+  }
+
+  .arrow-down {
+    opacity: 0;
+  }
+}

@@ -53,6 +53,8 @@ import {WorkflowTreeStructureComponent} from '../../components/workflow-tree-str
 import {SearchComponent} from '../../components/search/search.component';
 import {PermissionViewComponent} from "../../components/permission-view/permission-view.component";
 
+import {SelectDocumentComponent} from "../../components/select-document/select-document.component";
+
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule, NzAutocompleteModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
@@ -64,7 +66,7 @@ const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFrom
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator, RelativeDateRegexValidator,
   ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
-  StartUpModalComponent, TreeComponent, ValueEditorComponent, WorkflowTreeStructureComponent, SearchComponent, PermissionViewComponent];
+  StartUpModalComponent, TreeComponent, SelectDocumentComponent, ValueEditorComponent, WorkflowTreeStructureComponent, SearchComponent, PermissionViewComponent];
 
 @NgModule({
   imports: [

@@ -131,19 +131,6 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       if (node && (node.isExpanded || node.origin.isLeaf) && flag) {
         this.updateList(node, type);
       }
-    } else {
-      if (type === 'DOCUMENTATION') {
-        if (this.script.configuration.documentationName1) {
-          if (this.script.configuration.documentationName !== this.script.configuration.documentationName1) {
-            this.script.configuration.documentationName = this.script.configuration.documentationName1;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.script.configuration.documentationName !== node.key) {
-            this.script.configuration.documentationName = node.key;
-          }
-        }
-        this.saveJSON();
-      }
     }
   }
 
@@ -152,31 +139,20 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       path: node.key,
       objectTypes: [type]
     };
-    if (type === 'DOCUMENTATION') {
-      if (!this.permission.joc.documentations.view) {
-        return;
-      }
-      obj = {
-        folders: [{ folder: node.key, recursive: false }],
-        onlyWithAssignReference: true
-      };
-    }
-    const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+    const URL = 'inventory/read/folder';
     this.coreService.post(URL, obj).subscribe((res: any) => {
       let data;
       if (type === 'WORKFLOW') {
         data = res.workflows;
-      } else if (type === 'DOCUMENTATION') {
-        data = res.documentations;
       }
       data = sortBy(data, (i: any) => {
         return i.name.toLowerCase();
       });
       for (let i = 0; i < data.length; i++) {
         const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].assignReference || data[i].name;
+        data[i].title = data[i].name;
         data[i].path = path;
-        data[i].key = data[i].assignReference || data[i].name;
+        data[i].key = data[i].name;
         data[i].type = type;
         data[i].isLeaf = true;
       }
@@ -188,9 +164,6 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       }
       node.origin.isLeaf = false;
       node.origin.children = data;
-      if (type === 'DOCUMENTATION') {
-        this.documentationTree = [...this.documentationTree];
-      }
       this.ref.detectChanges();
     });
   }

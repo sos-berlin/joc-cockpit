@@ -82,7 +82,7 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-md-6" [ngClass]="{'has-error' :  ((search.dirty || search.touched) && search.invalid)}">
-          <input type="text" placeholder="{{'inventory.placeholder.valueWhichNeedToReplace' | translate}}" class="form-control" name="search" required
+          <input type="text" placeholder="{{'inventory.placeholder.valueWhichNeedToReplace' | translate}}" [appAutofocus]="true" class="form-control" name="search" required
                  #search="ngModel" [(ngModel)]="folder.search" autocomplete="off">
           <div *ngIf="search.invalid && (search.dirty || search.touched)"
                class="text-danger help-block">

@@ -17,7 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import {NzMessageService} from "ng-zorro-antd/message";
-import {isEmpty, isArray, isEqual, clone, extend, sortBy} from 'underscore';
+import {isEmpty, isArray, isEqual, clone, extend} from 'underscore';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
@@ -1862,15 +1862,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           path: node.key,
           objectTypes: [type]
         };
-        if (type === 'DOCUMENTATION') {
-          request = {
-            folders: [{folder: node.key, recursive: false}],
-            onlyWithAssignReference: true
-          };
-        }
-        const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+        const URL = 'inventory/read/folder';
         this.coreService.post(URL, request).subscribe((res: any) => {
-          let data = res.documentations || res.jobResources;
+          let data = res.jobResources;
           for (let i = 0; i < data.length; i++) {
             const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = data[i].assignReference || data[i].name;
@@ -1887,9 +1881,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           }
           node.origin.isLeaf = false;
           node.origin.children = data;
-          if (type === 'DOCUMENTATION') {
-            this.documentationTree = [...this.documentationTree];
-          }
           this.ref.detectChanges();
         });
       }
@@ -1899,17 +1890,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           this.closeScriptTree();
         }, 10);
       } else {
-        if (type === 'DOCUMENTATION') {
-          if (this.selectedNode.job.documentationName1) {
-            if (this.selectedNode.job.documentationName !== this.selectedNode.job.documentationName1) {
-              this.selectedNode.job.documentationName = this.selectedNode.job.documentationName1;
-            }
-          } else if (node.key && !node.key.match('/')) {
-            if (this.selectedNode.job.documentationName !== node.key) {
-              this.selectedNode.job.documentationName = node.key;
-            }
-          }
-        }
         setTimeout(() => {
           this.saveToHistory();
         }, 10);
@@ -3101,15 +3081,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           path: node.key,
           objectTypes: [type]
         };
-        if (type === 'DOCUMENTATION') {
-          obj = {
-            folders: [{folder: node.key, recursive: false}],
-            onlyWithAssignReference: true
-          };
-        }
-        const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+        const URL = 'inventory/read/folder';
         this.coreService.post(URL, obj).subscribe((res: any) => {
-          let data = type === InventoryObject.LOCK ? res.locks : type === InventoryObject.WORKFLOW ? res.workflows : res.noticeBoards || res.documentations;
+          let data = type === InventoryObject.LOCK ? res.locks : type === InventoryObject.WORKFLOW ? res.workflows : res.noticeBoards;
           for (let i = 0; i < data.length; i++) {
             const _path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
             data[i].title = data[i].assignReference || data[i].name;
@@ -3138,8 +3112,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             this.lockTree = [...this.lockTree];
           } else if (type === InventoryObject.WORKFLOW) {
             this.workflowTree = [...this.workflowTree];
-          } else if (type === 'DOCUMENTATION') {
-            this.documentationTree = [...this.documentationTree];
           } else if (type === InventoryObject.NOTICEBOARD) {
             this.boardTree = [...this.boardTree];
           }
@@ -3181,17 +3153,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             this.selectedNode.obj.noticeBoardName = node.key;
           }
         }
-      } else if (type === 'DOCUMENTATION') {
-        if (this.document.name) {
-          if (this.extraConfiguration.documentationName !== this.document.name) {
-            this.extraConfiguration.documentationName = this.document.name;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.extraConfiguration.documentationName !== node.key) {
-            this.extraConfiguration.documentationName = node.key;
-          }
-        }
-        this.updateOtherProperties('documentation');
       }
     }
   }
@@ -3230,7 +3191,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const dom = $('.graph-container');
       if (dom && dom.position()) {
         let _top = dom.position().top;
-        if(_top > 40){
+        if (_top > 40) {
           _top = 35;
         }
         const top = (_top + $('#rightPanel').position().top);
@@ -7664,7 +7625,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         for (let i = 0; i < jobs.length; i++) {
           if (jobs[i].name == name) {
             let tName;
-            if (name.match(/_copy_[0-9]+/)) {
+            if (name.match(/_copy_\d+/)) {
               const arr = name.split('copy_');
               let num = arr[arr.length - 1];
               num = parseInt(num, 10) || 0;
