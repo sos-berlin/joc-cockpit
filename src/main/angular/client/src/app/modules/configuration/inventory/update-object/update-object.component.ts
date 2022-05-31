@@ -128,17 +128,7 @@ export class UpdateObjectComponent implements OnInit {
         this.updateList(node, type);
       }
     } else {
-      if (type === 'DOCUMENTATION') {
-        if (this.object.documentationName1) {
-          if (this.object.documentationName !== this.object.documentationName1) {
-            this.object.documentationName = this.object.documentationName1;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.object.documentationName !== node.key) {
-            this.object.documentationName = node.key;
-          }
-        }
-      } else if (type === 'WORKFLOW') {
+      if (type === 'WORKFLOW') {
         if (this.object.workflowName1) {
           if (this.object.workflowName !== this.object.workflowName1) {
             this.object.workflowName = this.object.workflowName1;
@@ -160,19 +150,11 @@ export class UpdateObjectComponent implements OnInit {
       path: node.key,
       objectTypes: [type]
     };
-    if (type === 'DOCUMENTATION') {
-      obj = {
-        folders: [{folder: node.key, recursive: false}],
-        onlyWithAssignReference: true
-      };
-    }
-    const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+    const URL = 'inventory/read/folder';
     this.coreService.post(URL, obj).subscribe((res: any) => {
       let data;
       if (type === InventoryObject.WORKFLOW) {
         data = res.workflows;
-      } else if (type === 'DOCUMENTATION') {
-        data = res.documentations;
       }
       data = sortBy(data, (i: any) => {
         return i.name.toLowerCase();
@@ -193,9 +175,7 @@ export class UpdateObjectComponent implements OnInit {
       }
       node.origin.isLeaf = false;
       node.origin.children = data;
-      if (type === 'DOCUMENTATION') {
-        this.documentationTree = [...this.documentationTree];
-      } else if (type === InventoryObject.WORKFLOW) {
+      if (type === InventoryObject.WORKFLOW) {
         this.workflowTree = [...this.workflowTree];
       } else if (type === InventoryObject.JOBRESOURCE) {
         this.jobResourcesTree = [...this.jobResourcesTree];

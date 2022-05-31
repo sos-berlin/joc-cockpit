@@ -288,23 +288,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.updateList(node, type);
       }
     } else {
-      if (type === 'DOCUMENTATION') {
-        if (this.schedule.configuration.documentationName1) {
-          if (this.schedule.configuration.documentationName !== this.schedule.configuration.documentationName1) {
-            this.schedule.configuration.documentationName = this.schedule.configuration.documentationName1;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.schedule.configuration.documentationName !== node.key) {
-            this.schedule.configuration.documentationName = node.key;
-          }
-        }
-      } else {
         if (node.key && !node.key.match('/')) {
           if (this.schedule.configuration.workflowNames.indexOf(node.key) === -1) {
             this.schedule.configuration.workflowNames.push(node.key);
             this.getWorkflowInfo(node.key, true, null);
           }
-        }
+
       }
     }
   }
@@ -314,22 +303,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       path: node.key,
       objectTypes: [type]
     };
-    if (type === 'DOCUMENTATION') {
-      if (!this.permission.joc.documentations.view) {
-        return;
-      }
-      obj = {
-        folders: [{folder: node.key, recursive: false}],
-        onlyWithAssignReference: true
-      };
-    }
-    const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+
+    const URL = 'inventory/read/folder';
     this.coreService.post(URL, obj).subscribe((res: any) => {
       let data;
       if (type === 'WORKFLOW') {
         data = res.workflows;
-      } else if (type === 'DOCUMENTATION') {
-        data = res.documentations;
       }
       data = sortBy(data, (i: any) => {
         return i.name.toLowerCase();
@@ -350,9 +329,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
       node.origin.isLeaf = false;
       node.origin.children = data;
-      if (type === 'DOCUMENTATION') {
-        this.documentationTree = [...this.documentationTree];
-      } else if (type === InventoryObject.WORKFLOW) {
+      if (type === InventoryObject.WORKFLOW) {
         this.workflowTree = [...this.workflowTree];
         this.schedule.configuration.workflowNames = [...this.schedule.configuration.workflowNames];
       }

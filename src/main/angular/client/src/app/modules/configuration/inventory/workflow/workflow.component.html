@@ -350,7 +350,7 @@
           </div>
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'PostNotice' || selectedNode.type === 'ExpectNotice'">
-          <div class="form-group row doc-in-workflow">
+          <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.boardName' | translate}}"
                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.boardName' | translate) : ''"
                   [nzTooltipMouseEnterDelay]="0.5"
@@ -478,7 +478,7 @@
           </div>
         </div>
         <div class="box-body job-property-editor" *ngIf="selectedNode.type === 'Lock'">
-          <div class="form-group row doc-in-workflow" [ngClass]="{'has-error' : (error && !lockName.touched) || ((lockName.dirty || lockName.touched) && lockName.invalid)}">
+          <div class="form-group row" [ngClass]="{'has-error' : (error && !lockName.touched) || ((lockName.dirty || lockName.touched) && lockName.invalid)}">
             <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.lock.name' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                   translate>workflow.label.name
               <sup class="text-danger text-sm">*</sup>
@@ -791,39 +791,11 @@
                     [(ngModel)]="extraConfiguration.title" autocomplete="off" (blur)="updateOtherProperties('title')"/>
             </div>
           </div>
-          <div class="form-group row doc-in-workflow" [ngClass]="{'hide': fullScreen}">
+          <div class="form-group row" [ngClass]="{'hide': fullScreen}">
             <label class="col-md-4 col-lg-3 form-control-label" title="{{'inventory.label.documentation' | translate}}" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                   translate>inventory.label.documentation</label>
-            <div class="col-md-8 col-lg-9 select-input-both">
-              <input autocomplete="off" type="text" class="form-control"
-                    placeholder="{{'inventory.placeholder.documentationName' | translate}}"
-                    name="documentationPath" [(ngModel)]="extraConfiguration.documentationName">
-              <nz-tree-select
-                name="documentationName"
-                [nzDisabled]="isTrash"
-                nzNoAnimation
-                [nzAllowClear]="false"
-                [nzNodes]="documentationTree"
-                [nzHideUnMatched]="true"
-                [nzDropdownStyle]="{ 'max-height': '300px' }"
-                nzShowSearch
-                [(ngModel)]="document.name"
-                (nzExpandChange)="onExpand($event, 'DOCUMENTATION')"
-              >
-                <ng-template #nzTreeTemplate let-node>
-                  <div class="node-wrapper w-93" (click)="loadData(node, 'DOCUMENTATION', $event);">
-                    <div class="node-content-wrapper"
-                        [class.node-content-wrapper-active]="node.origin.assignReference == extraConfiguration.documentationName && extraConfiguration.documentationName">
-                      <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                        class="w-14"></i>
-                      <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                      {{node.origin.key}}
-                    </div>
-                  </div>
-                </ng-template>
-              </nz-tree-select>
-              <i class="tree-search-clear" (click)="extraConfiguration.documentationName = '';document.name='';updateOtherProperties('documentation')" *ngIf="extraConfiguration.documentationName" nz-icon
-                nzType="close-circle" nzTheme="outline"></i>
+            <div class="col-md-8 col-lg-9">
+              <app-select-document [documentationTree]="documentationTree" [data]="extraConfiguration" (funcCall)="updateOtherProperties('documentation')"></app-select-document>
             </div>
           </div>
           <div class="form-group row" [ngClass]="{'hide': fullScreen}">
@@ -986,7 +958,7 @@
                   </div>
                 </div>
               </ng-container>
-    
+
             </div>
           </div>
           <div class="form-group row">

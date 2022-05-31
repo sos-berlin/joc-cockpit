@@ -21,7 +21,7 @@
           </div>
           <div class="form-group row">
             <div class="col-sm-12 m-t-sm m-b">
-              <input type="search" name="search" placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="wizard.searchText">
+              <input type="search" name="search" [appAutofocus]="true" placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="wizard.searchText">
               <i *ngIf="wizard.searchText" class="fa fa-times search-close" (click)="wizard.searchText = '';"></i>
             </div>
             <div class="col-sm-12">

@@ -370,27 +370,17 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.updateList(node, type, reload);
       }
     } else {
-      if (type === 'DOCUMENTATION') {
-        if (this.fileOrder.configuration.documentationName1) {
-          if (this.fileOrder.configuration.documentationName !== this.fileOrder.configuration.documentationName1) {
-            this.fileOrder.configuration.documentationName = this.fileOrder.configuration.documentationName1;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.fileOrder.configuration.documentationName !== node.key) {
-            this.fileOrder.configuration.documentationName = node.key;
-          }
+
+      if (this.fileOrder.configuration.workflowName1) {
+        if (this.fileOrder.configuration.workflowName !== this.fileOrder.configuration.workflowName1) {
+          this.fileOrder.configuration.workflowName = this.fileOrder.configuration.workflowName1;
         }
-      } else {
-        if (this.fileOrder.configuration.workflowName1) {
-          if (this.fileOrder.configuration.workflowName !== this.fileOrder.configuration.workflowName1) {
-            this.fileOrder.configuration.workflowName = this.fileOrder.configuration.workflowName1;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.fileOrder.configuration.workflowName !== node.key) {
-            this.fileOrder.configuration.workflowName = node.key;
-          }
+      } else if (node.key && !node.key.match('/')) {
+        if (this.fileOrder.configuration.workflowName !== node.key) {
+          this.fileOrder.configuration.workflowName = node.key;
         }
       }
+
       setTimeout(() => {
         this.saveJSON();
       }, 10);
@@ -402,26 +392,18 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       path: node.key,
       objectTypes: [type]
     };
-    if (type === 'DOCUMENTATION') {
-      if (!this.permission.joc.documentations.view) {
-        return;
-      }
-      obj = {
-        folders: [{folder: node.key, recursive: false}],
-        onlyWithAssignReference: true
-      };
-    }
-    const URL = type === 'DOCUMENTATION' ? 'documentations' : 'inventory/read/folder';
+
+    const URL = 'inventory/read/folder';
     this.coreService.post(URL, obj).subscribe((res: any) => {
-      let data = res.workflows || res.documentations;
+      let data = res.workflows;
       data = sortBy(data, (i: any) => {
         return i.name.toLowerCase();
       });
       for (let i = 0; i < data.length; i++) {
         const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].assignReference || data[i].name;
+        data[i].title = data[i].name;
         data[i].path = path;
-        data[i].key = data[i].assignReference || data[i].name;
+        data[i].key = data[i].name;
         data[i].type = type;
         data[i].isLeaf = true;
       }
@@ -433,18 +415,15 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       }
       node.origin.isLeaf = false;
       node.origin.children = data;
-      if (type === 'DOCUMENTATION') {
-        this.documentationTree = [...this.documentationTree];
-      } else {
-        this.workflowTree = [...this.workflowTree];
-        if (reload) {
-          const text = this.treeCtrl.inputValue;
-          if (text) {
-            this.treeCtrl.nzSelectSearchComponent.onValueChange(text + 1);
-            setTimeout(() => {
-              this.treeCtrl.nzSelectSearchComponent.onValueChange(text);
-            }, 0);
-          }
+
+      this.workflowTree = [...this.workflowTree];
+      if (reload) {
+        const text = this.treeCtrl.inputValue;
+        if (text) {
+          this.treeCtrl.nzSelectSearchComponent.onValueChange(text + 1);
+          setTimeout(() => {
+            this.treeCtrl.nzSelectSearchComponent.onValueChange(text);
+          }, 0);
         }
       }
       this.ref.detectChanges();

@@ -62,36 +62,8 @@
         <div class="form-group row">
           <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.documentation' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6 select-input-both">
-            <input autocomplete="off" [readOnly]="isTrash || !permission.joc.inventory.manage" type="text" class="form-control"
-                   placeholder="{{'inventory.placeholder.documentationName' | translate}}"
-                   name="documentationPath" [(ngModel)]="jobResource.configuration.documentationName">
-            <nz-tree-select
-              name="documentationName"
-              [disabled]="isTrash || !permission.joc.inventory.manage"
-              nzNoAnimation
-              [nzAllowClear]="false"
-              [nzNodes]="documentationTree"
-              [nzHideUnMatched]="true"
-              [nzDropdownStyle]="{ 'max-height': '300px' }"
-              nzShowSearch
-              [(ngModel)]="jobResource.configuration.documentationName1"
-              (nzExpandChange)="onExpand($event)"
-            >
-              <ng-template #nzTreeTemplate let-node>
-                <div class="node-wrapper w-93" (click)="loadData(node, $event);">
-                  <div class="node-content-wrapper"
-                       [class.node-content-wrapper-active]="node.origin.assignReference == jobResource.configuration.documentationName && jobResource.configuration.documentationName">
-                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                       class="w-14"></i>
-                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                    {{node.origin.key}}
-                  </div>
-                </div>
-              </ng-template>
-            </nz-tree-select>
-            <i class="tree-search-clear" (click)="jobResource.configuration.documentationName = '';jobResource.configuration.documentationName1='';saveJSON()"
-               *ngIf="jobResource.configuration.documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
+            <app-select-document [documentationTree]="documentationTree" [data]="jobResource.configuration" (funcCall)="saveJSON($event)"></app-select-document>
           </div>
         </div>
         <div class="form-group row">

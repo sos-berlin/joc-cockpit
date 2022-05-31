@@ -70,34 +70,8 @@
         <div class="form-group row doc-in-workflow" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'inventory.label.documentation' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>inventory.label.documentation</label>
-          <div class="col-md-8 col-lg-9 select-input-both">
-            <input autocomplete="off" type="text" class="form-control"
-                   placeholder="{{'inventory.placeholder.documentationName' | translate}}"
-                   name="documentationPath" [(ngModel)]="selectedNode.job.documentationName">
-            <nz-tree-select
-              name="documentationName"
-              nzNoAnimation
-              [nzAllowClear]="false"
-              [nzNodes]="documentationTree"
-              [nzHideUnMatched]="true"
-              [nzDropdownStyle]="{ 'max-height': '300px' }"
-              nzShowSearch
-              [(ngModel)]="selectedNode.job.documentationName1"
-              (nzExpandChange)="onExpand($event, 'DOCUMENTATION')"
-            >
-              <ng-template #nzTreeTemplate let-node>
-                <div class="node-wrapper w-93" (click)="loadData(node, 'DOCUMENTATION', $event);">
-                  <div class="node-content-wrapper"
-                       [class.node-content-wrapper-active]="node.origin.assignReference == selectedNode.job.documentationName && selectedNode.job.documentationName">
-                    <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                       class="w-14"></i>
-                    <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                    {{node.origin.key}}
-                  </div>
-                </div>
-              </ng-template>
-            </nz-tree-select>
-            <i class="tree-search-clear" (click)="selectedNode.job.documentationName = '';selectedNode.job.documentationName1=''" *ngIf="selectedNode.job.documentationName" nz-icon nzType="close-circle" nzTheme="outline"></i>
+          <div class="col-md-8 col-lg-9">
+            <app-select-document [documentationTree]="documentationTree" [data]="selectedNode.job" (funcCall)="saveToHistory()"></app-select-document>
           </div>
         </div>
         <div class="form-group row" [hidden]="fullScreen">
@@ -803,7 +777,7 @@
       </div>
     </nz-tab>
     <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
-      <div class="job-property-editor" *ngIf="index === 3">
+      <div class="job-property-editor">
          <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailOn' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.mailOn</label>

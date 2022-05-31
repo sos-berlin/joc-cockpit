@@ -5849,17 +5849,17 @@ General CSS
 }
 
 .tree-search-clear {
-  position: absolute;
-  font-size: 11px;
   opacity: 0;
-  top: 10px;
-  right: 25px;
+  right: 24px;
   background: var(--bg-box);
   cursor: pointer;
+  &:hover{
+    opacity: 1;
+  }
 }
 
 .select-input-both:hover .tree-search-clear {
-  opacity: .6;
+  opacity: .8;
 }
 
 .search-close:hover {
@@ -6584,8 +6584,7 @@ tr.cdk-drag-preview {
   .ant-select {
     position: absolute;
     top: 0;
-    padding-right: 25px;
-
+    max-width: calc(100% - 24px);
     .ant-select-selector {
       background: transparent !important;
       color: transparent !important;
@@ -6605,24 +6604,6 @@ tr.cdk-drag-preview {
     padding-right: 0;
     width: calc(100% - 24px);
     height: 29px;
-  }
-}
-
-.select-input-both2 {
-  .ant-select {
-    padding-right: 4px;
-    width: 97%;
-  }
-
-  .ant-select-open {
-    width: 96.4%;
-    padding-right: 0;
-  }
-}
-
-.doc-in-workflow {
-  .ant-select-open {
-    width: 94% !important;
   }
 }
 
@@ -6763,7 +6744,6 @@ tr.tr-border td {
 .order-history-template10 {
   background: #e5e5e5 !important;
 }
-
 
 .inner-table .ant-table-small {
   border: none !important;

@@ -299,15 +299,15 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>, clusterAgents: any): void {
     if (event.previousIndex != event.currentIndex) {
+      let index = event.currentIndex - 1;
+      this.coreService.post('agents/inventory/cluster/subagents/ordering', {
+        subagentId: clusterAgents.subagents[event.previousIndex].subagentId,
+        predecessorSubagentId: index > -1 ? clusterAgents.subagents[index].subagentId : undefined
+      }).subscribe();
       moveItemInArray(clusterAgents.subagents, event.previousIndex, event.currentIndex);
       for (let i = 0; i < clusterAgents.subagents.length; i++) {
         clusterAgents.subagents[i].ordering = i + 1;
       }
-      this.coreService.post('agents/inventory/cluster/subagents/store', {
-        controllerId: clusterAgents.controllerId,
-        agentId: clusterAgents.agentId,
-        subagents: clusterAgents.subagents
-      }).subscribe();
     }
   }
 
