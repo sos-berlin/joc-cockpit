@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span translate>dailyPlan.label.createPlan</span>
     :
-    <i class="text-muted p-l-xs text" *ngIf="!(dateRanges && dateRanges.length > 0)">{{selectedDate | stringToDate1}}</i>
+    <i class="text-muted p-l-xs text" *ngIf="!(dateRanges && dateRanges.length > 0)">{{selectedDate | stringToDate1: true}}</i>
     <span *ngIf="dateRanges && dateRanges.length > 0">
       <i class="text-muted">{{dateRanges[0] | stringToDate1:true}}</i> -
       <i class="text-muted">{{dateRanges[1] | stringToDate1:true}}</i>

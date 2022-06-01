@@ -299,7 +299,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>, clusterAgents: any): void {
     if (event.previousIndex != event.currentIndex) {
-      let index = event.currentIndex - 1;
+      let index = (event.previousIndex < event.currentIndex) ? event.currentIndex : event.currentIndex - 1;
       this.coreService.post('agents/inventory/cluster/subagents/ordering', {
         subagentId: clusterAgents.subagents[event.previousIndex].subagentId,
         predecessorSubagentId: index > -1 ? clusterAgents.subagents[index].subagentId : undefined
@@ -313,7 +313,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   agentsReordering(event: CdkDragDrop<string[]>, agents: any[]): void {
     if (event.previousIndex != event.currentIndex) {
-      let index = event.currentIndex - 1;
+      let index = (event.previousIndex < event.currentIndex) ? event.currentIndex : event.currentIndex - 1;
       this.coreService.post('agents/inventory/ordering', {
         agentId: agents[event.previousIndex].agentId,
         predecessorAgentId: index > -1 ? agents[index].agentId : undefined
@@ -327,7 +327,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   clusterAgentsReordering(event: CdkDragDrop<string[]>, clusterAgents: any[]): void {
     if (event.previousIndex != event.currentIndex) {
-      let index = event.currentIndex - 1;
+      let index = (event.previousIndex < event.currentIndex) ? event.currentIndex : event.currentIndex - 1;
       this.coreService.post('agents/inventory/cluster/ordering', {
         agentId: clusterAgents[event.previousIndex].agentId,
         predecessorAgentId: index > -1 ? clusterAgents[index].agentId : undefined
