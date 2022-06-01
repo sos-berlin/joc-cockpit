@@ -4,6 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../services/core.service';
 import {StringDatePipe} from "../../pipes/core.pipe";
 import {DataService} from "../../services/data.service";
+import * as moment from "moment-timezone";
 
 @Component({
   selector: 'app-about',
@@ -39,7 +40,7 @@ import {DataService} from "../../services/data.service";
           <div class="p-b-xs row">
             <div class="col-sm-12 text-black-lt" translate>info.label.allRightReserved</div>
           </div>
-          <div class="row">
+          <div class="row" *ngIf="licenseType">
             <label class="col-sm-3" translate>info.label.licenseType</label>
             <div class="col-sm-9">
               <span *ngIf="licenseType !== 'OPENSOURCE'">
@@ -56,7 +57,7 @@ import {DataService} from "../../services/data.service";
               </a>
             </div>
           </div>
-          <div class="row m-t-xs" *ngIf="licenseType !== 'OPENSOURCE'">
+          <div class="row m-t-xs" *ngIf="licenseType && licenseType !== 'OPENSOURCE'">
             <label class="col-sm-3" translate>info.label.licenseValidity</label>
             <div class="col-sm-9"
                  [ngClass]="remainingDays < 1 ? 'text-danger' : remainingDays < 7 ? 'text-warning' : ''">
@@ -96,19 +97,33 @@ export class AboutModalComponent implements OnInit {
   remainingDays: number;
 
   constructor(public modalService: NzModalRef, private coreService: CoreService, private dataService: DataService,
-              private ref: ChangeDetectorRef, private datePipe: StringDatePipe) {
+              private ref: ChangeDetectorRef) {
+  }
+
+  static stringToDate(date): any{
+    if (sessionStorage.preferences) {
+      const n = JSON.parse(sessionStorage.preferences);
+      if (!n.zone) {
+        return '';
+      }
+      return moment(date).tz(n.zone).format(n.dateFormat);
+    } else {
+      return moment(date).format('DD.MM.YYYY HH:mm:ss');
+    }
   }
 
   ngOnInit(): void {
     this.hasLicense = sessionStorage.hasLicense == 'true';
     this.licenseType = sessionStorage.licenseType;
-    let validFrom = sessionStorage.licenseValidFrom;
     let validUntil = sessionStorage.licenseValidUntil;
     if (validUntil && (this.hasLicense || this.licenseType !== 'OPENSOURCE')) {
       this.checkLicense()
+    } else {
+      this.isLoaded = true;
     }
     this.coreService.get('version.json').subscribe((data) => {
       this.versionData = data;
+      this.ref.detectChanges();
     });
   }
 
@@ -117,7 +132,7 @@ export class AboutModalComponent implements OnInit {
       this.isLoading = true;
       this.coreService.post('joc/license', {}).subscribe({
         next: (data) => {
-          this.licenseType = data.licenseType;
+          this.licenseType = data.type;
           this.isCompleted = true;
           let recheckWarningFunc = false;
           if (sessionStorage.licenseValidUntil != data.validUntil) {
@@ -143,10 +158,10 @@ export class AboutModalComponent implements OnInit {
   private formatDate(validFrom, validUntil): void {
     this.isLoaded = true;
     if (validFrom) {
-      this.validFrom = this.datePipe.transform(validFrom);
+      this.validFrom = AboutModalComponent.stringToDate(validFrom);
     }
     if (validUntil) {
-      this.validUntil = this.datePipe.transform(validUntil);
+      this.validUntil = AboutModalComponent.stringToDate(validUntil);
       const differenceInTime = new Date(validUntil).getTime() - new Date().getTime();
       this.remainingDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
     } else {

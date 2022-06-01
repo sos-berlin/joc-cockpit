@@ -877,7 +877,7 @@ export class AgentComponent implements OnInit, OnDestroy {
 
   sortByDrop(event: CdkDragDrop<string[]>, subagents: any[]): void {
     if (event.previousIndex != event.currentIndex) {
-      let index = event.currentIndex - 1;
+      let index = (event.previousIndex < event.currentIndex) ? event.currentIndex : event.currentIndex - 1;
       this.coreService.post('agents/cluster/ordering', {
         subagentClusterId: subagents[event.previousIndex].subagentClusterId,
         predecessorSubagentClusterId: index > -1 ? subagents[index].subagentClusterId : undefined
