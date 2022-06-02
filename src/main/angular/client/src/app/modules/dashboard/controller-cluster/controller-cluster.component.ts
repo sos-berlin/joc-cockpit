@@ -434,11 +434,11 @@ export class ControllerClusterComponent implements OnInit, OnDestroy {
     this.coreService.post('controller/components', {controllerId: this.schedulerIds.selected}).subscribe({
       next: (res) => {
         this.clusterStatusData = res;
-        this.isDataLoaded = true;
         if (this.editor && this.editor.graph && !this.isDataLoaded) {
           this.editor.graph.removeCells(this.editor.graph.getChildVertices(this.editor.graph.getDefaultParent()));
           this.createWorkflowDiagram(this.editor.graph);
         }
+        this.isDataLoaded = true;
       }, error: () => this.isDataLoaded = true
     });
   }
