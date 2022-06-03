@@ -839,7 +839,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   private hideAndShow(agent, controller, flag): void {
     const obj: any = {
       controllerId: controller.controllerId,
-      agents: controller.agents
+      agents: [agent]
     };
     if (this.preferences.auditLog) {
       let comments = {
