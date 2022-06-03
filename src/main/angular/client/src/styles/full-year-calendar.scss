@@ -228,6 +228,9 @@
     background: rgba(0, 0, 0, 0.2);
     cursor: pointer;
   }
+  td.day .selected:hover {
+    background: var(--primary);
+  }
   tr td {
     &.old, &.new, &.old:hover, &.new:hover {
       background: none;
@@ -244,10 +247,7 @@
     background: none;
     cursor: default;
   }
-  tr td.range {
-    .day-content {
-      background: var(--range-hover) !important;
-    }
+  tr td {
     &.range-start .day-content {
       background: var(--range-start) !important;
     }
@@ -255,11 +255,16 @@
       background: var(--range-start) !important;
     }
   }
+  tr td.range {
+    .day-content {
+      background: var(--range-hover);
+    }
+  }
 
 }
 .calendar-sm{
   .selected{
-    background: var(--primary) !important;
+    background: var(--primary);
     color: #fff !important;
     .date{
       color: #fff !important;

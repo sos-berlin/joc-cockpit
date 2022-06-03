@@ -42,8 +42,7 @@
         allowOverlap: opt.allowOverlap != null ? opt.allowOverlap : true,
         displayWeekNumber: opt.displayWeekNumber != null ? opt.displayWeekNumber : false,
         disabledDays: opt.disabledDays instanceof Array ? opt.disabledDays : [],
-        dataSource: opt.dataSource instanceof Array != null ? opt.dataSource : [],
-        customDayRenderer: $.isFunction(opt.customDayRenderer) ? opt.customDayRenderer : null
+        dataSource: opt.dataSource instanceof Array != null ? opt.dataSource : []
       };
     },
     _initializeEvents: function (opt) {
@@ -329,14 +328,14 @@
           cell.addClass('day');
           if (_this.options.rangeSelection) {
             let moved = false;
-            cell.mousedown(function (evt) {
+            cell.on('mousedown', function (evt) {
               if (!evt.ctrlKey && !_this.options.isCrtlPress) {
                 _this.options.dateFrom = parseInt($(this).attr('currentDate'));
                 _this.options.dateTo = null;
               }
               moved = false;
             })
-            cell.mousemove(function () {
+            cell.on('mousemove', function () {
               if (_this.options.dateFrom && !_this.options.dateTo) {
                 moved = true;
                 const date = $(this).attr('currentDate');
@@ -356,7 +355,7 @@
                 }
               }
             })
-            cell.mouseup(function (evt) {
+            cell.on('mouseup',function (evt) {
               let flag = false;
               if ((moved || _this.options.isCrtlPress) && _this.options.dateFrom) {
                 let cells = _this.element.find('.day:not(.old, .new, .disabled)');
@@ -365,7 +364,7 @@
                   if (date >= _this.options.dateFrom && date <= $(this).attr('currentDate')) {
                     $(cells[i]).addClass('range');
                   } else {
-                    $(cells[i]).removeClass('range');
+                    $(cells[i]).removeClass('range range-start range-end');
                   }
                   if (!_this.options.dateTo) {
                     if ($(this).attr('class') && $(this).attr('class').indexOf('new') == -1) {
@@ -441,9 +440,6 @@
             cellContent.append(date);
             cell.attr('currentDate', currentDate.getTime())
             cell.append(cellContent);
-            if (this.options.customDayRenderer) {
-              this.options.customDayRenderer(cellContent, currentDate);
-            }
           }
           row.append(cell);
           currentDate.setDate(currentDate.getDate() + 1);
@@ -493,14 +489,14 @@
         this.element.find('.month-container').each(function () {
           $(this).find('.day-content').each(function () {
             $(this).children('.plan-time').remove();
-            $(this).removeClass('selected-blue').removeClass('selected-orange');
+            $(this).removeClass('selected-blue selected-orange');
           });
         });
       }
     },
     _renderDataSourceDay: function (elt, currentDate, events) {
       elt.children('.plan-time').remove();
-      elt.removeClass('selected-blue').removeClass('selected-orange');
+      elt.removeClass('selected-blue selected-orange');
       if (events.length > 0) {
         if (this.options.view !== 'year') {
           let cellContent = $(document.createElement('div'));
@@ -843,7 +839,6 @@
       weekStart: 1
     }
   };
-
 
   $(function () {
     $('[data-provide="calendar"]').each(function () {
