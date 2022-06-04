@@ -8664,10 +8664,21 @@ td .ver-top {
     display: inline-flex;
     align-items: center;
     height: 40px;
+    color: #efb700;
   }
 
   a.btn-text:hover {
     text-decoration: underline !important;
+  }
+}
+.license-box-danger {
+  background: rgba(247, 44, 0, 0.79);
+  border-color: rgba(247, 44, 0, 0.9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .5) !important;
+  color: #fff;
+
+  .fa-exclamation-triangle {
+    color: #fff;
   }
 }
 

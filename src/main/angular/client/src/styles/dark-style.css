@@ -859,7 +859,7 @@ span ul li a {
 }
 
 .ant-modal-content{
-  box-shadow: 0 4px 12px rgba(255, 255, 255,.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0,.5);
 }
 
 .ant-spin-container::after,

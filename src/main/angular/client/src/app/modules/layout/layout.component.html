@@ -35,10 +35,10 @@
   </div>
   <div class="app-body">
     <div *ngIf="warningMessage || warningMessage2">
-      <div class="license-box card">
+      <div class="license-box card" [ngClass]="warningMessage ? '' : 'license-box-danger'">
         <div class="pl-1 pr-1 row">
           <div class="col-1">
-            <i class="fa fa-exclamation-triangle text-18" [ngClass]="warningMessage ? 'text-warning' : 'text-danger'" aria-hidden="true"></i>
+            <i class="fa fa-exclamation-triangle text-18" aria-hidden="true"></i>
           </div>
           <div class="p-0 col-10" *ngIf="warningMessage">
             <p class="p-2 p-b-0 m-b-sm _400" [innerHTML]="warningMessage"></p>

@@ -159,45 +159,65 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   checkLicenseExpireDate() {
     if (sessionStorage.getItem('licenseValidUntil')) {
-      const date = this.preferences.licenseReminderDate;
-      this.licenseDate = new Date(sessionStorage.getItem('licenseValidUntil'));
-      const differenceInTime = this.licenseDate.getTime() - this.currentDate.getTime();
-      const remainingDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
-      if (date && remainingDays !== 0 && differenceInTime > 0) {
-        if (parseInt(date, 10) > new Date().getTime()) {
-          return;
-        }
-      }
-      if (this.preferences.licenseExpirationWarning && !date) {
-        if (remainingDays > 30) {
-          this.preferences.licenseReminderDate = new Date().setMonth(new Date().getMonth() + 1);
-        } else if (remainingDays > 7) {
-          this.preferences.licenseReminderDate = new Date().setDate(new Date().getDate() + 7);
-        } else {
-          this.preferences.licenseReminderDate = new Date(this.licenseDate).setDate(new Date(this.licenseDate).getDate() - 1);
-        }
-        if (remainingDays !== 30 && remainingDays !== 7) {
-          return;
-        }
-      }
-      if (remainingDays < 61) {
-        if (differenceInTime < 0) {
-          this.translate.get('license.secondWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
-            this.warningMessage2 = translatedValue;
-          });
-        } else {
-          if (remainingDays == 0) {
-            this.warningMessage2 = 'Hide';
+      this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
+        next: (res) => {
+          console.log(res)
+          if (res.configurations[0]) {
+            let configuration = res.configurations[0];
+            configuration = JSON.parse(res.configurations[0].configurationItem);
+            console.log(configuration.joc)
+            this._checkLicenseExpireDate(configuration.joc.disable_warning_on_license_expiration || false);
           }
-          this.translate.get('license.firstWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
-            this.warningMessage = this.coreService.convertTextToLink(translatedValue, 'mailto:sales@sos-berlin.com');
-          });
+        }, error: () => {
+          this._checkLicenseExpireDate();
         }
-      }
+      });
     } else if (this.preferences.licenseReminderDate) {
       this.preferences.licenseReminderDate = null;
       this.preferences.licenseExpirationWarning = false;
       this.saveLicenseReminderDate();
+    }
+  }
+
+  private _checkLicenseExpireDate(isDisable = false): void {
+    const date = this.preferences.licenseReminderDate;
+    this.licenseDate = new Date(sessionStorage.getItem('licenseValidUntil'));
+    const differenceInTime = this.licenseDate.getTime() - this.currentDate.getTime();
+    const remainingDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+    if (date && remainingDays !== 0 && differenceInTime > 0
+    ) {
+      if (parseInt(date, 10) > new Date().getTime()) {
+        return;
+      }
+    }
+    if (this.preferences.licenseExpirationWarning && !date) {
+      if (remainingDays > 30) {
+        this.preferences.licenseReminderDate = new Date().setMonth(new Date().getMonth() + 1);
+      } else if (remainingDays > 7) {
+        this.preferences.licenseReminderDate = new Date().setDate(new Date().getDate() + 7);
+      } else {
+        this.preferences.licenseReminderDate = new Date(this.licenseDate).setDate(new Date(this.licenseDate).getDate() - 1);
+      }
+      if (remainingDays !== 30 && remainingDays !== 7) {
+        return;
+      }
+    }
+    if (isDisable && remainingDays > 0) {
+      return;
+    }
+    if (remainingDays < 61) {
+      if (differenceInTime < 0) {
+        this.translate.get('license.secondWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
+          this.warningMessage2 = translatedValue;
+        });
+      } else {
+        if (remainingDays == 0) {
+          this.warningMessage2 = 'Hide';
+        }
+        this.translate.get('license.firstWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
+          this.warningMessage = this.coreService.convertTextToLink(translatedValue, 'mailto:sales@sos-berlin.com');
+        });
+      }
     }
   }
 

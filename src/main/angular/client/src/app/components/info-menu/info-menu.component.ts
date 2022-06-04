@@ -41,13 +41,20 @@ import {StringDatePipe} from "../../pipes/core.pipe";
           <div class="row">
             <label class="col-sm-3" translate>info.label.licenseType</label>
             <div class="col-sm-9">
-              <span *ngIf="hasLicense" translate>info.label.commercialLicense</span>
-              <span *ngIf="!hasLicense" translate>info.label.openSourceLicense</span>
+              <span *ngIf="licenseType === 'COMMERCIAL'" translate>info.label.commercialLicense</span>
+              <span *ngIf="licenseType !== 'COMMERCIAL'" translate>info.label.openSourceLicense</span>
+              <a *ngIf="licenseType === 'COMMERCIAL'" class="text-primary text-hover-primary m-l-md"
+                 (click)="checkLicense()">
+                <i *ngIf="!isCompleted" class="fa fa-refresh m-r-xs" [ngClass]="{'fa-spin': isLoading}"></i>
+                <i *ngIf="isCompleted" class="fa fa-check p-r-xs"></i>
+                {{'info.button.checkLicense' | translate}}
+              </a>
             </div>
           </div>
           <div class="row m-t-xs" *ngIf="validUntil">
             <label class="col-sm-3" translate>info.label.licenseValidity</label>
-            <div class="col-sm-9">
+            <div class="col-sm-9"
+                 [ngClass]="remainingDays < 1 ? 'text-danger' : remainingDays < 7 ? 'text-warning' : ''">
               <i>{{validFrom}}</i>
               -
               <i>{{validUntil}}</i>
@@ -67,25 +74,55 @@ import {StringDatePipe} from "../../pipes/core.pipe";
 })
 export class AboutModalComponent implements OnInit {
   versionData: any = {};
+  isLoading = false;
+  isCompleted = false;
   hasLicense = false;
+  licenseType = '';
   validFrom = '';
   validUntil = '';
+  remainingDays: number;
 
   constructor(public modalService: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef, private datePipe: StringDatePipe) {
   }
 
   ngOnInit(): void {
     this.hasLicense = sessionStorage.hasLicense == 'true';
+    this.licenseType = sessionStorage.licenseType;
     let validFrom = sessionStorage.licenseValidFrom;
     let validUntil = sessionStorage.licenseValidUntil;
-    if (validUntil) {
-      this.validFrom = this.datePipe.transform(validFrom);
-      this.validUntil = this.datePipe.transform(validUntil);
+    if (validUntil && (this.hasLicense || this.licenseType === 'COMMERCIAL')) {
+      this.formatDate(validFrom, validUntil);
     }
     this.coreService.get('version.json').subscribe((data) => {
       this.versionData = data;
       this.ref.detectChanges();
     });
+  }
+
+  checkLicense(): void {
+    this.isLoading = true;
+    this.coreService.post('joc/license', {}).subscribe({
+      next: (data) => {
+        this.formatDate(data.validFrom, data.validUntil);
+        this.isCompleted = true;
+        this.ref.detectChanges();
+      }, error: () => {
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private formatDate(validFrom, validUntil): void {
+    if (validFrom) {
+      this.validFrom = this.datePipe.transform(validFrom);
+    }
+    if (validUntil) {
+      this.validUntil = this.datePipe.transform(validUntil);
+      const differenceInTime = new Date(validUntil).getTime() - new Date().getTime();
+      this.remainingDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+    } else {
+      this.remainingDays = 0;
+    }
   }
 }
 
