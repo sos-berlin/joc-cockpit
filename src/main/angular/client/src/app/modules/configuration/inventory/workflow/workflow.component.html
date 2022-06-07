@@ -701,7 +701,7 @@
                   <ng-container *ngSwitchCase="'Number'">
                     <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                       <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1"
-                                      name="value{{i}}" [(ngModel)]="variable.value" (keypress)="onKeyPress($event, true)"></nz-input-number>
+                                      name="value{{i}}" [(ngModel)]="variable.value" (keydown)="onKeyPress($event, true)"></nz-input-number>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                           class="text-danger help-block">
                         <div *ngIf="value.errors.required">
@@ -733,7 +733,7 @@
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                      <input #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event, true)"
+                      <input #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keydown)="onKeyPress($event, true)"
                             name="value{{i}}" [(ngModel)]="variable.value" placeholder="{{'common.placeholder.value' | translate}}">
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                           class="text-danger help-block">
@@ -893,7 +893,7 @@
                    style="right: 1px;top:0px;" *ngIf="variable.value.type === 'Number' || variable.value.type === 'Boolean'" (click)="addList(variable)" nz-icon nzType="unordered-list" nzTheme="outline"></i>
                 <ng-container *ngSwitchDefault>
                   <input #value="ngModel" [facetValidation]="variable.value.facet" [disabled]="variable.value.type === 'List'" autocomplete="off" type="text" class="form-control" name="value{{i}}"
-                         (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
+                         (keydown)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
                          [(ngModel)]="variable.value.default" placeholder="{{'common.placeholder.value' | translate}}">
                   <i [nz-tooltip]="'workflow.tooltip.facetEntryMode' | translate" class="pos-abt cursor text-primary-hover" [ngClass]="{'text-primary': variable.value.facet}" style="right: 36px;top:1px;" *ngIf="variable.value.type === 'String'" (click)="addFacet(variable)" nz-icon nzType="snippets" nzTheme="outline"></i>
                   <i [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover" [ngClass]="{'text-primary': variable.value.list && variable.value.list.length > 0}"
@@ -908,7 +908,7 @@
               </div>
               <div class="col-md-4 col-lg-4 m-b-sm p-r-0" *ngIf="variable.value.type === 'Final'" [ngClass]="{'has-error' : ((final.dirty || final.touched) && final.invalid)}">
                 <input required autocomplete="off" type="text" class="form-control" #final="ngModel" name="final{{i}}"
-                      (keypress)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
+                      (keydown)="onKeyPress($event)" (blur)="updateOtherProperties('variable')"
                       [(ngModel)]="variable.value.final" placeholder="{{'workflow.placeholder.final' | translate}}">
                 <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
                   (click)="openEditor(variable.value, 'final')" style="right: 1px;top:1px;"></i>

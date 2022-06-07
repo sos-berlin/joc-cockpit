@@ -150,6 +150,7 @@ export class FacetEditorComponent implements OnInit {
   @Input() data: any = {};
   @Input() isList: boolean;
   variable: any = {};
+  favList = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -159,6 +160,11 @@ export class FacetEditorComponent implements OnInit {
     if (this.isList && this.variable.value && (!this.variable.value.list || this.variable.value.list.length === 0)) {
       this.addVariableToArray(this.variable.value);
     }
+    this.getFavList();
+  }
+
+  private getFavList(): void {
+    this.favList = this.coreService.getFavouriteTab().facets;
   }
 
   checkRegularExp(data): void {
@@ -166,7 +172,6 @@ export class FacetEditorComponent implements OnInit {
     try {
       new RegExp(data.facet);
     } catch (e) {
-      console.error(e)
       data.invalid = true;
     }
   }
@@ -878,6 +883,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTooltipVisible: boolean;
   @Input() isModal: boolean;
   @Input() exactMatch: boolean;
+  favourite: any = {
+    list: [],
+    agents: []
+  };
+  isFavourite = false;
   agentList = [];
   nonExistAgents = [];
   history = [];
@@ -992,7 +1002,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }, 100);
   }
 
-  expandCollapse(data, isCluster = false) {
+  expandCollapse($event, data, isCluster = false) {
+    $event.stopPropagation();
     data.hide = !data.hide;
     if (isCluster) {
       if (this.agents[1]) {
@@ -1034,6 +1045,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   changeType(): void {
     this.saveToHistory();
+  }
+
+  toggleFavourite(): void {
+    this.isFavourite = !this.isFavourite;
   }
 
   checkLength(): void {
@@ -1131,6 +1146,74 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.obj.script = false;
   }
 
+  generateFavList(): void {
+    let arr = [];
+    let flag = false;
+    for (let i in this.favourite.list) {
+      if (!this.favourite.list[i].clusterName) {
+        flag = true;
+        if (arr.length == 0) {
+          arr.push({
+            title: 'agents',
+            isStandalone: true,
+            children: [this.favourite.list[i].name]
+          })
+        } else {
+          arr[0].children.push(this.favourite.list[i].name);
+        }
+      } else {
+        if ((arr.length == 0 && !flag) || (arr.length == 1 && flag)) {
+          arr.push({
+            title: this.favourite.list[i].clusterName,
+            children: [this.favourite.list[i].name]
+          })
+        } else {
+          let isExist = false;
+          for (let j in arr) {
+            if (this.favourite.list[i].clusterName == arr[j].title) {
+              isExist = true;
+              arr[j].children.push(this.favourite.list[i].name);
+              break;
+            }
+          }
+          if (!isExist) {
+            arr.push({
+              title: this.favourite.list[i].clusterName,
+              children: [this.favourite.list[i].name]
+            })
+          }
+        }
+      }
+    }
+    this.favourite.agents = arr;
+  }
+
+  isFavCheck(agent, cluster): boolean {
+    let flag = false;
+    for (let i in this.favourite.list) {
+      if (agent == this.favourite.list[i].name && cluster == this.favourite.list[i].clusterName) {
+        flag = true;
+        break;
+      }
+    }
+    return flag;
+  }
+
+  setFavourite($event, agent, cluster, isFav): void {
+    $event.stopPropagation();
+    $event.preventDefault();
+    if (isFav) {
+      this.favourite.list.push({name: agent, clusterName: cluster});
+    } else {
+      for (let i = 0; i < this.favourite.list.length; i++) {
+        if (this.favourite.list[i].name === agent) {
+          this.favourite.list.splice(i, 1);
+          break;
+        }
+      }
+    }
+  }
+
   selectSubagentCluster(cluster): void {
     if (cluster) {
       this.selectedNode.job.agentName1 = cluster.title;
@@ -1216,7 +1299,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       const isSpace = currentLine.substring(cursor.ch, cursor.ch + 1) == ' ';
       let str = (!isSpace ? ' ' : '');
       if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
-        str = str + '##!include ' + this.scriptObj.name + ' ';
+        if(this.scriptObj.name) {
+          str = str + '##!include ' + this.scriptObj.name + ' ';
+        }
       } else {
         str = str + this.scriptObj.name + ' ';
       }
@@ -1903,6 +1988,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   private init(): void {
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
+    this.favourite.list = this.coreService.getFavouriteTab().agents;
     this.agentList = this.coreService.clone(this.agents);
     this.getJobInfo();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
@@ -2229,7 +2315,9 @@ export class ScriptEditorComponent implements AfterViewInit {
       const isSpace = currentLine.substring(cursor.ch, cursor.ch + 1) == ' ';
       let str = (!isSpace ? ' ' : '');
       if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
-        str = str + '##!include ' + this.scriptObj.name + ' ';
+        if(this.scriptObj.name) {
+          str = str + '##!include ' + this.scriptObj.name + ' ';
+        }
       } else {
         str = str + this.scriptObj.name + ' ';
       }
@@ -2329,7 +2417,7 @@ export class ImportComponent implements OnInit {
   hasBaseDropZoneOver: any;
   uploader: FileUploader;
 
-  constructor(public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToastrService) {
+  constructor(public activeModal: NzModalRef, private translate: TranslateService, private toasterService: ToastrService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
@@ -2473,7 +2561,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
-  constructor(public coreService: CoreService, public translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
+  constructor(public coreService: CoreService, private translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
               private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {

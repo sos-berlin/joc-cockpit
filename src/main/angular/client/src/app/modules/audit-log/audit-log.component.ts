@@ -119,7 +119,7 @@ export class SearchComponent implements OnInit {
   selectTime(time, isEditor = false, val = 'from'): void {
     this.coreService.selectTime(time, isEditor, this.filter, val);
   }
-  
+
   onSubmit(result): void {
     this.submitted = true;
     const configObj = {
@@ -310,6 +310,10 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
+  }
+
+  trackByFn(index:number, el:any): number {
+    return el.id;
   }
 
   checkSharedFilters(): void {

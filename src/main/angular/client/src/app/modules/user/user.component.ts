@@ -8,12 +8,175 @@ import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
 import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
+import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 
 declare var $;
+
+@Component({
+  selector: 'app-edit-favourite-modal',
+  templateUrl: './edit-favourite-dialog.html'
+})
+export class EditFavouriteModalComponent implements OnInit {
+  @Input() list = [];
+  @Input() data: any;
+  @Input() type: string;
+  @Input() schedulerId: any;
+
+  submitted = false;
+  agents = [];
+  value: any = {};
+  object: any = {};
+
+  constructor(private activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {
+  }
+
+  ngOnInit(): void {
+    if (this.type === 'Agent') {
+      this.agentList();
+    }
+    if (this.data) {
+      this.object = this.coreService.clone(this.data);
+    }
+  }
+
+  agentList() {
+    let data = {agentList: []};
+    let standaloneAgentText = '';
+    let clusterAgentText = '';
+    this.translate.get('agent.label.agents').subscribe(translatedValue => {
+      standaloneAgentText = translatedValue;
+    });
+    this.translate.get('agent.label.agentGroups').subscribe(translatedValue => {
+      clusterAgentText = translatedValue;
+    });
+    this.coreService.getAgents(data, this.schedulerId, () => {
+      for (let j = 0; j < data.agentList.length; j++) {
+        let obj = {
+          title: data.agentList[j].title === 'agents' ? standaloneAgentText : clusterAgentText,
+          key: data.agentList[j].title,
+          disabled: true,
+          children: []
+        }
+        for (let i = 0; i < data.agentList[j].children.length; i++) {
+          if (data.agentList[j].children[i].title) {
+            let _obj = {
+              title: data.agentList[j].children[i].title,
+              key: data.agentList[j].children[i].title,
+              disabled: true,
+              isLeaf: false,
+              children: []
+            };
+            if (data.agentList[j].children[i].children) {
+              data.agentList[j].children[i].children.forEach(element => {
+                _obj.children.push({
+                  title: element, key: element, isLeaf: true, cluster: true
+                })
+              })
+            }
+            obj.children.push(_obj)
+          } else {
+            let _obj = {title: data.agentList[j].children[i], key: data.agentList[j].children[i], isLeaf: true}
+            obj.children.push(_obj)
+          }
+        }
+        this.agents.push(obj);
+      }
+    })
+  }
+
+  checkRegularExp(data): void {
+    data.invalid = false;
+    try {
+      new RegExp(data.facet);
+    } catch (e) {
+      console.error(e)
+      data.invalid = true;
+    }
+  }
+
+  onSelect(node): void {
+    this.object.clusterName = undefined;
+    if(node.parentNode && node.parentNode.origin && node.origin.cluster){
+      this.object.clusterName = (node.parentNode.origin.key);
+    }
+  }
+
+  close() {
+    this.activeModal.destroy();
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    this.activeModal.close(this.object);
+  }
+
+}
+
+@Component({
+  selector: 'app-manage-favourite-list',
+  templateUrl: './favourite-list.component.html',
+})
+export class FavouriteListComponent implements OnInit {
+  @Input() list = [];
+  @Input() schedulerId: any;
+  @Input() type: string;
+  searchKey: string;
+
+  constructor(public coreService: CoreService, private modal: NzModalService) {
+  }
+
+  ngOnInit(): void {
+  }
+
+  add(): void {
+    this.openEditFavouriteModal();
+  }
+
+  edit(data): void {
+    this.openEditFavouriteModal(data);
+  }
+
+  private openEditFavouriteModal(data?): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: EditFavouriteModalComponent,
+      nzComponentParams: {
+        data,
+        type: this.type,
+        schedulerId: this.schedulerId.selected
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        if(data) {
+          for (let i = 0; i < this.list.length; i++) {
+            if (this.list[i].name === data.name) {
+              this.list[i] = result;
+              break;
+            }
+          }
+        } else {
+          this.list.push(result);
+        }
+      }
+    });
+  }
+
+  delete(data): void {
+    for (let i = 0; i < this.list.length; i++) {
+      if (this.list[i].name == data.name) {
+        this.list.splice(i, 1);
+        break;
+      }
+    }
+  }
+}
 
 @Component({
   selector: 'app-git-modal-content',
@@ -30,6 +193,7 @@ export class GitModalComponent implements OnInit {
   object: any = {
     type: 'password'
   };
+
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -80,7 +244,7 @@ export class GitModalComponent implements OnInit {
         obj.credentials[0].keyfilePath = '';
       }
     }
-    if(this.data){
+    if (this.data) {
       this.coreService.post('inventory/repository/git/credentials/remove', {
         auditLog: obj.auditLog,
         gitServers: [this.data.gitServer]
@@ -405,6 +569,9 @@ export class UserComponent implements OnInit, OnDestroy {
   identityServiceType: string;
   subscription1: Subscription;
   subscription2: Subscription;
+  facetList: any = [];
+  agentList: any = [];
+  searchKey: string;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
               private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
@@ -451,17 +618,25 @@ export class UserComponent implements OnInit, OnDestroy {
           }
         } else if (this.permission.joc.administration.certificates.view) {
           this.getGit();
+        } else {
+          this.getFavourite();
         }
       } else if ($event.index === 3) {
         if (this.permission.joc.administration.certificates.view) {
           this.getCA();
         } else if (this.securityLevel !== 'LOW' && this.permission.joc.inventory.view) {
           this.getGit();
+        } else {
+          this.getFavourite();
         }
       } else if ($event.index === 4) {
         if (this.permission.joc.administration.certificates.view) {
           this.getGit();
+        } else {
+          this.getFavourite();
         }
+      } else if ($event.index === 5) {
+        this.getFavourite();
       }
     }
   }
@@ -524,7 +699,7 @@ export class UserComponent implements OnInit, OnDestroy {
       this.preferences.maxBoardRecords = this.preferences.maxRecords;
       this.isGroupBtnActive = false;
     }
-    if(!this.preferences.licenseExpirationWarning){
+    if (!this.preferences.licenseExpirationWarning) {
       delete this.preferences.licenseReminderDate;
     }
     sessionStorage.preferences = JSON.stringify(this.preferences);
@@ -659,6 +834,11 @@ export class UserComponent implements OnInit, OnDestroy {
         this.gitCredentials = {};
       }
     });
+  }
+
+  getFavourite(): void {
+    this.facetList = this.coreService.getFavouriteTab().facets;
+    this.agentList = this.coreService.getFavouriteTab().agents;
   }
 
   pasteKey(type = 'key'): void {

@@ -7,6 +7,7 @@ import {differenceInCalendarDays} from 'date-fns';
 import {CoreService} from '../../../services/core.service';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
 import {AuthService} from '../../../components/guard';
+import {WorkflowService} from '../../../services/workflow.service';
 
 @Component({
   selector: 'app-show-dependency',
@@ -64,9 +65,11 @@ export class AddOrderModalComponent implements OnInit {
   submitted = false;
   zones = [];
   variableList = [];
+  startNodes = [];
+  endNodes = [];
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
-              private modal: NzModalService, private ref: ChangeDetectorRef) {
+              private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
@@ -79,8 +82,175 @@ export class AddOrderModalComponent implements OnInit {
       this.display = true;
     }
     this.order.timeZone = this.preferences.zone;
+    this.recursiveUpdate(null);
+    this.workflow.instructions.forEach(element => {
+      if (element.TYPE !== 'ImplicitEnd') {
+        let flag = true;
+        if (element.TYPE === 'Try') {
+          element.catch.instructions.forEach(ele => {
+            if (ele.TYPE === 'Retry') {
+              flag = false;
+              this.startNodes.push({name: element.jobName || ele.TYPE, position: element.positionString});
+            }
+          });
+        }
+        if (flag) {
+          this.startNodes.push({name: element.jobName || element.TYPE, position: element.positionString});
+        }
+      }
+    })
     this.order.at = 'now';
     this.updateVariableList();
+  }
+
+  recursiveUpdate(position): void {
+    const self = this;
+    let nodes: any = {
+      children: []
+    };
+    let flag = false;
+    function recursive(json, obj) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (!position || json.instructions[x].positionString === position) {
+            flag = true;
+          }
+          if (json.instructions[x].TYPE !== 'ImplicitEnd') {
+            if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
+              if (flag) {
+                obj.children.push({
+                  title: json.instructions[x].jobName || json.instructions[x].TYPE,
+                  key: json.instructions[x].positionString,
+                  isLeaf: true
+                });
+              }
+
+            } else {
+              if (json.instructions[x].TYPE === 'Fork') {
+                if (json.instructions[x].branches) {
+                  let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
+                  if (flag) {
+                    obj.children.push(_obj);
+                  }
+                  for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                    if (json.instructions[x].branches[i].workflow.instructions) {
+                      let obj1 = {
+                        title: json.instructions[x].branches[i].id,
+                        disabled: true,
+                        key: json.instructions[x].positionString + json.instructions[x].branches[i].id,
+                        children: []
+                      };
+                      if (flag) {
+                        _obj.children.push(obj1);
+                      }
+                      recursive(json.instructions[x].branches[i].workflow, obj1);
+                    }
+                  }
+                }
+              }
+
+              if (json.instructions[x].instructions) {
+                recursive(json.instructions[x], obj);
+              }
+              if (json.instructions[x].TYPE === 'Try') {
+
+                json.instructions[x].catch.instructions.forEach(element => {
+                  if (element.TYPE === 'Retry') {
+                    let _obj = {title: 'Retry', key: json.instructions[x].positionString, children: []};
+                    if (flag) {
+                      obj.children.push(_obj);
+                    }
+                    if (json.instructions[x].try) {
+                      if (json.instructions[x].try.instructions && json.instructions[x].try.instructions.length > 0) {
+                        recursive(json.instructions[x].try, _obj);
+                      }
+                    }
+                  } else {
+                    let _obj = {
+                      title: json.instructions[x].TYPE,
+                      key: json.instructions[x].positionString,
+                      children: []
+                    };
+                    if (flag) {
+                      obj.children.push(_obj);
+                    }
+                    if (json.instructions[x].try) {
+                      if (json.instructions[x].try.instructions && json.instructions[x].try.instructions.length > 0) {
+                        recursive(json.instructions[x].try, _obj);
+                      }
+                    }
+                    if (json.instructions[x].catch) {
+                      if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                        let obj1 = {
+                          title: "catch",
+                          disabled: true,
+                          key: json.instructions[x].positionString + "catch",
+                          children: []
+                        };
+                        if (flag) {
+                          _obj.children.push(obj1);
+                        }
+                        recursive(json.instructions[x].catch, obj1);
+                      }
+                    }
+                  }
+                })
+              }
+              if (json.instructions[x].TYPE === 'If') {
+                let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
+                if (flag) {
+                  obj.children.push(_obj);
+                }
+                if (json.instructions[x].then && json.instructions[x].then.instructions) {
+                  recursive(json.instructions[x].then, _obj);
+                }
+                if (json.instructions[x].else && json.instructions[x].else.instructions) {
+                  let obj1 = {title: "else", disabled: true, key: json.instructions[x].positionString, children: []};
+                  if (flag) {
+                    _obj.children.push(obj1);
+                  }
+                  recursive(json.instructions[x].else, obj1);
+                }
+              }
+              if (json.instructions[x].TYPE === 'Cycle') {
+                if (json.instructions[x].cycleWorkflow) {
+                  let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
+                  if (flag) {
+                    obj.children.push(_obj);
+                  }
+                  recursive(json.instructions[x].cycleWorkflow, _obj);
+                }
+              }
+              if (json.instructions[x].TYPE === 'Lock') {
+                if (json.instructions[x].lockedWorkflow) {
+                  let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
+                  if (flag) {
+                    obj.children.push(_obj);
+                  }
+                  recursive(json.instructions[x].lockedWorkflow, _obj);
+                }
+              }
+              if (json.instructions[x].TYPE === 'ForkList') {
+                if (json.instructions[x].workflow) {
+                  let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
+                  if (flag) {
+                    obj.children.push(_obj);
+                  }
+                  recursive(json.instructions[x].workflow, _obj);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    recursive(this.workflow, nodes);
+    self.endNodes = nodes.children;
+  }
+
+  selectStartNode(value) {
+    this.recursiveUpdate(value);
   }
 
   updateVariableList(): void {
@@ -90,16 +260,23 @@ export class AddOrderModalComponent implements OnInit {
         if (val.type !== 'List') {
           if (!val.final) {
             let list;
-            if(val.list){
+            if (val.list) {
               list = [];
               val.list.forEach((item) => {
-                let obj = {name : item}
+                let obj = {name: item}
                 this.coreService.removeSlashToString(obj, 'name');
                 list.push(obj);
               });
             }
             if (!val.default && val.default !== false && val.default !== 0) {
-              this.arguments.push({name: k, type: val.type, isRequired: true, facet: val.facet, message: val.message, list: list});
+              this.arguments.push({
+                name: k,
+                type: val.type,
+                isRequired: true,
+                facet: val.facet,
+                message: val.message,
+                list: list
+              });
             } else if (val.default) {
               if (val.type === 'String') {
                 this.coreService.removeSlashToString(val, 'default');
@@ -159,18 +336,18 @@ export class AddOrderModalComponent implements OnInit {
         argument.facet = obj.facet;
         argument.message = obj.message;
       }
-      if(obj.list){
+      if (obj.list) {
         argument.list = [];
         let isFound = false;
         obj.list.forEach((item) => {
-          let obj = {name : item};
-          if(argument.value === item){
+          let obj = {name: item};
+          if (argument.value === item) {
             isFound = true;
           }
           this.coreService.removeSlashToString(obj, 'name');
           argument.list.push(obj);
         });
-        if(!isFound){
+        if (!isFound) {
           argument.list.push({name: argument.value, default: true});
         }
       }
@@ -373,6 +550,14 @@ export class WorkflowActionComponent {
   navToDetailView(view): void {
     this.coreService.getWorkflowDetailTab().pageView = view;
     this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]);
+  }
+
+  suspend(workflow): void {
+
+  }
+
+  resume(workflow): void {
+
   }
 
   addOrder(workflow): void {

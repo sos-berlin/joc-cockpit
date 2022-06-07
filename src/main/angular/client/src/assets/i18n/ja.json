@@ -460,6 +460,7 @@
     "button.unassignDocumentation": "割当ドキュメントを解除",
     "button.viewDocumentation": "ドキュメント表示",
     "button.viewHistory": "履歴表示",
+    "button.addFromFavourite": "Add from Favourite",
     "placeholder.search": "検索",
     "placeholder.name": "名称",
     "placeholder.value": "値",
@@ -746,6 +747,13 @@
     "message.errorInLoadingScheduleIds": "コントローラーID取得エラー",
     "message.pasteInSubFolderNotAllowed": "宛先フォルダーはソースフォルダーの下にあります",
     "message.invalidJSON": "無効なJSONファイルです"
+  },
+  "favourite": {
+    "button.addFavourite": "Add Favourite",
+    "button.editFavourite": "Edit Favourite",
+    "button.addFromFavourite": "Add from Favourite",
+    "button.filterByFavourites": "Filter By Favourites",
+    "button.backToList": "Back To List"
   },
   "fileTransfer": {
     "label.transfer": "送信",
@@ -1543,6 +1551,8 @@
     "label.ordersFound": "オーダーがあります",
     "label.lastOutcome": "最新結果",
     "label.variableList": "変数一覧",
+    "label.startNode": "Start Node",
+    "label.endNode": "End Node",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
     "button.startNow": "即時開始",
@@ -1556,6 +1566,8 @@
     "button.addVariable": "変数追加",
     "button.modifyVariable": "変数編集",
     "button.showLog": "ログ表示",
+    "placeholder.selectStartNode": "Select Start Node",
+    "placeholder.selectEndNode": "Select End Node",
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
     "message.noLogHistoryFound": "このオーダーにはログがありません",
@@ -1605,6 +1617,7 @@
     "label.maxNumberOfNoticeBoardEntries": "最大通知ボードあたりオーダー表示数",
     "label.maxNumberOfHistoryEntriesPerOrder": "最大オーダー履歴表示数",
     "label.maxNumberOfHistoryEntriesPerTask": "最大タスク履歴表示数",
+    "label.maxNumberOfFavouriteEntries": "Max. number of Favourite entries",
     "label.showSubFolderAndFolderContents": "サブフォルダー/コンテンツ表示",
     "label.subFolderAndFolderContents": "サブフォルダー/コンテンツ",
     "label.currentController": "現在コントローラー",
@@ -1641,6 +1654,7 @@
     "label.newPassword": "新しいパスワード",
     "label.confirmPassword": "確認用パスワード",
     "label.gitManagement": "Git管理",
+    "label.favouriteManagement": "Favourite Management",
     "label.licenseWarningGotIt": "ライセンス警告を確認",
     "button.resetProfile": "リセットプロファイル",
     "button.groupLimit": "グループリミット",
@@ -1648,6 +1662,14 @@
     "message.passwordNotMatch": "パスワードと確認用パスワードは一致させる必要があります。",
     "message.minimumPasswordLength": "パスワードは{{length}}文字以上必要です。",
     "message.passwordShouldNotSame": "新しいパスワードは今のパスワードと異なる必要があります。",
+    "favouriteManagement": {
+      "label.manageFavourite":"Manage Favourite",
+      "label.addFavourite":"Add Favourite",
+      "label.editFavourite":"Update Favourite",
+      "button.addFavourite":"Add Favourite",
+      "tab.agents":"Agents",
+      "tab.facets":"Facets"
+    },
     "permission": {
       "label.order": "オーダー",
       "label.job": "ジョブ",

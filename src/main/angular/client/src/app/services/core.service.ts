@@ -37,6 +37,10 @@ export class CoreService {
   };
 
   searchResults = {};
+  favourite = {
+    facets: [],
+    agents: []
+  };
 
   newWindow: any;
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
@@ -1612,4 +1616,9 @@ export class CoreService {
       data[val === 'from' ? 'fromTime1' : val === 'start' ? 'startTime1' : val.match('end') ? val : 'toTime1'] = new Date(d);
     }
   }
+
+  getFavouriteTab(): any {
+    return this.favourite
+  }
+
 }

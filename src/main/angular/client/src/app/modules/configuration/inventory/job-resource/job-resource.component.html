@@ -115,7 +115,7 @@
                           </div>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="argu.value" (keypress)="onKeyPress($event, 'ARGU')" (blur)="saveJSON()"
+                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="argu.value" (keydown)="onKeyPress($event, 'ARGU')" (blur)="saveJSON()"
                                  placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                           <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)"></i>
                           <div class="pos-abt r-t-n-6">
@@ -179,7 +179,7 @@
                           </div>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" (keypress)="onKeyPress($event, 'ENV')" (blur)="saveJSON()"
+                          <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" (keydown)="onKeyPress($event, 'ENV')" (blur)="saveJSON()"
                                  placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                           <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)"></i>
                           <div class="pos-abt r-t-n-6">

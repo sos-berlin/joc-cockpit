@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>profile.favouriteManagement.label.manageFavourite</span>
+    <i *ngIf="data">:&nbsp;</i>
+    <span *ngIf="data">{{object.name}}</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="close()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>common.label.name</label>
+      <ng-container *ngIf="type == 'Agent'">
+        <div class="col-sm-8" [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}">
+          <nz-tree-select
+            required
+            [nzHideUnMatched]="true"
+            [nzDropdownStyle]="{ 'max-height': '300px' }"
+            nzShowSearch
+            name="name"
+            [(ngModel)]="object.name"
+            [nzDropdownClassName]="'custom-tree-select'"
+            #name="ngModel"
+            [nzNodes]="agents"
+            [nzPlaceHolder]="'workflow.placeholder.selectAgentName' | translate"
+            [nzAllowClear]="false"
+            >
+            <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper w-93" (click)="onSelect(node);">
+                <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.key == object.name && object.name">
+                  <i *ngIf="node.isLeaf" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                  {{node.origin.key}}
+                </div>
+              </div>
+            </ng-template>
+          </nz-tree-select>
+          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+            <div *ngIf="name.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="type == 'Facet'">
+        <div class="col-sm-8" [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}">
+          <input type="text" class="form-control" [placeholder]="'customization.placeholder.enterName' | translate" name="name" [(ngModel)]="object.name"
+                 required #name="ngModel"/>
+          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+            <div *ngIf="name.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div *ngIf="type == 'Facet'" class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>workflow.label.facet</label>
+      <div class="col-sm-8" [ngClass]="{ 'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || object.invalid}">
+        <textarea #facet="ngModel" name="facet" (keydown)="checkRegularExp(object)" (blur)="checkRegularExp(object)"
+                  [(ngModel)]="object.value" nz-input placeholder="{{'common.placeholder.regex' | translate}}" nzAutosize></textarea>
+        <div *ngIf="(facet.invalid && facet.errors && (facet.dirty || facet.touched)) || object.invalid"
+             class="text-danger help-block">
+          <div *ngIf="object.invalid">
+            <div translate>workflow.message.invalidRegularExpression</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" translate>
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      common.button.submit
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="close()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

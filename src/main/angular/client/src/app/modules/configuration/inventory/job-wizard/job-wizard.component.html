@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="col-sm-5 m-b-sm p-r-0">
-                  <input type="text" autocomplete="off" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event);"
+                  <input type="text" autocomplete="off" class="form-control" name="value{{i}}" (keydown)="onKeyPress($event);"
                          [(ngModel)]="param.newValue" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
                 </div>
                 <div class="col-sm-1">

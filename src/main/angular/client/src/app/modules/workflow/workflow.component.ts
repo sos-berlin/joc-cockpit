@@ -393,7 +393,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   sideBar: any = {};
   reloadState = 'no';
   objectType = 'WORKFLOW';
-
+  object = {
+    mapOfCheckedId: new Map(),
+    checked: false,
+    indeterminate: false,
+    isSuspend: false,
+    isResume: false,
+  };
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
@@ -465,6 +471,63 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.isProcessing = false;
       }, 100);
     }
+  }
+
+  onItemChecked(workflow,checked: boolean): void {    
+    if (!checked && this.object.mapOfCheckedId.size > (this.workflowFilters.entryPerPage || this.preferences.entryPerPage)) {
+      const orders = this.getCurrentData(this.data, this.workflowFilters); 
+      if (orders.length < this.data.length) {
+        this.object.mapOfCheckedId.clear();
+        orders.forEach(item => {
+          this.object.mapOfCheckedId.set(item.orderId, item);
+          
+        });
+      }
+    }
+    if (checked) {
+      this.object.mapOfCheckedId.set(workflow.path, workflow);
+      
+    } else {
+      this.object.mapOfCheckedId.delete(workflow.path);
+    }
+    this.refreshCheckedStatus();
+  }
+
+  resetCheckBox(): void {
+    this.object = {
+      mapOfCheckedId: new Map(),
+      checked: false,
+      indeterminate: false,
+      isSuspend: false,
+      isResume: false,
+    };
+  }
+
+  selectAll(): void{
+    this.data.forEach(item => {
+      this.object.mapOfCheckedId.set(item.path, item);
+    });
+    this.refreshCheckedStatus(true);
+  }
+
+  checkAll(value: boolean): void {
+    if (value && this.data.length > 0) {
+      const orders = this.getCurrentData(this.data, this.workflowFilters);
+      orders.forEach(item => {     
+        this.object.mapOfCheckedId.set(item.path, item);
+      });
+    } else {
+      this.object.mapOfCheckedId.clear();
+    }
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(allOrder = false): void {
+    const orders = allOrder ? this.data : this.getCurrentData(this.data, this.workflowFilters);
+    this.object.checked = this.object.mapOfCheckedId.size === orders.length;
+    this.object.isSuspend = true;
+    this.object.isResume = true;
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
   private init(): void {
@@ -622,6 +685,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         this.workflows = res.workflows;
         this.workflows = this.orderPipe.transform(this.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
         this.searchInResult();
+        if (this.object.mapOfCheckedId.size > 0) {
+          const tempObject = new Map();
+          this.data.forEach((order) => {
+            if (this.object.mapOfCheckedId.has(order.path)) {
+              tempObject.set(order.path, order);
+            }
+          });
+          this.object.mapOfCheckedId = tempObject;
+          this.object.mapOfCheckedId.size > 0 ? this.refreshCheckedStatus() : this.resetCheckBox();
+        } else {
+          this.resetCheckBox();
+        }
         if (request.workflowIds.length > 0) {
           this.getOrders(request);
         }
@@ -1025,14 +1100,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.workflowFilters.reverse = !this.workflowFilters.reverse;
     this.workflowFilters.filter.sortBy = key;
     this.data = this.orderPipe.transform(this.data, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
+    this.resetCheckBox();
   }
 
   pageIndexChange($event): void {
     this.workflowFilters.currentPage = $event;
+    this.resetCheckBox();
   }
 
   pageSizeChange($event): void {
     this.workflowFilters.entryPerPage = $event;
+    this.checkAll(true);
   }
 
   getCurrentData(list, filter): Array<any> {

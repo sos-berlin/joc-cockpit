@@ -460,6 +460,7 @@
     "button.unassignDocumentation": "Zuweisung der Dokumentation entfernen",
     "button.viewDocumentation": "Dokumentation anzeigen",
     "button.viewHistory": "Historie anzeigen",
+    "button.addFromFavourite": "Add from Favourite",
     "placeholder.search": "Ergebnisse filtern",
     "placeholder.name": "Name",
     "placeholder.value": "Wert",
@@ -746,6 +747,13 @@
     "message.errorInLoadingScheduleIds": "Fehler beim Lesen der Controller-Kennungen",
     "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners.",
     "message.invalidJSON": "Ungültige JSON Datei"
+  },
+  "favourite": {
+    "button.addFavourite": "Add Favourite",
+    "button.editFavourite": "Edit Favourite",
+    "button.addFromFavourite": "Add from Favourite",
+    "button.filterByFavourites": "Filter By Favourites",
+    "button.backToList": "Back To List"
   },
   "fileTransfer": {
     "label.transfer": "Übertragung",
@@ -1543,6 +1551,8 @@
     "label.ordersFound": "Aufträge gefunden",
     "label.lastOutcome": "Letztes Ergebnis",
     "label.variableList": "Listenvariable",
+    "label.startNode": "Start Node",
+    "label.endNode": "End Node",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
     "button.startNow": "Jetzt starten",
@@ -1556,6 +1566,8 @@
     "button.addVariable": "Variable hinzufügen",
     "button.modifyVariable": "Variable ändern",
     "button.showLog": "Protokoll anzeigen",
+    "placeholder.selectStartNode": "Select Start Node",
+    "placeholder.selectEndNode": "Select End Node",
     "message.noVariableAvailable": "keine Variablen vorhanden",
     "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung",
     "message.noLogHistoryFound": "Kein Protokoll für diesen Auftrag gefunden",
@@ -1605,6 +1617,7 @@
     "label.maxNumberOfNoticeBoardEntries": "Max. Anzahl Aufträge pro Notizbrett",
     "label.maxNumberOfHistoryEntriesPerOrder": "Max. Anzahl Einträge der Auftragshistorie pro Arbeitsablauf",
     "label.maxNumberOfHistoryEntriesPerTask": "Max. Anzahl Einträge der Job-Historie pro Arbeitsablauf",
+    "label.maxNumberOfFavouriteEntries": "Max. number of Favourite entries",
     "label.showSubFolderAndFolderContents": "Ordner und Inhalt der Unterordner anzeigen",
     "label.subFolderAndFolderContents": "Unterordner und Ordnerinhalt",
     "label.currentController": "Aktueller Controller",
@@ -1641,6 +1654,7 @@
     "label.newPassword": "Neues Kennwort",
     "label.confirmPassword": "Kennwort bestätigen",
     "label.gitManagement": "Git Verwaltung",
+    "label.favouriteManagement": "Favourite Management",
     "label.licenseWarningGotIt": "Lizenzwarnung akzeptiert",
     "button.resetProfile": "Profil zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
@@ -1648,6 +1662,14 @@
     "message.passwordNotMatch": "Neues Kennwort und bestätigtes Kennwort müssen übereinstimmen",
     "message.minimumPasswordLength": "Kennwort zu kurz",
     "message.passwordShouldNotSame": "Altes Kennwort und neues Kennwort dürfen nicht übereinstimmen.",
+    "favouriteManagement": {
+      "label.manageFavourite":"Manage Favourite",
+      "label.addFavourite":"Add Favourite",
+      "label.editFavourite":"Update Favourite",
+      "button.addFavourite":"Add Favourite",
+      "tab.agents":"Agents",
+      "tab.facets":"Facets"
+    },
     "permission": {
       "label.order": "Auftrag",
       "label.job": "Job",

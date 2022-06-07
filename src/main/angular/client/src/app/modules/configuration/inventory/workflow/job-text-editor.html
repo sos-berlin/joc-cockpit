@@ -85,38 +85,64 @@
                class="form-control" [(ngModel)]="selectedNode.job.agentName" #agentName="ngModel" (blur)="onBlur(true);" (ngModelChange)="onAgentChange($event)"
                [nzAutocomplete]="auto"/>
             <nz-autocomplete #auto>
+              <div *ngIf="favourite.list.length > 0" class="text-right text-sm m-r-12">
+                <a *ngIf="!favourite.show" class="primary-text-hover-color cursor" (click)="favourite.show = true;generateFavList()" translate>favourite.button.filterByFavourites</a>
+                <a *ngIf="favourite.show" class="primary-text-hover-color cursor" (click)="favourite.show = false;" translate>favourite.button.backToList</a>
+              </div>
               <nz-auto-option (click)="selectSubagentCluster(null)" *ngFor="let agent of nonExistAgents" [nzValue]="agent" [nzLabel]="agent">
                  <span class="p-l-xs">{{agent}}</span> <span class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
               </nz-auto-option>
-              <ng-container *ngIf="agentList[0] && agentList[0].title == 'agents'">
+              <ng-container *ngIf="favourite.show">
+                <ng-container>
+                  <nz-auto-optgroup *ngFor="let group of favourite.agents" [nzLabel]="groupTitle">
+                    <ng-template #groupTitle>
+                      <span class="_600" *ngIf="group.isStandalone">{{ 'agent.label.' + group.title | translate }}</span>
+                      <span class="_600" *ngIf="!group.isStandalone">{{ group.title}}</span>
+                    </ng-template>
+                    <nz-auto-option (click)="selectSubagentCluster(null)" *ngFor="let agent of group.children" [nzLabel]="agent" [nzValue]="agent">
+                      <div class="fav-icon-on-hover">
+                        {{ agent }}
+                      </div>
+                    </nz-auto-option>
+                  </nz-auto-optgroup>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="agentList[0] && agentList[0].title == 'agents' && !favourite.show">
                 <nz-auto-optgroup *ngFor="let group of [agentList[0]]" [nzLabel]="groupTitle">
                   <ng-template #groupTitle>
                     <span class="_600">
                       {{ 'agent.label.' + group.title | translate }}
-                      <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(group);$event.stopPropagation()"></i>
+                      <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse($event, group);"></i>
                     </span>
                   </ng-template>
-                  <nz-auto-option (click)="selectSubagentCluster(null)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
-                    {{ agents }}
+                  <nz-auto-option (click)="selectSubagentCluster(null)" [hidden]="group.hide" *ngFor="let agent of group.children" [nzLabel]="agent" [nzValue]="agent">
+                    <div class="fav-icon-on-hover">
+                      {{ agent }}
+                      <i class="pos-abt r-12 t-6 cursor font14 primary-text-hover-color" [hidden]="isFavCheck(agent, null)" nz-icon nzType="star" (click)="setFavourite($event, agent, null , true)" nzTheme="outline"></i>
+                      <i class="pos-abt r-12 t-6 cursor font14 text-primary" [hidden]="!isFavCheck(agent, null)" nz-icon nzType="star" (click)="setFavourite($event, agent, null , false)" nzTheme="fill"></i>
+                    </div>
                   </nz-auto-option>
                 </nz-auto-optgroup>
               </ng-container>
-              <ng-container *ngIf="(agentList[1] && agentList[1].title == 'agentGroups') || (agentList[0] && agentList[0].title == 'agentGroups')">
-                <nz-auto-option nzDisabled nzValue="" class="ant-select-item-group not-disabled" (click)="$event.stopPropagation();">
+              <ng-container *ngIf="((agentList[1] && agentList[1].title == 'agentGroups') || (agentList[0] && agentList[0].title == 'agentGroups')) &&  !favourite.show">
+                <nz-auto-option nzDisabled nzValue="" class="ant-select-item-group not-disabled">
                   <span class="_600" style="font-size: 12px;">
                     {{'agent.label.' + agentList[agentList.length - 1].title | translate}}
-                    <i class="fa p-r-xs cursor text-16"  [ngClass]="agentList[agentList.length - 1].hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(agentList[agentList.length - 1]);$event.stopPropagation()"></i>
+                    <i class="fa p-r-xs cursor text-16"  [ngClass]="agentList[agentList.length - 1].hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse($event, agentList[agentList.length - 1]);"></i>
                   </span>
                 </nz-auto-option>
                 <nz-auto-optgroup [hidden]="agentList[agentList.length - 1].hide" *ngFor="let group of agentList[agentList.length - 1].children" [nzLabel]="groupTitle">
                   <ng-template #groupTitle>
                     <span class="_600 pl-20">
                       {{ group.title }}
-                      <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(group, true);$event.stopPropagation()"></i>
+                      <i *ngIf="group.children && group.children.length > 0" class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse($event, group, true);"></i>
                     </span>
                   </ng-template>
-                  <nz-auto-option (click)="selectSubagentCluster(group)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents" [nzValue]="agents">
-                    <span class="pl-20">{{ agents }}</span>
+                  <nz-auto-option (click)="selectSubagentCluster(group)" [hidden]="group.hide" *ngFor="let agent of group.children" [nzLabel]="agent" [nzValue]="agent">
+                    <div class="pl-20 fav-icon-on-hover">{{ agent }}
+                      <i class="pos-abt r-12 t-6 cursor font14 primary-text-hover-color" [hidden]="isFavCheck(agent, group.title)" nz-icon nzType="star" (click)="setFavourite($event, agent, group.title, true)" nzTheme="outline"></i>
+                      <i class="pos-abt r-12 t-6 cursor font14 text-primary" [hidden]="!isFavCheck(agent, group.title)" nz-icon nzType="star" (click)="setFavourite($event, agent, group.title, false)" nzTheme="fill"></i>
+                    </div>
                   </nz-auto-option>
                 </nz-auto-optgroup>
               </ng-container>
@@ -333,7 +359,7 @@
                         </div>
                         <div class="col-md-6 col-lg-6 m-b-sm">
                           <label class="w-full">
-                            <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keypress)="onKeyPress($event, 'default')"
+                            <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (keydown)="onKeyPress($event, 'default')"
                                    [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
                           </label>
                           <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
@@ -488,7 +514,7 @@
                         </div>
                         <div class="col-md-6 col-lg-6 m-b-sm">
                           <label class="w-full">
-                            <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}" (keypress)="onKeyPress($event, 'argument')"
+                            <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}" (keydown)="onKeyPress($event, 'argument')"
                                    placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
                           </label>
                           <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)" style="right: 13px;top:1px;"></i>
@@ -560,7 +586,7 @@
                         </div>
                         <div class="col-md-6 col-lg-6 m-b-sm">
                           <label class="w-full">
-                           <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (blur)="checkString(argument, 'value')" (keypress)="onKeyPress($event, 'jobArgument')"
+                           <input autocomplete="off" type="text" class="form-control" name="value{{i}}" (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')"
                                   [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
                           </label>
                           <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
@@ -752,7 +778,7 @@
                     <nz-mention [nzSuggestions]="variableList" [nzNotFoundContent]="'common.message.noDataAvailable' | translate" [nzValueWith]="valueWith" [nzPrefix]="['$']">
                       <label class="w-full">
                         <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="argument.value" name="value{{i}}"
-                               (ngModelChange)="checkValue(argument)" (keypress)="onKeyPress($event, 'node')"
+                               (ngModelChange)="checkValue(argument)" (keydown)="onKeyPress($event, 'node')"
                                placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
                       </label>
                       <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>

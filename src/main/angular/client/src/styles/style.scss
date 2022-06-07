@@ -7044,6 +7044,10 @@ tr.tr-border td:first-child {
   border-color: var(--border-color) !important;
 }
 
+.ant-input-number-handler{
+  border-color: var(--border-color) !important;
+}
+
 .ant-input-number-handler-up-inner,
 .ant-input-number-handler-down-inner {
   color: var(--text-color)
@@ -8713,12 +8717,14 @@ td .ver-top {
   margin-top: 10px;
   right: 12px;
   opacity: 0;
+  z-index: 0;
+  pointer-events: none;
   max-width: 96.3%;
 }
 
 .fav-list-search-box.ant-select-open {
   opacity: 1;
-  margin-top: -20px;
+  margin-top: -19px;
 }
 
 .ant-select-dropdown {
@@ -8728,4 +8734,21 @@ td .ver-top {
 .ant-popover{
   left: 12px;
   width: 280px;
+}
+
+.custom-tree-select{
+  .ant-select-tree .ant-select-tree-treenode-disabled .ant-select-tree-node-content-wrapper {
+    color: var(--text-color);
+  }
+}
+
+.custom-dropdown {
+  .ant-select-tree .ant-select-tree-treenode-disabled .ant-select-tree-node-content-wrapper {
+    color: var(--text-muted);
+  }
+
+  .ant-select-tree .ant-select-tree-treenode:hover, .ant-select-tree .ant-select-tree-treenode-selected {
+    background-color: #e6f7ff;
+    color: var(--text-hover);
+  }
 }

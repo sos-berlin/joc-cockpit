@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-12 text-right">
+    <div class="search-box-field">
+      <label>
+        <input type="search" [(ngModel)]="searchKey" placeholder="{{'common.placeholder.search' | translate}}">
+      </label>
+      <i class="fa fa-times search-close" *ngIf="searchKey" (click)="searchKey=''"></i>
+    </div>
+    <button class="btn btn-grey btn-sm m-l-12 m-r-xs" (click)="add()">
+      <i class="fa fa-plus"></i>&nbsp;
+      <span translate>profile.favouriteManagement.button.addFavourite</span>
+    </button>
+  </div>
+</div>
+<ul class="p-0 mb-2" *ngFor="let item of list | filter : searchKey : ['name']">
+  <li>
+    <div class="btn-group ml-2 dropdown">
+      <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i
+          class="fa fa-ellipsis-h"></i></button>
+      <nz-dropdown-menu #option="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="edit(item)">
+            <a translate>common.button.edit</a>
+          </li>
+          <li nz-menu-item class="bg-hover-color" (click)="delete(item)">
+            <a translate>common.button.delete</a>
+          </li>
+        </ul>
+      </nz-dropdown-menu>&nbsp;
+      <span class="cursor" (click)="edit(item)" [innerHtml]="item.name | highlight : searchKey"></span>&nbsp;
+      <i *ngIf="item.value || item.clusterName">-</i>
+      &nbsp;<span class="cursor text-muted" (click)="edit(item)">{{item.value || item.clusterName}}</span>
+    </div>
+  </li>
+</ul>
+<div class="text-center" *ngIf="list.length === 0">
+  <app-empty-data></app-empty-data>
+</div>

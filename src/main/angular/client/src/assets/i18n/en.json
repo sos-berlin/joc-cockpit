@@ -747,6 +747,13 @@
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
     "message.invalidJSON": "Invalid JSON file"
   },
+  "favourite": {
+    "button.addFavourite": "Add Favourite",
+    "button.editFavourite": "Edit Favourite",
+    "button.addFromFavourite": "Add from Favourite",
+    "button.filterByFavourites": "Filter By Favourites",
+    "button.backToList": "Back To List"
+  },
   "fileTransfer": {
     "label.transfer": "Transfer",
     "label.status": "Status",
@@ -1543,6 +1550,8 @@
     "label.ordersFound": "Orders found",
     "label.lastOutcome": "Last Outcome",
     "label.variableList": "Variable List",
+    "label.startNode": "Start Node",
+    "label.endNode": "End Node",
     "button.allOrders": "All Orders",
     "button.cancel": "Cancel",
     "button.startNow": "Start Now",
@@ -1556,6 +1565,8 @@
     "button.addVariable": "Add Variable",
     "button.modifyVariable": "Modify Variable",
     "button.showLog": "Show Log",
+    "placeholder.selectStartNode": "Select Start Node",
+    "placeholder.selectEndNode": "Select End Node",
     "message.noVariableAvailable": "no variable available",
     "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification",
     "message.noLogHistoryFound": "No log found for this order",
@@ -1605,6 +1616,7 @@
     "label.maxNumberOfNoticeBoardEntries": "Max. number of orders per Notice Board",
     "label.maxNumberOfHistoryEntriesPerOrder": "Max. number of Order History entries per Workflow",
     "label.maxNumberOfHistoryEntriesPerTask": "Max. number of Job History entries per Workflow",
+    "label.maxNumberOfFavouriteEntries": "Max. number of Favourite entries",
     "label.showSubFolderAndFolderContents": "Show sub-folders and folder contents",
     "label.subFolderAndFolderContents": "Sub-folders and folder contents",
     "label.currentController": "Current Controller",
@@ -1641,6 +1653,7 @@
     "label.newPassword": "New Password",
     "label.confirmPassword": "Confirm Password",
     "label.gitManagement": "Git Management",
+    "label.favouriteManagement": "Favourite Management",
     "label.licenseWarningGotIt": "License Warning acknowledged",
     "button.resetProfile": "Reset profile to default",
     "button.groupLimit": "Group Limit",
@@ -1648,6 +1661,14 @@
     "message.passwordNotMatch": "New password and confirmed password have to match",
     "message.minimumPasswordLength": "Password too short",
     "message.passwordShouldNotSame": "Old password and new password cannot be the same",
+    "favouriteManagement": {
+      "label.manageFavourite":"Manage Favourite",
+      "label.addFavourite":"Add Favourite",
+      "label.editFavourite":"Update Favourite",
+      "button.addFavourite":"Add Favourite",
+      "tab.agents":"Agents",
+      "tab.facets":"Facets"
+    },
     "permission": {
       "label.order": "Order",
       "label.job": "Job",
@@ -2044,7 +2065,7 @@
     "label.editEntry": "Update Main Section",
     "label.updateMainSection": "Edit Main Section",
     "label.resetAllProfile": "Reset profiles to default",
-    "label.lastLogin":  "Letzte Änderung",
+    "label.lastLogin":  "Last Modification",
     "label.addController": "Add Controller",
     "label.copyController": "Copy Controller",
     "label.entryName": "Name",

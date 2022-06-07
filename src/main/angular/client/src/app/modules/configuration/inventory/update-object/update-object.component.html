@@ -55,7 +55,7 @@
                             </div>
                           </div>
                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                            <input type="text" autocomplete="off" class="form-control" [(ngModel)]="argu.value" name="argu_value{{i}}" (keypress)="onKeyPress2($event, 'ARGU')"
+                            <input type="text" autocomplete="off" class="form-control" [(ngModel)]="argu.value" name="argu_value{{i}}" (keydown)="onKeyPress2($event, 'ARGU')"
                                    placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                             <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argu)"></i>
                           </div>
@@ -94,7 +94,7 @@
                             </div>
                           </div>
                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                            <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}" (keypress)="onKeyPress2($event, 'ENV')"
+                            <input type="text" autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}" (keydown)="onKeyPress2($event, 'ENV')"
                                    placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                             <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)"></i>
                           </div>
@@ -357,7 +357,7 @@
               <label class="col-md-4 col-lg-3 form-control-label" translate>order.label.orderName</label>
               <div class="col-md-8" [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}">
                 <input type="text" identifierValidation maxlength="30" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
-                       name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keypress)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, object.variableSets)">
+                       name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keydown)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, object.variableSets)">
                 <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
                   <div *ngIf="orderName.errors.invalidIdentifier" translate>common.message.invalid</div>
                 </div>
@@ -464,7 +464,7 @@
                 <ng-container *ngSwitchCase="'Number'">
                   <div class="col-md-7 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-input-number [required]="variable.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1"
-                                     name="value{{i}}{{j}}" [(ngModel)]="variable.value" (keypress)="onKeyPress($event, variableSet)"></nz-input-number>
+                                     name="value{{i}}{{j}}" [(ngModel)]="variable.value" (keydown)="onKeyPress($event, variableSet)"></nz-input-number>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">
                       <div *ngIf="value.errors.required">
@@ -496,7 +496,7 @@
                 </ng-container>
                 <ng-container *ngSwitchDefault>
                   <div class="col-md-7 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <input #value="ngModel" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event, variableSet)"
+                    <input #value="ngModel" [required]="variable.isRequired" autocomplete="off" type="text" class="form-control" (keydown)="onKeyPress($event, variableSet)"
                            name="value{{i}}{{j}}" [(ngModel)]="variable.value" placeholder="{{'common.placeholder.value' | translate}}">
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">

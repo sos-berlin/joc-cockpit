@@ -459,8 +459,9 @@
     "button.assignDocumentation": "Associer la documentation",
     "button.unassignDocumentation": "Disscocier la Documentation",
     "button.viewDocumentation": "Voir la Documentation",
-    "placeholder.search": "Filtrer les résultats",
     "button.viewHistory": "Afficher l'Historique",
+    "button.addFromFavourite": "Add from Favourite",
+    "placeholder.search": "Filtrer les résultats",
     "placeholder.name": "Nom",
     "placeholder.value": "Valeur",
     "placeholder.enterNumber": "Entrer un nombre",
@@ -746,6 +747,13 @@
     "message.errorInLoadingScheduleIds": "Erreur lors de la récupération des ID du contrôleur",
     "message.pasteInSubFolderNotAllowed": "Le dossier de destination est un sous-dossier du dossier source.",
     "message.invalidJSON": "Fichier JSON invalide"
+  },
+  "favourite": {
+    "button.addFavourite": "Add Favourite",
+    "button.editFavourite": "Edit Favourite",
+    "button.addFromFavourite": "Add from Favourite",
+    "button.filterByFavourites": "Filter By Favourites",
+    "button.backToList": "Back To List"
   },
   "fileTransfer": {
     "label.transfer": "Transfert",
@@ -1543,6 +1551,8 @@
     "label.ordersFound": "Ordres trouvés",
     "label.lastOutcome": "Dernier résultat",
     "label.variableList": "Liste des variables",
+    "label.startNode": "Start Node",
+    "label.endNode": "End Node",
     "button.allOrders": "Tous les Ordres",
     "button.cancel": "Annuler",
     "button.startNow": "Démarrer Maintenant",
@@ -1556,6 +1566,8 @@
     "button.addVariable": "Ajouter une Variable",
     "button.modifyVariable": "Modifier une Variable",
     "button.showLog": "Afficher le Journal",
+    "placeholder.selectStartNode": "Select Start Node",
+    "placeholder.selectEndNode": "Select End Node",
     "message.noVariableAvailable": "aucune variable disponible",
     "message.orderModificationNotAllowed": "L'état de l'ordre {{state}} ne permet pas de modification",
     "message.noLogHistoryFound": "Aucun journal n'a été trouvé pour cet ordre",
@@ -1605,6 +1617,7 @@
     "label.maxNumberOfNoticeBoardEntries": "Nombre max. d'ordres par Condition",
     "label.maxNumberOfHistoryEntriesPerOrder": "Nombre max. d'entrées d'Historique par Ordre",
     "label.maxNumberOfHistoryEntriesPerTask": "Nombre max. d'entrées d'Historique par Tâche",
+    "label.maxNumberOfFavouriteEntries": "Max. number of Favourite entries",
     "label.showSubFolderAndFolderContents": "Afficher les sous-dossiers et le contenu des dossiers",
     "label.subFolderAndFolderContents": "Sous-dossiers et contenu des dossiers",
     "label.currentController": "Contrôleur actuel",
@@ -1641,6 +1654,7 @@
     "label.newPassword": "Nouveau mot de passe",
     "label.confirmPassword": "Confirmer le mot de passe",
     "label.gitManagement": "Gestion Git",
+    "label.favouriteManagement": "Favourite Management",
     "label.licenseWarningGotIt": "Avertissement reconnu",
     "button.resetProfile": "Rétablir le profil par défaut",
     "button.groupLimit": "Limite de groupe",
@@ -1648,6 +1662,14 @@
     "message.passwordNotMatch": "Le nouveau mot de passe et le mot de passe confirmé doivent correspondre",
     "message.minimumPasswordLength": "Mot de passe trop court",
     "message.passwordShouldNotSame": "L'ancien mot de passe et le nouveau mot de passe ne doivent pas être les mêmes.",
+    "favouriteManagement": {
+      "label.manageFavourite":"Manage Favourite",
+      "label.addFavourite":"Add Favourite",
+      "label.editFavourite":"Update Favourite",
+      "button.addFavourite":"Add Favourite",
+      "tab.agents":"Agents",
+      "tab.facets":"Facets"
+    },
     "permission": {
       "label.order": "Ordre",
       "label.job": "Tâche",

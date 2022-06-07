@@ -13,7 +13,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline pull-right">
+          <div [ngClass]="{'show-block':object.mapOfCheckedId.size == 0}" class="inline pull-right hide">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button class="btn btn-grey btn-sm button-group-ellipsis"
@@ -97,6 +97,15 @@
                     [disabled]="data.length===0" (click)="exportToExcel()">
               <i class="fa fa-share-square-o"></i></button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+          </div>
+          <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size > 0}">
+            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isSuspend"><i
+                class="fa fa-stop p-r-xs"></i>
+              <span class="hidden-sm-down" translate>order.button.suspend</span></button>
+            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isResume"><i
+                class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
+                translate>order.button.resume</span>
+            </button>
           </div>
         </div>
       </div>
@@ -261,6 +270,12 @@
                 </div>
               </div>
             </div>
+            <div class="text-center font14 box p-a-10 m-b-12" *ngIf="object.checked && object.mapOfCheckedId.size > 0 && data.length > (workflowFilters.entryPerPage || preferences.entryPerPage)">
+              <span translate *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: object.mapOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
+              <span translate *ngIf="object.mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}">common.label.allEntriesSelected</span>
+              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size !== data.length" (click)="selectAll()" translate [translateParams]="{count: data.length}">common.label.selectAllEntries</a>
+              <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size === data.length" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
+            </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView!=='grid' && tree.length > 0">
               <perfect-scrollbar appResizable class="resizable pos-init" [height]="resizerHeight"
                    [type]="'workflow'" [path]="currentPath" id="workflowTableId">
@@ -280,6 +295,8 @@
                 >
                   <thead>
                   <tr>
+        	    <th class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
+                        [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="checkAll($event)"></th>
                     <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
                     <th [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('name')" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.name</span>
@@ -398,6 +415,8 @@
                   <ng-template ngFor let-workflow
                                [ngForOf]="ajaxTable.data">
                     <tr [ngClass]="{'light-bg':workflow.show}">
+			<td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
+                          (nzCheckedChange)="onItemChecked(workflow,$event)"></td>
                       <td>
                         <div class="btn-group dropdown">
                           <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission" (isChanged)="changedHandler($event)"

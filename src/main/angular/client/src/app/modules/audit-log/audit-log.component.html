@@ -150,13 +150,13 @@
           >
             <thead>
             <tr>
-              <th width="185px" *ngIf="!adtLog.current" (click)="sort('controllerId')"><a><span class="p-r-xs" translate>common.label.controllerId</span>
+              <th nzWidth="185px" *ngIf="!adtLog.current" (click)="sort('controllerId')"><a><span class="p-r-xs" translate>common.label.controllerId</span>
                 <i *ngIf="adtLog.filter.sortBy == 'controllerId' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'controllerId' && adtLog.reverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th width="185px" (click)="sort('created')"><a><span class="p-r-xs" translate>auditLog.label.created</span>
+              <th nzWidth="185px" (click)="sort('created')"><a><span class="p-r-xs" translate>auditLog.label.created</span>
                 <i *ngIf="adtLog.filter.sortBy == 'created' && !adtLog.reverse"
                    class="fa fa-caret-up "></i>
                 <i *ngIf="adtLog.filter.sortBy == 'created' && adtLog.reverse"
@@ -201,7 +201,7 @@
             </tr>
             </thead>
             <tbody>
-            <ng-template ngFor let-auditLog [ngForOf]="ajaxTable.data">
+            <ng-template ngFor let-auditLog [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn">
               <tr (click)="navToDeploymentHistory(auditLog)" [ngClass]="{'primary-text-hover-color cursor': auditLog.commitId || auditLog.category === 'DAILYPLAN'}">
                 <td *ngIf="!adtLog.current" (click)="$event.stopPropagation()">
                   <i class="cursor fa fa-caret-down fa-lg" *ngIf="!auditLog.show"

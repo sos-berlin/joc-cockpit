@@ -696,6 +696,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     preferences.maxHistoryPerOrder = 10;
     preferences.maxHistoryPerTask = 10;
     preferences.maxAuditLogPerObject = 10;
+    preferences.maxFavouriteEntries = 10;
     preferences.maxEntryPerPage = '1000';
     preferences.entryPerPage = '25';
     preferences.isNewWindow = 'newWindow';
@@ -740,6 +741,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
       if (!data.maxBoardRecords) {
         data.maxBoardRecords = 5000;
+      }
+      if (!data.maxFavouriteEntries) {
+        data.maxFavouriteEntries = 10;
       }
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';

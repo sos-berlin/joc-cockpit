@@ -518,8 +518,9 @@ export class AutofocusDirective implements AfterViewInit {
       setTimeout(() => {
         if (this.el.nativeElement.attributes.class.value.match('input-number')) {
           $('.ant-input-number input').focus();
+        } else {
+          this.el.nativeElement.focus();
         }
-        this.el.nativeElement.focus();
       }, 10);
     }
   }
@@ -605,13 +606,18 @@ export class MaximumDirective {
     if (this.isMax) {
       $('.rg-bottom').hide();
       $('.rg-right').hide();
+      const dom: any = document.getElementsByClassName('script-editor')[0] ||
+        document.getElementsByClassName('script-editor2')[0];
+      if (dom && dom.style['transform']) {
+        dom.style['transform'] = 'translate3d(0,0,0)'
+      }
     } else {
       height = this.height;
       $('.rg-bottom').show();
       $('.rg-right').show();
     }
     this.cm.codeMirror.setSize((width), (height));
-    $('#resizable').css({ 'width': 'auto', 'height': 'auto' });
+    $('#resizable').css({'width': 'auto', 'height': 'auto'});
   }
 
   private doResize() {

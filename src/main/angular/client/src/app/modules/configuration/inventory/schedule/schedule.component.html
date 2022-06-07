@@ -130,7 +130,7 @@
             <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6" [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}">
               <input type="text" identifierValidation maxlength="30" [readOnly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
-                     name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keypress)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.variableSets)">
+                     name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keydown)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.variableSets)">
               <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
                 <div *ngIf="orderName.errors.invalidIdentifier" translate>common.message.invalid</div>
               </div>
@@ -239,7 +239,7 @@
                 <ng-container *ngSwitchCase="'Number'">
                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1"
-                                     name="value{{i}}{{j}}" [(ngModel)]="variable.value" (nzBlur)="saveJSON()" (keypress)="onKeyPress($event, variableSet)"></nz-input-number>
+                                     name="value{{i}}{{j}}" [(ngModel)]="variable.value" (nzBlur)="saveJSON()" (keydown)="onKeyPress($event, variableSet)"></nz-input-number>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">
                       <div *ngIf="value.errors.required">
@@ -271,7 +271,7 @@
                 </ng-container>
                 <ng-container *ngSwitchDefault>
                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <input [facetValidation]="variable.facet" #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired || variable.facet" autocomplete="off" type="text" class="form-control" (keypress)="onKeyPress($event, variableSet)"
+                    <input [facetValidation]="variable.facet" #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired || variable.facet" autocomplete="off" type="text" class="form-control" (keydown)="onKeyPress($event, variableSet)"
                            name="value{{i}}{{j}}" [(ngModel)]="variable.value" (blur)="saveJSON(false, false, value, variable)" placeholder="{{'common.placeholder.value' | translate}}">
                     <i class="pos-abt cursor fa fa-info-circle" *ngIf="variable.message" [nz-tooltip]="variable.message" style="right: 18px;top:9px;"></i>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"

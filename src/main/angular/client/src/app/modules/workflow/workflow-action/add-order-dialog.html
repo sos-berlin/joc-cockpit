@@ -72,6 +72,28 @@
         </nz-select>
       </div>
     </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
+      <div class="col-sm-6">
+        <nz-select nzShowSearch name="startNode" (ngModelChange)="selectStartNode($event)" [(ngModel)]="order.startNode" [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate" nzAllowClear>
+          <nz-option  *ngFor="let node of startNodes" [nzValue]="node.position" [nzLabel]="node.name"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
+      <div class="col-sm-6">
+        <nz-tree-select
+          [nzPlaceHolder]="'order.placeholder.selectEndNode' | translate"
+          name="endNode"
+          [(ngModel)]="order.endNode"
+          [nzDropdownClassName]="'custom-dropdown'"
+          [nzNodes]="endNodes"
+          [nzShowSearch]="true"
+          >
+        </nz-tree-select>
+      </div>
+    </div>
     <div *ngIf="forkListVariables && forkListVariables.length > 0">
       <div *ngFor="let listVariables of forkListVariables; let k = index">
         <div class="m-b-sm">{{'order.label.variableList' | translate}}:
@@ -171,7 +193,7 @@
               <ng-container *ngSwitchCase="'Number'">
                 <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                   <nz-input-number [required]="argument.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
-                                   [nzMin]="0" [nzStep]="1" name="value{{i}}" [(ngModel)]="argument.value" (keypress)="onKeyPress($event)"></nz-input-number>
+                                   [nzMin]="0" [nzStep]="1" name="value{{i}}" [(ngModel)]="argument.value" (keydown)="onKeyPress($event)"></nz-input-number>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
                     <div *ngIf="value.errors.required">
@@ -198,7 +220,7 @@
               <ng-container *ngSwitchDefault>
                 <div class="col-md-6 col-lg-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                   <input [facetValidation]="argument.facet" #value="ngModel" [required]="argument.isRequired || argument.facet" autocomplete="off" type="text" class="form-control"
-                         name="value{{i}}" (keypress)="onKeyPress($event)"
+                         name="value{{i}}" (keydown)="onKeyPress($event)"
                          [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                   <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
                   <i class="pos-abt cursor fa fa-info-circle" *ngIf="argument.message" [nz-tooltip]="argument.message" style="right: 32px;top:1px;"></i>

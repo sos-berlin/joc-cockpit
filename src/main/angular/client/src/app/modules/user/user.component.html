@@ -318,6 +318,14 @@
                   </div>
                 </div>
                 <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxNumberOfFavouriteEntries</div>
+                  <div class="col-md-6">
+                    <nz-input-number class="w-xl" [nzMin]="1" [nzStep]="5"
+                                     [(ngModel)]="preferences.maxFavouriteEntries"
+                                     (nzBlur)="changeConfiguration()"></nz-input-number>
+                  </div>
+                </div>
+                <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxEntryPerPage
                   </div>
                   <div class="col-md-6">
@@ -729,10 +737,21 @@
                 </div>
               </div>
             </nz-tab>
+            <nz-tab [nzTitle]="'profile.label.favouriteManagement' | translate">
+              <div class="p-l-sm p-r-rm m-t-n-sm">
+                <nz-tabset>
+                  <nz-tab [nzTitle]="'profile.favouriteManagement.tab.agents' | translate">
+                  	<app-manage-favourite-list [list]="agentList" [type]="'Agent'" [schedulerId]="schedulerIds"></app-manage-favourite-list>
+                  </nz-tab>
+                  <nz-tab [nzTitle]="'profile.favouriteManagement.tab.facets' | translate">
+                  	<app-manage-favourite-list [list]="facetList" [type]="'Facet'" [schedulerId]="schedulerIds"></app-manage-favourite-list>
+                  </nz-tab>
+                </nz-tabset>
+              </div>
+            </nz-tab>
           </nz-tabset>
         </div>
       </div>
     </div>
   </div>
 </div>
-
