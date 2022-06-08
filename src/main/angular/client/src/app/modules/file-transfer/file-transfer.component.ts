@@ -306,20 +306,6 @@ export class FileTransferSearchComponent implements OnInit {
     }
   }
 
-  selectedTargetProtocol(value: any): void {
-    if (!this.filter.targetProtocol) {
-      this.filter.targetProtocol = [];
-    }
-    this.filter.targetProtocol.push(value.text);
-  }
-
-  selectedSourceProtocol(value: any): void {
-    if (!this.filter.targetProtocol) {
-      this.filter.sourceProtocol = [];
-    }
-    this.filter.sourceProtocol.push(value.text);
-  }
-
   stateChange(value: string[]): void {
     this.filter.states = value;
   }

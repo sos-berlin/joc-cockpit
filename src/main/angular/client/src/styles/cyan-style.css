@@ -440,10 +440,6 @@ a .text-danger:hover {
   background-color: var(--bg-box) !important
 }
 
-.breadcrumb > .active {
-  color: var(--text-color)
-}
-
 .light-bg,
 .light-bg tr:hover {
   background: rgba(0, 68, 90, 0.87) !important;

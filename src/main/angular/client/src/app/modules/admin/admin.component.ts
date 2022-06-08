@@ -17,8 +17,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   isPaste = false;
   isButtonShow = false;
   isSelected = false;
-  isLdapRealmEnable = true;
-  isJOCClusterEnable = true;
   selectedUser: string;
   accounts: any = [];
   route: string;
@@ -49,7 +47,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       } else if (res === 'IS_ACCOUNT_PROFILES_FALSE' || res === 'IS_ROLE_PROFILES_FALSE') {
         this.isSelected = false;
       } else if (res === 'RELOAD') {
-        this.getUsersData(false);
+        this.getUsersData();
       }
     });
   }
@@ -95,10 +93,10 @@ export class AdminComponent implements OnInit, OnDestroy {
   selectUser(account): void {
     if (account) {
       this.selectedUser = account;
-      this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
+      this.router.navigate(['/users/identity_service/role'], {queryParams: {account}}).then();
     } else {
       this.selectedUser = null;
-      this.router.navigate(['/users/identity_service/role']);
+      this.router.navigate(['/users/identity_service/role']).then();
     }
   }
 
@@ -160,22 +158,6 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('ADD_ROLE');
   }
 
-  addMainSection(): void {
-    this.dataService.announceFunction('ADD_MAIN_SECTION');
-  }
-
-  editMainSection(): void {
-    this.dataService.announceFunction('EDIT_MAIN_SECTION');
-  }
-
-  addLdapRealm(): void {
-    this.dataService.announceFunction('ADD_ALAD');
-  }
-
-  enableJOCCluster(): void {
-    this.dataService.announceFunction('ENABLE_JOC');
-  }
-
   searchBar(searchKey): void {
     this.dataService.announceSearchKey(searchKey);
   }
@@ -214,9 +196,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         if (sessionStorage.identityServiceType) {
           if ((sessionStorage.identityServiceType === 'VAULT' || sessionStorage.identityServiceType === 'LDAP') && this.route.match('/users/identity_service/account')) {
             this.selectedUser = null;
-            this.router.navigate(['/users/identity_service/role']);
-          } else if (sessionStorage.identityServiceType !== 'SHIRO' && this.route.match('/users/identity_service/main_section')) {
-            this.router.navigate(['/users/identity_service/role']);
+            this.router.navigate(['/users/identity_service/role']).then();
           }
         }
         this.selectedUser = AdminComponent.getParameterByName('account');
@@ -224,32 +204,14 @@ export class AdminComponent implements OnInit, OnDestroy {
           this.userObj = {};
           this.identityService = sessionStorage.identityServiceName;
           this.identityServiceType = sessionStorage.identityServiceType;
-          this.getUsersData(true);
+          this.getUsersData();
         }
       }
     }
   }
 
-  private getUsersData(flag): void {
-    if (this.identityServiceType === 'SHIRO') {
-      this.coreService.post('authentication/auth', {
-        identityServiceName: this.identityService
-      }).subscribe({
-        next: res => {
-          this.userObj = res;
-          this.accounts = res.accounts;
-          delete this.userObj.deliveryDate;
-          this.userObj.identityServiceName = this.identityService;
-          if (flag) {
-            this.dataService.announceData(this.userObj);
-            this.checkLdapConf();
-          }
-        }, error: () => {
-          this.userObj = {accounts: [], identityServiceName: this.identityService};
-          this.dataService.announceData(this.userObj);
-        }
-      });
-    } else if (this.identityServiceType && this.identityService && this.route.match(/role/)) {
+  private getUsersData(): void {
+   if (this.identityServiceType && this.identityService && this.route.match(/role/)) {
       this.coreService.post('iam/accounts', {identityServiceName: this.identityService}).subscribe((res: any) => {
         this.accounts = res.accountItems;
         this.dataService.announceData(this.accounts);
@@ -257,20 +219,4 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkLdapConf(): void {
-    if (this.userObj.main && this.userObj.main.length > 1) {
-      for (const i in this.userObj.main) {
-        if (this.userObj.main[i]) {
-          if ((this.userObj.main[i].entryName === 'sessionDAO' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||
-            (this.userObj.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue === '$sessionDAO')) {
-            this.isJOCClusterEnable = false;
-          }
-          if ((this.userObj.main[i].entryName === 'ldapRealm' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSLdapAuthorizingRealm') ||
-            (this.userObj.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue === '$sessionDAO')) {
-            this.isLdapRealmEnable = false;
-          }
-        }
-      }
-    }
-  }
 }

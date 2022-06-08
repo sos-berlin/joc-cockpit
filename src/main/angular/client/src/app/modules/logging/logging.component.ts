@@ -86,7 +86,7 @@ export class LoggingComponent implements OnInit, OnDestroy {
       } catch (e) {}
     }
     // Create an Observable that will publish a value on an interval
-    this.subscription = interval(2500).subscribe(x => {
+    this.subscription = interval(2500).subscribe(() => {
       if (this.clientLogFilter.isEnable) {
         try {
           this.clientLogs = localStorage.logging ? JSON.parse(localStorage.logging) : [];

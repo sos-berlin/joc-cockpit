@@ -1,21 +1,21 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { clone, isEmpty } from 'underscore';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { FileUploader } from 'ng2-file-upload';
-import { ToastrService } from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core';
-import { saveAs } from 'file-saver';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard';
-import { DataService } from '../data.service';
-import { SaveService } from '../../../services/save.service';
-import { OrderPipe } from '../../../pipes/core.pipe';
-import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
-import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {clone, isEmpty} from 'underscore';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {FileUploader} from 'ng2-file-upload';
+import {ToastrService} from 'ngx-toastr';
+import {TranslateService} from '@ngx-translate/core';
+import {saveAs} from 'file-saver';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {DataService} from '../data.service';
+import {SaveService} from '../../../services/save.service';
+import {OrderPipe} from '../../../pipes/core.pipe';
+import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-setting-modal-content',
@@ -39,8 +39,7 @@ export class SettingModalComponent implements OnInit {
   isLengthMatch = true;
   submitted = false;
   currentObj: any = {};
-  userObj: any = {
-  };
+  userObj: any = {};
   allRoles = [];
   passwordFields: any = {
     first: false,
@@ -55,7 +54,7 @@ export class SettingModalComponent implements OnInit {
   uploader: FileUploader;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService,
-    private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
+              private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
@@ -111,7 +110,7 @@ export class SettingModalComponent implements OnInit {
       this.comments = this.dataService.comments;
       this.display = false;
     }
-    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+    this.uploader.onErrorItem = (fileItem, response: any) => {
       const res = typeof response === 'string' ? JSON.parse(response) : response;
       if (res.error) {
         this.toasterService.error(res.error.code, res.error.message);
@@ -282,7 +281,7 @@ export class SettingModalComponent implements OnInit {
       roles: []
     };
     if (!this.currentObj.iamLdapGroupRolesMap) {
-      this.currentObj.iamLdapGroupRolesMap = { items: [] };
+      this.currentObj.iamLdapGroupRolesMap = {items: []};
     }
     if (!this.coreService.isLastEntryEmpty(this.currentObj.iamLdapGroupRolesMap.items, 'ldapGroupDn', '')) {
       this.currentObj.iamLdapGroupRolesMap.items.push(param);
@@ -358,10 +357,10 @@ export class SettingModalComponent implements OnInit {
     const fileType = 'application/octet-stream';
     let obj = this.currentObj;
     if (this.data.identityServiceType.match('LDAP')) {
-      obj = { simple: this.userObj, expert: this.currentObj };
+      obj = {simple: this.userObj, expert: this.currentObj};
     }
     const data = JSON.stringify(obj, undefined, 2);
-    const blob = new Blob([data], { type: fileType });
+    const blob = new Blob([data], {type: fileType});
     saveAs(blob, name);
   }
 
@@ -383,7 +382,7 @@ export class SettingModalComponent implements OnInit {
       if (this.data.identityServiceType.match('VAULT')) {
         obj.vault = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
-        obj.ldap = { expert: this.coreService.clone(this.currentObj), simple: this.userObj };
+        obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
       }
     } else {
       obj = this.coreService.clone(this.currentObj);
@@ -400,15 +399,7 @@ export class SettingModalComponent implements OnInit {
       configurationItem: JSON.stringify(obj),
       auditLog: {}
     };
-    if (this.comments.comment) {
-      request.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      request.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      request.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, request.auditLog);
     if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
@@ -447,7 +438,6 @@ export class IdentityServiceModalComponent implements OnInit {
 
   submitted = false;
   isUnique = true;
-  types = [];
   serviceAuthenticationSchemes = ['SINGLE-FACTOR', 'TWO-FACTOR'];
   currentObj: any = {};
   settingObj: any = {};
@@ -479,16 +469,6 @@ export class IdentityServiceModalComponent implements OnInit {
       this.currentObj.serviceAuthenticationScheme = 'SINGLE-FACTOR';
       this.currentObj.singleFactorPwd = true;
     }
-    let flag = true;
-    for (const i in this.identityServices) {
-      if (this.identityServices[i].identityServiceType === 'SHIRO' && (!this.identityService || 'SHIRO' !== this.identityService.identityServiceType)) {
-        flag = false;
-        break;
-      }
-    }
-    this.types = this.identityServiceTypes.filter((item) => {
-      return !flag ? item !== 'SHIRO' : true;
-    });
   }
 
   checkService(): void {
@@ -556,35 +536,23 @@ export class IdentityServiceModalComponent implements OnInit {
   private saveSettings(): void {
     const deleteRequest: any = {
       controllerId: '.',
-      id: this.removeSettingId
+      id: this.removeSettingId,
+      auditLog: {}
     };
-    if (this.currentObj.identityServiceType === 'SHIRO') {
-      delete this.currentObj.serviceAuthenticationScheme;
-    }
     const saveRequest: any = {
       id: 0,
       objectType: this.currentObj.identityServiceType,
       configurationType: 'IAM',
       name: this.currentObj.identityServiceName,
-      configurationItem: this.settingObj
+      configurationItem: this.settingObj,
+      auditLog: {}
     };
-    deleteRequest.auditLog = {};
-    saveRequest.auditLog = {};
-    if (this.comments.comment) {
-      deleteRequest.auditLog.comment = this.comments.comment;
-      saveRequest.auditLog.comment = this.comments.comment;
+
+    this.coreService.getAuditLogObj(this.comments, deleteRequest.auditLog);
+    this.coreService.getAuditLogObj(this.comments, saveRequest.auditLog);
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
     }
-    if (this.comments.timeSpent) {
-      deleteRequest.auditLog.timeSpent = this.comments.timeSpent;
-      saveRequest.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      deleteRequest.auditLog.ticketLink = this.comments.ticketLink;
-      saveRequest.auditLog.ticketLink = this.comments.ticketLink;
-    }
-     if (this.comments.isChecked) {
-       this.dataService.comments = this.comments;
-     }
     this.coreService.post('configuration/delete', deleteRequest).subscribe();
     this.coreService.post('configuration/save', saveRequest).subscribe({
       next: () => {
@@ -603,15 +571,7 @@ export class IdentityServiceModalComponent implements OnInit {
       identityServiceNewName
     };
     request.auditLog = {};
-    if (this.comments.comment) {
-      request.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      request.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      request.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, request.auditLog);
     if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
@@ -649,15 +609,7 @@ export class IdentityServiceModalComponent implements OnInit {
       return;
     }
     this.currentObj.auditLog = {};
-    if (this.comments.comment) {
-      this.currentObj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      this.currentObj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      this.currentObj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, this.currentObj.auditLog);
     if (this.comments.isChecked) {
       this.dataService.comments = this.comments;
     }
@@ -692,7 +644,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService,
-    private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private translate: TranslateService,) {
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private translate: TranslateService,) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
     });
@@ -706,7 +658,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.usr = { currentPage: 1, sortBy: 'ordering', reverse: false };
+    this.usr = {currentPage: 1, sortBy: 'ordering', reverse: false};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.getIAMList();
@@ -751,7 +703,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   showUser(account): void {
     sessionStorage.identityServiceName = account.identityServiceName;
     sessionStorage.identityServiceType = account.identityServiceType;
-    this.router.navigate(['/users/identity_service/role']);
+    this.router.navigate(['/users/identity_service/role']).then();
   }
 
   add(): void {
@@ -905,15 +857,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     identityService.disabled = flag;
     if (comments) {
       identityService.auditLog = {};
-      if (comments.comment) {
-        identityService.auditLog.comment = comments.comment;
-      }
-      if (comments.timeSpent) {
-        identityService.auditLog.timeSpent = comments.timeSpent;
-      }
-      if (comments.ticketLink) {
-        identityService.auditLog.ticketLink = comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(comments, identityService.auditLog);
       if (comments.isChecked) {
         this.dataService.comments = comments;
       }
@@ -937,7 +881,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         nzClassName: 'lg',
         nzComponentParams: {
           comments,
-          obj: { identityServiceName: identityService.identityServiceName },
+          obj: {identityServiceName: identityService.identityServiceName},
           url: 'iam/identityservice/delete'
         },
         nzFooter: null,
@@ -970,17 +914,12 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         if (result) {
           const auditLog: any = {};
           if (this.preferences.auditLog && this.dataService.comments.comment) {
-            if (this.dataService.comments.comment) {
-              auditLog.comment = this.dataService.comments.comment;
-            }
-            if (this.dataService.comments.timeSpent) {
-              auditLog.timeSpent = this.dataService.comments.timeSpent;
-            }
-            if (this.dataService.comments.ticketLink) {
-              auditLog.ticketLink = this.dataService.comments.ticketLink;
-            }
+            this.coreService.getAuditLogObj(this.dataService.comments, auditLog);
           }
-          this.coreService.post('iam/identityservice/delete', { identityServiceName: identityService.identityServiceName, auditLog }).subscribe(() => {
+          this.coreService.post('iam/identityservice/delete', {
+            identityServiceName: identityService.identityServiceName,
+            auditLog
+          }).subscribe(() => {
             this.getIAMList();
           });
         }

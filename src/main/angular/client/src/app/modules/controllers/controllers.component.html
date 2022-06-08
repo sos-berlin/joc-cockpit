@@ -200,7 +200,10 @@
                                     <li (click)="deployAgent(agent, controller, true)" nz-menu-item>
                                       <a translate>inventory.button.deploy</a>
                                     </li>
-                                    <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller, agent)" nz-menu-item>
+                                    <li nz-menu-item (click)="revoke(agent, controller, true)">
+                                      <a translate>agent.button.revoke</a>
+                                    </li>
+                                    <li (click)="createToken(controller, agent)" nz-menu-item>
                                       <a translate>agent.button.createToken</a>
                                     </li>
                                     <li nz-menu-divider></li>

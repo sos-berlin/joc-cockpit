@@ -405,15 +405,7 @@ export class CreatePlanModalComponent implements OnInit {
       }
     }
     obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (this.dateRanges && this.dateRanges.length > 0) {
       this.recursivelyCreate(obj);
     } else {
@@ -525,15 +517,7 @@ export class RemovePlanModalComponent implements OnInit {
       }
     }
     obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.coreService.post('daily_plan/orders/submit', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
@@ -584,15 +568,7 @@ export class RemovePlanModalComponent implements OnInit {
     this.submitted = true;
     if (!this.submissionsDelete) {
       obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
     if (this.dateRange && this.dateRange.length > 0 && !this.submissionsDelete) {
       this.removeRecursively(obj);

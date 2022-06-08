@@ -284,15 +284,7 @@ export class ResumeOrderModalComponent implements OnInit {
       }
     }
     obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
     this.coreService.post('orders/resume', obj).subscribe({
       next: () => {

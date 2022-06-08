@@ -415,10 +415,6 @@ a.text-dark:hover {
   background-color: var(--bg-box) !important
 }
 
-.breadcrumb > .active {
-  color: var(--text-color)
-}
-
 .light-bg,
 .light-bg tr:hover {
   background: rgba(57, 57, 55, .87) !important

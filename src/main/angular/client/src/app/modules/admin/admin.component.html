@@ -83,28 +83,6 @@
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addRole</span>
             </button>
-            <button *ngIf="route === '/users/identity_service/main_section'" type="button" [disabled]="!isLdapRealmEnable"
-                    (click)="addLdapRealm()"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addLdapRealm</span>
-            </button>
-            <button *ngIf="route === '/users/identity_service/main_section'" type="button" [disabled]="!isJOCClusterEnable"
-                    (click)="enableJOCCluster()"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-toggle-on"></i>&nbsp;
-              <span translate>user.button.enableJOCCluster</span>
-            </button>
-            <button *ngIf="route === '/users/identity_service/main_section'" type="button" class="btn btn-sm btn-grey m-l-12"
-                    (click)="editMainSection()">
-              <i class="fa fa-pencil"></i>&nbsp;
-              <span translate>user.button.updateSection</span>
-            </button>
-            <button *ngIf="route === '/users/identity_service/main_section'" type="button" class="btn btn-sm btn-grey m-l-12"
-                    (click)="addMainSection()">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addEntry</span>
-            </button>
             <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="resetProfiles()">
               <i class="fa fa-refresh"></i>&nbsp;
@@ -152,14 +130,6 @@
             <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
              </a>
-          </li>
-          <li class="nav-item dropdown-separator" *ngIf="identityServiceType === 'SHIRO'">
-            <span class="separator"></span>
-          </li>
-          <li class="nav-item" *ngIf="identityServiceType === 'SHIRO'">
-            <a class="nav-link" routerLink="identity_service/main_section" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.mainSetting</span></span>
-            </a>
           </li>
           <li class="nav-item dropdown-separator">
             <span class="separator"></span>

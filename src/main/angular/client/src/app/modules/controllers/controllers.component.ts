@@ -79,15 +79,7 @@ export class CreateTokenModalComponent implements OnInit {
     }
     if (this.display) {
       obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
     if (this.token.validUntil && this.token.at === 'date') {
       this.coreService.getDateAndTime(this.token);
@@ -919,15 +911,19 @@ export class ControllersComponent implements OnInit, OnDestroy {
     }
   }
 
-  revoke(clusterAgent, controller) {
+  revoke(clusterAgent, controller, isAgent = false) {
     const obj: any = {
-      controllerId: controller.controllerId,
-      clusterAgentIds: [clusterAgent.agentId]
+      controllerId: controller.controllerId
     };
+    if (isAgent) {
+      obj.agentIds = [clusterAgent.agentId];
+    } else {
+      obj.clusterAgentIds = [clusterAgent.agentId];
+    }
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
-        type: 'Agent Cluster',
+        type: isAgent ? 'Agent' : 'Agent Cluster',
         operation: 'Revoke',
         name: clusterAgent.agentId
       };
@@ -948,11 +944,11 @@ export class ControllersComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post('agents/inventory/cluster/revoke', obj).subscribe();
+          this.coreService.post(isAgent ? 'agents/inventory/revoke' : 'agents/inventory/cluster/revoke', obj).subscribe();
         }
       });
     } else {
-      this.coreService.post('agents/inventory/cluster/revoke', obj).subscribe();
+      this.coreService.post(isAgent ? 'agents/inventory/revoke' : 'agents/inventory/cluster/revoke', obj).subscribe();
     }
   }
 
@@ -1148,7 +1144,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
           controllerId: this.data[i]
         };
 
-        if(this.coreService.preferences.controllers.has(this.data[i])) {
+        if (this.coreService.preferences.controllers.has(this.data[i])) {
           obj.sortBy2 = "ordering";
           obj.sortBy = "ordering";
         }

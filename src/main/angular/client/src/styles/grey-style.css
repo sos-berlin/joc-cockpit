@@ -400,10 +400,6 @@ input[type=search]:focus {
   background-color: var(--bg-box) !important
 }
 
-.breadcrumb > .active {
-  color: rgba(255, 255, 255, .85)
-}
-
 .light-bg,
 .light-bg tr:hover {
   background: rgba(66, 89, 109, .87) !important
@@ -830,10 +826,6 @@ span ul li a {
   background: var(--bg-footer);
 }
 
-.breadcrumb-item + .breadcrumb-item::before {
-  color: #fff;
-}
-
 .arrow-down-ac:last-child:after {
   color: var(--bg-box);
 }
@@ -941,9 +933,6 @@ span ul li a {
   border-color: rgba(233, 244, 255, .18) !important
 }
 
-.breadcrumb > li + li::before {
-  color: #f2f2f2
-}
 /**
 Code mirror
  */

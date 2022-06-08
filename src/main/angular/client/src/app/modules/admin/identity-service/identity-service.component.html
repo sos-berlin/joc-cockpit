@@ -89,7 +89,7 @@
                   <li nz-menu-item (click)="edit(identityService)">
                     <a translate>common.button.edit</a>
                   </li>
-                  <li nz-menu-item (click)="manageSetting(identityService)" *ngIf="identityService.identityServiceType !== 'SHIRO' && identityService.identityServiceType !== 'JOC'">
+                  <li nz-menu-item (click)="manageSetting(identityService)" *ngIf="identityService.identityServiceType !== 'JOC'">
                     <a translate>user.button.manageSetting</a>
                   </li>
                   <li nz-menu-item (click)="disable(identityService)" *ngIf="!identityService.disabled">

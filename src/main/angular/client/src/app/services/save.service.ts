@@ -34,10 +34,6 @@ export class SaveService {
     this.workflowFilters = JSON.stringify(workflow);
   }
 
-  setJob(job: any): void {
-    this.jobFilters = JSON.stringify(job);
-  }
-
   setYade(yade: any): void {
     this.yadeFilters = JSON.stringify(yade);
   }
@@ -52,10 +48,6 @@ export class SaveService {
 
   setAgent(filter: any): void {
     this.agentFilters = JSON.stringify(filter);
-  }
-
-  setIgnoreList(ignoreList: any): void {
-    this.ignoreList = JSON.stringify(ignoreList);
   }
 
   setDailyPlan(dailyPlan: any): void {

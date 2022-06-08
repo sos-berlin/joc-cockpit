@@ -45,7 +45,7 @@
           nzPlaceHolder="{{'user.placeholder.selectIdentityServiceType' | translate}}"
           [(ngModel)]="currentObj.identityServiceType"
           (ngModelChange)="changeType($event)">
-          <nz-option *ngFor="let option of types" [nzLabel]="option" [nzValue]="option"></nz-option>
+          <nz-option *ngFor="let option of identityServiceTypes" [nzLabel]="option" [nzValue]="option"></nz-option>
         </nz-select>
         <div *ngIf="type.invalid && (type.dirty || type.touched)" class="text-danger help-block">
           <div *ngIf="type.errors.required">
@@ -75,7 +75,7 @@
                name="disabled"></label>
       </div>
     </div>
-    <div class="form-group row b-t p-t" *ngIf="currentObj.identityServiceType !== 'SHIRO'">
+    <div class="form-group row b-t p-t">
       <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
         <sup class="text-danger text-sm">*</sup>
       </label>

@@ -877,7 +877,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   importXSDFile: boolean;
   sideView: any = {};
   uploadData: any;
-  liveXml: any;
   selectedTabIndex = 0;
   counter: number;
   requiredField: string;

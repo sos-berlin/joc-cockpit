@@ -246,15 +246,7 @@ export class SingleDeployComponent implements OnInit {
     if (this.isRevoke && this.object.delete.deployConfigurations.length > 0) {
       obj.deployConfigurations = this.object.delete.deployConfigurations;
     }
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
     if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
       this.submitted = false;
@@ -714,15 +706,7 @@ export class DeployComponent implements OnInit {
     }
 
     obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
     if (!this.releasable && isEmpty(obj.store) && isEmpty(obj.delete) && !this.isRevoke) {
       this.submitted = false;
@@ -835,16 +819,7 @@ export class CronImportModalComponent implements OnInit {
 
     this.uploader.onBeforeUploadItem = (item: any) => {
       const obj: any = {};
-      if (this.comments.comment) {
-        obj.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.ticketLink = this.comments.ticketLink;
-      }
-
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       if (this.requestObj.folder && this.requestObj.folder.substring(0, 1) !== '/') {
         this.requestObj.folder = '/' + this.requestObj.folder;
       }
@@ -1437,13 +1412,7 @@ export class ExportComponent implements OnInit {
 
       if (this.comments.comment) {
         obj.auditLog = {};
-        obj.auditLog.comment = this.comments.comment;
-        if (this.comments.timeSpent) {
-          obj.auditLog.timeSpent = this.comments.timeSpent;
-        }
-        if (this.comments.ticketLink) {
-          obj.auditLog.ticketLink = this.comments.ticketLink;
-        }
+        this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       }
       this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
         if (res) {
@@ -1889,13 +1858,7 @@ export class RepositoryComponent implements OnInit {
     if (obj.configurations.length > 0) {
       if (this.comments.comment) {
         obj.auditLog = {};
-        obj.auditLog.comment = this.comments.comment;
-        if (this.comments.timeSpent) {
-          obj.auditLog.timeSpent = this.comments.timeSpent;
-        }
-        if (this.comments.ticketLink) {
-          obj.auditLog.ticketLink = this.comments.ticketLink;
-        }
+        this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       }
       obj.category = this.category;
       this.coreService.post('inventory/repository/' + this.operation, obj).subscribe({
@@ -2050,13 +2013,7 @@ export class RepositoryComponent implements OnInit {
 
       if (this.comments.comment) {
         obj.auditLog = {};
-        obj.auditLog.comment = this.comments.comment;
-        if (this.comments.timeSpent) {
-          obj.auditLog.timeSpent = this.comments.timeSpent;
-        }
-        if (this.comments.ticketLink) {
-          obj.auditLog.ticketLink = this.comments.ticketLink;
-        }
+        this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       }
       this.coreService.post('inventory/repository/store', obj).subscribe({
         next: () => {
@@ -2111,13 +2068,7 @@ export class GitComponent implements OnInit {
     this.submitted = true;
     if (this.comments.comment) {
       this.object.auditLog = {};
-      this.object.auditLog.comment = this.comments.comment;
-      if (this.comments.timeSpent) {
-        this.object.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        this.object.auditLog.ticketLink = this.comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(this.comments, this.object.auditLog);
     }
     if (this.operation == 'clone') {
       let folder = this.object.folder === '/' ? ('/' + this.object.folderName) : this.object.folder;
@@ -2257,15 +2208,7 @@ export class ImportWorkflowModalComponent implements OnInit {
 
     this.uploader.onBeforeUploadItem = (item: any) => {
       const obj: any = {};
-      if (this.comments.comment) {
-        obj.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.ticketLink = this.comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       if (!this.isDeploy) {
         if (this.requestObj.targetFolder) {
           if (this.requestObj.targetFolder.substring(0, 1) !== '/') {
@@ -2657,15 +2600,7 @@ export class CreateObjectModalComponent implements OnInit {
     }
 
     request.auditLog = {};
-    if (this.comments.comment) {
-      request.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      request.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      request.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, request.auditLog);
     this.coreService.post('inventory/copy', request).subscribe({
       next: (res) => {
         this.activeModal.close(res);
@@ -2693,15 +2628,7 @@ export class CreateObjectModalComponent implements OnInit {
     }
 
     request.auditLog = {};
-    if (this.comments.comment) {
-      request.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      request.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      request.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, request.auditLog);
     this.coreService.post('inventory/trash/restore', request).subscribe({
       next: (res) => {
         this.activeModal.close(res);
@@ -2767,13 +2694,7 @@ export class CreateFolderModalComponent implements OnInit {
       };
       if (this.comments.comment) {
         obj.auditLog = {};
-        obj.auditLog.comment = this.comments.comment;
-        if (this.comments.timeSpent) {
-          obj.auditLog.timeSpent = this.comments.timeSpent;
-        }
-        if (this.comments.ticketLink) {
-          obj.auditLog.ticketLink = this.comments.ticketLink;
-        }
+        this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       }
       this.coreService.post('inventory/store', obj).subscribe({
         next: (res) => {
@@ -2818,13 +2739,7 @@ export class CreateFolderModalComponent implements OnInit {
       }
       if (this.comments.comment) {
         obj.auditLog = {};
-        obj.auditLog.comment = this.comments.comment;
-        if (this.comments.timeSpent) {
-          obj.auditLog.timeSpent = this.comments.timeSpent;
-        }
-        if (this.comments.ticketLink) {
-          obj.auditLog.ticketLink = this.comments.ticketLink;
-        }
+        this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       }
       this.submitted = false;
       this.coreService.post(URL, obj).subscribe({
@@ -4462,13 +4377,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
     if (comments.comment) {
       request.auditLog = {};
-      request.auditLog.comment = comments.comment;
-      if (comments.timeSpent) {
-        request.auditLog.timeSpent = comments.timeSpent;
-      }
-      if (comments.ticketLink) {
-        request.auditLog.ticketLink = comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(comments, request.auditLog);
     }
     request.newPath = request.newPath + (request.newPath === '/' ? '' : '/') + this.copyObj.name;
     this.coreService.post('inventory/rename', request).subscribe((res) => {

@@ -43,35 +43,35 @@
     <div class="box-body">
         <table class="w-full" *ngIf="!notAuthenticate1 && !notAuthenticate2 && isLoaded">
             <tr class="text-center">
-                <td width="25%">
+                <td style="width: 25%">
                     <div translate>dashboard.label.successfulOrders</div>
                 </td>
-                <td width="25%">
+                <td style="width: 25%">
                     <div translate>dashboard.label.failedOrders</div>
                 </td>
-                <td width="25%">
+                <td style="width: 25%">
                   <div translate>dashboard.label.successfulJobs</div>
                 </td>
-                <td width="25%">
+                <td style="width: 25%">
                   <div translate>dashboard.label.failedJobs</div>
                 </td>
             </tr>
             <tr class="text-center">
-                <td width="25%">
+                <td style="width: 25%">
                     <a (click)="showOrderSummary('SUCCESSFUL')" class="text-lg _600"
                        [ngClass]="{'dark-blue':orderSummary.successful >0}"
                        [innerHtml]="orderSummary.successful || 0"></a>
                 </td>
-                <td width="25%">
+                <td style="width: 25%">
                     <a (click)="showOrderSummary('FAILED')" class="text-lg _600"
                        [ngClass]="{'red':orderSummary.failed  >0}" [innerHtml]="orderSummary.failed || 0"></a>
                 </td>
-              <td width="25%">
+              <td style="width: 25%">
                 <a (click)="showTaskSummary('SUCCESSFUL')" class="text-lg _600"
                    [ngClass]="{'dark-blue':taskSummary.successful >0}"
                    [innerHtml]="taskSummary.successful || 0"></a>
               </td>
-              <td width="25%">
+              <td style="width: 25%">
                 <a (click)="showTaskSummary('FAILED')" class="text-lg _600"
                    [ngClass]="{'red':taskSummary.failed  >0}" [innerHtml]="taskSummary.failed || 0"></a>
               </td>

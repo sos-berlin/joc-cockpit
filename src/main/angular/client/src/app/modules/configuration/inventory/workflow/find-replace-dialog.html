@@ -15,7 +15,7 @@
       <div class="col-md-8 col-lg-9">
         <nz-select #selectBox nzMode="multiple" nzAllowClear nzShowSearch name="find" [nzDropdownClassName]="'group-list'"
                    nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
-                   [(ngModel)]="object.finds" (keypress)="onKeyPress($event)" (nzBlur)="focusOut()">
+                   [(ngModel)]="object.finds" (keydown)="onKeyPress($event)" (nzBlur)="focusOut()">
           <ng-container *ngFor="let item of listOfAgents">
             <ng-container *ngIf="!item.title">
               <nz-option [nzHide]="item === '*'" nzCustomContent [nzLabel]="item"

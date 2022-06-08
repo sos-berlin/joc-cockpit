@@ -222,15 +222,7 @@ export class GitModalComponent implements OnInit {
       credentials: [this.gitObject]
     };
     obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (this.object.type === 'password') {
       delete obj.credentials[0].keyfilePath;
       delete obj.credentials[0].personalAccessToken;
@@ -320,15 +312,7 @@ export class UpdateKeyModalComponent implements OnInit {
       obj = {certificate: this.data.certificate};
     }
     obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     const URL = this.type === 'key' ? 'profile/key/store' : this.type === 'certificate' ? 'profile/key/ca/store' : 'profile/ca/store';
     this.coreService.post(URL, this.type === 'key' ? {keys: obj} : obj).subscribe({
       next: () => {
@@ -355,7 +339,7 @@ export class ImportKeyModalComponent implements OnInit {
   comments: any = {};
   key = {keyAlg: 'RSA'};
 
-  constructor(public activeModal: NzModalRef, private authService: AuthService,
+  constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
               public translate: TranslateService, public toasterService: ToastrService) {
     this.uploader = new FileUploader({
       url: '',
@@ -385,15 +369,7 @@ export class ImportKeyModalComponent implements OnInit {
       if (this.type === 'certificate') {
         obj = {};
       }
-      if (this.comments.comment) {
-        obj.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.ticketLink = this.comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       item.file.name = encodeURIComponent(item.file.name);
       this.uploader.options.additionalParameter = obj;
     };

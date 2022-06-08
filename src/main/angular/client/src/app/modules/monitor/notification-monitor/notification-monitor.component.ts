@@ -34,15 +34,7 @@ export class AcknowledgeModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     const auditLog: any = {};
-    if (this.comments.comment) {
-      auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, auditLog);
     this.coreService.post('monitoring/notification/acknowledge', {
       ...this.data, ...{comment: this.comment, auditLog}
     }).subscribe({

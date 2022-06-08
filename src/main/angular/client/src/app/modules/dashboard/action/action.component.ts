@@ -36,13 +36,6 @@ export class CommentModalComponent implements OnInit {
     this.performAction(this.action, obj);
   }
 
-  postCall(url, obj): void {
-    this.coreService.post(url, obj).subscribe({
-      next: () => {
-        this.activeModal.close();
-      }, error: () => this.submitted = false
-    });
-  }
 }
 
 @Component({

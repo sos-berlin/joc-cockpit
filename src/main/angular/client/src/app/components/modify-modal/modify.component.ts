@@ -314,15 +314,7 @@ export class ChangeParameterModalComponent implements OnInit {
       });
     }
     obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (obj.variables || obj.removeVariables) {
       this.coreService.post('daily_plan/orders/modify', obj).subscribe({
         next: () => {

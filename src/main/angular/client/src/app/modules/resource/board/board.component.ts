@@ -73,15 +73,7 @@ export class PostModalComponent implements OnInit {
       timeZone: this.postObj.timeZone,
       auditLog: {}
     };
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (this.postObj.at === 'date') {
       if (this.postObj.fromDate) {
         this.coreService.getDateAndTime(this.postObj);

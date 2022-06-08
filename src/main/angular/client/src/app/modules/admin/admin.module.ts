@@ -7,10 +7,6 @@ import {AdminComponent} from './admin.component';
 import {SharedModule} from '../shared/shared.module';
 import {AccountsComponent, AccountModalComponent, ConfirmationModalComponent} from './accounts/accounts.component';
 import {RolesComponent, RoleModalComponent, ControllerModalComponent} from './roles/roles.component';
-import {
-  MainSectionComponent, MainSectionModalComponent, LdapSectionModalComponent,
-  EditMainSectionModalComponent
-} from './main-section/main-section.component';
 import {PermissionsComponent, FolderModalComponent, PermissionModalComponent} from './permissions/permissions.component';
 import {DataService} from './data.service';
 import {ProfilesComponent} from './profiles/profiles.component';
@@ -32,9 +28,6 @@ import {UploadModalComponent} from "./upload/upload.component";
     NzAutocompleteModule
   ],
   declarations: [
-    MainSectionModalComponent,
-    LdapSectionModalComponent,
-    EditMainSectionModalComponent,
     FolderModalComponent,
     PermissionModalComponent,
     AccountModalComponent,
@@ -46,7 +39,6 @@ import {UploadModalComponent} from "./upload/upload.component";
     IdentityServiceComponent,
     AdminComponent,
     RolesComponent,
-    MainSectionComponent,
     ProfilesComponent,
     PermissionsComponent,
     SessionTimeRegexValidator,

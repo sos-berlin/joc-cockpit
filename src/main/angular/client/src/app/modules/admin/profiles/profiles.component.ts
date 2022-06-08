@@ -16,8 +16,6 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   profiles: any = [];
-  subscription1: Subscription;
-  subscription2: Subscription;
   users: any;
   searchKey: string;
   prof: any = {currentPage: 1};
@@ -30,15 +28,12 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   identityServiceType: string;
   setOfCheckedId = new Set<string>();
 
+  subscription1: Subscription;
+
   constructor(private dataService: DataService, private modal: NzModalService, private coreService: CoreService,
               private router: Router, private authService: AuthService) {
-    this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res && res.accounts) {
-        this.setUserData(res);
-      }
-    });
 
-    this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
+    this.subscription1 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'RESET_PROFILES') {
         this.resetMainProfile();
       }
@@ -50,14 +45,11 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.identityServiceName = sessionStorage.identityServiceName;
     this.identityServiceType = sessionStorage.identityServiceType;
-    if (this.identityServiceType !== 'SHIRO') {
-      this.getList();
-    }
+    this.getList();
   }
 
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
   }
 
   private getList(): void {
@@ -69,18 +61,6 @@ export class ProfilesComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     })
-  }
-
-  setUserData(res): void {
-    if(this.identityServiceType === 'SHIRO') {
-      this.users = res;
-      if (res) {
-        this.profiles = res.profiles;
-        setTimeout(() => {
-          this.loading = false;
-        }, 300);
-      }
-    }
   }
 
   updateCheckedSet(account: string, checked: boolean): void {
@@ -135,16 +115,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           const auditLog: any = {};
-          if (result.comment) {
-            auditLog.comment = result.comment;
-          }
-          if (result.timeSpent) {
-            auditLog.timeSpent = result.timeSpent;
-          }
-          if (result.ticketLink) {
-            auditLog.ticketLink = result.ticketLink;
-          }
-
+          this.coreService.getAuditLogObj(result.comments, auditLog);
           if (result.isChecked) {
             this.dataService.comments = result;
           }
@@ -221,9 +192,9 @@ export class ProfilesComponent implements OnInit, OnDestroy {
 
   showMaster(account): void {
     if (sessionStorage.identityServiceType !== 'VAULT') {
-      this.router.navigate(['/users/identity_service/role'], {queryParams: {account}});
+      this.router.navigate(['/users/identity_service/role'], {queryParams: {account}}).then();
     } else {
-      this.router.navigate(['/users/identity_service/role']);
+      this.router.navigate(['/users/identity_service/role']).then();
     }
   }
 
@@ -253,15 +224,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       obj.accounts = Array.from(this.setOfCheckedId);
     }
     if (comments) {
-      if (comments.comment) {
-        obj.auditLog.comment = comments.comment;
-      }
-      if (comments.timeSpent) {
-        obj.auditLog.timeSpent = comments.timeSpent;
-      }
-      if (comments.ticketLink) {
-        obj.auditLog.ticketLink = comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(comments, obj.auditLog);
       if (comments.isChecked) {
         this.dataService.comments = comments;
       }

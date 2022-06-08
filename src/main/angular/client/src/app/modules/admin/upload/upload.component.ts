@@ -119,15 +119,7 @@ export class UploadModalComponent implements OnInit {
 
   import(): void {
     let auditLog: any = {};
-    if (this.comments.comment) {
-      auditLog.comment = this.comments.comment;
-      if (this.comments.timeSpent) {
-        auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        auditLog.ticketLink = this.comments.ticketLink;
-      }
-    }
+    this.coreService.getAuditLogObj(this.comments, auditLog);
     if (this.isRole) {
       for (let role in this.roles) {
         if (this.identityServiceType === 'SHIRO') {

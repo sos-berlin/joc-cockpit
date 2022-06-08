@@ -828,7 +828,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       controllerId: this.controllerId,
       compact: true
     }).subscribe({
-      next: (res) => {
+      next: () => {
         this.router.navigate(['/workflows/workflow'], {
           queryParams: {
             path: this.workflowPath,

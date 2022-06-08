@@ -327,11 +327,6 @@ input[type=search] {
   background-color: var(--bg-box) !important
 }
 
-.breadcrumb > .active {
-  color: rgba(255, 255, 255, .85)
-}
-
-
 .modal-content,
 .modal-footer,
 .modal-header {

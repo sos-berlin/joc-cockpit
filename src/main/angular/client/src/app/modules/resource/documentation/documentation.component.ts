@@ -65,15 +65,7 @@ export class ImportModalComponent implements OnInit {
         accessToken: this.authService.accessTokenId,
         name: item.file.name
       };
-      if (this.comments.comment) {
-        obj.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.ticketLink = this.comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       item.file.name = encodeURIComponent(item.file.name);
       this.uploader.options.additionalParameter = obj;
     };
@@ -140,19 +132,10 @@ export class EditModalComponent implements OnInit {
     this.submitted = true;
     const obj: any = {
       documentation: this.document.path,
-      assignReference: this.document.assignReference
+      assignReference: this.document.assignReference,
+      auditLog: {}
     };
-    obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
-
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.coreService.post('documentation/edit ', obj).subscribe({
       next: () => {
         this.submitted = false;

@@ -220,15 +220,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       newPath: name,
       auditLog: {}
     };
-    if (comments.comment) {
-      obj.auditLog.comment = comments.comment;
-    }
-    if (comments.timeSpent) {
-      obj.auditLog.timeSpent = comments.timeSpent;
-    }
-    if (comments.ticketLink) {
-      obj.auditLog.ticketLink = comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(comments, obj.auditLog);
     this.coreService.post('inventory/rename', obj).subscribe({
       next: () => {
         if ((data.path + (data.path === '/' ? '' : '/') + data.name) === (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)) {

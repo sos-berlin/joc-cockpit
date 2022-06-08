@@ -424,15 +424,7 @@ export class AddOrderModalComponent implements OnInit {
     }
     obj.orders.push(order);
     obj.auditLog = {};
-    if (this.comments.comment) {
-      obj.auditLog.comment = this.comments.comment;
-    }
-    if (this.comments.timeSpent) {
-      obj.auditLog.timeSpent = this.comments.timeSpent;
-    }
-    if (this.comments.ticketLink) {
-      obj.auditLog.ticketLink = this.comments.ticketLink;
-    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.coreService.post('orders/add', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');

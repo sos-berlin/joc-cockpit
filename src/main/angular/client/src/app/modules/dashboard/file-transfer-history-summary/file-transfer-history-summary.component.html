@@ -40,20 +40,20 @@
     <div class="box-body">
         <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
             <tr class="text-center">
-                <td width="50%">
+                <td style="width: 50%">
                     <div translate>common.label.successful</div>
                 </td>
-                <td width="505%">
+                <td style="width: 50%">
                     <div translate>common.label.failed</div>
                 </td>
             </tr>
             <tr class="text-center">
-                <td width="50%">
+                <td style="width: 50%">
                     <a (click)="showSummary('SUCCESSFUL')" class="text-lg _600"
                        [ngClass]="{'dark-blue':summary.successful >0}"
                        [innerHtml]="summary.successful || 0"></a>
                 </td>
-                <td width="50%">
+                <td style="width: 50%">
                     <a (click)="showSummary('FAILED')" class="text-lg _600"
                        [ngClass]="{'red':summary.failed  >0}" [innerHtml]="summary.failed || 0"></a>
                 </td>

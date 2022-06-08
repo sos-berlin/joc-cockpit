@@ -1098,7 +1098,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                 if (!position && node.getAttribute('positions')) {
                   const positions = JSON.parse(node.getAttribute('positions'));
                   let orders = [];
-                  positions.forEach((pos, index) => {
+                  positions.forEach((pos) => {
                     if (this.mapObj.get(pos)) {
                       orders = orders.concat(this.mapObj.get(pos));
                     }

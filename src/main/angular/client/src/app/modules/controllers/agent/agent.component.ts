@@ -86,15 +86,7 @@ export class SubagentModalComponent implements OnInit {
     const subagent: any = this.coreService.clone(this.subagent);
     if (this.display) {
       obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
 
     obj.subagents = [subagent];
@@ -170,15 +162,7 @@ export class AddClusterModalComponent implements OnInit {
     };
     if (this.display) {
       obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
     if (!this.new && !this.isCopy) {
       for (let i = 0; i < this.subagentClusters.length; i++) {
@@ -302,15 +286,7 @@ export class AgentModalComponent implements OnInit {
     const _agent: any = this.coreService.clone(this.agent);
     if (this.display) {
       obj.auditLog = {};
-      if (this.comments.comment) {
-        obj.auditLog.comment = this.comments.comment;
-      }
-      if (this.comments.timeSpent) {
-        obj.auditLog.timeSpent = this.comments.timeSpent;
-      }
-      if (this.comments.ticketLink) {
-        obj.auditLog.ticketLink = this.comments.ticketLink;
-      }
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
     if (this.agentNameAliases.length > 0) {
       _agent.agentNameAliases = [];

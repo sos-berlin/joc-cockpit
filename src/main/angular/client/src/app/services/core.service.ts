@@ -1120,7 +1120,7 @@ export class CoreService {
       url = 'task/log/download';
     }
     if (obj) {
-      this.download(url, obj, name, (res: any) => {
+      this.download(url, obj, name, () => {
       });
     }
   }
@@ -1621,4 +1621,15 @@ export class CoreService {
     return this.favourite
   }
 
+  getAuditLogObj(comments, auditLog): void {
+    if (comments.comment) {
+      auditLog.comment = comments.comment;
+    }
+    if (comments.timeSpent) {
+      auditLog.timeSpent = comments.timeSpent;
+    }
+    if (comments.ticketLink) {
+      auditLog.ticketLink = comments.ticketLink;
+    }
+  }
 }
