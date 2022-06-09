@@ -9,8 +9,7 @@ import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {saveAs} from 'file-saver';
-import {PerfectScrollbarComponent} from 'ngx-perfect-scrollbar';
-import {isEmpty, isArray, isEqual, sortBy, clone, groupBy} from 'underscore';
+import {isEmpty, isArray, isEqual, sortBy, clone} from 'underscore';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
@@ -896,7 +895,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
-  @ViewChild(PerfectScrollbarComponent, {static: false}) componentRef?: PerfectScrollbarComponent;
+  @ViewChild('scrollbar', {static: false}) componentRef?: any;
 
   constructor(
     public coreService: CoreService,

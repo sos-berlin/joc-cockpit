@@ -147,6 +147,7 @@ export class OffsetValidator implements Validator {
   templateUrl: './facet-editor-dialog.html'
 })
 export class FacetEditorComponent implements OnInit {
+  @Input() preferences: any = {};
   @Input() data: any = {};
   @Input() isList: boolean;
   variable: any = {};
@@ -164,7 +165,14 @@ export class FacetEditorComponent implements OnInit {
   }
 
   private getFavList(): void {
-    this.favList = this.coreService.getFavouriteTab().facets;
+    this.coreService.post('inventory/favorites', {
+      types: ['FACET'],
+      limit: this.preferences.maxFavouriteEntries || 10
+    }).subscribe({
+      next: (res: any) => {
+        this.favList = res.favorites;
+      }
+    });
   }
 
   checkRegularExp(data): void {
@@ -874,6 +882,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() schedulerId: any;
   @Input() selectedNode: any;
   @Input() jobs: any;
+  @Input() preferences: any;
   @Input() jobResourcesTree = [];
   @Input() documentationTree = [];
   @Input() scriptTree = [];
@@ -1203,11 +1212,17 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     $event.stopPropagation();
     $event.preventDefault();
     if (isFav) {
-      this.favourite.list.push({name: agent, clusterName: cluster});
+      this.favourite.list.push({name: agent, clusterName: cluster, ordering: this.favourite.list.length > 0 ? (this.favourite.list[this.favourite.list.length - 1].ordering + 1): 1});
+      this.coreService.post('inventory/favorites/store', {
+        favorites: [{type: 'AGENT', name: agent, content: cluster || ''}]
+      }).subscribe();
     } else {
       for (let i = 0; i < this.favourite.list.length; i++) {
         if (this.favourite.list[i].name === agent) {
           this.favourite.list.splice(i, 1);
+          this.coreService.post('inventory/favorites/delete', {
+            favoriteIds: [{type: 'AGENT', name: this.obj.name}]
+          }).subscribe();
           break;
         }
       }
@@ -1988,7 +2003,14 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   private init(): void {
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
-    this.favourite.list = this.coreService.getFavouriteTab().agents;
+    this.coreService.post('inventory/favorites', {
+      types: ['AGENT'],
+      limit: this.preferences.maxFavouriteEntries || 10
+    }).subscribe({
+      next: (res: any) => {
+        this.favourite.list = res.favorites;
+      }
+    });
     this.agentList = this.coreService.clone(this.agents);
     this.getJobInfo();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
@@ -3958,7 +3980,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzClassName: isList ? 'sm' : 'lg',
       nzComponentParams: {
         data,
-        isList
+        isList,
+        preferences: this.preferences
       },
       nzFooter: null,
       nzClosable: false,

@@ -739,7 +739,7 @@
             </nz-tab>
             <nz-tab [nzTitle]="'profile.label.favouriteManagement' | translate">
               <div class="p-l-sm p-r-rm m-t-n-sm">
-                <nz-tabset>
+                <nz-tabset (nzSelectChange)="innnerTabChange($event)">
                   <nz-tab [nzTitle]="'profile.favouriteManagement.tab.agents' | translate">
                   	<app-manage-favourite-list [list]="agentList" [type]="'Agent'" [schedulerId]="schedulerIds"></app-manage-favourite-list>
                   </nz-tab>

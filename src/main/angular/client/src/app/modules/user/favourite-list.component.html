@@ -12,7 +12,7 @@
     </button>
   </div>
 </div>
-<ul class="p-0 mb-2" *ngFor="let item of list | filter : searchKey : ['name']">
+<ul class="p-0 mb-2" *ngFor="let item of list | orderBy: 'ordering' | filter : searchKey : ['name', 'content']">
   <li>
     <div class="btn-group ml-2 dropdown">
       <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i
@@ -22,14 +22,22 @@
           <li nz-menu-item (click)="edit(item)">
             <a translate>common.button.edit</a>
           </li>
+          <li nz-menu-item *ngIf="!item.shared" (click)="makeShare(item)">
+            <a translate>customization.button.share</a>
+          </li>
+          <li nz-menu-item *ngIf="item.shared" (click)="makePrivate(item)">
+            <a translate>customization.button.makePrivate</a>
+          </li>
+          <li nz-menu-divider></li>
           <li nz-menu-item class="bg-hover-color" (click)="delete(item)">
             <a translate>common.button.delete</a>
           </li>
         </ul>
       </nz-dropdown-menu>&nbsp;
       <span class="cursor" (click)="edit(item)" [innerHtml]="item.name | highlight : searchKey"></span>&nbsp;
-      <i *ngIf="item.value || item.clusterName">-</i>
-      &nbsp;<span class="cursor text-muted" (click)="edit(item)">{{item.value || item.clusterName}}</span>
+      <i class="fa fa-share-square-o pos-rel text-primary t-n-xs m-r-sm" style="left:-2px" *ngIf="item.shared" aria-hidden="true"></i>
+      <i *ngIf="item.content">-</i>
+      &nbsp;<span class="text-muted" [innerHtml]="item.content | highlight : searchKey"></span>
     </div>
   </li>
 </ul>

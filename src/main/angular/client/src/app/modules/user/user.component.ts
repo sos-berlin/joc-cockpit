@@ -99,7 +99,7 @@ export class EditFavouriteModalComponent implements OnInit {
 
   onSelect(node): void {
     this.object.clusterName = undefined;
-    if(node.parentNode && node.parentNode.origin && node.origin.cluster){
+    if (node.parentNode && node.parentNode.origin && node.origin.cluster) {
       this.object.clusterName = (node.parentNode.origin.key);
     }
   }
@@ -110,9 +110,19 @@ export class EditFavouriteModalComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.activeModal.close(this.object);
+    this.coreService.post('inventory/favorites/store', {
+      favorites: [
+        {
+          type: this.type.toUpperCase(),
+          name: this.object.name,
+          content: this.type === 'Facet' ? this.object.value : this.object.clusterName
+        }]
+    }).subscribe({
+      next: () => {
+        this.activeModal.close();
+      }, error: () => this.submitted = false
+    });
   }
-
 }
 
 @Component({
@@ -154,7 +164,7 @@ export class FavouriteListComponent implements OnInit {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        if(data) {
+        if (data) {
           for (let i = 0; i < this.list.length; i++) {
             if (this.list[i].name === data.name) {
               this.list[i] = result;
@@ -168,13 +178,44 @@ export class FavouriteListComponent implements OnInit {
     });
   }
 
-  delete(data): void {
-    for (let i = 0; i < this.list.length; i++) {
-      if (this.list[i].name == data.name) {
-        this.list.splice(i, 1);
-        break;
+  makeShare(data): void {
+    this.coreService.post('inventory/favorites/share', {
+      favoriteIds: [{type: this.type.toUpperCase(), name: data.name}]
+    }).subscribe({
+      next: () => {
+        data.shared = true;
       }
-    }
+    });
+  }
+
+  makePrivate(data): void{
+    this.coreService.post('inventory/favorites/make_private', {
+      favoriteIds: [{type: this.type.toUpperCase(), name: data.name}]
+    }).subscribe({
+      next: () => {
+        data.shared = false;
+      }
+    });
+  }
+
+  delete(data): void {
+    this.coreService.post('inventory/favorites/delete', {
+      favoriteIds: [
+        {
+          type: this.type.toUpperCase(),
+          name: data.name
+        }
+      ]
+    }).subscribe({
+      next: () => {
+        for (let i = 0; i < this.list.length; i++) {
+          if (this.list[i].name == data.name) {
+            this.list.splice(i, 1);
+            break;
+          }
+        }
+      }
+    });
   }
 }
 
@@ -193,7 +234,6 @@ export class GitModalComponent implements OnInit {
   object: any = {
     type: 'password'
   };
-
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -598,10 +638,12 @@ export class UserComponent implements OnInit, OnDestroy {
           this.getFavourite();
         }
       } else if ($event.index === 3) {
-        if (this.permission.joc.administration.certificates.view) {
-          this.getCA();
-        } else if (this.securityLevel !== 'LOW' && this.permission.joc.inventory.view) {
-          this.getGit();
+        if (this.securityLevel !== 'LOW') {
+          if (this.permission.joc.administration.certificates.view) {
+            this.getCA();
+          } else if (this.permission.joc.inventory.view) {
+            this.getGit();
+          }
         } else {
           this.getFavourite();
         }
@@ -812,9 +854,27 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
-  getFavourite(): void {
-    this.facetList = this.coreService.getFavouriteTab().facets;
-    this.agentList = this.coreService.getFavouriteTab().agents;
+  getFavourite(type = 'AGENT'): void {
+    this.coreService.post('inventory/favorites', {
+      types: [type],
+      limit: this.preferences.maxFavouriteEntries || 10
+    }).subscribe({
+      next: (res: any) => {
+        
+        if (type === 'AGENT') {
+          this.agentList = res.favorites;
+        } else if (type === 'FACET') {
+          this.facetList = res.favorites;
+        }
+      }
+    });
+  }
+
+  innnerTabChange($event): void {
+    console.log($event.index, '??index');
+    if ($event.index == 1) {
+      this.getFavourite('FACET');
+    }
   }
 
   pasteKey(type = 'key'): void {

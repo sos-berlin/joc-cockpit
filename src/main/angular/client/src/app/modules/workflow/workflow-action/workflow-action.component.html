@@ -11,14 +11,15 @@
       <li nz-menu-item (click)="navToDetailView('grid')">
         <a translate>workflow.button.showGraphicalView</a>
       </li>
+      <li nz-menu-divider></li>
+      <li nz-menu-item *ngIf="permission.currentController.orders.create" [nzDisabled]="!workflow.isCurrentVersion" (click)="addOrder(workflow);" >
+        <a>{{'workflow.button.addOrder' | translate}} ..</a>
+      </li>
       <li nz-menu-item *ngIf="permission.currentController.orders" [nzDisabled]="!workflow.isCurrentVersion" (click)="suspend(workflow);" >
         <a>{{'order.button.suspend' | translate}}</a>
       </li>
       <li nz-menu-item *ngIf="permission.currentController.orders" [nzDisabled]="!workflow.isCurrentVersion" (click)="resume(workflow);" >
         <a>{{'order.button.resume' | translate}}</a>
-      </li>
-      <li nz-menu-item *ngIf="permission.currentController.orders.create" [nzDisabled]="!workflow.isCurrentVersion" (click)="addOrder(workflow);" >
-        <a>{{'workflow.button.addOrder' | translate}} ..</a>
       </li>
       <li nz-menu-item *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies" (click)="showDependency(workflow);" >
         <a>{{'workflow.button.showDependency' | translate}} ..</a>

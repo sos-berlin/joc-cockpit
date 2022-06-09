@@ -16,8 +16,8 @@
              translate>workflow.label.facet</label>
       <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || variable.value.invalid}">
         <textarea class="z-index" #facet="ngModel" name="facet" autofocus (keydown)="checkRegularExp(variable.value)" (blur)="checkRegularExp(variable.value)"
-                  [(ngModel)]="variable.value.facet"  nz-input placeholder="{{'common.placeholder.regex' | translate}}" nzAutosize></textarea>
-        <app-favourite-list [list]="favList" [data]="variable.value" [type]="'facet'"></app-favourite-list>
+                  [(ngModel)]="variable.value.facet" nz-input placeholder="{{'common.placeholder.regex' | translate}}" nzAutosize></textarea>
+        <app-favourite-list [list]="favList" [data]="variable.value" [value]="variable.value.facet" [type]="'facet'"></app-favourite-list>
         <div *ngIf="(facet.invalid && facet.errors && (facet.dirty || facet.touched)) || variable.value.invalid"
              class="text-danger help-block">
           <div *ngIf="variable.value.invalid">
