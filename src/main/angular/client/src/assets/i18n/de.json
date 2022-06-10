@@ -749,7 +749,7 @@
   "favorite": {
     "button.addFavorite": "Favorit hinzufügen",
     "button.editFavorite": "Favorit editieren",
-    "button.addFromFavorite": "Aus Favoriten hinzufügen",
+    "button.addFromFavorite": "Von Favoriten hinzufügen",
     "button.filterByFavorites": "Nach Favoriten filtern",
     "button.backToList": "Zurück zur Liste"
   },
@@ -1651,8 +1651,8 @@
     "label.oldPassword": "Altes Kennwort",
     "label.newPassword": "Neues Kennwort",
     "label.confirmPassword": "Kennwort bestätigen",
-    "label.gitManagement": "Git Verwaltung",
-    "label.favoriteManagement": "Management Favoriten",
+    "label.gitManagement": "Verwaltung Git",
+    "label.favoriteManagement": "Verwaltung Favoriten",
     "label.licenseWarningGotIt": "Lizenzwarnung akzeptiert",
     "button.resetProfile": "Profil zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
@@ -1664,12 +1664,12 @@
       "label.manageFavorite":"Favoriten verwalten",
       "label.addFavorite":"Favorit hinzufügen",
       "label.editFavorite":"Favorit aktualisieren",
-      "button.takeOver":"Take Over",
+      "button.takeOver":"Übernehmen",
       "button.addFavorite":"Favorit hinzufügen",
       "tab.agents":"Agenten",
       "tab.facets":"Eingabeprüfungen",
-      "tooltip.sharedByMe":"Shared by me",
-      "tooltip.sharedWithMe":"Shared with me"
+      "tooltip.sharedByMe":"Von mir geteilt",
+      "tooltip.sharedWithMe":"Mit mir geteilt"
     },
     "permission": {
       "label.order": "Auftrag",
@@ -2412,7 +2412,7 @@
     "button.addResult": "Ergebnis hinzufügen",
     "button.addDelay": "Verzögerung hinzufügen",
     "button.addAllDelay": "Alle Verzögerungen hinzufügen",
-    "button.addValueToList": "Add Value",
+    "button.addValueToList": "Wert hinzufügen",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

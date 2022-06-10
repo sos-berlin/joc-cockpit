@@ -1664,12 +1664,12 @@
       "label.manageFavorite":"Gérer Favorite",
       "label.addFavorite":"Ajouter Favorite",
       "label.editFavorite":"Mettre à jour Favorite",
-      "button.takeOver":"Take Over",
+      "button.takeOver":"Reprendre",
       "button.addFavorite":"Ajouter Favorite",
       "tab.agents":"Agents",
       "tab.facets":"Facets",
-      "tooltip.sharedByMe":"Shared by me",
-      "tooltip.sharedWithMe":"Shared with me"
+      "tooltip.sharedByMe":"Partagé par moi",
+      "tooltip.sharedWithMe":"Partagé avec moi"
     },
     "permission": {
       "label.order": "Ordre",
@@ -2412,7 +2412,7 @@
     "button.addResult": "Ajouter résultat",
     "button.addDelay": "Ajouter un Délai",
     "button.addAllDelay": "Ajouter tous les Délais",
-    "button.addValueToList": "Add Value",
+    "button.addValueToList": "Ajouter Valeur",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",
