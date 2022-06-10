@@ -459,7 +459,6 @@
     "button.unassignDocumentation": "割当ドキュメントを解除",
     "button.viewDocumentation": "ドキュメント表示",
     "button.viewHistory": "履歴表示",
-    "button.addFromFavourite": "Add from Favourite",
     "placeholder.search": "検索",
     "placeholder.name": "名称",
     "placeholder.value": "値",
@@ -747,11 +746,11 @@
     "message.pasteInSubFolderNotAllowed": "宛先フォルダーはソースフォルダーの下にあります",
     "message.invalidJSON": "無効なJSONファイルです"
   },
-  "favourite": {
-    "button.addFavourite": "Add Favourite",
-    "button.editFavourite": "Edit Favourite",
-    "button.addFromFavourite": "Add from Favourite",
-    "button.filterByFavourites": "Filter By Favourites",
+  "favorite": {
+    "button.addFavorite": "Add Favorite",
+    "button.editFavorite": "Edit Favorite",
+    "button.addFromFavorite": "Add from Favorite",
+    "button.filterByFavorites": "Filter By Favorites",
     "button.backToList": "Back To List"
   },
   "fileTransfer": {
@@ -1616,7 +1615,7 @@
     "label.maxNumberOfNoticeBoardEntries": "最大通知ボードあたりオーダー表示数",
     "label.maxNumberOfHistoryEntriesPerOrder": "最大オーダー履歴表示数",
     "label.maxNumberOfHistoryEntriesPerTask": "最大タスク履歴表示数",
-    "label.maxNumberOfFavouriteEntries": "Max. number of Favourite entries",
+    "label.maxNumberOfFavoriteEntries": "Max. number of Favorite entries",
     "label.showSubFolderAndFolderContents": "サブフォルダー/コンテンツ表示",
     "label.subFolderAndFolderContents": "サブフォルダー/コンテンツ",
     "label.currentController": "現在コントローラー",
@@ -1653,7 +1652,7 @@
     "label.newPassword": "新しいパスワード",
     "label.confirmPassword": "確認用パスワード",
     "label.gitManagement": "Git管理",
-    "label.favouriteManagement": "Favourite Management",
+    "label.favoriteManagement": "Favorite Management",
     "label.licenseWarningGotIt": "ライセンス警告を確認",
     "button.resetProfile": "リセットプロファイル",
     "button.groupLimit": "グループリミット",
@@ -1661,13 +1660,16 @@
     "message.passwordNotMatch": "パスワードと確認用パスワードは一致させる必要があります。",
     "message.minimumPasswordLength": "パスワードは{{length}}文字以上必要です。",
     "message.passwordShouldNotSame": "新しいパスワードは今のパスワードと異なる必要があります。",
-    "favouriteManagement": {
-      "label.manageFavourite":"Manage Favourite",
-      "label.addFavourite":"Add Favourite",
-      "label.editFavourite":"Update Favourite",
-      "button.addFavourite":"Add Favourite",
+    "favoriteManagement": {
+      "label.manageFavorite":"Manage Favorite",
+      "label.addFavorite":"Add Favorite",
+      "label.editFavorite":"Update Favorite",
+      "button.takeOver":"Take Over",
+      "button.addFavorite":"Add Favorite",
       "tab.agents":"Agents",
-      "tab.facets":"Facets"
+      "tab.facets":"Facets",
+      "tooltip.sharedByMe":"Shared by me",
+      "tooltip.sharedWithMe":"Shared with me"
     },
     "permission": {
       "label.order": "オーダー",
@@ -2186,8 +2188,6 @@
     "message.noRoleAssign": "選択したアカウントにはロールが適用されていません",
     "message.cannotDeleteRole": "アカウントが割り当てられているロールを削除できません。",
     "message.noFolderFound": "フォルダーはありません",
-    "message.moreThanOneVaultEnable": "VAULT* IDサービスは1つしか有効にできません",
-    "message.moreThanOneLDAPEnable": "LDAP* IDサービスは1つしか有効にできません",
     "message.deleteSelectedUser": "本当に選択したアカウントをすべて削除しますか？",
     "message.deleteSelectedRole": "本当に選択したロールをすべて削除しますか？",
     "message.resetPasswordForUser": "本当にこのアカウントのパスワードをリセットしますか?",
@@ -2412,6 +2412,7 @@
     "button.addResult": "結果追加",
     "button.addDelay": "遅延追加",
     "button.addAllDelay": "全遅延追加",
+    "button.addValueToList": "Add Value",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",

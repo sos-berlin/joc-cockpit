@@ -52,7 +52,7 @@ import {AuditLogInputComponent} from '../../components/audit-log-input/audit-log
 import {WorkflowTreeStructureComponent} from '../../components/workflow-tree-structure/workflow-tree-structure.component';
 import {SearchComponent} from '../../components/search/search.component';
 import {PermissionViewComponent} from "../../components/permission-view/permission-view.component";
-import {FavouriteListComponent} from "../../components/favourite-list/favourite-list.component";
+import {FavoriteListComponent} from "../../components/favorite-list/favorite-list.component";
 import {SelectDocumentComponent} from "../../components/select-document/select-document.component";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
@@ -66,7 +66,7 @@ const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFrom
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator, RelativeDateRegexValidator,
   ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
-  StartUpModalComponent, TreeComponent, FavouriteListComponent, ValueEditorComponent, WorkflowTreeStructureComponent, SearchComponent,
+  StartUpModalComponent, TreeComponent, FavoriteListComponent, ValueEditorComponent, WorkflowTreeStructureComponent, SearchComponent,
   SelectDocumentComponent, PermissionViewComponent];
 
 @NgModule({

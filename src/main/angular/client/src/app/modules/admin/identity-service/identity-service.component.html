@@ -74,10 +74,9 @@
       </tr>
       </thead>
       <tbody cdkDropList (cdkDropListDropped)="drop($event)">
-        <tr *ngFor="let identityService of ajaxTable.data" cdkDrag [nz-tooltip]="(showMessage && !identityService.disabled && identityService.identityServiceType.indexOf('VAULT') > -1 ? ('user.message.moreThanOneVaultEnable' | translate) : '') || (showMessage2 && !identityService.disabled && identityService.identityServiceType.indexOf('LDAP') > -1 ? ('user.message.moreThanOneLDAPEnable' | translate) : '')"
-            [ngClass]="{'opacity7': identityService.disabled, 'error-border': !identityService.disabled && ((showMessage && identityService.identityServiceType.indexOf('VAULT') > -1) || (showMessage2 && identityService.identityServiceType.indexOf('LDAP') > -1))}" class="cursor move-on-hover">
+        <tr *ngFor="let identityService of ajaxTable.data" cdkDrag
+            [ngClass]="{'opacity7': identityService.disabled}" class="cursor move-on-hover">
           <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu">
-            <i class="fa fa-exclamation-triangle warn-icon" aria-hidden="true"></i>
             <div *ngIf="usr.sortBy === 'ordering'" class="pos-abt move-icon text-16 cur-m" style="left: -1px" cdkDragHandle>
               <i class="fa fa-bars" aria-hidden="true"></i>
             </div>
@@ -86,16 +85,16 @@
                       [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                 <ul nz-menu>
-                  <li nz-menu-item (click)="edit(identityService)">
+                  <li nz-menu-item *ngIf="identityService.identityServiceType !== 'UNKNOWN'" (click)="edit(identityService)">
                     <a translate>common.button.edit</a>
                   </li>
-                  <li nz-menu-item (click)="manageSetting(identityService)" *ngIf="identityService.identityServiceType !== 'JOC'">
+                  <li nz-menu-item (click)="manageSetting(identityService)" *ngIf="identityService.identityServiceType !== 'JOC' && identityService.identityServiceType !== 'UNKNOWN'">
                     <a translate>user.button.manageSetting</a>
                   </li>
-                  <li nz-menu-item (click)="disable(identityService)" *ngIf="!identityService.disabled">
+                  <li nz-menu-item (click)="disable(identityService)" *ngIf="!identityService.disabled && identityService.identityServiceType !== 'UNKNOWN'">
                     <a translate>user.button.disable</a>
                   </li>
-                  <li nz-menu-item (click)="enable(identityService)" *ngIf="identityService.disabled">
+                  <li nz-menu-item (click)="enable(identityService)" *ngIf="identityService.disabled && identityService.identityServiceType !== 'UNKNOWN'">
                     <a translate>user.button.enable</a>
                   </li>
                   <li nz-menu-item (click)="delete(identityService)" class="bg-hover-color"

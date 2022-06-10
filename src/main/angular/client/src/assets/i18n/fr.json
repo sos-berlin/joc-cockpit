@@ -459,7 +459,6 @@
     "button.unassignDocumentation": "Disscocier la Documentation",
     "button.viewDocumentation": "Voir la Documentation",
     "button.viewHistory": "Afficher l'Historique",
-    "button.addFromFavourite": "Filtrer par Favoris",
     "placeholder.search": "Filtrer les résultats",
     "placeholder.name": "Nom",
     "placeholder.value": "Valeur",
@@ -747,11 +746,11 @@
     "message.pasteInSubFolderNotAllowed": "Le dossier de destination est un sous-dossier du dossier source.",
     "message.invalidJSON": "Fichier JSON invalide"
   },
-  "favourite": {
-    "button.addFavourite": "Ajouter Favorite",
-    "button.editFavourite": "Éditer les Favorite",
-    "button.addFromFavourite": "Ajouter à partir des Favoris",
-    "button.filterByFavourites": "Filtrer par Favoris",
+  "favorite": {
+    "button.addFavorite": "Ajouter Favorite",
+    "button.editFavorite": "Éditer les Favorite",
+    "button.addFromFavorite": "Ajouter à partir des Favoris",
+    "button.filterByFavorites": "Filtrer par Favoris",
     "button.backToList": "Retourner à la Liste"
   },
   "fileTransfer": {
@@ -1616,7 +1615,7 @@
     "label.maxNumberOfNoticeBoardEntries": "Nombre max. d'ordres par Condition",
     "label.maxNumberOfHistoryEntriesPerOrder": "Nombre max. d'entrées d'Historique par Ordre",
     "label.maxNumberOfHistoryEntriesPerTask": "Nombre max. d'entrées d'Historique par Tâche",
-    "label.maxNumberOfFavouriteEntries": "Nombre max. d'entrées de Favoris",
+    "label.maxNumberOfFavoriteEntries": "Nombre max. d'entrées de Favoris",
     "label.showSubFolderAndFolderContents": "Afficher les sous-dossiers et le contenu des dossiers",
     "label.subFolderAndFolderContents": "Sous-dossiers et contenu des dossiers",
     "label.currentController": "Contrôleur actuel",
@@ -1653,7 +1652,7 @@
     "label.newPassword": "Nouveau mot de passe",
     "label.confirmPassword": "Confirmer le mot de passe",
     "label.gitManagement": "Gestion Git",
-    "label.favouriteManagement": "Gestion des Favoris",
+    "label.favoriteManagement": "Gestion des Favoris",
     "label.licenseWarningGotIt": "Avertissement reconnu",
     "button.resetProfile": "Rétablir le profil par défaut",
     "button.groupLimit": "Limite de groupe",
@@ -1661,13 +1660,16 @@
     "message.passwordNotMatch": "Le nouveau mot de passe et le mot de passe confirmé doivent correspondre",
     "message.minimumPasswordLength": "Mot de passe trop court",
     "message.passwordShouldNotSame": "L'ancien mot de passe et le nouveau mot de passe ne doivent pas être les mêmes.",
-    "favouriteManagement": {
-      "label.manageFavourite":"Gérer Favorite",
-      "label.addFavourite":"Ajouter Favorite",
-      "label.editFavourite":"Mettre à jour Favorite",
-      "button.addFavourite":"Ajouter Favorite",
+    "favoriteManagement": {
+      "label.manageFavorite":"Gérer Favorite",
+      "label.addFavorite":"Ajouter Favorite",
+      "label.editFavorite":"Mettre à jour Favorite",
+      "button.takeOver":"Take Over",
+      "button.addFavorite":"Ajouter Favorite",
       "tab.agents":"Agents",
-      "tab.facets":"Facets"
+      "tab.facets":"Facets",
+      "tooltip.sharedByMe":"Shared by me",
+      "tooltip.sharedWithMe":"Shared with me"
     },
     "permission": {
       "label.order": "Ordre",
@@ -2186,8 +2188,6 @@
     "message.noRoleAssign": "Aucun Rôle associé au Compte selectionné",
     "message.cannotDeleteRole": "Impossible de supprimer un Rôle qui est attribué un compte.",
     "message.noFolderFound": "Aucun dossier trouvé",
-    "message.moreThanOneVaultEnable": "Un seul Service d'Identité VAULT* doit être activé.",
-    "message.moreThanOneLDAPEnable": "Un seul Service d'Identité LDAP* doit être activé.",
     "message.deleteSelectedUser": "Êtes-vous sûr de vouloir supprimer les comptes sélectionnés ?",
     "message.deleteSelectedRole": "Êtes-vous sûr de vouloir supprimer les rôles sélectionnés ?",
     "message.resetPasswordForUser": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de ce compte ?",
@@ -2412,6 +2412,7 @@
     "button.addResult": "Ajouter résultat",
     "button.addDelay": "Ajouter un Délai",
     "button.addAllDelay": "Ajouter tous les Délais",
+    "button.addValueToList": "Add Value",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

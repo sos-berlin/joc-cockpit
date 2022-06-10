@@ -459,7 +459,6 @@
     "button.unassignDocumentation": "Zuweisung der Dokumentation entfernen",
     "button.viewDocumentation": "Dokumentation anzeigen",
     "button.viewHistory": "Historie anzeigen",
-    "button.addFromFavourite": "Aus Favoriten hinzufügen",
     "placeholder.search": "Ergebnisse filtern",
     "placeholder.name": "Name",
     "placeholder.value": "Wert",
@@ -747,11 +746,11 @@
     "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners.",
     "message.invalidJSON": "Ungültige JSON Datei"
   },
-  "favourite": {
-    "button.addFavourite": "Favorit hinzufügen",
-    "button.editFavourite": "Favorit editieren",
-    "button.addFromFavourite": "Aus Favoriten hinzufügen",
-    "button.filterByFavourites": "Nach Favoriten filtern",
+  "favorite": {
+    "button.addFavorite": "Favorit hinzufügen",
+    "button.editFavorite": "Favorit editieren",
+    "button.addFromFavorite": "Aus Favoriten hinzufügen",
+    "button.filterByFavorites": "Nach Favoriten filtern",
     "button.backToList": "Zurück zur Liste"
   },
   "fileTransfer": {
@@ -1616,7 +1615,7 @@
     "label.maxNumberOfNoticeBoardEntries": "Max. Anzahl Aufträge pro Notizbrett",
     "label.maxNumberOfHistoryEntriesPerOrder": "Max. Anzahl Einträge der Auftragshistorie pro Arbeitsablauf",
     "label.maxNumberOfHistoryEntriesPerTask": "Max. Anzahl Einträge der Job-Historie pro Arbeitsablauf",
-    "label.maxNumberOfFavouriteEntries": "Max. Anzahl Einträge für Favoriten",
+    "label.maxNumberOfFavoriteEntries": "Max. Anzahl Einträge für Favoriten",
     "label.showSubFolderAndFolderContents": "Ordner und Inhalt der Unterordner anzeigen",
     "label.subFolderAndFolderContents": "Unterordner und Ordnerinhalt",
     "label.currentController": "Aktueller Controller",
@@ -1653,7 +1652,7 @@
     "label.newPassword": "Neues Kennwort",
     "label.confirmPassword": "Kennwort bestätigen",
     "label.gitManagement": "Git Verwaltung",
-    "label.favouriteManagement": "Management Favoriten",
+    "label.favoriteManagement": "Management Favoriten",
     "label.licenseWarningGotIt": "Lizenzwarnung akzeptiert",
     "button.resetProfile": "Profil zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
@@ -1661,13 +1660,16 @@
     "message.passwordNotMatch": "Neues Kennwort und bestätigtes Kennwort müssen übereinstimmen",
     "message.minimumPasswordLength": "Kennwort zu kurz",
     "message.passwordShouldNotSame": "Altes Kennwort und neues Kennwort dürfen nicht übereinstimmen.",
-    "favouriteManagement": {
-      "label.manageFavourite":"Favoriten verwalten",
-      "label.addFavourite":"Favorit hinzufügen",
-      "label.editFavourite":"Favorit aktualisieren",
-      "button.addFavourite":"Favorit hinzufügen",
+    "favoriteManagement": {
+      "label.manageFavorite":"Favoriten verwalten",
+      "label.addFavorite":"Favorit hinzufügen",
+      "label.editFavorite":"Favorit aktualisieren",
+      "button.takeOver":"Take Over",
+      "button.addFavorite":"Favorit hinzufügen",
       "tab.agents":"Agenten",
-      "tab.facets":"Eingabeprüfungen"
+      "tab.facets":"Eingabeprüfungen",
+      "tooltip.sharedByMe":"Shared by me",
+      "tooltip.sharedWithMe":"Shared with me"
     },
     "permission": {
       "label.order": "Auftrag",
@@ -2186,8 +2188,6 @@
     "message.noRoleAssign": "Dem ausgewählten Konto ist keine Rolle zugewiesen",
     "message.cannotDeleteRole": "Eine Rolle kann nicht entfernt werden solange sie einem Konto zugewiesen ist.",
     "message.noFolderFound": "Keinen Ordner gefunden",
-    "message.moreThanOneVaultEnable": "Nur ein einziger VAULT* Identitätsdienst darf aktiv sein.",
-    "message.moreThanOneLDAPEnable": "Nur ein einziger LDAP* Identitätsdienst darf aktiv sein.",
     "message.deleteSelectedUser": "Sind Sie sicher, dass Sie die ausgewählten Benutzerkonten löschen wollen?",
     "message.deleteSelectedRole": "Sind Sie sicher, dass Sie die ausgewählten Rollen löschen wollen?",
     "message.resetPasswordForUser": "Sind Sie sicher, dass Sie das Kennwort dieses Benutzerkontos zurücksetzen wollen?",
@@ -2412,6 +2412,7 @@
     "button.addResult": "Ergebnis hinzufügen",
     "button.addDelay": "Verzögerung hinzufügen",
     "button.addAllDelay": "Alle Verzögerungen hinzufügen",
+    "button.addValueToList": "Add Value",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

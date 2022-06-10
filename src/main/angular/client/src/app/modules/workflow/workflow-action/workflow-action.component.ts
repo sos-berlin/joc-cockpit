@@ -8,6 +8,7 @@ import {CoreService} from '../../../services/core.service';
 import {ValueEditorComponent} from '../../../components/value-editor/value.component';
 import {AuthService} from '../../../components/guard';
 import {WorkflowService} from '../../../services/workflow.service';
+import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 
 @Component({
   selector: 'app-show-dependency',
@@ -109,6 +110,7 @@ export class AddOrderModalComponent implements OnInit {
       children: []
     };
     let flag = false;
+
     function recursive(json, obj) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -544,12 +546,59 @@ export class WorkflowActionComponent {
     this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]);
   }
 
-  suspend(workflow): void {
-
+  suspend(workflow, paths?, cb?): void {
+    this.suspendResumeOperation('Suspend', workflow, paths, cb);
   }
 
-  resume(workflow): void {
+  resume(workflow, paths?, cb?): void {
+    this.suspendResumeOperation('Resume', workflow, paths, cb);
+  }
 
+  private suspendResumeOperation(type, workflow, paths?, cb?) {
+    let obj = {
+      controllerId: this.schedulerId,
+      workflowPaths: workflow ? [workflow.path] : paths
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Workflow',
+        operation: type,
+        name: workflow ? workflow.path : paths.join(',')
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'workflows/' + (type === 'Resume' ? 'resume' : 'suspend')
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.isChanged.emit({flag: true});
+          this.resetAction();
+          if (cb) {
+            cb();
+          }
+        }
+      });
+    } else {
+      this.isChanged.emit({flag: true});
+      this.coreService.post('workflows/' + (type === 'Resume' ? 'resume' : 'suspend'), obj).subscribe({
+        next: () => {
+          this.resetAction();
+          if (cb) {
+            cb();
+          }
+        }, error: () => this.isChanged.emit({flag: false})
+      });
+    }
   }
 
   addOrder(workflow): void {
@@ -571,11 +620,15 @@ export class WorkflowActionComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isChanged.emit({flag: true, isOrderAdded: workflow});
-        setTimeout(() => {
-          this.isChanged.emit({flag: false});
-        }, 5000);
+        this.resetAction();
       }
     });
+  }
+
+  private resetAction(): void {
+    setTimeout(() => {
+      this.isChanged.emit({flag: false});
+    }, 5000);
   }
 
   showDependency(workflow): void {

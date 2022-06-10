@@ -5,8 +5,8 @@ import {
   UserComponent,
   GenerateKeyComponent,
   GitModalComponent,
-  FavouriteListComponent,
-  EditFavouriteModalComponent
+  FavoriteListComponent,
+  EditFavoriteModalComponent
 } from './user.component';
 import {FileUploadModule} from 'ng2-file-upload';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
@@ -20,8 +20,8 @@ import {UserRoutingModule} from './user-routing.module';
     UpdateKeyModalComponent,
     GitModalComponent,
     GenerateKeyComponent,
-    FavouriteListComponent,
-    EditFavouriteModalComponent
+    FavoriteListComponent,
+    EditFavoriteModalComponent
   ],
   imports: [
     SharedModule,

@@ -746,11 +746,11 @@
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
     "message.invalidJSON": "Invalid JSON file"
   },
-  "favourite": {
-    "button.addFavourite": "Add Favorite",
-    "button.editFavourite": "Edit Favorite",
-    "button.addFromFavourite": "Add from Favorites",
-    "button.filterByFavourites": "Filter by Favorites",
+  "favorite": {
+    "button.addFavorite": "Add Favorite",
+    "button.editFavorite": "Edit Favorite",
+    "button.addFromFavorite": "Add from Favorites",
+    "button.filterByFavorites": "Filter by Favorites",
     "button.backToList": "Back to List"
   },
   "fileTransfer": {
@@ -1615,7 +1615,7 @@
     "label.maxNumberOfNoticeBoardEntries": "Max. number of orders per Notice Board",
     "label.maxNumberOfHistoryEntriesPerOrder": "Max. number of Order History entries per Workflow",
     "label.maxNumberOfHistoryEntriesPerTask": "Max. number of Job History entries per Workflow",
-    "label.maxNumberOfFavouriteEntries": "Max. number of Favorite entries",
+    "label.maxNumberOfFavoriteEntries": "Max. number of Favorite entries",
     "label.showSubFolderAndFolderContents": "Show sub-folders and folder contents",
     "label.subFolderAndFolderContents": "Sub-folders and folder contents",
     "label.currentController": "Current Controller",
@@ -1652,7 +1652,7 @@
     "label.newPassword": "New Password",
     "label.confirmPassword": "Confirm Password",
     "label.gitManagement": "Git Management",
-    "label.favouriteManagement": "Favorite Management",
+    "label.favoriteManagement": "Favorite Management",
     "label.licenseWarningGotIt": "License Warning acknowledged",
     "button.resetProfile": "Reset profile to default",
     "button.groupLimit": "Group Limit",
@@ -1660,13 +1660,16 @@
     "message.passwordNotMatch": "New password and confirmed password have to match",
     "message.minimumPasswordLength": "Password too short",
     "message.passwordShouldNotSame": "Old password and new password cannot be the same",
-    "favouriteManagement": {
-      "label.manageFavourite":"Manage Favorite",
-      "label.addFavourite":"Add Favorite",
-      "label.editFavourite":"Update Favorite",
-      "button.addFavourite":"Add Favorite",
+    "favoriteManagement": {
+      "label.manageFavorite":"Manage Favorite",
+      "label.addFavorite":"Add Favorite",
+      "label.editFavorite":"Update Favorite",
+      "button.takeOver":"Take Over",
+      "button.addFavorite":"Add Favorite",
       "tab.agents":"Agents",
-      "tab.facets":"Facets"
+      "tab.facets":"Facets",
+      "tooltip.sharedByMe":"Shared by me",
+      "tooltip.sharedWithMe":"Shared with me"
     },
     "permission": {
       "label.order": "Order",
@@ -2185,8 +2188,6 @@
     "message.noRoleAssign": "No role assigned to selected account",
     "message.cannotDeleteRole": "Cannot remove a role that is assigned an account.",
     "message.noFolderFound": "No folder found",
-    "message.moreThanOneVaultEnable": "Only one VAULT* identity service should be enabled.",
-    "message.moreThanOneLDAPEnable": "Only one LDAP* identity service should be enabled.",
     "message.deleteSelectedUser": "Are you sure that you want to delete the selected accounts?",
     "message.deleteSelectedRole": "Are you sure that you want to delete the selected roles?",
     "message.resetPasswordForUser": "Are you sure you want to reset the password of this account?",

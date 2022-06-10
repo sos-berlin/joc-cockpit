@@ -638,8 +638,6 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   userDetail: any = {};
   temp: any = 0;
   searchKey = '';
-  showMessage = false;
-  showMessage2 = false;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -670,29 +668,8 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         this.identityServiceTypes = res.identityServiceTypes;
         this.identityServices = res.identityServiceItems;
         this.loading = false;
-        this.checkTypes();
       }, error: () => this.loading = false
     });
-  }
-
-  private checkTypes(): void {
-    const arr = [];
-    const arr2 = [];
-    for (const i in this.identityServices) {
-      if (!this.identityServices[i].disabled) {
-        if (this.identityServices[i].identityServiceType.match(/vault/i)) {
-          if (arr.indexOf(this.identityServices[i].identityServiceType) === -1) {
-            arr.push(this.identityServices[i].identityServiceType);
-          }
-        } else if (this.identityServices[i].identityServiceType.match(/ldap/i)) {
-          if (arr2.indexOf(this.identityServices[i].identityServiceType) === -1) {
-            arr2.push(this.identityServices[i].identityServiceType);
-          }
-        }
-      }
-    }
-    this.showMessage = arr.length > 1;
-    this.showMessage2 = arr2.length > 1;
   }
 
   ngOnDestroy(): void {
@@ -700,10 +677,12 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  showUser(account): void {
-    sessionStorage.identityServiceName = account.identityServiceName;
-    sessionStorage.identityServiceType = account.identityServiceType;
-    this.router.navigate(['/users/identity_service/role']).then();
+  showUser(identityService): void {
+    if (identityService.identityServiceType !== 'UNKNOWN') {
+      sessionStorage.identityServiceName = identityService.identityServiceName;
+      sessionStorage.identityServiceType = identityService.identityServiceType;
+      this.router.navigate(['/users/identity_service/role']).then();
+    }
   }
 
   add(): void {
@@ -863,7 +842,9 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
       }
     }
     this.coreService.post('iam/identityservice/store', identityService).subscribe({
-      next: () => this.checkTypes(), error: () => this.getIAMList()
+      next: () => {
+
+      }, error: () => this.getIAMList()
     });
   }
 

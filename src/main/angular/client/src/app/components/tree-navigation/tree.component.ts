@@ -52,7 +52,7 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
           return;
         }
         if (ht > 400) {
-          $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');
+          $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
         }
       };
       recursiveCheck();

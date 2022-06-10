@@ -271,6 +271,14 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     this.actionChild.addOrder(workflow);
   }
 
+  suspend(workflow) {
+    this.actionChild.suspend(workflow);
+  }
+
+  resume(workflow) {
+    this.actionChild.resume(workflow);
+  }
+
   showDependency(workflow): void {
     this.actionChild.showDependency(workflow);
   }
@@ -448,7 +456,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (this.child) {
       this.workflowFilters.expandedKeys = this.child.defaultExpandedKeys;
       this.workflowFilters.selectedkeys = this.child.defaultSelectedKeys;
-    }  
+    }
     this.workflowFilters.showPanel = this.showPanel ? this.showPanel.path : '';
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
@@ -473,20 +481,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  onItemChecked(workflow,checked: boolean): void {    
+  onItemChecked(workflow, checked: boolean): void {
     if (!checked && this.object.mapOfCheckedId.size > (this.workflowFilters.entryPerPage || this.preferences.entryPerPage)) {
-      const orders = this.getCurrentData(this.data, this.workflowFilters); 
-      if (orders.length < this.data.length) {
+      const workflows = this.getCurrentData(this.data, this.workflowFilters);
+      if (workflows.length < this.data.length) {
         this.object.mapOfCheckedId.clear();
-        orders.forEach(item => {
-          this.object.mapOfCheckedId.set(item.orderId, item);
-          
+        workflows.forEach(item => {
+          this.object.mapOfCheckedId.set(item.path, item);
         });
       }
     }
     if (checked) {
       this.object.mapOfCheckedId.set(workflow.path, workflow);
-      
     } else {
       this.object.mapOfCheckedId.delete(workflow.path);
     }
@@ -503,7 +509,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     };
   }
 
-  selectAll(): void{
+  selectAll(): void {
     this.data.forEach(item => {
       this.object.mapOfCheckedId.set(item.path, item);
     });
@@ -512,8 +518,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   checkAll(value: boolean): void {
     if (value && this.data.length > 0) {
-      const orders = this.getCurrentData(this.data, this.workflowFilters);
-      orders.forEach(item => {     
+      const workflows = this.getCurrentData(this.data, this.workflowFilters);
+      workflows.forEach(item => {
         this.object.mapOfCheckedId.set(item.path, item);
       });
     } else {
@@ -522,9 +528,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.refreshCheckedStatus();
   }
 
-  refreshCheckedStatus(allOrder = false): void {
-    const orders = allOrder ? this.data : this.getCurrentData(this.data, this.workflowFilters);
-    this.object.checked = this.object.mapOfCheckedId.size === orders.length;
+  refreshCheckedStatus(allWorkflow = false): void {
+    const workflows = allWorkflow ? this.data : this.getCurrentData(this.data, this.workflowFilters);
+    this.object.checked = this.object.mapOfCheckedId.size === workflows.length;
     this.object.isSuspend = true;
     this.object.isResume = true;
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
@@ -541,7 +547,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.savedFilter = JSON.parse(this.saveService.workflowFilters) || {};
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
       this.checkSharedFilters();
-    } else{
+    } else {
       this.savedFilter.selected = undefined;
       this.initTree();
     }
@@ -792,6 +798,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   inventorySearch(): void {
     this.isSearchVisible = true;
   }
@@ -848,6 +855,34 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.actionChild.addOrder(workflow);
   }
 
+  suspend(workflow) {
+    this.actionChild.suspend(workflow);
+  }
+
+  suspendAll() {
+    this.suspendResumeOperation('Suspend');
+  }
+
+  resume(workflow): void {
+    this.actionChild.resume(workflow);
+  }
+
+  resumeAll(): void {
+    this.suspendResumeOperation('Resume');
+  }
+
+  private suspendResumeOperation(type): void {
+    const paths = [];
+    this.object.mapOfCheckedId.forEach((workflow) => {
+      paths.push(workflow.path);
+    });
+    if (paths.length > 0) {
+      this.actionChild[type === 'Resume' ? 'resume' : 'suspend'](null, paths, () => {
+        this.resetCheckBox();
+      });
+    }
+  }
+
   showDependency(workflow): void {
     this.actionChild.showDependency(workflow);
   }
@@ -866,7 +901,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     for (const i in this.workflows) {
       if (this.workflows[i].show) {
         request.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
-      } else{
+      } else {
         request2.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
       }
     }
@@ -1105,12 +1140,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   pageIndexChange($event): void {
     this.workflowFilters.currentPage = $event;
-    this.resetCheckBox();
+    if (this.object.mapOfCheckedId.size !== this.data.length) {
+      this.resetCheckBox();
+    }
   }
 
   pageSizeChange($event): void {
     this.workflowFilters.entryPerPage = $event;
-    this.checkAll(true);
+    if (this.object.mapOfCheckedId.size !== this.data.length) {
+      if (this.object.checked) {
+        this.checkAll(true);
+      }
+    }
   }
 
   getCurrentData(list, filter): Array<any> {

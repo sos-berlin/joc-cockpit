@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>profile.favouriteManagement.label.manageFavourite</span>
+    <span translate>profile.favoriteManagement.label.manageFavorite</span>
     <i *ngIf="data">:&nbsp;</i>
     <span *ngIf="data">{{object.name}}</span>
   </h4>
@@ -45,7 +45,7 @@
       </ng-container>
       <ng-container *ngIf="type == 'Facet'">
         <div class="col-sm-8" [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}">
-          <input type="text" class="form-control" [placeholder]="'customization.placeholder.enterName' | translate" name="name" [(ngModel)]="object.name"
+          <input type="text" class="form-control" maxlength="255" [placeholder]="'customization.placeholder.enterName' | translate" name="name" [(ngModel)]="object.name"
                  required #name="ngModel"/>
           <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
             <div *ngIf="name.errors.required">
@@ -59,7 +59,7 @@
       <label class="col-sm-3 form-control-label" translate>workflow.label.facet</label>
       <div class="col-sm-8" [ngClass]="{ 'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || object.invalid}">
         <textarea #facet="ngModel" name="facet" (keydown)="checkRegularExp(object)" (blur)="checkRegularExp(object)"
-                  [(ngModel)]="object.value" nz-input placeholder="{{'common.placeholder.regex' | translate}}" nzAutosize></textarea>
+                  [(ngModel)]="object.content" nz-input placeholder="{{'common.placeholder.regex' | translate}}" nzAutosize></textarea>
         <div *ngIf="(facet.invalid && facet.errors && (facet.dirty || facet.touched)) || object.invalid"
              class="text-danger help-block">
           <div *ngIf="object.invalid">

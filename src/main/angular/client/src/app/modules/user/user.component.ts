@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
@@ -16,10 +16,10 @@ import {AuthService} from '../../components/guard';
 declare var $;
 
 @Component({
-  selector: 'app-edit-favourite-modal',
-  templateUrl: './edit-favourite-dialog.html'
+  selector: 'app-edit-favorite-modal',
+  templateUrl: './edit-favorite-dialog.html'
 })
-export class EditFavouriteModalComponent implements OnInit {
+export class EditFavoriteModalComponent implements OnInit {
   @Input() list = [];
   @Input() data: any;
   @Input() type: string;
@@ -27,7 +27,6 @@ export class EditFavouriteModalComponent implements OnInit {
 
   submitted = false;
   agents = [];
-  value: any = {};
   object: any = {};
 
   constructor(private activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {
@@ -115,25 +114,29 @@ export class EditFavouriteModalComponent implements OnInit {
         {
           type: this.type.toUpperCase(),
           name: this.object.name,
-          content: this.type === 'Facet' ? this.object.value : this.object.clusterName
+          content: this.type === 'Facet' ? this.object.content : this.object.clusterName
         }]
     }).subscribe({
       next: () => {
-        this.activeModal.close();
+        this.activeModal.close('Done');
       }, error: () => this.submitted = false
     });
   }
 }
 
 @Component({
-  selector: 'app-manage-favourite-list',
-  templateUrl: './favourite-list.component.html',
+  selector: 'app-manage-favorite-list',
+  templateUrl: './favorite-list.component.html',
 })
-export class FavouriteListComponent implements OnInit {
+export class FavoriteListComponent implements OnInit {
   @Input() list = [];
   @Input() schedulerId: any;
   @Input() type: string;
+  @Input() account: string;
+
   searchKey: string;
+
+  @Output() reload: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService) {
   }
@@ -142,17 +145,17 @@ export class FavouriteListComponent implements OnInit {
   }
 
   add(): void {
-    this.openEditFavouriteModal();
+    this.openEditFavoriteModal();
   }
 
   edit(data): void {
-    this.openEditFavouriteModal(data);
+    this.openEditFavoriteModal(data);
   }
 
-  private openEditFavouriteModal(data?): void {
+  private openEditFavoriteModal(data?): void {
     this.modal.create({
       nzTitle: undefined,
-      nzContent: EditFavouriteModalComponent,
+      nzContent: EditFavoriteModalComponent,
       nzComponentParams: {
         data,
         type: this.type,
@@ -164,16 +167,7 @@ export class FavouriteListComponent implements OnInit {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        if (data) {
-          for (let i = 0; i < this.list.length; i++) {
-            if (this.list[i].name === data.name) {
-              this.list[i] = result;
-              break;
-            }
-          }
-        } else {
-          this.list.push(result);
-        }
+        this.reload.emit(this.type);
       }
     });
   }
@@ -188,12 +182,22 @@ export class FavouriteListComponent implements OnInit {
     });
   }
 
-  makePrivate(data): void{
+  makePrivate(data): void {
     this.coreService.post('inventory/favorites/make_private', {
       favoriteIds: [{type: this.type.toUpperCase(), name: data.name}]
     }).subscribe({
       next: () => {
         data.shared = false;
+      }
+    });
+  }
+
+  takeOver(data): void {
+    this.coreService.post('inventory/favorites/take_over', {
+      sharedFavoriteIds: [{type: this.type.toUpperCase(), name: data.name, account: data.account}]
+    }).subscribe({
+      next: () => {
+        this.reload.emit(this.type);
       }
     });
   }
@@ -208,12 +212,7 @@ export class FavouriteListComponent implements OnInit {
       ]
     }).subscribe({
       next: () => {
-        for (let i = 0; i < this.list.length; i++) {
-          if (this.list[i].name == data.name) {
-            this.list.splice(i, 1);
-            break;
-          }
-        }
+        this.reload.emit(this.type);
       }
     });
   }
@@ -635,7 +634,7 @@ export class UserComponent implements OnInit, OnDestroy {
         } else if (this.permission.joc.administration.certificates.view) {
           this.getGit();
         } else {
-          this.getFavourite();
+          this.getFavorite();
         }
       } else if ($event.index === 3) {
         if (this.securityLevel !== 'LOW') {
@@ -645,16 +644,16 @@ export class UserComponent implements OnInit, OnDestroy {
             this.getGit();
           }
         } else {
-          this.getFavourite();
+          this.getFavorite();
         }
       } else if ($event.index === 4) {
         if (this.permission.joc.administration.certificates.view) {
           this.getGit();
         } else {
-          this.getFavourite();
+          this.getFavorite();
         }
       } else if ($event.index === 5) {
-        this.getFavourite();
+        this.getFavorite();
       }
     }
   }
@@ -854,29 +853,6 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
-  getFavourite(type = 'AGENT'): void {
-    this.coreService.post('inventory/favorites', {
-      types: [type],
-      limit: this.preferences.maxFavouriteEntries || 10
-    }).subscribe({
-      next: (res: any) => {
-        
-        if (type === 'AGENT') {
-          this.agentList = res.favorites;
-        } else if (type === 'FACET') {
-          this.facetList = res.favorites;
-        }
-      }
-    });
-  }
-
-  innnerTabChange($event): void {
-    console.log($event.index, '??index');
-    if ($event.index == 1) {
-      this.getFavourite('FACET');
-    }
-  }
-
   pasteKey(type = 'key'): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -1050,6 +1026,37 @@ export class UserComponent implements OnInit, OnDestroy {
         this.getGit();
       }
     });
+  }
+
+  /* ------------- Favorite Management-------------- */
+
+  innnerTabChange($event): void {
+    if ($event.index == 1) {
+      this.getFavorite('FACET');
+    }
+  }
+
+
+  getFavorite(type = 'AGENT'): void {
+    this.coreService.post('inventory/favorites', {
+      types: [type],
+      withShared: true,
+      limit: this.preferences.maxFavoriteEntries || 10
+    }).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        if (type === 'AGENT') {
+          this.agentList = res.favorites.concat(res.sharedFavorites);
+        } else if (type === 'FACET') {
+          this.facetList = res.favorites.concat(res.sharedFavorites);
+        }
+      }
+    });
+  }
+
+  reload(type): void {
+    if (type)
+      this.getFavorite(type.toUpperCase());
   }
 }
 

@@ -167,7 +167,7 @@ export class FacetEditorComponent implements OnInit {
   private getFavList(): void {
     this.coreService.post('inventory/favorites', {
       types: ['FACET'],
-      limit: this.preferences.maxFavouriteEntries || 10
+      limit: this.preferences.maxFavoriteEntries || 10
     }).subscribe({
       next: (res: any) => {
         this.favList = res.favorites;
@@ -892,11 +892,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTooltipVisible: boolean;
   @Input() isModal: boolean;
   @Input() exactMatch: boolean;
-  favourite: any = {
+  favorite: any = {
     list: [],
     agents: []
   };
-  isFavourite = false;
+  isFavorite = false;
   agentList = [];
   nonExistAgents = [];
   history = [];
@@ -1056,8 +1056,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.saveToHistory();
   }
 
-  toggleFavourite(): void {
-    this.isFavourite = !this.isFavourite;
+  toggleFavorite(): void {
+    this.isFavorite = !this.isFavorite;
   }
 
   checkLength(): void {
@@ -1158,49 +1158,49 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   generateFavList(): void {
     let arr = [];
     let flag = false;
-    for (let i in this.favourite.list) {
-      if (!this.favourite.list[i].clusterName) {
+    for (let i in this.favorite.list) {
+      if (!this.favorite.list[i].clusterName) {
         flag = true;
         if (arr.length == 0) {
           arr.push({
             title: 'agents',
             isStandalone: true,
-            children: [this.favourite.list[i].name]
+            children: [this.favorite.list[i].name]
           })
         } else {
-          arr[0].children.push(this.favourite.list[i].name);
+          arr[0].children.push(this.favorite.list[i].name);
         }
       } else {
         if ((arr.length == 0 && !flag) || (arr.length == 1 && flag)) {
           arr.push({
-            title: this.favourite.list[i].clusterName,
-            children: [this.favourite.list[i].name]
+            title: this.favorite.list[i].clusterName,
+            children: [this.favorite.list[i].name]
           })
         } else {
           let isExist = false;
           for (let j in arr) {
-            if (this.favourite.list[i].clusterName == arr[j].title) {
+            if (this.favorite.list[i].clusterName == arr[j].title) {
               isExist = true;
-              arr[j].children.push(this.favourite.list[i].name);
+              arr[j].children.push(this.favorite.list[i].name);
               break;
             }
           }
           if (!isExist) {
             arr.push({
-              title: this.favourite.list[i].clusterName,
-              children: [this.favourite.list[i].name]
+              title: this.favorite.list[i].clusterName,
+              children: [this.favorite.list[i].name]
             })
           }
         }
       }
     }
-    this.favourite.agents = arr;
+    this.favorite.agents = arr;
   }
 
   isFavCheck(agent, cluster): boolean {
     let flag = false;
-    for (let i in this.favourite.list) {
-      if (agent == this.favourite.list[i].name && cluster == this.favourite.list[i].clusterName) {
+    for (let i in this.favorite.list) {
+      if (agent == this.favorite.list[i].name && cluster == this.favorite.list[i].clusterName) {
         flag = true;
         break;
       }
@@ -1208,18 +1208,18 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     return flag;
   }
 
-  setFavourite($event, agent, cluster, isFav): void {
+  setFavorite($event, agent, cluster, isFav): void {
     $event.stopPropagation();
     $event.preventDefault();
     if (isFav) {
-      this.favourite.list.push({name: agent, clusterName: cluster, ordering: this.favourite.list.length > 0 ? (this.favourite.list[this.favourite.list.length - 1].ordering + 1): 1});
+      this.favorite.list.push({name: agent, clusterName: cluster, ordering: this.favorite.list.length > 0 ? (this.favorite.list[this.favorite.list.length - 1].ordering + 1): 1});
       this.coreService.post('inventory/favorites/store', {
         favorites: [{type: 'AGENT', name: agent, content: cluster || ''}]
       }).subscribe();
     } else {
-      for (let i = 0; i < this.favourite.list.length; i++) {
-        if (this.favourite.list[i].name === agent) {
-          this.favourite.list.splice(i, 1);
+      for (let i = 0; i < this.favorite.list.length; i++) {
+        if (this.favorite.list[i].name === agent) {
+          this.favorite.list.splice(i, 1);
           this.coreService.post('inventory/favorites/delete', {
             favoriteIds: [{type: 'AGENT', name: this.obj.name}]
           }).subscribe();
@@ -2005,10 +2005,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
     this.coreService.post('inventory/favorites', {
       types: ['AGENT'],
-      limit: this.preferences.maxFavouriteEntries || 10
+      limit: this.preferences.maxFavoriteEntries || 10
     }).subscribe({
       next: (res: any) => {
-        this.favourite.list = res.favorites;
+        this.favorite.list = res.favorites;
       }
     });
     this.agentList = this.coreService.clone(this.agents);

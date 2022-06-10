@@ -99,10 +99,10 @@
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
           <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size > 0}">
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isSuspend"><i
+            <button class="btn btn-grey btn-sm m-l-12" (click)="suspendAll()" [disabled]="!object.isSuspend"><i
                 class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.suspend</span></button>
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isResume"><i
+            <button class="btn btn-grey btn-sm m-l-12" (click)="resumeAll()" [disabled]="!object.isResume"><i
                 class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
                 translate>order.button.resume</span>
             </button>
@@ -173,8 +173,7 @@
             <div class="col-md-12">
               <div class="box p-a m-b-xs">
                 <app-form-template [filter]="searchFilter" [preferences]="preferences" [schedulerIds]="schedulerIds"
-                                   [permission]="permission" [allFilter]="filterList"
-                                   [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
+                                   [permission]="permission" [allFilter]="filterList" [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-form-template>
               </div>
             </div>
           </div>
@@ -189,7 +188,10 @@
                   <div class="box card">
                     <div class="box-body">
                       <div>
-                        <div class="text-left block-ellipsis">
+                        <label class="pos-abt">
+                          <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(workflow.path)" (nzCheckedChange)="onItemChecked(workflow, $event)"></label>
+                        </label>
+                        <div class="text-left block-ellipsis m-l-md">
                           <i class="icon-workflows-icon"></i>&nbsp;
                           <i class="cursor fa fa-list" (click)="navToDetailView('list', workflow)"></i>
                           <i class="cursor fa fa-th p-l-xs p-r-xs" (click)="navToDetailView('grid', workflow)"></i>
@@ -295,7 +297,7 @@
                 >
                   <thead>
                   <tr>
-        	    <th class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
+        	          <th class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
                         [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="checkAll($event)"></th>
                     <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
                     <th [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('name')" rowspan="2">
@@ -415,7 +417,7 @@
                   <ng-template ngFor let-workflow
                                [ngForOf]="ajaxTable.data">
                     <tr [ngClass]="{'light-bg':workflow.show}">
-			<td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
+			                <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(workflow.path)"
                           (nzCheckedChange)="onItemChecked(workflow,$event)"></td>
                       <td>
                         <div class="btn-group dropdown">

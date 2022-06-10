@@ -1222,9 +1222,7 @@ div.jsoneditor-value.jsoneditor-invalid {
 .ant-tabs-bottom > div > .ant-tabs-nav .ant-tabs-nav-wrap::before {
     box-shadow: inset 10px 0 8px -8px rgba(255, 255, 255, .2);
 }
-.warn-icon {
-  color: red;
-}
+
 .bg-highlight {
     background-color: rgba(253, 70, 71, .58) !important
 }
