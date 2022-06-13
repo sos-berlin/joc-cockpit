@@ -1,10 +1,11 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {FileUploader, FileUploaderOptions} from 'ng2-file-upload';
 import {ToastrService} from 'ngx-toastr';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {registerLocaleData} from '@angular/common';
 import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
@@ -33,7 +34,7 @@ export class EditFavoriteModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.type === 'Agent') {
+    if (this.type === 'AGENT') {
       this.agentList();
     }
     if (this.data) {
@@ -82,6 +83,7 @@ export class EditFavoriteModalComponent implements OnInit {
           }
         }
         this.agents.push(obj);
+        this.agents = [...this.agents]
       }
     })
   }
@@ -97,9 +99,9 @@ export class EditFavoriteModalComponent implements OnInit {
   }
 
   onSelect(node): void {
-    this.object.clusterName = undefined;
+    this.object.content = undefined;
     if (node.parentNode && node.parentNode.origin && node.origin.cluster) {
-      this.object.clusterName = (node.parentNode.origin.key);
+      this.object.content = (node.parentNode.origin.key);
     }
   }
 
@@ -107,41 +109,110 @@ export class EditFavoriteModalComponent implements OnInit {
     this.activeModal.destroy();
   }
 
-  onSubmit() {
-    this.submitted = true;
+  private rename(): void {
+    for (let i in this.list) {
+      if (this.list[i].name == this.data.name) {
+        this.coreService.post('inventory/favorites/rename', {
+          favoriteIds: [{
+            type: this.type,
+            name: this.object.name,
+            oldName: this.data.name
+          }]
+        }).subscribe({
+          next: () => {
+            if (this.list[i].content != this.object.content) {
+              this.store()
+            } else {
+              this.activeModal.close('Done');
+            }
+          }, error: () => this.submitted = false
+        });
+        break;
+      }
+    }
+
+  }
+
+  private store(): void {
     this.coreService.post('inventory/favorites/store', {
-      favorites: [
-        {
-          type: this.type.toUpperCase(),
-          name: this.object.name,
-          content: this.type === 'Facet' ? this.object.content : this.object.clusterName
-        }]
+      favorites: [{
+        type: this.type,
+        name: this.object.name,
+        content: this.object.content
+      }]
     }).subscribe({
       next: () => {
         this.activeModal.close('Done');
       }, error: () => this.submitted = false
     });
   }
+
+  onSubmit() {
+    this.submitted = true;
+    if (this.data && this.data.name !== this.object.name) {
+      this.rename();
+    } else {
+      this.store();
+    }
+  }
 }
 
 @Component({
   selector: 'app-manage-favorite-list',
   templateUrl: './favorite-list.component.html',
+  styles: [`
+    .cdk-drag-preview {
+      box-sizing: border-box;
+      border-radius: 3px;
+      list-style-type: none;
+      box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+      0 8px 10px 1px rgba(0, 0, 0, 0.14),
+      0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+  `]
 })
-export class FavoriteListComponent implements OnInit {
-  @Input() list = [];
+export class FavoriteListComponent implements OnChanges {
+  @Input() favList = [];
+  @Input() sharedList = [];
+  @Input() filter: any;
   @Input() schedulerId: any;
   @Input() type: string;
   @Input() account: string;
 
-  searchKey: string;
+  object = {
+    checked: false,
+    indeterminate: false,
+    mapOfCheckedId: new Map<string, string>()
+  };
+  list: any = [];
 
   @Output() reload: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService) {
   }
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    this.list = this.filter.sharedWithMe ? this.sharedList : this.favList;
+  }
+
+  sharedWithMe(): void {
+    this.filter.sharedWithMe = !this.filter.sharedWithMe;
+    this.list = this.filter.sharedWithMe ? this.sharedList : this.favList;
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    if (event.previousIndex != event.currentIndex) {
+      let index = (event.previousIndex < event.currentIndex) ? event.currentIndex : event.currentIndex - 1;
+      this.coreService.post('inventory/favorites/ordering', {
+        name: this.list[event.previousIndex].name,
+        type: this.type,
+        predecessorName: index > -1 ? this.list[index].name : undefined
+      }).subscribe();
+      moveItemInArray(this.list, event.previousIndex, event.currentIndex);
+      for (let i = 0; i < this.list.length; i++) {
+        this.list[i].ordering = i + 1;
+      }
+    }
   }
 
   add(): void {
@@ -157,6 +228,7 @@ export class FavoriteListComponent implements OnInit {
       nzTitle: undefined,
       nzContent: EditFavoriteModalComponent,
       nzComponentParams: {
+        list: this.favList,
         data,
         type: this.type,
         schedulerId: this.schedulerId.selected
@@ -174,7 +246,7 @@ export class FavoriteListComponent implements OnInit {
 
   makeShare(data): void {
     this.coreService.post('inventory/favorites/share', {
-      favoriteIds: [{type: this.type.toUpperCase(), name: data.name}]
+      favoriteIds: [{type: this.type, name: data.name}]
     }).subscribe({
       next: () => {
         data.shared = true;
@@ -184,7 +256,7 @@ export class FavoriteListComponent implements OnInit {
 
   makePrivate(data): void {
     this.coreService.post('inventory/favorites/make_private', {
-      favoriteIds: [{type: this.type.toUpperCase(), name: data.name}]
+      favoriteIds: [{type: this.type, name: data.name}]
     }).subscribe({
       next: () => {
         data.shared = false;
@@ -192,11 +264,24 @@ export class FavoriteListComponent implements OnInit {
     });
   }
 
-  takeOver(data): void {
+  takeOver(data?): void {
+    let sharedFavoriteIds = [];
+    if (data) {
+      sharedFavoriteIds.push({type: this.type, name: data.name, account: data.account});
+    } else {
+      this.object.mapOfCheckedId.forEach((v, k) => {
+        sharedFavoriteIds.push({type: this.type, name: k, account: v});
+      })
+    }
     this.coreService.post('inventory/favorites/take_over', {
-      sharedFavoriteIds: [{type: this.type.toUpperCase(), name: data.name, account: data.account}]
+      sharedFavoriteIds
     }).subscribe({
       next: () => {
+        this.object = {
+          checked: false,
+          indeterminate: false,
+          mapOfCheckedId: new Map<string, string>()
+        };
         this.reload.emit(this.type);
       }
     });
@@ -206,7 +291,7 @@ export class FavoriteListComponent implements OnInit {
     this.coreService.post('inventory/favorites/delete', {
       favoriteIds: [
         {
-          type: this.type.toUpperCase(),
+          type: this.type,
           name: data.name
         }
       ]
@@ -215,6 +300,27 @@ export class FavoriteListComponent implements OnInit {
         this.reload.emit(this.type);
       }
     });
+  }
+
+  checkAll(value: boolean): void {
+    if (value && this.list.length > 0) {
+      this.list.forEach(item => {
+        this.object.mapOfCheckedId.set(item.name, item.account);
+      });
+    } else {
+      this.object.mapOfCheckedId.clear();
+    }
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
+  }
+
+  checkMappedObject(isChecked: boolean, item): void {
+    if (isChecked) {
+      this.object.mapOfCheckedId.set(item.name, item.account);
+    } else {
+      this.object.mapOfCheckedId.delete(item.name);
+    }
+    this.object.checked = this.object.mapOfCheckedId.size === this.list.length;
+    this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 }
 
@@ -577,6 +683,10 @@ export class UserComponent implements OnInit, OnDestroy {
   gitCredentials: any = {};
   configObj: any = {};
   timeZone: any = {};
+  favFilter: any = {
+    agent: {searchKey: ''},
+    facet: {searchKey: ''}
+  };
   forceLoging = false;
   isGroupBtnActive = false;
   selectedController = '';
@@ -584,9 +694,9 @@ export class UserComponent implements OnInit, OnDestroy {
   identityServiceType: string;
   subscription1: Subscription;
   subscription2: Subscription;
-  facetList: any = [];
-  agentList: any = [];
-  searchKey: string;
+  favList: any = [];
+  sharedList: any = [];
+  type = 'AGENT';
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
               private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
@@ -1031,32 +1141,27 @@ export class UserComponent implements OnInit, OnDestroy {
   /* ------------- Favorite Management-------------- */
 
   innnerTabChange($event): void {
-    if ($event.index == 1) {
-      this.getFavorite('FACET');
-    }
+    this.type = $event.index == 0 ? 'AGENT' : 'FACET';
+    this.getFavorite();
   }
 
 
-  getFavorite(type = 'AGENT'): void {
+  getFavorite(): void {
     this.coreService.post('inventory/favorites', {
-      types: [type],
+      types: [this.type],
       withShared: true,
       limit: this.preferences.maxFavoriteEntries || 10
     }).subscribe({
       next: (res: any) => {
-        console.log(res);
-        if (type === 'AGENT') {
-          this.agentList = res.favorites.concat(res.sharedFavorites);
-        } else if (type === 'FACET') {
-          this.facetList = res.favorites.concat(res.sharedFavorites);
-        }
+        this.sharedList = res.sharedFavorites;
+        this.favList = res.favorites;
       }
     });
   }
 
   reload(type): void {
     if (type)
-      this.getFavorite(type.toUpperCase());
+      this.getFavorite();
   }
 }
 

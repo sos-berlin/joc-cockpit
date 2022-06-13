@@ -1,50 +1,76 @@
 <div class="row">
-  <div class="col-md-12 text-right">
+  <div class="col-md-12 text-right" *ngIf="object.mapOfCheckedId.size > 0">
+    <button class="btn btn-grey btn-sm m-b-sm m-r-xs" (click)="takeOver()">
+      <i class="fa fa-copy"></i>&nbsp;
+      <span translate>profile.favoriteManagement.button.takeOver</span>
+    </button>
+  </div>
+  <div class="col-md-12 text-right" *ngIf="object.mapOfCheckedId.size === 0">
     <div class="search-box-field">
       <label>
-        <input type="search" [(ngModel)]="searchKey" placeholder="{{'common.placeholder.search' | translate}}">
+        <input type="search" [(ngModel)]="filter.searchKey" placeholder="{{'common.placeholder.search' | translate}}">
       </label>
-      <i class="fa fa-times search-close" *ngIf="searchKey" (click)="searchKey=''"></i>
+      <i class="fa fa-times search-close" *ngIf="filter.searchKey" (click)="filter.searchKey=''"></i>
     </div>
+    <button class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary': filter.sharedWithMe}" (click)="sharedWithMe()">
+      <i class="fa fa-share-alt"></i>&nbsp;
+      <span  translate>profile.favoriteManagement.button.sharedWithMe</span>
+    </button>
     <button class="btn btn-grey btn-sm m-l-12 m-r-xs" (click)="add()">
       <i class="fa fa-plus"></i>&nbsp;
       <span translate>profile.favoriteManagement.button.addFavorite</span>
     </button>
   </div>
 </div>
-<ul class="p-0 mb-2" *ngFor="let item of list | filter : searchKey : ['name', 'content']">
-  <li>
-    <div class="btn-group dropdown">
-      <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i
-          class="fa fa-ellipsis-h"></i></button>
-      <nz-dropdown-menu #option="nzDropdownMenu">
-        <ul nz-menu>
-          <li nz-menu-item (click)="edit(item)">
-            <a translate>common.button.edit</a>
-          </li>
-          <li nz-menu-item *ngIf="!item.shared" (click)="makeShare(item)">
-            <a translate>customization.button.share</a>
-          </li>
-          <li nz-menu-item *ngIf="item.shared && account === item.account" (click)="makePrivate(item)">
-            <a translate>customization.button.makePrivate</a>
-          </li>
-          <li nz-menu-item *ngIf="item.shared && account !== item.account" (click)="takeOver(item)">
-            <a translate>profile.favoriteManagement.button.takeOver</a>
-          </li>
-          <li nz-menu-divider></li>
-          <li nz-menu-item class="bg-hover-color" (click)="delete(item)">
-            <a translate>common.button.delete</a>
-          </li>
-        </ul>
-      </nz-dropdown-menu>&nbsp;
-      <span class="cursor" (click)="edit(item)" [innerHtml]="item.name | highlight : searchKey"></span>&nbsp;
-      <i class="fa fa-share-square-o pos-rel text-primary t-n-xs m-r-sm" [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedByMe' | translate" style="left:-2px" *ngIf="item.shared && account === item.account" aria-hidden="true"></i>
-      <i class="fa fa-share-alt pos-rel text-primary t-n-xs m-r-sm" [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedWithMe' | translate" style="left:-2px" *ngIf="item.shared && account !== item.account" aria-hidden="true"></i>
-      <i *ngIf="item.content">-</i>
-      &nbsp;<span class="text-muted" [innerHtml]="item.content | highlight : searchKey"></span>
-    </div>
-  </li>
-</ul>
-<div class="text-center" *ngIf="list.length === 0">
+<div class="b-b p-b-sm w-full m-t-sm m-b-sm" *ngIf="filter.sharedWithMe">
+  <label class="m-l-sm" nz-checkbox
+         [(nzChecked)]="object.checked"
+         [nzIndeterminate]="object.indeterminate"
+         (nzCheckedChange)="checkAll($event)">
+    <span class="p-l-xxs" translate>profile.favoriteManagement.label.checkAll</span>
+  </label>
+</div>
+<div>
+  <ul cdkDropList class="p-0" (cdkDropListDropped)="drop($event)">
+    <li class="p-a-sm p-b-xs p-t-xs" *ngFor="let item of list | filter : filter.searchKey : ['name', 'content']" cdkDrag [cdkDragDisabled]="filter.sharedWithMe">
+      <div class="drag-handler inline" *ngIf="!filter.sharedWithMe" cdkDragHandle>
+        <i class="fa fa-bars" aria-hidden="true"></i>
+      </div>
+      <div class="inline" *ngIf="filter.sharedWithMe">
+        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(item.name)" (nzCheckedChange)="checkMappedObject($event, item)"></label>
+      </div>
+      <div class="btn-group dropdown m-l-xs m-t-n-xs">
+        <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i
+            class="fa fa-ellipsis-h"></i></button>
+        <nz-dropdown-menu #option="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item *ngIf="account === item.account" (click)="edit(item)">
+              <a translate>common.button.edit</a>
+            </li>
+            <li nz-menu-item *ngIf="!item.shared && account === item.account" (click)="makeShare(item)">
+              <a translate>customization.button.share</a>
+            </li>
+            <li nz-menu-item *ngIf="item.shared && account === item.account" (click)="makePrivate(item)">
+              <a translate>customization.button.makePrivate</a>
+            </li>
+            <li nz-menu-item *ngIf="account !== item.account" (click)="takeOver(item)">
+              <a translate>profile.favoriteManagement.button.takeOver</a>
+            </li>
+            <li nz-menu-divider *ngIf="account === item.account"></li>
+            <li nz-menu-item class="bg-hover-color" *ngIf="account === item.account" (click)="delete(item)">
+              <a translate>common.button.delete</a>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+        <span class="cursor p-r-xs" (click)="edit(item)" [innerHtml]="item.name | highlight : filter.searchKey"></span>&nbsp;
+        <i class="fa fa-share-square-o pos-rel text-primary t-n-xs m-r-sm" [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedByMe' | translate" style="left:-2px" *ngIf="item.shared && account === item.account" aria-hidden="true"></i>
+        <i class="fa fa-share-alt pos-rel text-primary t-n-xs m-r-sm" [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedWithMe' | translate" style="left:-2px" *ngIf="item.shared && account !== item.account" aria-hidden="true"></i>
+        <i *ngIf="item.content">-</i>
+        &nbsp;<span class="text-muted" [innerHtml]="item.content | highlight : filter.searchKey"></span>
+      </div>
+    </li>
+  </ul>
+</div>
+<div class="text-center" *ngIf="(list | filter : filter.searchKey : ['name', 'content']).length === 0">
   <app-empty-data></app-empty-data>
 </div>

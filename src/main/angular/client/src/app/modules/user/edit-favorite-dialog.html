@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span translate>profile.favoriteManagement.label.manageFavorite</span>
     <i *ngIf="data">:&nbsp;</i>
-    <span *ngIf="data">{{object.name}}</span>
+    <span *ngIf="data">{{data.name}}</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="close()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -12,7 +12,7 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" translate>common.label.name</label>
-      <ng-container *ngIf="type == 'Agent'">
+      <ng-container *ngIf="type == 'AGENT'">
         <div class="col-sm-8" [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}">
           <nz-tree-select
             required
@@ -31,7 +31,7 @@
               <div class="node-wrapper w-93" (click)="onSelect(node);">
                 <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.origin.key == object.name && object.name">
                   <i *ngIf="node.isLeaf" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                  {{node.origin.key}}
+                  {{node.origin.title}}
                 </div>
               </div>
             </ng-template>
@@ -43,7 +43,7 @@
           </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="type == 'Facet'">
+      <ng-container *ngIf="type == 'FACET'">
         <div class="col-sm-8" [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}">
           <input type="text" class="form-control" maxlength="255" [placeholder]="'customization.placeholder.enterName' | translate" name="name" [(ngModel)]="object.name"
                  required #name="ngModel"/>
@@ -55,7 +55,7 @@
         </div>
       </ng-container>
     </div>
-    <div *ngIf="type == 'Facet'" class="form-group row">
+    <div *ngIf="type == 'FACET'" class="form-group row">
       <label class="col-sm-3 form-control-label" translate>workflow.label.facet</label>
       <div class="col-sm-8" [ngClass]="{ 'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || object.invalid}">
         <textarea #facet="ngModel" name="facet" (keydown)="checkRegularExp(object)" (blur)="checkRegularExp(object)"

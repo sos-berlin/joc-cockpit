@@ -1,0 +1,77 @@
+<div class="w-full"
+     [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
+  <input required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate" id="agentId"
+         class="form-control" [(ngModel)]="data.agentName" #agentName="ngModel" (blur)="onAgentChange('');" (ngModelChange)="onAgentChange($event)"
+         [nzAutocomplete]="auto"/>
+  <nz-autocomplete #auto>
+    <div *ngIf="favorite.list.length > 0" class="text-right text-sm m-r-12">
+      <a *ngIf="!favorite.show" class="primary-text-hover-color cursor" (click)="showFav(true);generateFavList()" translate>favorite.button.filterByFavorites</a>
+      <a *ngIf="favorite.show" class="primary-text-hover-color cursor" (click)="showFav(false);" translate>favorite.button.backToList</a>
+    </div>
+    <nz-auto-option (click)="selectSubagentCluster.emit(null)" *ngFor="let agent of nonExistAgents" [nzValue]="agent" [nzLabel]="agent">
+      <span class="p-l-xs">{{agent}}</span> <span class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
+    </nz-auto-option>
+    <ng-container *ngIf="favorite.show">
+      <ng-container>
+        <nz-auto-optgroup *ngFor="let group of favorite.agents" [nzLabel]="groupTitle">
+          <ng-template #groupTitle>
+            <span class="_600" *ngIf="group.isStandalone">{{ 'agent.label.' + group.title | translate }}</span>
+            <span class="_600" *ngIf="!group.isStandalone">{{ group.title}}</span>
+          </ng-template>
+          <nz-auto-option (click)="selectSubagentCluster.emit(group.isStandalone ? null : group)" *ngFor="let agent of group.children" [nzLabel]="agent" [nzValue]="agent">
+            <div class="fav-icon-on-hover">
+              {{ agent }}
+            </div>
+          </nz-auto-option>
+        </nz-auto-optgroup>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="agentList[0] && agentList[0].title == 'agents' && !favorite.show">
+      <nz-auto-optgroup *ngFor="let group of [agentList[0]]" [nzLabel]="groupTitle">
+        <ng-template #groupTitle>
+          <span class="_600">
+            {{ 'agent.label.' + group.title | translate }}
+            <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse($event, group);"></i>
+          </span>
+        </ng-template>
+        <nz-auto-option (click)="selectSubagentCluster.emit(null)" [hidden]="group.hide" *ngFor="let agent of group.children" [nzLabel]="agent" [nzValue]="agent">
+          <div class="fav-icon-on-hover">
+            {{ agent }}
+            <i class="pos-abt r-12 t-6 cursor font14 primary-text-hover-color" [hidden]="isFavCheck(agent, null)" nz-icon nzType="star" (click)="setFavorite($event, agent, null , true)" nzTheme="outline"></i>
+            <i class="pos-abt r-12 t-6 cursor font14 text-primary" [hidden]="!isFavCheck(agent, null)" nz-icon nzType="star" (click)="setFavorite($event, agent, null , false)" nzTheme="fill"></i>
+          </div>
+        </nz-auto-option>
+      </nz-auto-optgroup>
+    </ng-container>
+    <ng-container *ngIf="((agentList[1] && agentList[1].title == 'agentGroups') || (agentList[0] && agentList[0].title == 'agentGroups')) &&  !favorite.show">
+      <nz-auto-option nzDisabled nzValue="" class="ant-select-item-group not-disabled">
+        <span class="_600" style="font-size: 12px;">
+          {{'agent.label.' + agentList[agentList.length - 1].title | translate}}
+          <i class="fa p-r-xs cursor text-16"  [ngClass]="agentList[agentList.length - 1].hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse($event, agentList[agentList.length - 1]);"></i>
+        </span>
+      </nz-auto-option>
+      <nz-auto-optgroup [hidden]="agentList[agentList.length - 1].hide" *ngFor="let group of agentList[agentList.length - 1].children" [nzLabel]="groupTitle">
+        <ng-template #groupTitle>
+          <span class="_600 pl-20">
+            {{ group.title }}
+            <i *ngIf="group.children && group.children.length > 0 && !skipSubagents" class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse($event, group, true);"></i>
+          </span>
+        </ng-template>
+        <nz-auto-option (click)="selectSubagentCluster.emit(group)" [hidden]="group.hide" *ngFor="let agent of group.children" [nzLabel]="agent" [nzValue]="agent">
+          <div class="pl-20 fav-icon-on-hover">{{ agent }}
+            <i class="pos-abt r-12 t-6 cursor font14 primary-text-hover-color" [hidden]="isFavCheck(agent, group.title)" nz-icon nzType="star" (click)="setFavorite($event, agent, group.title, true)" nzTheme="outline"></i>
+            <i class="pos-abt r-12 t-6 cursor font14 text-primary" [hidden]="!isFavCheck(agent, group.title)" nz-icon nzType="star" (click)="setFavorite($event, agent, group.title, false)" nzTheme="fill"></i>
+          </div>
+        </nz-auto-option>
+      </nz-auto-optgroup>
+    </ng-container>
+  </nz-autocomplete>
+  <a class="pos-abt r-24 refresh-icon" style="top: 5px" [ngClass]="{'disabled-link': isReloading}" (click)="refreshAgents()"><i
+    class="fa fa-refresh" [ngClass]="{'fa-spin': isReloading}"></i></a>
+  <div *ngIf="obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)"
+       class="text-danger help-block">
+    <div *ngIf="(agentName.errors && agentName.errors.required) || obj.agent">
+      <div translate>common.message.requiredError</div>
+    </div>
+  </div>
+</div>

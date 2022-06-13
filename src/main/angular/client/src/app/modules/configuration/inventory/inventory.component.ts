@@ -4243,7 +4243,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.storeData(obj, result, !!this.type);
+       this.storeData(obj, result, !!this.type);
       }
     });
   }
@@ -4826,7 +4826,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       path,
       objectType: obj.objectType || obj.type
     };
-    if (request.objectType === 'CALENDAR') {
+    if (request.objectType === 'CALENDAR' || (request.objectType.match(/CALENDAR/) && result.type && result.type.match(/CALENDAR/)) ) {
       request.objectType = result.type || 'WORKINGDAYSCALENDAR';
     }
 

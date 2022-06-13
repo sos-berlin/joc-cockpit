@@ -741,11 +741,11 @@
               <div class="p-l-sm p-r-rm m-t-n-sm">
                 <nz-tabset (nzSelectChange)="innnerTabChange($event)">
                   <nz-tab [nzTitle]="'profile.favoriteManagement.tab.agents' | translate">
-                  	<app-manage-favorite-list [list]="agentList" [type]="'Agent'" [schedulerId]="schedulerIds"
+                  	<app-manage-favorite-list [favList]="favList" [sharedList]="sharedList" [type]="'AGENT'" [filter]="favFilter.agent" [schedulerId]="schedulerIds"
                                               (reload)="reload($event)" [account]="authService.currentUserData"></app-manage-favorite-list>
                   </nz-tab>
                   <nz-tab [nzTitle]="'profile.favoriteManagement.tab.facets' | translate">
-                  	<app-manage-favorite-list [list]="facetList" [type]="'Facet'" [schedulerId]="schedulerIds"
+                  	<app-manage-favorite-list [favList]="favList" [sharedList]="sharedList" [type]="'FACET'" [filter]="favFilter.facet" [schedulerId]="schedulerIds"
                                               (reload)="reload($event)" [account]="authService.currentUserData"></app-manage-favorite-list>
                   </nz-tab>
                 </nz-tabset>

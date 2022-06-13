@@ -892,13 +892,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTooltipVisible: boolean;
   @Input() isModal: boolean;
   @Input() exactMatch: boolean;
-  favorite: any = {
-    list: [],
-    agents: []
-  };
-  isFavorite = false;
-  agentList = [];
-  nonExistAgents = [];
+
   history = [];
   list: Array<string> = [];
   indexOfNextAdd = 0;
@@ -1011,28 +1005,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }, 100);
   }
 
-  expandCollapse($event, data, isCluster = false) {
-    $event.stopPropagation();
-    data.hide = !data.hide;
-    if (isCluster) {
-      if (this.agents[1]) {
-        for (let i in this.agents[1].children) {
-          if (this.agents[1].children[i].title === data.title) {
-            this.agents[1].children[i].hide = data.hide;
-            break;
-          }
-        }
-      }
-    } else {
-      for (let i in this.agents) {
-        if (this.agents[i].title === data.title) {
-          this.agents[i].hide = data.hide;
-          break;
-        }
-      }
-    }
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.selectedNode) {
       this.history = [];
@@ -1056,22 +1028,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.saveToHistory();
   }
 
-  toggleFavorite(): void {
-    this.isFavorite = !this.isFavorite;
-  }
-
   checkLength(): void {
     const len = JSON.stringify(this.selectedNode.job.notification).length;
     this.isLengthExceed = len > 1000;
-  }
-
-  refreshAgents(): void {
-    this.isReloading = true;
-    this.dataService.reloadTree.next({reloadAgents: true});
-    setTimeout(() => {
-      this.isReloading = false;
-      this.ref.detectChanges();
-    }, 2000)
   }
 
   updateSelectItems(): void {
@@ -1088,43 +1047,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     this.mentionValueList = [...x, ...arr];
     this.filteredOptions = [...x, ...arr];
-    this.ref.detectChanges();
-  }
-
-  private checkIsAgentExist(): void {
-    this.nonExistAgents = [];
-    if (this.selectedNode.job.agentName) {
-      let isFound = false;
-      for (const i in this.agents) {
-        if (this.agents[i].title === 'agents') {
-          for (const j in this.agents[i].children) {
-            if (this.agents[i].children[j] === this.selectedNode.job.agentName) {
-              isFound = true;
-              break;
-            }
-          }
-        } else {
-          if (!isFound) {
-            for (const prop in this.agents[i].children) {
-              if (this.agents[i].children[prop].children) {
-                for (const j in this.agents[i].children[prop].children) {
-                  if (this.agents[i].children[prop].children[j] === this.selectedNode.job.agentName) {
-                    isFound = true;
-                    break;
-                  }
-                }
-              }
-              if (isFound) {
-                break;
-              }
-            }
-          }
-        }
-      }
-      if (!isFound) {
-        this.nonExistAgents.push(this.selectedNode.job.agentName);
-      }
-    }
     this.ref.detectChanges();
   }
 
@@ -1153,80 +1075,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   focusChange(): void {
     this.obj.script = false;
-  }
-
-  generateFavList(): void {
-    let arr = [];
-    let flag = false;
-    for (let i in this.favorite.list) {
-      if (!this.favorite.list[i].clusterName) {
-        flag = true;
-        if (arr.length == 0) {
-          arr.push({
-            title: 'agents',
-            isStandalone: true,
-            children: [this.favorite.list[i].name]
-          })
-        } else {
-          arr[0].children.push(this.favorite.list[i].name);
-        }
-      } else {
-        if ((arr.length == 0 && !flag) || (arr.length == 1 && flag)) {
-          arr.push({
-            title: this.favorite.list[i].clusterName,
-            children: [this.favorite.list[i].name]
-          })
-        } else {
-          let isExist = false;
-          for (let j in arr) {
-            if (this.favorite.list[i].clusterName == arr[j].title) {
-              isExist = true;
-              arr[j].children.push(this.favorite.list[i].name);
-              break;
-            }
-          }
-          if (!isExist) {
-            arr.push({
-              title: this.favorite.list[i].clusterName,
-              children: [this.favorite.list[i].name]
-            })
-          }
-        }
-      }
-    }
-    this.favorite.agents = arr;
-  }
-
-  isFavCheck(agent, cluster): boolean {
-    let flag = false;
-    for (let i in this.favorite.list) {
-      if (agent == this.favorite.list[i].name && cluster == this.favorite.list[i].clusterName) {
-        flag = true;
-        break;
-      }
-    }
-    return flag;
-  }
-
-  setFavorite($event, agent, cluster, isFav): void {
-    $event.stopPropagation();
-    $event.preventDefault();
-    if (isFav) {
-      this.favorite.list.push({name: agent, clusterName: cluster, ordering: this.favorite.list.length > 0 ? (this.favorite.list[this.favorite.list.length - 1].ordering + 1): 1});
-      this.coreService.post('inventory/favorites/store', {
-        favorites: [{type: 'AGENT', name: agent, content: cluster || ''}]
-      }).subscribe();
-    } else {
-      for (let i = 0; i < this.favorite.list.length; i++) {
-        if (this.favorite.list[i].name === agent) {
-          this.favorite.list.splice(i, 1);
-          this.coreService.post('inventory/favorites/delete', {
-            favoriteIds: [{type: 'AGENT', name: this.obj.name}]
-          }).subscribe();
-          break;
-        }
-      }
-    }
   }
 
   selectSubagentCluster(cluster): void {
@@ -1314,7 +1162,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       const isSpace = currentLine.substring(cursor.ch, cursor.ch + 1) == ' ';
       let str = (!isSpace ? ' ' : '');
       if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
-        if(this.scriptObj.name) {
+        if (this.scriptObj.name) {
           str = str + '##!include ' + this.scriptObj.name + ' ';
         }
       } else {
@@ -1706,10 +1554,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  onBlur(isAgent = false): void {
-    if (isAgent) {
-      this.onAgentChange('');
-    }
+  onBlur(): void {
     if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentName;
@@ -1719,12 +1564,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.obj = {};
     }
     this.saveToHistory();
-  }
-
-  onAgentChange(value: string): void {
-    let temp = this.coreService.clone(this.agents);
-    this.agentList = this.coreService.getFilterAgentList(temp, value);
-    this.agentList = [...this.agentList];
   }
 
   onChangeJobResource(value): void {
@@ -2003,15 +1842,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   private init(): void {
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
-    this.coreService.post('inventory/favorites', {
-      types: ['AGENT'],
-      limit: this.preferences.maxFavoriteEntries || 10
-    }).subscribe({
-      next: (res: any) => {
-        this.favorite.list = res.favorites;
-      }
-    });
-    this.agentList = this.coreService.clone(this.agents);
     this.getJobInfo();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length === 0) {
@@ -2036,7 +1866,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.selectedNode.job.agentName = this.selectedNode.job.subagentClusterId;
       delete this.selectedNode.job.subagentClusterId;
     }
-    this.checkIsAgentExist();
     if (flag) {
       setTimeout(() => {
         dom.focus();
@@ -2337,7 +2166,7 @@ export class ScriptEditorComponent implements AfterViewInit {
       const isSpace = currentLine.substring(cursor.ch, cursor.ch + 1) == ' ';
       let str = (!isSpace ? ' ' : '');
       if (!currentLine.substring(0, cursor.ch).match(/##!include/)) {
-        if(this.scriptObj.name) {
+        if (this.scriptObj.name) {
           str = str + '##!include ' + this.scriptObj.name + ' ';
         }
       } else {
@@ -3070,7 +2899,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       workflowFilters.expandedKeys = pathArr;
       workflowFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
       workflowFilters.expandedObjects = [PATH];
-      this.router.navigate(['/workflows']);
+      this.router.navigate(['/workflows']).then();
     }
   }
 

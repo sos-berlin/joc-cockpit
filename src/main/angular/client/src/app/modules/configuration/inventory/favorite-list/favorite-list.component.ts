@@ -1,5 +1,5 @@
 import {OnChanges, Component, Input, ViewChild, SimpleChanges} from '@angular/core';
-import {CoreService} from "../../services/core.service";
+import {CoreService} from "../../../../services/core.service";
 
 @Component({
   selector: 'app-favorite-list',

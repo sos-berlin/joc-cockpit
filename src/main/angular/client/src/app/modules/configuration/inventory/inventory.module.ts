@@ -44,11 +44,14 @@ import {DurationWithPercentageRegexValidator, EnvVariableValidator, LabelValidat
 import {UpdateJobComponent} from './update-job/update-job.component';
 import {UpdateObjectComponent} from './update-object/update-object.component';
 import {ScriptComponent} from './script/script.component';
+import { AgentComponent } from './agent/agent.component';
+import {FavoriteListComponent} from "./favorite-list/favorite-list.component";
 
 const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
   CreateObjectModalComponent, NotificationComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, ImportComponent,
   UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent, PeriodComponent,
-  AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent, FacetEditorComponent, NewDraftComponent];
+  AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent, FacetEditorComponent,
+  FavoriteListComponent, NewDraftComponent];
 
 @NgModule({
   imports: [
@@ -80,7 +83,8 @@ const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDep
     DurationValidator,
     OffsetValidator,
     DurationWithPercentageRegexValidator,
-    ...COMPONENTS
+    ...COMPONENTS,
+    AgentComponent
   ]
 })
 export class InventoryModule {
