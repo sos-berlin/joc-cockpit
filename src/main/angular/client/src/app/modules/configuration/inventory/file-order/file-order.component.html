@@ -117,36 +117,9 @@
                  [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.agent
            <sup class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6"
-               [ngClass]="{'has-error' : (agentName.dirty || agentName.touched) && agentName.invalid}">
-            <input required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate" id="agentId"
-               class="form-control" [(ngModel)]="fileOrder.configuration.agentName" #agentName="ngModel" (blur)="onAgentChange('');saveJSON();" (ngModelChange)="onAgentChange($event)"
-               [nzAutocomplete]="auto"/>
-            <nz-autocomplete #auto>
-              <nz-auto-option (click)="selectSubagentCluster('#agentId')" *ngFor="let agent of nonExistAgents" [nzValue]="agent" [nzLabel]="agent">
-                 <span class="p-l-xs">{{agent}}</span> <span class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
-              </nz-auto-option>
-              <nz-auto-optgroup *ngFor="let group of agentList" [nzLabel]="groupTitle">
-                <ng-template #groupTitle>
-                  <span class="_600">
-                    {{ 'agent.label.' + group.title | translate }}
-                    <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="expandCollapse(group);$event.stopPropagation()"></i>
-                  </span>
-                </ng-template>
-                <nz-auto-option (click)="selectSubagentCluster('#agentId')" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents.title ? agents.title : agents" [nzValue]="agents.title ? agents.title : agents">
-                  <span *ngIf="!agents.title">{{ agents }}</span>
-                  <span *ngIf="agents.title">{{agents.title}}</span>
-                </nz-auto-option>
-              </nz-auto-optgroup>
-            </nz-autocomplete>
-            <div *ngIf="agentName.invalid && (agentName.dirty || agentName.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="(agentName.errors && agentName.errors.required)">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
-            <a class="pos-abt r-24 refresh-icon" style="top: 5px" [ngClass]="{'disabled-link': isReloading}" (click)="refreshAgents()"><i
-              class="fa fa-refresh" [ngClass]="{'fa-spin': isReloading}"></i></a>
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
+            <app-agent-selection [skipSubagents]="true" [preferences]="preferences" [agents]="agentList"
+                                  [data]="fileOrder.configuration" (onBlur)="saveJSON()"></app-agent-selection>
           </div>
         </div>
         <div class="form-group row">
@@ -167,6 +140,7 @@
             <input type="text" [readonly]="isTrash" class="form-control" autocomplete="off"
                    placeholder="{{'inventory.placeholder.pattern' | translate}}"
                    name="pattern" [(ngModel)]="fileOrder.configuration.pattern" (blur)="saveJSON()">
+            <app-favorite-list [list]="favList" [data]="fileOrder.configuration" [value]="fileOrder.configuration.pattern" (reload)="detectChanges" [type]="'pattern'"></app-favorite-list>
           </div>
         </div>
         <div class="form-group row">

@@ -465,7 +465,7 @@
               <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size === data.length" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
             </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView === 'list'">
-              <perfect-scrollbar appResizable class="table-responsive resizable" style="position: initial" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
+              <perfect-scrollbar appResizable class="table-responsive pos-init resizable" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"

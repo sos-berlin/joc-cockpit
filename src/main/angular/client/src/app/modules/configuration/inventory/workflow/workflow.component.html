@@ -1,7 +1,9 @@
 <div>
   <div class="row">
     <div class="col-md-12" *ngIf="data.type">
-      <div id="toolbar" class="bg-white" [ngClass]="{'disable-link': isTrash || !(permission.joc && permission.joc.inventory.manage)}"></div>
+      <prefect-scrollbar id="toolbar-scrollbar">
+        <div id="toolbar" class="bg-white" [ngClass]="{'disable-link': isTrash || !(permission.joc && permission.joc.inventory.manage)}"></div>
+      </prefect-scrollbar>
       <div class="row toolbar b-b m-b-12">
         <div class="col-md-12">
             <div class="inline m-b" *ngIf="workflow.path">

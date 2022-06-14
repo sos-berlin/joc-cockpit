@@ -111,8 +111,8 @@
             [innerHtml]="identityService.identityServiceType | highlight: searchKey"></span></td>
           <td (click)="showUser(identityService)"><span
             [innerHtml]="identityService.serviceAuthenticationScheme | translate | highlight: searchKey"></span></td>
-          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{identityService.singleFactorPwd ? 'Yes' : 'No'}}</span></td>
-          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{identityService.singleFactorCert ? 'Yes' : 'No'}}</span></td>
+          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE' || identityService.identityServiceType === 'KEYCLOAK-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{identityService.singleFactorPwd ? 'Yes' : 'No'}}</span></td>
+          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE' || identityService.identityServiceType === 'KEYCLOAK-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{identityService.singleFactorCert ? 'Yes' : 'No'}}</span></td>
           <td (click)="showUser(identityService)"><span [innerHtml]="identityService.ordering"></span></td>
           <td (click)="showUser(identityService)"><span>{{identityService.disabled ? 'Yes' : 'No'}}</span></td>
           <td (click)="showUser(identityService)"><span>{{identityService.required ? 'Yes' : 'No'}}</span></td>

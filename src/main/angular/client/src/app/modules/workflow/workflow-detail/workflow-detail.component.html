@@ -64,6 +64,13 @@
                     *ngIf="permission.currentController && permission.currentController.orders.create"><i class="fa fa-plus-square"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
             </button>
+            <button class="btn btn-grey btn-sm m-l-12" (click)="suspend()" *ngIf="!workflow.suspended" [disabled]="!workflow.isCurrentVersion"><i
+              class="fa fa-stop p-r-xs"></i>
+              <span class="hidden-sm-down" translate>order.button.suspend</span></button>
+            <button class="btn btn-grey btn-sm m-l-12" (click)="resume()" *ngIf="workflow.suspended" [disabled]="!workflow.isCurrentVersion"><i
+              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
+                                                           translate>order.button.resume</span>
+            </button>
             <div class="btn-group m-l-12">
               <button class="btn btn-grey btn-sm" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
                       [ngClass]="{'btn-primary': pageView=='graph'}" (click)="setView('graph')"><i class="fa fa-codepen"></i>

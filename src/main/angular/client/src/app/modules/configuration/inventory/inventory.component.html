@@ -211,9 +211,9 @@
                     <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color"
                        nzTheme="outline"></i>
                     <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
-                          [ngClass]="{'fa-circle-o': !node.origin.valid , 'fa-circle dark-blue' : node.origin.deployed || node.origin.released}"></span>
-                    <span *ngIf="node.origin.type && node.origin.syncState && inventoryService.checkDeploymentStatus.isChecked">
-                      <i *ngIf="node.origin.syncState._text === 'IN_SYNC'" class="fa fa-refresh font11 p-l-xxs"></i>
+                          [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' : node.origin.deployed || node.origin.released, 'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}"></span>
+                    <span *ngIf="node.origin.type && node.origin.syncState && inventoryService.checkDeploymentStatus.isChecked" [nz-tooltip]="node.origin.syncState._text | translate">
+                      <i *ngIf="node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING'" class="fa fa-refresh font11 p-l-xxs"></i>
                       <i *ngIf="node.origin.syncState._text === 'UNKNOWN'" class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
                       <i *ngIf="node.origin.syncState._text === 'NOT_IN_SYNC'" class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
                     </span>

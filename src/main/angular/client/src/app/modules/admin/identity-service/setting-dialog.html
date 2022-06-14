@@ -82,6 +82,11 @@
           <input type="url" class="form-control" required #vaultUrl="ngModel" name="iamVaultUrl"
                  [placeholder]="'user.placeholder.iamVaultUrl' | translate"
                  [(ngModel)]="currentObj.iamVaultUrl">
+          <div *ngIf="vaultUrl.invalid && (vaultUrl.dirty || vaultUrl.touched)" class="text-danger help-block">
+            <div *ngIf="vaultUrl.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group row">
@@ -95,6 +100,11 @@
           <input type="text" class="form-control" required #methodPath="ngModel" name="iamVaultAuthenticationMethodPath"
                  [placeholder]="'user.placeholder.iamVaultAuthenticationMethodPath' | translate"
                  [(ngModel)]="currentObj.iamVaultAuthenticationMethodPath">
+          <div *ngIf="methodPath.invalid && (methodPath.dirty || methodPath.touched)" class="text-danger help-block">
+            <div *ngIf="methodPath.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group row">
@@ -148,6 +158,98 @@
           <input type="text" class="form-control" required name="iamVaultApplicationToken" #token="ngModel"
                  [(ngModel)]="currentObj.iamVaultApplicationToken"
                  [placeholder]="'user.placeholder.iamVaultApplicationToken' | translate">
+        </div>
+      </div>
+    </div>
+    <div *ngIf="data && data.identityServiceType.match('KEYCLOAK')">
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakUrl' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakUrl
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6" [ngClass]="{'has-error' : ((keycloakUrl.dirty || keycloakUrl.touched) && keycloakUrl.invalid)}">
+          <input type="url" class="form-control" required #keycloakUrl="ngModel" name="iamKeycloakUrl"
+                 [placeholder]="'user.placeholder.iamKeycloakUrl' | translate"
+                 [(ngModel)]="currentObj.iamKeycloakUrl">
+          <div *ngIf="keycloakUrl.invalid && (keycloakUrl.dirty || keycloakUrl.touched)" class="text-danger help-block">
+            <div *ngIf="keycloakUrl.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAuthenticationMethodPath' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakAuthenticationMethodPath
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6"
+             [ngClass]="{'has-error' : ((methodPath.dirty || methodPath.touched) && methodPath.invalid)}">
+          <input type="text" class="form-control" required #methodPath="ngModel" name="iamKeycloakAuthenticationMethodPath"
+                 [placeholder]="'user.placeholder.iamKeycloakAuthenticationMethodPath' | translate"
+                 [(ngModel)]="currentObj.iamKeycloakAuthenticationMethodPath">
+          <div *ngIf="methodPath.invalid && (methodPath.dirty || methodPath.touched)" class="text-danger help-block">
+            <div *ngIf="methodPath.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePath' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakTrustStorePath</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="iamKeycloakTruststorePath"
+                 [(ngModel)]="currentObj.iamKeycloakTruststorePath"
+                 [placeholder]="'user.placeholder.iamKeycloakTrustStorePath' | translate">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePassword' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakTrustStorePassword</label>
+        <div class="col-sm-6">
+          <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control"
+                 name="iamKeycloakTruststorePassword" autocomplete="off"
+                 [(ngModel)]="currentObj.iamKeycloakTruststorePassword"
+                 [placeholder]="'user.placeholder.iamKeycloakTrustStorePassword' | translate">
+          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+             (click)="passwordFields.third = !passwordFields.third"></i>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStoreType' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakTrustStoreType
+          <sup *ngIf="currentObj.iamKeycloakTruststorePath" class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6" [ngClass]="{'has-error' : ((storePath.dirty || storePath.touched) && storePath.invalid)}">
+          <input name="iamKeycloakTruststoreType" #storePath="ngModel"
+                 [required]="(currentObj.iamKeycloakTruststorePath && currentObj.iamKeycloakTruststorePath.length > 0) ? true : false"
+                 [placeholder]="'user.placeholder.iamKeycloakTrustStoreType' | translate"
+                 class="form-control" [(ngModel)]="currentObj.iamKeycloakTruststoreType"/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientSecret' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakClientSecret</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="iamKeycloakClientSecret"
+                 [(ngModel)]="currentObj.iamKeycloakClientSecret"
+                 [placeholder]="'user.placeholder.iamKeycloakClientSecret' | translate">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakRealm' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakRealm</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="iamKeycloakRealm"
+                 [(ngModel)]="currentObj.iamKeycloakRealm"
+                 [placeholder]="'user.placeholder.iamKeycloakRealm' | translate">
         </div>
       </div>
     </div>
@@ -215,7 +317,7 @@
                 <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf"
                        (ngModelChange)="checkConfirmation($event, 'MemberOf')" name="iamLdapWithMemberOf"></label>
               </div>
-            </div>  
+            </div>
             <div class="form-group row">
               <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
                      [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapUserDnTemplate
@@ -226,7 +328,7 @@
                        [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate" #dnTemplate="ngModel"
                        [(ngModel)]="currentObj.iamLdapUserDnTemplate">
               </div>
-            </div>            
+            </div>
             <div class="form-group row">
               <label class="col-sm-4 form-control-label" [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
                      [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamLdapSearchBase

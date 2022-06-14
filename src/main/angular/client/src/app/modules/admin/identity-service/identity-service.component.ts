@@ -137,7 +137,7 @@ export class SettingModalComponent implements OnInit {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || {};
+            this.currentObj = data.vault || data.keycloak || {};
             if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
               if (data.ldap && data.ldap.simple) {
                 this.userObj = data.ldap.simple;
@@ -318,6 +318,13 @@ export class SettingModalComponent implements OnInit {
               break;
             }
           }
+        } else if (self.data.identityServiceType.match('KEYCLOAK')) {
+          for (const prop in data) {
+            if (prop && prop.match('iamKeycloak')) {
+              self.currentObj = data;
+              break;
+            }
+          }
         } else if (self.data.identityServiceType.match('LDAP')) {
           if (data.simple) {
             self.userObj = data.simple;
@@ -381,6 +388,8 @@ export class SettingModalComponent implements OnInit {
     if (this.data && this.data.identityServiceType) {
       if (this.data.identityServiceType.match('VAULT')) {
         obj.vault = this.currentObj;
+      } else if (this.data.identityServiceType.match('KEYCLOAK')) {
+        obj.keycloak = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
         obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
       }
@@ -488,7 +497,8 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   changeScheme($event): void {
-    if (this.currentObj.identityServiceType === 'JOC' || this.currentObj.identityServiceType === 'VAULT-JOC-ACTIVE') {
+    if (this.currentObj.identityServiceType === 'JOC' || this.currentObj.identityServiceType === 'VAULT-JOC-ACTIVE'
+      || this.currentObj.identityServiceType === 'KEYCLOAK-JOC-ACTIVE') {
       if ($event === 'SINGLE-FACTOR') {
         if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
           this.currentObj.singleFactorPwd = true;
@@ -524,7 +534,7 @@ export class IdentityServiceModalComponent implements OnInit {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if (data) {
-          if (data.vault || data.ldap) {
+          if (data.vault || data.ldap || data.keycloak) {
             this.removeSettingId = res.configuration.id;
             this.settingObj = res.configuration.configurationItem;
           }

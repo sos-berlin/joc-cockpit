@@ -1,4 +1,4 @@
-import {OnChanges, Component, Input, ViewChild, SimpleChanges} from '@angular/core';
+import {OnChanges, Component, Input, Output, ViewChild, SimpleChanges, EventEmitter} from '@angular/core';
 import {CoreService} from "../../../../services/core.service";
 
 @Component({
@@ -19,6 +19,8 @@ export class FavoriteListComponent implements OnChanges {
     selected: '',
     oldName: ''
   };
+
+  @Output() reload: EventEmitter<any> = new EventEmitter();
 
   constructor(private coreService: CoreService) {
   }
@@ -74,7 +76,8 @@ export class FavoriteListComponent implements OnChanges {
           }).subscribe(() => {
             this.isFavorite = true;
             this.list.splice(parseInt(i), 1);
-            this.list.push({name: this.obj.name, content: this.data[this.type], ordering})
+            this.list.push({name: this.obj.name, content: this.data[this.type], ordering});
+            this.reload.emit();
           });
           break;
         }
@@ -94,7 +97,8 @@ export class FavoriteListComponent implements OnChanges {
           name: this.obj.name,
           content: this.data[this.type],
           ordering: this.list.length > 0 ? (this.list[this.list.length - 1].ordering + 1) : 1
-        })
+        });
+        this.reload.emit();
       });
     }
   }

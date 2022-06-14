@@ -1083,7 +1083,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       delete this.selectedNode.job.agentName1;
     }
-    $('#agentId').blur();
   }
 
   openJobWizard(): void {
@@ -2445,7 +2444,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           result.jobs[x].executable.TYPE = 'ShellScriptExecutable';
         }
         result.jobs[x] = {
-          agentName: v.agentName,
+          agentName: v.agentName || v.agentId,
           executable: v.executable,
           defaultArguments: v.defaultArguments,
           jobResourceNames: v.jobResourceNames,

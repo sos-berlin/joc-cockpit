@@ -15,10 +15,10 @@
       <li nz-menu-item *ngIf="permission.currentController.orders.create" [nzDisabled]="!workflow.isCurrentVersion" (click)="addOrder(workflow);" >
         <a>{{'workflow.button.addOrder' | translate}} ..</a>
       </li>
-      <li nz-menu-item *ngIf="permission.currentController.orders" [nzDisabled]="!workflow.isCurrentVersion" (click)="suspend(workflow);" >
+      <li nz-menu-item *ngIf="!workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion" (click)="suspend(workflow);" >
         <a>{{'order.button.suspend' | translate}}</a>
       </li>
-      <li nz-menu-item *ngIf="permission.currentController.orders" [nzDisabled]="!workflow.isCurrentVersion" (click)="resume(workflow);" >
+      <li nz-menu-item *ngIf="workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion" (click)="resume(workflow);" >
         <a>{{'order.button.resume' | translate}}</a>
       </li>
       <li nz-menu-item *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies" (click)="showDependency(workflow);" >

@@ -44,7 +44,6 @@ import {DurationWithPercentageRegexValidator, EnvVariableValidator, LabelValidat
 import {UpdateJobComponent} from './update-job/update-job.component';
 import {UpdateObjectComponent} from './update-object/update-object.component';
 import {ScriptComponent} from './script/script.component';
-import { AgentComponent } from './agent/agent.component';
 import {FavoriteListComponent} from "./favorite-list/favorite-list.component";
 
 const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
@@ -83,8 +82,7 @@ const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDep
     DurationValidator,
     OffsetValidator,
     DurationWithPercentageRegexValidator,
-    ...COMPONENTS,
-    AgentComponent
+    ...COMPONENTS
   ]
 })
 export class InventoryModule {

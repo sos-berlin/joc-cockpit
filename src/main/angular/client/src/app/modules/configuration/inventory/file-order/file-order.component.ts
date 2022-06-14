@@ -37,8 +37,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   @Input() isTrash: any;
 
   invalidMsg: string;
+  favList = [];
   zones = [];
-  nonExistAgents = [];
   agentList = [];
   workflowTree = [];
   fileOrder: any = {};
@@ -47,7 +47,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   indexOfNextAdd = 0;
   history = [];
   lastModified: any = '';
-  isReloading = false;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -114,60 +113,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  onAgentChange(value: string): void {
-    let temp = this.coreService.clone(this.inventoryService.agentList);
-    this.agentList = this.coreService.getFilterAgentList(temp, value, true);
-    this.agentList = [...this.agentList];
-  }
-
-  expandCollapse(data) {
-    data.hide = !data.hide;
-    for (let i in this.inventoryService.agentList) {
-      if (this.inventoryService.agentList[i].title === data.title) {
-        this.inventoryService.agentList[i].hide = data.hide;
-        break;
-      }
-    }
-  }
-
-  private checkIsAgentExist(): void {
-    this.nonExistAgents = [];
-    if (this.fileOrder.configuration.agentName) {
-      let isFound = false;
-      for (const i in this.inventoryService.agentList) {
-        if (this.inventoryService.agentList[i]) {
-          for (const j in this.inventoryService.agentList[i].children) {
-            if (this.inventoryService.agentList[i].children[j] && (this.inventoryService.agentList[i].children[j] === this.fileOrder.configuration.agentName)
-             || (this.inventoryService.agentList[i].children[j].title === this.fileOrder.configuration.agentName)) {
-              isFound = true;
-              break;
-            }
-          }
-        }
-        if (isFound) {
-          break;
-        }
-      }
-      if (!isFound) {
-        this.nonExistAgents.push(this.fileOrder.configuration.agentName);
-      }
-    }
-    this.ref.detectChanges();
-  }
-
-  selectSubagentCluster(id): void {
-    $(id).blur();
-  }
-
-  refreshAgents(): void {
-    this.isReloading = true;
-    this.dataService.reloadTree.next({reloadAgents: true});
-    setTimeout(() => {
-      this.isReloading = false;
-      this.ref.detectChanges();
-    }, 2000)
-  }
-
   private getWorkflows(): void {
     if (this.workflowTree.length === 0) {
       this.coreService.post('tree', {
@@ -221,8 +166,8 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.fileOrder.configuration.timeZone = this.preferences.zone;
       }
       this.agentList = this.coreService.clone(this.inventoryService.agentList);
-      this.checkIsAgentExist();
       this.getWorkflows();
+      this.getFavList();
       if (!res.valid) {
         if (!this.fileOrder.configuration.workflowName) {
           this.invalidMsg = 'inventory.message.workflowIsMissing';
@@ -237,6 +182,17 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.invalidMsg = '';
       }
       this.ref.detectChanges();
+    });
+  }
+
+  private getFavList(): void {
+    this.coreService.post('inventory/favorites', {
+      types: ['FACET'],
+      limit: this.preferences.maxFavoriteEntries || 10
+    }).subscribe({
+      next: (res: any) => {
+        this.favList = res.favorites;
+      }
     });
   }
 
@@ -363,7 +319,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.updateList(node, type, reload);
       }
     } else {
-
       if (this.fileOrder.configuration.workflowName1) {
         if (this.fileOrder.configuration.workflowName !== this.fileOrder.configuration.workflowName1) {
           this.fileOrder.configuration.workflowName = this.fileOrder.configuration.workflowName1;
@@ -373,7 +328,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
           this.fileOrder.configuration.workflowName = node.key;
         }
       }
-
       setTimeout(() => {
         this.saveJSON();
       }, 10);
@@ -421,6 +375,10 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       }
       this.ref.detectChanges();
     });
+  }
+
+  detectChanges(): void {
+    this.ref.detectChanges();
   }
 
   onKeyPressFunc($event): void {

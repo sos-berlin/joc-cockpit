@@ -293,6 +293,11 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
             controllerId: this.controllerId,
             workflowIds: [args.eventSnapshots[j].workflow]
           });
+        } else if (args.eventSnapshots[j].eventType === 'WorkflowUpdated' && (args.eventSnapshots[j].path && this.path === args.eventSnapshots[j].path)) {
+          this.getWorkflowList({
+            controllerId: this.controllerId,
+            workflowId: {path: this.path, versionId: this.versionId ? this.versionId : undefined}
+          });
           break;
         }
       }
@@ -385,12 +390,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   currentPath = '/';
   pageView: any;
   workflows: any = [];
-  selectedPath: string;
   workflowFilters: any = {};
   showPanel: any;
   showSearchPanel = false;
   searchFilter: any = {};
-  temp_filter: any = {};
   isProcessing = false;
   isSearchVisible = false;
   sideView: any = {};
@@ -431,7 +434,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               private dataService: DataService, private modal: NzModalService, private workflowService: WorkflowService,
               private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService,
               private toasterService: ToastrService, private router: Router, private orderPipe: OrderPipe) {
-    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe((res) => {
       this.refresh(res);
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
@@ -533,6 +536,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.object.checked = this.object.mapOfCheckedId.size === workflows.length;
     this.object.isSuspend = true;
     this.object.isResume = true;
+    this.object.mapOfCheckedId.forEach(workflow => {
+      if (workflow.suspended){
+        this.object.isSuspend = false;
+      } else{
+        this.object.isResume = false;
+      }
+    })
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
   }
 
@@ -1350,9 +1360,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       let flag = false;
       let reload = true;
       for (const j in args.eventSnapshots) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow) {
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
           for (const i in this.workflows) {
-            if (this.workflows[i].path === args.eventSnapshots[j].workflow.path && this.workflows[i].versionId === args.eventSnapshots[j].workflow.versionId) {
+            if (args.eventSnapshots[j].workflow && (this.workflows[i].path === args.eventSnapshots[j].workflow.path && this.workflows[i].versionId === args.eventSnapshots[j].workflow.versionId)) {
               let flg = true;
               for (const x in request) {
                 if (request[x].path === args.eventSnapshots[j].workflow.path && request[x].versionId === args.eventSnapshots[j].workflow.versionId) {
@@ -1378,6 +1388,17 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                 }
               }
               break;
+            }
+            if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && (args.eventSnapshots[j].path && this.workflows[i].path === args.eventSnapshots[j].path)) {
+              this.coreService.post('workflow', {
+                controllerId: this.schedulerIds.selected,
+                workflowId: {path: this.workflows[i].path, versionId: this.workflows[i].versionId}
+              }).subscribe({
+                next: (res: any) => {
+                  this.workflows[i].suspended = res.workflow.suspended;
+                  this.workflows[i].state = res.workflow.state;
+                }
+              });
             }
           }
         }

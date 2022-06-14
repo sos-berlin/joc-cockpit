@@ -781,11 +781,11 @@ export class DeployComponent implements OnInit {
   templateUrl: './cron-import-dialog.html'
 })
 export class CronImportModalComponent implements OnInit {
+  @Input() preferences: any;
   @Input() display: any;
   @Input() controllerId;
   @Input() agents: any = [];
   nodes: any = [];
-  agentList: any = [];
   calendarTree: any = [];
   uploader: FileUploader;
   comments: any = {};
@@ -804,7 +804,7 @@ export class CronImportModalComponent implements OnInit {
       this.required = true;
       this.display = true;
     }
-    this.agentList = this.coreService.clone(this.agents);
+
     this.getTree();
     this.getCalendars();
     this.uploader = new FileUploader({
@@ -849,19 +849,12 @@ export class CronImportModalComponent implements OnInit {
     };
   }
 
-  onAgentChange(value: string): void {
-    let temp = this.coreService.clone(this.agents);
-    this.agentList = this.coreService.getFilterAgentList(temp, value);
-    this.agentList = [...this.agentList];
-  }
-
   selectSubagentCluster(cluster): void {
     if (cluster) {
       this.requestObj.agentName1 = cluster.title;
     } else {
       delete this.requestObj.agentName1;
     }
-    $('#agentId').blur();
   }
 
   private getTree(): void {
@@ -3899,6 +3892,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzClassName: 'lg',
       nzAutofocus: null,
       nzComponentParams: {
+        preferences: this.preferences,
         display: this.preferences.auditLog,
         agents: this.inventoryService.agentList,
         controllerId: this.schedulerIds.selected

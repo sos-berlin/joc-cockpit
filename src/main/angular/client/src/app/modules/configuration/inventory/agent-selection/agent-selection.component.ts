@@ -1,18 +1,20 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
 import {CoreService} from "../../../../services/core.service";
 import {DataService} from "../../../../services/data.service";
 
+declare const $;
+
 @Component({
   selector: 'app-agent-selection',
-  templateUrl: './agent.component.html',
-  styleUrls: ['./agent.component.scss']
+  templateUrl: './agent-selection.component.html'
 })
-export class AgentComponent implements OnInit {
+export class AgentSelectionComponent implements OnChanges {
   @Input() preferences: any = {};
   @Input() agents: any;
   @Input() obj: any = {};
   @Input() data: any = {};
   @Input() skipSubagents: boolean;
+  @Input() required = true;
 
   isReloading: boolean;
   favorite: any = {
@@ -23,26 +25,28 @@ export class AgentComponent implements OnInit {
   nonExistAgents = [];
 
   @Output() selectSubagentCluster: EventEmitter<any> = new EventEmitter();
+  @Output() onBlur: EventEmitter<any> = new EventEmitter();
 
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
-  ngOnInit(): void {
-    console.log(this.skipSubagents)
-    this.agentList = this.coreService.clone(this.agents);
-    this.coreService.post('inventory/favorites', {
-      types: ['AGENT'],
-      limit: this.preferences.maxFavoriteEntries || 10
-    }).subscribe({
-      next: (res: any) => {
-        this.favorite.list = res.favorites;
-        if (sessionStorage.isFavoriteAgent == true || sessionStorage.isFavoriteAgent == 'true') {
-          this.favorite.show = true;
-          this.generateFavList();
+  ngOnChanges(changes): void {
+    if (changes.agents) {
+      this.agentList = this.coreService.clone(this.agents);
+      this.coreService.post('inventory/favorites', {
+        types: ['AGENT'],
+        limit: this.preferences.maxFavoriteEntries || 10
+      }).subscribe({
+        next: (res: any) => {
+          this.favorite.list = res.favorites;
+          if (sessionStorage.isFavoriteAgent == true || sessionStorage.isFavoriteAgent == 'true') {
+            this.favorite.show = true;
+            this.generateFavList();
+          }
         }
-      }
-    });
-    this.checkIsAgentExist();
+      });
+      this.checkIsAgentExist();
+    }
   }
 
   private checkIsAgentExist(): void {
@@ -50,7 +54,7 @@ export class AgentComponent implements OnInit {
     if (this.data.agentName) {
       let isFound = false;
       for (const i in this.agents) {
-        if(this.skipSubagents){
+        if (this.skipSubagents) {
           for (const j in this.agents[i].children) {
             if (this.agents[i].children[j] && (this.agents[i].children[j] === this.data.agentName)
               || (this.agents[i].children[j].title === this.data.agentName)) {
@@ -143,24 +147,53 @@ export class AgentComponent implements OnInit {
           arr[0].children.push(this.favorite.list[i].name);
         }
       } else {
-        if ((arr.length == 0 && !flag) || (arr.length == 1 && flag)) {
-          arr.push({
-            title: this.favorite.list[i].content,
-            children: [this.favorite.list[i].name]
-          })
-        } else {
-          let isExist = false;
-          for (let j in arr) {
-            if (this.favorite.list[i].content == arr[j].title) {
-              isExist = true;
-              arr[j].children.push(this.favorite.list[i].name);
-              break;
-            }
-          }
-          if (!isExist) {
+        if (!this.skipSubagents) {
+          if ((arr.length == 0 && !flag) || (arr.length == 1 && flag)) {
             arr.push({
               title: this.favorite.list[i].content,
               children: [this.favorite.list[i].name]
+            })
+          } else {
+            let isExist = false;
+            for (let j in arr) {
+              if (this.favorite.list[i].content == arr[j].title) {
+                isExist = true;
+                arr[j].children.push(this.favorite.list[i].name);
+                break;
+              }
+            }
+            if (!isExist) {
+              arr.push({
+                title: this.favorite.list[i].content,
+                children: [this.favorite.list[i].name]
+              })
+            }
+          }
+        } else {
+          let skip = false;
+          if (arr.length > 0) {
+            for (let i in arr) {
+              if (arr[i].title === 'agentGroups') {
+                skip = true;
+                let flag = false;
+                for (let j in arr[i].children) {
+                  if (arr[i].children[j] == this.favorite.list[i].content) {
+                    flag = true;
+                    break;
+                  }
+                }
+                if (!flag) {
+                  arr[i].children.push(this.favorite.list[i].content)
+                }
+                break;
+              }
+            }
+          }
+          if (!skip) {
+            arr.push({
+              title: 'agentGroups',
+              isStandalone: true,
+              children: [this.favorite.list[i].content]
             })
           }
         }
@@ -209,6 +242,14 @@ export class AgentComponent implements OnInit {
     let temp = this.coreService.clone(this.agents);
     this.agentList = this.coreService.getFilterAgentList(temp, value);
     this.agentList = [...this.agentList];
+    if(!value){
+      this.onBlur.emit();
+    }
+  }
+
+  selectAgent(data): void {
+    this.selectSubagentCluster.emit(data)
+    $('#agentId').blur();
   }
 
 }

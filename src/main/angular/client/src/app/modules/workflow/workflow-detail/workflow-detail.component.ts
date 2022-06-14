@@ -10,6 +10,7 @@ import {WorkflowService} from '../../../services/workflow.service';
 import {AddOrderModalComponent, ShowDependencyComponent} from '../workflow-action/workflow-action.component';
 import {DataService} from '../../../services/data.service';
 import {DependentWorkflowComponent} from '../workflow-graphical/workflow-graphical.component';
+import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 
 declare const $;
 
@@ -95,6 +96,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow
           && this.path === args.eventSnapshots[j].workflow.path && this.versionId === args.eventSnapshots[j].workflow.versionId) {
           this.getOrders(this.coreService.clone(this.workflow));
+        } else if (args.eventSnapshots[j].eventType === 'WorkflowUpdated' && args.eventSnapshots[j].path && this.path === args.eventSnapshots[j].path) {
+          this.init();
           break;
         }
       }
@@ -181,21 +184,23 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   private callAPI(APIs, cb): void {
     if (APIs.length) {
-      forkJoin(APIs).subscribe((res: any) => {
-        res.forEach((item: any) => {
-          if (item && item.workflow && this.workflowObjects.has(item.workflow.path)) {
-            item.workflow.compressData = [];
-            this.workflowService.convertTryToRetry(item.workflow, null, item.workflow.jobs);
-            item.workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'expectedNoticeBoards');
-            item.workflow.postNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'postNoticeBoards');
-            this.workflowObjects.set(item.workflow.path, JSON.stringify(item.workflow));
-            this.isAllLoaded = true;
-            this.recursivelyUpdateWorkflow(item.workflow);
-            if (cb) {
-              cb();
+      forkJoin(APIs).subscribe({
+        next: (res: any) => {
+          res.forEach((item: any) => {
+            if (item && item.workflow && this.workflowObjects.has(item.workflow.path)) {
+              item.workflow.compressData = [];
+              this.workflowService.convertTryToRetry(item.workflow, null, item.workflow.jobs);
+              item.workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'expectedNoticeBoards');
+              item.workflow.postNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'postNoticeBoards');
+              this.workflowObjects.set(item.workflow.path, JSON.stringify(item.workflow));
+              this.isAllLoaded = true;
+              this.recursivelyUpdateWorkflow(item.workflow);
+              if (cb) {
+                cb();
+              }
             }
-          }
-        });
+          });
+        }
       });
     }
   }
@@ -316,6 +321,55 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.resetAction(5000);
       }
     });
+  }
+
+  suspend(): void {
+    this.suspendResumeOperation('Suspend');
+  }
+
+  resume(): void {
+    this.suspendResumeOperation('Resume');
+  }
+
+  private suspendResumeOperation(type) {
+    let obj = {
+      controllerId: this.schedulerIds.selected,
+      workflowPaths: [this.workFlowJson.path]
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Workflow',
+        operation: type,
+        name: this.workFlowJson.path
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          obj,
+          url: 'workflows/' + (type === 'Resume' ? 'resume' : 'suspend')
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.isProcessing = true;
+          this.resetAction(5000);
+        }
+      });
+    } else {
+      this.isProcessing = true;
+      this.coreService.post('workflows/' + (type === 'Resume' ? 'resume' : 'suspend'), obj).subscribe({
+        next: () => {
+          this.resetAction(5000);
+        }, error: () => this.isProcessing = false
+      });
+    }
   }
 
   loadOrders(date): void {
