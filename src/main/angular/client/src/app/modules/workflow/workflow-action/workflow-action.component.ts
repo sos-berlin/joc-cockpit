@@ -536,6 +536,7 @@ export class WorkflowActionComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
+  @Input() isDisabled: boolean;
   @Output() isChanged: EventEmitter<any> = new EventEmitter();
 
   constructor(public modal: NzModalService, public coreService: CoreService, private router: Router) {
@@ -543,7 +544,7 @@ export class WorkflowActionComponent {
 
   navToDetailView(view): void {
     this.coreService.getWorkflowDetailTab().pageView = view;
-    this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]);
+    this.router.navigate(['/workflows/workflow_detail', this.workflow.path, this.workflow.versionId]).then();
   }
 
   suspend(workflow, paths?, cb?): void {

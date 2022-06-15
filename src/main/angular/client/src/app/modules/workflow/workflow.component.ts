@@ -854,11 +854,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /* ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
     this.pageView = $event;
+    if(this.pageView === 'list'){
+      this.updatePanelHeight();
+    }
   }
 
   navToDetailView(view, workflow): void {
     this.coreService.getWorkflowDetailTab().pageView = view;
-    this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]);
+    this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]).then();
   }
 
   addOrder(workflow): void {
@@ -923,7 +926,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadWorkflow(): void {
+  loadWorkflow(status?): void {
     this.reloadState = 'no';
     const obj: any = {
       folders: [],
@@ -1360,9 +1363,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       let flag = false;
       let reload = true;
       for (const j in args.eventSnapshots) {
-        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged') {
+        if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' || args.eventSnapshots[j].eventType === 'WorkflowUpdated') {
           for (const i in this.workflows) {
-            if (args.eventSnapshots[j].workflow && (this.workflows[i].path === args.eventSnapshots[j].workflow.path && this.workflows[i].versionId === args.eventSnapshots[j].workflow.versionId)) {
+            if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && args.eventSnapshots[j].workflow &&
+              (this.workflows[i].path === args.eventSnapshots[j].workflow.path
+                && this.workflows[i].versionId === args.eventSnapshots[j].workflow.versionId)) {
               let flg = true;
               for (const x in request) {
                 if (request[x].path === args.eventSnapshots[j].workflow.path && request[x].versionId === args.eventSnapshots[j].workflow.versionId) {
@@ -1387,9 +1392,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   request2.push(args.eventSnapshots[j].workflow);
                 }
               }
-              break;
-            }
-            if (args.eventSnapshots[j].eventType === 'WorkflowStateChanged' && (args.eventSnapshots[j].path && this.workflows[i].path === args.eventSnapshots[j].path)) {
+            } else if (args.eventSnapshots[j].eventType === 'WorkflowUpdated' && (args.eventSnapshots[j].path && this.workflows[i].path === args.eventSnapshots[j].path)) {
               this.coreService.post('workflow', {
                 controllerId: this.schedulerIds.selected,
                 workflowId: {path: this.workflows[i].path, versionId: this.workflows[i].versionId}

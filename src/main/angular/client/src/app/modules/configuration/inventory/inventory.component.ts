@@ -979,7 +979,8 @@ export class ExportComponent implements OnInit {
     controllerId: '',
     forSigning: false,
     filename: '',
-    fileFormat: 'ZIP'
+    fileFormat: 'ZIP',
+    objectTypes: []
   };
   filter = {
     controller: true,
@@ -989,6 +990,7 @@ export class ExportComponent implements OnInit {
     release: true,
     valid: false,
   };
+  objectTypes = [];
   object: any = {
     draftConfigurations: [],
     releaseDraftConfigurations: [],
@@ -1006,6 +1008,7 @@ export class ExportComponent implements OnInit {
       this.display = true;
     }
     this.exportObj.controllerId = this.schedulerIds.selected;
+   
     this.securityLevel = sessionStorage.securityLevel;
     if (this.origin) {
       this.path = this.origin.path;
@@ -1014,14 +1017,33 @@ export class ExportComponent implements OnInit {
         this.exportType = this.origin.object || 'DAILYPLAN';
         this.filter.controller = false;
         this.filter.deploy = false;
+        if (this.origin.dailyPlan) {
+          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, 'CALENDAR');
+        } else {
+          this.objectTypes.push(this.origin.object.match('CALENDAR') ? 'CALENDAR' : this.origin.object);
+        }
+       
       } else {
+       
         if (this.origin.controller || this.origin.object) {
           this.exportType = this.origin.object || 'CONTROLLER';
           this.filter.dailyPlan = false;
           this.filter.release = false;
+          if (this.origin.controller) {
+            this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
+              InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
+          } else {
+            this.objectTypes.push(this.origin.object);
+          }
         }
       }
     }
+    if (this.objectTypes.length === 0) {
+      this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
+        InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
+      this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, 'CALENDAR');
+    }
+    this.exportObj.objectTypes = [...this.objectTypes];
     this.buildTree(this.path);
   }
 
@@ -1048,8 +1070,14 @@ export class ExportComponent implements OnInit {
       recursive: flag,
       withoutDrafts: !this.filter.draft,
       withoutDeployed: !this.filter.deploy,
-      withoutRemovedObjects: true
+      withoutRemovedObjects: true,
+      objectTypes: [...this.exportObj.objectTypes]
     };
+    const index = obj.objectTypes.indexOf('CALENDAR');
+    if (index > -1) {
+      obj.objectTypes.splice(index, 1);
+      obj.objectTypes = obj.objectTypes.concat([InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR]);
+    }
     const APIs = [];
     if (this.filter.controller && this.filter.dailyPlan) {
       obj.withoutReleased = !this.filter.release;
@@ -1060,9 +1088,6 @@ export class ExportComponent implements OnInit {
         catchError(error => of(error))
       ));
     } else {
-      if (this.origin && this.origin.object) {
-        obj.objectTypes = this.origin.object.match('CALENDAR') ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.origin.object];
-      }
       if (this.filter.dailyPlan) {
         obj.withoutReleased = !this.filter.release;
         APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
@@ -1838,7 +1863,8 @@ export class RepositoryComponent implements OnInit {
         }
       }
     }
-    if(this.nodes.length > 0) {
+
+    if (this.nodes.length > 0) {
       recursive(this.nodes);
     } else if (this.operation === 'delete' && !this.origin.object) {
       obj.configurations.push({
@@ -4237,7 +4263,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-       this.storeData(obj, result, !!this.type);
+        this.storeData(obj, result, !!this.type);
       }
     });
   }
@@ -4820,7 +4846,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       path,
       objectType: obj.objectType || obj.type
     };
-    if (request.objectType === 'CALENDAR' || (request.objectType.match(/CALENDAR/) && result.type && result.type.match(/CALENDAR/)) ) {
+    if (request.objectType === 'CALENDAR' || (request.objectType.match(/CALENDAR/) && result.type && result.type.match(/CALENDAR/))) {
       request.objectType = result.type || 'WORKINGDAYSCALENDAR';
     }
 

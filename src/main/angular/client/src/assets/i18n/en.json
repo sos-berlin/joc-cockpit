@@ -830,7 +830,10 @@
     "button.nextWeak": "Next 7 days",
     "button.next30": "Next 30 days",
     "button.nextDay": "Next day",
-    "button.thisHour": "This hour"
+    "button.thisHour": "This hour",
+    "button.synchronized": "Synchronized",
+    "button.notSynchronized": "Not Synchronized",
+    "button.suspended": "Suspended"
   },
   "header": {
     "label.dashboard": "DASHBOARD",
@@ -1090,6 +1093,7 @@
     "label.command": "Command",
     "label.exitCode": "Exit Code",
     "label.newDraft": "New Draft",
+    "label.objectTypes": "Object Types",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addVariableSet": "Add Variable Set",
     "button.setVersion": "Set Version",
@@ -1181,6 +1185,7 @@
     "placeholder.selectPredefinedExpression": "Select predefined expression",
     "placeholder.enterRemoteUri": "Enter Remote URI",
     "placeholder.enterGitMessage": "Enter message",
+    "placeholder.objectTypes": "Select object types",
     "message.workflowIsMissing": "Workflow is missing, but is required",
     "message.directoryIsMissing": "Directory is missing, but is required",
     "message.envOrArgumentIsMissing": "At least one variable or environment variable must be specified",

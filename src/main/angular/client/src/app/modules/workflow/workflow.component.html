@@ -15,6 +15,24 @@
           </div>
           <div [ngClass]="{'show-block':object.mapOfCheckedId.size == 0}" class="inline pull-right hide">
             <div class="btn-group m-l-12 hidden-btn-group">
+              <button class="btn btn-grey btn-sm button-group-ellipsis"
+                      [ngClass]="{'btn-primary': workflowFilters.filter.state==='ALL'}"
+                      (click)="loadWorkflow('ALL')" translate>filters.button.all
+              </button>
+              <button class="btn btn-grey btn-sm button-group-ellipsis"
+                      [ngClass]="{'btn-primary': workflowFilters.filter.state==='INSYNC'}"
+                      (click)="loadWorkflow('INSYNC')" translate>filters.button.synchronized
+              </button>
+              <button class="btn btn-grey btn-sm button-group-ellipsis"
+                      [ngClass]="{'btn-primary': workflowFilters.filter.state==='NOT_INSYNC'}"
+                      (click)="loadWorkflow('NOT_INSYNC')" translate>filters.button.notSynchronized
+              </button>
+              <button class="btn btn-grey btn-sm button-group-ellipsis"
+                      [ngClass]="{'btn-primary': workflowFilters.filter.state==='SUSPENDED'}"
+                      (click)="loadWorkflow('SUSPENDED')" translate>filters.button.suspended
+              </button>
+            </div>
+            <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button class="btn btn-grey btn-sm button-group-ellipsis"
                         [ngClass]="{'btn-primary': workflowFilters.filter.date===btn.date}"
@@ -199,7 +217,7 @@
                           <span [nz-tooltip]="workflow.title" [innerHtml]="workflow.name | highlight : workflowFilters.searchText"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission" (isChanged)="changedHandler($event)"
+                          <app-workflow-action [isDisabled]="object.checked || object.indeterminate" [schedulerId]="schedulerIds.selected" [permission]="permission" (isChanged)="changedHandler($event)"
                                                [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
                         </div>
                       </div>
@@ -421,7 +439,7 @@
                           (nzCheckedChange)="onItemChecked(workflow,$event)"></td>
                       <td>
                         <div class="btn-group dropdown">
-                          <app-workflow-action [schedulerId]="schedulerIds.selected" [permission]="permission" (isChanged)="changedHandler($event)"
+                          <app-workflow-action [isDisabled]="object.checked || object.indeterminate" [schedulerId]="schedulerIds.selected" [permission]="permission" (isChanged)="changedHandler($event)"
                                                [preferences]="preferences" [workflow]="workflow"></app-workflow-action>
                         </div>
                       </td>

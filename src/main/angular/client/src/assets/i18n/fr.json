@@ -830,7 +830,10 @@
     "button.nextWeak": "7 Prochains Jours",
     "button.next30": "30 Prochains Jours",
     "button.nextDay": "Prochain Jour",
-    "button.thisHour": "Cette Heure"
+    "button.thisHour": "Cette Heure",
+    "button.synchronized": "Synchronized",
+    "button.notSynchronized": "Not Synchronized",
+    "button.suspended": "Suspended"
   },
   "header": {
     "label.dashboard": "TABLEAU DE BORD",
@@ -1090,6 +1093,7 @@
     "label.command": "Commande",
     "label.exitCode": "Code Retour",
     "label.newDraft": "Nouveau Brouillon",
+    "label.objectTypes": "Object Types",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addVariableSet": "Ajouter un Jeu de Variable",
     "button.setVersion": "Définir la Version",
@@ -1181,6 +1185,7 @@
     "placeholder.selectPredefinedExpression": "Sélectionnez l'expression prédéfinie",
     "placeholder.enterRemoteUri": "Entrer le URI distant",
     "placeholder.enterGitMessage": "Entrer le message",
+    "placeholder.objectTypes": "Select object types",
     "message.workflowIsMissing": "Le Workflow est absent, mais il est nécessaire",
     "message.directoryIsMissing": "Le répertoire est absent, mais il est nécessaire",
     "message.envOrArgumentIsMissing": "Les variables d'environnement ou les arguments sont manquantes, mais sont nécessaires",

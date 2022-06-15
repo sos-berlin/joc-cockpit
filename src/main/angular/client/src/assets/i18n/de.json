@@ -830,7 +830,10 @@
     "button.nextWeak": "Nächste 7 Tage",
     "button.next30": "Nächste 30 Tage",
     "button.nextDay": "Nächster Tag",
-    "button.thisHour": "Aktuelle Stunde"
+    "button.thisHour": "Aktuelle Stunde",
+    "button.synchronized": "Synchronized",
+    "button.notSynchronized": "Not Synchronized",
+    "button.suspended": "Suspended"
   },
   "header": {
     "label.dashboard": "ÜBERSICHT",
@@ -1090,6 +1093,7 @@
     "label.command": "Kommando",
     "label.exitCode": "Rückgabewert",
     "label.newDraft": "Neuer Entwurf",
+    "label.objectTypes": "Object Types",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addVariableSet": "Variablensatz hinzufügen",
     "button.setVersion": "Version setzen",
@@ -1181,6 +1185,7 @@
     "placeholder.selectPredefinedExpression": "Vordefinierten Ausdruck auswählen",
     "placeholder.enterRemoteUri": "Ferne URI angeben",
     "placeholder.enterGitMessage": "Mitteilung angeben",
+    "placeholder.objectTypes": "Select object types",
     "message.workflowIsMissing": "Arbeitsablauf ist erforderlich",
     "message.directoryIsMissing": "Verzeichnis ist erforderlich",
     "message.envOrArgumentIsMissing": "Mindestens eine Variable oder Umgebungsvariable muss angegeben werden",

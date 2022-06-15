@@ -62,11 +62,11 @@
             </li>
           </ul>
         </nz-dropdown-menu>
-        <span class="cursor p-r-xs" (click)="edit(item)" [innerHtml]="item.name | highlight : filter.searchKey"></span>&nbsp;
+        <span class="cursor p-r-xs" [nz-tooltip]="item.content" [nzTooltipPlacement]="'right'" (click)="edit(item)" [innerHtml]="item.name | highlight : filter.searchKey"></span>&nbsp;
         <i class="fa fa-share-square-o pos-rel text-primary t-n-xs m-r-sm" [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedByMe' | translate" style="left:-2px" *ngIf="item.shared && account === item.account" aria-hidden="true"></i>
         <i class="fa fa-share-alt pos-rel text-primary t-n-xs m-r-sm" [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedWithMe' | translate" style="left:-2px" *ngIf="item.shared && account !== item.account" aria-hidden="true"></i>
-        <i *ngIf="item.content">-</i>
-        &nbsp;<span class="text-muted" [innerHtml]="item.content | highlight : filter.searchKey"></span>
+        <i *ngIf="item.content && type=== 'AGENT'">-</i>
+        &nbsp;<span class="text-muted" *ngIf="item.content && type=== 'AGENT'" [innerHtml]="item.content | highlight : filter.searchKey"></span>
       </div>
     </li>
   </ul>

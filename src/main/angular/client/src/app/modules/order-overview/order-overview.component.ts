@@ -565,6 +565,9 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
       this.resetCheckBox();
     }
     this.pageView = $event;
+    if(this.pageView === 'list'){
+      this.updatePanelHeight();
+    }
   }
 
   showPanelFunc(value: any): void {

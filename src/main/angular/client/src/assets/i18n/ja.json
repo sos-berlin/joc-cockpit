@@ -830,7 +830,10 @@
     "button.nextWeak": "今から7日間",
     "button.next30": "今から30日間",
     "button.nextDay": "翌日",
-    "button.thisHour": "現在時"
+    "button.thisHour": "現在時",
+    "button.synchronized": "Synchronized",
+    "button.notSynchronized": "Not Synchronized",
+    "button.suspended": "Suspended"
   },
   "header": {
     "label.dashboard": "ダッシュボード",
@@ -1090,6 +1093,7 @@
     "label.command": "コマンド",
     "label.exitCode": "Exitコード",
     "label.newDraft": "新規下書き",
+    "label.objectTypes": "Object Types",
     "button.modifyVariableSet": "変数設定変更",
     "button.addVariableSet": "変数設定追加",
     "button.setVersion": "バージョン設定",
@@ -1181,6 +1185,7 @@
     "placeholder.selectPredefinedExpression": "条件式選択",
     "placeholder.enterRemoteUri": "リモートURI入力",
     "placeholder.enterGitMessage": "コミットメッセージ入力",
+    "placeholder.objectTypes": "Select object types",
     "message.workflowIsMissing": "ワークフローが必要です",
     "message.directoryIsMissing": "必要なディレクトリがありません",
     "message.envOrArgumentIsMissing": "必要な環境変数または引数がありません",
