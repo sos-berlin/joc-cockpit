@@ -724,7 +724,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       subagentClusterIds: Array.from(this.object.mapOfCheckedId),
       auditLog
     };
-    this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe();
+    this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(()=>this.reset());
   }
 
   deployAll(): void {
@@ -756,11 +756,11 @@ export class AgentComponent implements OnInit, OnDestroy {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post('agents/cluster/deploy', obj).subscribe();
+          this.coreService.post('agents/cluster/deploy', obj).subscribe(()=>this.reset());
         }
       });
     } else {
-      this.coreService.post('agents/cluster/deploy', obj).subscribe();
+      this.coreService.post('agents/cluster/deploy', obj).subscribe(()=>this.reset());
     }
   }
 
@@ -794,11 +794,11 @@ export class AgentComponent implements OnInit, OnDestroy {
               timeSpent: result.timeSpent,
               ticketLink: result.ticketLink
             };
-            this.coreService.post('agents/cluster/deploy', obj).subscribe();
+            this.coreService.post('agents/cluster/deploy', obj).subscribe(()=>this.reset());
           }
         });
       } else {
-        this.coreService.post('agents/cluster/deploy', obj).subscribe();
+        this.coreService.post('agents/cluster/deploy', obj).subscribe(()=>this.reset());
       }
     }
   }
@@ -1222,7 +1222,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         this.first != null && this.bounds != null && !this.suspended) {
         // Stops moving if a multi touch event is received
         if (mxEvent.isMultiTouchEvent(me.getEvent())) {
-          this.reset();
+          self.reset();
           return;
         }
         let delta = this.getDelta(me);

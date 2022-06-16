@@ -82,7 +82,7 @@
                 <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
                 <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released || node.origin.deployId), 'fa-circle text-dark': node.origin.lastModified}" style="margin-top: 4px"></span>
+                <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released || node.origin.deployId || node.origin.releaseId), 'fa-circle text-dark': node.origin.lastModified}" style="margin-top: 4px"></span>
                 <span class="p-l-sm text-capitalize" *ngIf="node.origin.object">{{node.origin.name | translate}}</span>
                 <span class="p-l-sm" *ngIf="!node.origin.object">{{node.origin.name}}</span>
                 <i class="text-muted p-l-sm" *ngIf="node.origin.lastModified">({{node.origin.lastModified | stringToDate}})</i>

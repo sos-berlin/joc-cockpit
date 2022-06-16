@@ -8,30 +8,38 @@
 <div class="white box-shadow sub-header">
   <div class="row">
     <div class="col-md-12">
-      <div class="padding">
+      <div class="padding p-b-sm">
         <div class="text-right ">
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div [ngClass]="{'show-block':object.mapOfCheckedId.size == 0}" class="inline pull-right hide">
+          <div class="inline m-b-xs" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
             <div class="btn-group m-l-12 hidden-btn-group">
-              <button class="btn btn-grey btn-sm button-group-ellipsis"
-                      [ngClass]="{'btn-primary': workflowFilters.filter.state==='ALL'}"
-                      (click)="loadWorkflow('ALL')" translate>filters.button.all
-              </button>
-              <button class="btn btn-grey btn-sm button-group-ellipsis"
-                      [ngClass]="{'btn-primary': workflowFilters.filter.state==='INSYNC'}"
-                      (click)="loadWorkflow('INSYNC')" translate>filters.button.synchronized
-              </button>
-              <button class="btn btn-grey btn-sm button-group-ellipsis"
-                      [ngClass]="{'btn-primary': workflowFilters.filter.state==='NOT_INSYNC'}"
-                      (click)="loadWorkflow('NOT_INSYNC')" translate>filters.button.notSynchronized
-              </button>
-              <button class="btn btn-grey btn-sm button-group-ellipsis"
-                      [ngClass]="{'btn-primary': workflowFilters.filter.state==='SUSPENDED'}"
-                      (click)="loadWorkflow('SUSPENDED')" translate>filters.button.suspended
-              </button>
+              <ng-container *ngFor="let btn of filterState">
+                <button class="btn btn-grey btn-sm button-group-ellipsis"
+                        [ngClass]="{'btn-primary': workflowFilters.filter.state===btn.state}"
+                        (click)="loadWorkflow(btn.state)" translate>filters.button.{{btn.text}}
+                </button>
+              </ng-container>
             </div>
+            <div class="btn-group dropdown hidden-dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" type="button" translate>
+                common.label.status
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
+              </button>
+              <nz-dropdown-menu #anyState="nzDropdownMenu" >
+                <ul nz-menu>
+                  <ng-container *ngFor="let btn of filterState">
+                    <li nz-menu-item (click)="loadWorkflow(btn.state)"
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.state=== btn.state}">
+                      <a translate>filters.button.{{btn.text}}</a>
+                    </li>
+                  </ng-container>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
+          <div class="inline m-b-xs" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button class="btn btn-grey btn-sm button-group-ellipsis"
@@ -84,7 +92,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-   	        <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
+            <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button">
                 {{'customization.label.customizations' | translate}}
                 <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
@@ -131,7 +139,7 @@
   </div>
 </div>
 <div class="scroll-y max-ht overflow-hide">
-  <div class="padding p-b-0 p-l-0">
+  <div class="padding p-b-0">
     <div class="row m-t-sm">
       <div class="col-lg-12">
         <div appResizable [sideView]="sideView" id="leftPanel" class="sticky leftPanel workflow">
@@ -279,7 +287,7 @@
                     <div class="box-footer b-t">
                       <div>
                         <a class="hide text-left primary-text-hover-color"
-                           [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.create}"
+                           [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.create, 'disable-link': (!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC')}"
                            (click)="actionChild.addOrder(workflow);">
                           <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
                           <span class="text-black-lt" translate>workflow.button.addOrder</span>
@@ -449,7 +457,7 @@
                              *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
                           <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
                              (click)="hidePanelFuc(workflow)"></i>
-                          <i *ngIf="permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion" class="cursor fa fa-plus p-l-xs"
+                          <i *ngIf="permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC'" class="cursor fa fa-plus p-l-xs"
                              [nz-tooltip]="'workflow.button.addOrder' | translate" (click)="addOrder(workflow)"></i>
                           <i class="cursor fa fa-list p-l-xs" [nz-tooltip]="'workflow.button.showTabularView' | translate" (click)="navToDetailView('list', workflow)"></i>
                           <i class="cursor fa fa-th p-l-xs p-r-xs" [nz-tooltip]="'workflow.button.showGraphicalView' | translate" (click)="navToDetailView('grid', workflow)"></i>

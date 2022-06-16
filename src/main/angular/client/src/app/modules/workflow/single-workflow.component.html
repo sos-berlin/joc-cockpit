@@ -72,7 +72,7 @@
                          *ngIf="!workflow.show" (click)="showPanelFuc(workflow)"></i>
                       <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" *ngIf="workflow.show"
                          (click)="hidePanelFuc(workflow)"></i>
-                      <i *ngIf="permission.currentController.orders.create && workflow.isCurrentVersion" class="cursor fa fa-plus p-l-xs"
+                      <i *ngIf="permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC'" class="cursor fa fa-plus p-l-xs"
                           [nz-tooltip]="'workflow.button.addOrder' | translate" (click)="addOrder(workflow)"></i>
                       <i class="cursor fa fa-list p-l-xs" [nz-tooltip]="'workflow.button.showTabularView' | translate" (click)="navToDetailView('list', workflow)"></i>
                       <i class="cursor fa fa-th p-l-xs p-r-xs" [nz-tooltip]="'workflow.button.showGraphicalView' | translate" (click)="navToDetailView('grid', workflow)"></i>

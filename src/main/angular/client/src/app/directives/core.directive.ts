@@ -485,7 +485,7 @@ export class ResizableDirective implements OnInit {
         dom.css('top', '191px');
         if (this.sideView && this.sideView.width) {
           dom.css('width', this.sideView.width + 'px');
-          $('#rightPanel').css({'margin-left': this.sideView.width + 18 + 'px'});
+          $('#rightPanel').css({'margin-left': this.sideView.width + 'px'});
         }
         dom.resizable({
           handles: 'e',
@@ -493,7 +493,7 @@ export class ResizableDirective implements OnInit {
           maxWidth: 1024,
           resize: (e, x) => {
             const wt = dom.width();
-            $('#rightPanel').css({'margin-left': wt + 18 + 'px'});
+            $('#rightPanel').css({'margin-left': wt + 'px'});
             if (this.sideView) {
               this.sideView.width = wt;
             }

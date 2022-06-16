@@ -8,12 +8,12 @@
 <div class="white box-shadow sub-header" *ngIf="permission.currentController">
   <div class="row">
     <div class="col-md-12">
-      <div class="padding">
+      <div class="padding p-b-sm">
         <div class="text-right ">
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
+          <div class="inline m-b-xs" [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}">
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
                 <span>  {{ 'filters.button.'+orderFilters.filter.dateLabel | translate}} </span>
@@ -39,7 +39,7 @@
               </ng-container>
             </div>
             <div class="btn-group m-l-12 dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" type="button" translate>
+              <button class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" type="button" translate>
                 common.label.state
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
@@ -125,7 +125,7 @@
   </div>
 </div>
 <div class="scroll-y max-ht">
-  <div class="padding p-b-sm p-l-0">
+  <div class="padding p-b-sm">
     <div class="row m-t-sm">
       <div class="col-lg-12">
         <div *ngIf="sideView.orderOverview.show && pageView !== 'bulk'" class="pos-abt p-a-0 resize-cursor" style="left: 270px"><i style="font-size: 18px" class="fa fa-angle-double-left p-l-sm" (click)="hidePanel()"></i></div>
@@ -465,7 +465,7 @@
               <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size === data.length" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
             </div>
             <div class="box p-a m-t-xs m-b-0" *ngIf="pageView === 'list'">
-              <perfect-scrollbar appResizable class="table-responsive pos-init resizable" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
+              <perfect-scrollbar appResizable class="pos-init resizable" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
                 <nz-table
                   #ajaxTable
                   [nzSize]="'small'"

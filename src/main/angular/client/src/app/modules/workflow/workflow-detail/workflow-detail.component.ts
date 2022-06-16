@@ -401,8 +401,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         this.workflow = this.coreService.clone(res.workflow);
-        this.orderPreparation = res.workflow.orderPreparation;
+        this.orderPreparation = res.workflow.orderPreparation
+        let instructions = this.coreService.clone(res.workflow.instructions);
         this.workFlowJson = res.workflow;
+        this.workFlowJson.actual = this.coreService.clone(res.workflow.instructions);
         this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs);
         this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
         if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {

@@ -234,7 +234,7 @@
           <div class="rg-right" [ngClass]="{'bg-white' : isTrash}"><span></span></div>
         </div>
       </div>
-      <div id="rightPanel" [ngStyle]="{'margin-left': sideView.inventory ? (sideView.inventory.width + 18) + 'px' : 'auto'}">
+      <div id="rightPanel" [ngStyle]="{'margin-left': sideView.inventory ? (sideView.inventory.width) + 'px' : 'auto'}">
         <div *ngIf="type == 'WORKFLOW'">
           <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
                         [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-workflow>

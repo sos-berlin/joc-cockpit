@@ -66,8 +66,8 @@ export class AddOrderModalComponent implements OnInit {
   submitted = false;
   zones = [];
   variableList = [];
-  startNodes = [];
-  endNodes = [];
+  nodes = [];
+  positions = new Map();
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
@@ -83,176 +83,176 @@ export class AddOrderModalComponent implements OnInit {
       this.display = true;
     }
     this.order.timeZone = this.preferences.zone;
-    this.recursiveUpdate(null);
-    this.workflow.instructions.forEach(element => {
-      if (element.TYPE !== 'ImplicitEnd') {
-        let flag = true;
-        if (element.TYPE === 'Try') {
-          element.catch.instructions.forEach(ele => {
-            if (ele.TYPE === 'Retry') {
-              flag = false;
-              this.startNodes.push({name: element.jobName || ele.TYPE, position: element.positionString});
-            }
-          });
-        }
-        if (flag) {
-          this.startNodes.push({name: element.jobName || element.TYPE, position: element.positionString});
-        }
-      }
-    })
     this.order.at = 'now';
+    this.getPositions();
     this.updateVariableList();
   }
 
-  recursiveUpdate(position): void {
+  private getPositions(): void {
+    this.coreService.post('orders/add/positions', {
+      controllerId: this.schedulerId,
+      workflowId: {
+        path: this.workflow.path,
+        version: this.workflow.version
+      }
+    }).subscribe({
+      next: (res) => {
+        let positions = res.positions.map((item) => {
+          this.positions.set(item.positionString, JSON.stringify(item.position));
+          return item.positionString;
+        });
+        this.recursiveUpdate(positions);
+      }, error: () => this.submitted = false
+    });
+  }
+
+  recursiveUpdate(positions): void {
     const self = this;
     let nodes: any = {
       children: []
     };
-    let flag = false;
 
     function recursive(json, obj) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          if (!position || json.instructions[x].positionString === position) {
-            flag = true;
-          }
-          if (json.instructions[x].TYPE !== 'ImplicitEnd') {
-            if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
-              if (flag) {
-                obj.children.push({
-                  title: json.instructions[x].jobName || json.instructions[x].TYPE,
+          let isEnable = positions.indexOf(json.instructions[x].positionString) > -1;
+          if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
+            obj.children.push({
+              title: json.instructions[x].jobName || json.instructions[x].TYPE,
+              key: json.instructions[x].positionString,
+              disabled: !isEnable,
+              isLeaf: true
+            });
+          } else {
+            if (json.instructions[x].TYPE === 'Fork') {
+              if (json.instructions[x].branches) {
+                let _obj = {
+                  title: json.instructions[x].TYPE,
+                  disabled: !isEnable,
                   key: json.instructions[x].positionString,
-                  isLeaf: true
-                });
-              }
-
-            } else {
-              if (json.instructions[x].TYPE === 'Fork') {
-                if (json.instructions[x].branches) {
-                  let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
-                  if (flag) {
-                    obj.children.push(_obj);
-                  }
-                  for (let i = 0; i < json.instructions[x].branches.length; i++) {
-                    if (json.instructions[x].branches[i].workflow.instructions) {
-                      let obj1 = {
-                        title: json.instructions[x].branches[i].id,
-                        disabled: true,
-                        key: json.instructions[x].positionString + json.instructions[x].branches[i].id,
-                        children: []
-                      };
-                      if (flag) {
-                        _obj.children.push(obj1);
-                      }
-                      recursive(json.instructions[x].branches[i].workflow, obj1);
-                    }
-                  }
-                }
-              }
-
-              if (json.instructions[x].instructions) {
-                recursive(json.instructions[x], obj);
-              }
-              if (json.instructions[x].TYPE === 'Try') {
-
-                json.instructions[x].catch.instructions.forEach(element => {
-                  if (element.TYPE === 'Retry') {
-                    let _obj = {title: 'Retry', key: json.instructions[x].positionString, children: []};
-                    if (flag) {
-                      obj.children.push(_obj);
-                    }
-                    if (json.instructions[x].try) {
-                      if (json.instructions[x].try.instructions && json.instructions[x].try.instructions.length > 0) {
-                        recursive(json.instructions[x].try, _obj);
-                      }
-                    }
-                  } else {
-                    let _obj = {
-                      title: json.instructions[x].TYPE,
-                      key: json.instructions[x].positionString,
+                  children: []
+                };
+                obj.children.push(_obj);
+                for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                  if (json.instructions[x].branches[i].workflow.instructions) {
+                    let obj1 = {
+                      title: json.instructions[x].branches[i].id,
+                      disabled: true,
+                      key: json.instructions[x].positionString + json.instructions[x].branches[i].id,
                       children: []
                     };
-                    if (flag) {
-                      obj.children.push(_obj);
-                    }
-                    if (json.instructions[x].try) {
-                      if (json.instructions[x].try.instructions && json.instructions[x].try.instructions.length > 0) {
-                        recursive(json.instructions[x].try, _obj);
-                      }
-                    }
-                    if (json.instructions[x].catch) {
-                      if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-                        let obj1 = {
-                          title: "catch",
-                          disabled: true,
-                          key: json.instructions[x].positionString + "catch",
-                          children: []
-                        };
-                        if (flag) {
-                          _obj.children.push(obj1);
-                        }
-                        recursive(json.instructions[x].catch, obj1);
-                      }
-                    }
-                  }
-                })
-              }
-              if (json.instructions[x].TYPE === 'If') {
-                let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
-                if (flag) {
-                  obj.children.push(_obj);
-                }
-                if (json.instructions[x].then && json.instructions[x].then.instructions) {
-                  recursive(json.instructions[x].then, _obj);
-                }
-                if (json.instructions[x].else && json.instructions[x].else.instructions) {
-                  let obj1 = {title: "else", disabled: true, key: json.instructions[x].positionString, children: []};
-                  if (flag) {
                     _obj.children.push(obj1);
+                    recursive(json.instructions[x].branches[i].workflow, obj1);
                   }
-                  recursive(json.instructions[x].else, obj1);
-                }
-              }
-              if (json.instructions[x].TYPE === 'Cycle') {
-                if (json.instructions[x].cycleWorkflow) {
-                  let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
-                  if (flag) {
-                    obj.children.push(_obj);
-                  }
-                  recursive(json.instructions[x].cycleWorkflow, _obj);
-                }
-              }
-              if (json.instructions[x].TYPE === 'Lock') {
-                if (json.instructions[x].lockedWorkflow) {
-                  let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
-                  if (flag) {
-                    obj.children.push(_obj);
-                  }
-                  recursive(json.instructions[x].lockedWorkflow, _obj);
-                }
-              }
-              if (json.instructions[x].TYPE === 'ForkList') {
-                if (json.instructions[x].workflow) {
-                  let _obj = {title: json.instructions[x].TYPE, key: json.instructions[x].positionString, children: []};
-                  if (flag) {
-                    obj.children.push(_obj);
-                  }
-                  recursive(json.instructions[x].workflow, _obj);
                 }
               }
             }
+
+            if (json.instructions[x].instructions) {
+              recursive(json.instructions[x], obj);
+            }
+            if (json.instructions[x].TYPE === 'Try') {
+              let isRetry = false;
+              json.instructions[x].catch.instructions.forEach(element => {
+                if (element.TYPE === 'Retry') {
+                  isRetry = true;
+                }
+              })
+              let _obj = {
+                title: isRetry ? 'Retry' : json.instructions[x].TYPE,
+                key: json.instructions[x].positionString,
+                disabled: !isEnable,
+                children: []
+              };
+              obj.children.push(_obj);
+              if (json.instructions[x].try) {
+                if (json.instructions[x].try.instructions && json.instructions[x].try.instructions.length > 0) {
+                  recursive(json.instructions[x].try, _obj);
+                }
+              }
+              if (!isRetry) {
+                let obj1 = {
+                  title: "catch",
+                  disabled: !isEnable,
+                  key: json.instructions[x].positionString + "catch",
+                  children: []
+                };
+                _obj.children.push(obj1);
+                recursive(json.instructions[x].catch, obj1);
+              }
+            }
+            if (json.instructions[x].TYPE === 'If') {
+              let _obj = {
+                title: json.instructions[x].TYPE,
+                disabled: !isEnable,
+                key: json.instructions[x].positionString,
+                children: []
+              };
+              obj.children.push(_obj);
+              if (json.instructions[x].then && json.instructions[x].then.instructions) {
+                recursive(json.instructions[x].then, _obj);
+              }
+              if (json.instructions[x].else && json.instructions[x].else.instructions) {
+                let obj1 = {
+                  title: "Else",
+                  disabled: true,
+                  key: json.instructions[x].positionString,
+                  children: []
+                };
+                _obj.children.push(obj1);
+                recursive(json.instructions[x].else, obj1);
+              }
+            }
+            if (json.instructions[x].TYPE === 'Cycle') {
+              if (json.instructions[x].cycleWorkflow) {
+                let _obj = {
+                  title: json.instructions[x].TYPE,
+                  disabled: !isEnable,
+                  key: json.instructions[x].positionString,
+                  children: []
+                };
+                obj.children.push(_obj);
+                recursive(json.instructions[x].cycleWorkflow, _obj);
+              }
+            }
+            if (json.instructions[x].TYPE === 'Lock') {
+              if (json.instructions[x].lockedWorkflow) {
+                let _obj = {
+                  title: json.instructions[x].TYPE,
+                  disabled: !isEnable,
+                  key: json.instructions[x].positionString,
+                  children: []
+                };
+                obj.children.push(_obj);
+                recursive(json.instructions[x].lockedWorkflow, _obj);
+              }
+            }
+            if (json.instructions[x].TYPE === 'ForkList') {
+              if (json.instructions[x].workflow) {
+                let _obj = {
+                  title: json.instructions[x].TYPE,
+                  disabled: !isEnable,
+                  key: json.instructions[x].positionString,
+                  children: []
+                };
+                obj.children.push(_obj);
+                recursive(json.instructions[x].workflow, _obj);
+              }
+            }
           }
+
         }
       }
     }
 
-    recursive(this.workflow, nodes);
-    self.endNodes = nodes.children;
+    recursive({
+      instructions: this.workflow.actual || this.workflow.instructions
+    }, nodes);
+    self.nodes = nodes.children;
   }
 
   selectStartNode(value) {
-    this.recursiveUpdate(value);
+    // this.recursiveUpdate(value);
   }
 
   updateVariableList(): void {
@@ -423,6 +423,12 @@ export class AddOrderModalComponent implements OnInit {
           }
         }
       });
+    }
+    if (this.order.startPosition) {
+      order.startPosition = JSON.parse(this.positions.get(this.order.startPosition))
+    }
+    if (this.order.endPosition) {
+      order.endPosition = JSON.parse(this.positions.get(this.order.endPosition));
     }
     obj.orders.push(order);
     obj.auditLog = {};

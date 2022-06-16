@@ -254,12 +254,12 @@
 <div class="white box-shadow sub-header">
   <div class="row">
     <div class="col-md-12">
-      <div class="padding">
+      <div class="padding p-b-sm">
         <div class="text-right ">
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}">
+          <div class="inline m-b-xs" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
@@ -286,7 +286,7 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline break-line" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}">
+          <div class="inline" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}">
             <div class="btn-group m-l-12">
               <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                       [ngClass]="{'btn-primary': dailyPlanFilters.filter.late}" (click)="changeLate()">

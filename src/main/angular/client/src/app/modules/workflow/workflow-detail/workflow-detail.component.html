@@ -60,11 +60,11 @@
               <i class="fa fa-codepen"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDependency</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="addOrder()" [disabled]="!workflow.isCurrentVersion"
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="addOrder()" [disabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
                     *ngIf="permission.currentController && permission.currentController.orders.create"><i class="fa fa-plus-square"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" (click)="suspend()" *ngIf="!workflow.suspended" [disabled]="!workflow.isCurrentVersion"><i
+            <button class="btn btn-grey btn-sm m-l-12" (click)="suspend()" *ngIf="!workflow.suspended" [disabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"><i
               class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.suspend</span></button>
             <button class="btn btn-grey btn-sm m-l-12" (click)="resume()" *ngIf="workflow.suspended" [disabled]="!workflow.isCurrentVersion"><i

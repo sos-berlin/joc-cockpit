@@ -364,7 +364,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   showRole(account): void {
-    this.router.navigate(['/users/identity_service/role'], {queryParams: {account}}).then(r => console.log(r));
+    this.router.navigate(['/users/identity_service/role'], {queryParams: {account}}).then();
   }
 
   /* ---------------------------- Action ----------------------------------*/

@@ -2355,6 +2355,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @Input() reload: any;
   @Input() isTrash: any;
 
+  searchText = '';
   jobResourcesTree = [];
   documentationTree = [];
   workflowTree = [];
@@ -2395,6 +2396,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   error: boolean;
   cutCell: any = [];
   copyId: any = [];
+  allNodes: any = [];
   skipXMLToJSONConversion = false;
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
@@ -2403,6 +2405,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   variableDeclarations = {parameters: []};
   document = {name: ''};
   fullScreen = false;
+  isSearchVisible = false;
   keyHandler: any;
   lastModified: any = '';
   subscription1: Subscription;
@@ -2560,6 +2563,100 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
 
     recursive(scr[0]);
+  }
+
+  selectSearchNode(value) {
+    if (this.editor && this.editor.graph) {
+      const graph = this.editor.graph;
+      const model = graph.getModel();
+      if (model.cells) {
+        for (const prop in model.cells) {
+          if (model.cells[prop].getAttribute('uuid') === value) {
+            const cell = model.cells[prop];
+            const bounds = this.editor.graph.getGraphBounds();
+            let state = this.editor.graph.view.getState(cell);
+            this.editor.graph.view.setTranslate(((this.editor.graph.container.clientWidth / 2) - (state.width / 2) - (state.x - bounds.x)),
+              (bounds.y - (state.y - ((this.editor.graph.container.clientHeight / 2) - (state.height / 2)))));
+            graph.clearSelection();
+            graph.setSelectionCell(cell);
+            $("#searchTree").removeClass('ant-select-focused');
+            $('#workflowHeader').removeClass('hide-on-focus');
+            this.initEditorConf(this.editor, false, false, true);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  @HostListener('window:click', ['$event'])
+  onClick(): void {
+    $("#searchTree").hasClass('ant-select-focused') ? $('#workflowHeader').addClass('hide-on-focus') : $('#workflowHeader').removeClass('hide-on-focus');
+  }
+
+  recursiveUpdate(): void {
+    $('#searchTree').addClass('ant-select-focused');
+    $('#workflowHeader').addClass('hide-on-focus');
+    const self = this;
+    let nodes: any = {
+      children: []
+    };
+    let flag = false;
+
+    function recursive(json, obj) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+
+          let child: any = {
+            title: json.instructions[x].jobName || json.instructions[x].TYPE,
+            key: json.instructions[x].uuid
+          };
+
+          if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
+            child.isLeaf = true;
+          } else {
+            child.children = [];
+          }
+          obj.children.push(child);
+
+          if (json.instructions[x].TYPE === 'Fork') {
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                if (json.instructions[x].branches[i].instructions) {
+                  let obj1 = {
+                    title: json.instructions[x].branches[i].id,
+                    disabled: true,
+                    key: json.instructions[x].uuid + json.instructions[x].branches[i].id,
+                    children: []
+                  };
+                  child.children.push(obj1);
+                  recursive(json.instructions[x].branches[i], obj1);
+                }
+              }
+            }
+          }
+
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x], obj);
+          }
+          if (json.instructions[x].TYPE === 'If') {
+            if (json.instructions[x].then && json.instructions[x].then.instructions) {
+              recursive(json.instructions[x].then, obj);
+            }
+            if (json.instructions[x].else && json.instructions[x].else.instructions) {
+              let obj1 = {title: "else", disabled: true, key: json.instructions[x].uuid, children: []};
+              if (flag) {
+                child.children.push(obj1);
+              }
+              recursive(json.instructions[x].else, obj1);
+            }
+          }
+        }
+      }
+    }
+
+    recursive(this.workflow.configuration, nodes);
+    self.allNodes = nodes.children;
   }
 
   /**
@@ -3126,17 +3223,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   private checkGraphHeight(): void {
     if (this.editor) {
-      const dom = $('.graph-container');
-      if (dom && dom.position()) {
-        let _top = dom.position().top;
-        if (_top > 40) {
-          _top = 35;
+      setTimeout(() => {
+        const dom = $('.graph-container');
+        if (dom && dom.position()) {
+          let _top = dom.position().top;
+          if (_top > 40) {
+            _top = 35;
+          }
+          const top = (_top + $('#rightPanel').position().top);
+          const ht = 'calc(100vh - ' + (top + 22) + 'px)';
+          dom.css({height: ht, 'scroll-top': '0'});
+          $('#graph').slimscroll({height: ht, scrollTo: '0'});
         }
-        const top = (_top + $('#rightPanel').position().top);
-        const ht = 'calc(100vh - ' + (top + 22) + 'px)';
-        dom.css({height: ht, 'scroll-top': '0'});
-        $('#graph').slimscroll({height: ht, scrollTo: '0'});
-      }
+      }, 10);
     }
   }
 
@@ -4247,9 +4346,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         $('.sidebar-open').click();
       }, 100);
     }
-    setTimeout(() => {
-      self.checkGraphHeight();
-    }, 10);
+    self.checkGraphHeight();
   }
 
   private centered(flag = false): void {
@@ -4654,7 +4751,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     this.implicitSave = false;
   }
 
-  private initEditorConf(editor, isXML, callFun): void {
+  private initEditorConf(editor, isXML, callFun, isNavigate?): void {
     if (!editor) {
       return;
     }
@@ -4670,7 +4767,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     let dropTargetForPaste = null;
     let _iterateId = 0;
     const doc = mxUtils.createXmlDocument();
-    if (!callFun) {
+    if (!callFun && !isNavigate) {
       $('#toolbar').find('img').each(function (index) {
         if (index === 15) {
           $(this).addClass('disable-link');
@@ -8768,6 +8865,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     if (callFun) {
       selectionChanged();
+    }
+
+    if (isNavigate) {
+      customizedChangeEvent();
     }
   }
 

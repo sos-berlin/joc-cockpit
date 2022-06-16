@@ -1,11 +1,25 @@
 <div>
   <div class="row">
     <div class="col-md-12" *ngIf="data.type">
-      <prefect-scrollbar id="toolbar-scrollbar">
+      <perfect-scrollbar id="toolbar-scrollbar">
         <div id="toolbar" class="bg-white" [ngClass]="{'disable-link': isTrash || !(permission.joc && permission.joc.inventory.manage)}"></div>
-      </prefect-scrollbar>
+      </perfect-scrollbar>
       <div class="row toolbar b-b m-b-12">
         <div class="col-md-12">
+          <nz-tree-select
+            id="searchTree"
+            class="input-search"
+            [nzPlaceHolder]="'Search' | translate"
+            name="searchNode"
+            [(ngModel)]="searchText"
+            [nzDropdownClassName]="'custom-dropdown'"
+            [nzNodes]="allNodes"
+            [nzShowSearch]="true"
+            (ngModelChange)="selectSearchNode($event)"
+          >
+          </nz-tree-select>
+        </div>
+        <div class="col-md-12" id="workflowHeader" >
             <div class="inline m-b" *ngIf="workflow.path">
               <div style="position: relative; top: 3px">
                 <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
@@ -18,7 +32,9 @@
                 </span>
               </div>
             </div>
+
             <div class="inline pull-right" *ngIf="!isTrash">
+              <span *ngIf="!isLoading" class="btn-search" (click)="recursiveUpdate()"><i nz-icon nzType="search" nzTheme="outline"></i></span>
               <span *ngIf="!isLoading">
                 <span (click)="validate()" class="badge m-r-12"
                       [ngClass]="!workflow.valid ? 'cursor badge-danger':'badge-success'">

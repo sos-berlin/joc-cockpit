@@ -1,8 +1,7 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {clone} from 'underscore';
+import { NzModalService} from 'ng-zorro-antd/modal';
 import {takeUntil} from 'rxjs/operators';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -12,17 +11,6 @@ import {CalendarModalComponent} from '../../../components/calendar-modal/calenda
 import {SearchPipe} from '../../../pipes/core.pipe';
 
 declare const $: any;
-
-@Component({
-  selector: 'app-show-modal-content',
-  templateUrl: './show-dialog.html'
-})
-export class ShowModalComponent {
-  @Input() calendar: any;
-
-  constructor(public activeModal: NzModalRef) {
-  }
-}
 
 // Main Component
 @Component({
@@ -55,26 +43,6 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
 
   /* ---------------------------- Action ----------------------------------*/
 
-  showUsage(calendar): void {
-    const cal = clone(calendar);
-    this.coreService.post('calendar/used', {
-      id: calendar.id,
-      controllerId: this.controllerId
-    }).subscribe((res: any) => {
-      cal.usedIn = res;
-      this.modal.create({
-        nzTitle: null,
-        nzContent: ShowModalComponent,
-        nzComponentParams: {
-          calendar: cal
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-    });
-  }
-
   previewCalendar(calendar): void {
     this.modal.create({
       nzTitle: null,
@@ -88,10 +56,6 @@ export class SingleCalendarComponent implements OnInit, OnDestroy {
       nzClosable: false,
       nzMaskClosable: false
     });
-  }
-
-  showDocumentation(calendar): void {
-
   }
 
   private init(): void {
@@ -175,14 +139,14 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       types: ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR']
-    }).subscribe(res => {
-      this.tree = this.coreService.prepareTree(res, true);
-      if (this.tree.length > 0) {
-        this.loadCalendar(null);
-      }
-      this.isLoading = true;
-    }, () => {
-      this.isLoading = true;
+    }).subscribe({
+      next: res => {
+        this.tree = this.coreService.prepareTree(res, true);
+        if (this.tree.length > 0) {
+          this.loadCalendar(null);
+        }
+        this.isLoading = true;
+      }, error: () => this.isLoading = true
     });
   }
 
@@ -249,25 +213,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
-  showUsage(calendar): void {
-    const cal = clone(calendar);
-    this.coreService.post('calendar/used', {
-      id: calendar.id,
-      controllerId: this.schedulerIds.selected
-    }).subscribe((res: any) => {
-      cal.usedIn = res;
-      this.modal.create({
-        nzTitle: null,
-        nzContent: ShowModalComponent,
-        nzComponentParams: {
-          calendar: cal
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-    });
-  }
 
   previewCalendar(calendar): void {
     this.modal.create({

@@ -82,6 +82,12 @@ export class SearchComponent implements OnInit {
   isUnique = true;
   objectType = 'WORKFLOW';
 
+  checkOptions = [
+    { label: 'synchronized', value: 'INSYNC', checked: false },
+    { label: 'notSynchronized', value: 'NOT_INSYNC', checked: false },
+    { label: 'suspended', value: 'SUSPENDED', checked: false }
+  ];
+
   constructor(private authService: AuthService, public coreService: CoreService) {
   }
 
@@ -108,6 +114,10 @@ export class SearchComponent implements OnInit {
 
   displayWith(data): string {
     return data.key;
+  }
+
+  stateChange(value: string[]): void {
+    this.filter.states = value;
   }
 
   selectFolder(node, $event): void {
@@ -416,6 +426,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private pendingHTTPRequests$ = new Subject<void>();
 
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
+
+  filterState: any = [
+    {state: 'ALL', text: 'all'},
+    {state: 'INSYNC', text: 'synchronized'},
+    {state: 'NOT_INSYNC', text: 'notSynchronized'},
+    {state: 'SUSPENDED', text: 'suspended'}
+  ];
 
   filterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -1184,7 +1201,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   exportToExcel(): void {
-    let name = '', path = '', deploymentDate = '', status = '', numOfOrders = '', pending = '', scheduled = '', running = '',
+    let name = '', path = '', deploymentDate = '', status = '', numOfOrders = '', pending = '', scheduled = '',
+      running = '',
       suspended = '', prompting = '', failed = '', waiting = '', blocked = '', calling = '', inprogress = '';
     this.translate.get('common.label.name').subscribe(translatedValue => {
       name = translatedValue;

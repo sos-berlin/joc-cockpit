@@ -1,7 +1,7 @@
 <div class="white box-shadow sub-header">
   <div class="row">
     <div class="col-md-12">
-      <div class="padding">
+      <div class="padding p-b-sm">
         <div class="text-right ">
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
@@ -59,7 +59,7 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline break-line" *ngIf="historyFilters.type == 'ORDER'">
+          <div class="inline m-b-xs" *ngIf="historyFilters.type == 'ORDER'">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button [disabled]="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
@@ -162,7 +162,7 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline break-line" *ngIf="historyFilters.type == 'TASK'">
+          <div class="inline m-b-xs" *ngIf="historyFilters.type == 'TASK'">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button [disabled]="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
@@ -284,7 +284,7 @@
                   </nz-dropdown-menu>
                 </div>
           </div>
-          <div class="inline break-line" *ngIf="historyFilters.type == 'YADE'">
+          <div class="inline m-b-xs" *ngIf="historyFilters.type == 'YADE'">
              <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
               <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered3.account" nz-dropdown
                       nzTrigger="click" [nzDropdownMenu]="customization3" [nzPlacement]="'bottomRight'" type="button"
@@ -357,7 +357,7 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline break-line" *ngIf="historyFilters.type == 'DEPLOYMENT'">
+          <div class="inline m-b-xs" *ngIf="historyFilters.type == 'DEPLOYMENT'">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
                 <button [disabled]="savedDeploymentHistoryFilter.selected"
@@ -457,7 +457,7 @@
               </nz-dropdown-menu>
             </div>
           </div>
-          <div class="inline break-line" *ngIf="historyFilters.type == 'SUBMISSION'">
+          <div class="inline m-b-xs" *ngIf="historyFilters.type == 'SUBMISSION'">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of subMissionFilterBtn">
                 <button [disabled]="savedSubmissionHistoryFilter.selected"

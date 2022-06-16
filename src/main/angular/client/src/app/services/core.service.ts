@@ -116,6 +116,7 @@ export class CoreService {
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
     this.tabs._workflow.filter.date = '1d';
+    this.tabs._workflow.filter.state = 'ALL';
     this.tabs._workflow.filter.sortBy = 'name';
     this.tabs._workflow.reverse = false;
     this.tabs._workflow.currentPage = '1';
@@ -517,6 +518,8 @@ export class CoreService {
       return type === 'text' ? 'calling' : type === 'border' ? 'calling-box' : 'bg-calling';
     } else if (d === 10) {
       return type === 'text' ? 'light-yellow' : type === 'border' ? 'light-yellow-box' : 'bg-light-yellow';
+    } else if (d === 11) {
+      return type === 'text' ? 'light-orange' : type === 'border' ? 'light-orange-box' : 'bg-light-orange';
     } else {
       return type === 'text' ? 'light-green' : type === 'border' ? 'light-green-box' : 'bg-light-green';
     }
@@ -543,6 +546,10 @@ export class CoreService {
       return isHover ? 'rgba(204,204,0, .7)' : '#cccc00';
     } else if (d === 9) {
       return isHover ? 'rgba(243,120,145, .7)' : '#f37891';
+    } else if (d === 10) {
+      return isHover ? 'rgba(255,255,0, .7)' : '#ffff00';
+    } else if (d === 11) {
+      return isHover ? 'rgba(255,166,64, .7)' : '#FFA640';
     } else {
       return '';
     }
@@ -1461,7 +1468,7 @@ export class CoreService {
         dom.text('Search all:');
       }
       if (text.match(/Replace/)) {
-        $('.CodeMirror-search-field').keydown((e) => {
+        $('.CodeMirror-search-field').on('keydown', (e) => {
           if (e.keyCode === 13) {
             const dom2 = $('.CodeMirror-dialog .CodeMirror-search-label');
             if (dom2.text().match(/With:/)) {

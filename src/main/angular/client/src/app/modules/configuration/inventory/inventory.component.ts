@@ -1008,7 +1008,7 @@ export class ExportComponent implements OnInit {
       this.display = true;
     }
     this.exportObj.controllerId = this.schedulerIds.selected;
-   
+
     this.securityLevel = sessionStorage.securityLevel;
     if (this.origin) {
       this.path = this.origin.path;
@@ -1018,13 +1018,11 @@ export class ExportComponent implements OnInit {
         this.filter.controller = false;
         this.filter.deploy = false;
         if (this.origin.dailyPlan) {
-          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, 'CALENDAR');
+          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR);
         } else {
-          this.objectTypes.push(this.origin.object.match('CALENDAR') ? 'CALENDAR' : this.origin.object);
+          this.objectTypes.push(this.origin.object.match('CALENDAR') ? (InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR) : this.origin.object);
         }
-       
       } else {
-       
         if (this.origin.controller || this.origin.object) {
           this.exportType = this.origin.object || 'CONTROLLER';
           this.filter.dailyPlan = false;
@@ -1041,7 +1039,7 @@ export class ExportComponent implements OnInit {
     if (this.objectTypes.length === 0) {
       this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, 'CALENDAR');
+      this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR);
     }
     this.exportObj.objectTypes = [...this.objectTypes];
     this.buildTree(this.path);
@@ -1073,12 +1071,13 @@ export class ExportComponent implements OnInit {
       withoutRemovedObjects: true,
       objectTypes: [...this.exportObj.objectTypes]
     };
-    const index = obj.objectTypes.indexOf('CALENDAR');
-    if (index > -1) {
-      obj.objectTypes.splice(index, 1);
-      obj.objectTypes = obj.objectTypes.concat([InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR]);
-    }
+
     const APIs = [];
+    if (obj.objectTypes.length === 0) {
+      this.nodes = [];
+      this.loading = false;
+      return;
+    }
     if (this.filter.controller && this.filter.dailyPlan) {
       obj.withoutReleased = !this.filter.release;
       APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
@@ -1538,9 +1537,11 @@ export class RepositoryComponent implements OnInit {
         } else {
           obj2.objectTypes = [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.LOCK, InventoryObject.NOTICEBOARD];
         }
-        APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
-          catchError(error => of(error))
-        ));
+        if (obj2.objectTypes.length > 0) {
+          APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
+            catchError(error => of(error))
+          ));
+        }
       }
       if (this.category !== 'LOCAL') {
         obj.objectTypes = [InventoryObject.INCLUDESCRIPT];
@@ -1548,9 +1549,11 @@ export class RepositoryComponent implements OnInit {
         obj.objectTypes = [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.SCHEDULE];
       }
       obj.withoutReleased = !this.filter.release;
-      APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
-        catchError(error => of(error))
-      ));
+      if (obj.objectTypes.length === 0) {
+        APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
+          catchError(error => of(error))
+        ));
+      }
     } else if (this.filter.envIndependent) {
       obj.withVersions = !this.filter.deploy;
       if (this.type !== 'ALL') {
@@ -1558,70 +1561,77 @@ export class RepositoryComponent implements OnInit {
       } else {
         obj.objectTypes = [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.LOCK, InventoryObject.NOTICEBOARD];
       }
-      APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
-        catchError(error => of(error))
-      ));
+      if (obj.objectTypes.length === 0) {
+        APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
+          catchError(error => of(error))
+        ));
+      }
     } else {
       this.loading = false;
       return;
     }
-    forkJoin(APIs).subscribe({
-      next: (res: any) => {
-        let mergeObj: any = {};
-        if (res.length > 1) {
-          if (res[0].path && res[1].path) {
-            mergeObj = this.mergeDeep(res[0], res[1]);
-          } else if (res[0].path && !res[1].path) {
-            mergeObj = res[0];
-          } else if (!res[0].path && res[1].path) {
-            mergeObj = res[1];
-          }
-        } else {
-          if (res[0].path) {
-            mergeObj = res[0];
-          }
-        }
-        let tree = [];
-        if (mergeObj.folders && mergeObj.folders.length > 0 ||
-          ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
-          tree = this.coreService.prepareTree({
-            folders: [{
-              name: mergeObj.name,
-              path: mergeObj.path,
-              folders: mergeObj.folders,
-              deployables: mergeObj.deployables,
-              releasables: mergeObj.releasables
-            }]
-          }, false);
-          this.inventoryService.updateTree(tree[0]);
-        }
-        if (merge) {
-          if (tree.length > 0) {
-            merge.children = tree[0].children;
-            this.inventoryService.checkAndUpdateVersionList(tree[0]);
-          }
-          delete merge.loading;
-          if (!flag) {
-            this.nodes = [...this.nodes];
-          }
-        } else {
-          this.nodes = tree;
-          if (!cb) {
-            setTimeout(() => {
-              this.loading = false;
-              if (this.nodes.length > 0) {
-                this.nodes[0].expanded = true;
-                this.inventoryService.preselected(this.nodes[0]);
-                this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
-              }
-              this.nodes = [...this.nodes];
-            }, 0);
+    if (APIs.length > 0) {
+      forkJoin(APIs).subscribe({
+        next: (res: any) => {
+          let mergeObj: any = {};
+          if (res.length > 1) {
+            if (res[0].path && res[1].path) {
+              mergeObj = this.mergeDeep(res[0], res[1]);
+            } else if (res[0].path && !res[1].path) {
+              mergeObj = res[0];
+            } else if (!res[0].path && res[1].path) {
+              mergeObj = res[1];
+            }
           } else {
-            cb();
+            if (res[0].path) {
+              mergeObj = res[0];
+            }
+          }
+          let tree = [];
+          if (mergeObj.folders && mergeObj.folders.length > 0 ||
+            ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
+            tree = this.coreService.prepareTree({
+              folders: [{
+                name: mergeObj.name,
+                path: mergeObj.path,
+                folders: mergeObj.folders,
+                deployables: mergeObj.deployables,
+                releasables: mergeObj.releasables
+              }]
+            }, false);
+            this.inventoryService.updateTree(tree[0]);
+          }
+          if (merge) {
+            if (tree.length > 0) {
+              merge.children = tree[0].children;
+              this.inventoryService.checkAndUpdateVersionList(tree[0]);
+            }
+            delete merge.loading;
+            if (!flag) {
+              this.nodes = [...this.nodes];
+            }
+          } else {
+            this.nodes = tree;
+            if (!cb) {
+              setTimeout(() => {
+                this.loading = false;
+                if (this.nodes.length > 0) {
+                  this.nodes[0].expanded = true;
+                  this.inventoryService.preselected(this.nodes[0]);
+                  this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+                }
+                this.nodes = [...this.nodes];
+              }, 0);
+            } else {
+              cb();
+            }
           }
         }
-      }
-    })
+      })
+    } else {
+      this.nodes = [];
+      this.loading = false;
+    }
   }
 
   private mergeDeep(deployables, releasables): any {

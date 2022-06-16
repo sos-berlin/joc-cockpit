@@ -90,7 +90,7 @@
                     <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
                     <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
-                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs m-t-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId,
+                    <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs m-t-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
                     'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}"></span>
                     <span *ngIf="node.origin.type && node.origin.syncState" class="p-l-xxs" [nz-tooltip]="node.origin.syncState._text | translate">
                       <i *ngIf="node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING'" class="fa fa-refresh font11 p-l-xxs"></i>

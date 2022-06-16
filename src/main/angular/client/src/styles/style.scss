@@ -26,6 +26,7 @@
   --blue: #1171a6;
   --gold: #efcc00;
   --light-yellow: #ffff00;
+  --light-orange: #FFA640;
   --red: #dc143c;
   --dimgrey: #696969;
   --light-blue: #a3c6ea;
@@ -38,6 +39,7 @@
   --bg-blue: #1591d4;
   --bg-gold: #efcc00;
   --bg-light-yellow: #ffff00;
+  --bg-light-orange: rgba(255, 166, 64, 0.9);
   --bg-red: #ed365b;
   --bg-dimgrey: #bbb;
   --bg-light-blue: #a3c6ea;
@@ -361,11 +363,12 @@ html {
 
 body {
   padding: 0;
+  margin: 0;
   font-size: 13px;
   line-height: 1.42857143;
   -webkit-font-smoothing: antialiased;
   font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
-  overflow-x: hidden;
+  overflow: hidden;
   min-height: 100%;
   text-rendering: optimizeLegibility;
   color: var(--text-color);
@@ -3332,6 +3335,18 @@ div.order-panel div {
   color: rgba(0, 0, 0, .87) !important;
 }
 
+.light-orange {
+  color: var(--light-orange)
+}
+
+.light-orange-box {
+  border-color: var(--bg-light-orange) !important;
+}
+
+.bg-light-orange {
+  background: var(--bg-light-orange);
+}
+
 .light-blue {
   color: var(--light-blue);
 }
@@ -4199,7 +4214,7 @@ aside {
 }
 
 .leftPanel {
-  width: 270px;
+  width: 290px;
   max-width: 50%;
 }
 
@@ -6778,6 +6793,9 @@ tr.tr-border td {
   background: var(--bg-box);
   transition: all .5s;
   -webkit-transition: all .25s;
+  .order-view{
+    padding-left: 20px;
+  }
 }
 
 .workflow.sidebar-hover-effect {

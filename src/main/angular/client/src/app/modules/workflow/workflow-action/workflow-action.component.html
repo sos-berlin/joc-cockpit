@@ -12,10 +12,10 @@
         <a translate>workflow.button.showGraphicalView</a>
       </li>
       <li nz-menu-divider></li>
-      <li nz-menu-item *ngIf="permission.currentController.orders.create" [nzDisabled]="!workflow.isCurrentVersion" (click)="addOrder(workflow);" >
+      <li nz-menu-item *ngIf="permission.currentController.orders.create" [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'" (click)="addOrder(workflow);" >
         <a>{{'workflow.button.addOrder' | translate}} ..</a>
       </li>
-      <li nz-menu-item *ngIf="!workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion" (click)="suspend(workflow);" >
+      <li nz-menu-item *ngIf="!workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'" (click)="suspend(workflow);" >
         <a>{{'order.button.suspend' | translate}}</a>
       </li>
       <li nz-menu-item *ngIf="workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion" (click)="resume(workflow);" >
