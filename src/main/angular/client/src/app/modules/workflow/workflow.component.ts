@@ -428,7 +428,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
 
   filterState: any = [
-    {state: 'ALL', text: 'all'},
     {state: 'IN_SYNC', text: 'synchronized'},
     {state: 'NOT_IN_SYNC', text: 'notSynchronized'},
     {state: 'SUSPENDED', text: 'suspended'}
@@ -674,15 +673,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           obj.states = this.selectedFiltered.states;
         }
       } else {
-        if (this.workflowFilters.filter.status && this.workflowFilters.filter.status != 'ALL') {
-          obj.states = [this.workflowFilters.filter.status];
+        if (this.workflowFilters.filter.states && this.workflowFilters.filter.states.length > 0) {
+          obj.states = [...this.workflowFilters.filter.states];
         }
       }
-      if(obj.states && obj.states.length > 0){
-        if(obj.states.indexOf('SUSPENDED') > -1){
+      if (obj.states && obj.states.length > 0) {
+        if (obj.states.indexOf('SUSPENDED') > -1) {
           obj.states.push('SUSPENDING');
         }
-        if(obj.states.indexOf('IN_SYNC') > -1){
+        if (obj.states.indexOf('IN_SYNC') > -1) {
           obj.states.push('RESUMING');
         }
       }
@@ -908,25 +907,25 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.actionChild.suspend(workflow);
   }
 
-  suspendAll() {
-    this.suspendResumeOperation('Suspend');
+  suspendAll(all = false) {
+    this.suspendResumeOperation('Suspend', all);
   }
 
   resume(workflow): void {
     this.actionChild.resume(workflow);
   }
 
-  resumeAll(): void {
-    this.suspendResumeOperation('Resume');
+  resumeAll(all = false): void {
+    this.suspendResumeOperation('Resume', all);
   }
 
-  private suspendResumeOperation(type): void {
+  private suspendResumeOperation(type, all): void {
     const paths = [];
     this.object.mapOfCheckedId.forEach((workflow) => {
       paths.push(workflow.path);
     });
-    if (paths.length > 0) {
-      this.actionChild[type === 'Resume' ? 'resume' : 'suspend'](null, paths, () => {
+    if (paths.length > 0 || all) {
+      this.actionChild[type === 'Resume' ? 'resume' : 'suspend'](null, all || paths, () => {
         this.resetCheckBox();
       });
     }
@@ -964,7 +963,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   loadWorkflow(status?): void {
     if (status) {
-      this.workflowFilters.filter.status = status;
+      const index = this.workflowFilters.filter.states.indexOf(status);
+      if (index === -1) {
+        this.workflowFilters.filter.states.push(status);
+      } else {
+        this.workflowFilters.filter.states.splice(index, 1);
+      }
     }
     this.reloadState = 'no';
     const obj: any = {

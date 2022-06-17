@@ -9,6 +9,7 @@ import {ValueEditorComponent} from '../../../components/value-editor/value.compo
 import {AuthService} from '../../../components/guard';
 import {WorkflowService} from '../../../services/workflow.service';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
+import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 
 @Component({
   selector: 'app-show-dependency',
@@ -295,6 +296,7 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   selectStartNode(value) {
+    this.order.endPosition = '';
     this.recursiveUpdate(value);
   }
 
@@ -605,10 +607,14 @@ export class WorkflowActionComponent {
   }
 
   private suspendResumeOperation(type, workflow, paths?, cb?) {
-    let obj = {
+    let obj: any = {
       controllerId: this.schedulerId,
-      workflowPaths: workflow ? [workflow.path] : paths
     };
+    if (workflow || typeof paths != 'boolean') {
+      obj.workflowPaths = workflow ? [workflow.path] : paths;
+    } else {
+      obj.all = true;
+    }
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
@@ -638,17 +644,38 @@ export class WorkflowActionComponent {
           }
         }
       });
+    } else if (paths != true) {
+      this.resetCall(type, cb, obj);
     } else {
-      this.isChanged.emit({flag: true});
-      this.coreService.post('workflows/' + (type === 'Resume' ? 'resume' : 'suspend'), obj).subscribe({
-        next: () => {
-          this.resetAction();
-          if (cb) {
-            cb();
-          }
-        }, error: () => this.isChanged.emit({flag: false})
+      const modal = this.modal.create({
+        nzTitle: null,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title2: type === 'Resume' ? 'resumeAll': 'suspendAll',
+          message2: type === 'Resume' ? 'resumeAllWarning' : 'suspendAllWarning'
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe((result) => {
+        if (result) {
+          this.resetCall(type, cb, obj);
+        }
       });
     }
+  }
+
+  private resetCall(type, cb, obj): void{
+    this.isChanged.emit({flag: true});
+    this.coreService.post('workflows/' + (type === 'Resume' ? 'resume' : 'suspend'), obj).subscribe({
+      next: () => {
+        this.resetAction();
+        if (cb) {
+          cb();
+        }
+      }, error: () => this.isChanged.emit({flag: false})
+    });
   }
 
   addOrder(workflow): void {

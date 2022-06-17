@@ -29,7 +29,6 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../models/enums';
 
-
 declare const $: any;
 
 @Component({

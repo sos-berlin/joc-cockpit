@@ -8,7 +8,8 @@
       ?
     </span>
     <span *ngIf="type !== 'Delete' && type !== 'Remove'">
-      <span *ngIf="!resetProfiles">{{'common.label.' + title | translate}}</span>
+      <span *ngIf="!resetProfiles && title">{{'common.label.' + title | translate}}</span>
+      <span *ngIf="title2">{{'workflow.button.' + title2 | translate}}</span>
       <span *ngIf="resetProfiles && resetProfiles.length>0">{{'user.label.' + title | translate}}</span>
       <span *ngIf="objectName">
         {{objectName}}
@@ -23,6 +24,9 @@
   <div class="row text-center">
     <div class="col-sm-12 m-t m-b">
       <span *ngIf="question" class="text">{{question}}</span>
+      <span *ngIf="message2" class="text">
+        {{'workflow.message.' + message2 | translate}}
+      </span>
       <span *ngIf="!countMessage && message" class="text">
         {{(message === 'deleteGitCredentials' ? 'profile.gitManagement.message.' : 'common.message.') + message | translate}}
       </span>

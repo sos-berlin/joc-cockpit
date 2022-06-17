@@ -2579,13 +2579,20 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               (bounds.y - (state.y - ((this.editor.graph.container.clientHeight / 2) - (state.height / 2)))));
             graph.clearSelection();
             graph.setSelectionCell(cell);
-            $("#searchTree").removeClass('ant-select-focused');
+            $('#searchTree input').blur();
             $('#workflowHeader').removeClass('hide-on-focus')
             this.initEditorConf(this.editor, false, false, true);
             break;
           }
         }
       }
+    }
+  }
+
+  @HostListener('window:click', ['$event'])
+  onClick(): void {
+    if(!$('#searchTree').hasClass('ant-select-focused')){
+      $('#workflowHeader').removeClass('hide-on-focus');
     }
   }
 
@@ -2603,9 +2610,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         for (let x = 0; x < json.instructions.length; x++) {
 
           let child: any = {
-            title: json.instructions[x].jobName || json.instructions[x].TYPE,
+            title: json.instructions[x].TYPE,
             key: json.instructions[x].uuid
           };
+
+          if(json.instructions[x].jobName){
+            child.title += ' - ' + json.instructions[x].jobName;
+          } else if (json.instructions[x].noticeBoardName) {
+            child.title += ' - ' + json.instructions[x].noticeBoardName;
+          } else if (json.instructions[x].lockName) {
+            child.title += ' - ' + json.instructions[x].lockName;
+          }
 
           if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
             child.isLeaf = true;

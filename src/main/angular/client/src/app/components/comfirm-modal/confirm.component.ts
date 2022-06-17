@@ -8,7 +8,9 @@ import {NzModalRef} from 'ng-zorro-antd/modal';
 export class ConfirmModalComponent {
 
   @Input() title: any;
+  @Input() title2: any;
   @Input() message: any;
+  @Input() message2: any;
   @Input() countMessage: any;
   @Input() count: number;
   @Input() type: any;

@@ -17,7 +17,7 @@
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterState">
                 <button class="btn btn-grey btn-sm button-group-ellipsis"
-                        [ngClass]="{'btn-primary': workflowFilters.filter.status===btn.state}"
+                        [ngClass]="{'btn-primary': workflowFilters.filter.states.includes(btn.state)}"
                         (click)="loadWorkflow(btn.state)" translate>filters.button.{{btn.text}}
                 </button>
               </ng-container>
@@ -40,23 +40,15 @@
             </div>
           </div>
           <div class="inline m-b-xs" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
-            <div class="btn-group m-l-12 hidden-btn-group">
-              <ng-container *ngFor="let btn of filterBtn">
-                <button class="btn btn-grey btn-sm button-group-ellipsis"
-                        [ngClass]="{'btn-primary': workflowFilters.filter.date===btn.date}"
-                        (click)="loadOrders(btn.date)" translate>filters.button.{{btn.text}}
-                </button>
-              </ng-container>
-            </div>
-            <div class="btn-group dropdown hidden-dropdown">
-              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button" translate>
-                common.label.anyDate
+            <div class="btn-group dropdown">
+              <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button">
+                Order Filter: <span class="text-primary">{{'filters.button.'+ workflowFilters.filter.label | translate}}</span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu" >
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterBtn">
-                    <li nz-menu-item (click)="loadOrders(btn.date)"
+                    <li nz-menu-item (click)="loadOrders(btn.date);workflowFilters.filter.label = btn.text;"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.date=== btn.date}">
                       <a translate>filters.button.{{btn.text}}</a>
                     </li>
@@ -64,6 +56,13 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
+            <button class="btn btn-grey btn-sm m-l-12" (click)="suspendAll(true)"><i
+              class="fa fa-stop p-r-xs"></i>
+              <span class="hidden-sm-down" translate>workflow.button.suspendAll</span></button>
+            <button class="btn btn-grey btn-sm m-l-12" (click)="resumeAll(true)"><i
+              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
+                                                           translate>workflow.button.resumeAll</span>
+            </button>
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="sortBy"
                       [nzPlacement]="'bottomRight'">
@@ -323,8 +322,8 @@
                 >
                   <thead>
                   <tr>
-        	          <th class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
-                        [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="checkAll($event)"></th>
+        	    <th class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
+                        [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="checkAll($event)" rowspan="2"></th>
                     <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
                     <th [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" (click)="sort('name')" rowspan="2">
                       <a><span class="p-r-xs" translate>common.label.name</span>
