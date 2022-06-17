@@ -194,7 +194,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         (this.route.match('/users/identity_service/role') && this.dataService.copiedObject.roles && this.dataService.copiedObject.roles.size > 0));
       if (this.route.match('/users')) {
         if (sessionStorage.identityServiceType) {
-          if ((sessionStorage.identityServiceType === 'VAULT' || sessionStorage.identityServiceType === 'LDAP') && this.route.match('/users/identity_service/account')) {
+          if ((sessionStorage.identityServiceType === 'VAULT' || sessionStorage.identityServiceType === 'KEYCLOAK' || sessionStorage.identityServiceType === 'LDAP') && this.route.match('/users/identity_service/account')) {
             this.selectedUser = null;
             this.router.navigate(['/users/identity_service/role']).then();
           }

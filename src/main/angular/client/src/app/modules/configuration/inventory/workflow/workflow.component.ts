@@ -2580,7 +2580,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             graph.clearSelection();
             graph.setSelectionCell(cell);
             $("#searchTree").removeClass('ant-select-focused');
-            $('#workflowHeader').removeClass('hide-on-focus');
+            $('#workflowHeader').removeClass('hide-on-focus')
             this.initEditorConf(this.editor, false, false, true);
             break;
           }
@@ -2589,13 +2589,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  @HostListener('window:click', ['$event'])
-  onClick(): void {
-    $("#searchTree").hasClass('ant-select-focused') ? $('#workflowHeader').addClass('hide-on-focus') : $('#workflowHeader').removeClass('hide-on-focus');
-  }
-
   recursiveUpdate(): void {
-    $('#searchTree').addClass('ant-select-focused');
+    $('#searchTree input').focus();
     $('#workflowHeader').addClass('hide-on-focus');
     const self = this;
     let nodes: any = {
@@ -2637,11 +2632,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
 
           if (json.instructions[x].instructions) {
-            recursive(json.instructions[x], obj);
+            recursive(json.instructions[x], child);
           }
           if (json.instructions[x].TYPE === 'If') {
             if (json.instructions[x].then && json.instructions[x].then.instructions) {
-              recursive(json.instructions[x].then, obj);
+              recursive(json.instructions[x].then, child);
             }
             if (json.instructions[x].else && json.instructions[x].else.instructions) {
               let obj1 = {title: "else", disabled: true, key: json.instructions[x].uuid, children: []};

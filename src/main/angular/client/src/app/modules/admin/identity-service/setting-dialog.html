@@ -178,22 +178,35 @@
           </div>
         </div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="data.identityServiceType === 'KEYCLOAK'">
         <label class="col-sm-4 form-control-label"
-               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAuthenticationMethodPath' | translate"
-               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakAuthenticationMethodPath
+               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminAccount' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakAdminAccount
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6"
              [ngClass]="{'has-error' : ((methodPath.dirty || methodPath.touched) && methodPath.invalid)}">
-          <input type="text" class="form-control" required #methodPath="ngModel" name="iamKeycloakAuthenticationMethodPath"
-                 [placeholder]="'user.placeholder.iamKeycloakAuthenticationMethodPath' | translate"
-                 [(ngModel)]="currentObj.iamKeycloakAuthenticationMethodPath">
+          <input type="text" class="form-control" required #methodPath="ngModel" name="iamKeycloakAdminAccount"
+                 [placeholder]="'user.placeholder.iamKeycloakAdminAccount' | translate"
+                 [(ngModel)]="currentObj.iamKeycloakAdminAccount">
           <div *ngIf="methodPath.invalid && (methodPath.dirty || methodPath.touched)" class="text-danger help-block">
             <div *ngIf="methodPath.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="data.identityServiceType === 'KEYCLOAK'">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminPassword' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakAdminPassword</label>
+        <div class="col-sm-6">
+          <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control"
+                 name="iamKeycloakAdminPassword" autocomplete="off"
+                 [(ngModel)]="currentObj.iamKeycloakAdminPassword"
+                 [placeholder]="'user.placeholder.iamKeycloakAdminPassword' | translate">
+          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+             (click)="passwordFields.third = !passwordFields.third"></i>
         </div>
       </div>
       <div class="form-group row">
@@ -211,12 +224,12 @@
                [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePassword' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakTrustStorePassword</label>
         <div class="col-sm-6">
-          <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control"
+          <input type="{{!passwordFields.fourth ? 'password' : 'text'}}" class="form-control"
                  name="iamKeycloakTruststorePassword" autocomplete="off"
                  [(ngModel)]="currentObj.iamKeycloakTruststorePassword"
                  [placeholder]="'user.placeholder.iamKeycloakTrustStorePassword' | translate">
-          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
-             (click)="passwordFields.third = !passwordFields.third"></i>
+          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
+             (click)="passwordFields.fourth = !passwordFields.fourth"></i>
         </div>
       </div>
       <div class="form-group row">
@@ -230,6 +243,16 @@
                  [required]="(currentObj.iamKeycloakTruststorePath && currentObj.iamKeycloakTruststorePath.length > 0) ? true : false"
                  [placeholder]="'user.placeholder.iamKeycloakTrustStoreType' | translate"
                  class="form-control" [(ngModel)]="currentObj.iamKeycloakTruststoreType"/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientId' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamKeycloakClientId</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="iamKeycloakClientId"
+                 [(ngModel)]="currentObj.iamKeycloakClientId"
+                 [placeholder]="'user.placeholder.iamKeycloakClientId' | translate">
         </div>
       </div>
       <div class="form-group row">

@@ -44,7 +44,8 @@ export class SettingModalComponent implements OnInit {
   passwordFields: any = {
     first: false,
     second: false,
-    third: false
+    third: false,
+    fourth: false
   };
   oldPassword: string;
   display: any;
@@ -497,8 +498,7 @@ export class IdentityServiceModalComponent implements OnInit {
   }
 
   changeScheme($event): void {
-    if (this.currentObj.identityServiceType === 'JOC' || this.currentObj.identityServiceType === 'VAULT-JOC-ACTIVE'
-      || this.currentObj.identityServiceType === 'KEYCLOAK-JOC-ACTIVE') {
+    if (this.currentObj.identityServiceType === 'JOC' || this.currentObj.identityServiceType === 'VAULT-JOC-ACTIVE') {
       if ($event === 'SINGLE-FACTOR') {
         if (!this.currentObj.singleFactorPwd && !this.currentObj.singleFactorCert) {
           this.currentObj.singleFactorPwd = true;

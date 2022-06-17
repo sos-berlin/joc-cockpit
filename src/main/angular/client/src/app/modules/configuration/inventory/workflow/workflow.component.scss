@@ -104,6 +104,7 @@
   width: 10px;
   transition: all .5s ease-in-out;
   position: absolute;
+  margin-top: -8px;
   opacity: 0;
   background: var(--background-color);
 }
@@ -111,11 +112,12 @@
 .input-search.ant-select-focused {
   width: calc(100% - 20px);
   opacity: 1;
+  margin-top: 0;
   z-index: 999;
   transition: all 400ms cubic-bezier(0, 0, 0.46, 0.53);
 }
 
-::ng-deep nz-tree-select.input-search > div.ant-select-selector { 
+::ng-deep nz-tree-select.input-search > div.ant-select-selector {
   border: 1px solid transparent !important;
     border-bottom: 1px solid var(--primary) !important;
     margin-top: -5px !important;
@@ -123,4 +125,18 @@
 
 .hide-on-focus{
   visibility: hidden;
+}
+
+.search-icon {
+  display: none;
+  position: absolute;
+  right: 20px;
+  font-size: 18px;
+  color: var(--text-muted);
+  background: var(--background-color);
+  z-index: 999;
+}
+
+.input-search.ant-select-focused ~ .search-icon{
+  display: inline-block;
 }

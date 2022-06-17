@@ -1068,36 +1068,58 @@ export class ExportComponent implements OnInit {
       recursive: flag,
       withoutDrafts: !this.filter.draft,
       withoutDeployed: !this.filter.deploy,
-      withoutRemovedObjects: true,
-      objectTypes: [...this.exportObj.objectTypes]
+      withoutRemovedObjects: true
     };
 
-    const APIs = [];
-    if (obj.objectTypes.length === 0) {
-      this.nodes = [];
-      this.loading = false;
-      return;
+    let deployObjectTypes = [];
+    let releaseObjectTypes = [];
+    if (this.exportObj.objectTypes.length > 0) {
+      this.exportObj.objectTypes.forEach((item) => {
+        if (item === InventoryObject.WORKFLOW || item === InventoryObject.FILEORDERSOURCE || item === InventoryObject.JOBRESOURCE ||
+          item === InventoryObject.NOTICEBOARD || item === InventoryObject.LOCK) {
+          deployObjectTypes.push(item);
+        } else {
+          releaseObjectTypes.push(item);
+        }
+      })
     }
+
+    const APIs = [];
     if (this.filter.controller && this.filter.dailyPlan) {
       obj.withoutReleased = !this.filter.release;
-      APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
-        catchError(error => of(error))
-      ));
-      APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
-        catchError(error => of(error))
-      ));
-    } else {
-      if (this.filter.dailyPlan) {
-        obj.withoutReleased = !this.filter.release;
-        APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
-          catchError(error => of(error))
-        ));
-      } else {
-        obj.withVersions = !this.filter.deploy;
-        APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
+      if (deployObjectTypes.length > 0) {
+        APIs.push(this.coreService.post('inventory/deployables', {...obj, ...{objectTypes: deployObjectTypes}}).pipe(
           catchError(error => of(error))
         ));
       }
+      if (releaseObjectTypes.length > 0) {
+        APIs.push(this.coreService.post('inventory/releasables', {...obj, ...{objectTypes: releaseObjectTypes}}).pipe(
+          catchError(error => of(error))
+        ));
+      }
+    } else {
+      if (this.filter.dailyPlan) {
+        obj.withoutReleased = !this.filter.release;
+        if (releaseObjectTypes.length > 0) {
+          obj.objectTypes = releaseObjectTypes;
+          APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
+            catchError(error => of(error))
+          ));
+        }
+      } else {
+        obj.withVersions = !this.filter.deploy;
+        if (deployObjectTypes.length > 0) {
+          obj.objectTypes = deployObjectTypes;
+          APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
+            catchError(error => of(error))
+          ));
+        }
+      }
+    }
+    if (APIs.length === 0) {
+      this.nodes = [];
+      this.loading = false;
+      return;
     }
     forkJoin(APIs).subscribe({
       next: (res: any) => {

@@ -8,7 +8,7 @@
           </div>
           <div class="inline" *ngIf="permission.joc && permission.joc.administration.accounts.manage">
             <!-- Sorting via Account Name Starts -->
-            <div class="btn-group dropdown" *ngIf="!isSelected && route && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP' && route.match('/users/identity_service/role')">
+            <div class="btn-group dropdown" *ngIf="!isSelected && route && identityServiceType !== 'VAULT' && identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'LDAP' && route.match('/users/identity_service/role')">
               <button class="btn btn-grey btn-sm m-l-12 "
                 nz-dropdown nzTrigger="click" [nzDropdownMenu]="account" [nzPlacement]="'bottomRight'">{{'user.label.user' | translate}}
                 <span class="text-primary">{{selectedUser | decodeSpace}} </span>
@@ -123,10 +123,10 @@
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
             </a>
           </li>
-          <li class="nav-item dropdown-separator" *ngIf="identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
+          <li class="nav-item dropdown-separator" *ngIf="identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
             <span class="separator"></span>
           </li>
-          <li class="nav-item" *ngIf="identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
+          <li class="nav-item" *ngIf="identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'VAULT' && identityServiceType !== 'LDAP'">
             <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
              </a>

@@ -17,7 +17,7 @@
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterState">
                 <button class="btn btn-grey btn-sm button-group-ellipsis"
-                        [ngClass]="{'btn-primary': workflowFilters.filter.state===btn.state}"
+                        [ngClass]="{'btn-primary': workflowFilters.filter.status===btn.state}"
                         (click)="loadWorkflow(btn.state)" translate>filters.button.{{btn.text}}
                 </button>
               </ng-container>
@@ -31,7 +31,7 @@
                 <ul nz-menu>
                   <ng-container *ngFor="let btn of filterState">
                     <li nz-menu-item (click)="loadWorkflow(btn.state)"
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.state=== btn.state}">
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.status=== btn.state}">
                       <a translate>filters.button.{{btn.text}}</a>
                     </li>
                   </ng-container>

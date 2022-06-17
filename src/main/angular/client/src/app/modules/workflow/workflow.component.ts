@@ -83,8 +83,8 @@ export class SearchComponent implements OnInit {
   objectType = 'WORKFLOW';
 
   checkOptions = [
-    { label: 'synchronized', value: 'INSYNC', checked: false },
-    { label: 'notSynchronized', value: 'NOT_INSYNC', checked: false },
+    { label: 'synchronized', value: 'IN_SYNC', checked: false },
+    { label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false },
     { label: 'suspended', value: 'SUSPENDED', checked: false }
   ];
 
@@ -429,8 +429,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   filterState: any = [
     {state: 'ALL', text: 'all'},
-    {state: 'INSYNC', text: 'synchronized'},
-    {state: 'NOT_INSYNC', text: 'notSynchronized'},
+    {state: 'IN_SYNC', text: 'synchronized'},
+    {state: 'NOT_IN_SYNC', text: 'notSynchronized'},
     {state: 'SUSPENDED', text: 'suspended'}
   ];
 
@@ -667,6 +667,25 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private getWorkflowList(obj): void {
     if (obj.folders && obj.folders.length === 1) {
       this.currentPath = obj.folders[0].folder;
+    }
+    if(!obj.states) {
+      if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
+        if (this.selectedFiltered.states && this.selectedFiltered.states.length > 0) {
+          obj.states = this.selectedFiltered.states;
+        }
+      } else {
+        if (this.workflowFilters.filter.status && this.workflowFilters.filter.status != 'ALL') {
+          obj.states = [this.workflowFilters.filter.status];
+        }
+      }
+      if(obj.states && obj.states.length > 0){
+        if(obj.states.indexOf('SUSPENDED') > -1){
+          obj.states.push('SUSPENDING');
+        }
+        if(obj.states.indexOf('IN_SYNC') > -1){
+          obj.states.push('RESUMING');
+        }
+      }
     }
     this.coreService.post('workflows', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
@@ -944,6 +963,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   loadWorkflow(status?): void {
+    if (status) {
+      this.workflowFilters.filter.status = status;
+    }
     this.reloadState = 'no';
     const obj: any = {
       folders: [],
@@ -951,7 +973,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     };
     this.workflows = [];
     this.loading = true;
-    let paths = [];
+    let paths;
     if (this.child) {
       if (this.child.defaultSelectedKeys.length === 0) {
         this.child.defaultSelectedKeys = ['/'];
@@ -1045,6 +1067,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       for (let i in this.searchFilter.paths) {
         obj.folders.push({folder: this.searchFilter.paths[i], recursive: false});
       }
+    }
+    if (this.searchFilter.states && this.searchFilter.states.length > 0) {
+      obj.states = this.searchFilter.states;
     }
     this.getWorkflowList(obj);
   }

@@ -116,7 +116,7 @@ export class CoreService {
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
     this.tabs._workflow.filter.date = '1d';
-    this.tabs._workflow.filter.state = 'ALL';
+    this.tabs._workflow.filter.status = 'ALL';
     this.tabs._workflow.filter.sortBy = 'name';
     this.tabs._workflow.reverse = false;
     this.tabs._workflow.currentPage = '1';

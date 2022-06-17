@@ -15,11 +15,12 @@ export class SearchComponent implements OnInit, OnDestroy {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onNavigate: EventEmitter<any> = new EventEmitter();
   @Input() controllerId: any;
-  @Input() agentData: any = [];
+  @Input() agentData: any;
   @Input() isWorkflow: boolean;
   @Input() isBoard: boolean;
   @Input() isLock: boolean;
   permission: any = {};
+  preferences: any = {};
   submitted = false;
   isControllerId = false;
   isJobSearch = false;
@@ -50,6 +51,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.ENUM = InventorySearch;
     this.deployTypes = Object.keys(this.ENUM).filter(key => isNaN(+key));
     this.getAgents();
@@ -92,12 +94,6 @@ export class SearchComponent implements OnInit, OnDestroy {
         });
       }
     }
-  }
-
-  onAgentChange(value: string): void {
-    let temp = this.coreService.clone(this.agents.agentList);
-    this.agentList = this.coreService.getFilterAgentList(temp, value, true);
-    this.agentList = [...this.agentList];
   }
 
   displayWith(data): string {

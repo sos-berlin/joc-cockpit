@@ -66,7 +66,8 @@ export class AddOrderModalComponent implements OnInit {
   submitted = false;
   zones = [];
   variableList = [];
-  nodes = [];
+  startNodes = [];
+  endnodes = [];
   positions = new Map();
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
@@ -97,32 +98,58 @@ export class AddOrderModalComponent implements OnInit {
       }
     }).subscribe({
       next: (res) => {
-        let positions = res.positions.map((item) => {
+        res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
-          return item.positionString;
         });
-        this.recursiveUpdate(positions);
+        let instructions = this.workflow.actual || this.workflow.instructions;
+        instructions.forEach(element => {
+          let flag = true;
+          if (element.TYPE === 'Try') {
+            element.catch.instructions.forEach(ele => {
+              if (ele.TYPE === 'Retry') {
+                flag = false;
+                this.startNodes.push({name: element.jobName || ele.TYPE, position: element.positionString});
+              }
+            });
+          }
+          if (flag) {
+            this.startNodes.push({
+              name: element.jobName || (element.TYPE !== 'ImplicitEnd' ? element.TYPE : '--- end ---'),
+              position: element.positionString
+            });
+          }
+        })
+        this.recursiveUpdate(null);
       }, error: () => this.submitted = false
     });
   }
 
-  recursiveUpdate(positions): void {
+  recursiveUpdate(position): void {
     const self = this;
     let nodes: any = {
       children: []
     };
-
+    let flag = false;
     function recursive(json, obj) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          let isEnable = positions.indexOf(json.instructions[x].positionString) > -1;
+          let skip = false;
+          let isEnable = self.positions.has(json.instructions[x].positionString);
+          if (!position || json.instructions[x].positionString === position) {
+            flag = true;
+          }
+          if(json.instructions[x].positionString === position && isEnable){
+            skip = true;
+          }
           if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
-            obj.children.push({
-              title: json.instructions[x].jobName || json.instructions[x].TYPE,
-              key: json.instructions[x].positionString,
-              disabled: !isEnable,
-              isLeaf: true
-            });
+            if (flag && !skip) {
+              obj.children.push({
+                title: json.instructions[x].jobName || (json.instructions[x].TYPE !== 'ImplicitEnd' ? json.instructions[x].TYPE : '--- end ---'),
+                key: json.instructions[x].positionString,
+                disabled: !isEnable,
+                isLeaf: true
+              });
+            }
           } else {
             if (json.instructions[x].TYPE === 'Fork') {
               if (json.instructions[x].branches) {
@@ -132,7 +159,9 @@ export class AddOrderModalComponent implements OnInit {
                   key: json.instructions[x].positionString,
                   children: []
                 };
-                obj.children.push(_obj);
+                if (flag && !skip) {
+                  obj.children.push(_obj);
+                }
                 for (let i = 0; i < json.instructions[x].branches.length; i++) {
                   if (json.instructions[x].branches[i].workflow.instructions) {
                     let obj1 = {
@@ -141,7 +170,9 @@ export class AddOrderModalComponent implements OnInit {
                       key: json.instructions[x].positionString + json.instructions[x].branches[i].id,
                       children: []
                     };
-                    _obj.children.push(obj1);
+                    if (flag && !skip) {
+                      _obj.children.push(obj1);
+                    }
                     recursive(json.instructions[x].branches[i].workflow, obj1);
                   }
                 }
@@ -164,7 +195,9 @@ export class AddOrderModalComponent implements OnInit {
                 disabled: !isEnable,
                 children: []
               };
-              obj.children.push(_obj);
+              if (flag && !skip) {
+                obj.children.push(_obj);
+              }
               if (json.instructions[x].try) {
                 if (json.instructions[x].try.instructions && json.instructions[x].try.instructions.length > 0) {
                   recursive(json.instructions[x].try, _obj);
@@ -188,7 +221,9 @@ export class AddOrderModalComponent implements OnInit {
                 key: json.instructions[x].positionString,
                 children: []
               };
-              obj.children.push(_obj);
+              if (flag && !skip) {
+                obj.children.push(_obj);
+              }
               if (json.instructions[x].then && json.instructions[x].then.instructions) {
                 recursive(json.instructions[x].then, _obj);
               }
@@ -199,7 +234,9 @@ export class AddOrderModalComponent implements OnInit {
                   key: json.instructions[x].positionString,
                   children: []
                 };
-                _obj.children.push(obj1);
+                if (flag && !skip) {
+                  _obj.children.push(obj1);
+                }
                 recursive(json.instructions[x].else, obj1);
               }
             }
@@ -211,7 +248,9 @@ export class AddOrderModalComponent implements OnInit {
                   key: json.instructions[x].positionString,
                   children: []
                 };
-                obj.children.push(_obj);
+                if (flag && !skip) {
+                  obj.children.push(_obj);
+                }
                 recursive(json.instructions[x].cycleWorkflow, _obj);
               }
             }
@@ -223,7 +262,9 @@ export class AddOrderModalComponent implements OnInit {
                   key: json.instructions[x].positionString,
                   children: []
                 };
-                obj.children.push(_obj);
+                if (flag && !skip) {
+                  obj.children.push(_obj);
+                }
                 recursive(json.instructions[x].lockedWorkflow, _obj);
               }
             }
@@ -235,7 +276,9 @@ export class AddOrderModalComponent implements OnInit {
                   key: json.instructions[x].positionString,
                   children: []
                 };
-                obj.children.push(_obj);
+                if (flag && !skip) {
+                  obj.children.push(_obj);
+                }
                 recursive(json.instructions[x].workflow, _obj);
               }
             }
@@ -248,11 +291,11 @@ export class AddOrderModalComponent implements OnInit {
     recursive({
       instructions: this.workflow.actual || this.workflow.instructions
     }, nodes);
-    self.nodes = nodes.children;
+    self.endnodes = nodes.children;
   }
 
   selectStartNode(value) {
-    // this.recursiveUpdate(value);
+    this.recursiveUpdate(value);
   }
 
   updateVariableList(): void {

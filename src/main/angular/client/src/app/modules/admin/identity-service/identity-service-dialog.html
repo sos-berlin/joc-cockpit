@@ -86,8 +86,7 @@
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE'
-    || currentObj.identityServiceType === 'KEYCLOAK-JOC-ACTIVE')
+    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE')
        && currentObj.serviceAuthenticationScheme === 'SINGLE-FACTOR'">
       <label class="col-sm-4" translate>user.label.singleFactorPwd</label>
       <div class="col-sm-6">
@@ -95,8 +94,7 @@
                        name="singleFactorPwd" (nzCheckedChange)="checkCheckbox('pwd')"></label>
       </div>
     </div>
-    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE'
-    || currentObj.identityServiceType === 'KEYCLOAK-JOC-ACTIVE')
+    <div class="form-group row" *ngIf="(currentObj.identityServiceType === 'JOC' || currentObj.identityServiceType === 'VAULT-JOC-ACTIVE')
        && currentObj.serviceAuthenticationScheme === 'SINGLE-FACTOR'">
       <label class="col-sm-4" translate>user.label.singleFactorCert</label>
       <div class="col-sm-6">
