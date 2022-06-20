@@ -42,7 +42,7 @@
           <div class="inline m-b-xs" [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}">
             <div class="btn-group dropdown">
               <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" type="button">
-                Order Filter: <span class="text-primary">{{'filters.button.'+ workflowFilters.filter.label | translate}}</span>
+                <span translate>workflow.label.orderFilter</span>: <span class="text-primary">{{'filters.button.'+ workflowFilters.filter.label | translate}}</span>
                 <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu" >

@@ -497,8 +497,9 @@ export class AgentComponent implements OnInit, OnDestroy {
               break;
             }
           }
-          if (!isFound) {
-            this.selectedCluster = {};
+          if (!isFound && this.selectedCluster.ordering !== undefined) {
+           
+            this.backToListView();
           }
         }
         this.isLoading = false;
@@ -556,6 +557,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   createCluster(): void {
     this.modal.create({
       nzTitle: undefined,
+      nzAutofocus: null,
       nzContent: AddClusterModalComponent,
       nzComponentParams: {
         agentId: this.agentId,
@@ -578,6 +580,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   edit(cluster, isCopy = false): void {
     this.modal.create({
       nzTitle: undefined,
+      nzAutofocus: null,
       nzContent: AddClusterModalComponent,
       nzComponentParams: {
         agentId: this.agentId,
@@ -889,6 +892,7 @@ export class AgentComponent implements OnInit, OnDestroy {
             }
           }
         }
+
         this.selectedCluster.subagentIds.push(obj);
         this.updateCluster();
         this.storeCluster(obj);
@@ -905,6 +909,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         obj.auditLog = {comment: translatedValue};
       });
     }
+    let flag = false;
     for (let i in this.clusters) {
       if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
         if (subagent) {
@@ -917,8 +922,19 @@ export class AgentComponent implements OnInit, OnDestroy {
           subagentIds: this.clusters[i].subagentIds,
           subagentClusterId: this.clusters[i].subagentClusterId,
         });
+        flag = true;
         break;
       }
+    }
+
+    if (!flag) {
+      obj.subagentClusters.push({
+        title: this.selectedCluster.title,
+        controllerId: this.selectedCluster.controllerId || this.controllerId,
+        agentId: this.selectedCluster.agentId,
+        subagentClusterId: this.selectedCluster.subagentClusterId,
+        subagentIds: this.selectedCluster.subagentIds,
+      });
     }
     this.store(obj);
   }
@@ -965,15 +981,17 @@ export class AgentComponent implements OnInit, OnDestroy {
   }
 
   private store(obj): void {
-    this.coreService.post('agents/cluster/store', obj).subscribe(() => {
-      this.selectedCluster.deployed = false;
-      for (let i in this.clusters) {
-        if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
-          this.clusters[i].deployed = false;
-          break;
+    if (obj.subagentClusters.length > 0) {
+      this.coreService.post('agents/cluster/store', obj).subscribe(() => {
+        this.selectedCluster.deployed = false;
+        for (let i in this.clusters) {
+          if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
+            this.clusters[i].deployed = false;
+            break;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   private rearrange(sour, target): void {
@@ -1610,6 +1628,9 @@ export class AgentComponent implements OnInit, OnDestroy {
     const graph = this.editor.graph;
     const scrollValue: any = {};
     const element = document.getElementById('graph');
+    if(!element || !graph){
+      return;
+    }
     scrollValue.scrollTop = element.scrollTop;
     scrollValue.scrollLeft = element.scrollLeft;
     scrollValue.scale = graph.getView().getScale();

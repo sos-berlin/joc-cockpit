@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+      <span *ngIf="operation === 'START'" translate> order.label.startNode</span>
+      <span *ngIf="operation !== 'START'" translate> order.label.endNode</span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="cancel()">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+  </div>
+  <form (ngSubmit)="onSubmit()">
+    <div class="modal-body p-a min-ht-350">
+      <div *ngIf="workflow">
+        <div class="hover" >
+          <a class="text-primary" translate >workflow.label.start</a>
+          <span class="expand-collapse-btn">
+            <i class="cursor fa fa-lg fa-angle-double-down" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="workflow.isExpand = true;"></i>
+            <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
+          </span>
+        </div>
+        <app-workflow-tree-structure [disabledDrag]="disabledDrag" [jobs]="workflow.jobs" [isFirst]="true" [configuration]="workflow.configuration" [type]="'AddOrder'" (onDrop)="onDrop($event)"
+                                     [expandAll]="workflow.isExpand"></app-workflow-tree-structure>
+      </div>
+    </div>
+    <div class="modal-footer text-left">
+      <button type="submit" class="btn btn-primary btn-sm">
+        {{'common.button.submit' | translate}}
+      </button>
+      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>common.button.cancel</button>
+    </div>
+  </form>

@@ -13,8 +13,10 @@ export class WorkflowTreeStructureComponent implements OnChanges {
   @Input() jobs;
   @Input() timezone;
   @Input() orders;
+  @Input() type;
   @Input() expandAll;
   @Input() disabledDrag: boolean;
+  @Input() isFirst: boolean;
   @Output() onDrop: EventEmitter<any> = new EventEmitter();
   position: '';
 
@@ -174,7 +176,6 @@ export class WorkflowTreeStructureComponent implements OnChanges {
       classList.add('drop-hover');
     }
   }
-
 
   dragend(event): void {
     event.preventDefault();

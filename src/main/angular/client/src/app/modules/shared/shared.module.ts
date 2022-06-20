@@ -53,20 +53,22 @@ import {WorkflowTreeStructureComponent} from '../../components/workflow-tree-str
 import {SearchComponent} from '../../components/search/search.component';
 import {PermissionViewComponent} from "../../components/permission-view/permission-view.component";
 import {SelectDocumentComponent} from "../../components/select-document/select-document.component";
-import {AgentSelectionComponent} from "../configuration/inventory/agent-selection/agent-selection.component";
+import {AgentSelectionComponent} from "../../components/agent-selection/agent-selection.component";
+import {NodePositionComponent} from "../../components/node-position/node-position.component";
+import {GraphicalViewModalComponent} from '../../components/graphical-view-modal/graphical-view-modal.component';
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzIconModule, NzInputNumberModule, NzTreeModule, NzSpinModule, NzAutocompleteModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzCheckboxModule, NzRadioModule,
   NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
-  CalendarModalComponent, TreeModalComponent, ResumeOrderModalComponent, ChangeParameterModalComponent,
+  CalendarModalComponent, TreeModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective, TimeRegexValidator, RegexValidator, RelativeDateValidator, RelativeDateRegexValidator,
   ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
-  StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, SearchComponent,
+  StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
   SelectDocumentComponent, PermissionViewComponent];
 
 @NgModule({

@@ -5,13 +5,13 @@
         <div id="toolbar" class="bg-white" [ngClass]="{'disable-link': isTrash || !(permission.joc && permission.joc.inventory.manage)}"></div>
       </perfect-scrollbar>
       <div class="row toolbar b-b m-b-12">
-        <div class="col-md-12">
+        <div class="col-md-12" id="search-container">
           <nz-tree-select
             id="searchTree"
             class="input-search"
             [nzPlaceHolder]="'workflow.placeholder.findNode' | translate"
             name="searchNode"
-            [(ngModel)]="searchText"
+            [(ngModel)]="searchNode.text"
             [nzDropdownClassName]="'custom-dropdown'"
             [nzNodes]="allNodes"
             [nzShowSearch]="true"
@@ -19,9 +19,8 @@
           >
           </nz-tree-select>
           <i class="search-icon" nz-icon nzType="search" nzTheme="outline"></i>
-        </div>
-        <div class="col-md-12" id="workflowHeader" >
-            <div class="inline m-b" *ngIf="workflow.path">
+          <div  id="workflowHeader">
+            <div class="inline m-b-sm block-ellipsis-flow-order" *ngIf="workflow.path">
               <div style="position: relative; top: 3px">
                 <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
                 <span class="_600" [ngClass]="{'cursor text-hover-primary': workflow.hasDeployments || data.deployed}" (click)="navToWorkflowTab()">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
@@ -64,6 +63,7 @@
                 <span translate>inventory.button.deploy</span>
               </button>
             </div>
+          </div>
         </div>
       </div>
       <div class="graph-container">

@@ -6037,6 +6037,10 @@ input:-webkit-autofill {
   overflow: auto;
 }
 
+.cdk-global-scrollblock body{
+  overflow-x: hidden;
+}
+
 ul {
   list-style-type: none;
 }

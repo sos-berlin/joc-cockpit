@@ -46,6 +46,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
+  startNodes = [];
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
@@ -160,9 +161,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       variables: [],
       forkListVariables: this.coreService.clone(this.forkListVariables)
     };
-    if (this.schedule.configuration.variableSets) {
-      if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.variableSets, 'orderName', '') || this.schedule.configuration.variableSets.length < 2) {
-        this.schedule.configuration.variableSets.push(variableSet);
+    if (this.schedule.configuration.orderParameterisations) {
+      if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.orderParameterisations, 'orderName', '') || this.schedule.configuration.orderParameterisations.length < 2) {
+        this.schedule.configuration.orderParameterisations.push(variableSet);
         variableSet.variableList = this.coreService.clone(this.variableList);
         if (variableSet.variableList.length > 0) {
           for (const i in variableSet.variableList) {
@@ -210,7 +211,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   removeVariableSet(index): void {
-    this.schedule.configuration.variableSets.splice(index, 1);
+    this.schedule.configuration.orderParameterisations.splice(index, 1);
     this.saveJSON();
   }
 
@@ -288,11 +289,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.updateList(node, type);
       }
     } else {
-        if (node.key && !node.key.match('/')) {
-          if (this.schedule.configuration.workflowNames.indexOf(node.key) === -1) {
-            this.schedule.configuration.workflowNames.push(node.key);
-            this.getWorkflowInfo(node.key, true, null);
-          }
+      if (node.key && !node.key.match('/')) {
+        if (this.schedule.configuration.workflowNames.indexOf(node.key) === -1) {
+          this.schedule.configuration.workflowNames.push(node.key);
+          this.getWorkflowInfo(node.key, true, null);
+        }
 
       }
     }
@@ -343,7 +344,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   onRemoved(data): void {
     this.schedule.configuration.workflowNames.splice(this.schedule.configuration.workflowNames.indexOf(data.key), 1);
-    this.schedule.configuration.variableSets = [];
+    this.schedule.configuration.orderParameterisations = [];
     this.variableList = [];
     this.forkListVariables = [];
     this.saveJSON();
@@ -401,50 +402,62 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               });
             }
             this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
-            if (this.schedule.configuration.variableSets.length === 0) {
-              this.schedule.configuration.variableSets.push(
+            if (this.schedule.configuration.orderParameterisations.length === 0) {
+              this.schedule.configuration.orderParameterisations.push(
                 {
                   orderName: '',
                   variables: [],
                   forkListVariables: this.coreService.clone(this.forkListVariables)
                 });
-            }
-          }
-        } else {
-          if (this.schedule.configuration.variableSets.length === 0) {
-            if (!val.default && val.default !== false && val.default !== 0) {
-              if (!val.final) {
-                this.schedule.configuration.variableSets.push({orderName: '', variables: []});
+            } else {
+              for (const prop in this.schedule.configuration.orderParameterisations) {
+                for (let i = 0; i < this.schedule.configuration.orderParameterisations[prop].variables.length; i++) {
+                  if(this.schedule.configuration.orderParameterisations[prop].variables[i].name === k) {
+                    this.schedule.configuration.orderParameterisations[prop].variables[i].isExist = true;
+                    break;
+                  }
+                }
               }
             }
           }
-          for (const prop in this.schedule.configuration.variableSets) {
+        } else {
+          if (this.schedule.configuration.orderParameterisations.length === 0) {
+            if (!val.default && val.default !== false && val.default !== 0) {
+              if (!val.final) {
+                this.schedule.configuration.orderParameterisations.push({orderName: '', variables: []});
+              }
+            }
+          }
+          for (const prop in this.schedule.configuration.orderParameterisations) {
             let isExist = false;
-            for (let i = 0; i < this.schedule.configuration.variableSets[prop].variables.length; i++) {
-              if (this.schedule.configuration.variableSets[prop].variables[i].name === k) {
-                this.schedule.configuration.variableSets[prop].variables[i].isExist = true;
-                this.schedule.configuration.variableSets[prop].variables[i].type = val.type;
-                this.schedule.configuration.variableSets[prop].variables[i].facet = val.facet;
-                this.schedule.configuration.variableSets[prop].variables[i].message = val.message;
+            for (let i = 0; i < this.schedule.configuration.orderParameterisations[prop].variables.length; i++) {
+              if (this.schedule.configuration.orderParameterisations[prop].variables[i].name === k) {
+                this.schedule.configuration.orderParameterisations[prop].variables[i].isExist = true;
+                this.schedule.configuration.orderParameterisations[prop].variables[i].type = val.type;
+                this.schedule.configuration.orderParameterisations[prop].variables[i].facet = val.facet;
+                this.schedule.configuration.orderParameterisations[prop].variables[i].message = val.message;
                 let list;
                 if (val.list) {
                   list = [];
                   let isFound = false;
                   val.list.forEach((item) => {
                     let obj = {name: item};
-                    if (this.schedule.configuration.variableSets[prop].variables[i].value === item) {
+                    if (this.schedule.configuration.orderParameterisations[prop].variables[i].value === item) {
                       isFound = true;
                     }
                     this.coreService.removeSlashToString(obj, 'name');
                     list.push(obj);
                   });
                   if (!isFound) {
-                    list.push({name: this.schedule.configuration.variableSets[prop].variables[i].value, default: true});
+                    list.push({
+                      name: this.schedule.configuration.orderParameterisations[prop].variables[i].value,
+                      default: true
+                    });
                   }
                 }
-                this.schedule.configuration.variableSets[prop].variables[i].list = list;
+                this.schedule.configuration.orderParameterisations[prop].variables[i].list = list;
                 if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
-                  this.schedule.configuration.variableSets[prop].variables[i].isRequired = true;
+                  this.schedule.configuration.orderParameterisations[prop].variables[i].isRequired = true;
                 }
                 isExist = true;
                 break;
@@ -468,7 +481,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                   });
                 }
 
-                this.schedule.configuration.variableSets[prop].variables.push(obj);
+                this.schedule.configuration.orderParameterisations[prop].variables.push(obj);
               }
             }
           }
@@ -476,8 +489,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         return {name: k, value: v};
       });
 
-      for (const prop in this.schedule.configuration.variableSets) {
-        this.schedule.configuration.variableSets[prop].variables = this.schedule.configuration.variableSets[prop].variables.filter((item) => {
+      for (const prop in this.schedule.configuration.orderParameterisations) {
+        this.schedule.configuration.orderParameterisations[prop].variables = this.schedule.configuration.orderParameterisations[prop].variables.filter((item) => {
           if (item.isExist) {
             delete item.isExist;
             return true;
@@ -494,12 +507,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         return !item.value.final;
       });
 
-      for (const prop in this.schedule.configuration.variableSets) {
-        this.schedule.configuration.variableSets[prop].forkListVariables = this.coreService.clone(this.forkListVariables);
-        if (this.schedule.configuration.variableSets[prop].variables && this.schedule.configuration.variableSets[prop].variables.length > 0) {
-          this.schedule.configuration.variableSets[prop].variables = this.schedule.configuration.variableSets[prop].variables.filter(item => {
+      for (const prop in this.schedule.configuration.orderParameterisations) {
+        this.schedule.configuration.orderParameterisations[prop].forkListVariables = this.coreService.clone(this.forkListVariables);
+        if (this.schedule.configuration.orderParameterisations[prop].variables && this.schedule.configuration.orderParameterisations[prop].variables.length > 0) {
+          this.schedule.configuration.orderParameterisations[prop].variables = this.schedule.configuration.orderParameterisations[prop].variables.filter(item => {
             if (isArray(item.value)) {
-              this.setForkListVariables(item, this.schedule.configuration.variableSets[prop].forkListVariables);
+              this.setForkListVariables(item, this.schedule.configuration.orderParameterisations[prop].forkListVariables);
               return false;
             } else {
               return true;
@@ -508,7 +521,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
     } else {
-      this.schedule.configuration.variableSets = [];
+      this.schedule.configuration.orderParameterisations = [];
     }
     this.updateSelectItems();
   }
@@ -551,13 +564,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   updateSelectItems(): void {
-    for (const prop in this.schedule.configuration.variableSets) {
-      this.schedule.configuration.variableSets[prop].variableList = this.coreService.clone(this.variableList);
-      for (let i = 0; i < this.schedule.configuration.variableSets[prop].variableList.length; i++) {
-        this.schedule.configuration.variableSets[prop].variableList[i].isSelected = false;
-        for (let j = 0; j < this.schedule.configuration.variableSets[prop].variables.length; j++) {
-          if (this.schedule.configuration.variableSets[prop].variableList[i].name === this.schedule.configuration.variableSets[prop].variables[j].name) {
-            this.schedule.configuration.variableSets[prop].variableList[i].isSelected = true;
+    for (const prop in this.schedule.configuration.orderParameterisations) {
+      this.schedule.configuration.orderParameterisations[prop].variableList = this.coreService.clone(this.variableList);
+      for (let i = 0; i < this.schedule.configuration.orderParameterisations[prop].variableList.length; i++) {
+        this.schedule.configuration.orderParameterisations[prop].variableList[i].isSelected = false;
+        for (let j = 0; j < this.schedule.configuration.orderParameterisations[prop].variables.length; j++) {
+          if (this.schedule.configuration.orderParameterisations[prop].variableList[i].name === this.schedule.configuration.orderParameterisations[prop].variables[j].name) {
+            this.schedule.configuration.orderParameterisations[prop].variableList[i].isSelected = true;
             break;
           }
         }
@@ -675,7 +688,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     const obj = this.coreService.clone(this.schedule.configuration);
     let isEmptyExist = false;
     let isValid = true;
-    obj.variableSets = obj.variableSets.filter(variableSet => {
+    obj.orderParameterisations = obj.orderParameterisations.filter(variableSet => {
       if (variableSet.orderName === '' || !variableSet.orderName) {
         if (isEmptyExist) {
           return false;
@@ -712,14 +725,13 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       return true;
     });
 
-    obj.variableSets = obj.variableSets.map(variableSet => {
+    obj.orderParameterisations = obj.orderParameterisations.map(variableSet => {
       return {orderName: variableSet.orderName, variables: variableSet.variables};
     });
 
     if (obj.nonWorkingDayCalendars.length === 0) {
       delete obj.nonWorkingDayCalendars;
     }
-
     if (skip || (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj)))) {
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
@@ -747,9 +759,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         isValid = false;
       }
       if (isValid) {
-        for (const i in this.schedule.configuration.variableSets) {
-          for (let j = 0; j < this.schedule.configuration.variableSets[i].length; j++) {
-            const argu = this.schedule.configuration.variableSets[i].variables[j];
+        for (const i in this.schedule.configuration.orderParameterisations) {
+          for (let j = 0; j < this.schedule.configuration.orderParameterisations[i].length; j++) {
+            const argu = this.schedule.configuration.orderParameterisations[i].variables[j];
             if (argu.isRequired) {
               if (!argu.value && argu.value !== false && argu.value !== 0) {
                 isValid = false;
@@ -836,9 +848,26 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
       this.workflow = conf.configuration;
       if (flag && this.schedule.configuration) {
-        this.schedule.configuration.variableSets = [];
+        this.schedule.configuration.orderParameterisations = [];
       }
       this.updateVariableList();
+      this.workflow.instructions.forEach((element, index) => {
+        let flag = true;
+        if (element.TYPE === 'Try') {
+          element.catch.instructions.forEach(ele => {
+            if (ele.TYPE === 'Retry') {
+              flag = false;
+              this.startNodes.push({name: element.jobName || ele.TYPE, position: index});
+            }
+          });
+        }
+        if (flag) {
+          this.startNodes.push({
+            name: element.jobName || (element.TYPE !== 'ImplicitEnd' ? element.TYPE : '--- end ---'),
+            position: index
+          });
+        }
+      })
       this.saveJSON();
       if (cb) {
         cb(conf.path);
@@ -985,8 +1014,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.data.valid = res.valid;
       }
       this.schedule = this.coreService.clone(res);
-      if (!this.schedule.configuration.variableSets) {
-        this.schedule.configuration.variableSets = [];
+      if (!this.schedule.configuration.orderParameterisations) {
+        this.schedule.configuration.orderParameterisations = [];
       }
       if (this.schedule.configuration.workflowName) {
         if (!this.schedule.configuration.workflowNames) {
@@ -1020,8 +1049,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         });
       }
 
-      if (this.schedule.configuration.variableSets) {
-        this.schedule.configuration.variableSets.forEach((variableSet) => {
+      if (this.schedule.configuration.orderParameterisations) {
+        this.schedule.configuration.orderParameterisations.forEach((variableSet) => {
           variableSet.variables = this.coreService.convertObjectToArray(variableSet, 'variables');
         });
       }

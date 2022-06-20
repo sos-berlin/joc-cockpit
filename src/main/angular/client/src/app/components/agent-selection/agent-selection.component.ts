@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
-import {CoreService} from "../../../../services/core.service";
-import {DataService} from "../../../../services/data.service";
+import {CoreService} from "../../services/core.service";
+import {DataService} from "../../services/data.service";
 
 declare const $;
 

@@ -122,21 +122,36 @@
             <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage" [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned" (ngModelChange)="saveJSON()" name="submitOrderToControllerWhenPlanned"></label>
           </div>
         </div>
-        <div class="form-group row" *ngIf="variableList.length || schedule.configuration.variableSets.length">
+        <div class="form-group row" *ngIf="variableList.length || schedule.configuration.orderParameterisations.length">
           <label class="col-md-12 _600" translate>inventory.label.variableSets</label>
         </div>
-        <div *ngFor="let variableSet of schedule.configuration.variableSets; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
+        <div *ngFor="let variableSet of schedule.configuration.orderParameterisations; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
           <div class="form-group row">
             <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6" [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}">
               <input type="text" identifierValidation maxlength="30" [readOnly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
-                     name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keydown)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.variableSets)">
+                     name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keydown)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.orderParameterisations)">
               <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
                 <div *ngIf="orderName.errors.invalidIdentifier" translate>common.message.invalid</div>
               </div>
-              <div class="pos-abt r-t-n-28" [hidden]="schedule.configuration.variableSets.length == 1 && variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
+              <div class="pos-abt r-t-n-28" [hidden]="schedule.configuration.orderParameterisations.length == 1 && variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
                 <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariableSet(j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
               </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
+            <div class="col-lg-9 col-xl-8 col-xxl-6">
+              <nz-select nzShowSearch name="startNode" (ngModelChange)="selectStartNode($event)" [(ngModel)]="variableSet.startPosition"
+                         [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate" nzAllowClear>
+                <nz-option *ngFor="let node of startNodes" [nzValue]="node.position" [nzLabel]="node.name"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
+            <div class="col-lg-9 col-xl-8 col-xxl-6">
+              <app-node-position [obj]="variableSet" [position]="variableSet.startPosition" [workflow]="workflow"></app-node-position>
             </div>
           </div>
           <div *ngIf="variableSet.forkListVariables && variableSet.forkListVariables.length > 0">

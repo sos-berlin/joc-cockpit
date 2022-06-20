@@ -2355,7 +2355,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @Input() reload: any;
   @Input() isTrash: any;
 
-  searchText = '';
+  searchNode = {
+    text:''
+  }
   jobResourcesTree = [];
   documentationTree = [];
   workflowTree = [];
@@ -2512,7 +2514,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
@@ -2579,6 +2580,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               (bounds.y - (state.y - ((this.editor.graph.container.clientHeight / 2) - (state.height / 2)))));
             graph.clearSelection();
             graph.setSelectionCell(cell);
+            this.searchNode = {text: ''};
             $('#searchTree input').blur();
             $('#workflowHeader').removeClass('hide-on-focus')
             this.initEditorConf(this.editor, false, false, true);
@@ -2590,9 +2592,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   @HostListener('window:click', ['$event'])
-  onClick(): void {
-    if(!$('#searchTree').hasClass('ant-select-focused')){
-      $('#workflowHeader').removeClass('hide-on-focus');
+  onClick(event): void {
+    const dom = $('#searchTree');
+    if (!dom.hasClass('ant-select-focused')) {
+      if (event.target.id === 'search-container') {
+        dom.addClass('ant-select-focused');
+      } else {
+        $('#workflowHeader').removeClass('hide-on-focus');
+      }
     }
   }
 
@@ -2603,25 +2610,21 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     let nodes: any = {
       children: []
     };
-    let flag = false;
 
     function recursive(json, obj) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-
           let child: any = {
             title: json.instructions[x].TYPE,
             key: json.instructions[x].uuid
           };
-
-          if(json.instructions[x].jobName){
+          if (json.instructions[x].jobName) {
             child.title += ' - ' + json.instructions[x].jobName;
           } else if (json.instructions[x].noticeBoardName) {
             child.title += ' - ' + json.instructions[x].noticeBoardName;
           } else if (json.instructions[x].lockName) {
             child.title += ' - ' + json.instructions[x].lockName;
           }
-
           if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
             child.isLeaf = true;
           } else {
@@ -2634,7 +2637,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
                 if (json.instructions[x].branches[i].instructions) {
                   let obj1 = {
-                    title: json.instructions[x].branches[i].id,
+                    title: 'branch - ' + json.instructions[x].branches[i].id,
                     disabled: true,
                     key: json.instructions[x].uuid + json.instructions[x].branches[i].id,
                     children: []
@@ -2649,17 +2652,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x], child);
           }
-          if (json.instructions[x].TYPE === 'If') {
-            if (json.instructions[x].then && json.instructions[x].then.instructions) {
-              recursive(json.instructions[x].then, child);
-            }
-            if (json.instructions[x].else && json.instructions[x].else.instructions) {
-              let obj1 = {title: "else", disabled: true, key: json.instructions[x].uuid, children: []};
-              if (flag) {
-                child.children.push(obj1);
-              }
-              recursive(json.instructions[x].else, obj1);
-            }
+
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            recursive(json.instructions[x].then, child);
+          }
+          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+            let obj = {title: "Else", disabled: true, key: json.instructions[x].uuid + 'else', children: []};
+            child.children.push(obj);
+            recursive(json.instructions[x].else, obj);
+          }
+          if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
+            let obj = {title: "Catch", disabled: true, key: json.instructions[x].uuid + 'catch', children: []};
+            child.children.push(obj);
+            recursive(json.instructions[x].catch, obj);
           }
         }
       }

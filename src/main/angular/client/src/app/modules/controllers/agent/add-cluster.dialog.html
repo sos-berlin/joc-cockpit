@@ -21,7 +21,7 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8" [ngClass]="{'has-error' : ((subagentClusterId.dirty || subagentClusterId.touched) && subagentClusterId.invalid) || !isUniqueId}">
-        <input type="text" identifierValidation class="form-control" name="subagentClusterId" [readOnly]="!new && !isCopy"
+        <input type="text" identifierValidation [appAutofocus]="true" class="form-control" name="subagentClusterId" [readOnly]="!new && !isCopy"
                required [(ngModel)]="cluster.subagentClusterId" #subagentClusterId="ngModel"
                placeholder="{{'agent.placeholder.enterClusterName' | translate}}" (blur)="checkUnique()">
         <div *ngIf="subagentClusterId.invalid && (subagentClusterId.dirty || subagentClusterId.touched)" class="text-danger help-block">

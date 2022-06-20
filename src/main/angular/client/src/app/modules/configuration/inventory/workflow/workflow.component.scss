@@ -104,16 +104,17 @@
   width: 10px;
   transition: all .5s ease-in-out;
   position: absolute;
-  margin-top: -8px;
   opacity: 0;
+  z-index: 0;
+  pointer-events: none;
   background: var(--background-color);
 }
 
 .input-search.ant-select-focused {
   width: calc(100% - 20px);
   opacity: 1;
-  margin-top: 0;
   z-index: 999;
+  pointer-events: auto;
   transition: all 400ms cubic-bezier(0, 0, 0.46, 0.53);
 }
 
