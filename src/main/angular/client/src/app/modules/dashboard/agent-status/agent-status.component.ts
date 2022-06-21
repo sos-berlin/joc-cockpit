@@ -105,19 +105,7 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
       const result = {count: 1, _text: '', color: '', hoverColor: ''};
       let label: string;
       if (value.state) {
-        if (value.state._text === 'COUPLED') {
-          label = 'agent.label.coupled';
-        } else if (value.state._text === 'RESETTING') {
-          label = 'agent.label.resetting';
-        } else if (value.state._text === 'RESET') {
-          label = 'agent.label.reset';
-        } else if (value.state._text === 'SHUTDOWN') {
-          label = 'agent.label.shutdown';
-        } else if (value.state._text === 'UNKNOWN') {
-          label = 'agent.label.unknown';
-        } else {
-          label = 'agent.label.couplingFailed';
-        }
+        label = value.state._text;
         result.color = this.coreService.getColorBySeverity(value.state.severity, false);
         result.hoverColor = this.coreService.getColorBySeverity(value.state.severity, true);
         this.translate.get(label).subscribe(translatedValue => {

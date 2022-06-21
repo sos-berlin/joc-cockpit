@@ -9,6 +9,7 @@
           <nz-tree-select
             id="searchTree"
             class="input-search"
+            [nzDropdownStyle]="{ 'max-height': '340px' }"
             [nzPlaceHolder]="'workflow.placeholder.findNode' | translate"
             name="searchNode"
             [(ngModel)]="searchNode.text"
@@ -20,7 +21,7 @@
           </nz-tree-select>
           <i class="search-icon" nz-icon nzType="search" nzTheme="outline"></i>
           <div  id="workflowHeader">
-            <div class="inline m-b-sm block-ellipsis-flow-order" *ngIf="workflow.path">
+            <div class="inline m-b-sm" *ngIf="workflow.path">
               <div style="position: relative; top: 3px">
                 <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
                 <span class="_600" [ngClass]="{'cursor text-hover-primary': workflow.hasDeployments || data.deployed}" (click)="navToWorkflowTab()">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>

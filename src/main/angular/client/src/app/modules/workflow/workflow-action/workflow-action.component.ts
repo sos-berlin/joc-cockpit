@@ -67,8 +67,6 @@ export class AddOrderModalComponent implements OnInit {
   submitted = false;
   zones = [];
   variableList = [];
-  startNodes = [];
-  endnodes = [];
   positions: any;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
@@ -108,53 +106,8 @@ export class AddOrderModalComponent implements OnInit {
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
         });
-        let instructions = this.workflow.actual || this.workflow.instructions;
-        instructions.forEach(element => {
-          let flag = true;
-          if (element.TYPE === 'Try') {
-            element.catch.instructions.forEach(ele => {
-              if (ele.TYPE === 'Retry') {
-                flag = false;
-                this.startNodes.push({name: element.jobName || ele.TYPE, position: element.positionString});
-              }
-            });
-          }
-          if (flag) {
-            this.startNodes.push({
-              name: element.jobName || (element.TYPE !== 'ImplicitEnd' ? element.TYPE : '--- end ---'),
-              position: element.positionString
-            });
-          }
-        })
       }, error: () => this.submitted = false
     });
-  }
-
-  showGraphicalView(operation) {
-    // const modal = this.modal.create({
-    //   nzTitle: undefined,
-    //   nzContent: GraphicalViewModalComponent,
-    //   nzClassName: 'lg',
-    //   nzComponentParams: {
-    //     workflow: this.workflow,
-    //     positions: this.positions,
-    //     operation
-    //   },
-    //   nzFooter: null,
-    //   nzClosable: false,
-    //   nzMaskClosable: false
-    // });
-    // modal.afterClose.subscribe(result => {
-    //   if (result) {
-    //
-    //   }
-    // });
-  }
-
-  selectStartNode(value) {
-    if (value) {
-      this.order.endPosition = '';
-    }
   }
 
   updateVariableList(): void {
@@ -329,8 +282,8 @@ export class AddOrderModalComponent implements OnInit {
     if (this.order.startPosition) {
       order.startPosition = JSON.parse(this.positions.get(this.order.startPosition))
     }
-    if (this.order.endPosition) {
-      order.endPositions = [JSON.parse(this.positions.get(this.order.endPosition))];
+    if (this.order.endPositions && this.order.endPositions.length > 0) {
+      order.endPositions = JSON.parse(this.positions.get(this.order.endPositions));
     }
     obj.orders.push(order);
     obj.auditLog = {};

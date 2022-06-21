@@ -1,0 +1,28 @@
+<ng-template #contentTemplate>
+  <div *ngIf="workflow.info">
+    <div *ngIf="workflow.info.confirmedAgentNames">
+      <div class="p-l-sm">
+        <span translate *ngIf="workflow.state._text !== 'RESUMING'"> workflow.label.suspendedAgents </span>
+        <span translate *ngIf="workflow.state._text === 'RESUMING'"> workflow.label.resumedAgents </span>:
+        <span class="_600"> {{workflow.info.confirmedAgentNames.length}}</span>
+      </div>
+      <div class="p-l m-l-xs" *ngFor="let agent of workflow.info.confirmedAgentNames">
+        {{agent}}
+      </div>
+    </div>
+    <div *ngIf="workflow.info.notConfirmedAgentNames && workflow.info.notConfirmedAgentNames.length > 0">
+      <div class="p-l-sm m-t-xs">
+        <span translate *ngIf="workflow.state._text !== 'RESUMING'"> workflow.label.suspendingAgents </span>
+        <span translate *ngIf="workflow.state._text === 'RESUMING'"> workflow.label.resumingAgents </span>:
+        <span class="_600"> {{workflow.info.notConfirmedAgentNames.length}}</span>
+      </div>
+      <div class="p-l m-l-xs" *ngFor="let agent of workflow.info.notConfirmedAgentNames">
+        {{agent}}
+      </div>
+    </div>
+  </div>
+</ng-template>
+<span [nz-tooltip]="contentTemplate" nzTooltipPlacement="top">
+    <i class="fa fa-info-circle p-l-xs" (mouseenter)="getTooltipInfo(workflow)"></i>
+</span>
+

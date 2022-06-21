@@ -1,9 +1,21 @@
-<nz-tree-select
-  [nzPlaceHolder]="'order.placeholder.selectEndNode' | translate"
-  name="endNode"
-  [(ngModel)]="obj.endPosition"
-  [nzDropdownClassName]="'custom-dropdown'"
-  [nzNodes]="endnodes"
-  [nzShowSearch]="true"
->
-</nz-tree-select>
+<ng-container *ngIf="type === 'END'">
+  <nz-tree-select
+    nzMultiple
+    nzAllowClear
+    [nzDropdownStyle]="{ 'max-height': '260px' }"
+    [nzPlaceHolder]="'order.placeholder.selectEndNode' | translate"
+    name="endNode"
+    [(ngModel)]="obj.endPositions"
+    [nzDropdownClassName]="'custom-dropdown'"
+    [nzNodes]="endNodes"
+    [nzShowSearch]="true"
+  >
+  </nz-tree-select>
+</ng-container>
+<ng-container *ngIf="type === 'START'">
+  <nz-select nzShowSearch name="startNode" (ngModelChange)="selectStartNode($event)" [(ngModel)]="obj.startPosition"
+             [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate" nzAllowClear>
+    <nz-option *ngFor="let node of startNodes" [nzValue]="node.position" [nzLabel]="node.name"></nz-option>
+  </nz-select>
+</ng-container>
+

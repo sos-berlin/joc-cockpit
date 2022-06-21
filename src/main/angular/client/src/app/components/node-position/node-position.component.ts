@@ -1,42 +1,72 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {WorkflowService} from "../../services/workflow.service";
+import {GraphicalViewModalComponent} from "../graphical-view-modal/graphical-view-modal.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-node-position',
   templateUrl: './node-position.component.html'
 })
-export class NodePositionComponent implements OnChanges{
+export class NodePositionComponent implements OnChanges {
 
   @Input() obj: any;
   @Input() position: any;
   @Input() positions: any;
   @Input() workflow: any;
+  @Input() type: string;
 
-  endnodes = [];
+  startNodes = [];
+  endNodes = [];
 
-  constructor(public workflowService: WorkflowService) {
+  constructor(public workflowService: WorkflowService, private modal: NzModalService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.recursiveUpdate(this.position);
+    this.getEndNodes(this.position);
+    if (changes.positions) {
+      this.getStartNode();
+    }
   }
 
-  recursiveUpdate(position?): void {
+  private getStartNode(): void {
+    this.startNodes = [];
+    let instructions = this.workflow.actual || this.workflow.instructions;
+    instructions.forEach(element => {
+      let flag = true;
+      if (element.TYPE === 'Try') {
+        element.catch.instructions.forEach(ele => {
+          if (ele.TYPE === 'Retry') {
+            flag = false;
+            this.startNodes.push({name: element.jobName || ele.TYPE, position: element.positionString});
+          }
+        });
+      }
+      if (flag) {
+        this.startNodes.push({
+          name: element.jobName || (element.TYPE !== 'ImplicitEnd' ? element.TYPE : '--- end ---'),
+          position: element.positionString
+        });
+      }
+    })
+  }
+
+  private getEndNodes(position?): void {
     const self = this;
     let nodes: any = {
       children: []
     };
     let flag = false;
+
     function recursive(json, obj) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-      //    console.log(json.instructions[x],'????')
+          //    console.log(json.instructions[x],'????')
           let skip = false;
           let isEnable = self.positions ? self.positions.has(json.instructions[x].positionString) : true;
           if (!position || json.instructions[x].positionString === position) {
             flag = true;
           }
-          if(json.instructions[x].positionString && json.instructions[x].positionString === position && isEnable){
+          if (json.instructions[x].positionString && json.instructions[x].positionString === position && isEnable) {
             skip = true;
           }
           if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
@@ -189,6 +219,33 @@ export class NodePositionComponent implements OnChanges{
     recursive({
       instructions: this.workflow.actual || this.workflow.instructions
     }, nodes);
-    self.endnodes = nodes.children;
+    self.endNodes = nodes.children;
+  }
+
+  selectStartNode(value) {
+    if (value) {
+      this.obj.endPosition = '';
+    }
+  }
+
+  showGraphicalView(operation) {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: GraphicalViewModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        workflow: this.workflow,
+        positions: this.positions,
+        operation
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+
+      }
+    });
   }
 }

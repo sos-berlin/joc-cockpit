@@ -12,6 +12,7 @@ import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-hi
 import {OrderListSidebarComponent} from './order-list-sidebar/order-list-sidebar.component';
 import {TypeComponent} from './workflow-type/type.component';
 import {ScriptModalComponent} from './script-modal/script-modal.component';
+import {TooltipInfoComponent} from "./tooltip-info/tooltip-info.component";
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import {ScriptModalComponent} from './script-modal/script-modal.component';
     ShowDependencyComponent,
     ScriptModalComponent,
     FilterModalComponent,
+    TooltipInfoComponent,
     SearchComponent,
     TypeComponent
   ],

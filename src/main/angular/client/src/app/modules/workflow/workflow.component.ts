@@ -83,9 +83,9 @@ export class SearchComponent implements OnInit {
   objectType = 'WORKFLOW';
 
   checkOptions = [
-    { label: 'synchronized', value: 'IN_SYNC', checked: false },
-    { label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false },
-    { label: 'suspended', value: 'SUSPENDED', checked: false }
+    {label: 'synchronized', value: 'IN_SYNC', checked: false},
+    {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false},
+    {label: 'suspended', value: 'SUSPENDED', checked: false}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService) {
@@ -121,7 +121,9 @@ export class SearchComponent implements OnInit {
   }
 
   selectFolder(node, $event): void {
-    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    if (!node.origin.isLeaf) {
+      node.isExpanded = !node.isExpanded;
+    }
     $event.stopPropagation();
   }
 
@@ -269,7 +271,12 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
   }
 
   viewOrders(workflow): void {
-    this.sideBar = {isVisible: true, orders: workflow.orders, workflow: workflow.path, orderPreparation: workflow.orderPreparation};
+    this.sideBar = {
+      isVisible: true,
+      orders: workflow.orders,
+      workflow: workflow.path,
+      orderPreparation: workflow.orderPreparation
+    };
   }
 
   navToDetailView(view, workflow): void {
@@ -553,9 +560,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.object.isSuspend = true;
     this.object.isResume = true;
     this.object.mapOfCheckedId.forEach(workflow => {
-      if (workflow.suspended){
+      if (workflow.suspended) {
         this.object.isSuspend = false;
-      } else{
+      } else {
         this.object.isResume = false;
       }
     })
@@ -667,7 +674,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (obj.folders && obj.folders.length === 1) {
       this.currentPath = obj.folders[0].folder;
     }
-    if(!obj.states) {
+    if (!obj.states) {
       if (this.selectedFiltered && !isEmpty(this.selectedFiltered)) {
         if (this.selectedFiltered.states && this.selectedFiltered.states.length > 0) {
           obj.states = this.selectedFiltered.states;
@@ -889,7 +896,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   /* ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
     this.pageView = $event;
-    if(this.pageView === 'list'){
+    if (this.pageView === 'list') {
       this.updatePanelHeight();
     }
   }
@@ -1511,8 +1518,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           if ((this.workflows[i].path === res.workflows[j].path || this.workflows[i].name === res.workflows[j].path)
             && this.workflows[i].versionId === res.workflows[j].versionId) {
             this.workflows[i].numOfOrders = res.workflows[j].numOfOrders.blocked + res.workflows[j].numOfOrders.failed + res.workflows[j].numOfOrders.inProgress
-            + res.workflows[j].numOfOrders.pending + res.workflows[j].numOfOrders.prompting + res.workflows[j].numOfOrders.running + res.workflows[j].numOfOrders.suspended
-            + res.workflows[j].numOfOrders.scheduled + res.workflows[j].numOfOrders.terminated + res.workflows[j].numOfOrders.waiting;
+              + res.workflows[j].numOfOrders.pending + res.workflows[j].numOfOrders.prompting + res.workflows[j].numOfOrders.running + res.workflows[j].numOfOrders.suspended
+              + res.workflows[j].numOfOrders.scheduled + res.workflows[j].numOfOrders.terminated + res.workflows[j].numOfOrders.waiting;
             this.workflows[i].ordersSummary = res.workflows[j].numOfOrders || {};
             this.workflows[i].ordersSummary.inprogress = this.workflows[i].ordersSummary.inProgress;
             res.workflows.splice(j, 1);
@@ -1665,7 +1672,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private openFilterModal(filter, isCopy): void {
     if (this.schedulerIds.selected) {
       let filterObj: any = {};
-      this.coreService.post('configuration', {controllerId: filter.controllerId, id: filter.id}).subscribe((conf: any) => {
+      this.coreService.post('configuration', {
+        controllerId: filter.controllerId,
+        id: filter.id
+      }).subscribe((conf: any) => {
         filterObj = JSON.parse(conf.configuration.configurationItem);
         filterObj.shared = filter.shared;
         if (isCopy) {

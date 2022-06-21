@@ -78,16 +78,15 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
       <div class="col-sm-6">
-        <nz-select nzShowSearch name="startNode" (ngModelChange)="selectStartNode($event)" [(ngModel)]="order.startPosition"
-                   [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate" nzAllowClear>
-          <nz-option *ngFor="let node of startNodes" [nzValue]="node.position" [nzLabel]="node.name"></nz-option>
-        </nz-select>
+        <app-node-position [obj]="order" [type]="'START'"
+                           [workflow]="workflow" [positions]="positions"></app-node-position>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
       <div class="col-sm-6">
-        <app-node-position [obj]="order" [position]="order.startPosition" [workflow]="workflow" [positions]="positions"></app-node-position>
+        <app-node-position [obj]="order" [position]="order.startPosition" [type]="'END'"
+                           [workflow]="workflow" [positions]="positions"></app-node-position>
       </div>
     </div>
     <div *ngIf="forkListVariables && forkListVariables.length > 0">

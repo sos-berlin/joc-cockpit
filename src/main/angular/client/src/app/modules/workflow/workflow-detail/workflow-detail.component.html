@@ -149,6 +149,7 @@
                   <td>
                     <span class="label" *ngIf="item.state" [ngClass]="coreService.getColor(item.state.severity, 'bg')"
                        [innerHtml]="item.state._text | translate"></span>
+                    <app-tooltip-info *ngIf="item.state && (item.state._text === 'SUSPENDED' || item.state._text === 'SUSPENDING' || item.state._text === 'RESUMING')" [workflow]="item" [controllerId]="schedulerIds.selected"></app-tooltip-info>
                   </td>
                   <td>
                     <span class="remaining-order-count" (click)="viewOrders(workflow)" [innerHtml]="item.numOfOrders || 0"></span>

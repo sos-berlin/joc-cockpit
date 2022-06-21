@@ -46,7 +46,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
-  startNodes = [];
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
@@ -851,23 +850,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.schedule.configuration.orderParameterisations = [];
       }
       this.updateVariableList();
-      this.workflow.instructions.forEach((element, index) => {
-        let flag = true;
-        if (element.TYPE === 'Try') {
-          element.catch.instructions.forEach(ele => {
-            if (ele.TYPE === 'Retry') {
-              flag = false;
-              this.startNodes.push({name: element.jobName || ele.TYPE, position: index});
-            }
-          });
-        }
-        if (flag) {
-          this.startNodes.push({
-            name: element.jobName || (element.TYPE !== 'ImplicitEnd' ? element.TYPE : '--- end ---'),
-            position: index
-          });
-        }
-      })
       this.saveJSON();
       if (cb) {
         cb(conf.path);
