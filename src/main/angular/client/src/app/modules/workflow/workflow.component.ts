@@ -85,7 +85,9 @@ export class SearchComponent implements OnInit {
   checkOptions = [
     {label: 'synchronized', value: 'IN_SYNC', checked: false},
     {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false},
-    {label: 'suspended', value: 'SUSPENDED', checked: false}
+    {label: 'suspended', value: 'SUSPENDED', checked: false},
+    {label: 'suspending',value: 'SUSPENDING', checked: false},
+    {label: 'resuming', value: 'RESUMING', checked: false}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService) {
@@ -437,7 +439,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   filterState: any = [
     {state: 'IN_SYNC', text: 'synchronized'},
     {state: 'NOT_IN_SYNC', text: 'notSynchronized'},
-    {state: 'SUSPENDED', text: 'suspended'}
+    {state: 'SUSPENDED', text: 'suspended'},
+    {state: 'SUSPENDING', text: 'suspending'},
+    {state: 'RESUMING', text: 'resuming'}
   ];
 
   filterBtn: any = [
@@ -682,14 +686,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       } else {
         if (this.workflowFilters.filter.states && this.workflowFilters.filter.states.length > 0) {
           obj.states = [...this.workflowFilters.filter.states];
-        }
-      }
-      if (obj.states && obj.states.length > 0) {
-        if (obj.states.indexOf('SUSPENDED') > -1) {
-          obj.states.push('SUSPENDING');
-        }
-        if (obj.states.indexOf('IN_SYNC') > -1) {
-          obj.states.push('RESUMING');
         }
       }
     }

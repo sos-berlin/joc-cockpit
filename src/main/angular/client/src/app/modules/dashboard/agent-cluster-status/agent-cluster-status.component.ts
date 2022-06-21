@@ -36,7 +36,7 @@ export class AgentClusterStatusComponent implements OnInit, OnDestroy {
           e.native.target.style.cursor = 'default';
         },
         onClick: ($event, item) => {
-          this.navToAgentView(item.text);
+          this.navToAgentView();
         }
       },
       datalabels: {
@@ -149,7 +149,11 @@ export class AgentClusterStatusComponent implements OnInit, OnDestroy {
   }
 
   getStatus(): void {
-    this.coreService.post('agents', {controllerId: this.schedulerIds.selected, compact: true, onlyVisibleAgents: true}).subscribe({
+    this.coreService.post('agents', {
+      controllerId: this.schedulerIds.selected,
+      compact: true,
+      onlyVisibleAgents: true
+    }).subscribe({
       next: res => {
         this.prepareAgentClusterData(res);
         this.isLoaded = true;
@@ -159,10 +163,10 @@ export class AgentClusterStatusComponent implements OnInit, OnDestroy {
 
   // events
   onChartClick({ active }: { active: any }): void {
-    this.navToAgentView(this.pieChartData.labels[active[0].index]);
+    this.navToAgentView();
   }
 
-  navToAgentView(text): void {
+  navToAgentView(): void {
     this.coreService.getResourceTab().agents.filter.state = 'ALL';
     this.router.navigate(['/resources/agents']);
   }

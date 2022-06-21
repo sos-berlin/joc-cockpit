@@ -67,9 +67,14 @@
   </ng-template>
   <span class="_600" [nz-tooltip]="contentTemplate2"> {{orders.size - 1}} others</span>
 </ng-template>
-<div *ngFor="let instruction of configuration.instructions">
+<div *ngFor="let instruction of configuration.instructions; let i = index">
   <ul class="m-b-0">
     <li (dragover)="drag($event);" (dragend)="dragend($event)">
+      <div class="node-position pos-abt" style="margin-top: -22px; right: 22px" *ngIf="isFirst && type=='AddOrder' && i == 0 && !positionString">
+        <span class="draggable _ 600" draggable="true">
+          <i nz-icon nzType="drag" nzTheme="outline"></i>
+        </span>
+      </div>
       <div class="hover" [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}"
         *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock'">
         <div class="btn-group dropdown m-l-n-10" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">
@@ -107,7 +112,7 @@
         </span>
         <span class="m-l" *ngIf="instruction.order || instruction.node" >
           <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
-            <span *ngIf="type=='AddOrder'">
+            <span *ngIf="type=='AddOrder'" class="node-position">
               <i nz-icon nzType="drag" nzTheme="outline"></i>
             </span>
             <span *ngIf="instruction.order">
@@ -144,7 +149,7 @@
         </span>
         <span class="m-l-md" *ngIf="instruction.order || instruction.node">
           <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
-            <span *ngIf="type=='AddOrder'">
+            <span *ngIf="type=='AddOrder'" class="node-position">
               <i nz-icon nzType="drag" nzTheme="outline"></i>
             </span>
             <span *ngIf="instruction.order">
@@ -162,7 +167,7 @@
         </span>
         <span class="m-l-md" *ngIf="instruction.order || instruction.node">
           <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
-            <span *ngIf="type=='AddOrder'">
+            <span *ngIf="type=='AddOrder'" class="node-position">
               <i nz-icon nzType="drag" nzTheme="outline"></i>
             </span>
             <span *ngIf="instruction.order">
@@ -183,7 +188,7 @@
             </a>
             <span class="m-l-md" *ngIf="branch.order || branch.node">
               <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
-                <span *ngIf="type=='AddOrder'">
+                <span *ngIf="type=='AddOrder'" class="node-position">
                   <i nz-icon nzType="drag" nzTheme="outline"></i>
                 </span>
                 <span *ngIf="branch.order">
@@ -212,7 +217,7 @@
             </a>
             <span class="m-l-md" *ngIf="instruction.else && (instruction.else.order || instruction.else.node)">
               <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
-                <span *ngIf="type=='AddOrder'">
+                <span *ngIf="type=='AddOrder'" class="node-position">
                   <i nz-icon nzType="drag" nzTheme="outline"></i>
                 </span>
                 <span *ngIf="instruction.else.order">
@@ -233,14 +238,14 @@
       <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
           <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
                     [configuration]="instruction" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-workflow-tree-structure>
-          <div class="p-l-md">
-            <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
+          <div class="p-l-md" *ngIf="instruction.catch && instruction.catch.instructions">
+            <a class="m-l" (click)="collapse(instruction.catch)">
               <i class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.catch.show)}"></i>
               <span class="_600 inst-text" translate>workflow.label.catch</span>
             </a>
-            <span class="m-l-md" *ngIf="instruction.catch && (instruction.catch.order || instruction.catch.node)">
+            <span class="m-l-md" *ngIf="(instruction.catch.order || instruction.catch.node)">
               <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
-                <span *ngIf="type=='AddOrder'">
+                <span *ngIf="type=='AddOrder'" class="node-position">
                   <i nz-icon nzType="drag" nzTheme="outline"></i>
                 </span>
                 <span *ngIf="instruction.catch.order">
@@ -251,7 +256,7 @@
                 </span>
               </div>
             </span>
-            <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show)">
+            <div class="m-l" *ngIf="(instruction.catch.show)">
               <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag"
                         [configuration]="instruction.catch" [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-workflow-tree-structure>
             </div>
@@ -269,7 +274,7 @@
         </span>
         <span class="m-l-md" *ngIf="instruction.join.order || instruction.join.node">
           <div [ngClass]="disabledDrag ? 'inline' : 'draggable'" [draggable]="!disabledDrag">
-            <span *ngIf="type=='AddOrder'">
+            <span *ngIf="type=='AddOrder'" class="node-position">
               <i nz-icon nzType="drag" nzTheme="outline"></i>
             </span>
             <span *ngIf="instruction.join.order">

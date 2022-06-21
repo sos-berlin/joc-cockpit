@@ -834,7 +834,9 @@
     "button.thisHour": "Aktuelle Stunde",
     "button.synchronized": "Synchron",
     "button.notSynchronized": "Nicht Synchron",
-    "button.suspended": "Unterbrochen"
+    "button.suspended": "Unterbrochen",
+    "button.suspending": "Suspending",
+    "button.resuming": "Resuming"
   },
   "header": {
     "label.dashboard": "ÜBERSICHT",

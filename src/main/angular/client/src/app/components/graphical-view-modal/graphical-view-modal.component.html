@@ -17,7 +17,7 @@
             <i class="cursor fa fa-lg fa-angle-double-up p-l-xs" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="workflow.isExpand = false;"></i>
           </span>
         </div>
-        <app-workflow-tree-structure [disabledDrag]="disabledDrag" [jobs]="workflow.jobs" [isFirst]="true" [configuration]="workflow.configuration" [type]="'AddOrder'" (onDrop)="onDrop($event)"
+        <app-workflow-tree-structure [positionString]="position" [disabledDrag]="disabledDrag" [jobs]="workflow.jobs" [isFirst]="true" [configuration]="data" [type]="'AddOrder'" (onDrop)="onDrop($event)"
                                      [expandAll]="workflow.isExpand"></app-workflow-tree-structure>
       </div>
     </div>

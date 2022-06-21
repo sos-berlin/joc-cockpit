@@ -4,7 +4,7 @@
       <perfect-scrollbar id="toolbar-scrollbar">
         <div id="toolbar" class="bg-white" [ngClass]="{'disable-link': isTrash || !(permission.joc && permission.joc.inventory.manage)}"></div>
       </perfect-scrollbar>
-      <div class="row toolbar b-b m-b-12">
+      <div class="row toolbar b-b m-b-12" style="padding-bottom: 6px">
         <div class="col-md-12" id="search-container">
           <nz-tree-select
             id="searchTree"
@@ -33,7 +33,6 @@
                 </span>
               </div>
             </div>
-
             <div class="inline pull-right" *ngIf="!isTrash">
               <span *ngIf="!isLoading" class="btn-search" (click)="recursiveUpdate()"><i nz-icon nzType="search" nzTheme="outline"></i></span>
               <span *ngIf="!isLoading">

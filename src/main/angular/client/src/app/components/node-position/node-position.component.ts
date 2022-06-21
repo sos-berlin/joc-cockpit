@@ -57,10 +57,9 @@ export class NodePositionComponent implements OnChanges {
     };
     let flag = false;
 
-    function recursive(json, obj) {
+    function recursive(json, obj, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          //    console.log(json.instructions[x],'????')
           let skip = false;
           let isEnable = self.positions ? self.positions.has(json.instructions[x].positionString) : true;
           if (!position || json.instructions[x].positionString === position) {
@@ -72,7 +71,7 @@ export class NodePositionComponent implements OnChanges {
           if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
             if (flag && !skip) {
               obj.children.push({
-                title: json.instructions[x].jobName || (json.instructions[x].TYPE !== 'ImplicitEnd' ? json.instructions[x].TYPE : '--- end ---'),
+                title: json.instructions[x].jobName || (json.instructions[x].TYPE !== 'ImplicitEnd' ? json.instructions[x].TYPE : parent ? 'Join' : '--- end ---'),
                 key: json.instructions[x].positionString,
                 disabled: !isEnable,
                 isLeaf: true
@@ -101,7 +100,7 @@ export class NodePositionComponent implements OnChanges {
                     if (flag && !skip) {
                       _obj.children.push(obj1);
                     }
-                    recursive(json.instructions[x].branches[i].workflow, obj1);
+                    recursive(json.instructions[x].branches[i].workflow, obj1, json.instructions[x]);
                   }
                 }
               }
@@ -224,7 +223,7 @@ export class NodePositionComponent implements OnChanges {
 
   selectStartNode(value) {
     if (value) {
-      this.obj.endPosition = '';
+      this.obj.endPositions = [];
     }
   }
 
@@ -236,7 +235,8 @@ export class NodePositionComponent implements OnChanges {
       nzComponentParams: {
         workflow: this.workflow,
         positions: this.positions,
-        operation
+        operation,
+        startNode: operation === 'END' && this.obj.startPosition ? this.obj.startPosition : undefined
       },
       nzFooter: null,
       nzClosable: false,
@@ -244,7 +244,16 @@ export class NodePositionComponent implements OnChanges {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-
+        console.log(typeof result, result);
+        console.log(typeof this.obj.startPosition, this.obj.startPosition);
+        if(operation === 'START'){
+          this.obj.startPosition = result;
+        } else {
+          if(!this.obj.endPositions){
+            this.obj.endPositions = [];
+          }
+          this.obj.endPositions.push(result);
+        }
       }
     });
   }

@@ -834,7 +834,9 @@
     "button.thisHour": "Cette Heure",
     "button.synchronized": "Synchronisé",
     "button.notSynchronized": "Non Synchronisé",
-    "button.suspended": "Suspendu"
+    "button.suspended": "Suspendu",
+    "button.suspending": "Suspending",
+    "button.resuming": "Resuming"
   },
   "header": {
     "label.dashboard": "TABLEAU DE BORD",

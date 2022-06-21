@@ -834,7 +834,9 @@
     "button.thisHour": "現在時",
     "button.synchronized": "Synchronized",
     "button.notSynchronized": "Not Synchronized",
-    "button.suspended": "Suspended"
+    "button.suspended": "Suspended",
+    "button.suspending": "Suspending",
+    "button.resuming": "Resuming"
   },
   "header": {
     "label.dashboard": "ダッシュボード",

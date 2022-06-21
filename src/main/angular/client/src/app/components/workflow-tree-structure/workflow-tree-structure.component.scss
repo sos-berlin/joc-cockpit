@@ -19,8 +19,14 @@
   padding: 3px;
 }
 
-.order-count{
+.order-count, .node-position{
   background: var(--background-color);
   color: var(--text-color);
   border-radius: 10px;
+}
+
+.node-position{
+  padding: 1px 5px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }

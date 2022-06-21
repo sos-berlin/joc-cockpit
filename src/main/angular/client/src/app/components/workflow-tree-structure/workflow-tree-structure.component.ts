@@ -14,6 +14,7 @@ export class WorkflowTreeStructureComponent implements OnChanges {
   @Input() timezone;
   @Input() orders;
   @Input() type;
+  @Input() positionString;
   @Input() expandAll;
   @Input() disabledDrag: boolean;
   @Input() isFirst: boolean;
