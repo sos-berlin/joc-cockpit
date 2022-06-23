@@ -395,12 +395,12 @@ export class TypeComponent implements OnChanges {
   }
 
   openWorkflowDependency(obj): void {
-    if (obj.TYPE === 'ExpectNotice' || obj.TYPE === 'PostNotice' || obj.TYPE === 'AddOrder') {
+    if (obj.TYPE === 'ExpectNotices' || obj.TYPE === 'PostNotices' || obj.TYPE === 'AddOrder') {
       let workflow;
-      const list = obj.TYPE === 'ExpectNotice' ? this.expectedNoticeBoards : obj.TYPE === 'PostNotice' ? this.postNoticeBoards : [];
+      const list = obj.TYPE === 'ExpectNotices' ? this.expectedNoticeBoards : obj.TYPE === 'PostNotices' ? this.postNoticeBoards : [];
       for (const prop in list) {
         if (list[prop]) {
-          if (list[prop].name === obj.noticeBoardName) {
+          if (list[prop].name === obj.noticeBoardNames) {
             list[prop].value.forEach((item) => {
               workflow = item;
             });

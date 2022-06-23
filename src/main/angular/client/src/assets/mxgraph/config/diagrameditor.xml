@@ -96,7 +96,7 @@
       </ExpectNotice>
     </add>
     <add as="PostNotice">
-      <PostNotice label="postNotice">
+      <PostNotice label="postNotices">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>

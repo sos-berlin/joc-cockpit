@@ -448,12 +448,12 @@ export class SingleFileTransferComponent implements OnInit, OnDestroy {
 
   getFileTransferById(transferId): void {
     const obj = {
-      controllerId: this.controllerId,
-      transferIds: [transferId]
+      compact: false,
+      transferId: transferId
     };
-    this.coreService.post('yade/transfers', obj).subscribe({
+    this.coreService.post('yade/transfer', obj).subscribe({
       next: (result: any) => {
-        this.fileTransfers = result.transfers;
+        this.fileTransfers = [result];
         this.loading = true;
         this.setHeaderWidth();
       }, error: () => this.loading = true
@@ -676,8 +676,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   getTransfer(transfer): void {
     const obj = {
-      controllerId: this.schedulerIds.selected,
-      transferIds: [transfer.id]
+      transferId: transfer.id
     };
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       if (res.transfers && res.transfers.length > 0) {
@@ -721,11 +720,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     value.show = true;
     if (!value.target) {
       const obj = {
-        controllerId: value.controllerId || this.schedulerIds.selected,
-        transferIds: [value.id]
+        compact: false,
+        transferId: value.id
       };
-      this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
-        value = extend(value, res.transfers[0]);
+      this.coreService.post('yade/transfer', obj).subscribe((res: any) => {
+        value = extend(value, res);
       });
     }
     this.getFiles(value);

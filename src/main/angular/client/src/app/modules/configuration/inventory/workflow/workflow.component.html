@@ -368,27 +368,28 @@
             </form>
           </div>
         </div>
-        <div class="box-body" *ngIf="selectedNode.type === 'PostNotice' || selectedNode.type === 'ExpectNotice'">
+        <div class="box-body" *ngIf="selectedNode.type === 'PostNotices' || selectedNode.type === 'ExpectNotices'">
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.boardName' | translate}}"
-                  [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.boardName' | translate) : ''"
+            <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.boardNames' | translate}}"
+                  [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.boardNames' | translate) : ''"
                   [nzTooltipMouseEnterDelay]="0.5"
-                  translate>workflow.label.boardName
+                  translate>workflow.label.boardNames
               <sup class="text-danger text-sm">*</sup>
             </label>
-            <div class="col-md-8 col-lg-9 select-input-both"
+            <div class="col-md-8 col-lg-9"
                 [ngClass]="{'has-error' : ((noticeBoardName.dirty || noticeBoardName.touched) && noticeBoardName.invalid)}">
-              <input autocomplete="off" type="text" class="form-control" required
-                    placeholder="{{'workflow.placeholder.selectBoard' | translate}}"
-                    name="noticeBoardName" #noticeBoardName="ngModel" [(ngModel)]="selectedNode.obj.noticeBoardName">
               <nz-tree-select
+                nzMultiple
+                required
                 nzNoAnimation
+                [nzPlaceHolder]="'workflow.placeholder.selectBoards' | translate"
+                #noticeBoardName="ngModel"
                 [nzNodes]="boardTree"
                 [nzHideUnMatched]="true"
                 [nzDropdownStyle]="{ 'max-height': '300px' }"
                 nzShowSearch
                 [nzAllowClear]="false"
-                [(ngModel)]="selectedNode.obj.noticeBoardName1"
+                [(ngModel)]="selectedNode.obj.noticeBoardNames"
                 (nzExpandChange)="onExpand($event, 'NOTICEBOARD')"
               >
                 <ng-template #nzTreeTemplate let-node>
@@ -409,9 +410,6 @@
                   <div translate>common.message.requiredError</div>
                 </div>
               </div>
-            </div>
-            <div *ngIf="selectedNode.obj.noticeBoardName" class="pos-abt" style="margin-top: 3px; right: 5px">
-              <i (click)="navToObj(selectedNode.obj.noticeBoardName, 'NOTICEBOARD')" class="fa fa-pencil cursor"></i>
             </div>
           </div>
         </div>

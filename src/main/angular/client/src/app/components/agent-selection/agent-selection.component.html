@@ -1,7 +1,7 @@
 <div class="w-full"
      [ngClass]="{'has-error' : (obj.agent || (agentName.dirty || agentName.touched) && agentName.invalid)}">
-  <input [required]="required" name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate" id="agentId"
-         class="form-control" [(ngModel)]="data.agentName" #agentName="ngModel" (blur)="onAgentChange('');" (ngModelChange)="onAgentChange($event)"
+  <input [required]="required" name="agentName" [placeholder]="(type === 'replace' ? 'workflow.findAndReplace.placeholder.selectReplace' : 'workflow.placeholder.selectAgentName') | translate" id="agentId"
+         class="form-control" [(ngModel)]="data[type]" #agentName="ngModel" (blur)="onAgentChange('');" (ngModelChange)="onAgentChange($event)"
          [nzAutocomplete]="auto"/>
   <nz-autocomplete #auto>
     <div *ngIf="favorite.list.length > 0" class="text-right text-sm m-r-12">

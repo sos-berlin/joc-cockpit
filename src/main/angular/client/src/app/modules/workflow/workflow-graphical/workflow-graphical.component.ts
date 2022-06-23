@@ -711,16 +711,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               self.updateWorkflow(true);
             }
           }
-        } else if (cell.value.tagName === 'Connection' || cell.value.tagName === 'Board') {
-          let data;
-          if (cell.value.tagName === 'Board') {
-            data = cell.value.getAttribute('label');
-          } else{
-            data = cell.value.getAttribute('noticeBoardName');
-          }
-          if (data) {
-            self.coreService.showBoard(data);
-          }
         }
         evt.consume();
       }
@@ -896,12 +886,12 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
           }
-          if (json.instructions[x].TYPE === 'ExpectNotice') {
+          if (json.instructions[x].TYPE === 'ExpectNotices') {
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
               if (mainJson.expectedNoticeBoards) {
                 for (const prop in mainJson.expectedNoticeBoards) {
-                  if (mainJson.expectedNoticeBoards[prop].name === json.instructions[x].noticeBoardName) {
+                  if (mainJson.expectedNoticeBoards[prop].name === json.instructions[x].noticeBoardNames) {
                     const incomingEdges = graph.getIncomingEdges(cell);
                     if (incomingEdges && incomingEdges.length > 0) {
                       for (const edge in incomingEdges) {
@@ -921,12 +911,12 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             }
           }
 
-          if (json.instructions[x].TYPE === 'PostNotice') {
+          if (json.instructions[x].TYPE === 'PostNotices') {
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
               if (mainJson.postNoticeBoards) {
                 for (const prop in mainJson.postNoticeBoards) {
-                  if (mainJson.postNoticeBoards[prop].name === json.instructions[x].noticeBoardName) {
+                  if (mainJson.postNoticeBoards[prop].name === json.instructions[x].noticeBoardNames) {
                     const outgoingEdges = graph.getOutgoingEdges(cell);
                     if (outgoingEdges && outgoingEdges.length > 0) {
                       for (const edge in outgoingEdges) {

@@ -372,6 +372,7 @@ export class AgentModalComponent implements OnInit {
 export class AgentComponent implements OnInit, OnDestroy {
   isLoading = true;
   isVisible = false;
+  isActionMenuVisible = false;
   agentList = [];
   clusterAgents = [];
   pageView: string;
@@ -448,10 +449,20 @@ export class AgentComponent implements OnInit, OnDestroy {
         if (args.eventSnapshots[j].eventType === 'AgentChanged' || args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' || args.eventSnapshots[j].eventType === 'AgentStateChanged'
           || ((args.eventSnapshots[j].eventType === 'ProxyCoupled' || args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType.match(/Item/))
             && args.eventSnapshots[j].objectType === 'AGENT')) {
-          this.getClusters();
+          this.refreshView();
           break;
         }
       }
+    }
+  }
+
+  private refreshView(): void {
+    if ((!this.isActionMenuVisible && this.object.mapOfCheckedId.size === 0)) {
+      this.getClusters();
+    } else {
+      setTimeout(() => {
+        this.refreshView();
+      }, 750);
     }
   }
 
@@ -481,6 +492,10 @@ export class AgentComponent implements OnInit, OnDestroy {
     AgentComponent.setHeight();
   }
 
+  onVisible(value: boolean): void {
+    this.isActionMenuVisible = value;
+  }
+
   private getClusters(): void {
     this.coreService.post('agents/cluster', {
       controllerId: this.controllerId,
@@ -498,7 +513,7 @@ export class AgentComponent implements OnInit, OnDestroy {
             }
           }
           if (!isFound && this.selectedCluster.ordering !== undefined) {
-           
+
             this.backToListView();
           }
         }

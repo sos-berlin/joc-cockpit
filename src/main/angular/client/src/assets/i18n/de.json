@@ -1294,7 +1294,7 @@
         "timeZone": "Zeitzone der Zutrittszeit",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
-          "boardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen."
+          "boardNames": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen."
         },
         "fail": {
           "message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
@@ -2349,7 +2349,7 @@
     "label.branches": "Zweig",
     "label.branchId": "Kennung des Zweigs",
     "label.branch": "Zweigs",
-    "label.expectNotice": "ExpectNotice",
+    "label.expectNotices": "ExpectNotices",
     "label.fail": "Fail",
     "label.finish": "Finish",
     "label.try": "Try",
@@ -2366,7 +2366,7 @@
     "label.count": "Gewicht",
     "label.exclusive": "Exklusiv",
     "label.shared": "Geteilt",
-    "label.postNotice": "PostNotice",
+    "label.postNotices": "PostNotices",
     "label.prompt": "Prompt",
     "label.question": "Mitteilung",
     "label.if": "If",
@@ -2396,7 +2396,7 @@
     "label.failOnOutputErr": "Scheitern bei Ausgaben in stderr",
     "label.showConfiguration": "Konfiguration anzeigen",
     "label.allowUndeclared": "Undeklarierte Variablen",
-    "label.boardName": "Name des Notizbretts",
+    "label.boardNames": "Board Names",
     "label.children": "Listenvariable",
     "label.childToId": "Element der Listenvariable für Kennung des Zweigs",
     "label.createForkListVariable": "Listenvariable erstellen",
@@ -2503,7 +2503,7 @@
     "placeholder.selectAgentName": "Agentennamen auswählen",
     "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
     "placeholder.selectLock": "Kennung der Ressourcen-Sperre auswählen",
-    "placeholder.selectBoard": "Notizbrett auswählen",
+    "placeholder.selectBoards": "Select Boards",
     "placeholder.offset": "Werte als Stunden/Minuten/Sekunden kommasepariert angeben",
     "placeholder.duration": "Wert im Format eingeben: d/w/m/y/h oder hh:mm:ss oder Sekunden",
     "placeholder.durationPeriod": "Wert im Format eingeben: w/d/h/m oder hh:mm:ss oder hh:mm:ss-hh:mm:ss oder Sekunden",

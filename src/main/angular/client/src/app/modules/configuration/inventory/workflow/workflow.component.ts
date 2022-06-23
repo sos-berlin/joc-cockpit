@@ -326,6 +326,19 @@ export class CycleInstructionComponent implements OnChanges {
     }
   }
 
+  static createObj(data, period): any {
+    const obj: any = {
+      TYPE: !data.frequency ? 'DailyPeriod' : 'WeekdayPeriod'
+    };
+    if (obj.TYPE === 'DailyPeriod') {
+      obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek || 0) + period.startTime);
+    } else {
+      obj.secondOfWeek = ((data.secondOfDay || data.secondOfWeek || 0) + period.startTime);
+    }
+    obj.duration = period.duration;
+    return obj;
+  }
+
   private init(): void {
     if (this.days.length === 0) {
       this.days = this.coreService.getLocale().days;
@@ -472,9 +485,9 @@ export class CycleInstructionComponent implements OnChanges {
         p.text = this.workflowService.getText(p.startTime, p.duration);
         data.periods.push(p);
         this.ref.detectChanges();
-        const obj2 = this.createObj(data, res);
+        const obj2 = CycleInstructionComponent.createObj(data, res);
         if (period) {
-          const obj = this.createObj(data, period);
+          const obj = CycleInstructionComponent.createObj(data, period);
           this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods.filter((item) => {
             return JSON.stringify(item) !== JSON.stringify(obj);
           });
@@ -485,26 +498,13 @@ export class CycleInstructionComponent implements OnChanges {
   }
 
   removePeriod(data, period, index): void {
-    const obj = this.createObj(data, period);
+    const obj = CycleInstructionComponent.createObj(data, period);
     data.periods = data.periods.filter((item) => {
       return item !== period;
     });
     this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods = this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods.filter((item) => {
       return JSON.stringify(item) !== JSON.stringify(obj);
     });
-  }
-
-  private createObj(data, period): any {
-    const obj: any = {
-      TYPE: !data.frequency ? 'DailyPeriod' : 'WeekdayPeriod'
-    };
-    if (obj.TYPE === 'DailyPeriod') {
-      obj.secondOfDay = ((data.secondOfDay || data.secondOfWeek || 0) + period.startTime);
-    } else {
-      obj.secondOfWeek = ((data.secondOfDay || data.secondOfWeek || 0) + period.startTime);
-    }
-    obj.duration = period.duration;
-    return obj;
   }
 
   closeScheme(scheme): void {
@@ -793,6 +793,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
 })
 export class FindAndReplaceComponent implements OnInit {
   @Input() agents: any = [];
+  @Input() preferences: any = {};
 
   listOfAllAgents = [];
   listOfAgents = [];
@@ -833,38 +834,12 @@ export class FindAndReplaceComponent implements OnInit {
     }
   }
 
-  onChange(value: string): void {
-    this.listOfAllAgents = this.coreService.getFilterAgentList(this.coreService.clone(this.agents), value);
-  }
-
-  expandCollapse(data, isCluster = false) {
-    data.hide = !data.hide;
-    if (isCluster) {
-      if (this.agents[1]) {
-        for (let i in this.agents[1].children) {
-          if (this.agents[1].children[i].title === data.title) {
-            this.agents[1].children[i].hide = data.hide;
-            break;
-          }
-        }
-      }
-    } else {
-      for (let i in this.agents) {
-        if (this.agents[i].title === data.title) {
-          this.agents[i].hide = data.hide;
-          break;
-        }
-      }
-    }
-  }
-
   selectSubagentCluster(cluster): void {
     if (cluster) {
       this.object.agentName = cluster.title;
     } else {
       delete this.object.agentName;
     }
-    $('#agentId').blur();
   }
 
   onSubmit(): void {
@@ -2620,8 +2595,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           };
           if (json.instructions[x].jobName) {
             child.title += ' - ' + json.instructions[x].jobName;
-          } else if (json.instructions[x].noticeBoardName) {
-            child.title += ' - ' + json.instructions[x].noticeBoardName;
+          } else if (json.instructions[x].noticeBoardNames && json.instructions[x].noticeBoardNames.length > 0) {
+            child.title += ' - ' + json.instructions[x].noticeBoardNames.join(',');
           } else if (json.instructions[x].lockName) {
             child.title += ' - ' + json.instructions[x].lockName;
           }
@@ -3194,13 +3169,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         }
       } else if (type === InventoryObject.NOTICEBOARD) {
-        if (this.selectedNode.obj.noticeBoardName1) {
-          if (this.selectedNode.obj.noticeBoardName !== this.selectedNode.obj.noticeBoardName1) {
-            this.selectedNode.obj.noticeBoardName = this.selectedNode.obj.noticeBoardName1;
-          }
-        } else if (node.key && !node.key.match('/')) {
-          if (this.selectedNode.obj.noticeBoardName !== node.key) {
-            this.selectedNode.obj.noticeBoardName = node.key;
+        if (node.key && !node.key.match('/')) {
+          if (this.selectedNode.obj.noticeBoardNames.indexOf(node.key) === -1) {
+            this.selectedNode.obj.noticeBoardNames.push(node.key);
           }
         }
       }
@@ -3419,7 +3390,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.data.syncState = res.syncState;
           this.jobs = [];
           this.variableDeclarations = {parameters: []};
-          //this.variableDeclarations.allowUndeclared = false;
           this.orderPreparation = {};
           this.jobResourceNames = [];
           if (res.configuration) {
@@ -5200,7 +5170,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.images = [];
           let img;
           if (state.cell && (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'AddOrder' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
-            state.cell.value.tagName === 'ExpectNotice' || state.cell.value.tagName === 'PostNotice' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
+            state.cell.value.tagName === 'ExpectNotices' || state.cell.value.tagName === 'PostNotices' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
             img = mxUtils.createImage('./assets/images/menu.svg');
             let x = state.x - (20 * state.shape.scale);
             let y = state.y - (8 * state.shape.scale);
@@ -5577,7 +5547,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
             if (isProceed) {
               if (cell.value.tagName === 'Job' || cell.value.tagName === 'AddOrder' || cell.value.tagName === 'Finish' || cell.value.tagName === 'Fail' ||
-                cell.value.tagName === 'ExpectNotice' || cell.value.tagName === 'PostNotice' || cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
+                cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'PostNotices' || cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
                 if (!evt.ctrlKey) {
                   graph.setSelectionCell(cell);
                 } else {
@@ -5784,7 +5754,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (!check) {
               if (drpTargt.value.tagName !== 'Connection') {
                 if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'AddOrder' || drpTargt.value.tagName === 'Finish' || drpTargt.value.tagName === 'Fail'
-                  || drpTargt.value.tagName === 'ExpectNotice' || drpTargt.value.tagName === 'PostNotice' || drpTargt.value.tagName === 'Prompt') {
+                  || drpTargt.value.tagName === 'ExpectNotices' || drpTargt.value.tagName === 'PostNotices' || drpTargt.value.tagName === 'Prompt') {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {
                       self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
@@ -6230,8 +6200,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       if (cell.source.edges[x].id === cell.id) {
                         const _sourCellName = cell.source.value.tagName;
                         const _tarCellName = cell.target.value.tagName;
-                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'AddOrder' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotice') &&
-                          (_tarCellName === 'Job' || _tarCellName === 'AddOrder' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotice')))) {
+                        if ((cell.target && ((_sourCellName === 'Job' || _sourCellName === 'AddOrder' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotices' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotices') &&
+                          (_tarCellName === 'Job' || _tarCellName === 'AddOrder' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotices' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotices')))) {
                           graph.getModel().remove(cell.source.edges[x]);
                         } else {
                           cell.source.removeEdge(cell.source.edges[x], true);
@@ -7149,9 +7119,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'uncatchable', self.selectedNode.newObj.uncatchable);
             graph.getModel().execute(edit3);
-          } else if (self.selectedNode.type === 'ExpectNotice' || self.selectedNode.type === 'PostNotice') {
+          } else if (self.selectedNode.type === 'ExpectNotices' || self.selectedNode.type === 'PostNotices') {
             const edit1 = new mxCellAttributeChange(
-              obj.cell, 'noticeBoardName', self.selectedNode.newObj.noticeBoardName);
+              obj.cell, 'noticeBoardNames', JSON.stringify(self.selectedNode.newObj.noticeBoardNames));
             graph.getModel().execute(edit1);
           } else if (self.selectedNode.type === 'Prompt') {
             self.coreService.addSlashToString(self.selectedNode.newObj, 'question');
@@ -7432,8 +7402,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           obj.message = cell.getAttribute('message');
           obj.uncatchable = cell.getAttribute('uncatchable');
           obj.uncatchable = obj.uncatchable == 'true';
-        } else if (cell.value.tagName === 'ExpectNotice' || cell.value.tagName === 'PostNotice') {
-          obj.noticeBoardName = cell.getAttribute('noticeBoardName');
+        } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'PostNotices') {
+          obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
+          if (typeof obj.noticeBoardNames === 'string') {
+            obj.noticeBoardNames = JSON.parse(obj.noticeBoardNames);
+          } else {
+            obj.noticeBoardNames =[];
+          }
         } else if (cell.value.tagName === 'Prompt') {
           obj.question = cell.getAttribute('question');
           self.coreService.removeSlashToString(obj, 'question');
@@ -7970,13 +7945,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, 'try');
         } else if (title.match('await')) {
-          _node = doc.createElement('ExpectNotice');
-          _node.setAttribute('label', 'expectNotice');
+          _node = doc.createElement('ExpectNotices');
+          _node.setAttribute('label', 'expectNotices');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'expectNotice');
         } else if (title.match('publish')) {
-          _node = doc.createElement('PostNotice');
-          _node.setAttribute('label', 'postNotice');
+          _node = doc.createElement('PostNotices');
+          _node.setAttribute('label', 'postNotices');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'postNotice');
         } else if (title.match('prompt')) {
@@ -8048,8 +8023,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (targetCell.source.edges[x].id === targetCell.id) {
                 const _sourCellName = targetCell.source.value.tagName;
                 const _tarCellName = targetCell.target.value.tagName;
-                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'AddOrder' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotice' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotice') &&
-                  (_tarCellName === 'Job' || _tarCellName === 'AddOrder' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotice' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotice')))) {
+                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'AddOrder' || _sourCellName === 'Finish' || _sourCellName === 'Fail' || _sourCellName === 'PostNotices' || _sourCellName === 'Prompt' || _sourCellName === 'ExpectNotices') &&
+                  (_tarCellName === 'Job' || _tarCellName === 'AddOrder' || _tarCellName === 'Finish' || _tarCellName === 'Fail' || _tarCellName === 'PostNotices' || _tarCellName === 'Prompt' || _tarCellName === 'ExpectNotices')))) {
                   graph.getModel().remove(targetCell.source.edges[x]);
                 } else {
                   targetCell.source.removeEdge(targetCell.source.edges[x], true);
@@ -8136,7 +8111,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
       if (!flg) {
         if (tagName !== 'Connection') {
-          if (tagName === 'Job' || tagName === 'AddOrder' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'ExpectNotice' || tagName === 'PostNotice' || tagName === 'Prompt') {
+          if (tagName === 'Job' || tagName === 'AddOrder' || tagName === 'Finish' || tagName === 'Fail' || tagName === 'ExpectNotices' || tagName === 'PostNotices' || tagName === 'Prompt') {
             for (let i = 0; i < targetCell.edges.length; i++) {
               if (targetCell.edges[i].target.id !== targetCell.id) {
                 return 'inValid';
@@ -9449,8 +9424,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
           }
 
-          if (json.instructions[x].TYPE === 'ExpectNotice') {
-            flag = self.workflowService.validateFields(json.instructions[x], 'ExpectNotice');
+          if (json.instructions[x].TYPE === 'ExpectNotices') {
+            flag = self.workflowService.validateFields(json.instructions[x], 'ExpectNotices');
             if (!flag) {
               checkErr = true;
               self.invalidMsg = 'workflow.message.invalidExpectNoticeInstruction';
@@ -9463,8 +9438,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
           }
 
-          if (json.instructions[x].TYPE === 'PostNotice') {
-            flag = self.workflowService.validateFields(json.instructions[x], 'PostNotice');
+          if (json.instructions[x].TYPE === 'PostNotices') {
+            flag = self.workflowService.validateFields(json.instructions[x], 'PostNotices');
             if (!flag) {
               checkErr = true;
               self.invalidMsg = 'workflow.message.invalidPostNoticeInstruction';
@@ -9943,7 +9918,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzTitle: undefined,
       nzContent: FindAndReplaceComponent,
       nzComponentParams: {
-        agents: this.inventoryService.agentList
+        agents: this.inventoryService.agentList,
+        preferences: this.preferences
       },
       nzFooter: null,
       nzClosable: false,

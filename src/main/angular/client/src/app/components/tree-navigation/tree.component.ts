@@ -34,10 +34,10 @@ export class TreeComponent implements OnInit, OnChanges, AfterViewInit {
         if (top < 70) {
           top = 92;
         }
-        if (top < 155 && top > 140) {
-          top = 155;
+        if (top < 150 && top > 140) {
+          top = 150;
         }
-        $('.sticky').css('top', top + 2);
+        $('.sticky').css('top', top);
         const ht = window.innerHeight - top;
         if (count < 5) {
           if (top < 139 && top > 92) {

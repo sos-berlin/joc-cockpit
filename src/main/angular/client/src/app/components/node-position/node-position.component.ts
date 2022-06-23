@@ -1,7 +1,8 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {NzModalService} from "ng-zorro-antd/modal";
+import {isArray} from "underscore";
 import {WorkflowService} from "../../services/workflow.service";
 import {GraphicalViewModalComponent} from "../graphical-view-modal/graphical-view-modal.component";
-import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-node-position',
@@ -15,42 +16,34 @@ export class NodePositionComponent implements OnChanges {
   @Input() workflow: any;
   @Input() type: string;
 
-  startNodes = [];
-  endNodes = [];
+  isSelect = false;
+  nodes = [];
 
   constructor(public workflowService: WorkflowService, private modal: NzModalService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.getEndNodes(this.position);
-    if (changes.positions) {
-      this.getStartNode();
+    if (changes.positions && isArray(changes.positions.currentValue)) {
+      this.nodes = changes.positions.currentValue;
+      this.isSelect = true;
+    }
+    if(this.isSelect){
+      if(this.position) {
+        let flag = false;
+        this.nodes = this.positions.filter((node) => {
+          if(JSON.stringify(node.position) == JSON.stringify(this.position)){
+            flag = true;
+            return false;
+          }
+          return flag;
+        });
+      }
+    } else {
+      this.getNodes(this.position);
     }
   }
 
-  private getStartNode(): void {
-    this.startNodes = [];
-    let instructions = this.workflow.actual || this.workflow.instructions;
-    instructions.forEach(element => {
-      let flag = true;
-      if (element.TYPE === 'Try') {
-        element.catch.instructions.forEach(ele => {
-          if (ele.TYPE === 'Retry') {
-            flag = false;
-            this.startNodes.push({name: element.jobName || ele.TYPE, position: element.positionString});
-          }
-        });
-      }
-      if (flag) {
-        this.startNodes.push({
-          name: element.jobName || (element.TYPE !== 'ImplicitEnd' ? element.TYPE : '--- end ---'),
-          position: element.positionString
-        });
-      }
-    })
-  }
-
-  private getEndNodes(position?): void {
+  private getNodes(position?): void {
     const self = this;
     let nodes: any = {
       children: []
@@ -65,9 +58,11 @@ export class NodePositionComponent implements OnChanges {
           if (!position || json.instructions[x].positionString === position) {
             flag = true;
           }
-          if (json.instructions[x].positionString && json.instructions[x].positionString === position && isEnable) {
-            skip = true;
+
+          if(position && json.instructions[x].positionString === position){
+            isEnable = false;
           }
+
           if (!self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
             if (flag && !skip) {
               obj.children.push({
@@ -210,7 +205,9 @@ export class NodePositionComponent implements OnChanges {
               }
             }
           }
-
+          if (json.instructions[x].positionString && json.instructions[x].positionString === position && isEnable) {
+            skip = true;
+          }
         }
       }
     }
@@ -218,7 +215,7 @@ export class NodePositionComponent implements OnChanges {
     recursive({
       instructions: this.workflow.actual || this.workflow.instructions
     }, nodes);
-    self.endNodes = nodes.children;
+    self.nodes = nodes.children;
   }
 
   selectStartNode(value) {

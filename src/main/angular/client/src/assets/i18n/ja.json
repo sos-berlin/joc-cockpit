@@ -1294,7 +1294,7 @@
         "timeZone": "許可時間タイムゾーン",
         "allowUndeclared": "未宣言を許可",
         "board": {
-          "boardName": "ボード名"
+          "boardNames": "Board Names"
         },
         "fail": {
           "message": "オーダーに添付され、オーダー履歴で表示されるメッセージを指定することができます。",
@@ -2349,7 +2349,7 @@
     "label.branches": "分岐",
     "label.branchId": "分岐ID",
     "label.branch": "分岐",
-    "label.expectNotice": "ExpectNotice",
+    "label.expectNotices": "ExpectNotices",
     "label.fail": "失敗",
     "label.finish": "終了",
     "label.try": "Try",
@@ -2366,7 +2366,7 @@
     "label.count": "Count",
     "label.exclusive": "排他",
     "label.shared": "共有",
-    "label.postNotice": "PostNotice",
+    "label.postNotices": "PostNotices",
     "label.prompt": "指示待ち",
     "label.question": "質問",
     "label.if": "If",
@@ -2396,7 +2396,7 @@
     "label.failOnOutputErr": "stderr出力でエラー",
     "label.showConfiguration": "ジョブ定義表示",
     "label.allowUndeclared": "未宣言を許可",
-    "label.boardName": "通知ボード名",
+    "label.boardNames": "Board Names",
     "label.children": "オーダー変数",
     "label.childToId": "オーダーId",
     "label.createForkListVariable": "ForkList変数作成",
@@ -2503,7 +2503,7 @@
     "placeholder.selectAgentName": "参照エージェント入力",
     "placeholder.enterJobClass": "参照ジョブクラス入力",
     "placeholder.selectLock": "ロックID選択",
-    "placeholder.selectBoard": "通知ボード選択",
+    "placeholder.selectBoards": "Select Boards",
     "placeholder.offset": "コンマ区切りでh/m/sを入力してください",
     "placeholder.duration": "d/w/m/y/hか、hh:mm:ss、秒で入力してください",
     "placeholder.durationPeriod": "w/d/h/mか、hh:mm:ss、hh:mm:ss-hh:mm:ss、秒で入力してください",

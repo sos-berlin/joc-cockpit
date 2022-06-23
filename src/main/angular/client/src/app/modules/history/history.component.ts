@@ -2,7 +2,7 @@ import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output}
 import {Subject, Subscription} from 'rxjs';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
-import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {isEmpty, clone, extend} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
@@ -2295,11 +2295,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   showTransferFuc(data: any): void {
     if (!data.target) {
       const obj = {
-        controllerId: data.controllerId || this.schedulerIds.selected,
-        transferIds: [data.id]
+        transferId: data.id
       };
-      this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
-        data = extend(data, res.transfers[0]);
+      this.coreService.post('yade/transfer', obj).subscribe((res: any) => {
+        data = extend(data, res);
       });
     }
     const self = this;

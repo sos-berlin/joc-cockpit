@@ -122,7 +122,7 @@
         <span class="order-count" (click)="showOrders(instruction)" *ngIf="instruction.orderCount > 0 && (!instruction.show && !expandAll)">{{instruction.orderCount}}</span>
       </a>
       <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
-       || instruction.TYPE === 'PostNotice' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotice'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
+       || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotices'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd'}">
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'Job'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
@@ -145,13 +145,11 @@
         </div>
         <i *ngIf="instruction.TYPE === 'Job' && instruction.documentationName" (click)="coreService.showDocumentation(instruction.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
         <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
-        <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
+        <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
-          <span *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice' || instruction.TYPE === 'AddOrder')">: </span>
-          <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotice' || instruction.TYPE === 'ExpectNotice') && instruction.noticeBoardName">
-            <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(instruction.noticeBoardName, 'NOTICEBOARD');$event.stopPropagation();"
-                 class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
-            <a class="text-hover-primary" (click)="coreService.showBoard(instruction.noticeBoardName);$event.stopPropagation();" >{{instruction.noticeBoardName}}</a>
+          <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>
+          <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices') && instruction.noticeBoardNames">
+            {{instruction.noticeBoardNames}}
           </span>
           <span class="text-muted" *ngIf="instruction.TYPE === 'AddOrder'">
             <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(instruction.workflowName, 'WORKFLOW');$event.stopPropagation();"

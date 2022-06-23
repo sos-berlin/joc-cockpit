@@ -1294,7 +1294,7 @@
         "timeZone": "Admission Times are calculated for the specified time zone. By default the time zone specified from the user profile is used.",
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
         "board": {
-          "boardName": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens."
+          "boardNames": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens."
         },
         "fail": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
@@ -2349,7 +2349,7 @@
     "label.branches": "Branches",
     "label.branchId": "Branch ID",
     "label.branch": "Branch",
-    "label.expectNotice": "ExpectNotice",
+    "label.expectNotices": "ExpectNotices",
     "label.fail": "Fail",
     "label.finish": "Finish",
     "label.try": "Try",
@@ -2366,7 +2366,7 @@
     "label.count": "Weight",
     "label.exclusive": "Exclusive",
     "label.shared": "Shared",
-    "label.postNotice": "PostNotice",
+    "label.postNotices": "PostNotices",
     "label.prompt": "Prompt",
     "label.question": "Message",
     "label.if": "If",
@@ -2396,7 +2396,7 @@
     "label.failOnOutputErr": "Fail on output to stderr",
     "label.showConfiguration": "Show Configuration",
     "label.allowUndeclared": "Undeclared Variables",
-    "label.boardName": "Board Name",
+    "label.boardNames": "Board Names",
     "label.children": "List Variable",
     "label.childToId": "Element of list variable for branch ID",
     "label.createForkListVariable": "Create ForkList Variable",
@@ -2503,7 +2503,7 @@
     "placeholder.selectAgentName": "Select Agent Name",
     "placeholder.enterJobClass": "Enter Job Class reference",
     "placeholder.selectLock": "Select Resource Lock ID",
-    "placeholder.selectBoard": "Select Board",
+    "placeholder.selectBoards": "Select Boards",
     "placeholder.offset": "Enter values as h/m/s separated by comma",
     "placeholder.duration": "Enter value as d/w/m/y/h or hh:mm:ss or seconds",
     "placeholder.durationPeriod": "Enter value as w/d/h/m or hh:mm:ss or hh:mm:ss-hh:mm:ss or seconds",

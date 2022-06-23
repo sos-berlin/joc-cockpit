@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12" *ngIf="data.type">
-    <div class="box p-a p-r-md">
+    <div class="box p-a p-r-md m-t-n-xs">
       <div class="b-b p-b m-b">
         <span class="text-left">
           <a (click)="backToListView()"><i nz-tooltip="{{'inventory.button.backToList' | translate}}" class="fa fa-arrow-circle-left config-back-btn"></i></a>
@@ -122,7 +122,7 @@
             <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage" [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned" (ngModelChange)="saveJSON()" name="submitOrderToControllerWhenPlanned"></label>
           </div>
         </div>
-        <div class="form-group row" *ngIf="variableList.length || schedule.configuration.orderParameterisations.length">
+        <div class="form-group row" *ngIf="(schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) || schedule.configuration.orderParameterisations.length">
           <label class="col-md-12 _600" translate>inventory.label.variableSets</label>
         </div>
         <div *ngFor="let variableSet of schedule.configuration.orderParameterisations; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
@@ -142,15 +142,29 @@
           <div class="form-group row">
             <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <app-node-position [obj]="variableSet" [type]="'START'"
-                                 [workflow]="workflow" [positions]="positions"></app-node-position>
+              <nz-select nzShowSearch name="startNode{{j}}" [(ngModel)]="variableSet.positions.startPosition"
+                         [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate" nzAllowClear (ngModelChange)="selectStartNode($event, variableSet.positions);saveJSON()">
+                <nz-option *ngFor="let node of positions" nzCustomContent [nzValue]="node.position" [nzLabel]="node.type">
+                  <div>
+                    {{node.type}} <span *ngIf="node.label"> - {{node.label}}</span>
+                  </div>
+                </nz-option>
+              </nz-select>
+
             </div>
           </div>
           <div class="form-group row">
             <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <app-node-position [obj]="variableSet" [type]="'END'" [position]="variableSet.startPosition"
-                                 [workflow]="workflow" [positions]="positions"></app-node-position>
+              <nz-select nzMode="multiple" nzShowSearch name="endNode{{j}}" [(ngModel)]="variableSet.positions.endPositions"
+                         [nzPlaceHolder]="'order.placeholder.selectEndNode' | translate" nzAllowClear (ngModelChange)="saveJSON()">
+                <nz-option *ngFor="let node of positions" nzCustomContent [nzDisabled]="node.position === variableSet.positions.startPosition" [nzValue]="node.position" [nzLabel]="node.type">
+                  <div>
+                    {{node.type}} <span *ngIf="node.label"> - {{node.label}}</span>
+                  </div>
+                </nz-option>
+              </nz-select>
+
             </div>
           </div>
           <div *ngIf="variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
@@ -332,7 +346,7 @@
           </div>
         </div>
         <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
-          <div class="col-sm-12" *ngIf="variableList.length > 0 || forkListVariables.length > 0 || (workflow.orderPreparation && workflow.orderPreparation.allowUndeclared)">
+          <div class="col-sm-12" *ngIf="variableList.length > 0 || forkListVariables.length > 0 || (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1)">
             <a class="text-u-l" (click)="addVariableSet()" translate>inventory.button.addVariableSet</a>
           </div>
         </div>

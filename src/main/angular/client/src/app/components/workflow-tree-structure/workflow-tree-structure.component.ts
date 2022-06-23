@@ -17,7 +17,6 @@ export class WorkflowTreeStructureComponent implements OnChanges {
   @Input() positionString;
   @Input() expandAll;
   @Input() disabledDrag: boolean;
-  @Input() isFirst: boolean;
   @Output() onDrop: EventEmitter<any> = new EventEmitter();
   position: '';
 

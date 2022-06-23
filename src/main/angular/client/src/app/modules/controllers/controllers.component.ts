@@ -115,6 +115,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   loading = false;
   isLoaded = false;
   hasLicense = false;
+  isActionMenuVisible = false;
   object = {
     mapOfCheckedId2: new Map(),
     mapOfCheckedId: new Map()
@@ -162,18 +163,36 @@ export class ControllersComponent implements OnInit, OnDestroy {
           if (this.controllers.length > 0) {
             for (let i = 0; i < this.controllers.length; i++) {
               if (this.controllers[i] && this.coreService.preferences.controllers.has(this.controllers[i].controllerId)) {
-                this.getAgents(this.controllers[i], null);
+                this.refreshView(this.controllers[i]);
               }
             }
           }
         } else if (args.eventSnapshots[j].eventType === 'ControllerStateChanged' || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
           || args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType.match(/Item/)) && args.eventSnapshots[j].objectType === 'CONTROLLER')) {
           this.isLoaded = false;
-          this.getSchedulerIds();
+          this.refreshView();
           break;
         }
       }
     }
+  }
+
+  private refreshView(obj?): void {
+    if ((!this.isActionMenuVisible && (this.object.mapOfCheckedId.size === 0 || this.object.mapOfCheckedId2.size === 0))) {
+      if(obj){
+        this.getAgents(obj, null);
+      } else {
+        this.getSchedulerIds();
+      }
+    } else {
+      setTimeout(() => {
+        this.refreshView(obj);
+      }, 750);
+    }
+  }
+
+  onVisible(value: boolean): void {
+    this.isActionMenuVisible = value;
   }
 
   private getTokens(flag = true): void {

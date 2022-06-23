@@ -64,55 +64,9 @@
              translate>workflow.findAndReplace.label.replace
        <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-md-8 col-lg-9"
-           [ngClass]="{'has-error' : ((replace.dirty || replace.touched) && replace.invalid)}">
-        <input id="agentId" required name="agentName" [placeholder]="'workflow.findAndReplace.placeholder.selectReplace' | translate"
-               class="form-control" [(ngModel)]="object.replace" #replace="ngModel" (ngModelChange)="onChange($event)"
-               [nzAutocomplete]="auto"/>
-        <nz-autocomplete #auto>
-          <ng-container *ngIf="listOfAllAgents[0] && listOfAllAgents[0].title == 'agents'">
-            <nz-auto-optgroup *ngFor="let group of [listOfAllAgents[0]]" [nzLabel]="groupTitle">
-              <ng-template #groupTitle>
-                    <span class="_600">
-                      {{ 'agent.label.' + group.title | translate }}
-                      <i class="fa p-r-xs cursor text-16" [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'"
-                         (click)="expandCollapse(group);$event.stopPropagation()"></i>
-                    </span>
-              </ng-template>
-              <nz-auto-option (click)="selectSubagentCluster( null)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents"
-                              [nzValue]="agents">
-                {{ agents }}
-              </nz-auto-option>
-            </nz-auto-optgroup>
-          </ng-container>
-          <ng-container
-            *ngIf="(listOfAllAgents[1] && listOfAllAgents[1].title == 'agentGroups') || (listOfAllAgents[0] && listOfAllAgents[0].title == 'agentGroups')">
-            <nz-auto-option nzDisabled class="ant-select-item-group not-disabled"
-                            (click)="$event.stopPropagation();">
-              <span class="_600" style="font-size: 12px;">
-                {{'agent.label.' + listOfAllAgents[listOfAllAgents.length - 1].title | translate}}
-                <i class="fa p-r-xs cursor text-16"
-                   [ngClass]="listOfAllAgents[listOfAllAgents.length - 1].hide ? 'fa-caret-down' : 'fa-caret-up'"
-                   (click)="expandCollapse(listOfAllAgents[listOfAllAgents.length - 1]);$event.stopPropagation()"></i>
-              </span>
-            </nz-auto-option>
-            <nz-auto-optgroup [hidden]="listOfAllAgents[listOfAllAgents.length - 1].hide"
-                              *ngFor="let group of listOfAllAgents[listOfAllAgents.length - 1].children"
-                              [nzLabel]="groupTitle">
-              <ng-template #groupTitle>
-                <span class="_600 pl-20">
-                  {{ group.title }}
-                  <i class="fa p-r-xs cursor text-16" [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'"
-                     (click)="expandCollapse(group, true);$event.stopPropagation()"></i>
-                </span>
-              </ng-template>
-              <nz-auto-option (click)="selectSubagentCluster(group)" [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents"
-                              [nzValue]="agents">
-                <span class="pl-20">{{ agents }}</span>
-              </nz-auto-option>
-            </nz-auto-optgroup>
-          </ng-container>
-        </nz-autocomplete>
+      <div class="col-md-8 col-lg-9">
+        <app-agent-selection [obj]="{}" [preferences]="preferences" [type]="'replace'" [agents]="agents"
+                             (selectSubagentCluster)="selectSubagentCluster($event)" [data]="object"></app-agent-selection>
       </div>
     </div>
   </div>

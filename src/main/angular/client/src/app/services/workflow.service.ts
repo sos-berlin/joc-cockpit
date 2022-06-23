@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {isEmpty, isArray, clone, isNaN} from 'underscore';
+import {isEmpty, isArray, clone, isNaN, isEqual} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from './core.service';
 import {StringDatePipe} from '../pipes/core.pipe';
@@ -397,9 +397,11 @@ export class WorkflowService {
           return false;
         }
       }
-      if (type === 'ExpectNotice' || type === 'PostNotice') {
-        if (!value.noticeBoardName) {
+      if (type === 'ExpectNotices' || type === 'PostNotices') {
+        if (!value.noticeBoardNames) {
           return false;
+        } else if (typeof value.noticeBoardNames == 'string') {
+          value.noticeBoardNames = JSON.parse(value.noticeBoardNames);
         }
       }
       if (type === 'AddOrder') {
@@ -635,10 +637,10 @@ export class WorkflowService {
               delete json.instructions[x].workflow;
             }
           }
-          if (mainJson.compressData && (json.instructions[x].TYPE === 'PostNotice' || json.instructions[x].TYPE === 'ExpectNotice')) {
+          if (mainJson.compressData && (json.instructions[x].TYPE === 'PostNotices' || json.instructions[x].TYPE === 'ExpectNotices')) {
             let isChecked = false;
             for (const key in mainJson.compressData) {
-              if (mainJson.compressData[key].name === json.instructions[x].noticeBoardName) {
+              if (isEqual(mainJson.compressData[key].name, json.instructions[x].noticeBoardNames)) {
                 isChecked = true;
                 mainJson.compressData[key].instructions.push(json.instructions[x]);
                 break;
@@ -646,7 +648,7 @@ export class WorkflowService {
             }
             if (!isChecked) {
               mainJson.compressData.push({
-                name: json.instructions[x].noticeBoardName,
+                name: json.instructions[x].noticeBoardNames,
                 instructions: [json.instructions[x]]
               });
             }
@@ -699,7 +701,7 @@ export class WorkflowService {
     let boardName;
     if (mapObj.cell) {
       boardType = mapObj.cell.value.tagName;
-      boardName = mapObj.cell.getAttribute('noticeBoardName') || mapObj.workflowName;
+      boardName = mapObj.cell.getAttribute('noticeBoardNames') || mapObj.workflowName;
     }
     const graph = editor.graph;
     const self = this;
@@ -751,7 +753,7 @@ export class WorkflowService {
           connectInstruction(v1, start, '', '', defaultParent);
         }
 
-        if (mapObj.cell && !isFound && wf && boardType !== 'AddOrder' && boardType !== 'PostNotice' && boardType !== 'ExpectNotice') {
+        if (mapObj.cell && !isFound && wf && boardType !== 'AddOrder' && boardType !== 'PostNotices' && boardType !== 'ExpectNotices') {
           connectInstruction(wf, mapObj.cell, '', '', defaultParent);
         }
 
@@ -852,17 +854,17 @@ export class WorkflowService {
                 connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
               }
             }
-          } else if (json.instructions[x].TYPE === 'PostNotice') {
-            _node.setAttribute('label', 'postNotice');
-            if (json.instructions[x].noticeBoardName !== undefined) {
-              _node.setAttribute('noticeBoardName', json.instructions[x].noticeBoardName);
+          } else if (json.instructions[x].TYPE === 'PostNotices') {
+            _node.setAttribute('label', 'postNotices');
+            if (json.instructions[x].noticeBoardNames !== undefined) {
+              _node.setAttribute('noticeBoardNames', JSON.stringify(json.instructions[x].noticeBoardNames));
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-            if (boardType === 'ExpectNotice' && boardName === json.instructions[x].noticeBoardName) {
+            if (boardType === 'ExpectNotices' && boardName === json.instructions[x].noticeBoardNames) {
               connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
             }
           } else if (json.instructions[x].TYPE === 'Prompt') {
@@ -882,10 +884,10 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-          } else if (json.instructions[x].TYPE === 'ExpectNotice') {
-            _node.setAttribute('label', 'expectNotice');
-            if (json.instructions[x].noticeBoardName !== undefined) {
-              _node.setAttribute('noticeBoardName', json.instructions[x].noticeBoardName);
+          } else if (json.instructions[x].TYPE === 'ExpectNotices') {
+            _node.setAttribute('label', 'expectNotices');
+            if (json.instructions[x].noticeBoardNames !== undefined) {
+              _node.setAttribute('noticeBoardNames', JSON.stringify(json.instructions[x].noticeBoardNames));
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
@@ -893,7 +895,7 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
 
-            if (boardType === 'PostNotice' && boardName === json.instructions[x].noticeBoardName) {
+            if (boardType === 'PostNotices' && boardName === json.instructions[x].noticeBoardNames) {
               connectInstruction(mapObj.cell, v1, boardName, '', mapObj.cell.parent);
             }
           } else if (json.instructions[x].TYPE === 'Fork') {
@@ -1112,23 +1114,23 @@ export class WorkflowService {
           for (let x = 0; x < json.compressData[i].instructions.length; x++) {
             const _node = doc.createElement(json.compressData[i].instructions[x].TYPE);
             let v1;
-            if (json.compressData[i].instructions[x].TYPE === 'PostNotice') {
-              _node.setAttribute('label', 'postNotice');
-              if (json.compressData[i].instructions[x].noticeBoardName !== undefined) {
-                _node.setAttribute('noticeBoardName', json.compressData[i].instructions[x].noticeBoardName);
+            if (json.compressData[i].instructions[x].TYPE === 'PostNotices') {
+              _node.setAttribute('label', 'postNotices');
+              if (json.compressData[i].instructions[x].noticeBoardNames !== undefined) {
+                _node.setAttribute('noticeBoardNames', JSON.stringify(json.compressData[i].instructions[x].noticeBoardNames));
               }
               _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
               v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
               if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                 mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
               }
-              if (boardType === 'ExpectNotice' && boardName === json.compressData[i].instructions[x].noticeBoardName) {
+              if (boardType === 'ExpectNotices' && boardName === json.compressData[i].instructions[x].noticeBoardNames) {
                 connectInstruction(v1, mapObj.cell, boardName, '', parent);
               }
-            } else if (json.compressData[i].instructions[x].TYPE === 'ExpectNotice') {
-              _node.setAttribute('label', 'expectNotice');
-              if (json.compressData[i].instructions[x].noticeBoardName !== undefined) {
-                _node.setAttribute('noticeBoardName', json.compressData[i].instructions[x].noticeBoardName);
+            } else if (json.compressData[i].instructions[x].TYPE === 'ExpectNotices') {
+              _node.setAttribute('label', 'expectNotices');
+              if (json.compressData[i].instructions[x].noticeBoardNames !== undefined) {
+                _node.setAttribute('noticeBoardNames', JSON.stringify(json.compressData[i].instructions[x].noticeBoardNames));
               }
               _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
               v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
@@ -1136,7 +1138,7 @@ export class WorkflowService {
                 mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
               }
 
-              if (boardType === 'PostNotice' && boardName === json.compressData[i].instructions[x].noticeBoardName) {
+              if (boardType === 'PostNotices' && boardName === json.compressData[i].instructions[x].noticeBoardNames) {
                 connectInstruction(mapObj.cell, v1, boardName, '', parent);
               }
             }
@@ -1158,7 +1160,7 @@ export class WorkflowService {
         arr.forEach(id => {
           connectInstruction(graph.getModel().getCell(id), w1, '', '', parent);
         });
-      } else if (mapObj.cell && mapObj.cell.value.tagName !== 'ExpectNotice' && mapObj.cell.value.tagName !== 'PostNotice') {
+      } else if (mapObj.cell && mapObj.cell.value.tagName !== 'ExpectNotices' && mapObj.cell.value.tagName !== 'PostNotices') {
         connectInstruction(w1, mapObj.cell, '', '', parent);
       }
     }
@@ -1422,14 +1424,6 @@ export class WorkflowService {
         }
         return '<div class="cursor workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
           + truncate(cell.getAttribute('jobName'), 22) + '</div>';
-      } else if (cell.value.tagName === 'PostNotice' || cell.value.tagName === 'ExpectNotice') {
-        const noticeBoardName = cell.getAttribute('noticeBoardName');
-        if (noticeBoardName) {
-          const edge = graph.getOutgoingEdges(cell)[0];
-          if (edge) {
-            edge.setAttribute('noticeBoardName', noticeBoardName);
-          }
-        }
       } else if (cell.value.tagName === 'Workflow') {
         const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : cell.getAttribute('type') === 'post' ? 'm-t-sm' : '';
         return '<div class="cursor text-dark ' + cls + '"><i class="icon-workflows-icon p-r-xs"></i>'
@@ -1479,7 +1473,7 @@ export class WorkflowService {
         const count = cell.getAttribute('count');
         return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
-        const x = cell.getAttribute('noticeBoardName') || cell.getAttribute('label');
+        const x = cell.getAttribute('label');
         if (x) {
           if (cell.value.tagName === 'Connection') {
             if (x === 'then' || x === 'else') {
@@ -1491,7 +1485,7 @@ export class WorkflowService {
             } else if (cell.source.value.tagName === 'Fork') {
               str = x;
             }
-            if (((cell.source.value.tagName === 'PostNotice' || cell.source.value.tagName === 'ExpectNotice'))) {
+            if (((cell.source.value.tagName === 'PostNotices' || cell.source.value.tagName === 'ExpectNotices'))) {
               str = '<a class="text-primary cursor">' + x + '</a>';
             } else if (((cell.source.value.tagName === 'AddOrder'))) {
               str = x;
@@ -1705,8 +1699,8 @@ export class WorkflowService {
             str = translatedValue;
           });
         }
-        if (((cell.value.tagName === 'PostNotice' || cell.value.tagName === 'ExpectNotice'))) {
-          str = str + ': ' + cell.getAttribute('noticeBoardName');
+        if (((cell.value.tagName === 'PostNotices' || cell.value.tagName === 'ExpectNotices'))) {
+          str = str + ': ' + (cell.getAttribute('noticeBoardNames') || '');
         }
         return str;
       }

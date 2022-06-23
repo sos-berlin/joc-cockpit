@@ -15,6 +15,7 @@ export class AgentSelectionComponent implements OnChanges {
   @Input() data: any = {};
   @Input() skipSubagents: boolean;
   @Input() required = true;
+  @Input() type = 'agentName';
 
   isReloading: boolean;
   favorite: any = {
@@ -51,13 +52,13 @@ export class AgentSelectionComponent implements OnChanges {
 
   private checkIsAgentExist(): void {
     this.nonExistAgents = [];
-    if (this.data.agentName) {
+    if (this.data[this.type]) {
       let isFound = false;
       for (const i in this.agents) {
         if (this.skipSubagents) {
           for (const j in this.agents[i].children) {
-            if (this.agents[i].children[j] && (this.agents[i].children[j] === this.data.agentName)
-              || (this.agents[i].children[j].title === this.data.agentName)) {
+            if (this.agents[i].children[j] && (this.agents[i].children[j] === this.data[this.type])
+              || (this.agents[i].children[j].title === this.data[this.type])) {
               isFound = true;
               break;
             }
@@ -65,7 +66,7 @@ export class AgentSelectionComponent implements OnChanges {
         } else {
           if (this.agents[i].title === 'agents') {
             for (const j in this.agents[i].children) {
-              if (this.agents[i].children[j] === this.data.agentName) {
+              if (this.agents[i].children[j] === this.data[this.type]) {
                 isFound = true;
                 break;
               }
@@ -75,7 +76,7 @@ export class AgentSelectionComponent implements OnChanges {
               for (const prop in this.agents[i].children) {
                 if (this.agents[i].children[prop].children) {
                   for (const j in this.agents[i].children[prop].children) {
-                    if (this.agents[i].children[prop].children[j] === this.data.agentName) {
+                    if (this.agents[i].children[prop].children[j] === this.data[this.type]) {
                       isFound = true;
                       break;
                     }
@@ -90,7 +91,7 @@ export class AgentSelectionComponent implements OnChanges {
         }
       }
       if (!isFound) {
-        this.nonExistAgents.push(this.data.agentName);
+        this.nonExistAgents.push(this.data[this.type]);
       }
     }
   }

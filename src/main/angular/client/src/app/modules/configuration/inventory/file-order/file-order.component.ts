@@ -20,8 +20,6 @@ import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 
-declare const $;
-
 @Component({
   selector: 'app-file-order',
   changeDetection: ChangeDetectionStrategy.OnPush,

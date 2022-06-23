@@ -1,5 +1,6 @@
 <ng-container *ngIf="type === 'END'">
   <nz-tree-select
+    *ngIf="!isSelect"
     nzMultiple
     nzAllowClear
     [nzDropdownStyle]="{ 'max-height': '260px' }"
@@ -7,15 +8,40 @@
     name="endNode"
     [(ngModel)]="obj.endPositions"
     [nzDropdownClassName]="'custom-dropdown'"
-    [nzNodes]="endNodes"
+    [nzNodes]="nodes"
     [nzShowSearch]="true"
   >
   </nz-tree-select>
-</ng-container>
-<ng-container *ngIf="type === 'START'">
-  <nz-select nzShowSearch name="startNode" (ngModelChange)="selectStartNode($event)" [(ngModel)]="obj.startPosition"
-             [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate" nzAllowClear>
-    <nz-option *ngFor="let node of startNodes" [nzValue]="node.position" [nzLabel]="node.name"></nz-option>
+  <nz-select *ngIf="isSelect" nzMode="multiple" nzShowSearch name="endNode" [(ngModel)]="obj.endPositions"
+             [nzPlaceHolder]="'order.placeholder.selectEndNode' | translate" nzAllowClear>
+    <nz-option *ngFor="let node of nodes" nzCustomContent [nzValue]="node.position" [nzLabel]="node.type">
+      <div>
+        {{node.type}} <span *ngIf="node.label"> - {{node.label}}</span>
+      </div>
+    </nz-option>
   </nz-select>
 </ng-container>
-<i class="fa fa-sitemap mt-2 cursor primary-text-hover-color pos-abt m-l-12" aria-hidden="true" (click)="showGraphicalView(type)"></i>
+<ng-container *ngIf="type === 'START'">
+  <nz-tree-select
+    *ngIf="!isSelect"
+    nzAllowClear
+    [nzDropdownStyle]="{ 'max-height': '260px' }"
+    [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate"
+    name="startNode"
+    [(ngModel)]="obj.startPosition"
+    [nzDropdownClassName]="'custom-dropdown'"
+    [nzNodes]="nodes"
+    (ngModelChange)="selectStartNode($event)"
+    [nzShowSearch]="true"
+  >
+  </nz-tree-select>
+  <nz-select *ngIf="isSelect" nzShowSearch name="startNode" (ngModelChange)="selectStartNode($event)" [(ngModel)]="obj.startPosition"
+             [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate" nzAllowClear>
+    <nz-option *ngFor="let node of nodes" nzCustomContent [nzValue]="node.position" [nzLabel]="node.type">
+      <div>
+        {{node.type}} <span *ngIf="node.label"> - {{node.label}}</span>
+      </div>
+    </nz-option>
+  </nz-select>
+</ng-container>
+<!--<i class="fa fa-sitemap mt-2 cursor primary-text-hover-color pos-abt m-l-12" aria-hidden="true" (click)="showGraphicalView(type)"></i>-->
