@@ -123,7 +123,7 @@
           </div>
         </div>
         <div class="form-group row" *ngIf="(schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) || schedule.configuration.orderParameterisations.length">
-          <label class="col-md-12 _600" translate>inventory.label.variableSets</label>
+          <label class="col-md-12 _600" translate>inventory.label.orderParameterisations</label>
         </div>
         <div *ngFor="let variableSet of schedule.configuration.orderParameterisations; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
           <div class="form-group row">
@@ -347,7 +347,7 @@
         </div>
         <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
           <div class="col-sm-12" *ngIf="variableList.length > 0 || forkListVariables.length > 0 || (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1)">
-            <a class="text-u-l" (click)="addVariableSet()" translate>inventory.button.addVariableSet</a>
+            <a class="text-u-l" (click)="addVariableSet()" translate>inventory.button.addOrderParameter</a>
           </div>
         </div>
       </form>

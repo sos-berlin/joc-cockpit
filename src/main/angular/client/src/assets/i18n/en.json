@@ -1076,7 +1076,7 @@
     "label.minutes": "Minutes",
     "label.hours": "Hours",
     "label.days": "Days",
-    "label.variableSets": "Variable Sets",
+    "label.orderParameterisations": "Order Parameterization",
     "label.objectNotExist": "Object does not exist",
     "label.revoke": "Revoke",
     "label.deploymentStatus": "Deployment Status",
@@ -1098,7 +1098,7 @@
     "label.newDraft": "New Draft",
     "label.objectTypes": "Object Types",
     "button.modifyVariableSet": "Modify Variable Set",
-    "button.addVariableSet": "Add Variable Set",
+    "button.addOrderParameter": "Add Order Parameter",
     "button.setVersion": "Set Version",
     "button.new": "New",
     "button.newFolder": "New Folder",
@@ -1259,6 +1259,8 @@
       },
       "board": {
         "name": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "expectBoardExpression": "ExpectNotice Expression",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Notice Board. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Notice Board",
         "toNotice": "Enter Notice ID for posting order",
@@ -1294,7 +1296,8 @@
         "timeZone": "Admission Times are calculated for the specified time zone. By default the time zone specified from the user profile is used.",
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
         "board": {
-          "boardNames": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens."
+          "expectBoardName": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+          "boardNames": "Post Notice Boards"
         },
         "fail": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
@@ -2397,6 +2400,8 @@
     "label.showConfiguration": "Show Configuration",
     "label.allowUndeclared": "Undeclared Variables",
     "label.boardNames": "Board Names",
+    "label.expectBoardName": "Board Name",
+    "label.expectBoardExpression": "ExpectNotice Expression",
     "label.children": "List Variable",
     "label.childToId": "Element of list variable for branch ID",
     "label.createForkListVariable": "Create ForkList Variable",
@@ -2504,6 +2509,7 @@
     "placeholder.enterJobClass": "Enter Job Class reference",
     "placeholder.selectLock": "Select Resource Lock ID",
     "placeholder.selectBoards": "Select Boards",
+    "placeholder.selectExpectBoard": "Select Expect Notice",
     "placeholder.offset": "Enter values as h/m/s separated by comma",
     "placeholder.duration": "Enter value as d/w/m/y/h or hh:mm:ss or seconds",
     "placeholder.durationPeriod": "Enter value as w/d/h/m or hh:mm:ss or hh:mm:ss-hh:mm:ss or seconds",

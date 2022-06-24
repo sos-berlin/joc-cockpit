@@ -400,8 +400,8 @@ export class WorkflowService {
       if (type === 'ExpectNotices' || type === 'PostNotices') {
         if (!value.noticeBoardNames) {
           return false;
-        } else if (typeof value.noticeBoardNames == 'string') {
-          value.noticeBoardNames = JSON.parse(value.noticeBoardNames);
+        } else if (type === 'PostNotices' && typeof value.noticeBoardNames == 'string') {
+          value.noticeBoardNames = value.noticeBoardNames.split(',');
         }
       }
       if (type === 'AddOrder') {
@@ -857,7 +857,7 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'PostNotices') {
             _node.setAttribute('label', 'postNotices');
             if (json.instructions[x].noticeBoardNames !== undefined) {
-              _node.setAttribute('noticeBoardNames', JSON.stringify(json.instructions[x].noticeBoardNames));
+              _node.setAttribute('noticeBoardNames', isArray(json.instructions[x].noticeBoardNames) ? json.instructions[x].noticeBoardNames.join(',') : '');
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
@@ -887,7 +887,7 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'ExpectNotices') {
             _node.setAttribute('label', 'expectNotices');
             if (json.instructions[x].noticeBoardNames !== undefined) {
-              _node.setAttribute('noticeBoardNames', JSON.stringify(json.instructions[x].noticeBoardNames));
+              _node.setAttribute('noticeBoardNames', json.instructions[x].noticeBoardNames);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
@@ -895,7 +895,7 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
 
-            if (boardType === 'PostNotices' && boardName === json.instructions[x].noticeBoardNames) {
+            if (boardType === 'PostNotices' && boardName === JSON.stringify(json.instructions[x].noticeBoardNames)) {
               connectInstruction(mapObj.cell, v1, boardName, '', mapObj.cell.parent);
             }
           } else if (json.instructions[x].TYPE === 'Fork') {
@@ -1117,7 +1117,8 @@ export class WorkflowService {
             if (json.compressData[i].instructions[x].TYPE === 'PostNotices') {
               _node.setAttribute('label', 'postNotices');
               if (json.compressData[i].instructions[x].noticeBoardNames !== undefined) {
-                _node.setAttribute('noticeBoardNames', JSON.stringify(json.compressData[i].instructions[x].noticeBoardNames));
+                _node.setAttribute('noticeBoardNames', isArray(json.compressData[i].instructions[x].noticeBoardNames) ?
+                  json.compressData[i].instructions[x].noticeBoardNames.join(',') : '');
               }
               _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
               v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
@@ -1130,7 +1131,7 @@ export class WorkflowService {
             } else if (json.compressData[i].instructions[x].TYPE === 'ExpectNotices') {
               _node.setAttribute('label', 'expectNotices');
               if (json.compressData[i].instructions[x].noticeBoardNames !== undefined) {
-                _node.setAttribute('noticeBoardNames', JSON.stringify(json.compressData[i].instructions[x].noticeBoardNames));
+                _node.setAttribute('noticeBoardNames', json.compressData[i].instructions[x].noticeBoardNames);
               }
               _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
               v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
@@ -1485,9 +1486,7 @@ export class WorkflowService {
             } else if (cell.source.value.tagName === 'Fork') {
               str = x;
             }
-            if (((cell.source.value.tagName === 'PostNotices' || cell.source.value.tagName === 'ExpectNotices'))) {
-              str = '<a class="text-primary cursor">' + x + '</a>';
-            } else if (((cell.source.value.tagName === 'AddOrder'))) {
+            if (((cell.source.value.tagName === 'AddOrder'))) {
               str = x;
             }
           } else {
@@ -1700,7 +1699,10 @@ export class WorkflowService {
           });
         }
         if (((cell.value.tagName === 'PostNotices' || cell.value.tagName === 'ExpectNotices'))) {
-          str = str + ': ' + (cell.getAttribute('noticeBoardNames') || '');
+          let boards = cell.getAttribute('noticeBoardNames');
+          if (boards && typeof boards == 'string') {
+            str = str + ': ' + boards;
+          }
         }
         return str;
       }

@@ -2331,7 +2331,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   @Input() isTrash: any;
 
   searchNode = {
-    text:''
+    text: ''
   }
   jobResourcesTree = [];
   documentationTree = [];
@@ -2389,7 +2389,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   subscription2: Subscription;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
-  @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
+  @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
   constructor(public coreService: CoreService, private translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
               private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
@@ -2596,7 +2596,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (json.instructions[x].jobName) {
             child.title += ' - ' + json.instructions[x].jobName;
           } else if (json.instructions[x].noticeBoardNames && json.instructions[x].noticeBoardNames.length > 0) {
-            child.title += ' - ' + json.instructions[x].noticeBoardNames.join(',');
+            child.title += ' - ' + (json.instructions[x].TYPE === 'PostNotices' ? json.instructions[x].noticeBoardNames.join(',') : json.instructions[x].noticeBoardNames);
           } else if (json.instructions[x].lockName) {
             child.title += ' - ' + json.instructions[x].lockName;
           }
@@ -3088,7 +3088,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     });
   }
 
-  loadData(node, type, $event): void {
+  loadData(node, type, $event, isExpand = false): void {
     if (!node || !node.origin) {
       return;
     }
@@ -3096,6 +3096,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if ($event) {
         node.isExpanded = !node.isExpanded;
         $event.stopPropagation();
+      } else if (isExpand) {
+        node.isExpanded = true;
       }
       let flag = true;
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
@@ -3139,6 +3141,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             this.workflowTree = [...this.workflowTree];
           } else if (type === InventoryObject.NOTICEBOARD) {
             this.boardTree = [...this.boardTree];
+            if (this.selectedNode.obj && this.selectedNode.obj.noticeBoardNames && typeof this.selectedNode.obj.noticeBoardNames != 'string') {
+              this.selectedNode.obj.noticeBoardNames = [...this.selectedNode.obj.noticeBoardNames];
+            }
           }
           this.ref.detectChanges();
         });
@@ -3168,7 +3173,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             this.getWorkflow(true);
           }
         }
-      } else if (type === InventoryObject.NOTICEBOARD) {
+      } else if (type === 'PostNotices') {
         if (node.key && !node.key.match('/')) {
           if (this.selectedNode.obj.noticeBoardNames.indexOf(node.key) === -1) {
             this.selectedNode.obj.noticeBoardNames.push(node.key);
@@ -3176,6 +3181,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
     }
+  }
+
+  checkExpectNoticeExp(event): void {
+    this.selectedNode.obj.noticeBoardNames = event;
   }
 
   onExpand(e, type): void {
@@ -4168,6 +4177,39 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
+  private checkAndLoadBoards(list): void {
+    list.forEach((name, index) => {
+      this.getBoardPath(name, (path) => {
+        if (path) {
+          this.loadBoardList(path);
+          if (list.length - 1 === index) {
+            this.boardTree = [...this.boardTree];
+          }
+        }
+      });
+    });
+  }
+
+  private getBoardPath(name, cb): void {
+    this.coreService.post('inventory/read/configuration', {
+      path: name,
+      objectType: InventoryObject.NOTICEBOARD
+    }).subscribe((conf: any) => {
+      if (cb) {
+        cb(conf.path);
+      }
+    })
+  }
+
+  private loadBoardList(path): void {
+    if (this.treeCtrl) {
+      const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
+      if (node && node.origin) {
+        this.loadData(node, InventoryObject.NOTICEBOARD, null, true);
+      }
+    }
+  }
+
   private getListOfVariables(obj): void {
     this.forkListVariables = [];
     if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
@@ -4675,6 +4717,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
           } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable') {
             val = val == 'true';
+          } else if(obj.TYPE === 'PostNotices' && attr[j].name === 'noticeBoardNames'){
+            val = val ? val.split(',') : '';
           }
           obj[attr[j].name] = val;
         }
@@ -7120,8 +7164,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               obj.cell, 'uncatchable', self.selectedNode.newObj.uncatchable);
             graph.getModel().execute(edit3);
           } else if (self.selectedNode.type === 'ExpectNotices' || self.selectedNode.type === 'PostNotices') {
+            let noticeBoardNames;
+            if (self.selectedNode.type === 'ExpectNotices') {
+              self.coreService.addSlashToString(self.selectedNode.newObj, 'noticeBoardNames');
+              noticeBoardNames = self.selectedNode.newObj.noticeBoardNames;
+            } else {
+              if(isArray(self.selectedNode.newObj.noticeBoardNames)){
+                noticeBoardNames = self.selectedNode.newObj.noticeBoardNames.join(',');
+              }
+            }
             const edit1 = new mxCellAttributeChange(
-              obj.cell, 'noticeBoardNames', JSON.stringify(self.selectedNode.newObj.noticeBoardNames));
+              obj.cell, 'noticeBoardNames', noticeBoardNames);
             graph.getModel().execute(edit1);
           } else if (self.selectedNode.type === 'Prompt') {
             self.coreService.addSlashToString(self.selectedNode.newObj, 'question');
@@ -7402,13 +7455,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           obj.message = cell.getAttribute('message');
           obj.uncatchable = cell.getAttribute('uncatchable');
           obj.uncatchable = obj.uncatchable == 'true';
-        } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'PostNotices') {
+        } else if (cell.value.tagName === 'PostNotices') {
           obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
-          if (typeof obj.noticeBoardNames === 'string') {
-            obj.noticeBoardNames = JSON.parse(obj.noticeBoardNames);
+          if (obj.noticeBoardNames) {
+            obj.noticeBoardNames = obj.noticeBoardNames.split(',');
           } else {
-            obj.noticeBoardNames =[];
+            obj.noticeBoardNames = [];
           }
+          if (obj.noticeBoardNames.length > 0) {
+            self.checkAndLoadBoards(obj.noticeBoardNames);
+          }
+        } else if (cell.value.tagName === 'ExpectNotices') {
+          obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
+          self.coreService.removeSlashToString(obj, 'noticeBoardNames');
         } else if (cell.value.tagName === 'Prompt') {
           obj.question = cell.getAttribute('question');
           self.coreService.removeSlashToString(obj, 'question');

@@ -1076,7 +1076,7 @@
     "label.minutes": "分",
     "label.hours": "時",
     "label.days": "日",
-    "label.variableSets": "変数設定",
+    "label.orderParameterisations": "Order Parameterization",
     "label.objectNotExist": "オブジェクトがありません",
     "label.revoke": "取り消し",
     "label.deploymentStatus": "配置ステータス",
@@ -1098,7 +1098,7 @@
     "label.newDraft": "新規下書き",
     "label.objectTypes": "Object Types",
     "button.modifyVariableSet": "変数設定変更",
-    "button.addVariableSet": "変数設定追加",
+    "button.addOrderParameter": "Add Order Parameter",
     "button.setVersion": "バージョン設定",
     "button.new": "新規",
     "button.newFolder": "新規フォルダー",
@@ -1259,6 +1259,8 @@
       },
       "board": {
         "name": "ボード名",
+        "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "expectBoardExpression": "ExpectNotice Expression",
         "documentation": "ドキュメント",
         "title": "ボードのタイトル",
         "toNotice": "通知入力",
@@ -1294,7 +1296,8 @@
         "timeZone": "許可時間タイムゾーン",
         "allowUndeclared": "未宣言を許可",
         "board": {
-          "boardNames": "Board Names"
+          "expectBoardName": "Board Name",
+          "boardNames": "Post Notice Boards"
         },
         "fail": {
           "message": "オーダーに添付され、オーダー履歴で表示されるメッセージを指定することができます。",
@@ -2397,6 +2400,8 @@
     "label.showConfiguration": "ジョブ定義表示",
     "label.allowUndeclared": "未宣言を許可",
     "label.boardNames": "Board Names",
+    "label.expectBoardName": "Board Name",
+    "label.expectBoardExpression": "ExpectNotice Expression",
     "label.children": "オーダー変数",
     "label.childToId": "オーダーId",
     "label.createForkListVariable": "ForkList変数作成",
@@ -2504,6 +2509,7 @@
     "placeholder.enterJobClass": "参照ジョブクラス入力",
     "placeholder.selectLock": "ロックID選択",
     "placeholder.selectBoards": "Select Boards",
+    "placeholder.selectExpectBoard": "Select Expect Notice",
     "placeholder.offset": "コンマ区切りでh/m/sを入力してください",
     "placeholder.duration": "d/w/m/y/hか、hh:mm:ss、秒で入力してください",
     "placeholder.durationPeriod": "w/d/h/mか、hh:mm:ss、hh:mm:ss-hh:mm:ss、秒で入力してください",

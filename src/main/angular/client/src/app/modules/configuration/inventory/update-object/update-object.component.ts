@@ -31,6 +31,7 @@ export class UpdateObjectComponent implements OnInit {
   workflowTree = [];
   jobResourcesTree = [];
   documentationTree = [];
+  positions = [];
   step = 1;
   submitted = false;
   isVisible = false;
@@ -105,6 +106,19 @@ export class UpdateObjectComponent implements OnInit {
     this.coreService.getJobResource((arr) => {
       this.jobResourcesTree = arr;
     });
+  }
+
+  onRemoved(data): void {
+    this.object.workflowNames.splice(this.object.workflowNames.indexOf(data.key), 1);
+    this.object.orderParameterisations = [];
+    this.variableList = [];
+    this.forkListVariables = [];
+  }
+
+  selectStartNode(value, positions): void{
+    if(value){
+      positions.endPositions = [];
+    }
   }
 
   onExpand(e, type): void {
@@ -189,8 +203,9 @@ export class UpdateObjectComponent implements OnInit {
       objectType: InventoryObject.WORKFLOW
     }).subscribe((conf: any) => {
       this.workflow = conf.configuration;
-      this.object.variableSets = [];
+      this.object.orderParameterisations = [];
       this.updateVariableList();
+      this.getPositions(conf.path);
     });
   }
 
@@ -258,30 +273,24 @@ export class UpdateObjectComponent implements OnInit {
               });
             }
             this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
-            if (this.object.variableSets.length === 0) {
-              this.object.variableSets.push(
+            if (this.object.orderParameterisations.length === 0) {
+              this.object.orderParameterisations.push(
                 {
                   orderName: '',
+                  positions: {},
                   variables: [],
                   forkListVariables: this.coreService.clone(this.forkListVariables)
                 });
             }
           }
         } else {
-          if (this.object.variableSets.length === 0) {
-            if (!val.default && val.default !== false && val.default !== 0) {
-              if (!val.final) {
-                this.object.variableSets.push({orderName: '', variables: []});
-              }
-            }
-          }
-          for (const prop in this.object.variableSets) {
+          for (const prop in this.object.orderParameterisations) {
             let isExist = false;
-            for (let i = 0; i < this.object.variableSets[prop].variables.length; i++) {
-              if (this.object.variableSets[prop].variables[i].name === k) {
-                this.object.variableSets[prop].variables[i].type = val.type;
+            for (let i = 0; i < this.object.orderParameterisations[prop].variables.length; i++) {
+              if (this.object.orderParameterisations[prop].variables[i].name === k) {
+                this.object.orderParameterisations[prop].variables[i].type = val.type;
                 if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
-                  this.object.variableSets[prop].variables[i].isRequired = true;
+                  this.object.orderParameterisations[prop].variables[i].isRequired = true;
                 }
                 isExist = true;
                 break;
@@ -289,7 +298,7 @@ export class UpdateObjectComponent implements OnInit {
             }
             if (!val.default && val.default !== false && val.default !== 0 && !isExist) {
               if (!val.final) {
-                this.object.variableSets[prop].variables.push({name: k, type: val.type, isRequired: true});
+                this.object.orderParameterisations[prop].variables.push({name: k, type: val.type, isRequired: true});
               }
             }
           }
@@ -304,12 +313,12 @@ export class UpdateObjectComponent implements OnInit {
       });
 
 
-      for (const prop in this.object.variableSets) {
-        this.object.variableSets[prop].forkListVariables = this.coreService.clone(this.forkListVariables);
-        if (this.object.variableSets[prop].variables && this.object.variableSets[prop].variables.length > 0) {
-          this.object.variableSets[prop].variables = this.object.variableSets[prop].variables.filter(item => {
+      for (const prop in this.object.orderParameterisations) {
+        this.object.orderParameterisations[prop].forkListVariables = this.coreService.clone(this.forkListVariables);
+        if (this.object.orderParameterisations[prop].variables && this.object.orderParameterisations[prop].variables.length > 0) {
+          this.object.orderParameterisations[prop].variables = this.object.orderParameterisations[prop].variables.filter(item => {
             if (isArray(item.value)) {
-              this.setForkListVariables(item, this.object.variableSets[prop].forkListVariables);
+              this.setForkListVariables(item, this.object.orderParameterisations[prop].forkListVariables);
               return false;
             } else {
               return true;
@@ -317,8 +326,6 @@ export class UpdateObjectComponent implements OnInit {
           });
         }
       }
-    } else {
-      this.object.variableSets = [];
     }
     this.updateSelectItems();
   }
@@ -342,14 +349,29 @@ export class UpdateObjectComponent implements OnInit {
     this.updateSelectItems();
   }
 
+  private getPositions(path): void {
+    this.coreService.post('inventory/read/order/positions', {
+      workflowPath: path
+    }).subscribe((res) => {
+      this.positions = res.positions.filter(pos => {
+        pos.position = JSON.stringify(pos.position);
+        if(pos.type === 'ImplicitEnd'){
+          pos.type = '--- end ---'
+        }
+        return true;
+      });
+    })
+  }
+
+
   updateSelectItems(): void {
-    for (const prop in this.object.variableSets) {
-      this.object.variableSets[prop].variableList = this.coreService.clone(this.variableList);
-      for (let i = 0; i < this.object.variableSets[prop].variableList.length; i++) {
-        this.object.variableSets[prop].variableList[i].isSelected = false;
-        for (let j = 0; j < this.object.variableSets[prop].variables.length; j++) {
-          if (this.object.variableSets[prop].variableList[i].name === this.object.variableSets[prop].variables[j].name) {
-            this.object.variableSets[prop].variableList[i].isSelected = true;
+    for (const prop in this.object.orderParameterisations) {
+      this.object.orderParameterisations[prop].variableList = this.coreService.clone(this.variableList);
+      for (let i = 0; i < this.object.orderParameterisations[prop].variableList.length; i++) {
+        this.object.orderParameterisations[prop].variableList[i].isSelected = false;
+        for (let j = 0; j < this.object.orderParameterisations[prop].variables.length; j++) {
+          if (this.object.orderParameterisations[prop].variableList[i].name === this.object.orderParameterisations[prop].variables[j].name) {
+            this.object.orderParameterisations[prop].variableList[i].isSelected = true;
             break;
           }
         }
@@ -382,12 +404,13 @@ export class UpdateObjectComponent implements OnInit {
   addVariableSet(): void {
     const variableSet: any = {
       orderName: '',
+      positions: {},
       variables: [],
       forkListVariables: this.coreService.clone(this.forkListVariables)
     };
-    if (this.object.variableSets) {
-      if (!this.coreService.isLastEntryEmpty(this.object.variableSets, 'orderName', '') || this.object.variableSets.length < 2) {
-        this.object.variableSets.push(variableSet);
+    if (this.object.orderParameterisations) {
+      if (!this.coreService.isLastEntryEmpty(this.object.orderParameterisations, 'orderName', '') || this.object.orderParameterisations.length < 2) {
+        this.object.orderParameterisations.push(variableSet);
         variableSet.variableList = this.coreService.clone(this.variableList);
         if (variableSet.variableList.length > 0) {
           for (const i in variableSet.variableList) {
@@ -419,7 +442,7 @@ export class UpdateObjectComponent implements OnInit {
   }
 
   removeVariableSet(index): void {
-    this.object.variableSets.splice(index, 1);
+    this.object.orderParameterisations.splice(index, 1);
   }
 
   removeVariableFromList(index, list): void {
@@ -727,12 +750,12 @@ export class UpdateObjectComponent implements OnInit {
         obj.submitOrderToControllerWhenPlanned = object.submitOrderToControllerWhenPlanned;
       }
       if (object.workflowName) {
-        obj.variableSets = [];
+        obj.orderParameterisations = [];
       }
-      if (object.variableSets && object.variableSets.length > 0) {
-        obj.variableSets = this.coreService.clone(object.variableSets);
+      if (object.orderParameterisations && object.orderParameterisations.length > 0) {
+        obj.orderParameterisations = this.coreService.clone(object.orderParameterisations);
         let isEmptyExist = false;
-        obj.variableSets = obj.variableSets.filter(variableSet => {
+        obj.orderParameterisations = obj.orderParameterisations.filter(variableSet => {
           if (variableSet.orderName === '' || !variableSet.orderName) {
             if (isEmptyExist) {
               return false;
@@ -770,8 +793,8 @@ export class UpdateObjectComponent implements OnInit {
           return true;
         });
 
-        obj.variableSets = obj.variableSets.map(variableSet => {
-          return {orderName: variableSet.orderName, variables: variableSet.variables};
+        obj.orderParameterisations = obj.orderParameterisations.map(variableSet => {
+          return {orderName: variableSet.orderName, variables: variableSet.variables, positions: variableSet.variables};
         });
       }
 

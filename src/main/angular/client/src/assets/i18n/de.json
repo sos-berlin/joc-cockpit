@@ -1076,7 +1076,7 @@
     "label.minutes": "Minuten",
     "label.hours": "Stunden",
     "label.days": "Tage",
-    "label.variableSets": "Variablensätze",
+    "label.orderParameterisations": "Order Parameterization",
     "label.objectNotExist": "Objekt nicht vorhanden",
     "label.revoke": "Zurückziehen",
     "label.deploymentStatus": "Status des Ausrollens",
@@ -1098,7 +1098,7 @@
     "label.newDraft": "Neuer Entwurf",
     "label.objectTypes": "Objekttypen",
     "button.modifyVariableSet": "Variablensatz ändern",
-    "button.addVariableSet": "Variablensatz hinzufügen",
+    "button.addOrderParameter": "Add Order Parameter",
     "button.setVersion": "Version setzen",
     "button.new": "Neu",
     "button.newFolder": "Neuer Ordner",
@@ -1259,6 +1259,8 @@
       },
       "board": {
         "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotice- und ExpectNotice-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "expectBoardExpression": "ExpectNotice Expression",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Notizbrett angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Notizbretts.",
         "toNotice": "Notizkennung des ausstellenden Auftrags",
@@ -1294,7 +1296,8 @@
         "timeZone": "Zeitzone der Zutrittszeit",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
-          "boardNames": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen."
+          "expectBoardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+          "boardNames": "Post Notice Boards"
         },
         "fail": {
           "message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
@@ -2397,6 +2400,8 @@
     "label.showConfiguration": "Konfiguration anzeigen",
     "label.allowUndeclared": "Undeklarierte Variablen",
     "label.boardNames": "Namenn der Notzbretter",
+    "label.expectBoardName": "Board Name",
+    "label.expectBoardExpression": "ExpectNotice Expression",
     "label.children": "Listenvariable",
     "label.childToId": "Element der Listenvariable für Kennung des Zweigs",
     "label.createForkListVariable": "Listenvariable erstellen",
@@ -2504,6 +2509,7 @@
     "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
     "placeholder.selectLock": "Kennung der Ressourcen-Sperre auswählen",
     "placeholder.selectBoards": "Notizbretter auswählen",
+    "placeholder.selectExpectBoard": "Select Expect Notice",
     "placeholder.offset": "Werte als Stunden/Minuten/Sekunden kommasepariert angeben",
     "placeholder.duration": "Wert im Format eingeben: d/w/m/y/h oder hh:mm:ss oder Sekunden",
     "placeholder.durationPeriod": "Wert im Format eingeben: w/d/h/m oder hh:mm:ss oder hh:mm:ss-hh:mm:ss oder Sekunden",

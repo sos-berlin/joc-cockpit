@@ -1076,7 +1076,7 @@
     "label.minutes": "Minutes",
     "label.hours": "Heures",
     "label.days": "Jours",
-    "label.variableSets": "Jeux de Variables",
+    "label.orderParameterisations": "Order Parameterization",
     "label.objectNotExist": "Objet n'existe pas",
     "label.revoke": "Révoquer",
     "label.deploymentStatus": "Statut du Dépoloiement",
@@ -1098,7 +1098,7 @@
     "label.newDraft": "Nouveau Brouillon",
     "label.objectTypes": "Types d'Objets",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
-    "button.addVariableSet": "Ajouter un Jeu de Variable",
+    "button.addOrderParameter": "Add Order Parameter",
     "button.setVersion": "Définir la Version",
     "button.new": "Nouveau",
     "button.newFolder": "Nouveau Répertoire",
@@ -1259,6 +1259,8 @@
       },
       "board": {
         "name": "Un tableau de condition représente les dépendances entre les workflows. Les instructions PostNotice et les instructions ExpectNotice respectives dans les workflows font référence au tableau de condition. Le nom d'un Tableau de Condition est unique dans l'inventaire. Pour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucun point ni tiret au début ou en fin.",
+        "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "expectBoardExpression": "ExpectNotice Expression",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le tableau de condition. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre de la Condition.",
         "toNotice": "Entrer la Condition",
@@ -1294,7 +1296,8 @@
         "timeZone": "Les heures d'admission sont calculées pour le fuseau horaire spécifié. Par défaut, le fuseau horaire spécifié dans le profil de l'utilisateur est utilisé.",
         "allowUndeclared": "Autoriser les variables non déclarées des Ordres. Cela signifie qu'un ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les tâches échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un ordre.",
         "board": {
-          "boardNames": "Le nom d'une Condition est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin."
+          "expectBoardName": "Le nom d'une Condition est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
+          "boardNames": "Post Notice Boards"
         },
         "fail": {
           "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",
@@ -2397,6 +2400,8 @@
     "label.showConfiguration": "Afficher la Configuration",
     "label.allowUndeclared": "Variables non déclarés",
     "label.boardNames": "Noms des Conditions",
+    "label.expectBoardName": "Board Name",
+    "label.expectBoardExpression": "ExpectNotice Expression",
     "label.children": "Variable de Tableau",
     "label.childToId": "Mappage de l'élément à l'ID ordre",
     "label.createForkListVariable": "Créer une Variable de Tableau",
@@ -2504,6 +2509,7 @@
     "placeholder.enterJobClass": "Entrer la référence de la classe du Tâche",
     "placeholder.selectLock": "Sélectionner l'ID du Verrou de Ressource",
     "placeholder.selectBoards": "Sélectionner les Conditions",
+    "placeholder.selectExpectBoard": "Select Expect Notice",
     "placeholder.offset": "Entres les valeurs en format h/m/s séparés par virgule",
     "placeholder.duration": "Entrer une valeur comme d/w/m/y/h our hh:mm:ss ou sécondes",
     "placeholder.durationPeriod": "Entrer une valeur comme w/d/h/m ou hh:mm:ss ou hh:mm:ss-hh:mm:ss ou sécondes",

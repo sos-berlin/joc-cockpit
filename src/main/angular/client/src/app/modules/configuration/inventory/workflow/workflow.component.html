@@ -368,7 +368,7 @@
             </form>
           </div>
         </div>
-        <div class="box-body" *ngIf="selectedNode.type === 'PostNotices' || selectedNode.type === 'ExpectNotices'">
+        <div class="box-body" *ngIf="selectedNode.type === 'PostNotices'">
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.boardNames' | translate}}"
                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.boardNames' | translate) : ''"
@@ -379,6 +379,7 @@
             <div class="col-md-8 col-lg-9"
                 [ngClass]="{'has-error' : ((noticeBoardName.dirty || noticeBoardName.touched) && noticeBoardName.invalid)}">
               <nz-tree-select
+                #treeSelectCtrl
                 nzMultiple
                 required
                 nzNoAnimation
@@ -407,6 +408,62 @@
               <div *ngIf="(error && !noticeBoardName.touched) || noticeBoardName.invalid && (noticeBoardName.dirty || noticeBoardName.touched)"
                   class="text-danger help-block">
                 <div *ngIf="error || (noticeBoardName.errors && noticeBoardName.errors.required)">
+                  <div translate>common.message.requiredError</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="box-body" *ngIf="selectedNode.type === 'ExpectNotices'">
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.expectBoardName' | translate}}"
+                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.expectBoardName' | translate) : ''"
+                   [nzTooltipMouseEnterDelay]="0.5"
+                   translate>workflow.label.expectBoardName
+            </label>
+            <div class="col-md-8 col-lg-9">
+              <nz-tree-select
+                nzNoAnimation
+                [nzPlaceHolder]="'workflow.placeholder.selectExpectBoard' | translate"
+                #noticeBoardName="ngModel"
+                [nzNodes]="boardTree"
+                [nzHideUnMatched]="true"
+                [nzDropdownStyle]="{ 'max-height': '300px' }"
+                nzShowSearch
+                [nzAllowClear]="false"
+                (ngModelChange)="checkExpectNoticeExp($event)"
+                [(ngModel)]="selectedNode.obj.noticeBoardName"
+                (nzExpandChange)="onExpand($event, 'NOTICEBOARD')"
+              >
+                <ng-template #nzTreeTemplate let-node>
+                  <div class="node-wrapper w-93" (click)="loadData(node, 'NOTICEBOARD', $event);">
+                    <div class="node-content-wrapper"
+                         [class.node-content-wrapper-active]="node.origin.path == selectedNode.obj.noticeBoardName">
+                      <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                         class="w-14"></i>
+                      <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                      {{node.origin.name}}
+                    </div>
+                  </div>
+                </ng-template>
+              </nz-tree-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.expectBoardExpression' | translate}}"
+                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.expectBoardExpression' | translate) : ''"
+                   [nzTooltipMouseEnterDelay]="0.5"
+                   translate>workflow.label.expectBoardExpression
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-md-8 col-lg-9"
+                 [ngClass]="{'has-error' : ((expectBoardExpression.dirty || expectBoardExpression.touched) && expectBoardExpression.invalid)}">
+              <input [readonly]="isTrash" #expectBoardExpression="ngModel" required type="text"
+                     class="form-control" name="expectBoardExpression" placeholder="{{'workflow.placeholder.expectBoardExpression' | translate}}"
+                     [(ngModel)]="selectedNode.obj.noticeBoardNames" placeholder="{{'workflow.placeholder.expression' | translate}}">
+              <div *ngIf="(error && !expectBoardExpression.touched) || expectBoardExpression.invalid && (expectBoardExpression.dirty || expectBoardExpression.touched)"
+                   class="text-danger help-block">
+                <div *ngIf="error || (expectBoardExpression.errors && expectBoardExpression.errors.required)">
                   <div translate>common.message.requiredError</div>
                 </div>
               </div>

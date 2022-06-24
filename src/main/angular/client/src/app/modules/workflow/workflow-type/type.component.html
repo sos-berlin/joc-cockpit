@@ -145,7 +145,7 @@
         </div>
         <i *ngIf="instruction.TYPE === 'Job' && instruction.documentationName" (click)="coreService.showDocumentation(instruction.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
         <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
-        <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
+        <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
           <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>
           <span class="text-muted" *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices') && instruction.noticeBoardNames">
