@@ -185,7 +185,7 @@
     "label.dragAndDropForRoundRobin": "Drop here for round-robin mode",
     "label.dragAndDropFixedPriority": "Drop here for fixed-priority mode",
     "label.duplicateCluster": "Duplicate Cluster",
-    "label.withGenerateSubagentCluster": "As own Cluster",
+    "label.withGenerateSubagentCluster": "As own Subagent Cluster",
     "label.subagentClusterId": "Subagent Cluster ID",
     "button.createToken": "Create one-time Token",
     "button.addAgent": "Add Standalone Agent",
@@ -1098,7 +1098,7 @@
     "label.newDraft": "New Draft",
     "label.objectTypes": "Object Types",
     "button.modifyVariableSet": "Modify Variable Set",
-    "button.addOrderParameter": "Add Order Parameter",
+    "button.addOrderParameter": "Add Order Parameterization",
     "button.setVersion": "Set Version",
     "button.new": "New",
     "button.newFolder": "New Folder",
@@ -1253,18 +1253,18 @@
         "delay": "A Delay is applied for which the Agent waits that an incoming file remains unchanged. Changes are detected from the file size and file timestamp. If the file changes, for example if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further change occurs."
       },
       "jobResource": {
-        "name": "A Job Resource is a set of variables that can be used by a number of workflows or jobs. There are two flavors: Variables are assigned to JITL jobs and Java jobs, Environment Variables become automatically available with Shell jobs. For the name of the Job Resource most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "name": "A Job Resource is a set of variables that can be used by a number of workflows or jobs. There are two flavors: Variables are assigned to JITL jobs and Java jobs, Environment Variables automatically become available with Shell jobs. For the name of the Job Resource most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Job Resource. The RESOURCES view allows to manage the Documentation.",
         "title": "The Title of the Job Resource"
       },
       "board": {
-        "name": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-        "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-        "expectBoardExpression": "ExpectNotice Expression",
+        "name": "A Notice Board represents the dependencies between workflows. The respective PostNotices Instructions and ExpectNotices Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory. For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotices Instructions and ExpectNotices Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "expectBoardExpression": "The ExpectNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Notice Board. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Notice Board",
         "toNotice": "Enter Notice ID for posting order",
-        "endOfLife": "Enter end of life for Notice",
+        "endOfLife": "Enter end-of-life period for Notice",
         "readingOrderToNoticeId": "Enter Notice ID for expecting order"
       },
       "lock": {
@@ -1297,12 +1297,12 @@
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
         "board": {
           "expectBoardName": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-          "boardNames": "Post Notice Boards"
+          "boardNames": "A number of Notice Board names can be specified for which Notices are created."
         },
         "fail": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
           "uncatchable": "An uncatchable error cannot be handled with a Try/Catch Instruction.",
-          "returnCode": "The Fail Instruction can be assigned a positive, non-zero Return Code that becomes visible with the order history."
+          "returnCode": "The Fail Instruction can be assigned a positive, non-zero Return Code that becomes visible with the order history. Non-zero Return Codes indicate failed execution."
         },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
@@ -2399,9 +2399,9 @@
     "label.failOnOutputErr": "Fail on output to stderr",
     "label.showConfiguration": "Show Configuration",
     "label.allowUndeclared": "Undeclared Variables",
-    "label.boardNames": "Board Names",
-    "label.expectBoardName": "Board Name",
-    "label.expectBoardExpression": "ExpectNotice Expression",
+    "label.boardNames": "Notice Board Names",
+    "label.expectBoardName": "Notice Board Name",
+    "label.expectBoardExpression": "ExpectNotices Expression",
     "label.children": "List Variable",
     "label.childToId": "Element of list variable for branch ID",
     "label.createForkListVariable": "Create ForkList Variable",
@@ -2494,8 +2494,8 @@
     "message.invalidCycleInstruction": "Cycle Instruction cannot be empty",
     "message.invalidLockInstruction": "Resource Lock Instruction cannot be empty",
     "message.invalidForkListInstruction": "ForkList Instruction cannot be empty",
-    "message.invalidPostNoticeInstruction": "PostNotice Instruction is not valid",
-    "message.invalidExpectNoticeInstruction": "ExpectNotice Instruction is not valid",
+    "message.invalidPostNoticeInstruction": "PostNotices Instruction is not valid",
+    "message.invalidExpectNoticeInstruction": "ExpectNotices Instruction is not valid",
     "message.agentIsMissing": "Agent is missing, but is required",
     "message.orderNameIsMissing": "Order Name is missing, but is required",
     "message.workflowNameIsNotValid": "Workflow Name is missing, but is required",
@@ -2508,8 +2508,8 @@
     "placeholder.selectAgentName": "Select Agent Name",
     "placeholder.enterJobClass": "Enter Job Class reference",
     "placeholder.selectLock": "Select Resource Lock ID",
-    "placeholder.selectBoards": "Select Boards",
-    "placeholder.selectExpectBoard": "Select Expect Notice",
+    "placeholder.selectBoards": "Select Notice Boards",
+    "placeholder.selectExpectBoard": "Select Notice Boards expected to hold Notices",
     "placeholder.offset": "Enter values as h/m/s separated by comma",
     "placeholder.duration": "Enter value as d/w/m/y/h or hh:mm:ss or seconds",
     "placeholder.durationPeriod": "Enter value as w/d/h/m or hh:mm:ss or hh:mm:ss-hh:mm:ss or seconds",

@@ -185,7 +185,7 @@
     "label.dragAndDropForRoundRobin": "Hierher ziehen und ablegen für round-robin Modus",
     "label.dragAndDropFixedPriority": "Hierher ziehen und ablegen für fixed-priority Modus",
     "label.duplicateCluster": "Cluster duplizieren",
-    "label.withGenerateSubagentCluster": "Als eigener Cluster",
+    "label.withGenerateSubagentCluster": "Als eigener Subagenten-Cluster",
     "label.subagentClusterId": "Subagenten-Cluster ID",
     "button.createToken": "Einmaliges Token erstellen",
     "button.addAgent": "Autonomen Agenten hinzufügent",
@@ -1076,7 +1076,7 @@
     "label.minutes": "Minuten",
     "label.hours": "Stunden",
     "label.days": "Tage",
-    "label.orderParameterisations": "Order Parameterization",
+    "label.orderParameterisations": "Auftragsparametrisierung",
     "label.objectNotExist": "Objekt nicht vorhanden",
     "label.revoke": "Zurückziehen",
     "label.deploymentStatus": "Status des Ausrollens",
@@ -1098,7 +1098,7 @@
     "label.newDraft": "Neuer Entwurf",
     "label.objectTypes": "Objekttypen",
     "button.modifyVariableSet": "Variablensatz ändern",
-    "button.addOrderParameter": "Add Order Parameter",
+    "button.addOrderParameter": "Auftragsparametrisierung hinzufügen",
     "button.setVersion": "Version setzen",
     "button.new": "Neu",
     "button.newFolder": "Neuer Ordner",
@@ -1258,9 +1258,9 @@
         "title": "Der Titel der Job-Ressource"
       },
       "board": {
-        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotice- und ExpectNotice-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotice Instructions and ExpectNotice Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-        "expectBoardExpression": "ExpectNotice Expression",
+        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "expectBoardName": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "expectBoardExpression": "Der ExpectNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Notizbrett angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Notizbretts.",
         "toNotice": "Notizkennung des ausstellenden Auftrags",
@@ -1297,12 +1297,12 @@
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
           "expectBoardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-          "boardNames": "Post Notice Boards"
+          "boardNames": "Mehrere Notizbretter können ausgewählt werden, für die Notizen erzeugt werden."
         },
         "fail": {
           "message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
-          "uncatchable": "Ein uneinfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
-          "returnCode": "Der Fail-Instruktion kann ein positiver, numerischer Rückgabewert zugeordnet werden, der in der Auftragshistorie sichtbar wird."
+          "uncatchable": "Ein nicht abfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
+          "returnCode": "Der Fail-Instruktion kann eine positive Zahl als Rückgabewert zugeordnet werden, die in der Auftragshistorie sichtbar wird. Rückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
         },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
@@ -2401,7 +2401,7 @@
     "label.allowUndeclared": "Undeklarierte Variablen",
     "label.boardNames": "Namenn der Notzbretter",
     "label.expectBoardName": "Board Name",
-    "label.expectBoardExpression": "ExpectNotice Expression",
+    "label.expectBoardExpression": "ExpectNotices Expression",
     "label.children": "Listenvariable",
     "label.childToId": "Element der Listenvariable für Kennung des Zweigs",
     "label.createForkListVariable": "Listenvariable erstellen",
@@ -2493,8 +2493,8 @@
     "message.invalidRetryInstruction": "Retry-Instruktion darf nicht leer sein",
     "message.invalidCycleInstruction": "Cycle-Instruktion darf nicht leer sein",
     "message.invalidLockInstruction": "Resource-Lock-Instruktion darf nicht leer sein",
-    "message.invalidPostNoticeInstruction": "PostNotice-Instruktion ist nicht gültig",
-    "message.invalidExpectNoticeInstruction": "ExpectNotice-Instruktion ist nicht gültig",
+    "message.invalidPostNoticeInstruction": "PostNotices-Instruktion ist nicht gültig",
+    "message.invalidExpectNoticeInstruction": "ExpectNotices-Instruktion ist nicht gültig",
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.orderNameIsMissing": "Auftragsname darf nicht leer sein",
     "message.workflowNameIsNotValid": "Name des Arbeitsablaufs darf nicht leer sein",
@@ -2509,7 +2509,7 @@
     "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
     "placeholder.selectLock": "Kennung der Ressourcen-Sperre auswählen",
     "placeholder.selectBoards": "Notizbretter auswählen",
-    "placeholder.selectExpectBoard": "Select Expect Notice",
+    "placeholder.selectExpectBoard": "Notizbretter auswählen, von denen Notizen erwartet werden",
     "placeholder.offset": "Werte als Stunden/Minuten/Sekunden kommasepariert angeben",
     "placeholder.duration": "Wert im Format eingeben: d/w/m/y/h oder hh:mm:ss oder Sekunden",
     "placeholder.durationPeriod": "Wert im Format eingeben: w/d/h/m oder hh:mm:ss oder hh:mm:ss-hh:mm:ss oder Sekunden",
