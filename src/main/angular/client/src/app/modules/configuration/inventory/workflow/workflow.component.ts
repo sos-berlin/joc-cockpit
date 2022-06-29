@@ -9867,7 +9867,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.orderPreparation = variableDeclarations;
         flag = true;
       }
-      // this.orderPreparation.allowUndeclared = this.variableDeclarations.allowUndeclared;
     }
     if (flag) {
       const data = JSON.parse(this.workflow.actual);
@@ -9960,11 +9959,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.workflow.valid = res.valid;
           this.data.valid = res.valid;
           this.data.deployed = false;
+          if (res.invalidMsg) {
+            this.invalidMsg = res.invalidMsg;
+          }
           if (this.invalidMsg && this.invalidMsg.match(/inventory/)) {
             this.invalidMsg = '';
           }
-          if (!this.invalidMsg && res.invalidMsg) {
-            this.invalidMsg = res.invalidMsg;
+          if(!res.valid){
+            const data = this.coreService.clone(this.workflow.configuration);
+            this.modifyJSON(data, true, false);
           }
           this.ref.detectChanges();
         }

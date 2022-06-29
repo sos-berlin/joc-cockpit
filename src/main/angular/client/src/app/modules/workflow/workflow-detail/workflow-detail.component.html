@@ -5,7 +5,7 @@
     </div>
   </div>
 </div>
-<div class="white box-shadow sub-header" style="height: 54px">
+<div class="white box-shadow sub-header">
   <div class="row">
     <div class="col-md-12">
       <div class="padding">
@@ -56,6 +56,8 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
+          </div>
+          <div class="inline">
             <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="openModal()" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies">
               <i class="fa fa-codepen"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDependency</span>

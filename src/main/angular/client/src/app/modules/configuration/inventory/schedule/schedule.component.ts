@@ -528,7 +528,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.schedule.configuration.orderParameterisations[prop].variables = {};
       }
     }
-    this.updateSelectItems();
+    this.updateSelectItems(true);
   }
 
   checkVariableType(argument): void {
@@ -568,18 +568,20 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     this.updateSelectItems();
   }
 
-  updateSelectItems(): void {
+  updateSelectItems(flag?): void {
     for (const prop in this.schedule.configuration.orderParameterisations) {
-      if(this.schedule.configuration.orderParameterisations[prop].positions) {
-        if (this.schedule.configuration.orderParameterisations[prop].positions.startPosition) {
-          this.schedule.configuration.orderParameterisations[prop].positions.startPosition =
-            JSON.stringify(this.schedule.configuration.orderParameterisations[prop].positions.startPosition);
-        }
-        if (this.schedule.configuration.orderParameterisations[prop].positions.endPositions) {
-          this.schedule.configuration.orderParameterisations[prop].positions.endPositions =
-            this.schedule.configuration.orderParameterisations[prop].positions.endPositions.map(pos => {
-              return JSON.stringify(pos);
-            });
+      if(flag) {
+        if (this.schedule.configuration.orderParameterisations[prop].positions) {
+          if (this.schedule.configuration.orderParameterisations[prop].positions.startPosition) {
+            this.schedule.configuration.orderParameterisations[prop].positions.startPosition =
+              JSON.stringify(this.schedule.configuration.orderParameterisations[prop].positions.startPosition);
+          }
+          if (this.schedule.configuration.orderParameterisations[prop].positions.endPositions) {
+            this.schedule.configuration.orderParameterisations[prop].positions.endPositions =
+              this.schedule.configuration.orderParameterisations[prop].positions.endPositions.map(pos => {
+                return JSON.stringify(pos);
+              });
+          }
         }
       }
       this.schedule.configuration.orderParameterisations[prop].variableList = this.coreService.clone(this.variableList);
@@ -694,9 +696,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  selectStartNode(value, positions): void{
-   
-    if(value){
+  selectStartNode(value, positions): void {
+    if (value) {
       positions.endPositions = [];
     }
   }
@@ -897,7 +898,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }).subscribe((res) => {
       this.positions = res.positions.filter(pos => {
         pos.position = JSON.stringify(pos.position);
-        if(pos.type === 'ImplicitEnd'){
+        if (pos.type === 'ImplicitEnd') {
           pos.type = '--- end ---'
         }
         return true;

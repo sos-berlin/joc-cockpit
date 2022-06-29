@@ -47,166 +47,166 @@
       </button>
     </div>
   </div>
-  <div class="table-responsive">
-  <nz-table
-    #ajaxTable
-    [nzSize]="'small'"
-    [nzPageSize]="filter.entryPerPage || preferences.entryPerPage || 25"
-    [nzPageIndex]="filter.currentPage"
-    [nzBordered]="true"
-    [nzShowPagination]="data.length > 0"
-    [nzData]="data"
-    [nzShowSizeChanger]="true"
-    (nzPageIndexChange)="pageIndexChange($event)"
-    (nzPageSizeChange)="pageSizeChange($event)"
-    [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
-    <thead>
-      <tr>
-        <th class="chk"
-          *ngIf="permission.joc.inventory.manage"
-          [nzShowCheckbox]="true"
-          [(nzChecked)]="checked"
-          [nzIndeterminate]="indeterminate"
-          (nzCheckedChange)="onAllChecked($event)"
-        ></th>
-        <th class="menu"><span translate>common.label.action</span></th>
-        <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
-          <i *ngIf="filter.sortBy == 'name' && !filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'name' && filter.reverse"
-             class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('valid')"><a><span class="p-r-xs" translate>inventory.label.validHeader</span>
-          <i *ngIf="filter.sortBy == 'valid' && !filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'valid' && filter.reverse"
-             class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('deployed')" *ngIf="!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"><a><span class="p-r-xs" translate>common.label.status</span>
-          <i *ngIf="filter.sortBy == 'deployed' && !filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'deployed' && filter.reverse"
-             class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('released')" *ngIf="objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT' || objectType.match('CALENDAR')"><a><span class="p-r-xs" translate>common.label.status</span>
-          <i *ngIf="filter.sortBy == 'released' && !filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'released' && filter.reverse"
-             class="fa fa-caret-down "></i></a></th>
-        <th (click)="sort('objectType')" *ngIf="objectType.match('CALENDAR')"><a><span class="p-r-xs" translate>common.label.type</span>
-          <i *ngIf="filter.sortBy == 'objectType' && !filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'objectType' && filter.reverse"
-             class="fa fa-caret-down "></i></a>
-        </th>
-        <th (click)="sort('syncState._text')" *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
-          <a><span class="p-r-xs" translate>inventory.label.deploymentStatus</span>
-          <i *ngIf="filter.sortBy == 'syncState._text' && !filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'syncState._text' && filter.reverse"
-             class="fa fa-caret-down "></i></a>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
-        <tr [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === data.path && copyObj.name === data.name && copyObj.type === data.type)}">
-          <td *ngIf="permission.joc.inventory.manage" [nzShowCheckbox]="true" [nzChecked]="mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
-          <td>
-            <div class="btn-group dropdown">
-              <button class="btn-drop more-option-h" [disabled]="mapOfCheckedId.size > 0" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
-                type="button">
-                <i class="fa fa-ellipsis-h"></i>
-              </button>
-              <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
-                <ul nz-menu *ngIf="!isTrash && permission.joc">
-                  <li nz-menu-item (click)="cutObject(data)" *ngIf="permission.joc.inventory.manage">
-                    <a translate>inventory.button.cut</a>
-                  </li>
-                  <li nz-menu-item (click)="copyObject(data)" *ngIf="permission.joc.inventory.manage">
-                    <a translate>inventory.button.copy</a>
-                  </li>
-                  <li nz-menu-item (click)="renameObject(data);" *ngIf="permission.joc.inventory.manage">
-                    <a translate>inventory.button.rename</a></li>
-                  <li nz-menu-divider *ngIf="permission.joc.inventory.manage">
-                  <li nz-menu-item (click)="deployObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments && !data.valid">
-                    <a translate>inventory.button.deploy</a>
-                  </li>
-                  <li nz-menu-item (click)="revoke(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments">
-                    <a translate>inventory.button.revoke</a>
-                  </li>
-                  <li nz-menu-item (click)="releaseObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT'" [nzDisabled]="!data.valid">
-                    <a translate>inventory.button.release</a>
-                  </li>
-                  <li nz-menu-divider *ngIf="permission.joc.inventory.manage">
-                  <li nz-menu-item (click)="removeObject(data)" *ngIf="permission.joc.inventory.manage">
-                    <a translate>inventory.button.remove</a>
-                  </li>
-                  <li nz-menu-item (click)="deleteDraft(data)" *ngIf="permission.joc.inventory.manage" [nzDisabled]="data.deployed || data.released">
-                    <a translate>inventory.button.deleteDraft</a>
-                  </li>
-                  <li nz-menu-divider></li>
-                  <li nz-menu-item (click)="newDraft(data)">
-                    <a translate>inventory.button.newDraft</a>
-                  </li>
-                  <li nz-menu-divider></li>
-                  <li nz-menu-item (click)="showJson(data, false)">
-                    <a translate>inventory.button.showJSON</a>
-                  </li>
-                  <li nz-menu-item (click)="showJson(data, true)"
-                      *ngIf="permission.joc.inventory.manage">
-                    <a translate>inventory.button.editJSON</a>
-                  </li>
-                  <li nz-menu-divider></li>
-                  <li nz-menu-item (click)="exportJSON(data)">
-                    <a translate>inventory.button.downloadJSON</a>
-                  </li>
-                  <li nz-menu-item (click)="importJSON(data)" *ngIf="permission.joc.inventory.manage">
-                    <a translate>inventory.button.uploadJSON</a>
-                  </li>
-                  <li (click)="coreService.copyLink('configuration', (data.path + (data.path === '/' ? '' : '/') + data.name), data.type)" nz-menu-item>
-                    <a translate>common.button.copyLinkToObject</a>
-                  </li>
-                </ul>
-                <ul nz-menu *ngIf="isTrash && permission.joc">
-                  <li nz-menu-item (click)="deletePermanently(data);" *ngIf="permission.joc.inventory.manage" class="bg-hover-color">
-                    <a translate>inventory.button.delete</a></li>
-                  <li nz-menu-item (click)="restoreObject(data);">
-                    <a translate>inventory.button.restore</a></li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
-          </td>
-          <td class="cursor" (click)="editObject(data)">
-            <span [innerHTML]="data.name | highlight : searchKey"></span>
-            <i *ngIf="data.title"> - </i>
-            <span class="text-muted">{{data.title}}</span>
-          </td>
-          <td class="cursor" (click)="editObject(data)">
-            <span class="label bg-dark-blue" *ngIf="data.valid"
-                  translate>inventory.label.valid</span>
-            <span class="label bg-orange" *ngIf="!data.valid"
-                  translate>inventory.label.notValid</span>
-          </td>
-          <td class="cursor" (click)="editObject(data)">
-            <span class="label bg-dark-blue" *ngIf="data.deployed && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
-                  translate>inventory.label.deployed</span>
-            <span class="label bg-orange" *ngIf="!data.deployed && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
-                translate>inventory.label.notDeployed</span>
-            <span class="label bg-dark-blue" *ngIf="data.released && (objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT' || objectType.match('CALENDAR'))"
-                  translate>inventory.label.released</span>
-            <span class="label bg-orange" *ngIf="!data.released && (objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT' || objectType.match('CALENDAR'))"
-                  translate>inventory.label.notReleased</span>
-          </td>
-          <td class="cursor" (click)="editObject(data)" *ngIf="objectType.match('CALENDAR')">
-            <span class="label" [ngClass]="data.objectType=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'">
-              {{data.objectType | translate}}</span>
-          </td>
-          <td class="cursor" (click)="editObject(data)" *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
-            <span *ngIf="data.syncState" class="label" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" >{{data.syncState._text | translate}}</span>
-          </td>
+  <perfect-scrollbar class="table-responsive">
+    <nz-table
+      #ajaxTable
+      [nzSize]="'small'"
+      [nzPageSize]="filter.entryPerPage || preferences.entryPerPage || 25"
+      [nzPageIndex]="filter.currentPage"
+      [nzBordered]="true"
+      [nzShowPagination]="data.length > 0"
+      [nzData]="data"
+      [nzShowSizeChanger]="true"
+      (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)"
+      [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
+      <thead>
+        <tr>
+          <th class="chk"
+            *ngIf="permission.joc.inventory.manage"
+            [nzShowCheckbox]="true"
+            [(nzChecked)]="checked"
+            [nzIndeterminate]="indeterminate"
+            (nzCheckedChange)="onAllChecked($event)"
+          ></th>
+          <th class="menu"><span translate>common.label.action</span></th>
+          <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
+            <i *ngIf="filter.sortBy == 'name' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'name' && filter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th (click)="sort('valid')"><a><span class="p-r-xs" translate>inventory.label.validHeader</span>
+            <i *ngIf="filter.sortBy == 'valid' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'valid' && filter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th (click)="sort('deployed')" *ngIf="!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"><a><span class="p-r-xs" translate>common.label.status</span>
+            <i *ngIf="filter.sortBy == 'deployed' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'deployed' && filter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th (click)="sort('released')" *ngIf="objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT' || objectType.match('CALENDAR')"><a><span class="p-r-xs" translate>common.label.status</span>
+            <i *ngIf="filter.sortBy == 'released' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'released' && filter.reverse"
+               class="fa fa-caret-down "></i></a></th>
+          <th (click)="sort('objectType')" *ngIf="objectType.match('CALENDAR')"><a><span class="p-r-xs" translate>common.label.type</span>
+            <i *ngIf="filter.sortBy == 'objectType' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'objectType' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('syncState._text')" *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
+            <a><span class="p-r-xs" translate>inventory.label.deploymentStatus</span>
+            <i *ngIf="filter.sortBy == 'syncState._text' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'syncState._text' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
         </tr>
-      </ng-template>
-    </tbody>
-  </nz-table>
-  </div>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
+          <tr [ngClass]="{'cut-row' : (copyObj && copyObj.operation === 'CUT' && copyObj.path === data.path && copyObj.name === data.name && copyObj.type === data.type)}">
+            <td *ngIf="permission.joc.inventory.manage" [nzShowCheckbox]="true" [nzChecked]="mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
+            <td>
+              <div class="btn-group dropdown">
+                <button class="btn-drop more-option-h" [disabled]="mapOfCheckedId.size > 0" nz-dropdown nzTrigger="click" [nzDropdownMenu]="exportMenu"
+                  type="button">
+                  <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
+                  <ul nz-menu *ngIf="!isTrash && permission.joc">
+                    <li nz-menu-item (click)="cutObject(data)" *ngIf="permission.joc.inventory.manage">
+                      <a translate>inventory.button.cut</a>
+                    </li>
+                    <li nz-menu-item (click)="copyObject(data)" *ngIf="permission.joc.inventory.manage">
+                      <a translate>inventory.button.copy</a>
+                    </li>
+                    <li nz-menu-item (click)="renameObject(data);" *ngIf="permission.joc.inventory.manage">
+                      <a translate>inventory.button.rename</a></li>
+                    <li nz-menu-divider *ngIf="permission.joc.inventory.manage">
+                    <li nz-menu-item (click)="deployObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments && !data.valid">
+                      <a translate>inventory.button.deploy</a>
+                    </li>
+                    <li nz-menu-item (click)="revoke(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'" [nzDisabled]="!data.hasDeployments">
+                      <a translate>inventory.button.revoke</a>
+                    </li>
+                    <li nz-menu-item (click)="releaseObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT'" [nzDisabled]="!data.valid">
+                      <a translate>inventory.button.release</a>
+                    </li>
+                    <li nz-menu-divider *ngIf="permission.joc.inventory.manage">
+                    <li nz-menu-item (click)="removeObject(data)" *ngIf="permission.joc.inventory.manage">
+                      <a translate>inventory.button.remove</a>
+                    </li>
+                    <li nz-menu-item (click)="deleteDraft(data)" *ngIf="permission.joc.inventory.manage" [nzDisabled]="data.deployed || data.released">
+                      <a translate>inventory.button.deleteDraft</a>
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="newDraft(data)">
+                      <a translate>inventory.button.newDraft</a>
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="showJson(data, false)">
+                      <a translate>inventory.button.showJSON</a>
+                    </li>
+                    <li nz-menu-item (click)="showJson(data, true)"
+                        *ngIf="permission.joc.inventory.manage">
+                      <a translate>inventory.button.editJSON</a>
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="exportJSON(data)">
+                      <a translate>inventory.button.downloadJSON</a>
+                    </li>
+                    <li nz-menu-item (click)="importJSON(data)" *ngIf="permission.joc.inventory.manage">
+                      <a translate>inventory.button.uploadJSON</a>
+                    </li>
+                    <li (click)="coreService.copyLink('configuration', (data.path + (data.path === '/' ? '' : '/') + data.name), data.type)" nz-menu-item>
+                      <a translate>common.button.copyLinkToObject</a>
+                    </li>
+                  </ul>
+                  <ul nz-menu *ngIf="isTrash && permission.joc">
+                    <li nz-menu-item (click)="deletePermanently(data);" *ngIf="permission.joc.inventory.manage" class="bg-hover-color">
+                      <a translate>inventory.button.delete</a></li>
+                    <li nz-menu-item (click)="restoreObject(data);">
+                      <a translate>inventory.button.restore</a></li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+            <td class="cursor" (click)="editObject(data)">
+              <span [innerHTML]="data.name | highlight : searchKey"></span>
+              <i *ngIf="data.title"> - </i>
+              <span class="text-muted">{{data.title}}</span>
+            </td>
+            <td class="cursor" (click)="editObject(data)">
+              <span class="label bg-dark-blue" *ngIf="data.valid"
+                    translate>inventory.label.valid</span>
+              <span class="label bg-orange" *ngIf="!data.valid"
+                    translate>inventory.label.notValid</span>
+            </td>
+            <td class="cursor" (click)="editObject(data)">
+              <span class="label bg-dark-blue" *ngIf="data.deployed && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
+                    translate>inventory.label.deployed</span>
+              <span class="label bg-orange" *ngIf="!data.deployed && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'"
+                  translate>inventory.label.notDeployed</span>
+              <span class="label bg-dark-blue" *ngIf="data.released && (objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT' || objectType.match('CALENDAR'))"
+                    translate>inventory.label.released</span>
+              <span class="label bg-orange" *ngIf="!data.released && (objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT' || objectType.match('CALENDAR'))"
+                    translate>inventory.label.notReleased</span>
+            </td>
+            <td class="cursor" (click)="editObject(data)" *ngIf="objectType.match('CALENDAR')">
+              <span class="label" [ngClass]="data.objectType=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'">
+                {{data.objectType | translate}}</span>
+            </td>
+            <td class="cursor" (click)="editObject(data)" *ngIf="inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT'">
+              <span *ngIf="data.syncState" class="label" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" >{{data.syncState._text | translate}}</span>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </nz-table>
+  </perfect-scrollbar>
   <div class="w-half label-top"
        *ngIf="ajaxTable.data.length >0"><span
     translate>common.label.total</span> {{data.length}}

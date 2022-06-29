@@ -697,6 +697,7 @@ export class WorkflowService {
     }
     const isGraphView = mapObj.graphView;
     const colorCode = mapObj.colorCode;
+    const useString = mapObj.useString;
     let boardType;
     let boardName;
     if (mapObj.cell) {
@@ -718,7 +719,7 @@ export class WorkflowService {
         const v1 = graph.insertVertex(defaultParent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
 
         let wf;
-        if (isGraphView && colorCode !== '#90C7F5') {
+        if (isGraphView && colorCode && colorCode !== '#90C7F5') {
           const node1 = doc.createElement('Workflow');
           const workflowName = mainJson.path.substring(mainJson.path.lastIndexOf('/') + 1);
           node1.setAttribute('workflowName', workflowName);
@@ -726,7 +727,7 @@ export class WorkflowService {
           wf = graph.insertVertex(defaultParent, null, node1, 0, 0, 160, 40, WorkflowService.setStyleToVertex('', colorCode, self.theme, null));
           let isConnect = true;
 
-          if (mapObj.addOrderdMap.has(workflowName)) {
+          if (mapObj.addOrderdMap && mapObj.addOrderdMap.has(workflowName)) {
             let arr = mapObj.addOrderdMap.get(workflowName);
             arr = JSON.parse(arr);
             arr.forEach(id => {
@@ -780,7 +781,7 @@ export class WorkflowService {
           let v2;
           const _node = doc.createElement(json.instructions[x].TYPE);
           if (json.instructions[x].position) {
-            _node.setAttribute('position', JSON.stringify(json.instructions[x].position));
+            _node.setAttribute('position', useString ? json.instructions[x].positionString : JSON.stringify(json.instructions[x].position));
           }
           if (!json.instructions[x].uuid) {
             json.instructions[x].uuid = self.create_UUID();
@@ -880,9 +881,13 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'ImplicitEnd' || json.instructions[x].TYPE === 'ForkListEnd' || json.instructions[x].TYPE === 'Join') {
             _node.setAttribute('label', 'end');
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
-            if (mapObj.vertixMap && json.instructions[x].position) {
-              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+            if(type && useString){
+              v1 = null;
+            } else {
+              v1 = graph.insertVertex(parent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
+              if (mapObj.vertixMap && json.instructions[x].position) {
+                mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+              }
             }
           } else if (json.instructions[x].TYPE === 'ExpectNotices') {
             _node.setAttribute('label', 'expectNotices');

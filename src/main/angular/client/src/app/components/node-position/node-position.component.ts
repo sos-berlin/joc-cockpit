@@ -27,11 +27,11 @@ export class NodePositionComponent implements OnChanges {
       this.nodes = changes.positions.currentValue;
       this.isSelect = true;
     }
-    if(this.isSelect){
-      if(this.position) {
+    if (this.isSelect) {
+      if (this.position) {
         let flag = false;
         this.nodes = this.positions.filter((node) => {
-          if(JSON.stringify(node.position) == JSON.stringify(this.position)){
+          if (JSON.stringify(node.position) == JSON.stringify(this.position)) {
             flag = true;
             return false;
           }
@@ -59,7 +59,7 @@ export class NodePositionComponent implements OnChanges {
             flag = true;
           }
 
-          if(position && json.instructions[x].positionString === position){
+          if (position && json.instructions[x].positionString === position) {
             isEnable = false;
           }
 
@@ -241,15 +241,10 @@ export class NodePositionComponent implements OnChanges {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        console.log(typeof result, result);
-        console.log(typeof this.obj.startPosition, this.obj.startPosition);
-        if(operation === 'START'){
+        if (operation === 'START') {
           this.obj.startPosition = result;
         } else {
-          if(!this.obj.endPositions){
-            this.obj.endPositions = [];
-          }
-          this.obj.endPositions.push(result);
+          this.obj.endPositions = result;
         }
       }
     });

@@ -4300,12 +4300,16 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   exportJSON(obj): void {
+    let type = obj.objectType || obj.type;
+    if (obj.objectType === 'CALENDAR') {
+      type = obj.type;
+    }
     if (obj.path && obj.name) {
       this.coreService.post('inventory/read/configuration', {
         path: (obj.path + (obj.path === '/' ? '' : '/') + obj.name),
-        objectType: obj.objectType || obj.type,
+        objectType: type,
       }).subscribe((res: any) => {
-        const name = obj.name + (obj.type ? '.' + obj.type.toLowerCase() : '') + '.json';
+        const name = obj.name + type.toLowerCase() + '.json';
         const fileType = 'application/octet-stream';
         delete res.configuration.TYPE;
         const data = JSON.stringify(res.configuration, undefined, 2);

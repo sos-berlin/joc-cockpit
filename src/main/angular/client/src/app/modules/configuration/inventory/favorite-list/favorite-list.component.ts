@@ -48,7 +48,6 @@ export class FavoriteListComponent implements OnChanges {
   }
 
   checkName(): void {
-    console.log(this.data)
     this.unique = true;
     for (let i in this.list) {
       if (this.list[i].name == this.obj.name && (this.list[i].name !== this.obj.oldName)) {

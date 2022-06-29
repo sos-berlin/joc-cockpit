@@ -208,6 +208,7 @@ export class TypeComponent implements OnChanges {
     }
 
     recursive(data);
+    this.isFirst = true;
     this.sideBar.isVisible = true;
   }
 

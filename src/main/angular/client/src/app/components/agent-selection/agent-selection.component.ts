@@ -101,7 +101,6 @@ export class AgentSelectionComponent implements OnChanges {
     this.dataService.reloadTree.next({reloadAgents: true});
     setTimeout(() => {
       this.isReloading = false;
-      console.log(this.isReloading)
     }, 2000)
   }
 

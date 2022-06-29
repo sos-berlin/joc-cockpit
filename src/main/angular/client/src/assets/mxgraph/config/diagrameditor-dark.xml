@@ -89,18 +89,18 @@
       </Finish>
     </add>
     <add as="ExpectNotice" >
-      <ExpectNotice label="expectNotice">
+      <ExpectNotices label="expectNotices">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
-      </ExpectNotice>
+      </ExpectNotices>
     </add>
-    <add as="PostNotice">
-      <PostNotice label="postNotice">
+    <add as="PostNotices">
+      <PostNotices label="postNotices">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="68" height="68"/>
         </mxCell>
-      </PostNotice>
+      </PostNotices>
     </add>
     <add as="Prompt">
       <Prompt label="prompt">
