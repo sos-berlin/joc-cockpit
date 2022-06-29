@@ -449,7 +449,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
     if (isEmpty(this.period)) {
       if (this.dateType.at === 'now') {
         obj.scheduledFor = 'now';
-      } else if (this.order.at === 'never') {
+      } else if (this.dateType.at === 'never') {
         obj.scheduledFor = 'never';
       } else if (this.dateType.at === 'later') {
         obj.scheduledFor = 'now + ' + this.order.atTime;
