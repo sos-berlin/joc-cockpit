@@ -1631,4 +1631,24 @@ export class CoreService {
       auditLog.ticketLink = comments.ticketLink;
     }
   }
+
+  getHtml(exp, permission): string {
+    const arr = exp.split(' ');
+    let str = '';
+    arr.forEach(item => {
+      item = item.trim();
+      if (item !== '&&' && item != '||') {
+        if (item.substring(0, 1) == '"' || item.substring(0, 1) == "'") {
+          item = item.substring(1, item.length - 1)
+        }
+        if (permission.joc && permission.joc.inventory.view) {
+          str += '<i data-id-x="' + item + '" class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>';
+        }
+        str += '<a class="text-hover-primary" data-id-y="' + item + '" >' + item + '</a>'
+      } else {
+        str += ' ' + item;
+      }
+    })
+    return str;
+  }
 }

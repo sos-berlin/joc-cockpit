@@ -46,7 +46,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
-  positions = [];
+  positions: any;
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
@@ -570,17 +570,21 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
   updateSelectItems(flag?): void {
     for (const prop in this.schedule.configuration.orderParameterisations) {
-      if(flag) {
+      if (flag) {
         if (this.schedule.configuration.orderParameterisations[prop].positions) {
+          let map = new Map();
+          this.positions.forEach((k, v) => {
+            map.set(k, v);
+          });
           if (this.schedule.configuration.orderParameterisations[prop].positions.startPosition) {
             this.schedule.configuration.orderParameterisations[prop].positions.startPosition =
-              JSON.stringify(this.schedule.configuration.orderParameterisations[prop].positions.startPosition);
+              map.get(JSON.stringify(this.schedule.configuration.orderParameterisations[prop].positions.startPosition));
           }
           if (this.schedule.configuration.orderParameterisations[prop].positions.endPositions) {
             this.schedule.configuration.orderParameterisations[prop].positions.endPositions =
               this.schedule.configuration.orderParameterisations[prop].positions.endPositions.map(pos => {
-                return JSON.stringify(pos);
-              });
+                return map.get(JSON.stringify(pos));
+              }).filter(pos => !!pos);
           }
         }
       }
@@ -702,6 +706,11 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  updateEndNode(positions): void {
+    positions.endPositions = [...positions.endPositions];
+    this.saveJSON();
+  }
+
   saveJSON(flag = false, skip = false, form?, data?): void {
     if (form && form.invalid) {
       data.value = '';
@@ -747,12 +756,14 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         });
       }
-      if(parameter.positions.startPosition){
-        parameter.positions.startPosition = JSON.parse(parameter.positions.startPosition)
+      if (parameter.positions.startPosition && this.positions.has(parameter.positions.startPosition)) {
+        parameter.positions.startPosition = JSON.parse(this.positions.get(parameter.positions.startPosition))
       }
-      if(parameter.positions.endPositions){
+      if (parameter.positions.endPositions) {
         parameter.positions.endPositions = parameter.positions.endPositions.map((item) => {
-          return JSON.parse(item)
+          if (this.positions.has(item)) {
+            return JSON.parse(this.positions.get(item))
+          }
         })
       }
       return true;
@@ -862,6 +873,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   private getWorkflowInfo(name, flag = false, cb): void {
     this.coreService.post('inventory/read/configuration', {
       path: name,
+      withPositions: true,
       objectType: InventoryObject.WORKFLOW
     }).subscribe((conf: any) => {
       if (this.schedule.configuration && this.schedule.configuration.workflowNames.length > 1) {
@@ -883,27 +895,30 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (flag && this.schedule.configuration) {
         this.schedule.configuration.orderParameterisations = [];
       }
-      this.getPositions(conf.path);
-      this.updateVariableList();
-      this.saveJSON();
+      this.getPositions(conf.path, () => {
+        this.updateVariableList();
+        this.saveJSON();
+      });
       if (cb) {
         cb(conf.path);
       }
     });
   }
 
-  private getPositions(path): void {
+  private getPositions(path, cb): void {
     this.coreService.post('inventory/read/order/positions', {
       workflowPath: path
-    }).subscribe((res) => {
-      this.positions = res.positions.filter(pos => {
-        pos.position = JSON.stringify(pos.position);
-        if (pos.type === 'ImplicitEnd') {
-          pos.type = '--- end ---'
-        }
-        return true;
-      });
-    })
+    }).subscribe({
+      next: (res) => {
+        this.positions = new Map()
+        res.positions.forEach((item) => {
+          this.positions.set(item.positionString, JSON.stringify(item.position));
+        });
+        cb();
+      }, error: () => {
+        cb();
+      }
+    });
   }
 
   private convertObjToArr(calendar): void {

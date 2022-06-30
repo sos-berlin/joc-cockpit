@@ -25,6 +25,7 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
   @Input() agentName: string;
   @Input() subagentClusterId: string;
   @Input() timezone: string;
+  @Input() noticeBoardNames: string;
 
   dragEle: any;
   preferences: any = {};
@@ -41,9 +42,10 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
     mode: 'shell'
   };
   todayDate: string;
+  type: string;
   @ViewChild('codeMirror', {static: false}) cm: any;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private translate: TranslateService, private authService: AuthService,
               private message: NzMessageService, private clipboardService: ClipboardService, private workflowService: WorkflowService, private dragDrop: DragDrop) {
   }
 
@@ -300,6 +302,17 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
       this.activeModal.destroy();
       this.workflowService.setJobValue(this.jobName);
       this.coreService.navToInventoryTab(this.workflowPath, 'WORKFLOW');
+    }
+  }
+
+  @HostListener('window:click', ['$event'])
+  onClick(event): void {
+    if (event) {
+      if (event.target.getAttribute('data-id-x')) {
+        this.coreService.navToInventoryTab(event.target.getAttribute('data-id-x'), 'NOTICEBOARD');
+      } else if (event.target.getAttribute('data-id-y')) {
+        this.coreService.showBoard(event.target.getAttribute('data-id-y'));
+      }
     }
   }
 }

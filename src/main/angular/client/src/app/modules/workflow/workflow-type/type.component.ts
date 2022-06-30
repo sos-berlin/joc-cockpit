@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, HostListener} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
@@ -141,6 +141,7 @@ export class TypeComponent implements OnChanges {
   }
 
   showOrders(data): void {
+
     const self = this;
     this.sideBar = {
       orders: [],
@@ -442,6 +443,17 @@ export class TypeComponent implements OnChanges {
   showLog(order): void {
     if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
       this.coreService.showOrderLogWindow(order.orderId);
+    }
+  }
+
+  @HostListener('window:click', ['$event'])
+  onClick(event): void {
+    if (event) {
+      if (event.target.getAttribute('data-id-x')) {
+        this.coreService.navToInventoryTab(event.target.getAttribute('data-id-x'), 'NOTICEBOARD');
+      } else if (event.target.getAttribute('data-id-y')) {
+        this.coreService.showBoard(event.target.getAttribute('data-id-y'));
+      }
     }
   }
 }

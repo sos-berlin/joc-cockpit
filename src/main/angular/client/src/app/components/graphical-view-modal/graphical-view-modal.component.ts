@@ -103,7 +103,7 @@ export class GraphicalViewModalComponent implements OnInit {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           json.instructions[x].id = ++count;
-          if (!self.positions.has(json.instructions[x].positionString)) {
+          if (self.positions && !self.positions.has(json.instructions[x].positionString)) {
             json.instructions[x].position = undefined;
           } else {
             if(self.startNode) {
@@ -127,7 +127,7 @@ export class GraphicalViewModalComponent implements OnInit {
               }
               positions.push(json.instructions[x].position);
               parent.join.positionStrings = positions;
-              if (self.positions.has(parent.join.positionStrings)) {
+              if (self.positions && self.positions.has(parent.join.positionStrings)) {
                 parent.join.position = self.positions.get(parent.join.positionString);
               }
               json.instructions[x].TYPE = 'Join';

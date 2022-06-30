@@ -1,4 +1,4 @@
-<div class="modal-header">
+<div class="modal-header" [hidden]="noticeBoardNames">
   <h4 class="modal-title" >
     <span class="drag-text" translate>workflow.label.showConfiguration</span>
     <i *ngIf="jobName">:</i>
@@ -14,7 +14,22 @@
 </div>
 <form spellcheck="false">
   <div class="modal-body p-a" style="min-height: 112px">
-    <div class="row">
+    <div class="row" *ngIf="noticeBoardNames">
+      <div class="col-sm-12 text-center">
+        <b class="b-b p-b-xs m-b-sm">{{type | translate}}</b>
+        <div class="m-t-md" *ngIf="type === 'PostNotices'">
+          <div class="text-muted" *ngFor="let board of noticeBoardNames">
+            <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(board, 'NOTICEBOARD');"
+               class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
+            <a class="text-hover-primary" (click)="coreService.showBoard(board);" >{{board}}</a>
+          </div>
+        </div>
+        <div class="m-t-md" *ngIf="type === 'ExpectNotices'">
+           <span [innerHTML]="coreService.getHtml(noticeBoardNames, permission) | safeHtml"></span>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="!noticeBoardNames">
       <div class="col-sm-12 m-b-10" *ngIf="agentName">
         <span class="_600" translate>agent.label.agentName</span>:&nbsp;
         {{agentName}}
@@ -124,7 +139,7 @@
       </div>
     </div>
   </div>
-  <div class="modal-footer">
+  <div class="modal-footer" [hidden]="noticeBoardNames">
     <button type="button" class="btn btn-grey btn-sm"
             (click)="activeModal.destroy()" translate>
       common.button.close

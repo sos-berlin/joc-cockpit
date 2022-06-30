@@ -881,7 +881,7 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'ImplicitEnd' || json.instructions[x].TYPE === 'ForkListEnd' || json.instructions[x].TYPE === 'Join') {
             _node.setAttribute('label', 'end');
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            if(type && useString){
+            if((type || json.instructions[x].TYPE === 'ForkListEnd') && useString){
               v1 = null;
             } else {
               v1 = graph.insertVertex(parent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));

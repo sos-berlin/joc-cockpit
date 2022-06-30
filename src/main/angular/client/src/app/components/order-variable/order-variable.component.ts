@@ -16,6 +16,7 @@ export class OrderVariableComponent implements OnInit {
   @Input() permission: any;
   @Input() schedulerId: any;
 
+  workflow: any;
   constructor(public coreService: CoreService, public modal: NzModalService,
               public toasterService: ToastrService, private translate: TranslateService) {
   }
@@ -61,7 +62,8 @@ export class OrderVariableComponent implements OnInit {
           schedulerId: this.schedulerId,
           variable,
           order,
-          orderPreparation: order.requirements
+          orderPreparation: order.requirements,
+          workflow: this.workflow
         },
         nzFooter: null,
         nzClosable: false,
@@ -132,6 +134,7 @@ export class OrderVariableComponent implements OnInit {
         workflowId: {path: order.workflowId ? order.workflowId.path : order.workflowPath}
       }).subscribe({
         next: (res: any) => {
+          this.workflow=res.workflow;
           order.requirements = res.workflow.orderPreparation;
           cb();
         }, error: () => cb()

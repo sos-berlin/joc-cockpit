@@ -17,15 +17,18 @@ export class ChangeParameterModalComponent implements OnInit {
   @Input() orders: any;
   @Input() orderIds: any;
   @Input() orderPreparation: any;
+  @Input() workflow: any;
 
   removeVariables = [];
   variables: any = [];
   variableList = [];
   forkListVariables = [];
   submitted = false;
-  display: any;
   required = false;
   comments: any = {};
+  schedule: any = {};
+  display: any;
+  positions: any;
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService) {
   }
@@ -54,8 +57,26 @@ export class ChangeParameterModalComponent implements OnInit {
       }
     }
     this.updateVariableList();
+    this.getPositions();
     if (this.variables.length === 0 && !this.variable) {
       this.addVariable();
+    }
+  }
+
+  private getPositions(): void {
+    if (this.workflow) {
+      this.coreService.post('orders/add/positions', {
+        controllerId: this.schedulerId,
+        workflowId: {
+          path: this.workflow.path,
+          version: this.workflow.version
+        }
+      }).subscribe((res) => {
+        this.positions = new Map()
+        res.positions.forEach((item) => {
+          this.positions.set(item.positionString, JSON.stringify(item.position));
+        });
+      });
     }
   }
 
@@ -167,6 +188,12 @@ export class ChangeParameterModalComponent implements OnInit {
     }
   }
 
+  selectStartNode(value, positions): void {
+    if (value) {
+      positions.endPositions = [];
+    }
+  }
+
   addVariableToList(data): void {
     const arr = [];
     data.list.forEach(item => {
@@ -227,7 +254,7 @@ export class ChangeParameterModalComponent implements OnInit {
   }
 
   removeVariable(argu): void {
-    this.removeVariables.push({name: argu.name, value: argu.value});
+    this.removeVariables.push(argu.name)
     this.variables = this.variables.filter((item) => {
       return argu.name !== item.name;
     });
@@ -274,7 +301,7 @@ export class ChangeParameterModalComponent implements OnInit {
       if (argu.length > 0) {
         obj.variables = object(argu.map((val) => {
           if (!val.value && val.value !== false && val.value !== 0) {
-            this.removeVariables.push({name: val.name, value: val.value});
+            this.removeVariables.push(val.name);
           }
           return val.name ? [val.name, val.value] : null;
         }));
@@ -294,7 +321,7 @@ export class ChangeParameterModalComponent implements OnInit {
       obj.orderIds = this.orderIds;
     }
     if (this.removeVariables.length > 0) {
-      obj.removeVariables = this.coreService.keyValuePair(this.removeVariables);
+      obj.removeVariables = this.removeVariables;
     }
     if (this.forkListVariables && this.forkListVariables.length > 0) {
       if (!obj.variables) {
@@ -311,6 +338,15 @@ export class ChangeParameterModalComponent implements OnInit {
             obj.variables[item.name].push(listObj);
           }
         }
+      });
+    }
+    if (this.plan.startPosition) {
+      obj.startPosition = JSON.parse(this.positions.get(this.plan.startPosition));
+    }
+    if (this.plan.endPositions) {
+      obj.endPositions = [];
+      this.plan.endPositions.forEach(pos => {
+        obj.endPositions.push(JSON.parse(this.positions.get(pos)));
       });
     }
     obj.auditLog = {};

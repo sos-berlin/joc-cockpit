@@ -2387,13 +2387,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           }
         });
         if (requirements) {
-          this._openModel(plan, order, requirements);
+          this._openModel(plan, order, requirements,null);
         } else {
           this.coreService.post('workflow', {
             controllerId: this.schedulerIds.selected,
             workflowId: {path: workflowPath}
           }).subscribe((res: any) => {
-            this._openModel(plan, order, res.workflow.orderPreparation);
+            this._openModel(plan, order, res.workflow.orderPreparation, res.workflow);
           });
         }
       } else {
@@ -2402,7 +2402,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _openModel(plan, order, orderPreparation): void {
+  private _openModel(plan, order, orderPreparation, workflow?): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ChangeParameterModalComponent,
@@ -2411,7 +2411,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         schedulerId: this.schedulerIds.selected,
         order,
         plan,
-        orderPreparation
+        orderPreparation,
+        workflow
       },
       nzFooter: null,
       nzClosable: false,

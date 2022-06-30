@@ -1,6 +1,5 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
-import {isArray} from "underscore";
 import {WorkflowService} from "../../services/workflow.service";
 import {GraphicalViewModalComponent} from "../graphical-view-modal/graphical-view-modal.component";
 
@@ -16,29 +15,14 @@ export class NodePositionComponent implements OnChanges {
   @Input() workflow: any;
   @Input() type: string;
 
-  isSelect = false;
-  nodes = [];
+  nodes:any = [];
+  @Output() onBlur = new EventEmitter<string>();
 
   constructor(public workflowService: WorkflowService, private modal: NzModalService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.positions && isArray(changes.positions.currentValue)) {
-      this.nodes = changes.positions.currentValue;
-      this.isSelect = true;
-    }
-    if (this.isSelect) {
-      if (this.position) {
-        let flag = false;
-        this.nodes = this.positions.filter((node) => {
-          if (JSON.stringify(node.position) == JSON.stringify(this.position)) {
-            flag = true;
-            return false;
-          }
-          return flag;
-        });
-      }
-    } else {
+    if (this.workflow) {
       this.getNodes(this.position);
     }
   }
@@ -222,6 +206,7 @@ export class NodePositionComponent implements OnChanges {
     if (value) {
       this.obj.endPositions = [];
     }
+    this.onBlur.emit();
   }
 
   showGraphicalView(operation) {
@@ -246,6 +231,7 @@ export class NodePositionComponent implements OnChanges {
         } else {
           this.obj.endPositions = result;
         }
+        this.onBlur.emit();
       }
     });
   }

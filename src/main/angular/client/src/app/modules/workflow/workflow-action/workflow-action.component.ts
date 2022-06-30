@@ -102,7 +102,7 @@ export class AddOrderModalComponent implements OnInit {
       }
     }).subscribe({
       next: (res) => {
-        this.positions = new Map()
+        this.positions = new Map();
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
         });

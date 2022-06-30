@@ -1,13 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="type === 'Delete' || type === 'Remove'">
+    <span *ngIf="(type === 'Delete' || type === 'Remove') && !resetProfiles">
       <span>{{'common.label.' + title | translate}}</span>
       <span *ngIf="objectName">:
         {{objectName}}
       </span>
       ?
     </span>
-    <span *ngIf="type !== 'Delete' && type !== 'Remove'">
+    <span *ngIf="(type !== 'Delete' && type !== 'Remove') || resetProfiles">
       <span *ngIf="!resetProfiles && title">{{'common.label.' + title | translate}}</span>
       <span *ngIf="title2">{{'workflow.button.' + title2 | translate}}</span>
       <span *ngIf="resetProfiles && resetProfiles.length>0">{{'user.label.' + title | translate}}</span>

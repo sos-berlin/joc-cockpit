@@ -45,8 +45,11 @@
             <i class="fa fa-ellipsis-h"></i></button>
           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
             <ul nz-menu >
-              <li (click)="resetProfile(profile)" nz-menu-item >
+              <li (click)="resetOrDeleteProfile(profile, 'Reset')" nz-menu-item >
                 <a translate>user.button.resetProfile</a>
+              </li>
+              <li (click)="resetOrDeleteProfile(profile, 'Delete')" nz-menu-item >
+                <a translate>user.button.deleteProfile</a>
               </li>
             </ul>
           </nz-dropdown-menu>

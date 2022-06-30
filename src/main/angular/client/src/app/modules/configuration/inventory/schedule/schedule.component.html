@@ -142,29 +142,15 @@
           <div class="form-group row">
             <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <nz-select nzShowSearch name="startNode{{j}}" [(ngModel)]="variableSet.positions.startPosition"
-                         [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate" nzAllowClear (ngModelChange)="selectStartNode($event, variableSet.positions);saveJSON()">
-                <nz-option *ngFor="let node of positions" nzCustomContent [nzValue]="node.position" [nzLabel]="node.type">
-                  <div>
-                    {{node.type}} <span *ngIf="node.label"> - {{node.label}}</span>
-                  </div>
-                </nz-option>
-              </nz-select>
-
+              <app-node-position [obj]="variableSet.positions" [type]="'START'" (onBlur)="saveJSON()"
+                               [workflow]="workflow" [positions]="positions"></app-node-position>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <nz-select nzMode="multiple" nzShowSearch name="endNode{{j}}" [(ngModel)]="variableSet.positions.endPositions"
-                         [nzPlaceHolder]="'order.placeholder.selectEndNode' | translate" nzAllowClear (ngModelChange)="saveJSON()">
-                <nz-option *ngFor="let node of positions" nzCustomContent [nzDisabled]="node.position === variableSet.positions.startPosition" [nzValue]="node.position" [nzLabel]="node.type">
-                  <div>
-                    {{node.type}} <span *ngIf="node.label"> - {{node.label}}</span>
-                  </div>
-                </nz-option>
-              </nz-select>
-
+              <app-node-position [obj]="variableSet.positions" [type]="'END'" (onBlur)="updateEndNode(variableSet.positions)"
+                                 [position]="variableSet.positions.startPosition" [workflow]="workflow" [positions]="positions"></app-node-position>
             </div>
           </div>
           <div *ngIf="variableSet.forkListVariables && variableSet.forkListVariables.length > 0">

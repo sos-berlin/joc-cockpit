@@ -680,7 +680,13 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               self.showLog(JSON.parse(order));
             }
           }
-        } else if (cell.value.tagName === 'Workflow') {
+        } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'PostNotices') {
+          let noticeNames = cell.value.getAttribute('noticeBoardNames');
+          if(cell.value.tagName === 'PostNotices') {
+          //  noticeNames = JSON.parse(noticeNames)
+          }
+          self.showConfiguration({noticeNames, type: cell.value.tagName});
+        } if (cell.value.tagName === 'Workflow') {
           const data = cell.value.getAttribute('data');
           if (data) {
             const workflow = JSON.parse(data);
@@ -1319,16 +1325,21 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         workflowPath:this.workFlowJson.path,
         timezone: this.workFlowJson.timeZone
       };
+    } else if(argu.noticeNames){
+      nzComponentParams = {
+        noticeBoardNames: argu.noticeNames,
+        type: argu.type
+      };
     }
     if (nzComponentParams) {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ScriptModalComponent,
-        nzClassName: 'lg script-editor2',
+        nzClassName: argu.noticeNames ? '' : 'lg script-editor2',
         nzComponentParams,
         nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
+        nzClosable: !!argu.noticeNames,
+        nzMaskClosable: !!argu.noticeNames
       });
     }
   }
