@@ -111,6 +111,16 @@
           </li>
         </ul>
         <ul nz-menu *ngIf="job">
+          <li nz-menu-item *ngIf="!job.isSkip" (click)="skip(job);">
+            <a>
+              <span translate>workflow.button.skip</span>
+            </a>
+          </li>
+          <li nz-menu-item *ngIf="job.isSkip" (click)="unskip(job);">
+            <a>
+              <span translate>workflow.button.unskip</span>
+            </a>
+          </li>
           <li nz-menu-item (click)="showConfiguration(job);">
             <a translate>common.button.showConfiguration</a>
           </li>

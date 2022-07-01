@@ -30,6 +30,11 @@ export class ChangeParameterModalComponent implements OnInit {
   display: any;
   positions: any;
 
+  positionObj = {
+    startPosition: '',
+    endPositions: []
+  }
+
   constructor(private activeModal: NzModalRef, public coreService: CoreService) {
   }
 
@@ -340,12 +345,12 @@ export class ChangeParameterModalComponent implements OnInit {
         }
       });
     }
-    if (this.plan.startPosition) {
-      obj.startPosition = JSON.parse(this.positions.get(this.plan.startPosition));
+    if (this.positionObj.startPosition) {
+      obj.startPosition = JSON.parse(this.positions.get(this.positionObj.startPosition));
     }
-    if (this.plan.endPositions) {
+    if (this.positionObj.endPositions) {
       obj.endPositions = [];
-      this.plan.endPositions.forEach(pos => {
+      this.positionObj.endPositions.forEach(pos => {
         obj.endPositions.push(JSON.parse(this.positions.get(pos)));
       });
     }

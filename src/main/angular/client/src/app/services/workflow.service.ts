@@ -783,6 +783,9 @@ export class WorkflowService {
           if (json.instructions[x].position) {
             _node.setAttribute('position', useString ? json.instructions[x].positionString : JSON.stringify(json.instructions[x].position));
           }
+          if (json.instructions[x].state && json.instructions[x].state._text) {
+            _node.setAttribute('state', JSON.stringify(json.instructions[x].state));
+          }
           if (!json.instructions[x].uuid) {
             json.instructions[x].uuid = self.create_UUID();
           }
@@ -1428,8 +1431,22 @@ export class WorkflowService {
         if (docName) {
           className = 'show-block';
         }
-        return '<div class="cursor workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
+        let state = cell.getAttribute('state');
+
+        let str = '<div class="cursor workflow-title"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
           + truncate(cell.getAttribute('jobName'), 22) + '</div>';
+        if (state) {
+          state = JSON.parse(state);
+          if (state._text === 'SKIPPED') {
+            const class1 = this.coreService.getColor(state.severity, 'text');
+            let skip = '';
+            this.translate.get('SKIPPED').subscribe(translatedValue => {
+              skip = translatedValue;
+            });
+            str += '<div><span class = "text-xs ' + class1 + '">' + skip + '</span></div>';
+          }
+        }
+        return str;
       } else if (cell.value.tagName === 'Workflow') {
         const cls = cell.getAttribute('type') === 'expect' ? 'm-t-n-6' : cell.getAttribute('type') === 'post' ? 'm-t-sm' : '';
         return '<div class="cursor text-dark ' + cls + '"><i class="icon-workflows-icon p-r-xs"></i>'

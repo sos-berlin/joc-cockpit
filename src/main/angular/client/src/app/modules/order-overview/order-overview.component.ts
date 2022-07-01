@@ -880,18 +880,25 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
   modifyAllOrder(): void {
     const order = this.object.mapOfCheckedId.values().next().value;
-    this.modal.create({
-      nzTitle: null,
-      nzContent: ChangeParameterModalComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        schedulerId: this.schedulerIds.selected,
-        orders: this.object.mapOfCheckedId,
-        orderPreparation: order.requirements
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
+    this.coreService.post('workflow', {
+      controllerId: this.schedulerIds.selected,
+      workflowId: order.workflowId
+    }).subscribe((res: any) => {
+      order.requirements = res.workflow.orderPreparation;
+      this.modal.create({
+        nzTitle: null,
+        nzContent: ChangeParameterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          schedulerId: this.schedulerIds.selected,
+          orders: this.object.mapOfCheckedId,
+          orderPreparation: order.requirements,
+          workflow: res.workflow
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
     });
   }
 

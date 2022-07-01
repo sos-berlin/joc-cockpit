@@ -319,7 +319,7 @@ export class DeployComponent implements OnInit {
   isDeleted = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService) {
+              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -633,12 +633,9 @@ export class DeployComponent implements OnInit {
   }
 
   getReleaseObject(): void {
-    this.object = {
-      update: [],
-      delete: []
-    };
+    this.object.update = [];
+    this.object.delete = [];
     const self = this;
-
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((!nodes[i].object) && nodes[i].checked) {
@@ -706,7 +703,6 @@ export class DeployComponent implements OnInit {
 
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
     if (!this.releasable && isEmpty(obj.store) && isEmpty(obj.delete) && !this.isRevoke) {
       this.submitted = false;
       this.ref.detectChanges();
@@ -715,6 +711,11 @@ export class DeployComponent implements OnInit {
       if (this.releasable) {
         if (isEmpty(obj) || (isEmpty(obj.update) && isEmpty(obj.delete))) {
           this.submitted = false;
+          let msg = '';
+          this.translate.get('inventory.message.noObjectFoundToRelease').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.info(msg);
           this.ref.detectChanges();
           return;
         }

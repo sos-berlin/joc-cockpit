@@ -25,14 +25,12 @@ export class GraphicalViewModalComponent implements OnInit {
   @Input() positions: any;
   @Input() operation: string;
   @Input() startNode: string;
-  @Input() endNode: [];
+  @Input() data: any;
   isModal: boolean = true;
   disabledDrag = false;
   position: any;
   preferences: any = {};
   graph: any;
-  mapObj = new Map();
-  nodeMap = new Map();
   workFlowJson: any = {};
 
   @ViewChild('graph', {static: true}) graphContainer: ElementRef;
@@ -48,7 +46,7 @@ export class GraphicalViewModalComponent implements OnInit {
       for (let i in model.cells) {
         if (model.cells[i].value && model.cells[i].value.tagName) {
           let pos = model.cells[i].value.getAttribute('position');
-          if(!pos) {
+          if (!pos) {
             const state = graph.view.getState(model.cells[i]);
             if (state && state.shape) {
               state.style[mxConstants.STYLE_OPACITY] = 60;
@@ -99,6 +97,7 @@ export class GraphicalViewModalComponent implements OnInit {
     let count = 1;
     const map = new Map();
     let isChecked = false;
+
     function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -106,8 +105,8 @@ export class GraphicalViewModalComponent implements OnInit {
           if (self.positions && !self.positions.has(json.instructions[x].positionString)) {
             json.instructions[x].position = undefined;
           } else {
-            if(self.startNode) {
-              if(!isChecked){
+            if (self.startNode) {
+              if (!isChecked) {
                 json.instructions[x].position = undefined;
               }
               if (self.startNode === json.instructions[x].positionString) {
@@ -350,16 +349,16 @@ export class GraphicalViewModalComponent implements OnInit {
       if (cell != null) {
         const pos = cell.value.getAttribute('position');
         if (pos) {
-          if(self.operation == 'END'){
+          if (self.operation == 'END') {
             let flag = true;
-            if(!self.position){
+            if (!self.position) {
               self.position = [];
             } else {
-              if(self.position.indexOf(pos) > -1){
+              if (self.position.indexOf(pos) > -1) {
                 flag = false;
               }
             }
-            if(flag) {
+            if (flag) {
               self.position.push(pos);
               graph.addSelectionCell(cell);
             } else {
@@ -380,9 +379,22 @@ export class GraphicalViewModalComponent implements OnInit {
     this.graph.getModel().beginUpdate();
     try {
       this.graph.removeCells(this.graph.getChildCells(this.graph.getDefaultParent()), true);
-      const mapObj = {nodeMap: this.nodeMap, graphView: true, vertixMap: new Map(), useString: true};
+      const mapObj = {nodeMap: new Map(), graphView: true, vertixMap: new Map(), useString: true};
       this.workflowService.createWorkflow(this.workFlowJson, {graph: this.graph}, mapObj);
-      this.nodeMap = mapObj.nodeMap;
+
+      if (this.data) {
+        if (this.operation === 'START' && this.data.startPosition) {
+          this.position = this.coreService.clone(this.data.startPosition);
+          let pos = this.positions.get(this.data.startPosition);
+          this.graph.setSelectionCell(mapObj.vertixMap.get(pos));
+        } else if (this.operation === 'END' && this.data.endPositions && this.data.endPositions.length > 0) {
+          this.position = this.coreService.clone(this.data.endPositions);
+          this.data.endPositions.forEach((endPosition) => {
+            let pos = this.positions.get(endPosition);
+            this.graph.addSelectionCell(mapObj.vertixMap.get(pos));
+          })
+        }
+      }
     } finally {
       // Updates the display
       this.graph.getModel().endUpdate();
@@ -390,7 +402,6 @@ export class GraphicalViewModalComponent implements OnInit {
       GraphicalViewModalComponent.changeCellStyle(this.graph);
     }
   }
-
 }
 
 

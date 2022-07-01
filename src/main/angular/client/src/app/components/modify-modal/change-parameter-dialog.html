@@ -15,15 +15,19 @@
       <div class="hide" [ngClass]="{'show': display}" *ngIf="!(variableList.length === 0 && forkListVariables.length === 0) || (variables.length === 0 && forkListVariables.length === 0 && variable)">
         <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="7"></app-audit-log-input>
       </div>
+      <div class="form-group row" *ngIf="!variable">
+        <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
+        <div class="col-sm-7">
+          <app-node-position [obj]="positionObj" [type]="'START'" [workflow]="workflow" [positions]="positions"></app-node-position>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="!variable">
+        <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
+        <div class="col-sm-7">
+          <app-node-position [obj]="positionObj" [position]="positionObj.startPosition" [type]="'END'" [workflow]="workflow" [positions]="positions"></app-node-position>
+        </div>
+      </div>
       <div class="row">
-      <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
-      <div class="col-sm-6">
-        <app-node-position [obj]="plan || order" [type]="'START'" [workflow]="workflow" [positions]="positions"></app-node-position>
-      </div><br><br>
-      <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
-      <div class="col-sm-6">
-        <app-node-position [obj]="plan || order" [position]="plan.startPosition" [type]="'END'" [workflow]="workflow" [positions]="positions"></app-node-position>
-      </div><br><br>
         <div class="col-sm-12" *ngIf="forkListVariables && forkListVariables.length > 0">
           <div *ngFor="let listVariables of forkListVariables; let k = index">
             <div class="m-b-sm">{{'order.label.variableList' | translate}}:

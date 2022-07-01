@@ -168,7 +168,7 @@ export class OrderActionComponent {
       }).subscribe({
         next: (res: any) => {
           order.requirements = res.workflow.orderPreparation;
-          cb();
+          cb(res.workflow);
         }, error: () => cb()
       });
     }
@@ -181,7 +181,7 @@ export class OrderActionComponent {
       });
     }
 
-    this.getRequirements(order, () => {
+    this.getRequirements(order, (workflow) => {
       this.modal.create({
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
@@ -189,7 +189,8 @@ export class OrderActionComponent {
         nzComponentParams: {
           schedulerId: this.schedulerId,
           orderPreparation: order.requirements,
-          order: this.coreService.clone(order)
+          order: this.coreService.clone(order),
+          workflow
         },
         nzFooter: null,
         nzClosable: false,

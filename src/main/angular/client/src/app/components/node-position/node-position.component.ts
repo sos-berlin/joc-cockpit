@@ -217,6 +217,7 @@ export class NodePositionComponent implements OnChanges {
       nzComponentParams: {
         workflow: this.workflow,
         positions: this.positions,
+        data: this.obj,
         operation,
         startNode: operation === 'END' && this.obj.startPosition ? this.obj.startPosition : undefined
       },
@@ -230,6 +231,7 @@ export class NodePositionComponent implements OnChanges {
           this.obj.startPosition = result;
         } else {
           this.obj.endPositions = result;
+          this.obj.endPositions = [...this.obj.endPositions];
         }
         this.onBlur.emit();
       }

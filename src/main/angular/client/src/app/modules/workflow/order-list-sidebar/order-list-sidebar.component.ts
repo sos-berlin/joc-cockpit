@@ -168,24 +168,30 @@ export class OrderListSidebarComponent implements OnChanges {
   }
 
   modifyAllOrder(): void {
-    this.modal.create({
-      nzTitle: null,
-      nzContent: ChangeParameterModalComponent,
-      nzClassName: 'lg',
-      nzComponentParams: {
-        schedulerId: this.schedulerId,
-        orderPreparation: this.coreService.clone(this.orderPreparation),
-        orderIds: Array.from(this.setOfCheckedId)
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    }).afterClose.subscribe(result => {
-      if (result) {
-        this.isProcessing = true;
-        this.resetAction(5000);
-        this.resetCheckBox();
-      }
+    this.coreService.post('workflow', {
+      controllerId: this.schedulerId,
+      workflowId: this.orders[0].workflowId
+    }).subscribe((res: any) => {
+      this.modal.create({
+        nzTitle: null,
+        nzContent: ChangeParameterModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          schedulerId: this.schedulerId,
+          orderPreparation: this.coreService.clone(this.orderPreparation),
+          orderIds: Array.from(this.setOfCheckedId),
+          workflow: res.workflow
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.isProcessing = true;
+          this.resetAction(5000);
+          this.resetCheckBox();
+        }
+      });
     });
   }
 

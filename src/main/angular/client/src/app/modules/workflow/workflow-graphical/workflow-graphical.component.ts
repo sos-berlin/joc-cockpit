@@ -682,9 +682,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           }
         } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'PostNotices') {
           let noticeNames = cell.value.getAttribute('noticeBoardNames');
-          if(cell.value.tagName === 'PostNotices') {
-          //  noticeNames = JSON.parse(noticeNames)
-          }
           self.showConfiguration({noticeNames, type: cell.value.tagName});
         } if (cell.value.tagName === 'Workflow') {
           const data = cell.value.getAttribute('data');
@@ -761,7 +758,11 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             } else if (state.cell.value.tagName === 'Job') {
               const jobName = state.cell.value.getAttribute('jobName');
               const documentationName = state.cell.value.getAttribute('documentationName');
-              data = {jobName, documentationName};
+              const label = state.cell.value.getAttribute('label');
+              let _state = state.cell.value.getAttribute('state');
+              _state = JSON.parse(_state);
+              let isSkip = (_state && _state._text === 'SKIPPED');
+              data = {jobName, documentationName, label, isSkip};
             } else if (state.cell.value.tagName === 'If') {
               const predicate = state.cell.value.getAttribute('predicate');
               data = {predicate};
@@ -1292,6 +1293,67 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   }
 
   /* --------- Job action menu operations ----------------*/
+
+  skipOperation(job, operation): void {
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Job',
+        operation: operation,
+        name: job.label
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.coreService.post('workflow/' + operation.toLowerCase(), {
+            controllerId: this.controllerId,
+            workflowPath: this.workFlowJson.path,
+            labels: [job.label],
+            auditLog: {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            }
+          }).subscribe({
+            next: () => {
+              this.resetAction(5000);
+            }, error: () => {
+              this.resetAction();
+            }
+          });
+        }
+      });
+    } else {
+      this.coreService.post('workflow/' + operation.toLowerCase(), {
+        controllerId: this.controllerId,
+        workflowPath: this.workFlowJson.path,
+        labels: [job.label]
+      }).subscribe({
+        next: () => {
+          this.resetAction(5000);
+        }, error: () => {
+          this.resetAction();
+        }
+      });
+    }
+  }
+
+  skip(job): void{
+    this.skipOperation(job, 'Skip');
+  }
+
+  unskip(job): void{
+    this.skipOperation(job, 'UnSkip');
+  }
 
   showConfiguration(argu): void {
     let nzComponentParams;

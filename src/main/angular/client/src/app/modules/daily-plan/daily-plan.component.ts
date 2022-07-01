@@ -1391,7 +1391,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             workflowId: {path: order.workflowPath}
           }).subscribe((res: any) => {
             order.requirements = res.workflow.orderPreparation;
-            openModal(order.requirements);
+            openModal(order.requirements, res.workflow);
           });
         }
       } else {
@@ -1399,7 +1399,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       }
     });
 
-    function openModal(requirements) {
+    function openModal(requirements, workflow?) {
       self.modal.create({
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
@@ -1407,7 +1407,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           schedulerId: self.schedulerIds.selected,
           orders: self.object.mapOfCheckedId,
-          orderPreparation: requirements
+          orderPreparation: requirements,
+          workflow
         },
         nzFooter: null,
         nzClosable: false,
@@ -2367,7 +2368,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           workflowId: {path: order.workflowPath}
         }).subscribe((res: any) => {
           order.requirements = res.workflow.orderPreparation;
-          this._openModel(plan, order, order.requirements);
+          this._openModel(plan, order, order.requirements, res.workflow);
         });
       } else {
         this._openModel(plan, order, order.requirements);
@@ -2387,7 +2388,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
           }
         });
         if (requirements) {
-          this._openModel(plan, order, requirements,null);
+          this._openModel(plan, order, requirements);
         } else {
           this.coreService.post('workflow', {
             controllerId: this.schedulerIds.selected,

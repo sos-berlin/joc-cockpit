@@ -574,6 +574,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzAutofocus: null,
       nzContent: AddClusterModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         agentId: this.agentId,
         subagentClusters: this.clusters,
@@ -597,6 +598,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       nzTitle: undefined,
       nzAutofocus: null,
       nzContent: AddClusterModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         agentId: this.agentId,
         subagentClusters: this.clusters,

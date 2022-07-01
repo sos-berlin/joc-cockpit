@@ -214,7 +214,26 @@
     "placeholder.enterSubagentId": "サブエージェントIDを入力",
     "placeholder.enterAgentName": "エージェント名を入力",
     "placeholder.enterAgentNameAlias": "エイリアス名を入力",
-    "placeholder.enterClusterName": "クラスター名を入力"
+    "placeholder.enterClusterName": "クラスター名を入力",
+    "tooltip.agentId": "Agent ID",
+    "tooltip.agentName": "Agent Name",
+    "tooltip.title": "Title",
+    "tooltip.agentNameAliases": "Alias Names",
+    "tooltip.url": "URL",
+    "tooltip.hidden": "Hidden",
+    "cluster":{
+     "tooltip.agentClusterName": "Agent Cluster Name",
+     "tooltip.subagentId": "Subagent ID",
+     "tooltip.title": "Title",
+     "tooltip.url": "URL",
+     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+    },
+    "subagent": {
+     "tooltip.subagentId": "Subagent ID",
+     "tooltip.title": "Title",
+     "tooltip.url": "URL",
+     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+    }
   },
   "auditLog": {
     "label.auditLog": "操作ログ",
@@ -223,13 +242,18 @@
     "label.category": "カテゴリー",
     "label.created": "日時",
     "label.account": "アカウント",
+    "label.loginDate": "Login Date",
     "label.request": "リクエスト",
     "label.comment": "コメント",
     "label.ticketLink": "チケットリンク",
     "label.timeSpend": "作業時間",
     "label.auditLogFound": "操作ログがあります",
     "label.auditLogsFound": "操作ログがあります",
+    "label.loginFound": "Login entry found",
+    "label.loginsFound": "Login entries found",
     "message.defaultAuditLog": "デフォルト操作ログ",
+    "tab.auditLog": "Audit Log",
+    "tab.loginHistory": "Failed Login",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "理由",
@@ -1208,6 +1232,7 @@
     "message.workflowsWithoutVariables": "オーダー変数がないワークフローのみ可能",
     "message.workflowWithVariables": "オーダー変数を持つ単一ワークフローのみ可能",
     "message.deleteCurrentDraftObject": "オブジェクトを消去しようとしています、このまま続けますか？",
+    "message.noObjectFoundToRelease": "No releasable object found",
     "cronTab": {
       "label.convertCron": "crontab変換",
       "label.folder": "フォルダー",
@@ -2470,6 +2495,8 @@
     "button.addValueToList": "Add Value",
     "button.suspendAll": "Suspend All",
     "button.resumeAll": "Resume All",
+    "button.skip": "Skip",
+    "button.unskip": "UnSkip",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",

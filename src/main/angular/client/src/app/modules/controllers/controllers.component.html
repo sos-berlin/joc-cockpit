@@ -37,8 +37,8 @@
                         <i class="fa fa-ellipsis-h"></i></button>
                       <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                         <ul nz-menu>
-                          <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller)" nz-menu-item>
-                            <a translate>agent.button.createToken</a>
+                          <li (click)="editController(controller.controllerId)" nz-menu-item>
+                            <a translate>common.button.edit</a>
                           </li>
                           <li (click)="addAgent(controller)" nz-menu-item>
                             <a translate>agent.button.addAgent</a>
@@ -46,9 +46,10 @@
                           <li *ngIf="hasLicense" (click)="addClusterAgent(controller)" nz-menu-item>
                             <a translate>agent.button.addClusterAgent</a>
                           </li>
-                          <li (click)="editController(controller.controllerId)" nz-menu-item>
-                            <a translate>common.button.edit</a>
+                          <li *ngIf="permission.joc.administration.certificates.manage" (click)="createToken(controller)" nz-menu-item>
+                            <a translate>agent.button.createToken</a>
                           </li>
+                          <li nz-menu-divider></li>
                           <li (click)="deleteController(controller.controllerId)" nz-menu-item class="bg-hover-color">
                             <a translate>common.button.delete</a>
                           </li>
@@ -90,7 +91,7 @@
                 </div>
                 <div *ngIf="coreService.preferences.controllers.has(controller.controllerId)" class="row">
                   <div class="col-md-12">
-                    <div class="p-a-sm p-b-0 overflow-y" style="max-height: calc(100vh - 342px)">
+                    <div class="p-a-sm p-b-0">
                       <div class="p-b-xs" translate>
                         agent.label.agents
                         <i (click)="collapse(controller.controllerId + '$standalone$');" *ngIf="coreService.preferences.controllers.has(controller.controllerId+ '$standalone$')" class="cursor fa fa-caret-down m-l-xs"></i>

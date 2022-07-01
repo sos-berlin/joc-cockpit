@@ -214,7 +214,26 @@
     "placeholder.enterSubagentId": "Entrer l'ID du Sous-agent",
     "placeholder.enterAgentName": "Entrer le nom de l'Agent",
     "placeholder.enterAgentNameAlias": "Entrer le nom de l'alias",
-    "placeholder.enterClusterName": "Entrer le nom du Cluster"
+    "placeholder.enterClusterName": "Entrer le nom du Cluster",
+    "tooltip.agentId": "Agent ID",
+    "tooltip.agentName": "Agent Name",
+    "tooltip.title": "Title",
+    "tooltip.agentNameAliases": "Alias Names",
+    "tooltip.url": "URL",
+    "tooltip.hidden": "Hidden",
+    "cluster":{
+     "tooltip.agentClusterName": "Agent Cluster Name",
+     "tooltip.subagentId": "Subagent ID",
+     "tooltip.title": "Title",
+     "tooltip.url": "URL",
+     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+    },
+    "subagent": {
+     "tooltip.subagentId": "Subagent ID",
+     "tooltip.title": "Title",
+     "tooltip.url": "URL",
+     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+    }
   },
   "auditLog": {
     "label.auditLog": "Journal d'Audit",
@@ -223,13 +242,18 @@
     "label.category": "Catégorie",
     "label.created": "Créé",
     "label.account": "Compte",
+    "label.loginDate": "Login Date",
     "label.request": "Demande",
     "label.comment": "Raison",
     "label.ticketLink": "Lien vers le ticket",
     "label.timeSpend": "Temps passé",
     "label.auditLogFound": "Entrée du journal d'audit trouvée",
     "label.auditLogsFound": "Entrées du journal d'audit trouvées",
+    "label.loginFound": "Login entry found",
+    "label.loginsFound": "Login entries found",
     "message.defaultAuditLog": "[créé automatiquement]",
+    "tab.auditLog": "Audit Log",
+    "tab.loginHistory": "Failed Login",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Raison",
@@ -1208,6 +1232,7 @@
     "message.workflowsWithoutVariables": "Seuls les Workflows sans variables d'ordre sont acceptés",
     "message.workflowWithVariables": "Seul un Workflow unique avec des variables d'ordre est acceptés",
     "message.deleteCurrentDraftObject": "Vous êtes sur le point de remplacer le brouillon. Vous êtes sûr de vouloir continuer ?",
+    "message.noObjectFoundToRelease": "No releasable object found",
     "cronTab": {
       "label.convertCron": "Convertir crontab",
       "label.folder": "Dossier",
@@ -2470,6 +2495,8 @@
     "button.addValueToList": "Ajouter Valeur",
     "button.suspendAll": "Suspendre tous",
     "button.resumeAll": "Reprendre tous",
+    "button.skip": "Skip",
+    "button.unskip": "UnSkip",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

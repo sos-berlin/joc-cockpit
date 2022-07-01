@@ -3,6 +3,7 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {ScriptModalComponent} from '../script-modal/script-modal.component';
 import {DependentWorkflowComponent} from '../workflow-graphical/workflow-graphical.component';
+import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 
 @Component({
   selector: 'app-type',
@@ -330,6 +331,55 @@ export class TypeComponent implements OnChanges {
   }
 
   /* --------- Job action menu operations ----------------*/
+
+  skipOperation(job, operation): void {
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Job',
+        operation: operation,
+        name: job.label
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzComponentParams: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.restCall(job, operation, {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          });
+        }
+      });
+    } else {
+      this.restCall(job, operation);
+    }
+  }
+
+  restCall(job, operation, auditLog?): void{
+    this.coreService.post('workflow/' + operation.toLowerCase(), {
+      controllerId: this.schedulerId,
+      workflowPath: this.path,
+      labels: [job.label],
+      auditLog
+    })
+  }
+
+  skip(job): void{
+    this.skipOperation(job, 'Skip');
+  }
+
+  unskip(job): void{
+    this.skipOperation(job, 'UnSkip');
+  }
 
   showConfiguration(instruction): void {
     let nzComponentParams;

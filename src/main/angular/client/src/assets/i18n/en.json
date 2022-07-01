@@ -214,7 +214,26 @@
     "placeholder.enterSubagentId": "Enter Subagent ID",
     "placeholder.enterAgentName": "Enter Agent Name",
     "placeholder.enterAgentNameAlias": "Enter Alias Name",
-    "placeholder.enterClusterName": "Enter Cluster Name"
+    "placeholder.enterClusterName": "Enter Cluster Name",
+    "tooltip.agentId": "Agent ID",
+    "tooltip.agentName": "Agent Name",
+    "tooltip.title": "Title",
+    "tooltip.agentNameAliases": "Alias Names",
+    "tooltip.url": "URL",
+    "tooltip.hidden": "Hidden",
+    "cluster":{
+     "tooltip.agentClusterName": "Agent Cluster Name",
+     "tooltip.subagentId": "Subagent ID",
+     "tooltip.title": "Title",
+     "tooltip.url": "URL",
+     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+    },
+    "subagent": {
+     "tooltip.subagentId": "Subagent ID",
+     "tooltip.title": "Title",
+     "tooltip.url": "URL",
+     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+    }
   },
   "auditLog": {
     "label.auditLog": "Audit Log",
@@ -223,13 +242,18 @@
     "label.category": "Category",
     "label.created": "Created",
     "label.account": "Account",
+    "label.loginDate": "Login Date",
     "label.request": "Request",
     "label.comment": "Reason",
     "label.ticketLink": "Ticket Link",
     "label.timeSpend": "Time Spent",
     "label.auditLogFound": "Audit Log entry found",
     "label.auditLogsFound": "Audit Log entries found",
+    "label.loginFound": "Login entry found",
+    "label.loginsFound": "Login entries found",
     "message.defaultAuditLog": "[automatically created]",
+    "tab.auditLog": "Audit Log",
+    "tab.loginHistory": "Failed Login",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Reason",
@@ -1208,6 +1232,7 @@
     "message.workflowsWithoutVariables": "Only workflows without order variables are allowed",
     "message.workflowWithVariables": "Only a single workflow with order variables is allowed",
     "message.deleteCurrentDraftObject": "Your are about to replace the draft. Are you sure you want to continue?",
+    "message.noObjectFoundToRelease": "No releasable object found",
     "cronTab": {
       "label.convertCron": "Convert crontab",
       "label.folder": "Folder",
@@ -2470,6 +2495,8 @@
     "button.addValueToList": "Add Value",
     "button.suspendAll": "Suspend All",
     "button.resumeAll": "Resume All",
+    "button.skip": "Skip",
+    "button.unskip": "UnSkip",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",

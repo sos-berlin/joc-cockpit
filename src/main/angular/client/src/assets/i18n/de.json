@@ -214,7 +214,26 @@
     "placeholder.enterSubagentId": "Kennung des Subagenten angeben",
     "placeholder.enterAgentName": "Name des Agenten angeben",
     "placeholder.enterAgentNameAlias": "Alias-Name angeben",
-    "placeholder.enterClusterName": "Cluster Name angeben"
+    "placeholder.enterClusterName": "Cluster Name angeben",
+    "tooltip.agentId": "Agent ID",
+    "tooltip.agentName": "Agent Name",
+    "tooltip.title": "Title",
+    "tooltip.agentNameAliases": "Alias Names",
+    "tooltip.url": "URL",
+    "tooltip.hidden": "Hidden",
+    "cluster":{
+     "tooltip.agentClusterName": "Agent Cluster Name",
+     "tooltip.subagentId": "Subagent ID",
+     "tooltip.title": "Title",
+     "tooltip.url": "URL",
+     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+    },
+    "subagent": {
+     "tooltip.subagentId": "Subagent ID",
+     "tooltip.title": "Title",
+     "tooltip.url": "URL",
+     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+    }
   },
   "auditLog": {
     "label.auditLog": "Prüfprotokoll",
@@ -223,13 +242,18 @@
     "label.category": "Kategorie",
     "label.created": "Erstellt",
     "label.account": "Konto",
+    "label.loginDate": "Login Date",
     "label.request": "Anfrage",
     "label.comment": "Begründung",
     "label.ticketLink": "Ticket-Verweis",
     "label.timeSpend": "Zeitaufwand",
     "label.auditLogFound": "Prüfprotokoll Eintrag gefunden",
     "label.auditLogsFound": "Prüfprotokoll Einträge gefunden",
+    "label.loginFound": "Login entry found",
+    "label.loginsFound": "Login entries found",
     "message.defaultAuditLog": "[automatisch generiert]",
+    "tab.auditLog": "Audit Log",
+    "tab.loginHistory": "Failed Login",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Grund",
@@ -1208,6 +1232,7 @@
     "message.workflowsWithoutVariables": "Nur Arbeitsabläufe ohne Auftragsvariablen sind zulässig",
     "message.workflowWithVariables": "Nur ein einzelner Arbeitsablauf mit Auftragsvariablen ist zulässig",
     "message.deleteCurrentDraftObject": "Sie sind im Begriff, den Entwurf zu ersetzen. Sind Sie sicher, dass Sie fortfahren wollen?",
+    "message.noObjectFoundToRelease": "No releasable object found",
     "cronTab": {
       "label.convertCron": "crontab konvertieren",
       "label.folder": "Ordner",
@@ -2470,6 +2495,8 @@
     "button.addValueToList": "Wert hinzufügen",
     "button.suspendAll": "Alle aussetzen",
     "button.resumeAll": "Alle wiederaufnehmen",
+    "button.skip": "Skip",
+    "button.unskip": "UnSkip",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

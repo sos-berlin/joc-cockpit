@@ -130,13 +130,23 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item>
-                <a (click)="showConfiguration(instruction);">
+              <li nz-menu-item *ngIf="!instruction.state || instruction.state._text !== 'SKIPPED'" (click)="skip(instruction);">
+                <a>
+                  <span translate>workflow.button.skip</span>
+                </a>
+              </li>
+              <li nz-menu-item *ngIf="instruction.state && instruction.state._text === 'SKIPPED'" (click)="unskip(instruction);">
+                <a>
+                  <span translate>workflow.button.unskip</span>
+                </a>
+              </li>
+              <li nz-menu-item (click)="showConfiguration(instruction);">
+                <a>
                   <span translate>common.button.showConfiguration</span>
                 </a>
               </li>
-              <li nz-menu-item [nzDisabled]="!instruction.documentationName">
-                <a (click)="coreService.showDocumentation(instruction.documentationName, preferences)">
+              <li nz-menu-item [nzDisabled]="!instruction.documentationName" (click)="coreService.showDocumentation(instruction.documentationName, preferences)">
+                <a>
                   <span translate>common.button.viewDocumentation</span>
                 </a>
               </li>
@@ -144,7 +154,11 @@
           </nz-dropdown-menu>
         </div>
         <i *ngIf="instruction.TYPE === 'Job' && instruction.documentationName" (click)="coreService.showDocumentation(instruction.documentationName, preferences)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
-        <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">{{instruction.jobName}}</span>
+        <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">
+          {{instruction.jobName}}
+        </span>
+        <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text === 'SKIPPED'">-</i>
+        <span *ngIf="instruction.state && instruction.state._text === 'SKIPPED'" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{'SKIPPED' | translate}}</span>
         <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
           <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>

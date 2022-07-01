@@ -23,7 +23,7 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>agent.label.subagentId
+      <label class="col-sm-3 form-control-label"[nz-tooltip]="'agent.subagent.tooltip.subagentId' | translate" translate>agent.label.subagentId
        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">
@@ -39,14 +39,14 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>common.label.title</label>
+      <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" translate>common.label.title</label>
       <div class=" col-sm-8">
         <input type="text" class="form-control" [(ngModel)]="subagent.title"
                [maxLength]="255" name="title" placeholder="{{'common.placeholder.title' | translate}}">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>agent.label.url
+      <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" translate>agent.label.url
        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
@@ -61,7 +61,7 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="new">
-      <label class="col-sm-3" translate>agent.label.withGenerateSubagentCluster</label>
+      <label class="col-sm-3" [nz-tooltip]="'agent.subagent.tooltip.withGenerateSubagentCluster' | translate" translate>agent.label.withGenerateSubagentCluster</label>
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="subagent.withGenerateSubagentCluster"
                name="withGenerateSubagentCluster"></label>
