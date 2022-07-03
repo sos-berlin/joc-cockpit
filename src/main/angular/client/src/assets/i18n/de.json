@@ -215,24 +215,24 @@
     "placeholder.enterAgentName": "Name des Agenten angeben",
     "placeholder.enterAgentNameAlias": "Alias-Name angeben",
     "placeholder.enterClusterName": "Cluster Name angeben",
-    "tooltip.agentId": "Agent ID",
-    "tooltip.agentName": "Agent Name",
-    "tooltip.title": "Title",
-    "tooltip.agentNameAliases": "Alias Names",
-    "tooltip.url": "URL",
-    "tooltip.hidden": "Hidden",
+    "tooltip.agentId": "Die Kennung eines Agenten ist eindeutig und kann während der Lebenszeit eines Agenten nicht geändert werden. Für die Kennung des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+    "tooltip.agentName": "Der Name eines Agenten ist eine eindeutige Bezeichnung, die geändert werden kann. Agenten werden Jobs anhand ihres Namens zugewiesen. Für die Kennung des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+    "tooltip.title": "Der Titel eines Agenten kann beliebig angegeben werden.",
+    "tooltip.agentNameAliases": "Einem Agenten können Alias Namen zugeordnet werden. Der Agent kann unter Verwendung des Alias Namens einem Job oder einer Dateiauftragsquelle zugeordnet werden. Für Alias Namen des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+    "tooltip.url": "Die URL eines Agenten benennt das Protokoll, http oder https, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
+    "tooltip.hidden": "Agenten können verborgen werden, um sie in der JOC Cockpit Oberfläche nicht anzuzeigen. Dies gilt für die ÜBERSICHT sowie für alle Stellen, an denen Agenten zugeordnet werden.",
     "cluster":{
-     "tooltip.agentClusterName": "Agent Cluster Name",
-     "tooltip.subagentId": "Subagent ID",
-     "tooltip.title": "Title",
-     "tooltip.url": "URL",
-     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+     "tooltip.agentClusterName": "Der Name des Agenten-Cluster ist eindeutig und kann während der Lebenszeit des Agenten-Cluster nicht geändert werden. Für die Kennung des Agenten-Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+     "tooltip.subagentId": "Die Subagenten-Kennung eines Director Agenten ist eindeutig und kann während der Lebenszeit eines Director Agenten nicht geändert werden. Für die Kennung des Director Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+     "tooltip.title": "Der Titel eines Director Agenten kann beliebig angegeben werden.",
+     "tooltip.url": "Die URL eines Director Agenten benennt das Protokoll, http oder https, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
+     "tooltip.withGenerateSubagentCluster": "Ein Director Agent kann als eigener Subagenten-Cluster eingerichtet werden, der diesen einzigen Director Agent aufführt. Dadurch lassen sich Jobs gezielt auf einem Director Agent ausführen."
     },
     "subagent": {
-     "tooltip.subagentId": "Subagent ID",
-     "tooltip.title": "Title",
-     "tooltip.url": "URL",
-     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+     "tooltip.subagentId": "Die Kennung des Subagenten ist eindeutig und kann während der Lebenszeit eines Subagenten nicht geändert werden. Für die Kennung des Subagenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+     "tooltip.title": "Der Titel eines Subagenten kann beliebig angegeben werden.",
+     "tooltip.url": "Die URL eines Subagenten benennt das Protokoll, http oder https, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
+     "tooltip.withGenerateSubagentCluster": "Ein Subagent kann als eigener Subagenten-Cluster eingerichtet werden, der diesen einzigen Subagenten aufführt. Dadurch lassen sich Jobs gezielt auf einem Subagenten ausführen."
     }
   },
   "auditLog": {
@@ -242,18 +242,18 @@
     "label.category": "Kategorie",
     "label.created": "Erstellt",
     "label.account": "Konto",
-    "label.loginDate": "Login Date",
+    "label.loginDate": "Datum der letzten Anmeldung",
     "label.request": "Anfrage",
     "label.comment": "Begründung",
     "label.ticketLink": "Ticket-Verweis",
     "label.timeSpend": "Zeitaufwand",
-    "label.auditLogFound": "Prüfprotokoll Eintrag gefunden",
-    "label.auditLogsFound": "Prüfprotokoll Einträge gefunden",
-    "label.loginFound": "Login entry found",
-    "label.loginsFound": "Login entries found",
+    "label.auditLogFound": "Eintrag im Prüfprotokoll gefunden",
+    "label.auditLogsFound": "Einträge im Prüfprotokoll gefunden",
+    "label.loginFound": "Anmeldung gefunden",
+    "label.loginsFound": "Anmeldungen gefunden",
     "message.defaultAuditLog": "[automatisch generiert]",
-    "tab.auditLog": "Audit Log",
-    "tab.loginHistory": "Failed Login",
+    "tab.auditLog": "Prüfprotokoll",
+    "tab.loginHistory": "Historie fehlgeschlagener Anmeldungen",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Grund",
@@ -524,7 +524,7 @@
     "message.deleteAllObject": "Sind Sie sicher, dass Sie {{count}} Objekte löschen wollen? Dieser Vorgang kann nicht rückgängig gemacht werden.",
     "message.copied": "Kopiert!",
     "message.cut": "Bereit zum Einfügen!",
-    "message.inValidUserName": "Benutzerkonten mit Leerzeichen sind für die Authentifizierung mit Shiro nicht zugelassen",
+    "message.inValidUserName": "Benutzerkonten mit Leerzeichen sind für die Authentifizierung nicht zugelassen",
     "message.deleteProfiles": "Sind Sie sicher, dass Sie die ausgewählten Profile löschen wollen?",
     "message.deleteAllProfiles": "Sind Sie sicher, dass Sie alle Profile löschen wollen?",
     "message.cannotDeleteLastFolderOrPermission": "Sie können die einzige Berechtigung oder den einzigen Ordner für diese Rolle nicht entfernen.",
@@ -1232,7 +1232,7 @@
     "message.workflowsWithoutVariables": "Nur Arbeitsabläufe ohne Auftragsvariablen sind zulässig",
     "message.workflowWithVariables": "Nur ein einzelner Arbeitsablauf mit Auftragsvariablen ist zulässig",
     "message.deleteCurrentDraftObject": "Sie sind im Begriff, den Entwurf zu ersetzen. Sind Sie sicher, dass Sie fortfahren wollen?",
-    "message.noObjectFoundToRelease": "No releasable object found",
+    "message.noObjectFoundToRelease": "Kein freigebbares Objekt gefunden",
     "cronTab": {
       "label.convertCron": "crontab konvertieren",
       "label.folder": "Ordner",
@@ -1261,7 +1261,7 @@
     },
     "tooltips": {
       "calendar": {
-        "name": "Kalender werden von Zeitplänen genutzt, die Aufträge für jeden Tag des Kalenders zu erzeugen. Für den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Kalender werden von Zeitplänen genutzt, die Aufträge für jeden Tag des Kalenders zu erzeugen. Für den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Kalender angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Kalenders",
         "type": "Kalender können für Arbeitstage und für Nicht-Arbeitstage eingerichtet werden. Beim Zuweisen eines Kalenders zu einem Zeitplan können zusätzlich Kalender der Nicht-Arbeitstage verwendet werden, die die Tage zur Ausführung von Arbeitsabläufen weiter beschränken.",
@@ -1269,7 +1269,7 @@
         "validTo": "Optional kann die Gültigkeitsperiode des Kalenders angegeben werden. Nach dem angegebenen Datum werden von Zeitplänen keine Aufträge erzeugt."
       },
       "fileOrderSource": {
-        "name": "Eine Dateiauftragsquelle wird zur Verzeichnisüberwachung genutzt. Für jede eintreffende Datei wird ein Dateiauftrag eingerichtet. Dadurch werden Arbeitsabläufe automatisch bei Eintreffen von Dateien gestartet. Für den Namen der Dateiauftragsquelle können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Eine Dateiauftragsquelle wird zur Verzeichnisüberwachung genutzt. Für jede eintreffende Datei wird ein Dateiauftrag eingerichtet. Arbeitsabläufe werden automatisch bei Eintreffen von Dateien gestartet. Für den Namen der Dateiauftragsquelle können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit der Dateiauftragsquelle angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Dateiauftragsquelle",
         "workflowName": "Ein Verweis auf einen Arbeitsablauf muss hinzugefügt werden. Bei Eintreffen einer Datei im überwachten Verzeichnis wird automatisch ein Dateiauftrag für den Arbeitsablauf erzeugt.",
@@ -1280,12 +1280,12 @@
         "delay": "Die Verzögerung stellt die Dauer dar, für die ein Agent wartet bis eine eintreffende Datei stabil ist, d.h.  deren Größe und Zeitstempel sich nicht ändern. Wird eine Änderung bemerkt, dann wird erneut für die Dauer der Verzögerung gewartet und die Prüfung wiederholt."
       },
       "jobResource": {
-        "name": "Eine Job-Ressource ist eine Menge von Variablen, d.h. Paaren von Namen und Wert, die allen Arbeitsabläufen und Jobs zur Verfügung gestellt werden kann. Es gibt zwei Varianten: Variablen sind für JITL Jobs und Java Jobs verfügbar, Umgebungsvariablen sind für Shell Jobs verfügbar. Für den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Eine Job-Ressource ist eine Menge von Variablen, d.h. Paaren von Namen und Wert, die allen Arbeitsabläufen und Jobs zur Verfügung gestellt werden kann. Es gibt zwei Varianten: Variablen sind für JITL Jobs und Java Jobs verfügbar, Umgebungsvariablen sind für Shell Jobs verfügbar. Für den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit der Job-Ressource angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Job-Ressource"
       },
       "board": {
-        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "expectBoardName": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "expectBoardExpression": "Der ExpectNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Notizbrett angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
@@ -1295,13 +1295,13 @@
         "readingOrderToNoticeId": "Notizkennung des notifizierten Auftrags"
       },
       "lock": {
-        "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs in mehreren Arbeitsabläufen. Der Name einer Ressourcen-Sperre ist eindeutig im Inventar. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs in mehreren Arbeitsabläufen. Der Name einer Ressourcen-Sperre ist eindeutig im Inventar. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit der Ressourcen-Sperre angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Ressourcen-Sperre",
         "limit": "Wird eine Ressourcen-Sperre von mehreren Jobs geteilt genutzt, dann kann jede Nutzung ein Gewicht für den Zugriff bestimmen, dass verwendet wird, um die verfügbare Kapazität der Ressourcen-Sperre zu bestimmen und Jobs ggf. warten zu lassen bis eine ausreichende Kapazität verfügbar ist."
       },
       "schedule": {
-        "name": "Ein Zeitplan wird verwendet, um automatisch Aufträge für Arbeitsabläufe basierend auf einem Kalender zu erzeugen. Der Name eines Zeitplans ist eindeutig im Inventar. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein Zeitplan wird verwendet, um automatisch Aufträge für Arbeitsabläufe basierend auf einem Kalender zu erzeugen. Der Name eines Zeitplans ist eindeutig im Inventar. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Zeitplan angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Zeitplans",
         "workflowName": "Ein Verweis auf einen Arbeitsablauf muss angegeben werden, für den die Aufträge erzeugt werden.",
@@ -1309,21 +1309,21 @@
         "submitOrderToControllerWhenPlanned": "Gelante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt."
       },
       "script": {
-        "name": "Ein Skript Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript Bausteins ist eindeutig im Inventar. Für den Namen des Skript Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein Skript Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript Bausteins ist eindeutig im Inventar. Für den Namen des Skript Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Skript angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Skript Bausteins",
         "script": "Der Inhalt des Skript Bausteins kann je nach Verwendung in Job-Skripten aus Shell Kommandos oder Code für Skriptsprachen wie Perl, PowerShell etc. bestehen.",
         "autocompleteShortCut": "Verwenden Sie die Tasten Ctrl+Leertaste um die Liste der Skript Bausteine anzuzeigen."
       },
       "workflow": {
-        "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
+        "name": "Der Name eines Arbeitsablaufs ist eindeutig im Inventar. Die meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen. Die Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
         "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs wird in der Sicht ARBEITSABLÄUFE angezeigt.",
         "timeZone": "Zeitzone der Zutrittszeit",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
-          "expectBoardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+          "expectBoardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
           "boardNames": "Mehrere Notizbretter können ausgewählt werden, für die Notizen erzeugt werden."
         },
         "fail": {
@@ -1348,7 +1348,7 @@
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
         },
         "job": {
-          "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Instruktion im Arbeitsablauf vorkommen sofern er durch seine Kennzeichnung unterschieden ist. Für Job-Namen können Unicode Zeichen verwendet werden, Punkte und Bindestriche, jedoch nicht am Beginn oder Ende des Job-Namens.",
+          "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Instruktion im Arbeitsablauf vorkommen sofern er durch seine Kennzeichnung unterschieden ist. Für Job-Namen können Unicode Zeichen verwendet werden, Punkte und Bindestriche, jedoch nicht am Beginn oder Ende des Job-Namens sowie keine Leerzeichen.",
           "label": "Eindeutige Kennzeichnung des Jobs im Arbeitsablauf. Ein Job kann im Arbeitsablauf wiederverwendet werden, sein Auftreten wird durch die Kennzeichnung unterschieden.",
           "title": "Der Titel eines Jobs wird in der Sicht ARBEITSABLÄUFE angezeigt.",
           "compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet bspw. dass für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit 'SCHEDULER_PARAM_' präfiziert sind - analog zu JS1",
@@ -2495,8 +2495,8 @@
     "button.addValueToList": "Wert hinzufügen",
     "button.suspendAll": "Alle aussetzen",
     "button.resumeAll": "Alle wiederaufnehmen",
-    "button.skip": "Skip",
-    "button.unskip": "UnSkip",
+    "button.skip": "Überspringen",
+    "button.unskip": "Einbeziehen",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",
