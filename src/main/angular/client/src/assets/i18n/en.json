@@ -225,7 +225,7 @@
      "tooltip.agentClusterName": "The Agent Cluster Name is a unique identifier of the Agent Cluster that cannot be changed during the Agent Cluster's lifetime. For Agent Cluster Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Director Agent that cannot be changed during the Director Agent's lifetime. For Subagent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
      "tooltip.title": "The title of an Agent Cluster can be specified as desired.",
-     "tooltip.url": "The URL of an Agent specifies the protocol, http or https, the host name or IP address and the port of the Director Agent, e.g. http://localhost:4445",
+     "tooltip.url": "The URL of a Director Agent specifies the protocol, http or https, the host name or IP address and the port of the Director Agent, e.g. http://localhost:4445",
      "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent."
     },
     "subagent": {
