@@ -226,7 +226,8 @@
      "tooltip.subagentId": "L'ID Sous-agent est un identifiant unique d'un Agent Directeur qui ne peut être modifié pendant la durée de vie de l'Agent Directeur. Pour l'ID Sous-agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
      "tooltip.title": "Le Titre d'un Agent Directeur peut être spécifié à volonté.",
      "tooltip.url": "L'URL d'un Agent Directeur spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de l'Agent Directeur, par exemple http://localhost:4445.",
-     "tooltip.withGenerateSubagentCluster": "Un Agent Directeur peut être configuré comme un cluster de Sous-agents distinct qui inclut ce seul Agent Directeur. Cela permet d'exécuter des tâches spécifiquement sur l'Agent Directeur."
+     "tooltip.withGenerateSubagentCluster": "Un Agent Directeur peut être configuré comme un cluster de Sous-agents distinct qui inclut ce seul Agent Directeur. Cela permet d'exécuter des tâches spécifiquement sur l'Agent Directeur.",
+     "tooltip.agentNameAliases": "Cluster Alias Names."
     },
     "subagent": {
      "tooltip.subagentId": "L'ID Sous-agent est un identifiant unique d'un Sous-agent qui ne peut être modifié pendant la durée de vie du Sous-agent. Pour l'ID Sous-agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
@@ -328,11 +329,15 @@
     "label.primaryUrl": "URL pour le Primaire",
     "button.testConnection": "Test de Connexion",
     "button.newController": "Nouveau Contrôleur",
+    "tooltip.type": "Type",
+    "tooltip.standaloneTitle": "Standalone Title",
     "tooltip.standaloneUrlForJOC": "URL du Contrôleur Autonome vue par JOC Cockpit",
     "tooltip.primaryUrlForJOC": "URL du Contrôleur Principal vue par JOC Cockpit",
     "tooltip.backupUrlForJOC": "URL du Contrôleur Secondaire vue par JOC Cockpit",
     "tooltip.urlForBackup": "URL du Contrôleur Principal vue par le Contrôleur Secondaire",
-    "tooltip.urlForPrimary": "URL du Contrôleur Secondaire vue par le Contrôleur Principal"
+    "tooltip.urlForPrimary": "URL du Contrôleur Secondaire vue par le Contrôleur Principal",
+    "tooltip.primaryTitle": "Primary Title",
+    "tooltip.backupTitle": "Secondary Title"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -2497,6 +2502,8 @@
     "button.resumeAll": "Reprendre tous",
     "button.skip": "Ignorer",
     "button.unskip": "Inclure",
+    "button.stop": "Stop",
+    "button.unstop": "Unstop",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

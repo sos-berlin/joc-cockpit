@@ -121,6 +121,16 @@
               <span translate>workflow.button.unskip</span>
             </a>
           </li>
+          <li nz-menu-item *ngIf="!job.isStop" (click)="stop(job);">
+            <a>
+              <span translate>workflow.button.stop</span>
+            </a>
+          </li>
+          <li nz-menu-item *ngIf="job.isStop" (click)="unstop(job);">
+            <a>
+              <span translate>workflow.button.unstop</span>
+            </a>
+          </li>
           <li nz-menu-item (click)="showConfiguration(job);">
             <a translate>common.button.showConfiguration</a>
           </li>

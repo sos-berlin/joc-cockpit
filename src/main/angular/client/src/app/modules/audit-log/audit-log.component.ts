@@ -210,16 +210,21 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   savedFilter: any = {};
   filterList: any = [];
   data = [];
+  loginHistory = [];
+  auditLog: any = {
+    type: 'AUDITLOG'
+  };
   searchableProperties = ['controllerId', 'category', 'account', 'request', 'created', 'comment', 'ticketLink'];
+  searchableProperties2 = ['accountName', 'loginDate']
 
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
-    private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
-    private translate: TranslateService, private excelService: ExcelService, private router: Router,
-    private orderPipe: OrderPipe) {
+              private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
+              private translate: TranslateService, private excelService: ExcelService, private router: Router,
+              private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -312,7 +317,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.pendingHTTPRequests$.complete();
   }
 
-  trackByFn(index:number, el:any): number {
+  trackByFn(index: number, el: any): number {
     return el.id;
   }
 
@@ -331,6 +336,18 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         this.getCustomizations();
       }, error: () => this.getCustomizations()
     });
+  }
+
+  auditLogTab() {
+    this.auditLog.type = 'AUDITLOG'
+    this.isLoaded = false
+    this.load(null)
+  }
+
+  loginHistoryTab() {
+    this.auditLog.type = 'LOGINHISTORY'
+    this.isLoaded = false;
+    this.loadLoginHistory()
   }
 
   getCustomizations(): void {
@@ -449,6 +466,21 @@ export class AuditLogComponent implements OnInit, OnDestroy {
             }
           });
         }
+        this.isLoaded = true;
+        this.searchInResult();
+      }, error: () => this.isLoaded = true
+    });
+  }
+
+  loadLoginHistory(): void {
+    this.coreService.post('audit_log/login_history', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+
+        res.loginHistoryItems = this.orderPipe.transform(res.loginHistoryItems, this.adtLog.filter.sortBy, this.adtLog.reverse);
+        if (res.loginHistoryItems && res.loginHistoryItems.length === 0) {
+          this.adtLog.currentPage = 1;
+        }
+        this.loginHistory = res.loginHistoryItems
         this.isLoaded = true;
         this.searchInResult();
       }, error: () => this.isLoaded = true
@@ -642,58 +674,81 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   searchInResult(): void {
-    this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText, this.searchableProperties) : this.auditLogs;
-    this.data = [...this.data];
+    if (this.auditLog.type === 'AUDITLOG') {
+      this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText, this.searchableProperties) : this.auditLogs;
+      this.data = [...this.data];
+    } else {
+      this.data = this.adtLog.searchText ? this.searchPipe.transform(this.loginHistory, this.adtLog.searchText, this.searchableProperties2) : this.loginHistory;
+      this.data = [...this.data];
+    }
   }
 
   exportToExcel(): void {
-    let created = '', controllerId = '', category = '', account = '',
-      request = '', comment = '', timeSpend = '', ticketLink = '', requestBody = '';
-    this.translate.get('auditLog.label.created').subscribe(translatedValue => {
-      created = translatedValue;
-    });
-    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
-      controllerId = translatedValue;
-    });
-    this.translate.get('auditLog.label.account').subscribe(translatedValue => {
-      account = translatedValue;
-    });
-    this.translate.get('auditLog.label.request').subscribe(translatedValue => {
-      request = translatedValue;
-    });
-    this.translate.get('auditLog.label.category').subscribe(translatedValue => {
-      category = translatedValue;
-    });
-    this.translate.get('auditLog.label.comment').subscribe(translatedValue => {
-      comment = translatedValue;
-    });
-    this.translate.get('auditLog.label.timeSpend').subscribe(translatedValue => {
-      timeSpend = translatedValue;
-    });
-    this.translate.get('auditLog.label.ticketLink').subscribe(translatedValue => {
-      ticketLink = translatedValue;
-    });
-    this.translate.get('auditLog.label.requestBody').subscribe(translatedValue => {
-      requestBody = translatedValue;
-    });
-    const data = [];
-    for (let i = 0; i < this.auditLogs.length; i++) {
-      const obj: any = {};
-      if (!this.adtLog.current) {
-        obj[controllerId] = this.auditLogs[i].controllerId;
-      }
-      obj[created] = this.coreService.stringToDate(this.preferences, this.auditLogs[i].created);
-      obj[account] = this.auditLogs[i].account;
-      obj[request] = this.auditLogs[i].request;
-      obj[category] = this.auditLogs[i].category;
-      obj[comment] = this.auditLogs[i].comment;
-      obj[timeSpend] = this.auditLogs[i].timeSpend;
-      obj[ticketLink] = this.auditLogs[i].ticketLink;
-      obj[requestBody] = this.auditLogs[i].parameters;
+    if (this.auditLog.type === 'AUDITLOG') {
+      let created = '', controllerId = '', category = '', account = '',
+        request = '', comment = '', timeSpend = '', ticketLink = '', requestBody = '';
+      this.translate.get('auditLog.label.created').subscribe(translatedValue => {
+        created = translatedValue;
+      });
+      this.translate.get('common.label.controllerId').subscribe(translatedValue => {
+        controllerId = translatedValue;
+      });
+      this.translate.get('auditLog.label.account').subscribe(translatedValue => {
+        account = translatedValue;
+      });
+      this.translate.get('auditLog.label.request').subscribe(translatedValue => {
+        request = translatedValue;
+      });
+      this.translate.get('auditLog.label.category').subscribe(translatedValue => {
+        category = translatedValue;
+      });
+      this.translate.get('auditLog.label.comment').subscribe(translatedValue => {
+        comment = translatedValue;
+      });
+      this.translate.get('auditLog.label.timeSpend').subscribe(translatedValue => {
+        timeSpend = translatedValue;
+      });
+      this.translate.get('auditLog.label.ticketLink').subscribe(translatedValue => {
+        ticketLink = translatedValue;
+      });
+      this.translate.get('auditLog.label.requestBody').subscribe(translatedValue => {
+        requestBody = translatedValue;
+      });
+      const data = [];
+      for (let i = 0; i < this.auditLogs.length; i++) {
+        const obj: any = {};
+        if (!this.adtLog.current) {
+          obj[controllerId] = this.auditLogs[i].controllerId;
+        }
+        obj[created] = this.coreService.stringToDate(this.preferences, this.auditLogs[i].created);
+        obj[account] = this.auditLogs[i].account;
+        obj[request] = this.auditLogs[i].request;
+        obj[category] = this.auditLogs[i].category;
+        obj[comment] = this.auditLogs[i].comment;
+        obj[timeSpend] = this.auditLogs[i].timeSpend;
+        obj[ticketLink] = this.auditLogs[i].ticketLink;
+        obj[requestBody] = this.auditLogs[i].parameters;
 
-      data.push(obj);
+        data.push(obj);
+      }
+      this.excelService.exportAsExcelFile(data, 'JS7-audit-logs');
+    } else {
+      let account = '', date = '';
+      this.translate.get('auditLog.label.account').subscribe(translatedValue => {
+        account = translatedValue;
+      });
+      this.translate.get('auditLog.label.loginDate').subscribe(translatedValue => {
+        date = translatedValue;
+      });
+      const data = [];
+      for (let i = 0; i < this.loginHistory.length; i++) {
+        const obj: any = {};
+        obj[account] = this.loginHistory[i].accountName;
+        obj[date] = this.coreService.stringToDate(this.preferences, this.loginHistory[i].loginDate);
+        data.push(obj);
+      }
+      this.excelService.exportAsExcelFile(data, 'JS7-login-history');
     }
-    this.excelService.exportAsExcelFile(data, 'JS7-audit-logs');
   }
 
   /* ----------------------Advance Search --------------------- */
@@ -843,7 +898,10 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   private openFilterModal(filter, isCopy): void {
     if (this.schedulerIds.selected) {
       let filterObj: any = {};
-      this.coreService.post('configuration', { controllerId: filter.controllerId, id: filter.id }).subscribe((conf: any) => {
+      this.coreService.post('configuration', {
+        controllerId: filter.controllerId,
+        id: filter.id
+      }).subscribe((conf: any) => {
         filterObj = JSON.parse(conf.configuration.configurationItem);
         filterObj.shared = filter.shared;
         if (isCopy) {

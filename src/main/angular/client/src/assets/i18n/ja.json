@@ -226,7 +226,8 @@
      "tooltip.subagentId": "Subagent ID",
      "tooltip.title": "Title",
      "tooltip.url": "URL",
-     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster"
+     "tooltip.withGenerateSubagentCluster": "As own Subagent Cluster",
+     "tooltip.agentNameAliases": "Cluster Alias Names."
     },
     "subagent": {
      "tooltip.subagentId": "Subagent ID",
@@ -328,11 +329,15 @@
     "label.primaryUrl": "プライマリーコントローラーがみるURL",
     "button.testConnection": "テスト接続",
     "button.newController": "新規コントローラー",
+    "tooltip.type": "Type",
+    "tooltip.standaloneTitle": "Standalone Title",
     "tooltip.standaloneUrlForJOC": "JOCコクピットがみるスタンドアロンコントローラーURL",
     "tooltip.primaryUrlForJOC": "JOCコクピットがみるプライマリーコントローラーURL",
     "tooltip.backupUrlForJOC": "JOCコクピットがみるセカンダリーコントローラーURL",
     "tooltip.urlForBackup": "セカンダリーコントローラーがみるプライマリーコントローラーURL",
-    "tooltip.urlForPrimary": "プライマリーコントローラーがみるセカンダリーコントローラーURL"
+    "tooltip.urlForPrimary": "プライマリーコントローラーがみるセカンダリーコントローラーURL",
+    "tooltip.primaryTitle": "Primary Title",
+    "tooltip.backupTitle": "Secondary Title"
   },
   "--------COMMON LABEL AND BUTTONS------------": "複数ページで使用",
   "common": {
@@ -2496,7 +2501,9 @@
     "button.suspendAll": "Suspend All",
     "button.resumeAll": "Resume All",
     "button.skip": "Skip",
-    "button.unskip": "UnSkip",
+    "button.unskip": "Unskip",
+    "button.stop": "Stop",
+    "button.unstop": "Unstop",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",

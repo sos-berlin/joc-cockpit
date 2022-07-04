@@ -17,7 +17,7 @@
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
     <div class="form-group row" *ngIf="!new">
-      <label class="col-sm-3" translate>agent.label.agentId</label>
+      <label class="col-sm-3" [nz-tooltip]="'agent.tooltip.agentId' | translate" translate>agent.label.agentId</label>
       <div class="col-sm-8">
         {{agent.agentId}}
       </div>
@@ -43,7 +43,7 @@
       <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.tooltip.agentName' | translate" *ngIf="!isCluster" translate>agent.label.agentName
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <label class="col-sm-3 p-r-xs form-control-label" [nz-tooltip]="'agent.cluster.tooltip.agentClusterName' | translate" *ngIf="isCluster" translate>agent.label.agentClusterName
+      <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.cluster.tooltip.agentClusterName' | translate" *ngIf="isCluster" translate>agent.label.agentClusterName
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((agentName.dirty || agentName.touched) && agentName.invalid)}">
@@ -58,14 +58,14 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.tooltip.title' | translate" translate>common.label.title</label>
+      <label class="col-sm-3 form-control-label" nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.title' | translate) : ('agent.tooltip.title' | translate) }}" translate>common.label.title</label>
       <div class=" col-sm-8">
         <input type="text" class="form-control" [(ngModel)]="agent.title"
                [maxLength]="255" name="title" placeholder="{{'common.placeholder.title' | translate}}">
       </div>
     </div>
     <div class="form-group row" *ngFor="let alisa of agentNameAliases; let i = index">
-      <label class="col-sm-3 form-control-label"><span [nz-tooltip]="'agent.tooltip.agentNameAliases' | translate" *ngIf="i==0" translate>agent.label.agentNameAliases</span></label>
+      <label class="col-sm-3 form-control-label"><span nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.agentNameAliases' | translate) : ('agent.tooltip.agentNameAliases' | translate) }}" *ngIf="i==0" translate>agent.label.agentNameAliases</span></label>
       <div class=" col-sm-8">
         <input type="text" class="form-control" name="agentNameAliases{{i}}" [(ngModel)]="alisa.name"
                placeholder="{{'agent.placeholder.enterAgentNameAlias' | translate}} {{i+1}}">
@@ -109,14 +109,14 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.cluster.tooltip.title' | translate" translate>common.label.title</label>
+        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" translate>common.label.title</label>
         <div class=" col-sm-8">
           <input type="text" class="form-control" [(ngModel)]="agent.subtitle"
                  [maxLength]="255" name="subtitle" placeholder="{{'common.placeholder.title' | translate}}">
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.cluster.tooltip.url' | translate" translate>agent.label.url
+        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" translate>agent.label.url
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
@@ -154,14 +154,14 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.cluster.tooltip.title' | translate" translate>common.label.title</label>
+        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" translate>common.label.title</label>
         <div class=" col-sm-8">
           <input disabled type="text" class="form-control" [(ngModel)]="agent.subtitle2"
                  [maxLength]="255" name="subtitle2" placeholder="{{'common.placeholder.title' | translate}}">
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.cluster.tooltip.url' | translate" translate>agent.label.url
+        <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" translate>agent.label.url
           <sup *ngIf="agent.subagentId2 && agent.subagentId2.length > 0" class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-8" [ngClass]="{'has-error' : ((url2.dirty || url2.touched) && url2.invalid)}">
@@ -206,14 +206,14 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.tooltip.title' | translate" translate>common.label.title</label>
+              <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" translate>common.label.title</label>
               <div class=" col-sm-8">
                 <input type="text" class="form-control" [(ngModel)]="item.title"
                        [maxLength]="255" name="title{{i}}" placeholder="{{'common.placeholder.title' | translate}}">
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.tooltip.url' | translate" translate>agent.label.url
+              <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" translate>agent.label.url
                <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">

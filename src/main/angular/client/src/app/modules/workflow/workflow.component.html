@@ -584,7 +584,7 @@
                           </div>
                           <app-type [timezone]="workflow.configuration.timeZone" [path]="workflow.configuration.path" [configuration]="workflow.configuration" [orderReload]="workflow.orderReload" [jobs]="workflow.configuration.jobs" [orderPreparation]="workflow.configuration.orderPreparation" [permission]="permission" [preferences]="preferences"
                                     [schedulerId]="schedulerIds.selected" [expandAll]="workflow.isExpand"
-                                    (update)="updatePanelHeight()" (isChanged)="changedHandler($event)" [orders]="workflow.orders"></app-type>
+                                    (update)="updatePanelHeight()" (isChanged)="changedHandler($event)" (isProcessing)="processingHandler($event)" [orders]="workflow.orders"></app-type>
                         </div>
                       </td>
                     </tr>

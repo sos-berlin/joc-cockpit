@@ -28,6 +28,7 @@ export class TypeComponent implements OnChanges {
   @Input() orderReload: boolean;
   @Output() update: EventEmitter<any> = new EventEmitter();
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
+  @Output() isProcessing: EventEmitter<boolean> = new EventEmitter();
 
   sideBar: any = {};
   isFirst = false;
@@ -62,6 +63,15 @@ export class TypeComponent implements OnChanges {
     setTimeout(() => {
       this.isChanged.emit(false);
     }, 5000);
+  }
+
+  processingHandler(flag: boolean): void {
+    this.isProcessing.emit(flag);
+    if (flag) {
+      setTimeout(() => {
+        this.isChanged.emit(false);
+      }, 5000);
+    }
   }
 
   collapse(node): void {
@@ -364,12 +374,16 @@ export class TypeComponent implements OnChanges {
     }
   }
 
-  restCall(job, operation, auditLog?): void{
+  restCall(job, operation, auditLog?): void {
     this.coreService.post('workflow/' + operation.toLowerCase(), {
       controllerId: this.schedulerId,
       workflowPath: this.path,
       labels: [job.label],
       auditLog
+    }).subscribe({
+      next: () => {
+        this.processingHandler(true)
+      }, error: () => this.processingHandler(false)
     })
   }
 
@@ -378,7 +392,15 @@ export class TypeComponent implements OnChanges {
   }
 
   unskip(job): void{
-    this.skipOperation(job, 'UnSkip');
+    this.skipOperation(job, 'Unskip');
+  }
+
+  stop(job): void{
+    this.skipOperation(job, 'Stop');
+  }
+
+  unstop(job): void{
+    this.skipOperation(job, 'Unstop');
   }
 
   showConfiguration(instruction): void {

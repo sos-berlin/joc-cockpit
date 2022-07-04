@@ -358,6 +358,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.modalInstance = this.modal.create({
       nzTitle: undefined,
       nzContent: StartUpModalComponent,
+      nzClassName: 'lg',
       nzComponentParams: {
         isModal: true,
         new: true,
@@ -381,6 +382,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         this.modalInstance = this.modal.create({
           nzTitle: undefined,
           nzContent: StartUpModalComponent,
+          nzClassName: 'lg',
           nzComponentParams: {
             isModal: true,
             controllerInfo: res.controllers,
@@ -567,6 +569,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       this.modal.create({
         nzTitle: undefined,
         nzContent: AgentModalComponent,
+        nzClassName: 'lg',
         nzAutofocus: null,
         nzComponentParams: {
           controllerId: controller.controllerId,
@@ -585,6 +588,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: AgentModalComponent,
+          nzClassName: 'lg',
           nzAutofocus: null,
           nzComponentParams: {
             controllerId: controller.controllerId,
@@ -661,6 +665,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: AgentModalComponent,
+        nzClassName: 'lg',
         nzAutofocus: null,
         nzComponentParams: {
           controllerId: controller.controllerId,
@@ -683,6 +688,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: SubagentModalComponent,
+      nzClassName: 'lg',
       nzAutofocus: null,
       nzComponentParams: {
         controllerId: controller.controllerId,
@@ -704,6 +710,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: SubagentModalComponent,
+      nzClassName: 'lg',
       nzAutofocus: null,
       nzComponentParams: {
         controllerId: controller.controllerId,

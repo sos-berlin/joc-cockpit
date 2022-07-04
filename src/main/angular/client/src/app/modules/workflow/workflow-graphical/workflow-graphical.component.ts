@@ -12,7 +12,7 @@ import {
 import {ActivatedRoute} from '@angular/router';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
-import {sortBy} from 'underscore';
+import {isArray, sortBy} from 'underscore';
 import {Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
@@ -205,6 +205,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   @Input() jobs: any = {};
   @Input() orders: any = [];
   @Input() isModal: boolean = false;
+  @Input() reload: boolean;
   @Input() recursiveCals: any;
   @Input() workflowObjects: any;
 
@@ -269,6 +270,9 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.orders) {
       this.updateOrder();
+    }
+    if (changes.reload && this.graph) {
+      this.updateWorkflow(true);
     }
   }
 
@@ -897,8 +901,21 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
               if (mainJson.expectedNoticeBoards) {
+                let arr = [];
+                json.instructions[x].noticeBoardNames.split(' ').forEach((item) => {
+                  let x = item.trim();
+                  if(x !== '&&' && x !== '||') {
+                    if (x.substring(0, 1) == '(') {
+                      x = x.substring(1, x.length - 1);
+                    }
+                    if (x.substring(0, 1) == '"' || x.substring(0, 1) == "'") {
+                      x = x.substring(1, x.length - 1);
+                    }
+                    arr.push(x);
+                  }
+                });
                 for (const prop in mainJson.expectedNoticeBoards) {
-                  if (mainJson.expectedNoticeBoards[prop].name === json.instructions[x].noticeBoardNames) {
+                  if (arr.length > 0 && arr.indexOf(mainJson.expectedNoticeBoards[prop].name) > -1) {
                     const incomingEdges = graph.getIncomingEdges(cell);
                     if (incomingEdges && incomingEdges.length > 0) {
                       for (const edge in incomingEdges) {
@@ -923,7 +940,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             if (cell) {
               if (mainJson.postNoticeBoards) {
                 for (const prop in mainJson.postNoticeBoards) {
-                  if (mainJson.postNoticeBoards[prop].name === json.instructions[x].noticeBoardNames) {
+                 
+                  if (isArray(json.instructions[x].noticeBoardNames) && json.instructions[x].noticeBoardNames.indexOf(mainJson.postNoticeBoards[prop].name) > -1) {
                     const outgoingEdges = graph.getOutgoingEdges(cell);
                     if (outgoingEdges && outgoingEdges.length > 0) {
                       for (const edge in outgoingEdges) {
@@ -1314,6 +1332,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       });
       modal.afterClose.subscribe(result => {
         if (result) {
+          this.isProcessing = true;
           this.coreService.post('workflow/' + operation.toLowerCase(), {
             controllerId: this.controllerId,
             workflowPath: this.workFlowJson.path,
@@ -1333,6 +1352,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         }
       });
     } else {
+      this.isProcessing = true;
       this.coreService.post('workflow/' + operation.toLowerCase(), {
         controllerId: this.controllerId,
         workflowPath: this.workFlowJson.path,
@@ -1352,7 +1372,15 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   }
 
   unskip(job): void{
-    this.skipOperation(job, 'UnSkip');
+    this.skipOperation(job, 'Unskip');
+  }
+
+  stop(job): void{
+    this.skipOperation(job, 'Stop');
+  }
+
+  unstop(job): void{
+    this.skipOperation(job, 'Unstop');
   }
 
   showConfiguration(argu): void {

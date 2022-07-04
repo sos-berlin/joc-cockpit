@@ -6,12 +6,12 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline valign">
+          <div class="inline valign" *ngIf="auditLog.type === 'AUDITLOG'">
             <label nz-checkbox [(ngModel)]="adtLog.current" name="current" (ngModelChange)="changeController()">
              {{'common.label.currentController' | translate}}
             </label>
           </div>
-          <div class="btn-group m-l-12 hidden-btn-group">
+          <div class="btn-group m-l-12 hidden-btn-group" *ngIf="auditLog.type === 'AUDITLOG'">
             <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="load('all')"
                     [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" translate>filters.button.all
             </button>
@@ -31,7 +31,7 @@
                     [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}" translate>filters.button.lastWeak
             </button>
           </div>
-          <div class="btn-group dropdown hidden-dropdown">
+          <div class="btn-group dropdown hidden-dropdown" *ngIf="auditLog.type === 'AUDITLOG'">
             <button class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" type="button" translate>
               common.label.anyDate
               <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
@@ -60,7 +60,7 @@
             </nz-dropdown-menu>
           </div>
           <div class="btn-group dropdown" *ngIf="permission.joc && permission.joc.administration.customization.view">
-            <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button">
+            <button class="btn btn-grey btn-sm m-l-12" [nz-tooltip]="selectedFiltered.account" nz-dropdown nzTrigger="click" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'" type="button" *ngIf="auditLog.type === 'AUDITLOG'">
               {{'customization.label.customizations' | translate}}
               <span class="text-primary" [innerHtml]="selectedFiltered.name"></span>
               <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
@@ -97,18 +97,39 @@
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
     <div class="row m-b-12 m-t-xs">
-      <div class="col-lg-12">
-        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" (click)="collapseDetails()">
+      <div class="col-md-6 col-sm-6">
+        <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': auditLog.type=='AUDITLOG'}" (click)="auditLogTab()">
+              <span class="nav-text text-dark p-b-sm">
+                <span class="text" translate>auditLog.tab.auditLog</span>
+                </span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': auditLog.type=='LOGINHISTORY'}" (click)="loginHistoryTab()">
+              <span class="nav-text text-dark p-b-sm">
+                <span class="text" translate>auditLog.tab.loginHistory</span>
+                </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-6 col-sm-6">
+        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" *ngIf="auditLog.type === 'AUDITLOG'" (click)="collapseDetails()">
           <i class="fa fa-compress text"></i>
         </button>
-        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" (click)="expandDetails()" >
+        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" *ngIf="auditLog.type === 'AUDITLOG'" (click)="expandDetails()" >
           <i class="fa fa-expand text" ></i>
         </button>
-        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel && auditLog.type === 'AUDITLOG'">
           <span translate>common.button.advancedSearch</span>
           <i class="fa fa-caret-down p-l-xs"></i>
         </button>
-        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
+        <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel && auditLog.type === 'AUDITLOG'">
           <span translate>common.button.advancedSearch</span>
           <i class="fa fa-caret-down p-l-xs"></i>
         </button>
@@ -132,7 +153,7 @@
       </div>
     </div>
     <div>
-      <div class="m-t-sm box p-a">
+      <div class="m-t-sm box p-a" *ngIf="auditLog.type === 'AUDITLOG'">
         <div class="table-responsive" id="auditLogTableId">
           <nz-table
             #ajaxTable
@@ -266,6 +287,63 @@
           translate>common.label.total</span> {{data.length}}
           <span *ngIf="ajaxTable.data.length >1" translate>auditLog.label.auditLogsFound</span>
           <span *ngIf="ajaxTable.data.length ==1" translate>auditLog.label.auditLogFound</span>
+        </div>
+      </div>
+      <div class="m-t-sm box p-a" *ngIf="auditLog.type === 'LOGINHISTORY'">
+        <div class="table-responsive">
+          <nz-table
+            #ajaxTable
+            [nzSize]="'small'"
+            [nzPageSize]="adtLog.entryPerPage || preferences.entryPerPage || 25"
+            [nzPageIndex]="adtLog.currentPage"
+            [nzBordered]="true"
+            [nzShowPagination]="data.length > 0"
+            [nzData]="data"
+            [nzLoading]="!isLoaded"
+            [nzShowSizeChanger]="true"
+            (nzPageIndexChange)="pageIndexChange($event)"
+            (nzPageSizeChange)="pageSizeChange($event)"
+            [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
+          >
+            <thead>
+            <tr>
+              <th (click)="sort('accountName')"><a>
+                <span class="p-r-xs" translate>auditLog.label.account</span>
+                <i *ngIf="adtLog.filter.sortBy == 'accountName' && !adtLog.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="adtLog.filter.sortBy == 'accountName' && adtLog.reverse"
+                   class="fa fa-caret-down "></i>
+              </a>
+              </th>
+              <th (click)="sort('loginDate')"><a>
+                <span class="p-r-xs" translate>auditLog.label.loginDate</span>
+                <i *ngIf="adtLog.filter.sortBy == 'loginDate' && !adtLog.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="adtLog.filter.sortBy == 'loginDate' && adtLog.reverse"
+                   class="fa fa-caret-down "></i>
+              </a>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-template ngFor let-loginsData [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn">
+              <tr>
+                <td>
+                  <span [innerHtml]="loginsData.accountName | highlight : adtLog.searchText"></span>
+                </td>
+                <td>
+                  <span [innerHtml]="loginsData.loginDate | stringToDate | highlight : adtLog.searchText"></span>
+                </td>
+              </tr>
+            </ng-template>
+            </tbody>
+          </nz-table>
+        </div>
+        <div class="w-half label-top"
+             *ngIf="ajaxTable.data.length >0"><span
+          translate>common.label.total</span> {{data.length}}
+          <span *ngIf="ajaxTable.data.length >1" translate>auditLog.label.loginsFound</span>
+          <span *ngIf="ajaxTable.data.length ==1" translate>auditLog.label.loginFound</span>
         </div>
       </div>
     </div>

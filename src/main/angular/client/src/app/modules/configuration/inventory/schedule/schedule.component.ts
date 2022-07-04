@@ -96,16 +96,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     if (changes.data) {
       if (this.data.type) {
         this.getObject();
-        if (this.workflowTree.length === 0) {
-          this.coreService.post('tree', {
-            controllerId: this.schedulerId,
-            forInventory: true,
-            types: ['WORKFLOW']
-          }).subscribe((res) => {
-            this.workflowTree = this.coreService.prepareTree(res, true);
-            this.ref.detectChanges();
-          });
-        }
       } else {
         this.schedule = {};
         this.ref.detectChanges();
@@ -522,7 +512,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           });
         }
       }
-    } else if(this.schedule.configuration.orderParameterisations && this.schedule.configuration.orderParameterisations.length > 0){
+    } else if (this.schedule.configuration.orderParameterisations && this.schedule.configuration.orderParameterisations.length > 0) {
       for (const prop in this.schedule.configuration.orderParameterisations) {
         delete this.schedule.configuration.orderParameterisations[prop].forkListVariables;
         this.schedule.configuration.orderParameterisations[prop].variables = {};
@@ -1036,6 +1026,16 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private getObject(): void {
+    if (this.workflowTree.length === 0) {
+      this.coreService.post('tree', {
+        controllerId: this.schedulerId,
+        forInventory: true,
+        types: ['WORKFLOW']
+      }).subscribe((res) => {
+        this.workflowTree = this.coreService.prepareTree(res, true);
+        this.ref.detectChanges();
+      });
+    }
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),

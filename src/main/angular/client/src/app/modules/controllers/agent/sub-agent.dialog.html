@@ -16,14 +16,14 @@
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
     <div class="form-group row" *ngIf="!new">
-      <label class="col-sm-3" translate>agent.label.agentId</label>
+      <label class="col-sm-3" [nz-tooltip]="'agent.tooltip.agentId' | translate" translate>agent.label.agentId</label>
       <div class="col-sm-8">
         {{clusterAgent.agentId}}
       </div>
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label"[nz-tooltip]="'agent.subagent.tooltip.subagentId' | translate" translate>agent.label.subagentId
+      <label class="col-sm-3 form-control-label" [nz-tooltip]="'agent.subagent.tooltip.subagentId' | translate" translate>agent.label.subagentId
        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class=" col-sm-8" [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}">

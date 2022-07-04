@@ -1306,7 +1306,8 @@ export class ExportComponent implements OnInit {
       draftConfigurations: [],
       releaseDraftConfigurations: [],
       deployConfigurations: [],
-      releasedConfigurations: []
+      releasedConfigurations: [],
+      folders: []
     };
     let selectFolder = true;
     if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH') {
@@ -1319,11 +1320,7 @@ export class ExportComponent implements OnInit {
           const objDep: any = {};
           if (!nodes[i].type) {
             if (selectFolder) {
-              objDep.configuration = {
-                path: nodes[i].path,
-                objectType: 'FOLDER',
-                recursive: self.exportObj.isRecursive
-              };
+              self.object.folders.push(nodes[i].path);
             }
           } else {
             objDep.configuration = {
@@ -1399,6 +1396,13 @@ export class ExportComponent implements OnInit {
   }
 
   export(): void {
+    const obj: any = {
+      exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
+    };
+    if (this.comments.comment) {
+      obj.auditLog = {};
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    }
     if ((this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
       (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
       (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
@@ -1420,9 +1424,6 @@ export class ExportComponent implements OnInit {
           this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
         }
       }
-      const obj: any = {
-        exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
-      };
       if (this.exportObj.forSigning) {
         obj.forSigning = {controllerId: this.exportObj.controllerId};
         if (this.object.draftConfigurations || this.object.deployConfigurations) {
@@ -1448,10 +1449,8 @@ export class ExportComponent implements OnInit {
           };
         }
       }
-
-      if (this.comments.comment) {
-        obj.auditLog = {};
-        this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+      if(this.object.folders && this.object.folders.length > 0){
+        this.exportFolder(obj);
       }
       this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
         if (res) {
@@ -1460,9 +1459,45 @@ export class ExportComponent implements OnInit {
           this.submitted = false;
         }
       });
-    } else {
       this.submitted = false;
+    } else {
+      if(this.object.folders && this.object.folders.length > 0){
+        this.exportFolder(obj);
+      } else {
+        this.submitted = false;
+      }
     }
+  }
+
+  private exportFolder(obj): void {
+    if (this.exportObj.forSigning) {
+      obj.forSigning = {
+        controllerId: this.exportObj.controllerId,
+        objectTypes: this.exportObj.objectTypes,
+        folders: Array.from(new Set(this.object.folders)),
+        recursive: this.exportObj.isRecursive,
+        withoutDrafts: !this.filter.draft,
+        withoutDeployed: !this.filter.deploy
+      };
+    } else {
+      obj.shallowCopy = {
+        objectTypes: this.exportObj.objectTypes,
+        folders: Array.from(new Set(this.object.folders)),
+        recursive: this.exportObj.isRecursive,
+        onlyValidObjects: this.filter.valid,
+        withoutDrafts: !this.filter.draft,
+        withoutDeployed: !this.filter.deploy,
+        withoutReleased: !this.filter.release
+      };
+    }
+
+    this.coreService.download('inventory/export/folder', obj, this.exportObj.filename, (res) => {
+      if (res) {
+        this.activeModal.close('ok');
+      } else {
+        this.submitted = false;
+      }
+    });
   }
 
   cancel(): void {

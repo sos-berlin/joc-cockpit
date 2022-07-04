@@ -3184,7 +3184,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   checkExpectNoticeExp(event): void {
-    this.selectedNode.obj.noticeBoardNames = event;
+    this.selectedNode.obj.noticeBoardNames = "'" + event + "'";
   }
 
   onExpand(e, type): void {
@@ -7166,7 +7166,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           } else if (self.selectedNode.type === 'ExpectNotices' || self.selectedNode.type === 'PostNotices') {
             let noticeBoardNames;
             if (self.selectedNode.type === 'ExpectNotices') {
-              self.coreService.addSlashToString(self.selectedNode.newObj, 'noticeBoardNames');
               noticeBoardNames = self.selectedNode.newObj.noticeBoardNames;
             } else {
               if(isArray(self.selectedNode.newObj.noticeBoardNames)){

@@ -226,7 +226,8 @@
      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Director Agent that cannot be changed during the Director Agent's lifetime. For Subagent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
      "tooltip.title": "The Title of an Agent Cluster can be specified as desired.",
      "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, e.g. http://localhost:4445",
-     "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent."
+     "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent.",
+     "tooltip.agentNameAliases": "Cluster Alias Names."
     },
     "subagent": {
      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Subagent that cannot be changed during the Subagent's lifetime. For Subagent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -328,11 +329,15 @@
     "label.primaryUrl": "URL for Primary",
     "button.testConnection": "Test Connection",
     "button.newController": "New Controller",
+    "tooltip.type": "Type",
+    "tooltip.standaloneTitle": "Standalone Title",
     "tooltip.standaloneUrlForJOC": "URL of the Standalone Controller as seen by JOC Cockpit",
     "tooltip.primaryUrlForJOC": "URL of the Primary Controller as seen by JOC Cockpit",
     "tooltip.backupUrlForJOC": "URL of the Secondary Controller as seen by JOC Cockpit",
     "tooltip.urlForBackup": "URL of the Primary Controller as seen by the Secondary Controller",
-    "tooltip.urlForPrimary": "URL of the Secondary Controller as seen by the Primary Controller"
+    "tooltip.urlForPrimary": "URL of the Secondary Controller as seen by the Primary Controller",
+    "tooltip.primaryTitle": "Primary Title",
+    "tooltip.backupTitle": "Secondary Title"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -861,8 +866,7 @@
     "button.synchronized": "Synchronized",
     "button.notSynchronized": "Not Synchronized",
     "button.suspended": "Suspended",
-    "button.suspending": "Suspending",
-    "button.resuming": "Resuming"
+    "button.outstanding": "Outstanding"
   },
   "header": {
     "label.dashboard": "DASHBOARD",
@@ -2497,6 +2501,8 @@
     "button.resumeAll": "Resume All",
     "button.skip": "Skip",
     "button.unskip": "Unskip",
+    "button.stop": "Stop",
+    "button.unstop": "Unstop",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",

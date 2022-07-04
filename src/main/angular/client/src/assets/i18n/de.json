@@ -226,7 +226,8 @@
      "tooltip.subagentId": "Die Subagenten-Kennung eines Director Agenten ist eindeutig und kann während der Lebenszeit eines Director Agenten nicht geändert werden. Für die Subagenten-Kennung des Director Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
      "tooltip.title": "Der Titel eines Director Agenten kann nach Belieben angegeben werden.",
      "tooltip.url": "Die URL eines Director Agenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
-     "tooltip.withGenerateSubagentCluster": "Ein Director Agent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Director Agent aufführt. Dadurch lassen sich Jobs gezielt auf einem Director Agent ausführen."
+     "tooltip.withGenerateSubagentCluster": "Ein Director Agent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Director Agent aufführt. Dadurch lassen sich Jobs gezielt auf einem Director Agent ausführen.",
+     "tooltip.agentNameAliases": "Cluster Alias Names."
     },
     "subagent": {
      "tooltip.subagentId": "Die Kennung des Subagenten ist eindeutig und kann während der Lebenszeit eines Subagenten nicht geändert werden. Für die Kennung des Subagenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -328,11 +329,15 @@
     "label.primaryUrl": "URL für Primären Controller",
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
+    "tooltip.type": "Type",
+    "tooltip.standaloneTitle": "Standalone Title",
     "tooltip.standaloneUrlForJOC": "URL des autonomen Controller aus Sicht von JOC Cockpit",
     "tooltip.primaryUrlForJOC": "URL des Primären Controllers aus Sicht von JOC Cockpit",
     "tooltip.backupUrlForJOC": "URL des Sekundären Controllers aus Sicht von JOC Cockpit",
     "tooltip.urlForBackup": "URL des Primären Controllers aus Sicht des Sekundären Controllers",
-    "tooltip.urlForPrimary": "URL des Sekundären Controllers aus Sicht des Primären Controllers"
+    "tooltip.urlForPrimary": "URL des Sekundären Controllers aus Sicht des Primären Controllers",
+    "tooltip.primaryTitle": "Primary Title",
+    "tooltip.backupTitle": "Secondary Title"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -2497,6 +2502,8 @@
     "button.resumeAll": "Alle wiederaufnehmen",
     "button.skip": "Überspringen",
     "button.unskip": "Einbeziehen",
+    "button.stop": "Stop",
+    "button.unstop": "Unstop",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

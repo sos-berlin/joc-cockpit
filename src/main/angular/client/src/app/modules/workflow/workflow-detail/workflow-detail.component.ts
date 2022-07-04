@@ -45,6 +45,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   permission: any = {};
   workflow: any = {};
   isExpandAll: boolean;
+  isReload: boolean;
   pageView: any;
   selectedPath: string;
   workflowFilters: any = {};
@@ -97,7 +98,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           && this.path === args.eventSnapshots[j].workflow.path && this.versionId === args.eventSnapshots[j].workflow.versionId) {
           this.getOrders(this.coreService.clone(this.workflow));
         } else if (args.eventSnapshots[j].eventType === 'WorkflowUpdated' && args.eventSnapshots[j].path && this.path === args.eventSnapshots[j].path) {
-          this.init();
+          this.init(true);
           break;
         }
       }
@@ -386,7 +387,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     order.show = true;
   }
 
-  private init(): void {
+  private init(flag?): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
@@ -402,7 +403,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.workflow = this.coreService.clone(res.workflow);
         this.orderPreparation = res.workflow.orderPreparation
-        let instructions = this.coreService.clone(res.workflow.instructions);
         this.workFlowJson = res.workflow;
         this.workFlowJson.actual = this.coreService.clone(res.workflow.instructions);
         this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs);
@@ -411,6 +411,9 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           this.showDependency(res.workflow);
         } else {
           this.getOrders(res.workflow);
+        }
+        if(flag) {
+          this.isReload = true;
         }
         WorkflowDetailComponent.showAndHideBtn();
       }, error: () => this.loading = true

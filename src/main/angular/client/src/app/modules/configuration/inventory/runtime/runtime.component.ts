@@ -1113,7 +1113,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       let planData: any = {};
       if (value.begin) {
         planData = {
-          plannedStartTime: new Date(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin)._d),
+          plannedStartTime: new Date(this.coreService.getDateByFormat(value.begin, this.preferences.zone, 'YYYY-MM-DD')),
           plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin), this.preferences.dateFormat)
         };
         if (value.end) {
@@ -1125,7 +1125,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         }
       } else if (value.singleStart) {
         planData = {
-          plannedStartTime: new Date(this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart)._d),
+          plannedStartTime: new Date(this.coreService.getDateByFormat(value.singleStart, this.preferences.zone, 'YYYY-MM-DD')),
           plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart), this.preferences.dateFormat)
         };
       }

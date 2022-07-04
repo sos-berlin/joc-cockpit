@@ -861,7 +861,7 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'PostNotices') {
             _node.setAttribute('label', 'postNotices');
             if (json.instructions[x].noticeBoardNames !== undefined) {
-              _node.setAttribute('noticeBoardNames', isArray(json.instructions[x].noticeBoardNames) ? json.instructions[x].noticeBoardNames.join(',') : '');
+              _node.setAttribute('noticeBoardNames', isArray(json.instructions[x].noticeBoardNames) ? json.instructions[x].noticeBoardNames.join(',') : json.instructions[x].noticeBoardNames);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');

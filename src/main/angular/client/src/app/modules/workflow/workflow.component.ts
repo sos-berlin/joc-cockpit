@@ -86,8 +86,7 @@ export class SearchComponent implements OnInit {
     {label: 'synchronized', value: 'IN_SYNC', checked: false},
     {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false},
     {label: 'suspended', value: 'SUSPENDED', checked: false},
-    {label: 'suspending',value: 'SUSPENDING', checked: false},
-    {label: 'resuming', value: 'RESUMING', checked: false}
+    {label: 'outstanding',value: 'OUTSTANDING', checked: false}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService) {
@@ -440,8 +439,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     {state: 'IN_SYNC', text: 'synchronized'},
     {state: 'NOT_IN_SYNC', text: 'notSynchronized'},
     {state: 'SUSPENDED', text: 'suspended'},
-    {state: 'SUSPENDING', text: 'suspending'},
-    {state: 'RESUMING', text: 'resuming'}
+    {state: 'OUTSTANDING', text: 'outstanding'}
   ];
 
   filterBtn: any = [
@@ -501,6 +499,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (obj.isOrderAdded && obj.flag) {
       this.showPanelFunc(obj.isOrderAdded);
     }
+  }
+
+  processingHandler(flag: boolean): void {
+    this.isProcessing = flag;
   }
 
   private resetAction(): void {
@@ -1450,6 +1452,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                 next: (res: any) => {
                   this.workflows[i].suspended = res.workflow.suspended;
                   this.workflows[i].state = res.workflow.state;
+                  this.workflows[i].jobs = res.workflow.jobs;
+                  if (this.workflows[i].show) {
+                    this.workflows[i].configuration = res.workflow;
+                    this.workflowService.convertTryToRetry(this.workflows[i].configuration, null);
+                  }
                 }
               });
             }
