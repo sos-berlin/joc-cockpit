@@ -227,7 +227,7 @@
      "tooltip.title": "The Title of an Agent Cluster can be specified as desired.",
      "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, e.g. http://localhost:4445",
      "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent.",
-     "tooltip.agentNameAliases": "Cluster Alias Names."
+     "tooltip.agentNameAliases": "Alias Names can be assigned to an Agent Cluster. The Agent Cluster can be assigned to a job or File Order Source using the Alias Name. For Alias Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens."
     },
     "subagent": {
      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Subagent that cannot be changed during the Subagent's lifetime. For Subagent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -329,15 +329,15 @@
     "label.primaryUrl": "URL for Primary",
     "button.testConnection": "Test Connection",
     "button.newController": "New Controller",
-    "tooltip.type": "Type",
-    "tooltip.standaloneTitle": "Standalone Title",
+    "tooltip.type": "A Standalone Controller can be configured using a single instance. A Controller Cluster can be configured using two instances if a Commercial License is in place.",
+    "tooltip.standaloneTitle": "Title of the Standalone Controller instance",
     "tooltip.standaloneUrlForJOC": "URL of the Standalone Controller as seen by JOC Cockpit",
     "tooltip.primaryUrlForJOC": "URL of the Primary Controller as seen by JOC Cockpit",
     "tooltip.backupUrlForJOC": "URL of the Secondary Controller as seen by JOC Cockpit",
     "tooltip.urlForBackup": "URL of the Primary Controller as seen by the Secondary Controller",
     "tooltip.urlForPrimary": "URL of the Secondary Controller as seen by the Primary Controller",
-    "tooltip.primaryTitle": "Primary Title",
-    "tooltip.backupTitle": "Secondary Title"
+    "tooltip.primaryTitle": "Title of the Primary Controller instance",
+    "tooltip.backupTitle": "Title of the Secondary Controller instance"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
