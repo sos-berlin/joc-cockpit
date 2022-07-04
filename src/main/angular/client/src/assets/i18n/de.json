@@ -2423,7 +2423,7 @@
     "label.criticality": "Kritikalität",
     "label.workflowFound": "Arbeitsablauf gefunden",
     "label.workflowsFound": "Arbeitsabläufe gefunden",
-    "label.enterDateAndTime": "Datum und Uhrzeit angeben",
+    "label.enterDateAndTime": "Datum und Uhrzeit",
     "label.logLevel": "Protokollierungsstufe",
     "label.failOnOutputErr": "Scheitern bei Ausgaben in stderr",
     "label.showConfiguration": "Konfiguration anzeigen",
