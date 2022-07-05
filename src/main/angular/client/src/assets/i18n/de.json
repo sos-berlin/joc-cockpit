@@ -147,7 +147,7 @@
     "label.disabled": "Deaktiviert",
     "label.hidden": "Verborgen",
     "label.agents": "Autonome Agenten",
-    "label.agentNameAliases": "Alias-Namen",
+    "label.agentNameAliases": "Alias Namen",
     "label.addAgent": "Agenten hinzufügen",
     "label.editAgent": "Agenten aktualisieren",
     "label.addSubAgent": "Subagenten hinzufügen",
@@ -213,7 +213,7 @@
     "placeholder.enterAgentId": "Kennung des Agenten angeben",
     "placeholder.enterSubagentId": "Kennung des Subagenten angeben",
     "placeholder.enterAgentName": "Name des Agenten angeben",
-    "placeholder.enterAgentNameAlias": "Alias-Name angeben",
+    "placeholder.enterAgentNameAlias": "Alias Name angeben",
     "placeholder.enterClusterName": "Cluster Name angeben",
     "tooltip.agentId": "Die Kennung eines Agenten ist eindeutig und kann während der Lebenszeit eines Agenten nicht geändert werden. Für die Kennung des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
     "tooltip.agentName": "Der Name eines Agenten ist eine eindeutige Bezeichnung, die geändert werden kann. Agenten werden Jobs anhand ihres Namens zugewiesen. Für die Kennung des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -229,8 +229,8 @@
       "tooltip.withGenerateSubagentCluster": "Ein Director Agent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Director Agent aufführt. Dadurch lassen sich Jobs gezielt auf einem Director Agent ausführen.",
       "tooltip.agentNameAliases": "Einem Agenten Cluster können Alias Namen zugeordnet werden. Der Agenten Cluster kann unter Verwendung des Alias Namens einem Job oder einer Dateiauftragsquelle zugeordnet werden. Für Alias Namen des Agenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
       "subagent": {
-        "tooltip.clusterName": "Subagent Cluster Name",
-        "tooltip.title": "Title"
+        "tooltip.clusterName": "Der Name des Subagenten Cluster ist eindeutig und kann während der Lebenszeit des Subagenten Cluster nicht geändert werden. Für den Namen des Subagenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "tooltip.title": "Der Titel eines Subagenten Cluster kann nach Belieben angegeben werden."
       }
     },
     "subagent": {
@@ -870,7 +870,7 @@
     "button.synchronized": "Synchron",
     "button.notSynchronized": "Nicht Synchron",
     "button.suspended": "Ausgesetzt",
-    "button.outstanding": "Outstanding"
+    "button.outstanding": "Ausstehend"
   },
   "header": {
     "label.dashboard": "ÜBERSICHT",
@@ -1599,7 +1599,7 @@
     "label.variableList": "Listenvariable",
     "label.startNode": "Start-Position vor Instruktion",
     "label.endNode": "End-Positionen vor Instruktionen",
-    "label.expectedNotices": "Expected Notices",
+    "label.expectedNotices": "Erwartete Notizen",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
     "button.startNow": "Jetzt starten",
@@ -1612,7 +1612,7 @@
     "button.leaveWorkflow": "Arbeitsablauf verlassen",
     "button.addVariable": "Variable hinzufügen",
     "button.modifyVariable": "Variable ändern",
-    "button.modifyVariables": "Modify Variables",
+    "button.modifyVariables": "Variablen ändern",
     "button.showLog": "Protokoll anzeigen",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
@@ -2215,7 +2215,7 @@
     "button.resetPassword": "Kennwort zurücksetzen",
     "button.forcePasswordChange": "Kennwortänderung erzwingen",
     "button.showPermission": "Berechtigungen anzeigen",
-    "button.addToBlocklist": "Add to blocklist",
+    "button.addToBlocklist": "Zur Sperrliste hinzufügen",
     "placeholder.role": "Name der Rolle angeben",
     "placeholder.selectRoles": "Rollen auswählen",
     "placeholder.user": "Konto angeben",
