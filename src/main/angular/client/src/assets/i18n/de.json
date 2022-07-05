@@ -258,7 +258,7 @@
     "label.loginsFound": "Anmeldungen gefunden",
     "message.defaultAuditLog": "[automatisch generiert]",
     "tab.auditLog": "Prüfprotokoll",
-    "tab.loginHistory": "Historie fehlgeschlagener Anmeldungen",
+    "tab.loginHistory": "Fehlgeschlagene Anmeldungen",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Grund",

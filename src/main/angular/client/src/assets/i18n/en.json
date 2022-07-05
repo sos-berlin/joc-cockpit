@@ -258,7 +258,7 @@
     "label.loginsFound": "Login entries found",
     "message.defaultAuditLog": "[automatically created]",
     "tab.auditLog": "Audit Log",
-    "tab.loginHistory": "History of Failed Logins",
+    "tab.loginHistory": "Failed Logins",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Reason",

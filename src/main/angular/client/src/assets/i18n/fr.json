@@ -258,7 +258,7 @@
     "label.loginsFound": "Entrées de Connexion trouvées",
     "message.defaultAuditLog": "[créé automatiquement]",
     "tab.auditLog": "Journal d'Audit",
-    "tab.loginHistory": "Historique des Échecs de Connexion",
+    "tab.loginHistory": "Échecs de Connexion",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Raison",
