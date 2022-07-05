@@ -28,6 +28,13 @@
       <span class="_600" *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
       <span class="_600" *ngIf="order.scheduledNever" translate>common.label.never</span>
     </div>
+    <div class="p-l-sm" *ngIf="order.expectedNotices">
+      <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
+      <div class="p-l-sm" *ngFor="let notice of order.expectedNotices">
+        {{notice.boardName}}
+      </div>
+    </div>
+
     <div class="m-a-sm m-t-0" *ngIf="order.cyclicOrder">
       <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
       <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:

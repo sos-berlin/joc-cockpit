@@ -417,7 +417,7 @@
                              (blur)="validateAttr(node.data, node)"
                              (focus)="hideError();previousName = node.data;"
                              (change)="submitData(node.data, node)"
-                             *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer && node.name !== 'job_resource' && node.name !== 'job_resources'"
+                             *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer && node.name !== 'job_resource' && node.name !== 'job_resources' && node.name !== 'time_zone'"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
                              xmlAutofocus>
@@ -461,18 +461,18 @@
                              (focus)="hideError()"
                              (keydown)="stopPressingSpace(node.name)"
                              (change)="submitData(node.data, node)"
-                             *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources' && 
+                             *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources' &&
                              !(node.parent === 'JobResource' && (node.name === 'name' || node.name === 'variable' || node.name === 'environment_variable'))"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
                              xmlAutofocus>
                       <ng-container *ngIf="node.name && node.type === 'xs:NMTOKEN' && node.parent === 'JobResource' && node.name === 'variable'">
                         <input type="text" class="form-control w-full" identifierValidation autocomplete="off"
-                              [(ngModel)]="node.data"  
+                              [(ngModel)]="node.data"
                               #aname="ngModel"
-                              name="variable"   
+                              name="variable"
                               (blur)="validateAttr(node.data, node)"
-                              (change)="submitData(node.data, node)"                                            
+                              (change)="submitData(node.data, node)"
                               [ngClass]="((error && errorName === node.name) || ((aname.dirty || aname.touched) && aname.invalid)) ? 'invalid': ''"
                               [required]="node.use ==='required'">
                         <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
@@ -482,11 +482,11 @@
                       </ng-container>
                       <ng-container  *ngIf="node.name && node.type === 'xs:NMTOKEN' && node.parent === 'JobResource' && node.name === 'environment_variable'">
                         <input type="text" class="form-control w-full" envVariableValidation autocomplete="off"
-                              [(ngModel)]="node.data"  
+                              [(ngModel)]="node.data"
                               #envname="ngModel"
-                              name="env_variable"   
+                              name="env_variable"
                               (blur)="upperCase(node);validateAttr(node.data, node)"
-                              (change)="submitData(node.data, node)"                                            
+                              (change)="submitData(node.data, node)"
                               [ngClass]="((error && errorName === node.name) || ((envname.dirty || envname.touched) && envname.invalid)) ? 'invalid': ''"
                               [required]="node.use ==='required'">
                         <div *ngIf="envname.invalid && envname.errors && (envname.dirty || envname.touched)"
@@ -569,6 +569,14 @@
                       <div *ngIf="error && errorName === node.name" [innerText]="text" class="help-block text-danger"
                            id="{{node.name}}Alert" role="alert">
                       </div>
+                      <nz-select id="{{node.name}}" class="w-full" nzShowSearch nzAllowClear [(ngModel)]="node.data"
+                                 *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && node.name === 'time_zone'"
+                                 (nzBlur)="validateAttr(node.data, node)"
+                                 (ngModelChange)="submitData(node.data, node)"
+                                 [ngClass]="error && errorName === node.name? 'invalid': ''"
+                                 [required]="node.use ==='required'">
+                        <nz-option *ngFor="let zone of zones" [nzValue]="zone" [nzLabel]="zone"></nz-option>
+                      </nz-select>
                     </div>
                     <div class="col-sm-3 p-l-xs">
                       <span class=""

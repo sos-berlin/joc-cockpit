@@ -4345,7 +4345,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         path: (obj.path + (obj.path === '/' ? '' : '/') + obj.name),
         objectType: type,
       }).subscribe((res: any) => {
-        const name = obj.name + type.toLowerCase() + '.json';
+        const name = obj.name + '.' + type.toLowerCase() + '.json';
         const fileType = 'application/octet-stream';
         delete res.configuration.TYPE;
         const data = JSON.stringify(res.configuration, undefined, 2);

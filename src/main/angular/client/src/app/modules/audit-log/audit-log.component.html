@@ -11,6 +11,26 @@
              {{'common.label.currentController' | translate}}
             </label>
           </div>
+          <div class="btn-group m-l-12 hidden-btn-group" *ngIf="auditLog.type !== 'AUDITLOG'">
+            <button class="btn btn-grey btn-sm" (click)="loadLoginHistory('all')"
+                    [ngClass]="{'btn-primary': historyLogin.filter.date=='all'}" translate>filters.button.all
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="loadLoginHistory('today')"
+                    [ngClass]="{'btn-primary': historyLogin.filter.date=='today'}" translate>filters.button.today
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="loadLoginHistory('-1h')"
+                    [ngClass]="{'btn-primary': historyLogin.filter.date=='-1h'}" translate>filters.button.last1
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="loadLoginHistory('-12h')"
+                    [ngClass]="{'btn-primary': historyLogin.filter.date=='-12h'}" translate>filters.button.last12
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="loadLoginHistory('-24h')"
+                    [ngClass]="{'btn-primary': historyLogin.filter.date=='-24h'}" translate>filters.button.last24
+            </button>
+            <button class="btn btn-grey btn-sm" (click)="loadLoginHistory('-7d')"
+                    [ngClass]="{'btn-primary': historyLogin.filter.date=='-7d'}" translate>filters.button.lastWeak
+            </button>
+          </div>
           <div class="btn-group m-l-12 hidden-btn-group" *ngIf="auditLog.type === 'AUDITLOG'">
             <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm" (click)="load('all')"
                     [ngClass]="{'btn-primary': adtLog.filter.date=='all'}" translate>filters.button.all
@@ -134,12 +154,18 @@
           <i class="fa fa-caret-down p-l-xs"></i>
         </button>
         <div class="search-box-field pull-right">
-          <label>
+          <label *ngIf="auditLog.type === 'AUDITLOG'">
             <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
                    [(ngModel)]="adtLog.searchText">
           </label>
-          <i [hidden]="!adtLog.searchText" class="fa fa-times search-close"
+          <label *ngIf="auditLog.type !== 'AUDITLOG'">
+            <input type="search" placeholder="{{'common.placeholder.search' | translate}}" (keyup)="searchInResult()"
+                   [(ngModel)]="historyLogin.searchText">
+          </label>
+          <i *ngIf="auditLog.type === 'AUDITLOG'" [hidden]="!adtLog.searchText" class="fa fa-times search-close"
              (click)="adtLog.searchText = '';searchInResult()"></i>
+          <i *ngIf="auditLog.type !== 'AUDITLOG'" [hidden]="!historyLogin.searchText" class="fa fa-times search-close"
+             (click)="historyLogin.searchText = '';searchInResult()"></i>
         </div>
       </div>
     </div>
@@ -294,8 +320,8 @@
           <nz-table
             #ajaxTable
             [nzSize]="'small'"
-            [nzPageSize]="adtLog.entryPerPage || preferences.entryPerPage || 25"
-            [nzPageIndex]="adtLog.currentPage"
+            [nzPageSize]="historyLogin.entryPerPage || preferences.entryPerPage || 25"
+            [nzPageIndex]="historyLogin.currentPage"
             [nzBordered]="true"
             [nzShowPagination]="data.length > 0"
             [nzData]="data"
@@ -307,32 +333,45 @@
           >
             <thead>
             <tr>
+              <th class="menu"><span translate>common.label.action</span></th>
               <th (click)="sort('accountName')"><a>
                 <span class="p-r-xs" translate>auditLog.label.account</span>
-                <i *ngIf="adtLog.filter.sortBy == 'accountName' && !adtLog.reverse"
+                <i *ngIf="historyLogin.filter.sortBy == 'accountName' && !historyLogin.reverse"
                    class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'accountName' && adtLog.reverse"
+                <i *ngIf="historyLogin.filter.sortBy == 'accountName' && historyLogin.reverse"
                    class="fa fa-caret-down "></i>
               </a>
               </th>
               <th (click)="sort('loginDate')"><a>
                 <span class="p-r-xs" translate>auditLog.label.loginDate</span>
-                <i *ngIf="adtLog.filter.sortBy == 'loginDate' && !adtLog.reverse"
+                <i *ngIf="historyLogin.filter.sortBy == 'loginDate' && !historyLogin.reverse"
                    class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'loginDate' && adtLog.reverse"
+                <i *ngIf="historyLogin.filter.sortBy == 'loginDate' && historyLogin.reverse"
                    class="fa fa-caret-down "></i>
               </a>
               </th>
             </tr>
             </thead>
             <tbody>
-            <ng-template ngFor let-loginsData [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn">
+            <ng-template ngFor let-account [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn">
               <tr>
                 <td>
-                  <span [innerHtml]="loginsData.accountName | highlight : adtLog.searchText"></span>
+                  <div class="btn-group dropdown pull-left m-r-sm">
+                    <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                      <ul nz-menu >
+                        <li nz-menu-item (click)="addToBlocklist(account)">
+                          <a translate>user.button.addToBlocklist</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
                 </td>
                 <td>
-                  <span [innerHtml]="loginsData.loginDate | stringToDate | highlight : adtLog.searchText"></span>
+                  <span [innerHtml]="account.accountName | highlight : historyLogin.searchText"></span>
+                </td>
+                <td>
+                  <span [innerHtml]="account.loginDate | stringToDate | highlight : historyLogin.searchText"></span>
                 </td>
               </tr>
             </ng-template>

@@ -221,19 +221,23 @@
     "tooltip.agentNameAliases": "Des Noms d'Alias peuvent être attribués à un Agent. L'Agent peut être affecté à une tâche ou à une Source d'Ordre de Fichier en utilisant le Nom d'Alias. Pour le Nom d'Alias, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
     "tooltip.url": "L'URL d'un Agent spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de l'Agent, par exemple http://localhost:4445.",
     "tooltip.hidden": "Les Agents peuvent être masqués pour éviter qu'ils ne soient visibles dans l'interface utilisateur du JOC Cockpit. Ceci s'applique à la vue TABLEAU DE BORD ainsi qu'à toutes les occurrences où des Agents sont associés.",
-    "cluster":{
-     "tooltip.agentClusterName": "Le nom du Cluster d'Agents est un identifiant unique du Cluster d'Agents qui ne peut pas être modifié pendant la durée de vie du Cluster d'Agents. Pour le Nom du Cluster d'Agents, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
-     "tooltip.subagentId": "L'ID Sous-agent est un identifiant unique d'un Agent Directeur qui ne peut être modifié pendant la durée de vie de l'Agent Directeur. Pour l'ID Sous-agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
-     "tooltip.title": "Le Titre d'un Agent Directeur peut être spécifié à volonté.",
-     "tooltip.url": "L'URL d'un Agent Directeur spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de l'Agent Directeur, par exemple http://localhost:4445.",
-     "tooltip.withGenerateSubagentCluster": "Un Agent Directeur peut être configuré comme un cluster de Sous-agents distinct qui inclut ce seul Agent Directeur. Cela permet d'exécuter des tâches spécifiquement sur l'Agent Directeur.",
-     "tooltip.agentNameAliases": "Des Noms d'Alias peuvent être attribués à un Cluster d'Agents. Le Cluster d'Agents peut être affecté à une tâche ou à une Source d'Ordre de Fichier en utilisant le Nom d'Alias. Pour le Nom d'Alias, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé."
+    "cluster": {
+      "tooltip.agentClusterName": "Le nom du Cluster d'Agents est un identifiant unique du Cluster d'Agents qui ne peut pas être modifié pendant la durée de vie du Cluster d'Agents. Pour le Nom du Cluster d'Agents, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
+      "tooltip.subagentId": "L'ID Sous-agent est un identifiant unique d'un Agent Directeur qui ne peut être modifié pendant la durée de vie de l'Agent Directeur. Pour l'ID Sous-agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
+      "tooltip.title": "Le Titre d'un Agent Directeur peut être spécifié à volonté.",
+      "tooltip.url": "L'URL d'un Agent Directeur spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de l'Agent Directeur, par exemple http://localhost:4445.",
+      "tooltip.withGenerateSubagentCluster": "Un Agent Directeur peut être configuré comme un cluster de Sous-agents distinct qui inclut ce seul Agent Directeur. Cela permet d'exécuter des tâches spécifiquement sur l'Agent Directeur.",
+      "tooltip.agentNameAliases": "Des Noms d'Alias peuvent être attribués à un Cluster d'Agents. Le Cluster d'Agents peut être affecté à une tâche ou à une Source d'Ordre de Fichier en utilisant le Nom d'Alias. Pour le Nom d'Alias, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
+      "subagent": {
+        "tooltip.clusterName": "Subagent Cluster Name",
+        "tooltip.title": "Title"
+      }
     },
     "subagent": {
-     "tooltip.subagentId": "L'ID Sous-agent est un identifiant unique d'un Sous-agent qui ne peut être modifié pendant la durée de vie du Sous-agent. Pour l'ID Sous-agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
-     "tooltip.title": "Le Titre d'un Sous-agent peut être spécifié à volonté.",
-     "tooltip.url": "L'URL d'un Sous-agent spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de du Sous-agent, par exemple http://localhost:4445.",
-     "tooltip.withGenerateSubagentCluster": "Un Sous-agent peut être configuré comme un cluster de Sous-agents distinct qui inclut ce seul Sous-agent. Cela permet d'exécuter des tâches spécifiquement sur un Sous-agent."
+      "tooltip.subagentId": "L'ID Sous-agent est un identifiant unique d'un Sous-agent qui ne peut être modifié pendant la durée de vie du Sous-agent. Pour l'ID Sous-agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
+      "tooltip.title": "Le Titre d'un Sous-agent peut être spécifié à volonté.",
+      "tooltip.url": "L'URL d'un Sous-agent spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de du Sous-agent, par exemple http://localhost:4445.",
+      "tooltip.withGenerateSubagentCluster": "Un Sous-agent peut être configuré comme un cluster de Sous-agents distinct qui inclut ce seul Sous-agent. Cela permet d'exécuter des tâches spécifiquement sur un Sous-agent."
     }
   },
   "auditLog": {
@@ -866,8 +870,7 @@
     "button.synchronized": "Synchronisé",
     "button.notSynchronized": "Non Synchronisé",
     "button.suspended": "Suspendu",
-    "button.suspending": "En Suspension",
-    "button.resuming": "En Reprise"
+    "button.outstanding": "Outstanding"
   },
   "header": {
     "label.dashboard": "TABLEAU DE BORD",
@@ -1596,6 +1599,7 @@
     "label.variableList": "Liste des variables",
     "label.startNode": "Position de Départ avant Instruction",
     "label.endNode": "Positions de Fin avant Instructions",
+    "label.expectedNotices": "Expected Notices",
     "button.allOrders": "Tous les Ordres",
     "button.cancel": "Annuler",
     "button.startNow": "Démarrer Maintenant",
@@ -1608,6 +1612,7 @@
     "button.leaveWorkflow": "Quitter le Workflow",
     "button.addVariable": "Ajouter une Variable",
     "button.modifyVariable": "Modifier une Variable",
+    "button.modifyVariables": "Modify Variables",
     "button.showLog": "Afficher le Journal",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
@@ -2210,6 +2215,7 @@
     "button.resetPassword": "Réinitialiser le mot de passe",
     "button.forcePasswordChange": "Forcer le changement de mot de passe",
     "button.showPermission": "Visualiser les Permissions",
+    "button.addToBlocklist": "Add to blocklist",
     "placeholder.role": "Entrer le nom du Rôle",
     "placeholder.selectRoles": "Sélectionner les Rôles",
     "placeholder.user": "Entrer l'utilisateur",

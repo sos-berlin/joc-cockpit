@@ -639,8 +639,17 @@ export class WorkflowService {
           }
           if (mainJson.compressData && (json.instructions[x].TYPE === 'PostNotices' || json.instructions[x].TYPE === 'ExpectNotices')) {
             let isChecked = false;
+            
+            let noticeBoardName = isArray(json.instructions[x].noticeBoardNames) ? json.instructions[x].noticeBoardNames.join(',') : json.instructions[x].noticeBoardNames;
+            if (json.instructions[x].TYPE === 'ExpectNotices') {
+              let arr = noticeBoardName.split(' ');
+              if (arr.length === 1 && (noticeBoardName.substring(0, 1) == "'" || noticeBoardName.substring(0, 1) == "'")) {
+                noticeBoardName = noticeBoardName.substring(1, noticeBoardName.length - 1);
+              }
+            }
             for (const key in mainJson.compressData) {
-              if (isEqual(mainJson.compressData[key].name, json.instructions[x].noticeBoardNames)) {
+             
+              if ((mainJson.compressData[key].name == noticeBoardName)) {
                 isChecked = true;
                 mainJson.compressData[key].instructions.push(json.instructions[x]);
                 break;
@@ -648,7 +657,7 @@ export class WorkflowService {
             }
             if (!isChecked) {
               mainJson.compressData.push({
-                name: json.instructions[x].noticeBoardNames,
+                name: noticeBoardName,
                 instructions: [json.instructions[x]]
               });
             }
@@ -699,11 +708,20 @@ export class WorkflowService {
     const colorCode = mapObj.colorCode;
     const useString = mapObj.useString;
     let boardType;
-    let boardName;
+    let boardNames;
+    let objectName;
     if (mapObj.cell) {
       boardType = mapObj.cell.value.tagName;
-      boardName = mapObj.cell.getAttribute('noticeBoardNames') || mapObj.workflowName;
+      objectName = mapObj.cell.getAttribute('noticeBoardNames') || mapObj.workflowName;
+      if (objectName) {
+        if (mapObj.cell.value.tagName === 'PostNotices') {
+          boardNames = objectName.split(',');
+        } else if (mapObj.cell.value.tagName === 'ExpectNotices') {
+          boardNames = this.convertExpToArray(objectName);
+        }
+      }
     }
+
     const graph = editor.graph;
     const self = this;
     const doc = mxUtils.createXmlDocument();
@@ -852,10 +870,10 @@ export class WorkflowService {
               }
               mapObj.addOrderdMap.set(json.instructions[x].workflowName, JSON.stringify(arr));
             }
-            if (json.instructions[x].workflowName && boardName === json.instructions[x].workflowName) {
+            if (json.instructions[x].workflowName && objectName === json.instructions[x].workflowName) {
               isFound = true;
               if (mapObj.cell) {
-                connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
+                connectInstruction(v1, mapObj.cell, objectName, '', mapObj.cell.parent);
               }
             }
           } else if (json.instructions[x].TYPE === 'PostNotices') {
@@ -868,8 +886,9 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-            if (boardType === 'ExpectNotices' && boardName === json.instructions[x].noticeBoardNames) {
-              connectInstruction(v1, mapObj.cell, boardName, '', mapObj.cell.parent);
+            if (boardType === 'ExpectNotices' && (json.instructions[x].noticeBoardNames && objectName === json.instructions[x].noticeBoardNames.join(',') ||
+              (json.instructions[x].noticeBoardNames.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
+              connectInstruction(v1, mapObj.cell, objectName, '', mapObj.cell.parent);
             }
           } else if (json.instructions[x].TYPE === 'Prompt') {
             _node.setAttribute('label', 'prompt');
@@ -884,7 +903,7 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'ImplicitEnd' || json.instructions[x].TYPE === 'ForkListEnd' || json.instructions[x].TYPE === 'Join') {
             _node.setAttribute('label', 'end');
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            if((type || json.instructions[x].TYPE === 'ForkListEnd') && useString){
+            if ((type || json.instructions[x].TYPE === 'ForkListEnd') && useString) {
               v1 = null;
             } else {
               v1 = graph.insertVertex(parent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
@@ -902,9 +921,11 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-
-            if (boardType === 'PostNotices' && boardName === JSON.stringify(json.instructions[x].noticeBoardNames)) {
-              connectInstruction(mapObj.cell, v1, boardName, '', mapObj.cell.parent);
+            if(json.instructions[x].noticeBoardNames) {
+              let arr = self.convertExpToArray(json.instructions[x].noticeBoardNames);
+              if (boardType === 'PostNotices' && (objectName === json.instructions[x].noticeBoardNames || (arr.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
+                connectInstruction(mapObj.cell, v1, objectName, '', mapObj.cell.parent);
+              }
             }
           } else if (json.instructions[x].TYPE === 'Fork') {
             _node.setAttribute('label', 'fork');
@@ -1133,8 +1154,10 @@ export class WorkflowService {
               if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                 mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
               }
-              if (boardType === 'ExpectNotices' && boardName === json.compressData[i].instructions[x].noticeBoardNames) {
-                connectInstruction(v1, mapObj.cell, boardName, '', parent);
+
+              if (boardType === 'ExpectNotices' && json.compressData[i].instructions[x].noticeBoardNames && (objectName === json.compressData[i].instructions[x].noticeBoardNames.join(',') ||
+                (json.compressData[i].instructions[x].noticeBoardNames.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
+                connectInstruction(v1, mapObj.cell, objectName, '', parent);
               }
             } else if (json.compressData[i].instructions[x].TYPE === 'ExpectNotices') {
               _node.setAttribute('label', 'expectNotices');
@@ -1146,9 +1169,9 @@ export class WorkflowService {
               if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                 mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
               }
-
-              if (boardType === 'PostNotices' && boardName === json.compressData[i].instructions[x].noticeBoardNames) {
-                connectInstruction(mapObj.cell, v1, boardName, '', parent);
+              let arr = self.convertExpToArray(json.compressData[i].instructions[x].noticeBoardNames);
+              if (boardType === 'PostNotices' && (objectName === json.compressData[i].instructions[x].noticeBoardNames || arr.filter(o1 => boardNames.some(o2 => o1 === o2)))) {
+                connectInstruction(mapObj.cell, v1, objectName, '', parent);
               }
             }
 
@@ -1686,6 +1709,16 @@ export class WorkflowService {
           div = div + '<b class="p-l-sm">' + end + '</b> : ' + this.stringDatePipe.transform(data.cyclicOrder.lastStart) + '</br>';
           div = div + '<b class="p-l-sm">' + orders + '</b> : ' + data.cyclicOrder.count;
         }
+        if (data.expectedNotices) {
+          let noticeLabel = '';
+          this.translate.get('order.label.expectedNotices').subscribe(translatedValue => {
+            noticeLabel = translatedValue;
+          });
+          div = div + ' <b class="m-b-xs" >' + noticeLabel + ' :</b></br>';
+          for (let x in data.expectedNotices) {
+            div = div + ' <span class="p-l-sm" >' + data.expectedNotices[x].boardName + '</span></br>';
+          }
+        }
         if (data.cycleState) {
           div = div + '<b class="m-b-xs">' + cycleState + '</b></br>';
           if (data.cycleState.since) {
@@ -2015,5 +2048,22 @@ export class WorkflowService {
 
   getJobValue(): string {
     return this.jobPath;
+  }
+
+  convertExpToArray(exp): Array<string> {
+    let arr = [];
+    exp.split(' ').forEach((item) => {
+      let x = item.trim();
+      if (x !== '&&' && x !== '||') {
+        if (x.substring(0, 1) == '(') {
+          x = x.substring(1, x.length - 1);
+        }
+        if (x.substring(0, 1) == '"' || x.substring(0, 1) == "'") {
+          x = x.substring(1, x.length - 1);
+        }
+        arr.push(x);
+      }
+    });
+    return arr;
   }
 }

@@ -325,10 +325,9 @@
           <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
             <div class="col-sm-12" *ngIf="variableList.length > variableSet.variables.length">
               <a class="text-u-l" (click)="addVariable(false, variableSet)" translate>order.button.modifyVariable</a>
+              <a class="text-u-l m-l-12" (click)="addVariables(false, variableSet)" translate>order.button.modifyVariables</a>
             </div>
-            <div class="col-sm-12" *ngIf="variableList.length <= variableSet.variables.length && (workflow.orderPreparation && workflow.orderPreparation.allowUndeclared)">
-              <a class="text-u-l" (click)="addVariable(true, variableSet)" translate>order.button.addVariable</a>
-            </div>
+
           </div>
         </div>
         <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">

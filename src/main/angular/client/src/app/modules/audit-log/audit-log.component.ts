@@ -200,6 +200,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   adtLog: any = {};
+  historyLogin: any = {};
   auditLogs: any = [];
   isLoaded = false;
   reloadState = 'no';
@@ -318,7 +319,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   trackByFn(index: number, el: any): number {
-    return el.id;
+    return el.id || el.loginDate;
   }
 
   checkSharedFilters(): void {
@@ -468,22 +469,41 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         }
         this.isLoaded = true;
         this.searchInResult();
-      }, error: () => this.isLoaded = true
+      }, error: () => {
+        this.data = [];
+        this.isLoaded = true
+      }
     });
   }
 
-  loadLoginHistory(): void {
-    this.coreService.post('audit_log/login_history', {}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
-      next: (res: any) => {
+  loadLoginHistory(date?): void {
+    if (date) {
+      this.historyLogin.filter.date = date;
+      this.isLoaded = false;
+    }
+    let obj: any = {};
+    if (this.historyLogin.filter.date == 'all') {
 
-        res.loginHistoryItems = this.orderPipe.transform(res.loginHistoryItems, this.adtLog.filter.sortBy, this.adtLog.reverse);
+    } else if (this.historyLogin.filter.date == 'today') {
+      obj.dateFrom = '0d';
+      obj.dateTo = '0d';
+    } else {
+      obj.dateFrom = this.historyLogin.filter.date;
+    }
+    this.coreService.post('audit_log/login_history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        res.loginHistoryItems = this.orderPipe.transform(res.loginHistoryItems, this.historyLogin.filter.sortBy, this.historyLogin.reverse);
         if (res.loginHistoryItems && res.loginHistoryItems.length === 0) {
-          this.adtLog.currentPage = 1;
+          this.historyLogin.currentPage = 1;
         }
+
         this.loginHistory = res.loginHistoryItems
         this.isLoaded = true;
         this.searchInResult();
-      }, error: () => this.isLoaded = true
+      }, error: () => {
+        this.data = [];
+        this.isLoaded = true
+      }
     });
   }
 
@@ -493,6 +513,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
 
     this.adtLog = this.coreService.getAuditLogTab();
+    this.historyLogin = this.coreService.getHistoryLoginTab();
     if (!(this.adtLog.current || this.adtLog.current === false)) {
       this.adtLog.current = this.preferences.currentController;
     }
@@ -586,6 +607,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   /* ----------------------Action --------------------- */
+
+  addToBlocklist(account): void {
+    console.log(account)
+  }
+
   action(type, obj, self): void {
     if (type === 'DELETE') {
       if (self.savedFilter.selected == obj.id) {
@@ -655,17 +681,31 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   sort(propertyName): void {
-    this.adtLog.reverse = !this.adtLog.reverse;
-    this.adtLog.filter.sortBy = propertyName;
-    this.data = this.orderPipe.transform(this.data, this.adtLog.filter.sortBy, this.adtLog.reverse);
+    if (this.auditLog.type === 'AUDITLOG') {
+      this.adtLog.reverse = !this.adtLog.reverse;
+      this.adtLog.filter.sortBy = propertyName;
+      this.data = this.orderPipe.transform(this.data, this.adtLog.filter.sortBy, this.adtLog.reverse);
+    } else {
+      this.historyLogin.reverse = !this.historyLogin.reverse;
+      this.historyLogin.filter.sortBy = propertyName;
+      this.data = this.orderPipe.transform(this.data, this.historyLogin.filter.sortBy, this.historyLogin.reverse);
+    }
   }
 
   pageIndexChange($event): void {
-    this.adtLog.currentPage = $event;
+    if (this.auditLog.type === 'AUDITLOG') {
+      this.adtLog.currentPage = $event;
+    } else {
+      this.historyLogin.currentPage = $event;
+    }
   }
 
   pageSizeChange($event): void {
-    this.adtLog.entryPerPage = $event;
+    if (this.auditLog.type === 'AUDITLOG') {
+      this.adtLog.entryPerPage = $event;
+    } else {
+      this.historyLogin.entryPerPage = $event;
+    }
   }
 
   getCurrentData(list, filter): Array<any> {
@@ -678,7 +718,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       this.data = this.adtLog.searchText ? this.searchPipe.transform(this.auditLogs, this.adtLog.searchText, this.searchableProperties) : this.auditLogs;
       this.data = [...this.data];
     } else {
-      this.data = this.adtLog.searchText ? this.searchPipe.transform(this.loginHistory, this.adtLog.searchText, this.searchableProperties2) : this.loginHistory;
+      this.data = this.historyLogin.searchText ? this.searchPipe.transform(this.loginHistory, this.historyLogin.searchText, this.searchableProperties2) : this.loginHistory;
       this.data = [...this.data];
     }
   }

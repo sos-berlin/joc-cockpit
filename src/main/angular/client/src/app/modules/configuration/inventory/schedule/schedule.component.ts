@@ -170,6 +170,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                     list.push(obj);
                   });
                 }
+                obj.variableList[i].isSelected = true;
                 obj.variables.push({
                   name: obj.variableList[i].name,
                   type: val.type,
@@ -198,6 +199,25 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
         variableSet.variables.push(param);
       }
+    }
+  }
+
+  addVariables(isNew = false, variableSet): void {
+    if (!this.coreService.isLastEntryEmpty(variableSet.variables, 'name', '')) {
+      variableSet.variableList.forEach(variable => {
+        if (!variable.isSelected) {
+          variable.isSelected = true;
+          const param: any = {
+            name: variable.name,
+            value: ''
+          };
+          if (isNew) {
+            param.isTextField = true;
+          }
+          variableSet.variables.push(param);
+          this.checkVariableType(param)
+        }
+      });
     }
   }
 

@@ -81,6 +81,10 @@ export class OrderListSidebarComponent implements OnChanges {
     }
   }
 
+  trackByFn(index: number, el: any): number {
+    return el.orderId;
+  }
+
   changedHandler(flag: boolean): void {
     this.isProcessing = flag;
   }

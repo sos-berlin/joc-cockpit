@@ -100,7 +100,7 @@
       </thead>
       <tbody (click)="$event.preventDefault()">
       <ng-template ngFor let-order
-                   [ngForOf]="ajaxTable.data">
+                   [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn">
         <tr>
           <td [nzShowCheckbox]="true" [nzDisabled]="order.positionIsImplicitEnd" [nzChecked]="setOfCheckedId.has(order.orderId)" (nzCheckedChange)="onItemChecked(order.orderId, $event)"></td>
           <td>

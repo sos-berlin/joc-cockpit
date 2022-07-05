@@ -891,6 +891,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   beforeDrop;
   jobResources = [];
   jobResourcesTree = [];
+  zones = [];
+
   subscription1: Subscription;
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl: any;
@@ -914,6 +916,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.zones = this.coreService.getTimeZoneList();
     this.init();
     this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
       this.requiredField = translatedValue;

@@ -253,6 +253,13 @@ export class CoreService {
     this.tabs._auditLog.reverse = true;
     this.tabs._auditLog.currentPage = '1';
 
+    this.tabs._historyLogin = {};
+    this.tabs._historyLogin.filter = {};
+    this.tabs._historyLogin.filter.date = 'today';
+    this.tabs._historyLogin.filter.sortBy = 'loginDate';
+    this.tabs._historyLogin.reverse = true;
+    this.tabs._historyLogin.currentPage = '1';
+
     this.tabs._resource = {};
     this.tabs._resource.agents = {};
     this.tabs._resource.agents.filter = {};
@@ -372,6 +379,10 @@ export class CoreService {
 
   getAuditLogTab(): any {
     return this.tabs._auditLog;
+  }
+
+  getHistoryLoginTab(): any {
+    return this.tabs._historyLogin;
   }
 
   getAgentClusterTab(): any {

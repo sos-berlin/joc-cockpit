@@ -221,19 +221,23 @@
     "tooltip.agentNameAliases": "Einem Agenten können Alias Namen zugeordnet werden. Der Agent kann unter Verwendung des Alias Namens einem Job oder einer Dateiauftragsquelle zugeordnet werden. Für Alias Namen des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
     "tooltip.url": "Die URL eines Agenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
     "tooltip.hidden": "Agenten können verborgen werden, um sie in der JOC Cockpit Oberfläche nicht anzuzeigen. Dies gilt für die ÜBERSICHT sowie für alle Stellen, an denen Agenten zugeordnet werden.",
-    "cluster":{
-     "tooltip.agentClusterName": "Der Name des Agenten Cluster ist eindeutig und kann während der Lebenszeit des Agenten Cluster nicht geändert werden. Für den Namen des Agenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-     "tooltip.subagentId": "Die Subagenten-Kennung eines Director Agenten ist eindeutig und kann während der Lebenszeit eines Director Agenten nicht geändert werden. Für die Subagenten-Kennung des Director Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-     "tooltip.title": "Der Titel eines Agenten Cluster kann nach Belieben angegeben werden.",
-     "tooltip.url": "Die URL eines Director Agenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
-     "tooltip.withGenerateSubagentCluster": "Ein Director Agent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Director Agent aufführt. Dadurch lassen sich Jobs gezielt auf einem Director Agent ausführen.",
-     "tooltip.agentNameAliases": "Einem Agenten Cluster können Alias Namen zugeordnet werden. Der Agenten Cluster kann unter Verwendung des Alias Namens einem Job oder einer Dateiauftragsquelle zugeordnet werden. Für Alias Namen des Agenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen."
+    "cluster": {
+      "tooltip.agentClusterName": "Der Name des Agenten Cluster ist eindeutig und kann während der Lebenszeit des Agenten Cluster nicht geändert werden. Für den Namen des Agenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+      "tooltip.subagentId": "Die Subagenten-Kennung eines Director Agenten ist eindeutig und kann während der Lebenszeit eines Director Agenten nicht geändert werden. Für die Subagenten-Kennung des Director Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+      "tooltip.title": "Der Titel eines Agenten Cluster kann nach Belieben angegeben werden.",
+      "tooltip.url": "Die URL eines Director Agenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
+      "tooltip.withGenerateSubagentCluster": "Ein Director Agent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Director Agent aufführt. Dadurch lassen sich Jobs gezielt auf einem Director Agent ausführen.",
+      "tooltip.agentNameAliases": "Einem Agenten Cluster können Alias Namen zugeordnet werden. Der Agenten Cluster kann unter Verwendung des Alias Namens einem Job oder einer Dateiauftragsquelle zugeordnet werden. Für Alias Namen des Agenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+      "subagent": {
+        "tooltip.clusterName": "Subagent Cluster Name",
+        "tooltip.title": "Title"
+      }
     },
     "subagent": {
-     "tooltip.subagentId": "Die Kennung des Subagenten ist eindeutig und kann während der Lebenszeit eines Subagenten nicht geändert werden. Für die Kennung des Subagenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-     "tooltip.title": "Der Titel eines Subagenten kann nach Belieben angegeben werden.",
-     "tooltip.url": "Die URL eines Subagenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
-     "tooltip.withGenerateSubagentCluster": "Ein Subagent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Subagenten aufführt. Dadurch lassen sich Jobs gezielt auf einem Subagenten ausführen."
+      "tooltip.subagentId": "Die Kennung des Subagenten ist eindeutig und kann während der Lebenszeit eines Subagenten nicht geändert werden. Für die Kennung des Subagenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+      "tooltip.title": "Der Titel eines Subagenten kann nach Belieben angegeben werden.",
+      "tooltip.url": "Die URL eines Subagenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
+      "tooltip.withGenerateSubagentCluster": "Ein Subagent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Subagenten aufführt. Dadurch lassen sich Jobs gezielt auf einem Subagenten ausführen."
     }
   },
   "auditLog": {
@@ -866,8 +870,7 @@
     "button.synchronized": "Synchron",
     "button.notSynchronized": "Nicht Synchron",
     "button.suspended": "Ausgesetzt",
-    "button.suspending": "In Aussetzung",
-    "button.resuming": "In Wiederaufnahme"
+    "button.outstanding": "Outstanding"
   },
   "header": {
     "label.dashboard": "ÜBERSICHT",
@@ -1596,6 +1599,7 @@
     "label.variableList": "Listenvariable",
     "label.startNode": "Start-Position vor Instruktion",
     "label.endNode": "End-Positionen vor Instruktionen",
+    "label.expectedNotices": "Expected Notices",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
     "button.startNow": "Jetzt starten",
@@ -1608,6 +1612,7 @@
     "button.leaveWorkflow": "Arbeitsablauf verlassen",
     "button.addVariable": "Variable hinzufügen",
     "button.modifyVariable": "Variable ändern",
+    "button.modifyVariables": "Modify Variables",
     "button.showLog": "Protokoll anzeigen",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
@@ -2210,6 +2215,7 @@
     "button.resetPassword": "Kennwort zurücksetzen",
     "button.forcePasswordChange": "Kennwortänderung erzwingen",
     "button.showPermission": "Berechtigungen anzeigen",
+    "button.addToBlocklist": "Add to blocklist",
     "placeholder.role": "Name der Rolle angeben",
     "placeholder.selectRoles": "Rollen auswählen",
     "placeholder.user": "Konto angeben",

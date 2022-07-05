@@ -901,19 +901,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
               if (mainJson.expectedNoticeBoards) {
-                let arr = [];
-                json.instructions[x].noticeBoardNames.split(' ').forEach((item) => {
-                  let x = item.trim();
-                  if(x !== '&&' && x !== '||') {
-                    if (x.substring(0, 1) == '(') {
-                      x = x.substring(1, x.length - 1);
-                    }
-                    if (x.substring(0, 1) == '"' || x.substring(0, 1) == "'") {
-                      x = x.substring(1, x.length - 1);
-                    }
-                    arr.push(x);
-                  }
-                });
+                let arr = self.workflowService.convertExpToArray(json.instructions[x].noticeBoardNames);
                 for (const prop in mainJson.expectedNoticeBoards) {
                   if (arr.length > 0 && arr.indexOf(mainJson.expectedNoticeBoards[prop].name) > -1) {
                     const incomingEdges = graph.getIncomingEdges(cell);
@@ -934,6 +922,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               }
             }
           }
+
 
           if (json.instructions[x].TYPE === 'PostNotices') {
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
