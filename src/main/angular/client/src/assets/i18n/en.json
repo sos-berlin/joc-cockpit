@@ -216,9 +216,9 @@
     "placeholder.enterAgentNameAlias": "Enter Alias Name",
     "placeholder.enterClusterName": "Enter Cluster Name",
     "tooltip.agentId": "The Agent ID is a unique identifier of an Agent that cannot be changed during the Agent's lifetime. For Agent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-    "tooltip.agentName": "The Agent Name is a unique desigantion of an Agent that can be changed. Agents are assigned to jobs by their Agent Name. For Agent Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+    "tooltip.agentName": "The Agent Name is a unique designation of an Agent that can be changed. Agents are assigned to jobs by their Agent Name. For Agent Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.title": "The Title of an Agent can be specified as desired.",
-    "tooltip.agentNameAliases": "Alias Names can be assigned to an Agent. The Agent can be assigned to a job or File Order Source using the Alias Name. For Alias Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+    "tooltip.agentNameAliases": "An Agent can be assigned a number of Alias Names. The Agent can be assigned to a job or File Order Source using its Alias Name. For Alias Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.url": "The URL of an Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Agent, e.g. http://localhost:4445",
     "tooltip.hidden": "Agents can be hidden to prevent them from being displayed in the JOC Cockpit user interface. This applies to the DASHBOARD view as well as to all occurrences where Agents are assigned.",
     "cluster": {
@@ -227,7 +227,7 @@
       "tooltip.title": "The Title of an Agent Cluster can be specified as desired.",
       "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, e.g. http://localhost:4445",
       "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent.",
-      "tooltip.agentNameAliases": "Alias Names can be assigned to an Agent Cluster. The Agent Cluster can be assigned to a job or File Order Source using the Alias Name. For Alias Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+      "tooltip.agentNameAliases": "An Agent Cluster can be assigned a number of Alias Names. The Agent Cluster can be assigned to a job or File Order Source using its Alias Name. For Alias Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "subagent": {
         "tooltip.clusterName": "The Subagent Cluster Name is a unique identifier of the Subagent Cluster that cannot be changed during the Subagent Cluster's lifetime. For Subagent Cluster Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "tooltip.title": "The Title of a Subagent Cluster can be specified as desired."
