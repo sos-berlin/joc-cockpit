@@ -296,6 +296,7 @@ export class DeployComponent implements OnInit {
   @Input() releasable: boolean;
   @Input() display: any;
   @Input() data: any;
+  @Input() operation: string;
   @Input() isRemove: any;
   @Input() isRevoke: boolean;
   @Input() isChecked: boolean;
@@ -306,6 +307,7 @@ export class DeployComponent implements OnInit {
     isRecursive: false,
     delete: [],
     update: [],
+    releasables: [],
     store: {draftConfigurations: [], deployConfigurations: []},
     deleteObj: {deployConfigurations: []}
   };
@@ -341,7 +343,6 @@ export class DeployComponent implements OnInit {
   expandAll(): void {
     this.buildTree(this.path, null, () => {
       const self = this;
-
       function recursive(node): void {
         for (const i in node) {
           if (!node[i].isLeaf) {
@@ -432,12 +433,13 @@ export class DeployComponent implements OnInit {
     } else {
       if (!this.isRemove) {
         if (this.releasable) {
-          obj.withoutReleased = true;
+          obj.withoutReleased = this.operation !== 'recall';
+          obj.withRemovedObjects = this.operation !== 'recall';
+          obj.recursive = !(this.data.dailyPlan || this.data.object);
         } else {
           obj.withVersions = true;
         }
-      }
-      if (this.isRemove) {
+      } else if (this.isRemove) {
         obj.withRemovedObjects = false;
         obj.withoutDrafts = true;
         obj.latest = true;
@@ -460,14 +462,19 @@ export class DeployComponent implements OnInit {
             folders: [{
               name: res.name,
               path: res.path,
-              folders: res.folders,
+              folders: (this.data.dailyPlan || this.data.object || this.data.controller) ? [] : res.folders,
               deployables: res.deployables,
               releasables: res.releasables
             }]
           }, false);
           this.inventoryService.updateTree(tree[0]);
         }
-
+        if (tree.length > 0) {
+          console.log(tree[0], 'tree')
+          if(tree[0].children.length === 0 && !tree[0].deployables && !tree[0].releasables){
+            tree = [];
+          }
+        }
         if (merge) {
           if (tree.length > 0) {
             merge.children = tree[0].children;
@@ -516,7 +523,7 @@ export class DeployComponent implements OnInit {
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     const node = e.node;
     if (node && node.origin && node.origin.expanded && !node.origin.isCall) {
-      if (!node.origin.type && !node.origin.object) {
+      if (!node.origin.type && !node.origin.object && !this.releasable) {
         node.origin.loading = true;
         this.buildTree(node.origin.path, node.origin);
       }
@@ -635,16 +642,12 @@ export class DeployComponent implements OnInit {
   getReleaseObject(): void {
     this.object.update = [];
     this.object.delete = [];
+    this.object.releasables = [];
     const self = this;
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((!nodes[i].object) && nodes[i].checked) {
-          if ((!nodes[i].type) && nodes[i].deleted) {
-            self.object.delete.push({
-              path: nodes[i].path,
-              objectType: 'FOLDER'
-            });
-          } else if (nodes[i].type) {
+          if (nodes[i].type) {
             const obj: any = {
               path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
               objectType: nodes[i].type
@@ -654,6 +657,10 @@ export class DeployComponent implements OnInit {
             } else {
               self.object.update.push(obj);
             }
+            self.object.releasables.push({
+              name: nodes[i].name,
+              objectType: nodes[i].type
+            });
           }
         }
         if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
@@ -661,7 +668,6 @@ export class DeployComponent implements OnInit {
         }
       }
     }
-
     recursive(this.nodes);
   }
 
@@ -693,11 +699,20 @@ export class DeployComponent implements OnInit {
         obj.deployConfigurations = this.object.deleteObj.deployConfigurations;
       }
     } else if (this.releasable) {
-      if (this.object.delete.length > 0) {
-        obj.delete = this.object.delete;
-      }
-      if (this.object.update.length > 0) {
-        obj.update = this.object.update;
+      if (this.operation !== 'recall') {
+        if (this.object.delete.length > 0) {
+          obj.delete = this.object.delete;
+        }
+        if (this.object.update.length > 0) {
+          obj.update = this.object.update;
+        }
+      } else {
+        if (this.object.releasables.length > 0) {
+          obj.releasables = this.object.releasables;
+        } else{
+          this.ref.detectChanges();
+          return;
+        }
       }
     }
 
@@ -708,7 +723,7 @@ export class DeployComponent implements OnInit {
       this.ref.detectChanges();
       return;
     } else {
-      if (this.releasable) {
+      if (this.releasable && this.operation !== 'recall') {
         if (isEmpty(obj) || (isEmpty(obj.update) && isEmpty(obj.delete))) {
           this.submitted = false;
           let msg = '';
@@ -722,7 +737,7 @@ export class DeployComponent implements OnInit {
       }
     }
 
-    const URL = this.releasable ? 'inventory/release' : this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
+    const URL = this.releasable ? this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release' : this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
@@ -2957,6 +2972,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.revoke(res.revoke);
         } else if (res.release) {
           this.releaseObject(res.release);
+        } else if (res.recall) {
+          this.recallObject(res.recall);
         } else if (res.restore) {
           this.restoreObject(res.restore);
         } else if (res.delete) {
@@ -4042,14 +4059,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  deployObject(node, releasable): void {
+  deployObject(node, releasable, operation?): void {
     const origin = this.coreService.clone(node.origin ? node.origin : node);
     if (this.selectedObj && this.selectedObj.id &&
       this.selectedObj.type === InventoryObject.WORKFLOW) {
       this.dataService.reloadTree.next({saveObject: origin});
     }
     if (releasable && origin.objectType) {
-      this.releaseSingleObject(origin);
+      this.releaseSingleObject(origin, operation);
       return;
     }
 
@@ -4084,7 +4101,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: origin.path,
           data: origin,
           isChecked: this.inventoryService.checkDeploymentStatus.isChecked,
-          releasable
+          releasable,
+          operation
         },
         nzFooter: null,
         nzClosable: false,
@@ -4244,7 +4262,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   releaseObject(data): void {
-    this.deployObject(data, true);
+    this.deployObject(data, true, 'release');
+  }
+
+  recallObject(data): void {
+    this.deployObject(data, true, 'recall');
   }
 
   rename(data): void {
@@ -4858,13 +4880,23 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private releaseSingleObject(data): void {
+  private releaseSingleObject(data,operation?): void {
     const PATH = data.path1 ? ((data.path1 + (data.path1 === '/' ? '' : '/') + data.name)) : ((data.path + (data.path === '/' ? '' : '/') + data.name));
+    let obj: any = {};
+    if (operation === 'release') {
+      if (data.deleted) {
+        obj.delete = [{objectType: data.objectType, path: PATH}];
+      } else {
+        obj.update = [{objectType: data.objectType, path: PATH}];
+      }
+    } else {
+      obj.releasables = [{objectType: data.objectType, name: data.name}];
+    }
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
         type: data.type || data.objectType,
-        operation: 'Release',
+        operation: operation === 'release' ? 'Release' : 'Recall',
         name: data.name
       };
       const modal = this.modal.create({
@@ -4880,30 +4912,21 @@ export class InventoryComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          const obj: any = {
-            auditLog: {
-              comment: result.comment,
-              timeSpent: result.timeSpent,
-              ticketLink: result.ticketLink
-            }
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
           };
-          if (data.deleted) {
-            obj.delete = [{objectType: data.objectType, path: PATH}];
-          } else {
-            obj.update = [{objectType: data.objectType, path: PATH}];
-          }
-          this.coreService.post('inventory/release', obj).subscribe();
+          this.releaseRecallOperation(operation, obj);
         }
       });
     } else {
-      const obj: any = {};
-      if (data.deleted) {
-        obj.delete = [{objectType: data.objectType, path: PATH}];
-      } else {
-        obj.update = [{objectType: data.objectType, path: PATH}];
-      }
-      this.coreService.post('inventory/release', obj).subscribe();
+      this.releaseRecallOperation(operation, obj);
     }
+  }
+
+  private releaseRecallOperation(operation, obj): void{
+    this.coreService.post(operation === 'release' ? 'inventory/release' : 'inventory/releasables/recall', obj).subscribe();
   }
 
   private storeData(obj, result, reload): void {

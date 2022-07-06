@@ -427,6 +427,10 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.dataService.reloadTree.next({release: data});
   }
 
+  recallObject(data): void {
+    this.dataService.reloadTree.next({recall: data});
+  }
+
   private store(obj, path, configuration, comments: any = {}): void {
     if (this.objectType === InventoryObject.WORKFLOW && !configuration.timeZone) {
       configuration.timeZone = this.preferences.zone;

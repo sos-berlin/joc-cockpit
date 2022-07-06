@@ -2,7 +2,8 @@
   <h4 class="modal-title" >
     <span *ngIf="!releasable && !isRemove && !isRevoke" translate>inventory.label.deploy</span>
     <span *ngIf="isRevoke" translate>inventory.label.revoke</span>
-    <span *ngIf="releasable && !isRemove" translate>inventory.label.release</span>
+    <span *ngIf="releasable && !isRemove && operation !== 'recall'" translate>inventory.label.release</span>
+    <span *ngIf="operation === 'recall'" translate>inventory.label.recall</span>
     <span *ngIf="isRemove" translate>inventory.label.remove</span>
     <span *ngIf="path">:
       {{path}}
@@ -126,12 +127,12 @@
                       </ng-container>
                     </nz-select>
                   </div>
-                  <div class="m-l" *ngIf="!isRemove &&  node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
+                  <div class="m-l" *ngIf="!isRemove && node.origin.type && operation !== 'recall' && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)">
                     <i class="text-muted" *ngIf="!node.origin.deleted" translate>workflow.label.draft</i>
                     <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
                     <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.markForDelete</i>
                   </div>
-                  <div class="m-l" *ngIf="!isRemove &&  !node.origin.type && !node.origin.object">
+                  <div class="m-l" *ngIf="!isRemove && !node.origin.type && !node.origin.object">
                     <i class="text-danger" *ngIf="node.origin.deleted && node.origin.deploymentId" translate>inventory.label.deployMarkDelete</i>
                     <i class="text-danger" *ngIf="node.origin.deleted && !node.origin.deploymentId" translate>inventory.label.markForDelete</i>
                   </div>
