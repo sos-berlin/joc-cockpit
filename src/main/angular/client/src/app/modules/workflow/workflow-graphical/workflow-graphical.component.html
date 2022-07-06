@@ -111,22 +111,22 @@
           </li>
         </ul>
         <ul nz-menu *ngIf="job">
-          <li nz-menu-item *ngIf="!job.isSkip" (click)="skip(job);">
+          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!job.isSkip)" (click)="skip(job);">
             <a>
               <span translate>workflow.button.skip</span>
             </a>
           </li>
-          <li nz-menu-item *ngIf="job.isSkip" (click)="unskip(job);">
+          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && job.isSkip" (click)="unskip(job);">
             <a>
               <span translate>workflow.button.unskip</span>
             </a>
           </li>
-          <li nz-menu-item *ngIf="!job.isStop" (click)="stop(job);">
+          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && !job.isStop" (click)="stop(job);">
             <a>
               <span translate>workflow.button.stop</span>
             </a>
           </li>
-          <li nz-menu-item *ngIf="job.isStop" (click)="unstop(job);">
+          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && job.isStop" (click)="unstop(job);">
             <a>
               <span translate>workflow.button.unstop</span>
             </a>

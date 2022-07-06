@@ -137,22 +137,22 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item *ngIf="!instruction.state || instruction.state._text !== 'SKIPPED'" (click)="skip(instruction);">
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || instruction.state._text !== 'SKIPPED')" (click)="skip(instruction);">
                 <a>
                   <span translate>workflow.button.skip</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="instruction.state && instruction.state._text === 'SKIPPED'" (click)="unskip(instruction);">
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && instruction.state._text === 'SKIPPED')" (click)="unskip(instruction);">
                 <a>
                   <span translate>workflow.button.unskip</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="!instruction.state || instruction.state._text !== 'STOPPED'" (click)="stop(instruction);">
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || instruction.state._text !== 'STOPPED')" (click)="stop(instruction);">
                 <a>
                   <span translate>workflow.button.stop</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="instruction.state && instruction.state._text === 'STOPPED'" (click)="unstop(instruction);">
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && instruction.state._text === 'STOPPED')" (click)="unstop(instruction);">
                 <a>
                   <span translate>workflow.button.unstop</span>
                 </a>

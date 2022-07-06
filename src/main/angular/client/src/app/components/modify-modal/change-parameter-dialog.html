@@ -15,13 +15,13 @@
       <div class="hide" [ngClass]="{'show': display}" *ngIf="!(variableList.length === 0 && forkListVariables.length === 0) || (variables.length === 0 && forkListVariables.length === 0 && variable)">
         <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="7"></app-audit-log-input>
       </div>
-      <div class="form-group row" *ngIf="!variable">
+      <div class="form-group row" *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && !variable">
         <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
         <div class="col-sm-7">
           <app-node-position [obj]="positionObj" [type]="'START'" [workflow]="workflow" [positions]="positions"></app-node-position>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!variable">
+      <div class="form-group row" *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && !variable">
         <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
         <div class="col-sm-7">
           <app-node-position [obj]="positionObj" [position]="positionObj.startPosition" [type]="'END'" [workflow]="workflow" [positions]="positions"></app-node-position>

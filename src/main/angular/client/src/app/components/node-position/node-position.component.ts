@@ -14,6 +14,7 @@ export class NodePositionComponent implements OnChanges {
   @Input() positions: any;
   @Input() workflow: any;
   @Input() type: string;
+  @Input() index = 0;
 
   nodes:any = [];
   @Output() onBlur = new EventEmitter<string>();

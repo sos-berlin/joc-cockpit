@@ -31,7 +31,7 @@ export class UpdateObjectComponent implements OnInit {
   workflowTree = [];
   jobResourcesTree = [];
   documentationTree = [];
-  positions = [];
+  positions: any;
   step = 1;
   submitted = false;
   isVisible = false;
@@ -96,12 +96,6 @@ export class UpdateObjectComponent implements OnInit {
     }
   }
 
-  onAgentChange(value: string): void {
-    let temp = this.coreService.clone(this.agents.agentList);
-    this.agentList = this.coreService.getFilterAgentList(temp, value, true);
-    this.agentList = [...this.agentList];
-  }
-
   private getJobResources(): void {
     this.coreService.getJobResource((arr) => {
       this.jobResourcesTree = arr;
@@ -113,12 +107,6 @@ export class UpdateObjectComponent implements OnInit {
     this.object.orderParameterisations = [];
     this.variableList = [];
     this.forkListVariables = [];
-  }
-
-  selectStartNode(value, positions): void{
-    if(value){
-      positions.endPositions = [];
-    }
   }
 
   onExpand(e, type): void {
@@ -200,12 +188,14 @@ export class UpdateObjectComponent implements OnInit {
   private getWorkflowInfo(name): void {
     this.coreService.post('inventory/read/configuration', {
       path: name,
+      withPositions: true,
       objectType: InventoryObject.WORKFLOW
     }).subscribe((conf: any) => {
       this.workflow = conf.configuration;
       this.object.orderParameterisations = [];
-      this.updateVariableList();
-      this.getPositions(conf.path);
+      this.getPositions(conf.path, () => {
+        this.updateVariableList();
+      });
     });
   }
 
@@ -349,20 +339,21 @@ export class UpdateObjectComponent implements OnInit {
     this.updateSelectItems();
   }
 
-  private getPositions(path): void {
+  private getPositions(path, cb): void {
     this.coreService.post('inventory/read/order/positions', {
       workflowPath: path
-    }).subscribe((res) => {
-      this.positions = res.positions.filter(pos => {
-        pos.position = JSON.stringify(pos.position);
-        if(pos.type === 'ImplicitEnd'){
-          pos.type = '--- end ---'
-        }
-        return true;
-      });
-    })
+    }).subscribe({
+      next: (res) => {
+        this.positions = new Map()
+        res.positions.forEach((item) => {
+          this.positions.set(item.positionString, JSON.stringify(item.position));
+        });
+        cb();
+      }, error: () => {
+        cb();
+      }
+    });
   }
-
 
   updateSelectItems(): void {
     for (const prop in this.object.orderParameterisations) {

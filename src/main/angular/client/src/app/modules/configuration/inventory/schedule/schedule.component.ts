@@ -314,20 +314,16 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       objectTypes: [type]
     };
 
-    const URL = 'inventory/read/folder';
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-      let data;
-      if (type === 'WORKFLOW') {
-        data = res.workflows;
-      }
+    this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
+      let data = res.workflows;
       data = sortBy(data, (i: any) => {
         return i.name.toLowerCase();
       });
       for (let i = 0; i < data.length; i++) {
         const path = node.key + (node.key === '/' ? '' : '/') + data[i].name;
-        data[i].title = data[i].assignReference || data[i].name;
+        data[i].title = data[i].name;
         data[i].path = path;
-        data[i].key = data[i].assignReference || data[i].name;
+        data[i].key = data[i].name;
         data[i].type = type;
         data[i].isLeaf = true;
       }
@@ -339,10 +335,8 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       }
       node.origin.isLeaf = false;
       node.origin.children = data;
-      if (type === InventoryObject.WORKFLOW) {
-        this.workflowTree = [...this.workflowTree];
-        this.schedule.configuration.workflowNames = [...this.schedule.configuration.workflowNames];
-      }
+      this.workflowTree = [...this.workflowTree];
+      this.schedule.configuration.workflowNames = [...this.schedule.configuration.workflowNames];
       this.ref.detectChanges();
     });
   }
@@ -869,6 +863,10 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (node && node.origin) {
         this.loadData(node, 'WORKFLOW', null, true);
       }
+    } else {
+      setTimeout(() => {
+        this.loadWorkflowList(path);
+      }, 100)
     }
   }
 

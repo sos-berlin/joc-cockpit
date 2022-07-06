@@ -2502,7 +2502,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         mxOutline.prototype.destroy();
         this.keyHandler.destroy();
         this.editor = null;
-        $('.mxTooltip').remove();
+        $('.mxTooltip').css({visibility: 'hidden'})
       }
     } catch (e) {
       console.error(e);

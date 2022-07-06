@@ -4,6 +4,7 @@ import {differenceInCalendarDays} from 'date-fns';
 import {isEmpty, isArray, object} from 'underscore';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
+import {AuthService} from "../guard";
 
 @Component({
   selector: 'app-change-parameter',
@@ -19,6 +20,7 @@ export class ChangeParameterModalComponent implements OnInit {
   @Input() orderPreparation: any;
   @Input() workflow: any;
 
+  permission: any = {};
   removeVariables = [];
   variables: any = [];
   variableList = [];
@@ -35,11 +37,12 @@ export class ChangeParameterModalComponent implements OnInit {
     endPositions: []
   }
 
-  constructor(private activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(private activeModal: NzModalRef, public coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
     const preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
     if (sessionStorage.$SOS$FORCELOGING === 'true') {

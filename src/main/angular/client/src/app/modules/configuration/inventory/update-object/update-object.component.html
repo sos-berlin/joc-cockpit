@@ -189,23 +189,8 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.agent</label>
             <div class="col-md-8 col-lg-9">
-              <input required name="agentName" [placeholder]="'workflow.placeholder.selectAgentName' | translate"
-               class="form-control" [(ngModel)]="object.agentName" #agentName="ngModel" (blur)="onAgentChange('');" (ngModelChange)="onAgentChange($event)"
-               [nzAutocomplete]="auto"/>
-              <nz-autocomplete #auto>
-                <nz-auto-optgroup *ngFor="let group of agentList" [nzLabel]="groupTitle">
-                  <ng-template #groupTitle>
-                    <span class="_600">
-                      {{ 'agent.label.' + group.title | translate }}
-                      <i class="fa p-r-xs cursor text-16"  [ngClass]="group.hide ? 'fa-caret-down' : 'fa-caret-up'" (click)="group.hide = !group.hide;$event.stopPropagation()"></i>
-                    </span>
-                  </ng-template>
-                  <nz-auto-option [hidden]="group.hide" *ngFor="let agents of group.children" [nzLabel]="agents.title ? agents.title : agents" [nzValue]="agents.title ? agents.title : agents">
-                    <span *ngIf="!agents.title">{{ agents }}</span>
-                    <span *ngIf="agents.title">{{agents.title}}</span>
-                  </nz-auto-option>
-                </nz-auto-optgroup>
-              </nz-autocomplete>
+              <app-agent-selection [skipSubagents]="true" [preferences]="preferences" [agents]="agentList"
+                                   [data]="object"></app-agent-selection>
             </div>
           </div>
           <div class="form-group row">
@@ -308,12 +293,10 @@
         <ng-container *ngIf="type === 'SCHEDULE'">
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.workflowNames</label>
-            <div class="col-md-8 col-lg-9 select-input-both">
+            <div class="col-md-8 col-lg-9">
               <nz-tree-select
-                #workflowName="ngModel"
                 name="workflowName"
                 nzNoAnimation
-                #treeSelectCtrl
                 nzAllowClear
                 [nzNodes]="workflowTree"
                 [nzHideUnMatched]="true"
@@ -349,7 +332,7 @@
               <label nz-checkbox [(ngModel)]="object.submitOrderToControllerWhenPlanned" name="submitOrderToControllerWhenPlanned"></label>
             </div>
           </div>
-          <div class="form-group row" *ngIf="(object.workflowNames && object.workflowNames.length ==1) || object.orderParameterisations.length">
+          <div class="form-group row" *ngIf="(object.workflowNames && object.workflowNames.length ==1) || (object.orderParameterisations && object.orderParameterisations.length)">
             <label class="col-md-12 _600" translate>inventory.label.orderParameterisations</label>
           </div>
           <div *ngFor="let variableSet of object.orderParameterisations; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
@@ -367,29 +350,17 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
-              <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <nz-select nzShowSearch name="startNode{{j}}" [(ngModel)]="variableSet.positions.startPosition"
-                           [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate" nzAllowClear (ngModelChange)="selectStartNode($event, variableSet.positions);">
-                  <nz-option *ngFor="let node of positions" nzCustomContent [nzValue]="node.position" [nzLabel]="node.type">
-                    <div>
-                      {{node.type}} <span *ngIf="node.label"> - {{node.label}}</span>
-                    </div>
-                  </nz-option>
-                </nz-select>
+              <label class="col-md-4 col-lg-3 form-control-label" translate>order.label.startNode</label>
+              <div class="col-md-8">
+                <app-node-position [obj]="variableSet.positions" [index]="j" [type]="'START'"
+                                   [workflow]="workflow" [positions]="positions"></app-node-position>
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
-              <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <nz-select nzMode="multiple" nzShowSearch name="endNode{{j}}" [(ngModel)]="variableSet.positions.endPositions"
-                           [nzPlaceHolder]="'order.placeholder.selectEndNode' | translate" nzAllowClear>
-                  <nz-option *ngFor="let node of positions" nzCustomContent [nzDisabled]="node.position === variableSet.positions.startPosition" [nzValue]="node.position" [nzLabel]="node.type">
-                    <div>
-                      {{node.type}} <span *ngIf="node.label"> - {{node.label}}</span>
-                    </div>
-                  </nz-option>
-                </nz-select>
+              <label class="col-md-4 col-lg-3 form-control-label" translate>order.label.endNode</label>
+              <div class="col-md-8">
+                <app-node-position [obj]="variableSet.positions" [index]="j" [type]="'END'"
+                                   [position]="variableSet.positions.startPosition" [workflow]="workflow" [positions]="positions"></app-node-position>
               </div>
             </div>
             <div *ngIf="variableSet.forkListVariables && variableSet.forkListVariables.length > 0">

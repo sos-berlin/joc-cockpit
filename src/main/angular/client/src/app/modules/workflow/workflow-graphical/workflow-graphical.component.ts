@@ -279,7 +279,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   ngOnDestroy(): void {
     if (!this.isModal) {
       $('#workflowGraphId').remove();
-      $('.mxTooltip').remove();
+      $('.mxTooltip').css({visibility: 'hidden'});
     }
   }
 
@@ -686,7 +686,12 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           }
         } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'PostNotices') {
           let noticeNames = cell.value.getAttribute('noticeBoardNames');
-          self.showConfiguration({noticeNames, type: cell.value.tagName});
+          if(noticeNames && cell.value.tagName === 'PostNotices') {
+            if(typeof noticeNames == 'string'){
+              noticeNames = noticeNames.split(',');
+            }
+            self.showConfiguration({noticeNames, type: cell.value.tagName});
+          }
         } if (cell.value.tagName === 'Workflow') {
           const data = cell.value.getAttribute('data');
           if (data) {
@@ -929,7 +934,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             if (cell) {
               if (mainJson.postNoticeBoards) {
                 for (const prop in mainJson.postNoticeBoards) {
-                 
+
                   if (isArray(json.instructions[x].noticeBoardNames) && json.instructions[x].noticeBoardNames.indexOf(mainJson.postNoticeBoards[prop].name) > -1) {
                     const outgoingEdges = graph.getOutgoingEdges(cell);
                     if (outgoingEdges && outgoingEdges.length > 0) {

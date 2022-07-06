@@ -3,7 +3,7 @@
     nzAllowClear
     [nzDropdownStyle]="{ 'max-height': '260px' }"
     [nzPlaceHolder]="'order.placeholder.selectStartNode' | translate"
-    name="startNode"
+    name="startNode{{index}}"
     [(ngModel)]="obj.startPosition"
     [nzDropdownClassName]="'custom-dropdown'"
     [nzNodes]="nodes"
@@ -18,7 +18,7 @@
     nzAllowClear
     [nzDropdownStyle]="{ 'max-height': '260px' }"
     [nzPlaceHolder]="'order.placeholder.selectEndNode' | translate"
-    name="endNode"
+    name="endNode{{index}}"
     [(ngModel)]="obj.endPositions"
     [nzDropdownClassName]="'custom-dropdown'"
     [nzNodes]="nodes"
