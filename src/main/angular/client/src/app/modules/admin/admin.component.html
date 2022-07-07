@@ -35,11 +35,15 @@
               <i class="fa fa-upload"></i>&nbsp;
               <span translate>inventory.button.import</span>
             </button>
-            <button *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
+            <button *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':showBlocklist}" (click)=" manageBlocklist()">
+              <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
+              <span translate>user.button.blocklist</span>
+            </button>
+            <button [disabled]="showBlocklist" *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.manageGeneralSetting</span>
             </button>
-            <button *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+            <button [disabled]="showBlocklist" *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addIdentityService</span>
             </button>

@@ -53,6 +53,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   isProcessing = false;
   subscription: Subscription;
   workflowObjects = new Map();
+  countObj = {count: 0};
 
   filterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -190,7 +191,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           res.forEach((item: any) => {
             if (item && item.workflow && this.workflowObjects.has(item.workflow.path)) {
               item.workflow.compressData = [];
-              this.workflowService.convertTryToRetry(item.workflow, null, item.workflow.jobs);
+              this.workflowService.convertTryToRetry(item.workflow, null, item.workflow.jobs, this.countObj);
               item.workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'expectedNoticeBoards');
               item.workflow.postNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'postNoticeBoards');
               this.workflowObjects.set(item.workflow.path, JSON.stringify(item.workflow));
@@ -276,7 +277,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       if (!workflow.instructions) {
         workflow.instructions = res.workflow.instructions;
         workflow.jobs = res.workflow.jobs;
-        this.workflowService.convertTryToRetry(workflow, null, res.workflow.jobs);
+        this.workflowService.convertTryToRetry(workflow, null, res.workflow.jobs, this.countObj);
       }
       workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
       workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
@@ -405,7 +406,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.orderPreparation = res.workflow.orderPreparation
         this.workFlowJson = res.workflow;
         this.workFlowJson.actual = this.coreService.clone(res.workflow.instructions);
-        this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs);
+        this.countObj = {count: 0};
+        this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs, this.countObj);
         this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
         if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
           this.showDependency(res.workflow);

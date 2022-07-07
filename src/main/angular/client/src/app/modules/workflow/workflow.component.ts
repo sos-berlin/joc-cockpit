@@ -262,7 +262,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
     workflow.show = true;
     $('#workflowTableId').css('height', 450);
     workflow.configuration = this.coreService.clone(workflow);
-    this.workflowService.convertTryToRetry(workflow.configuration, null);
+    this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0});
   }
 
   hidePanelFuc(workflow): void {
@@ -1043,7 +1043,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
     workflow.show = true;
     workflow.configuration = this.coreService.clone(workflow);
-    this.workflowService.convertTryToRetry(workflow.configuration, null);
+    this.workflowService.convertTryToRetry(workflow.configuration, null, {},{count: 0});
     this.updatePanelHeight();
   }
 
@@ -1323,7 +1323,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     workflows.forEach((workflow) => {
       workflow.show = true;
       workflow.configuration = this.coreService.clone(workflow);
-      this.workflowService.convertTryToRetry(workflow.configuration, null);
+      this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0});
       if (workflow.numOfOrders > 0) {
         workflowIds.push({path: workflow.path, versionId: workflow.versionId});
       }
@@ -1455,7 +1455,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   this.workflows[i].jobs = res.workflow.jobs;
                   if (this.workflows[i].show) {
                     this.workflows[i].configuration = res.workflow;
-                    this.workflowService.convertTryToRetry(this.workflows[i].configuration, null);
+                    this.workflowService.convertTryToRetry(this.workflows[i].configuration, null, {}, {count: 0});
                   }
                 }
               });

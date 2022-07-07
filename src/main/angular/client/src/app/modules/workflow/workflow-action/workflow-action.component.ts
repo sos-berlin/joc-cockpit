@@ -86,7 +86,7 @@ export class AddOrderModalComponent implements OnInit {
     this.order.at = 'now';
     if(!this.workflow.configuration) {
        this.workflow.configuration = this.coreService.clone(this.workflow);
-       this.workflowService.convertTryToRetry(this.workflow.configuration, null);
+       this.workflowService.convertTryToRetry(this.workflow.configuration, null, {}, {count: 0});
 
     }
     this.getPositions();

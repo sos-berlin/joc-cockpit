@@ -98,7 +98,8 @@
         </div>
         <i (click)="collapse(instruction)" class="fa fa-plus pr-2" [ngClass]="{'fa-minus' : (instruction.show)}"></i>
         <span class="_600">
-          {{instruction.TYPE}}<span *ngIf="instruction.TYPE === 'Lock'">:</span>
+          <span *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'">{{instruction.TYPE}}</span>
+          <a class="cursor" (click)="showConfiguration(instruction);" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">{{instruction.TYPE}}</a><span *ngIf="instruction.TYPE === 'Lock'">:</span>
           <span class="text-muted" *ngIf="instruction.TYPE === 'Lock'">
               <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(instruction.lockName, 'LOCK');$event.stopPropagation();"
                  class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>

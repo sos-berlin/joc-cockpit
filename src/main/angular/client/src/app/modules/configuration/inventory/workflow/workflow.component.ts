@@ -4247,7 +4247,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       } else {
         this.workflowService.convertTryToRetry(this.workflow.configuration, () => {
           this.updateWorkflow(graph);
-        });
+        }, {}, {count: 0});
       }
     } else {
       this.reloadDummyXml(graph);

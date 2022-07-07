@@ -1,4 +1,4 @@
-<div class="box p-a">
+<div *ngIf="!showBlocklist" class="box p-a">
   <div class="table-responsive">
     <nz-table
       #ajaxTable
@@ -126,3 +126,4 @@
     <span translate *ngIf="ajaxTable.data.length ===1">user.label.identityServiceFound</span>
   </div>
 </div>
+<app-blocklist *ngIf="showBlocklist"></app-blocklist>

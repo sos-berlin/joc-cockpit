@@ -15,6 +15,7 @@ import {AuthService} from '../../../components/guard';
 export class ProfilesComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
+  schedulerIds: any = {};
   profiles: any = [];
   users: any;
   searchKey: string;
@@ -45,6 +46,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.identityServiceName = sessionStorage.identityServiceName;
     this.identityServiceType = sessionStorage.identityServiceType;
     this.getList();
@@ -55,7 +57,10 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   }
 
   private getList(): void {
-    this.coreService.post('configurations/profiles', {identityServiceName: this.identityServiceName}).subscribe({
+    this.coreService.post('profiles', {
+      controllerId: this.schedulerIds.selected,
+      identityServiceName: this.identityServiceName
+    }).subscribe({
       next: (res: any) => {
         this.profiles = res.profiles;
         this.loading = false;

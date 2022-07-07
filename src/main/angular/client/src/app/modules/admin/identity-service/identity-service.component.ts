@@ -648,6 +648,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   userDetail: any = {};
   temp: any = 0;
   searchKey = '';
+  showBlocklist = false;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -661,6 +662,8 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         this.add();
       } else if (res === 'MANAGE_SETTING') {
         this.manageSetting(null);
+      } else if (res === 'MANAGE_BLOCKLIST') {
+       this.showBlocklist= !this.showBlocklist;
       }
     });
   }

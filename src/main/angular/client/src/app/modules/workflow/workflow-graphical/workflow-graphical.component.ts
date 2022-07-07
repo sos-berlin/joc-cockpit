@@ -125,7 +125,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
     }).subscribe((res) => {
       this.workflow = res.workflow;
       this.workFlowJson = this.coreService.clone(this.workflow);
-      this.workflowService.convertTryToRetry(this.workFlowJson, null, this.workflow.jobs);
+      this.workflowService.convertTryToRetry(this.workFlowJson, null, this.workflow.jobs, {count: 0});
       this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
       this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
       this.workFlowJson.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
@@ -825,6 +825,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     const self = this;
     const doc = mxUtils.createXmlDocument();
     this.orderCountMap = new Map();
+    let workflows = new Map();
     const graph = this.graph;
 
     function createWorkflowNode(workflow, cell, type): void {
@@ -833,7 +834,16 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         node.setAttribute('workflowName', workflow.path.substring(workflow.path.lastIndexOf('/') + 1));
         node.setAttribute('data', JSON.stringify(workflow));
         node.setAttribute('type', type);
-        const w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, type);
+        let w1;
+        if(!workflows.has(workflow.path)) {
+          w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, type);
+          workflows.set(workflow.path, w1)
+        } else {
+          w1 = workflows.get(workflow.path);
+          if(graph.getEdgesBetween(w1, cell).length > 0){
+            return;
+          }
+        }
         if (type === 'expect') {
           graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
         } else {
@@ -921,20 +931,17 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                     mainJson.expectedNoticeBoards[prop].value.forEach((workflow) => {
                       createWorkflowNode(workflow, cell, 'expect');
                     });
-                    break;
                   }
                 }
               }
             }
           }
 
-
           if (json.instructions[x].TYPE === 'PostNotices') {
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
               if (mainJson.postNoticeBoards) {
                 for (const prop in mainJson.postNoticeBoards) {
-
                   if (isArray(json.instructions[x].noticeBoardNames) && json.instructions[x].noticeBoardNames.indexOf(mainJson.postNoticeBoards[prop].name) > -1) {
                     const outgoingEdges = graph.getOutgoingEdges(cell);
                     if (outgoingEdges && outgoingEdges.length > 0) {
@@ -948,7 +955,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                     mainJson.postNoticeBoards[prop].value.forEach((workflow) => {
                       createWorkflowNode(workflow, cell, 'post');
                     });
-                    break;
                   }
                 }
               }

@@ -562,14 +562,13 @@ export class WorkflowService {
     }
   }
 
-  convertTryToRetry(mainJson: any, cb: any, jobs = {}): void {
-    let count = 1;
-
+  convertTryToRetry(mainJson: any, cb: any, jobs = {}, countObj): void {
+    const self = this;
     function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           if (!cb) {
-            json.instructions[x].id = ++count;
+            json.instructions[x].id = ++countObj.count;
             if (json.instructions[x].TYPE === 'ImplicitEnd' && (json.TYPE || parent)) {
               if (json.TYPE === 'ForkList') {
                 json.instructions[x].TYPE = 'ForkListEnd';
@@ -638,28 +637,35 @@ export class WorkflowService {
             }
           }
           if (mainJson.compressData && (json.instructions[x].TYPE === 'PostNotices' || json.instructions[x].TYPE === 'ExpectNotices')) {
-            let isChecked = false;
-            
-            let noticeBoardName = isArray(json.instructions[x].noticeBoardNames) ? json.instructions[x].noticeBoardNames.join(',') : json.instructions[x].noticeBoardNames;
+            let arr = [];
             if (json.instructions[x].TYPE === 'ExpectNotices') {
-              let arr = noticeBoardName.split(' ');
-              if (arr.length === 1 && (noticeBoardName.substring(0, 1) == "'" || noticeBoardName.substring(0, 1) == "'")) {
-                noticeBoardName = noticeBoardName.substring(1, noticeBoardName.length - 1);
-              }
+              arr = self.convertExpToArray(json.instructions[x].noticeBoardNames);
+            } else{
+              arr = json.instructions[x].noticeBoardNames;
             }
+            arr = Array.from(new Set(arr));
             for (const key in mainJson.compressData) {
-             
-              if ((mainJson.compressData[key].name == noticeBoardName)) {
-                isChecked = true;
-                mainJson.compressData[key].instructions.push(json.instructions[x]);
-                break;
+              for (let m =0; m < arr.length; m++) {
+                if ((mainJson.compressData[key].name == arr[m])) {
+                  if (!json.instructions[x].uuid) {
+                    json.instructions[x].uuid = self.create_UUID();
+                  }
+                  mainJson.compressData[key].instructions.push(json.instructions[x]);
+                  arr.splice(m, 1);
+                  break;
+                }
               }
             }
-            if (!isChecked) {
-              mainJson.compressData.push({
-                name: noticeBoardName,
-                instructions: [json.instructions[x]]
-              });
+            if (arr.length > 0) {
+              for (const m in arr) {
+                if (!json.instructions[x].uuid) {
+                  json.instructions[x].uuid = self.create_UUID();
+                }
+                mainJson.compressData.push({
+                  name: arr[m],
+                  instructions: [json.instructions[x]]
+                });
+              }
             }
           }
           if (json.instructions[x].instructions) {
@@ -1143,21 +1149,25 @@ export class WorkflowService {
           for (let x = 0; x < json.compressData[i].instructions.length; x++) {
             const _node = doc.createElement(json.compressData[i].instructions[x].TYPE);
             let v1;
+            const cell = vertexMap.get(json.compressData[i].instructions[x].uuid);
             if (json.compressData[i].instructions[x].TYPE === 'PostNotices') {
               _node.setAttribute('label', 'postNotices');
               if (json.compressData[i].instructions[x].noticeBoardNames !== undefined) {
                 _node.setAttribute('noticeBoardNames', isArray(json.compressData[i].instructions[x].noticeBoardNames) ?
-                  json.compressData[i].instructions[x].noticeBoardNames.join(',') : '');
+                  json.compressData[i].instructions[x].noticeBoardNames.join(',') : json.compressData[i].instructions[x].noticeBoardNames);
               }
               _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
-              v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
-              if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
-                mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
-              }
-
-              if (boardType === 'ExpectNotices' && json.compressData[i].instructions[x].noticeBoardNames && (objectName === json.compressData[i].instructions[x].noticeBoardNames.join(',') ||
-                (json.compressData[i].instructions[x].noticeBoardNames.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
-                connectInstruction(v1, mapObj.cell, objectName, '', parent);
+              if (cell && cell.getAttribute('uuid') == json.compressData[i].instructions[x].uuid) {
+                v1 = cell;
+              } else {
+                v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
+                if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
+                  mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
+                }
+                if (boardType === 'ExpectNotices' && json.compressData[i].instructions[x].noticeBoardNames && (objectName === json.compressData[i].instructions[x].noticeBoardNames.join(',') ||
+                  (json.compressData[i].instructions[x].noticeBoardNames.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
+                  connectInstruction(v1, mapObj.cell, objectName, '', parent);
+                }
               }
             } else if (json.compressData[i].instructions[x].TYPE === 'ExpectNotices') {
               _node.setAttribute('label', 'expectNotices');
@@ -1165,13 +1175,17 @@ export class WorkflowService {
                 _node.setAttribute('noticeBoardNames', json.compressData[i].instructions[x].noticeBoardNames);
               }
               _node.setAttribute('uuid', json.compressData[i].instructions[x].uuid);
-              v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
-              if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
-                mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
-              }
-              let arr = self.convertExpToArray(json.compressData[i].instructions[x].noticeBoardNames);
-              if (boardType === 'PostNotices' && (objectName === json.compressData[i].instructions[x].noticeBoardNames || arr.filter(o1 => boardNames.some(o2 => o1 === o2)))) {
-                connectInstruction(mapObj.cell, v1, objectName, '', parent);
+              if (cell && cell.getAttribute('uuid') == json.compressData[i].instructions[x].uuid) {
+                v1 = cell;
+              } else {
+                v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
+                if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
+                  mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
+                }
+                let arr = self.convertExpToArray(json.compressData[i].instructions[x].noticeBoardNames);
+                if (boardType === 'PostNotices' && (objectName === json.compressData[i].instructions[x].noticeBoardNames || arr.filter(o1 => boardNames.some(o2 => o1 === o2)))) {
+                  connectInstruction(mapObj.cell, v1, objectName, '', parent);
+                }
               }
             }
 
@@ -1180,8 +1194,12 @@ export class WorkflowService {
             }
             if (v1) {
               json.compressData[i].instructions[x].id = v1.id;
-              connectInstruction(w1, v1, '', '', parent);
-              connectInstruction(v1, b1, '', '', parent);
+              if(graph.getEdgesBetween(w1, v1).length === 0) {
+                connectInstruction(w1, v1, '', '', parent);
+              }
+              if(graph.getEdgesBetween(v1, b1).length === 0) {
+                connectInstruction(v1, b1, '', '', parent);
+              }
             }
           }
         }

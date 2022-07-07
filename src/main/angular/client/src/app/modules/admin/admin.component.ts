@@ -25,6 +25,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   identityServiceType: string;
   pageView: string;
   isLoaded = false;
+  showBlocklist = false;
   filter = {
     searchKey: ''
   };
@@ -102,6 +103,11 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   manageSetting(): void {
     this.dataService.announceFunction('MANAGE_SETTING');
+  }
+
+  manageBlocklist(): void {
+    this.showBlocklist = !this.showBlocklist;
+    this.dataService.announceFunction('MANAGE_BLOCKLIST');
   }
 
   addAccount(): void {
