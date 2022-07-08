@@ -82,20 +82,130 @@
       </div>
     </div>
   </div>
-  <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b">
+  <div class="m-b">
     <div class="form-group row">
-      <label class="col-sm-3" translate>workflow.admissionTime.label.weekDays</label>
+      <label class="col-sm-3 form-control-label" translate>workflow.label.admissionType</label>
       <div class="col-sm-9">
-        <label class="w" nz-checkbox [(ngModel)]="frequency.all" name="week"
-               (nzCheckedChange)="selectAllWeek()">
-          <span translate>workflow.admissionTime.label.everyDay</span>
-        </label><br>
-        <nz-checkbox-wrapper (nzOnChange)="dayChange($event)">
-          <ng-container *ngFor="let option of daysOptions">
-            <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
-                   name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
-          </ng-container>
-        </nz-checkbox-wrapper>
+        <nz-select nzShowSearch name="frequencyTab" [(ngModel)]="frequency.tab" (ngModelChange)="changeFrequency()">
+          <nz-option nzValue="weekDays" [nzLabel]="'runtime.label.weekDays' | translate"></nz-option>
+          <nz-option nzValue="specificWeekDays" [nzLabel]="'runtime.label.specificWeekDays' | translate"></nz-option>
+          <nz-option nzValue="monthDays" [nzLabel]="'runtime.label.monthDays' | translate"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b">
+    <div class="tab-pane animated fadeIn" id="tab1" [ngClass]="{'active':frequency.tab == 'weekDays'}">
+      <div class="form-group row">
+        <label class="col-sm-3" translate>workflow.admissionTime.label.weekDays</label>
+        <div class="col-sm-9">
+          <label class="w" nz-checkbox [(ngModel)]="frequency.all" name="week"
+                 (nzCheckedChange)="selectAllWeek()">
+            <span translate>workflow.admissionTime.label.everyDay</span>
+          </label><br>
+          <nz-checkbox-wrapper (nzOnChange)="dayChange($event)">
+            <ng-container *ngFor="let option of daysOptions">
+              <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
+                     name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
+            </ng-container>
+          </nz-checkbox-wrapper>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane animated fadeIn" id="tab2" [ngClass]="{'active':frequency.tab == 'specificWeekDays'}">
+      <div class="form-group row">
+        <label class="col-sm-3" translate>runtime.label.dayNumber</label>
+        <div class="col-sm-9">
+          <nz-select [(ngModel)]="frequency.specificWeek" name="specificWeek" (ngModelChange)="onFrequencyChange()">
+            <nz-option nzValue="1" [nzLabel]="'runtime.label.first' | translate"></nz-option>
+            <nz-option nzValue="2" [nzLabel]="'runtime.label.second' | translate"></nz-option>
+            <nz-option nzValue="3" [nzLabel]="'runtime.label.third' | translate"></nz-option>
+            <nz-option nzValue="4" [nzLabel]="'runtime.label.fourth' | translate"></nz-option>
+            <nz-option nzValue="-1" [nzLabel]="'runtime.label.last' | translate"></nz-option>
+            <nz-option nzValue="-2" [nzLabel]="'runtime.label.secondLast' | translate"></nz-option>
+            <nz-option nzValue="-3" [nzLabel]="'runtime.label.thirdLast' | translate"></nz-option>
+            <nz-option nzValue="-4" [nzLabel]="'runtime.label.fourthLast' | translate"></nz-option>
+          </nz-select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 form-control-label" translate>runtime.label.weekDays</label>
+        <div class="col-sm-9">
+          <nz-select [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay" (ngModelChange)="onFrequencyChange()">
+            <nz-option nzValue="0" [nzLabel]="'runtime.label.monday' | translate"></nz-option>
+            <nz-option nzValue="1" [nzLabel]="'runtime.label.tuesday' | translate"></nz-option>
+            <nz-option nzValue="2" [nzLabel]="'runtime.label.wednesday' | translate"></nz-option>
+            <nz-option nzValue="3" [nzLabel]="'runtime.label.thursday' | translate"></nz-option>
+            <nz-option nzValue="4" [nzLabel]="'runtime.label.friday' | translate"></nz-option>
+            <nz-option nzValue="5" [nzLabel]="'runtime.label.saturday' | translate"></nz-option>
+            <nz-option nzValue="6" [nzLabel]="'runtime.label.sunday' | translate"></nz-option>
+          </nz-select>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane animated fadeIn" id="tab3" [ngClass]="{'active':frequency.tab == 'monthDays'}">
+      <div class="form-group row">
+        <label class="col-sm-3" translate>runtime.label.monthDays</label>
+
+        <div class="col-sm-9">
+          <nz-radio-group name="radio" [(ngModel)]="frequency.isUltimos">
+            <label nz-radio nzValue="months"><span translate>runtime.label.countFromFirstDay</span></label>
+            <label nz-radio nzValue="ultimos"><span translate>runtime.label.countFromTheLastDay</span></label>
+          </nz-radio-group>
+        </div>
+        <div class="col-sm-offset-3 col-sm-6 m-t-sm p-t-xs">
+          <table class="table table-bordered table-striped text-center m-b-xs w "
+                 [hidden]="frequency.isUltimos!=='months'">
+            <tbody>
+            <tr *ngFor="let count of countArr;">
+              <td (click)="selectMonthDaysFunc(((7 * count) + 1) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 1) +'')}"><a
+              >{{(7 * count) + 1 }}</a></td>
+              <td (click)="selectMonthDaysFunc(((7 * count) + 2) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 2) +'')}"><a
+              >{{(7 * count) + 2 }}</a></td>
+              <td (click)="selectMonthDaysFunc(((7 * count) + 3) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 3) +'')}"><a
+              >{{(7 * count) + 3 }}</a></td>
+              <td (click)="selectMonthDaysFunc(((7 * count) + 4) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 4) +'')}"><a
+              >{{(7 * count) + 4 }}</a></td>
+              <td (click)="selectMonthDaysFunc(((7 * count) + 5) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 5) +'')}"><a
+              >{{(7 * count) + 5 }}</a></td>
+              <td (click)="selectMonthDaysFunc(((7 * count) + 6) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 6) +'')}"><a
+              >{{(7 * count) + 6 }}</a></td>
+              <td (click)="selectMonthDaysFunc(((7 * count) + 7) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 7) +'')}"><a
+              >{{(7 * count) + 7 }}</a></td>
+            </tr>
+            </tbody>
+          </table>
+          <table class="table table-bordered table-striped text-center m-b-xs w "
+                 [hidden]="frequency.isUltimos=='months'">
+            <tbody>
+            <tr *ngFor="let count of countArr;">
+              <td (click)="selectMonthDaysUFunc(((6 * count) + 1) +'')"
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 1) +'')}">
+                <a>-{{(6 * count) + 1 }}</a></td>
+              <td (click)="selectMonthDaysUFunc(((6 * count) + 2) + '')"
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 2) + '')}">
+                <a>-{{(6 * count) + 2 }}</a>
+              </td>
+              <td (click)="selectMonthDaysUFunc(((6 * count) + 3) +'')"
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 3) +'')}">
+                <a>-{{(6 * count) + 3 }}</a>
+              </td>
+              <td (click)="selectMonthDaysUFunc(((6 * count) + 4) +'')" *ngIf="count !== 4"
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 4) +'')}">
+                <a>-{{(6 * count) + 4 }}</a>
+              </td>
+              <td (click)="selectMonthDaysUFunc(((6 * count) + 5) +'')" *ngIf="count !== 4"
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) +5) +'')}">
+                <a>-{{(6 * count) + 5 }}</a>
+              </td>
+              <td (click)="selectMonthDaysUFunc(((6 * count) + 6) +'')" *ngIf="count !== 4"
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 6) +'')}">
+                <a>-{{(6 * count) + 6 }}</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -103,7 +213,7 @@
     <div class="col-sm-12">
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" translate>workflow.admissionTime.label.startTime</label>
-        <div class="col-sm-6">
+        <div class="col-sm-9">
           <div class="time-picker m-l-0">
             <input timevalidator type="text" #timePicker="ngModel" class="form-control"
                 name="startTime" [(ngModel)]="object.startTime" (ngModelChange)="selectTime(object.startTime, true)" placeholder="HH:MM:SS">
@@ -115,7 +225,7 @@
         <label class="col-sm-3 form-control-label" translate>common.label.duration
          <sup *ngIf="!!object.startTime" class="text-danger text-sm">*</sup>
         </label>
-        <div class="col-sm-6" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
+        <div class="col-sm-9" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
           <input appValidateDuration [required]="!!object.startTime" class="form-control" name="duration"
                  #duration="ngModel" [(ngModel)]="object.duration"
                  placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
@@ -131,7 +241,7 @@
   </div>
   <div class="form-group row ">
     <div class="col-sm-12 b-b p-t p-b">
-      <button class="btn btn-sm btn-primary" [disabled]="!myForm.form.valid"
+      <button class="btn btn-sm btn-primary" [disabled]="!myForm.form.valid || !editor.isEnable"
               (click)="addFrequency()" translate>workflow.admissionTime.button.update
       </button>
       <button (click)="closeRuntime()" [disabled]="!isValid" type="button" class="btn btn-grey m-l-12 btn-sm" translate>workflow.admissionTime.button.back</button>

@@ -253,14 +253,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private saveLicenseReminderDate(): void {
     const configObj = {
-      id: parseInt(sessionStorage.preferenceId, 10),
       controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'PROFILE',
-      configurationItem: JSON.stringify(this.preferences)
+      accountName: this.authService.currentUserData,
+      profileItem: JSON.stringify(this.preferences)
     };
-    sessionStorage.preferences = configObj.configurationItem;
-    this.coreService.post('configuration/save', configObj).subscribe();
+    sessionStorage.preferences = configObj.profileItem;
+    this.coreService.post('profile/prefs/store', configObj).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -412,7 +410,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.authService.setPermission(permission);
         this.authService.save();
         this.permission = permission;
-        if (!sessionStorage.preferenceId) {
+        if (!sessionStorage.preferences) {
           this.ngOnInit();
         }
         if (this.child) {
@@ -656,14 +654,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private setUserPreferences(preferences: any, configObj: any, reload: boolean): void {
-    if (sessionStorage.preferenceId === 0 || sessionStorage.preferenceId == '0') {
+    if (!sessionStorage.preferences) {
       this.getDefaultPreferences(preferences);
-      configObj.configurationItem = JSON.stringify(preferences);
-      configObj.id = 0;
-      sessionStorage.preferences = configObj.configurationItem;
+      configObj.profileItem = JSON.stringify(preferences);
+      sessionStorage.preferences = preferences;
       if (this.schedulerIds.selected) {
-        this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-          sessionStorage.preferenceId = res.id;
+        this.coreService.post('profile/prefs/store', configObj).subscribe((res: any) => {
           if (reload) {
             this.reloadThemeAndLang(preferences);
             this.dataService.resetProfileSetting.next(true);
@@ -716,8 +712,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private setUserObject(preferences: any, conf: any, configObj: any): void {
-    if (conf.configurationItem) {
-      const data = JSON.parse(conf.configurationItem);
+    if (conf.profileItem) {
+      const data = JSON.parse(conf.profileItem);
       if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
         data.auditLog = true;
       }
@@ -759,17 +755,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (id) {
       const configObj = {
         controllerId: id,
-        account: user,
-        configurationType: 'PROFILE'
+        accountName: user
       };
       const preferences: any = {};
-      this.coreService.post('configurations', configObj).subscribe({
+      this.coreService.post('profile/prefs', configObj).subscribe({
         next: (res: any) => {
-          sessionStorage.preferenceId = 0;
-          if (res.configurations && res.configurations.length > 0) {
-            const conf = res.configurations[0];
-            sessionStorage.preferenceId = conf.id;
-            this.setUserObject(preferences, conf, configObj);
+          if (res.profileItem) {
+            this.setUserObject(preferences, res, configObj);
             if (reload) {
               this.dataService.refreshUI('reload');
             }

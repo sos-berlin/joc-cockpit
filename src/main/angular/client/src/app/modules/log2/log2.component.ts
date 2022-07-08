@@ -42,7 +42,6 @@ export class Log2Component implements OnInit {
   scrolled = false;
   isExpandCollapse = false;
   taskCount = 1;
-  preferenceId: any;
   controllerId: string;
   lastScrollTop = 0;
   delta = 20;
@@ -78,21 +77,17 @@ export class Log2Component implements OnInit {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     this.controllerId = this.route.snapshot.queryParams.controllerId;
-    this.preferenceId = window.sessionStorage.preferenceId;
     if (this.authService.scheduleIds) {
       const ids = JSON.parse(this.authService.scheduleIds);
       if (ids && ids.selected != this.controllerId) {
         const configObj = {
           controllerId: this.controllerId,
-          account: this.authService.currentUserData,
-          configurationType: 'PROFILE'
+          accountName: this.authService.currentUserData
         };
-        this.coreService.post('configurations', configObj).subscribe({
+        this.coreService.post('profile/prefs', configObj).subscribe({
           next: (res: any) => {
-            if (res.configurations && res.configurations.length > 0) {
-              const conf = res.configurations[0];
-              this.preferences = JSON.parse(conf.configurationItem);
-              this.preferenceId = conf.id;
+            if (res.profileItem) {
+              this.preferences = JSON.parse(res.profileItem);
             }
             this.init();
           }, error: () => this.init()
@@ -850,14 +845,12 @@ export class Log2Component implements OnInit {
     this.preferences.logFilter = this.object.checkBoxs;
     const configObj: any = {
       controllerId: this.controllerId,
-      account: this.authService.currentUserData,
-      configurationType: 'PROFILE',
-      id: this.preferenceId,
-      configurationItem: JSON.stringify(this.preferences)
+      accountName: this.authService.currentUserData,
+      profileItem: JSON.stringify(this.preferences)
     };
-    sessionStorage.setItem('changedPreferences', configObj.configurationItem);
+    sessionStorage.setItem('changedPreferences', configObj.profileItem);
     sessionStorage.setItem('controllerId', this.controllerId);
-    this.coreService.post('configuration/save', configObj).subscribe(() => {
+    this.coreService.post('profile/prefs/store', configObj).subscribe(() => {
 
     });
   }

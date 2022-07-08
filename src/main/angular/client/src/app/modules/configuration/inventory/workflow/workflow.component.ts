@@ -554,11 +554,16 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   @Input() repeatObject: any;
   frequency: any = {
     days: [],
+    tab: 'weekDays',
     all: false
   };
   days = [];
   isValid = true;
   object: any = {};
+  selectedMonths = [];
+  selectedMonthsU = [];
+  countArr = [0, 1, 2, 3, 4];
+  editor: any = {isEnable: false};
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
     {label: 'tuesday', value: '2', checked: false},
@@ -627,6 +632,27 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.tp.close();
   }
 
+  changeFrequency(): void {
+    if (!this.frequency.isUltimos) {
+      this.frequency.isUltimos = 'months';
+    }
+    if (this.frequency.tab == 'specificWeekDays') {
+      this.onFrequencyChange();
+    } else if (this.frequency.tab == 'monthDays') {
+      if (this.frequency.isUltimos == 'months') {
+        this.editor.isEnable = this.selectedMonths.length != 0;
+      } else {
+        this.editor.isEnable = this.selectedMonthsU.length != 0;
+      }
+    } else if (this.frequency.tab == 'weekDays') {
+      this.editor.isEnable = this.frequency.days && this.frequency.days.length > 0;
+    }
+  }
+
+  onFrequencyChange(): void {
+    this.editor.isEnable = !!(this.frequency.specificWeekDay && this.frequency.specificWeek);
+  }
+
   selectTime(time, isEditor = false): void {
     this.coreService.selectTime(time, isEditor, this.object, 'start');
   }
@@ -638,6 +664,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
 
   onChangeDays(): void {
     if (this.frequency.days) {
+      this.editor.isEnable = this.frequency.days.length > 0;
       this.frequency.all = this.frequency.days.length === 7;
       this.frequency.days.sort();
     }
@@ -649,6 +676,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     } else {
       this.frequency.days = [];
     }
+    this.editor.isEnable = this.frequency.days.length > 0;
     this.checkDays();
   }
 
@@ -659,6 +687,36 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
         checked: (this.frequency.days ? this.frequency.days.indexOf(item.value) > -1 : false)
       };
     });
+  }
+
+  selectMonthDaysFunc(value): void {
+    if (this.selectedMonths.indexOf(value) === -1) {
+      this.selectedMonths.push(value);
+    } else {
+      this.selectedMonths.splice(this.selectedMonths.indexOf(value), 1);
+    }
+    this.frequency.selectedMonths = this.coreService.clone(this.selectedMonths);
+    this.frequency.selectedMonths.sort();
+    this.editor.isEnable = this.selectedMonths.length > 0;
+  }
+
+  selectMonthDaysUFunc(value): void {
+    if (this.selectedMonthsU.indexOf(value) === -1) {
+      this.selectedMonthsU.push(value);
+    } else {
+      this.selectedMonthsU.splice(this.selectedMonthsU.indexOf(value), 1);
+    }
+    this.frequency.selectedMonthsU = this.coreService.clone(this.selectedMonthsU);
+    this.frequency.selectedMonthsU.sort();
+    this.editor.isEnable = this.selectedMonthsU.length > 0;
+  }
+
+  getSelectedMonthDays(value): boolean {
+    return this.selectedMonths.indexOf(value) !== -1;
+  }
+
+  getSelectedMonthDaysU(value): boolean {
+    return this.selectedMonthsU.indexOf(value) !== -1;
   }
 
   addFrequency(): void {

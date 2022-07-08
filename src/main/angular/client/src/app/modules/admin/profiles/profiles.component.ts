@@ -15,7 +15,6 @@ import {AuthService} from '../../../components/guard';
 export class ProfilesComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
-  schedulerIds: any = {};
   profiles: any = [];
   users: any;
   searchKey: string;
@@ -36,9 +35,9 @@ export class ProfilesComponent implements OnInit, OnDestroy {
 
     this.subscription1 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'RESET_PROFILES') {
-        this.resetMainProfile();
+        this.deleteProfile(null, false);
       } else if (res === 'DELETE_PROFILES') {
-        this.deleteMainProfile();
+        this.deleteProfile(null, true);
       }
     });
   }
@@ -46,7 +45,6 @@ export class ProfilesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.identityServiceName = sessionStorage.identityServiceName;
     this.identityServiceType = sessionStorage.identityServiceType;
     this.getList();
@@ -58,7 +56,6 @@ export class ProfilesComponent implements OnInit, OnDestroy {
 
   private getList(): void {
     this.coreService.post('profiles', {
-      controllerId: this.schedulerIds.selected,
       identityServiceName: this.identityServiceName
     }).subscribe({
       next: (res: any) => {
@@ -100,12 +97,12 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     }
   }
 
-  resetOrDeleteProfile(profile, type): void {
+  deleteProfile(profile, complete): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
         type: 'Profile',
-        operation: type,
+        operation: 'Delete',
         name: profile ? profile.account : Array.from(this.setOfCheckedId)
       };
       const modal = this.modal.create({
@@ -126,7 +123,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
           if (result.isChecked) {
             this.dataService.comments = result;
           }
-          this.resetDeleteProfile(profile, auditLog, type);
+          this.resetDeleteProfile(profile, auditLog, complete);
         }
       });
     } else {
@@ -134,9 +131,9 @@ export class ProfilesComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ConfirmModalComponent,
         nzComponentParams: {
-          title: profile ? (type === 'Reset' ? 'resetProfile' : 'deleteProfile') : (type === 'Reset' ? 'resetAllProfile' : 'deleteAllProfile'),
-          message: profile ? (type === 'Reset' ? 'resetSingleProfile' : 'deleteSingleProfile') : (type === 'Reset' ? 'resetDefaultProfile' : 'deleteDefaultProfile'),
-          type: type,
+          title: profile ? (complete ? 'deleteProfileAndCustomizations' : 'deleteProfilePreferences') : (complete ? 'deleteAllProfileAndCustomizations' : 'deleteAllProfilePreferences'),
+          message: profile ? (complete ? 'deleteProfileAndCustomizations' : 'deleteProfilePreferences') : (complete ? 'deleteAllProfileAndCustomizations' : 'deleteAllProfilePreferences'),
+          type: 'Delete',
           objectName: profile ? profile.account : undefined,
           resetProfiles: profile ? undefined : Array.from(this.setOfCheckedId)
         },
@@ -146,18 +143,10 @@ export class ProfilesComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.resetDeleteProfile(profile, this.dataService.comments, type);
+          this.resetDeleteProfile(profile, this.dataService.comments, complete);
         }
       });
     }
-  }
-
-  resetMainProfile(): void {
-    this.resetOrDeleteProfile(null, 'Reset');
-  }
-
-  deleteMainProfile(): void {
-    this.resetOrDeleteProfile(null, 'Delete');
   }
 
   showMaster(account): void {
@@ -186,7 +175,7 @@ export class ProfilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private resetDeleteProfile(profile, comments, type): void {
+  private resetDeleteProfile(profile, comments, complete): void {
     const obj: any = {accounts: [], auditLog: {}};
     if (profile) {
       obj.accounts.push(profile.account);
@@ -199,10 +188,8 @@ export class ProfilesComponent implements OnInit, OnDestroy {
         this.dataService.comments = comments;
       }
     }
-    if (type === 'Delete') {
-      obj.configurationType = 'PROFILE';
-    }
-    this.coreService.post('configurations/delete', obj).subscribe(() => {
+    obj.complete = complete;
+    this.coreService.post('profiles/delete', obj).subscribe(() => {
       if (profile) {
         for (let i = 0; i < this.profiles.length; i++) {
           if (this.profiles[i].account === profile.account) {

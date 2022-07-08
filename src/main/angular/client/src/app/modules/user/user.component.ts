@@ -702,7 +702,6 @@ export class UserComponent implements OnInit, OnDestroy {
               private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
-        this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
         this.setPreferences();
       }
     });
@@ -722,9 +721,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.zones = this.coreService.getTimeZoneList();
     this.timeZone = this.coreService.getTimeZone();
     this.configObj.controllerId = this.schedulerIds.selected;
-    this.configObj.account = this.username;
-    this.configObj.configurationType = 'PROFILE';
-    this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
+    this.configObj.accountName = this.username;
   }
 
   ngOnDestroy(): void {
@@ -784,12 +781,12 @@ export class UserComponent implements OnInit, OnDestroy {
 
   savePreferences(isThemeReload = false): void {
     if (this.schedulerIds.selected) {
-      this.configObj.configurationItem = JSON.stringify(this.preferences);
-      sessionStorage.preferences = JSON.stringify(this.preferences);
+      this.configObj.profileItem = JSON.stringify(this.preferences);
+      sessionStorage.preferences = this.configObj.profileItem;
       if (isThemeReload) {
         this.dataService.isThemeReload.next(true);
       }
-      this.coreService.post('configuration/save', this.configObj).subscribe();
+      this.coreService.post('profile/prefs/store', this.configObj).subscribe();
     }
   }
 
@@ -890,7 +887,7 @@ export class UserComponent implements OnInit, OnDestroy {
       nzContent: ConfirmModalComponent,
       nzComponentParams: {
         title: 'resetProfile',
-        message: 'resetSingleProfile',
+        message: 'resetProfilePreferences',
         type: 'Reset',
         objectName: this.username
       },
@@ -906,8 +903,8 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   private _resetProfile(): void {
-    const obj = {accounts: [this.username]};
-    this.coreService.post('configurations/delete', obj).subscribe(() => {
+    const obj = {accounts: [this.username], complete: false};
+    this.coreService.post('profiles/delete', obj).subscribe(() => {
       this.dataService.isProfileReload.next(true);
     });
   }

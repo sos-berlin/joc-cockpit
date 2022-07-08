@@ -89,13 +89,13 @@
             </button>
             <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="resetProfiles()">
-              <i class="fa fa-refresh"></i>&nbsp;
-              <span translate>user.button.resetProfile</span>
+              <i class="fa fa-trash-o"></i>&nbsp;
+              <span translate>user.button.deleteProfile</span>
             </button>
             <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="deleteProfiles()">
               <i class="fa fa-trash"></i>&nbsp;
-              <span translate>user.button.deleteProfile</span>
+              <span translate>user.button.deleteProfileAndCustomization</span>
             </button>
             <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/identity_service/permissions')"
                     (click)="addFolder()">

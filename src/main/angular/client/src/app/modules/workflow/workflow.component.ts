@@ -1454,8 +1454,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   this.workflows[i].state = res.workflow.state;
                   this.workflows[i].jobs = res.workflow.jobs;
                   if (this.workflows[i].show) {
-                    this.workflows[i].configuration = res.workflow;
-                    this.workflowService.convertTryToRetry(this.workflows[i].configuration, null, {}, {count: 0});
+                    this.workflowService.convertTryToRetry(res.workflow, null, {}, {count: 0});
+                    this.compareAndMergeInstructions(this.workflows[i].configuration.instructions, res.workflow.instructions);
                   }
                 }
               });
@@ -1500,6 +1500,29 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           controllerId: this.schedulerIds.selected,
           workflowIds: request2
         });
+      }
+    }
+  }
+
+  private compareAndMergeInstructions(sour, targ): void {
+    for (let i in sour) {
+      if (sour[i].TYPE === 'Job') {
+        sour[i].state = targ[i].state
+      } else if (this.workflowService.isInstructionCollapsible(sour[i].TYPE)) {
+        if (sour[i].then) {
+          this.compareAndMergeInstructions(sour[i].then, targ[i].then);
+        } else if (sour[i].else) {
+          this.compareAndMergeInstructions(sour[i].else, targ[i].else);
+        } else if (sour[i].branches && sour[i].branches.length > 0) {
+          sour[i].branches.forEach((branch, index) => {
+            this.compareAndMergeInstructions(sour[i].branches[index], targ[i].branches[index]);
+          })
+        } else if (sour[i].instructions) {
+          this.compareAndMergeInstructions(sour[i], targ[i]);
+        }
+        if (sour[i].catch) {
+          this.compareAndMergeInstructions(sour[i].catch, targ[i].catch);
+        }
       }
     }
   }
@@ -1734,13 +1757,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   private saveProfileSettings(preferences): void {
     const configObj = {
       controllerId: this.schedulerIds.selected,
-      account: this.authService.currentUserData,
-      configurationType: 'PROFILE',
-      id: parseInt(sessionStorage.preferenceId, 10),
-      configurationItem: JSON.stringify(preferences)
+      accountName: this.authService.currentUserData,
+      profileItem: JSON.stringify(preferences)
     };
-    sessionStorage.preferences = JSON.stringify(preferences);
-    this.coreService.post('configuration/save', configObj).subscribe();
+    sessionStorage.preferences = configObj.profileItem;
+    this.coreService.post('profile/prefs/store', configObj).subscribe();
   }
 
   reload(): void {

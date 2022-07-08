@@ -42,7 +42,6 @@ export class LogComponent implements OnInit {
   scrolled = false;
   isExpandCollapse = false;
   taskCount = 1;
-  preferenceId: any;
   controllerId: string;
   lastScrollTop = 0;
   delta = 20;
@@ -83,20 +82,16 @@ export class LogComponent implements OnInit {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     this.controllerId = this.route.snapshot.queryParams.controllerId;
-    this.preferenceId = window.sessionStorage.preferenceId;
     if (this.authService.scheduleIds) {
       const ids = JSON.parse(this.authService.scheduleIds);
       if (ids && ids.selected != this.controllerId) {
         const configObj = {
           controllerId: this.controllerId,
-          account: this.authService.currentUserData,
-          configurationType: 'PROFILE'
+          accountName: this.authService.currentUserData
         };
-        this.coreService.post('configurations', configObj).subscribe({next:(res: any) => {
-          if (res.configurations && res.configurations.length > 0) {
-            const conf = res.configurations[0];
-            this.preferences = JSON.parse(conf.configurationItem);
-            this.preferenceId = conf.id;
+        this.coreService.post('profile/prefs', configObj).subscribe({next:(res: any) => {
+          if (res.profileItem) {
+            this.preferences = JSON.parse(res.profileItem);
           }
           this.init();
         }, error:() => this.init()
@@ -849,13 +844,11 @@ export class LogComponent implements OnInit {
     this.preferences.logFilter = this.object.checkBoxs;
     const configObj: any = {
       controllerId: this.controllerId,
-      account: this.authService.currentUserData,
-      configurationType: 'PROFILE',
-      id: this.preferenceId
+      accountName: this.authService.currentUserData,
+      profileItem: JSON.stringify(this.preferences)
     };
-    window.sessionStorage.preferences = JSON.stringify(this.preferences);
+    window.sessionStorage.preferences = configObj.profileItem;
     sessionStorage.setItem('controllerId', this.controllerId);
-    configObj.configurationItem = JSON.stringify(this.preferences);
-    this.coreService.post('configuration/save', configObj).subscribe();
+    this.coreService.post('profile/prefs/store', configObj).subscribe();
   }
 }
