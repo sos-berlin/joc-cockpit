@@ -859,6 +859,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   schemaIdentifier;
   isExpandAll = false;
   isStore = false;
+  isChange = false;
   path;
   prevXML;
   recreateJsonFlag;
@@ -1024,6 +1025,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.extraInfo.sync = false;
       this.autoValidate();
     }
+    this.isChange = true;
   }
 
   private checkJobReource(name): void {
@@ -1521,6 +1523,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     };
     this.coreService.post('xmleditor/read', obj).subscribe({
       next: (res: any) => {
+        this.isChange = false;
         if (res.validation && res.validation.validated) {
           this.validConfig = true;
         } else {
@@ -2631,6 +2634,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
     this.validConfig = false;
     this.extraInfo.released = false;
+    this.isChange = true;
   }
 
   autoAddChild(child) {
@@ -3340,6 +3344,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.getIndividualData(this.selectedNode, undefined);
     }
     this.extraInfo.released = false;
+    this.isChange = true;
   }
 
   getParent(node, list) {
@@ -3649,6 +3654,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.getIndividualData(this.selectedNode, undefined);
     this.scrollTreeToGivenId(this.selectedNode.uuid);
     this.extraInfo.released = false;
+    this.isChange = true;
     this.printArraya(false);
   }
 
@@ -4182,6 +4188,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   updateListData(node): void {
     node.data = node.data1.join(' ');
     this.extraInfo.released = false;
+    this.isChange = true;
   }
 
   upperCase(env): void {
@@ -4191,6 +4198,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   submitData(value, tag) {
+    this.isChange = true;
     if (tag.type === 'xs:NMTOKEN') {
       if (/\s/.test(value)) {
         this.error = true;
@@ -4466,6 +4474,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   submitValue(value, ref, tag) {
+    this.isChange = true;
     if (/^\s*$/.test(value)) {
       this.error = true;
       this.text = this.requiredField;
@@ -5027,6 +5036,19 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.prevXML = '';
         this.getIndividualData(this.nodes[0], undefined);
         this.getData(this.nodes[0]);
+        if (this.nodes.length > 0 && this.nodes[0].children && this.nodes[0].children.length > 0) {
+          for (const i in this.nodes[0].children) {
+            if (this.nodes[0].children[i].ref === 'JobResource') {
+              for (const j in this.nodes[0].children[i].attributes) {
+                if (this.nodes[0].children[i].attributes[j].name === 'name') {
+                  this.getJobResourceTree(this.nodes[0].children[i].attributes[j]);
+                  break;
+                }
+              }
+              break;
+            }
+          }
+        }
       }
     });
   }
@@ -5632,7 +5654,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (this.prevXML && this.mainXml) {
       eRes = this.compare(this.prevXML.toString(), this.mainXml.toString());
     }
-    if (!eRes) {
+    if (!eRes && this.isChange) {
+      this.isChange = false;
+     
       this.removeDocs();
       this.isStore = true;
       if (this.objectType === 'NOTIFICATION') {
@@ -5679,6 +5703,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           }
         });
       }
+    } else {
+      this.isChange = false;
     }
   }
 
