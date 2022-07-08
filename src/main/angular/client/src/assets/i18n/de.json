@@ -1709,7 +1709,7 @@
     "label.gitManagement": "Verwaltung Git",
     "label.favoriteManagement": "Verwaltung Favoriten",
     "label.licenseWarningGotIt": "Lizenzwarnung akzeptiert",
-    "button.resetPreferences": "Einstellungen im Profile zurücksetzen",
+    "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
     "message.passwordNotMatch": "Neues Kennwort und bestätigtes Kennwort müssen übereinstimmen",
