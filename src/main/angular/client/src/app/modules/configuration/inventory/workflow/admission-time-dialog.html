@@ -99,7 +99,7 @@
       <div class="form-group row">
         <label class="col-sm-3" translate>workflow.admissionTime.label.weekDays</label>
         <div class="col-sm-9">
-          <label class="w" nz-checkbox [(ngModel)]="frequency.all" name="week"
+          <label class="w m-b-xxs" nz-checkbox [(ngModel)]="frequency.all" name="week"
                  (nzCheckedChange)="selectAllWeek()">
             <span translate>workflow.admissionTime.label.everyDay</span>
           </label><br>
@@ -258,12 +258,14 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let item of data.periodList;">
+          <tr *ngFor="let item of data.periodList; let i = index">
             <td>
-              <span *ngIf="item.frequency"><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
-              <span *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
+              <span class="cursor" (click)="editFrequency(item)" *ngIf="item.frequency"><span *ngIf="item.day" translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
+              <span class="cursor" (click)="editFrequency(item)" *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
+              <a class="text-xs primary-text-hover-color m-l-sm"
+                 (click)="editFrequency(item)"><i class="fa fa-pencil"></i></a>
               <a class="text-xs text-hover-color m-l-sm"
-                 (click)="removeFrequency(item)"><i class="fa fa-times"></i></a>
+                 (click)="removeFrequency(item, i)"><i class="fa fa-times"></i></a>
             </td>
             <td>
               <div *ngFor="let p of item.periods;">

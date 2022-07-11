@@ -35,10 +35,6 @@
               <i class="fa fa-upload"></i>&nbsp;
               <span translate>inventory.button.import</span>
             </button>
-            <button *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':showBlocklist}" (click)=" manageBlocklist()">
-              <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
-              <span translate>user.button.blocklist</span>
-            </button>
             <button [disabled]="showBlocklist" *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.manageGeneralSetting</span>
@@ -92,6 +88,11 @@
               <i class="fa fa-trash-o"></i>&nbsp;
               <span translate>user.button.deleteProfile</span>
             </button>
+            <button *ngIf="route === '/users/identity_service/blocklist' && isBlockButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
+            (click)="deleteBulkBlockedAccounts()">
+      		<i class="fa fa-trash-o"></i>&nbsp;
+     		 <span translate>user.button.deleteBlockedAccounts</span>
+    	    </button>
             <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="deleteProfiles()">
               <i class="fa fa-trash"></i>&nbsp;
@@ -146,6 +147,14 @@
           <li class="nav-item">
             <a class="nav-link" routerLink="identity_service/profiles" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.profiles</span></span>
+            </a>
+          </li>
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="identity_service/blocklist" routerLinkActive="active">
+              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.blocklist</span></span>
             </a>
           </li>
         </ul>

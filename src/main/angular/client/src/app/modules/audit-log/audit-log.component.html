@@ -334,7 +334,7 @@
             <thead>
             <tr>
               <th class="menu"><span translate>common.label.action</span></th>
-              <th (click)="sort('accountName')"><a>
+              <th nzWidth="30%" (click)="sort('accountName')"><a>
                 <span class="p-r-xs" translate>auditLog.label.account</span>
                 <i *ngIf="historyLogin.filter.sortBy == 'accountName' && !historyLogin.reverse"
                    class="fa fa-caret-up "></i>
@@ -360,7 +360,7 @@
                     <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                       <ul nz-menu >
-                        <li nz-menu-item (click)="addToBlocklist(account)">
+                        <li nz-menu-item (click)="addBlockedAccounts(account)">
                           <a translate>user.button.addToBlocklist</a>
                         </li>
                       </ul>
@@ -368,10 +368,34 @@
                   </div>
                 </td>
                 <td>
+                  <i class="cursor fa fa-caret-down fa-lg"
+                     *ngIf="!account.show" (click)="account.show = true;$event.stopPropagation()"></i>
+                  <i class="cursor fa fa-caret-up fa-lg"
+                     *ngIf="account.show" (click)="account.show = false;$event.stopPropagation()"></i>&nbsp;
                   <span [innerHtml]="account.accountName | highlight : historyLogin.searchText"></span>
                 </td>
                 <td>
                   <span [innerHtml]="account.loginDate | stringToDate | highlight : historyLogin.searchText"></span>
+                </td>
+              </tr>
+              <tr *ngIf="account.show">
+                <td class="menu"></td>
+                <td colspan="2" style="padding:0 !important;" class="audit-log-failed-template">
+                  <nz-table class="m-a-0 inner-table" #innerChildTable nzSize="small"
+                            [nzData]="account.details.loginHistoryItems" [nzShowPagination]="false" [nzFrontPagination]="false">
+                    <thead>
+                    <tr>
+                      <th nzWidth="31%"><span translate>auditLog.label.identityServiceName</span></th>
+                      <th><span translate>auditLog.label.message</span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let child of innerChildTable.data">
+                      <td><span>{{child.identityServiceName}}</span></td>
+                      <td><span class="text-danger">{{child.message}}</span></td>
+                    </tr>
+                    </tbody>
+                  </nz-table>
                 </td>
               </tr>
             </ng-template>

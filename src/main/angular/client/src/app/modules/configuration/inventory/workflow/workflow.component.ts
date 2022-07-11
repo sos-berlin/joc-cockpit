@@ -403,24 +403,7 @@ export class CycleInstructionComponent implements OnChanges {
     if (list.periodList.length === 0) {
       this.selectedNode.obj.schedule.schemes[mainIndex].admissionTimeScheme.periods = [];
     } else {
-      const arr = [];
-      list.periodList.forEach((item) => {
-        if (item.periods) {
-          item.periods.forEach((period) => {
-            const obj: any = {
-              TYPE: !item.frequency ? 'DailyPeriod' : 'WeekdayPeriod'
-            };
-            if (!item.frequency) {
-              obj.secondOfDay = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
-            } else {
-              obj.secondOfWeek = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
-            }
-            obj.duration = period.duration;
-            arr.push(obj);
-          });
-        }
-      });
-      this.selectedNode.obj.schedule.schemes[mainIndex].admissionTimeScheme.periods = arr;
+      this.selectedNode.obj.schedule.schemes[mainIndex].admissionTimeScheme.periods = this.workflowService.convertListToAdmissionTime(list.periodList);
     }
   }
 
@@ -604,27 +587,10 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    const arr = [];
-    this.data.periodList.forEach((item) => {
-      if (item.periods) {
-        item.periods.forEach((period) => {
-          const obj: any = {
-            TYPE: !item.frequency ? 'DailyPeriod' : 'WeekdayPeriod'
-          };
-          if (!item.frequency) {
-            obj.secondOfDay = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
-          } else {
-            obj.secondOfWeek = ((item.secondOfDay || item.secondOfWeek || 0) + period.startTime);
-          }
-          obj.duration = period.duration;
-          arr.push(obj);
-        });
-      }
-    });
     if (!this.job.admissionTimeScheme) {
       this.job.admissionTimeScheme = {};
     }
-    this.job.admissionTimeScheme.periods = arr;
+    this.job.admissionTimeScheme.periods = this.workflowService.convertListToAdmissionTime(this.data.periodList);
     this.data.periodList = null;
   }
 
@@ -736,18 +702,42 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       p.text = this.workflowService.getText(p.startTime, p.duration);
     }
     const temp = this.coreService.clone(this.data.periodList);
-    this.data.periodList = [];
-    if (this.frequency.days.length === 7 && this.repeatObject) {
-      this.addFrequencyAndPeriod('1', temp, p, true);
-    } else {
-      this.frequency.days.forEach((day) => {
-        this.addFrequencyAndPeriod(day, temp, p, false);
-      });
+    console.log(this.data.periodList, 'before', this.frequency.tab)
+    if (this.frequency.tab === 'weekDays') {
+      if (this.frequency.days.length > 0) {
+        if (this.frequency.days.length === 7 && this.repeatObject) {
+          this.data.periodList.push(this.addWeekdayFrequency('1', temp, p, true));
+        } else {
+          this.frequency.days.forEach((day) => {
+            this.data.periodList.push(this.addWeekdayFrequency(day, temp, p, false));
+          });
+        }
+      }
+    } else if (this.frequency.tab === 'specificWeekDays') {
+      this.data.periodList.push(this.addSpecificWeekdayFrequency(this.frequency, temp, p));
+    } else if (this.frequency.tab === 'monthDays') {
+      if (this.frequency.isUltimos === 'months') {
+        this.selectedMonths.forEach((day) => {
+          this.data.periodList.push(this.addMonthdayFrequency(day, temp, p, false));
+        });
+      } else {
+        this.selectedMonthsU.forEach((day) => {
+          this.data.periodList.push(this.addMonthdayFrequency(day, temp, p, true));
+        });
+      }
+    }
+    for (let i in temp) {
+      for (let j = 0; j < this.data.periodList.length; j++) {
+        if (temp[i].match && temp[i].frequency === this.data.periodList[j].frequency) {
+          this.data.periodList.splice(j, 1);
+          break;
+        }
+      }
     }
     this.object = {};
   }
 
-  private addFrequencyAndPeriod(day, temp, p, isDaily): void {
+  private addWeekdayFrequency(day, temp, p, isDaily): any {
     const d = parseInt(day, 10) - 1;
     const obj: any = {
       day,
@@ -755,45 +745,56 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       frequency: isDaily ? '' : this.days[parseInt(day, 10)],
       periods: []
     };
-    if (temp.length > 0) {
-      for (const i in temp) {
-        if (temp[i] && temp[i].day == day) {
-          obj.periods = temp[i].periods;
-          break;
-        }
-      }
-    }
-    if (p) {
-      let isCheck = true;
-      if (obj.periods.length > 0) {
-        obj.periods.forEach((per) => {
-          if (per.text === p.text) {
-            isCheck = false;
-          }
-        });
-      }
-      if (isCheck) {
-        obj.periods.push(p);
-      }
-    }
+    this.workflowService.updatePeriod(temp, obj, p);
     if (obj.periods.length === 0) {
       this.isValid = false;
     }
-    this.data.periodList.push(obj);
+    return obj;
   }
+
+  private addSpecificWeekdayFrequency(frequency, temp, p): any {
+    const obj: any = {
+      secondOfWeeks: (frequency.specificWeekDay * 24 * 3600) + (frequency.specificWeek * 7 * 24 * 3600),
+      frequency: this.workflowService.getSpecificDay(frequency.specificWeek) + ' ' + this.workflowService.getStringDay(frequency.specificWeekDay),
+      periods: []
+    };
+    this.workflowService.updatePeriod(temp, obj, p);
+    if (obj.periods.length === 0) {
+      this.isValid = false;
+    }
+    return obj;
+  }
+
+  private addMonthdayFrequency(day, temp, p, isLast): any {
+    const d = parseInt(day, 10) - 1;
+    const obj: any = {
+      frequency: this.workflowService.getMonthDays(day),
+      periods: []
+    };
+    if (!isLast) {
+      obj.secondOfMonth = (d * 24 * 3600);
+    } else {
+      obj.lastSecondOfMonth = (d * 24 * 3600);
+    }
+    this.workflowService.updatePeriod(temp, obj, p);
+    if (obj.periods.length === 0) {
+      this.isValid = false;
+    }
+    return obj;
+  }
+
 
   closeRuntime(): void {
     this.close.emit();
   }
 
-  removeFrequency(data): void {
+  editFrequency(item): void {
+    console.log(item);
+  }
+
+  removeFrequency(data, index): void {
     this.isValid = true;
-    this.data.periodList = this.data.periodList.filter((item) => {
-      if (item.periods.length === 0) {
-        this.isValid = false;
-      }
-      return item.day !== data.day;
-    });
+    this.data.periodList.splice(index, 1);
   }
 
   addPeriod(data): void {
@@ -4775,7 +4776,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
           } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable') {
             val = val == 'true';
-          } else if(obj.TYPE === 'PostNotices' && attr[j].name === 'noticeBoardNames'){
+          } else if (obj.TYPE === 'PostNotices' && attr[j].name === 'noticeBoardNames') {
             val = val ? val.split(',') : '';
           }
           obj[attr[j].name] = val;
@@ -7172,7 +7173,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 }
                 if (flag1) {
                   if (self.selectedNode.data.periodList) {
-                    self.selectedNode.data.schedule.admissionTimeScheme.periods = convertListToAdmissionTime(self.selectedNode.data.periodList);
+                    self.selectedNode.data.schedule.admissionTimeScheme.periods = self.workflowService.convertListToAdmissionTime(self.selectedNode.data.periodList);
                   }
                   if (!self.selectedNode.isEdit) {
                     self.selectedNode.obj.schedule.schemes.push({
@@ -7226,7 +7227,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (self.selectedNode.type === 'ExpectNotices') {
               noticeBoardNames = self.selectedNode.newObj.noticeBoardNames;
             } else {
-              if(isArray(self.selectedNode.newObj.noticeBoardNames)){
+              if (isArray(self.selectedNode.newObj.noticeBoardNames)) {
                 noticeBoardNames = self.selectedNode.newObj.noticeBoardNames.join(',');
               }
             }
@@ -7279,31 +7280,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
     }
 
-    function convertListToAdmissionTime(list): Array<any> {
-      const arr = [];
-      list.forEach((item) => {
-        if (item.periods) {
-          item.periods.forEach((period) => {
-            if (!period.startTime) {
-              period.startTime = 0;
-            }
-            const obj: any = {
-              TYPE: item.frequency ? 'WeekdayPeriod' : 'DailyPeriod'
-            };
-            if (obj.TYPE === 'DailyPeriod') {
-              obj.secondOfDay = ((item.secondOfWeek || item.secondOfDay || 0) + period.startTime);
-            } else {
-              obj.secondOfWeek = ((item.secondOfWeek || item.secondOfDay || 0) + period.startTime);
-            }
-            obj.duration = period.duration;
-            arr.push(obj);
-          });
-        }
-      });
-
-      return arr;
-    }
-
     /**
      * Updates the properties panel
      */
@@ -7313,7 +7289,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (!self.selectedNode.job.admissionTimeScheme) {
             self.selectedNode.job.admissionTimeScheme = {};
           }
-          self.selectedNode.job.admissionTimeScheme.periods = convertListToAdmissionTime(self.selectedNode.periodList);
+          self.selectedNode.job.admissionTimeScheme.periods = self.workflowService.convertListToAdmissionTime(self.selectedNode.periodList);
         }
         self.cutOperation();
         self.error = false;
@@ -10022,7 +9998,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if (this.invalidMsg && this.invalidMsg.match(/inventory/)) {
             this.invalidMsg = '';
           }
-          if(!res.valid){
+          if (!res.valid) {
             const data = this.coreService.clone(this.workflow.configuration);
             this.modifyJSON(data, true, false);
           }

@@ -5,6 +5,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty, clone} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {takeUntil} from 'rxjs/operators';
+import {ToastrService} from 'ngx-toastr';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {ExcelService} from '../../services/excel.service';
 import {CoreService} from '../../services/core.service';
@@ -12,6 +13,7 @@ import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
+import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-filter-content',
@@ -224,7 +226,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService, private router: Router,
+              private translate: TranslateService, private toasterService: ToastrService, private excelService: ExcelService, private router: Router,
               private orderPipe: OrderPipe) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -607,9 +609,57 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   /* ----------------------Action --------------------- */
+  addBlockedAccounts(acc) {
+    let object: any = {
+      accountName: acc.accountName
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Blocklist',
+        operation: 'Add to blocklist',
+        name: acc.accountName
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          object.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this.addToBlocklist(object);
+        }
+      });
+    } else {
+      this.addToBlocklist(object);
+    }
+  }
 
-  addToBlocklist(account): void {
-    console.log(account)
+
+  addToBlocklist(obj): void {
+    this.coreService.post('iam/blockedAccount/store', obj).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.translate.get('user.message.addedToBlocklist').subscribe(translatedValue => {
+            this.toasterService.success(translatedValue);
+          });
+        }
+        this.isLoaded = true;
+      }, error: () => {
+        this.isLoaded = true
+      }
+    });
   }
 
   action(type, obj, self): void {

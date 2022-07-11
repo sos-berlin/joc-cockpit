@@ -16,6 +16,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   permission: any;
   isPaste = false;
   isButtonShow = false;
+  isBlockButtonShow=false;
   isSelected = false;
   selectedUser: string;
   accounts: any = [];
@@ -45,8 +46,10 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.isButtonShow = false;
       } else if (res === 'IS_ACCOUNT_PROFILES_TRUE' || res === 'IS_ROLE_PROFILES_TRUE') {
         this.isSelected = true;
+        this.isBlockButtonShow = true;
       } else if (res === 'IS_ACCOUNT_PROFILES_FALSE' || res === 'IS_ROLE_PROFILES_FALSE') {
         this.isSelected = false;
+        this.isBlockButtonShow = false;
       } else if (res === 'RELOAD') {
         this.getUsersData();
       }
@@ -174,6 +177,10 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   deleteProfiles(): void {
     this.dataService.announceFunction('DELETE_PROFILES');
+  }
+
+  deleteBulkBlockedAccounts(): void {
+    this.dataService.announceFunction('DELETE_BULK_BLOCKS');
   }
 
   exportObject(): void {

@@ -564,6 +564,7 @@ export class WorkflowService {
 
   convertTryToRetry(mainJson: any, cb: any, jobs = {}, countObj): void {
     const self = this;
+
     function recursive(json: any, parent = null) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -640,12 +641,12 @@ export class WorkflowService {
             let arr = [];
             if (json.instructions[x].TYPE === 'ExpectNotices') {
               arr = self.convertExpToArray(json.instructions[x].noticeBoardNames);
-            } else{
+            } else {
               arr = json.instructions[x].noticeBoardNames;
             }
             arr = Array.from(new Set(arr));
             for (const key in mainJson.compressData) {
-              for (let m =0; m < arr.length; m++) {
+              for (let m = 0; m < arr.length; m++) {
                 if ((mainJson.compressData[key].name == arr[m])) {
                   if (!json.instructions[x].uuid) {
                     json.instructions[x].uuid = self.create_UUID();
@@ -927,7 +928,7 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-            if(json.instructions[x].noticeBoardNames) {
+            if (json.instructions[x].noticeBoardNames) {
               let arr = self.convertExpToArray(json.instructions[x].noticeBoardNames);
               if (boardType === 'PostNotices' && (objectName === json.instructions[x].noticeBoardNames || (arr.filter(o1 => boardNames.some(o2 => o1 === o2))))) {
                 connectInstruction(mapObj.cell, v1, objectName, '', mapObj.cell.parent);
@@ -1194,10 +1195,10 @@ export class WorkflowService {
             }
             if (v1) {
               json.compressData[i].instructions[x].id = v1.id;
-              if(graph.getEdgesBetween(w1, v1).length === 0) {
+              if (graph.getEdgesBetween(w1, v1).length === 0) {
                 connectInstruction(w1, v1, '', '', parent);
               }
-              if(graph.getEdgesBetween(v1, b1).length === 0) {
+              if (graph.getEdgesBetween(v1, b1).length === 0) {
                 connectInstruction(v1, b1, '', '', parent);
               }
             }
@@ -1914,40 +1915,106 @@ export class WorkflowService {
   convertSecondIntoWeek(data, periodList, days, frequency): void {
     const hour = 3600;
     data.periods.forEach((period) => {
-      const hours = (period.secondOfWeek || period.secondOfDay || 0) / hour;
-      const day = Math.floor(hours / 24) + 1;
-      if (frequency.days && frequency.days.indexOf(day.toString()) === -1) {
-        frequency.days.push(day.toString());
-      }
-      const d = day - 1;
-      const obj: any = {
-        day,
-        secondOfWeek: (d * 24 * 3600),
-        frequency: days[day],
-        periods: []
-      };
-      if (period.TYPE === 'DailyPeriod') {
-        obj.frequency = '';
-      }
-      const startTime = (period.secondOfWeek || period.secondOfDay || 0) - obj.secondOfWeek;
       const p: any = {
-        startTime,
+        startTime: 0,
         duration: period.duration
       };
-      p.text = this.getText(p.startTime, p.duration);
-      let flag = true;
-      if (periodList.length > 0) {
-        for (const i in periodList) {
-          if (periodList[i].day == day) {
-            flag = false;
-            periodList[i].periods.push(p);
-            break;
+      let obj: any = {};
+      if (period.TYPE === 'WeekdayPeriod' || period.TYPE === 'DailyPeriod') {
+        const hours = (period.secondOfWeek || period.secondOfDay || 0) / hour;
+        const day = Math.floor(hours / 24) + 1;
+        if (frequency.days && frequency.days.indexOf(day.toString()) === -1) {
+          frequency.days.push(day.toString());
+        }
+        const d = day - 1;
+        obj = {
+          day,
+          secondOfWeek: (d * 24 * 3600),
+          frequency: days[day],
+          periods: []
+        };
+        if (period.TYPE === 'DailyPeriod') {
+          obj.frequency = '';
+        }
+        p.startTime = (period.secondOfWeek || period.secondOfDay || 0) - obj.secondOfWeek;
+        p.text = this.getText(p.startTime, p.duration);
+        let flag = true;
+        if (periodList.length > 0) {
+          for (const i in periodList) {
+            if (periodList[i].day == day) {
+              flag = false;
+              periodList[i].periods.push(p);
+              break;
+            }
           }
         }
-      }
-      if (flag) {
-        obj.periods.push(p);
-        periodList.push(obj);
+        if (flag) {
+          obj.periods.push(p);
+          periodList.push(obj);
+        }
+      } else if (period.TYPE === 'MonthlyDatePeriod' || period.TYPE === 'MonthlyLastDatePeriod') {
+        obj = {
+          frequency: '',
+          periods: []
+        };
+        const hours = (period.secondOfMonth || period.lastSecondOfMonth) / hour;
+        let day = Math.floor(hours / 24) + 1;
+        const d = day - 1;
+        obj = {
+          periods: []
+        };
+        obj[period.TYPE === 'MonthlyLastDatePeriod' ? 'lastSecondOfMonth' : 'secondOfMonth'] =(d * 24 * 3600);
+        if (period.TYPE === 'MonthlyLastDatePeriod') {
+          day = -27 + day;
+        }
+        obj.frequency = this.getMonthDays(day);
+        p.startTime = (period.secondOfMonth || period.lastSecondOfMonth) - (obj.secondOfMonth || obj.lastSecondOfMonth);
+        p.text = this.getText(p.startTime, p.duration);
+        let flag = true;
+        if (periodList.length > 0) {
+          for (const i in periodList) {
+            if (periodList[i].frequency == obj.frequency) {
+              flag = false;
+              periodList[i].periods.push(p);
+              break;
+            }
+          }
+        }
+        if (flag) {
+          obj.periods.push(p);
+          periodList.push(obj);
+        }
+      } else if (period.TYPE === 'MonthlyWeekdayPeriod' || period.TYPE === 'MonthlyLastWeekdayPeriod') {
+        const hours = (period.secondOfWeeks || 0) / hour;
+        const day = Math.floor(hours / 24) + 1;
+        const d = day - 1;
+        obj = {
+          secondOfWeeks: (d * 24 * 3600),
+          periods: []
+        };
+        let specificWeekDay = day % 7;
+        let specificWeek = Math.abs((day - specificWeekDay) / 7) + 1;
+        if (period.TYPE === 'MonthlyLastWeekdayPeriod') {
+          specificWeekDay = 7 + specificWeekDay;
+          specificWeek = -(specificWeek);
+        }
+        obj.frequency = this.getSpecificDay(specificWeek) + ' ' + this.getStringDay((specificWeekDay - 1))
+        p.startTime = period.secondOfWeeks - obj.secondOfWeeks;
+        p.text = this.getText(p.startTime, p.duration);
+        let flag = true;
+        if (periodList.length > 0) {
+          for (const i in periodList) {
+            if (periodList[i].frequency == obj.frequency) {
+              flag = false;
+              periodList[i].periods.push(p);
+              break;
+            }
+          }
+        }
+        if (flag) {
+          obj.periods.push(p);
+          periodList.push(obj);
+        }
       }
     });
   }
@@ -2084,4 +2151,128 @@ export class WorkflowService {
     });
     return arr;
   }
+
+  getStringDay(day): string {
+    return (day == 0 ? 'Monday' : day == 1 ? 'Tuesday' : day == 2 ? 'Wednesday' : day == 3 ? 'Thursday' : day == 4 ? 'Friday' : day == 5 ? 'Saturday' : 'Sunday') + ' of a month';
+  }
+
+  getSpecificDay(day): string {
+    if (!day) {
+      return '';
+    }
+    if (day == 1) {
+      return 'first';
+    } else if (day == 2) {
+      return 'second';
+    } else if (day == 3) {
+      return 'third';
+    } else if (day == 4) {
+      return 'fourth';
+    } else if (day == -1) {
+      return 'last';
+    } else if (day == -2) {
+      return 'second last';
+    } else if (day == -3) {
+      return 'third last';
+    } else if (day == -4) {
+      return 'fourth last';
+    } else {
+      return '';
+    }
+  }
+
+  getMonthDays(month): string {
+    let str = '';
+    if (!month) {
+      return month;
+    }
+    let months = month;
+    if (!isArray(month)) {
+      months = month.toString().split(' ').sort();
+    }
+    for (let i = 0; i < months.length; i++) {
+      if (months[i] == 0) {
+        str = str + 'last';
+      } else if (months[i] == 1 || months[i] == 31) {
+        str = str + months[i] + 'st,';
+      } else if (months[i] == 2) {
+        str = str + months[i] + 'nd,';
+      } else if (months[i] == 3) {
+        str = str + months[i] + 'rd,';
+      } else {
+        str = str + months[i] + 'th,';
+      }
+    }
+
+    if (str.length === 1) {
+      return '';
+    } else {
+      if (str.substring(str.length - 1) == ',') {
+        str = str.substring(0, str.length - 1);
+      }
+    }
+    return str + ' of a month';
+  }
+
+  convertListToAdmissionTime(list): Array<any> {
+    const arr = [];
+    list.forEach((item) => {
+      if (item.periods) {
+        item.periods.forEach((period) => {
+          if (!period.startTime) {
+            period.startTime = 0;
+          }
+          const obj: any = {
+            TYPE: item.frequency ? 'WeekdayPeriod' : 'DailyPeriod'
+          };
+          if (item.secondOfMonth != undefined) {
+            obj.TYPE = 'MonthlyDatePeriod';
+            obj.secondOfMonth = item.secondOfMonth + period.startTime;
+          } else if (item.lastSecondOfMonth != undefined) {
+            obj.TYPE = 'MonthlyLastDatePeriod';
+            obj.lastSecondOfMonth = item.lastSecondOfMonth + period.startTime;
+          } else if (item.secondOfWeeks != undefined) {
+            obj.TYPE = item.secondOfWeeks < 0 ? 'MonthlyLastWeekdayPeriod' : 'MonthlyWeekdayPeriod';
+            obj.secondOfWeeks = item.secondOfWeeks + period.startTime;
+          }
+          if (obj.TYPE === 'WeekdayPeriod') {
+            obj.secondOfWeek = ((item.secondOfWeek || item.secondOfDay || 0) + period.startTime);
+          } else if (obj.TYPE === 'DailyPeriod') {
+            obj.secondOfDay = ((item.secondOfDay || 0) + period.startTime);
+          }
+          obj.duration = period.duration;
+          console.log(obj, '>>>>>>>', item.frequency)
+          arr.push(obj);
+        });
+      }
+    });
+
+    return arr;
+  }
+
+  updatePeriod(temp, obj, period): void {
+    if (temp.length > 0) {
+      for (const i in temp) {
+        if (temp[i] && temp[i].frequency == obj.frequency) {
+          obj.periods = this.coreService.clone(temp[i].periods);
+          temp[i].match = true;
+          break;
+        }
+      }
+    }
+    if (period) {
+      let isCheck = true;
+      if (obj.periods.length > 0) {
+        obj.periods.forEach((_period) => {
+          if (_period.text === period.text) {
+            isCheck = false;
+          }
+        });
+      }
+      if (isCheck) {
+        obj.periods.push(period);
+      }
+    }
+  }
+
 }

@@ -1,10 +1,9 @@
 <div class="box p-a">
   <div class="table-responsive">
-    <nz-table #ajaxTable [nzSize]="'small'"
-              [nzPageSize]="filter.entryPerPage"
-              [nzPageIndex]="filter.currentPage" [nzBordered]="true" [nzShowPagination]="data.length > 0"
-              [nzData]="data" [nzLoading]="!isLoaded" [nzShowSizeChanger]="true"
-              (nzPageIndexChange)="pageIndexChange($event)" (nzPageSizeChange)="pageSizeChange($event)"
+    <nz-table #ajaxTable [nzSize]="'small'" [nzPageSize]="filter.entryPerPage" [nzPageIndex]="filter.currentPage"
+              [nzBordered]="true" [nzShowPagination]="blocklist.length > 0" [nzData]="blocklist" [nzLoading]="!isLoaded"
+              [nzShowSizeChanger]="true" (nzPageIndexChange)="pageIndexChange($event)"
+              (nzPageSizeChange)="pageSizeChange($event)"
               [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
       <thead>
       <tr>
@@ -13,19 +12,15 @@
         </th>
         <th class="menu"><span translate>common.label.action</span></th>
         <th (click)="sort('accountName')"><a>
-          <span class="p-r-xs" translate>auditLog.label.account</span>
-          <i *ngIf="filter.sortBy == 'accountName' && !filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'accountName' && filter.reverse"
-             class="fa fa-caret-down "></i>
+          <span class="p-r-xs" translate>user.label.account</span>
+          <i *ngIf="filter.sortBy == 'accountName' && !filter.reverse" class="fa fa-caret-up "></i>
+          <i *ngIf="filter.sortBy == 'accountName' && filter.reverse" class="fa fa-caret-down "></i>
         </a>
         </th>
-        <th (click)="sort('loginDate')"><a>
-          <span class="p-r-xs" translate>auditLog.label.loginDate</span>
-          <i *ngIf="filter.sortBy == 'loginDate' && !filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'loginDate' && filter.reverse"
-             class="fa fa-caret-down "></i>
+        <th (click)="sort('since')"><a>
+          <span class="p-r-xs" translate>user.label.date</span>
+          <i *ngIf="filter.sortBy == 'since' && !filter.reverse" class="fa fa-caret-up "></i>
+          <i *ngIf="filter.sortBy == 'since' && filter.reverse" class="fa fa-caret-down "></i>
         </a>
         </th>
       </tr>
@@ -33,8 +28,7 @@
       <tbody>
       <ng-template ngFor let-account [ngForOf]="ajaxTable.data">
         <tr>
-          <td [nzShowCheckbox]="true"
-              [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
+          <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
               (nzCheckedChange)="onItemChecked(account, $event)">
           </td>
           <td>
@@ -43,10 +37,7 @@
                       [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                 <ul nz-menu>
-                  <li nz-menu-item (click)="addToBlocklist(account)">
-                    <a translate>user.button.addToBlocklist</a>
-                  </li>
-                  <li nz-menu-item (click)="removeFromBlocklist(account)">
+                  <li nz-menu-item (click)="removeBlocks(account)">
                     <a translate>user.button.removeFromBlocklist</a>
                   </li>
                 </ul>
@@ -57,7 +48,7 @@
             <span [innerHtml]="account.accountName | highlight : filter.searchText"></span>
           </td>
           <td>
-            <span [innerHtml]="account.loginDate | stringToDate | highlight : filter.searchText"></span>
+            <span [innerHtml]="account.since | stringToDate | highlight : filter.searchText"></span>
           </td>
         </tr>
       </ng-template>
@@ -66,7 +57,7 @@
   </div>
   <div class="w-half label-top" *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span>
     {{data.length}}
-    <span *ngIf="ajaxTable.data.length >1" translate>auditLog.label.loginsFound</span>
-    <span *ngIf="ajaxTable.data.length ==1" translate>auditLog.label.loginFound</span>
+    <span *ngIf="ajaxTable.data.length >1" translate>user.label.blockedAccountsFound</span>
+    <span *ngIf="ajaxTable.data.length ==1" translate>user.label.blockedAccountFound</span>
   </div>
 </div>

@@ -1,7 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {CoreService} from 'src/app/services/core.service';
-import {OrderPipe, SearchPipe} from 'src/app/pipes/core.pipe';
-import {DataService} from '../data.service';
+import { Component, OnInit } from '@angular/core';
+import { CoreService } from 'src/app/services/core.service';
+import { OrderPipe, SearchPipe } from 'src/app/pipes/core.pipe';
+import { DataService } from '../data.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
+import { Subscription } from 'rxjs';
+import { ConfirmationModalComponent } from '../accounts/accounts.component';
 
 @Component({
   selector: 'app-blocklist',
@@ -9,10 +13,11 @@ import {DataService} from '../data.service';
 })
 export class BlocklistComponent implements OnInit {
   isLoaded = false;
-  loginHistory = [];
+  blocklist = [];
   data = [];
-  searchableProperties = ['accountName', 'loginDate']
+  searchableProperties = ['accountName', 'since']
   preferences: any;
+  identityServiceName: string;
   filter: any = {
     sortBy: 'accountName',
     reverse: false,
@@ -25,24 +30,33 @@ export class BlocklistComponent implements OnInit {
     checked: false,
     indeterminate: false
   };
+  subscription: Subscription;
 
   constructor(private coreService: CoreService, private orderPipe: OrderPipe,
-              private searchPipe: SearchPipe, private dataService: DataService) {
+              private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
+
+    this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
+      if (res === 'DELETE_BULK_BLOCKS') {
+        this.removeBlocks(null);
+      }
+    });
   }
 
   ngOnInit(): void {
+    this.identityServiceName = sessionStorage.identityServiceName;
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     if (this.preferences.entryPerPage) {
       this.filter.entryPerPage = this.preferences.entryPerPage;
     }
-    this.loadLoginHistory();
+    this.loadBlocklist();
   }
 
-  loadLoginHistory(): void {
-    let obj: any = {};
-    this.coreService.post('audit_log/login_history', obj).subscribe({
+  loadBlocklist(): void {
+    this.coreService.post('iam/blockedAccounts', {
+      identityServiceName: this.identityServiceName
+    }).subscribe({
       next: (res: any) => {
-        this.loginHistory = res.loginHistoryItems;
+        this.blocklist = res.blockedAccounts;
         this.isLoaded = true;
         this.searchInResult();
       }, error: () => {
@@ -52,9 +66,13 @@ export class BlocklistComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   pageIndexChange($event): void {
     this.filter.currentPage = $event;
-    if (this.object.mapOfCheckedId.size !== this.loginHistory.length) {
+    if (this.object.mapOfCheckedId.size !== this.blocklist.length) {
       if (this.object.checked) {
         this.checkAll(true);
       } else {
@@ -71,7 +89,7 @@ export class BlocklistComponent implements OnInit {
   }
 
   searchInResult(): void {
-    this.data = this.filter.searchText ? this.searchPipe.transform(this.loginHistory, this.filter.searchText, this.searchableProperties) : this.loginHistory;
+    this.data = this.filter.searchText ? this.searchPipe.transform(this.blocklist, this.filter.searchText, this.searchableProperties) : this.blocklist;
     this.data = this.orderPipe.transform(this.data, this.filter.sortBy, this.filter.reverse);
     this.data = [...this.data];
   }
@@ -97,7 +115,7 @@ export class BlocklistComponent implements OnInit {
   }
 
   checkAll(value: boolean): void {
-    if (value && this.loginHistory.length > 0) {
+    if (value && this.blocklist.length > 0) {
       //const users = this.getCurrentData(this.data, this.filter);
       this.data.forEach(item => {
         this.object.mapOfCheckedId.add(item.accountName);
@@ -137,11 +155,72 @@ export class BlocklistComponent implements OnInit {
     }
   }
 
-  addToBlocklist(account): void {
-
+  removeBlocks(acc) {
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Blocklist',
+        operation: 'Delete',
+        name: ''
+      };
+      this.object.mapOfCheckedId.forEach((value, key) => {
+        comments.name = comments.name + key + ', ';
+      });
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.removeFromBlocklist(acc, {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          });
+        }
+      });
+    } else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmationModalComponent,
+        nzComponentParams: {
+          delete: true,
+          identityServiceName: this.identityServiceName
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.removeFromBlocklist(acc);
+        }
+      });
+    }
   }
 
-  removeFromBlocklist(account): void {
-
+  removeFromBlocklist(account, object?): void {
+    const obj = {accountNames: [], auditLog: object};
+    if (account) {
+      obj.accountNames.push(account.accountName);
+    } else {
+      this.object.mapOfCheckedId.forEach((value, key) => {
+        obj.accountNames.push(key);
+      });
+    }
+    this.coreService.post('iam/blockedAccounts/delete', obj).subscribe({
+      next: () => {
+        this.loadBlocklist();
+        this.reset();
+      }, error: () => {
+        this.reset();
+      }
+    });
   }
 }

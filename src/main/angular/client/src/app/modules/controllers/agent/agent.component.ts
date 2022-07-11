@@ -436,7 +436,7 @@ export class AgentComponent implements OnInit, OnDestroy {
         this.editor.destroy();
         mxOutline.prototype.destroy();
         this.editor = null;
-        $('.mxTooltip').remove();
+        $('.mxTooltip').css({visibility: 'hidden'})
       }
     } catch (e) {
       console.error(e);
