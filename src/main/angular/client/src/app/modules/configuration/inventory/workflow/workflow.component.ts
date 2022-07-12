@@ -543,9 +543,11 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   days = [];
   isValid = true;
   object: any = {};
+  _temp: any;
   selectedMonths = [];
   selectedMonthsU = [];
   countArr = [0, 1, 2, 3, 4];
+  countUArr = [1, 2, 3, 4];
   editor: any = {isEnable: false};
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
@@ -689,6 +691,14 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   addFrequency(): void {
     this.isValid = true;
     let p: any;
+    if (this._temp) {
+      for (let i = 0; i < this.data.periodList.length; i++) {
+        if (this.data.periodList[i].frequency === this._temp.frequency) {
+          this.data.periodList.splice(i, 1);
+          break;
+        }
+      }
+    }
     if (this.object.startTime || this.object.duration) {
       p = {};
       if (this.object.startTime) {
@@ -703,7 +713,6 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       p.text = this.workflowService.getText(p.startTime, p.duration);
     }
     const temp = this.coreService.clone(this.data.periodList);
-    console.log(this.data.periodList, 'before', this.frequency.tab)
     if (this.frequency.tab === 'weekDays') {
       if (this.frequency.days.length > 0) {
         if (this.frequency.days.length === 7 && this.repeatObject) {
@@ -736,6 +745,9 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       }
     }
     this.object = {};
+    this._temp = {};
+    this.selectedMonths = [];
+    this.selectedMonthsU = [];
   }
 
   private addWeekdayFrequency(day, temp, p, isDaily): any {
@@ -771,14 +783,14 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   private addMonthdayFrequency(day, temp, p, isLast): any {
     const d = parseInt(day, 10) - 1;
     const obj: any = {
-      frequency: this.workflowService.getMonthDays(day),
+      frequency: this.workflowService.getMonthDays(isLast ? -d : day, isLast),
       day,
       periods: []
     };
     if (!isLast) {
       obj.secondOfMonth = (d * 24 * 3600);
     } else {
-      obj.lastSecondOfMonth = (d * 24 * 3600);
+      obj.lastSecondOfMonth = -(day * 24 * 3600);
     }
     this.workflowService.updatePeriod(temp, obj, p);
     if (obj.periods.length === 0) {
@@ -787,23 +799,32 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-
   closeRuntime(): void {
     this.close.emit();
   }
 
+  resetTab(): void {
+    this._temp = null;
+    this.selectedMonths = [];
+    this.selectedMonthsU = [];
+    this.frequency.tab = 'weekDays';
+    this.frequency.days = [];
+    this.frequency.all = false;
+    this.object = {};
+    this.ref.detectChanges();
+  }
+
   editFrequency(data): void {
-   
-    // this._temp = this.coreService.clone(data);
+    this._temp = this.coreService.clone(data);
     this.selectedMonths = [];
     this.selectedMonthsU = [];
     if (data.lastSecondOfMonth || data.secondOfMonth > -1) {
       this.frequency.tab = 'monthDays';
       this.frequency.isUltimos = data.secondOfMonth > -1 ? 'months' : 'ultimos';
       if (this.frequency.isUltimos == 'months') {
-        this.selectedMonths.push(data.day);
+        this.selectedMonths.push('' + data.day);
       } else {
-        this.selectedMonthsU.push(data.day);
+        this.selectedMonthsU.push('' + data.day);
       }
     } else if (data.secondOfWeeks) {
       this.frequency.tab = 'specificWeekDays';
@@ -812,8 +833,8 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     } else {
       this.frequency.tab = 'weekDays';
     }
+    this.editor.isEnable = true;
     this.ref.detectChanges();
-
   }
 
   removeFrequency(data, index): void {

@@ -18,6 +18,7 @@ export class StartUpModalComponent implements OnInit {
   @Input() modalRef: boolean;
   @Input() controllerInfo: any;
   @Input() agents: any;
+  @Input() clusterAgents: any;
   @Output() afterSubmit: EventEmitter<any> = new EventEmitter();
   submitted = false;
   controller: any = {};
@@ -37,6 +38,7 @@ export class StartUpModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.agent.asStandaloneAgent =  false;
     this.hasLicense = sessionStorage.hasLicense == 'true';
     this.controller = {
       url: '',
@@ -119,6 +121,11 @@ export class StartUpModalComponent implements OnInit {
       }
       if (this.agent && this.agent.agentId) {
         obj.clusterWatcher = this.agent;
+      }
+      if (this.agent && this.agent.asStandaloneAgent) {
+        obj.clusterWatcher.asStandaloneAgent= this.agent.asStandaloneAgent;
+      } else if (this.agent && this.agent.primaryDirectorId) {
+        obj.clusterWatcher.primaryDirectorId = this.agent.primaryDirectorId;
       }
     }
     if (this.display) {

@@ -168,11 +168,32 @@
         <div class="col-sm-12 m-t" translate>agent.label.clusterWatcher</div>
       </div>
       <div class="p-a b-a">
-        <div class="form-group row" *ngIf="!new && agents && agents.length>0">
+        <div class="form-group row" *ngIf="!new && ((agents && agents.length>0) || clusterAgents && clusterAgents.length > 0)">
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'agent.tooltip.agentId' | translate" translate>agent.label.agentId</label>
           <div class="col-sm-8">
-            <nz-select nzShowSearch [(ngModel)]="agent" name="selectAgentId">
-              <nz-option *ngFor="let list of agents" [nzLabel]="list.agentId" [nzValue]="list"></nz-option>
+            <nz-select nzShowSearch [(ngModel)]="agent" name="selectAgentId" [nzDropdownClassName]="'group-list'">
+              <ng-container>
+                <nz-option-group [nzLabel]="groupTitle">
+                  <ng-template #groupTitle>
+                  <span class="_600">
+                    {{ 'agent.label.agents' | translate }}
+                  </span>
+                  </ng-template>
+                  <nz-option *ngFor="let agent of agents" [nzLabel]="agent.agentId"
+                             [nzValue]="agent"></nz-option>
+                </nz-option-group>
+              </ng-container>
+              <ng-container>
+                <nz-option-group [nzLabel]="groupTitle2">
+                  <ng-template #groupTitle2>
+                  <span class="_600">
+                    {{ 'agent.label.agentGroups' | translate }}
+                  </span>
+                  </ng-template>
+                  <nz-option *ngFor="let agent of clusterAgents" [nzLabel]="agent.agentId"
+                             [nzValue]="agent"></nz-option>
+                </nz-option-group>
+              </ng-container>
             </nz-select>
           </div>
         </div>
@@ -204,8 +225,9 @@
             </div>
           </div>
         </div>
-        <div class="row">
-          <label class="col-sm-4 form-control-label" [nz-tooltip]="'agent.tooltip.url' | translate" translate>agent.label.url
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label" [nz-tooltip]="'agent.tooltip.url' | translate"
+            translate>agent.label.url
             <sup *ngIf="agent.agentId && agent.agentId.length > 0" class="text-danger text-sm">*</sup>
           </label>
           <div class=" col-sm-8" [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}">
@@ -217,6 +239,24 @@
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="m-b-12 row" *ngIf="new">
+          <label class="col-sm-4" [nz-tooltip]="'agent.tooltip.asStandaloneAgent' | translate"
+            translate>agent.label.asStandaloneAgent
+          </label>
+          <div class="col-sm-8">
+            <label nz-checkbox [(ngModel)]="agent.standaloneClusterAgent" name="asStandaloneAgent">
+            </label>
+          </div>
+        </div>
+        <div class="row" *ngIf="!agent.standaloneClusterAgent && new">
+          <label class="col-sm-4 form-control-label" [nz-tooltip]="'agent.tooltip.primaryDirectorId' | translate"
+            translate>agent.label.primaryDirectorId</label>
+          <div class=" col-sm-8" [ngClass]="{'has-error' : ((primaryDirectorId.dirty || primaryDirectorId.touched) && primaryDirectorId.invalid)}">
+            <input type="text" identifierValidation class="form-control" name="primaryDirectorId"
+              [(ngModel)]="agent.primaryDirectorId" #primaryDirectorId="ngModel"
+              placeholder="{{'agent.placeholder.enterPrimaryDirectorId' | translate}}">
           </div>
         </div>
       </div>

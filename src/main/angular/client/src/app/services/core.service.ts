@@ -112,6 +112,25 @@ export class CoreService {
         request: {}
       }
     };
+    this.tabs._admin = {
+      isBlocklist: false,
+      identityService: {
+        filter: {
+          sortBy: 'ordering',
+          reverse: false
+        },
+        currentPage: '1'
+      },
+      blocklist: {
+        filter: {
+          date: 'today',
+          sortBy: 'since',
+          reverse: false
+        },
+        currentPage: '1'
+      }
+    };
+
     this.tabs._workflow = {};
     this.tabs._workflow.filter = {};
     this.tabs._workflow.filter.date = '1d';
@@ -339,6 +358,10 @@ export class CoreService {
 
   getTabs(): any {
     return this.tabs;
+  }
+
+  getAdminTab(): any {
+    return this.tabs._admin;
   }
 
   getWorkflowTab(): any {

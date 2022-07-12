@@ -1961,15 +1961,14 @@ export class WorkflowService {
         let day = Math.floor(hours / 24) + 1;
         const d = day - 1;
         obj = {
+          day,
           periods: []
         };
+
         obj[period.TYPE === 'MonthlyLastDatePeriod' ? 'lastSecondOfMonth' : 'secondOfMonth'] = (d * 24 * 3600);
+        obj.frequency = this.getMonthDays(day, period.TYPE === 'MonthlyLastDatePeriod');
         if (period.TYPE === 'MonthlyLastDatePeriod') {
-          day = -27 + day;
-        }
-        obj.frequency = this.getMonthDays(day);
-        obj.day = day;
-        if (period.TYPE === 'MonthlyLastDatePeriod') {
+          obj.day = obj.day + 1;
           p.startTime = period.lastSecondOfMonth - obj.lastSecondOfMonth;
         } else {
           p.startTime = period.secondOfMonth - obj.secondOfMonth;
@@ -2188,37 +2187,21 @@ export class WorkflowService {
     }
   }
 
-  getMonthDays(month): string {
-    let str = '';
-    if (!month) {
-      return month;
-    }
-    let months = month;
-    if (!isArray(month)) {
-      months = month.toString().split(' ').sort();
-    }
-    for (let i = 0; i < months.length; i++) {
-      if (months[i] == 0) {
-        str = str + 'last';
-      } else if (months[i] == 1 || months[i] == 31) {
-        str = str + months[i] + 'st,';
-      } else if (months[i] == 2) {
-        str = str + months[i] + 'nd,';
-      } else if (months[i] == 3) {
-        str = str + months[i] + 'rd,';
-      } else {
-        str = str + months[i] + 'th,';
-      }
+  getMonthDays(month, isLast): string {
+    let str = isLast ? 'last' : '';
+    if (month == 0 && isLast) {
+
+    } else if (Math.abs(month) == 1 || Math.abs(month) == 31) {
+      str = str + Math.abs(month) + 'st';
+    } else if (Math.abs(month) == 2) {
+      str = str + Math.abs(month) + 'nd';
+    } else if (Math.abs(month) == 3) {
+      str = str + Math.abs(month) + 'rd';
+    } else {
+      str = str + Math.abs(month) + 'th';
     }
 
-    if (str.length === 1) {
-      return '';
-    } else {
-      if (str.substring(str.length - 1) == ',') {
-        str = str.substring(0, str.length - 1);
-      }
-    }
-    return str + ' of a month';
+    return str + ' day of a month';
   }
 
   convertListToAdmissionTime(list): Array<any> {

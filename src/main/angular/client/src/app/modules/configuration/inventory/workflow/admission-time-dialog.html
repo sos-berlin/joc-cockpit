@@ -178,29 +178,41 @@
           <table class="table table-bordered table-striped text-center m-b-xs w "
                  [hidden]="frequency.isUltimos=='months'">
             <tbody>
-            <tr *ngFor="let count of countArr;">
-              <td (click)="selectMonthDaysUFunc(((6 * count) + 1) +'')"
-                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 1) +'')}">
-                <a>-{{(6 * count) + 1 }}</a></td>
-              <td (click)="selectMonthDaysUFunc(((6 * count) + 2) + '')"
-                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 2) + '')}">
-                <a>-{{(6 * count) + 2 }}</a>
+            <tr>
+              <td colspan="2" (click)="selectMonthDaysUFunc('1')" [ngClass]="{'primary': getSelectedMonthDaysU('1')}"><a
+                translate>runtime.label.lastDay</a></td>
+              <td (click)="selectMonthDaysUFunc('2')" [ngClass]="{'primary': getSelectedMonthDaysU('2')}"><a
+              >-1</a></td>
+              <td (click)="selectMonthDaysUFunc('3')" [ngClass]="{'primary': getSelectedMonthDaysU('3')}"><a
+              >-2</a></td>
+              <td (click)="selectMonthDaysUFunc('4')" [ngClass]="{'primary': getSelectedMonthDaysU('4')}"><a
+              >-3</a></td>
+              <td (click)="selectMonthDaysUFunc('5')" [ngClass]="{'primary': getSelectedMonthDaysU('5')}"><a
+              >-4</a></td>
+            </tr>
+            <tr *ngFor="let count of countUArr;">
+              <td (click)="selectMonthDaysUFunc(((6 * count)) +'')"
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count)) +'')}">
+                <a>-{{(6 * count) + 1 - 2 }}</a></td>
+              <td (click)="selectMonthDaysUFunc(((6 * count) + 1) + '')"
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 1) + '')}">
+                <a>-{{(6 * count) + 2 - 2 }}</a>
+              </td>
+              <td (click)="selectMonthDaysUFunc(((6 * count) + 2) +'')"
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 2) +'')}">
+                <a>-{{(6 * count) + 3 - 2 }}</a>
               </td>
               <td (click)="selectMonthDaysUFunc(((6 * count) + 3) +'')"
                   [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 3) +'')}">
-                <a>-{{(6 * count) + 3 }}</a>
+                <a>-{{(6 * count) + 4 - 2 }}</a>
               </td>
-              <td (click)="selectMonthDaysUFunc(((6 * count) + 4) +'')" *ngIf="count !== 4"
+              <td (click)="selectMonthDaysUFunc(((6 * count) + 4) +'')"
                   [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 4) +'')}">
-                <a>-{{(6 * count) + 4 }}</a>
+                <a>-{{(6 * count) + 5 - 2 }}</a>
               </td>
               <td (click)="selectMonthDaysUFunc(((6 * count) + 5) +'')" *ngIf="count !== 4"
-                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) +5) +'')}">
-                <a>-{{(6 * count) + 5 }}</a>
-              </td>
-              <td (click)="selectMonthDaysUFunc(((6 * count) + 6) +'')" *ngIf="count !== 4"
-                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 6) +'')}">
-                <a>-{{(6 * count) + 6 }}</a>
+                  [ngClass]="{'primary': getSelectedMonthDaysU(((6 * count) + 5) +'')}">
+                <a>-{{(6 * count) + 6 - 2 }}</a>
               </td>
             </tr>
             </tbody>
@@ -244,7 +256,8 @@
       <button class="btn btn-sm btn-primary" [disabled]="!myForm.form.valid || !editor.isEnable"
               (click)="addFrequency()" translate>workflow.admissionTime.button.update
       </button>
-      <button (click)="closeRuntime()" [disabled]="!isValid" type="button" class="btn btn-grey m-l-12 btn-sm" translate>workflow.admissionTime.button.back</button>
+      <button (click)="closeRuntime()" *ngIf="!_temp" [disabled]="!isValid" type="button" class="btn btn-grey m-l-12 btn-sm" translate>workflow.admissionTime.button.back</button>
+      <button (click)="resetTab()" *ngIf="_temp" type="button" class="btn btn-grey m-l-12 btn-sm" translate>common.button.cancel</button>
     </div>
   </div>
   <div class="row m-t">
@@ -258,7 +271,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let item of data.periodList; let i = index">
+          <tr *ngFor="let item of data.periodList; let i = index" [ngClass]="{'light-bg': _temp && _temp.frequency == item.frequency}">
             <td>
               <span class="cursor" (click)="editFrequency(item)" *ngIf="item.frequency"><span *ngIf="item.day" translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
               <span class="cursor" (click)="editFrequency(item)" *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>

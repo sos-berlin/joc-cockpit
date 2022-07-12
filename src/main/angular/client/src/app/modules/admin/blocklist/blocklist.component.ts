@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { CoreService } from 'src/app/services/core.service';
-import { OrderPipe, SearchPipe } from 'src/app/pipes/core.pipe';
-import { DataService } from '../data.service';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
-import { Subscription } from 'rxjs';
-import { ConfirmationModalComponent } from '../accounts/accounts.component';
+import {Component, OnInit} from '@angular/core';
+import {CoreService} from 'src/app/services/core.service';
+import {OrderPipe, SearchPipe} from 'src/app/pipes/core.pipe';
+import {DataService} from '../data.service';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
+import {Subscription} from 'rxjs';
+import {ConfirmationModalComponent} from '../accounts/accounts.component';
 
 @Component({
   selector: 'app-blocklist',
@@ -17,14 +17,8 @@ export class BlocklistComponent implements OnInit {
   data = [];
   searchableProperties = ['accountName', 'since']
   preferences: any;
-  identityServiceName: string;
-  filter: any = {
-    sortBy: 'accountName',
-    reverse: false,
-    searchText: '',
-    entryPerPage: 25,
-    currentPage: 1
-  };
+
+  blocklistFilter: any = {};
   object = {
     mapOfCheckedId: new Set(),
     checked: false,
@@ -38,23 +32,42 @@ export class BlocklistComponent implements OnInit {
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'DELETE_BULK_BLOCKS') {
         this.removeBlocks(null);
+      } else if (res != 'IS_BLOCKLIST_PROFILES_TRUE' && res != 'IS_BLOCKLIST_PROFILES_FALSE') {
+        
+        this.loadBlocklist(res);
       }
     });
   }
 
   ngOnInit(): void {
-    this.identityServiceName = sessionStorage.identityServiceName;
+   
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.blocklistFilter = this.coreService.getAdminTab().blocklist;
     if (this.preferences.entryPerPage) {
-      this.filter.entryPerPage = this.preferences.entryPerPage;
+      this.blocklistFilter.entryPerPage = this.preferences.entryPerPage;
     }
     this.loadBlocklist();
   }
 
-  loadBlocklist(): void {
-    this.coreService.post('iam/blockedAccounts', {
-      identityServiceName: this.identityServiceName
-    }).subscribe({
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  loadBlocklist(date?): void {
+    if (date) {
+      this.blocklistFilter.filter.date = date;
+      this.isLoaded = false;
+    }
+    let obj: any = {};
+    if (this.blocklistFilter.filter.date == 'all') {
+
+    } else if (this.blocklistFilter.filter.date == 'today') {
+      obj.dateFrom = '0d';
+      obj.dateTo = '0d';
+    } else {
+      obj.dateFrom = this.blocklistFilter.filter.date;
+    }
+    this.coreService.post('iam/blockedAccounts', obj).subscribe({
       next: (res: any) => {
         this.blocklist = res.blockedAccounts;
         this.isLoaded = true;
@@ -66,12 +79,8 @@ export class BlocklistComponent implements OnInit {
     });
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
   pageIndexChange($event): void {
-    this.filter.currentPage = $event;
+    this.blocklistFilter.currentPage = $event;
     if (this.object.mapOfCheckedId.size !== this.blocklist.length) {
       if (this.object.checked) {
         this.checkAll(true);
@@ -82,22 +91,22 @@ export class BlocklistComponent implements OnInit {
   }
 
   pageSizeChange($event): void {
-    this.filter.entryPerPage = $event;
+    this.blocklistFilter.entryPerPage = $event;
     if (this.object.checked) {
       this.checkAll(true);
     }
   }
 
   searchInResult(): void {
-    this.data = this.filter.searchText ? this.searchPipe.transform(this.blocklist, this.filter.searchText, this.searchableProperties) : this.blocklist;
-    this.data = this.orderPipe.transform(this.data, this.filter.sortBy, this.filter.reverse);
+    this.data = this.blocklistFilter.filter.searchText ? this.searchPipe.transform(this.blocklist, this.blocklistFilter.filter.searchText, this.searchableProperties) : this.blocklist;
+    this.data = this.orderPipe.transform(this.data, this.blocklistFilter.filter.sortBy, this.blocklistFilter.filter.reverse);
     this.data = [...this.data];
   }
 
   sort(propertyName): void {
-    this.filter.reverse = !this.filter.reverse;
-    this.filter.sortBy = propertyName;
-    this.data = this.orderPipe.transform(this.data, this.filter.sortBy, this.filter.reverse);
+    this.blocklistFilter.filter.reverse = !this.blocklistFilter.filter.reverse;
+    this.blocklistFilter.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.blocklistFilter.filter.sortBy, this.blocklistFilter.filter.reverse);
     this.reset();
   }
 
@@ -127,8 +136,8 @@ export class BlocklistComponent implements OnInit {
   }
 
   onItemChecked(account, checked: boolean): void {
-    if (!checked && this.object.mapOfCheckedId.size > (this.filter.entryPerPage || this.preferences.entryPerPage)) {
-      const users = this.getCurrentData(this.data, this.filter);
+    if (!checked && this.object.mapOfCheckedId.size > (this.blocklistFilter.entryPerPage || this.preferences.entryPerPage)) {
+      const users = this.getCurrentData(this.data, this.blocklistFilter);
       if (users.length < this.data.length) {
         this.object.mapOfCheckedId.clear();
         users.forEach(item => {
@@ -141,7 +150,7 @@ export class BlocklistComponent implements OnInit {
     } else {
       this.object.mapOfCheckedId.delete(account.accountName);
     }
-    const users = this.getCurrentData(this.data, this.filter);
+    const users = this.getCurrentData(this.data, this.blocklistFilter);
     this.object.checked = this.object.mapOfCheckedId.size === users.length;
     this.checkCheckBoxState();
   }
@@ -149,9 +158,9 @@ export class BlocklistComponent implements OnInit {
   checkCheckBoxState(): void {
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     if (this.object.mapOfCheckedId.size > 0) {
-      this.dataService.announceFunction('IS_ACCOUNT_PROFILES_TRUE');
+      this.dataService.announceFunction('IS_BLOCKLIST_PROFILES_TRUE');
     } else {
-      this.dataService.announceFunction('IS_ACCOUNT_PROFILES_FALSE');
+      this.dataService.announceFunction('IS_BLOCKLIST_PROFILES_FALSE');
     }
   }
 
@@ -191,8 +200,7 @@ export class BlocklistComponent implements OnInit {
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
         nzComponentParams: {
-          delete: true,
-          identityServiceName: this.identityServiceName
+          delete: true
         },
         nzFooter: null,
         nzClosable: false,

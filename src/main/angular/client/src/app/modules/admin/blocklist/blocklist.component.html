@@ -1,7 +1,20 @@
+<div class="row m-b">
+  <div class="col-md-12">
+    <div class="search-box-field pull-right">
+      <label>
+        <input type="search" (keyup)="searchInResult()"
+               placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="blocklistFilter.filter.searchText">
+        <i *ngIf="blocklistFilter.filter.searchKey" class="fa fa-times search-close"
+           (click)="blocklistFilter.filter.searchKey = '';"></i>
+      </label>
+    </div>
+  </div>
+</div>
 <div class="box p-a">
   <div class="table-responsive">
-    <nz-table #ajaxTable [nzSize]="'small'" [nzPageSize]="filter.entryPerPage" [nzPageIndex]="filter.currentPage"
-              [nzBordered]="true" [nzShowPagination]="blocklist.length > 0" [nzData]="blocklist" [nzLoading]="!isLoaded"
+    <nz-table #ajaxTable [nzSize]="'small'" [nzPageSize]="blocklistFilter.entryPerPage"
+              [nzPageIndex]="blocklistFilter.currentPage"
+              [nzBordered]="true" [nzShowPagination]="data.length > 0" [nzData]="data" [nzLoading]="!isLoaded"
               [nzShowSizeChanger]="true" (nzPageIndexChange)="pageIndexChange($event)"
               (nzPageSizeChange)="pageSizeChange($event)"
               [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
@@ -13,14 +26,18 @@
         <th class="menu"><span translate>common.label.action</span></th>
         <th (click)="sort('accountName')"><a>
           <span class="p-r-xs" translate>user.label.account</span>
-          <i *ngIf="filter.sortBy == 'accountName' && !filter.reverse" class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'accountName' && filter.reverse" class="fa fa-caret-down "></i>
+          <i *ngIf="blocklistFilter.filter.sortBy == 'accountName' && !blocklistFilter.filter.reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="blocklistFilter.filter.sortBy == 'accountName' && blocklistFilter.filter.reverse"
+             class="fa fa-caret-down "></i>
         </a>
         </th>
         <th (click)="sort('since')"><a>
           <span class="p-r-xs" translate>user.label.date</span>
-          <i *ngIf="filter.sortBy == 'since' && !filter.reverse" class="fa fa-caret-up "></i>
-          <i *ngIf="filter.sortBy == 'since' && filter.reverse" class="fa fa-caret-down "></i>
+          <i *ngIf="blocklistFilter.filter.sortBy == 'since' && !blocklistFilter.filter.reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="blocklistFilter.filter.sortBy == 'since' && blocklistFilter.filter.reverse"
+             class="fa fa-caret-down "></i>
         </a>
         </th>
       </tr>
@@ -45,10 +62,10 @@
             </div>
           </td>
           <td>
-            <span [innerHtml]="account.accountName | highlight : filter.searchText"></span>
+            <span [innerHtml]="account.accountName | highlight : blocklistFilter.filter.searchText"></span>
           </td>
           <td>
-            <span [innerHtml]="account.since | stringToDate | highlight : filter.searchText"></span>
+            <span [innerHtml]="account.since | stringToDate | highlight : blocklistFilter.filter.searchText"></span>
           </td>
         </tr>
       </ng-template>

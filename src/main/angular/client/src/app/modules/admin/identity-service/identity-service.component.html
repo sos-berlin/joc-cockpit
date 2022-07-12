@@ -1,13 +1,24 @@
-<div *ngIf="!showBlocklist" class="box p-a">
+<div class="row m-b" *ngIf="!adminFilter.isBlocklist">
+  <div class="col-md-12">
+    <div class="search-box-field pull-right">
+      <label>
+        <input type="search"
+               placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="filter.searchKey">
+        <i *ngIf="filter.searchKey" class="fa fa-times search-close" (click)="filter.searchKey = '';"></i>
+      </label>
+    </div>
+  </div>
+</div>
+<div *ngIf="!adminFilter.isBlocklist" class="box p-a">
   <div class="table-responsive">
     <nz-table
       #ajaxTable
       [nzSize]="'small'"
       [nzPageSize]="preferences.entryPerPage || 25"
-      [nzPageIndex]="usr.currentPage"
+      [nzPageIndex]="filter.currentPage"
       [nzBordered]="true"
-      [nzShowPagination]="(identityServices | filter: searchKey : ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']).length > 0"
-      [nzData]="(identityServices | filter: searchKey: ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']) | orderBy: usr.sortBy:usr.reverse"
+      [nzShowPagination]="(identityServices | filter: filter.searchKey : ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']).length > 0"
+      [nzData]="(identityServices | filter: filter.searchKey: ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']) | orderBy: filter.filter.sortBy:filter.filter.reverse"
       [nzLoading]="loading"
       [nzShowSizeChanger]="true"
       [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage || 5000]"
@@ -17,58 +28,58 @@
         <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span></th>
         <th (click)="sort('identityServiceName')">
           <a><span class="p-r-xs" translate>user.label.identityServiceName</span>
-            <i *ngIf="usr.sortBy == 'identityServiceName' && !usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'identityServiceName' && !filter.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'identityServiceName' && usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'identityServiceName' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('identityServiceType')">
           <a><span class="p-r-xs" translate>user.label.identityServiceType</span>
-            <i *ngIf="usr.sortBy == 'identityServiceType' && !usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'identityServiceType' && !filter.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'identityServiceType' && usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'identityServiceType' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('serviceAuthenticationScheme')">
           <a><span class="p-r-xs" translate>user.label.serviceAuthenticationScheme</span>
-            <i *ngIf="usr.sortBy == 'serviceAuthenticationScheme' && !usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'serviceAuthenticationScheme' && !filter.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'serviceAuthenticationScheme' && usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'serviceAuthenticationScheme' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('singleFactorPwd')">
           <a><span class="p-r-xs" translate>user.label.singleFactorPwd</span>
-            <i *ngIf="usr.sortBy == 'singleFactorPwd' && !usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'singleFactorPwd' && !filter.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'singleFactorPwd' && usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'singleFactorPwd' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('singleFactorCert')">
           <a><span class="p-r-xs" translate>user.label.singleFactorCert</span>
-            <i *ngIf="usr.sortBy == 'singleFactorCert' && !usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'singleFactorCert' && !filter.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'singleFactorCert' && usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'singleFactorCert' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('ordering')">
           <a><span class="p-r-xs" translate>user.label.identityServiceOrdering</span>
-            <i *ngIf="usr.sortBy == 'ordering' && !usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'ordering' && !filter.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'ordering' && usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'ordering' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('disabled')">
           <a><span class="p-r-xs" translate>user.label.identityServiceDisabled</span>
-            <i *ngIf="usr.sortBy == 'disabled' && !usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'disabled' && !filter.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'disabled' && usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'disabled' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
         <th (click)="sort('required')">
           <a><span class="p-r-xs" translate>user.label.identityServiceRequired</span>
-            <i *ngIf="usr.sortBy == 'required' && !usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'required' && !filter.filter.reverse"
                class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'required' && usr.reverse"
+            <i *ngIf="filter.filter.sortBy == 'required' && filter.filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
       </tr>
@@ -77,7 +88,7 @@
         <tr *ngFor="let identityService of ajaxTable.data" cdkDrag
             [ngClass]="{'opacity7': identityService.disabled}" class="cursor move-on-hover">
           <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu">
-            <div *ngIf="usr.sortBy === 'ordering'" class="pos-abt move-icon text-16 cur-m" style="left: -1px" cdkDragHandle>
+            <div *ngIf="filter.filter.sortBy === 'ordering'" class="pos-abt move-icon text-16 cur-m" style="left: -1px" cdkDragHandle>
               <i class="fa fa-bars" aria-hidden="true"></i>
             </div>
             <div class="btn-group dropdown m-l-xs">
@@ -106,11 +117,11 @@
             </div>
           </td>
           <td (click)="showUser(identityService)"><span
-            [innerHtml]="identityService.identityServiceName | highlight: searchKey"></span></td>
+            [innerHtml]="identityService.identityServiceName | highlight: filter.searchKey"></span></td>
           <td (click)="showUser(identityService)"><span
-            [innerHtml]="identityService.identityServiceType | highlight: searchKey"></span></td>
+            [innerHtml]="identityService.identityServiceType | highlight: filter.searchKey"></span></td>
           <td (click)="showUser(identityService)"><span
-            [innerHtml]="identityService.serviceAuthenticationScheme | translate | highlight: searchKey"></span></td>
+            [innerHtml]="identityService.serviceAuthenticationScheme | translate | highlight: filter.searchKey"></span></td>
           <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{identityService.singleFactorPwd ? 'Yes' : 'No'}}</span></td>
           <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{identityService.singleFactorCert ? 'Yes' : 'No'}}</span></td>
           <td (click)="showUser(identityService)"><span [innerHtml]="identityService.ordering"></span></td>
@@ -121,9 +132,9 @@
     </nz-table>
   </div>
   <div class="w-half label-top" *ngIf="ajaxTable.data.length >0">
-    <span translate>common.label.total</span> <span> {{(identityServices | filter: searchKey: ['identityServiceName', 'identityServiceType']).length}} </span>
+    <span translate>common.label.total</span> <span> {{(identityServices | filter: filter.searchKey: ['identityServiceName', 'identityServiceType']).length}} </span>
     <span translate *ngIf="ajaxTable.data.length >1">user.label.identityServicesFound</span>
     <span translate *ngIf="ajaxTable.data.length ===1">user.label.identityServiceFound</span>
   </div>
 </div>
-<app-blocklist *ngIf="showBlocklist"></app-blocklist>
+<app-blocklist *ngIf="adminFilter.isBlocklist"></app-blocklist>

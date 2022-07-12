@@ -640,15 +640,14 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   loading = true;
   preferences: any = {};
   permission: any = {};
+  adminFilter: any = {};
   identityServiceTypes: any = [];
   identityServices: any = [];
   roles: any = [];
-  reverse = false;
-  usr: any = {};
+  filter: any = {};
   userDetail: any = {};
   temp: any = 0;
   searchKey = '';
-  showBlocklist = false;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -662,16 +661,15 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         this.add();
       } else if (res === 'MANAGE_SETTING') {
         this.manageSetting(null);
-      } else if (res === 'MANAGE_BLOCKLIST') {
-       this.showBlocklist= !this.showBlocklist;
       }
     });
   }
 
   ngOnInit(): void {
-    this.usr = {currentPage: 1, sortBy: 'ordering', reverse: false};
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.adminFilter  = this.coreService.getAdminTab();
+    this.filter = this.adminFilter.identityService;
     this.getIAMList();
   }
 
@@ -815,10 +813,10 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<string[]>): void {
-    const list = this.orderPipe.transform(this.identityServices, this.usr.sortBy, this.usr.reverse);
+    const list = this.orderPipe.transform(this.identityServices, this.filter.filter.sortBy, this.filter.filter.reverse);
     moveItemInArray(list, event.previousIndex, event.currentIndex);
     const changeArr = [];
-    if (this.usr.reverse) {
+    if (this.filter.filter.reverse) {
       let j = 1;
       for (let i = list.length - 1; i >= 0; i--) {
         list[i].ordering = j;
@@ -922,7 +920,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   }
 
   sort(key): void {
-    this.usr.reverse = !this.usr.reverse;
-    this.usr.sortBy = key;
+    this.filter.filter.reverse = !this.filter.filter.reverse;
+    this.filter.filter.sortBy = key;
   }
 }

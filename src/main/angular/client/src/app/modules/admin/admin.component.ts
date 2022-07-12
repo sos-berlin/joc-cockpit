@@ -16,7 +16,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   permission: any;
   isPaste = false;
   isButtonShow = false;
-  isBlockButtonShow=false;
+  isBlockButtonShow = false;
   isSelected = false;
   selectedUser: string;
   accounts: any = [];
@@ -25,8 +25,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   identityService: string;
   identityServiceType: string;
   pageView: string;
+  adminFilter: any = {};
   isLoaded = false;
-  showBlocklist = false;
   filter = {
     searchKey: ''
   };
@@ -46,12 +46,14 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.isButtonShow = false;
       } else if (res === 'IS_ACCOUNT_PROFILES_TRUE' || res === 'IS_ROLE_PROFILES_TRUE') {
         this.isSelected = true;
-        this.isBlockButtonShow = true;
       } else if (res === 'IS_ACCOUNT_PROFILES_FALSE' || res === 'IS_ROLE_PROFILES_FALSE') {
         this.isSelected = false;
-        this.isBlockButtonShow = false;
       } else if (res === 'RELOAD') {
         this.getUsersData();
+      } else if (res === 'IS_BLOCKLIST_PROFILES_TRUE') {
+        this.isBlockButtonShow = true;
+      } else if (res === 'IS_BLOCKLIST_PROFILES_FALSE') {
+        this.isBlockButtonShow = false;
       }
     });
   }
@@ -73,6 +75,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    this.adminFilter = this.coreService.getAdminTab();
     if (!this.permission.joc) {
       setTimeout(() => {
         this.ngOnInit();
@@ -109,8 +112,12 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   manageBlocklist(): void {
-    this.showBlocklist = !this.showBlocklist;
-    this.dataService.announceFunction('MANAGE_BLOCKLIST');
+    this.adminFilter.isBlocklist = !this.adminFilter.isBlocklist;
+  }
+
+  loadBlocklist(date) {
+    this.adminFilter.blocklist.filter.date = date;
+    this.dataService.announceFunction(date);
   }
 
   addAccount(): void {
@@ -194,7 +201,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   importObject(): void {
     if (this.route.match('/users/identity_service/account')) {
       this.dataService.announceFunction('IMPORT_USER');
-    }  else {
+    } else {
       this.dataService.announceFunction('IMPORT_ROLE');
     }
   }
@@ -228,7 +235,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private getUsersData(): void {
-   if (this.identityServiceType && this.identityService && this.route.match(/role/)) {
+    if (this.identityServiceType && this.identityService && this.route.match(/role/)) {
       this.coreService.post('iam/accounts', {identityServiceName: this.identityService}).subscribe((res: any) => {
         this.accounts = res.accountItems;
         this.dataService.announceData(this.accounts);

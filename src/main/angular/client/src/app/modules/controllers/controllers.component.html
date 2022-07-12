@@ -312,6 +312,13 @@
                                 <i *ngIf="controller.sortBy2 == 'syncState._text' && controller.reverse2"
                                    class="fa fa-caret-down "></i></a>
                             </th>
+                            <th nzWidth="140px" (click)="sort(controller, 'clusterWatcher', true)">
+                              <a><span class="p-r-xs" translate>agent.label.clusterWatcher</span>
+                                <i *ngIf="controller.sortBy2 == 'clusterWatcher' && !controller.reverse2"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="controller.sortBy2 == 'clusterWatcher' && controller.reverse2"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
                             <th nzWidth="150px" (click)="sort(controller, 'validityDate', true)">
                               <a><span class="p-r-xs" translate>agent.label.validityDate</span>
                                 <i *ngIf="controller.sortBy2 == 'validityDate' && !controller.reverse2"
@@ -393,6 +400,7 @@
                                        [ngClass]="coreService.getColor(clusterAgent.syncState.severity, 'bg')"
                                        [innerHtml]="clusterAgent.syncState._text | translate"></label>
                                 </td>
+                                <td (click)="editAgent(clusterAgent, controller, true)">{{clusterAgent.isClusterWatcher ? 'Yes' : 'No'}}</td>
                                 <td>
                                   <span *ngIf="!clusterAgent.token">-</span>
                                   <span *ngIf="clusterAgent.token">{{clusterAgent.token.validUntil | stringToDate}}</span>
@@ -410,7 +418,7 @@
                                 </td>
                               </tr>
                               <tr *ngIf="clusterAgent.show">
-                                <td colspan="8" style="padding: 0 !important;border-top: none!important;">
+                                <td colspan="9" style="padding: 0 !important;border-top: none!important;">
                                   <nz-table class="m-a-0 inner-table" #subagentClusterTable nzSize="small" [nzBordered]="true"
                                             [nzData]="clusterAgent.subagents | orderBy: 'ordering'" [nzShowPagination]="false" [nzFrontPagination]="false">
                                     <thead>

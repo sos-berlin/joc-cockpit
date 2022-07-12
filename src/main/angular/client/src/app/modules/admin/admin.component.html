@@ -26,6 +26,27 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
+            <div class="btn-group m-l-12 hidden-btn-group" *ngIf="adminFilter.isBlocklist && !isBlockButtonShow">
+              <button class="btn btn-grey btn-sm" (click)="loadBlocklist('all')"
+                      [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='all'}" translate>filters.button.all
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="loadBlocklist('today')"
+                      [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='today'}" translate>filters.button.today
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="loadBlocklist('-1h')"
+                      [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-1h'}" translate>filters.button.last1
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="loadBlocklist('-12h')"
+                      [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-12h'}" translate>filters.button.last12
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="loadBlocklist('-24h')"
+                      [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-24h'}" translate>filters.button.last24
+              </button>
+              <button class="btn btn-grey btn-sm" (click)="loadBlocklist('-7d')"
+                      [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-7d'}" translate>filters.button.lastWeak
+              </button>
+            </div>
+
             <!-- Sorting via Account Name Ends -->
             <button *ngIf="isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="exportObject()">
               <i class="fa fa-download"></i>&nbsp;
@@ -35,11 +56,15 @@
               <i class="fa fa-upload"></i>&nbsp;
               <span translate>inventory.button.import</span>
             </button>
-            <button [disabled]="showBlocklist" *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
+            <button *ngIf="route === '/users/identity_service' && !isBlockButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isBlocklist}" (click)=" manageBlocklist()">
+              <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
+              <span translate>user.button.blocklist</span>
+            </button>
+            <button *ngIf="route === '/users' || route === '/users/identity_service' && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.manageGeneralSetting</span>
             </button>
-            <button [disabled]="showBlocklist" *ngIf="route === '/users' || route === '/users/identity_service'" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+            <button *ngIf="route === '/users' || route === '/users/identity_service' && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addIdentityService</span>
             </button>
@@ -88,11 +113,11 @@
               <i class="fa fa-trash-o"></i>&nbsp;
               <span translate>user.button.deleteProfile</span>
             </button>
-            <button *ngIf="route === '/users/identity_service/blocklist' && isBlockButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
-            (click)="deleteBulkBlockedAccounts()">
-      		<i class="fa fa-trash-o"></i>&nbsp;
-     		 <span translate>user.button.deleteBlockedAccounts</span>
-    	    </button>
+            <button *ngIf="isBlockButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
+                  (click)="deleteBulkBlockedAccounts()">
+              <i class="fa fa-trash-o"></i>&nbsp;
+              <span translate>user.button.deleteBlockedAccounts</span>
+            </button>
             <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="deleteProfiles()">
               <i class="fa fa-trash"></i>&nbsp;
@@ -147,14 +172,6 @@
           <li class="nav-item">
             <a class="nav-link" routerLink="identity_service/profiles" routerLinkActive="active">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.profiles</span></span>
-            </a>
-          </li>
-          <li class="nav-item dropdown-separator">
-            <span class="separator"></span>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="identity_service/blocklist" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.blocklist</span></span>
             </a>
           </li>
         </ul>
