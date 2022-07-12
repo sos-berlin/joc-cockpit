@@ -905,6 +905,7 @@ export class UserComponent implements OnInit, OnDestroy {
   private _resetProfile(): void {
     const obj = {accounts: [this.username], complete: false};
     this.coreService.post('profiles/delete', obj).subscribe(() => {
+      sessionStorage.removeItem('preferences');
       this.dataService.isProfileReload.next(true);
     });
   }

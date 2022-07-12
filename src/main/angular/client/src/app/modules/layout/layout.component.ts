@@ -657,7 +657,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (!sessionStorage.preferences) {
       this.getDefaultPreferences(preferences);
       configObj.profileItem = JSON.stringify(preferences);
-      sessionStorage.preferences = preferences;
+      sessionStorage.preferences = configObj.profileItem;
       if (this.schedulerIds.selected) {
         this.coreService.post('profile/prefs/store', configObj).subscribe((res: any) => {
           if (reload) {
@@ -766,7 +766,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
               this.dataService.refreshUI('reload');
             }
           } else {
-            this.setUserPreferences(preferences, configObj, reload);
+            this.setUserPreferences(preferences, configObj, true);
           }
         }, error: () => this.setUserPreferences(preferences, configObj, reload)
       });

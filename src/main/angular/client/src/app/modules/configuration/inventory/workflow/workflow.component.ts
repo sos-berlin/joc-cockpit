@@ -647,6 +647,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   }
 
   checkDays(): void {
+    this.frequency.all = this.frequency.days.length === 7;
     this.daysOptions = this.daysOptions.map(item => {
       return {
         ...item,
@@ -754,7 +755,9 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
 
   private addSpecificWeekdayFrequency(frequency, temp, p): any {
     const obj: any = {
-      secondOfWeeks: (frequency.specificWeekDay * 24 * 3600) + (frequency.specificWeek * 7 * 24 * 3600),
+      specificWeekDay: frequency.specificWeekDay,
+      specificWeek: frequency.specificWeek,
+      secondOfWeeks: (frequency.specificWeekDay * 24 * 3600) + ((frequency.specificWeek - (frequency.specificWeek > 0 ? 1 : 0)) * 7 * 24 * 3600),
       frequency: this.workflowService.getSpecificDay(frequency.specificWeek) + ' ' + this.workflowService.getStringDay(frequency.specificWeekDay),
       periods: []
     };
@@ -769,6 +772,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     const d = parseInt(day, 10) - 1;
     const obj: any = {
       frequency: this.workflowService.getMonthDays(day),
+      day,
       periods: []
     };
     if (!isLast) {
@@ -788,8 +792,28 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.close.emit();
   }
 
-  editFrequency(item): void {
-    console.log(item);
+  editFrequency(data): void {
+   
+    // this._temp = this.coreService.clone(data);
+    this.selectedMonths = [];
+    this.selectedMonthsU = [];
+    if (data.lastSecondOfMonth || data.secondOfMonth > -1) {
+      this.frequency.tab = 'monthDays';
+      this.frequency.isUltimos = data.secondOfMonth > -1 ? 'months' : 'ultimos';
+      if (this.frequency.isUltimos == 'months') {
+        this.selectedMonths.push(data.day);
+      } else {
+        this.selectedMonthsU.push(data.day);
+      }
+    } else if (data.secondOfWeeks) {
+      this.frequency.tab = 'specificWeekDays';
+      this.frequency.specificWeekDay = data.specificWeekDay.toString();
+      this.frequency.specificWeek = data.specificWeek.toString();
+    } else {
+      this.frequency.tab = 'weekDays';
+    }
+    this.ref.detectChanges();
+
   }
 
   removeFrequency(data, index): void {

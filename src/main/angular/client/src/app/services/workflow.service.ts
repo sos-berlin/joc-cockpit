@@ -1963,12 +1963,17 @@ export class WorkflowService {
         obj = {
           periods: []
         };
-        obj[period.TYPE === 'MonthlyLastDatePeriod' ? 'lastSecondOfMonth' : 'secondOfMonth'] =(d * 24 * 3600);
+        obj[period.TYPE === 'MonthlyLastDatePeriod' ? 'lastSecondOfMonth' : 'secondOfMonth'] = (d * 24 * 3600);
         if (period.TYPE === 'MonthlyLastDatePeriod') {
           day = -27 + day;
         }
         obj.frequency = this.getMonthDays(day);
-        p.startTime = (period.secondOfMonth || period.lastSecondOfMonth) - (obj.secondOfMonth || obj.lastSecondOfMonth);
+        obj.day = day;
+        if (period.TYPE === 'MonthlyLastDatePeriod') {
+          p.startTime = period.lastSecondOfMonth - obj.lastSecondOfMonth;
+        } else {
+          p.startTime = period.secondOfMonth - obj.secondOfMonth;
+        }
         p.text = this.getText(p.startTime, p.duration);
         let flag = true;
         if (periodList.length > 0) {
@@ -1998,7 +2003,9 @@ export class WorkflowService {
           specificWeekDay = 7 + specificWeekDay;
           specificWeek = -(specificWeek);
         }
-        obj.frequency = this.getSpecificDay(specificWeek) + ' ' + this.getStringDay((specificWeekDay - 1))
+        obj.frequency = this.getSpecificDay(specificWeek) + ' ' + this.getStringDay((specificWeekDay - 1));
+        obj.specificWeekDay = specificWeekDay - 1;
+        obj.specificWeek = specificWeek;
         p.startTime = period.secondOfWeeks - obj.secondOfWeeks;
         p.text = this.getText(p.startTime, p.duration);
         let flag = true;
