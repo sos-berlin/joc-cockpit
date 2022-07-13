@@ -1094,9 +1094,9 @@
     "label.schedule": "Zeitplan",
     "label.objectType": "Objekttyp",
     "label.fileFormat": "Dateiformat",
-    "label.exportType": "Export Type",
-    "label.individualObjects": "Individual Objects",
-    "label.folders": "Folders",
+    "label.exportType": "Art des Exports",
+    "label.individualObjects": "Einzelne Objekte",
+    "label.folders": "Ordner",
     "label.newPath": "Neuer Pfad",
     "label.directory": "Verzeichnis",
     "label.pattern": "Muster",
@@ -1348,7 +1348,7 @@
         "board": {
           "expectBoardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
           "boardNames": "Mehrere Notizbretter können ausgewählt werden, für die Notizen erzeugt werden.",
-          "expectBoardExpression": "Der ExpectNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden."
+          "expectBoardExpression": "Der ExpectNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer Booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden."
         },
         "fail": {
           "message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
