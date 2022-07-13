@@ -647,9 +647,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
           clearInterval(this.interval);
           this.isLogout = true;
           this.logout('timeout');
+        } else {
+          let currentTime = this.coreService.convertTimeToLocalTZ(this.preferences, new Date()).format('HH:mm:ss');
+          if (currentTime === '00:00:00' || currentTime === '00:00:01' || currentTime === '00:00:02') {
+            this.dataService.refreshUI('reload');
+          }
         }
       }
       this.openStepGuideModal();
+
     }, 3000);
   }
 

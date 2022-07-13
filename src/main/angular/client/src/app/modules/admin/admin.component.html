@@ -56,10 +56,6 @@
               <i class="fa fa-upload"></i>&nbsp;
               <span translate>inventory.button.import</span>
             </button>
-            <button *ngIf="route === '/users/identity_service' && !isBlockButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isBlocklist}" (click)=" manageBlocklist()">
-              <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
-              <span translate>user.button.blocklist</span>
-            </button>
             <button *ngIf="route === '/users' || route === '/users/identity_service' && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.manageGeneralSetting</span>
@@ -132,6 +128,10 @@
                     [hidden]="pageView=='grid'" (click)="addPermission();">
               <i class="fa fa-plus"></i>&nbsp;
               {{'user.button.addPermission' | translate}}
+            </button>
+            <button *ngIf="route === '/users/identity_service' && !isBlockButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isBlocklist}" (click)=" manageBlocklist()">
+              <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
+              <span translate>user.button.blocklist</span>
             </button>
             <div class="hide" [ngClass]="{'show-block': route && route.match('/users/identity_service/permissions')}">
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>

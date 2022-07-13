@@ -5518,13 +5518,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       controllerId: this.schedulerIds.selected,
       objectType: this.objectType,
     };
-    const URL = this.objectType === 'NOTIFICATION' ? 'notification/delete' : 'xmleditor/remove';
     if (this.objectType !== 'NOTIFICATION') {
       obj.id = tab.id;
     } else {
       obj.release = isRelease;
     }
-    this.coreService.post(URL, obj).subscribe({
+    this.coreService.post('xmleditor/remove', obj).subscribe({
       next: (res: any) => {
         if (this.objectType === 'NOTIFICATION') {
           this.extraInfo = {
@@ -5662,7 +5661,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.removeDocs();
       this.isStore = true;
       if (this.objectType === 'NOTIFICATION') {
-        this.coreService.post('notification/store', {
+        this.coreService.post('xmleditor/store', {
           controllerId: this.schedulerIds.selected,
           objectType: this.objectType,
           configuration: this.mainXml,

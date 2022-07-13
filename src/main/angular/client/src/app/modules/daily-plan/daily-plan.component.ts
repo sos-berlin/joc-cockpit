@@ -1365,6 +1365,50 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
+  modifyOrderStartTime(): void {
+    const self = this;
+    let order = this.object.mapOfCheckedId.values().next().value;
+    const orderIds = [];
+    this.object.mapOfCheckedId.forEach((value) => {
+      orderIds.push(value.orderId);
+    });
+    this.getOrder(orderIds, (orders) => {
+      let state;
+      if (orders && orders.length > 0) {
+        for (let i in orders) {
+          if (orders[i].state._text !== 'SCHEDULED' && orders[i].state._text !== 'PENDING' && orders[i].state._text !== 'BLOCKED') {
+            state = orders[i].state._text;
+            break;
+          }
+        }
+      }
+      if (!state) {
+         openModal(order, null);
+      } else {
+        this.showInfoMsg(state);
+      }
+    });
+
+    function openModal(order, plan) {
+      self.modal.create({
+        nzTitle: undefined,
+        nzContent: ModifyStartTimeModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          schedulerId: self.schedulerIds.selected,
+          order,
+          plan,
+          isDailyPlan: true,
+          preferences: self.preferences
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+
+    }
+  }
+
   modifySelectedOrder(): void {
     const self = this;
     let order = this.object.mapOfCheckedId.values().next().value;

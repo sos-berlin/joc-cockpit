@@ -377,19 +377,19 @@
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
           <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}">
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isModify" (click)="modifySelectedOrder()"><i
-              class="fa fa-times"></i>&nbsp;
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController && permission.currentController.orders.modify" [disabled]="!object.isModify" (click)="modifyOrderStartTime()"><i
+              class="fa fa-clock-o"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.setStartTime</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isModify" (click)="modifySelectedOrder()"><i
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController && permission.currentController.orders.modify" [disabled]="!object.isModify" (click)="modifySelectedOrder()"><i
               class="fa fa-edit"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12" [disabled]="!object.isPlanned" (click)="submitSelectedOrder()"><i
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController && permission.currentController.orders.create" [disabled]="!object.isPlanned" (click)="submitSelectedOrder()"><i
               class="fa fa-rocket"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.submitOrder</span>
             </button>
-            <button class="btn btn-grey btn-sm m-l-12 bg-hover-color"
+            <button class="btn btn-grey btn-sm m-l-12 bg-hover-color" *ngIf="permission.currentController && permission.currentController.orders.cancel"
                     [disabled]="!object.isPlanned" (click)="removeSelectedOrder()"><i
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>

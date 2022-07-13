@@ -15,11 +15,15 @@
   </div>
   <div class="row text-center" *ngIf="!display">
     <div class="col-sm-12 text m-t m-b">
-      <span *ngIf="delete" translate>
-        <span *ngIf="!isRole" translate>user.message.deleteSelectedUser</span>
+      <span *ngIf="delete">
+        <span *ngIf="blocklist">
+          <span *ngIf="account" translate>user.message.deleteBlocklist</span>
+          <span *ngIf="!account" translate>user.message.deleteSelectedBlocklist</span>
+        </span>
+        <span *ngIf="!isRole && !blocklist" translate>user.message.deleteSelectedUser</span>
         <span *ngIf="isRole" translate>user.message.deleteSelectedRole</span>
       </span>
-      <span *ngIf="account">
+      <span *ngIf="account && !blocklist">
         <span *ngIf="reset" translate>user.message.resetPasswordForUser</span>
         <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForUser</span>
       </span>

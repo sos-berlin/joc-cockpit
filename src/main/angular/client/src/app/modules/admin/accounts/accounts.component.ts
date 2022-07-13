@@ -24,6 +24,7 @@ export class ConfirmationModalComponent implements OnInit {
   @Input() accounts;
   @Input() account;
   @Input() isRole;
+  @Input() blocklist;
   @Input() identityServiceName: string;
   submitted = false;
   display: any;

@@ -2188,7 +2188,7 @@ export class WorkflowService {
   }
 
   getMonthDays(month, isLast): string {
-    let str = isLast ? 'last' : '';
+    let str = isLast ? 'last ' : '';
     if (month == 0 && isLast) {
 
     } else if (Math.abs(month) == 1 || Math.abs(month) == 31) {

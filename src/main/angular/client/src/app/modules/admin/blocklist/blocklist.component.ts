@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {CoreService} from 'src/app/services/core.service';
-import {OrderPipe, SearchPipe} from 'src/app/pipes/core.pipe';
-import {DataService} from '../data.service';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
 import {Subscription} from 'rxjs';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
+import {CoreService} from '../../../services/core.service';
+import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
+import {DataService} from '../data.service';
 
 @Component({
   selector: 'app-blocklist',
@@ -17,30 +17,27 @@ export class BlocklistComponent implements OnInit {
   data = [];
   searchableProperties = ['accountName', 'since']
   preferences: any;
-
   blocklistFilter: any = {};
   object = {
     mapOfCheckedId: new Set(),
     checked: false,
     indeterminate: false
   };
+
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private orderPipe: OrderPipe,
               private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
-
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'DELETE_BULK_BLOCKS') {
         this.removeBlocks(null);
       } else if (res != 'IS_BLOCKLIST_PROFILES_TRUE' && res != 'IS_BLOCKLIST_PROFILES_FALSE') {
-        
         this.loadBlocklist(res);
       }
     });
   }
 
   ngOnInit(): void {
-   
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.blocklistFilter = this.coreService.getAdminTab().blocklist;
     if (this.preferences.entryPerPage) {
@@ -170,7 +167,7 @@ export class BlocklistComponent implements OnInit {
         radio: 'predefined',
         type: 'Blocklist',
         operation: 'Delete',
-        name: ''
+        name: acc ? acc.accountName : ''
       };
       this.object.mapOfCheckedId.forEach((value, key) => {
         comments.name = comments.name + key + ', ';
@@ -200,7 +197,9 @@ export class BlocklistComponent implements OnInit {
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
         nzComponentParams: {
-          delete: true
+          delete: true,
+          account: acc,
+          blocklist: true
         },
         nzFooter: null,
         nzClosable: false,
