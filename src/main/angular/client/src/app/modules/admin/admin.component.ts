@@ -115,6 +115,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.adminFilter.isBlocklist = !this.adminFilter.isBlocklist;
   }
 
+  addToBlocklist(): void {
+    this.dataService.announceFunction('ADD_TO_BLOCKLIST');
+  }
+
   loadBlocklist(date) {
     this.adminFilter.blocklist.filter.date = date;
     this.dataService.announceFunction(date);

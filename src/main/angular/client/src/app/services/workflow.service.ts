@@ -78,9 +78,9 @@ export class WorkflowService {
     } else if (name === 'addOrder') {
       const fillColor = colorCode || '#ffb481';
       svg = '<svg width="52px" height="52px" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1"><stop stop-color="' + fillColor + '" offset="0%"></stop><stop stop-color="' + color2 + '" offset="100%"></stop></linearGradient></defs><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(1.000000, 1.000000)"><g id="noun_fork_60030" transform="translate(24.748737, 24.748737) rotate(90.000000) translate(-24.748737, -24.748737) " fill="url(#linearGradient-1)" fill-rule="nonzero" stroke="' + fillColor + '"><rect id="Rectangle-33" transform="translate(24.748737, 24.748737) rotate(45.000000) translate(-24.748737, -24.748737) " x="7.24873734" y="7.24873734" width="35" height="35" rx="4"></rect></g><g id="noun_Add-Receipt_783557" transform="translate(13.000000, 14.000000)" fill="' + color + '"><path d="M15.9560181,14.9122362 L12.4359743,14.9122362 L12.4359743,13.6516532 L15.9560181,13.6516532 L15.9560181,10.0879853 L17.2011698,10.0879853 L17.2011698,13.6516532 L20.7212136,13.6516532 L20.7212136,14.9122362 L17.2011698,14.9122362 L17.2011698,18.4759041 L15.9560181,18.4759041 L15.9560181,14.9122362 Z M4.5,9.26058293 L15.5,9.26058293 L15.5,8 L4.5,8 L4.5,9.26058293 Z M4.5,6.26058293 L17.2,6.26058293 L17.2,5 L4.5,5 L4.5,6.26058293 Z M4.5,12.2605829 L13.7085193,12.2605829 L13.7085193,11 L4.5,11 L4.5,12.2605829 Z M4.5,14.9105829 L10.9959564,14.9105829 L10.9959564,13.65 L4.5,13.65 L4.5,14.9105829 Z" id="Shape"></path></g></g></g></svg>';
-    } else if (name === 'expectNotice') {
+    } else if (name === 'expectNotices') {
       svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><rect width="16.8" height="16.8" x="4" y="4" fill="none" fill-rule="nonzero" stroke="' + (colorCode || color) + '" stroke-width=".5" rx="1.92" transform="rotate(45 12.4 12.4)"/><g stroke="' + (colorCode || color) + '" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.212" transform="translate(8 8)"><polyline points="4.762 4.762 7.619 7.619 4.762 10.476"/><path d="M5.71428571,4.26325641e-14 L3.80952381,4.26325641e-14 C1.70571429,4.26325641e-14 -3.3158661e-14,1.70571429 -3.3158661e-14,3.80952381 L-3.3158661e-14,3.80952381 C-3.3158661e-14,5.91333333 1.70571429,7.61904762 3.80952381,7.61904762 L7.61904762,7.61904762"/></g></g></svg>';
-    } else if (name === 'postNotice') {
+    } else if (name === 'postNotices') {
       svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><rect width="16.8" height="16.8" x="4" y="4" stroke="' + (colorCode || color) + '" stroke-width=".5" rx="1.92" transform="rotate(45 12.4 12.4)"/><g stroke="' + (colorCode || color) + '" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.212" transform="matrix(1 0 0 -1 8 17)"><polyline points="4.762 4.762 7.619 7.619 4.762 10.476"/><path d="M5.71428571,4.26325641e-14 L3.80952381,4.26325641e-14 C1.70571429,4.26325641e-14 -3.3158661e-14,1.70571429 -3.3158661e-14,3.80952381 L-3.3158661e-14,3.80952381 C-3.3158661e-14,5.91333333 1.70571429,7.61904762 3.80952381,7.61904762 L7.61904762,7.61904762"/></g></g></svg>';
     } else if (name === 'finish') {
       svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><rect width="16.8" height="16.8" x="4" y="4" stroke="' + (colorCode || color) + '" stroke-width=".5" rx="1.92" transform="rotate(45 12.4 12.4)"/><polygon fill="' + (colorCode || color) + '" fill-rule="nonzero" stroke="' + color2 + '" stroke-width=".4" points="8.571 0 9.857 1.286 3.866 7.286 0 3.429 1.286 2.143 3.866 4.714" transform="translate(7 9)"/></g></svg>';
@@ -215,8 +215,8 @@ export class WorkflowService {
     WorkflowService.setStyleToSymbol('closeForkList', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('lock', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('closeLock', colorCode, theme, graph);
-    WorkflowService.setStyleToSymbol('expectNotice', colorCode, theme, graph);
-    WorkflowService.setStyleToSymbol('postNotice', colorCode, theme, graph);
+    WorkflowService.setStyleToSymbol('expectNotices', colorCode, theme, graph);
+    WorkflowService.setStyleToSymbol('postNotices', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('finish', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('fail', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('prompt', colorCode, theme, graph);
@@ -889,7 +889,7 @@ export class WorkflowService {
               _node.setAttribute('noticeBoardNames', isArray(json.instructions[x].noticeBoardNames) ? json.instructions[x].noticeBoardNames.join(',') : json.instructions[x].noticeBoardNames);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotices', colorCode, self.theme) : 'postNotices');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -924,7 +924,7 @@ export class WorkflowService {
               _node.setAttribute('noticeBoardNames', json.instructions[x].noticeBoardNames);
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotices', colorCode, self.theme) : 'expectNotices');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1161,7 +1161,7 @@ export class WorkflowService {
               if (cell && cell.getAttribute('uuid') == json.compressData[i].instructions[x].uuid) {
                 v1 = cell;
               } else {
-                v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotice', colorCode, self.theme) : 'postNotice');
+                v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotices', colorCode, self.theme) : 'postNotices');
                 if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                   mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
                 }
@@ -1179,7 +1179,7 @@ export class WorkflowService {
               if (cell && cell.getAttribute('uuid') == json.compressData[i].instructions[x].uuid) {
                 v1 = cell;
               } else {
-                v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotice', colorCode, self.theme) : 'expectNotice');
+                v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotices', colorCode, self.theme) : 'expectNotices');
                 if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                   mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
                 }

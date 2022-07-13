@@ -1,11 +1,60 @@
 import {Component, OnInit} from '@angular/core';
-import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
 import {CoreService} from '../../../services/core.service';
 import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {DataService} from '../data.service';
+
+@Component({
+  selector: 'app-add-to-blocklist',
+  templateUrl: './add-to-blocklist-dialog.html'
+})
+export class AddBlocklistModalComponent implements OnInit {
+  submitted = false;
+  accountName = '';
+  display: any;
+  required = false;
+  comments: any = {};
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
+  }
+
+  ngOnInit(): void {
+    this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    } else {
+      let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+      this.display = preferences.auditLog;
+    }
+    if (this.dataService.comments && this.dataService.comments.comment) {
+      this.comments = this.dataService.comments;
+      this.display = false;
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const request: any = {
+      accountName: this.accountName,
+      auditLog: {}
+    };
+    this.coreService.getAuditLogObj(this.comments, request.auditLog);
+    if (this.comments.isChecked) {
+      this.dataService.comments = this.comments;
+    }
+    this.coreService.post('iam/blockedAccount/store', request).subscribe({
+      next: () => {
+        this.activeModal.close('DONE');
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
+  }
+}
 
 @Component({
   selector: 'app-blocklist',
@@ -31,6 +80,8 @@ export class BlocklistComponent implements OnInit {
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'DELETE_BULK_BLOCKS') {
         this.removeBlocks(null);
+      } else if(res === 'ADD_TO_BLOCKLIST'){
+        this.addToBlocklist();
       } else if (res != 'IS_BLOCKLIST_PROFILES_TRUE' && res != 'IS_BLOCKLIST_PROFILES_FALSE') {
         this.loadBlocklist(res);
       }
@@ -159,6 +210,21 @@ export class BlocklistComponent implements OnInit {
     } else {
       this.dataService.announceFunction('IS_BLOCKLIST_PROFILES_FALSE');
     }
+  }
+
+  addToBlocklist(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzAutofocus: null,
+      nzContent: AddBlocklistModalComponent,
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.loadBlocklist();
+      }
+    });
   }
 
   removeBlocks(acc) {

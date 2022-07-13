@@ -995,6 +995,7 @@ export class ExportComponent implements OnInit {
     forSigning: false,
     filename: '',
     fileFormat: 'ZIP',
+    exportType: 'folders',
     objectTypes: []
   };
   filter = {

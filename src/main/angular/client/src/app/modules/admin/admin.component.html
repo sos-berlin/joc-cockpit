@@ -129,6 +129,10 @@
               <i class="fa fa-plus"></i>&nbsp;
               {{'user.button.addPermission' | translate}}
             </button>
+            <button *ngIf="route === '/users/identity_service' && adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addToBlocklist()">
+              <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;
+              <span translate>user.button.addToBlocklist</span>
+            </button>
             <button *ngIf="route === '/users/identity_service' && !isBlockButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isBlocklist}" (click)=" manageBlocklist()">
               <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
               <span translate>user.button.blocklist</span>

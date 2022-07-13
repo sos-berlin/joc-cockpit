@@ -1094,6 +1094,9 @@
     "label.schedule": "スケジュール",
     "label.objectType": "オブジェクトタイプ",
     "label.fileFormat": "ファイル形式",
+    "label.exportType": "Export Type",
+    "label.individualObjects": "Individual Objects",
+    "label.folders": "Folders",
     "label.newPath": "新規パス",
     "label.directory": "ディレクトリー",
     "label.pattern": "パターン",
@@ -1308,7 +1311,6 @@
       "board": {
         "name": "ボード名",
         "expectBoardName": "通知ボードとは、ワークフロー間の依存関係を表すものです。ワークフローのPostNotice命令、ExpectNotice命令は、通知ボードを参照します。通知ボードの名前は、インベントリ内で一意です。 通知ボードの名前には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、先頭または末尾にドットやハイフンを使用することはできません。",
-        "expectBoardExpression": "ExpectNotice条件式",
         "documentation": "ドキュメント",
         "title": "ボードのタイトル",
         "toNotice": "通知入力",
@@ -1345,7 +1347,8 @@
         "allowUndeclared": "未宣言を許可",
         "board": {
           "expectBoardName": "通知ボード名",
-          "boardNames": "通知ボード登録"
+          "boardNames": "通知ボード登録",
+          "expectBoardExpression": "ExpectNotice条件式"
         },
         "fail": {
           "message": "オーダーに添付され、オーダー履歴で表示されるメッセージを指定することができます。",

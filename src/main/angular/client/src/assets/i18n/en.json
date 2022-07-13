@@ -1094,6 +1094,9 @@
     "label.schedule": "Schedule",
     "label.objectType": "Object Type",
     "label.fileFormat": "File Format",
+    "label.exportType": "Export Type",
+    "label.individualObjects": "Individual Objects",
+    "label.folders": "Folders",
     "label.newPath": "New Path",
     "label.directory": "Directory",
     "label.pattern": "Pattern",
@@ -1308,7 +1311,6 @@
       "board": {
         "name": "A Notice Board represents the dependencies between workflows. The respective PostNotices Instructions and ExpectNotices Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory. For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotices Instructions and ExpectNotices Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-        "expectBoardExpression": "The ExpectNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Notice Board. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Notice Board can be specified as desired.",
         "toNotice": "Enter Notice ID for posting order",
@@ -1345,7 +1347,8 @@
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available with an order.",
         "board": {
           "expectBoardName": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-          "boardNames": "A number of Notice Board names can be specified for which Notices are created."
+          "boardNames": "A number of Notice Board names can be specified for which Notices are created.",
+          "expectBoardExpression": "The ExpectNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing"
         },
         "fail": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",

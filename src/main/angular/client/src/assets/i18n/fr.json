@@ -1094,6 +1094,9 @@
     "label.schedule": "Planification",
     "label.objectType": "Type d'Objet",
     "label.fileFormat": "Format de fichier",
+    "label.exportType": "Export Type",
+    "label.individualObjects": "Individual Objects",
+    "label.folders": "Folders",
     "label.newPath": "Nouveau chemin",
     "label.directory": "Répertoire",
     "label.pattern": "Modèle",
@@ -1308,7 +1311,6 @@
       "board": {
         "name": "Un tableau de condition représente les dépendances entre les workflows. Les instructions PostNotices et ExpectNotices respectives dans les workflows font référence au tableau de condition. Le nom d'un Tableau de Condition est unique dans l'inventaire. Pour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "expectBoardName": "Un tableau de condition représente les dépendances entre les workflows. Les instructions PostNotices et ExpectNotices respectives dans les workflows font référence au tableau de condition. Le nom d'un Tableau de Condition est unique dans l'inventaire. Pour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
-        "expectBoardExpression": "L'expression ExpectNotices peut être utilisée pour spécifier un seul tableau de condition et pour spécifier une logique booléenne : ('A-BOARD' || 'B-BOARD') && 'C-BOARD'. Les noms des tableaux de condition sont cités et les opérateurs && (et) et || (ou) peuvent être utilisés de manière optionnelle, y compris entre crochets.",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le tableau de condition. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre de la Condition peut être spécifié à volonté.",
         "toNotice": "Entrer la Condition",
@@ -1345,7 +1347,8 @@
         "allowUndeclared": "Autoriser les variables non déclarées des Ordres. Cela signifie qu'un ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les tâches échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un ordre.",
         "board": {
           "expectBoardName": "Le nom d'une Condition est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
-          "boardNames": "Il est possible de spécifier un certain nombre de Conditions pour lesquels des Annonces sont créés."
+          "boardNames": "Il est possible de spécifier un certain nombre de Conditions pour lesquels des Annonces sont créés.",
+          "expectBoardExpression": "L'expression ExpectNotices peut être utilisée pour spécifier un seul tableau de condition et pour spécifier une logique booléenne : ('A-BOARD' || 'B-BOARD') && 'C-BOARD'. Les noms des tableaux de condition sont cités et les opérateurs && (et) et || (ou) peuvent être utilisés de manière optionnelle, y compris entre crochets."
         },
         "fail": {
           "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",

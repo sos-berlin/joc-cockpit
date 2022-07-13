@@ -1082,6 +1082,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
+  submissionSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
   yadeSearchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
   isSubmissionLoading = false;
@@ -2164,7 +2165,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       this.data = this.deployment.searchText ? this.searchPipe.transform(this.deploymentHistorys, this.deployment.searchText, this.deploymentSearchableProperties) : this.deploymentHistorys;
     } else if (this.historyFilters.type === 'SUBMISSION') {
-      this.data = this.submissionHistorys;
+      this.data = this.submission.searchText ? this.searchPipe.transform(this.submissionHistorys, this.submission.searchText, this.submissionSearchableProperties) : this.submissionHistorys;
     }
     this.data = [...this.data];
     if (this.historyFilters.type === 'ORDER' && this.historys.length === 0) {
@@ -2178,7 +2179,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else if (this.historyFilters.type === 'SUBMISSION' && this.submissionHistorys.length === 0) {
       this.submission.currentPage = 1;
     }
-
   }
 
   expandDetails(): void {

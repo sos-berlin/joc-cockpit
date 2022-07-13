@@ -824,7 +824,10 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       if (this.frequency.isUltimos == 'months') {
         this.selectedMonths.push('' + data.day);
       } else {
-        this.selectedMonthsU.push('' + data.day);
+        if (data.day === 0) {
+          data.day = 1;
+        }
+        this.selectedMonthsU.push('' + Math.abs(data.day));
       }
     } else if (data.secondOfWeeks) {
       this.frequency.tab = 'specificWeekDays';
@@ -8085,12 +8088,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           _node = doc.createElement('ExpectNotices');
           _node.setAttribute('label', 'expectNotices');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'expectNotice');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'expectNotices');
         } else if (title.match('publish')) {
           _node = doc.createElement('PostNotices');
           _node.setAttribute('label', 'postNotices');
           _node.setAttribute('uuid', self.workflowService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'postNotice');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'postNotices');
         } else if (title.match('prompt')) {
           _node = doc.createElement('Prompt');
           _node.setAttribute('label', 'prompt');

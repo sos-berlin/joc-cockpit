@@ -18,7 +18,7 @@ import {
 import {SessionTimeRegexValidator} from '../../directives/core.directive';
 import {ShowPermissionComponent} from './show-permission/show-permission.component';
 import {UploadModalComponent} from "./upload/upload.component";
-import { BlocklistComponent } from './blocklist/blocklist.component';
+import {AddBlocklistModalComponent, BlocklistComponent} from './blocklist/blocklist.component';
 
 @NgModule({
   imports: [
@@ -46,7 +46,8 @@ import { BlocklistComponent } from './blocklist/blocklist.component';
     ConfirmationModalComponent,
     UploadModalComponent,
     ShowPermissionComponent,
-    BlocklistComponent
+    BlocklistComponent,
+    AddBlocklistModalComponent
   ],
   providers: [
     DataService

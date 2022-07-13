@@ -199,9 +199,9 @@
     <hr/>
     <add as="Prompt" template="Prompt" style="prompt" icon="./assets/mxgraph/images/white-prompt.png"/>
     <hr/>
-    <add as="PostNotices" template="PostNotices" style="postNotice" icon="./assets/mxgraph/images/white-publish.png"/>
+    <add as="PostNotices" template="PostNotices" style="postNotices" icon="./assets/mxgraph/images/white-publish.png"/>
     <hr/>
-    <add as="ExpectNotices" template="ExpectNotices" style="expectNotice" icon="./assets/mxgraph/images/white-await.png"/>
+    <add as="ExpectNotices" template="ExpectNotices" style="expectNotices" icon="./assets/mxgraph/images/white-await.png"/>
     <hr/>
     <add as="Lock" template="Lock" style="lock" icon="./assets/mxgraph/images/white-lock.png"/>
     <hr/>
