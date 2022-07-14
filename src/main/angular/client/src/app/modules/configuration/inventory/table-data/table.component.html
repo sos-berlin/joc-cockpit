@@ -135,7 +135,7 @@
                     <li nz-menu-item (click)="releaseObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT'" [nzDisabled]="!data.valid">
                       <a translate>inventory.button.release</a>
                     </li>
-                    <li nz-menu-item (click)="recallObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT'" [nzDisabled]="!data.valid">
+                    <li nz-menu-item (click)="recallObject(data)" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'INCLUDESCRIPT'" [nzDisabled]="!data.released">
                       <a translate>inventory.button.recall</a>
                     </li>
                     <li nz-menu-divider *ngIf="permission.joc.inventory.manage">

@@ -7689,6 +7689,11 @@ tr.tr-border td:first-child {
     display: none;
   }
 }
+.export-tree-checkbox{
+  .ant-tree-checkbox-checked.ant-tree-checkbox-disabled {
+    display: block;
+  }
+}
 
 .ant-tree-child-tree {
   width: fit-content !important;

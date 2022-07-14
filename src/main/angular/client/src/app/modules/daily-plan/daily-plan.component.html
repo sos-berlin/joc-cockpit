@@ -377,7 +377,7 @@
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
           <div class="hide" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}">
-            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController && permission.currentController.orders.modify" [disabled]="!object.isModify" (click)="modifyOrderStartTime()"><i
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="permission.currentController && permission.currentController.orders.modify" [disabled]="!object.isModifyStartTime" (click)="modifyOrderStartTime()"><i
               class="fa fa-clock-o"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.setStartTime</span>
             </button>

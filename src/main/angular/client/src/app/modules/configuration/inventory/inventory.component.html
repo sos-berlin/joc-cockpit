@@ -422,10 +422,10 @@
       <a translate>inventory.button.release</a>
     </li>
     <li nz-menu-item (click)="recallObject(node);"  *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && (node.origin.object.match('CALENDAR') || node.origin.object === 'SCHEDULE' || node.origin.object === 'INCLUDESCRIPT'))
-    || (node.origin.type && (node.origin.type.match('CALENDAR') || node.origin.type === 'SCHEDULE' || node.origin.type === 'INCLUDESCRIPT')) || (!node.origin.object && !node.origin.type && !node.origin.controller))"
-       [nzDisabled]="(!node.origin.hasReleases && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid)))">
+      || (node.origin.type && (node.origin.type.match('CALENDAR') || node.origin.type === 'SCHEDULE' || node.origin.type === 'INCLUDESCRIPT')) || (!node.origin.object && !node.origin.type && !node.origin.controller))"
+       [nzDisabled]="(!node.origin.hasReleases && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.released)))">
        <a translate>inventory.button.recall</a>
-      </li>
+    </li>
     <li nz-menu-divider *ngIf="permission.joc.inventory.manage"></li>
     <li nz-menu-item (click)="removeObject(node);" *ngIf="permission.joc.inventory.manage"
         [nzDisabled]="(node.origin.object && node.origin.children.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">

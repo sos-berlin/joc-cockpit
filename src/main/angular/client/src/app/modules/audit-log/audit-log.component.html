@@ -360,7 +360,7 @@
                     <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                       <ul nz-menu >
-                        <li nz-menu-item (click)="addBlockedAccounts(account)">
+                        <li nz-menu-item [nzDisabled]="account.accountName === '*none'" (click)="addBlockedAccounts(account)">
                           <a translate>user.button.addToBlocklist</a>
                         </li>
                       </ul>

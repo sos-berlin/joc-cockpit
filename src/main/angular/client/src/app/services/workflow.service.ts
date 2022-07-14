@@ -634,6 +634,7 @@ export class WorkflowService {
           if (json.instructions[x].TYPE === 'ForkList') {
             if (json.instructions[x].workflow) {
               json.instructions[x].instructions = json.instructions[x].workflow.instructions;
+              json.instructions[x].result = json.instructions[x].workflow.result;
               delete json.instructions[x].workflow;
             }
           }
@@ -966,6 +967,9 @@ export class WorkflowService {
             }
             if (json.instructions[x].children !== undefined) {
               _node.setAttribute('children', json.instructions[x].children);
+            }
+            if (json.instructions[x].result !== undefined) {
+              _node.setAttribute('result', JSON.stringify(json.instructions[x].result));
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('forkList', colorCode, self.theme) : 'forkList');
@@ -1479,10 +1483,10 @@ export class WorkflowService {
           + truncate(cell.getAttribute('jobName'), 22) + '</div>';
         if (state) {
           state = JSON.parse(state);
-          if (state._text === 'SKIPPED') {
+          if (state._text) {
             const class1 = this.coreService.getColor(state.severity, 'text');
             let skip = '';
-            this.translate.get('SKIPPED').subscribe(translatedValue => {
+            this.translate.get(state._text).subscribe(translatedValue => {
               skip = translatedValue;
             });
             str += '<div><span class = "text-xs ' + class1 + '">' + skip + '</span></div>';
@@ -2231,7 +2235,6 @@ export class WorkflowService {
             obj.secondOfDay = ((item.secondOfDay || 0) + period.startTime);
           }
           obj.duration = period.duration;
-          console.log(obj, '>>>>>>>', item.frequency)
           arr.push(obj);
         });
       }

@@ -1106,6 +1106,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     checked: false,
     indeterminate: false,
     isCancel: false,
+    isModifyStartTime: false,
     isModify: false,
     isPlanned: false,
     isFinished: false
@@ -1367,7 +1368,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   modifyOrderStartTime(): void {
     const self = this;
-    let order = this.object.mapOfCheckedId.values().next().value;
     const orderIds = [];
     this.object.mapOfCheckedId.forEach((value) => {
       orderIds.push(value.orderId);
@@ -1383,29 +1383,33 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         }
       }
       if (!state) {
-         openModal(order, null);
+        openModal();
       } else {
         this.showInfoMsg(state);
       }
     });
 
-    function openModal(order, plan) {
+    function openModal() {
       self.modal.create({
         nzTitle: undefined,
         nzContent: ModifyStartTimeModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
           schedulerId: self.schedulerIds.selected,
-          order,
-          plan,
+          orders: self.object.mapOfCheckedId,
           isDailyPlan: true,
           preferences: self.preferences
         },
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          self.resetCheckBox();
+          self.isProcessing = true;
+          self.resetAction(5000);
+        }
       });
-
     }
   }
 
@@ -2323,6 +2327,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     object.isFinished = false;
     object.isCancel = false;
     object.isModify = true;
+    object.isModifyStartTime = true;
     let finishedCount = 0;
     let count = 0;
     let workflow = null;
@@ -2335,14 +2340,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (order.state._text !== 'PLANNED') {
         object.isPlanned = false;
       }
-      if (order.state._text === 'FINISHED') {
-        ++finishedCount;
-      }
       if (order.state._text === 'PLANNED') {
         object.isCancel = true;
       }
       if (order.state._text === 'FINISHED') {
+        ++finishedCount;
         object.isModify = false;
+        object.isModifyStartTime = false;
       }
 
       if (!workflow) {
@@ -2351,7 +2355,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         object.isModify = false;
       }
     });
-    if (finishedCount === list.length) {
+    if (finishedCount === list.length || finishedCount === list.size) {
       object.isFinished = true;
     }
   }
@@ -2494,6 +2498,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       checked: false,
       isCancel: false,
       isModify: false,
+      isModifyStartTime: false,
       isPlanned: false,
       isFinished: false
     };

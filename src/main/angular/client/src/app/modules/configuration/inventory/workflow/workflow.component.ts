@@ -2662,10 +2662,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               (bounds.y - (state.y - ((this.editor.graph.container.clientHeight / 2) - (state.height / 2)))));
             graph.clearSelection();
             graph.setSelectionCell(cell);
+            this.initEditorConf(this.editor, false, false, true);
             this.searchNode = {text: ''};
             $('#searchTree input').blur();
             $('#workflowHeader').removeClass('hide-on-focus')
-            this.initEditorConf(this.editor, false, false, true);
             break;
           }
         }
@@ -3962,21 +3962,21 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  addResult(branch): void {
+  addResult(obj): void {
     const param = {
       name: '',
       value: ''
     };
-    if (!branch.result) {
-      branch.result = [];
+    if (!obj.result) {
+      obj.result = [];
     }
-    if (!this.coreService.isLastEntryEmpty(branch.result, 'name', '')) {
-      branch.result.push(param);
+    if (!this.coreService.isLastEntryEmpty(obj.result, 'name', '')) {
+      obj.result.push(param);
     }
   }
 
-  removeResult(i, branch): void {
-    branch.result.splice(i, 1);
+  removeResult(i, list): void {
+    list.result.splice(i, 1);
   }
 
   isStringValid(data, form): void {
@@ -3998,6 +3998,26 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         }
       });
+    }
+  }
+
+  isForklistStringValid(data, form): void {
+    delete data.invalid;
+    if (form.invalid) {
+      data.name = '';
+      data.value = '';
+    } else {
+      let count = 0;
+        for (let i in this.selectedNode.obj.result) {
+          if (this.selectedNode.obj.result[i].name === data.name) {
+            ++count;
+          }
+          if (count > 1) {
+            data.invalid = true;
+            form.control.setErrors({incorrect: true});
+            break;
+          }
+        }
     }
   }
 
@@ -4820,7 +4840,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         if (attr[j].name && attr[j].value && (attr[j].name !== 'label' || (attr[j].name === 'label' && obj.TYPE === 'Job'))) {
           let val = attr[j].value;
-          if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome')) {
+          if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome' || attr[j].name === 'result')) {
             val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
           } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable') {
             val = val == 'true';
@@ -7249,6 +7269,22 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'joinIfFailed', self.selectedNode.newObj.joinIfFailed);
             graph.getModel().execute(edit3);
+            if (self.selectedNode.newObj.result && self.selectedNode.newObj.result.length > 0) {
+              self.selectedNode.newObj.result = self.selectedNode.newObj.result.filter((argu) => {
+                self.coreService.addSlashToString(argu, 'value');
+                return !argu.invalid;
+              });
+              self.coreService.convertArrayToObject(self.selectedNode.newObj, 'result', true);
+              if (self.selectedNode.newObj.result) {
+                const edit4 = new mxCellAttributeChange(
+                  obj.cell, 'result', JSON.stringify(self.selectedNode.newObj.result));
+                graph.getModel().execute(edit4);
+              }
+            } else {
+              const edit4 = new mxCellAttributeChange(
+                obj.cell, 'result', null);
+              graph.getModel().execute(edit4);
+            }
           } else if (self.selectedNode.type === 'Lock') {
             let count = '';
             if (self.selectedNode.newObj.countProperty === 'shared') {
@@ -7516,6 +7552,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           obj.childToId = cell.getAttribute('childToId');
           obj.joinIfFailed = cell.getAttribute('joinIfFailed');
           obj.joinIfFailed = obj.joinIfFailed == 'true';
+          let resultObj = cell.getAttribute('result');
+          if (resultObj) {
+            resultObj = JSON.parse(resultObj);
+            resultObj = self.coreService.convertObjectToArray({result: resultObj}, 'result');
+            resultObj.filter((arg) => {
+              self.coreService.removeSlashToString(arg, 'value');
+            });
+          } else {
+            resultObj = [];
+          }
+          obj.result = resultObj;
         } else if (cell.value.tagName === 'Lock') {
           obj.count = cell.getAttribute('count');
           if (obj.count) {
@@ -9660,8 +9707,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             delete json.instructions[x].instructions;
             delete json.instructions[x].count;
             json.instructions[x].count = countObj;
-          }
-          if (json.instructions[x].TYPE === 'Cycle') {
+          } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
             };
@@ -9677,24 +9723,25 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (scheduleObj && scheduleObj.schemes && scheduleObj.schemes.length > 0) {
               json.instructions[x].schedule = scheduleObj;
             }
-          }
-          if (json.instructions[x].TYPE === 'ForkList') {
+          } else if (json.instructions[x].TYPE === 'ForkList') {
             const childrenObj = clone(json.instructions[x].children);
             const childToIdObj = clone(json.instructions[x].childToId);
             let joinIfFailed = clone(json.instructions[x].joinIfFailed);
+            let result = clone(json.instructions[x].result);
             joinIfFailed = joinIfFailed == 'true' || joinIfFailed === true;
             delete json.instructions[x].children;
             delete json.instructions[x].childToId;
             delete json.instructions[x].joinIfFailed;
+            delete json.instructions[x].result;
             json.instructions[x].children = childrenObj;
             json.instructions[x].childToId = childToIdObj;
             json.instructions[x].workflow = {
-              instructions: json.instructions[x].instructions
+              instructions: json.instructions[x].instructions,
+              result
             };
             json.instructions[x].joinIfFailed = joinIfFailed;
             delete json.instructions[x].instructions;
-          }
-          if (json.instructions[x].TYPE === 'Fork') {
+          } else if (json.instructions[x].TYPE === 'Fork') {
             const branchObj = clone(json.instructions[x].branches);
             let joinIfFailed = clone(json.instructions[x].joinIfFailed);
             joinIfFailed = joinIfFailed == 'true' || joinIfFailed === true;
@@ -9702,9 +9749,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             delete json.instructions[x].joinIfFailed;
             json.instructions[x].branches = branchObj;
             json.instructions[x].joinIfFailed = joinIfFailed;
-          }
-
-          if (json.instructions[x].TYPE === 'Fail') {
+          } else if (json.instructions[x].TYPE === 'Fail') {
             if (json.instructions[x].uncatchable == 'false') {
               json.instructions[x].uncatchable = false;
             } else if (json.instructions[x].uncatchable == 'true') {

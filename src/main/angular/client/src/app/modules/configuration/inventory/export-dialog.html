@@ -59,7 +59,7 @@
       <div class="row m-b-12" *ngIf="!origin || !origin.object">
         <div class="col-md-3" translate>inventory.label.exportType</div>
         <div class="col-md-6">
-          <nz-radio-group  name="exportType" [(ngModel)]="exportObj.exportType">
+          <nz-radio-group  name="exportType" [(ngModel)]="exportObj.exportType" (ngModelChange)="filterList()">
             <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
             <label nz-radio nzValue="folders"><span translate>inventory.label.folders</span></label>
           </nz-radio-group>
@@ -135,7 +135,7 @@
         </div>
       </div>
       <div class="row" *ngIf="nodes.length>0">
-        <div class="col-md-12">
+        <div class="col-md-12 export-tree-checkbox">
           <nz-tree
             #treeCtrl
             [nzCheckable]="true"

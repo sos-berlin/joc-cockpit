@@ -143,7 +143,7 @@
                   <span translate>workflow.button.skip</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && instruction.state._text === 'SKIPPED')" (click)="unskip(instruction);">
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unskip(instruction);">
                 <a>
                   <span translate>workflow.button.unskip</span>
                 </a>
@@ -153,7 +153,7 @@
                   <span translate>workflow.button.stop</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && instruction.state._text === 'STOPPED')" (click)="unstop(instruction);">
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unstop(instruction);">
                 <a>
                   <span translate>workflow.button.unstop</span>
                 </a>
@@ -175,8 +175,8 @@
         <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">
           {{instruction.jobName}}
         </span>
-        <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text === 'SKIPPED'">-</i>
-        <span *ngIf="instruction.state && instruction.state._text === 'SKIPPED'" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{'SKIPPED' | translate}}</span>
+        <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text">-</i>
+        <span *ngIf="instruction.state && instruction.state._text" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{instruction.state._text | translate}}</span>
         <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
           <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>

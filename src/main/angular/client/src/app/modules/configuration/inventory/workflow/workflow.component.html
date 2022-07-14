@@ -224,7 +224,7 @@
                   <div class="form-group row m-b-0" *ngFor="let item of branch.result; let i = index">
                       <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
                         <label class="w-full">
-                          <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == branch.result.length -1"
+                          <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{index}}{{i}}" [appAutofocus]="i == branch.result.length -1"
                                 [(ngModel)]="item.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(item, aname)">
                         </label>
                         <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)" class="text-danger help-block">
@@ -232,7 +232,7 @@
                         </div>
                       </div>
                       <div class="col-md-6 col-lg-6 m-b-sm">
-                        <input type="text" autocomplete="off" class="form-control" [(ngModel)]="item.value" name="value{{i}}"
+                        <input type="text" autocomplete="off" class="form-control" [(ngModel)]="item.value" name="value{{index}}{{i}}"
                               placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
                       </div>
                       <div class="col-md-1 col-lg-1 p-l-0">
@@ -293,12 +293,45 @@
               <label nz-checkbox [(ngModel)]="selectedNode.obj.joinIfFailed" name="joinIfFailed"></label>
             </div>
           </div>
+          <div class="form-group row m-b-0">
+            <div class="col-md-12" *ngIf="selectedNode.obj.result && selectedNode.obj.result.length > 0">
+              <div class="form-group row m-b-0">
+                <div class="col-md-4 col-lg-5 m-b-sm p-r-0" translate>common.label.name</div>
+                <div class="col-md-8 col-lg-6 m-b-sm" translate>common.label.value</div>
+              </div>
+            </div>
+            <div class="col-md-12" style="max-height: calc(100vh - 396px); overflow: auto;">
+              <div class="form-group row m-b-0" *ngFor="let item of selectedNode.obj.result; let i = index">
+                  <div class="col-md-5 col-lg-5 m-b-sm p-r-0" [ngClass]="{'has-error' : ((bname.dirty || bname.touched) && bname.invalid)}">
+                    <label class="w-full">
+                      <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.obj.result.length -1"
+                            [(ngModel)]="item.name" #bname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isForklistStringValid(item, bname)">
+                    </label>
+                    <div *ngIf="bname.invalid && bname.errors && (bname.dirty || bname.touched)" class="text-danger help-block">
+                      <div *ngIf="bname.errors.invalidIdentifier" translate>common.message.invalid</div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-6 m-b-sm">
+                    <input type="text" autocomplete="off" class="form-control" [(ngModel)]="item.value" name="value{{i}}"
+                          placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
+                  </div>
+                  <div class="col-md-1 col-lg-1 p-l-0">
+                    <a><i (click)="removeResult(i, selectedNode.obj)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                  </div>
+                </div>
+              <div class="form-group row" >
+                <div class="col-sm-12">
+                  <a class="text-u-l" (click)="addResult(selectedNode.obj);" translate>workflow.button.addResult</a>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="form-group row" [hidden]="forkListVariableObj && forkListVariableObj.value">
             <div class="col-md-12">
               <a class="text-hover-primary" (click)="createForkListVariables();"><i class="fa fa-plus p-r-sm"></i>{{'workflow.button.createForkListVariables' | translate}}</a>
             </div>
           </div>
-          <div class="b-a p-a m-t-md" *ngIf="forkListVariableObj && forkListVariableObj.value">
+          <div class="b-a p-a" *ngIf="forkListVariableObj && forkListVariableObj.value">
             <div class="form-group row">
               <div class="col-md-12 _600" *ngIf="forkListVariableObj.create" translate>workflow.label.createForkListVariable</div>
               <div class="col-md-12 _600" *ngIf="!forkListVariableObj.create" translate>workflow.label.updateForkListVariable</div>

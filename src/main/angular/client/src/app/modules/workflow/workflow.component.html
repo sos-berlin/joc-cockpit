@@ -235,8 +235,7 @@
                       <div class="text-sm text-left text-muted p-t-xs">
                         <span translate>common.label.status </span>:
                         <span *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'text')" [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"></span>
-                        <app-tooltip-info *ngIf="workflow.state && (workflow.state._text === 'SUSPENDED' || workflow.state._text === 'SUSPENDING'
-                            || workflow.state._text === 'RESUMING')" [workflow]="workflow" [controllerId]="schedulerIds.selected"></app-tooltip-info>
+                        <app-tooltip-info *ngIf="workflow.state && (workflow.state._text === 'OUTSTANDING')" [workflow]="workflow" [controllerId]="schedulerIds.selected"></app-tooltip-info>
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs">
                         <span>
@@ -485,8 +484,7 @@
                       <td>
                         <a class="label" *ngIf="workflow.state" [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"
                            [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"></a>
-                        <app-tooltip-info *ngIf="workflow.state && (workflow.state._text === 'SUSPENDED' || workflow.state._text === 'SUSPENDING'
-                            || workflow.state._text === 'RESUMING')" [workflow]="workflow" [controllerId]="schedulerIds.selected"></app-tooltip-info>
+                        <app-tooltip-info *ngIf="workflow.state && (workflow.state._text === 'OUTSTANDING')" [workflow]="workflow" [controllerId]="schedulerIds.selected"></app-tooltip-info>
                       </td>
                       <td>
                         <span class="remaining-order-count" (click)="viewOrders(workflow)" [innerHtml]="workflow.numOfOrders || 0"></span>

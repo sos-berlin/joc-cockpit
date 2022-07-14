@@ -402,7 +402,7 @@ export class ModifyStartTimeModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.orders){
+    if (this.orders) {
       this.n1 = this.orders.size;
     }
     this.display = this.preferences.auditLog;
@@ -414,9 +414,9 @@ export class ModifyStartTimeModalComponent implements OnInit {
     if (!this.order) {
       this.order = {};
     }
+    let isCyclic = false;
+    let isStandalone = false;
     if (this.plan && this.plan.value) {
-      let isCyclic = false;
-      let isStandalone = false;
       this.plan.value.forEach((order) => {
         this.n1 = this.n1 + 1;
         if (order.cyclicOrder) {
@@ -429,15 +429,31 @@ export class ModifyStartTimeModalComponent implements OnInit {
           isStandalone = true;
         }
       });
-
-      if (isCyclic && isStandalone) {
-        this.order = null;
-        this.errorMsg = true;
-      } else if (isCyclic) {
-        this.order.cyclicOrder = {};
+    } else if (this.orders && this.orders.size > 0) {
+      this.n1 = 0;
+      this.orders.forEach((order) => {
+        if (order.cyclicOrder) {
+          this.n2 = this.n2 + order.cyclicOrder.count;
+        } else {
+          this.n1 = this.n1 + 1;
+        }
+        if (order.cyclicOrder && !isCyclic) {
+          isCyclic = true;
+        }
+        if (!order.cyclicOrder && !isStandalone) {
+          isStandalone = true;
+        }
+      });
+      if(this.n1 == 0 && this.n2 > 0){
+        this.n1 = this.orders.size;
       }
     }
-
+    if (isCyclic && isStandalone) {
+      this.order = null;
+      this.errorMsg = true;
+    } else if (isCyclic) {
+      this.order.cyclicOrder = {};
+    }
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.dateType.timeZone = this.preferences.zone;

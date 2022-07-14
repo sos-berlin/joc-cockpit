@@ -470,7 +470,6 @@ export class DeployComponent implements OnInit {
           this.inventoryService.updateTree(tree[0]);
         }
         if (tree.length > 0) {
-          console.log(tree[0], 'tree')
           if(tree[0].children.length === 0 && !tree[0].deployables && !tree[0].releasables){
             tree = [];
           }
@@ -1024,9 +1023,11 @@ export class ExportComponent implements OnInit {
       this.display = true;
     }
     this.exportObj.controllerId = this.schedulerIds.selected;
-
     this.securityLevel = sessionStorage.securityLevel;
     if (this.origin) {
+      if(this.origin.object){
+        this.exportObj.exportType = '';
+      }
       this.path = this.origin.path;
       if (this.origin.dailyPlan || (this.origin.object &&
         (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')))) {
@@ -1098,6 +1099,12 @@ export class ExportComponent implements OnInit {
           releaseObjectTypes.push(item);
         }
       })
+    }
+
+    if(this.exportObj.exportType !== 'folders') {
+      deployObjectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
+        InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
+      releaseObjectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR);
     }
 
     const APIs = [];
@@ -1184,6 +1191,7 @@ export class ExportComponent implements OnInit {
               if (this.nodes.length > 0) {
                 this.nodes[0].expanded = true;
                 this.inventoryService.preselected(this.nodes[0]);
+                this.disabledCheckbox(this.nodes[0]);
                 this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
               }
               this.nodes = [...this.nodes];
@@ -1194,6 +1202,19 @@ export class ExportComponent implements OnInit {
         }
       }
     })
+  }
+
+  private disabledCheckbox(node: any): void {
+    if (this.exportObj.exportType === 'folders') {
+      for (let i = 0; i < node.children.length; i++) {
+        if (node.children[i].type) {
+          node.children[i].disableCheckbox = true;
+        }
+        if (!node.children[i].type && !node.children[i].object) {
+          break;
+        }
+      }
+    }
   }
 
   private mergeDeep(deployables, releasables): any {
@@ -1234,7 +1255,16 @@ export class ExportComponent implements OnInit {
       return;
     } else {
       this.loading = true;
-      this.buildTree(this.path);
+      const expandedList = this.treeCtrl.getExpandedNodeList();
+      this.buildTree(this.path, null, () => {
+        this.loading = false;
+        if (this.nodes.length > 0) {
+          this.nodes[0].expanded = true;
+          this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+        }
+        this.nodes = [...this.nodes];
+        console.log(expandedList);
+      });
     }
   }
 
@@ -1307,6 +1337,9 @@ export class ExportComponent implements OnInit {
         for (let i = 0; i < node.children.length; i++) {
           if (node.children[i].origin.type) {
             node.children[i].isChecked = node.isChecked;
+            if (this.exportObj.exportType === 'folders') {
+              node.children[i].isDisableCheckbox = true;
+            }
           }
           if (!node.children[i].origin.object && !node.children[i].origin.type) {
             break;
@@ -1326,7 +1359,7 @@ export class ExportComponent implements OnInit {
       folders: []
     };
     let selectFolder = true;
-    if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH') {
+    if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH' && this.exportObj.exportType !== 'folders') {
       selectFolder = false;
     }
 
@@ -1465,19 +1498,19 @@ export class ExportComponent implements OnInit {
           };
         }
       }
-      if(this.object.folders && this.object.folders.length > 0){
+      if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
+      } else {
+        this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
+          if (res) {
+            this.activeModal.close('ok');
+          } else {
+            this.submitted = false;
+          }
+        });
       }
-      this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
-        if (res) {
-          this.activeModal.close('ok');
-        } else {
-          this.submitted = false;
-        }
-      });
-      this.submitted = false;
     } else {
-      if(this.object.folders && this.object.folders.length > 0){
+      if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
       } else {
         this.submitted = false;
