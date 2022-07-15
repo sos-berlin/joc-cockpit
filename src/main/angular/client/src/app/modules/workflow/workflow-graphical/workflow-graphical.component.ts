@@ -212,6 +212,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   loading: boolean = false;
   order: any;
   job: any;
+  stopInstruction: any;
   graph: any;
   vertixMap = new Map();
   mapObj = new Map();
@@ -272,6 +273,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       this.updateOrder();
     }
     if (changes.reload && this.graph) {
+      this.vertixMap = new Map();
+      this.nodeMap = new Map();
       this.updateWorkflow(true);
     }
   }
@@ -419,6 +422,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
   closeMenu(): void {
     this.order = null;
     this.job = null;
+    this.stopInstruction = null;
   }
 
   modifyOrder(): void {
@@ -747,7 +751,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     function mxIconSet(state) {
       this.images = [];
       let img;
-      if (state.cell && (state.cell.value.tagName === 'Order' || state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'If')) {
+      if (state.cell && (state.cell.value.tagName === 'Order' || state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'AddOrder' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
+        state.cell.value.tagName === 'ExpectNotices' || state.cell.value.tagName === 'PostNotices' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
         img = mxUtils.createImage('./assets/images/menu.svg');
         let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
         if (state.cell.value.tagName !== 'Job') {
@@ -760,7 +765,15 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           mxUtils.bind(this, function(evt) {
             self.order = null;
             self.job = null;
+            self.stopInstruction = null;
             let data: any;
+            let isStop = false;
+            let position = state.cell.value.getAttribute('position');
+            let _state = state.cell.value.getAttribute('state');
+            if(_state){
+              _state = JSON.parse(_state);
+               isStop = (_state && (_state._text === 'STOPPED' || _state._text === 'STOPPED_AND_SKIPPED'));
+            }
             if (state.cell.value.tagName === 'Order') {
               data = state.cell.getAttribute('order');
               data = JSON.parse(data);
@@ -768,24 +781,25 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               const jobName = state.cell.value.getAttribute('jobName');
               const documentationName = state.cell.value.getAttribute('documentationName');
               const label = state.cell.value.getAttribute('label');
-              let _state = state.cell.value.getAttribute('state');
-              _state = JSON.parse(_state);
-              let isSkip = (_state && _state._text === 'SKIPPED');
-              data = {jobName, documentationName, label, isSkip};
+              let isSkip = (_state && (_state._text === 'SKIPPED' || _state._text === 'STOPPED_AND_SKIPPED'));
+              data = {jobName, documentationName, label, isSkip, isStop};
             } else if (state.cell.value.tagName === 'If') {
               const predicate = state.cell.value.getAttribute('predicate');
-              data = {predicate};
+              data = {predicate, isStop};
+            } else {
+              const position = state.cell.value.getAttribute('position');
+              data = {position, isStop};
             }
             try {
               if (self.menu) {
                 setTimeout(() => {
+                  data.position = position;
                   if (data.jobName || data.predicate) {
                     self.job = data;
-                  } else {
+                  } else if (data.orderId) {
                     self.order = data;
-                    if (data.positionIsImplicitEnd) {
-                      return;
-                    }
+                  } else {
+                    self.stopInstruction = data;
                   }
                   self.nzContextMenuService.create(evt, self.menu);
                 }, 0);
@@ -827,7 +841,6 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     this.orderCountMap = new Map();
     let workflows = new Map();
     const graph = this.graph;
-
     function createWorkflowNode(workflow, cell, type): void {
       if (!self.workflowObjects) {
         const node = doc.createElement('Workflow');
@@ -1228,7 +1241,12 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     this.graph.getModel().beginUpdate();
     try {
       this.addOrderdMap = new Map();
-      const mapObj: any = {nodeMap: this.nodeMap, vertixMap: this.vertixMap, graphView: !!this.workflowObjects, addOrderdMap: this.addOrderdMap};
+      const mapObj: any = {
+        nodeMap: this.nodeMap,
+        vertixMap: this.vertixMap,
+        graphView: !!this.workflowObjects,
+        addOrderdMap: this.addOrderdMap
+      };
       if (mapObj.graphView) {
         mapObj.colorCode = this.colors[0];
         this.workflowArr.push({
@@ -1333,38 +1351,38 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
-          this.coreService.post('workflow/' + operation.toLowerCase(), {
-            controllerId: this.controllerId,
-            workflowPath: this.workFlowJson.path,
-            labels: [job.label],
-            auditLog: {
-              comment: result.comment,
-              timeSpent: result.timeSpent,
-              ticketLink: result.ticketLink
-            }
-          }).subscribe({
-            next: () => {
-              this.resetAction(5000);
-            }, error: () => {
-              this.resetAction();
-            }
-          });
+          this.skipOrStop(job, operation, {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          })
         }
       });
     } else {
       this.isProcessing = true;
-      this.coreService.post('workflow/' + operation.toLowerCase(), {
-        controllerId: this.controllerId,
-        workflowPath: this.workFlowJson.path,
-        labels: [job.label]
-      }).subscribe({
-        next: () => {
-          this.resetAction(5000);
-        }, error: () => {
-          this.resetAction();
-        }
-      });
+      this.skipOrStop(job, operation);
     }
+  }
+
+  private skipOrStop(data,operation, auditLog?): void {
+    let obj: any = {
+      controllerId: this.controllerId,
+      auditLog
+    };
+    if (operation === 'Skip' || operation === 'Unskip') {
+      obj.labels = [data.label];
+      obj.workflowPath = this.workFlowJson.path;
+    } else {
+      obj.positions = [JSON.parse(data.position)]
+      obj.workflowId = {path: this.workFlowJson.path, versionId: this.workFlowJson.versionId};
+    }
+    this.coreService.post('workflow/' + operation.toLowerCase(), obj).subscribe({
+      next: () => {
+        this.resetAction(5000);
+      }, error: () => {
+        this.resetAction();
+      }
+    });
   }
 
   skip(job): void{

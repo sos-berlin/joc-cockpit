@@ -44,6 +44,13 @@
             <i *ngIf="usr.sortBy == 'forcePasswordChange' && usr.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
+        <th nzWidth="20%" (click)="sort('blocked')">
+          <a><span class="p-r-xs" translate>common.label.blocked</span>
+            <i *ngIf="usr.sortBy == 'blocked' && !usr.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="usr.sortBy == 'blocked' && usr.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
         <th nzWidth="20%" (click)="sort('disabled')">
           <a><span class="p-r-xs" translate>user.label.disable</span>
             <i *ngIf="usr.sortBy == 'disabled' && !usr.reverse"
@@ -73,6 +80,11 @@
                 <li nz-menu-item *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')" [nzDisabled]="account.forcePasswordChange" (click)="forcePasswordChange(account)">
                   <a translate>user.button.forcePasswordChange</a>
                 </li>
+                <li nz-menu-item (click)="addToBlocklist(account)" *ngIf="account.blocked === true || account.blocked === false"
+                    [ngClass]="{'disable-link': (username==account.accountName && selectedIdentityService === userIdentityService) || account.blocked === true}">
+                  <a translate>user.button.addToBlocklist</a>
+                </li>
+                <li nz-menu-divider></li>
                 <li nz-menu-item *ngIf="identityServiceType.match('JOC')" (click)="disabledUser(account, account.disabled)"
                     [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}">
                   <a *ngIf="account.disabled" translate>user.button.enable</a>
@@ -97,6 +109,7 @@
           <div *ngFor="let role of account.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
         </td>
         <td><span>{{account.forcePasswordChange ? 'Yes' : 'No'}}</span></td>
+        <td><span>{{account.blocked ? 'Yes' : 'No'}}</span></td>
         <td><span>{{account.disabled ? 'Yes' : 'No'}}</span></td>
       </tr>
       </tbody>

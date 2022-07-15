@@ -266,7 +266,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  showDependency(workflow): void {
+  showDependency(workflow, isReload): void {
     this.coreService.post('workflow/dependencies', {
       controllerId: this.schedulerIds.selected,
       workflowId: {
@@ -284,7 +284,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       workflow.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
       workflow.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
       this.workflowObjects.set(workflow.path, JSON.stringify(workflow));
-      this.getOrders(workflow);
+      this.getOrders(workflow, isReload);
     });
   }
 
@@ -402,6 +402,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       workflowId: {path: this.path, versionId: this.versionId}
     }).subscribe({
       next: (res: any) => {
+        this.workflowObjects = new Map();
         this.workflow = this.coreService.clone(res.workflow);
         this.orderPreparation = res.workflow.orderPreparation
         this.workFlowJson = res.workflow;
@@ -410,19 +411,19 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs, this.countObj);
         this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
         if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
-          this.showDependency(res.workflow);
+          this.showDependency(res.workflow, flag);
         } else {
-          this.getOrders(res.workflow);
-        }
-        if(flag) {
-          this.isReload = true;
+          this.getOrders(res.workflow, flag);
         }
         WorkflowDetailComponent.showAndHideBtn();
       }, error: () => this.loading = true
     });
   }
 
-  private getOrders(workflow): void {
+  private getOrders(workflow, isReload?): void {
+    if (isReload) {
+      this.isReload = true;
+    }
     if (this.permission && this.permission.currentController && !this.permission.currentController.orders.view) {
       this.loading = true;
       return;

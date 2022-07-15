@@ -139,10 +139,10 @@
         </ul>
       </div>
       <div class="col-md-6 col-sm-6">
-        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" *ngIf="auditLog.type === 'AUDITLOG'" (click)="collapseDetails()">
+        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}" (click)="collapseDetails()">
           <i class="fa fa-compress text"></i>
         </button>
-        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" *ngIf="auditLog.type === 'AUDITLOG'" (click)="expandDetails()" >
+        <button class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" (click)="expandDetails()" >
           <i class="fa fa-expand text" ></i>
         </button>
         <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel && auditLog.type === 'AUDITLOG'">

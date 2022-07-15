@@ -48,11 +48,24 @@ export class StartUpModalComponent implements OnInit {
       backupTitle: 'SECONDARY CONTROLLER',
     };
 
+    let isFound = false;
     if (this.agents && this.agents.length > 0) {
       for (let i = 0; i < this.agents.length; i++) {
         if (this.agents[i].isClusterWatcher) {
           this.agent = this.agents[i];
+          isFound = true;
           break;
+        }
+      }
+    }
+    if(!isFound){
+      if (this.clusterAgents && this.clusterAgents.length > 0) {
+        for (let i = 0; i < this.clusterAgents.length; i++) {
+          if (this.clusterAgents[i].isClusterWatcher) {
+            this.agent = this.clusterAgents[i];
+            isFound = true;
+            break;
+          }
         }
       }
     }

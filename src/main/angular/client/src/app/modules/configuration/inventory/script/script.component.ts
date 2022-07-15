@@ -342,7 +342,11 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         this.data.valid = res.valid;
       }
       this.script = this.coreService.clone(res);
-
+      if(this.script.configuration.script) {
+        if (this.cm && this.cm.codeMirror) {
+          this.cm.codeMirror.setValue(this.script.configuration.script);
+        }
+      }
       this.script.actual = JSON.stringify(this.script.configuration);
       this.script.path1 = this.data.path;
       this.script.name = this.data.name;

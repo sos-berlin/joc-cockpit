@@ -125,7 +125,7 @@ export class CoreService {
         filter: {
           date: 'today',
           sortBy: 'since',
-          reverse: false
+          reverse: true
         },
         currentPage: '1'
       }
@@ -1480,6 +1480,7 @@ export class CoreService {
           } else {
             if (!mainStr.match(/[!?~'"}\[\]{@#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(mainStr)
               && /^(?!-)(?!.*--)/.test(mainStr) && !/\s/.test(mainStr)) {
+            } else if (/\(\d+\)/.test(mainStr)) {
             } else {
               data[type] = endChar === "$" ? data[type].trim() : '"' + data[type].trim() + '"';
             }

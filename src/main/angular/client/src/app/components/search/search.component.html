@@ -40,7 +40,7 @@
           </nz-tree-select>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard">
+      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar">
         <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'inventory.search.tooltips.deployedOrReleased' | translate"
                translate>inventory.search.label.deployedOrReleased</label>
         <div class="col-md-2 col-lg-2">
@@ -52,7 +52,7 @@
           <label nz-checkbox [(ngModel)]="searchObj.currentController" name="currentController"></label>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard">
+      <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar">
         <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.return' | translate"
                translate>inventory.search.label.return</label>
         <div class="col-md-8 col-lg-9">
@@ -61,7 +61,7 @@
           </nz-select>
         </div>
       </div>
-      <nz-collapse [nzBordered]="false">
+      <nz-collapse [nzBordered]="false" *ngIf="searchObj.returnType !== 'CALENDAR' && searchObj.returnType !== 'INCLUDESCRIPT'">
         <nz-collapse-panel
           [nzHeader]="'inventory.search.label.advanced' | translate"
           [nzActive]="panel.active"
@@ -188,6 +188,14 @@
                          [(ngModel)]="searchObj.advanced.jobScript">
                 </div>
               </div>
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.CALENDAR">
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.includeScript' | translate"
+                       translate>inventory.search.label.includeScript</label>
+                <div class="col-md-8 col-lg-9">
+                  <input autocomplete="off" type="text" class="form-control" name="includeScript"
+                         [(ngModel)]="searchObj.advanced.includeScripts">
+                </div>
+              </div>
               <div class="form-group row" *ngIf="searchObj.returnType === ENUM.WORKFLOW">
                 <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.argumentName' | translate"
                        translate>inventory.search.label.argumentName</label>
@@ -252,7 +260,8 @@
         </b>
       </div>
       <div class="col-sm-12">
-        <div class="table-responsive text-overflow" [ngStyle]="{'max-height': panel.active ? '200px' : 'calc(100vh - 410px)'}">
+        <div class="table-responsive text-overflow" [ngStyle]="{'max-height':
+         (searchObj.returnType !== 'CALENDAR' && searchObj.returnType !== 'INCLUDESCRIPT') ? panel.active ? '200px' : 'calc(100vh - 410px)' : 'calc(100vh - 360px)'}">
           <nz-table
             #ajaxTable
             [nzSize]="'small'"
@@ -264,7 +273,7 @@
             [nzShowSizeChanger]="false">
             <thead>
             <tr>
-              <th *ngIf="!isWorkflow && !isLock && !isBoard" class="chk"
+              <th *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" class="chk"
                   [nzShowCheckbox]="true"
                   [(nzChecked)]="object.checked"
                   [nzIndeterminate]="object.indeterminate"
@@ -273,15 +282,16 @@
               <th nowrap *ngIf="isControllerId"><span translate>common.label.controllerId</span></th>
               <th><span translate>common.label.name</span></th>
               <th><span translate>common.label.path</span></th>
+              <th *ngIf="searchObj.returnType === 'CALENDAR'"><span translate>common.label.type</span></th>
             </tr>
             </thead>
             <tbody>
             <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
               <tr class="cursor" [ngClass]="{'disabled-row' : !data.permitted}">
-                <td *ngIf="!isWorkflow && !isLock && !isBoard" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
+                <td *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
                 <td (click)="navToObject(data)" *ngIf="isControllerId">{{data.controllerId}}</td>
                 <td (click)="navToObject(data)">
-                  <span *ngIf="!isWorkflow && !isLock && !isBoard" class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
+                  <span *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
                         [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"></span>
                   <span class="p-l-xs" [innerHTML]="data.name"></span>
                   <i *ngIf="data.title"> - </i>
@@ -289,11 +299,12 @@
                 </td>
                 <td>
                   <span class="show-in-single-line">
-                    <i *ngIf="(isWorkflow || isLock || isBoard) && data.permitted" (click)="coreService.navToInventoryTab(data.path, this.type);$event.stopPropagation();"
+                    <i *ngIf="(isWorkflow || isLock || isBoard || isCalendar) && data.permitted" (click)="coreService.navToInventoryTab(data.path, this.type);$event.stopPropagation();"
                        class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                     <span> {{data.path.substring(0, data.path.lastIndexOf('/')) || '/'}}</span>
                   </span>
                 </td>
+                <td *ngIf="searchObj.returnType === 'CALENDAR'">{{data.objectType | translate}}</td>
               </tr>
             </ng-template>
             </tbody>

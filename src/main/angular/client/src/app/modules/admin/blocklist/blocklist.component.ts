@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
+
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
 import {CoreService} from '../../../services/core.service';
@@ -12,13 +13,17 @@ import {DataService} from '../data.service';
   templateUrl: './add-to-blocklist-dialog.html'
 })
 export class AddBlocklistModalComponent implements OnInit {
+  @Input() bulkBlock: boolean;
+  @Input() obj: any;
+  @Input() auditlog: any;
   submitted = false;
   accountName = '';
   display: any;
   required = false;
   comments: any = {};
+  comment = '';
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -30,22 +35,26 @@ export class AddBlocklistModalComponent implements OnInit {
       let preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
       this.display = preferences.auditLog;
     }
-    if (this.dataService.comments && this.dataService.comments.comment) {
-      this.comments = this.dataService.comments;
-      this.display = false;
+    if (this.obj && this.obj.accountName) {
+      this.accountName = this.obj.accountName;
     }
+    // if (this.dataService.comments && this.dataService.comments.comment) {
+    //   this.comments = this.dataService.comments;
+    //   this.display = false;
+    // }
   }
 
   onSubmit(): void {
     this.submitted = true;
     const request: any = {
       accountName: this.accountName,
+      comment: this.comment,
       auditLog: {}
     };
     this.coreService.getAuditLogObj(this.comments, request.auditLog);
-    if (this.comments.isChecked) {
-      this.dataService.comments = this.comments;
-    }
+    // if (this.comments.isChecked) {
+    //   this.dataService.comments = this.comments;
+    // }
     this.coreService.post('iam/blockedAccount/store', request).subscribe({
       next: () => {
         this.activeModal.close('DONE');
@@ -64,7 +73,7 @@ export class BlocklistComponent implements OnInit {
   isLoaded = false;
   blocklist = [];
   data = [];
-  searchableProperties = ['accountName', 'since']
+  searchableProperties = ['accountName', 'since', 'comment']
   preferences: any;
   blocklistFilter: any = {};
   object = {
@@ -80,7 +89,7 @@ export class BlocklistComponent implements OnInit {
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'DELETE_BULK_BLOCKS') {
         this.removeBlocks(null);
-      } else if(res === 'ADD_TO_BLOCKLIST'){
+      } else if (res === 'ADD_TO_BLOCKLIST') {
         this.addToBlocklist();
       } else if (res != 'IS_BLOCKLIST_PROFILES_TRUE' && res != 'IS_BLOCKLIST_PROFILES_FALSE') {
         this.loadBlocklist(res);
@@ -217,6 +226,9 @@ export class BlocklistComponent implements OnInit {
       nzTitle: undefined,
       nzAutofocus: null,
       nzContent: AddBlocklistModalComponent,
+      nzComponentParams: {
+        bulkBlock: true
+      },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false

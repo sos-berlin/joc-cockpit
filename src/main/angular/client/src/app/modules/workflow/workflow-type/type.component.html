@@ -81,6 +81,26 @@
     <li >
       <a class="hover"
         *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock'">
+        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'">
+          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
+                  type="button">
+            <i class="fa fa-ellipsis-h"></i>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
+            <ul nz-menu>
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="stop(instruction);">
+                <a>
+                  <span translate>workflow.button.stop</span>
+                </a>
+              </li>
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unstop(instruction);">
+                <a>
+                  <span translate>workflow.button.unstop</span>
+                </a>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </div>
         <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
                   type="button">
@@ -88,6 +108,16 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="stop(instruction);">
+                <a>
+                  <span translate>workflow.button.stop</span>
+                </a>
+              </li>
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unstop(instruction);">
+                <a>
+                  <span translate>workflow.button.unstop</span>
+                </a>
+              </li>
               <li nz-menu-item>
                 <a (click)="showConfiguration(instruction);">
                   <span translate>common.button.showConfiguration</span>
@@ -138,7 +168,7 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
             <ul nz-menu>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || instruction.state._text !== 'SKIPPED')" (click)="skip(instruction);">
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="skip(instruction);">
                 <a>
                   <span translate>workflow.button.skip</span>
                 </a>
@@ -148,7 +178,7 @@
                   <span translate>workflow.button.unskip</span>
                 </a>
               </li>
-              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || instruction.state._text !== 'STOPPED')" (click)="stop(instruction);">
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="stop(instruction);">
                 <a>
                   <span translate>workflow.button.stop</span>
                 </a>
@@ -166,6 +196,26 @@
               <li nz-menu-item [nzDisabled]="!instruction.documentationName" (click)="coreService.showDocumentation(instruction.documentationName, preferences)">
                 <a>
                   <span translate>common.button.viewDocumentation</span>
+                </a>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </div>
+        <div class="btn-group dropdown" style="margin-left: -10px" *ngIf="instruction.TYPE !== 'Job' && instruction.TYPE !== 'ImplicitEnd'">
+          <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu"
+                  type="button">
+            <i class="fa fa-ellipsis-h"></i>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
+            <ul nz-menu>
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))" (click)="stop(instruction);">
+                <a>
+                  <span translate>workflow.button.stop</span>
+                </a>
+              </li>
+              <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))" (click)="unstop(instruction);">
+                <a>
+                  <span translate>workflow.button.unstop</span>
                 </a>
               </li>
             </ul>
@@ -237,7 +287,7 @@
             </span>
             <span class="order-count" (click)="showOrders(branch)" *ngIf="branch.orderCount > 0 && (!branch.show && !expandAll)"> {{branch.orderCount}}</span>
             <div class="p-l" *ngIf="branch.instructions && (branch.show)">
-              <app-type [timezone]="timezone" [path]="path" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
                         [workflowFilters]="workflowFilters" [configuration]="branch" [jobs]="jobs" (isChanged)="changedHandler($event)" (isProcessing)="processingHandler($event)" [orderPreparation]="orderPreparation" [expandAll]="expandAll"></app-type>
             </div>
           </div>
@@ -245,7 +295,7 @@
       </div>
       <div *ngIf="instruction.TYPE === 'If' && (instruction.show)">
         <div *ngIf="instruction.then && instruction.then.instructions">
-          <app-type [timezone]="timezone" [path]="path" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"
                     [workflowFilters]="workflowFilters" [configuration]="instruction.then" [jobs]="jobs" (isChanged)="changedHandler($event)" (isProcessing)="processingHandler($event)" [orderPreparation]="orderPreparation" [expandAll]="expandAll"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.else" (click)="collapse(instruction.else)">
@@ -263,14 +313,14 @@
             </span>
             <span class="order-count" (click)="showOrders(instruction.else)" *ngIf="instruction.else && instruction.else.orderCount > 0 && (!instruction.else.show && !expandAll)">{{instruction.else.orderCount}}</span>
             <div class="p-l" *ngIf="instruction.else && (instruction.else.show)">
-              <app-type [timezone]="timezone" [path]="path" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                         [workflowFilters]="workflowFilters" [configuration]="instruction.else" [jobs]="jobs" (isChanged)="changedHandler($event)" (isProcessing)="processingHandler($event)" [expandAll]="expandAll" *ngIf="instruction.else.instructions"></app-type>
             </div>
           </div>
         </div>
       </div>
       <div *ngIf="instruction.TYPE === 'Try' && (instruction.show)">
-          <app-type [timezone]="timezone" [path]="path" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                     [workflowFilters]="workflowFilters" [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" (isProcessing)="processingHandler($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
           <div class="p-l-md">
             <a class="m-l" *ngIf="instruction.catch" (click)="collapse(instruction.catch)">
@@ -288,14 +338,14 @@
             </span>
             <span class="order-count" (click)="showOrders(instruction.catch)" *ngIf="instruction.catch && instruction.catch.orderCount > 0 && (!instruction.catch.show && !expandAll)">{{instruction.catch.orderCount}}</span>
             <div class="m-l" *ngIf="instruction.catch && (instruction.catch.show)">
-              <app-type [timezone]="timezone" [path]="path" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
+              <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                         [workflowFilters]="workflowFilters" [configuration]="instruction.catch" [jobs]="jobs" (isChanged)="changedHandler($event)" (isProcessing)="processingHandler($event)" [expandAll]="expandAll" *ngIf="instruction.catch.instructions"></app-type>
             </div>
           </div>
       </div>
       <div *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'ForkList') && (instruction.show)">
         <div>
-          <app-type [timezone]="timezone" [path]="path" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
+          <app-type [timezone]="timezone" [workflowObj]="workflowObj" [expectedNoticeBoards]="expectedNoticeBoards" [addOrderToWorkflows]="addOrderToWorkflows" [postNoticeBoards]="postNoticeBoards" [recursiveCals]="recursiveCals" [permission]="permission" [orderPreparation]="orderPreparation" [preferences]="preferences" [schedulerId]="schedulerId"
                     [workflowFilters]="workflowFilters" [configuration]="instruction" [jobs]="jobs" (isChanged)="changedHandler($event)" (isProcessing)="processingHandler($event)" [expandAll]="expandAll" *ngIf="instruction.instructions"></app-type>
         </div>
       </div>

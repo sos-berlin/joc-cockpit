@@ -26,7 +26,7 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <div class="btn-group m-l-12 hidden-btn-group" *ngIf="adminFilter.isBlocklist && !isBlockButtonShow">
+            <div class="btn-group m-l-12 hidden-btn-group" *ngIf="(route === '/users' || route === '/users/identity_service') && adminFilter.isBlocklist && !isBlockButtonShow">
               <button class="btn btn-grey btn-sm" (click)="loadBlocklist('all')"
                       [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='all'}" translate>filters.button.all
               </button>
@@ -56,11 +56,11 @@
               <i class="fa fa-upload"></i>&nbsp;
               <span translate>inventory.button.import</span>
             </button>
-            <button *ngIf="route === '/users' || route === '/users/identity_service' && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
+            <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.manageGeneralSetting</span>
             </button>
-            <button *ngIf="route === '/users' || route === '/users/identity_service' && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+            <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>user.button.addIdentityService</span>
             </button>
@@ -129,11 +129,11 @@
               <i class="fa fa-plus"></i>&nbsp;
               {{'user.button.addPermission' | translate}}
             </button>
-            <button *ngIf="route === '/users/identity_service' && adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addToBlocklist()">
+            <button *ngIf="(route === '/users/identity_service' || route === '/users') && !isBlockButtonShow && adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addToBlocklist()">
               <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;
               <span translate>user.button.addToBlocklist</span>
             </button>
-            <button *ngIf="route === '/users/identity_service' || route === '/users' && !isBlockButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isBlocklist}" (click)=" manageBlocklist()">
+            <button *ngIf="(route === '/users/identity_service' || route === '/users') && !isBlockButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isBlocklist}" (click)=" manageBlocklist()">
               <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
               <span translate>user.button.blocklist</span>
             </button>

@@ -19,6 +19,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   @Input() isWorkflow: boolean;
   @Input() isBoard: boolean;
   @Input() isLock: boolean;
+  @Input() isCalendar: boolean;
   permission: any = {};
   preferences: any = {};
   submitted = false;
@@ -56,13 +57,13 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.deployTypes = Object.keys(this.ENUM).filter(key => isNaN(+key));
     this.getAgents();
     this.getFolderTree();
-    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory');
+    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory');
     this.panel.active = savedObj.panel;
     if (!isEmpty(savedObj.request)) {
       this.searchObj = savedObj.request;
       this.results = savedObj.result;
     } else {
-      if (!this.isWorkflow && !this.isBoard && !this.isLock) {
+      if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
         this.searchObj.returnType = this.ENUM.WORKFLOW;
       } else {
         if (this.isWorkflow) {
@@ -71,6 +72,8 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.type = this.ENUM.NOTICEBOARD;
         } else if (this.isLock) {
           this.type = this.ENUM.LOCK;
+        } else if (this.isCalendar) {
+          this.type = this.ENUM.WORKINGDAYSCALENDAR;
         }
         this.searchObj.returnType = this.type;
       }
@@ -78,8 +81,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory');
-    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory',
+    const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory');
+    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
       {...savedObj, panel: this.panel.active, request: this.searchObj});
   }
 
@@ -113,7 +116,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   selectFolder(node, $event): void {
-    if (!node.origin.isLeaf) { node.isExpanded = !node.isExpanded; }
+    if (!node.origin.isLeaf) {
+      node.isExpanded = !node.isExpanded;
+    }
     $event.stopPropagation();
   }
 
@@ -208,7 +213,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.object.type = obj.returnType;
         this.results = res.results;
         this.isControllerId = false;
-        if (!this.isWorkflow && !this.isBoard && !this.isLock) {
+        if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
           if (this.results.length > 0 && this.results[0].controllerId) {
             this.isControllerId = true;
           }
@@ -225,7 +230,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   clear(): void {
     const type = this.searchObj.returnType;
-    this.searchObj = {advanced: {}, returnType:  type};
+    this.searchObj = {advanced: {}, returnType: type};
     this.results = [];
     this.object.mapOfCheckedId = new Set();
     this.object.checked = false;
@@ -266,6 +271,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   updateObject(): void {
+    if (!this.object.type) {
+      this.object.type = this.searchObj.returnType;
+    }
     const modal = this.modal.create({
       nzTitle: null,
       nzContent: UpdateObjectComponent,

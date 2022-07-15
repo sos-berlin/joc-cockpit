@@ -556,13 +556,27 @@
             </div>
           </div>
         </ng-container>
+        <ng-container *ngIf="type === 'INCLUDESCRIPT'">
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.script' | translate) : ''"
+                   [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.script
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-md-8 col-lg-9">
+              <div class="b-a">
+                <ngx-codemirror #codeMirror #cm="ngModel" name="cm"
+                                [(ngModel)]="object.script" [options]="cmOption"></ngx-codemirror>
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </div>
       <div class="col-md-12" *ngIf="step === 2">
         <div class="min-ht-200" style="display: flex;justify-content: center;align-items: center;">
           <div class="text-md">
             <span class="_600" translate [translateParams]="{count: data.length}">inventory.updateObject.message.updateSuccessfully</span>
-            <a class="text-primary p-l-xs" *ngIf="!(type === 'SCHEDULE' || type.match('Calendar'))" (click)="step = 3;" translate>inventory.updateObject.button.clickHereToDeploy</a>
-            <a class="text-primary p-l-xs" *ngIf="(type === 'SCHEDULE' || type.match('Calendar'))" (click)="preferences.auditLog ? step = 3 : deploy(false)" translate>inventory.updateObject.button.clickHereToRelease</a>
+            <a class="text-primary p-l-xs" *ngIf="(type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT')" (click)="step = 3;" translate>inventory.updateObject.button.clickHereToDeploy</a>
+            <a class="text-primary p-l-xs" *ngIf="(type === 'SCHEDULE' || type === 'CALENDAR' || type === 'INCLUDESCRIPT')" (click)="preferences.auditLog ? step = 3 : deploy(false)" translate>inventory.updateObject.button.clickHereToRelease</a>
           </div>
         </div>
       </div>
@@ -570,7 +584,7 @@
         <div *ngIf="preferences.auditLog">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
         </div>
-        <div class="form-group row" *ngIf="!(type === 'SCHEDULE' || type.match('Calendar'))">
+        <div class="form-group row" *ngIf="(type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT')">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.controllers</label>
           </label>
@@ -594,10 +608,10 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" (click)="deploy(!(type === 'SCHEDULE' || type.match('Calendar')))" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" *ngIf="step === 3" translate>
+    <button type="button" (click)="deploy((type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT'))" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" *ngIf="step === 3" translate>
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      <span *ngIf="!(type === 'SCHEDULE' || type.match('Calendar'))" translate>inventory.button.deploy</span>
-      <span *ngIf="(type === 'SCHEDULE' || type.match('Calendar'))" translate>inventory.button.release</span>
+      <span *ngIf="(type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT')" translate>inventory.button.deploy</span>
+      <span *ngIf="(type === 'SCHEDULE'|| type === 'CALENDAR' || type === 'INCLUDESCRIPT')" translate>inventory.button.release</span>
     </button>
     <button type="button" class="btn btn-grey btn-sm" *ngIf="step === 2" (click)="activeModal.close('Close')" translate>
       common.button.close

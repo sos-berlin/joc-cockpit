@@ -1506,16 +1506,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
   private compareAndMergeInstructions(sour, targ): void {
     for (let i in sour) {
-      if (sour[i].TYPE === 'Job') {
-        sour[i].state = targ[i].state
-      } else if (this.workflowService.isInstructionCollapsible(sour[i].TYPE)) {
+      sour[i].state = targ[i].state
+      if (this.workflowService.isInstructionCollapsible(sour[i].TYPE)) {
         if (sour[i].then) {
           this.compareAndMergeInstructions(sour[i].then, targ[i].then);
         } else if (sour[i].else) {
           this.compareAndMergeInstructions(sour[i].else, targ[i].else);
         } else if (sour[i].branches && sour[i].branches.length > 0) {
           sour[i].branches.forEach((branch, index) => {
-            this.compareAndMergeInstructions(sour[i].branches[index], targ[i].branches[index]);
+            this.compareAndMergeInstructions(sour[i].branches[index].instructions, targ[i].branches[index].instructions);
           })
         } else if (sour[i].instructions) {
           this.compareAndMergeInstructions(sour[i], targ[i]);

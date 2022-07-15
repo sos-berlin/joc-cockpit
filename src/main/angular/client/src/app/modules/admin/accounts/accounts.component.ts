@@ -12,6 +12,7 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {ShowPermissionComponent} from "../show-permission/show-permission.component";
 import {UploadModalComponent} from "../upload/upload.component";
+import { AddBlocklistModalComponent } from '../blocklist/blocklist.component';
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -681,6 +682,24 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
+  addToBlocklist(obj) {
+    this.modal.create({
+      nzTitle: undefined,
+      nzAutofocus: null,
+      nzContent: AddBlocklistModalComponent,
+      nzComponentParams: {
+        obj
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.getList();
+      }
+    });
+  }
+
   private paste(): void {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
@@ -711,7 +730,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
     } else {
       this.pasteUser(this.dataService.comments);
     }
-
   }
 
   private pasteUser(comments): void {

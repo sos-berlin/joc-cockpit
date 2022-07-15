@@ -43,6 +43,14 @@
              class="fa fa-caret-down "></i>
         </a>
         </th>
+        <th (click)="sort('comment')"><a>
+          <span class="p-r-xs" translate>common.label.comment</span>
+          <i *ngIf="blocklistFilter.filter.sortBy == 'comment' && blocklistFilter.filter.reverse"
+             class="fa fa-caret-up "></i>
+          <i *ngIf="blocklistFilter.filter.sortBy == 'comment' && !blocklistFilter.filter.reverse"
+             class="fa fa-caret-down "></i>
+        </a>
+        </th>
       </tr>
       </thead>
       <tbody>
@@ -69,6 +77,9 @@
           </td>
           <td>
             <span [innerHtml]="account.since | stringToDate | highlight : blocklistFilter.filter.searchText"></span>
+          </td>
+          <td>
+            <span [innerHtml]="account.comment | highlight : blocklistFilter.filter.searchText"></span>
           </td>
         </tr>
       </ng-template>

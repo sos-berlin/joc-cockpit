@@ -41,6 +41,13 @@ export class UpdateObjectComponent implements OnInit {
   object: any = {};
   workflow: any = {};
   required = false;
+  cmOption: any = {
+    scrollbarStyle: 'simple',
+    lineNumbers: true,
+    autoRefresh: true,
+    mode: 'shell',
+    extraKeys: {'Ctrl-Space': 'autocomplete'}
+  };
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
               private authService: AuthService, private modal: NzModalService, private translate: TranslateService) {
@@ -90,7 +97,7 @@ export class UpdateObjectComponent implements OnInit {
       });
     }
     if (this.type === InventoryObject.FILEORDERSOURCE && this.permission.joc.inventory.view) {
-      this.coreService.getAgents(this.agents, this.controllerId, () =>{
+      this.coreService.getAgents(this.agents, this.controllerId, () => {
         this.agentList = this.coreService.clone(this.agents.agentList);
       });
     }
@@ -624,9 +631,12 @@ export class UpdateObjectComponent implements OnInit {
       path: data.path,
       objectType: this.type
     };
+    if (this.type === 'CALENDAR') {
+      request.objectType = data.configuration.type;
+    }
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        request.auditLog = { comment: translatedValue };
+        request.auditLog = {comment: translatedValue};
       });
     }
     this.coreService.post('inventory/store', request).subscribe({
@@ -825,6 +835,10 @@ export class UpdateObjectComponent implements OnInit {
       }
       if (object.to) {
         obj.to = object.to;
+      }
+    } else if (this.type === InventoryObject.INCLUDESCRIPT) {
+      if (object.script) {
+        obj.script = object.script;
       }
     }
     return obj;

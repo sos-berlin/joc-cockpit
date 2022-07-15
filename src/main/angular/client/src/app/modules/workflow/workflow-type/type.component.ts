@@ -18,7 +18,7 @@ export class TypeComponent implements OnChanges {
   @Input() permission: any;
   @Input() schedulerId: any;
   @Input() timezone: string;
-  @Input() path: string;
+  @Input() workflowObj: any;
   @Input() orderPreparation: any;
   @Input() recursiveCals: any;
   @Input() workflowFilters: any;
@@ -362,7 +362,7 @@ export class TypeComponent implements OnChanges {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.restCall(job, operation, {
+          this.skipOrStop(job, operation, {
             comment: result.comment,
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
@@ -370,21 +370,29 @@ export class TypeComponent implements OnChanges {
         }
       });
     } else {
-      this.restCall(job, operation);
+      this.skipOrStop(job, operation);
     }
   }
 
-  restCall(job, operation, auditLog?): void {
-    this.coreService.post('workflow/' + operation.toLowerCase(), {
+  private skipOrStop(data,operation, auditLog?): void {
+    let obj: any = {
       controllerId: this.schedulerId,
-      workflowPath: this.path,
-      labels: [job.label],
       auditLog
-    }).subscribe({
+    };
+    if (operation === 'Skip' || operation === 'Unskip') {
+      obj.labels = [data.label];
+      obj.workflowPath = this.workflowObj.path;
+    } else {
+      obj.positions = [data.position];
+      obj.workflowId = {path: this.workflowObj.path, versionId: this.workflowObj.versionId};
+    }
+    this.coreService.post('workflow/' + operation.toLowerCase(), obj).subscribe({
       next: () => {
         this.processingHandler(true)
-      }, error: () => this.processingHandler(false)
-    })
+      }, error: () => {
+        this.processingHandler(false)
+      }
+    });
   }
 
   skip(job): void{
@@ -413,7 +421,7 @@ export class TypeComponent implements OnChanges {
           data,
           agentName: job.agentName,
           subagentClusterId: job.subagentClusterId,
-          workflowPath: this.path,
+          workflowPath: this.workflowObj.path,
           admissionTime: job.admissionTimeScheme,
           timezone: this.timezone,
           jobName: instruction.jobName,
@@ -425,14 +433,14 @@ export class TypeComponent implements OnChanges {
       nzComponentParams = {
         predicate: true,
         data: instruction.predicate,
-        workflowPath: this.path,
+        workflowPath: this.workflowObj.path,
         isScript: true,
         readonly: true
       };
     } else if (instruction.TYPE === 'Cycle') {
       nzComponentParams = {
         schedule: instruction.schedule,
-        workflowPath: this.path,
+        workflowPath: this.workflowObj.path,
         timezone: this.timezone
       };
     }

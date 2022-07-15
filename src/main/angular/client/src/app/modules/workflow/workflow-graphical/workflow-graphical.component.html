@@ -110,8 +110,20 @@
             <a translate>common.button.copyLinkToObject</a>
           </li>
         </ul>
+        <ul nz-menu *ngIf="stopInstruction">
+          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && !stopInstruction.isStop" (click)="stop(stopInstruction);">
+            <a>
+              <span translate>workflow.button.stop</span>
+            </a>
+          </li>
+          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && stopInstruction.isStop" (click)="unstop(stopInstruction);">
+            <a>
+              <span translate>workflow.button.unstop</span>
+            </a>
+          </li>
+        </ul>
         <ul nz-menu *ngIf="job">
-          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!job.isSkip)" (click)="skip(job);">
+          <li nz-menu-item *ngIf="permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && !job.predicate && (!job.isSkip)" (click)="skip(job);">
             <a>
               <span translate>workflow.button.skip</span>
             </a>

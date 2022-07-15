@@ -1263,7 +1263,6 @@ export class ExportComponent implements OnInit {
           this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
         }
         this.nodes = [...this.nodes];
-        console.log(expandedList);
       });
     }
   }
@@ -1337,9 +1336,7 @@ export class ExportComponent implements OnInit {
         for (let i = 0; i < node.children.length; i++) {
           if (node.children[i].origin.type) {
             node.children[i].isChecked = node.isChecked;
-            if (this.exportObj.exportType === 'folders') {
-              node.children[i].isDisableCheckbox = true;
-            }
+            node.children[i].isDisableCheckbox = (node.children[i].isChecked && this.exportObj.exportType === 'folders');
           }
           if (!node.children[i].origin.object && !node.children[i].origin.type) {
             break;
@@ -1359,7 +1356,9 @@ export class ExportComponent implements OnInit {
       folders: []
     };
     let selectFolder = true;
-    if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH' && this.exportObj.exportType !== 'folders') {
+    if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH') {
+      selectFolder = false;
+    } else if(this.exportObj.exportType !== 'folders'){
       selectFolder = false;
     }
 
@@ -1401,7 +1400,6 @@ export class ExportComponent implements OnInit {
                 }
               }
             } else {
-
               if (self.filter.controller) {
                 if (self.filter.deploy) {
                   self.object.deployConfigurations.push(objDep);
@@ -1426,7 +1424,10 @@ export class ExportComponent implements OnInit {
             recursive(nodes[i].children);
           } else if (!self.exportObj.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
-              if (!nodes[i].children[j].object && !nodes[i].children[j].type && nodes[i].children[j].children) {
+              if (!nodes[i].children[j].object && !nodes[i].children[j].type) {
+                if(nodes[i].children[j].checked && selectFolder) {
+                  self.object.folders.push(nodes[i].children[j].path);
+                }
                 recursive(nodes[i].children[j].children);
               }
             }
@@ -1498,6 +1499,7 @@ export class ExportComponent implements OnInit {
           };
         }
       }
+
       if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
       } else {

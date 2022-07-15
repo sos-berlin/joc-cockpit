@@ -13,7 +13,7 @@ import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
-import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
+import {AddBlocklistModalComponent} from '../admin/blocklist/blocklist.component';
 
 @Component({
   selector: 'app-filter-content',
@@ -609,56 +609,16 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   /* ----------------------Action --------------------- */
-  addBlockedAccounts(acc) {
-    let object: any = {
-      accountName: acc.accountName
-    };
-    if (this.preferences.auditLog) {
-      let comments = {
-        radio: 'predefined',
-        type: 'Blocklist',
-        operation: 'Add to blocklist',
-        name: acc.accountName
-      };
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: CommentModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          comments
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          object.auditLog = {
-            comment: result.comment,
-            timeSpent: result.timeSpent,
-            ticketLink: result.ticketLink
-          };
-          this.addToBlocklist(object);
-        }
-      });
-    } else {
-      this.addToBlocklist(object);
-    }
-  }
-
-
-  addToBlocklist(obj): void {
-    this.coreService.post('iam/blockedAccount/store', obj).subscribe({
-      next: (res: any) => {
-        if (res) {
-          this.translate.get('user.message.addedToBlocklist').subscribe(translatedValue => {
-            this.toasterService.success(translatedValue);
-          });
-        }
-        this.isLoaded = true;
-      }, error: () => {
-        this.isLoaded = true
-      }
+  addBlockedAccounts(obj) {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddBlocklistModalComponent,
+      nzComponentParams: {
+        obj
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 
@@ -864,17 +824,31 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   expandDetails(): void {
-    const logs = this.getCurrentData(this.data, this.adtLog);
-    logs.forEach((value) => {
-      this.showDetail(value);
-    });
+    if (this.auditLog.type === 'AUDITLOG') {
+      const logs = this.getCurrentData(this.data, this.adtLog);
+      logs.forEach((value) => {
+        this.showDetail(value);
+      });
+    } else {
+      const logins = this.getCurrentData(this.data, this.historyLogin);
+      logins.forEach((value) => {
+        value.show = true;
+      });
+    }
   }
 
   collapseDetails(): void {
-    const logs = this.getCurrentData(this.data, this.adtLog);
-    logs.forEach((value: any) => {
-      value.show = false;
-    });
+    if (this.auditLog.type === 'AUDITLOG') {
+      const logs = this.getCurrentData(this.data, this.adtLog);
+      logs.forEach((value: any) => {
+        value.show = false;
+      });
+    } else {
+      const logins = this.getCurrentData(this.data, this.historyLogin);
+      logins.forEach((value: any) => {
+        value.show = false;
+      });
+    }
   }
 
   search(flag = false): void {
