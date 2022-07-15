@@ -140,4 +140,4 @@
     <span translate *ngIf="ajaxTable.data.length ===1">user.label.identityServiceFound</span>
   </div>
 </div>
-<app-blocklist *ngIf="adminFilter.isBlocklist"></app-blocklist>
+<app-blocklist *ngIf="adminFilter.isBlocklist" [permission]="permission"></app-blocklist>

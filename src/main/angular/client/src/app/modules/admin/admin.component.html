@@ -6,7 +6,7 @@
           <div class="pull-left">
               <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div class="inline" *ngIf="permission.joc && permission.joc.administration.accounts.manage">
+          <div class="inline">
             <!-- Sorting via Account Name Starts -->
             <div class="btn-group dropdown" *ngIf="!isSelected && route && identityServiceType !== 'VAULT' && identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'LDAP' && route.match('/users/identity_service/role')">
               <button class="btn btn-grey btn-sm m-l-12 "
@@ -46,102 +46,100 @@
                       [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-7d'}" translate>filters.button.lastWeak
               </button>
             </div>
-
-            <!-- Sorting via Account Name Ends -->
-            <button *ngIf="isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="exportObject()">
-              <i class="fa fa-download"></i>&nbsp;
-              <span translate>inventory.button.export</span>
-            </button>
-            <button *ngIf="!isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="importObject()">
-              <i class="fa fa-upload"></i>&nbsp;
-              <span translate>inventory.button.import</span>
-            </button>
-            <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.manageGeneralSetting</span>
-            </button>
-            <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addIdentityService</span>
-            </button>
-            <button *ngIf="!isSelected && isPaste && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="pasteList()">
-              <i class="fa fa-paste"></i>&nbsp;
-              <span translate>common.button.paste</span>
-            </button>
-            <button *ngIf="!isSelected && route.match('/users/identity_service/account')" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addUser</span>
-            </button>
-            <button *ngIf="isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="copyList()">
-              <i class="fa fa-copy"></i>&nbsp;
-              <span translate>common.button.copy</span>
-            </button>
-            <button *ngIf="isSelected && (identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="resetPassword()">
-              <i class="fa fa-refresh"></i>&nbsp;
-              <span translate>user.button.resetPassword</span>
-            </button>
-            <button *ngIf="isSelected && (identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="forcePasswordChange()">
-              <i class="fa fa-key"></i>&nbsp;
-              <span translate>user.button.forcePasswordChange</span>
-            </button>
-            <button *ngIf="isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="disableList()">
-              <i class="fa fa-ban"></i>&nbsp;
-              <span translate>user.button.disable</span>
-            </button>
-             <button *ngIf="isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="disableList(true)">
-              <i class="fa fa-check"></i>&nbsp;
-              <span translate>user.button.enable</span>
-            </button>
-            <button *ngIf="isSelected && route && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="deleteList()">
-              <i class="fa fa-trash"></i>&nbsp;
-              <span translate>user.button.delete</span>
-            </button>
-            <button *ngIf="!isSelected && route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addController()">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addController</span>
-            </button>
-            <button *ngIf="!isSelected && route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addRole()">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addRole</span>
-            </button>
-            <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
-                    (click)="resetProfiles()">
-              <i class="fa fa-trash-o"></i>&nbsp;
-              <span translate>user.button.deleteProfile</span>
-            </button>
-            <button *ngIf="isBlockButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
-                  (click)="deleteBulkBlockedAccounts()">
-              <i class="fa fa-trash-o"></i>&nbsp;
-              <span translate>user.button.deleteBlockedAccounts</span>
-            </button>
-            <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
-                    (click)="deleteProfiles()">
-              <i class="fa fa-trash"></i>&nbsp;
-              <span translate>user.button.deleteProfileAndCustomization</span>
-            </button>
-            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/identity_service/permissions')"
-                    (click)="addFolder()">
-              <i class="fa fa-plus"></i>
-              {{'user.button.addFolder' | translate}}
-            </button>
-            <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/identity_service/permissions')"
-                    [hidden]="pageView=='grid'" (click)="addPermission();">
-              <i class="fa fa-plus"></i>&nbsp;
-              {{'user.button.addPermission' | translate}}
-            </button>
-            <button *ngIf="(route === '/users/identity_service' || route === '/users') && !isBlockButtonShow && adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addToBlocklist()">
-              <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;
-              <span translate>user.button.addToBlocklist</span>
-            </button>
+          </div>
+          <div class="inline" *ngIf="permission.joc && permission.joc.administration.accounts.manage">
+              <!-- Sorting via Account Name Ends -->
+              <button *ngIf="isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="exportObject()">
+                <i class="fa fa-download"></i>&nbsp;
+                <span translate>inventory.button.export</span>
+              </button>
+              <button *ngIf="!isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12" (click)="importObject()">
+                <i class="fa fa-upload"></i>&nbsp;
+                <span translate>inventory.button.import</span>
+              </button>
+              <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span translate>user.button.manageGeneralSetting</span>
+              </button>
+              <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span translate>user.button.addIdentityService</span>
+              </button>
+              <button *ngIf="!isSelected && isPaste && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="pasteList()">
+                <i class="fa fa-paste"></i>&nbsp;
+                <span translate>common.button.paste</span>
+              </button>
+              <button *ngIf="!isSelected && route.match('/users/identity_service/account')" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span translate>user.button.addUser</span>
+              </button>
+              <button *ngIf="isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="copyList()">
+                <i class="fa fa-copy"></i>&nbsp;
+                <span translate>common.button.copy</span>
+              </button>
+              <button *ngIf="isSelected && (identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="resetPassword()">
+                <i class="fa fa-refresh"></i>&nbsp;
+                <span translate>user.button.resetPassword</span>
+              </button>
+              <button *ngIf="isSelected && (identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="forcePasswordChange()">
+                <i class="fa fa-key"></i>&nbsp;
+                <span translate>user.button.forcePasswordChange</span>
+              </button>
+              <button *ngIf="isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="disableList()">
+                <i class="fa fa-ban"></i>&nbsp;
+                <span translate>user.button.disable</span>
+              </button>
+               <button *ngIf="isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12" (click)="disableList(true)">
+                <i class="fa fa-check"></i>&nbsp;
+                <span translate>user.button.enable</span>
+              </button>
+              <button *ngIf="isSelected && route && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12" (click)="deleteList()">
+                <i class="fa fa-trash"></i>&nbsp;
+                <span translate>user.button.delete</span>
+              </button>
+              <button *ngIf="!isSelected && route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addController()">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span translate>user.button.addController</span>
+              </button>
+              <button *ngIf="!isSelected && route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12" (click)="addRole()">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span translate>user.button.addRole</span>
+              </button>
+              <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
+                      (click)="resetProfiles()">
+                <i class="fa fa-trash-o"></i>&nbsp;
+                <span translate>user.button.deleteProfile</span>
+              </button>
+              <button *ngIf="isBlockButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
+                    (click)="deleteBulkBlockedAccounts()">
+                <i class="fa fa-trash-o"></i>&nbsp;
+                <span translate>user.button.deleteBlockedAccounts</span>
+              </button>
+              <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
+                      (click)="deleteProfiles()">
+                <i class="fa fa-trash"></i>&nbsp;
+                <span translate>user.button.deleteProfileAndCustomization</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/identity_service/permissions')"
+                      (click)="addFolder()">
+                <i class="fa fa-plus"></i>
+                {{'user.button.addFolder' | translate}}
+              </button>
+              <button type="button" class="btn btn-sm btn-grey m-l-12" *ngIf="route && route.match('/users/identity_service/permissions')"
+                      [hidden]="pageView=='grid'" (click)="addPermission();">
+                <i class="fa fa-plus"></i>&nbsp;
+                {{'user.button.addPermission' | translate}}
+              </button>
+              <button *ngIf="(route === '/users/identity_service' || route === '/users') && !isBlockButtonShow && adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addToBlocklist()">
+                <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;
+                <span translate>user.button.addToBlocklist</span>
+              </button>
+            </div>
+          <div class="inline">
             <button *ngIf="(route === '/users/identity_service' || route === '/users') && !isBlockButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isBlocklist}" (click)=" manageBlocklist()">
               <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
               <span translate>user.button.blocklist</span>
             </button>
-            <div class="hide" [ngClass]="{'show-block': route && route.match('/users/identity_service/permissions')}">
-              <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
-            </div>
-          </div>
-          <div class="inline" *ngIf="permission.joc && !permission.joc.administration.accounts.manage">
             <div class="hide" [ngClass]="{'show-block': route && route.match('/users/identity_service/permissions')}">
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>

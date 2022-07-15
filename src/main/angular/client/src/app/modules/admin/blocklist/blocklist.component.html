@@ -23,10 +23,10 @@
               [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
       <thead>
       <tr>
-        <th class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
+        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
             [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="checkAll($event)">
         </th>
-        <th class="menu"><span translate>common.label.action</span></th>
+        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span></th>
         <th (click)="sort('accountName')"><a>
           <span class="p-r-xs" translate>user.label.account</span>
           <i *ngIf="blocklistFilter.filter.sortBy == 'accountName' && !blocklistFilter.filter.reverse"
@@ -56,10 +56,10 @@
       <tbody>
       <ng-template ngFor let-account [ngForOf]="ajaxTable.data">
         <tr>
-          <td [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
+          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
               (nzCheckedChange)="onItemChecked(account, $event)">
           </td>
-          <td>
+          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
             <div class="btn-group dropdown pull-left m-r-sm">
               <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                       [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>

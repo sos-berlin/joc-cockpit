@@ -133,7 +133,7 @@
             <a class="nav-link" [ngClass]="{'active': auditLog.type=='LOGINHISTORY'}" (click)="loginHistoryTab()">
               <span class="nav-text text-dark p-b-sm">
                 <span class="text" translate>auditLog.tab.loginHistory</span>
-                </span>
+              </span>
             </a>
           </li>
         </ul>
@@ -333,7 +333,7 @@
           >
             <thead>
             <tr>
-              <th class="menu"><span translate>common.label.action</span></th>
+              <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span></th>
               <th nzWidth="30%" (click)="sort('accountName')"><a>
                 <span class="p-r-xs" translate>auditLog.label.account</span>
                 <i *ngIf="historyLogin.filter.sortBy == 'accountName' && !historyLogin.reverse"
@@ -355,7 +355,7 @@
             <tbody>
             <ng-template ngFor let-account [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn">
               <tr>
-                <td>
+                <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
                   <div class="btn-group dropdown pull-left m-r-sm">
                     <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
                     <nz-dropdown-menu #option="nzDropdownMenu" role="menu">

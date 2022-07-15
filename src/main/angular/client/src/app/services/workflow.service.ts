@@ -1968,11 +1968,10 @@ export class WorkflowService {
           day,
           periods: []
         };
-
         obj[period.TYPE === 'MonthlyLastDatePeriod' ? 'lastSecondOfMonth' : 'secondOfMonth'] = (d * 24 * 3600);
         obj.frequency = this.getMonthDays(day, period.TYPE === 'MonthlyLastDatePeriod');
         if (period.TYPE === 'MonthlyLastDatePeriod') {
-          obj.day = obj.day + 1;
+          obj.day = obj.day > -1 ? obj.day + 1 : obj.day - 1;
           p.startTime = period.lastSecondOfMonth - obj.lastSecondOfMonth;
         } else {
           p.startTime = period.secondOfMonth - obj.secondOfMonth;

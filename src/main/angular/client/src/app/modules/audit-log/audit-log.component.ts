@@ -342,14 +342,16 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   auditLogTab() {
-    this.auditLog.type = 'AUDITLOG'
-    this.isLoaded = false
-    this.load(null)
+    this.auditLog.type = 'AUDITLOG';
+    this.isLoaded = false;
+    this.data = [];
+    this.load(null);
   }
 
   loginHistoryTab() {
-    this.auditLog.type = 'LOGINHISTORY'
+    this.auditLog.type = 'LOGINHISTORY';
     this.isLoaded = false;
+    this.data = [];
     this.loadLoginHistory()
   }
 

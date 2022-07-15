@@ -70,6 +70,7 @@ export class AddBlocklistModalComponent implements OnInit {
   templateUrl: './blocklist.component.html'
 })
 export class BlocklistComponent implements OnInit {
+  @Input() permission: any = {};
   isLoaded = false;
   blocklist = [];
   data = [];
