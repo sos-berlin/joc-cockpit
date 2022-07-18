@@ -12,7 +12,7 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {ShowPermissionComponent} from "../show-permission/show-permission.component";
 import {UploadModalComponent} from "../upload/upload.component";
-import { AddBlocklistModalComponent } from '../blocklist/blocklist.component';
+import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -688,6 +688,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzContent: AddBlocklistModalComponent,
       nzComponentParams: {
+        existingComments: this.dataService.comments,
         obj
       },
       nzFooter: null,
@@ -695,6 +696,73 @@ export class AccountsComponent implements OnInit, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
+        this.getList();
+      }
+    });
+  }
+
+  removeBlockAcc(acc): void {
+    if (this.preferences.auditLog && !this.dataService.comments.comment) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Blocklist',
+        operation: 'Delete',
+        name: acc ? acc.accountName : ''
+      };
+      this.object.mapOfCheckedId.forEach((value, key) => {
+        comments.name = comments.name + key + ', ';
+      });
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.removeFromBlocklist(acc, {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          });
+        }
+      });
+    } else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmationModalComponent,
+        nzComponentParams: {
+          delete: true,
+          account: acc,
+          blocklist: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.removeFromBlocklist(acc);
+        }
+      });
+    }
+  }
+
+  removeFromBlocklist(account, object?): void {
+    const obj = {accountNames: [], auditLog: object};
+    if (account) {
+      obj.accountNames.push(account.accountName);
+    } else {
+      this.object.mapOfCheckedId.forEach((value, key) => {
+        obj.accountNames.push(key);
+      });
+    }
+    this.coreService.post('iam/blockedAccounts/delete', obj).subscribe({
+      next: () => {
         this.getList();
       }
     });

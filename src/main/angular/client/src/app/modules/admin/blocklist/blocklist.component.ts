@@ -15,7 +15,7 @@ import {DataService} from '../data.service';
 export class AddBlocklistModalComponent implements OnInit {
   @Input() bulkBlock: boolean;
   @Input() obj: any;
-  @Input() auditlog: any;
+  @Input() existingComments: any;
   submitted = false;
   accountName = '';
   display: any;
@@ -38,10 +38,10 @@ export class AddBlocklistModalComponent implements OnInit {
     if (this.obj && this.obj.accountName) {
       this.accountName = this.obj.accountName;
     }
-    // if (this.dataService.comments && this.dataService.comments.comment) {
-    //   this.comments = this.dataService.comments;
-    //   this.display = false;
-    // }
+    if (this.existingComments && this.existingComments.comment) {
+      this.comments = this.existingComments;
+      this.display = false;
+    }
   }
 
   onSubmit(): void {
@@ -52,9 +52,9 @@ export class AddBlocklistModalComponent implements OnInit {
       auditLog: {}
     };
     this.coreService.getAuditLogObj(this.comments, request.auditLog);
-    // if (this.comments.isChecked) {
-    //   this.dataService.comments = this.comments;
-    // }
+    if (this.comments.isChecked) {
+      this.existingComments = this.comments;
+    }
     this.coreService.post('iam/blockedAccount/store', request).subscribe({
       next: () => {
         this.activeModal.close('DONE');
@@ -228,6 +228,7 @@ export class BlocklistComponent implements OnInit {
       nzAutofocus: null,
       nzContent: AddBlocklistModalComponent,
       nzComponentParams: {
+        existingComments: this.dataService.comments,
         bulkBlock: true
       },
       nzFooter: null,

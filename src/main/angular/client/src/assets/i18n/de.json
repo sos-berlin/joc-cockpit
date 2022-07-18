@@ -2212,6 +2212,7 @@
     "label.resetPassword": "Kennwort zurücksetzen",
     "label.forcePasswordChange": "Kennwortänderung erzwingen",
     "label.disable": "Deaktivieren",
+    "label.disabled": "Deaktiviert",
     "label.folderNotExist": "Ordner nicht vorhanden",
     "label.reuseReason": "Begründung wiederverwenden",
     "label.showPermission": "Berechtigungen anzeigen",

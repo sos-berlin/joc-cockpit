@@ -52,7 +52,7 @@
                class="fa fa-caret-down "></i></a>
         </th>
         <th nzWidth="20%" (click)="sort('disabled')">
-          <a><span class="p-r-xs" translate>user.label.disable</span>
+          <a><span class="p-r-xs" translate>user.label.disabled</span>
             <i *ngIf="usr.sortBy == 'disabled' && !usr.reverse"
                class="fa fa-caret-up "></i>
             <i *ngIf="usr.sortBy == 'disabled' && usr.reverse"
@@ -80,9 +80,12 @@
                 <li nz-menu-item *ngIf="(identityServiceType === 'JOC' || identityServiceType === 'VAULT-JOC-ACTIVE')" [nzDisabled]="account.forcePasswordChange" (click)="forcePasswordChange(account)">
                   <a translate>user.button.forcePasswordChange</a>
                 </li>
-                <li nz-menu-item (click)="addToBlocklist(account)" *ngIf="account.blocked === true || account.blocked === false"
+                <li nz-menu-item (click)="addToBlocklist(account)" *ngIf="account.blocked === 'undefined' || account.blocked === false"
                     [ngClass]="{'disable-link': (username==account.accountName && selectedIdentityService === userIdentityService) || account.blocked === true}">
                   <a translate>user.button.addToBlocklist</a>
+                </li>
+                <li nz-menu-item (click)="removeBlockAcc(account)" *ngIf="account.blocked">
+                  <a translate>user.button.removeFromBlocklist</a>
                 </li>
                 <li nz-menu-divider></li>
                 <li nz-menu-item *ngIf="identityServiceType.match('JOC')" (click)="disabledUser(account, account.disabled)"

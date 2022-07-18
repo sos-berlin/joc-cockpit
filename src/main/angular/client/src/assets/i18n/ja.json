@@ -2213,6 +2213,7 @@
     "label.resetPassword": "パスワードリセット",
     "label.forcePasswordChange": "パスワード変更を強制",
     "label.disable": "無効化",
+    "label.disabled": "無効化",
     "label.folderNotExist": "フォルダーがありません",
     "label.reuseReason": "再使用理由",
     "label.showPermission": "パーミッション表示",

@@ -2212,6 +2212,7 @@
     "label.resetPassword": "Réinitialiser le mot de passe",
     "label.forcePasswordChange": "Forcer le changement de mot de passe",
     "label.disable": "Désactiver",
+    "label.disabled": "Désactivé",
     "label.folderNotExist": "Le dossier n'existe pas",
     "label.reuseReason": "Réutiliser la raison",
     "label.showPermission": "Visualiser les Permissions",
