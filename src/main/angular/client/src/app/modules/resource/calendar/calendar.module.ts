@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {
   CalendarComponent,
   SingleCalendarComponent
@@ -11,6 +12,7 @@ import {SharedModule} from '../../shared/shared.module';
   imports: [
     SharedModule,
     ResourceSharedModule,
+    NzDrawerModule,
     CalendarRoutingModule
   ],
   declarations: [CalendarComponent, SingleCalendarComponent]

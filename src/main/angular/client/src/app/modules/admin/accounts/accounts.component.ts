@@ -264,6 +264,7 @@ export class AccountModalComponent implements OnInit {
     request.accountName = obj.accountName;
     request.password = obj.password;
     request.disabled = obj.disabled;
+    request.blocked = obj.blocked;
     request.enabled = obj.enabled;
     request.forcePasswordChange = obj.forcePasswordChange;
     request.roles = obj.roles;

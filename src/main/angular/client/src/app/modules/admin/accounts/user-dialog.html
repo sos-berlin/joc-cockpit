@@ -81,8 +81,15 @@
                name="forcePasswordChange"></label>
       </div>
     </div>
+    <div class="form-group row" *ngIf="!newUser && !copy && identityServiceType">
+      <label class="col-sm-4" translate>common.label.blocked</label>
+      <div class="col-sm-6">
+        <label nz-checkbox [(ngModel)]="currentUser.blocked"
+               name="blocked"></label>
+      </div>
+    </div>
     <div class="form-group row" *ngIf="!newUser && !copy && identityServiceType && identityServiceType.match('JOC')">
-      <label class="col-sm-4" translate>user.label.disable</label>
+      <label class="col-sm-4" translate>user.label.disabled</label>
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="currentUser.disabled"
                name="disabled"></label>

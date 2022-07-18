@@ -73,7 +73,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         } else if (this.isLock) {
           this.type = this.ENUM.LOCK;
         } else if (this.isCalendar) {
-          this.type = this.ENUM.WORKINGDAYSCALENDAR;
+          this.type = 'CALENDAR';
         }
         this.searchObj.returnType = this.type;
       }
@@ -219,7 +219,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
           this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
         }
-        this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory',
+        this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
           {panel: this.panel.active, request: this.searchObj, result: this.results});
         this.submitted = false;
       }, error: () => {
@@ -235,7 +235,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.object.mapOfCheckedId = new Set();
     this.object.checked = false;
     this.object.indeterminate = false;
-    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : 'inventory',
+    this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
       {panel: false, request: {}, result: []});
   }
 

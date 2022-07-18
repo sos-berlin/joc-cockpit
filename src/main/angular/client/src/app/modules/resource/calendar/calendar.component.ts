@@ -100,6 +100,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   sideView: any = {};
   searchableProperties = ['name', 'path', 'title', 'type'];
   reloadState = 'no';
+  isSearchVisible = false;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -213,6 +214,47 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
   }
 
+  search(): void {
+    this.isSearchVisible = true;
+  }
+
+  closeSearch(): void {
+    this.isSearchVisible = false;
+  }
+
+  onNavigate(data): void {
+    const pathArr = [];
+    const arr = data.path.split('/');
+    this.calendarFilters.selectedkeys = [];
+    const len = arr.length - 1;
+    if (len > 1) {
+      for (let i = 0; i < len; i++) {
+        if (arr[i]) {
+          if (i > 0 && pathArr[i - 1]) {
+            pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + arr[i]);
+          } else {
+            pathArr.push('/' + arr[i]);
+          }
+        } else {
+          pathArr.push('/');
+        }
+      }
+    }
+    if (pathArr.length === 0) {
+      pathArr.push('/');
+    }
+    const PATH = data.path.substring(0, data.path.lastIndexOf('/')) || '/';
+    this.calendarFilters.expandedKeys = pathArr;
+    this.calendarFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
+    this.calendarFilters.expandedObjects = [data.path];
+    const obj = {
+      controllerId: this.schedulerIds.selected,
+      folders: [{folder: PATH, recursive: false}]
+    };
+    this.calendars = [];
+    this.loading = true;
+    this.getCalendarsList(obj);
+  }
 
   previewCalendar(calendar): void {
     this.modal.create({

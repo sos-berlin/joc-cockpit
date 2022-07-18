@@ -123,7 +123,7 @@ export class CoreService {
       },
       blocklist: {
         filter: {
-          date: 'today',
+          date: 'all',
           sortBy: 'since',
           reverse: true
         },

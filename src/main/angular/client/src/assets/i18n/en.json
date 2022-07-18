@@ -2212,6 +2212,7 @@
     "label.resetPassword": "Reset Password",
     "label.forcePasswordChange": "Force Password Change",
     "label.disable": "Disable",
+    "label.disabled": "Disabled",
     "label.folderNotExist": "Folder does not exist",
     "label.reuseReason": "Reuse reason",
     "label.showPermission": "Show Permissions",
