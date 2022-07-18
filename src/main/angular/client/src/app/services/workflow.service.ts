@@ -1561,6 +1561,18 @@ export class WorkflowService {
             this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
               str = translatedValue;
             });
+            let _state = cell.getAttribute('state');
+            if (_state) {
+              try {
+                _state = JSON.parse(_state);
+                if (_state && _state._text) {
+                  this.translate.get(_state._text).subscribe(translatedValue => {
+                    str = str + ' <br><span class="label bg-red">' + translatedValue + '</span>';
+                  });
+                }
+              } catch (e) {
+              }
+            }
           }
         }
         return str;

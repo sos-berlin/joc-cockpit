@@ -136,6 +136,8 @@
               <a class="text-hover-primary" [nz-tooltip]="lockItemTemplate" (click)="coreService.showLock(instruction.lockName);$event.stopPropagation();" >{{instruction.lockName}}</a>
             </span>
         </span>
+        <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text">-</i>
+        <span *ngIf="instruction.state && instruction.state._text" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{instruction.state._text | translate}}</span>
         <ng-template #lockItemTemplate>
           <div>
             <div class="p-l-sm">
@@ -225,8 +227,6 @@
         <span class="cursor" *ngIf="instruction.TYPE === 'Job'" (click)="showConfiguration(instruction)">
           {{instruction.jobName}}
         </span>
-        <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text">-</i>
-        <span *ngIf="instruction.state && instruction.state._text" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{instruction.state._text | translate}}</span>
         <span (click)="openWorkflowDependency(instruction);" [ngClass]="{'cursor' : (instruction.TYPE === 'PostNotices' || instruction.TYPE === 'AddOrder')}" *ngIf="instruction.TYPE !== 'Job'" [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
           <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'AddOrder')">: </span>
@@ -245,6 +245,8 @@
             <a class="text-hover-primary" (click)="coreService.showWorkflow(instruction.workflowName);$event.stopPropagation();" >{{instruction.workflowName}}</a>
           </span>
         </span>
+        <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text">-</i>
+        <span *ngIf="instruction.state && instruction.state._text" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{instruction.state._text | translate}}</span>
         <span class="m-l-md" *ngIf="instruction.orders && instruction.orders.length> 0">
          <ng-template ngFor let-order [ngForOf]="instruction.orders | orderBy : 'scheduledFor': true | slice:0:3">
             <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{ $implicit: order}"></ng-container>
