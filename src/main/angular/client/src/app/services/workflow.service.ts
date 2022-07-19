@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {isEmpty, isArray, clone, isNaN, isEqual} from 'underscore';
+import {isEmpty, isArray, clone, isNaN} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from './core.service';
 import {StringDatePipe} from '../pipes/core.pipe';

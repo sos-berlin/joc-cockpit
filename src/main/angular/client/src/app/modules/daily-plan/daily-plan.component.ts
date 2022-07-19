@@ -119,7 +119,9 @@ export class SelectOrderTemplatesComponent implements OnInit {
           return result.path;
         });
         this.generateTree(arr);
-        this.nodes = [...this.nodes];
+        if (this.nodes) {
+          this.nodes = [...this.nodes];
+        }
       }, error: () => {
         this.nodes = [];
       }
@@ -986,7 +988,9 @@ export class SearchComponent implements OnInit {
       node.isLeaf = false;
       node.children = data;
       this.workflowTree = [...this.workflowTree];
-      this.filter.workflowPaths = [...this.filter.workflowPaths];
+      if (this.filter.workflowPaths) {
+        this.filter.workflowPaths = [...this.filter.workflowPaths];
+      }
     });
   }
 
@@ -2295,7 +2299,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.planOrders = [...this.planOrders];
+    if (this.planOrders) {
+      this.planOrders = [...this.planOrders];
+    }
   }
 
   private setStateToParentObject(): void {

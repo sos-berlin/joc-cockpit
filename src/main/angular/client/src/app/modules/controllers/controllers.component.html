@@ -101,7 +101,7 @@
                                   [nzData]="controller.agents | orderBy: controller.sortBy: controller.reverse" [nzShowPagination]="false" [nzFrontPagination]="false">
                           <thead>
                           <tr>
-                            <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="chk"
+                            <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" nzWidth="46px"
                                 [nzShowCheckbox]="true"
                                 [(nzChecked)]="controller.checked"
                                 [nzIndeterminate]="controller.indeterminate"
@@ -277,7 +277,7 @@
                                   [nzData]="controller.agentClusters | orderBy: controller.sortBy2: controller.reverse2" [nzShowPagination]="false" [nzFrontPagination]="false">
                           <thead>
                           <tr>
-                            <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="chk"
+                            <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" nzWidth="46px"
                                 [nzShowCheckbox]="true"
                                 [(nzChecked)]="controller.checked2"
                                 [nzIndeterminate]="controller.indeterminate2"

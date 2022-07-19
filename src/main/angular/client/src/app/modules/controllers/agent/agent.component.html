@@ -145,7 +145,7 @@
           >
             <thead>
             <tr>
-              <th *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+              <th nzWidth="46px" *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                   [nzShowCheckbox]="true"
                   [(nzChecked)]="object.checked"
                   [nzIndeterminate]="object.indeterminate"
@@ -366,6 +366,7 @@
             <thead>
             <tr>
               <th
+                class="chk"
                 [nzShowCheckbox]="true"
                 [(nzChecked)]="object.checked"
                 [nzIndeterminate]="object.indeterminate"
