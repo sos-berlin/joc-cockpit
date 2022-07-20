@@ -1,4 +1,4 @@
-<div class="row m-b-12" *ngIf="!adminFilter.isBlocklist">
+<div class="row m-b-12" *ngIf="!adminFilter.isBlocklist && !adminFilter.isSession">
   <div class="col-md-12">
     <div class="pull-left">
       <h5 class="pos-rel t-3" translate>user.label.identityService</h5>
@@ -12,7 +12,7 @@
     </div>
   </div>
 </div>
-<div *ngIf="!adminFilter.isBlocklist" class="box p-a">
+<div *ngIf="!adminFilter.isBlocklist && !adminFilter.isSession" class="box p-a">
   <div class="table-responsive">
     <nz-table
       #ajaxTable
@@ -125,11 +125,11 @@
             [innerHtml]="identityService.identityServiceType | highlight: filter.searchKey"></span></td>
           <td (click)="showUser(identityService)"><span
             [innerHtml]="identityService.serviceAuthenticationScheme | translate | highlight: filter.searchKey"></span></td>
-          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{identityService.singleFactorPwd ? 'Yes' : 'No'}}</span></td>
-          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{identityService.singleFactorCert ? 'Yes' : 'No'}}</span></td>
+          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{(identityService.singleFactorPwd ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+          <td (click)="showUser(identityService)"><span *ngIf="(identityService.identityServiceType === 'JOC' || identityService.identityServiceType === 'VAULT-JOC-ACTIVE') && identityService.serviceAuthenticationScheme === 'SINGLE-FACTOR'">{{(identityService.singleFactorCert ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
           <td (click)="showUser(identityService)"><span [innerHtml]="identityService.ordering"></span></td>
-          <td (click)="showUser(identityService)"><span>{{identityService.disabled ? 'Yes' : 'No'}}</span></td>
-          <td (click)="showUser(identityService)"><span>{{identityService.required ? 'Yes' : 'No'}}</span></td>
+          <td (click)="showUser(identityService)"><span>{{(identityService.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+          <td (click)="showUser(identityService)"><span>{{(identityService.required ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
         </tr>
       </tbody>
     </nz-table>
@@ -140,4 +140,5 @@
     <span translate *ngIf="ajaxTable.data.length ===1">user.label.identityServiceFound</span>
   </div>
 </div>
-<app-blocklist *ngIf="adminFilter.isBlocklist" [permission]="permission"></app-blocklist>
+<app-blocklist *ngIf="adminFilter.isBlocklist && !adminFilter.isSession" [permission]="permission"></app-blocklist>
+<app-session-management *ngIf="adminFilter.isSession && !adminFilter.isBlocklist" [permission]="permission"></app-session-management>

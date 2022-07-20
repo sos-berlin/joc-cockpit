@@ -133,7 +133,7 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     filter.order.filter.historyStates = state;
     filter.order.selectedView = false;
     filter.order.filter.date = this.filters.date === '0d' ? 'today' : this.filters.date;
-    this.router.navigate(['/history']);
+    this.router.navigate(['/history']).then();
   }
 
   showTaskSummary(state): void {
@@ -142,6 +142,6 @@ export class HistorySummaryComponent implements OnInit, OnDestroy {
     filter.task.filter.historyStates = state;
     filter.task.selectedView = false;
     filter.task.filter.date = this.filters.date === '0d' ? 'today' : this.filters.date;
-    this.router.navigate(['/history']);
+    this.router.navigate(['/history']).then();
   }
 }

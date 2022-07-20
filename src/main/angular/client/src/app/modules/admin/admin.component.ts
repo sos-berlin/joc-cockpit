@@ -17,6 +17,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   isPaste = false;
   isButtonShow = false;
   isBlockButtonShow = false;
+  isSessionButtonShow = false;
   isSelected = false;
   selectedUser: string;
   accounts: any = [];
@@ -54,6 +55,10 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.isBlockButtonShow = true;
       } else if (res === 'IS_BLOCKLIST_PROFILES_FALSE') {
         this.isBlockButtonShow = false;
+      } else if (res === 'IS_SESSION_MANAGEMENT_TRUE') {
+        this.isSessionButtonShow = true;
+      } else if (res === 'IS_SESSION_MANAGEMENT_FALSE') {
+        this.isSessionButtonShow = false;
       }
     });
   }
@@ -112,7 +117,16 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   manageBlocklist(): void {
+    this.adminFilter.isSession = false;
+    this.isSessionButtonShow = false;
     this.adminFilter.isBlocklist = !this.adminFilter.isBlocklist;
+
+  }
+
+  manageSession(): void {
+    this.adminFilter.isBlocklist = false;
+    this.isBlockButtonShow = false;
+    this.adminFilter.isSession = !this.adminFilter.isSession;
   }
 
   addToBlocklist(): void {
@@ -192,6 +206,10 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   deleteBulkBlockedAccounts(): void {
     this.dataService.announceFunction('DELETE_BULK_BLOCKS');
+  }
+
+  deleteBulkActiveSessions(): void {
+    this.dataService.announceFunction('DELETE_BULK_ACTIVE_SESSION');
   }
 
   exportObject(): void {

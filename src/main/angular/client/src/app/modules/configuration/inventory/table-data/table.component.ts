@@ -151,6 +151,16 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.indeterminate = this.mapOfCheckedId.size > 0 && !this.checked;
   }
 
+  selectAll(): void{
+    this.data.forEach(item => {
+      this.mapOfCheckedId.set(item.name, {
+        objectType: item.objectType || item.type,
+        path: item.path + (item.path === '/' ? '' : '/') + item.name
+      });
+    });
+    this.indeterminate = this.mapOfCheckedId.size > 0 && !this.checked;
+  }
+
   onAllChecked(value: boolean): void {
     if (value && this.data.length > 0) {
       const data = this.getCurrentData(this.data, this.filter);

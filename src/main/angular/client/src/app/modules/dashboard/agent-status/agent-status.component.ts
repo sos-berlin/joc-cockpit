@@ -165,6 +165,6 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   navToAgentView(text): void {
 
     this.coreService.getResourceTab().agents.filter.state = this.mapObj.get(text);
-    this.router.navigate(['/resources/agents']);
+    this.router.navigate(['/resources/agents']).then();
   }
 }

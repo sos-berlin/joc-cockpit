@@ -244,6 +244,6 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       filter.task.workflow = this.workflow.path;
       filter.task.fromDate = new Date(this.taskHistory[this.taskHistory.length - 1].plannedTime);
     }
-    this.router.navigate(['/history']);
+    this.router.navigate(['/history']).then();
   }
 }

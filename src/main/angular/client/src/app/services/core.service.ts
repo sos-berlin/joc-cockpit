@@ -121,6 +121,13 @@ export class CoreService {
         },
         currentPage: '1'
       },
+      sessionManagement: {
+        filter: {
+          sortBy: 'accountName',
+          reverse: false
+        },
+        currentPage: '1'
+      },
       blocklist: {
         filter: {
           date: 'all',
@@ -996,7 +1003,7 @@ export class CoreService {
       path: path.substring(0, path.lastIndexOf('/')) || '/',
       type
     };
-    this.router.navigate(['/configuration/inventory']);
+    this.router.navigate(['/configuration/inventory']).then();
   }
 
   showBoard(boardName: any): void {
@@ -1028,7 +1035,7 @@ export class CoreService {
       boardFilters.expandedKeys = pathArr;
       boardFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
       boardFilters.expandedObjects = [res.path];
-      this.router.navigate(['/resources/boards']);
+      this.router.navigate(['/resources/boards']).then();
     });
   }
 
@@ -1039,7 +1046,7 @@ export class CoreService {
         versionId,
         controllerId: JSON.parse(this.authService.scheduleIds).selected
       }
-    });
+    }).then();
   }
 
   showLock(lockName: string): void {
@@ -1071,7 +1078,7 @@ export class CoreService {
       lockFilters.expandedKeys = pathArr;
       lockFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
       lockFilters.expandedObjects = [lockName];
-      this.router.navigate(['/resources/locks']);
+      this.router.navigate(['/resources/locks']).then();
     });
   }
 

@@ -57,11 +57,11 @@
                 <i class="fa fa-upload"></i>&nbsp;
                 <span translate>inventory.button.import</span>
               </button>
-              <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
+              <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession" class="btn btn-grey btn-sm m-l-12" (click)="manageSetting()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>user.button.manageGeneralSetting</span>
               </button>
-              <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
+              <button *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession" class="btn btn-grey btn-sm m-l-12" (click)="addAccount()">
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>user.button.addIdentityService</span>
               </button>
@@ -110,10 +110,15 @@
                 <i class="fa fa-trash-o"></i>&nbsp;
                 <span translate>user.button.deleteProfile</span>
               </button>
-              <button *ngIf="isBlockButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
+              <button *ngIf="isBlockButtonShow && adminFilter.isBlocklist" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="deleteBulkBlockedAccounts()">
                 <i class="fa fa-trash-o"></i>&nbsp;
                 <span translate>user.button.deleteBlockedAccounts</span>
+              </button>
+              <button *ngIf="isSessionButtonShow && adminFilter.isSession" type="button" class="btn btn-sm btn-grey m-l-12"
+                    (click)="deleteBulkActiveSessions()">
+                <i class="fa fa-trash-o"></i>&nbsp;
+                <span translate>user.button.deleteSessions</span>
               </button>
               <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
                       (click)="deleteProfiles()">
@@ -136,9 +141,13 @@
               </button>
             </div>
           <div class="inline">
-            <button *ngIf="(route === '/users/identity_service' || route === '/users') && !isBlockButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isBlocklist}" (click)=" manageBlocklist()">
+            <button *ngIf="(route === '/users/identity_service' || route === '/users') && !isBlockButtonShow && !isSessionButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isBlocklist}" (click)=" manageBlocklist()">
               <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
               <span translate>user.button.blocklist</span>
+            </button>
+            <button *ngIf="(route === '/users/identity_service' || route === '/users') && !isBlockButtonShow && !isSessionButtonShow" class="btn btn-grey btn-sm m-l-12" [ngClass]="{'btn-primary':adminFilter.isSession}" (click)=" manageSession()">
+              <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
+              <span translate>user.button.sessionManagement</span>
             </button>
             <div class="hide" [ngClass]="{'show-block': route && route.match('/users/identity_service/permissions')}">
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>

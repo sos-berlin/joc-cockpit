@@ -102,7 +102,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const resourceFilters = this.coreService.getResourceTab();
     if (resourceFilters.state === 'agent') {
       if (this.permission.currentController.agents.view) {
-        this.router.navigate(['/resources/agents']);
+        this.router.navigate(['/resources/agents']).then();
         return;
       } else {
         resourceFilters.state = 'agentJobExecutions';
@@ -110,7 +110,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'agentJobExecutions') {
       if (this.permission.currentController.agents.view) {
-        this.router.navigate(['/resources/agent_job_executions']);
+        this.router.navigate(['/resources/agent_job_executions']).then();
         return;
       } else {
         resourceFilters.state = 'locks';
@@ -118,7 +118,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'locks') {
       if (this.permission.currentController.locks.view) {
-        this.router.navigate(['/resources/locks']);
+        this.router.navigate(['/resources/locks']).then();
         return;
       } else {
         resourceFilters.state = 'boards';
@@ -126,7 +126,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'boards') {
       if (this.permission.currentController.noticeBoards.view) {
-        this.router.navigate(['/resources/boards']);
+        this.router.navigate(['/resources/boards']).then();
         return;
       } else {
         resourceFilters.state = 'calendars';
@@ -134,7 +134,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'calendars') {
       if (this.permission.joc.calendars.view) {
-        this.router.navigate(['/resources/calendars']);
+        this.router.navigate(['/resources/calendars']).then();
         return;
       } else {
         resourceFilters.state = 'documentations';
@@ -142,7 +142,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (resourceFilters.state === 'documentations') {
       if (this.permission.joc.documentations.view) {
-        this.router.navigate(['/resources/documentations']);
+        this.router.navigate(['/resources/documentations']).then();
         return;
       }
     }
@@ -152,7 +152,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const confFilters = this.coreService.getConfigurationTab();
     if (confFilters.state === 'inventory') {
       if (this.permission.joc.inventory.view) {
-        this.router.navigate(['/configuration/' + confFilters.state]);
+        this.router.navigate(['/configuration/' + confFilters.state]).then();
         return;
       } else {
         confFilters.state = 'file_transfer';
@@ -160,7 +160,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (confFilters.state === 'file_transfer') {
       if (this.permission.joc.fileTransfer.view) {
-        this.router.navigate(['/configuration/' + confFilters.state]);
+        this.router.navigate(['/configuration/' + confFilters.state]).then();
         return;
       } else {
         confFilters.state = 'notification';
@@ -168,7 +168,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (confFilters.state === 'notification') {
       if (this.permission.joc.notification.view) {
-        this.router.navigate(['/configuration/' + confFilters.state]);
+        this.router.navigate(['/configuration/' + confFilters.state]).then();
         return;
       } else {
         confFilters.state = 'other';
@@ -176,7 +176,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (confFilters.state === 'other') {
       if (this.permission.joc.others.view) {
-        this.router.navigate(['/configuration/' + confFilters.state]);
+        this.router.navigate(['/configuration/' + confFilters.state]).then();
       }
     }
   }

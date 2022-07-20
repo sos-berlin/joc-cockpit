@@ -149,44 +149,7 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
   }
 
   convertSecondIntoWeek(): void {
-    const hour = 3600;
-    this.admissionTime.periods.forEach((period) => {
-      const hours = (period.secondOfWeek || period.secondOfDay) / hour;
-      const day = Math.floor(hours / 24) + 1;
-      const d = day - 1;
-      const obj: any = {
-        day,
-        secondOfWeek: (d * 24 * 3600),
-        frequency: this.days[day],
-        periods: []
-      };
-      const startTime = (period.secondOfWeek || period.secondOfDay) - obj.secondOfWeek;
-      const p: any = {
-        startTime,
-        duration: period.duration
-      };
-      p.text = this.getText(p.startTime, p.duration);
-      let flag = true;
-      if (this.periodList.length > 0) {
-        for (const i in this.periodList) {
-          if (this.periodList[i].day == day) {
-            flag = false;
-            this.periodList[i].periods.push(p);
-            break;
-          }
-        }
-      }
-      if (flag) {
-        obj.periods.push(p);
-        this.periodList.push(obj);
-      }
-    });
-  }
-
-  private getText(startTime, duration): string {
-    const time = this.workflowService.convertSecondToTime(startTime);
-    const dur = this.workflowService.convertDurationToHour(duration);
-    return 'starting at ' + time + ' for ' + dur;
+    this.workflowService.convertSecondIntoWeek(this.admissionTime, this.periodList, this.days, {});
   }
 
   showConvertTime(): void {
@@ -198,22 +161,27 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
         const convertTedList = [];
         this.periodList.forEach((item) => {
           item.periods.forEach((period) => {
-            const obj: any = {
+            let obj: any = {
               periods: []
             };
             const originalTime = this.workflowService.convertSecondToTime(period.startTime);
             const currentDay = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.timezone, 'Z'), this.preferences.zone, 'YYYY-MM-DD');
             const convertedTime = this.coreService.getDateByFormat(this.todayDate + ' ' + originalTime + '.000' + this.coreService.getDateByFormat(null, this.timezone, 'Z'), this.preferences.zone, 'HH:mm:ss');
-            if (this.todayDate != currentDay) {
-              obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
+            if (item.secondOfWeek || item.secondOfDay) {
+              if (this.todayDate != currentDay) {
+                obj.day = (currentDay > this.todayDate) ? (item.day + 1) : (item.day - 1);
+              } else {
+                obj.day = item.day;
+              }
+              obj.frequency = this.days[obj.day];
             } else {
-              obj.day = item.day;
+              obj = this.coreService.clone(item);
+              obj.periods = [];
             }
-            obj.frequency = this.days[obj.day];
             const dur = this.workflowService.convertDurationToHour(period.duration);
             obj.periods.push({text: 'starting at ' + convertedTime + ' for ' + dur});
             let flag = true;
-            if (convertTedList.length > 0) {
+            if (convertTedList.length > 0 && (item.secondOfWeek || item.secondOfDay)) {
               for (let i = 0; i < convertTedList.length; i++) {
                 if (convertTedList[i].day === obj.day) {
                   flag = false;

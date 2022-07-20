@@ -402,18 +402,25 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       workflowId: {path: this.path, versionId: this.versionId}
     }).subscribe({
       next: (res: any) => {
-        this.workflowObjects = new Map();
         this.workflow = this.coreService.clone(res.workflow);
         this.orderPreparation = res.workflow.orderPreparation
-        this.workFlowJson = res.workflow;
-        this.workFlowJson.actual = this.coreService.clone(res.workflow.instructions);
-        this.countObj = {count: 0};
-        this.workflowService.convertTryToRetry(this.workFlowJson, null, res.workflow.jobs, this.countObj);
-        this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
-        if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
-          this.showDependency(res.workflow, flag);
+        if (!flag) {
+          this.workflowObjects = new Map();
+          this.countObj = {count: 0};
+          this.workFlowJson = res.workflow;
+          this.workflowService.convertTryToRetry(res.workflow, null, res.workflow.jobs, this.countObj);
+          this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
+          if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
+            this.showDependency(res.workflow, flag);
+          } else {
+            this.getOrders(res.workflow, flag);
+          }
         } else {
-          this.getOrders(res.workflow, flag);
+          this.workflowService.convertTryToRetry(res.workflow, null, {}, {count: 0});
+          this.workflowService.compareAndMergeInstructions(this.workFlowJson.instructions, res.workflow.instructions);
+          setTimeout(() => {
+            this.isReload = true;
+          }, 0);
         }
         WorkflowDetailComponent.showAndHideBtn();
       }, error: () => this.loading = true

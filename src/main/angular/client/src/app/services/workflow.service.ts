@@ -752,7 +752,6 @@ export class WorkflowService {
           node1.setAttribute('path', mainJson.path);
           wf = graph.insertVertex(defaultParent, null, node1, 0, 0, 160, 40, WorkflowService.setStyleToVertex('', colorCode, self.theme, null));
           let isConnect = true;
-
           if (mapObj.addOrderdMap && mapObj.addOrderdMap.has(workflowName)) {
             let arr = mapObj.addOrderdMap.get(workflowName);
             arr = JSON.parse(arr);
@@ -800,7 +799,7 @@ export class WorkflowService {
       }
     }
 
-    function recursive(json: any, type: any, parent: any): void {
+    function recursive(json: any, type: any, parent: any, path: string, versionId: string): void {
       if (json.instructions) {
         let v1, endNode;
         for (let x = 0; x < json.instructions.length; x++) {
@@ -812,6 +811,8 @@ export class WorkflowService {
           if (json.instructions[x].state && json.instructions[x].state._text) {
             _node.setAttribute('state', JSON.stringify(json.instructions[x].state));
           }
+          _node.setAttribute('versionId', versionId);
+          _node.setAttribute('path', path);
           if (!json.instructions[x].uuid) {
             json.instructions[x].uuid = self.create_UUID();
           }
@@ -950,7 +951,7 @@ export class WorkflowService {
                 return (branch.instructions && branch.instructions.length > 0);
               });
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
-                recursive(json.instructions[x].branches[i], 'branch', v1);
+                recursive(json.instructions[x].branches[i], 'branch', v1, path, versionId);
                 connectInstruction(v1, vertexMap.get(json.instructions[x].branches[i].instructions[0].uuid), json.instructions[x].branches[i].id, 'branch', v1, json.instructions[x].branches[i].result);
               }
               v2 = joinFork(json.instructions[x].branches, v1, parent);
@@ -977,7 +978,7 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
-              recursive(json.instructions[x], '', v1);
+              recursive(json.instructions[x], '', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'forkList', 'forkList', v1);
               v2 = joinForkList(json.instructions[x], v1.id, parent);
             } else {
@@ -992,11 +993,11 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
             if (json.instructions[x].then && json.instructions[x].then.instructions && json.instructions[x].then.instructions.length > 0) {
-              recursive(json.instructions[x].then, 'endIf', v1);
+              recursive(json.instructions[x].then, 'endIf', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].then.instructions[0].uuid), 'then', 'then', v1);
             }
             if (json.instructions[x].else && json.instructions[x].else.instructions && json.instructions[x].else.instructions.length > 0) {
-              recursive(json.instructions[x].else, 'endIf', v1);
+              recursive(json.instructions[x].else, 'endIf', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].else.instructions[0].uuid), 'else', 'else', v1);
             }
             v2 = endIf(json.instructions[x], v1, parent);
@@ -1010,7 +1011,7 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
-              recursive(json.instructions[x], '', v1);
+              recursive(json.instructions[x], '', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'retry', 'retry', v1);
               v2 = closingNode(json.instructions[x], v1.id, parent, 'Retry');
             } else {
@@ -1030,7 +1031,7 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
-              recursive(json.instructions[x], '', v1);
+              recursive(json.instructions[x], '', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'lock', 'lock', v1);
               v2 = closingNode(json.instructions[x], v1.id, parent, 'Lock');
             } else {
@@ -1047,7 +1048,7 @@ export class WorkflowService {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
-              recursive(json.instructions[x], '', v1);
+              recursive(json.instructions[x], '', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'cycle', 'cycle', v1);
               v2 = closingNode(json.instructions[x], v1.id, parent, 'Cycle');
             } else {
@@ -1073,7 +1074,7 @@ export class WorkflowService {
             if (json.instructions[x].catch) {
               json.instructions[x].catch.id = cv1.id;
               if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-                recursive(json.instructions[x].catch, 'endTry', v1);
+                recursive(json.instructions[x].catch, 'endTry', v1, path, versionId);
                 connectInstruction(cv1, vertexMap.get(json.instructions[x].catch.instructions[0].uuid), 'catch', 'catch', v1);
                 _id = catchEnd(json.instructions[x].catch);
               } else {
@@ -1083,7 +1084,7 @@ export class WorkflowService {
             }
 
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
-              recursive(json.instructions[x], '', v1);
+              recursive(json.instructions[x], '', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'try', 'try', v1);
               const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
               if (self.isInstructionCollapsible(_lastNode.TYPE)) {
@@ -1153,6 +1154,9 @@ export class WorkflowService {
           }
           for (let x = 0; x < json.compressData[i].instructions.length; x++) {
             const _node = doc.createElement(json.compressData[i].instructions[x].TYPE);
+            if (json.compressData[i].instructions[x].state) {
+              _node.setAttribute('state', JSON.stringify(json.compressData[i].instructions[x].state));
+            }
             let v1;
             const cell = vertexMap.get(json.compressData[i].instructions[x].uuid);
             if (json.compressData[i].instructions[x].TYPE === 'PostNotices') {
@@ -1209,6 +1213,7 @@ export class WorkflowService {
           }
         }
       }
+
       if (mapObj.addOrderdMap.has(workflowName)) {
         let arr = mapObj.addOrderdMap.get(workflowName);
         arr = JSON.parse(arr);
@@ -1439,7 +1444,7 @@ export class WorkflowService {
     if (!mainJson.isExpanded && isGraphView && mainJson.compressData) {
       createCollapsedObjects(mainJson, defaultParent);
     } else {
-      recursive(mainJson, '', defaultParent);
+      recursive(mainJson, '', defaultParent, mainJson.path, mainJson.versionId);
       connectWithDummyNodes(mainJson);
     }
   }
@@ -2279,4 +2284,30 @@ export class WorkflowService {
     }
   }
 
+  compareAndMergeInstructions(sour, targ): void {
+    if (isArray(sour)) {
+      for (let i in sour) {
+        sour[i].state = targ[i].state
+        if (this.isInstructionCollapsible(sour[i].TYPE)) {
+          if (sour[i].then) {
+            this.compareAndMergeInstructions(sour[i].then.instructions, targ[i].then.instructions);
+          }
+          if (sour[i].else) {
+            this.compareAndMergeInstructions(sour[i].else.instructions, targ[i].else.instructions);
+          }
+          if (sour[i].branches && sour[i].branches.length > 0) {
+            sour[i].branches.forEach((branch, index) => {
+              this.compareAndMergeInstructions(sour[i].branches[index].instructions, targ[i].branches[index].instructions);
+            })
+          }
+          if (sour[i].instructions) {
+            this.compareAndMergeInstructions(sour[i].instructions, targ[i].instructions);
+          }
+          if (sour[i].catch) {
+            this.compareAndMergeInstructions(sour[i].catch.instructions, targ[i].catch.instructions);
+          }
+        }
+      }
+    }
+  }
 }

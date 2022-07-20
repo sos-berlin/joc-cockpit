@@ -168,6 +168,6 @@ export class AgentClusterStatusComponent implements OnInit, OnDestroy {
 
   navToAgentView(): void {
     this.coreService.getResourceTab().agents.filter.state = 'ALL';
-    this.router.navigate(['/resources/agents']);
+    this.router.navigate(['/resources/agents']).then();
   }
 }

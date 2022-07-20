@@ -206,7 +206,7 @@ export class StartUpModalComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/dashboard']).then();
   }
 }
 
@@ -231,7 +231,7 @@ export class StartUpComponent implements OnInit {
   private redirect(): void {
     this.authService.save();
     this.dataService.isProfileReload.next(true);
-    this.router.navigate(['/controllers']);
+    this.router.navigate(['/controllers']).then();
   }
 
   getSchedulerIds(): void {

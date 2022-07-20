@@ -247,9 +247,9 @@
                                      [ngClass]="coreService.getColor(agent.syncState.severity, 'bg')"
                                      [innerHtml]="agent.syncState._text | translate"></label>
                             </td>
-                            <td (click)="editAgent(agent, controller)">{{agent.hidden ? 'Yes' : 'No'}}</td>
-                            <td (click)="editAgent(agent, controller)">{{agent.disabled ? 'Yes' : 'No'}}</td>
-                            <td (click)="editAgent(agent, controller)">{{agent.isClusterWatcher ? 'Yes' : 'No'}}</td>
+                            <td (click)="editAgent(agent, controller)">{{(agent.hidden ? 'common.label.yes' : 'common.label.no') | translate}}</td>
+                            <td (click)="editAgent(agent, controller)">{{(agent.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
+                            <td (click)="editAgent(agent, controller)">{{(agent.isClusterWatcher ? 'common.label.yes' : 'common.label.no') | translate}}</td>
                             <td>
                               <span *ngIf="!agent.token">-</span>
                               <span *ngIf="agent.token">{{agent.token.validUntil | stringToDate}}</span>
@@ -400,7 +400,7 @@
                                        [ngClass]="coreService.getColor(clusterAgent.syncState.severity, 'bg')"
                                        [innerHtml]="clusterAgent.syncState._text | translate"></label>
                                 </td>
-                                <td (click)="editAgent(clusterAgent, controller, true)">{{clusterAgent.isClusterWatcher ? 'Yes' : 'No'}}</td>
+                                <td (click)="editAgent(clusterAgent, controller, true)">{{(clusterAgent.isClusterWatcher ? 'common.label.yes' : 'common.label.no') | translate}}</td>
                                 <td>
                                   <span *ngIf="!clusterAgent.token">-</span>
                                   <span *ngIf="clusterAgent.token">{{clusterAgent.token.validUntil | stringToDate}}</span>
@@ -481,7 +481,7 @@
                                                [ngClass]="coreService.getColor(sub.syncState.severity, 'bg')"
                                                [innerHtml]="sub.syncState._text | translate"></label>
                                       </td>
-                                      <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.disabled ? 'Yes' : 'No'}}</td>
+                                      <td (click)="editSubagent(sub, clusterAgent, controller)">{{(sub.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
                                     </tr>
                                     </tbody>
                                   </nz-table>

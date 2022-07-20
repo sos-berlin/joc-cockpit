@@ -1481,7 +1481,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       }
       resourceFilters.expandedKeys = pathArr;
       resourceFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
-      this.router.navigate(['/resources/calendars']);
+      this.router.navigate(['/resources/calendars']).then();
     }
   }
 
