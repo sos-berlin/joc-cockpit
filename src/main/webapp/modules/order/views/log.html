@@ -6,18 +6,20 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb-last></span>
                     </div>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-if="isCancel || finished" ng-click="reload()">
-                        <i class="fa fa-refresh"></i>
-                        <span translate>button.reload</span>
-                    </button>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-if="!isCancel && !finished" ng-click="cancel()">
-                        <i class="fa fa-times"></i>
-                        <span translate>button.cancel</span>
-                    </button>
-                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="downloadLog()">
-                        <i class="fa fa-download"></i>
-                        <span translate>button.download</span>
-                    </button>
+                    <div class="show-inline">
+                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-if="isCancel || finished" ng-click="reload()">
+                            <i class="fa fa-refresh"></i>
+                            <span translate>button.reload</span>
+                        </button>
+                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-if="!isCancel && !finished" ng-click="cancel()">
+                            <i class="fa fa-times"></i>
+                            <span translate>button.cancel</span>
+                        </button>
+                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="downloadLog()">
+                            <i class="fa fa-download"></i>
+                            <span translate>button.download</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
