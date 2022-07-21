@@ -100,6 +100,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
     const filter = this.coreService.getOrderOverviewTab();
     filter.filter.date = this.filters.date;
     filter.filter.dateLabel = this.filters.label;
-    this.router.navigate(['/orders_overview', state]);
+    this.router.navigate(['/orders_overview', state]).then();
   }
 }

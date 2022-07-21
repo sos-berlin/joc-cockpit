@@ -41,16 +41,27 @@
 <div class="text-center m-t-md m-b text"><i class="tree-icon icon-orders-icon"></i>&nbsp;
   <span class="_600 b-b p-b-sm m-l-sm" translate>order.label.orders</span>
 </div>
+<div class="text-center font14 box bg-box p-a-10 m-b-12" *ngIf="checked && setOfCheckedId.size > 0 && data.length > (filter.entryPerPage || preferences.entryPerPage)">
+  <span translate *ngIf="setOfCheckedId.size !== data.length" [translateParams]="{count: setOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
+  <span translate *ngIf="setOfCheckedId.size === data.length" [translateParams]="{count: data.length}">common.label.allEntriesSelected</span>
+  <a class="text-primary p-l-xs" *ngIf="setOfCheckedId.size !== data.length" (click)="selectAll()" translate [translateParams]="{count: data.length}">common.label.selectAllEntries</a>
+  <a class="text-primary p-l-xs" *ngIf="setOfCheckedId.size === data.length" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
+</div>
 <div class="p-a-sm">
-  <perfect-scrollbar style="max-height: calc(100vh - 101px); overflow: auto">
+  <div class="table-responsive">
     <nz-table
       #ajaxTable
       [nzSize]="'small'"
+      [nzPageSize]="filter.entryPerPage || preferences.entryPerPage"
+      [nzPageIndex]="filter.currentPage"
       [nzLoading]="loading"
       [nzBordered]="true"
-      [nzShowPagination]="false"
+      [nzShowPagination]="data.length > 10"
       [nzData]="data | orderBy: filter.sortBy: filter.reverse"
-      [nzPageSize]="data.length"
+      [nzShowSizeChanger]="true"
+      (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)"
+      [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]"
     >
       <thead>
       <tr>
@@ -184,5 +195,10 @@
       </ng-template>
       </tbody>
     </nz-table>
-  </perfect-scrollbar>
+    <div class="w-half label-top"
+         *ngIf="ajaxTable.data.length >0"><span translate>common.label.total</span> {{data.length}}
+      <span translate *ngIf="ajaxTable.data.length >1">order.label.ordersFound</span>
+      <span translate *ngIf="ajaxTable.data.length ==1">order.label.orderFound</span>
+    </div>
+  </div>
 </div>

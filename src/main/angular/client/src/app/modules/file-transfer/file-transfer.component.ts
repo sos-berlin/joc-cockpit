@@ -984,7 +984,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
       type: 'WORKFLOW'
     };
-    this.router.navigate(['/configuration/inventory']);
+    this.router.navigate(['/configuration/inventory']).then()
   }
 
   private setHeaderWidth(): void {

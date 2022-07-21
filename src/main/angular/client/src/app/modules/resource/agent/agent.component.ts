@@ -250,12 +250,12 @@ export class AgentComponent implements OnInit, OnDestroy {
   navToController(agent, cluster): void {
     if (this.permission.joc && this.permission.joc.administration.controllers.view) {
       if (cluster) {
-        this.router.navigate(['/controllers/cluster_agent', cluster.controllerId, cluster.agentId]);
+        this.router.navigate(['/controllers/cluster_agent', cluster.controllerId, cluster.agentId]).then();
       } else {
         this.coreService.preferences.controllers.clear();
         this.coreService.preferences.controllers.add(agent.controllerId);
         this.coreService.preferences.controllers.add(agent.controllerId + (agent.subagents ? '$standalone$' : '$cluster$'));
-        this.router.navigate(['/controllers']);
+        this.router.navigate(['/controllers']).then();
       }
     }
   }

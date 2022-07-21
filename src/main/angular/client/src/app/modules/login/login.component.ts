@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
       this.returnUrl = '/';
     }
     if (this.authService.accessTokenId) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/dashboard']).then();
     }
   }
 
@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
         if (this.returnUrl.indexOf('?') > -1) {
           this.router.navigateByUrl(this.returnUrl);
         } else {
-          this.router.navigate([this.returnUrl]);
+          this.router.navigate([this.returnUrl]).then();
         }
       }, error: () => {
         this.submitted = false;

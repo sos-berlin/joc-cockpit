@@ -581,6 +581,6 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   navToYade(title): void {
     sessionStorage.tabName = title.split(':')[1];
-    this.router.navigate(['/configuration/file_transfer']);
+    this.router.navigate(['/configuration/file_transfer']).then();
   }
 }

@@ -6,7 +6,6 @@ import {RolesComponent} from './roles/roles.component';
 import {ProfilesComponent} from './profiles/profiles.component';
 import {PermissionsComponent} from './permissions/permissions.component';
 import {IdentityServiceComponent} from './identity-service/identity-service.component';
-import {BlocklistComponent} from './blocklist/blocklist.component';
 
 const routes: Routes = [
   {
@@ -19,7 +18,6 @@ const routes: Routes = [
       {path: 'identity_service/account', component: AccountsComponent, data: {breadcrumb: 'breadcrumb.label.manageUser'}},
       {path: 'identity_service/role', component: RolesComponent, data: {breadcrumb: 'breadcrumb.label.manageRoles'}},
       {path: 'identity_service/profiles', component: ProfilesComponent, data: {breadcrumb: 'breadcrumb.label.profiles'}},
-      {path: 'identity_service/blocklist', component: BlocklistComponent, data: {breadcrumb: 'breadcrumb.label.blocklist'}},
       {path: 'identity_service/permissions/:controller.controller/:role.role', component: PermissionsComponent, data: {breadcrumb: 'breadcrumb.label.permissions'}}
     ]
   }

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 
@@ -69,7 +69,7 @@ export class AddBlocklistModalComponent implements OnInit {
   selector: 'app-blocklist',
   templateUrl: './blocklist.component.html'
 })
-export class BlocklistComponent implements OnInit {
+export class BlocklistComponent implements OnInit, OnDestroy {
   @Input() permission: any = {};
   isLoaded = false;
   blocklist = [];
@@ -179,6 +179,7 @@ export class BlocklistComponent implements OnInit {
       indeterminate: false,
       checked: false
     };
+    this.dataService.announceFunction('IS_BLOCKLIST_PROFILES_FALSE');
   }
 
   checkAll(value: boolean): void {

@@ -111,9 +111,9 @@
         <td>
           <div *ngFor="let role of account.roles"><span [innerHtml]= "role | highlight: searchKey"></span></div>
         </td>
-        <td><span>{{account.forcePasswordChange ? 'Yes' : 'No'}}</span></td>
-        <td><span>{{account.blocked ? 'Yes' : 'No'}}</span></td>
-        <td><span>{{account.disabled ? 'Yes' : 'No'}}</span></td>
+        <td><span>{{(account.forcePasswordChange ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+        <td><span>{{(account.blocked ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+        <td><span>{{(account.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
       </tr>
       </tbody>
     </nz-table>

@@ -460,7 +460,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.getComments(true);
         } else {
           this.getComments();
-          this.router.navigate(['/start-up']);
+          this.router.navigate(['/start-up']).then();
           setTimeout(() => {
             this.loading = true;
           }, 10);
@@ -472,9 +472,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private checkSecurityControllers(res): void {
     this.getComments();
     if (res && res.controllers && res.controllers.length > 0) {
-      this.router.navigate(['/controllers']);
+      this.router.navigate(['/controllers']).then();
     } else {
-      this.router.navigate(['/start-up']);
+      this.router.navigate(['/start-up']).then();
     }
     setTimeout(() => {
       this.loading = true;
@@ -497,7 +497,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (returnUrl === '/error' || returnUrl === 'error') {
           returnUrl = '/';
         }
-        this.router.navigate(['login'], {queryParams: {returnUrl}});
+        this.router.navigate(['login'], {queryParams: {returnUrl}}).then();
       }
     });
   }
@@ -520,7 +520,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.sessionTimeout = parseInt(this.authService.sessionTimeout, 10);
     if (!skip) {
       if (this.permission && this.permission.joc && !this.authService.permissionCheck(this.router.url)) {
-        this.router.navigate(['/error']);
+        this.router.navigate(['/error']).then();
       }
       if (sessionStorage.preferences || isError) {
         if (!this.permission) {
@@ -589,12 +589,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
         }
         queryParams.queryParams.returnUrl = returnUrl;
       }
-      this.router.navigate(['login'], queryParams);
+      this.router.navigate(['login'], queryParams).then();
     } else {
       localStorage.removeItem('logging');
       this.coreService.setDefaultTab();
       sessionStorage.clear();
-      this.router.navigate(['login']);
+      this.router.navigate(['login']).then();
     }
   }
 

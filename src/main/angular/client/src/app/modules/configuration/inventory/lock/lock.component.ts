@@ -231,7 +231,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       resourceFilters.expandedKeys = pathArr;
       resourceFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
       resourceFilters.expandedObjects = [this.data.name];
-      this.router.navigate(['/resources/locks']);
+      this.router.navigate(['/resources/locks']).then();
     }
   }
 

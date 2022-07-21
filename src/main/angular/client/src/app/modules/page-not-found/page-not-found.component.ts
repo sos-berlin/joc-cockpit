@@ -18,6 +18,6 @@ export class PageNotFoundComponent implements OnInit {
   }
 
   backHome(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/dashboard']).then();
   }
 }

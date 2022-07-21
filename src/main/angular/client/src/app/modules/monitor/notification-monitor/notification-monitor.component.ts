@@ -243,7 +243,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
       path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
       type: 'WORKFLOW'
     };
-    this.router.navigate(['/configuration/inventory']);
+    this.router.navigate(['/configuration/inventory']).then();
   }
 
   navToOrderHistory(data): void {
@@ -253,7 +253,7 @@ export class NotificationMonitorComponent implements OnInit, OnDestroy {
         workflow: data.workflow,
         controllerId: data.controllerId || this.schedulerIds.selected
       }
-    });
+    }).then();
   }
 
   selectAll(): void {

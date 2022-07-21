@@ -282,7 +282,7 @@ export class SingleWorkflowComponent implements OnInit, OnDestroy {
 
   navToDetailView(view, workflow): void {
     this.coreService.getWorkflowDetailTab().pageView = view;
-    this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]);
+    this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]).then();
   }
 
   addOrder(workflow): void {
@@ -1455,7 +1455,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                   this.workflows[i].jobs = res.workflow.jobs;
                   if (this.workflows[i].show) {
                     this.workflowService.convertTryToRetry(res.workflow, null, {}, {count: 0});
-                    this.compareAndMergeInstructions(this.workflows[i].configuration.instructions, res.workflow.instructions);
+                    this.workflowService.compareAndMergeInstructions(this.workflows[i].configuration.instructions, res.workflow.instructions);
                   }
                 }
               });
@@ -1500,30 +1500,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           controllerId: this.schedulerIds.selected,
           workflowIds: request2
         });
-      }
-    }
-  }
-
-  private compareAndMergeInstructions(sour, targ): void {
-    if (isArray(sour)) {
-      for (let i in sour) {
-        sour[i].state = targ[i].state
-        if (this.workflowService.isInstructionCollapsible(sour[i].TYPE)) {
-          if (sour[i].then) {
-            this.compareAndMergeInstructions(sour[i].then.instructions, targ[i].then.instructions);
-          } else if (sour[i].else) {
-            this.compareAndMergeInstructions(sour[i].else.instructions, targ[i].else.instructions);
-          } else if (sour[i].branches && sour[i].branches.length > 0) {
-            sour[i].branches.forEach((branch, index) => {
-              this.compareAndMergeInstructions(sour[i].branches[index].instructions, targ[i].branches[index].instructions);
-            })
-          } else if (sour[i].instructions) {
-            this.compareAndMergeInstructions(sour[i], targ[i]);
-          }
-          if (sour[i].catch) {
-            this.compareAndMergeInstructions(sour[i].catch.instructions, targ[i].catch.instructions);
-          }
-        }
       }
     }
   }

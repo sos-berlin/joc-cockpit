@@ -260,7 +260,7 @@
           </div>
           <div *ngIf="pageView === 'graph' && workflow.instructions">
             <div *ngIf="isLoading">
-              <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [permission]="permission" [preferences]="preferences"
+              <app-workflow-graphical [recursiveCals]="recursiveCals" [workFlowJson]="workFlowJson" [reload]="isReload" [permission]="permission" [preferences]="preferences"
                                       [jobs]="workflow.jobs" [controllerId]="schedulerIds.selected" [workflowObjects]="workflowObjects"
                                       [workflowFilters]="workflowFilters"></app-workflow-graphical>
             </div>

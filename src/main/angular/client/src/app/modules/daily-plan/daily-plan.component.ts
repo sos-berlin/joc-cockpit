@@ -1322,7 +1322,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     filter.type = 'SUBMISSION';
     filter.submission.selectedView = false;
     filter.task.filter.date = 'today';
-    this.router.navigate(['/history']);
+    this.router.navigate(['/history']).then();
   }
 
   navToOrderHistory(data): void {
@@ -1332,7 +1332,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         workflow: data.workflowPath,
         controllerId: JSON.parse(this.authService.scheduleIds).selected
       }
-    });
+    }).then();
   }
 
   /* --------------- Navigate End-------------------*/

@@ -321,7 +321,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
       resourceFilters.expandedKeys = pathArr;
       resourceFilters.selectedkeys.push(pathArr[pathArr.length - 1]);
       resourceFilters.expandedObjects = [PATH];
-      this.router.navigate(['/resources/boards']);
+      this.router.navigate(['/resources/boards']).then();
     }
   }
 

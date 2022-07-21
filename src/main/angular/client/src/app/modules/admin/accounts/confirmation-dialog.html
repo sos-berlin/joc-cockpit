@@ -20,10 +20,14 @@
           <span *ngIf="account" translate>user.message.deleteBlocklist</span>
           <span *ngIf="!account" translate>user.message.deleteSelectedBlocklist</span>
         </span>
-        <span *ngIf="!isRole && !blocklist" translate>user.message.deleteSelectedUser</span>
+        <span *ngIf="activeSession">
+          <span *ngIf="account" translate>user.message.deleteActiveSession</span>
+          <span *ngIf="!account" translate>user.message.deleteSelectedActiveSession</span>
+        </span>
+        <span *ngIf="!isRole && !blocklist && !activeSession" translate>user.message.deleteSelectedUser</span>
         <span *ngIf="isRole" translate>user.message.deleteSelectedRole</span>
       </span>
-      <span *ngIf="account && !blocklist">
+      <span *ngIf="account && !blocklist && !activeSession">
         <span *ngIf="reset" translate>user.message.resetPasswordForUser</span>
         <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForUser</span>
       </span>

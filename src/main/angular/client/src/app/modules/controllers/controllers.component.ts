@@ -351,7 +351,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   navToController(controllerId, agentId): void {
-    this.router.navigate(['/controllers/cluster_agent', controllerId, agentId]);
+    this.router.navigate(['/controllers/cluster_agent', controllerId, agentId]).then();
   }
 
   addController(): void {

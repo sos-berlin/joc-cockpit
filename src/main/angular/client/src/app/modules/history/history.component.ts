@@ -66,7 +66,7 @@ export class OrderTemplateComponent {
       path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
       type: 'WORKFLOW'
     };
-    this.router.navigate(['/configuration/inventory']);
+    this.router.navigate(['/configuration/inventory']).then();
   }
 }
 
@@ -834,7 +834,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
             path: this.workflowPath,
             controllerId: this.controllerId
           }
-        });
+        }).then();
       }
     });
   }
@@ -931,7 +931,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
       path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
       type: 'WORKFLOW'
     };
-    this.router.navigate(['/configuration/inventory']);
+    this.router.navigate(['/configuration/inventory']).then();
   }
 
   navToInventoryTab(data): void {
@@ -942,7 +942,7 @@ export class SingleHistoryComponent implements OnInit, OnDestroy {
         path: data.folder,
         type: data.deployType.toUpperCase()
       };
-      this.router.navigate(['/configuration/inventory']);
+      this.router.navigate(['/configuration/inventory']).then();
     }
   }
 
@@ -2076,7 +2076,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       path: workflow.substring(0, workflow.lastIndexOf('/')) || '/',
       type: 'WORKFLOW'
     };
-    this.router.navigate(['/configuration/inventory']);
+    this.router.navigate(['/configuration/inventory']).then();
   }
 
   navToInventoryTab(data): void {
@@ -2087,7 +2087,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         path: data.folder,
         type: data.deployType.toUpperCase()
       };
-      this.router.navigate(['/configuration/inventory']);
+      this.router.navigate(['/configuration/inventory']).then();
     }
   }
 

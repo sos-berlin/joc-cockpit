@@ -139,7 +139,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     filter.selectedDate = new Date(d);
     filter.filter.status = (obj === 1 || obj === 2) ? 'PLANNED' : (obj === 4 || obj === 5) ? 'SUBMITTED' : 'FINISHED';
     filter.filter.late = (obj === 2 || obj === 5);
-    this.router.navigate(['/daily_plan']);
+    this.router.navigate(['/daily_plan']).then();
   }
 
   private refresh(args): void {

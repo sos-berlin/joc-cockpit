@@ -146,7 +146,7 @@
                                (messageEvent)="receiveAction($event)"></app-tree-navigation>
         </div>
         <div id="rightPanel" *ngIf="pageView === 'bulk'">
-          <div class="box p-a m-t-xs" *ngIf="orderOverview">
+          <div class="box p-a" *ngIf="orderOverview">
             <div class="table-responsive status-table">
               <table class="w-full order-table-panel table-hover">
                 <thead>
@@ -354,7 +354,7 @@
           </div>
         </div>
         <div id="rightPanel1" *ngIf="pageView !== 'bulk'">
-          <div class="row m-b m-t-xs" *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage))">
+          <div class="row m-b" *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage))">
             <div class="col-lg-12">
               <button class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}" [ngClass]="{'show-block':data.length>0 && pageView=='list'}" (click)="expandDetails()" >
                 <i class="fa fa-expand text" ></i>
@@ -464,7 +464,7 @@
               <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size !== data.length" (click)="selectAll()" translate [translateParams]="{count: data.length}">common.label.selectAllEntries</a>
               <a class="text-primary p-l-xs" *ngIf="object.mapOfCheckedId.size === data.length" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
             </div>
-            <div class="box p-a m-t-xs m-b-0" *ngIf="pageView === 'list'">
+            <div class="box p-a m-b-0" *ngIf="pageView === 'list'">
               <perfect-scrollbar appResizable class="pos-init resizable" [height]="resizerHeight" [type]="'orderOverview'" id="orderTableId">
                 <nz-table
                   #ajaxTable

@@ -92,7 +92,7 @@ export class FileTransferHistorySummaryComponent implements OnInit, OnDestroy {
     filter.yade.filter.states = state;
     filter.yade.selectedView = false;
     filter.yade.filter.date = this.filters.date === '0d' ? 'today' : this.filters.date;
-    this.router.navigate(['/history']);
+    this.router.navigate(['/history']).then();
   }
 
 }

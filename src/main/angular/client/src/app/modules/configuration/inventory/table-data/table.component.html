@@ -47,6 +47,12 @@
       </button>
     </div>
   </div>
+  <div class="text-center font14 box p-a-10 m-b-12" *ngIf="checked && mapOfCheckedId.size > 0 && data.length > (filter.entryPerPage || preferences.entryPerPage)">
+    <span translate *ngIf="mapOfCheckedId.size !== data.length" [translateParams]="{count: mapOfCheckedId.size}">common.label.selectAllEntriesOfCurrentPage</span>
+    <span translate *ngIf="mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}">common.label.allEntriesSelected</span>
+    <a class="text-primary p-l-xs" *ngIf="mapOfCheckedId.size !== data.length" (click)="selectAll()" translate [translateParams]="{count: data.length}">common.label.selectAllEntries</a>
+    <a class="text-primary p-l-xs" *ngIf="mapOfCheckedId.size === data.length" (click)="reset()" translate>common.label.clearSelection</a>
+  </div>
   <perfect-scrollbar class="table-responsive">
     <nz-table
       #ajaxTable

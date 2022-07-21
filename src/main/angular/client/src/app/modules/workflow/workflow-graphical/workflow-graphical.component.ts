@@ -272,9 +272,10 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     if (changes.orders) {
       this.updateOrder();
     }
-    if (changes.reload && this.graph) {
+    if ((changes.reload || changes.jobs) && this.graph) {
       this.vertixMap = new Map();
       this.nodeMap = new Map();
+      this.workflowArr = [];
       this.updateWorkflow(true);
     }
   }
@@ -751,7 +752,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     function mxIconSet(state) {
       this.images = [];
       let img;
-      if (state.cell && (state.cell.value.tagName === 'Order' || state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'AddOrder' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
+      if (state.cell && (state.cell.getAttribute('path') == self.workFlowJson.path) && (state.cell.value.tagName === 'Order' || state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'AddOrder' || state.cell.value.tagName === 'Finish' || state.cell.value.tagName === 'Fail' ||
         state.cell.value.tagName === 'ExpectNotices' || state.cell.value.tagName === 'PostNotices' || state.cell.value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(state.cell.value.tagName))) {
         img = mxUtils.createImage('./assets/images/menu.svg');
         let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
@@ -762,7 +763,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
         img.style.left = (x + 5) + 'px';
         img.style.top = y + 'px';
         mxEvent.addListener(img, 'click',
-          mxUtils.bind(this, function(evt) {
+          mxUtils.bind(this, function (evt) {
             self.order = null;
             self.job = null;
             self.stopInstruction = null;
@@ -770,9 +771,9 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
             let isStop = false;
             let position = state.cell.value.getAttribute('position');
             let _state = state.cell.value.getAttribute('state');
-            if(_state){
+            if (_state) {
               _state = JSON.parse(_state);
-               isStop = (_state && (_state._text === 'STOPPED' || _state._text === 'STOPPED_AND_SKIPPED'));
+              isStop = (_state && (_state._text === 'STOPPED' || _state._text === 'STOPPED_AND_SKIPPED'));
             }
             if (state.cell.value.tagName === 'Order') {
               data = state.cell.getAttribute('order');
@@ -790,6 +791,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               const position = state.cell.value.getAttribute('position');
               data = {position, isStop};
             }
+            data.path = state.cell.getAttribute('path');
+            data.versionId = state.cell.getAttribute('versionId');
             try {
               if (self.menu) {
                 setTimeout(() => {
@@ -802,6 +805,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                     self.stopInstruction = data;
                   }
                   self.nzContextMenuService.create(evt, self.menu);
+                  $('.mxTooltip').css({visibility: 'hidden'});
                 }, 0);
               }
             } catch (e) {
@@ -843,26 +847,31 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     const graph = this.graph;
     function createWorkflowNode(workflow, cell, type): void {
       if (!self.workflowObjects) {
-        const node = doc.createElement('Workflow');
-        node.setAttribute('workflowName', workflow.path.substring(workflow.path.lastIndexOf('/') + 1));
-        node.setAttribute('data', JSON.stringify(workflow));
-        node.setAttribute('type', type);
-        let w1;
-        if(!workflows.has(workflow.path)) {
-          w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, type);
-          workflows.set(workflow.path, w1)
-        } else {
-          w1 = workflows.get(workflow.path);
-          if(graph.getEdgesBetween(w1, cell).length > 0){
-            return;
+        if (workflow.path !== self.workFlowJson.path) {
+          const node = doc.createElement('Workflow');
+          node.setAttribute('workflowName', workflow.path.substring(workflow.path.lastIndexOf('/') + 1));
+          node.setAttribute('data', JSON.stringify(workflow));
+          node.setAttribute('type', type);
+          let w1;
+          if (!workflows.has(workflow.path)) {
+            w1 = graph.insertVertex(cell.parent, null, node, 0, 0, 128, 36, type);
+            workflows.set(workflow.path, w1)
+          } else {
+            w1 = workflows.get(workflow.path);
+            if (graph.getEdgesBetween(w1, cell).length > 0) {
+              return;
+            }
+          }
+          if (type === 'expect') {
+            graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
+          } else {
+            graph.insertEdge(cell.parent, null, doc.createElement('Connection'), cell, w1);
           }
         }
-        if (type === 'expect') {
-          graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
-        } else {
-          graph.insertEdge(cell.parent, null, doc.createElement('Connection'), cell, w1);
-        }
       } else {
+        if (workflow.path == self.workFlowJson.path) {
+          return;
+        }
         if (self.workflowObjects.has(workflow.path)) {
           const jsonObject = self.workflowObjects.get(workflow.path);
           if (jsonObject) {
@@ -888,7 +897,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           const mapObj = {
             vertixMap: new Map(),
             cell,
-            workflowName : self.workFlowJson.name || self.workFlowJson.path,
+            workflowName: self.workFlowJson.name || self.workFlowJson.path,
             graphView: !!self.workflowObjects,
             colorCode: obj.color,
             boardMap: self.boardMap,
@@ -1249,10 +1258,12 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
       };
       if (mapObj.graphView) {
         mapObj.colorCode = this.colors[0];
-        this.workflowArr.push({
-          path: this.workFlowJson.path,
-          color: mapObj.colorCode
-        });
+        if(!isRemove) {
+          this.workflowArr.push({
+            path: this.workFlowJson.path,
+            color: mapObj.colorCode
+          });
+        }
       }
       if (isRemove) {
         this.graph.removeCells(this.graph.getChildCells(this.graph.getDefaultParent()), true);
@@ -1371,10 +1382,10 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
     };
     if (operation === 'Skip' || operation === 'Unskip') {
       obj.labels = [data.label];
-      obj.workflowPath = this.workFlowJson.path;
+      obj.workflowPath = data.path;
     } else {
       obj.positions = [JSON.parse(data.position)]
-      obj.workflowId = {path: this.workFlowJson.path, versionId: this.workFlowJson.versionId};
+      obj.workflowId = {path: data.path, versionId: data.versionId};
     }
     this.coreService.post('workflow/' + operation.toLowerCase(), obj).subscribe({
       next: () => {
