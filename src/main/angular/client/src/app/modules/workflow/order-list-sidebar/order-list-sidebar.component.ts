@@ -9,6 +9,7 @@ import {
 } from '../../../components/modify-modal/modify.component';
 import {OrderActionComponent} from '../../order-overview/order-action/order-action.component';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
+import {OrderPipe} from "../../../pipes/core.pipe";
 
 @Component({
   selector: 'app-order-list-sidebar',
@@ -23,6 +24,8 @@ export class OrderListSidebarComponent implements OnChanges {
   @Input() loading: boolean;
   filter = {
     sortBy: 'scheduledFor',
+    entryPerPage: 25,
+    currentPage: 1,
     reverse: true
   };
   data = [];
@@ -42,7 +45,7 @@ export class OrderListSidebarComponent implements OnChanges {
 
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
-  constructor(public coreService: CoreService, public modal: NzModalService) {
+  constructor(public coreService: CoreService, public modal: NzModalService, private orderPipe: OrderPipe) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -55,6 +58,22 @@ export class OrderListSidebarComponent implements OnChanges {
   sort(key): void {
     this.filter.reverse = !this.filter.reverse;
     this.filter.sortBy = key;
+  }
+
+  pageIndexChange($event): void {
+    this.filter.currentPage = $event;
+    if (this.setOfCheckedId.size !== this.data.length) {
+      this.resetCheckBox();
+    }
+  }
+
+  pageSizeChange($event): void {
+    this.filter.entryPerPage = $event;
+    if (this.setOfCheckedId.size !== this.data.length) {
+      if (this.checked) {
+        this.onAllChecked(true);
+      }
+    }
   }
 
   private refreshView(): void {
@@ -97,25 +116,52 @@ export class OrderListSidebarComponent implements OnChanges {
     }
   }
 
-  updateCheckedSet(orderId: string, checked: boolean): void {
+  onItemChecked(orderId: string, checked: boolean): void {
+    let orders = [];
+    if (!checked && this.setOfCheckedId.size > (this.filter.entryPerPage || this.preferences.entryPerPage)) {
+      const orders = this.getCurrentData(this.data, this.filter);
+      if (orders.length < this.data.length) {
+        this.setOfCheckedId.clear();
+        orders.forEach(item => {
+          this.setOfCheckedId.add(item.orderId);
+        });
+      }
+    }
     if (checked) {
       this.setOfCheckedId.add(orderId);
     } else {
       this.setOfCheckedId.delete(orderId);
     }
+    this.refreshCheckedStatus(orders);
   }
 
-  onItemChecked(orderId: string, checked: boolean): void {
-    this.updateCheckedSet(orderId, checked);
-    this.refreshCheckedStatus();
+  getCurrentData(list, filter): Array<any> {
+    const entryPerPage = filter.entryPerPage || this.preferences.entryPerPage;
+    list = this.orderPipe.transform(list, filter.sortBy, filter.reverse);
+    return list.slice((entryPerPage * (filter.currentPage - 1)), (entryPerPage * filter.currentPage));
+  }
+
+  selectAll(): void{
+    this.data.forEach(item => {
+      this.setOfCheckedId.add(item.orderId);
+    });
+    this.refreshCheckedStatus(true);
   }
 
   onAllChecked(value: boolean): void {
-    this.orders.forEach(item => this.updateCheckedSet(item.orderId, value));
-    this.refreshCheckedStatus();
+    let orders = [];
+    if (value && this.data.length > 0) {
+      orders = this.getCurrentData(this.data, this.filter);
+      orders.forEach(item => {
+        this.setOfCheckedId.add(item.orderId);
+      });
+    } else {
+      this.setOfCheckedId.clear();
+    }
+    this.refreshCheckedStatus(orders);
   }
 
-  refreshCheckedStatus(): void {
+  refreshCheckedStatus(orders): void {
     this.object.isCancel = false;
     this.object.isCancelWithKill = false;
     this.object.isModify = true;
@@ -123,7 +169,7 @@ export class OrderListSidebarComponent implements OnChanges {
     this.object.isSuspendWithKill = false;
     this.object.isResume = true;
     this.object.isTerminate = true;
-    this.orders.forEach(item => {
+    orders.forEach(item => {
       if (this.setOfCheckedId.has(item.orderId)) {
         if (item.state) {
           if (item.state._text !== 'SUSPENDED' && item.state._text !== 'FAILED') {
@@ -149,9 +195,7 @@ export class OrderListSidebarComponent implements OnChanges {
         }
       }
     });
-    this.checked = this.orders.every(item => {
-      return this.setOfCheckedId.has(item.orderId);
-    });
+    this.checked = this.setOfCheckedId.size === orders.length;
     this.indeterminate = this.setOfCheckedId.size > 0 && !this.checked;
   }
 
@@ -324,7 +368,7 @@ export class OrderListSidebarComponent implements OnChanges {
     this.actionChild.showLog(order);
   }
 
-  private resetCheckBox(): void {
+  resetCheckBox(): void {
     this.checked = false;
     this.indeterminate = false;
     this.setOfCheckedId.clear();

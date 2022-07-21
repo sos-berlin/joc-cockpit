@@ -138,7 +138,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
   loadSession(): void {
     this.coreService.post('iam/sessions', {}).subscribe({
       next: (res: any) => {
-        this.sessions = res;
+        this.sessions = res.activeSessions;
         this.isLoaded = true;
         this.searchInResult();
       }, error: () => {
