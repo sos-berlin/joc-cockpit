@@ -410,8 +410,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
  * ```
  */
 angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$animate", "$compile", "$window", "gettextUtil", function (gettextCatalog, $parse, $animate, $compile, $window, gettextUtil) {
-    var lowercase = angular.$$lowercase || angular.lowercase;
-    var msie = parseInt((/msie (\d+)/.exec(lowercase($window.navigator.userAgent)) || [])[1], 10);
+    var msie = parseInt((/msie (\d+)/i.exec($window.navigator.userAgent) || [])[1], 10);
     var PARAMS_PREFIX = 'translateParams';
 
     function getCtxAttr(key) {
@@ -427,7 +426,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
             return null;
         }
 
-        var interpolationContext = angular.extend({}, scope);
+        var interpolationContext = scope.$new();
         var unwatchers = [];
         attributes.forEach(function (attribute) {
             var unwatch = scope.$watch(attrs[attribute], function (newVal) {
@@ -441,6 +440,8 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
             unwatchers.forEach(function (unwatch) {
                 unwatch();
             });
+
+            interpolationContext.$destroy();
         });
         return interpolationContext;
     }
@@ -449,6 +450,16 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
         restrict: 'AE',
         terminal: true,
         compile: function compile(element, attrs) {
+            var translate = attrs.translate;
+            if (translate && translate.match(/^yes|no$/i)) {
+                // Ignore the translate attribute if it has a "yes" or "no" value, assuming that it is the HTML
+                // native translate attribute, see
+                // https://html.spec.whatwg.org/multipage/dom.html#the-translate-attribute
+                //
+                // In that case we skip processing as this attribute is intended for the user agent itself.
+                return;
+            }
+
             // Validate attributes
             gettextUtil.assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
             gettextUtil.assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
@@ -479,9 +490,9 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                         if (translatePlural) {
                             scope = pluralScope || (pluralScope = scope.$new());
                             scope.$count = countFn(scope);
-                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, interpolationContext, translateContext);
+                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, null, translateContext);
                         } else {
-                            translated = gettextCatalog.getString(msgid, interpolationContext, translateContext);
+                            translated = gettextCatalog.getString(msgid, null, translateContext);
                         }
                         var oldContents = element.contents();
 
@@ -500,7 +511,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 
                         // Swap in the translation
                         var newWrapper = angular.element('<span>' + translated + '</span>');
-                        $compile(newWrapper.contents())(scope);
+                        $compile(newWrapper.contents())(interpolationContext || scope);
                         var newContents = newWrapper.contents();
 
                         $animate.enter(newContents, element);

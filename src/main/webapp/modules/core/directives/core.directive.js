@@ -778,7 +778,7 @@
             controller: ['$scope', '$rootScope', function ($scope, $rootScope) {
                 $(".dropdown").on("shown.bs.dropdown", function (e) {
                     $rootScope.$broadcast('stopEvents');
-                    if ($(e.target).context.className && $(e.target).context.className.match('status-dropdown')) {
+                    if ($(e.target).context && $(e.target).context.className && $(e.target).context.className.match('status-dropdown')) {
 
                     } else {
                         $(e.target).parents('.grid-stack-item-content').css({

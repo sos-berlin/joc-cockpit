@@ -1,0 +1,512 @@
+{
+  "_from": "date-holidays@^3.13.0",
+  "_id": "date-holidays@3.16.2",
+  "_inBundle": false,
+  "_integrity": "sha512-Ddc70Hyz5Gn9EbPnlZ7KcWUh5dO2ommJYW/sGpRla+xlMauUnjRvyBXEx4kzyO6b0am+Zc42vWDAWwkaGucuOg==",
+  "_location": "/date-holidays",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "date-holidays@^3.13.0",
+    "name": "date-holidays",
+    "escapedName": "date-holidays",
+    "rawSpec": "^3.13.0",
+    "saveSpec": null,
+    "fetchSpec": "^3.13.0"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/date-holidays/-/date-holidays-3.16.2.tgz",
+  "_shasum": "cc7fc29eb74dade4dc052fe430a748ddd938ef06",
+  "_spec": "date-holidays@^3.13.0",
+  "_where": "D:\\SOS\\JS7-2.3\\joc-cockpit",
+  "author": {
+    "name": "commenthol",
+    "email": "commenthol@gmail.com"
+  },
+  "bin": {
+    "holidays2json": "scripts/holidays2json.cjs"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
+  "bugs": {
+    "url": "https://github.com/commenthol/date-holidays/issues"
+  },
+  "bundleDependencies": false,
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "type-enum": [
+        2,
+        "always",
+        [
+          "break",
+          "feat",
+          "fix",
+          "chore",
+          "docs",
+          "refactor",
+          "revert",
+          "test"
+        ]
+      ],
+      "subject-case": [
+        2,
+        "never",
+        [
+          "start-case",
+          "pascal-case"
+        ]
+      ],
+      "scope-case": [
+        0
+      ]
+    }
+  },
+  "contributors": [
+    {
+      "name": "0xflotus",
+      "email": "0xflotus@gmail.com"
+    },
+    {
+      "name": "Adam Otradovec",
+      "email": "adam.otradovec@seznam.cz"
+    },
+    {
+      "name": "Agus Condro",
+      "email": "guzzchangx2@gmail.com"
+    },
+    {
+      "name": "Alex Fernández",
+      "email": "alexfernandeznpm@gmail.com"
+    },
+    {
+      "name": "AlinaA",
+      "email": "alinaa874@gmail.com"
+    },
+    {
+      "name": "Artem Yagutyan",
+      "email": "artem.yagutyan@gmail.com"
+    },
+    {
+      "name": "ash",
+      "email": "makingahabit@gmail.com"
+    },
+    {
+      "name": "Ben Arwin",
+      "email": "github@arwin.net"
+    },
+    {
+      "name": "Bilal Gültekin",
+      "email": "bilal@Bilals-MacBook-Pro.local"
+    },
+    {
+      "name": "bogdanmarinescu",
+      "email": "bogdan.marinescu@protonmail.com"
+    },
+    {
+      "name": "Braeden Paradine",
+      "email": "bparadine@gmail.com"
+    },
+    {
+      "name": "Brandon Bay",
+      "email": "brandon.bay@gmail.com"
+    },
+    {
+      "name": "Brian Keifer",
+      "email": "brian@valinor.net"
+    },
+    {
+      "name": "Christian Schinnerl",
+      "email": "Schinnerl.Christian@gmail.com"
+    },
+    {
+      "name": "Daichan",
+      "email": "daichi.yasuda@asbloom.me"
+    },
+    {
+      "name": "damon02",
+      "email": "damon@teqplay.nl"
+    },
+    {
+      "name": "David Álvarez Navarro",
+      "email": "david16an@gmail.com"
+    },
+    {
+      "name": "Erlend Ellingsen",
+      "email": "erlend.ame@gmail.com"
+    },
+    {
+      "name": "Filip Staffa",
+      "email": "fstaffa@cimpress.com"
+    },
+    {
+      "name": "Florian SALEUR",
+      "email": "dev.daedalus@gmail.com"
+    },
+    {
+      "name": "Francesco Ansanelli",
+      "email": "f.ansanelli@solution-g.com"
+    },
+    {
+      "name": "Agus Condro",
+      "email": "guzzchangx2@gmail.com"
+    },
+    {
+      "name": "Germain",
+      "email": "germain.clauss@receeve.com"
+    },
+    {
+      "name": "germain-receeve",
+      "email": "53000086+germain-receeve@users.noreply.github.com"
+    },
+    {
+      "name": "Goran Martinjak",
+      "email": "goran@netgen.hr"
+    },
+    {
+      "name": "Guillaume Bisch",
+      "email": "guillaume@sqrd.com"
+    },
+    {
+      "name": "Humam Aziz Romdhoni",
+      "email": "anaktampan@live.com"
+    },
+    {
+      "name": "Jack Zhang",
+      "email": "18542127+jk1z@users.noreply.github.com"
+    },
+    {
+      "name": "JAlexander",
+      "email": "roodrallec@users.noreply.github.com"
+    },
+    {
+      "name": "James Dixon",
+      "email": "jim.w.dixon@gmail.com"
+    },
+    {
+      "name": "Jani Šumak",
+      "email": "jani.sumak@inova.si"
+    },
+    {
+      "name": "Jeff Hughes",
+      "email": "43132199+jwh-hutchison@users.noreply.github.com"
+    },
+    {
+      "name": "Jérôme Vasseur",
+      "email": "jerome.vasseur@thetribe.io"
+    },
+    {
+      "name": "jk-12345",
+      "email": "33206139+jk-12345@users.noreply.github.com"
+    },
+    {
+      "name": "John-Olav Storvold",
+      "email": "johsto@knowit.no"
+    },
+    {
+      "name": "Joshua Rippon",
+      "email": "joshuarippon1@gmail.com"
+    },
+    {
+      "name": "Julian Krenge",
+      "email": "julian@parcellab.com"
+    },
+    {
+      "name": "Kane.Westwood",
+      "email": "kane.westwood@moonpig.com"
+    },
+    {
+      "name": "Kerstens Maxim",
+      "email": "maxim.kerstens@gmail.com"
+    },
+    {
+      "name": "Kevin Ley",
+      "email": "3976145+kevinley@users.noreply.github.com"
+    },
+    {
+      "name": "Kevin Samoei",
+      "email": "samoeikev@gmail.com"
+    },
+    {
+      "name": "Konstantinos Koukourakis",
+      "email": "konstantinoskouk90@gmail.com"
+    },
+    {
+      "name": "Leonidas Villeneuve",
+      "email": "leonidas@leonidasv.com"
+    },
+    {
+      "name": "Long Nguyen",
+      "email": "olragon@users.noreply.github.com"
+    },
+    {
+      "name": "Lukas Eipert",
+      "email": "git@leipert.io"
+    },
+    {
+      "name": "Mauro Braggio",
+      "email": "m.braggio@e-time.it"
+    },
+    {
+      "name": "Matthias Lösch",
+      "email": "mlo@codiac.de"
+    },
+    {
+      "name": "Nancy",
+      "email": "nancy@transit.app"
+    },
+    {
+      "name": "Nils Mehlhorn",
+      "email": "nilsmehlhorn@users.noreply.github.com"
+    },
+    {
+      "name": "oprogramador",
+      "email": "uomodislesia@gmail.com"
+    },
+    {
+      "name": "Oscar Lagercrantz",
+      "email": "oscar.lagercrantz@gmail.com"
+    },
+    {
+      "name": "osoken",
+      "email": "osoken.devel@outlook.jp"
+    },
+    {
+      "name": "Pandu Supriyono",
+      "email": "mail@supriyono.nl"
+    },
+    {
+      "name": "Petar Kovačević",
+      "email": "pero.5ar@gmail.com"
+    },
+    {
+      "name": "Philip Renich",
+      "email": "hello@philiprenich.com"
+    },
+    {
+      "name": "oprogramador",
+      "email": "uomodislesia@gmail.com"
+    },
+    {
+      "name": "r.ryngenen@gmail.com",
+      "email": "r.ryngenen@gmail.com"
+    },
+    {
+      "name": "rbrasco",
+      "email": "roger.brasco@scytl.com"
+    },
+    {
+      "name": "Roman Hirsch",
+      "email": "r.hirsch@brendow.de"
+    },
+    {
+      "name": "RomanTheBrov",
+      "email": "romouald.dombrovski@gmail.com"
+    },
+    {
+      "name": "Ryan Gerry",
+      "email": "gerryster@gmail.com"
+    },
+    {
+      "name": "Sean Riley",
+      "email": "spriley@msts.com"
+    },
+    {
+      "name": "seb",
+      "email": "sebastien@lewebfrancais.fr"
+    },
+    {
+      "name": "Seb735",
+      "email": "duclutsebastien@yahoo.com"
+    },
+    {
+      "name": "Simon Victory",
+      "email": "email@simonvictory.com"
+    },
+    {
+      "name": "Quennie",
+      "email": "simply.me.queeny@gmail.com"
+    },
+    {
+      "name": "Tiago",
+      "email": "tiago.peliciari@gmail.com"
+    },
+    {
+      "name": "Tim Keegan",
+      "email": "tjnkeegan@icloud.com"
+    },
+    {
+      "name": "Tomas",
+      "email": "norkunas.tom@gmail.com"
+    },
+    {
+      "name": "tothadi",
+      "email": "tothadam.onp@gmail.com"
+    },
+    {
+      "name": "Troels Bay-Petersen",
+      "email": "troels.petersen@hr-on.com"
+    },
+    {
+      "name": "Vuong Ho",
+      "email": "hochivuong2002@gmail.com"
+    },
+    {
+      "name": "Wayne Parrott",
+      "email": "wayne.parrott@reblcorp.com"
+    },
+    {
+      "name": "Wésley Queiroz",
+      "email": "wesleycoder@gmail.com"
+    },
+    {
+      "name": "westn",
+      "email": "westn89@gmail.com"
+    },
+    {
+      "name": "William Santos",
+      "email": "william@MacBook-Pro-de-William-2.local"
+    },
+    {
+      "name": "Yannick",
+      "email": "yannick.franssen@outlook.com"
+    },
+    {
+      "name": "Yoshio HANAWA",
+      "email": "y@hnw.jp"
+    },
+    {
+      "name": "Yosuke Kumakura",
+      "email": "kumatch@gmail.com"
+    },
+    {
+      "name": "Zacharias Erlandsson",
+      "email": "zacharias.erlandsson@gmail.com"
+    },
+    {
+      "name": "Zack Pollard",
+      "email": "zackpollard@ymail.com"
+    },
+    {
+      "name": "zbypy",
+      "email": "zbynek.pysny@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "date-holidays-parser": "^3.4.1",
+    "js-yaml": "^4.1.0",
+    "lodash.omit": "^4.5.0",
+    "lodash.pick": "^4.4.0",
+    "prepin": "^1.0.3"
+  },
+  "deprecated": false,
+  "description": "worldwide holidays",
+  "devDependencies": {
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.18.0",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.18.0",
+    "@commitlint/cli": "^13.2.1",
+    "@commitlint/config-conventional": "^13.2.0",
+    "@mocha/contributors": "git+https://github.com/commenthol/contributors.git#semver:1.1.0-0",
+    "babel-loader": "^8.2.5",
+    "dtslint": "^4.2.1",
+    "eslint": "^8.16.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-yml": "^0.15.0",
+    "hashtree": "^0.7.0",
+    "husky": "^8.0.1",
+    "markedpp": "^1.1.0",
+    "mocha": "^10.0.0",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.74.1",
+    "typescript": "^4.6.4",
+    "watch-run": "^1.2.5",
+    "webpack": "^5.72.1",
+    "webpack-bundle-analyzer": "^4.5.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "directories": {
+    "lib": "lib",
+    "doc": "docs",
+    "test": "test"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./lib/index.cjs"
+    },
+    "./data": {
+      "import": "./src/data.js",
+      "require": "./lib/data.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "homepage": "https://github.com/commenthol/date-holidays",
+  "keywords": [
+    "holidays",
+    "world"
+  ],
+  "license": "(ISC AND CC-BY-3.0)",
+  "main": "./lib/index.cjs",
+  "maintainers": [
+    {
+      "name": "commenthol",
+      "email": "commenthol@gmail.com"
+    },
+    {
+      "name": "Ryan Gerry",
+      "email": "rgerry@bluemarblepayroll.com"
+    }
+  ],
+  "mocha": {
+    "checkLeaks": true,
+    "colors": true,
+    "reporter": "dot"
+  },
+  "module": "./src/index.js",
+  "name": "date-holidays",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/commenthol/date-holidays.git"
+  },
+  "scripts": {
+    "all": "npm-run-all clean yaml build lint test doc:tree doc:attrib webpack",
+    "build": "rollup -c",
+    "changelog": "contributors && node scripts/gitlog.cjs",
+    "ci": "TEST_XXL=1 npm-run-all yaml build test",
+    "clean": "rimraf lib dist src/data.js",
+    "clean:all": "npm-run-all clean clean:modules",
+    "clean:modules": "rimraf node_modules",
+    "doc:attrib": "node scripts/attributions.cjs",
+    "doc:tree": "node scripts/addtree.cjs",
+    "lint": "eslint --fix --ext .js,.cjs,.yaml .",
+    "prepare": "husky install",
+    "prepublishOnly": "npm run all",
+    "test": "npm-run-all test:*",
+    "test:ci": "mocha",
+    "test:ts": "dtslint types",
+    "watch": "watch-run -p data/countries/*.yaml npm run yaml",
+    "webpack": "webpack",
+    "webpack:analyze": "webpack",
+    "yaml": "node scripts/holidays2json.cjs"
+  },
+  "type": "module",
+  "types": "./types",
+  "version": "3.16.2"
+}

@@ -1,0 +1,16 @@
+# @source https://www.joursferies.fr/pays/guyane.php
+# @source https://www.public-holidays.us/FR_FR_2021_Guyane
+holidays:
+  GF:
+    names:
+      fr: Guyane
+      en: French Guiana
+    langs:
+      - fr
+    zones:
+      - America/Cayenne
+    dayoff: sunday
+    _days: FR
+    days:
+      06-10:
+        _name: Abolition of Slavery

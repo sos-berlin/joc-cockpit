@@ -1,0 +1,15 @@
+# @source https://www.joursferies.fr/pays/mayotte.php
+holidays:
+  RE:
+    names:
+      fr: Réunion
+      en: Réunion
+    langs:
+      - fr
+    zones:
+      - Indian/Reunion
+    dayoff: ""
+    _days: FR
+    days:
+      12-20:
+        _name: Abolition of Slavery

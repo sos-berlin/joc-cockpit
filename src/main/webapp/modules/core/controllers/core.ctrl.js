@@ -2746,7 +2746,7 @@
 
         //-------------------Begin year view ----------------------
         vm.Math = Math;
-
+        const Holidays = window.Holidays.default;
         var hd = new Holidays();
         // get supported countries
         vm.countryList = hd.getCountries('en');
@@ -4490,6 +4490,7 @@
         };
 
         //-------------------Begin national holiday----------------------
+        const Holidays = window.Holidays.default;
         var hd = new Holidays();
         // get supported countries
         vm.countryList = hd.getCountries('en');
