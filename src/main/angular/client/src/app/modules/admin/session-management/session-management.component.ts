@@ -59,6 +59,31 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
     this.data = this.sessionFilter.filter.searchText ? this.searchPipe.transform(this.sessions, this.sessionFilter.filter.searchText, this.searchableProperties) : this.sessions;
     this.data = this.orderPipe.transform(this.data, this.sessionFilter.filter.sortBy, this.sessionFilter.filter.reverse);
     this.data = [...this.data];
+    this.data.forEach((item) => {
+      item.remainingSessionTimeout = this.convertMsToTime(item.timeout);
+     
+    })
+  }
+
+  private convertMsToTime(milliseconds) {
+    let seconds = Math.floor(milliseconds / 1000);
+    const s = Math.floor((seconds) % 60);
+    const m = Math.floor((seconds / (60)) % 60);
+    const h = Math.floor((seconds / (60 * 60)) % 24);
+    const d = Math.floor(seconds / (60 * 60 * 24));
+
+    const x = m > 9 ? m : '0' + m;
+    const y = s > 9 ? s : '0' + s;
+
+    if (d === 0 && h !== 0) {
+      return h + 'h ' + x + 'm ' + y + 's';
+    } else if (d === 0 && h === 0 && m !== 0) {
+      return x + 'm ' + y + 's';
+    } else if (d === 0 && h === 0 && m === 0) {
+      return s + 's';
+    } else {
+      return d + 'd ' + h + 'h';
+    }
   }
 
   pageIndexChange($event): void {
@@ -91,7 +116,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
   checkAll(value: boolean): void {
     if (value && this.sessions.length > 0) {
       this.data.forEach(item => {
-        this.object.mapOfCheckedId.add(item.accountName);
+        this.object.mapOfCheckedId.add(item.id);
       });
     } else {
       this.object.mapOfCheckedId.clear();
@@ -112,14 +137,14 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
       if (users.length < this.data.length) {
         this.object.mapOfCheckedId.clear();
         users.forEach(item => {
-          this.object.mapOfCheckedId.add(item.accountName);
+          this.object.mapOfCheckedId.add(item.id);
         });
       }
     }
     if (checked) {
-      this.object.mapOfCheckedId.add(account.accountName);
+      this.object.mapOfCheckedId.add(account.id);
     } else {
-      this.object.mapOfCheckedId.delete(account.accountName);
+      this.object.mapOfCheckedId.delete(account.id);
     }
     const users = this.getCurrentData(this.data, this.sessionFilter);
     this.object.checked = this.object.mapOfCheckedId.size === users.length;
@@ -155,9 +180,6 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
         operation: 'Delete',
         name: acc ? acc.accountName : ''
       };
-      this.object.mapOfCheckedId.forEach((value, key) => {
-        comments.name = comments.name + key + ', ';
-      });
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
@@ -199,12 +221,12 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
   }
 
   removeFromSession(account, object?): void {
-    const obj = {accountNames: [], auditLog: object};
+    const obj = {ids: [], auditLog: object};
     if (account) {
-      obj.accountNames.push(account.accountName);
+      obj.ids.push(account.id);
     } else {
-      this.object.mapOfCheckedId.forEach((value, key) => {
-        obj.accountNames.push(key);
+      this.object.mapOfCheckedId.forEach((id) => {
+        obj.ids.push(id);
       });
     }
     this.coreService.post('iam/sessions/delete', obj).subscribe({

@@ -54,7 +54,7 @@
         </a>
         </th>
         <th (click)="sort('timeout')"><a>
-          <span class="p-r-xs" translate>user.label.sessionTime</span>
+          <span class="p-r-xs" translate>common.label.remainingSessionTime</span>
         </a>
         </th>
       </tr>
@@ -63,7 +63,7 @@
       <ng-template ngFor let-account [ngForOf]="ajaxTable.data">
         <tr>
           <td *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-              [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
+              [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(account.id)"
               (nzCheckedChange)="onItemChecked(account, $event)">
           </td>
           <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
@@ -88,7 +88,7 @@
               [innerHtml]="account.identityService | highlight : sessionFilter.filter.searchText"></span>
           </td>
           <td>
-            <span [innerHtml]="account.timeout | highlight : sessionFilter.filter.searchText"></span>
+            <span [innerHtml]="account.remainingSessionTimeout"></span>
           </td>
         </tr>
       </ng-template>

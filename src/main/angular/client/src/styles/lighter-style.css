@@ -192,3 +192,6 @@ div.jsoneditor-tree .jsoneditor-button.jsoneditor-schema-error {
 img.mxToolbarModeSelected {
   background: #e6f7ff;
 }
+.btn-search {
+  background-color: #ddd;
+}
