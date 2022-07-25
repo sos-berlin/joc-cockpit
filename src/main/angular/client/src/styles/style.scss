@@ -6655,6 +6655,11 @@ tr.cdk-drag-preview {
   display: none !important;
 }
 
+.ant-mentions {
+  background: transparent;
+  border: none;
+}
+
 .ant-select-selection--multiple .ant-select-selection__choice {
   border-radius: 5px;
 }
@@ -7085,6 +7090,7 @@ tr.tr-border td:first-child {
   border-color: var(--border-color) !important;
 }
 
+.ant-mentions:focus-within,
 .ant-input:hover,
 .ant-input-focused {
   border-color: var(--primary) !important;
@@ -8781,4 +8787,8 @@ td .ver-top {
     background-color: #e6f7ff;
     color: var(--text-hover);
   }
+}
+
+.btn-search {
+  background-color: var(--bg-box);
 }

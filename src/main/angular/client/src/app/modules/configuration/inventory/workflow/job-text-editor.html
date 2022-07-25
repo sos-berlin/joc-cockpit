@@ -365,7 +365,7 @@
                               <input nz-input nzMentionTrigger autocomplete="off" class="form-control" [(ngModel)]="env.value" name="value{{i}}"
                                      placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" (ngModelChange)="checkValue(env)" />
                             </label>
-                            <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)" style="right: 13px;top:1px;"></i>
+                            <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(env)" style="right: 1px;top:1px;"></i>
                             <ng-container *nzMentionSuggestion="let argu">
                               <span>{{ argu.name }}</span>
                             </ng-container>
@@ -692,7 +692,7 @@
                     <label class="m-t-xs" nz-checkbox [nzDisabled]="!argument.name" [nzChecked]="object.setOfCheckedNodeArgu.has(argument.name)"
                            (nzCheckedChange)="onItemChecked(selectedNode.obj, 'nodeArguments', argument.name, $event)" ></label>
                   </div>
-                  <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
+                  <div class="col-md-5 col-lg-5 m-b-sm p-r-0" [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
                     <label class="w-full">
                       <input autocomplete="off" identifierValidation type="text" class="form-control" name="name{{i}}" [appAutofocus]="i == selectedNode.obj.defaultArguments.length -1"
                             [(ngModel)]="argument.name" #aname="ngModel" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" (blur)="isStringValid(argument, aname, selectedNode.obj.defaultArguments)">
@@ -708,7 +708,7 @@
                                (ngModelChange)="checkValue(argument)" (keydown)="onKeyPress($event, 'node')"
                                placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" />
                       </label>
-                      <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 13px;top:1px;"></i>
+                      <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline" (click)="openEditor(argument)" style="right: 1px;top:1px;"></i>
                       <ng-container *nzMentionSuggestion="let argu">
                         <span>{{ argu.name }}</span>
                       </ng-container>

@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "cross-env NODE_OPTIONS=--max_old_space_size=6000 ng build --configuration=production --base-href=./"
+    "postinstall": "cross-env NODE_OPTIONS=--max_old_space_size=6000 ng build --configuration=production --base-href=./ && node ./versioning.build.js"
   },
   "private": true,
   "dependencies": {
@@ -46,6 +46,7 @@
     "ngx-clipboard": "^15.0.1",
     "ngx-perfect-scrollbar": "^10.1.1",
     "ngx-toastr": "^14.2.1",
+    "replace-in-file": "^6.3.5",
     "rxjs": "~7.5.0",
     "save-svg-as-png": "^1.4.17",
     "stream": "0.0.2",
