@@ -27,7 +27,7 @@
     constructor: Calendar,
     _initializeOptions: function (opt) {
       if (opt == null) {
-        opt = [];
+        opt = {};
       }
       this.options = {
         startYear: !isNaN(parseInt(opt.startYear)) ? parseInt(opt.startYear) : opt.selectedDate ? new Date(opt.selectedDate).getFullYear() : new Date().getFullYear(),
@@ -47,7 +47,7 @@
     },
     _initializeEvents: function (opt) {
       if (opt == null) {
-        opt = [];
+        opt = {};
       }
       if (opt.renderEnd) {
         this.element.bind('renderEnd', opt.renderEnd);

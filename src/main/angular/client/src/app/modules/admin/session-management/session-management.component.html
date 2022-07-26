@@ -72,8 +72,14 @@
                       [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                 <ul nz-menu>
+                  <li nz-menu-item (click)="addToBlocklist(account)">
+                    <a translate>user.button.addToBlocklist</a>
+                  </li>
                   <li nz-menu-item (click)="removeSessions(account)">
                     <a translate>user.button.deleteFromSession</a>
+                  </li>
+                  <li nz-menu-item (click)="removeSessionByAccount(account)">
+                    <a translate>user.button.deletesessionByAccount</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
