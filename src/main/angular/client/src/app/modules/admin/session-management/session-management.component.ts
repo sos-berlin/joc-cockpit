@@ -6,6 +6,7 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
 import {CoreService} from "../../../services/core.service";
 import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
+import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
 
 
 @Component({
@@ -172,7 +173,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeSessions(acc) {
+  removeSessions(acc, flag?) {
     if (this.preferences.auditLog && !this.dataService.comments.comment) {
       let comments = {
         radio: 'predefined',
@@ -193,7 +194,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.removeFromSession(acc, {
+          this.removeFromSession(acc, flag, {
             comment: result.comment,
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
@@ -214,20 +215,25 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
         if (result) {
-          this.removeFromSession(acc);
+          this.removeFromSession(acc, flag);
         }
       });
     }
   }
 
-  removeFromSession(account, object?): void {
-    const obj = {ids: [], auditLog: object};
-    if (account) {
-      obj.ids.push(account.id);
+  removeFromSession(account, flag?, object?): void {
+    const obj: any = { auditLog: object };
+    if (flag) {
+      obj.accountNames = [account.accountName];
     } else {
-      this.object.mapOfCheckedId.forEach((id) => {
-        obj.ids.push(id);
-      });
+      obj.ids = [];
+      if (account) {
+        obj.ids.push(account.id);
+      } else {
+        this.object.mapOfCheckedId.forEach((id) => {
+          obj.ids.push(id);
+        });
+      }
     }
     this.coreService.post('iam/sessions/delete', obj).subscribe({
       next: () => {
@@ -235,6 +241,29 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
         this.reset();
       }, error: () => {
         this.reset();
+      }
+    });
+  }
+
+  removeSessionByAccount(acc): void {
+    this.removeSessions(acc, true);
+  }
+  
+  addToBlocklist(obj): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzAutofocus: null,
+      nzContent: AddBlocklistModalComponent,
+      nzComponentParams: {
+        existingComments: this.dataService.comments,
+        obj
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.loadSession();
       }
     });
   }
