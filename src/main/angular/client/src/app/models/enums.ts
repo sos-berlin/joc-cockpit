@@ -20,6 +20,7 @@ export enum InventoryForHistory {
 export enum InventoryObject {
   WORKFLOW= 'WORKFLOW',
   FILEORDERSOURCE = 'FILEORDERSOURCE',
+  JOB = 'JOB',
   JOBRESOURCE = 'JOBRESOURCE',
   NOTICEBOARD = 'NOTICEBOARD',
   LOCK = 'LOCK',

@@ -1035,7 +1035,7 @@ export class ExportComponent implements OnInit {
         this.filter.controller = false;
         this.filter.deploy = false;
         if (this.origin.dailyPlan) {
-          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR);
+          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOB);
         } else {
           this.objectTypes.push(this.origin.object.match('CALENDAR') ? (InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR) : this.origin.object);
         }
@@ -1056,7 +1056,7 @@ export class ExportComponent implements OnInit {
     if (this.objectTypes.length === 0) {
       this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR);
+      this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOB);
     }
     this.exportObj.objectTypes = [...this.objectTypes];
     this.buildTree(this.path);
@@ -1101,22 +1101,22 @@ export class ExportComponent implements OnInit {
       })
     }
 
-    if(this.exportObj.exportType !== 'folders') {
+    if (this.exportObj.exportType !== 'folders') {
       deployObjectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      releaseObjectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR);
+      releaseObjectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOB);
     }
 
     const APIs = [];
     if (this.filter.controller && this.filter.dailyPlan) {
       obj.withoutReleased = !this.filter.release;
       if (deployObjectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/deployables', {...obj, ...{objectTypes: deployObjectTypes}}).pipe(
+        APIs.push(this.coreService.post('inventory/deployables', { ...obj, ...{ objectTypes: deployObjectTypes } }).pipe(
           catchError(error => of(error))
         ));
       }
       if (releaseObjectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/releasables', {...obj, ...{objectTypes: releaseObjectTypes}}).pipe(
+        APIs.push(this.coreService.post('inventory/releasables', { ...obj, ...{ objectTypes: releaseObjectTypes } }).pipe(
           catchError(error => of(error))
         ));
       }
@@ -1654,7 +1654,7 @@ export class RepositoryComponent implements OnInit {
       if (this.category !== 'LOCAL') {
         obj.objectTypes = [InventoryObject.INCLUDESCRIPT];
       } else {
-        obj.objectTypes = [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.SCHEDULE];
+        obj.objectTypes = [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.SCHEDULE, InventoryObject.JOB];
       }
       obj.withoutReleased = !this.filter.release;
       if (obj.objectTypes.length === 0) {
@@ -3569,7 +3569,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
           children: [],
           path: data.path,
           key: (KEY + 'Calendars$')
-        }
+        },
+        {
+          name: 'Job Templates',
+          title: 'Job Templates',
+          object: InventoryObject.JOB,
+          children: [],
+          path: data.path,
+          key: (KEY + 'JobTemplates$')
+        },
       ];
     }
     const obj: any = {
@@ -3585,7 +3593,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           || res.noticeBoards.length || res.locks.length)) {
           controllerObj.isArrow = true;
         }
-        if (res.schedules && (res.schedules.length || res.includeScripts.length || res.calendars.length)) {
+        if (res.schedules && (res.schedules.length || res.includeScripts.length || res.calendars.length || res.jobTemplates.length)) {
           dailyPlanObj.isArrow = true;
         }
         for (let i = 0; i < controllerObj.controllerArr.length; i++) {
@@ -3625,6 +3633,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
             resObject = res.includeScripts;
           } else if (dailyPlanObj.dailyPlanArr[i].object === 'CALENDAR') {
             resObject = res.calendars;
+          } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.JOB) {
+            resObject = res.jobTemplates;
           }
           if (resObject) {
             if (!flag) {
@@ -5277,7 +5287,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       configuration.timeZone = this.preferences.zone;
     }
     const valid = !(obj.type.match(/CALENDAR/) || obj.type === InventoryObject.SCHEDULE || obj.type === InventoryObject.INCLUDESCRIPT || obj.type === InventoryObject.NOTICEBOARD
-      || obj.type === InventoryObject.WORKFLOW || obj.type === InventoryObject.FILEORDERSOURCE || obj.type === InventoryObject.JOBRESOURCE);
+      || obj.type === InventoryObject.WORKFLOW || obj.type === InventoryObject.FILEORDERSOURCE || obj.type === InventoryObject.JOBRESOURCE || obj.type === InventoryObject.JOB);
     const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (PATH && obj.type && obj.name) {
       const request: any = {
@@ -5311,7 +5321,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private deleteObject(path, object, node, auditLog): void {
-    this.coreService.post('inventory/remove/folder', {path, auditLog}).subscribe(() => {
+    this.coreService.post('inventory/remove/folder', { path, auditLog }).subscribe(() => {
       object.deleted = true;
       if (node && node.parentNode && node.parentNode.origin) {
         node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
@@ -5326,7 +5336,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private getObjectArr(object, isDraft): any {
-    let obj: any = {objects: []};
+    let obj: any = { objects: [] };
     if (!object.type) {
       if (object.object || object.controller || object.dailyPlan) {
         object.children.forEach((item) => {
