@@ -86,14 +86,12 @@ export class TableComponent implements OnChanges, OnDestroy {
       if (res) {
         let configuration = {};
         obj.name = res.name;
-        if (obj.type === 'JOBCLASS') {
-          configuration = {maxProcesses: 1};
-        } else if (obj.type === InventoryObject.SCHEDULE) {
-          configuration = {controllerId: this.schedulerId};
+        if (obj.type === InventoryObject.SCHEDULE) {
+          configuration = { controllerId: this.schedulerId };
         } else if (obj.type === 'LOCK') {
-          configuration = {limit: 1, id: res.name};
+          configuration = { limit: 1, id: res.name };
         } else if (obj.type === 'WORKINGDAYSCALENDAR' || obj.type === 'NONWORKINGDAYSCALENDAR') {
-          configuration = {type: obj.type};
+          configuration = { type: obj.type };
         }
         const path = this.dataObj.path + (this.dataObj.path === '/' ? '' : '/') + res.name;
         this.store(obj, path, configuration, res.comments);
@@ -446,7 +444,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       configuration.timeZone = this.preferences.zone;
     }
     const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.INCLUDESCRIPT
-      || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
+      || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE || this.objectType === InventoryObject.JOB);
     if (!path) {
       return;
     }

@@ -9,10 +9,10 @@ export class AuthService {
   propsPrefix = '$SOS$';
   rememberMe = false;
   scheduleIds: any;
-  accessTokenId: any;
-  currentUserData: any;
+  accessTokenId: string;
+  currentUserData: string;
   forcePasswordChange: any;
-  currentUserIdentityService: any;
+  currentUserIdentityService: string;
   sessionTimeout: any;
   permission: any;
 

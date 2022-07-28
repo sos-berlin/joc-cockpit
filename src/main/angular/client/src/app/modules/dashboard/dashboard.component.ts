@@ -224,7 +224,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     sessionStorage.preferences = JSON.stringify(this.preferences);
     const configObj: any = {
       controllerId: this.schedulerIds.selected,
-      accountName: this.permission.user,
+      accountName: this.authService.currentUserData,
       profileItem: JSON.stringify(this.preferences)
     };
     this.coreService.post('profile/prefs/store', configObj).subscribe();
