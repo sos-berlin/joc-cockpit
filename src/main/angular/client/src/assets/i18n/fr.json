@@ -1399,7 +1399,8 @@
           "mailTo": "Envoyer l'e-mail à",
           "mailCC": "Envoyer une copie de l'e-mail à",
           "mailBcc": "Envoyer une copie carbone invisible de l'e-mail à",
-          "mailOn": "Mail On"
+          "mailOn": "Mail On",
+          "description": "Description"
         },
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
@@ -2610,6 +2611,7 @@
     "placeholder.expression": "Entrer l'expression",
     "placeholder.orderId": "Entrer l'ID de l'Ordre",
     "placeholder.className": "Entrer le Nom de la Classe",
+    "placeholder.description": "Enter Description",
     "placeholder.selectJobResources": "Sélectionnez les Ressources de la Tâche",
     "placeholder.selectScript": "Sélectionnez le Script Élément",
     "placeholder.enterCredentialKey": "Entrer la clé d'identification à partir du gestionnaire d'identification Windows",

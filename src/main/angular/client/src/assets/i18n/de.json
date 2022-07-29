@@ -1399,7 +1399,8 @@
           "mailTo": "E-Mail senden an",
           "mailCC": "Kopie der E-Mail senden an",
           "mailBcc": "Blindkopie der E-Mail senden an",
-          "mailOn": "Mail On"
+          "mailOn": "Mail On",
+          "description": "Description"
         },
         "addOrder": {
           "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
@@ -2610,6 +2611,7 @@
     "placeholder.expression": "Ausdruck angeben",
     "placeholder.orderId": "Auftragskennung angeben",
     "placeholder.className": "Name der Klasse angeben",
+    "placeholder.description": "Enter Description",
     "placeholder.selectJobResources": "Job-Ressource auswählen",
     "placeholder.selectScript": "Skript Baustein auswählen",
     "placeholder.enterCredentialKey": "Name des Schlüssels in der Windows Anmeldeinformationsverwaltung",

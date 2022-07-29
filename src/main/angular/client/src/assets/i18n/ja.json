@@ -1399,7 +1399,8 @@
           "mailTo": "メール送信宛先",
           "mailCC": "メールcc宛先",
           "mailBcc": "メールbcc宛先",
-          "mailOn": "送信タイミング"
+          "mailOn": "送信タイミング",
+          "description": "Description"
         },
         "addOrder": {
           "workflowName": "ワークフロー名",
@@ -2610,6 +2611,7 @@
     "placeholder.expression": "条件式を入力",
     "placeholder.orderId": "オーダーID編集",
     "placeholder.className": "クラス名を入力",
+    "placeholder.description": "Enter Description",
     "placeholder.selectJobResources": "ジョブリソースを選択",
     "placeholder.selectScript": "スクリプトを選択",
     "placeholder.enterCredentialKey": "Windows資格マネージャーから認証キーを入力",

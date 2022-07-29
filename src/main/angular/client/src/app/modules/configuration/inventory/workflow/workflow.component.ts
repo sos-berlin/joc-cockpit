@@ -9414,6 +9414,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function recursive(json): void {
       if (json.instructions && (flag || !isValidate)) {
         for (let x = 0; x < json.instructions.length; x++) {
+          delete json.instructions[x].path;
+          delete json.instructions[x].versionId;
           if (json.instructions[x].TYPE === 'Job') {
             isJobExist = true;
             json.instructions[x].TYPE = 'Execute.Named';

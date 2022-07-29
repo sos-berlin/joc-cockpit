@@ -758,15 +758,17 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         });
       }
-      if (parameter.positions.startPosition && this.positions.has(parameter.positions.startPosition)) {
-        parameter.positions.startPosition = JSON.parse(this.positions.get(parameter.positions.startPosition))
-      }
-      if (parameter.positions.endPositions) {
-        parameter.positions.endPositions = parameter.positions.endPositions.map((item) => {
-          if (this.positions.has(item)) {
-            return JSON.parse(this.positions.get(item))
-          }
-        })
+      if (parameter.positions) {
+        if (parameter.positions.startPosition && this.positions && this.positions.has(parameter.positions.startPosition)) {
+          parameter.positions.startPosition = JSON.parse(this.positions.get(parameter.positions.startPosition))
+        }
+        if (parameter.positions.endPositions) {
+          parameter.positions.endPositions = parameter.positions.endPositions.map((item) => {
+            if (this.positions.has(item)) {
+              return JSON.parse(this.positions.get(item))
+            }
+          })
+        }
       }
       return true;
     });

@@ -13,14 +13,15 @@ import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
+import {NzMessageService} from "ng-zorro-antd/message";
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
-import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
-import {InventoryObject} from '../../../../models/enums';
-import {InventoryService} from '../inventory.service';
-import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {WorkflowService} from "../../../../services/workflow.service";
-import {NzMessageService} from "ng-zorro-antd/message";
+import {InventoryService} from '../inventory.service';
+import {InventoryObject} from '../../../../models/enums';
+import {FacetEditorComponent} from "../workflow/workflow.component";
+import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 
 @Component({
   selector: 'app-jobs',
@@ -69,6 +70,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
   };
   lastModified: any = '';
   copiedParamObjects: any = {};
+  allowedDatatype = ['String', 'Number', 'Boolean'];
+
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -119,7 +122,6 @@ export class JobsComponent implements OnChanges, OnDestroy {
         this.ref.detectChanges();
       }
     }
-    this.getDocumentations();
   }
 
   ngOnDestroy(): void {
@@ -204,6 +206,21 @@ export class JobsComponent implements OnChanges, OnDestroy {
     }
   }
 
+  private getJobResources(): void {
+    this.coreService.getJobResource((arr) => {
+      this.jobResourcesTree = arr;
+      if (this.job.configuration && this.job.configuration.jobResourceNames && this.job.configuration.jobResourceNames.length > 0) {
+        this.job.configuration.jobResourceNames = [...this.job.configuration.jobResourceNames];
+        this.jobResourcesTree = this.coreService.getNotExistJobResource({
+          arr: this.jobResourcesTree,
+          jobResources: this.job.configuration.jobResourceNames
+        });
+        this.ref.detectChanges();
+      }
+    });
+  }
+
+
   release(): void {
     this.dataService.reloadTree.next({release: this.job});
   }
@@ -273,6 +290,18 @@ export class JobsComponent implements OnChanges, OnDestroy {
         return this.object.setOfCheckedEnv.has(item.name);
       });
       this.object.indeterminate3 = this.object.setOfCheckedEnv.size > 0 && !this.object.checked3;
+    } else {
+      if (name) {
+        if (checked) {
+          this.object.setOfCheckedParam.add(name);
+        } else {
+          this.object.setOfCheckedParam.delete(name);
+        }
+      }
+      this.object.checked4 = list.every(item => {
+        return this.object.setOfCheckedParam.has(item.name);
+      });
+      this.object.indeterminate4 = this.object.setOfCheckedParam.size > 0 && !this.object.checked4;
     }
   }
 
@@ -295,6 +324,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
             return !this.object.setOfCheckedJobArgu.has(item.name);
           } else if (this.copiedParamObjects.type === 'env') {
             return !this.object.setOfCheckedEnv.has(item.name);
+          } else {
+            return !this.object.setOfCheckedParam.has(item.name);
           }
         });
         if (this.copiedParamObjects.type === 'arguments') {
@@ -303,6 +334,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
           this.job.configuration.executable.jobArguments = list;
         } else if (this.copiedParamObjects.type === 'env') {
           this.job.configuration.executable.env = list;
+        } else {
+          this.job.configuration.parameters = list;
         }
       }
     }
@@ -331,21 +364,40 @@ export class JobsComponent implements OnChanges, OnDestroy {
       this.object.indeterminate2 = false;
       this.object.checked3 = false;
       this.object.indeterminate3 = false;
+      this.object.checked4 = false;
+      this.object.indeterminate4 = false;
       this.object.setOfCheckedJobArgu.clear();
       this.object.setOfCheckedEnv.clear();
+      this.object.setOfCheckedParam.clear();
     } else if (type === 'jobArguments') {
       this.object.checked1 = false;
       this.object.indeterminate1 = false;
       this.object.checked3 = false;
       this.object.indeterminate3 = false;
+      this.object.checked4 = false;
+      this.object.indeterminate4 = false;
       this.object.setOfCheckedArgu.clear();
       this.object.setOfCheckedEnv.clear();
+      this.object.setOfCheckedParam.clear();
     } else if (type === 'env') {
       this.object.checked1 = false;
       this.object.indeterminate1 = false;
       this.object.checked2 = false;
       this.object.indeterminate2 = false;
+      this.object.checked4 = false;
+      this.object.indeterminate4 = false;
       this.object.setOfCheckedArgu.clear();
+      this.object.setOfCheckedJobArgu.clear();
+      this.object.setOfCheckedParam.clear();
+    } else {
+      this.object.checked1 = false;
+      this.object.indeterminate1 = false;
+      this.object.checked2 = false;
+      this.object.indeterminate2 = false;
+      this.object.checked3 = false;
+      this.object.indeterminate3 = false;
+      this.object.setOfCheckedArgu.clear();
+      this.object.setOfCheckedEnv.clear();
       this.object.setOfCheckedJobArgu.clear();
     }
     let list = this.getList(type);
@@ -356,6 +408,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
         return this.object.setOfCheckedJobArgu.has(item.name);
       } else if (type === 'env') {
         return this.object.setOfCheckedEnv.has(item.name);
+      } else {
+        return this.object.setOfCheckedParam.has(item.name);
       }
     });
     this.copiedParamObjects = {operation, type, data: arr, name: this.job.name};
@@ -403,6 +457,10 @@ export class JobsComponent implements OnChanges, OnDestroy {
         this.object.setOfCheckedEnv = new Set<string>();
         this.object.checked3 = false;
         this.object.indeterminate3 = false;
+      } else {
+        this.object.setOfCheckedParam = new Set<string>();
+        this.object.checked4 = false;
+        this.object.indeterminate4 = false;
       }
       this.copiedParamObjects = {};
       this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
@@ -515,7 +573,9 @@ export class JobsComponent implements OnChanges, OnDestroy {
   addParameter(): void {
     const param = {
       name: '',
-      value: ''
+      value: {
+        type: 'String'
+      }
     };
     if (this.job.configuration.parameters) {
       if (!this.coreService.isLastEntryEmpty(this.job.configuration.parameters, 'name', '')) {
@@ -525,9 +585,36 @@ export class JobsComponent implements OnChanges, OnDestroy {
   }
 
   removeParameter(index): void {
-    this.job.configuration.arguments.splice(index, 1);
+    this.job.configuration.parameters.splice(index, 1);
     this.ref.detectChanges();
     this.saveJSON();
+  }
+
+  addFacet(data: any, isList = false): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: FacetEditorComponent,
+      nzClassName: isList ? 'sm' : 'lg',
+      nzComponentParams: {
+        data,
+        isList,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        data.value = result.value;
+        this.ref.detectChanges();
+        this.saveJSON();
+      }
+    });
+  }
+
+  addList(data: any): void {
+    this.addFacet(data, true);
   }
 
   addEnv(): void {
@@ -563,6 +650,9 @@ export class JobsComponent implements OnChanges, OnDestroy {
             break;
           }
         }
+      }
+      if(count < 2) {
+        this.saveJSON();
       }
     }
   }
@@ -609,7 +699,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
       }
     }
     if ($event.which === '13' || $event.which === 13) {
-      type === 'jobArgument' ? this.addJobArgument() : this.addArgu();
+      type === 'parameters' ? this.addParameter() :type === 'jobArgument' ? this.addJobArgument() : this.addArgu();
       this.saveJSON();
     }
   }
@@ -673,6 +763,35 @@ export class JobsComponent implements OnChanges, OnDestroy {
       } else {
         delete job.executable.env;
       }
+    }
+
+    if(job.parameters.length > 0) {
+      let temp = this.coreService.clone(job.parameters);
+      job.parameters = temp.filter((value) => {
+        delete value.value.invalid;
+        if (value.value.type !== 'String') {
+          delete value.value.facet;
+          delete value.value.message;
+        }
+        if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
+          delete value.value.default;
+        }
+
+        if (value.value.type === 'String') {
+          this.coreService.addSlashToString(value.value, 'default');
+        }
+
+        if (value.value.list) {
+          let list = [];
+          value.value.list.forEach((obj) => {
+            this.coreService.addSlashToString(obj, 'name');
+            list.push(obj.name);
+          });
+          value.value.list = list;
+        }
+        return !!value.name;
+      });
+      job.parameters = this.coreService.keyValuePair(job.parameters);
     }
 
     if (!job.parallelism) {
@@ -773,6 +892,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
       this.history = [];
       this.indexOfNextAdd = 0;
       this.getDocumentations();
+
       this.reset();
       if (res.configuration) {
         delete res.configuration.TYPE;
@@ -793,6 +913,14 @@ export class JobsComponent implements OnChanges, OnDestroy {
       this.job.path1 = this.data.path;
       this.job.name = this.data.name;
       this.setJobProperties();
+      if (this.jobResourcesTree.length === 0) {
+        this.getJobResources();
+      } else {
+        this.jobResourcesTree = this.coreService.getNotExistJobResource({
+          arr: this.jobResourcesTree,
+          jobResources: this.job.configuration.jobResourceNames
+        });
+      }
       this.job.actual = JSON.stringify(res.configuration);
       this.history.push(this.job.actual);
       this.ref.detectChanges();
@@ -848,6 +976,29 @@ export class JobsComponent implements OnChanges, OnDestroy {
         });
       }
     }
+
+    const temp = this.coreService.clone(this.job.configuration.parameters);
+    this.job.configuration.parameters = Object.entries(temp).map(([k, v]) => {
+      const val: any = v;
+      if (val.default) {
+        delete val.listParameters;
+        if (val.type === 'String') {
+          this.coreService.removeSlashToString(val, 'default');
+        } else if (val.type === 'Boolean') {
+          val.default = (val.default === true || val.default === 'true');
+        }
+      }
+      if (val.list) {
+        let list = [];
+        val.list.forEach((val) => {
+          let obj = {name: val};
+          this.coreService.removeSlashToString(obj, 'name');
+          list.push(obj);
+        });
+        val.list = list;
+      }
+      return {name: k, value: val};
+    });
 
     if (!this.job.configuration.executable.login) {
       this.job.configuration.executable.login = {};
