@@ -1399,7 +1399,8 @@
           "mailTo": "Send e-mail to",
           "mailCC": "Send e-mail copy to",
           "mailBcc": "Send e-mail blind copy to",
-          "mailOn": "Mail On"
+          "mailOn": "Mail On",
+          "description": "Description"
         },
         "addOrder": {
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
@@ -2610,6 +2611,7 @@
     "placeholder.expression": "Enter expression",
     "placeholder.orderId": "Enter Order ID",
     "placeholder.className": "Enter Class Name",
+    "placeholder.description": "Enter Description",
     "placeholder.selectJobResources": "Select Job Resources",
     "placeholder.selectScript": "Select Script Include",
     "placeholder.enterCredentialKey": "Enter credential key for Windows Credential Manager",
