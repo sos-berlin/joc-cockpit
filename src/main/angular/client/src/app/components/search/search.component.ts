@@ -46,6 +46,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     type: ''
   };
   type: string;
+  url: string;
 
   constructor(public coreService: CoreService, public modal: NzModalService, private authService: AuthService) {
   }
@@ -171,14 +172,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       type: ''
     };
     this.submitted = true;
-    const obj: any = {
-      deployedOrReleased: this.searchObj.deployedOrReleased,
-      returnType: this.searchObj.returnType,
-    };
-    if (this.isWorkflow) {
-      obj.deployedOrReleased = true;
-      obj.controllerId = this.controllerId;
-    }
+    const obj: any = {};
+
     if (this.searchObj.search) {
       obj.search = this.searchObj.search;
     }
@@ -208,7 +203,24 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.searchObj.deployedOrReleased && this.searchObj.currentController) {
       obj.controllerId = this.controllerId;
     }
-    this.coreService.post('inventory/search', obj).subscribe({
+    if (!this.isWorkflow && !this.isBoard && !this.isLock && !this.isCalendar) {
+      this.url = 'inventory/search';
+      obj.deployedOrReleased = this.searchObj.deployedOrReleased;
+      obj.returnType = this.searchObj.returnType;
+    } else {
+      obj.controllerId = this.controllerId;
+      if (this.isWorkflow) {
+        this.url = 'workflows/search';
+      } else if (this.isBoard) {
+        this.url = 'notice/boards/search';
+      } else if (this.isLock) {
+        this.url = 'locks/search';
+      } else if (this.isCalendar) {
+        this.url = 'calendar/search';
+      }
+    }
+  
+    this.coreService.post(this.url, obj).subscribe({
       next: (res) => {
         this.object.type = obj.returnType;
         this.results = res.results;

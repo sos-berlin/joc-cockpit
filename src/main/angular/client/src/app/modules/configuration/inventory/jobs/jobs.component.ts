@@ -7,7 +7,7 @@ import {
   OnDestroy,
   SimpleChanges
 } from '@angular/core';
-import {isArray, isEmpty, isEqual} from 'underscore';
+import {clone, isArray, isEmpty, isEqual} from 'underscore';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -129,6 +129,165 @@ export class JobsComponent implements OnChanges, OnDestroy {
     this.subscription2.unsubscribe();
     if (this.job.name) {
       this.saveJSON();
+    }
+  }
+
+  private getObject(): void {
+    this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
+    const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
+    this.coreService.post(URL, {
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.objectType,
+    }).subscribe((res: any) => {
+      this.lastModified = res.configurationDate;
+      this.history = [];
+      this.indexOfNextAdd = 0;
+      this.getDocumentations();
+
+      this.reset();
+      if (res.configuration) {
+        delete res.configuration.TYPE;
+        delete res.configuration.path;
+        delete res.configuration.version;
+        delete res.configuration.versionId;
+      } else {
+        res.configuration = {};
+      }
+      if (this.data.released !== res.released) {
+        this.data.released = res.released;
+      }
+      if (this.data.valid !== res.valid) {
+        this.data.valid = res.valid;
+      }
+
+      this.job = res;
+      this.job.path1 = this.data.path;
+      this.job.name = this.data.name;
+      this.setJobProperties();
+      if (this.jobResourcesTree.length === 0) {
+        this.getJobResources();
+      } else {
+        this.jobResourcesTree = this.coreService.getNotExistJobResource({
+          arr: this.jobResourcesTree,
+          jobResources: this.job.configuration.jobResourceNames
+        });
+      }
+      this.job.actual = JSON.stringify(res.configuration);
+      this.history.push(this.job.actual);
+      if (!res.valid) {
+        this.validateJSON(res.configuration);
+      } else {
+        this.invalidMsg = '';
+      }
+      this.ref.detectChanges();
+    });
+
+  }
+
+  private setJobProperties(): void {
+    if (!this.job.configuration.parallelism) {
+      this.job.configuration.parallelism = 1;
+    }
+    if (!this.job.configuration.executable || !this.job.configuration.executable.TYPE) {
+      this.job.configuration.executable = {
+        TYPE: 'ShellScriptExecutable',
+        script: '',
+        login: {},
+        env: []
+      };
+    }
+    if (this.job.configuration.executable.TYPE === 'ScriptExecutable') {
+      this.job.configuration.executable.TYPE = 'ShellScriptExecutable';
+    }
+
+    if (!this.job.configuration.executable.arguments || isEmpty(this.job.configuration.executable.arguments)) {
+      this.job.configuration.executable.arguments = [];
+    } else {
+      if (!isArray(this.job.configuration.executable.arguments)) {
+        this.job.configuration.executable.arguments = this.coreService.convertObjectToArray(this.job.configuration.executable, 'arguments');
+        this.job.configuration.executable.arguments.filter((env) => {
+          this.coreService.removeSlashToString(env, 'value');
+        });
+      }
+    }
+
+    if (!this.job.configuration.executable.jobArguments || isEmpty(this.job.configuration.executable.jobArguments)) {
+      this.job.configuration.executable.jobArguments = [];
+    } else {
+      if (!isArray(this.job.configuration.executable.jobArguments)) {
+        this.job.configuration.executable.jobArguments = this.coreService.convertObjectToArray(this.job.configuration.executable, 'jobArguments');
+        this.job.configuration.executable.jobArguments.filter((argu) => {
+          this.coreService.removeSlashToString(argu, 'value');
+        });
+      }
+    }
+
+    if (!this.job.configuration.executable.env || isEmpty(this.job.configuration.executable.env)) {
+      this.job.configuration.executable.env = [];
+    } else {
+      if (!isArray(this.job.configuration.executable.env)) {
+        this.job.configuration.executable.env = this.coreService.convertObjectToArray(this.job.configuration.executable, 'env');
+        this.job.configuration.executable.env.filter((env) => {
+          this.coreService.removeSlashToString(env, 'value');
+        });
+      }
+    }
+
+    const temp = this.coreService.clone(this.job.configuration.parameters);
+    this.job.configuration.parameters = Object.entries(temp).map(([k, v]) => {
+      const val: any = v;
+      if (val.default) {
+        delete val.listParameters;
+        if (val.type === 'String') {
+          this.coreService.removeSlashToString(val, 'default');
+        } else if (val.type === 'Boolean') {
+          val.default = (val.default === true || val.default === 'true');
+        }
+      }
+      if (val.list) {
+        let list = [];
+        val.list.forEach((val) => {
+          let obj = {name: val};
+          this.coreService.removeSlashToString(obj, 'name');
+          list.push(obj);
+        });
+        val.list = list;
+      }
+      return {name: k, value: val};
+    });
+
+    if (!this.job.configuration.executable.login) {
+      this.job.configuration.executable.login = {};
+    }
+
+    if (!this.job.configuration.notification) {
+      this.job.configuration.notification = {
+        mail: {}
+      };
+    } else if (!this.job.configuration.notification.mail) {
+      this.job.configuration.notification.mail = {};
+    }
+
+    if (this.job.configuration.timeout) {
+      this.job.configuration.timeout1 = this.workflowService.convertDurationToString(this.job.configuration.timeout);
+    }
+    if (this.job.configuration.graceTimeout) {
+      this.job.configuration.graceTimeout1 = this.workflowService.convertDurationToString(this.job.configuration.graceTimeout);
+    }
+    if (this.job.configuration.executable.arguments && this.job.configuration.executable.arguments.length === 0) {
+      this.addArgu();
+    }
+    if (this.job.configuration.executable.jobArguments && this.job.configuration.executable.jobArguments.length === 0) {
+      this.addJobArgument();
+    }
+    if (this.job.configuration.executable.env && this.job.configuration.executable.env.length === 0) {
+      this.addEnv();
+    }
+    if (!this.job.configuration.parameters) {
+      this.job.configuration.parameters = [];
+    }
+    if (this.job.configuration.parameters.length === 0) {
+      this.addParameter();
     }
   }
 
@@ -859,6 +1018,18 @@ export class JobsComponent implements OnChanges, OnDestroy {
     }
   }
 
+  private validateJSON(json): void {
+    const obj = clone(json);
+    obj.path = this.data.path;
+    this.coreService.post('inventory/' + this.objectType + '/validate', obj).subscribe((res: any) => {
+      this.job.valid = res.valid;
+      if (this.job.path === this.data.path) {
+        this.data.valid = res.valid;
+      }
+      this.setErrorMessage(res);
+    });
+  }
+
   private setErrorMessage(res): void {
     this.invalidMsg = '';
     if (res.invalidMsg) {
@@ -868,170 +1039,15 @@ export class JobsComponent implements OnChanges, OnDestroy {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
-    } else if (res.configuration) {
-      if (!res.configuration.arguments && !res.configuration.env) {
-        this.invalidMsg = 'inventory.message.envOrArgumentIsMissing';
+      if (this.job.configuration.executable.TYPE === 'ShellScriptExecutable' && !this.job.configuration.executable.script) {
+        this.invalidMsg = 'workflow.message.scriptIsMissing';
+      } else if (this.job.configuration.executable.TYPE === 'InternalExecutable' && !this.job.configuration.executable.className) {
+        this.invalidMsg = 'workflow.message.classNameIsMissing';
+      } else if (this.job.configuration.executable && this.job.configuration.executable.login &&
+        this.job.configuration.executable.login.withUserProfile && !this.job.configuration.executable.login.credentialKey) {
+        this.invalidMsg = 'inventory.message.credentialKeyIsMissing';
       }
     }
     this.ref.detectChanges();
-  }
-
-  private getObject(): void {
-    this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
-    const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
-    const obj: any = {
-      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
-      objectType: this.objectType,
-    };
-    if (this.inventoryService.checkDeploymentStatus.isChecked && !this.isTrash) {
-      obj.controllerId = this.schedulerId;
-    }
-
-    this.coreService.post(URL, obj).subscribe((res: any) => {
-      this.lastModified = res.configurationDate;
-      this.history = [];
-      this.indexOfNextAdd = 0;
-      this.getDocumentations();
-
-      this.reset();
-      if (res.configuration) {
-        delete res.configuration.TYPE;
-        delete res.configuration.path;
-        delete res.configuration.version;
-        delete res.configuration.versionId;
-      } else {
-        res.configuration = {};
-      }
-      if (this.data.released !== res.released) {
-        this.data.released = res.released;
-      }
-      if (this.data.valid !== res.valid) {
-        this.data.valid = res.valid;
-      }
-
-      this.job = res;
-      this.job.path1 = this.data.path;
-      this.job.name = this.data.name;
-      this.setJobProperties();
-      if (this.jobResourcesTree.length === 0) {
-        this.getJobResources();
-      } else {
-        this.jobResourcesTree = this.coreService.getNotExistJobResource({
-          arr: this.jobResourcesTree,
-          jobResources: this.job.configuration.jobResourceNames
-        });
-      }
-      this.job.actual = JSON.stringify(res.configuration);
-      this.history.push(this.job.actual);
-      this.ref.detectChanges();
-    });
-
-  }
-
-  private setJobProperties(): void {
-    if (!this.job.configuration.parallelism) {
-      this.job.configuration.parallelism = 1;
-    }
-    if (!this.job.configuration.executable || !this.job.configuration.executable.TYPE) {
-      this.job.configuration.executable = {
-        TYPE: 'ShellScriptExecutable',
-        script: '',
-        login: {},
-        env: []
-      };
-    }
-    if (this.job.configuration.executable.TYPE === 'ScriptExecutable') {
-      this.job.configuration.executable.TYPE = 'ShellScriptExecutable';
-    }
-
-    if (!this.job.configuration.executable.arguments || isEmpty(this.job.configuration.executable.arguments)) {
-      this.job.configuration.executable.arguments = [];
-    } else {
-      if (!isArray(this.job.configuration.executable.arguments)) {
-        this.job.configuration.executable.arguments = this.coreService.convertObjectToArray(this.job.configuration.executable, 'arguments');
-        this.job.configuration.executable.arguments.filter((env) => {
-          this.coreService.removeSlashToString(env, 'value');
-        });
-      }
-    }
-
-    if (!this.job.configuration.executable.jobArguments || isEmpty(this.job.configuration.executable.jobArguments)) {
-      this.job.configuration.executable.jobArguments = [];
-    } else {
-      if (!isArray(this.job.configuration.executable.jobArguments)) {
-        this.job.configuration.executable.jobArguments = this.coreService.convertObjectToArray(this.job.configuration.executable, 'jobArguments');
-        this.job.configuration.executable.jobArguments.filter((argu) => {
-          this.coreService.removeSlashToString(argu, 'value');
-        });
-      }
-    }
-
-    if (!this.job.configuration.executable.env || isEmpty(this.job.configuration.executable.env)) {
-      this.job.configuration.executable.env = [];
-    } else {
-      if (!isArray(this.job.configuration.executable.env)) {
-        this.job.configuration.executable.env = this.coreService.convertObjectToArray(this.job.configuration.executable, 'env');
-        this.job.configuration.executable.env.filter((env) => {
-          this.coreService.removeSlashToString(env, 'value');
-        });
-      }
-    }
-
-    const temp = this.coreService.clone(this.job.configuration.parameters);
-    this.job.configuration.parameters = Object.entries(temp).map(([k, v]) => {
-      const val: any = v;
-      if (val.default) {
-        delete val.listParameters;
-        if (val.type === 'String') {
-          this.coreService.removeSlashToString(val, 'default');
-        } else if (val.type === 'Boolean') {
-          val.default = (val.default === true || val.default === 'true');
-        }
-      }
-      if (val.list) {
-        let list = [];
-        val.list.forEach((val) => {
-          let obj = {name: val};
-          this.coreService.removeSlashToString(obj, 'name');
-          list.push(obj);
-        });
-        val.list = list;
-      }
-      return {name: k, value: val};
-    });
-
-    if (!this.job.configuration.executable.login) {
-      this.job.configuration.executable.login = {};
-    }
-
-    if (!this.job.configuration.notification) {
-      this.job.configuration.notification = {
-        mail: {}
-      };
-    } else if (!this.job.configuration.notification.mail) {
-      this.job.configuration.notification.mail = {};
-    }
-
-    if (this.job.configuration.timeout) {
-      this.job.configuration.timeout1 = this.workflowService.convertDurationToString(this.job.configuration.timeout);
-    }
-    if (this.job.configuration.graceTimeout) {
-      this.job.configuration.graceTimeout1 = this.workflowService.convertDurationToString(this.job.configuration.graceTimeout);
-    }
-    if (this.job.configuration.executable.arguments && this.job.configuration.executable.arguments.length === 0) {
-      this.addArgu();
-    }
-    if (this.job.configuration.executable.jobArguments && this.job.configuration.executable.jobArguments.length === 0) {
-      this.addJobArgument();
-    }
-    if (this.job.configuration.executable.env && this.job.configuration.executable.env.length === 0) {
-      this.addEnv();
-    }
-    if (!this.job.configuration.parameters) {
-      this.job.configuration.parameters = [];
-    }
-    if (this.job.configuration.parameters.length === 0) {
-      this.addParameter();
-    }
   }
 }
