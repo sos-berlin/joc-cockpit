@@ -4998,20 +4998,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.coreService.post('inventory/store', request).subscribe((res: any) => {
       obj.valid = res.valid;
       if (obj.path === this.selectedObj.path && obj.name === this.selectedObj.name && request.objectType === this.selectedObj.type) {
-        this.type = undefined;
+        this.type = obj.objectType || obj.type;
         this.selectedData.valid = res.valid;
         this.selectedData.deployed = res.deployed;
         this.selectedData.released = res.released;
         if (reload) {
           this.selectedData.reload = true;
         }
-        setTimeout(() => {
-          this.type = obj.objectType || obj.type;
-        }, 5);
       }
-      this.updateFolders(obj.path, false, () => {
-        this.updateTree(false);
-      });
     });
   }
 

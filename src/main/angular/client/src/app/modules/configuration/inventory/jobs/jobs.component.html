@@ -145,7 +145,7 @@
                 <div class="row">
                   <div class="col-md-12 role">
                     <div class="b-a" [ngClass]="{'invalid': (script.invalid && (script.dirty && script.touched))}">
-                      <ngx-codemirror name="script" #script="ngModel" [(ngModel)]="job.configuration.script"
+                      <ngx-codemirror name="script" #script="ngModel" [(ngModel)]="job.configuration.executable.script"
                                       title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}" required
                                       [options]="cmOption" (focusout)="saveJSON()"></ngx-codemirror>
                     </div>
@@ -180,7 +180,7 @@
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab [nzTitle]="'workflow.label.parameters' | translate">
+              <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
                 <div class="pos-abt r-t-12">
                   <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedParam.size === 0"
                           nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('parameter')" translate>
@@ -277,7 +277,7 @@
                     </div>
                     <div class="form-group row">
                       <div class="col-sm-12" *ngIf="job.configuration.parameters">
-                        <a class="text-u-l m-l-11" (click)="addParameter();saveJSON()" translate>workflow.button.addParameter</a>
+                        <a class="text-u-l m-l-11" (click)="addParameter();saveJSON()" translate>workflow.button.addArgument</a>
                       </div>
                     </div>
                   </div>
@@ -360,86 +360,86 @@
                   </div>
                 </div>
               </nz-tab>
-              <nz-tab [nzTitle]="'workflow.label.arguments' | translate"
-                      *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'InternalExecutable'">
+<!--              <nz-tab [nzTitle]="'workflow.label.arguments' | translate"-->
+<!--                      *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'InternalExecutable'">-->
 
-                <div class="pos-abt r-t-12">
-                  <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"
-                          nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('arguments')" translate>
-                    <i class="fa fa-scissors"></i>
-                  </button>
-                  <button type="button" class="btn btn-grey btn-sm m-l-sm"
-                          [disabled]="object.setOfCheckedArgu.size === 0"
-                          nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('arguments')" translate>
-                    <i class="fa fa-copy"></i>
-                  </button>
-                  <button type="button" class="btn btn-grey btn-sm m-l-sm"
-                          [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"
-                          nz-tooltip="{{'common.button.paste' | translate}}"
-                          (click)="pasteParam(job.configuration.executable,'arguments')" translate>
-                    <i class="fa fa-paste"></i>
-                  </button>
-                </div>
-                <div class="row">
-                  <div class="col-md-12" *ngIf="job.configuration.executable.arguments.length > 0">
-                    <div class="pos-abt m-t-n-xxs m-l-11">
-                      <label nz-checkbox [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1"
-                             (nzCheckedChange)="onAllChecked(job.configuration.executable,'arguments', $event)"></label>
-                    </div>
-                    <div class="form-group row m-b-0 m-l-md">
-                      <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-                      <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
-                    </div>
-                  </div>
-                  <div class="col-md-12 tab-ht">
-                    <div cdkDropList (cdkDropListDropped)="drop($event, job.configuration.executable.arguments)">
-                      <div class="form-group row m-b-0 m-l-md move-on-hover"
-                           *ngFor="let argu of job.configuration.executable.arguments; let i = index" cdkDrag>
-                        <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
-                          <i class="fa fa-bars" aria-hidden="true"></i>
-                        </div>
-                        <div class="pos-abt m-l-n-13">
-                          <label class="m-t-xs" nz-checkbox [nzDisabled]="!argu.name"
-                                 [nzChecked]="object.setOfCheckedArgu.has(argu.name)"
-                                 (nzCheckedChange)="onItemChecked(job.configuration.executable,'arguments', argu.name, $event)"></label>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm p-r-0"
-                             [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">
-                          <input nz-input identifierValidation name="aname{{i}}" class="form-control"
-                                 [(ngModel)]="argu.name" #aname="ngModel"
-                                 (blur)="isStringValid(argu, aname, job.configuration.executable.arguments)"
-                                 placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
-                          <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
-                               class="text-danger help-block">
-                            <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
-                          </div>
-                        </div>
-                        <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}"
-                                 (keydown)="onKeyPress($event, 'argument')"
-                                 placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
-                          <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"
-                             (click)="openEditor(argu)"></i>
-                          <div class="pos-abt r-t-n-6">
-                            <i
-                              *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"
-                              class="fa fa-scissors"></i>
-                            <a
-                              *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i
-                              (click)="removeArgu(i)" class="fa fa-times text-hover-color"></i></a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <div class="col-sm-12">
-                        <a class="text-u-l m-l-11" (click)="addArgu();saveJSON()" translate>workflow.button.addArgument</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+<!--                <div class="pos-abt r-t-12">-->
+<!--                  <button type="button" class="btn btn-grey btn-sm" [disabled]="object.setOfCheckedArgu.size === 0"-->
+<!--                          nz-tooltip="{{'common.button.cut' | translate}}" (click)="cutParam('arguments')" translate>-->
+<!--                    <i class="fa fa-scissors"></i>-->
+<!--                  </button>-->
+<!--                  <button type="button" class="btn btn-grey btn-sm m-l-sm"-->
+<!--                          [disabled]="object.setOfCheckedArgu.size === 0"-->
+<!--                          nz-tooltip="{{'common.button.copy' | translate}}" (click)="copyParam('arguments')" translate>-->
+<!--                    <i class="fa fa-copy"></i>-->
+<!--                  </button>-->
+<!--                  <button type="button" class="btn btn-grey btn-sm m-l-sm"-->
+<!--                          [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"-->
+<!--                          nz-tooltip="{{'common.button.paste' | translate}}"-->
+<!--                          (click)="pasteParam(job.configuration.executable,'arguments')" translate>-->
+<!--                    <i class="fa fa-paste"></i>-->
+<!--                  </button>-->
+<!--                </div>-->
+<!--                <div class="row">-->
+<!--                  <div class="col-md-12" *ngIf="job.configuration.executable.arguments.length > 0">-->
+<!--                    <div class="pos-abt m-t-n-xxs m-l-11">-->
+<!--                      <label nz-checkbox [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1"-->
+<!--                             (nzCheckedChange)="onAllChecked(job.configuration.executable,'arguments', $event)"></label>-->
+<!--                    </div>-->
+<!--                    <div class="form-group row m-b-0 m-l-md">-->
+<!--                      <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>-->
+<!--                      <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="col-md-12 tab-ht">-->
+<!--                    <div cdkDropList (cdkDropListDropped)="drop($event, job.configuration.executable.arguments)">-->
+<!--                      <div class="form-group row m-b-0 m-l-md move-on-hover"-->
+<!--                           *ngFor="let argu of job.configuration.executable.arguments; let i = index" cdkDrag>-->
+<!--                        <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>-->
+<!--                          <i class="fa fa-bars" aria-hidden="true"></i>-->
+<!--                        </div>-->
+<!--                        <div class="pos-abt m-l-n-13">-->
+<!--                          <label class="m-t-xs" nz-checkbox [nzDisabled]="!argu.name"-->
+<!--                                 [nzChecked]="object.setOfCheckedArgu.has(argu.name)"-->
+<!--                                 (nzCheckedChange)="onItemChecked(job.configuration.executable,'arguments', argu.name, $event)"></label>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm p-r-0"-->
+<!--                             [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}">-->
+<!--                          <input nz-input identifierValidation name="aname{{i}}" class="form-control"-->
+<!--                                 [(ngModel)]="argu.name" #aname="ngModel"-->
+<!--                                 (blur)="isStringValid(argu, aname, job.configuration.executable.arguments)"-->
+<!--                                 placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">-->
+<!--                          <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"-->
+<!--                               class="text-danger help-block">-->
+<!--                            <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">-->
+<!--                          <input type="text" class="form-control" [(ngModel)]="argu.value" name="value{{i}}"-->
+<!--                                 (keydown)="onKeyPress($event, 'argument')"-->
+<!--                                 placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>-->
+<!--                          <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"-->
+<!--                             (click)="openEditor(argu)"></i>-->
+<!--                          <div class="pos-abt r-t-n-6">-->
+<!--                            <i-->
+<!--                              *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name)"-->
+<!--                              class="fa fa-scissors"></i>-->
+<!--                            <a-->
+<!--                              *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(argu.name))"><i-->
+<!--                              (click)="removeArgu(i)" class="fa fa-times text-hover-color"></i></a>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="form-group row">-->
+<!--                      <div class="col-sm-12">-->
+<!--                        <a class="text-u-l m-l-11" (click)="addArgu();saveJSON()" translate>workflow.button.addArgument</a>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
 
-              </nz-tab>
+<!--              </nz-tab>-->
               <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate"
                       *ngIf="job.configuration.executable && (job.configuration.executable.TYPE === 'InternalExecutable')">
                 <div class="pos-abt r-t-12">
