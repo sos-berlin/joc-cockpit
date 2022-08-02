@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.coreService.get('assets/i18n/locales.json').subscribe((data) => {
+    this.coreService.get('assets/i18n/locales.json?v=1659421544261').subscribe((data) => {
       const locales = [];
       for (const prop in data) {
         locales.push(data[prop]);

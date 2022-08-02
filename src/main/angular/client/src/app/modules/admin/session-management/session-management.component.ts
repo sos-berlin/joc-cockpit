@@ -62,7 +62,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
     this.data = [...this.data];
     this.data.forEach((item) => {
       item.remainingSessionTimeout = this.convertMsToTime(item.timeout);
-     
+
     })
   }
 
@@ -178,7 +178,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
       let comments = {
         radio: 'predefined',
         type: 'Session',
-        operation: 'Delete',
+        operation: 'Cancel',
         name: acc ? acc.accountName : ''
       };
       const modal = this.modal.create({
@@ -206,7 +206,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
         nzTitle: undefined,
         nzContent: ConfirmationModalComponent,
         nzComponentParams: {
-          delete: true,
+          cancel: true,
           account: acc,
           activeSession: true
         },
@@ -235,7 +235,7 @@ export class SessionManagementComponent implements OnInit, OnDestroy {
         });
       }
     }
-    this.coreService.post('iam/sessions/delete', obj).subscribe({
+    this.coreService.post('iam/sessions/cancel', obj).subscribe({
       next: () => {
         this.loadSession();
         this.reset();

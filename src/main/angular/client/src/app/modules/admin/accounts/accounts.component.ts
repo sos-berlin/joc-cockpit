@@ -20,6 +20,7 @@ import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
 })
 export class ConfirmationModalComponent implements OnInit {
   @Input() delete;
+  @Input() cancel: boolean;
   @Input() reset;
   @Input() forceChange;
   @Input() accounts;

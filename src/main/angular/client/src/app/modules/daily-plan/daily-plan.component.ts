@@ -502,22 +502,23 @@ export class RemovePlanModalComponent implements OnInit {
       filter: {}
     };
 
-    if (this.workflow) {
-      obj.filter.workflowPaths = [this.order.key];
-    } else {
-      if (this.order) {
-        if (this.order.key) {
-          obj.filter.schedulePaths = [this.order.schedulePath || this.order.key];
-        } else {
-          obj.filter.orderIds = [this.order.orderId];
-        }
-      } else if (this.orders) {
+
+    if (this.order) {
+      if (this.order.key) {
         obj.filter.orderIds = [];
-        this.orders.forEach((order) => {
+        this.order.value.forEach((order) => {
           obj.filter.orderIds.push(order.orderId);
         });
+      } else {
+        obj.filter.orderIds = [this.order.orderId];
       }
+    } else if (this.orders) {
+      obj.filter.orderIds = [];
+      this.orders.forEach((order) => {
+        obj.filter.orderIds.push(order.orderId);
+      });
     }
+
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.coreService.post('daily_plan/orders/submit', obj).subscribe({

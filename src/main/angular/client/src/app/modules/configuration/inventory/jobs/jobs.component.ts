@@ -47,6 +47,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
   jobResourcesTree = [];
   isLengthExceed = false;
   selectedNode: any = {};
+  returnCodes: any = {on: 'success'};
   object = {
     checked1: false,
     indeterminate1: false,
@@ -142,6 +143,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
       this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
+      this.returnCodes = {on: 'success'};
       this.getDocumentations();
 
       this.reset();
@@ -198,6 +200,23 @@ export class JobsComponent implements OnChanges, OnDestroy {
     }
     if (this.job.configuration.executable.TYPE === 'ScriptExecutable') {
       this.job.configuration.executable.TYPE = 'ShellScriptExecutable';
+    }
+
+    if (!this.job.configuration.executable.returnCodeMeaning) {
+      this.job.configuration.executable.returnCodeMeaning = {
+        success: 0
+      };
+    } else {
+      if (this.job.configuration.executable.returnCodeMeaning.success) {
+        this.job.configuration.executable.returnCodeMeaning.success = this.job.configuration.executable.returnCodeMeaning.success.toString();
+      } else if (this.job.configuration.executable.returnCodeMeaning.failure) {
+        this.job.configuration.executable.returnCodeMeaning.failure = this.job.configuration.executable.returnCodeMeaning.failure.toString();
+      }
+    }
+    if (this.job.configuration.executable.returnCodeMeaning.failure) {
+      this.returnCodes.on = 'failure';
+    } else {
+      this.returnCodes.on = 'success';
     }
 
     if (!this.job.configuration.executable.arguments || isEmpty(this.job.configuration.executable.arguments)) {
@@ -879,6 +898,24 @@ export class JobsComponent implements OnChanges, OnDestroy {
     }
     if (job.executable && job.executable.env) {
       this.coreService.convertArrayToObject(job.executable, 'env', true);
+    }
+    if (job.executable.returnCodeMeaning && !isEmpty(job.executable.returnCodeMeaning)) {
+      if (job.executable.returnCodeMeaning.success && typeof job.executable.returnCodeMeaning.success == 'string') {
+        job.executable.returnCodeMeaning.success = job.executable.returnCodeMeaning.success.split(',').map(Number);
+        delete job.executable.returnCodeMeaning.failure;
+      } else if (job.executable.returnCodeMeaning.failure && typeof job.executable.returnCodeMeaning.failure == 'string') {
+        job.executable.returnCodeMeaning.failure = job.executable.returnCodeMeaning.failure.split(',').map(Number);
+        delete job.executable.returnCodeMeaning.success;
+      }
+      if (job.executable.returnCodeMeaning.failure === '') {
+        delete job.executable.returnCodeMeaning.failure;
+      }
+      if (job.executable.returnCodeMeaning.success === '' && !job.executable.returnCodeMeaning.failure) {
+        job.executable.returnCodeMeaning = {};
+      }
+      if (job.executable.returnCodeMeaning.success == '0') {
+        delete job.executable.returnCodeMeaning;
+      }
     }
     if (job.executable && isEmpty(job.executable.login)) {
       delete job.executable.login;

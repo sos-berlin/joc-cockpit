@@ -19,7 +19,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   import(`../../node_modules/@angular/common/locales/${lang}.mjs`).then(locale => {
     registerLocaleData(locale.default);
   });
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json?v=1659421544261');
 }
 
 @Injectable()
