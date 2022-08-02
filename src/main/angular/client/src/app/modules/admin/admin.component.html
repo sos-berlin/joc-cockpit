@@ -117,8 +117,8 @@
               </button>
               <button *ngIf="isSessionButtonShow && adminFilter.isSession" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="deleteBulkActiveSessions()">
-                <i class="fa fa-trash-o"></i>&nbsp;
-                <span translate>user.button.deleteSessions</span>
+                <i class="fa fa-times"></i>&nbsp;
+                <span translate>user.button.cancelSessions</span>
               </button>
               <button *ngIf="route === '/users/identity_service/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-12"
                       (click)="deleteProfiles()">

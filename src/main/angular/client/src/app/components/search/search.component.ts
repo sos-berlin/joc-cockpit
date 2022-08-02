@@ -106,9 +106,14 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   getFolderTree(): void {
     this.searchObj.folders = [];
-    this.coreService.post('tree', {
-      forInventory: true
-    }).subscribe(res => {
+    const obj: any = {};
+    if (this.isWorkflow || this.isBoard || this.isLock || this.isCalendar) {
+      obj.types = this.isWorkflow ? [this.ENUM.WORKFLOW] : this.isBoard ? [this.ENUM.NOTICEBOARD] : this.isLock ? [this.ENUM.LOCK] : ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+      obj.controllerId = this.controllerId;
+    } else{
+      obj.forInventory = true;
+    }
+    this.coreService.post('tree', obj).subscribe(res => {
       this.folders = this.coreService.prepareTree(res, true);
       if (this.folders.length > 0) {
         this.folders[0].expanded = true;
@@ -216,7 +221,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       } else if (this.isLock) {
         this.url = 'locks/search';
       } else if (this.isCalendar) {
-        this.url = 'calendar/search';
+        this.url = 'calendars/search';
       }
     }
   
