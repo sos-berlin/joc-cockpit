@@ -294,16 +294,18 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (node.origin.children && node.origin.children.length > 0 && node.origin.children[0].type) {
         flag = false;
       }
-      if ((node.isExpanded || node.origin.isLeaf) && flag) {
+      if ((node.isExpanded || node.origin.isLeaf) && flag && !node.origin.isCall) {
+        node.origin.isCall = true;
         this.updateList(node, type);
       }
     } else {
       if (node.key && !node.key.match('/')) {
         if (this.schedule.configuration.workflowNames.indexOf(node.key) === -1) {
           this.schedule.configuration.workflowNames.push(node.key);
-          this.getWorkflowInfo(node.key, true, null);
+          if(this.schedule.configuration.workflowNames.length === 1) {
+            this.getWorkflowInfo(node.key, true, null);
+          }
         }
-
       }
     }
   }
@@ -313,7 +315,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       path: node.key,
       objectTypes: [type]
     };
-
     this.coreService.post('inventory/read/folder', obj).subscribe((res: any) => {
       let data = res.workflows;
       data = sortBy(data, (i: any) => {
@@ -885,6 +886,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       objectType: InventoryObject.WORKFLOW
     }).subscribe((conf: any) => {
       if (this.schedule.configuration && this.schedule.configuration.workflowNames.length > 1) {
+        this.ref.detectChanges();
         let msg;
         if (conf.configuration.orderPreparation) {
           msg = 'inventory.message.workflowsWithoutVariables';
@@ -898,15 +900,16 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           });
           return;
         }
+      } else {
+        this.workflow = conf.configuration;
+        if (flag && this.schedule.configuration) {
+          this.schedule.configuration.orderParameterisations = [];
+        }
+        this.getPositions(conf.path, () => {
+          this.updateVariableList();
+          this.saveJSON();
+        });
       }
-      this.workflow = conf.configuration;
-      if (flag && this.schedule.configuration) {
-        this.schedule.configuration.orderParameterisations = [];
-      }
-      this.getPositions(conf.path, () => {
-        this.updateVariableList();
-        this.saveJSON();
-      });
       if (cb) {
         cb(conf.path);
       }
