@@ -2641,7 +2641,9 @@
       "label.class": "Class",
       "button.next": "Next",
       "button.showDocumentation": "Show Documentation",
-      "button.addAnotherParameter": "Add another Variable"
+      "button.addAnotherParameter": "Add another Variable",
+      "tab.jitl": "JITL Job",
+      "tab.jobTemplate": "Job Template"
     },
     "admissionTime": {
       "label.on": "On",

@@ -2641,7 +2641,9 @@
       "label.class": "クラス",
       "button.next": "次",
       "button.showDocumentation": "ドキュメント表示",
-      "button.addAnotherParameter": "他のパラメーター追加"
+      "button.addAnotherParameter": "他のパラメーター追加",
+      "tab.jitl": "JITL Job",
+      "tab.jobTemplate": "Job Template"
     },
     "admissionTime": {
       "label.on": "On",

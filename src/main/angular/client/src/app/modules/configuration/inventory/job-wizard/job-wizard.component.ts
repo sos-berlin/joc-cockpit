@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
+import {InventoryObject} from "../../../../models/enums";
 
 @Component({
   selector: 'app-job-wizard',
@@ -21,16 +22,24 @@ export class JobWizardComponent implements OnInit {
     sortBy: 'name',
     reverse: false
   };
+  jobTree: any = [];
   jobList: any;
   job: any;
   loading = true;
 
-  constructor(private coreService: CoreService, private activeModal: NzModalRef) {
+  constructor(private coreService: CoreService, private activeModal: NzModalRef, private modal: NzModalService,) {
   }
 
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.getJitlJobs();
+  }
+
+  tabChange($event): void {
+    if ($event.index === 1) {
+      console.log('call tree');
+      this.getJobTemplates();
+    }
   }
 
   private getJitlJobs(): void {
@@ -41,6 +50,15 @@ export class JobWizardComponent implements OnInit {
         this.jobList = res.jobs;
         this.loading = false;
       }, error: () => this.loading = false
+    });
+  }
+
+  private getJobTemplates(): void {
+    this.coreService.post('tree', {
+      forInventory: true,
+      types: [InventoryObject.JOB]
+    }).subscribe((res) => {
+      this.jobTree = this.coreService.prepareTree(res, false);
     });
   }
 
