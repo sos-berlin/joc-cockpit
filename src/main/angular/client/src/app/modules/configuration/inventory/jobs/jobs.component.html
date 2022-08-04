@@ -238,10 +238,10 @@
                   </button>
                 </div>
                 <div class="row">
-                  <div class="col-md-12" *ngIf="job.configuration.parameters.length > 0">
+                  <div class="col-md-12" *ngIf="job.configuration.arguments.length > 0">
                     <div class="pos-abt m-t-n-xxs m-l-11">
                       <label nz-checkbox [(nzChecked)]="object.checked4" [nzIndeterminate]="object.indeterminate4"
-                             (nzCheckedChange)="onAllChecked(job.configuration,'parameters', $event)"></label>
+                             (nzCheckedChange)="onAllChecked(job.configuration,'arguments', $event)"></label>
                     </div>
                     <div class="form-group row m-b-0 m-l-md">
                       <div class="col-md-4 col-lg-4 col-xl-3 m-b-sm" translate>common.label.name</div>
@@ -250,22 +250,22 @@
                     </div>
                   </div>
                   <div class="col-md-12 tab-ht">
-                    <div cdkDropList (cdkDropListDropped)="drop($event, job.configuration.parameters)">
+                    <div cdkDropList (cdkDropListDropped)="drop($event, job.configuration.arguments)">
                       <div class="form-group row m-b-0 m-l-md move-on-hover"
-                           *ngFor="let parameter of job.configuration.parameters; let i = index" cdkDrag>
+                           *ngFor="let parameter of job.configuration.arguments; let i = index" cdkDrag>
                         <div class="pos-abt move-icon drag-move-icon" cdkDragHandle>
                           <i class="fa fa-bars" aria-hidden="true"></i>
                         </div>
                         <div class="pos-abt m-l-n-13">
                           <label class="m-t-xs" nz-checkbox [nzDisabled]="!parameter.name"
                                  [nzChecked]="object.setOfCheckedParam.has(parameter.name)"
-                                 (nzCheckedChange)="onItemChecked(job.configuration, 'parameters', parameter.name, $event)"></label>
+                                 (nzCheckedChange)="onItemChecked(job.configuration, 'arguments', parameter.name, $event)"></label>
                         </div>
                         <div class="col-md-4 col-lg-4 col-xl-3 m-b-sm p-r-0"
                              [ngClass]="{'has-error' : ((pname.dirty || pname.touched) && pname.invalid)}">
                           <input [readonly]="isTrash" identifierValidation #pname="ngModel" autocomplete="off" type="text" class="form-control"
                                  name="pname{{i}}" [(ngModel)]="parameter.name" placeholder="{{'common.placeholder.name' | translate}}"
-                                 (blur)="isStringValid(parameter, pname, job.configuration.parameters)">
+                                 (blur)="isStringValid(parameter, pname, job.configuration.arguments)">
                           <div *ngIf="pname.invalid && pname.errors && (pname.dirty || pname.touched)"
                                class="text-danger help-block">
                             <div *ngIf="pname.errors.invalidIdentifier" translate>common.message.invalid</div>
@@ -308,14 +308,19 @@
                               (click)="removeParameter(i)" class="fa fa-times text-hover-color"></i></a>
                           </div>
                         </div>
-                        <div class="col-lg-12 col-xl-9 m-b-12">
+                        <div class="col-lg-12 col-xl-9 m-b-xs">
                           <textarea class="form-control" rows="2" name="pdescription{{i}}" [(ngModel)]="parameter.value.description"
                                     placeholder="{{'workflow.placeholder.description' | translate}}" (blur)="saveJSON()"></textarea>
+                        </div>
+                        <div class="col-lg-12 col-xl-9 m-b-12">
+                          <label class="m-t-xs" nz-checkbox [(ngModel)]="parameter.value.required">
+                            {{'workflow.label.required' | translate}}
+                          </label>
                         </div>
                       </div>
                     </div>
                     <div class="form-group row">
-                      <div class="col-sm-12" *ngIf="job.configuration.parameters">
+                      <div class="col-sm-12" *ngIf="job.configuration.arguments">
                         <a class="text-u-l m-l-11" (click)="addParameter();saveJSON()" translate>workflow.button.addArgument</a>
                       </div>
                     </div>
@@ -647,18 +652,6 @@
                                placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
                                (blur)="saveJSON()" validateDurtionWithPercentageReqex>
                       </label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.compatibleMode' | translate}}"
-                           [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.configuration.compatibleMode' | translate) : ''"
-                           [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.compatibleMode</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <nz-select [nzDisabled]="isTrash || !permission.joc.inventory.manage" name="v1Compatible"
-                                 [(ngModel)]="job.configuration.v1Compatible" nzAllowClear (ngModelChange)="saveJSON()">
-                        <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
-                      </nz-select>
                     </div>
                   </div>
                   <div class="form-group row">

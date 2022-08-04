@@ -1035,7 +1035,7 @@ export class ExportComponent implements OnInit {
         this.filter.controller = false;
         this.filter.deploy = false;
         if (this.origin.dailyPlan) {
-          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOB);
+          this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
         } else {
           this.objectTypes.push(this.origin.object.match('CALENDAR') ? (InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR) : this.origin.object);
         }
@@ -1056,7 +1056,7 @@ export class ExportComponent implements OnInit {
     if (this.objectTypes.length === 0) {
       this.objectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOB);
+      this.objectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
     }
     this.exportObj.objectTypes = [...this.objectTypes];
     this.buildTree(this.path);
@@ -1104,7 +1104,7 @@ export class ExportComponent implements OnInit {
     if (this.exportObj.exportType !== 'folders') {
       deployObjectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      releaseObjectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOB);
+      releaseObjectTypes.push(InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
     }
 
     const APIs = [];
@@ -1654,7 +1654,7 @@ export class RepositoryComponent implements OnInit {
       if (this.category !== 'LOCAL') {
         obj.objectTypes = [InventoryObject.INCLUDESCRIPT];
       } else {
-        obj.objectTypes = [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.SCHEDULE, InventoryObject.JOB];
+        obj.objectTypes = [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.SCHEDULE, InventoryObject.JOBTEMPLATE];
       }
       obj.withoutReleased = !this.filter.release;
       if (obj.objectTypes.length === 0) {
@@ -3573,7 +3573,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         {
           name: 'Job Templates',
           title: 'Job Templates',
-          object: InventoryObject.JOB,
+          object: InventoryObject.JOBTEMPLATE,
           children: [],
           path: data.path,
           key: (KEY + 'JobTemplates$')
@@ -3633,7 +3633,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             resObject = res.includeScripts;
           } else if (dailyPlanObj.dailyPlanArr[i].object === 'CALENDAR') {
             resObject = res.calendars;
-          } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.JOB) {
+          } else if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.JOBTEMPLATE) {
             resObject = res.jobTemplates;
           }
           if (resObject) {
@@ -5281,7 +5281,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       configuration.timeZone = this.preferences.zone;
     }
     const valid = !(obj.type.match(/CALENDAR/) || obj.type === InventoryObject.SCHEDULE || obj.type === InventoryObject.INCLUDESCRIPT || obj.type === InventoryObject.NOTICEBOARD
-      || obj.type === InventoryObject.WORKFLOW || obj.type === InventoryObject.FILEORDERSOURCE || obj.type === InventoryObject.JOBRESOURCE || obj.type === InventoryObject.JOB);
+      || obj.type === InventoryObject.WORKFLOW || obj.type === InventoryObject.FILEORDERSOURCE || obj.type === InventoryObject.JOBRESOURCE || obj.type === InventoryObject.JOBTEMPLATE);
     const PATH = obj.path + (obj.path === '/' ? '' : '/') + obj.name;
     if (PATH && obj.type && obj.name) {
       const request: any = {

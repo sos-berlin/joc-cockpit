@@ -198,7 +198,7 @@
                     <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
                        nzTheme="outline"></i>
                     <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
-                    <i *ngIf="node.origin.object == 'JOB'" class="icon-jobs-icon icon-color tree-icon"></i>
+                    <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
                     <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
                     <i *ngIf="node.origin.object == 'NOTICEBOARD'" nz-icon nzType="pushpin" class="icon-color"
                        nzTheme="outline"></i>
@@ -242,7 +242,7 @@
           <app-file-order [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
                         [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-file-order>
         </div>
-        <div *ngIf="type == 'JOB'">
+        <div *ngIf="type == 'JOBTEMPLATE'">
           <app-jobs [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
                          [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-jobs>
         </div>
@@ -311,7 +311,7 @@
         <li nz-menu-item *ngIf="!node.origin.controller" (click)="newObject(node, 'WORKINGDAYSCALENDAR')">
           <a translate>inventory.button.newCalendar</a>
         </li>
-        <li nz-menu-item *ngIf="!node.origin.controller" (click)="newObject(node, 'JOB')">
+        <li nz-menu-item *ngIf="!node.origin.controller" (click)="newObject(node, 'JOBTEMPLATE')">
           <a translate>inventory.button.newJobTemplate</a>
         </li>
       </ul>

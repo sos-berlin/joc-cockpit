@@ -39,7 +39,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
 
   job: any = {};
   invalidMsg: string;
-  objectType = InventoryObject.JOB;
+  objectType = InventoryObject.JOBTEMPLATE;
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
@@ -252,8 +252,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
       }
     }
 
-    const temp = this.coreService.clone(this.job.configuration.parameters);
-    this.job.configuration.parameters = Object.entries(temp).map(([k, v]) => {
+    const temp = this.coreService.clone(this.job.configuration.arguments);
+    this.job.configuration.arguments = Object.entries(temp).map(([k, v]) => {
       const val: any = v;
       if (val.default) {
         delete val.listParameters;
@@ -302,10 +302,10 @@ export class JobsComponent implements OnChanges, OnDestroy {
     if (this.job.configuration.executable.env && this.job.configuration.executable.env.length === 0) {
       this.addEnv();
     }
-    if (!this.job.configuration.parameters) {
-      this.job.configuration.parameters = [];
+    if (!this.job.configuration.arguments) {
+      this.job.configuration.arguments = [];
     }
-    if (this.job.configuration.parameters.length === 0) {
+    if (this.job.configuration.arguments.length === 0) {
       this.addParameter();
     }
   }
@@ -513,7 +513,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
         } else if (this.copiedParamObjects.type === 'env') {
           this.job.configuration.executable.env = list;
         } else {
-          this.job.configuration.parameters = list;
+          this.job.configuration.arguments = list;
         }
       }
     }
@@ -605,7 +605,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
     } else if (type === 'env') {
       return this.job.configuration.executable.env;
     } else {
-      return this.job.configuration.defaultArguments;
+      return this.job.configuration.arguments;
     }
   }
 
@@ -755,15 +755,15 @@ export class JobsComponent implements OnChanges, OnDestroy {
         type: 'String'
       }
     };
-    if (this.job.configuration.parameters) {
-      if (!this.coreService.isLastEntryEmpty(this.job.configuration.parameters, 'name', '')) {
-        this.job.configuration.parameters.push(param);
+    if (this.job.configuration.arguments) {
+      if (!this.coreService.isLastEntryEmpty(this.job.configuration.arguments, 'name', '')) {
+        this.job.configuration.arguments.push(param);
       }
     }
   }
 
   removeParameter(index): void {
-    this.job.configuration.parameters.splice(index, 1);
+    this.job.configuration.arguments.splice(index, 1);
     this.ref.detectChanges();
     this.saveJSON();
   }
@@ -829,7 +829,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
           }
         }
       }
-      if(count < 2) {
+      if (count < 2) {
         this.saveJSON();
       }
     }
@@ -877,7 +877,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
       }
     }
     if ($event.which === '13' || $event.which === 13) {
-      type === 'parameters' ? this.addParameter() :type === 'jobArgument' ? this.addJobArgument() : this.addArgu();
+      type === 'parameters' ? this.addParameter() : type === 'jobArgument' ? this.addJobArgument() : this.addArgu();
       this.saveJSON();
     }
   }
@@ -887,8 +887,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
       return;
     }
     const job = this.coreService.clone(this.job.configuration);
-    if (job.parameters) {
-      this.coreService.convertArrayToObject(job, 'parameters', true);
+    if (job.arguments) {
+      this.coreService.convertArrayToObject(job, 'arguments', true);
     }
     if (job.executable && job.executable.arguments) {
       this.coreService.convertArrayToObject(job.executable, 'arguments', true);
@@ -920,19 +920,12 @@ export class JobsComponent implements OnChanges, OnDestroy {
     if (job.executable && isEmpty(job.executable.login)) {
       delete job.executable.login;
     }
-    if (!job.executable.v1Compatible) {
-      if (job.executable.TYPE === 'ShellScriptExecutable') {
-        job.executable.v1Compatible = false;
-      } else {
-        delete job.executable.v1Compatible;
-      }
-    }
-    if (job.parameters) {
-      if (job.parameters && isArray(job.parameters)) {
-        job.parameters.filter((argu) => {
+    if (job.arguments) {
+      if (job.arguments && isArray(job.arguments)) {
+        job.arguments.filter((argu) => {
           this.coreService.addSlashToString(argu, 'value');
         });
-        this.coreService.convertArrayToObject(job, 'parameters', true);
+        this.coreService.convertArrayToObject(job, 'arguments', true);
       }
     }
     if (job.notification && isEmpty(job.notification.mail)) {
@@ -961,9 +954,9 @@ export class JobsComponent implements OnChanges, OnDestroy {
       }
     }
 
-    if (job.parameters && job.parameters.length > 0) {
-      let temp = this.coreService.clone(job.parameters);
-      job.parameters = temp.filter((value) => {
+    if (job.arguments && job.arguments.length > 0) {
+      let temp = this.coreService.clone(job.arguments);
+      job.arguments = temp.filter((value) => {
         delete value.value.invalid;
         if (value.value.type !== 'String') {
           delete value.value.facet;
@@ -987,7 +980,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
         }
         return !!value.name;
       });
-      job.parameters = this.coreService.keyValuePair(job.parameters);
+      job.arguments = this.coreService.keyValuePair(job.arguments);
     }
 
     if (!job.parallelism) {
@@ -1005,8 +998,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
     }
     delete job.timeout1;
     delete job.graceTimeout1;
-    if (!job.parameters || typeof job.parameters === 'string' || job.parameters.length === 0) {
-      delete job.parameters;
+    if (!job.arguments || typeof job.arguments === 'string' || job.arguments.length === 0) {
+      delete job.arguments;
     }
     if (job.executable && (!job.executable.arguments || typeof job.executable.arguments === 'string' || job.executable.arguments.length === 0)) {
       delete job.executable.arguments;

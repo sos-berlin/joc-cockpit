@@ -35,7 +35,7 @@
         <span *ngIf="objectType === 'SCHEDULE'" translate>inventory.button.newOrder</span>
         <span *ngIf="objectType === 'INCLUDESCRIPT'" translate>inventory.button.newScript</span>
         <span *ngIf="objectType && objectType.match('CALENDAR')" translate>inventory.button.newCalendar</span>
-        <span *ngIf="objectType === 'JOB'" translate>inventory.button.newJobTemplate</span>
+        <span *ngIf="objectType === 'JOBTEMPLATE'" translate>inventory.button.newJobTemplate</span>
       </button>
       <button *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12" (click)="removeAll()" >
         <i class="fa fa-trash p-r-xs"></i>

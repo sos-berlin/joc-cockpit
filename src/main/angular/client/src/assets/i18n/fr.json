@@ -2472,6 +2472,7 @@
     "label.valueEditor": "Editeur de Valeur",
     "label.functions": "Fonctions",
     "label.description": "Description",
+    "label.required": "Required",
     "label.syntax": "Syntaxe",
     "label.example": "Exemple",
     "label.script": "Script",

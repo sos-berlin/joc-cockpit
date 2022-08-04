@@ -31,10 +31,10 @@
           <label class="m-l-md" nz-checkbox name="draft" [(ngModel)]="filter.draft" (ngModelChange)="filterList()">
             {{'inventory.repository.label.draft'| translate}}
           </label>
-          <label *ngIf="type === 'ALL' || !(type === 'SCHEDULE' && type === 'INCLUDESCRIPT' && type.match('CALENDAR'))" class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
+          <label *ngIf="type === 'ALL' || !(type === 'SCHEDULE' && type === 'JOBTEMPLATE' && type === 'INCLUDESCRIPT' && type.match('CALENDAR'))" class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" (ngModelChange)="filterList()">
             {{'inventory.repository.label.deployed'| translate}}
           </label>
-          <label *ngIf="type === 'ALL' || type === 'SCHEDULE' || type === 'INCLUDESCRIPT' || type.match('CALENDAR')" class="m-l-md" nz-checkbox name="release" [(ngModel)]="filter.release" (ngModelChange)="filterList()">
+          <label *ngIf="type === 'ALL' || type === 'SCHEDULE' || type === 'JOBTEMPLATE' || type === 'INCLUDESCRIPT' || type.match('CALENDAR')" class="m-l-md" nz-checkbox name="release" [(ngModel)]="filter.release" (ngModelChange)="filterList()">
             {{'inventory.repository.label.released'| translate}}
           </label>
         </div>
@@ -77,6 +77,7 @@
                 <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
                 <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
+                <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
                 <i *ngIf="node.origin.object == 'NOTICEBOARD'" nz-icon nzType="pushpin" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>

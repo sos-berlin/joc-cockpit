@@ -2,6 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from "../../../../models/enums";
+import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
+import {sortBy} from "underscore";
 
 @Component({
   selector: 'app-job-wizard',
@@ -26,6 +28,7 @@ export class JobWizardComponent implements OnInit {
   jobList: any;
   job: any;
   loading = true;
+  isTreeLoad = false;
 
   constructor(private coreService: CoreService, private activeModal: NzModalRef, private modal: NzModalService,) {
   }
@@ -37,8 +40,9 @@ export class JobWizardComponent implements OnInit {
 
   tabChange($event): void {
     if ($event.index === 1) {
-      console.log('call tree');
-      this.getJobTemplates();
+      if (!this.isTreeLoad) {
+        this.getJobTemplates();
+      }
     }
   }
 
@@ -56,15 +60,53 @@ export class JobWizardComponent implements OnInit {
   private getJobTemplates(): void {
     this.coreService.post('tree', {
       forInventory: true,
-      types: [InventoryObject.JOB]
-    }).subscribe((res) => {
-      this.jobTree = this.coreService.prepareTree(res, false);
+      types: [InventoryObject.JOBTEMPLATE]
+    }).subscribe({
+      next: (res) => {
+        this.isTreeLoad = true;
+        this.jobTree = this.coreService.prepareTree(res, false);
+      }, error: () => {
+        this.isTreeLoad = true;
+      }
     });
+  }
+
+  selectNode(e): void {
+    const data = e.origin || e;
+    if (!data) {
+      return;
+    }
+    if (!data.jobTemplates) {
+      e.origin.loading = true;
+      const obj: any = {
+        path: e.key,
+        objectTypes: [InventoryObject.JOBTEMPLATE]
+      };
+      this.coreService.post('inventory/read/folder', obj).subscribe({
+        next: (res: any) => {
+          e.origin.loading = false;
+          data.jobTemplates = res.jobTemplates;
+          data.jobTemplates = sortBy(data.jobTemplates, 'name');
+          for (const i in data.jobTemplates) {
+            if (data.jobTemplates[i]) {
+              data.jobTemplates[i].path = e.key + (e.key === '/' ? '' : '/') + data.jobTemplates[i].name;
+            }
+          }
+        }, error: () => {
+          data.jobTemplates = [];
+          e.origin.loading = false;
+        }
+      });
+    }
+  }
+
+  onExpand(e): void {
+    this.selectNode(e.node);
   }
 
   selectJob(job): void {
     this.coreService.post('inventory/wizard/job', {
-      assignReference: job.assignReference
+      assignReference: job.assignReference || job.name
     }).subscribe((res) => {
       this.job = res;
       this.job.paramList = [];
