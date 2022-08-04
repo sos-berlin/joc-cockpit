@@ -2643,7 +2643,7 @@
       "button.showDocumentation": "Dokumentation anzeigen",
       "button.addAnotherParameter": "Variable hinzufügen",
       "tab.jitl": "JITL Job",
-      "tab.jobTemplate": "Job Template"
+      "tab.jobTemplate": "Job-Vorlage"
     },
     "admissionTime": {
       "label.on": "Am",
