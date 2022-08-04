@@ -50,6 +50,13 @@
                             <a translate>agent.button.createToken</a>
                           </li>
                           <li nz-menu-divider></li>
+                          <li (click)="exportAgents(controller)" nz-menu-item>
+                            <a translate>common.button.export</a>
+                          </li>
+                          <li (click)="importAgents(controller)" nz-menu-item>
+                            <a translate>common.button.import</a>
+                          </li>
+                          <li nz-menu-divider></li>
                           <li (click)="deleteController(controller.controllerId)" nz-menu-item class="bg-hover-color">
                             <a translate>common.button.delete</a>
                           </li>

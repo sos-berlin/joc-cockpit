@@ -6,7 +6,8 @@ import {AuthService} from '../../../components/guard';
 
 @Component({
   selector: 'app-agent-running-task',
-  templateUrl: './agent-running-task.component.html'
+  templateUrl: './agent-running-task.component.html',
+  styleUrls: ['agent-running-task.component.css']
 })
 export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   @Input('layout') layout: any;
@@ -14,7 +15,8 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   isLoaded = false;
   schedulerIds: any;
   data = [];
-  view: any[] = [560, 150];
+  view: any[] = [560, 140];
+  view1: any[] = [560, 40];
   subscription1: Subscription;
   subscription2: Subscription;
   colorScheme = {
@@ -58,6 +60,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     } else {
       this.isLoaded = true;
     }
+
   }
 
   onResize(event): void {
@@ -67,9 +70,10 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   private setViewSize(target): void {
     const w = target.innerWidth / 12;
     this.view[0] = w * this.layout.cols - 90;
-    this.view[1] = ((this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50)) - 6) + (this.data.length > 5 ? ((this.data.length - this.layout.rows) * 5) : 1);
-    if (this.view[1] < 100 && this.data.length > 5) {
-      this.view[1] = 100 + (this.data.length * 8)
+    this.view1[0] = this.view[0];
+    this.view[1] = ((this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50)) - 6) + (this.data.length > 5 ? ((this.data.length - this.layout.rows) * 5) : 1) - 10;
+    if (this.view[1] < 90 && this.data.length > 5) {
+      this.view[1] = 90 + (this.data.length * 8)
     }
   }
 
@@ -84,7 +88,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
       this.data.push({name: res.agents[i].agentName || res.agents[i].subagentId, value: res.agents[i].runningTasks});
     }
     this.setViewSize(window);
- 
+
   }
 
   getRunningTask(): void {

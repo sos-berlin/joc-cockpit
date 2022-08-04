@@ -961,7 +961,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
       }
     }
 
-    if(job.parameters.length > 0) {
+    if (job.parameters && job.parameters.length > 0) {
       let temp = this.coreService.clone(job.parameters);
       job.parameters = temp.filter((value) => {
         delete value.value.invalid;

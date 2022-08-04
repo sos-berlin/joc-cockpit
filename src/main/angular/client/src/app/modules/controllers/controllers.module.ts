@@ -3,9 +3,12 @@ import {NzPopoverModule} from 'ng-zorro-antd/popover';
 import {ClipboardModule} from 'ngx-clipboard';
 import {RouterModule, Routes} from '@angular/router';
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
+import {FileUploadModule} from "ng2-file-upload";
 import {
   ControllersComponent,
   CreateTokenModalComponent,
+  ExportComponent,
+  ImportModalComponent
 } from './controllers.component';
 import {
   AddClusterModalComponent,
@@ -28,10 +31,20 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [ControllersComponent, SubagentModalComponent, AddClusterModalComponent, AgentModalComponent, CreateTokenModalComponent, AgentComponent],
+  declarations: [
+    ControllersComponent,
+    SubagentModalComponent,
+    AddClusterModalComponent,
+    AgentModalComponent,
+    CreateTokenModalComponent,
+    AgentComponent,
+    ExportComponent,
+    ImportModalComponent
+  ],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,
+    FileUploadModule,
     ClipboardModule,
     NzDrawerModule,
     NzPopoverModule

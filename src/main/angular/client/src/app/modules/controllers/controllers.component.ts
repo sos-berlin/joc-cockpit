@@ -12,6 +12,207 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
 import {AgentModalComponent, SubagentModalComponent} from "./agent/agent.component";
+import {FileUploader} from "ng2-file-upload";
+import {TranslateService} from "@ngx-translate/core";
+import {ToastrService} from "ngx-toastr";
+
+@Component({
+  selector: 'app-export-modal',
+  templateUrl: './export-dialog.html'
+})
+export class ExportComponent implements OnInit {
+  @Input() preferences;
+  @Input() display: any;
+  @Input() controller: any;
+  submitted = false;
+  required = false;
+  comments: any = {radio: 'predefined'};
+  inValid = false;
+  exportObj = {
+    filename: '',
+    fileFormat: 'ZIP'
+  };
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    console.log(this.controller);
+    if (!this.controller.agents) {
+      this.getAgents(this.controller);
+    }
+  }
+
+  private getAgents(controller): void {
+    if (sessionStorage.hasLicense == 'true') {
+      this.getClusterAgents(controller);
+    }
+    this.coreService.post('agents/inventory', {
+      controllerId: controller.controllerId
+    }).subscribe({
+      next: (data: any) => {
+        controller.agents = data.agents;
+      }
+    });
+  }
+
+  private getClusterAgents(controller): void {
+    controller.isLoading = true;
+    this.coreService.post('agents/inventory/cluster', {
+      controllerId: controller.controllerId
+    }).subscribe({
+      next: (data: any) => {
+        controller.agentClusters = data.agents;
+      }
+    });
+  }
+
+  checkFileName(): void {
+    if (this.exportObj.filename) {
+      const ext = this.exportObj.filename.split('.').pop();
+      if (ext && this.exportObj.filename.indexOf('.') > -1) {
+        if (this.exportObj.fileFormat === 'ZIP' && (ext === 'ZIP' || ext === 'zip')) {
+          this.inValid = false;
+        } else {
+          this.inValid = !(this.exportObj.fileFormat === 'TAR_GZ' && (ext === 'tar' || ext === 'gz'));
+        }
+      } else {
+        this.inValid = false;
+        this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
+      }
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj: any = {
+      agentIds: [],
+      exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
+    };
+    if (this.comments.comment) {
+      obj.auditLog = {};
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    }
+    if (this.controller.agentClusters) {
+      if (this.controller.agents) {
+        this.controller.agents.forEach((agent) => {
+          obj.agentIds.push(agent.agentId);
+        })
+      }
+      if (this.controller.agentClusters) {
+        this.controller.agentClusters.forEach((agent) => {
+          obj.agentIds.push(agent.agentId);
+        })
+      }
+    }
+
+    this.coreService.download('agents/export', obj, this.exportObj.filename, (res) => {
+      if (res) {
+        this.activeModal.close('ok');
+      } else {
+        this.submitted = false;
+      }
+    });
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+}
+
+@Component({
+  selector: 'app-import-modal-content',
+  templateUrl: './import-dialog.html'
+})
+export class ImportModalComponent implements OnInit {
+  @Input() display: any;
+  @Input() controller: any;
+  nodes: any = [];
+  uploader: FileUploader;
+  signatureAlgorithm: string;
+  required = false;
+  comments: any = {};
+  settings: any = {};
+  hasBaseDropZoneOver: any;
+  requestObj = {
+    overwrite: false,
+    format: 'ZIP',
+  };
+
+  constructor(public activeModal: NzModalRef, private modal: NzModalService, private translate: TranslateService,
+              public toasterService: ToastrService, private coreService: CoreService, private authService: AuthService) {
+  }
+
+  ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    this.uploader = new FileUploader({
+      url: './api/agents/import',
+      queueLimit: 1,
+      headers: [{
+        name: 'X-Access-Token',
+        value: this.authService.accessTokenId
+      }]
+    });
+    this.comments.radio = 'predefined';
+
+    this.uploader.onBeforeUploadItem = (item: any) => {
+      const obj: any = {};
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+      obj.format = this.requestObj.format;
+      obj.overwrite = this.requestObj.overwrite;
+      item.file.name = encodeURIComponent(item.file.name);
+      this.uploader.options.additionalParameter = obj;
+    };
+
+    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
+      if (status === 200) {
+        this.activeModal.close('DONE');
+      }
+    };
+
+    this.uploader.onErrorItem = (fileItem, response: any) => {
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.error(res.error.message, res.error.code);
+      }
+    };
+  }
+
+  fileOverBase(e: any): void {
+    this.hasBaseDropZoneOver = e;
+  }
+
+  // CALLBACKS
+  onFileSelected(event: any): void {
+    const item = event['0'];
+    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
+    if (!(fileExt && ((fileExt === 'zip' && this.requestObj.format === 'ZIP') ||
+      (this.requestObj.format !== 'ZIP' && (fileExt.match(/tar/) || fileExt.match(/gz/)))))) {
+      let msg = '';
+      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.error(fileExt + ' ' + msg);
+      this.uploader.clearQueue();
+    }
+  }
+
+  import(): void {
+    this.uploader.queue[0].upload();
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
 
 @Component({
   selector: 'app-create-token-modal',
@@ -297,7 +498,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
     this.coreService.preferences.controllers.delete(controllerId);
   }
 
-
   sort(controller, key, isCluster = false): void {
     if (isCluster) {
       controller.reverse2 = !controller.reverse2;
@@ -352,6 +552,43 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   navToController(controllerId, agentId): void {
     this.router.navigate(['/controllers/cluster_agent', controllerId, agentId]).then();
+  }
+
+  exportAgents(controller): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ExportComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        preferences: this.preferences,
+        display: this.preferences.auditLog,
+        controller
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  importAgents(controller): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ImportModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzComponentParams: {
+        display: this.preferences.auditLog,
+        controller
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        console.log(result)
+      }
+    });
   }
 
   addController(): void {
