@@ -73,6 +73,17 @@ export class JobWizardComponent implements OnInit {
   }
 
   selectNode(e): void {
+    e.isExpanded = !e.isExpanded;
+    if (e.isExpanded) {
+      this.loadData(e);
+    }
+  }
+
+  onExpand(e): void {
+    this.loadData(e.node);
+  }
+
+  private loadData(e): void {
     const data = e.origin || e;
     if (!data) {
       return;
@@ -99,10 +110,6 @@ export class JobWizardComponent implements OnInit {
         }
       });
     }
-  }
-
-  onExpand(e): void {
-    this.selectNode(e.node);
   }
 
   selectJob(job): void {
@@ -293,6 +300,9 @@ export class JobWizardComponent implements OnInit {
 
   checkRequiredParam(checkType?): void {
     let existingArguments = [];
+    if (!this.job.params) {
+      this.job.params = [];
+    }
     if (checkType) {
       if (this.job.arguments && this.job.arguments.length > 0) {
         this.job.params = this.coreService.clone(this.job.arguments);

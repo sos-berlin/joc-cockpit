@@ -1182,11 +1182,49 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.selectedNode.job.executable = result.executable;
+        this.selectedNode.job.executable.TYPE = result.executable.TYPE;
+        this.selectedNode.job.executable.className = result.executable.className;
+        this.selectedNode.job.executable.script = result.executable.script;
+        if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
+          this.selectedNode.job.executable.arguments = result.executable.arguments || [];
+          if (result.executable.jobArguments) {
+            this.selectedNode.job.executable.jobArguments = result.executable.jobArguments;
+          }
+        } else {
+          this.selectedNode.job.executable.env = result.executable.env || [];
+          this.selectedNode.job.executable.login = result.executable.login || {};
+        }
+
+        if (result.executable.returnCodeMeaning) {
+          this.selectedNode.job.executable.returnCodeMeaning = result.executable.returnCodeMeaning;
+        }
+        if (result.notification) {
+          this.selectedNode.job.notification = result.notification;
+        }
         this.selectedNode.job.title = result.title;
         this.selectedNode.job.documentationName = result.documentationName;
         if (result.admissionTimeScheme) {
           this.selectedNode.job.admissionTimeScheme = result.admissionTimeScheme;
+        }
+        if (result.criticality) {
+          this.selectedNode.job.criticality = result.criticality;
+        }
+        if (result.admissionTimeScheme) {
+          this.selectedNode.job.admissionTimeScheme = result.admissionTimeScheme;
+        }
+        if (result.warnIfShorter) {
+          this.selectedNode.job.warnIfShorter = result.warnIfShorter;
+        }
+        if (result.warnIfLonger) {
+          this.selectedNode.job.warnIfLonger = result.warnIfLonger;
+        }
+        if (result.timeout) {
+          this.selectedNode.job.timeout = result.timeout;
+          this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
+        }
+        if (result.graceTimeout) {
+          this.selectedNode.job.graceTimeout = result.graceTimeout;
+          this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
         }
         if (result.failOnErrWritten != undefined) {
           this.selectedNode.job.failOnErrWritten = result.failOnErrWritten;
@@ -1824,8 +1862,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   isStringValid(data, form, list): void {
     if (form.invalid) {
-     // data.name = '';
-     // data.value = '';
+      // data.name = '';
+      // data.value = '';
     } else {
       let count = 0;
       if (list.length > 1) {
@@ -1844,7 +1882,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   upperCase(env): void {
     if (env.name) {
-     // env.name = env.name.toUpperCase();
+      // env.name = env.name.toUpperCase();
       if (!env.value) {
         env.value = '$' + env.name.toLowerCase();
       }
@@ -4024,16 +4062,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       data.value = '';
     } else {
       let count = 0;
-        for (let i in this.selectedNode.obj.result) {
-          if (this.selectedNode.obj.result[i].name === data.name) {
-            ++count;
-          }
-          if (count > 1) {
-            data.invalid = true;
-            form.control.setErrors({incorrect: true});
-            break;
-          }
+      for (let i in this.selectedNode.obj.result) {
+        if (this.selectedNode.obj.result[i].name === data.name) {
+          ++count;
         }
+        if (count > 1) {
+          data.invalid = true;
+          form.control.setErrors({incorrect: true});
+          break;
+        }
+      }
     }
   }
 

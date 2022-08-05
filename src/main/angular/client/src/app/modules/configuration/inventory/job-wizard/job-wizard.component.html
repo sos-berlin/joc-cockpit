@@ -96,19 +96,29 @@
                   ></nz-tree>
                   <ng-template #nzTreeTemplate let-node>
                     <div class="node-wrapper">
-                      <i class="w-14 m-l-xxs m-r-xs m-t-n-1" *ngIf="node.origin.loading"><nz-spin nzSimple [nzSize]="'small'"></nz-spin></i>
+                      <i class="w-14 m-l-xxs m-r-xs m-t-n-1" *ngIf="node.origin.loading">
+                        <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
+                      </i>
                       <div class="node-content-wrapper"
                            (click)="selectNode(node)">
                         <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                         {{node.origin.name || node.origin.path}}
                       </div>
                     </div>
-                    <div class="m-b-xs m-l-22" *ngFor="let job of node.origin.jobTemplates">
-                      <a class="text-primary-hover m-t-xs" (click)="selectJobTemp(job);$event.stopPropagation();"><i
-                        class="icon icon-jobs-icon text-sm">&nbsp;</i>{{job.name}}</a>
-                      <i class="p-l-xs p-r-xs" *ngIf="job.title">-</i>
-                      <span *ngIf="job.title" class="text-muted">{{job.title}}</span>
-                    </div>
+                    <ng-container *ngIf="node.isExpanded">
+                      <div class="node-content-wrapper m-l-22" style="display: block"
+                           *ngFor="let item of node.origin.jobTemplates"
+                           [ngClass]="{'node-content-wrapper-active': item.name === job.name}">
+                        <a class="text-primary-hover m-t-xs" (click)="selectJobTemp(item);$event.stopPropagation();"><i
+                          class="icon icon-jobs-icon text-sm"></i>
+                          <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
+                                [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' : node.origin.released}"></span>
+                          {{item.name}}</a>
+                        <i class="p-l-xs p-r-xs" *ngIf="item.title">-</i>
+                        <span *ngIf="item.title" class="text-muted">{{item.title}}</span>
+                      </div>
+                    </ng-container>
+
                   </ng-template>
                 </div>
               </div>
