@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from "../../../../models/enums";
+import {sortBy} from "underscore";
 
 @Component({
   selector: 'app-job-wizard',
@@ -9,6 +10,7 @@ import {InventoryObject} from "../../../../models/enums";
 })
 export class JobWizardComponent implements OnInit {
   @Input() existingJob: any;
+  @Input() node: any;
 
   preferences: any;
   wizard = {
@@ -26,8 +28,9 @@ export class JobWizardComponent implements OnInit {
   jobList: any;
   job: any;
   loading = true;
+  isTreeLoad = false;
 
-  constructor(private coreService: CoreService, private activeModal: NzModalRef, private modal: NzModalService,) {
+  constructor(private coreService: CoreService, private activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
@@ -36,9 +39,11 @@ export class JobWizardComponent implements OnInit {
   }
 
   tabChange($event): void {
+    this.job = {};
     if ($event.index === 1) {
-      console.log('call tree');
-      this.getJobTemplates();
+      if (!this.isTreeLoad) {
+        this.getJobTemplates();
+      }
     }
   }
 
@@ -56,10 +61,48 @@ export class JobWizardComponent implements OnInit {
   private getJobTemplates(): void {
     this.coreService.post('tree', {
       forInventory: true,
-      types: [InventoryObject.JOB]
-    }).subscribe((res) => {
-      this.jobTree = this.coreService.prepareTree(res, false);
+      types: [InventoryObject.JOBTEMPLATE]
+    }).subscribe({
+      next: (res) => {
+        this.isTreeLoad = true;
+        this.jobTree = this.coreService.prepareTree(res, false);
+      }, error: () => {
+        this.isTreeLoad = true;
+      }
     });
+  }
+
+  selectNode(e): void {
+    const data = e.origin || e;
+    if (!data) {
+      return;
+    }
+    if (!data.jobTemplates) {
+      e.origin.loading = true;
+      const obj: any = {
+        path: e.key,
+        objectTypes: [InventoryObject.JOBTEMPLATE]
+      };
+      this.coreService.post('inventory/read/folder', obj).subscribe({
+        next: (res: any) => {
+          e.origin.loading = false;
+          data.jobTemplates = res.jobTemplates;
+          data.jobTemplates = sortBy(data.jobTemplates, 'name');
+          for (const i in data.jobTemplates) {
+            if (data.jobTemplates[i]) {
+              data.jobTemplates[i].path = e.key + (e.key === '/' ? '' : '/') + data.jobTemplates[i].name;
+            }
+          }
+        }, error: () => {
+          data.jobTemplates = [];
+          e.origin.loading = false;
+        }
+      });
+    }
+  }
+
+  onExpand(e): void {
+    this.selectNode(e.node);
   }
 
   selectJob(job): void {
@@ -72,6 +115,54 @@ export class JobWizardComponent implements OnInit {
       this.wizard.checked = false;
       this.wizard.indeterminate = false;
       this.checkRequiredParam();
+    });
+  }
+
+  selectJobTemp(job): void {
+    this.coreService.post('inventory/read/configuration', {
+      path: job.path,
+      objectType: InventoryObject.JOBTEMPLATE
+    }).subscribe((res) => {
+      this.job = res.configuration;
+      if (this.job.arguments) {
+        const temp = this.coreService.clone(this.job.arguments);
+        this.job.arguments = Object.entries(temp).map(([k, v]) => {
+          const val: any = v;
+          if (val.default) {
+            delete val.listParameters;
+            if (val.type === 'String') {
+              this.coreService.removeSlashToString(val, 'default');
+            } else if (val.type === 'Boolean') {
+              val.default = (val.default === true || val.default === 'true');
+            }
+          }
+          if (val.list) {
+            let list = [];
+            val.list.forEach((val) => {
+              let obj = {name: val};
+              this.coreService.removeSlashToString(obj, 'name');
+              list.push(obj);
+            });
+            val.list = list;
+          }
+          return {
+            name: k,
+            type: val.type,
+            description: val.description,
+            defaultValue: val.default,
+            list: val.list,
+            facet: val.facet,
+            message: val.meesage
+          };
+        });
+      }
+      this.job.jobTemplate = true;
+      this.job.name = job.name;
+      this.job.paramList = [];
+      this.wizard.setOfCheckedValue = new Set<string>();
+      this.wizard.checked = false;
+      this.wizard.indeterminate = false;
+      this.checkRequiredParam(true);
     });
   }
 
@@ -107,8 +198,8 @@ export class JobWizardComponent implements OnInit {
     }
   }
 
-  checkCheckbox(param): void{
-    if(param.newValue && param.newValue !== param.defaultValue) {
+  checkCheckbox(param): void {
+    if (param.newValue && param.newValue !== param.defaultValue) {
       this.wizard.setOfCheckedValue.add(param.name);
     }
   }
@@ -118,28 +209,53 @@ export class JobWizardComponent implements OnInit {
   }
 
   ok(): void {
-    const obj = {
-      title: this.job.title,
-      executable: {
-        TYPE: 'InternalExecutable',
-        className: this.job.javaClass,
-        arguments: []
-      },
-      documentationName: this.job.assignReference,
-    };
+    let obj: any = {};
+    if (!this.job.jobTemplate) {
+      obj = {
+        executable: {
+          TYPE: 'InternalExecutable',
+          className: this.job.javaClass,
+          arguments: []
+        },
+        documentationName: this.job.assignReference,
+      };
+      this.updateParam(obj);
+    } else {
+      obj = this.coreService.clone(this.job);
+      delete obj.jobTemplate;
+      delete obj.paramList;
+      delete obj.params;
+      delete obj.version;
+      if (obj.executable.TYPE !== 'InternalExecutable') {
+        delete obj.arguments;
+      }
+      this.updateParam(obj);
+    }
+    obj.title = this.job.title;
+    this.activeModal.close(obj);
+  }
+
+  private updateParam(obj): void {
     this.job.params.forEach(item => {
       if (this.wizard.setOfCheckedValue.has(item.name)) {
-        obj.executable.arguments.push({name: item.name, value: item.newValue});
+        if (obj.executable.TYPE === 'InternalExecutable') {
+          obj.executable.arguments.push({name: item.name, value: item.newValue});
+        } else if (this.node) {
+          this.node.defaultArguments.push({name: item.name, value: item.newValue});
+        }
       }
     });
     if (this.job.paramList && this.job.paramList.length > 0) {
       for (const i in this.job.paramList) {
         if (this.job.paramList[i].name) {
-          obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
+          if (obj.executable.TYPE === 'InternalExecutable') {
+            obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
+          } else if (this.node) {
+            this.node.defaultArguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
+          }
         }
       }
     }
-    this.activeModal.close(obj);
   }
 
   cancel(): void {
@@ -175,10 +291,16 @@ export class JobWizardComponent implements OnInit {
     this.filter.sortBy = key;
   }
 
-  checkRequiredParam(): void {
+  checkRequiredParam(checkType?): void {
     let existingArguments = [];
-    if (this.existingJob.executable.arguments && this.existingJob.executable.arguments.length > 0) {
-      existingArguments = this.coreService.clone(this.existingJob.executable.arguments);
+    if (checkType) {
+      if (this.job.arguments && this.job.arguments.length > 0) {
+        this.job.params = this.coreService.clone(this.job.arguments);
+      }
+    } else {
+      if (this.existingJob.executable.arguments && this.existingJob.executable.arguments.length > 0) {
+        existingArguments = this.coreService.clone(this.existingJob.executable.arguments);
+      }
     }
     const arr2 = [];
     if (this.job.params.length > 0) {

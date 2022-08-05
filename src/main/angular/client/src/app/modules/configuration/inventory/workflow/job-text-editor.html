@@ -124,14 +124,14 @@
             </nz-radio-group>
           </div>
         </div>
-        <div class="form-group row" *ngIf="returnCodes.on === 'success' && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'" [hidden]="fullScreen">
+        <div class="form-group row" *ngIf="(returnCodes.on === 'success' || returnCodes.on === 'failure') && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label"></label>
           <div class="col-md-8 col-lg-9"
                [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
             <label class="w-full">
               <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveToHistory();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                     name="success" #success="ngModel" [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.success">
+                     name="success" #success="ngModel" [(ngModel)]="selectedNode.job.executable.returnCodeMeaning[returnCodes.on]">
             </label>
             <div *ngIf="success.invalid && (success.dirty || success.touched)"
                  class="text-danger help-block">
@@ -139,18 +139,21 @@
             </div>
           </div>
         </div>
-        <div class="form-group row" *ngIf="returnCodes.on === 'failure' && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'" [hidden]="fullScreen">
-          <label class="col-md-4 col-lg-3 form-control-label"></label>
+
+        <div class="form-group row" [hidden]="fullScreen">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>
+            workflow.label.onWarning
+          </label>
           <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
+               [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid)}">
             <label class="w-full">
               <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveToHistory();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                     #failure="ngModel" name="failure" [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.failure">
+                     #warning="ngModel" name="warning" [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.warning">
             </label>
-            <div *ngIf="failure.invalid && (failure.dirty || failure.touched)"
+            <div *ngIf="warning.invalid && (warning.dirty || warning.touched)"
                  class="text-danger help-block">
-              <div *ngIf="failure.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
+              <div *ngIf="warning.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
             </div>
           </div>
         </div>

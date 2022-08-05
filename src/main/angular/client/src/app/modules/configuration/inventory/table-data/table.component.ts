@@ -371,7 +371,7 @@ export class TableComponent implements OnChanges, OnDestroy {
     if (object) {
       let isDraftOnly = true;
       if (type === 'delete_draft') {
-        if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.INCLUDESCRIPT) {
+        if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE || this.objectType === InventoryObject.INCLUDESCRIPT) {
           if (object.hasReleases) {
             object.released = true;
             isDraftOnly = false;
@@ -395,7 +395,7 @@ export class TableComponent implements OnChanges, OnDestroy {
           if (this.dataObj.children[i].name === key) {
             let isDraftOnly = true;
             if (type === 'delete_draft') {
-              if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.INCLUDESCRIPT) {
+              if (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE || this.objectType === InventoryObject.INCLUDESCRIPT) {
                 if (this.dataObj.children[i].hasReleases) {
                   this.dataObj.children[i].released = true;
                   isDraftOnly = false;
@@ -443,8 +443,8 @@ export class TableComponent implements OnChanges, OnDestroy {
     if (this.objectType === InventoryObject.WORKFLOW && !configuration.timeZone) {
       configuration.timeZone = this.preferences.zone;
     }
-    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.INCLUDESCRIPT
-      || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE || this.objectType === InventoryObject.JOB);
+    const valid = !(this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE || this.objectType === InventoryObject.INCLUDESCRIPT
+      || this.objectType === InventoryObject.WORKFLOW || this.objectType === InventoryObject.FILEORDERSOURCE || this.objectType === InventoryObject.JOBRESOURCE);
     if (!path) {
       return;
     }
