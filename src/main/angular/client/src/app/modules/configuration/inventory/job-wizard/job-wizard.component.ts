@@ -229,6 +229,7 @@ export class JobWizardComponent implements OnInit {
       this.updateParam(obj);
     } else {
       obj = this.coreService.clone(this.job);
+      obj.jobTemplateName = this.job.name;
       delete obj.jobTemplate;
       delete obj.paramList;
       delete obj.params;
