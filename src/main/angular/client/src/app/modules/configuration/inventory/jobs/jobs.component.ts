@@ -212,6 +212,9 @@ export class JobsComponent implements OnChanges, OnDestroy {
       } else if (this.job.configuration.executable.returnCodeMeaning.failure) {
         this.job.configuration.executable.returnCodeMeaning.failure = this.job.configuration.executable.returnCodeMeaning.failure.toString();
       }
+      if (this.job.configuration.executable.returnCodeMeaning && this.job.configuration.executable.returnCodeMeaning.warning) {
+        this.job.configuration.executable.returnCodeMeaning.warning = this.job.configuration.executable.returnCodeMeaning.warning.toString();
+      }
     }
     if (this.job.configuration.executable.returnCodeMeaning.failure) {
       this.returnCodes.on = 'failure';
@@ -256,7 +259,6 @@ export class JobsComponent implements OnChanges, OnDestroy {
     this.job.configuration.arguments = Object.entries(temp).map(([k, v]) => {
       const val: any = v;
       if (val.default) {
-        delete val.listParameters;
         if (val.type === 'String') {
           this.coreService.removeSlashToString(val, 'default');
         } else if (val.type === 'Boolean') {
@@ -814,8 +816,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
 
   isStringValid(data, form, list): void {
     if (form.invalid) {
-      data.name = '';
-      data.value = '';
+     // data.name = '';
+     // data.value = '';
     } else {
       let count = 0;
       if (list.length > 1) {
@@ -847,7 +849,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
 
   upperCase(env): void {
     if (env.name) {
-      env.name = env.name.toUpperCase();
+      // env.name = env.name.toUpperCase();
       if (!env.value) {
         env.value = '$' + env.name.toLowerCase();
       }
@@ -907,14 +909,18 @@ export class JobsComponent implements OnChanges, OnDestroy {
         job.executable.returnCodeMeaning.failure = job.executable.returnCodeMeaning.failure.split(',').map(Number);
         delete job.executable.returnCodeMeaning.success;
       }
+
+      if (job.executable.returnCodeMeaning.warning && typeof job.executable.returnCodeMeaning.warning == 'string') {
+        job.executable.returnCodeMeaning.warning = job.executable.returnCodeMeaning.warning.split(',').map(Number);
+      }
+      if (job.executable.returnCodeMeaning.warning === '') {
+        delete job.executable.returnCodeMeaning.warning;
+      }
       if (job.executable.returnCodeMeaning.failure === '') {
         delete job.executable.returnCodeMeaning.failure;
       }
-      if (job.executable.returnCodeMeaning.success === '' && !job.executable.returnCodeMeaning.failure) {
+      if (job.executable.returnCodeMeaning.success === '' && !job.executable.returnCodeMeaning.failure && !job.executable.returnCodeMeaning.warning) {
         job.executable.returnCodeMeaning = {};
-      }
-      if (job.executable.returnCodeMeaning.success == '0') {
-        delete job.executable.returnCodeMeaning;
       }
     }
     if (job.executable && isEmpty(job.executable.login)) {
@@ -1009,6 +1015,11 @@ export class JobsComponent implements OnChanges, OnDestroy {
     }
     if (job.executable && (!job.executable.env || typeof job.executable.env === 'string' || job.executable.env.length === 0)) {
       delete job.executable.env;
+    }
+    if (job.executable.returnCodeMeaning) {
+      if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0' && !job.executable.returnCodeMeaning.warning) {
+        delete job.executable.returnCodeMeaning;
+      }
     }
     if (this.job.actual && !isEqual(this.job.actual, JSON.stringify(job))) {
       if (!flag) {

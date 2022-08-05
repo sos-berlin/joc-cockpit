@@ -71,7 +71,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+          <label class="col-md-4 col-lg-3 form-control-label"
                  title="{{'inventory.label.documentation' | translate}}"
                  [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
@@ -111,7 +111,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+          <label class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.description' | translate}}"
                  [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.description' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.description</label>
@@ -122,21 +122,21 @@
         </div>
         <div class="form-group row" *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'">
           <div class="col-md-4 col-lg-3" translate [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5">workflow.label.returnCode</div>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveJSON();">
               <label nz-radio nzValue="success" (click)="job.configuration.executable.returnCodeMeaning.success = job.configuration.executable.returnCodeMeaning.failure;job.configuration.executable.returnCodeMeaning.failure = ''"><span translate>workflow.label.onSuccess</span></label>
               <label nz-radio nzValue="failure" (click)="job.configuration.executable.returnCodeMeaning.failure = job.configuration.executable.returnCodeMeaning.success;job.configuration.executable.returnCodeMeaning.success = ''"><span translate>workflow.label.onFailure</span></label>
             </nz-radio-group>
           </div>
         </div>
-        <div class="form-group row" *ngIf="returnCodes.on === 'success' && job.configuration.executable.TYPE === 'ShellScriptExecutable'">
+        <div class="form-group row" *ngIf="(returnCodes.on === 'success' || returnCodes.on === 'failure') && job.configuration.executable.TYPE === 'ShellScriptExecutable'">
           <label class="col-md-4 col-lg-3 form-control-label"></label>
-          <div class="col-md-8 col-lg-9"
+          <div class="col-lg-9 col-xl-8 col-xxl-6"
                [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}">
             <label class="w-full">
               <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveJSON();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                     name="success" #success="ngModel" [(ngModel)]="job.configuration.executable.returnCodeMeaning.success">
+                     name="success" #success="ngModel" [(ngModel)]="job.configuration.executable.returnCodeMeaning[returnCodes.on]">
             </label>
             <div *ngIf="success.invalid && (success.dirty || success.touched)"
                  class="text-danger help-block">
@@ -144,18 +144,20 @@
             </div>
           </div>
         </div>
-        <div class="form-group row" *ngIf="returnCodes.on === 'failure' && job.configuration.executable.TYPE === 'ShellScriptExecutable'">
-          <label class="col-md-4 col-lg-3 form-control-label"></label>
-          <div class="col-md-8 col-lg-9"
-               [ngClass]="{'has-error' : ((failure.dirty || failure.touched) && failure.invalid)}">
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>
+            workflow.label.onWarning
+          </label>
+          <div class="col-lg-9 col-xl-8 col-xxl-6"
+               [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid)}">
             <label class="w-full">
               <input autocomplete="off" type="text" class="form-control" validateNumberArrayReqex (blur)="saveJSON();"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}"
-                     #failure="ngModel" name="failure" [(ngModel)]="job.configuration.executable.returnCodeMeaning.failure">
+                     #warning="ngModel" name="warning" [(ngModel)]="job.configuration.executable.returnCodeMeaning.warning">
             </label>
-            <div *ngIf="failure.invalid && (failure.dirty || failure.touched)"
+            <div *ngIf="warning.invalid && (warning.dirty || warning.touched)"
                  class="text-danger help-block">
-              <div *ngIf="failure.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
+              <div *ngIf="warning.errors.validateNumberArrayRegex" translate>common.message.invalid</div>
             </div>
           </div>
         </div>

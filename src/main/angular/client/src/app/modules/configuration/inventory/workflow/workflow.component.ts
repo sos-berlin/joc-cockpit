@@ -1173,7 +1173,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzContent: JobWizardComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        existingJob: this.selectedNode.job
+        existingJob: this.selectedNode.job,
+        node: this.selectedNode.obj
       },
       nzFooter: null,
       nzClosable: false,
@@ -1181,11 +1182,24 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.selectedNode.job.executable.TYPE = 'InternalExecutable';
-        this.selectedNode.job.executable.className = result.executable.className;
-        this.selectedNode.job.executable.arguments = result.executable.arguments;
+        this.selectedNode.job.executable = result.executable;
         this.selectedNode.job.title = result.title;
         this.selectedNode.job.documentationName = result.documentationName;
+        if (result.admissionTimeScheme) {
+          this.selectedNode.job.admissionTimeScheme = result.admissionTimeScheme;
+        }
+        if (result.failOnErrWritten != undefined) {
+          this.selectedNode.job.failOnErrWritten = result.failOnErrWritten;
+        }
+        if (result.skipIfNoAdmissionForOrderDay != undefined) {
+          this.selectedNode.job.failOnErrWritten = result.skipIfNoAdmissionForOrderDay;
+        }
+        if (result.parallelism) {
+          this.selectedNode.job.parallelism = result.parallelism;
+        }
+        if (result.jobResourceNames) {
+          this.selectedNode.job.jobResourceNames = result.jobResourceNames;
+        }
         this.ref.detectChanges();
       }
     });
@@ -1810,8 +1824,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   isStringValid(data, form, list): void {
     if (form.invalid) {
-      data.name = '';
-      data.value = '';
+     // data.name = '';
+     // data.value = '';
     } else {
       let count = 0;
       if (list.length > 1) {
@@ -1830,7 +1844,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   upperCase(env): void {
     if (env.name) {
-      env.name = env.name.toUpperCase();
+     // env.name = env.name.toUpperCase();
       if (!env.value) {
         env.value = '$' + env.name.toLowerCase();
       }
@@ -1988,7 +2002,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       this.returnCodes.on = 'success';
     }
-
+    if (this.selectedNode.job.executable.returnCodeMeaning && this.selectedNode.job.executable.returnCodeMeaning.warning) {
+      this.selectedNode.job.executable.returnCodeMeaning.warning = this.selectedNode.job.executable.returnCodeMeaning.warning.toString();
+    }
     if (!this.selectedNode.job.defaultArguments || isEmpty(this.selectedNode.job.defaultArguments)) {
       this.selectedNode.job.defaultArguments = [];
     } else {
@@ -7421,10 +7437,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   job.executable.returnCodeMeaning.failure = job.executable.returnCodeMeaning.failure.split(',').map(Number);
                   delete job.executable.returnCodeMeaning.success;
                 }
+                if (job.executable.returnCodeMeaning.warning && typeof job.executable.returnCodeMeaning.warning == 'string') {
+                  job.executable.returnCodeMeaning.warning = job.executable.returnCodeMeaning.warning.split(',').map(Number);
+                }
+                if (job.executable.returnCodeMeaning.warning === '') {
+                  delete job.executable.returnCodeMeaning.warning;
+                }
                 if (job.executable.returnCodeMeaning.failure === '') {
                   delete job.executable.returnCodeMeaning.failure;
                 }
-                if (job.executable.returnCodeMeaning.success === '' && !job.executable.returnCodeMeaning.failure) {
+                if (job.executable.returnCodeMeaning.success === '' && !job.executable.returnCodeMeaning.failure && !job.executable.returnCodeMeaning.warning) {
                   job.executable.returnCodeMeaning = {};
                 }
               }
@@ -7451,7 +7473,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 delete job.executable.env;
               }
               if (job.executable.returnCodeMeaning) {
-                if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0') {
+                if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0' && !job.executable.returnCodeMeaning.warning) {
                   delete job.executable.returnCodeMeaning;
                 }
               }
@@ -9161,6 +9183,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           job.executable.returnCodeMeaning.failure = [0];
           delete job.executable.returnCodeMeaning.success;
         }
+      }
+      if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.warning == 0) {
+        job.executable.returnCodeMeaning.warning = [0];
       }
     }
 
