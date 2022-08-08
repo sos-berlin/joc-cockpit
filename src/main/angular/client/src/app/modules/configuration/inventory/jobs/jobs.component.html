@@ -296,7 +296,7 @@
                             <i [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover" [ngClass]="{'text-primary': parameter.value.list && parameter.value.list.length > 0}"
                                style="right: 31px;top:1px;" *ngIf="parameter.value.type === 'String'" (click)="addList(parameter)" nz-icon nzType="unordered-list" nzTheme="outline"></i>
                             <i [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
-                               (click)="openEditor(parameter.value)" style="right: 13px;top:1px;"></i>
+                               (click)="openEditor(parameter.value)" style="right: 13px;top:1px;" *ngIf="parameter.value.type === 'String'"></i>
                             <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                  class="text-danger help-block">
                               <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>

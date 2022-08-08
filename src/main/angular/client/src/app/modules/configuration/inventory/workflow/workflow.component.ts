@@ -2038,11 +2038,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         this.selectedNode.job.executable.returnCodeMeaning.failure = this.selectedNode.job.executable.returnCodeMeaning.failure.toString();
       }
     }
-    if (this.selectedNode.job.executable.returnCodeMeaning.failure) {
-      this.returnCodes.on = 'failure';
-    } else {
-      this.returnCodes.on = 'success';
-    }
+
+    this.returnCodes.on = this.selectedNode.job.executable.returnCodeMeaning.failure ? 'failure' : 'success';
+
     if (this.selectedNode.job.executable.returnCodeMeaning && this.selectedNode.job.executable.returnCodeMeaning.warning) {
       this.selectedNode.job.executable.returnCodeMeaning.warning = this.selectedNode.job.executable.returnCodeMeaning.warning.toString();
     }
@@ -7470,27 +7468,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (job.executable && job.executable.env) {
                 self.coreService.convertArrayToObject(job.executable, 'env', true);
               }
-              if (job.executable.returnCodeMeaning && !isEmpty(job.executable.returnCodeMeaning)) {
-                if (job.executable.returnCodeMeaning.success && typeof job.executable.returnCodeMeaning.success == 'string') {
-                  job.executable.returnCodeMeaning.success = job.executable.returnCodeMeaning.success.split(',').map(Number);
-                  delete job.executable.returnCodeMeaning.failure;
-                } else if (job.executable.returnCodeMeaning.failure && typeof job.executable.returnCodeMeaning.failure == 'string') {
-                  job.executable.returnCodeMeaning.failure = job.executable.returnCodeMeaning.failure.split(',').map(Number);
-                  delete job.executable.returnCodeMeaning.success;
-                }
-                if (job.executable.returnCodeMeaning.warning && typeof job.executable.returnCodeMeaning.warning == 'string') {
-                  job.executable.returnCodeMeaning.warning = job.executable.returnCodeMeaning.warning.split(',').map(Number);
-                }
-                if (job.executable.returnCodeMeaning.warning === '') {
-                  delete job.executable.returnCodeMeaning.warning;
-                }
-                if (job.executable.returnCodeMeaning.failure === '') {
-                  delete job.executable.returnCodeMeaning.failure;
-                }
-                if (job.executable.returnCodeMeaning.success === '' && !job.executable.returnCodeMeaning.failure && !job.executable.returnCodeMeaning.warning) {
-                  job.executable.returnCodeMeaning = {};
-                }
-              }
+              self.workflowService.checkReturnCodes(job);
+
               if (job.executable && isEmpty(job.executable.login)) {
                 delete job.executable.login;
               }
@@ -7512,11 +7491,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
               if (job.executable && (!job.executable.env || typeof job.executable.env === 'string' || job.executable.env.length === 0)) {
                 delete job.executable.env;
-              }
-              if (job.executable.returnCodeMeaning) {
-                if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0' && !job.executable.returnCodeMeaning.warning) {
-                  delete job.executable.returnCodeMeaning;
-                }
               }
               if (!isEqual(JSON.stringify(_job), JSON.stringify(job))) {
                 isChange = true;
@@ -9212,7 +9186,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (job.executable.returnCodeMeaning) {
       if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0') {
-        delete job.executable.returnCodeMeaning;
+        delete job.executable.returnCodeMeaning.success;
       } else {
         if (job.executable.returnCodeMeaning.succes && typeof job.executable.returnCodeMeaning.success == 'string') {
           job.executable.returnCodeMeaning.success = job.executable.returnCodeMeaning.success.split(',').map(Number);
@@ -9225,9 +9199,13 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           delete job.executable.returnCodeMeaning.success;
         }
       }
-      if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.warning == 0) {
+      if (job.executable.returnCodeMeaning.warning == 0) {
         job.executable.returnCodeMeaning.warning = [0];
       }
+    }
+
+    if (isEmpty(job.executable.returnCodeMeaning)) {
+      delete job.executable.returnCodeMeaning;
     }
 
     if (!job.executable.v1Compatible) {
@@ -9312,15 +9290,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (this.jobs[i].name === job.jobName) {
         flag = false;
         delete job.jobName;
-        if (this.jobs[i].value.executable && this.jobs[i].value.executable.returnCodeMeaning) {
-          if (this.jobs[i].value.executable.TYPE === 'ShellScriptExecutable') {
-            if (typeof this.jobs[i].value.executable.returnCodeMeaning.success == 'string') {
-              this.jobs[i].value.executable.returnCodeMeaning.success = this.jobs[i].value.executable.returnCodeMeaning.success.split(',').map(Number);
-            }
-          } else {
-            delete this.jobs[i].value.executable.returnCodeMeaning;
-          }
-        }
+        this.workflowService.checkReturnCodes(this.jobs[i].value);
         if (!isEqual(JSON.stringify(job), JSON.stringify(this.jobs[i].value))) {
           this.jobs[i].value = job;
         } else {

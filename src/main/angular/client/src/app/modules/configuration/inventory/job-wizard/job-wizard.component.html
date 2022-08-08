@@ -9,7 +9,7 @@
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<form>
+<form #myForm="ngForm" (ngSubmit)="ok()">
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-md-12" *ngIf="wizard.step === 1">
@@ -157,7 +157,7 @@
                 <ng-container *ngSwitchCase="'Number'">
                   <div class="col-sm-5 m-b-sm p-r-0"
                        [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <nz-input-number [required]="true" #value="ngModel"
+                    <nz-input-number [required]="param.required" #value="ngModel"
                                      nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
                                      [nzMin]="0" [nzStep]="1" name="_value{{i}}"
                                      [(ngModel)]="param.newValue"></nz-input-number>
@@ -173,7 +173,7 @@
                   <div class="col-sm-5 m-b-sm p-r-0"
                        [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                               #value="ngModel" [required]="true" name="_value{{i}}"
+                               #value="ngModel" [required]="param.required" name="_value{{i}}"
                                [(ngModel)]="param.newValue">
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                       <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
@@ -190,7 +190,7 @@
                   <div class="col-sm-5 m-b-sm p-r-0"
                        [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <input [facetValidation]="param.facet" #value="ngModel"
-                           [required]="param.isRequired || param.facet" autocomplete="off" type="text"
+                           [required]="param.required || param.facet" autocomplete="off" type="text"
                            class="form-control"
                            name="value{{i}}" (keydown)="onKeyPress($event)"
                            [(ngModel)]="param.newValue" placeholder="{{'common.placeholder.value' | translate}}">
@@ -257,8 +257,8 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary btn-sm"
-            [disabled]="!job.javaClass && !job.name" (click)="ok()" translate>common.button.submit
+    <button type="submit" class="btn btn-primary btn-sm"
+            [disabled]="(!job.javaClass && !job.name) || !myForm.form.valid" translate>common.button.submit
     </button>
     <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 1" [disabled]="!job.javaClass && !job.name"
             (click)="next()" translate>workflow.wizard.button.next

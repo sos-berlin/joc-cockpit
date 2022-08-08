@@ -156,6 +156,7 @@ export class JobWizardComponent implements OnInit {
             name: k,
             type: val.type,
             description: val.description,
+            required: val.required,
             defaultValue: val.default,
             list: val.list,
             facet: val.facet,
