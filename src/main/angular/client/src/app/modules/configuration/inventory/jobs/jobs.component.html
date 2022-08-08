@@ -18,6 +18,11 @@
             <i class="fa fa-clock-o p-r-xs"></i>
             <span translate>workflow.label.admissionTime</span>
           </button>
+          <button class="btn btn-sm btn-grey m-l-12 m-t-n-xs" [disabled]="job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
+                  (click)="openJobWizard()">
+            <i class="fa fa-magic p-r-xs"></i>
+            {{'workflow.button.wizard' | translate}}
+          </button>
         </div>
         <div class="inline pull-right" *ngIf="!isTrash">
           <span class="badge m-r-12" *ngIf="job.configuration" [ngClass]="!job.valid ? 'badge-danger':'badge-success'">

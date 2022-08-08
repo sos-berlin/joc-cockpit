@@ -22,6 +22,7 @@ import {InventoryObject} from '../../../../models/enums';
 import {FacetEditorComponent} from "../workflow/workflow.component";
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {JobWizardComponent} from "../job-wizard/job-wizard.component";
 
 @Component({
   selector: 'app-jobs',
@@ -407,6 +408,29 @@ export class JobsComponent implements OnChanges, OnDestroy {
   showRuntime(): void {
     this.selectedNode.periodList = [];
     this.isRuntimeVisible = true;
+  }
+
+  openJobWizard(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: JobWizardComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        existingJob: this.job.configuration
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.job.configuration.executable.TYPE = result.executable.TYPE;
+        this.job.configuration.executable.className = result.executable.className;
+        this.job.configuration.title = result.title;
+        this.job.configuration.documentationName = result.documentationName;
+        this.ref.detectChanges();
+      }
+    });
   }
 
   closeRuntime(): void {

@@ -74,21 +74,32 @@ export class AuthInterceptor implements HttpInterceptor {
               if (req.url.match('controller/ids') && err.status === 403) {
                 return;
               }
-              if (err.error.error) {
-                if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
-                  this.toasterService.error( '', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
-                } else {
-                  this.toasterService.error( '', err.error.error.message);
+              let flag = false;
+              if (typeof err.error === 'string') {
+                try {
+                  let _err = JSON.parse(err.error);
+                  this.toasterService.error(_err.error.code, _err.error.message);
+                  flag = true;
+                } catch (e) {
                 }
-              } else if (err.error.message) {
-                this.toasterService.error( err.error.message);
-              } else {
-                if (err.error.errors) {
-                  for (let i = 0; i < err.error.errors.length; i++) {
-                    this.toasterService.error(  err.error.errors[i].message);
+              }
+              if (!flag) {
+                if (err.error.error) {
+                  if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
+                    this.toasterService.error('', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
+                  } else {
+                    this.toasterService.error('', err.error.error.message);
                   }
-                } else if (err.message) {
-                  this.toasterService.error(  err.message);
+                } else if (err.error.message) {
+                  this.toasterService.error(err.error.message);
+                } else {
+                  if (err.error.errors) {
+                    for (let i = 0; i < err.error.errors.length; i++) {
+                      this.toasterService.error(err.error.errors[i].message);
+                    }
+                  } else if (err.message) {
+                    this.toasterService.error(err.message);
+                  }
                 }
               }
             }
@@ -101,7 +112,7 @@ export class AuthInterceptor implements HttpInterceptor {
               if (err.error && err.error.error) {
                 errorMessage = JSON.stringify(err.error.error);
               } else {
-                errorMessage = JSON.stringify(err.error);
+                errorMessage = typeof err.error === 'string' ? err.error :  JSON.stringify(err.error);
               }
             }
             this.logService.error(errorMessage);

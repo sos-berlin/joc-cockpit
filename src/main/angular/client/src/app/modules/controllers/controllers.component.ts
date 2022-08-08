@@ -168,6 +168,7 @@ export class ImportModalComponent implements OnInit {
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       obj.format = this.requestObj.format;
       obj.overwrite = this.requestObj.overwrite;
+      obj.controllerId = this.controller.controllerId;
       item.file.name = encodeURIComponent(item.file.name);
       this.uploader.options.additionalParameter = obj;
     };

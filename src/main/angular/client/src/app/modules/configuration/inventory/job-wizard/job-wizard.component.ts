@@ -12,6 +12,7 @@ export class JobWizardComponent implements OnInit {
   @Input() existingJob: any;
   @Input() node: any;
 
+  index = 0;
   preferences: any;
   wizard = {
     step: 1,
@@ -40,6 +41,7 @@ export class JobWizardComponent implements OnInit {
 
   tabChange($event): void {
     this.job = {};
+    this.index = $event.index;
     if ($event.index === 1) {
       if (!this.isTreeLoad) {
         this.getJobTemplates();
@@ -126,52 +128,60 @@ export class JobWizardComponent implements OnInit {
   }
 
   selectJobTemp(job): void {
-    this.coreService.post('inventory/read/configuration', {
-      path: job.path,
-      objectType: InventoryObject.JOBTEMPLATE
-    }).subscribe((res) => {
-      this.job = res.configuration;
-      if (this.job.arguments) {
-        const temp = this.coreService.clone(this.job.arguments);
-        this.job.arguments = Object.entries(temp).map(([k, v]) => {
-          const val: any = v;
-          if (val.default) {
-            delete val.listParameters;
-            if (val.type === 'String') {
-              this.coreService.removeSlashToString(val, 'default');
-            } else if (val.type === 'Boolean') {
-              val.default = (val.default === true || val.default === 'true');
-            }
-          }
-          if (val.list) {
-            let list = [];
-            val.list.forEach((val) => {
-              let obj = {name: val};
-              this.coreService.removeSlashToString(obj, 'name');
-              list.push(obj);
+    if (job.loading == undefined) {
+      job.loading = true;
+      this.coreService.post('inventory/read/configuration', {
+        path: job.path,
+        objectType: InventoryObject.JOBTEMPLATE
+      }).subscribe({
+        next: (res) => {
+          job.loading = false;
+          this.job = res.configuration;
+          if (this.job.arguments) {
+            const temp = this.coreService.clone(this.job.arguments);
+            this.job.arguments = Object.entries(temp).map(([k, v]) => {
+              const val: any = v;
+              if (val.default) {
+                delete val.listParameters;
+                if (val.type === 'String') {
+                  this.coreService.removeSlashToString(val, 'default');
+                } else if (val.type === 'Boolean') {
+                  val.default = (val.default === true || val.default === 'true');
+                }
+              }
+              if (val.list) {
+                let list = [];
+                val.list.forEach((val) => {
+                  let obj = {name: val};
+                  this.coreService.removeSlashToString(obj, 'name');
+                  list.push(obj);
+                });
+                val.list = list;
+              }
+              return {
+                name: k,
+                type: val.type,
+                description: val.description,
+                required: val.required,
+                defaultValue: val.default,
+                list: val.list,
+                facet: val.facet,
+                message: val.message
+              };
             });
-            val.list = list;
           }
-          return {
-            name: k,
-            type: val.type,
-            description: val.description,
-            required: val.required,
-            defaultValue: val.default,
-            list: val.list,
-            facet: val.facet,
-            message: val.meesage
-          };
-        });
-      }
-      this.job.jobTemplate = true;
-      this.job.name = job.name;
-      this.job.paramList = [];
-      this.wizard.setOfCheckedValue = new Set<string>();
-      this.wizard.checked = false;
-      this.wizard.indeterminate = false;
-      this.checkRequiredParam(true);
-    });
+          this.job.jobTemplate = true;
+          this.job.name = job.name;
+          this.job.paramList = [];
+          this.wizard.setOfCheckedValue = new Set<string>();
+          this.wizard.checked = false;
+          this.wizard.indeterminate = false;
+          this.checkRequiredParam(true);
+        }, error: () => {
+          job.loading = false;
+        }
+      });
+    }
   }
 
   addParameter(): void {
