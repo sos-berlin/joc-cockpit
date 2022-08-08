@@ -216,12 +216,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
         this.job.configuration.executable.returnCodeMeaning.warning = this.job.configuration.executable.returnCodeMeaning.warning.toString();
       }
     }
-    if (this.job.configuration.executable.returnCodeMeaning.failure) {
-      this.returnCodes.on = 'failure';
-    } else {
-      this.returnCodes.on = 'success';
-    }
-
+    this.returnCodes.on = this.job.configuration.executable.returnCodeMeaning.failure ? 'failure' : 'success';
     if (!this.job.configuration.executable.arguments || isEmpty(this.job.configuration.executable.arguments)) {
       this.job.configuration.executable.arguments = [];
     } else {
@@ -816,8 +811,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
 
   isStringValid(data, form, list): void {
     if (form.invalid) {
-     // data.name = '';
-     // data.value = '';
+      // data.name = '';
+      // data.value = '';
     } else {
       let count = 0;
       if (list.length > 1) {
@@ -889,51 +884,18 @@ export class JobsComponent implements OnChanges, OnDestroy {
       return;
     }
     const job = this.coreService.clone(this.job.configuration);
-    if (job.arguments) {
-      this.coreService.convertArrayToObject(job, 'arguments', true);
-    }
+
     if (job.executable && job.executable.arguments) {
       this.coreService.convertArrayToObject(job.executable, 'arguments', true);
     }
     if (job.executable && job.executable.jobArguments) {
       this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
     }
-    if (job.executable && job.executable.env) {
-      this.coreService.convertArrayToObject(job.executable, 'env', true);
-    }
-    if (job.executable.returnCodeMeaning && !isEmpty(job.executable.returnCodeMeaning)) {
-      if (job.executable.returnCodeMeaning.success && typeof job.executable.returnCodeMeaning.success == 'string') {
-        job.executable.returnCodeMeaning.success = job.executable.returnCodeMeaning.success.split(',').map(Number);
-        delete job.executable.returnCodeMeaning.failure;
-      } else if (job.executable.returnCodeMeaning.failure && typeof job.executable.returnCodeMeaning.failure == 'string') {
-        job.executable.returnCodeMeaning.failure = job.executable.returnCodeMeaning.failure.split(',').map(Number);
-        delete job.executable.returnCodeMeaning.success;
-      }
-
-      if (job.executable.returnCodeMeaning.warning && typeof job.executable.returnCodeMeaning.warning == 'string') {
-        job.executable.returnCodeMeaning.warning = job.executable.returnCodeMeaning.warning.split(',').map(Number);
-      }
-      if (job.executable.returnCodeMeaning.warning === '') {
-        delete job.executable.returnCodeMeaning.warning;
-      }
-      if (job.executable.returnCodeMeaning.failure === '') {
-        delete job.executable.returnCodeMeaning.failure;
-      }
-      if (job.executable.returnCodeMeaning.success === '' && !job.executable.returnCodeMeaning.failure && !job.executable.returnCodeMeaning.warning) {
-        job.executable.returnCodeMeaning = {};
-      }
-    }
+    this.workflowService.checkReturnCodes(job);
     if (job.executable && isEmpty(job.executable.login)) {
       delete job.executable.login;
     }
-    if (job.arguments) {
-      if (job.arguments && isArray(job.arguments)) {
-        job.arguments.filter((argu) => {
-          this.coreService.addSlashToString(argu, 'value');
-        });
-        this.coreService.convertArrayToObject(job, 'arguments', true);
-      }
-    }
+
     if (job.notification && isEmpty(job.notification.mail)) {
       if (!job.notification.types || job.notification.types.length === 0) {
         delete job.notification;
@@ -959,7 +921,9 @@ export class JobsComponent implements OnChanges, OnDestroy {
         delete job.executable.env;
       }
     }
-
+    if (job.executable && job.executable.env) {
+      this.coreService.convertArrayToObject(job.executable, 'env', true);
+    }
     if (job.arguments && job.arguments.length > 0) {
       let temp = this.coreService.clone(job.arguments);
       job.arguments = temp.filter((value) => {
@@ -988,7 +952,14 @@ export class JobsComponent implements OnChanges, OnDestroy {
       });
       job.arguments = this.coreService.keyValuePair(job.arguments);
     }
-
+    if (job.arguments) {
+      if (job.arguments && isArray(job.arguments)) {
+        job.arguments.filter((argu) => {
+          this.coreService.addSlashToString(argu, 'value');
+        });
+        this.coreService.convertArrayToObject(job, 'arguments', true);
+      }
+    }
     if (!job.parallelism) {
       job.parallelism = 0;
     }
@@ -1016,11 +987,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
     if (job.executable && (!job.executable.env || typeof job.executable.env === 'string' || job.executable.env.length === 0)) {
       delete job.executable.env;
     }
-    if (job.executable.returnCodeMeaning) {
-      if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0' && !job.executable.returnCodeMeaning.warning) {
-        delete job.executable.returnCodeMeaning;
-      }
-    }
+
     if (this.job.actual && !isEqual(this.job.actual, JSON.stringify(job))) {
       if (!flag) {
         if (this.history.length === 20) {

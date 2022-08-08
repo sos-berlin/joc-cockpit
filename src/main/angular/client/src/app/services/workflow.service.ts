@@ -459,24 +459,7 @@ export class WorkflowService {
         }
       }
 
-      if (value.executable && value.executable.returnCodeMeaning) {
-        if (value.executable.returnCodeMeaning.success && typeof value.executable.returnCodeMeaning.success === 'string') {
-          value.executable.returnCodeMeaning.success = value.executable.returnCodeMeaning.success.split(',').map(Number);
-          delete value.executable.returnCodeMeaning.failure;
-        } else if (value.executable.returnCodeMeaning.failure && typeof value.executable.returnCodeMeaning.failure === 'string') {
-          value.executable.returnCodeMeaning.failure = value.executable.returnCodeMeaning.failure.split(',').map(Number);
-          delete value.executable.returnCodeMeaning.success;
-        }
-        if (value.executable.returnCodeMeaning.failure === '') {
-          delete value.executable.returnCodeMeaning.failure;
-        }
-        if (value.executable.TYPE !== 'ShellScriptExecutable' || (value.executable.returnCodeMeaning.success === '' && !value.executable.returnCodeMeaning.failure)) {
-          value.executable.returnCodeMeaning = {};
-        }
-        if (isEmpty(value.executable.returnCodeMeaning)) {
-          delete value.executable.returnCodeMeaning;
-        }
-      }
+      this.checkReturnCodes(value);
       if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode === 'string') {
         value.returnCode = parseInt(value.returnCode, 10);
         if (isNaN(value.returnCode)) {
@@ -512,6 +495,39 @@ export class WorkflowService {
       }
     }
     return true;
+  }
+
+  checkReturnCodes(obj): void {
+    if (obj.executable && obj.executable.returnCodeMeaning) {
+      if (obj.executable.TYPE === 'ShellScriptExecutable') {
+        if (obj.executable.returnCodeMeaning.success === '') {
+          delete obj.executable.returnCodeMeaning.success;
+        }
+        if (obj.executable.returnCodeMeaning.failure === '') {
+          delete obj.executable.returnCodeMeaning.failure;
+        }
+        if (obj.executable.returnCodeMeaning.warning === '') {
+          delete obj.executable.returnCodeMeaning.warning;
+        }
+        if (typeof obj.executable.returnCodeMeaning.success == 'string') {
+          delete obj.executable.returnCodeMeaning.failure;
+          obj.executable.returnCodeMeaning.success = obj.executable.returnCodeMeaning.success.split(',').map(Number);
+        } else if (typeof obj.executable.returnCodeMeaning.failure == 'string') {
+          delete obj.executable.returnCodeMeaning.success;
+          obj.executable.returnCodeMeaning.failure = obj.executable.returnCodeMeaning.failure.split(',').map(Number);
+        }
+      }
+      if (typeof obj.executable.returnCodeMeaning.warning == 'string') {
+        obj.executable.returnCodeMeaning.warning = obj.executable.returnCodeMeaning.warning.split(',').map(Number);
+      }
+
+      if (obj.executable.returnCodeMeaning.success == '0' && !obj.executable.returnCodeMeaning.warning) {
+        delete obj.executable.returnCodeMeaning;
+      }
+    }
+    if (obj.executable && isEmpty(obj.executable.returnCodeMeaning)) {
+      delete obj.executable.returnCodeMeaning;
+    }
   }
 
   checkEmptyObjects(mainJson: any, cb: any): void {
