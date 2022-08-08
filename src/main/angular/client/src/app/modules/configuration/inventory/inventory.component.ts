@@ -4348,7 +4348,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.storeData(obj.showJson, result, false);
+          this.storeData(obj.showJson, result, obj.edit);
         }
       });
     });

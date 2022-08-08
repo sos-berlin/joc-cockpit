@@ -21,7 +21,7 @@
                    [(ngModel)]="job.title">
           </div>
         </div>
-        <nz-tabset [nzAnimated]="false" (nzSelectChange)="tabChange($event)">
+        <nz-tabset [(nzSelectedIndex)]="index" [nzAnimated]="false" (nzSelectChange)="tabChange($event)">
           <nz-tab [nzTitle]="'workflow.wizard.tab.jitl' | translate">
             <div class="form-group row">
               <div class="col-sm-12 m-t-sm m-b">
@@ -84,7 +84,7 @@
               </div>
             </div>
           </nz-tab>
-          <nz-tab [nzTitle]="'workflow.wizard.tab.jobTemplate' | translate">
+          <nz-tab [nzTitle]="'workflow.wizard.tab.jobTemplate' | translate" *ngIf="node">
             <div class="min-ht-150">
               <div class="row" *ngIf="jobTree.length>0">
                 <div class="col-md-12" *ngIf="isTreeLoad">
@@ -109,9 +109,11 @@
                       <div class="node-content-wrapper m-l-22" style="display: block"
                            *ngFor="let item of node.origin.jobTemplates"
                            [ngClass]="{'node-content-wrapper-active': item.name === job.name}">
-                        <a class="text-primary-hover m-t-xs" (click)="selectJobTemp(item);$event.stopPropagation();"><i
-                          class="icon icon-jobs-icon text-sm"></i>
-                          <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
+                        <a class="text-primary-hover m-t-xs" (click)="selectJobTemp(item);$event.stopPropagation();">
+                          <i class="w-14 m-r-sm m-t-n-1" style="display: inline-block" *ngIf="item.loading">
+                            <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
+                          </i><i class="icon icon-jobs-icon text-sm"></i>
+                          <span class="fa fa-check-circle-o orange text-xs m-l-xs m-r-xs"
                                 [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' : node.origin.released}"></span>
                           {{item.name}}</a>
                         <i class="p-l-xs p-r-xs" *ngIf="item.title">-</i>
@@ -158,6 +160,7 @@
                   <div class="col-sm-5 m-b-sm p-r-0"
                        [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-input-number [required]="param.required" #value="ngModel"
+                                     (nzBlur)="checkCheckbox(param)"
                                      nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
                                      [nzMin]="0" [nzStep]="1" name="_value{{i}}"
                                      [(ngModel)]="param.newValue"></nz-input-number>
@@ -174,7 +177,7 @@
                        [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
                                #value="ngModel" [required]="param.required" name="_value{{i}}"
-                               [(ngModel)]="param.newValue">
+                               [(ngModel)]="param.newValue" (ngModelChange)="checkCheckbox(param)">
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                       <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                     </nz-select>
@@ -190,8 +193,9 @@
                   <div class="col-sm-5 m-b-sm p-r-0"
                        [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <input [facetValidation]="param.facet" #value="ngModel"
-                           [required]="param.required || param.facet" autocomplete="off" type="text"
+                           [required]="param.required" autocomplete="off" type="text"
                            class="form-control"
+                           (blur)="checkCheckbox(param)"
                            name="value{{i}}" (keydown)="onKeyPress($event)"
                            [(ngModel)]="param.newValue" placeholder="{{'common.placeholder.value' | translate}}">
                     <i class="pos-abt cursor fa fa-info-circle" *ngIf="param.message" [nz-tooltip]="param.message"

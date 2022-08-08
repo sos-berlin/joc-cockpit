@@ -273,8 +273,8 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   isStringValid(data, notValid): void {
     if (notValid) {
-      data.name = '';
-      data.value = '';
+     // data.name = '';
+     // data.value = '';
     } else {
       setTimeout(() => {
         this.saveJSON();
@@ -284,7 +284,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
 
   upperCase(env): void {
     if (env.name) {
-      env.name = env.name.toUpperCase();
+      // env.name = env.name.toUpperCase();
       if (!env.value) {
         env.value = '$' + env.name.toLowerCase();
       }
