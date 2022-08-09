@@ -8,7 +8,8 @@
           </div>
           <div class="inline" *ngIf="permission.joc">
             <div class="inline valign">
-              <label nz-checkbox [(ngModel)]="inventoryService.checkDeploymentStatus.isChecked" (ngModelChange)="reloadFolders($event)">
+              <label nz-checkbox [(ngModel)]="inventoryService.checkDeploymentStatus.isChecked"
+                     (ngModelChange)="reloadFolders($event)">
                 {{'inventory.button.checkDeploymentStatus' | translate}}
               </label>
             </div>
@@ -19,7 +20,8 @@
             </button>
             <div class="btn-group" *ngIf="permission.joc.inventory.manage">
               <div class="btn-group dropdown ">
-                <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"  nzPlacement="bottomRight">
+                <button class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" [nzDropdownMenu]="order"
+                        nzPlacement="bottomRight">
                   <i nz-icon nzType="sync" nzTheme="outline"></i>&nbsp;
                   <span translate>inventory.button.convert </span>
                   <i nz-icon nzType="caret-down" nzTheme="outline" class="caretDownIcon"></i>
@@ -92,16 +94,17 @@
         </ul>
       </div>
       <div class="inline">
-        <a class="text-hover-primary m-l-lg pos-rel t-10" *ngIf="indexOfNextAdd > 0" (click)="backToObject()" >
-          <i class="fa fa-arrow-circle-left" ></i>
+        <a class="text-hover-primary m-l-lg pos-rel t-10" *ngIf="indexOfNextAdd > 0" (click)="backToObject()">
+          <i class="fa fa-arrow-circle-left"></i>
           {{'inventory.button.backToObject' | translate}}
         </a>
       </div>
     </div>
-    <div class="col-md-3" *ngIf="!isTrash && type && type !== 'WORKFLOW' && selectedData.objectType && permission.joc && permission.joc.inventory.manage">
-      <div class="inline pull-right" >
+    <div class="col-md-3"
+         *ngIf="!isTrash && type && type !== 'WORKFLOW' && selectedData.objectType && permission.joc && permission.joc.inventory.manage">
+      <div class="inline pull-right">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-          <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate" >
+          <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate">
             <a class="nav-link"
                (click)="undo()">
               <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
@@ -135,7 +138,9 @@
 <div class="scroll-y max-ht2">
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
-      <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor " [ngClass]="{'bg-white' : isTrash}" [ngStyle]="{'width': sideView.inventory ? sideView.inventory.width +'px' : 'auto'}">
+      <div appResizable [sideView]="sideView.inventory" id="leftPanel" class="sticky leftPanel editor "
+           [ngClass]="{'bg-white' : isTrash}"
+           [ngStyle]="{'width': sideView.inventory ? sideView.inventory.width +'px' : 'auto'}">
         <div class="pl-20 editor-tree">
           <a class="text resize-cursor a-1 pos-abt r-28 z-index-99" *ngIf="!isTrash">
             <i class="fa fa-angle-double-left fa-lg" (click)="hidePanel()"></i>
@@ -181,7 +186,8 @@
                     <span class="p-r-xs"></span>
                   </span>
                   <button class="btn-drop more-option-h" [disabled]="!node.origin.permitted && !node.origin.controller
-                   && !node.origin.dailyPlan && !node.origin.object && !node.origin.type" (click)="openMenu(node, $event)"
+                   && !node.origin.dailyPlan && !node.origin.object && !node.origin.type"
+                          (click)="openMenu(node, $event)"
                           type="button">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
@@ -190,14 +196,16 @@
                   (!node.origin.type && !node.origin.object && !node.origin.controller && !node.origin.dailyPlan && node.origin.path === selectedObj.path) ||
                   (node.origin.object && ((node.origin.object === selectedObj.type) || (selectedObj.type && node.origin.object && node.origin.object.match('CALENDAR') && selectedObj.type.match('CALENDAR'))) && node.origin.path === selectedObj.path)}"
                        (click)="selectNode(node)">
-                    <i *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan"
+                    <i
+                      *ngIf="node.children && !node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan"
                       nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                     <i *ngIf="node.origin.controller" nz-icon nzType="container" class="icon-color"
                        nzTheme="outline"></i>
                     <i *ngIf="node.origin.dailyPlan" class="icon-daily-plan-icon icon-color tree-icon opacity8"></i>
                     <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color"
                        nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
+                    <i *ngIf="node.origin.object == 'FILEORDERSOURCE'"
+                       class="icon-orders-icon icon-color tree-icon"></i>
                     <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
                     <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
                     <i *ngIf="node.origin.object == 'NOTICEBOARD'" nz-icon nzType="pushpin" class="icon-color"
@@ -207,14 +215,21 @@
                     <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13 text-shadow"></i>
                     <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color"
                        nzTheme="outline"></i>
-                    <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color"
+                    <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar"
+                       class="icon-color"
                        nzTheme="outline"></i>
                     <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
                           [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' : node.origin.deployed || node.origin.released, 'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}"></span>
-                    <span *ngIf="node.origin.type && node.origin.syncState && inventoryService.checkDeploymentStatus.isChecked" [nz-tooltip]="node.origin.syncState._text | translate">
-                      <i *ngIf="node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING'" class="fa fa-refresh font11 p-l-xxs"></i>
-                      <i *ngIf="node.origin.syncState._text === 'UNKNOWN'" class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
-                      <i *ngIf="node.origin.syncState._text === 'NOT_IN_SYNC'" class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
+                    <span
+                      *ngIf="node.origin.type && node.origin.syncState && inventoryService.checkDeploymentStatus.isChecked"
+                      [nz-tooltip]="node.origin.syncState._text | translate">
+                      <i
+                        *ngIf="node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING'"
+                        class="fa fa-refresh font11 p-l-xxs"></i>
+                      <i *ngIf="node.origin.syncState._text === 'UNKNOWN'"
+                         class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
+                      <i *ngIf="node.origin.syncState._text === 'NOT_IN_SYNC'"
+                         class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
                     </span>
                     <span class="p-l-xs">
                       <span
@@ -236,39 +251,48 @@
       <div id="rightPanel" [ngStyle]="{'margin-left': sideView.inventory ? (sideView.inventory.width) + 'px' : 'auto'}">
         <div *ngIf="type == 'WORKFLOW'">
           <app-workflow [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-workflow>
+                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
+                        [isTrash]="isTrash"></app-workflow>
         </div>
         <div *ngIf="type == 'FILEORDERSOURCE'">
           <app-file-order [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-file-order>
+                          [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
+                          [isTrash]="isTrash"></app-file-order>
         </div>
         <div *ngIf="type == 'JOBTEMPLATE'">
           <app-jobs [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                         [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-jobs>
+                    [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
+                    [isTrash]="isTrash"></app-jobs>
         </div>
         <div *ngIf="type == 'JOBRESOURCE'">
           <app-job-resource [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                         [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-job-resource>
+                            [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
+                            [isTrash]="isTrash"></app-job-resource>
         </div>
         <div *ngIf="type == 'NOTICEBOARD'">
           <app-board [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-board>
+                     [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
+                     [isTrash]="isTrash"></app-board>
         </div>
         <div *ngIf="type == 'LOCK'">
           <app-lock [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
-                    [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-lock>
+                    [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
+                    [isTrash]="isTrash"></app-lock>
         </div>
         <div *ngIf="type == 'SCHEDULE'">
           <app-schedule [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-schedule>
+                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
+                        [isTrash]="isTrash"></app-schedule>
         </div>
         <div *ngIf="type == 'INCLUDESCRIPT'">
           <app-script [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-script>
+                      [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
+                      [isTrash]="isTrash"></app-script>
         </div>
         <div *ngIf="type && type.match('CALENDAR')">
           <app-calendar [preferences]="preferences" [permission]="permission" [schedulerId]="schedulerIds.selected"
-                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload" [isTrash]="isTrash"></app-calendar>
+                        [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
+                        [isTrash]="isTrash"></app-calendar>
         </div>
       </div>
     </div>
@@ -277,7 +301,7 @@
 <nz-dropdown-menu #menu="nzDropdownMenu">
   <ul nz-menu *ngIf="!isTrash && node.origin && permission.joc">
     <li nz-menu-item *ngIf="node.origin.object && permission.joc.inventory.manage"
-      (click)="addObject(node, node.origin.object === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : node.origin.object);">
+        (click)="addObject(node, node.origin.object === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : node.origin.object);">
       <a translate>inventory.button.new</a>
     </li>
     <li nz-submenu [nzTitle]="'inventory.button.new' | translate"
@@ -336,43 +360,52 @@
       <a translate>inventory.button.paste</a>
     </li>
     <li nz-menu-item (click)="renameObject(node);"
-        *ngIf="permission.joc.inventory.manage" [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
+        *ngIf="permission.joc.inventory.manage"
+        [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
       <a translate>inventory.button.rename</a>
     </li>
     <li nz-menu-item (click)="exportObject(node);" *ngIf="!node.origin.type"
         [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
       <a translate>inventory.button.export</a>
     </li>
-    <li [hidden]="node.origin.path === '/' && node.origin.object" (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu [nzTitle]="'inventory.button.repository' | translate" *ngIf="(!node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
+    <li [hidden]="node.origin.path === '/' && node.origin.object"
+        (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
+        [nzTitle]="'inventory.button.repository' | translate"
+        *ngIf="(!node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
       <ul>
-        <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu [nzTitle]="'inventory.button.local' | translate">
+        <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
+            [nzTitle]="'inventory.button.local' | translate">
           <ul>
             <li *ngIf="node.origin.path !== '/'" nz-menu-item (click)="repositoryOperation(node, 'store', 'LOCAL');">
               <a translate>inventory.button.storeTo</a>
             </li>
-            <li *ngIf="node.origin.path !== '/'"  nz-menu-item (click)="repositoryOperation(node, 'update', 'LOCAL');">
+            <li *ngIf="node.origin.path !== '/'" nz-menu-item (click)="repositoryOperation(node, 'update', 'LOCAL');">
               <a translate>inventory.button.updateFrom</a>
             </li>
             <li *ngIf="node.origin.path !== '/'" nz-menu-item (click)="repositoryOperation(node, 'delete', 'LOCAL');">
               <a translate>inventory.button.deleteFrom</a>
             </li>
             <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
-                *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')" [nzTitle]="'inventory.button.git' | translate">
+                *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')"
+                [nzTitle]="'inventory.button.git' | translate">
               <ul>
                 <li [nzDisabled]="node.origin.repoControlled" nz-menu-item (click)="gitClone(node.origin, 'LOCAL');">
                   <a translate>inventory.button.clone</a>
                 </li>
-                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPull(node.origin, 'LOCAL');">
+                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item
+                    (click)="gitPull(node.origin, 'LOCAL');">
                   <a translate>inventory.button.pull</a>
                 </li>
-                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPush(node.origin, 'LOCAL');">
+                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item
+                    (click)="gitPush(node.origin, 'LOCAL');">
                   <a translate>inventory.button.push</a>
                 </li>
               </ul>
             </li>
           </ul>
         </li>
-        <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu [nzTitle]="'inventory.button.rollout' | translate">
+        <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
+            [nzTitle]="'inventory.button.rollout' | translate">
           <ul>
             <li *ngIf="node.origin.path !== '/'" nz-menu-item (click)="repositoryOperation(node, 'store', 'ROLLOUT');">
               <a translate>inventory.button.storeTo</a>
@@ -384,15 +417,18 @@
               <a translate>inventory.button.deleteFrom</a>
             </li>
             <li (click)="$event.preventDefault();$event.stopPropagation()" nz-submenu
-                *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')" [nzTitle]="'inventory.button.git' | translate">
+                *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')"
+                [nzTitle]="'inventory.button.git' | translate">
               <ul>
                 <li [nzDisabled]="node.origin.repoControlled" nz-menu-item (click)="gitClone(node.origin, 'ROLLOUT');">
                   <a translate>inventory.button.clone</a>
                 </li>
-                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPull(node.origin, 'ROLLOUT');">
+                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item
+                    (click)="gitPull(node.origin, 'ROLLOUT');">
                   <a translate>inventory.button.pull</a>
                 </li>
-                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item (click)="gitPush(node.origin, 'ROLLOUT');">
+                <li *ngIf="node.origin.path !== '/'" [nzDisabled]="!node.origin.repoControlled" nz-menu-item
+                    (click)="gitPush(node.origin, 'ROLLOUT');">
                   <a translate>inventory.button.push</a>
                 </li>
               </ul>
@@ -403,13 +439,13 @@
     </li>
     <li nz-menu-divider *ngIf="(node.origin.type || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan))
                        && permission.joc.inventory.manage && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)"></li>
-    <li nz-menu-item (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT')
-     || (node.origin.type && !node.origin.type.match('CALENDAR') && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'INCLUDESCRIPT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
+    <li nz-menu-item (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT' && node.origin.type !== 'JOBTEMPLATE')
+     || (node.origin.type && !node.origin.type.match('CALENDAR') && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'JOBTEMPLATE' && node.origin.type !== 'INCLUDESCRIPT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
         [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid))">
       <a translate>inventory.button.deploy</a>
     </li>
-    <li nz-menu-item (click)="revoke(node);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT')
-     || (node.origin.type && !node.origin.type.match('CALENDAR') && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'INCLUDESCRIPT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
+    <li nz-menu-item (click)="revoke(node);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT' && node.origin.type !== 'JOBTEMPLATE')
+     || (node.origin.type && !node.origin.type.match('CALENDAR') && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'JOBTEMPLATE' && node.origin.type !== 'INCLUDESCRIPT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
         [nzDisabled]="((node.origin.object && node.origin.children.length === 0)) || (node.origin.type && !node.origin.hasDeployments)">
       <a translate>inventory.button.revoke</a>
     </li>
@@ -421,16 +457,17 @@
         *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))">
       <a translate>inventory.button.synchronize</a>
     </li>
-    <li nz-menu-divider *ngIf="permission.joc.inventory.manage && (!node.origin.type && !node.origin.controller && !node.origin.object)"></li>
-    <li nz-menu-item (click)="releaseObject(node);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && (node.origin.object.match('CALENDAR') || node.origin.object === 'SCHEDULE' || node.origin.object === 'INCLUDESCRIPT'))
-     || (node.origin.type && (node.origin.type.match('CALENDAR') || node.origin.type === 'SCHEDULE' || node.origin.type === 'INCLUDESCRIPT')) || (!node.origin.object && !node.origin.type && !node.origin.controller))"
+    <li nz-menu-divider
+        *ngIf="permission.joc.inventory.manage && (!node.origin.type && !node.origin.controller && !node.origin.object)"></li>
+    <li nz-menu-item (click)="releaseObject(node);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && (node.origin.object.match('CALENDAR') || node.origin.object === 'SCHEDULE' || node.origin.object === 'INCLUDESCRIPT' || node.origin.type == 'JOBTEMPLATE'))
+     || (node.origin.type && (node.origin.type.match('CALENDAR') || node.origin.type === 'SCHEDULE' || node.origin.type === 'JOBTEMPLATE' || node.origin.type === 'INCLUDESCRIPT')) || (!node.origin.object && !node.origin.type && !node.origin.controller))"
         [nzDisabled]="(!node.origin.hasReleases && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.valid)))">
       <a translate>inventory.button.release</a>
     </li>
-    <li nz-menu-item (click)="recallObject(node);"  *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && (node.origin.object.match('CALENDAR') || node.origin.object === 'SCHEDULE' || node.origin.object === 'INCLUDESCRIPT'))
-      || (node.origin.type && (node.origin.type.match('CALENDAR') || node.origin.type === 'SCHEDULE' || node.origin.type === 'INCLUDESCRIPT')) || (!node.origin.object && !node.origin.type && !node.origin.controller))"
-       [nzDisabled]="(!node.origin.hasReleases && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.released)))">
-       <a translate>inventory.button.recall</a>
+    <li nz-menu-item (click)="recallObject(node);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && (node.origin.object.match('CALENDAR') || node.origin.object === 'SCHEDULE' || node.origin.object === 'INCLUDESCRIPT' || node.origin.type == 'JOBTEMPLATE'))
+      || (node.origin.type && (node.origin.type.match('CALENDAR') || node.origin.type === 'SCHEDULE' || node.origin.type === 'JOBTEMPLATE' || node.origin.type === 'INCLUDESCRIPT')) || (!node.origin.object && !node.origin.type && !node.origin.controller))"
+        [nzDisabled]="(!node.origin.hasReleases && ((node.origin.object && node.origin.children.length === 0) || (node.origin.type && !node.origin.released)))">
+      <a translate>inventory.button.recall</a>
     </li>
     <li nz-menu-divider *ngIf="permission.joc.inventory.manage"></li>
     <li nz-menu-item (click)="removeObject(node);" *ngIf="permission.joc.inventory.manage"
@@ -465,7 +502,8 @@
       <a translate>inventory.button.uploadJSON</a>
     </li>
     <li *ngIf="!node.origin.controller && !node.origin.dailyPlan && !node.origin.object"
-        (click)="coreService.copyLink('configuration', (node.origin.path + (node.origin.path === '/' ? '' : '/') + node.origin.name), node.origin.objectType || node.origin.type)" nz-menu-item>
+        (click)="coreService.copyLink('configuration', (node.origin.path + (node.origin.path === '/' ? '' : '/') + node.origin.name), node.origin.objectType || node.origin.type)"
+        nz-menu-item>
       <a translate>common.button.copyLinkToObject</a>
     </li>
   </ul>
@@ -473,7 +511,8 @@
     <li nz-menu-item (click)="deletePermanently(node);" *ngIf="permission.joc.inventory.manage" class="bg-hover-color"
         [nzDisabled]="(node.origin.object && node.origin.children.length === 0)">
       <a translate>inventory.button.delete</a></li>
-    <li nz-menu-item (click)="restoreObject(node);" [nzDisabled]="node.origin.object || node.origin.controller || node.origin.dailyPlan">
+    <li nz-menu-item (click)="restoreObject(node);"
+        [nzDisabled]="node.origin.object || node.origin.controller || node.origin.dailyPlan">
       <a translate>inventory.button.restore</a>
     </li>
   </ul>
@@ -487,8 +526,10 @@
   <ng-container *nzDrawerContent>
     <div class="close-btn" (click)="closeSearch()"></div>
     <div *ngIf="isSearchVisible">
-      <div class="text-center m-b-sm text" ><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span></div>
-      <app-inventory-search [controllerId]="schedulerIds.selected" [agentData]="inventoryService.agentList" (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)"></app-inventory-search>
+      <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
+      </div>
+      <app-inventory-search [controllerId]="schedulerIds.selected" [agentData]="inventoryService.agentList"
+                            (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)"></app-inventory-search>
     </div>
   </ng-container>
 </nz-drawer>

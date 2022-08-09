@@ -166,6 +166,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
       this.job = res;
       this.job.path1 = this.data.path;
       this.job.name = this.data.name;
+      this.job.actual = JSON.stringify(res.configuration);
       this.setJobProperties();
       if (this.jobResourcesTree.length === 0) {
         this.getJobResources();
@@ -175,7 +176,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
           jobResources: this.job.configuration.jobResourceNames
         });
       }
-      this.job.actual = JSON.stringify(res.configuration);
+
       this.history.push(this.job.actual);
       if (!res.valid) {
         this.validateJSON(res.configuration);

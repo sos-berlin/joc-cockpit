@@ -506,9 +506,6 @@ export class WorkflowService {
         if (obj.executable.returnCodeMeaning.failure === '') {
           delete obj.executable.returnCodeMeaning.failure;
         }
-        if (obj.executable.returnCodeMeaning.warning === '') {
-          delete obj.executable.returnCodeMeaning.warning;
-        }
         if (typeof obj.executable.returnCodeMeaning.success == 'string') {
           delete obj.executable.returnCodeMeaning.failure;
           obj.executable.returnCodeMeaning.success = obj.executable.returnCodeMeaning.success.split(',').map(Number);
@@ -516,6 +513,12 @@ export class WorkflowService {
           delete obj.executable.returnCodeMeaning.success;
           obj.executable.returnCodeMeaning.failure = obj.executable.returnCodeMeaning.failure.split(',').map(Number);
         }
+      } else {
+        delete obj.executable.returnCodeMeaning.success;
+        delete obj.executable.returnCodeMeaning.failure;
+      }
+      if (obj.executable.returnCodeMeaning.warning === '') {
+        delete obj.executable.returnCodeMeaning.warning;
       }
       if (typeof obj.executable.returnCodeMeaning.warning == 'string') {
         obj.executable.returnCodeMeaning.warning = obj.executable.returnCodeMeaning.warning.split(',').map(Number);

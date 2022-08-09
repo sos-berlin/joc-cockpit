@@ -113,8 +113,8 @@
                           <i class="w-14 m-r-sm m-t-n-1" style="display: inline-block" *ngIf="item.loading">
                             <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
                           </i><i class="icon icon-jobs-icon text-sm"></i>
-                          <span class="fa fa-check-circle-o orange text-xs m-l-xs m-r-xs"
-                                [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' : node.origin.released}"></span>
+                          <span class="fa fa-check-circle-o orange text-xs m-l-xs p-l-xs m-r-xs"
+                                [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' : item.released}"></span>
                           {{item.name}}</a>
                         <i class="p-l-xs p-r-xs" *ngIf="item.title">-</i>
                         <span *ngIf="item.title" class="text-muted">{{item.title}}</span>
