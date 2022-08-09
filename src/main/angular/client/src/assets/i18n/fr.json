@@ -2413,7 +2413,7 @@
     "label.declareVariables": "Déclaration des Variables",
     "label.environmentVariables": "Variables d'Environnement",
     "label.onSuccess": "Sur Succès",
-    "label.onWarning": "Sur Avertissement",
+    "label.onWarning": "Code de Retour sur Avertissement",
     "label.onFailure": "Sur Échec",
     "label.returnCode": "Code de Retour",
     "label.executableType": "Type d'Exécutable",
