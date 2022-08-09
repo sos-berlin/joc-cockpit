@@ -67,6 +67,7 @@
   "UNREACHABLE": "non accessibles",
   "WAITINGFORRESOURCE": "en attente de ressource",
   "WAITING_FOR_ACTIVATION": "en attente d'activation",
+  "WAITING_FOR_ACTIVATION_PAUSED": "waiting_for_activation_paused",
   "WAITING_FOR_AGENT": "en attente d'un Agent",
   "WAITING_FOR_DATABASE": "en attente de la base des données",
   "WAITING_FOR_LOCK": "en attente d'un Verrou",

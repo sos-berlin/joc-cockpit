@@ -189,42 +189,42 @@
                                         <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
                                              role="menu">
                                             <a class="dropdown-item bg-hover-color"
-                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION_PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-if="master.permission.execute.terminate"
                                                ng-click="clusterAction('master', 'terminate', master.host, master.port, master.jobschedulerId)"
                                                translate>button.terminate</a>
                                             <a class="dropdown-item bg-hover-color"
-                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION_PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-if="master.permission.execute.terminate"
                                                ng-click="clusterAction('master', 'terminateWithin', master.host, master.port, master.jobschedulerId)"
                                                translate>button.terminateWithin</a>
                                             <a class="dropdown-item"
-                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION_PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-if="master.permission.execute.abort"
                                                ng-click="clusterAction('master', 'abort', master.host, master.port, master.jobschedulerId)"
                                                translate>button.abort</a>
                                             <a class="dropdown-item"
-                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION_PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-if="master.permission.execute.restart.abort"
                                                ng-click="clusterAction('master', 'abortAndRestart', master.host, master.port, master.jobschedulerId)"
                                                translate>button.abortAndRestart</a>
                                             <a class="dropdown-item"
-                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION_PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-if="master.permission.execute.restart.terminate"
                                                ng-click="clusterAction('master', 'terminateAndRestart', master.host, master.port, master.jobschedulerId)"
                                                translate>button.terminateAndRestart</a>
                                             <a class="dropdown-item"
-                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION_PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-if="master.permission.execute.restart.terminate"
                                                ng-click="clusterAction('master', 'terminateAndRestartWithTimeout', master.host, master.port, master.jobschedulerId)"
                                                translate>button.terminateAndRestartWithin</a>
                                             <a class="dropdown-item"
                                                ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-                                               ng-if="master.permission.execute.pause && master.state._text!='PAUSED'"
+                                               ng-if="master.permission.execute.pause && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION_PAUSED'"
                                                ng-click="clusterAction('master', 'pause', master.host, master.port, master.jobschedulerId)"
                                                translate>button.pause</a>
                                             <a class="dropdown-item"
-                                               ng-if="master.permission.execute.continue && master.state._text=='PAUSED'"
+                                               ng-if="master.permission.execute.continue && (master.state._text=='PAUSED' || master.state._text=='WAITING_FOR_ACTIVATION_PAUSED')"
                                                ng-click="clusterAction('master', 'continue', master.host, master.port, master.jobschedulerId)"
                                                translate>button.continue</a>
                                             <a class="dropdown-item"
@@ -234,12 +234,12 @@
                                             </a>
                                             <a class="dropdown-item"
                                                ng-if="master.permission.view.mainlog"
-                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION_PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-click="clusterAction('master', 'downloadLog', master.host, master.port, master.jobschedulerId)"
                                                translate>button.downloadLog</a>
                                             <a class="dropdown-item"
                                                ng-if="master.permission.view.mainlog"
-                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                               ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION_PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-click="clusterAction('master', 'downloadDebugLog', master.host, master.port, master.jobschedulerId)"
                                                translate>button.downloadDebugLog</a>
                                         </div>

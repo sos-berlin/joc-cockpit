@@ -196,7 +196,9 @@
                             if (logElems.length == j) {
                                 logElems.push(window.document.createElement("span"));
                             }
-                            logElems[j].appendChild(div);
+                            if(logElems[j]) {
+                                logElems[j].appendChild(div);
+                            }
                             return "";
                         }
                         j++;

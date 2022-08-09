@@ -67,6 +67,7 @@
   "UNREACHABLE": "不通",
   "WAITINGFORRESOURCE": "リソース待機中",
   "WAITING_FOR_ACTIVATION": "待機中",
+  "WAITING_FOR_ACTIVATION_PAUSED": "waiting_for_activation_paused",
   "WAITING_FOR_AGENT": "エージェント待機中",
   "WAITING_FOR_DATABASE": "データベース待機中",
   "WAITING_FOR_LOCK": "ロック待機中",
