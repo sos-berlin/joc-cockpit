@@ -425,11 +425,28 @@ export class JobsComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.job.configuration.executable.TYPE = result.executable.TYPE;
-        this.job.configuration.executable.className = result.executable.className;
+        this.job.configuration.executable.TYPE = 'InternalExecutable';
+        this.job.configuration.executable.className = result.javeClass;
         this.job.configuration.title = result.title;
-        this.job.configuration.documentationName = result.documentationName;
+        this.job.configuration.documentationName = result.docName;
+        
+        let arr = [];
+        for(let i in result.params){
+          if(result.params[i] && result.params[i].newValue){
+            arr.push({
+              name: result.params[i].name,
+              value: {
+                type: 'String',
+                description: result.params[i].description,
+                required: result.params[i].required,
+                default: result.params[i].newValue
+              }
+            })
+          }
+        }
+        this.job.configuration.arguments = [...this.job.configuration.arguments, ... arr];
         this.ref.detectChanges();
+        this.saveJSON();
       }
     });
   }

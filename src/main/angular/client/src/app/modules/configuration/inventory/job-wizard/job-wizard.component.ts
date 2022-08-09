@@ -251,7 +251,11 @@ export class JobWizardComponent implements OnInit {
       this.updateParam(obj);
     }
     obj.title = this.job.title;
-    this.activeModal.close(obj);
+    if (this.node) {
+      this.activeModal.close(obj);
+    } else {
+      this.activeModal.close(this.job);
+    }
   }
 
   private updateParam(obj): void {

@@ -292,7 +292,7 @@
                             <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                           </nz-select>
                           <i [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover" [ngClass]="{'text-primary': parameter.value.list && parameter.value.list.length > 0}"
-                             style="right: 1px;top:0px;" *ngIf="parameter.value.type === 'Number' || parameter.value.type === 'Boolean'" (click)="addList(parameter)" nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                             style="right: 13px;top:0;" *ngIf="parameter.value.type === 'Number' || parameter.value.type === 'Boolean'" (click)="addList(parameter)" nz-icon nzType="unordered-list" nzTheme="outline"></i>
                           <ng-container *ngSwitchDefault>
                             <input #value="ngModel" [facetValidation]="parameter.value.facet" autocomplete="off" type="text" class="form-control" name="value{{i}}"
                                    (keydown)="onKeyPress($event, 'parameters')"
