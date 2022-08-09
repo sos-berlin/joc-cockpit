@@ -113,8 +113,6 @@
                           <i class="w-14 m-r-sm m-t-n-1" style="display: inline-block" *ngIf="item.loading">
                             <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
                           </i><i class="icon icon-jobs-icon text-sm"></i>
-                          <span class="fa fa-check-circle-o orange text-xs m-l-xs p-l-xs m-r-xs"
-                                [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' : item.released}"></span>
                           {{item.name}}</a>
                         <i class="p-l-xs p-r-xs" *ngIf="item.title">-</i>
                         <span *ngIf="item.title" class="text-muted">{{item.title}}</span>
@@ -231,27 +229,29 @@
                 </ng-template>
               </div>
             </div>
-            <div class="form-group row m-b-0" *ngFor="let param of job.paramList; let i = index">
-              <div class="col-sm-1 m-b-sm text-center">
-                <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="true"></label>
-              </div>
-              <div class="col-sm-5 m-b-sm p-l-0">
-                <input type="text" autocomplete="off" class="form-control" name="name{{i}}"
-                       [(ngModel)]="param.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
-              </div>
+            <ng-container *ngIf="node">
+              <div class="form-group row m-b-0" *ngFor="let param of job.paramList; let i = index">
+                <div class="col-sm-1 m-b-sm text-center">
+                  <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="true"></label>
+                </div>
+                <div class="col-sm-5 m-b-sm p-l-0">
+                  <input type="text" autocomplete="off" class="form-control" name="name{{i}}"
+                         [(ngModel)]="param.name" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                </div>
 
-              <div class="col-sm-5 m-b-sm p-r-0">
-                <input type="text" autocomplete="off" class="form-control" name="value{{i}}"
-                       (keydown)="onKeyPress($event);"
-                       [(ngModel)]="param.newValue" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                <div class="col-sm-5 m-b-sm p-r-0">
+                  <input type="text" autocomplete="off" class="form-control" name="value{{i}}"
+                         (keydown)="onKeyPress($event);"
+                         [(ngModel)]="param.newValue" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
+                </div>
+                <div class="col-sm-1">
+                  <a><i (click)="removeParams(i)" class="fa fa-times m-t-sm text-muted"></i></a>
+                </div>
               </div>
-              <div class="col-sm-1">
-                <a><i (click)="removeParams(i)" class="fa fa-times m-t-sm text-muted"></i></a>
-              </div>
-            </div>
+            </ng-container>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" *ngIf="node">
           <div class="col-sm-12 p-l-md">
             <a class="text-u-l" (click)="addParameter()"
                translate>workflow.wizard.button.addAnotherParameter</a>

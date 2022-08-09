@@ -1204,7 +1204,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         this.selectedNode.job.title = result.title;
         this.selectedNode.job.documentationName = result.documentationName;
         if (result.jobTemplateName) {
-          this.selectedNode.job.jobTemplateName = result.jobTemplateName;
+          this.selectedNode.job.jobTemplate = {name: result.jobTemplateName};
         }
         if (result.admissionTimeScheme) {
           this.selectedNode.job.admissionTimeScheme = result.admissionTimeScheme;
@@ -9185,37 +9185,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
     }
 
-    if (job.executable.returnCodeMeaning) {
-      if (job.executable.TYPE === 'ShellScriptExecutable') {
-        if (job.executable.returnCodeMeaning.success && typeof job.executable.returnCodeMeaning.success == 'string') {
-          job.executable.returnCodeMeaning.success = job.executable.returnCodeMeaning.success.split(',').map(Number);
-          delete job.executable.returnCodeMeaning.failure;
-        } else if (job.executable.returnCodeMeaning.failure && typeof job.executable.returnCodeMeaning.failure == 'string') {
-          job.executable.returnCodeMeaning.failure = job.executable.returnCodeMeaning.failure.split(',').map(Number);
-          delete job.executable.returnCodeMeaning.success;
-        }
-        if (job.executable.returnCodeMeaning.success == '0') {
-          job.executable.returnCodeMeaning.success = [0];
-          delete job.executable.returnCodeMeaning.failure;
-        }
-        if (job.executable.returnCodeMeaning.failure == '0') {
-          job.executable.returnCodeMeaning.failure = [0];
-          delete job.executable.returnCodeMeaning.success;
-        }
-      } else {
-        delete job.executable.returnCodeMeaning.success;
-        delete job.executable.returnCodeMeaning.failure;
-      }
-      if (job.executable.returnCodeMeaning.warning && typeof job.executable.returnCodeMeaning.warning == 'string') {
-        job.executable.returnCodeMeaning.warning = job.executable.returnCodeMeaning.warning.split(',').map(Number);
-      }
-      if (job.executable.returnCodeMeaning.warning == '0') {
-        job.executable.returnCodeMeaning.warning = [0];
-      }
-      if (job.executable.returnCodeMeaning && job.executable.returnCodeMeaning.success == '0' && !job.executable.returnCodeMeaning.warning) {
-        delete job.executable.returnCodeMeaning.success;
-      }
-    }
+    this.workflowService.checkReturnCodes(job);
 
     if (isEmpty(job.executable.returnCodeMeaning)) {
       delete job.executable.returnCodeMeaning;

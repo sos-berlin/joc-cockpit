@@ -506,6 +506,16 @@ export class WorkflowService {
         if (obj.executable.returnCodeMeaning.failure === '') {
           delete obj.executable.returnCodeMeaning.failure;
         }
+
+        if (obj.executable.returnCodeMeaning.success == 0 || obj.executable.returnCodeMeaning.success == '0') {
+          obj.executable.returnCodeMeaning.success = [0];
+          delete obj.executable.returnCodeMeaning.failure;
+        }
+        if (obj.executable.returnCodeMeaning.failure == 0 || obj.executable.returnCodeMeaning.failure == '0') {
+          obj.executable.returnCodeMeaning.failure = [0];
+          delete obj.executable.returnCodeMeaning.success;
+        }
+
         if (typeof obj.executable.returnCodeMeaning.success == 'string') {
           delete obj.executable.returnCodeMeaning.failure;
           obj.executable.returnCodeMeaning.success = obj.executable.returnCodeMeaning.success.split(',').map(Number);
@@ -520,16 +530,22 @@ export class WorkflowService {
       if (obj.executable.returnCodeMeaning.warning === '') {
         delete obj.executable.returnCodeMeaning.warning;
       }
+      if (obj.executable.returnCodeMeaning.warning == 0 || obj.executable.returnCodeMeaning.warning == '0') {
+        obj.executable.returnCodeMeaning.warning = [0];
+      }
       if (typeof obj.executable.returnCodeMeaning.warning == 'string') {
         obj.executable.returnCodeMeaning.warning = obj.executable.returnCodeMeaning.warning.split(',').map(Number);
       }
 
-      if (obj.executable.returnCodeMeaning.success == '0' && !obj.executable.returnCodeMeaning.warning) {
+      if (obj.executable.returnCodeMeaning.success && obj.executable.returnCodeMeaning.success.length > 0
+        && obj.executable.returnCodeMeaning.success[0] == '0' && !obj.executable.returnCodeMeaning.warning) {
         delete obj.executable.returnCodeMeaning;
       }
     }
-    if (obj.executable && isEmpty(obj.executable.returnCodeMeaning)) {
-      delete obj.executable.returnCodeMeaning;
+    if (obj.executable) {
+      if (isEmpty(obj.executable.returnCodeMeaning)) {
+        delete obj.executable.returnCodeMeaning;
+      }
     }
   }
 
