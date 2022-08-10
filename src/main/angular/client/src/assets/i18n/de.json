@@ -2413,7 +2413,7 @@
     "label.declareVariables": "Variablen deklarieren",
     "label.environmentVariables": "Umgebungsvariablen",
     "label.onSuccess": "Bei Erfolg",
-    "label.onWarning": "Bei Warnung",
+    "label.onWarning": "Rückgabewert bei Warnung",
     "label.onFailure": "Bei Fehler",
     "label.returnCode": "Rückgabewert",
     "label.executableType": "Typ der Ausführung",
