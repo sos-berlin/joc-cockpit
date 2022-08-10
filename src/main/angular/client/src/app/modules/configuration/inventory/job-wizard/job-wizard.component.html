@@ -112,8 +112,12 @@
                         <a class="text-primary-hover m-t-xs" (click)="selectJobTemp(item);$event.stopPropagation();">
                           <i class="w-14 m-r-sm m-t-n-1" style="display: inline-block" *ngIf="item.loading">
                             <nz-spin nzSimple [nzSize]="'small'"></nz-spin>
-                          </i><i class="icon icon-jobs-icon text-sm"></i>
-                          {{item.name}}</a>
+                          </i>
+                          <i *ngIf="item.documentationName" class="fa fa-book p-r-sm"
+                             (click)="showDoc(item.documentationName);$event.stopPropagation()"></i>
+                          <i class="icon icon-jobs-icon text-sm"></i>
+                          {{item.name}}
+                        </a>
                         <i class="p-l-xs p-r-xs" *ngIf="item.title">-</i>
                         <span *ngIf="item.title" class="text-muted">{{item.title}}</span>
                       </div>
@@ -278,6 +282,14 @@
       <i class="fa fa-book p-r-sm"></i>
       <span translate>workflow.wizard.button.showDocumentation</span>
     </button>
+    <button type="button" class="btn btn-grey btn-sm pull-right" *ngIf="wizard.step === 2 && job.description"
+            nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate">
+      <i class="fa fa-file-text-o p-r-sm"></i>
+      <span translate>workflow.label.description</span>
+    </button>
+    <ng-template #contentTemplate>
+      <div [innerHTML]="job.description"></div>
+    </ng-template>
   </div>
 </form>
 

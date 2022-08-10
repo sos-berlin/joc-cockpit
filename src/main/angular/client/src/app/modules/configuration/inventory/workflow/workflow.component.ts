@@ -1212,9 +1212,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         if (result.criticality) {
           this.selectedNode.job.criticality = result.criticality;
         }
-        if (result.admissionTimeScheme) {
-          this.selectedNode.job.admissionTimeScheme = result.admissionTimeScheme;
-        }
         if (result.warnIfShorter) {
           this.selectedNode.job.warnIfShorter = result.warnIfShorter;
         }

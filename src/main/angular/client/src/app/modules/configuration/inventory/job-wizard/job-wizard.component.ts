@@ -62,7 +62,9 @@ export class JobWizardComponent implements OnInit {
 
   private getJobTemplates(): void {
     this.coreService.post('tree', {
-      forInventory: true,
+      folders: [
+        {folder: '/', recursive: true}
+      ],
       types: [InventoryObject.JOBTEMPLATE]
     }).subscribe({
       next: (res) => {
@@ -92,20 +94,17 @@ export class JobWizardComponent implements OnInit {
     }
     if (!data.jobTemplates) {
       e.origin.loading = true;
-      const obj: any = {
-        path: e.key,
-        objectTypes: [InventoryObject.JOBTEMPLATE]
+      const obj: any = {folders : [{
+          folder: e.key,
+          recursive: false
+        }],
+        compact: true
       };
-      this.coreService.post('inventory/read/folder', obj).subscribe({
+      this.coreService.post('job_templates', obj).subscribe({
         next: (res: any) => {
           e.origin.loading = false;
           data.jobTemplates = res.jobTemplates;
           data.jobTemplates = sortBy(data.jobTemplates, 'name');
-          for (const i in data.jobTemplates) {
-            if (data.jobTemplates[i]) {
-              data.jobTemplates[i].path = e.key + (e.key === '/' ? '' : '/') + data.jobTemplates[i].name;
-            }
-          }
         }, error: () => {
           data.jobTemplates = [];
           e.origin.loading = false;
@@ -130,13 +129,12 @@ export class JobWizardComponent implements OnInit {
   selectJobTemp(job): void {
     if (job.loading == undefined) {
       job.loading = true;
-      this.coreService.post('inventory/read/configuration', {
-        path: job.path,
-        objectType: InventoryObject.JOBTEMPLATE
+      this.coreService.post('job_template', {
+        jobTemplatePath: job.path
       }).subscribe({
         next: (res) => {
           job.loading = false;
-          this.job = res.configuration;
+          this.job = res.jobTemplate;
           if (this.job.arguments) {
             const temp = this.coreService.clone(this.job.arguments);
             this.job.arguments = Object.entries(temp).map(([k, v]) => {
@@ -171,7 +169,6 @@ export class JobWizardComponent implements OnInit {
             });
           }
           this.job.jobTemplate = true;
-          this.job.name = job.name;
           this.job.paramList = [];
           this.wizard.setOfCheckedValue = new Set<string>();
           this.wizard.checked = false;

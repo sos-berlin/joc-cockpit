@@ -45,7 +45,7 @@ export class MyErrorHandler implements ErrorHandler {
     BrowserAnimationsModule,
     LoginModule,
     ToastrModule.forRoot({
-      maxOpened: 3,
+      maxOpened: 1,
       positionClass: 'toast-top-center',
       preventDuplicates: true,
     }),
