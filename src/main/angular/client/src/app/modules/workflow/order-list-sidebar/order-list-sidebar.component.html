@@ -48,7 +48,7 @@
   <a class="text-primary p-l-xs" *ngIf="setOfCheckedId.size === data.length" (click)="resetCheckBox()" translate>common.label.clearSelection</a>
 </div>
 <div class="p-a-sm">
-  <div class="table-responsive">
+  <perfect-scrollbar class="table-responsive" style="max-height: 84vh; overflow: auto">
     <nz-table
       #ajaxTable
       [nzSize]="'small'"
@@ -56,7 +56,7 @@
       [nzPageIndex]="filter.currentPage"
       [nzLoading]="loading"
       [nzBordered]="true"
-      [nzShowPagination]="data.length > 10"
+      [nzShowPagination]="true"
       [nzData]="data | orderBy: filter.sortBy: filter.reverse"
       [nzShowSizeChanger]="true"
       (nzPageIndexChange)="pageIndexChange($event)"
@@ -200,5 +200,5 @@
       <span translate *ngIf="ajaxTable.data.length >1">order.label.ordersFound</span>
       <span translate *ngIf="ajaxTable.data.length ==1">order.label.orderFound</span>
     </div>
-  </div>
+  </perfect-scrollbar>
 </div>
