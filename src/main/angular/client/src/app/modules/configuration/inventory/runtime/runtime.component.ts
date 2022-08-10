@@ -384,8 +384,8 @@ export class AddRestrictionComponent implements OnInit {
             } else {
               if (!this.calendar.frequencyList[i].months) {
                 this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
-                this.calendar.frequencyList[i].startingWithW = clone(this.frequency.startingWithW);
-                this.calendar.frequencyList[i].endOnW = clone(this.frequency.endOnW);
+                this.calendar.frequencyList[i].startingWithW = this.frequency.startingWithW;
+                this.calendar.frequencyList[i].endOnW = this.frequency.endOnW;
                 this.calendar.frequencyList[i].str = clone(this.frequency.str);
                 flag1 = true;
                 break;
@@ -395,8 +395,8 @@ export class AddRestrictionComponent implements OnInit {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
                 this.calendar.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
-                this.calendar.frequencyList[i].startingWithM = clone(this.frequency.startingWithM);
-                this.calendar.frequencyList[i].endOnM = clone(this.frequency.endOnM);
+                this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
+                this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
                 this.calendar.frequencyList[i].str = clone(this.frequency.str);
                 flag1 = true;
                 break;
@@ -417,8 +417,8 @@ export class AddRestrictionComponent implements OnInit {
             } else {
               if (!this.calendar.frequencyList[i].months) {
                 this.calendar.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
-                this.calendar.frequencyList[i].startingWithM = clone(this.frequency.startingWithM);
-                this.calendar.frequencyList[i].endOnM = clone(this.frequency.endOnM);
+                this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
+                this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
                 this.calendar.frequencyList[i].str = clone(this.frequency.str);
                 flag1 = true;
                 break;
@@ -428,8 +428,8 @@ export class AddRestrictionComponent implements OnInit {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
                 this.calendar.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
-                this.calendar.frequencyList[i].startingWithM = clone(this.frequency.startingWithM);
-                this.calendar.frequencyList[i].endOnM = clone(this.frequency.endOnM);
+                this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
+                this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
                 this.calendar.frequencyList[i].str = clone(this.frequency.str);
                 flag1 = true;
                 break;
@@ -450,8 +450,8 @@ export class AddRestrictionComponent implements OnInit {
             } else {
               if (!this.calendar.frequencyList[i].months) {
                 this.calendar.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
-                this.calendar.frequencyList[i].startingWithM = clone(this.frequency.startingWithM);
-                this.calendar.frequencyList[i].endOnM = clone(this.frequency.endOnM);
+                this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
+                this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
                 this.calendar.frequencyList[i].str = clone(this.frequency.str);
 
                 flag1 = true;

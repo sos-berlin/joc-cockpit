@@ -558,8 +558,8 @@ export class FrequencyModalComponent implements OnInit {
                   break;
                 }
                 this.frequencyList[i].days = clone(this.frequency.days);
-                this.frequencyList[i].startingWithW = clone(this.frequency.startingWithW);
-                this.frequencyList[i].endOnW = clone(this.frequency.endOnW);
+                this.frequencyList[i].startingWithW = this.frequency.startingWithW;
+                this.frequencyList[i].endOnW = this.frequency.endOnW;
                 this.frequencyList[i].str = clone(this.frequency.str);
                 flag1 = true;
                 break;
@@ -580,8 +580,8 @@ export class FrequencyModalComponent implements OnInit {
             } else {
               if (!this.frequencyList[i].months) {
                 this.frequencyList[i].days = clone(this.frequency.days);
-                this.frequencyList[i].startingWithM = clone(this.frequency.startingWithW);
-                this.frequencyList[i].endOnW = clone(this.frequency.endOnW);
+                this.frequencyList[i].startingWithW = this.frequency.startingWithW;
+                this.frequencyList[i].endOnW = this.frequency.endOnW;
                 this.frequencyList[i].str = clone(this.frequency.str);
                 flag1 = true;
                 break;
@@ -591,8 +591,8 @@ export class FrequencyModalComponent implements OnInit {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.frequencyList[i].months || isEqual(this.frequencyList[i].months, this.frequency.months)) {
                 this.frequencyList[i].selectedMonths = clone(this.frequency.selectedMonths);
-                this.frequencyList[i].startingWithM = clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = clone(this.frequency.endOnM);
+                this.frequencyList[i].startingWithM = this.frequency.startingWithM;
+                this.frequencyList[i].endOnM = this.frequency.endOnM;
                 this.frequencyList[i].str = clone(this.frequency.str);
                 flag1 = true;
                 break;
@@ -608,8 +608,8 @@ export class FrequencyModalComponent implements OnInit {
             } else {
               if (!this.frequencyList[i].months) {
                 this.frequencyList[i].selectedMonths = clone(this.frequency.selectedMonths);
-                this.frequencyList[i].startingWithM = clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = clone(this.frequency.endOnM);
+                this.frequencyList[i].startingWithM = this.frequency.startingWithM;
+                this.frequencyList[i].endOnM = this.frequency.endOnM;
                 this.frequencyList[i].str = clone(this.frequency.str);
                 flag1 = true;
                 break;
@@ -619,8 +619,8 @@ export class FrequencyModalComponent implements OnInit {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.frequencyList[i].months || isEqual(this.frequencyList[i].months, this.frequency.months)) {
                 this.frequencyList[i].selectedMonthsU = clone(this.frequency.selectedMonthsU);
-                this.frequencyList[i].startingWithM = clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = clone(this.frequency.endOnM);
+                this.frequencyList[i].startingWithM = this.frequency.startingWithM;
+                this.frequencyList[i].endOnM = this.frequency.endOnM;
                 this.frequencyList[i].str = clone(this.frequency.str);
                 flag1 = true;
                 break;
@@ -636,8 +636,8 @@ export class FrequencyModalComponent implements OnInit {
             } else {
               if (!this.frequencyList[i].months) {
                 this.frequencyList[i].selectedMonthsU = clone(this.frequency.selectedMonthsU);
-                this.frequencyList[i].startingWithM = clone(this.frequency.startingWithM);
-                this.frequencyList[i].endOnM = clone(this.frequency.endOnM);
+                this.frequencyList[i].startingWithM = this.frequency.startingWithM;
+                this.frequencyList[i].endOnM = this.frequency.endOnM;
                 this.frequencyList[i].str = clone(this.frequency.str);
 
                 flag1 = true;
@@ -649,6 +649,8 @@ export class FrequencyModalComponent implements OnInit {
               if (!isEqual(this.frequencyList[i].months, this.frequency.months)) {
                 if (isEqual(this.frequencyList[i].specificWeekDay, this.frequency.specificWeekDay) && isEqual(this.frequencyList[i].which, this.frequency.which)) {
                   this.updateFrequencyData(i);
+                  this.frequencyList[i].startingWithS = this.frequency.startingWithS;
+                  this.frequencyList[i].endOnS = this.frequency.endOnS;
                   this.frequencyList[i].str = this.calendarService.freqToStr(this.frequencyList[i], this.dateFormat);
                   flag1 = true;
                   break;
