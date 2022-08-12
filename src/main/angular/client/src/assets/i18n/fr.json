@@ -2651,8 +2651,8 @@
       "button.next": "Suivant",
       "button.showDocumentation": "Afficher la Documentation",
       "button.addAnotherParameter": "Ajouter un autre paramètre",
-      "tab.jitl": "JITL Tâche",
-      "tab.jobTemplate": "Modèle de Tâche"
+      "tab.jitl": "Modèle de Tâche JITL",
+      "tab.jobTemplate": "Modèle de Tâche d'Utilisateur"
     },
     "admissionTime": {
       "label.on": "Le",
