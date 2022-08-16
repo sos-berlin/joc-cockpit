@@ -199,6 +199,10 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.dataService.reloadTree.next({newDraft: data});
   }
 
+  updateFromJobTemplates(data): void {
+    this.dataService.reloadTree.next({updateFromJobTemplate: data});
+  }
+
   editObject(data): void {
     this.dataService.reloadTree.next({set: data});
   }

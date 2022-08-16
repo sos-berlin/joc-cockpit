@@ -537,7 +537,7 @@ export class WorkflowService {
         obj.executable.returnCodeMeaning.warning = obj.executable.returnCodeMeaning.warning.split(',').map(Number);
       }
 
-      if (obj.executable.returnCodeMeaning.success && obj.executable.returnCodeMeaning.success.length > 0
+      if (obj.executable.returnCodeMeaning.success && obj.executable.returnCodeMeaning.success.length === 1
         && obj.executable.returnCodeMeaning.success[0] == '0' && !obj.executable.returnCodeMeaning.warning) {
         delete obj.executable.returnCodeMeaning;
       }

@@ -1210,6 +1210,10 @@
     "button.pull": "Herunterladen",
     "button.push": "Hochladen",
     "button.newDraft": "Neuer Entwurf",
+    "button.updateJobs": "Update Jobs",
+    "button.updateFromJobTemplate": "Update from Job Template",
+    "button.updateFromJobTemplates": "Update from Job Templates",
+    "button.makeJobsTemplate": "Make Job Template",
     "tooltip.setVersion": "Version setzen",
     "placeholder.enterUniqueName": "Eindeutigen Objektnamen angeben",
     "placeholder.enterFileName": "Dateinamen angeben",
@@ -2105,7 +2109,10 @@
       "controller_connection_joc_password": "Das Kennwort wird für die Authentifizierung des JOC Dienstes (der in JOC Cockpit abläuft) gegenüber dem Controller verwendet. Wenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung. Wenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist. Es kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei private.conf des Controller's \"plain:\" lautet. Wenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei private.conf des Controllers geändert werden, damit die Kennwörter übereinstimmen. Es wird empfohlen, das Kennwort zunächst in der Datei private.conf der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu. JOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz. Wenn ein Controller Cluster verwendet wird, nehmen Sie die gleiche Änderung in der Datei private.conf der passiven Controller Instanz vor.",
       "controller_connection_history_password": "Das Kennwort wird für die Authentifizierung des Historiendienstes (der in JOC Cockpit abläuft) gegenüber dem Controller verwendet. Wenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung. Wenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist. Es kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei private.conf des Controller's \"plain:\" lautet. Wenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei private.conf des Controllers geändert werden, damit die Kennwörter übereinstimmen. Es wird empfohlen, das Kennwort zunächst in der Datei private.conf der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu. JOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz. Wenn ein Controller Cluster verwendet wird, nehmen Sie die gleiche Änderung in der Datei private.conf der passiven Controller Instanz vor.",
       "encoding": "Die Kodierung wird verwendet, wenn JOC Cockpit für Windows Umgebungen betrieben wird. Windows unterstützt kein Unicode, sondern verwendet Code Pages. Für den Fall, dass die Windows Code Page nicht automatisch erkannt werden kann, kann der Benutzer die Code Page angeben, weitere Details siehe https://kb.sos-berlin.com/x/h7J2B",
-      "disable_warning_on_license_expiration": "Warnungen vor Ablauf der Lizenz abschalten."
+      "disable_warning_on_license_expiration": "Warnungen vor Ablauf der Lizenz abschalten.",
+      "log_maximum_display_size": "JOC Cockpit bietet zur Anzeige von Protokollausgaben ein Log View Fenster sofern die Größe der unkomprimierten Ausgaben diesen Wert nicht überschreitet. Andernfalls werden die Protokollausgaben nur zum Herunterlalden angeboten.",
+      "log_applicable_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten und letzten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt.",
+      "log_maximum_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt."
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
@@ -2648,8 +2655,8 @@
       "button.next": "Weiter",
       "button.showDocumentation": "Dokumentation anzeigen",
       "button.addAnotherParameter": "Variable hinzufügen",
-      "tab.jitl": "JITL Job",
-      "tab.jobTemplate": "Job-Vorlage"
+      "tab.jitl": "JITL Job-Vorlage",
+      "tab.jobTemplate": "Anwender Job-Vorlage"
     },
     "admissionTime": {
       "label.on": "Am",

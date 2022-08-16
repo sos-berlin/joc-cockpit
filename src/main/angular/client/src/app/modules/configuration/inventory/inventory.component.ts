@@ -4379,6 +4379,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
+  updateFromJobTemplates(workflow): void{
+
+  }
+
   editJson(data: any, isEdit: boolean): void {
     this.showJson({showJson: data, edit: isEdit});
   }
