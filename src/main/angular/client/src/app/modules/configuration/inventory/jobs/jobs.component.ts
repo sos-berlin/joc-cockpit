@@ -411,6 +411,10 @@ export class JobsComponent implements OnChanges, OnDestroy {
     this.isRuntimeVisible = true;
   }
 
+  updateJobs(): void {
+
+  }
+
   openJobWizard(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -426,25 +430,25 @@ export class JobsComponent implements OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.job.configuration.executable.TYPE = 'InternalExecutable';
-        this.job.configuration.executable.className = result.javeClass;
+        this.job.configuration.executable.className = result.javaClass;
         this.job.configuration.title = result.title;
         this.job.configuration.documentationName = result.docName;
-        
+
         let arr = [];
-        for(let i in result.params){
-          if(result.params[i] && result.params[i].newValue){
+        for (let i in result.params) {
+          if (result.params[i]) {
             arr.push({
               name: result.params[i].name,
               value: {
                 type: 'String',
                 description: result.params[i].description,
                 required: result.params[i].required,
-                default: result.params[i].newValue
+                default: result.params[i].defaultValue
               }
             })
           }
         }
-        this.job.configuration.arguments = [...this.job.configuration.arguments, ... arr];
+        this.job.configuration.arguments = arr;
         this.ref.detectChanges();
         this.saveJSON();
       }
@@ -927,6 +931,9 @@ export class JobsComponent implements OnChanges, OnDestroy {
     }
     const job = this.coreService.clone(this.job.configuration);
 
+    if (isEmpty(job.admissionTimeScheme)) {
+      delete job.admissionTimeScheme;
+    }
     if (job.executable && job.executable.arguments) {
       this.coreService.convertArrayToObject(job.executable, 'arguments', true);
     }
@@ -934,6 +941,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
       this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
     }
     this.workflowService.checkReturnCodes(job);
+
     if (job.executable && isEmpty(job.executable.login)) {
       delete job.executable.login;
     }

@@ -483,6 +483,10 @@
         *ngIf="node.origin.type">
       <a translate>inventory.button.newDraft</a>
     </li>
+    <li nz-menu-item (click)="updateFromJobTemplates(node.origin)"
+        *ngIf="node.origin.type === 'WORKFLOW'">
+      <a translate>inventory.button.updateFromJobTemplates</a>
+    </li>
     <li nz-menu-divider *ngIf="node.origin.type"></li>
     <li nz-menu-item (click)="editJson(node.origin, false)"
         *ngIf="node.origin.type">

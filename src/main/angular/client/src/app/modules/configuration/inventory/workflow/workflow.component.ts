@@ -1192,9 +1192,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
           }
         } else {
           this.selectedNode.job.executable.env = result.executable.env || [];
-          this.selectedNode.job.executable.login = result.executable.login || {};
         }
-
+        if(result.executable.login && !isEmpty(result.executable.login)){
+          this.selectedNode.job.executable.login = result.executable.login;
+        }
         if (result.executable.returnCodeMeaning) {
           this.selectedNode.job.executable.returnCodeMeaning = result.executable.returnCodeMeaning;
         }
@@ -1204,7 +1205,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         this.selectedNode.job.title = result.title;
         this.selectedNode.job.documentationName = result.documentationName;
         if (result.jobTemplateName) {
-          this.selectedNode.job.jobTemplate = {name: result.jobTemplateName};
+          this.selectedNode.job.jobTemplate = {name: result.jobTemplateName, hash: result.hash};
         }
         if (result.admissionTimeScheme) {
           this.selectedNode.job.admissionTimeScheme = result.admissionTimeScheme;
@@ -5250,7 +5251,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 };
               }
             }
-          } else {
+          } else if(graph.getView().getState(this.cells[0])) {
             const originalShape = graph.getView().getState(this.cells[0]).shape;
             this.pBounds = originalShape.bounds;
             if (this.cells[0].value.tagName === 'Job') {
@@ -5827,18 +5828,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           if ((forced || !this.noReset) && this.selectedMode != this.defaultMode) {
             this.selectMode(this.defaultMode, this.defaultFunction);
           }
-        };
-
-        /**
-         * Overrides method to provide a cell collapse/expandable on double click
-         */
-        graph.dblClick = function (evt, cell) {
-          // if (cell != null && cell.vertex == 1) {
-          //   if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
-          //     const flag = cell.collapsed != true;
-          //     graph.foldCells(flag, false, [cell], null, evt);
-          //   }
-          // }
         };
 
         /**
@@ -8484,25 +8473,25 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       }
       if (dropTargetName === 'If') {
-        let flag = false;
         label = 'then';
-        for (let i = 0; i < _dropTarget.edges.length; i++) {
-          if (_dropTarget.edges[i].target && _dropTarget.edges[i].target.id !== _dropTarget.id && _dropTarget.edges[i].target.value.tagName !== 'EndIf') {
-            label = 'else';
-          } else {
-            if (_dropTarget.edges[i].target && _dropTarget.edges[i].target.edges) {
-              for (let j = 0; j < _dropTarget.edges[i].target.edges.length; j++) {
-                if (_dropTarget.edges[i].target.edges[j].edge && _dropTarget.edges[i].target.edges[j].value.attributes
-                  && _dropTarget.edges[i].target.edges[j].value.attributes.length > 0 && (_dropTarget.edges[i].target.edges[j].value.attributes[0]
-                    && _dropTarget.edges[i].target.edges[j].value.attributes[0].value === 'else')) {
-                  flag = true;
+        const edges = graph.getOutgoingEdges(_dropTarget);
+        for (let i = 0; i < edges.length; i++) {
+          if(edges[i].target) {
+            if (edges[i].target.value.tagName !== 'EndIf') {
+              label = 'else';
+            } else {
+              if (edges[i].target.edges) {
+                for (let j = 0; j < edges[i].target.edges.length; j++) {
+                  if (edges[i].target.edges[j].edge && edges[i].target.edges[j].value.attributes
+                    && edges[i].target.edges[j].value.attributes.length > 0 && (edges[i].target.edges[j].value.attributes[0]
+                      && edges[i].target.edges[j].value.attributes[0].value === 'else')) {
+                    label = 'then';
+                    break;
+                  }
                 }
               }
             }
           }
-        }
-        if (flag) {
-          label = 'then';
         }
       } else if (dropTargetName === 'Retry') {
         label = 'retry';
@@ -9183,10 +9172,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
 
     this.workflowService.checkReturnCodes(job);
-
-    if (isEmpty(job.executable.returnCodeMeaning)) {
-      delete job.executable.returnCodeMeaning;
-    }
 
     if (!job.executable.v1Compatible) {
       if (job.executable.TYPE === 'ShellScriptExecutable') {

@@ -12,11 +12,10 @@
           </span>
         </span>
         <div class="inline pull-right">
-          <button type="button"
-                  [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
-                  [nzTooltipMouseEnterDelay]="0.5" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" (click)="showRuntime()">
-            <i class="fa fa-clock-o p-r-xs"></i>
-            <span translate>workflow.label.admissionTime</span>
+          <button class="btn btn-sm btn-grey m-l-12 m-t-n-xs"
+                  (click)="updateJobs()">
+            <i class="fa fa-refresh p-r-xs"></i>
+            {{'inventory.button.updateJobs' | translate}}
           </button>
           <button class="btn btn-sm btn-grey m-l-12 m-t-n-xs" [disabled]="job.configuration && job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
                   (click)="openJobWizard()">
@@ -726,6 +725,16 @@
                       <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                              [(ngModel)]="job.skipIfNoAdmissionForOrderDay"
                              name="skipIfNoAdmissionForOrderDay" (ngModelChange)="saveJSON()"></label>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 block-ellipsis-job"
+                           title="{{'workflow.label.admissionTime' | translate}}"
+                           [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
+                           [nzTooltipMouseEnterDelay]="0.5"
+                           translate>workflow.label.admissionTime</label>
+                    <div class="col-lg-9 col-xl-8 col-xxl-6">
+                      <a class="text-hover-primary" (click)="showRuntime()" translate>workflow.label.showPeriods</a>
                     </div>
                   </div>
                 </div>

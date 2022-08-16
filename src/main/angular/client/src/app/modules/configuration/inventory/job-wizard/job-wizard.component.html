@@ -268,7 +268,7 @@
     <button type="submit" class="btn btn-primary btn-sm"
             [disabled]="(!job.javaClass && !job.name) || !myForm.form.valid" translate>common.button.submit
     </button>
-    <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 1" [disabled]="!job.javaClass && !job.name"
+    <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 1 && node" [disabled]="!job.javaClass && !job.name"
             (click)="next()" translate>workflow.wizard.button.next
     </button>
     <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 2"

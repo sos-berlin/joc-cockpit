@@ -1210,6 +1210,10 @@
     "button.pull": "プル",
     "button.push": "プッシュ",
     "button.newDraft": "新規下書き",
+    "button.updateJobs": "Update Jobs",
+    "button.updateFromJobTemplate": "Update from Job Template",
+    "button.updateFromJobTemplates": "Update from Job Templates",
+    "button.makeJobsTemplate": "Make Job Template",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
     "placeholder.enterFileName": "ファイル名を入力",
@@ -2105,7 +2109,10 @@
       "controller_connection_joc_password": "コントローラー接続JOCパスワード",
       "controller_connection_history_password": "コントローラー接続履歴パスワード",
       "encoding": "エンコーディング",
-      "disable_warning_on_license_expiration": "ライセンス期限警告を無効化"
+      "disable_warning_on_license_expiration": "ライセンス期限警告を無効化",
+      "log_maximum_display_size": "JOC Cockpit offers log output for display with the Log View window if the size of uncompressed log output does not exceed this value. Otherwise the log is offered for download only.",
+      "log_applicable_size": "If this value for the size of a job's log output is exceeded then the History Service will truncate the log output and will use the first and last 100 KB for the task log. The original log file will be removed.",
+      "log_maximum_size": "If this value for the size of a job's log output is exceeded then the History Service will truncate the log output and will use the first 100 KB for the task log. The original log file will be removed."
     },
     "user": {
       "welcome_got_it": "了解",
@@ -2648,8 +2655,8 @@
       "button.next": "次",
       "button.showDocumentation": "ドキュメント表示",
       "button.addAnotherParameter": "他のパラメーター追加",
-      "tab.jitl": "JITL Job",
-      "tab.jobTemplate": "Job Template"
+      "tab.jitl": "JITL Job Template",
+      "tab.jobTemplate": "User Job Template"
     },
     "admissionTime": {
       "label.on": "On",

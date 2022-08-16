@@ -155,6 +155,10 @@
                     <li nz-menu-item (click)="newDraft(data)">
                       <a translate>inventory.button.newDraft</a>
                     </li>
+                    <li nz-menu-item (click)="updateFromJobTemplates(data)"
+                        *ngIf="objectType === 'WORKFLOW'">
+                      <a translate>inventory.button.updateFromJobTemplates</a>
+                    </li>
                     <li nz-menu-divider></li>
                     <li nz-menu-item (click)="showJson(data, false)">
                       <a translate>inventory.button.showJSON</a>
