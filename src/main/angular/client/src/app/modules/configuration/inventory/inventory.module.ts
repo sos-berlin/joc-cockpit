@@ -45,11 +45,11 @@ import {UpdateJobComponent} from './update-job/update-job.component';
 import {UpdateObjectComponent} from './update-object/update-object.component';
 import {ScriptComponent} from './script/script.component';
 import {FavoriteListComponent} from "./favorite-list/favorite-list.component";
-import {JobsComponent} from './jobs/jobs.component';
+import {JobsComponent, UpdateJobTemplatesComponent} from './jobs/jobs.component';
 
 const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
   CreateObjectModalComponent, NotificationComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, ImportComponent,
-  UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent, PeriodComponent,
+  UploadModalComponent, ScriptEditorComponent, UpdateJobComponent, UpdateJobTemplatesComponent, UpdateObjectComponent, FindAndReplaceComponent, CycleInstructionComponent, PeriodComponent,
   AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, RunTimeComponent, JobWizardComponent, FacetEditorComponent,
   FavoriteListComponent, NewDraftComponent];
 

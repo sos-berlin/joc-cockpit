@@ -4,14 +4,14 @@ import {
   Component,
   Input,
   OnChanges,
-  OnDestroy,
+  OnDestroy, OnInit,
   SimpleChanges
 } from '@angular/core';
 import {clone, isArray, isEmpty, isEqual} from 'underscore';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {NzMessageService} from "ng-zorro-antd/message";
 import {CoreService} from '../../../../services/core.service';
@@ -19,10 +19,36 @@ import {DataService} from '../../../../services/data.service';
 import {WorkflowService} from "../../../../services/workflow.service";
 import {InventoryService} from '../inventory.service';
 import {InventoryObject} from '../../../../models/enums';
-import {FacetEditorComponent} from "../workflow/workflow.component";
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {JobWizardComponent} from "../job-wizard/job-wizard.component";
+import {FacetEditorComponent} from "../workflow/workflow.component";
+
+@Component({
+  selector: 'app-update-modal',
+  templateUrl: './update-dialog.html'
+})
+export class UpdateJobTemplatesComponent implements OnInit {
+  @Input() preferences: any = {};
+  @Input() data: any = {};
+  submitted = false
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    console.log(this.data)
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.activeModal.close('DONE');
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
 
 @Component({
   selector: 'app-jobs',
@@ -412,8 +438,23 @@ export class JobsComponent implements OnChanges, OnDestroy {
   }
 
   updateJobs(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: UpdateJobTemplatesComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        preferences: this.preferences,
+        data: this.job.configuration
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
 
-  }
+      }
+    });}
 
   openJobWizard(): void {
     const modal = this.modal.create({
@@ -931,112 +972,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
     }
     const job = this.coreService.clone(this.job.configuration);
 
-    if (isEmpty(job.admissionTimeScheme)) {
-      delete job.admissionTimeScheme;
-    }
-    if (job.executable && job.executable.arguments) {
-      this.coreService.convertArrayToObject(job.executable, 'arguments', true);
-    }
-    if (job.executable && job.executable.jobArguments) {
-      this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
-    }
-    this.workflowService.checkReturnCodes(job);
-
-    if (job.executable && isEmpty(job.executable.login)) {
-      delete job.executable.login;
-    }
-
-    if (job.notification && isEmpty(job.notification.mail)) {
-      if (!job.notification.types || job.notification.types.length === 0) {
-        delete job.notification;
-      } else {
-        delete job.notification.mail;
-      }
-    }
-    if (job.executable.TYPE === 'InternalExecutable') {
-      delete job.executable.script;
-      delete job.executable.login;
-    } else if (job.executable.TYPE === 'ShellScriptExecutable') {
-      delete job.executable.className;
-    }
-    if (job.executable.env) {
-      if (job.executable.TYPE === 'ShellScriptExecutable') {
-        if (job.executable.env && isArray(job.executable.env)) {
-          job.executable.env.filter((env) => {
-            this.coreService.addSlashToString(env, 'value');
-          });
-          this.coreService.convertArrayToObject(job.executable, 'env', true);
-        }
-      } else {
-        delete job.executable.env;
-      }
-    }
-    if (job.executable && job.executable.env) {
-      this.coreService.convertArrayToObject(job.executable, 'env', true);
-    }
-    if (job.arguments && job.arguments.length > 0) {
-      let temp = this.coreService.clone(job.arguments);
-      job.arguments = temp.filter((value) => {
-        delete value.value.invalid;
-        if (value.value.type !== 'String') {
-          delete value.value.facet;
-          delete value.value.message;
-        }
-        if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
-          delete value.value.default;
-        }
-
-        if (value.value.type === 'String') {
-          this.coreService.addSlashToString(value.value, 'default');
-        }
-
-        if (value.value.list) {
-          let list = [];
-          value.value.list.forEach((obj) => {
-            this.coreService.addSlashToString(obj, 'name');
-            list.push(obj.name);
-          });
-          value.value.list = list;
-        }
-        return !!value.name;
-      });
-      job.arguments = this.coreService.keyValuePair(job.arguments);
-    }
-    if (job.arguments) {
-      if (job.arguments && isArray(job.arguments)) {
-        job.arguments.filter((argu) => {
-          this.coreService.addSlashToString(argu, 'value');
-        });
-        this.coreService.convertArrayToObject(job, 'arguments', true);
-      }
-    }
-    if (!job.parallelism) {
-      job.parallelism = 0;
-    }
-    if (job.timeout1) {
-      job.timeout = this.workflowService.convertStringToDuration(job.timeout1);
-    } else {
-      delete job.timeout;
-    }
-    if (job.graceTimeout1) {
-      job.graceTimeout = this.workflowService.convertStringToDuration(job.graceTimeout1);
-    } else {
-      delete job.graceTimeout;
-    }
-    delete job.timeout1;
-    delete job.graceTimeout1;
-    if (!job.arguments || typeof job.arguments === 'string' || job.arguments.length === 0) {
-      delete job.arguments;
-    }
-    if (job.executable && (!job.executable.arguments || typeof job.executable.arguments === 'string' || job.executable.arguments.length === 0)) {
-      delete job.executable.arguments;
-    }
-    if (job.executable && (!job.executable.jobArguments || typeof job.executable.jobArguments === 'string' || job.executable.jobArguments.length === 0)) {
-      delete job.executable.jobArguments;
-    }
-    if (job.executable && (!job.executable.env || typeof job.executable.env === 'string' || job.executable.env.length === 0)) {
-      delete job.executable.env;
-    }
+    this.workflowService.convertJobObject(job);
 
     if (this.job.actual && !isEqual(this.job.actual, JSON.stringify(job))) {
       if (!flag) {

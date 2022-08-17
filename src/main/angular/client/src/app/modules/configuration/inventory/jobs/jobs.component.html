@@ -746,7 +746,7 @@
                            [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
                            [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.mailOn</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <nz-select class="w-full" name="types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
+                      <nz-select class="w-full" nzMode="multiple" name="types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
                                  [(ngModel)]="job.configuration.notification.types" (ngModelChange)="saveJSON()">
                         <nz-option [nzValue]="'ERROR'" [nzLabel]="'ERROR'"></nz-option>
                         <nz-option [nzValue]="'WARNING'" [nzLabel]="'WARNING'"></nz-option>

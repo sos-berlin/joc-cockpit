@@ -279,10 +279,10 @@ export class AddOrderModalComponent implements OnInit {
         }
       });
     }
-    if (this.order.startPosition) {
+    if (this.order.startPosition && this.positions) {
       order.startPosition = JSON.parse(this.positions.get(this.order.startPosition))
     }
-    if (this.order.endPositions && this.order.endPositions.length > 0) {
+    if (this.order.endPositions && this.order.endPositions.length > 0 && this.positions) {
       order.endPositions = [];
       this.order.endPositions.forEach(pos => {
         order.endPositions.push(JSON.parse(this.positions.get(pos)));
