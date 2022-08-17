@@ -173,7 +173,8 @@
       <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
         <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
           <app-job-content [selectedNode]="selectedNode" [scriptList]="scriptList" [preferences]="preferences" [isTooltipVisible]="!preferences.showTooltipInfo" [orderPreparation]="orderPreparation" [jobs]="jobs" [agents]="inventoryService.agentList"
-                          [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [scriptTree]="scriptTree" [schedulerId]="schedulerId"></app-job-content>
+                          [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [scriptTree]="scriptTree" [schedulerId]="schedulerId"
+                           (makeJobTemplateFn)="makeJobTemplate($event)" (updateFromJobTemplateFn)="updateFromJobTemplate($event)"></app-job-content>
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'If'">
           <app-expression-content [selectedNode]="selectedNode" [isTooltipVisible]="!preferences.showTooltipInfo" [error]="error"></app-expression-content>
@@ -1094,6 +1095,18 @@
         <span translate>common.button.cut</span>
       </a>
     </li>
+    <li nz-menu-divider></li>
+    <li *ngIf="node && node.hasTemplate" nz-menu-item (click)="updateFromJobTemplate(node);closeMenu()">
+      <a><i nz-icon nzType="reload" nzTheme="outline"></i>&nbsp;
+        <span translate>inventory.button.updateFromJobTemplate</span>
+      </a>
+    </li>
+    <li *ngIf="node && node.isJob" nz-menu-item (click)="makeJobTemplate(node);closeMenu()">
+      <a><i nz-icon nzType="plus" nzTheme="outline"></i>&nbsp;
+        <span translate>inventory.button.makeJobTemplate</span>
+      </a>
+    </li>
+    <li *ngIf="node && node.isJob" nz-menu-divider></li>
     <li nz-menu-item (click)="delete();closeMenu()">
       <a><i nz-icon nzType="delete" nzTheme="outline"></i>&nbsp;
         <span translate>common.button.remove</span>

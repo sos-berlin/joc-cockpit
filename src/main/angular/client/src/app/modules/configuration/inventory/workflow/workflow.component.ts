@@ -31,6 +31,7 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {InventoryService} from '../inventory.service';
+import {CreateObjectModalComponent} from "../inventory.component";
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -1029,6 +1030,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild('codeMirror', {static: false}) cm: any;
 
+  @Output() makeJobTemplateFn: EventEmitter<any> = new EventEmitter();
+  @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
+
   constructor(private coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
               private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
@@ -1104,6 +1108,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  navToJobTemp(name): void {
+    this.dataService.reloadTree.next({navigate: {name, type: 'JOBTEMPLATE'}});
   }
 
   changeType(): void {
@@ -1187,21 +1195,13 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         this.selectedNode.job.executable.script = result.executable.script;
         if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
           this.selectedNode.job.executable.arguments = result.executable.arguments || [];
-          if (result.executable.jobArguments) {
-            this.selectedNode.job.executable.jobArguments = result.executable.jobArguments;
-          }
+          this.selectedNode.job.executable.jobArguments = result.executable.jobArguments || [];
         } else {
           this.selectedNode.job.executable.env = result.executable.env || [];
         }
-        if(result.executable.login && !isEmpty(result.executable.login)){
-          this.selectedNode.job.executable.login = result.executable.login;
-        }
-        if (result.executable.returnCodeMeaning) {
-          this.selectedNode.job.executable.returnCodeMeaning = result.executable.returnCodeMeaning;
-        }
-        if (result.notification) {
-          this.selectedNode.job.notification = result.notification;
-        }
+        this.selectedNode.job.executable.login = result.executable.login || {};
+        this.selectedNode.job.executable.returnCodeMeaning = result.executable.returnCodeMeaning || {};
+        this.selectedNode.job.notification = result.notification || {mail: {}};
         this.selectedNode.job.title = result.title;
         this.selectedNode.job.documentationName = result.documentationName;
         if (result.jobTemplateName) {
@@ -1210,35 +1210,17 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         if (result.admissionTimeScheme) {
           this.selectedNode.job.admissionTimeScheme = result.admissionTimeScheme;
         }
-        if (result.criticality) {
-          this.selectedNode.job.criticality = result.criticality;
-        }
-        if (result.warnIfShorter) {
-          this.selectedNode.job.warnIfShorter = result.warnIfShorter;
-        }
-        if (result.warnIfLonger) {
-          this.selectedNode.job.warnIfLonger = result.warnIfLonger;
-        }
-        if (result.timeout) {
-          this.selectedNode.job.timeout = result.timeout;
-          this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
-        }
-        if (result.graceTimeout) {
-          this.selectedNode.job.graceTimeout = result.graceTimeout;
-          this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
-        }
-        if (result.failOnErrWritten != undefined) {
-          this.selectedNode.job.failOnErrWritten = result.failOnErrWritten;
-        }
-        if (result.skipIfNoAdmissionForOrderDay != undefined) {
-          this.selectedNode.job.failOnErrWritten = result.skipIfNoAdmissionForOrderDay;
-        }
-        if (result.parallelism) {
-          this.selectedNode.job.parallelism = result.parallelism;
-        }
-        if (result.jobResourceNames) {
-          this.selectedNode.job.jobResourceNames = result.jobResourceNames;
-        }
+        this.selectedNode.job.criticality = result.criticality;
+        this.selectedNode.job.warnIfShorter = result.warnIfShorter;
+        this.selectedNode.job.warnIfLonger = result.warnIfLonger;
+        this.selectedNode.job.timeout = result.timeout;
+        this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
+        this.selectedNode.job.graceTimeout = result.graceTimeout;
+        this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
+        this.selectedNode.job.failOnErrWritten = result.failOnErrWritten;
+        this.selectedNode.job.skipIfNoAdmissionForOrderDay = result.skipIfNoAdmissionForOrderDay;
+        this.selectedNode.job.parallelism = result.parallelism;
+        this.selectedNode.job.jobResourceNames = result.jobResourceNames || [];
         this.ref.detectChanges();
       }
     });
@@ -1756,6 +1738,10 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.setJobProperties();
   }
 
+  getJobTemplate(): void {
+    console.log(this.selectedNode.job)
+  }
+
   checkJobInfo(): void {
     if (!this.selectedNode.obj.jobName) {
       this.selectedNode.obj.jobName = 'job';
@@ -1977,6 +1963,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   private init(): void {
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
     this.getJobInfo();
+    this.getJobTemplate();
     this.selectedNode.obj.defaultArguments = this.coreService.convertObjectToArray(this.selectedNode.obj, 'defaultArguments');
     if (this.selectedNode.obj.defaultArguments && this.selectedNode.obj.defaultArguments.length === 0) {
       this.addArgument();
@@ -2147,6 +2134,16 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedNode.obj = JSON.parse(obj.obj);
     this.selectedNode.job = JSON.parse(obj.job);
     this.ref.detectChanges();
+  }
+
+  updateFromJobTemplate(): void {
+    $('div.floating-action-menu').removeClass('active');
+    this.updateFromJobTemplateFn.emit(this.selectedNode)
+  }
+
+  makeJobTemplate(): void {
+    $('div.floating-action-menu').removeClass('active');
+    this.makeJobTemplateFn.emit(this.selectedNode)
   }
 }
 
@@ -3034,6 +3031,55 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       const cells = this.editor.graph.getChildVertices();
       this.editor.graph.foldCells(true, true, cells, null, null);
     }
+  }
+
+  updateFromJobTemplate(data): void {
+    console.log(data)
+  }
+
+  makeJobTemplate(data): void {
+    console.log(data)
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateObjectModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        preferences: this.preferences,
+        obj: {
+          type: 'JOBTEMPLATE',
+          path: this.data.path
+        },
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result: any) => {
+      if (result) {
+        console.log(result);
+        console.log(data.job);
+        const request: any = {
+          objectType: 'JOBTEMPLATE',
+          path: this.data.path + (this.data.path === '/' ? '' : this.data.path) + result.name,
+          configuration: {}
+        };
+        if (result.comments.comment) {
+          request.auditLog = {
+            comment: result.comments.comment,
+            timeSpent: result.comments.timeSpent,
+            ticketLink: result.comments.ticketLink
+          }
+        }
+        let job = this.coreService.clone(data.job);
+        if (!job.executable) {
+          return false;
+        }
+        this.workflowService.convertJobObject(job);
+        delete job.jobName;
+        request.configuration = job;
+        this.coreService.post('inventory/store', request).subscribe();
+      }
+    });
   }
 
   delete(): void {
@@ -5251,7 +5297,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 };
               }
             }
-          } else if(graph.getView().getState(this.cells[0])) {
+          } else if (graph.getView().getState(this.cells[0])) {
             const originalShape = graph.getView().getState(this.cells[0]).shape;
             this.pBounds = originalShape.bounds;
             if (this.cells[0].value.tagName === 'Job') {
@@ -5410,6 +5456,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   cell: state.cell,
                   isCloseable: self.workflowService.isInstructionCollapsible(state.cell.value.tagName)
                 };
+                if (state.cell.value.tagName === 'Job') {
+                  self.node.isJob = true;
+                  for (let i in self.jobs) {
+                    if (self.jobs[i].name === state.cell.getAttribute('jobName')) {
+                      self.node.job = self.jobs[i].value;
+                      if (self.jobs[i].value && self.jobs[i].value.jobTemplate && self.jobs[i].value.jobTemplate.hash) {
+                        self.node.hasTemplate = true;
+                      }
+                      break;
+                    }
+                  }
+                }
                 if (self.menu) {
                   setTimeout(() => {
                     self.nzContextMenuService.create(evt, self.menu);
@@ -7645,6 +7703,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
 
         self.selectedNode = {
+          path: self.data.path,
           type: cell.value.tagName,
           obj, cell,
           job,
@@ -8476,7 +8535,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         label = 'then';
         const edges = graph.getOutgoingEdges(_dropTarget);
         for (let i = 0; i < edges.length; i++) {
-          if(edges[i].target) {
+          if (edges[i].target) {
             if (edges[i].target.value.tagName !== 'EndIf') {
               label = 'else';
             } else {
@@ -9146,109 +9205,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (!job.executable) {
       return false;
     }
-    if (isEmpty(job.admissionTimeScheme)) {
-      delete job.admissionTimeScheme;
-    }
-    if (isEmpty(job.executable.login)) {
-      delete job.executable.login;
-    }
-    if (job.agentName1) {
-      job.subagentClusterId = job.agentName;
-      job.agentName = job.agentName1;
-      job = {
-        ...{
-          agentName: job.agentName1,
-          subagentClusterId: job.agentName
-        }, ...job
-      }
-      delete job.agentName1
-    }
-    if (job.notification && isEmpty(job.notification.mail)) {
-      if (!job.notification.types || job.notification.types.length === 0) {
-        delete job.notification;
-      } else {
-        delete job.notification.mail;
-      }
-    }
+    this.workflowService.convertJobObject(job, false);
 
-    this.workflowService.checkReturnCodes(job);
-
-    if (!job.executable.v1Compatible) {
-      if (job.executable.TYPE === 'ShellScriptExecutable') {
-        job.executable.v1Compatible = false;
-      } else {
-        delete job.executable.v1Compatible;
-      }
-    }
-    if (job.defaultArguments) {
-      if (job.executable.v1Compatible && job.executable.TYPE === 'ShellScriptExecutable') {
-        job.defaultArguments.filter((argu) => {
-          this.coreService.addSlashToString(argu, 'value');
-        });
-        this.coreService.convertArrayToObject(job, 'defaultArguments', true);
-      } else {
-        delete job.defaultArguments;
-      }
-    }
-    if (job.executable.arguments) {
-      if (job.executable.TYPE === 'InternalExecutable') {
-        if (job.executable.arguments && isArray(job.executable.arguments)) {
-          job.executable.arguments.filter((argu) => {
-            this.coreService.addSlashToString(argu, 'value');
-          });
-          this.coreService.convertArrayToObject(job.executable, 'arguments', true);
-        }
-      } else {
-        delete job.executable.arguments;
-      }
-    }
-    if (job.executable.jobArguments) {
-      if (job.executable.TYPE === 'InternalExecutable') {
-        if (job.executable.jobArguments && isArray(job.executable.jobArguments)) {
-          job.executable.jobArguments.filter((argu) => {
-            this.coreService.addSlashToString(argu, 'value');
-          });
-          this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
-        }
-      } else {
-        delete job.executable.jobArguments;
-      }
-    }
-    if (job.executable.TYPE === 'InternalExecutable') {
-      delete job.executable.script;
-      delete job.executable.login;
-    } else if (job.executable.TYPE === 'ShellScriptExecutable') {
-      delete job.executable.className;
-    }
-
-    if (job.executable.env) {
-      if (job.executable.TYPE === 'ShellScriptExecutable') {
-        if (job.executable.env && isArray(job.executable.env)) {
-          job.executable.env.filter((env) => {
-            this.coreService.addSlashToString(env, 'value');
-          });
-          this.coreService.convertArrayToObject(job.executable, 'env', true);
-        }
-      } else {
-        delete job.executable.env;
-      }
-    }
-
-    if (!job.parallelism) {
-      job.parallelism = 0;
-    }
-    if (job.timeout1) {
-      job.timeout = this.workflowService.convertStringToDuration(job.timeout1);
-    } else {
-      delete job.timeout;
-    }
-    if (job.graceTimeout1) {
-      job.graceTimeout = this.workflowService.convertStringToDuration(job.graceTimeout1);
-    } else {
-      delete job.graceTimeout;
-    }
-    delete job.timeout1;
-    delete job.graceTimeout1;
     let flag = true;
     let isChange = true;
     for (let i = 0; i < this.jobs.length; i++) {

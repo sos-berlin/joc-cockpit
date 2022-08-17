@@ -14,6 +14,15 @@
   </button>
 </div>
 <div *ngIf="!isRuntimeVisible">
+  <div class="row" *ngIf="selectedNode.job.jobTemplate">
+    <div class="col-md-12">
+      <span translate>workflow.label.jobTemplateReference</span>:
+      <a class="text-primary cursor p-l-sm" (click)="navToJobTemp(selectedNode.job.jobTemplate.name)">
+        <i class="p-r-xs fa fa-pencil"></i>{{selectedNode.job.jobTemplate.name}}</a>
+      <i [nz-tooltip]="'workflow.tooltip.removeJobTemplateReference' | translate"
+         (click)="selectedNode.job.jobTemplate = null" class="fa fa-trash p-l-sm text-hover-color cursor"></i>
+    </div>
+  </div>
   <nz-tabset [(nzSelectedIndex)]="index" [nzAnimated]="false" (nzSelectChange)="tabChange($event)">
     <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
       <div class="job-property-editor" *ngIf="index === 0">
@@ -786,4 +795,22 @@
 
 <div *ngIf="isRuntimeVisible">
   <app-admission-time [job]="selectedNode.job" [data]="selectedNode" (close)="closeRuntime()"></app-admission-time>
+</div>
+
+<div class="position-absolute text-right floating-action-menu" style="bottom: 10px; right: 10px;" [hidden]="isModal">
+  <div class="action-menu">
+    <div class="floating-action" *ngIf="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.hash">
+      <div class="badge badge-dark" translate>inventory.button.updateFromJobTemplate</div>
+      <a class="btn-floating btn-sm" (click)="updateFromJobTemplate()"><i class="fa fa-refresh"></i></a>
+    </div>
+    <div class="floating-action">
+      <div class="badge badge-dark" translate>inventory.button.makeJobTemplate</div>
+      <a class="btn-floating btn-sm" (click)="makeJobTemplate();"><i class="fa fa-plus"></i></a>
+    </div>
+  </div>
+  <div class="d-block action-button">
+    <a class="btn-floating" onclick="$(this).closest('div.floating-action-menu').toggleClass('active')">
+      <i class="fa fa-plus"></i>
+    </a>
+  </div>
 </div>

@@ -8792,3 +8792,110 @@ td .ver-top {
 .btn-search {
   background-color: var(--bg-box);
 }
+
+
+div.floating-action-menu > .action-menu {
+  visibility: hidden;
+  transform: translateY(65px);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 300ms linear;
+}
+div.floating-action-menu.active > .action-menu {
+  visibility: visible;
+  transform: translate(0);
+  opacity: 1;
+  padding-bottom: 10px;
+  max-height: 200px;
+}
+
+
+div.floating-action-menu > .action-menu .btn-floating,
+div.floating-action-menu > .action-menu .badge
+{
+  transform: scale(0.4);
+  transition: all 500ms ease-in-out;
+}
+div.floating-action-menu.active > .action-menu .btn-floating,
+div.floating-action-menu.active > .action-menu .badge
+{
+  transform: scale(1);
+}
+
+div.floating-action-menu > .action-button > .btn-floating {
+  transition: all 500ms linear;
+}
+div.floating-action-menu.active > .action-button > .btn-floating {
+  background-color: var(--hover-primary);
+  border-color: var(--hover-primary);
+}
+div.floating-action-menu.active > .action-button > .btn-floating:hover {
+  background-color: var(--hover-primary);
+  border-color: var(--hover-primary);
+}
+
+div.floating-action-menu > .action-button > .btn-floating > i {
+  transition: transform 500ms ease-in-out;
+}
+div.floating-action-menu.active > .action-button > .btn-floating > i {
+  transform: rotate(-315deg);
+}
+.btn-floating {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  padding: 0;
+  margin: 5px;
+  overflow: hidden;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 50%;
+  -webkit-box-shadow: 0 5px 11px 0 rgb(0 0 0 / 18%), 0 4px 15px 0 rgb(0 0 0 / 15%);
+  box-shadow: 0 5px 11px 0 rgb(0 0 0 / 18%), 0 4px 15px 0 rgb(0 0 0 / 15%);
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  width: 47px;
+  height: 47px;
+  text-align: center;
+  background: var(--primary);
+  .fa{
+    margin-top: 13px;
+    font-size: 22px;
+    color: white;
+  }
+
+}
+div.floating-action-menu > .action-menu > .floating-action {
+   padding-right: 0.45rem;
+  .badge {
+    color: #fff !important;
+    border-radius: 0.125rem;
+    -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  }
+  .badge-dark {
+    color: #fff !important;
+    background-color: #3a3a3a !important;
+  }
+
+  .btn-floating {
+    width: 34px;
+    height: 34px;
+    .fa{
+      margin-top: 10px;
+      font-size: 14px;
+      color: white;
+      font-weight: normal;
+    }
+  }
+}
+

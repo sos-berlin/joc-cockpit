@@ -2345,4 +2345,171 @@ export class WorkflowService {
       }
     }
   }
+
+  convertJobObject(job, isJobTemplate = true): void{
+    if (isEmpty(job.admissionTimeScheme)) {
+      delete job.admissionTimeScheme;
+    }
+    if (job.executable && isEmpty(job.executable.login)) {
+      delete job.executable.login;
+    }
+    if(!isJobTemplate) {
+      if (job.agentName1) {
+        job.subagentClusterId = job.agentName;
+        job.agentName = job.agentName1;
+        job = {
+          ...{
+            agentName: job.agentName1,
+            subagentClusterId: job.agentName
+          }, ...job
+        }
+        delete job.agentName1
+      }
+      if (!job.executable.v1Compatible) {
+        if (job.executable.TYPE === 'ShellScriptExecutable') {
+          job.executable.v1Compatible = false;
+        } else {
+          delete job.executable.v1Compatible;
+        }
+      }
+      if (job.defaultArguments) {
+        if (job.executable.v1Compatible && job.executable.TYPE === 'ShellScriptExecutable') {
+          job.defaultArguments.filter((argu) => {
+            this.coreService.addSlashToString(argu, 'value');
+          });
+          this.coreService.convertArrayToObject(job, 'defaultArguments', true);
+        } else {
+          delete job.defaultArguments;
+        }
+      }
+      if (job.executable.arguments) {
+        if (job.executable.TYPE === 'InternalExecutable') {
+          if (job.executable.arguments && isArray(job.executable.arguments)) {
+            job.executable.arguments.filter((argu) => {
+              this.coreService.addSlashToString(argu, 'value');
+            });
+            this.coreService.convertArrayToObject(job.executable, 'arguments', true);
+          }
+        } else {
+          delete job.executable.arguments;
+        }
+      }
+    } else {
+      delete job.executable.v1Compatible;
+      delete job.defaultArguments;
+      delete job.agentName1;
+      delete job.agentName;
+      delete job.subagentClusterId;
+       if (job.executable && job.executable.arguments) {
+        this.coreService.convertArrayToObject(job.executable, 'arguments', true);
+      }
+    }
+
+    if (job.executable && job.executable.jobArguments) {
+      if (job.executable.TYPE === 'InternalExecutable') {
+        if (job.executable.jobArguments && isArray(job.executable.jobArguments)) {
+          job.executable.jobArguments.filter((argu) => {
+            this.coreService.addSlashToString(argu, 'value');
+          });
+          this.coreService.convertArrayToObject(job.executable, 'jobArguments', true);
+        }
+      } else {
+        delete job.executable.jobArguments;
+      }
+    }
+    this.checkReturnCodes(job);
+
+    if (job.notification && isEmpty(job.notification.mail)) {
+      if (!job.notification.types || job.notification.types.length === 0) {
+        delete job.notification;
+      } else {
+        delete job.notification.mail;
+      }
+    }
+    if (job.executable.TYPE === 'InternalExecutable') {
+      delete job.executable.script;
+      delete job.executable.login;
+    } else if (job.executable.TYPE === 'ShellScriptExecutable') {
+      delete job.executable.className;
+    }
+    if (job.executable.env) {
+      if (job.executable.TYPE === 'ShellScriptExecutable') {
+        if (job.executable.env && isArray(job.executable.env)) {
+          job.executable.env.filter((env) => {
+            this.coreService.addSlashToString(env, 'value');
+          });
+          this.coreService.convertArrayToObject(job.executable, 'env', true);
+        }
+      } else {
+        delete job.executable.env;
+      }
+    }
+    if (job.executable && job.executable.env) {
+      this.coreService.convertArrayToObject(job.executable, 'env', true);
+    }
+    if (job.arguments && job.arguments.length > 0) {
+      let temp = this.coreService.clone(job.arguments);
+      job.arguments = temp.filter((value) => {
+        delete value.value.invalid;
+        if (value.value.type !== 'String') {
+          delete value.value.facet;
+          delete value.value.message;
+        }
+        if (!value.value.default && value.value.default !== false && value.value.default !== 0) {
+          delete value.value.default;
+        }
+
+        if (value.value.type === 'String') {
+          this.coreService.addSlashToString(value.value, 'default');
+        }
+
+        if (value.value.list) {
+          let list = [];
+          value.value.list.forEach((obj) => {
+            this.coreService.addSlashToString(obj, 'name');
+            list.push(obj.name);
+          });
+          value.value.list = list;
+        }
+        return !!value.name;
+      });
+      job.arguments = this.coreService.keyValuePair(job.arguments);
+    }
+    if (job.arguments) {
+      if (job.arguments && isArray(job.arguments)) {
+        job.arguments.filter((argu) => {
+          this.coreService.addSlashToString(argu, 'value');
+        });
+        this.coreService.convertArrayToObject(job, 'arguments', true);
+      }
+    }
+    if (!job.parallelism) {
+      job.parallelism = 0;
+    }
+    if (job.timeout1) {
+      job.timeout = this.convertStringToDuration(job.timeout1);
+    } else {
+      delete job.timeout;
+    }
+    if (job.graceTimeout1) {
+      job.graceTimeout = this.convertStringToDuration(job.graceTimeout1);
+    } else {
+      delete job.graceTimeout;
+    }
+    delete job.timeout1;
+    delete job.graceTimeout1;
+    if (!job.arguments || typeof job.arguments === 'string' || job.arguments.length === 0) {
+      delete job.arguments;
+    }
+    if (job.executable && (!job.executable.arguments || typeof job.executable.arguments === 'string' || job.executable.arguments.length === 0)) {
+      delete job.executable.arguments;
+    }
+    if (job.executable && (!job.executable.jobArguments || typeof job.executable.jobArguments === 'string' || job.executable.jobArguments.length === 0)) {
+      delete job.executable.jobArguments;
+    }
+    if (job.executable && (!job.executable.env || typeof job.executable.env === 'string' || job.executable.env.length === 0)) {
+      delete job.executable.env;
+    }
+
+  }
 }
