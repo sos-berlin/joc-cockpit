@@ -1210,10 +1210,10 @@
     "button.pull": "Tirer",
     "button.push": "Pousser",
     "button.newDraft": "Nouveau Brouillon",
-    "button.updateJobs": "Update Jobs",
-    "button.updateFromJobTemplate": "Update from Job Template",
-    "button.updateFromJobTemplates": "Update from Job Templates",
-    "button.makeJobTemplate": "Make Job Template",
+    "button.updateJobs": "Mettre à jour les Tâches",
+    "button.updateFromJobTemplate": "Mettre à jour du Modèle de Tâche",
+    "button.updateFromJobTemplates": "Mettre à jour du Modèle de Tâche",
+    "button.makeJobTemplate": "Comme Modèle de Tâche",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -2532,7 +2532,7 @@
     "label.listEditor": "Éditeur de listes",
     "label.orderFilter": "Filtre d'Ordre",
     "label.outstandingAgents": "En attendant les Agents",
-    "label.jobTemplateReference": "Job Template Reference",
+    "label.jobTemplateReference": "Référence au Modèle de Tâche",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
@@ -2639,7 +2639,7 @@
     "tooltip.listEntryMode": "Mode d'entrée de liste",
     "tooltip.facetEntryMode": "Mode contrôle des entrées",
     "tooltip.editorEntryMode": "Mode d'entrée directe",
-    "tooltip.removeJobTemplateReference": "Remove Job Template Reference",
+    "tooltip.removeJobTemplateReference": "Supprimer la référence au Modèle de Tâche",
     "findAndReplace": {
       "label.find": "Trouver",
       "label.replace": "Remplacer",
@@ -2657,8 +2657,8 @@
       "button.next": "Suivant",
       "button.showDocumentation": "Afficher la Documentation",
       "button.addAnotherParameter": "Ajouter un autre paramètre",
-      "tab.jitl": "Modèle de Tâche JITL",
-      "tab.jobTemplate": "Modèle de Tâche d'Utilisateur"
+      "tab.jitl": "Modèles de Tâche JITL",
+      "tab.jobTemplate": "Modèles de Tâche d'Utilisateur"
     },
     "admissionTime": {
       "label.on": "Le",

@@ -1210,10 +1210,10 @@
     "button.pull": "Herunterladen",
     "button.push": "Hochladen",
     "button.newDraft": "Neuer Entwurf",
-    "button.updateJobs": "Update Jobs",
-    "button.updateFromJobTemplate": "Update from Job Template",
-    "button.updateFromJobTemplates": "Update from Job Templates",
-    "button.makeJobTemplate": "Make Job Template",
+    "button.updateJobs": "Jobs aktualisieren",
+    "button.updateFromJobTemplate": "Aktualisieren aus Job-Vorlage",
+    "button.updateFromJobTemplates": "Aktualisieren aus Job-Vorlage",
+    "button.makeJobTemplate": "Als Job-Vorlage",
     "tooltip.setVersion": "Version setzen",
     "placeholder.enterUniqueName": "Eindeutigen Objektnamen angeben",
     "placeholder.enterFileName": "Dateinamen angeben",
@@ -2532,7 +2532,7 @@
     "label.listEditor": "Editor für Listen",
     "label.orderFilter": "Auftragsfilter",
     "label.outstandingAgents": "Ausstehend bei Agenten",
-    "label.jobTemplateReference": "Job Template Reference",
+    "label.jobTemplateReference": "Verweis zu Job-Vorlage",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
@@ -2639,7 +2639,7 @@
     "tooltip.listEntryMode": "Eingabemodus für Listen",
     "tooltip.facetEntryMode": "Eingabemodus für Prüfungen",
     "tooltip.editorEntryMode": "Direkter Eingabemodus",
-    "tooltip.removeJobTemplateReference": "Remove Job Template Reference",
+    "tooltip.removeJobTemplateReference": "Verweis auf Job-Vorlage entfernen",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",
@@ -2657,8 +2657,8 @@
       "button.next": "Weiter",
       "button.showDocumentation": "Dokumentation anzeigen",
       "button.addAnotherParameter": "Variable hinzufügen",
-      "tab.jitl": "JITL Job-Vorlage",
-      "tab.jobTemplate": "Anwender Job-Vorlage"
+      "tab.jitl": "JITL Job-Vorlagen",
+      "tab.jobTemplate": "Anwender Job-Vorlagen"
     },
     "admissionTime": {
       "label.on": "Am",
