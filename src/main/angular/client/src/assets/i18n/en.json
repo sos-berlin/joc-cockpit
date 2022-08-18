@@ -1408,7 +1408,8 @@
           "mailCC": "Send e-mail copy to",
           "mailBcc": "Send e-mail blind copy to",
           "mailOn": "Mail On",
-          "description": "Description"
+          "description": "Description",
+          "onWarning": "Return Code on Warning"
         },
         "addOrder": {
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
@@ -1646,6 +1647,7 @@
     "button.modifyVariable": "Modify Variable",
     "button.modifyVariables": "Modify Variables",
     "button.showLog": "Show Log",
+    "button.assignParameterizationFromSchedules": "Assign Parameterization From Schedules",
     "placeholder.selectStartNode": "Select Start Position",
     "placeholder.selectEndNode": "Select End Position",
     "message.noVariableAvailable": "no variable available",
@@ -2657,8 +2659,8 @@
       "button.next": "Next",
       "button.showDocumentation": "Show Documentation",
       "button.addAnotherParameter": "Add another Variable",
-      "tab.jitl": "JITL Job Template",
-      "tab.jobTemplate": "User Job Template"
+      "tab.jitl": "JITL Job Templates",
+      "tab.jobTemplate": "User Job Templates"
     },
     "admissionTime": {
       "label.on": "On",

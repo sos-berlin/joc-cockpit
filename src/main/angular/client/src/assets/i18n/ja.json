@@ -1408,7 +1408,8 @@
           "mailCC": "メールcc宛先",
           "mailBcc": "メールbcc宛先",
           "mailOn": "送信タイミング",
-          "description": "Description"
+          "description": "Description",
+          "onWarning": "Return Code on Warning"
         },
         "addOrder": {
           "workflowName": "ワークフロー名",
@@ -1646,6 +1647,7 @@
     "button.modifyVariable": "変数編集",
     "button.modifyVariables": "変数編集",
     "button.showLog": "ログ表示",
+    "button.assignParameterizationFromSchedules": "Assign Parameterization From Schedules",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
     "message.noVariableAvailable": "変数はありません",

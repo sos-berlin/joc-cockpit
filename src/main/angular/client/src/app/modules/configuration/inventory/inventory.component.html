@@ -478,13 +478,13 @@
         [nzDisabled]="node.origin.deployed || node.origin.released || (node.origin.object && node.origin.children.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')">
       <a translate>inventory.button.deleteDraft</a>
     </li>
-    <li nz-menu-divider *ngIf="node.origin.type"></li>
+    <li nz-menu-divider *ngIf="node.origin.type || node.origin.controller || node.origin.object === 'WORKFLOW' || (!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan)"></li>
     <li nz-menu-item (click)="newDraft(node.origin)"
         *ngIf="node.origin.type">
       <a translate>inventory.button.newDraft</a>
     </li>
     <li nz-menu-item (click)="updateFromJobTemplates(node.origin)"
-        *ngIf="node.origin.type === 'WORKFLOW'">
+        *ngIf="node.origin.type === 'WORKFLOW' || node.origin.controller || node.origin.object === 'WORKFLOW' || (!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
       <a translate>inventory.button.updateFromJobTemplates</a>
     </li>
     <li nz-menu-divider *ngIf="node.origin.type"></li>
