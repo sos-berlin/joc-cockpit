@@ -1409,7 +1409,7 @@
           "mailBcc": "Envoyer une copie carbone invisible de l'e-mail à",
           "mailOn": "E-mail en cas de",
           "description": "Description",
-          "onWarning": "Return Code on Warning"
+          "onWarning": "Code de Retour sur Avertissement"
         },
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
@@ -1603,7 +1603,7 @@
       "button": {
         "success": "Succès",
         "error": "Erreur",
-        "warning": "Attention",
+        "warning": "Avertissement",
         "recovered": "Rétabli",
         "acknowledge": "Reconnu"
       },
@@ -1647,7 +1647,7 @@
     "button.modifyVariable": "Modifier une Variable",
     "button.modifyVariables": "Modifier les Variables",
     "button.showLog": "Afficher le Journal",
-    "button.assignParameterizationFromSchedules": "Assign Parameterization From Schedules",
+    "button.assignParameterizationFromSchedules": "Paramétrage à partir des Planifications",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "message.noVariableAvailable": "aucune variable disponible",
@@ -2268,7 +2268,7 @@
     "button.cancelFromSession": "Annuler Session",
     "button.cancelSessionByAccount": "Annuler toutes les Sessions du Compte",
     "button.cancelSessions": "Annuler Sessions",
-    "button.sessionManagement": "Sessions",
+    "button.sessionManagement": "Sessions Actives",
     "placeholder.role": "Entrer le nom du Rôle",
     "placeholder.selectRoles": "Sélectionner les Rôles",
     "placeholder.user": "Entrer l'utilisateur",

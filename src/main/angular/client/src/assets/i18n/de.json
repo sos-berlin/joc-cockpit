@@ -1409,7 +1409,7 @@
           "mailBcc": "Blindkopie der E-Mail senden an",
           "mailOn": "E-Mail bei",
           "description": "Beschreibung",
-          "onWarning": "Return Code on Warning"
+          "onWarning": "Rückgabewert bei Warnung"
         },
         "addOrder": {
           "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
@@ -1647,7 +1647,7 @@
     "button.modifyVariable": "Variable ändern",
     "button.modifyVariables": "Variablen ändern",
     "button.showLog": "Protokoll anzeigen",
-    "button.assignParameterizationFromSchedules": "Assign Parameterization From Schedules",
+    "button.assignParameterizationFromSchedules": "Parametrisierung aus Zeitplänen",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
     "message.noVariableAvailable": "keine Variablen vorhanden",
@@ -2268,7 +2268,7 @@
     "button.cancelFromSession": "Sitzung abbrechen",
     "button.cancelSessionByAccount": "Alle Sitzungen des Kontos abbrechen",
     "button.cancelSessions": "Sitzungen abbrechen",
-    "button.sessionManagement": "Sitzungen",
+    "button.sessionManagement": "Aktive Sitzungen",
     "placeholder.role": "Name der Rolle angeben",
     "placeholder.selectRoles": "Rollen auswählen",
     "placeholder.user": "Konto angeben",
@@ -2641,7 +2641,7 @@
     "tooltip.listEntryMode": "Eingabemodus für Listen",
     "tooltip.facetEntryMode": "Eingabemodus für Prüfungen",
     "tooltip.editorEntryMode": "Direkter Eingabemodus",
-    "tooltip.removeJobTemplateReference": "Verweis auf Job-Vorlage entfernen",
+    "tooltip.removeJobTemplateReference": "Verweis zu Job-Vorlage entfernen",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",
