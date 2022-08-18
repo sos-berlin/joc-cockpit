@@ -2384,7 +2384,7 @@ export class WorkflowService {
       }
       if (job.executable.arguments) {
         if (job.executable.TYPE === 'InternalExecutable') {
-          if (job.executable.arguments && isArray(job.executable.arguments)) {
+          if (isArray(job.executable.arguments)) {
             job.executable.arguments.filter((argu) => {
               this.coreService.addSlashToString(argu, 'value');
             });
@@ -2404,6 +2404,18 @@ export class WorkflowService {
         this.coreService.convertArrayToObject(job.executable, 'arguments', true);
       }
     }
+
+    if (job.parameters) {
+      job.arguments = {};
+      for (let i in job.parameters) {
+        job.arguments[i] = {
+          type: (job.parameters[i] == 'true' || job.parameters[i] == 'false') ? 'Boolean' :
+            (/^\d+$/.test(job.parameters[i])) ? 'Number' : 'String',
+          default: job.parameters[i]
+        }
+      }
+    }
+    delete job.parameters;
 
     if (job.executable && job.executable.jobArguments) {
       if (job.executable.TYPE === 'InternalExecutable') {
@@ -2444,9 +2456,7 @@ export class WorkflowService {
         delete job.executable.env;
       }
     }
-    if (job.executable && job.executable.env) {
-      this.coreService.convertArrayToObject(job.executable, 'env', true);
-    }
+
     if (job.arguments && job.arguments.length > 0) {
       let temp = this.coreService.clone(job.arguments);
       job.arguments = temp.filter((value) => {

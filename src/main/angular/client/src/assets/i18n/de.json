@@ -1408,7 +1408,8 @@
           "mailCC": "Kopie der E-Mail senden an",
           "mailBcc": "Blindkopie der E-Mail senden an",
           "mailOn": "E-Mail bei",
-          "description": "Beschreibung"
+          "description": "Beschreibung",
+          "onWarning": "Return Code on Warning"
         },
         "addOrder": {
           "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
@@ -1646,6 +1647,7 @@
     "button.modifyVariable": "Variable ändern",
     "button.modifyVariables": "Variablen ändern",
     "button.showLog": "Protokoll anzeigen",
+    "button.assignParameterizationFromSchedules": "Assign Parameterization From Schedules",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
     "message.noVariableAvailable": "keine Variablen vorhanden",

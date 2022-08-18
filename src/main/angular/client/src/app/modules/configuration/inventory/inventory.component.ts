@@ -1030,7 +1030,7 @@ export class ExportComponent implements OnInit {
       }
       this.path = this.origin.path;
       if (this.origin.dailyPlan || (this.origin.object &&
-        (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')))) {
+        (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')))) {
         this.exportType = this.origin.object || 'DAILYPLAN';
         this.filter.controller = false;
         this.filter.deploy = false;
@@ -1607,7 +1607,7 @@ export class RepositoryComponent implements OnInit {
     if (this.origin) {
       this.path = this.origin.path;
       if (this.origin.object) {
-        if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')) {
+        if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT || this.origin.object.match('CALENDAR')) {
           this.type = this.origin.object;
           this.filter.envIndependent = false;
           this.filter.deploy = false;
@@ -3027,6 +3027,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         } else if (res.back) {
           this.backToListView();
         } else if (res.navigate) {
+          console.log(res.navigate, '>>>')
           this.pushObjectInHistory();
           this.selectedObj.type = res.navigate.type;
           this.selectedObj.name = res.navigate.name;
@@ -3183,6 +3184,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   recursivelyExpandTree(): void {
+    console.log(this.selectedObj, 'recursivelyExpandTree')
     if (this.selectedObj.type) {
       this.coreService.post('inventory/read/configuration', {
         objectType: this.selectedObj.type,
@@ -3245,7 +3247,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
                 data.children.splice(0, index, children[0]);
                 data.children.splice(1, index, children[1]);
 
-                const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type === InventoryObject.INCLUDESCRIPT || (self.selectedObj.type && self.selectedObj.type.match(/CALENDAR/))) ? children[1] : children[0];
+                const parentNode = (self.selectedObj.type === InventoryObject.SCHEDULE || self.selectedObj.type === InventoryObject.JOBTEMPLATE || self.selectedObj.type === InventoryObject.INCLUDESCRIPT || (self.selectedObj.type && self.selectedObj.type.match(/CALENDAR/))) ? children[1] : children[0];
                 if (self.selectedObj.path === parentNode.path) {
                   parentNode.expanded = true;
                   for (let j = 0; j < parentNode.children.length; j++) {
@@ -3810,7 +3812,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       const data = node.origin.children;
       this.updateObjects(node.origin, false, (children) => {
         if (children.length > 0) {
-          if ((type.match('CALENDAR') || type === InventoryObject.SCHEDULE || type === InventoryObject.INCLUDESCRIPT)) {
+          if ((type.match('CALENDAR') || type === InventoryObject.SCHEDULE || type === InventoryObject.JOBTEMPLATE || type === InventoryObject.INCLUDESCRIPT)) {
             children[1].expanded = true;
           } else {
             children[0].expanded = true;
@@ -4706,7 +4708,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (object.objectType) {
         let isDraftOnly = true;
         let isDeployObj = true;
-        if (object.type.match(/CALENDAR/) || object.type === InventoryObject.SCHEDULE || object.type === InventoryObject.INCLUDESCRIPT) {
+        if (object.type.match(/CALENDAR/) || object.type === InventoryObject.SCHEDULE || object.type === InventoryObject.JOBTEMPLATE || object.type === InventoryObject.INCLUDESCRIPT) {
           isDeployObj = false;
           if (object.hasReleases) {
             isDraftOnly = false;
@@ -4918,7 +4920,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   private backToListView(): void {
     const parent = this.treeCtrl.getTreeNodeByKey(this.selectedObj.path);
     if (parent && parent.origin.children && this.selectedObj.type) {
-      const index = (this.selectedObj.type.match('CALENDAR') || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.INCLUDESCRIPT) ? 1 : 0;
+      const index = (this.selectedObj.type.match('CALENDAR') || this.selectedObj.type === InventoryObject.SCHEDULE || this.selectedObj.type === InventoryObject.JOBTEMPLATE || this.selectedObj.type === InventoryObject.INCLUDESCRIPT) ? 1 : 0;
       const child = parent.origin.children[index];
       for (let i = 0; i < child.children.length; i++) {
         if (child.children[i].object === this.selectedObj.type || (this.selectedObj.type && this.selectedObj.type.match('CALENDAR') && child.children[i].object && child.children[i].object.match('CALENDAR'))) {
@@ -5031,7 +5033,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             this.updateObjects(node.origin, false, (children) => {
               if (children.length > 0) {
                 if (res.objectType !== 'FOLDER' && this.copyObj.type) {
-                  if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.INCLUDESCRIPT)) {
+                  if ((this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.JOBTEMPLATE || this.copyObj.type === InventoryObject.INCLUDESCRIPT)) {
                     children[1].expanded = true;
                   } else {
                     children[0].expanded = true;
@@ -5049,7 +5051,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
             return;
           }
           if (this.copyObj.type) {
-            if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.INCLUDESCRIPT) {
+            if (this.copyObj.type === 'CALENDAR' || this.copyObj.type === InventoryObject.SCHEDULE || this.copyObj.type === InventoryObject.JOBTEMPLATE || this.copyObj.type === InventoryObject.INCLUDESCRIPT) {
               data = object.children[1];
             } else {
               data = object.children[0];

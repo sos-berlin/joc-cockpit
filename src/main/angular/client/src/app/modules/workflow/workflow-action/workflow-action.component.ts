@@ -388,6 +388,18 @@ export class AddOrderModalComponent implements OnInit {
       }
     });
   }
+
+  assignParameterizationFromSchedules(): void{
+   
+    this.coreService.post('workflow/order_templates', {
+      controllerId: this.schedulerId,
+      workflowPath: this.workflow.path
+    }).subscribe({
+      next: (res) => {
+        console.log(res);
+      }
+    });
+  }
 }
 
 @Component({

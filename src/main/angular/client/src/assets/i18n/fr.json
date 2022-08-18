@@ -1408,7 +1408,8 @@
           "mailCC": "Envoyer une copie de l'e-mail à",
           "mailBcc": "Envoyer une copie carbone invisible de l'e-mail à",
           "mailOn": "E-mail en cas de",
-          "description": "Description"
+          "description": "Description",
+          "onWarning": "Return Code on Warning"
         },
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
@@ -1646,6 +1647,7 @@
     "button.modifyVariable": "Modifier une Variable",
     "button.modifyVariables": "Modifier les Variables",
     "button.showLog": "Afficher le Journal",
+    "button.assignParameterizationFromSchedules": "Assign Parameterization From Schedules",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "message.noVariableAvailable": "aucune variable disponible",
