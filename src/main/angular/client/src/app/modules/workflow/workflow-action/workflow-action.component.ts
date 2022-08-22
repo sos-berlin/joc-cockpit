@@ -67,7 +67,11 @@ export class AddOrderModalComponent implements OnInit {
   submitted = false;
   zones = [];
   variableList = [];
+  schedules = [];
   positions: any;
+  object = {
+    name: ''
+  }
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
@@ -84,9 +88,9 @@ export class AddOrderModalComponent implements OnInit {
     }
     this.order.timeZone = this.preferences.zone;
     this.order.at = 'now';
-    if(!this.workflow.configuration) {
-       this.workflow.configuration = this.coreService.clone(this.workflow);
-       this.workflowService.convertTryToRetry(this.workflow.configuration, null, {}, {count: 0});
+    if (!this.workflow.configuration) {
+      this.workflow.configuration = this.coreService.clone(this.workflow);
+      this.workflowService.convertTryToRetry(this.workflow.configuration, null, {}, {count: 0});
 
     }
     this.getPositions();
@@ -389,14 +393,17 @@ export class AddOrderModalComponent implements OnInit {
     });
   }
 
-  assignParameterizationFromSchedules(): void{
-   
+  selectSchedule(): void {
+    console.log(this.object)
+  }
+
+  assignParameterizationFromSchedules(): void {
     this.coreService.post('workflow/order_templates', {
       controllerId: this.schedulerId,
       workflowPath: this.workflow.path
     }).subscribe({
       next: (res) => {
-        console.log(res);
+        this.schedules = res.schedules;
       }
     });
   }

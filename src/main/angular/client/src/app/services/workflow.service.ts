@@ -2346,14 +2346,21 @@ export class WorkflowService {
     }
   }
 
-  convertJobObject(job, isJobTemplate = true): void{
+  convertJobObject(job, isJobTemplate = true): any {
     if (isEmpty(job.admissionTimeScheme)) {
       delete job.admissionTimeScheme;
     }
     if (job.executable && isEmpty(job.executable.login)) {
       delete job.executable.login;
     }
-    if(!isJobTemplate) {
+    if (!job.executable.v1Compatible) {
+      if (job.executable.TYPE === 'ShellScriptExecutable') {
+        job.executable.v1Compatible = false;
+      } else {
+        delete job.executable.v1Compatible;
+      }
+    }
+    if (!isJobTemplate) {
       if (job.agentName1) {
         job.subagentClusterId = job.agentName;
         job.agentName = job.agentName1;
@@ -2364,13 +2371,6 @@ export class WorkflowService {
           }, ...job
         }
         delete job.agentName1
-      }
-      if (!job.executable.v1Compatible) {
-        if (job.executable.TYPE === 'ShellScriptExecutable') {
-          job.executable.v1Compatible = false;
-        } else {
-          delete job.executable.v1Compatible;
-        }
       }
       if (job.defaultArguments) {
         if (job.executable.v1Compatible && job.executable.TYPE === 'ShellScriptExecutable') {
@@ -2395,27 +2395,14 @@ export class WorkflowService {
         }
       }
     } else {
-      delete job.executable.v1Compatible;
       delete job.defaultArguments;
       delete job.agentName1;
       delete job.agentName;
       delete job.subagentClusterId;
-       if (job.executable && job.executable.arguments) {
+      if (job.executable && job.executable.arguments) {
         this.coreService.convertArrayToObject(job.executable, 'arguments', true);
       }
     }
-
-    if (job.parameters) {
-      job.arguments = {};
-      for (let i in job.parameters) {
-        job.arguments[i] = {
-          type: (job.parameters[i] == 'true' || job.parameters[i] == 'false') ? 'Boolean' :
-            (/^\d+$/.test(job.parameters[i])) ? 'Number' : 'String',
-          default: job.parameters[i]
-        }
-      }
-    }
-    delete job.parameters;
 
     if (job.executable && job.executable.jobArguments) {
       if (job.executable.TYPE === 'InternalExecutable') {
@@ -2447,8 +2434,21 @@ export class WorkflowService {
     if (job.executable.env) {
       if (job.executable.TYPE === 'ShellScriptExecutable') {
         if (job.executable.env && isArray(job.executable.env)) {
-          job.executable.env.filter((env) => {
-            this.coreService.addSlashToString(env, 'value');
+          job.executable.env = job.executable.env.filter((env) => {
+            if (env.value) {
+              if (!(/[$_+]/.test(env.value))) {
+                const startChar = env.value.substring(0, 1);
+                const endChar = env.value.substring(env.value.length - 1);
+                if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
+
+                } else {
+                  env.value = JSON.stringify(env.value);
+                  env.value = '\'' + env.value.substring(1, env.value.length - 1) + '\'';
+                }
+              }
+              return true;
+            }
+            return false;
           });
           this.coreService.convertArrayToObject(job.executable, 'env', true);
         }
@@ -2493,6 +2493,19 @@ export class WorkflowService {
         this.coreService.convertArrayToObject(job, 'arguments', true);
       }
     }
+
+    if (job.parameters) {
+      job.arguments = {};
+      for (let i in job.parameters) {
+        job.arguments[i] = {
+          type: (job.parameters[i] == 'true' || job.parameters[i] == 'false') ? 'Boolean' :
+            (/^\d+$/.test(job.parameters[i])) ? 'Number' : 'String',
+          default: job.parameters[i]
+        }
+      }
+    }
+    delete job.parameters;
+
     if (!job.parallelism) {
       job.parallelism = 0;
     }
@@ -2501,6 +2514,7 @@ export class WorkflowService {
     } else {
       delete job.timeout;
     }
+    
     if (job.graceTimeout1) {
       job.graceTimeout = this.convertStringToDuration(job.graceTimeout1);
     } else {
@@ -2521,5 +2535,6 @@ export class WorkflowService {
       delete job.executable.env;
     }
 
+    return job;
   }
 }

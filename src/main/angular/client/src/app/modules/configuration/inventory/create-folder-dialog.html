@@ -93,18 +93,10 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="folder.deepRename === 'replace'">
-        <label class="col-md-3 form-control-label" translate>inventory.label.replace
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-md-6" [ngClass]="{'has-error' :  ((replace.dirty || replace.touched) && replace.invalid)}">
-          <input type="text" placeholder="{{'inventory.placeholder.valueReplaceBy' | translate}}" class="form-control" name="replace" required
-                 #replace="ngModel" [(ngModel)]="folder.replace" autocomplete="off">
-          <div *ngIf="replace.invalid && (replace.dirty || replace.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(replace.errors && replace.errors.required)">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
+        <label class="col-md-3 form-control-label" translate>inventory.label.replace</label>
+        <div class="col-md-6">
+          <input type="text" placeholder="{{'inventory.placeholder.valueReplaceBy' | translate}}" class="form-control" name="replace"
+                 [(ngModel)]="folder.replace" autocomplete="off">
         </div>
       </div>
     </div>

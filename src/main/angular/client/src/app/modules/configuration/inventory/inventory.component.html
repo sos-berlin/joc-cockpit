@@ -260,9 +260,9 @@
                           [isTrash]="isTrash"></app-file-order>
         </div>
         <div *ngIf="type == 'JOBTEMPLATE'">
-          <app-jobs [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
+          <app-job-template [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"
                     [data]="selectedData" [copyObj]="copyObj" [reload]="selectedData.reload"
-                    [isTrash]="isTrash"></app-jobs>
+                    [isTrash]="isTrash"></app-job-template>
         </div>
         <div *ngIf="type == 'JOBRESOURCE'">
           <app-job-resource [preferences]="preferences" [schedulerId]="schedulerIds.selected" [permission]="permission"

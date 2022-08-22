@@ -1,0 +1,89 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>inventory.label.updateJobs</span>:
+    {{data.name}}
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a min-ht-300">
+    <div *ngIf="isloaded && listOfWorkflows.length">
+      <div class="hide" [ngClass]="{'show': display}">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-3">
+          <label translate>inventory.export.label.filter</label>
+        </div>
+        <div class="col-md-9">
+          <label nz-checkbox name="draft" [(ngModel)]="object.draft" (ngModelChange)="filterList()">
+            {{'inventory.export.label.draft'| translate}}
+          </label>
+          <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="object.deploy" (ngModelChange)="filterList()">
+            {{'inventory.export.label.deployed'| translate}}
+          </label>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-3">
+          <label translate>inventory.label.overwriteNotification</label>
+        </div>
+        <div class="col-md-9">
+          <label nz-checkbox name="draft" [(ngModel)]="object.overwriteNotification"></label>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-3">
+          <label translate>inventory.label.overwriteAdmissionTime</label>
+        </div>
+        <div class="col-md-9">
+          <label nz-checkbox name="draft" [(ngModel)]="object.overwriteAdmissionTime"></label>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="nodes.length">
+        <div class="col-md-12">
+          <label nz-checkbox [(nzChecked)]="object.checked"
+                 [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="selectAll($event)"></label>
+          <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12" *ngFor="let item of nodes">
+          <label nz-checkbox [nzChecked]="object.setOfCheckedPath.has(item.path)"
+                 (nzCheckedChange)="onItemChecked(item, $event)"></label>
+          <i nz-icon nzType="apartment" class="icon-color p-l-sm p-r-sm"
+             nzTheme="outline"></i>
+          <span class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"
+                [ngClass]="{'fa-circle dark-blue' : item.deployed}"></span>
+          <span *ngIf="item.state" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
+            <i *ngIf="item.state._text === 'IN_SYNC'"
+               class="fa fa-refresh font11"></i>
+            <i *ngIf="item.state._text === 'UNKNOWN'"
+               class="fa fa-exclamation-triangle font11"></i>
+            <i *ngIf="item.state._text === 'NOT_IN_SYNC'"
+               class="icon3-reload-error font11 pos-rel t-1"></i>
+          </span>
+          <span>{{item.path}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="m-t-md" *ngIf="nodes.length===0 && isloaded">
+      <app-empty-data></app-empty-data>
+    </div>
+    <div class="text-center m-t-md" *ngIf="!isloaded">
+      <nz-spin nzSimple></nz-spin>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm"
+            [disabled]="submitted || this.object.setOfCheckedPath.size == 0">
+      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
+      <span translate>common.button.submit</span>
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

@@ -1153,6 +1153,9 @@
     "label.exitCode": "Code Retour",
     "label.newDraft": "Nouveau Brouillon",
     "label.objectTypes": "Types d'Objets",
+    "label.updateJobs": "Update Jobs",
+    "label.overwriteNotification": "Overwrite Notification",
+    "label.overwriteAdmissionTime": "Overwrite Admission Time",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -1409,7 +1412,7 @@
           "mailBcc": "Envoyer une copie carbone invisible de l'e-mail à",
           "mailOn": "E-mail en cas de",
           "description": "Description",
-          "onWarning": "Return Code on Warning"
+          "onWarning": "Code de Retour sur Avertissement"
         },
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
@@ -1603,7 +1606,7 @@
       "button": {
         "success": "Succès",
         "error": "Erreur",
-        "warning": "Attention",
+        "warning": "Avertissement",
         "recovered": "Rétabli",
         "acknowledge": "Reconnu"
       },
@@ -1647,7 +1650,7 @@
     "button.modifyVariable": "Modifier une Variable",
     "button.modifyVariables": "Modifier les Variables",
     "button.showLog": "Afficher le Journal",
-    "button.assignParameterizationFromSchedules": "Assign Parameterization From Schedules",
+    "button.assignParameterizationFromSchedules": "Paramétrage à partir des Planifications",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "message.noVariableAvailable": "aucune variable disponible",
@@ -2112,9 +2115,9 @@
       "controller_connection_history_password": "Le mot de passe est utilisé pour l'authentification du History Service (exécuté dans JOC Cockpit) avec le Contrôleur. Si des connexions HTTP sont utilisées, le mot de passe est le seul moyen d'authentification. Si des connexions HTTPS avec authentification mutuelle sont utilisées, le mot de passe n'est pas pertinent car une authentification basée sur un certificat est en place. Un mot de passe vide peut être spécifié, le mot de passe correspondant dans le fichier private.conf du Contrôleur étant \"plain:\". Si le mot de passe est modifié dans la page des Paramètres de JOC Cockpit, il doit également être modifié dans le fichier private.conf du Contrôleur pour que les mots de passe correspondent. Il est recommandé de modifier d'abord le mot de passe dans le fichier private.conf de l'instance active du Contrôleur, puis dans la page des paramètres. Ensuite, redémarrez l'instance du Contrôleur à partir de la vue TABLEAU DE BORD. JOC Cockpit se reconnectera à l'instance active du Contrôleur. Si un Contrôleur Cluster est utilisé, il faut appliquer la même modification au fichier private.conf de l'instance passive du Contrôleur.",
       "encoding": "L'Encodage est appliqué si JOC Cockpit est utilisé dans des environnements Windows. Windows ne supporte pas Unicode mais utilise des pages de code. Dans le cas où la page de code de Windows ne peut pas être détectée automatiquement, l'utilisateur peut spécifier la page de code, pour plus de détails voir https://kb.sos-berlin.com/x/h7J2B.",
       "disable_warning_on_license_expiration": "Désactiver l'avertissement d'expiration de licence",
-      "log_maximum_display_size": "JOC Cockpit propose la sortie du journal d'un job pour affichage dans la fenêtre Log View si la taille de la sortie du journal non compressé ne dépasse pas cette valeur. Dans le cas contraire, le journal est proposé uniquement pour le téléchargement.",
-      "log_applicable_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers et derniers Ko pour le journal de la tâche. Le fichier journal original sera supprimé.",
-      "log_maximum_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers Ko pour le journal de la tâche. Le fichier journal original sera supprimé."
+      "log_maximum_display_size": "JOC Cockpit propose la sortie du journal d'un job pour affichage dans la fenêtre Log View si la taille de la sortie du journal non compressé ne dépasse pas cette valeur. Dans le cas contraire, le journal est proposé uniquement pour le téléchargement. La taille est spécifiée en MO.",
+      "log_applicable_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers et derniers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO.",
+      "log_maximum_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO."
     },
     "user": {
       "welcome_got_it": "Spécifie que la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger ne doit plus être affichée.",
@@ -2268,7 +2271,7 @@
     "button.cancelFromSession": "Annuler Session",
     "button.cancelSessionByAccount": "Annuler toutes les Sessions du Compte",
     "button.cancelSessions": "Annuler Sessions",
-    "button.sessionManagement": "Sessions",
+    "button.sessionManagement": "Sessions Actives",
     "placeholder.role": "Entrer le nom du Rôle",
     "placeholder.selectRoles": "Sélectionner les Rôles",
     "placeholder.user": "Entrer l'utilisateur",

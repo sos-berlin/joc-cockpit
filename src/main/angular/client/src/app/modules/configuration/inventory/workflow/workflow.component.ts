@@ -32,6 +32,7 @@ import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {InventoryService} from '../inventory.service';
 import {CreateObjectModalComponent} from "../inventory.component";
+import {ConfirmModalComponent} from "../../../../components/comfirm-modal/confirm.component";
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -990,7 +991,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   index = 0;
   presentObj: any = {};
   returnCodes: any = {on: 'success'};
-
+  state: any = {};
   cmOption: any = {
     lineNumbers: true,
     autoRefresh: true,
@@ -1033,7 +1034,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Output() makeJobTemplateFn: EventEmitter<any> = new EventEmitter();
   @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
 
-  constructor(private coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
+  constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
               private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       if (res.error) {
@@ -1111,7 +1112,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   navToJobTemp(name): void {
-    this.dataService.reloadTree.next({navigate: {name, type: 'JOBTEMPLATE'}});
+    this.dataService.reloadTree.next({navigate: {name, type: InventoryObject.JOBTEMPLATE}});
   }
 
   changeType(): void {
@@ -1739,7 +1740,15 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getJobTemplate(): void {
-    console.log(this.selectedNode.job)
+    if (this.selectedNode.job.jobTemplate) {
+      this.coreService.post('job_template/state', {
+        jobTemplate: this.selectedNode.job.jobTemplate
+      }).subscribe({
+        next: (res) => {
+          this.state = res;
+        }
+      })
+    }
   }
 
   checkJobInfo(): void {
@@ -2137,13 +2146,15 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   updateFromJobTemplate(): void {
-    $('div.floating-action-menu').removeClass('active');
-    this.updateFromJobTemplateFn.emit(this.selectedNode)
+    // $('div.floating-action-menu').removeClass('active');
+    if (this.state._text !== 'IN_SYNC') {
+      this.updateFromJobTemplateFn.emit(this.selectedNode)
+    }
   }
 
   makeJobTemplate(): void {
-    $('div.floating-action-menu').removeClass('active');
-    this.makeJobTemplateFn.emit(this.selectedNode)
+    //   $('div.floating-action-menu').removeClass('active');
+    //   this.makeJobTemplateFn.emit(this.selectedNode)
   }
 }
 
@@ -3035,6 +3046,38 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   updateFromJobTemplate(data): void {
     console.log(data)
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzAutofocus: null,
+      nzComponentParams: {
+        updateFromJobTemplate: data.cell ? data.cell.getAttribute('jobName') : true,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe((result: any) => {
+      if (result === 'close') {
+        console.log('waiting for API')
+        // let request: any = {
+        //   jobTemplates: [{
+        //     path: this.data.jobTemplate.name,
+        //     workflows: Array.from(this.object.setOfCheckedPath)
+        //   }],
+        //   overwriteNotification: this.object.overwriteNotification,
+        //   overwriteAdmissionTime: this.object.overwriteAdmissionTime,
+        // };
+        // if (this.comments.comment) {
+        //   request.auditLog = {
+        //     comment: this.comments.comment,
+        //     timeSpent: this.comments.timeSpent,
+        //     ticketLink: this.comments.ticketLink
+        //   }
+        // }
+        // this.coreService.post('/job_templates/propagate', request).subscribe();
+
+      }
+    });
   }
 
   makeJobTemplate(data): void {
@@ -3046,7 +3089,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzComponentParams: {
         preferences: this.preferences,
         obj: {
-          type: 'JOBTEMPLATE',
+          type: InventoryObject.JOBTEMPLATE,
           path: this.data.path
         },
       },
@@ -3056,10 +3099,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe((result: any) => {
       if (result) {
-        console.log(result);
-        console.log(data.job);
         const request: any = {
-          objectType: 'JOBTEMPLATE',
+          objectType: InventoryObject.JOBTEMPLATE,
           path: this.data.path + (this.data.path === '/' ? '' : this.data.path) + result.name,
           configuration: {}
         };
@@ -3073,6 +3114,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         let job = this.coreService.clone(data.job);
         if (!job.executable) {
           return false;
+        }
+        if (job.executable.TYPE === 'ShellScriptExecutable') {
+          if (data.cell) {
+            let parameters = data.cell.getAttribute('defaultArguments')
+            if (parameters) {
+              job.parameters = JSON.parse(parameters)
+            }
+          } else {
+            job.parameters = data.obj.defaultArguments;
+          }
+        } else {
+          job.parameters = job.executable.arguments;
         }
         this.workflowService.convertJobObject(job);
         delete job.jobName;
@@ -9205,7 +9258,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if (!job.executable) {
       return false;
     }
-    this.workflowService.convertJobObject(job, false);
+    job = this.workflowService.convertJobObject(job, false);
 
     let flag = true;
     let isChange = true;

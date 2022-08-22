@@ -5,9 +5,9 @@ import {
   Input,
   OnChanges,
   OnDestroy, OnInit,
-  SimpleChanges
+  SimpleChanges, ViewChild
 } from '@angular/core';
-import {clone, isArray, isEmpty, isEqual} from 'underscore';
+import {clone, groupBy, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -21,8 +21,8 @@ import {InventoryService} from '../inventory.service';
 import {InventoryObject} from '../../../../models/enums';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-import {JobWizardComponent} from "../job-wizard/job-wizard.component";
-import {FacetEditorComponent} from "../workflow/workflow.component";
+import {JobWizardComponent} from '../job-wizard/job-wizard.component';
+import {FacetEditorComponent} from '../workflow/workflow.component';
 
 @Component({
   selector: 'app-update-modal',
@@ -31,18 +31,262 @@ import {FacetEditorComponent} from "../workflow/workflow.component";
 export class UpdateJobTemplatesComponent implements OnInit {
   @Input() preferences: any = {};
   @Input() data: any = {};
-  submitted = false
+  submitted = false;
+  isExpandAll = false;
+  listOfWorkflows = [];
+  nodes: any = [{path: '/', key: '/', name: '/', children: []}];
+  isloaded = false;
+  loading = true;
+  required = false;
+  display = false;
+  comments: any = {radio: 'predefined'};
+  object = {
+    overwriteNotification: false,
+    overwriteAdmissionTime: false,
+    setOfCheckedPath: new Set(),
+    checked: false,
+    indeterminate: false,
+    isRecursive: false,
+    draft: true,
+    deploy: true,
+  };
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  @ViewChild('treeCtrl', {static: false}) treeCtrl;
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
+  }
+
+  static createTempArray(arr): any {
+    const tempArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      const parentObj: any = {
+        name: arr[i].name,
+        path: arr[i].path,
+        key: arr[i].key,
+        title: arr[i].key,
+        type: true,
+        isLeaf: true
+      };
+      tempArr.push(parentObj);
+    }
+    return tempArr;
   }
 
   ngOnInit(): void {
-    console.log(this.data)
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    this.propagateJobs();
+  }
+
+  propagateJobs(): void {
+    this.coreService.post('/job_templates/used', {
+      jobTemplatePaths: [this.data.path]
+    }).subscribe({
+      next: (res) => {
+        this.isloaded = true;
+        if (res.jobTemplates.length > 0) {
+          this.listOfWorkflows = res.jobTemplates[0].workflows;
+        } else {
+          this.nodes = [];
+        }
+        this.filterList();
+        // this.createTreeStructure();
+      }, error: () => {
+        this.isloaded = true;
+      }
+    })
+  }
+
+  filterList(): void {
+    this.object.setOfCheckedPath = new Set();
+    if (this.object.draft && this.object.deploy) {
+      this.nodes = this.coreService.clone(this.listOfWorkflows);
+    } else {
+      this.nodes = this.listOfWorkflows.filter((item) => {
+        if (this.object.draft && !item.deployed) {
+          return true;
+        } else if (this.object.deploy && item.deployed) {
+          return true;
+        }
+        return false;
+      })
+    }
+  }
+
+  private createTreeStructure(): void {
+    const treeObj = [];
+    for (let i = 0; i < this.listOfWorkflows.length; i++) {
+      const path = this.listOfWorkflows[i].path;
+      const obj = {
+        name: this.listOfWorkflows[i].name,
+        path: path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1),
+        key: path,
+        title: path
+      };
+      treeObj.push(obj);
+    }
+
+    const arr = groupBy(sortBy(treeObj, (i: any) => {
+      return i.path.toLowerCase();
+    }), (result) => {
+      return result.path;
+    });
+    this.generateTree(arr);
+    if (this.nodes) {
+      this.nodes = [...this.nodes];
+    }
+  }
+
+  private generateTree(arr): void {
+    for (const [key, value] of Object.entries(arr)) {
+      if (key !== '/') {
+        const paths = key.split('/');
+        if (paths.length > 1) {
+          const pathArr = [];
+          for (let i = 0; i < paths.length; i++) {
+            if (paths[i]) {
+              if (i > 0 && pathArr[i - 1]) {
+                pathArr.push(pathArr[i - 1] + (pathArr[i - 1] === '/' ? '' : '/') + paths[i]);
+              } else {
+                pathArr.push('/' + paths[i]);
+              }
+            } else {
+              pathArr.push('/');
+            }
+          }
+          for (let i = 0; i < pathArr.length; i++) {
+            this.checkAndAddFolder(pathArr[i]);
+          }
+        }
+      }
+      this.checkFolderRecur(key, value);
+    }
+  }
+
+  private checkFolderRecur(_path, data): void {
+    let flag = false;
+    let arr = [];
+    if (data.length > 0) {
+      arr = UpdateJobTemplatesComponent.createTempArray(data);
+    }
+    function recursive(path, nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i].type) {
+          if (nodes[i].path === path) {
+            if (!nodes[i].children || nodes[i].children.length === 0) {
+              for (let j = 0; j < arr.length; j++) {
+                if (arr[j].name === nodes[i].name && arr[j].path === nodes[i].path && arr[j].type === nodes[i].type) {
+                  nodes[i].key = arr[j].key;
+                  arr.splice(j, 1);
+                  break;
+                }
+              }
+              nodes[i].children = arr;
+            } else {
+              nodes[i].children = nodes[i].children.concat(arr);
+            }
+            flag = true;
+            break;
+          }
+          if (!flag && nodes[i].children) {
+            recursive(path, nodes[i].children);
+          }
+        }
+      }
+    }
+    if (this.nodes && this.nodes[0]) {
+      this.nodes[0].expanded = true;
+      recursive(_path, this.nodes);
+    }
+  }
+
+  private checkAndAddFolder(mainPath): void {
+    let node: any;
+
+    function recursive(path, nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        if (!nodes[i].type) {
+          if (nodes[i].path === path.substring(0, path.lastIndexOf('/') + 1) || nodes[i].path === path.substring(0, path.lastIndexOf('/'))) {
+            node = nodes[i];
+            break;
+          }
+          if (nodes[i].children) {
+            recursive(path, nodes[i].children);
+          }
+        }
+      }
+    }
+
+    recursive(mainPath, this.nodes);
+    if (node) {
+      let falg = false;
+      for (let x = 0; x < node.children.length; x++) {
+        if (!node.children[x].type && !node.children[x].object && node.children[x].path === mainPath) {
+          falg = true;
+          break;
+        }
+      }
+      if (!falg && mainPath.substring(mainPath.lastIndexOf('/') + 1)) {
+        node.children.push({
+          name: mainPath.substring(mainPath.lastIndexOf('/') + 1),
+          path: mainPath,
+          key: mainPath,
+          title: mainPath,
+          children: []
+        });
+      }
+    }
+  }
+
+  selectAll(value: boolean): void {
+    if (value) {
+      this.nodes.forEach(item => {
+        this.object.setOfCheckedPath.add(item.path);
+      });
+    } else {
+      this.object.setOfCheckedPath.clear();
+    }
+  }
+
+  onItemChecked(item: any, checked: boolean): void {
+    if (checked) {
+      this.object.setOfCheckedPath.add(item.path);
+    } else {
+      this.object.setOfCheckedPath.delete(item.path);
+    }
+    this.object.checked = this.object.setOfCheckedPath.size === this.nodes.length;
+    this.object.indeterminate = this.object.setOfCheckedPath.size > 0 && !this.object.checked;
   }
 
   onSubmit(): void {
     this.submitted = true;
-    this.activeModal.close('DONE');
+    let request: any = {
+      jobTemplates: [{
+        path: this.data.path,
+        workflows: Array.from(this.object.setOfCheckedPath)
+      }],
+      overwriteNotification: this.object.overwriteNotification,
+      overwriteAdmissionTime: this.object.overwriteAdmissionTime,
+    };
+    if (this.comments.comment) {
+      request.auditLog = {
+        comment: this.comments.comment,
+        timeSpent: this.comments.timeSpent,
+        ticketLink: this.comments.ticketLink
+      }
+    }
+    this.coreService.post('/job_templates/propagate', request).subscribe({
+      next: (res) => {
+        this.activeModal.close('DONE');
+      }, error: (err) => {
+        this.submitted = false;
+      }
+    });
+
   }
 
   cancel(): void {
@@ -51,11 +295,11 @@ export class UpdateJobTemplatesComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-jobs',
+  selector: 'app-job-template',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './jobs.component.html'
+  templateUrl: './job-template.component.html'
 })
-export class JobsComponent implements OnChanges, OnDestroy {
+export class JobTemplateComponent implements OnChanges, OnDestroy {
   @Input() permission: any;
   @Input() preferences: any;
   @Input() schedulerId: any;
@@ -444,7 +688,7 @@ export class JobsComponent implements OnChanges, OnDestroy {
       nzClassName: 'lg',
       nzComponentParams: {
         preferences: this.preferences,
-        data: this.job.configuration
+        data: this.job
       },
       nzFooter: null,
       nzClosable: false,
@@ -454,7 +698,8 @@ export class JobsComponent implements OnChanges, OnDestroy {
       if (result) {
 
       }
-    });}
+    });
+  }
 
   openJobWizard(): void {
     const modal = this.modal.create({
@@ -966,6 +1211,10 @@ export class JobsComponent implements OnChanges, OnDestroy {
     }
   }
 
+  onChangeJobResource(value): void {
+    this.saveJSON();
+  }
+
   saveJSON(flag = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
@@ -973,7 +1222,6 @@ export class JobsComponent implements OnChanges, OnDestroy {
     const job = this.coreService.clone(this.job.configuration);
 
     this.workflowService.convertJobObject(job);
-
     if (this.job.actual && !isEqual(this.job.actual, JSON.stringify(job))) {
       if (!flag) {
         if (this.history.length === 20) {
