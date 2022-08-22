@@ -19,6 +19,7 @@ export class ConfirmModalComponent {
   @Input() documentArr: any;
   @Input() resetProfiles: any;
   @Input() question: string;
+  @Input() updateFromJobTemplate: string;
 
   constructor(public activeModal: NzModalRef) {
   }

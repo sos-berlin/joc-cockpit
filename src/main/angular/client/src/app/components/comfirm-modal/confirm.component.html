@@ -7,6 +7,10 @@
       </span>
       ?
     </span>
+    <span *ngIf="updateFromJobTemplate">{{'inventory.button.updateFromJobTemplate' | translate}}
+      :
+      {{updateFromJobTemplate}}
+    </span>
     <span *ngIf="(type !== 'Delete' && type !== 'Remove') || resetProfiles">
       <span *ngIf="title">{{'common.label.' + title | translate}}</span>
       <span *ngIf="resetProfiles">?</span>
@@ -23,6 +27,7 @@
 <div class="modal-body p-a">
   <div class="row text-center">
     <div class="col-sm-12 m-t m-b">
+      <span *ngIf="updateFromJobTemplate" class="text" translate>inventory.message.updateFromJobTemplate</span>
       <span *ngIf="question" class="text">{{question}}</span>
       <span *ngIf="message2" class="text">
         {{'workflow.message.' + message2 | translate}}

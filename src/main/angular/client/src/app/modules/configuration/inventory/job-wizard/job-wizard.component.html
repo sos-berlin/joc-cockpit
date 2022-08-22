@@ -115,6 +115,11 @@
                           </i>
                           <i *ngIf="item.documentationName" class="fa fa-book p-r-sm"
                              (click)="showDoc(item.documentationName);$event.stopPropagation()"></i>
+                          <i *ngIf="item.description" class="fa fa-info-circle p-r-sm"
+                             [nz-tooltip]="contentTemplate"></i>
+                          <ng-template #contentTemplate>
+                            <div [innerHTML]="item.description"></div>
+                          </ng-template>
                           <i class="icon icon-jobs-icon text-sm"></i>
                           {{item.name}}
                         </a>

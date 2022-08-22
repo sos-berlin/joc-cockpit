@@ -45,7 +45,7 @@ import {UpdateJobComponent} from './update-job/update-job.component';
 import {UpdateObjectComponent} from './update-object/update-object.component';
 import {ScriptComponent} from './script/script.component';
 import {FavoriteListComponent} from "./favorite-list/favorite-list.component";
-import {JobsComponent, UpdateJobTemplatesComponent} from './jobs/jobs.component';
+import {JobTemplateComponent, UpdateJobTemplatesComponent} from './job-template/job-template.component';
 
 const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDeployComponent, DeployComponent, ExportComponent, CreateFolderModalComponent,
   CreateObjectModalComponent, NotificationComponent, RepositoryComponent, GitComponent, ImportWorkflowModalComponent, CronImportModalComponent, ImportComponent,
@@ -76,7 +76,7 @@ const COMPONENTS = [FrequencyModalComponent, JsonEditorModalComponent, SingleDep
     WorkflowComponent,
     BoardComponent,
     JobResourceComponent,
-    JobsComponent,
+    JobTemplateComponent,
     FileOrderComponent,
     TableComponent,
     LabelValidator,
