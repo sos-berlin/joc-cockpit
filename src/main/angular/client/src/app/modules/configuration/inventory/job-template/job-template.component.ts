@@ -30,7 +30,8 @@ import {FacetEditorComponent} from '../workflow/workflow.component';
 })
 export class UpdateJobTemplatesComponent implements OnInit {
   @Input() preferences: any = {};
-  @Input() data: any = {};
+  @Input() data: any;
+  @Input() treeObj: any;
   submitted = false;
   isExpandAll = false;
   listOfWorkflows = [];
@@ -39,6 +40,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
   loading = true;
   required = false;
   display = false;
+  listView = true;
   comments: any = {radio: 'predefined'};
   object = {
     overwriteNotification: false,
@@ -47,6 +49,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
     checked: false,
     indeterminate: false,
     isRecursive: false,
+    recursive: false,
     draft: true,
     deploy: true,
   };
@@ -79,11 +82,13 @@ export class UpdateJobTemplatesComponent implements OnInit {
       this.required = true;
       this.display = true;
     }
-    this.propagateJobs();
+    if (this.data) {
+      this.propagateJobs();
+    }
   }
 
   propagateJobs(): void {
-    this.coreService.post('/job_templates/used', {
+    this.coreService.post('job_templates/used', {
       jobTemplatePaths: [this.data.path]
     }).subscribe({
       next: (res) => {
@@ -94,11 +99,19 @@ export class UpdateJobTemplatesComponent implements OnInit {
           this.nodes = [];
         }
         this.filterList();
-        // this.createTreeStructure();
       }, error: () => {
         this.isloaded = true;
       }
     })
+  }
+
+  switchView(): void {
+    if (!this.listView) {
+      this.nodes = [{path: '/', key: '/', name: '/', children: []}];
+      this.createTreeStructure();
+    } else {
+      this.filterList();
+    }
   }
 
   filterList(): void {
@@ -173,6 +186,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
     if (data.length > 0) {
       arr = UpdateJobTemplatesComponent.createTempArray(data);
     }
+
     function recursive(path, nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].type) {
@@ -198,6 +212,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
         }
       }
     }
+
     if (this.nodes && this.nodes[0]) {
       this.nodes[0].expanded = true;
       recursive(_path, this.nodes);
@@ -265,13 +280,18 @@ export class UpdateJobTemplatesComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     let request: any = {
-      jobTemplates: [{
-        path: this.data.path,
-        workflows: Array.from(this.object.setOfCheckedPath)
-      }],
       overwriteNotification: this.object.overwriteNotification,
       overwriteAdmissionTime: this.object.overwriteAdmissionTime,
     };
+    if (this.data) {
+      request.jobTemplates = [{
+        path: this.data.path,
+        workflows: Array.from(this.object.setOfCheckedPath)
+      }];
+    } else {
+      request.folder = this.treeObj.path;
+      request.recursive = this.object.recursive;
+    }
     if (this.comments.comment) {
       request.auditLog = {
         comment: this.comments.comment,
@@ -279,7 +299,8 @@ export class UpdateJobTemplatesComponent implements OnInit {
         ticketLink: this.comments.ticketLink
       }
     }
-    this.coreService.post('/job_templates/propagate', request).subscribe({
+    const URL = this.data ? 'job_templates/propagate' : 'inventory/workflows/update';
+    this.coreService.post(URL, request).subscribe({
       next: (res) => {
         this.activeModal.close('DONE');
       }, error: (err) => {

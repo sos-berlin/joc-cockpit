@@ -28,6 +28,7 @@ import {AuthService} from '../../../components/guard';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 import {InventoryObject} from '../../../models/enums';
+import {UpdateJobTemplatesComponent} from "./job-template/job-template.component";
 
 declare const $: any;
 
@@ -3027,7 +3028,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
         } else if (res.back) {
           this.backToListView();
         } else if (res.navigate) {
-          console.log(res.navigate, '>>>')
           this.pushObjectInHistory();
           this.selectedObj.type = res.navigate.type;
           this.selectedObj.name = res.navigate.name;
@@ -3184,7 +3184,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   recursivelyExpandTree(): void {
-    console.log(this.selectedObj, 'recursivelyExpandTree')
     if (this.selectedObj.type) {
       this.coreService.post('inventory/read/configuration', {
         objectType: this.selectedObj.type,
@@ -4381,8 +4380,24 @@ export class InventoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateFromJobTemplates(workflow): void{
+  updateFromJobTemplates(workflow): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: UpdateJobTemplatesComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        preferences: this.preferences,
+        treeObj: workflow
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
 
+      }
+    });
   }
 
   editJson(data: any, isEdit: boolean): void {
@@ -4932,7 +4947,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private releaseSingleObject(data,operation?): void {
+  private releaseSingleObject(data, operation?): void {
     const PATH = data.path1 ? ((data.path1 + (data.path1 === '/' ? '' : '/') + data.name)) : ((data.path + (data.path === '/' ? '' : '/') + data.name));
     let obj: any = {};
     if (operation === 'release') {
@@ -4977,7 +4992,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private releaseRecallOperation(operation, obj): void{
+  private releaseRecallOperation(operation, obj): void {
     this.coreService.post(operation === 'release' ? 'inventory/release' : 'inventory/releasables/recall', obj).subscribe();
   }
 
@@ -5321,7 +5336,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private deleteObject(path, object, node, auditLog): void {
-    this.coreService.post('inventory/remove/folder', { path, auditLog }).subscribe(() => {
+    this.coreService.post('inventory/remove/folder', {path, auditLog}).subscribe(() => {
       object.deleted = true;
       if (node && node.parentNode && node.parentNode.origin) {
         node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
@@ -5336,7 +5351,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private getObjectArr(object, isDraft): any {
-    let obj: any = { objects: [] };
+    let obj: any = {objects: []};
     if (!object.type) {
       if (object.object || object.controller || object.dailyPlan) {
         object.children.forEach((item) => {

@@ -484,7 +484,7 @@
       <a translate>inventory.button.newDraft</a>
     </li>
     <li nz-menu-item (click)="updateFromJobTemplates(node.origin)"
-        *ngIf="node.origin.type === 'WORKFLOW' || node.origin.controller || node.origin.object === 'WORKFLOW' || (!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
+        *ngIf="node.origin.controller || node.origin.object === 'WORKFLOW' || (!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan)">
       <a translate>inventory.button.updateFromJobTemplates</a>
     </li>
     <li nz-menu-divider *ngIf="node.origin.type"></li>

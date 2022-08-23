@@ -15,6 +15,7 @@ export class NodePositionComponent implements OnChanges {
   @Input() workflow: any;
   @Input() type: string;
   @Input() index = 0;
+  @Input() reload: boolean;
 
   nodes:any = [];
   @Output() onBlur = new EventEmitter<string>();
@@ -25,6 +26,10 @@ export class NodePositionComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (this.workflow) {
       this.getNodes(this.position);
+    }
+
+     if(changes.reload && changes.reload.currentValue == true){
+       this.getNodes(this.position);
     }
   }
 

@@ -67,9 +67,12 @@ export class AddOrderModalComponent implements OnInit {
   submitted = false;
   zones = [];
   variableList = [];
-  schedules = [];
+  schedules: any;
+  selectedSchedule: any;
   positions: any;
+  positionList: any;
   object = {
+    orderName: '',
     name: ''
   }
 
@@ -107,8 +110,10 @@ export class AddOrderModalComponent implements OnInit {
     }).subscribe({
       next: (res) => {
         this.positions = new Map();
+        this.positionList = new Map();
         res.positions.forEach((item) => {
           this.positions.set(item.positionString, JSON.stringify(item.position));
+          this.positionList.set(JSON.stringify(item.position), item.positionString);
         });
       }, error: () => this.submitted = false
     });
@@ -393,19 +398,125 @@ export class AddOrderModalComponent implements OnInit {
     });
   }
 
-  selectSchedule(): void {
-    console.log(this.object)
+  selectSchedule(name): void {
+    for (let i in this.schedules) {
+      if (this.schedules[i].name == name) {
+        this.selectedSchedule = this.schedules[i];
+        this.object.orderName = '';
+        break;
+      }
+    }
+  }
+
+  selectOrder(name): void {
+    this.order.reload = false;
+    for (let i in this.selectedSchedule.orderParameterisations) {
+      if (this.selectedSchedule.orderParameterisations[i].orderName == name) {
+        this.updateVariablesFromSchedule(this.selectedSchedule.orderParameterisations[i]);
+        if (this.selectedSchedule.orderParameterisations[i].positions) {
+          if (this.selectedSchedule.orderParameterisations[i].positions.startPosition) {
+            this.order.startPosition = this.positionList.get(JSON.stringify(this.selectedSchedule.orderParameterisations[i].positions.startPosition));
+          }
+          if (this.selectedSchedule.orderParameterisations[i].positions.endPositions && this.selectedSchedule.orderParameterisations[i].positions.endPositions.length > 0) {
+            this.order.endPositions = [];
+            this.selectedSchedule.orderParameterisations[i].positions.endPositions.forEach(item => {
+              this.order.endPositions.push(this.positionList.get(JSON.stringify(item)));
+            })
+          }
+          this.order.reload = true;
+        }
+        break;
+      }
+    }
+  }
+
+  private updateVariablesFromSchedule(orderParameterisations): void {
+    this.arguments = [];
+    this.forkListVariables = [];
+    if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
+      this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
+        const val: any = v;
+        if (val.type !== 'List') {
+          if (!val.final) {
+            let list;
+            if (val.list) {
+              list = [];
+              val.list.forEach((item) => {
+                let obj = {name: item}
+                this.coreService.removeSlashToString(obj, 'name');
+                list.push(obj);
+              });
+            }
+            for (let x in orderParameterisations.variables) {
+              if (k == x) {
+                this.arguments.push({
+                  name: k,
+                  type: val.type,
+                  isRequired: true,
+                  facet: val.facet,
+                  message: val.message,
+                  value: orderParameterisations.variables[x],
+                  list: list
+                });
+                break;
+              }
+            }
+          }
+        } else {
+          const actualList = [];
+          if (val.listParameters) {
+            if (!isArray(val.listParameters)) {
+              val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                const val1: any = v1;
+                return {name: k1, value: val1};
+              });
+            }
+            val.listParameters.forEach((item) => {
+              for (let x in orderParameterisations.variables) {
+                if (k === x) {
+                  if (isArray(orderParameterisations.variables[x])) {
+                    orderParameterisations.variables[x].forEach((key) => {
+                      if (key[item.name]) {
+                        actualList.push({name: item.name, type: item.value.type, value: key[item.name]});
+                      }
+                    })
+                    break;
+                  }
+                }
+              }
+            });
+            if(actualList.length === 0){
+              val.listParameters.forEach((item) => {
+                actualList.push({name: item.name, type: item.value.type});
+              });
+            }
+            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
+          }
+        }
+        return {name: k, value: val};
+      });
+      this.variableList = this.variableList.filter((item) => {
+        if (item.value.type === 'List') {
+          return false;
+        }
+        return !item.value.final;
+      });
+    }
+    this.updateSelectItems();
+
   }
 
   assignParameterizationFromSchedules(): void {
-    this.coreService.post('workflow/order_templates', {
-      controllerId: this.schedulerId,
-      workflowPath: this.workflow.path
-    }).subscribe({
-      next: (res) => {
-        this.schedules = res.schedules;
-      }
-    });
+    if (!this.schedules) {
+      this.coreService.post('workflow/order_templates', {
+        controllerId: this.schedulerId,
+        workflowPath: this.workflow.path
+      }).subscribe({
+        next: (res) => {
+          this.schedules = res.schedules;
+        }
+      });
+    }
   }
 }
 

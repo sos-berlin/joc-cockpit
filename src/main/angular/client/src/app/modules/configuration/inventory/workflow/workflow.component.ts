@@ -3045,7 +3045,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   updateFromJobTemplate(data): void {
-    console.log(data)
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
@@ -3058,30 +3057,19 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe((result: any) => {
       if (result === 'close') {
-        console.log('waiting for API')
-        // let request: any = {
-        //   jobTemplates: [{
-        //     path: this.data.jobTemplate.name,
-        //     workflows: Array.from(this.object.setOfCheckedPath)
-        //   }],
-        //   overwriteNotification: this.object.overwriteNotification,
-        //   overwriteAdmissionTime: this.object.overwriteAdmissionTime,
-        // };
-        // if (this.comments.comment) {
-        //   request.auditLog = {
-        //     comment: this.comments.comment,
-        //     timeSpent: this.comments.timeSpent,
-        //     ticketLink: this.comments.ticketLink
-        //   }
-        // }
-        // this.coreService.post('/job_templates/propagate', request).subscribe();
-
+        let request: any = {
+          jobTemplatePath: data.job.jobTemplate.name,
+         // overwriteNotification: this.object.overwriteNotification,
+        //  overwriteAdmissionTime: this.object.overwriteAdmissionTime,
+        };
+        this.coreService.post('job_template', request).subscribe((res) => {
+          console.log(res)
+        });
       }
     });
   }
 
   makeJobTemplate(data): void {
-    console.log(data)
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
