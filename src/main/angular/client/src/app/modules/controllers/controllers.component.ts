@@ -41,7 +41,6 @@ export class ExportComponent implements OnInit {
       this.required = true;
       this.display = true;
     }
-    console.log(this.controller);
     if (!this.controller.agents) {
       this.getAgents(this.controller);
     }

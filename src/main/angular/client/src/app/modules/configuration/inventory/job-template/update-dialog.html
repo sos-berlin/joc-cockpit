@@ -1,7 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>inventory.label.updateJobs</span>:
-    {{data.name}}
+    <span *ngIf="treeObj">
+      <span translate>inventory.label.updateWorkflowsFromJobTemplates</span>:
+      {{treeObj.path}}
+    </span>
+    <span *ngIf="data">
+      <span translate>inventory.label.updateJobs</span>:
+      {{data.name}}
+    </span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -9,11 +15,11 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a min-ht-300">
-    <div *ngIf="isloaded && listOfWorkflows.length">
+    <div *ngIf="(isloaded && listOfWorkflows.length) || treeObj">
       <div class="hide" [ngClass]="{'show': display}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="data">
         <div class="col-md-3">
           <label translate>inventory.export.label.filter</label>
         </div>
@@ -24,6 +30,14 @@
           <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="object.deploy" (ngModelChange)="filterList()">
             {{'inventory.export.label.deployed'| translate}}
           </label>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="treeObj && !treeObj.object && !treeObj.controller">
+        <div class="col-md-3">
+          <label translate>inventory.label.handleRecursively</label>
+        </div>
+        <div class="col-md-9">
+          <label nz-checkbox name="recursive" [(ngModel)]="object.recursive"></label>
         </div>
       </div>
       <div class="form-group row">
@@ -42,14 +56,14 @@
           <label nz-checkbox name="draft" [(ngModel)]="object.overwriteAdmissionTime"></label>
         </div>
       </div>
-      <div class="form-group row" *ngIf="nodes.length">
+      <div class="form-group row" *ngIf="nodes.length && data">
         <div class="col-md-12">
           <label nz-checkbox [(nzChecked)]="object.checked"
                  [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="selectAll($event)"></label>
           <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
         </div>
       </div>
-      <div class="row">
+      <div class="row" *ngIf="data">
         <div class="col-md-12" *ngFor="let item of nodes">
           <label nz-checkbox [nzChecked]="object.setOfCheckedPath.has(item.path)"
                  (nzCheckedChange)="onItemChecked(item, $event)"></label>
@@ -69,16 +83,16 @@
         </div>
       </div>
     </div>
-    <div class="m-t-md" *ngIf="nodes.length===0 && isloaded">
+    <div class="m-t-md" *ngIf="nodes.length===0 && isloaded && data">
       <app-empty-data></app-empty-data>
     </div>
-    <div class="text-center m-t-md" *ngIf="!isloaded">
+    <div class="text-center m-t-md" *ngIf="!isloaded && data">
       <nz-spin nzSimple></nz-spin>
     </div>
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-primary btn-sm"
-            [disabled]="submitted || this.object.setOfCheckedPath.size == 0">
+            [disabled]="submitted || (object.setOfCheckedPath.size == 0 && data)">
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
       <span translate>common.button.submit</span>
     </button>

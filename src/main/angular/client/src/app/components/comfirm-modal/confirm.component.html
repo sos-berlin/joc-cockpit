@@ -35,7 +35,8 @@
       <span *ngIf="!countMessage && message" class="text">
         {{(message === 'deleteGitCredentials' ? 'profile.gitManagement.message.' : 'common.message.') + message | translate}}
       </span>
-      <span *ngIf="countMessage && count > 0" [translateParams]="{count: count}" class="text" translate>{{'common.message.' + countMessage}}</span>
+      <span *ngIf="countMessage && count > 0" [translateParams]="{count: count}" class="text"
+            translate>{{'common.message.' + countMessage}}</span>
       <span *ngIf="countMessage && count === 0" class="text">
         <app-empty-data [title]="'common.message.noObjectFoundToDelete'"></app-empty-data>
       </span>
@@ -83,7 +84,8 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" [ngClass]="{'btn-primary' : type !== 'Delete' && type !== 'Remove'}" class="btn btn-danger btn-sm" [disabled]="count == 0"
+  <button type="button" [ngClass]="{'btn-primary' : type !== 'Delete' && type !== 'Remove'}"
+          class="btn btn-danger btn-sm" [disabled]="count == 0"
           (click)="activeModal.close('close')">
     <span *ngIf="type === 'Delete'">{{'common.button.delete' | translate}}</span>
     <span *ngIf="type === 'Remove'">{{'common.button.remove' | translate}}</span>

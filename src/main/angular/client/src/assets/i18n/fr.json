@@ -232,7 +232,7 @@
     "tooltip.agentNameAliases": "Des Noms d'Alias peuvent être attribués à un Agent. L'Agent peut être affecté à une tâche ou à une Source d'Ordre de Fichier en utilisant le Nom d'Alias. Pour le Nom d'Alias, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
     "tooltip.url": "L'URL d'un Agent spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de l'Agent, par exemple http://localhost:4445.",
     "tooltip.hidden": "Les Agents peuvent être masqués pour éviter qu'ils ne soient visibles dans l'interface utilisateur du JOC Cockpit. Ceci s'applique à la vue TABLEAU DE BORD ainsi qu'à toutes les occurrences où des Agents sont associés.",
-    "tooltip.asStandaloneAgent": "Comme Agent Autonome.",
+    "tooltip.asStandaloneAgent": "Un Agent Autonome ou un Agent Directeur d'un Cluster peut agir comme un Observateur de Cluster. L'Agent spécifié sera créé en tant qu'Agent Autonome si cette case est cochée.",
     "tooltip.primaryDirectorId" : "L'ID Agent Directeur est un identifiant unique d'un Agent Directeur qui ne peut pas être modifié pendant la durée de vie de l'Agent. Pour l'ID Agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
     "cluster": {
       "tooltip.agentClusterName": "Le nom du Cluster d'Agents est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster d'Agents. Pour le Nom du Cluster d'Agents, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
@@ -1153,9 +1153,10 @@
     "label.exitCode": "Code Retour",
     "label.newDraft": "Nouveau Brouillon",
     "label.objectTypes": "Types d'Objets",
-    "label.updateJobs": "Update Jobs",
-    "label.overwriteNotification": "Overwrite Notification",
-    "label.overwriteAdmissionTime": "Overwrite Admission Time",
+    "label.updateJobs": "Mettre à jour les Jobs",
+    "label.overwriteNotification": "Mettre à jour la Notification",
+    "label.overwriteAdmissionTime": "Mettre à jour les Heures d'Admission",
+    "label.updateWorkflowsFromJobTemplates": "Update Workflows from Job Templates",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -1271,6 +1272,7 @@
     "message.workflowWithVariables": "Seul un Workflow unique avec des variables d'ordre est acceptés",
     "message.deleteCurrentDraftObject": "Vous êtes sur le point de remplacer le brouillon. Vous êtes sûr de vouloir continuer ?",
     "message.noObjectFoundToRelease": "Aucun objet publiable trouvé",
+    "message.updateFromJobTemplate": "Are you sure you want to update this from Job template?",
     "cronTab": {
       "label.convertCron": "Convertir crontab",
       "label.folder": "Dossier",
@@ -1407,12 +1409,12 @@
           "failOnOutputErr": "Si une tâche écrit une sortie sur le canal stderr, cela est considéré comme une erreur et l'ordre passe à l'état ECHEC.",
           "admissionTime": "Les Heures d'Admission règlent l'accès aux tâches en fonction des jours et des heures de la semaine. Un ordre attend devant un nœud de tâche jusqu'à ce que l'heure d'admission soit atteinte ou peut être configurée pour ignorer la tâche si les heures d'admission ne correspondent pas à la date de l'ordre.",
           "skipIfNoAdmissionForOrderDay": "La tâche est ignorée si des périodes d'admission ont été configurées qui ne correspondent pas à la date de l'ordre. Par exemple, si les périodes d'admission sont configurées pour le lundi et le mardi, mais que l'ordre est prévu pour le mercredi, la tâche sera ignorée. Le lundi et le mardi, l'ordre attendra avec le nœud de travail jusqu'à ce que l'heure d'admission soit atteinte.",
-          "mailTo": "Envoyer l'e-mail à",
-          "mailCC": "Envoyer une copie de l'e-mail à",
-          "mailBcc": "Envoyer une copie carbone invisible de l'e-mail à",
-          "mailOn": "E-mail en cas de",
-          "description": "Description",
-          "onWarning": "Code de Retour sur Avertissement"
+          "mailTo": "Envoyer un e-mail au destinataire indiqué. Il est possible de spécifier un certain nombre d'adresses e-mail séparées par une virgule.",
+          "mailCC": "Envoyer une copie de l'e-mail au destinataire indiqué. Il est possible de spécifier un certain nombre d'adresses e-mail séparées par une virgule.",
+          "mailBcc": "Envoyer la copie cachée d'un e-mail au destinataire indiqué. Il est possible de spécifier un certain nombre d'adresses e-mail séparées par une virgule.",
+          "mailOn": "Envoyer un e-mail en cas d'événements indiqués d'erreurs, d'avertissements ou de succès.",
+          "description": "La description s'affiche lorsque ce job est sélectionné dans la liste des Modèles des Tâches.",
+          "onWarning": "Il est possible de spécifier un certain nombre de Codes de Retour qui signalent une exécution réussie avec des avertissements. Une notification est créée dans le cas de tels Codes de Retour. Un certain nombre de Codes de Retour peuvent être spécifiés par une liste séparée par des virgules."
         },
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
@@ -1517,8 +1519,8 @@
         "clickHereToDeploy": "Cliquez ici pour déployer!"
       },
       "message": {
-        "updateSuccessfully": "Les {{workflowsCount}} workflows sont mis à jour avec succès.",
-        "selectWorkflowToOpenJobEditor": "Sélectionnez l'un des Workflow pour ouvrir l'éditeur de Tâche"
+        "updateSuccessfully": "Les {{workflowsCount}} Workflows sont mis à jour avec succès.",
+        "selectWorkflowToOpenJobEditor": "Sélectionnez l'un des Workflows pour ouvrir l'éditeur de Tâche"
       }
     },
     "updateObject": {
@@ -1536,7 +1538,7 @@
   },
   "license": {
     "firstWarning": "La licence JS7 expire le {{date}}. Pour le renouvellement de la licence contacter %Sales Team%",
-    "secondWarning": "La licence JS7 a expiré le {{date}}. Les instances de cluster de JOC Cockpit, Controller et Agents sont hors service."
+    "secondWarning": "La licence JS7 a expiré le {{date}}. Les instances de cluster de JOC Cockpit, Contrôleur et Agents sont hors service."
   },
   "log": {
     "--------COMMENT BOX BEGIN------------": "Client Logging and Log window",
@@ -1557,7 +1559,7 @@
     "label.modifyLogCriteria": "Modifier les critères de visualisation du journal",
     "button.openInNewTab": "Ouvrir dans un nouvel onglet",
     "button.copyToClipboard": "Copier dans le presse-papier",
-    "message.noLogsToViewEnableIt": "Aucun journal à afficher ! Activer la journalisation"
+    "message.noLogsToViewEnableIt": "Aucun journal à afficher. Activez la journalisation."
   },
   "login": {
     "label.account": "Compte",
@@ -1636,6 +1638,8 @@
     "label.startNode": "Position de Départ avant Instruction",
     "label.endNode": "Positions de Fin avant Instructions",
     "label.expectedNotices": "Conditions attendues",
+    "label.selectSchedule": "Select Schedule",
+    "label.selectOrder": "Select Order",
     "button.allOrders": "Tous les Ordres",
     "button.cancel": "Annuler",
     "button.startNow": "Démarrer Maintenant",
@@ -1643,7 +1647,7 @@
     "button.suspend": "Suspendre",
     "button.suspendAndKillTask": "Suspendre/Tuer les tâches",
     "button.resume": "Reprendre",
-    "button.resumeParametrized": "Reprise Paramétrée",
+    "button.resumeParametrized": "Reprise paramétrée",
     "button.confirm": "Confirmer",
     "button.leaveWorkflow": "Quitter le Workflow",
     "button.addVariable": "Ajouter une Variable",
@@ -1853,7 +1857,7 @@
       "label.gitServer": "Git Server",
       "label.userName": "Nom d'utilisateur",
       "label.emailAddress": "Adresse E-Mail",
-      "label.gitPassword": "Git Mot de passe",
+      "label.gitPassword": "Git Mot de Passe",
       "label.keyfilePath": "Chemin d'accès à la clé privée",
       "label.gitAccessToken": "Git Jeton d'accès",
       "label.authenticationType": "Type d'authentification",
@@ -2830,7 +2834,7 @@
         "year": "Année",
         "timeSelect": "Sélectionner l'heure",
         "dateSelect": "Sélectionner la date",
-        "weekSelect": "Choose a week",
+        "weekSelect": "Sélectionner la semaine",
         "monthSelect": "Choisissez un mois",
         "yearSelect": "Choisissez une année",
         "decadeSelect": "Choisissez une décennie",
@@ -2895,7 +2899,7 @@
         "year": "Année",
         "timeSelect": "Sélectionner l'heure",
         "dateSelect": "Sélectionner la date",
-        "weekSelect": "Choose a week",
+        "weekSelect": "Sélectionner la semaine",
         "monthSelect": "Choisissez un mois",
         "yearSelect": "Choisissez une année",
         "decadeSelect": "Choisissez une décennie",
