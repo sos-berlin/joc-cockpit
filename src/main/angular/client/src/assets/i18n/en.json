@@ -1272,7 +1272,7 @@
     "message.workflowWithVariables": "Only a single workflow with order variables is allowed",
     "message.deleteCurrentDraftObject": "Your are about to replace the draft. Are you sure you want to continue?",
     "message.noObjectFoundToRelease": "No releasable object found",
-    "message.updateFromJobTemplate": "Are you sure you want to update this from Job template?",
+    "message.updateFromJobTemplate": "Are you sure you want to update the job from the Job Template?",
     "cronTab": {
       "label.convertCron": "Convert crontab",
       "label.folder": "Folder",
@@ -1639,7 +1639,7 @@
     "label.endNode": "End Positions before Instructions",
     "label.expectedNotices": "Expected Notices",
     "label.selectSchedule": "Select Schedule",
-    "label.selectOrder": "Select Order",
+    "label.selectOrder": "Select Order Template",
     "button.allOrders": "All Orders",
     "button.cancel": "Cancel",
     "button.startNow": "Start Now",
