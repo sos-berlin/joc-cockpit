@@ -199,7 +199,7 @@
                     <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
                 </ng-template>
                 <div class="row" *ngIf="isDisplay">
-                  <div class="col-md-12 role">
+                  <div class="col-md-12 role" [ngClass]="{'disable-link' : (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name)}">
                     <div class="select-script-input bg-box" *ngIf="scriptObj.show">
                       <nz-tree-select
                         name="scriptName"

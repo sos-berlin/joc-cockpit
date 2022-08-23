@@ -3036,6 +3036,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.getAgents();
         } else if (res.newDraft) {
           this.newDraft(res.newDraft);
+        } else if (res.updateFromJobTemplate) {
+          this.updateFromJobTemplates(res.updateFromJobTemplate);
         }
       }
     });
@@ -4381,7 +4383,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   updateFromJobTemplates(workflow): void {
-    const modal = this.modal.create({
+    console.log(workflow);
+    this.modal.create({
       nzTitle: undefined,
       nzContent: UpdateJobTemplatesComponent,
       nzClassName: 'lg',
@@ -4392,11 +4395,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-
-      }
     });
   }
 
