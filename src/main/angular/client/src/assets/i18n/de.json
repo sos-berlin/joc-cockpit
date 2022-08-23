@@ -506,7 +506,7 @@
     "button.advancedSearch": "Erweiterter Filter",
     "button.compactView": "Kompakte Darstellung",
     "button.resetPanel": "Anzeige zurücksetzen",
-    "button.copyLinkToObject": "Verweis zum Objekt kopieren",
+    "button.copyLinkToObject": "Verweis auf Objekt kopieren",
     "button.dragAndDropFileToUpload": "Dateien zum Hochladen ziehen und ablegen",
     "button.chooseFileToUpload": "DATEIEN ZUM HOCHLADEN AUSWÄHLEN",
     "button.showConfiguration": "Konfiguration anzeigen",
@@ -1315,7 +1315,7 @@
         "workflowName": "Ein Verweis auf einen Arbeitsablauf muss hinzugefügt werden. Bei Eintreffen einer Datei im überwachten Verzeichnis wird automatisch ein Dateiauftrag für den Arbeitsablauf erzeugt.",
         "agent": "Ein Agent muss angegeben werden, der die Verzeichnisüberwachung auf dem Server durchführt, auf dem er installiert ist.",
         "directory": "Das Verzeichnis muss angegeben werden, das vom Agenten überwacht wird. Das Verzeichnis muss für den Server und für das Konto des Agenten zugreifbar sein.",
-        "pattern": "Ein regülärer Ausdruck beschreibt das Muster der Namen von Dateien, die überwacht werden. Zum Beispiel bedeutet .* alle Dateinamen, \\.*txt$ bedeutet alle Dateinamen mit der Endung .txt.",
+        "pattern": "Ein regülärer Ausdruck beschreibt das Muster der Pfade von Dateien, die überwacht werden. Zum Beispiel bedeutet .* alle Dateinamen, .*\\.*txt$ bedeutet alle Dateinamen mit der Endung .txt.",
         "timeZone": "Wenn eine Datei im überwachten Verzeichnis eintrifft wird vom Agenten ein Auftrag erzeugt, dessen Auftragskennung das Tagesdatum enthält. Hier wird die Zeitzone benannt, für die das Tagesdatum verwendet wird.",
         "delay": "Die Verzögerung stellt die Dauer dar, für die ein Agent wartet bis eine eintreffende Datei stabil ist, d.h.  deren Größe und Zeitstempel sich nicht ändern. Wird eine Änderung bemerkt, dann wird erneut für die Dauer der Verzögerung gewartet und die Prüfung wiederholt."
       },
@@ -1399,8 +1399,8 @@
           "jobClass": "Die Job-Klasse legt fest, ob ein Job in der Shell des Betriebssystems (Windows, Unix, MacOs etc.) oder als JITL Java Job oder als Skript Job in einer der von Java unterstützten Skript-Sprachen ausgeführt wird.",
           "timeout": "Nach Zeitablauf wird ein Job unter Windows abgebrochen. Unter Unix wird der Job mit SIGTERM versucht zu beenden und ggf. nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen.",
           "graceTimeout": "Die Toleranzfrist gilt für Jobs unter Unix, die zunächst mit SIGTERM versucht werden zu beenden und nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen werden.",
-          "warnIfShorter": "Bei kürzerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet.",
-          "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet.",
+          "warnIfShorter": "Bei kürzerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann auch das Format hh:mm:ss verwendet werden, z. B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus den erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
+          "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann auch das Format hh:mm:ss verwendet werden, z. B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus den erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
           "agent": "Dem Job ist ein Agent zugewiesen, der das Job Skript bzw. die Java Klasse ausführt.",
           "fileWatcher": "Eine Dateiauftragsquelle überwacht ein Verzeichnis auf eintreffende Dateien und erzeugt für jede Datei einen Auftrag für einen Arbeitsablauf.",
           "className": "Der Name einer Java Klasse, die einen Job implementiert. JS7 enthält eine Reihe von JITL Java Klassen, z.B. für Datenbankzugriffe, E-Mail Versand etc.",
@@ -1414,7 +1414,7 @@
           "mailBcc": "Blindkopie der E-Mail an den angegeben Empfänger senden. Mehrere E-Mail Adressen können durch Komma getrennt angegeben werden.",
           "mailOn": "E-Mail bei Ereignisse wie Fehler, Warnung oder Erfolg versenden.",
           "description": "Die Beschreibung wird angezeigt, wenn dieser Job aus der Liste der Job-Vorlagen ausgewählt wird.",
-          "onWarning": "Es kann eine Reihe von Rückgabewerten angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren. Im Fall solcher Rückgabewerte wird eine Benachrichtigung erzeugt. Eine Reihe von Rückgabewerten kann durch eine kommaseparierte Liste angegeben werden."
+          "onWarning": "Es können eine Reihe von Rückgabewerten angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren. Im Fall solcher Rückgabewerte wird eine Benachrichtigung erzeugt. Eine Reihe von Rückgabewerten kann durch eine kommaseparierte Liste angegeben werden."
         },
         "addOrder": {
           "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
@@ -2541,7 +2541,7 @@
     "label.listEditor": "Editor für Listen",
     "label.orderFilter": "Auftragsfilter",
     "label.outstandingAgents": "Ausstehend bei Agenten",
-    "label.jobTemplateReference": "Verweis zu Job-Vorlage",
+    "label.jobTemplateReference": "Verweis auf Job-Vorlage",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
@@ -2648,7 +2648,7 @@
     "tooltip.listEntryMode": "Eingabemodus für Listen",
     "tooltip.facetEntryMode": "Eingabemodus für Prüfungen",
     "tooltip.editorEntryMode": "Direkter Eingabemodus",
-    "tooltip.removeJobTemplateReference": "Verweis zu Job-Vorlage entfernen",
+    "tooltip.removeJobTemplateReference": "Verweis auf Job-Vorlage entfernen",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",

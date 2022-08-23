@@ -1399,8 +1399,8 @@
           "jobClass": "The Job Class determines if a job is executed with the OS Shell (Windows, Unix, MacOS) etc.) or is executed as a JVM JITL Java job or is executed as a JVM Script job for one of the scripting languages supported by the JVM.",
           "timeout": "When exceeding the Timeout then with Windows a job is aborted. With Unix the job is sent a SIGTERM signal and after the Grace Timeout a SIGKILL signal will abort the job.",
           "graceTimeout": "A Grace Timeout is applied to jobs with Unix that receive a SIGTERM signal when exceeding their Timeout. If the job does not terminate then after the Grace Timeout a SIGKILL signal will abort the job.",
-          "warnIfShorter": "If the execution period of a job is shorter than specified then a notification, e.g. by e-mail, is sent.",
-          "warnIfLonger": "If the execution period of a job is longer than specified then a notification, e.g. by e-mail, is sent.",
+          "warnIfShorter": "If the execution period of a job is shorter than specified then a notification, e.g. by e-mail, is sent. The number of seconds can be specified as in 1s. Alternatively the hh:mm:ss format can be used, for example 01:30:00 for one and a half hours. A percentage can be specified that is calculated from successful past job executions, for example 30%.",
+          "warnIfLonger": "If the execution period of a job is longer than specified then a notification, e.g. by e-mail, is sent. The number of seconds can be specified as in 1s. Alternatively the hh:mm:ss format can be used, for example 01:30:00 for one and a half hours. A percentage can be specified that is calculated from successful past job executions, for example 30%.",
           "agent": "The job is assigned an Agent that will execute the job script/class. Select from the list of available Agents.",
           "fileWatcher": "File Order Sources are used to watch a Directory for incoming files and to create an order with the respective workflow for each file.",
           "className": "The name of a Java class implementing a job. JS7 ships with a number of predefined JITL Java classes, e.g. for database access, to send e-mail etc.",
@@ -1414,7 +1414,7 @@
           "mailBcc": "Send e-mail blind copy to the indicated recipient. A number of e-mail addresses can be specified separated by a comma.",
           "mailOn": "Send e-mail in case of the indicated events of errors, warnings or success.",
           "description": "The Description is displayed when this job is selected from the list of Job Templates.",
-          "onWarning": "A number of Return Codes can be specified that are signal successful execution with warnings. A notification is created in case of such return codes. A number of return codes can be specified by a comma separated list."
+          "onWarning": "A number of Return Codes can be specified that signal successful execution with warnings. A notification is created in case of such return codes. A number of return codes can be specified by a comma separated list."
         },
         "addOrder": {
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
