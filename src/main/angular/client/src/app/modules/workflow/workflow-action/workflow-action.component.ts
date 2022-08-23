@@ -399,10 +399,13 @@ export class AddOrderModalComponent implements OnInit {
   }
 
   selectSchedule(name): void {
+    this.object.orderName = '';
     for (let i in this.schedules) {
       if (this.schedules[i].name == name) {
         this.selectedSchedule = this.schedules[i];
-        this.object.orderName = '';
+        if (this.selectedSchedule.orderParameterisations && this.selectedSchedule.orderParameterisations.length == 1) {
+          this.selectOrder(this.selectedSchedule.orderParameterisations[0].name || '-');
+        }
         break;
       }
     }
@@ -411,7 +414,8 @@ export class AddOrderModalComponent implements OnInit {
   selectOrder(name): void {
     this.order.reload = false;
     for (let i in this.selectedSchedule.orderParameterisations) {
-      if (this.selectedSchedule.orderParameterisations[i].orderName == name) {
+      if (this.selectedSchedule.orderParameterisations[i].orderName == name ||
+        (this.selectedSchedule.orderParameterisations[i].orderName == '' && name == '-') || this.selectedSchedule.orderParameterisations.length == 1) {
         this.updateVariablesFromSchedule(this.selectedSchedule.orderParameterisations[i]);
         if (this.selectedSchedule.orderParameterisations[i].positions) {
           if (this.selectedSchedule.orderParameterisations[i].positions.startPosition) {

@@ -32,6 +32,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
   @Input() preferences: any = {};
   @Input() data: any;
   @Input() treeObj: any;
+  @Input() job: any;
   submitted = false;
   isExpandAll = false;
   listOfWorkflows = [];
@@ -278,6 +279,10 @@ export class UpdateJobTemplatesComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if(this.job){
+      this.activeModal.close(this.object);
+      return;
+    }
     this.submitted = true;
     let request: any = {
       overwriteNotification: this.object.overwriteNotification,
@@ -290,7 +295,11 @@ export class UpdateJobTemplatesComponent implements OnInit {
       }];
     } else {
       request.folder = this.treeObj.path;
-      request.recursive = this.object.recursive;
+      if(this.treeObj.type){
+        request.workflowPaths = [this.treeObj.path + (this.treeObj.path === '/' ? '' : '/') + this.treeObj.name]
+      } else {
+        request.recursive = this.object.recursive;
+      }
     }
     if (this.comments.comment) {
       request.auditLog = {

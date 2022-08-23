@@ -301,14 +301,13 @@
         </nz-select>
       </div>
     </div>
-    <div class="form-group row" *ngIf="selectedSchedule && selectedSchedule.orderParameterisations && selectedSchedule.orderParameterisations.length > 0">
+    <div class="form-group row" *ngIf="selectedSchedule && selectedSchedule.orderParameterisations && selectedSchedule.orderParameterisations.length > 1">
       <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
       <div class="col-sm-6">
         <nz-select nzShowSearch name="order" nzAllowClear [(ngModel)]="object.orderName" (ngModelChange)="selectOrder($event)">
-          <nz-option *ngFor="let option of selectedSchedule.orderParameterisations" [nzValue]="option.orderName" [nzLabel]="option.orderName"></nz-option>
+          <nz-option *ngFor="let option of selectedSchedule.orderParameterisations" [nzValue]="option.orderName || '-'" [nzLabel]="option.orderName || '-'"></nz-option>
         </nz-select>
       </div>
-
     </div>
   </div>
   <div class="modal-footer text-left">

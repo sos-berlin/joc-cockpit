@@ -337,7 +337,7 @@ export class JobWizardComponent implements OnInit {
             break;
           }
         }
-        if (this.job.params[i].defaultValue && !this.job.params[i].newValue) {
+        if ((this.job.params[i].defaultValue || this.job.params[i].defaultValue === false || this.job.params[i].defaultValue === 0) && !this.job.params[i].newValue ) {
           this.job.params[i].newValue = this.job.params[i].defaultValue;
         }
         if (this.job.params[i].required) {
