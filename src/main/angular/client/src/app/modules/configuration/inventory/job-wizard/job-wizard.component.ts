@@ -261,7 +261,9 @@ export class JobWizardComponent implements OnInit {
         if (obj.executable.TYPE === 'InternalExecutable') {
           obj.executable.arguments.push({name: item.name, value: item.newValue});
         } else if (this.node) {
-          this.node.defaultArguments.push({name: item.name, value: item.newValue});
+          if(!this.checkAlreadyExistArgu(item)) {
+            this.node.defaultArguments.push({name: item.name, value: item.newValue});
+          }
         }
       }
     });
@@ -271,11 +273,30 @@ export class JobWizardComponent implements OnInit {
           if (obj.executable.TYPE === 'InternalExecutable') {
             obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
           } else if (this.node) {
-            this.node.defaultArguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
+            if(!this.checkAlreadyExistArgu(this.job.paramList[i])) {
+              this.node.defaultArguments.push({
+                name: this.job.paramList[i].name,
+                value: this.job.paramList[i].newValue
+              });
+            }
           }
         }
       }
     }
+  }
+
+  private checkAlreadyExistArgu(item): boolean {
+    let flag = false;
+    for (let i in this.node.defaultArguments) {
+      if (this.node.defaultArguments[i].name === item.name) {
+        if (item.newValue || item.newValue === false || item.newValue === 0) {
+          this.node.defaultArguments[i].newValue = item.newValue;
+        }
+        flag = true;
+        break;
+      }
+    }
+    return flag;
   }
 
   cancel(): void {

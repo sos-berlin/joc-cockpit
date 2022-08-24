@@ -18,89 +18,116 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a min-ht-128">
-    <div *ngIf="(isloaded && listOfWorkflows.length) || treeObj || job">
-      <div class="hide" [ngClass]="{'show': display && !job}">
-        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    <div *ngIf="!isUpdated">
+      <div *ngIf="(isloaded && listOfWorkflows.length) || treeObj || job">
+        <div class="hide" [ngClass]="{'show': display && !job}">
+          <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+        </div>
+        <div class="form-group row" *ngIf="data">
+          <div class="col-md-3">
+            <label translate>inventory.export.label.filter</label>
+          </div>
+          <div class="col-md-9">
+            <label nz-checkbox name="draft" [(ngModel)]="object.draft" (ngModelChange)="filterList()">
+              {{'inventory.export.label.draft'| translate}}
+            </label>
+            <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="object.deploy" (ngModelChange)="filterList()">
+              {{'inventory.export.label.deployed'| translate}}
+            </label>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="treeObj && !treeObj.object && !treeObj.controller && !treeObj.type">
+          <div class="col-md-3">
+            <label translate>inventory.label.handleRecursively</label>
+          </div>
+          <div class="col-md-9">
+            <label nz-checkbox name="recursive" [(ngModel)]="object.recursive"></label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.label.overwriteNotification</label>
+          </div>
+          <div class="col-md-9">
+            <label nz-checkbox name="overwriteNotification" [(ngModel)]="object.overwriteNotification"></label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.label.overwriteAdmissionTime</label>
+          </div>
+          <div class="col-md-9">
+            <label nz-checkbox name="overwriteAdmissionTime" [(ngModel)]="object.overwriteAdmissionTime"></label>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="nodes.length && data">
+          <div class="col-md-12">
+            <label nz-checkbox [(nzChecked)]="object.checked"
+                   [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="selectAll($event)"></label>
+            <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
+          </div>
+        </div>
+        <div class="row" *ngIf="data">
+          <div class="col-md-12 m-b-sm" *ngFor="let item of nodes">
+            <label nz-checkbox [nzChecked]="object.setOfCheckedPath.has(item.path)"
+                   (nzCheckedChange)="onItemChecked(item, $event)"></label>
+            <i nz-icon nzType="apartment" class="icon-color p-l-sm p-r-sm"
+               nzTheme="outline"></i>
+            <span class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"
+                  [ngClass]="{'fa-circle dark-blue' : item.deployed}"></span>
+            <span *ngIf="item.state" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
+              <i *ngIf="item.state._text === 'IN_SYNC'"
+                 class="fa fa-refresh font11"></i>
+              <i *ngIf="item.state._text === 'UNKNOWN'"
+                 class="fa fa-exclamation-triangle font11"></i>
+              <i *ngIf="item.state._text === 'NOT_IN_SYNC'"
+                 class="icon3-reload-error font11 pos-rel t-1"></i>
+            </span>
+            <span>{{item.path}}</span>
+          </div>
+        </div>
       </div>
-      <div class="form-group row" *ngIf="data">
-        <div class="col-md-3">
-          <label translate>inventory.export.label.filter</label>
-        </div>
-        <div class="col-md-9">
-          <label nz-checkbox name="draft" [(ngModel)]="object.draft" (ngModelChange)="filterList()">
-            {{'inventory.export.label.draft'| translate}}
-          </label>
-          <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="object.deploy" (ngModelChange)="filterList()">
-            {{'inventory.export.label.deployed'| translate}}
-          </label>
-        </div>
+      <div class="m-t-md" *ngIf="nodes.length===0 && isloaded && data">
+        <app-empty-data></app-empty-data>
       </div>
-      <div class="form-group row" *ngIf="treeObj && !treeObj.object && !treeObj.controller && !treeObj.type">
-        <div class="col-md-3">
-          <label translate>inventory.label.handleRecursively</label>
-        </div>
-        <div class="col-md-9">
-          <label nz-checkbox name="recursive" [(ngModel)]="object.recursive"></label>
-        </div>
+      <div class="text-center m-t-md" *ngIf="!isloaded && data">
+        <nz-spin nzSimple></nz-spin>
       </div>
-      <div class="form-group row">
-        <div class="col-md-3">
-          <label translate>inventory.label.overwriteNotification</label>
-        </div>
-        <div class="col-md-9">
-          <label nz-checkbox name="draft" [(ngModel)]="object.overwriteNotification"></label>
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-md-3">
-          <label translate>inventory.label.overwriteAdmissionTime</label>
-        </div>
-        <div class="col-md-9">
-          <label nz-checkbox name="draft" [(ngModel)]="object.overwriteAdmissionTime"></label>
-        </div>
-      </div>
-      <div class="form-group row" *ngIf="nodes.length && data">
-        <div class="col-md-12">
-          <label nz-checkbox [(nzChecked)]="object.checked"
-                 [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="selectAll($event)"></label>
-          <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
-        </div>
-      </div>
-      <div class="row" *ngIf="data">
-        <div class="col-md-12" *ngFor="let item of nodes">
-          <label nz-checkbox [nzChecked]="object.setOfCheckedPath.has(item.path)"
-                 (nzCheckedChange)="onItemChecked(item, $event)"></label>
+    </div>
+    <div *ngIf="isUpdated">
+      <ul>
+        <li><span class="_600 text" translate>inventory.label.workflows</span>:</li>
+        <li *ngFor="let workflow of updatedList" class="p-b-sm p-l-sm">
           <i nz-icon nzType="apartment" class="icon-color p-l-sm p-r-sm"
              nzTheme="outline"></i>
-          <span class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"
-                [ngClass]="{'fa-circle dark-blue' : item.deployed}"></span>
-          <span *ngIf="item.state" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
-            <i *ngIf="item.state._text === 'IN_SYNC'"
-               class="fa fa-refresh font11"></i>
-            <i *ngIf="item.state._text === 'UNKNOWN'"
-               class="fa fa-exclamation-triangle font11"></i>
-            <i *ngIf="item.state._text === 'NOT_IN_SYNC'"
-               class="icon3-reload-error font11 pos-rel t-1"></i>
-          </span>
-          <span>{{item.path}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="m-t-md" *ngIf="nodes.length===0 && isloaded && data">
-      <app-empty-data></app-empty-data>
-    </div>
-    <div class="text-center m-t-md" *ngIf="!isloaded && data">
-      <nz-spin nzSimple></nz-spin>
+          <span>{{workflow.path}}</span>
+          <span class="label m-l" [ngClass]="coreService.getColor(workflow.state.severity,'bg')"
+                [innerHtml]="workflow.state._text | translate"></span>
+          <ul *ngIf="workflow.jobs" class="m-b-sm p-t-xxs">
+            <li><span class="_600 text" translate>dashboard.label.jobs</span>:</li>
+            <li class="m-l-sm" *ngFor="let job of workflow.jobs">
+              <i class="icon-jobs-icon icon-color tree-icon"></i>
+              {{job.name}}
+              <span *ngIf="job.value" class="label m-l" [ngClass]="coreService.getColor(job.value.state.severity,'bg')"
+                    [innerHtml]="job.value.state._text | translate"></span>
+              <i *ngIf="job.value.state.message" class="fa fa-info-circle p-l-sm" [nz-tooltip]="job.value.state.message"></i>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm"
+    <button type="submit" class="btn btn-primary btn-sm" *ngIf="!isUpdated"
             [disabled]="submitted || (object.setOfCheckedPath.size == 0 && data)">
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
       <span translate>common.button.submit</span>
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button type="button" *ngIf="!isUpdated" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
       common.button.cancel
+    </button>
+    <button type="button" *ngIf="isUpdated" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+      common.button.close
     </button>
   </div>
 </form>
