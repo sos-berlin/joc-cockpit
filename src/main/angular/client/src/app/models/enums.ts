@@ -7,6 +7,7 @@ export enum InventorySearch {
   INCLUDESCRIPT = 'INCLUDESCRIPT',
   SCHEDULE = 'SCHEDULE',
   CALENDAR = 'CALENDAR',
+  JOBTEMPLATE = 'JOBTEMPLATE',
 }
 
 export enum InventoryForHistory {

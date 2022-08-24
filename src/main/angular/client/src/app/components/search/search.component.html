@@ -61,7 +61,7 @@
           </nz-select>
         </div>
       </div>
-      <nz-collapse [nzBordered]="false">
+      <nz-collapse [nzBordered]="false" *ngIf="searchObj.returnType !== 'JOBTEMPLATE'">
         <nz-collapse-panel
           [nzHeader]="'inventory.search.label.advanced' | translate"
           [nzActive]="panel.active"
@@ -134,14 +134,6 @@
                          [(ngModel)]="searchObj.advanced.includeScripts">
                 </div>
               </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.CALENDAR">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.calendar' | translate"
-                       translate>inventory.search.label.calendar</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="calendar"
-                         [(ngModel)]="searchObj.advanced.calendar">
-                </div>
-              </div>
               <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.SCHEDULE">
                 <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.schedule' | translate"
                        translate>inventory.search.label.schedule</label>
@@ -150,6 +142,22 @@
                     <input type="text" autocomplete="off" class="form-control"
                            name="schedule" [(ngModel)]="searchObj.advanced.schedule">
                   </label>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.CALENDAR">
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.calendar' | translate"
+                       translate>inventory.search.label.calendar</label>
+                <div class="col-md-8 col-lg-9">
+                  <input autocomplete="off" type="text" class="form-control" name="calendar"
+                         [(ngModel)]="searchObj.advanced.calendar">
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOBTEMPLATE">
+                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobTemplate' | translate"
+                       translate>inventory.search.label.jobTemplate</label>
+                <div class="col-md-8 col-lg-9">
+                  <input autocomplete="off" type="text" class="form-control" name="jobTemplate"
+                         [(ngModel)]="searchObj.advanced.jobTemplate">
                 </div>
               </div>
               <div class="form-group row">

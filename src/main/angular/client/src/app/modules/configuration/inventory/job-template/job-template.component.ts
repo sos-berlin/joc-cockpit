@@ -284,10 +284,6 @@ export class UpdateJobTemplatesComponent implements OnInit {
 
   onSubmit(): void {
     this.isUpdated = false;
-    if (this.job) {
-      this.activeModal.close(this.object);
-      return;
-    }
     this.submitted = true;
     let request: any = {
       overwriteNotification: this.object.overwriteNotification,
@@ -298,13 +294,16 @@ export class UpdateJobTemplatesComponent implements OnInit {
         path: this.data.path,
         workflows: Array.from(this.object.setOfCheckedPath)
       }];
-    } else {
+    } else if (this.treeObj) {
       request.folder = this.treeObj.path;
       if (this.treeObj.type) {
         request.workflowPaths = [this.treeObj.path + (this.treeObj.path === '/' ? '' : '/') + this.treeObj.name]
       } else {
         request.recursive = this.object.recursive;
       }
+    } else if (this.job) {
+      request.workflowPath = this.job.workflowPath;
+      request.jobName = this.job.jobName;
     }
     if (this.comments.comment) {
       request.auditLog = {
@@ -313,7 +312,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
         ticketLink: this.comments.ticketLink
       }
     }
-    const URL = this.data ? 'job_templates/propagate' : 'inventory/workflows/update';
+    const URL = this.data ? 'job_templates/propagate' : this.job ? 'inventory/job/update' : 'inventory/workflows/update';
     this.coreService.post(URL, request).subscribe({
       next: (res) => {
         if (res.workflows && res.workflows.length > 0) {

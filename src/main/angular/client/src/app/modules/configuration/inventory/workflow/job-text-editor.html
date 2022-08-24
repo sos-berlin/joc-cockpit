@@ -83,7 +83,7 @@
                  translate>workflow.label.title</label>
           <div class="col-md-8 col-lg-9">
             <label class="w-full">
-              <input type="text" autocomplete="off" [maxLength]="255" class="form-control" [(ngModel)]="selectedNode.job.title" (blur)="saveToHistory();"
+              <input [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" type="text" autocomplete="off" [maxLength]="255" class="form-control" [(ngModel)]="selectedNode.job.title" (blur)="saveToHistory();"
                      placeholder="{{'common.placeholder.title' | translate}}" name="title">
             </label>
           </div>

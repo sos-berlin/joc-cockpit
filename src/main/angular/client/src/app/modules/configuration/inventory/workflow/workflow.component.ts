@@ -590,6 +590,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       }
       this.checkDays();
     }
+    this.checkFrequency();
   }
 
   ngOnDestroy(): void {
@@ -608,6 +609,10 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     if (!this.frequency.isUltimos) {
       this.frequency.isUltimos = 'months';
     }
+    this.checkFrequency();
+  }
+
+  private checkFrequency(): void{
     if (this.frequency.tab == 'specificWeekDays') {
       this.onFrequencyChange();
     } else if (this.frequency.tab == 'monthDays') {
@@ -3077,48 +3082,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzClassName: 'lg',
       nzComponentParams: {
         preferences: this.preferences,
-        job: data.job
+        job: {
+          jobName: data.cell.getAttribute('jobName'),
+          workflowPath: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)
+        }
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe((result: any) => {
       if (result) {
-        const jobName = data.cell.getAttribute('jobName');
-        if (this.selectedNode && this.selectedNode.job.jobName && this.selectedNode.job.jobName == jobName) {
-          this.selectedNode = null;
-        }
-        this.coreService.post('job_template', {
-          jobTemplatePath: data.job.jobTemplate.name,
-        }).subscribe((res) => {
-          for (let i in this.jobs) {
-            if (this.jobs[i].name === jobName) {
-              this.jobs[i].value.title = res.jobTemplate.title;
-              this.jobs[i].value.executable = res.jobTemplate.executable;
-              this.jobs[i].value.documentationName = res.jobTemplate.documentationName;
-              this.jobs[i].value.jobResourceNames = res.jobTemplate.jobResourceNames;
-              this.jobs[i].value.criticality = res.jobTemplate.criticality;
-              this.jobs[i].value.timeout = res.jobTemplate.timeout;
-              this.jobs[i].value.graceTimeout = res.jobTemplate.graceTimeout;
-              this.jobs[i].value.failOnErrWritten = res.jobTemplate.failOnErrWritten;
-              this.jobs[i].value.warnOnErrWritten = res.jobTemplate.warnOnErrWritten;
-              this.jobs[i].value.warnIfShorter = res.jobTemplate.warnIfShorter;
-              this.jobs[i].value.warnIfLonger = res.jobTemplate.warnIfLonger;
-              this.jobs[i].value.parallelism = res.jobTemplate.parallelism;
-              this.jobs[i].value.returnCodeMeaning = res.jobTemplate.returnCodeMeaning;
-              this.jobs[i].value.skipIfNoAdmissionForOrderDay = res.jobTemplate.skipIfNoAdmissionForOrderDay;
-              if (result.overwriteNotification) {
-                this.jobs[i].value.notification = res.jobTemplate.notification;
-              }
-              if (result.overwriteAdmissionTime) {
-                this.jobs[i].value.admissionTimeScheme = res.jobTemplate.admissionTimeScheme;
-              }
-              this.jobs[i].value.jobTemplate.hash = res.jobTemplate.hash;
-              this.validateJSON();
-              break;
-            }
-          }
-        });
+
       }
     });
   }
