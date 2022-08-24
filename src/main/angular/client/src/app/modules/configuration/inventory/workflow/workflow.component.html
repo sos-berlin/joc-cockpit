@@ -647,7 +647,7 @@
           </div>
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'Cycle'">
-          <app-cycle-instruction [selectedNode]="selectedNode"></app-cycle-instruction>
+          <app-cycle-instruction [isTooltipVisible]="!preferences.showTooltipInfo" [selectedNode]="selectedNode"></app-cycle-instruction>
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'AddOrder'">
           <div class="form-group row">

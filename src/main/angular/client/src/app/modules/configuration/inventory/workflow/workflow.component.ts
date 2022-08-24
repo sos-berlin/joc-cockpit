@@ -315,6 +315,7 @@ export class TimeEditorComponent implements OnInit {
 })
 export class CycleInstructionComponent implements OnChanges {
   @Input() selectedNode: any;
+  @Input() isTooltipVisible: boolean;
   schemeList = [];
   days = [];
 
@@ -537,6 +538,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   @Input() job: any;
   @Input() data: any;
   @Input() repeatObject: any;
+  @Input() isTooltipVisible: boolean;
   frequency: any = {
     days: [],
     tab: 'weekDays',
@@ -1243,6 +1245,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedNode.job.graceTimeout = result.graceTimeout;
     this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
     this.selectedNode.job.failOnErrWritten = result.failOnErrWritten;
+    this.selectedNode.job.warnOnErrWritten = result.warnOnErrWritten;
     this.selectedNode.job.skipIfNoAdmissionForOrderDay = result.skipIfNoAdmissionForOrderDay;
     this.selectedNode.job.parallelism = result.parallelism;
     this.selectedNode.job.jobResourceNames = result.jobResourceNames || [];
@@ -1762,7 +1765,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getJobTemplate(): void {
-    if (this.selectedNode.job.jobTemplate) {
+    if (this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.hash) {
       this.coreService.post('job_template/state', {
         jobTemplate: this.selectedNode.job.jobTemplate
       }).subscribe({
@@ -2629,6 +2632,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           timeout: v.timeout,
           graceTimeout: v.graceTimeout,
           failOnErrWritten: v.failOnErrWritten,
+          warnOnErrWritten: v.warnOnErrWritten,
           warnIfShorter: v.warnIfShorter,
           warnIfLonger: v.warnIfLonger,
           notification: v.notification,
@@ -3097,6 +3101,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.jobs[i].value.timeout = res.jobTemplate.timeout;
               this.jobs[i].value.graceTimeout = res.jobTemplate.graceTimeout;
               this.jobs[i].value.failOnErrWritten = res.jobTemplate.failOnErrWritten;
+              this.jobs[i].value.warnOnErrWritten = res.jobTemplate.warnOnErrWritten;
               this.jobs[i].value.warnIfShorter = res.jobTemplate.warnIfShorter;
               this.jobs[i].value.warnIfLonger = res.jobTemplate.warnIfLonger;
               this.jobs[i].value.parallelism = res.jobTemplate.parallelism;

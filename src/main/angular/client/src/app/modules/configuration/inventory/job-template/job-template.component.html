@@ -714,9 +714,21 @@
                            [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
                            [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.failOnOutputErr</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                      <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.warnOnErrWritten"
                              [(ngModel)]="job.configuration.failOnErrWritten"
                              name="failOnErrWritten" (ngModelChange)="saveJSON()"></label>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 block-ellipsis-job"
+                           title="{{'workflow.label.warnOnOutputErr' | translate}}"
+                           [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
+                           [nzTooltipMouseEnterDelay]="0.5"
+                           translate>workflow.label.warnOnOutputErr</label>
+                    <div class="col-lg-9 col-xl-8 col-xxl-6">
+                      <label [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.failOnErrWritten" nz-checkbox
+                             [(ngModel)]="job.configuration.warnOnErrWritten"
+                             name="warnOnErrWritten" (ngModelChange)="saveJSON()"></label>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -821,7 +833,7 @@
         <div class="text-center m-b text"><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm"
                                                                                    translate>workflow.label.admissionTime</span>
         </div>
-        <app-admission-time [job]="job.configuration" [data]="selectedNode"
+        <app-admission-time [job]="job.configuration" [data]="selectedNode" [isTooltipVisible]="!preferences.showTooltipInfo"
                             (close)="closeRuntime()"></app-admission-time>
       </div>
     </div>

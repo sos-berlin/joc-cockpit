@@ -94,7 +94,8 @@ export class JobWizardComponent implements OnInit {
     }
     if (!data.jobTemplates) {
       e.origin.loading = true;
-      const obj: any = {folders : [{
+      const obj: any = {
+        folders: [{
           folder: e.key,
           recursive: false
         }],
@@ -248,6 +249,7 @@ export class JobWizardComponent implements OnInit {
       this.updateParam(obj);
     }
     obj.title = this.job.title;
+
     if (this.node) {
       this.activeModal.close(obj);
     } else {
@@ -262,7 +264,7 @@ export class JobWizardComponent implements OnInit {
           obj.executable.arguments.push({name: item.name, value: item.newValue});
         } else if (this.node) {
           if(!this.checkAlreadyExistArgu(item)) {
-            this.node.defaultArguments.push({name: item.name, value: item.newValue});
+            this.node.defaultArguments.push({name: item.name, value: item.newValue+ ''});
           }
         }
       }
@@ -276,7 +278,7 @@ export class JobWizardComponent implements OnInit {
             if(!this.checkAlreadyExistArgu(this.job.paramList[i])) {
               this.node.defaultArguments.push({
                 name: this.job.paramList[i].name,
-                value: this.job.paramList[i].newValue
+                value: this.job.paramList[i].newValue +''
               });
             }
           }
@@ -287,14 +289,23 @@ export class JobWizardComponent implements OnInit {
 
   private checkAlreadyExistArgu(item): boolean {
     let flag = false;
-    for (let i in this.node.defaultArguments) {
+    let index = -1;
+    for (let i = 0; i < this.node.defaultArguments.length; i++) {
+      if (!this.node.defaultArguments[i].name) {
+        index = i;
+      }
       if (this.node.defaultArguments[i].name === item.name) {
         if (item.newValue || item.newValue === false || item.newValue === 0) {
-          this.node.defaultArguments[i].newValue = item.newValue;
+          this.node.defaultArguments[i].value = item.newValue + '';
+        } else if (this.node.defaultArguments[i].value == '') {
+          this.node.defaultArguments[i].value = item.defaultValue + '';
         }
         flag = true;
         break;
       }
+    }
+    if (index > -1) {
+      this.node.defaultArguments.splice(index, 1);
     }
     return flag;
   }
@@ -358,7 +369,8 @@ export class JobWizardComponent implements OnInit {
             break;
           }
         }
-        if ((this.job.params[i].defaultValue || this.job.params[i].defaultValue === false || this.job.params[i].defaultValue === 0) && !this.job.params[i].newValue ) {
+        if ((this.job.params[i].defaultValue || this.job.params[i].defaultValue === false || this.job.params[i].defaultValue === 0)
+          && (!this.job.params[i].newValue && this.job.params[i].newValue != 0 && this.job.params[i].newValue != false)) {
           this.job.params[i].newValue = this.job.params[i].defaultValue;
         }
         if (this.job.params[i].required) {
