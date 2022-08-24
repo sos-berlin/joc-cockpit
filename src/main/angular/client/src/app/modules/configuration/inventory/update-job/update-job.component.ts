@@ -116,6 +116,9 @@ export class UpdateJobComponent implements OnInit {
     if (job.failOnErrWritten || job.failOnErrWritten === false) {
       obj.failOnErrWritten = job.failOnErrWritten;
     }
+    if (job.warnOnErrWritten || job.warnOnErrWritten === false) {
+      obj.warnOnErrWritten = job.warnOnErrWritten;
+    }
     return obj;
   }
 

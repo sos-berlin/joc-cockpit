@@ -737,7 +737,7 @@ export class CoreService {
     }
   }
 
-  showOrderLogWindow(orderId: string): void {
+  showOrderLogWindow(orderId: string, controllerId: string): void {
     const preferenceObj = JSON.parse(sessionStorage.preferences);
     const self = this;
     let url;
@@ -759,15 +759,15 @@ export class CoreService {
     }
 
     openWindow();
-    this.post('orders/history', {
-      orderId: orderId
+    this.post('order/history', {
+      orderId: orderId,
+      controllerId
     }).subscribe({
       next: (res) => {
         if (res.history && res.history.length > 0) {
           this.refreshParent();
           let url2 = '';
           const order = res.history[0];
-          const controllerId = order.controllerId || JSON.parse(this.authService.scheduleIds).selected;
           if (order && order.historyId && order.orderId) {
             url2 = '?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&workflow=' + encodeURIComponent(order.workflow) + '&controllerId=' + controllerId;
           }

@@ -4386,7 +4386,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   updateFromJobTemplates(workflow): void {
-    console.log(workflow);
     this.modal.create({
       nzTitle: undefined,
       nzContent: UpdateJobTemplatesComponent,

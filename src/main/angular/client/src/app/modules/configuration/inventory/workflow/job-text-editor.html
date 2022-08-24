@@ -663,7 +663,14 @@
           <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.failOnOutputErr' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
                  translate>workflow.label.failOnOutputErr</label>
           <div class="col-md-8 col-lg-9">
-            <label [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" nz-checkbox [(ngModel)]="selectedNode.job.failOnErrWritten" name="failOnErrWritten"></label>
+            <label [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.warnOnErrWritten" nz-checkbox [(ngModel)]="selectedNode.job.failOnErrWritten" name="failOnErrWritten"></label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.warnOnOutputErr' | translate}}" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+                 translate>workflow.label.warnOnOutputErr</label>
+          <div class="col-md-8 col-lg-9">
+            <label [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.failOnErrWritten" nz-checkbox [(ngModel)]="selectedNode.job.warnOnErrWritten" name="warnOnErrWritten"></label>
           </div>
         </div>
         <div class="form-group row">
@@ -808,23 +815,5 @@
 </div>
 
 <div *ngIf="isRuntimeVisible">
-  <app-admission-time [job]="selectedNode.job" [data]="selectedNode" (close)="closeRuntime()"></app-admission-time>
+  <app-admission-time [job]="selectedNode.job" [isTooltipVisible]="isTooltipVisible" [data]="selectedNode" (close)="closeRuntime()"></app-admission-time>
 </div>
-
-<!--<div class="position-fixed text-right floating-action-menu" style="bottom: 12px; right: 10px;" [hidden]="isModal">-->
-<!--  <div class="action-menu">-->
-<!--    <div class="floating-action" *ngIf="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.hash">-->
-<!--      <div class="badge badge-dark" translate>inventory.button.updateFromJobTemplate</div>-->
-<!--      <a class="btn-floating btn-sm" (click)="updateFromJobTemplate()"><i class="fa fa-refresh"></i></a>-->
-<!--    </div>-->
-<!--    <div class="floating-action">-->
-<!--      <div class="badge badge-dark" translate>inventory.button.makeJobTemplate</div>-->
-<!--      <a class="btn-floating btn-sm" (click)="makeJobTemplate();"><i class="fa fa-plus"></i></a>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="d-block action-button">-->
-<!--    <a class="btn-floating" onclick="$(this).closest('div.floating-action-menu').toggleClass('active')">-->
-<!--      <i class="fa fa-plus"></i>-->
-<!--    </a>-->
-<!--  </div>-->
-<!--</div>-->
