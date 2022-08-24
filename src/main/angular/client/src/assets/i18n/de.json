@@ -1162,7 +1162,7 @@
     "label.overwriteAdmissionTime": "Zutrittszeiten aktualisieren",
     "label.updateWorkflowsFromJobTemplates": "Arbeitsabläufe aus Job-Vorlagen aktualisieren",
     "button.modifyVariableSet": "Variablensatz ändern",
-    "button.addOrderParameter": "Auftragsmuster hinzufügen",
+    "button.addOrderParameter": "Auftragsvorlage hinzufügen",
     "button.setVersion": "Version setzen",
     "button.new": "Neu",
     "button.newFolder": "Neuer Ordner",
@@ -1305,10 +1305,10 @@
     },
     "tooltips": {
       "calendar": {
-        "name": "Kalender werden von Zeitplänen genutzt, die Aufträge für jeden Tag des Kalenders zu erzeugen. Für den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Kalender werden von Zeitplänen genutzt, um Aufträge für jeden Tag des Kalenders zu erzeugen. Für den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Kalender angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Kalenders kann nach Belieben angegeben werden.",
-        "type": "Kalender können für Arbeitstage und für Nicht-Arbeitstage eingerichtet werden. Beim Zuweisen eines Kalenders zu einem Zeitplan können zusätzlich Kalender der Nicht-Arbeitstage verwendet werden, die die Tage zur Ausführung von Arbeitsabläufen weiter beschränken.",
+        "type": "Kalender können für Arbeitstage und für Nicht-Arbeitstage eingerichtet werden. Beim Zuweisen eines Kalenders zu einem Zeitplan können zusätzlich Kalender der Nicht-Arbeitstage verwendet werden, die die Tage zur Ausführung von Arbeitsabläufen beschränken.",
         "validFrom": "Optional kann die Gültigkeitsperiode des Kalenders angegeben werden. Vor dem angegebenen Datum werden von Zeitplänen keine Aufträge erzeugt.",
         "validTo": "Optional kann die Gültigkeitsperiode des Kalenders angegeben werden. Nach dem angegebenen Datum werden von Zeitplänen keine Aufträge erzeugt."
       },
@@ -1318,13 +1318,13 @@
         "title": "Der Titel der Dateiauftragsquelle kann nach Belieben angegeben werden.",
         "workflowName": "Ein Verweis auf einen Arbeitsablauf muss hinzugefügt werden. Bei Eintreffen einer Datei im überwachten Verzeichnis wird automatisch ein Dateiauftrag für den Arbeitsablauf erzeugt.",
         "agent": "Ein Agent muss angegeben werden, der die Verzeichnisüberwachung auf dem Server durchführt, auf dem er installiert ist.",
-        "directory": "Das Verzeichnis muss angegeben werden, das vom Agenten überwacht wird. Das Verzeichnis muss für den Server und für das Konto des Agenten zugreifbar sein.",
-        "pattern": "Ein regülärer Ausdruck beschreibt das Muster der Pfade von Dateien, die überwacht werden. Zum Beispiel bedeutet .* alle Dateinamen, .*\\.*txt$ bedeutet alle Dateinamen mit der Endung .txt.",
+        "directory": "Das Verzeichnis muss angegeben werden, das vom Agenten überwacht wird. Das Verzeichnis muss für den Server und für das Konto des Agenten zugreifbar sein. Für das Verzeichnis wird ein Ausdruck erwartet, eine in Hochkomma gefasste Zeichenfolge, z.B. '/home/sos/files' oder in Kombination mit einer Funktion, z.B. env('HOME') ++ '/files'",
+        "pattern": "Ein regülärer Ausdruck beschreibt das Muster der Pfade von Dateien, die überwacht werden. Zum Beispiel bedeutet .* alle Dateien, .*\\.*txt$ bedeutet alle Dateien mit der Endung .txt.",
         "timeZone": "Wenn eine Datei im überwachten Verzeichnis eintrifft wird vom Agenten ein Auftrag erzeugt, dessen Auftragskennung das Tagesdatum enthält. Hier wird die Zeitzone benannt, für die das Tagesdatum verwendet wird.",
         "delay": "Die Verzögerung stellt die Dauer dar, für die ein Agent wartet bis eine eintreffende Datei stabil ist, d.h.  deren Größe und Zeitstempel sich nicht ändern. Wird eine Änderung bemerkt, dann wird erneut für die Dauer der Verzögerung gewartet und die Prüfung wiederholt."
       },
       "jobResource": {
-        "name": "Eine Job-Ressource ist eine Menge von Variablen, d.h. Paaren von Namen und Wert, die allen Arbeitsabläufen und Jobs zur Verfügung gestellt werden kann. Es gibt zwei Varianten: Variablen sind für JITL Jobs und Java Jobs verfügbar, Umgebungsvariablen sind für Shell Jobs verfügbar. Für den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Eine Job-Ressource ist eine Menge von Variablen, d.h. Paaren von Namen und Werten, die allen Arbeitsabläufen und Jobs zur Verfügung gestellt werden kann. Es gibt zwei Varianten: Argumente sind für JITL Jobs und Java Jobs verfügbar, Umgebungsvariablen sind für Shell Jobs verfügbar. Die Werte von Umgebungsvariablen können Argumente aufführen wie in $argument. Für den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit der Job-Ressource angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Job-Ressource kann nach Belieben angegeben werden."
       },
@@ -1333,23 +1333,23 @@
         "expectBoardName": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Notizbrett angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Notizbretts kann nach Belieben angegeben werden.",
-        "toNotice": "Notizkennung des ausstellenden Auftrags",
-        "endOfLife": "Verfallsfrist der Notiz",
-        "readingOrderToNoticeId": "Notizkennung des notifizierten Auftrags"
+        "toNotice": "Die Notizkennung des ausstellenden Auftrags wird aus dessen Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem die zu notifizierenden Aufträge identifiziert wereden.",
+        "endOfLife": "Die Verfallsfrist der Notiz bestimmt deren Lebensdauer im Format hh:mm:ss, z.B. 01:30:00 für eineinhalb Stunden.",
+        "readingOrderToNoticeId": "Die Notizkennung des notifizierten Auftrags wird aus dessen Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem ausstellende Aufträge identifiziert werden."
       },
       "lock": {
-        "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs in mehreren Arbeitsabläufen. Der Name einer Ressourcen-Sperre ist eindeutig im Inventar. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs im selben oder unterschiedlichen Arbeitsabläufen. Der Name einer Ressourcen-Sperre ist eindeutig im Inventar. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit der Ressourcen-Sperre angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Ressourcen-Sperre kann nach Belieben angegeben werden.",
-        "limit": "Wird eine Ressourcen-Sperre von mehreren Jobs geteilt genutzt, dann kann jede Nutzung ein Gewicht für den Zugriff bestimmen, dass verwendet wird, um die verfügbare Kapazität der Ressourcen-Sperre zu bestimmen und Jobs ggf. warten zu lassen bis eine ausreichende Kapazität verfügbar ist."
+        "limit": "Wird eine Ressourcen-Sperre von mehreren Jobs geteilt genutzt, dann kann jede Nutzung ein Gewicht für den Zugriff bestimmen, das verwendet wird, um die verfügbare Kapazität der Ressourcen-Sperre zu bestimmen und Jobs ggf. warten zu lassen bis eine ausreichende Kapazität verfügbar ist."
       },
       "schedule": {
         "name": "Ein Zeitplan wird verwendet, um automatisch Aufträge für Arbeitsabläufe basierend auf einem Kalender zu erzeugen. Der Name eines Zeitplans ist eindeutig im Inventar. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Zeitplan angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Zeitplans kann nach Belieben angegeben werden.",
-        "workflowName": "Ein Verweis auf einen Arbeitsablauf muss angegeben werden, für den die Aufträge erzeugt werden.",
+        "workflowName": "Ein Verweis auf einen oder mehrere Arbeitsabläufe muss angegeben werden, für den Aufträge erzeugt werden.",
         "planOrderAutomatically": "Aufträge werden automatisch geplant, d.h. in Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus geplant.",
-        "submitOrderToControllerWhenPlanned": "Gelante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt."
+        "submitOrderToControllerWhenPlanned": "Geplante Aufträge werden automatisch an den Controller übermittelt. In Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt."
       },
       "script": {
         "name": "Ein Skript Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript Bausteins ist eindeutig im Inventar. Für den Namen des Skript Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -1403,8 +1403,8 @@
           "jobClass": "Die Job-Klasse legt fest, ob ein Job in der Shell des Betriebssystems (Windows, Unix, MacOs etc.) oder als JITL Java Job oder als Skript Job in einer der von Java unterstützten Skript-Sprachen ausgeführt wird.",
           "timeout": "Nach Zeitablauf wird ein Job unter Windows abgebrochen. Unter Unix wird der Job mit SIGTERM versucht zu beenden und ggf. nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen.",
           "graceTimeout": "Die Toleranzfrist gilt für Jobs unter Unix, die zunächst mit SIGTERM versucht werden zu beenden und nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen werden.",
-          "warnIfShorter": "Bei kürzerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann auch das Format hh:mm:ss verwendet werden, z. B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus den erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
-          "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann auch das Format hh:mm:ss verwendet werden, z. B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus den erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
+          "warnIfShorter": "Bei kürzerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann auch das Format hh:mm:ss verwendet werden, z.B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus den Durchschnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
+          "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann auch das Format hh:mm:ss verwendet werden, z.B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus dem Durchscnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
           "agent": "Dem Job ist ein Agent zugewiesen, der das Job Skript bzw. die Java Klasse ausführt.",
           "fileWatcher": "Eine Dateiauftragsquelle überwacht ein Verzeichnis auf eintreffende Dateien und erzeugt für jede Datei einen Auftrag für einen Arbeitsablauf.",
           "className": "Der Name einer Java Klasse, die einen Job implementiert. JS7 enthält eine Reihe von JITL Java Klassen, z.B. für Datenbankzugriffe, E-Mail Versand etc.",

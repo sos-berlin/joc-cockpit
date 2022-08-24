@@ -1308,7 +1308,7 @@
         "name": "Les calendriers sont utilisés par les Planification pour créent des Ordres des jours spécifiés par le calendrier. Pour le nom du Calendrier, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
         "documentation": "Une référence à une Documentation peut être ajoutée qui sera affichée avec le Calendrier. La vue RESSOURCES permet de gérer la documentation",
         "title": "Titre du calendrier.",
-        "type": "TLes calendriers sont créés pour les jours ouvrables ou pour les jours non ouvrables. Lorsque vous attribuez un calendrier à une planification, en plus d'un calendrier pour les jours ouvrables, un calendrier pour les jours non ouvrables peut être attribué afin de limiter davantage les jours d'exécution d'un workflow.",
+        "type": "TLes calendriers sont créés pour les jours ouvrables ou pour les jours non ouvrables. Lorsque vous attribuez un calendrier à une planification, en plus d'un calendrier pour les jours ouvrables, un calendrier pour les jours non ouvrables peut être attribué afin de limiter les jours d'exécution d'un workflow.",
         "validFrom": "En option, le début de la période de validité du Calendrier peut être spécifié. Aucun Ordre ne sera créée par un Calendrier avant cette date.",
         "validTo": "En option, la fin de la période de validité du Calendrier peut être spécifiée. Aucun Ordre ne sera créée par un Calendrier au-delà de cette date."
       },
@@ -1318,13 +1318,13 @@
         "title": "Titre de la Source d'Ordre de Fichiers.",
         "workflowName": "Une référence à un Workflow doit être ajoutée. Un ordre pour ce workflow sera créée à l'arrivée d'un fichier entrant dans le Répertoire qui est surveillé.",
         "agent": "L'Agent doit être spécifié pour effectuer la surveillance des fichiers sur l'hôte respectif sur lequel l'Agent est installé.",
-        "directory": "Le répertoire est spécifié pour la surveillance des les fichiers entrants. Le répertoire doit être accessible pour l'hôte et le compte de l'Agent.",
-        "pattern": "Un pattern d'expression régulière spécifie les fichiers pour lesquels le répertoire est surveillé. Par exemple, .* signifie tous les fichiers, .*\\.txt$ signifie tous les fichiers avec une extension .txt.",
+        "directory": "Le répertoire est spécifié pour la surveillance des les fichiers entrants. Le répertoire doit être accessible pour l'hôte et le compte de l'Agent. Le répertoire est spécifié sous forme d'expression, par exemple une chaîne '/home/sos/files' ou en combinaison avec une fonction comme dans env('HOME') ++ '/files'",
+        "pattern": "Un pattern d'expression régulière spécifie chemin d'accès aux fichiers pour lesquels le répertoire est surveillé. Par exemple, .* signifie tous les fichiers, .*\\.txt$ signifie tous les fichiers avec une extension .txt.",
         "timeZone": "Lorsqu'un fichier arrive, l'Agent crée un ordre qui inclut la date du jour avec son ID Ordre. Cet élément spécifie le fuseau horaire utilisé pour la date dans l'ID Ordre.",
         "delay": "Un délai est appliqué pendant lequel l'Agent attend qu'un fichier entrant reste inchangé. Les modifications sont détectées à partir de la taille du fichier et de l'horodatage du fichier. Si le fichier change, par exemple si le fichier est écrit par un processus, le délai sera à nouveau appliqué et la vérification sera répétée jusqu'à ce qu'aucun autre changement ne se produise."
       },
       "jobResource": {
-        "name": "Une ressource de tâche est un ensemble de variables qui peuvent être utilisées par un certain nombre de worklows ou de tâches. Il existe deux types : les variables sont affectées aux travaux JITL et aux tâches Java, les variables d'environnement deviennent automatiquement disponibles avec les travaux Shell. Pour le nom de la ressource de tâche, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "name": "Une ressource de tâche est un ensemble de variables qui peuvent être utilisées par un certain nombre de workflows ou de tâches. Il existe deux types : les arguments sont affectées aux tâches JITL et aux tâches Java, les variables d'environnement deviennent automatiquement disponibles avec les tâches Shell. Les valeurs des variables d'environnement peuvent utiliser des arguments comme dans $argument. Pour le nom de la ressource de tâche, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec la ressource de tâche. La vue RESSOURCES permet de gérer la Documentation.",
         "title": "Le Titre de la Ressource de Tâche peut être spécifié à volonté."
       },
@@ -1334,11 +1334,11 @@
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le tableau de condition. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre de la Condition peut être spécifié à volonté.",
         "toNotice": "Entrer la Condition",
-        "endOfLife": "Entrer la fin de vie",
+        "endOfLife": "Le délai d'expiration de la Condition détermine sa durée de vie au format hh:mm:ss, par exemple 01:30:00 pour une heure et demie.",
         "readingOrderToNoticeId": "Entrer la règle pour créer l'ID Annonce pour 'Ordre attendu"
       },
       "lock": {
-        "name": "Les verrous de ressources sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de tâche. Ils peuvent être utilisés dans tous les workflows et limitent le parallélisme des tâches. Le nom d'un Verrou est unique dans l'inventaire. Pour le nom du verrou de ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "name": "Les verrous de ressources sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de tâche. Ils peuvent être utilisés dans le même workflow et dans tous les workflows pour limiter le parallélisme des tâches. Le nom d'un Verrou est unique dans l'inventaire. Pour le nom du verrou de ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec le verrou de ressource. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre d'un verrou peut être spécifié à volonté.",
         "limit": "Si un verrou de ressource est acquis en mode partagé, chaque consommateur de verrou de ressource spécifie un nombre en fonction de la capacité du verrou de ressource. Si la capacité est dépassée, les tâches doivent attendre que leur nombre corresponde à la capacité disponible du verrou de ressource."
@@ -1347,7 +1347,7 @@
         "name": "Une Planification est utilisé pour créer automatiquement des ordres pour un workflow donné en fonction du calendrier attribué. Le nom d'une Planification est unique dans l'inventaire. Pour le nom de la Planification, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec la Planification. La vue RESSOURCES permet de gérer la documentation.",
         "title": "Le Titre d'une planification peut être spécifié à volonté.",
-        "workflowName": "Il faut ajouter une référence à un workflow pour lequel des ordres sont crées.",
+        "workflowName": "Il faut ajouter une référence à un ou plusieurs workflows pour lesquels des ordres sont crées.",
         "planOrderAutomatically": "Les ordres sont planifiées automatiquement, c'est-à-dire qu'en fonction des paramètres du service du plan quotidien, les ordres sont créées pour les prochains jours à l'avance.",
         "submitOrderToControllerWhenPlanned": "Les ordres sont automatiquement soumis à un contrôleur au moment prévu. Sur la base des paramètres des ordres du Daily Plan Service sont soumis un certain nombre de jours à l'avance."
       },
@@ -1403,8 +1403,8 @@
           "jobClass": "La Catégorie de la Tâche détermine si une tâche est exécutée avec le shell du système d'exploitation (Windows, Unix, MacOS, etc.), ou exécuté en tant que travail Java JVM JITL ou exécuté en tant que travail JVM Script pour l'un des langages de script pris en charge par la JVM.",
           "timeout": "Lorsque le délai est dépassé, la tâche est interrompu sous Windows. Sous Unix, la tâche reçoit un signal SIGTERM et après le délai de grâce, un signal SIGKILL interrompra la tâche.",
           "graceTimeout": "Un Délai de Grâce est appliqué aux tâches sous Unix qui reçoivent un signal SIGTERM lorsqu'ils dépassent leur délai. Si la tâche ne se termine pas après le délai de grâce, un signal SIGKILL interrompra la tâche.",
-          "warnIfShorter": "Si la période d'exécution d'un travail est plus courte que celle spécifiée, une notification, par exemple par e-mail, sera envoyée. Le nombre de secondes peut être spécifié comme en 1s. On peut aussi utiliser le format hh:mm:ss, par exemple 01:30:00 pour une heure et demie. Il est possible de spécifier un pourcentage calculé à partir des exécutions réussies de Tâches antérieurs, par exemple 30%.",
-          "warnIfLonger": "Si la période d'exécution d'un travail est plus longue que celle spécifiée, une notification, par exemple par e-mail, sera envoyée. Le nombre de secondes peut être spécifié comme en 1s. On peut aussi utiliser le format hh:mm:ss, par exemple 01:30:00 pour une heure et demie. Il est possible de spécifier un pourcentage calculé à partir des exécutions réussies de Tâches antérieurs, par exemple 30%.",
+          "warnIfShorter": "Si la période d'exécution d'un travail est plus courte que celle spécifiée, une notification, par exemple par e-mail, sera envoyée. Le nombre de secondes peut être spécifié comme en 1s. On peut aussi utiliser le format hh:mm:ss, par exemple 01:30:00 pour une heure et demie. Il est possible de spécifier un pourcentage calculé à partir de la moyenne des exécutions réussies de Tâches antérieurs, par exemple 30%.",
+          "warnIfLonger": "Si la période d'exécution d'un travail est plus longue que celle spécifiée, une notification, par exemple par e-mail, sera envoyée. Le nombre de secondes peut être spécifié comme en 1s. On peut aussi utiliser le format hh:mm:ss, par exemple 01:30:00 pour une heure et demie. Il est possible de spécifier un pourcentage calculé à partir de la moyenne des exécutions réussies de Tâches antérieurs, par exemple 30%.",
           "agent": "Un Agent est assigné à la Tâche qui exécutera le script/la classe de la Tâche. Faites votre choix dans la liste des Agents disponibles.",
           "fileWatcher": "Les Sources d'Ordre de Fichier sont utilisées pour surveiller un répertoire pour les fichiers entrants et pour créer un ordre avec le workflow respectif pour chaque fichier.",
           "className": "Le nom d'une Classe Java implémentant une tâche. JS7 est livré avec un certain nombre de classes Java JITL prédéfinies, par exemple pour l'accès aux bases de données, pour l'envoi d'e-mails, etc.",
