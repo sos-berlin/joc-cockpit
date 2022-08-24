@@ -810,3 +810,21 @@
 <div *ngIf="isRuntimeVisible">
   <app-admission-time [job]="selectedNode.job" [data]="selectedNode" (close)="closeRuntime()"></app-admission-time>
 </div>
+
+<!--<div class="position-fixed text-right floating-action-menu" style="bottom: 12px; right: 10px;" [hidden]="isModal">-->
+<!--  <div class="action-menu">-->
+<!--    <div class="floating-action" *ngIf="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.hash">-->
+<!--      <div class="badge badge-dark" translate>inventory.button.updateFromJobTemplate</div>-->
+<!--      <a class="btn-floating btn-sm" (click)="updateFromJobTemplate()"><i class="fa fa-refresh"></i></a>-->
+<!--    </div>-->
+<!--    <div class="floating-action">-->
+<!--      <div class="badge badge-dark" translate>inventory.button.makeJobTemplate</div>-->
+<!--      <a class="btn-floating btn-sm" (click)="makeJobTemplate();"><i class="fa fa-plus"></i></a>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="d-block action-button">-->
+<!--    <a class="btn-floating" onclick="$(this).closest('div.floating-action-menu').toggleClass('active')">-->
+<!--      <i class="fa fa-plus"></i>-->
+<!--    </a>-->
+<!--  </div>-->
+<!--</div>-->

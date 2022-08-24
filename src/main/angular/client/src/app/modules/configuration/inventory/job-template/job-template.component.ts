@@ -55,9 +55,12 @@ export class UpdateJobTemplatesComponent implements OnInit {
     deploy: true,
   };
 
+  isUpdated = false;
+  updatedList = [];
+
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private inventoryService: InventoryService) {
   }
 
   static createTempArray(arr): any {
@@ -266,6 +269,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
     } else {
       this.object.setOfCheckedPath.clear();
     }
+    this.object.indeterminate = this.object.setOfCheckedPath.size > 0 && !this.object.checked;
   }
 
   onItemChecked(item: any, checked: boolean): void {
@@ -279,7 +283,8 @@ export class UpdateJobTemplatesComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if(this.job){
+    this.isUpdated = false;
+    if (this.job) {
       this.activeModal.close(this.object);
       return;
     }
@@ -295,7 +300,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
       }];
     } else {
       request.folder = this.treeObj.path;
-      if(this.treeObj.type){
+      if (this.treeObj.type) {
         request.workflowPaths = [this.treeObj.path + (this.treeObj.path === '/' ? '' : '/') + this.treeObj.name]
       } else {
         request.recursive = this.object.recursive;
@@ -311,12 +316,22 @@ export class UpdateJobTemplatesComponent implements OnInit {
     const URL = this.data ? 'job_templates/propagate' : 'inventory/workflows/update';
     this.coreService.post(URL, request).subscribe({
       next: (res) => {
-        this.activeModal.close('DONE');
-      }, error: (err) => {
+        if (res.workflows && res.workflows.length > 0) {
+          this.updatedList = res.workflows;
+          this.isUpdated = true;
+          this.updatedList.forEach((workflow) => {
+            workflow.jobs = Object.entries(workflow.jobs).map(([k, v]) => {
+              return {name: k, value: v};
+            });
+          })
+        } else {
+          this.activeModal.close('DONE');
+        }
+        this.submitted = false;
+      }, error: () => {
         this.submitted = false;
       }
     });
-
   }
 
   cancel(): void {
@@ -1250,7 +1265,6 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       return;
     }
     const job = this.coreService.clone(this.job.configuration);
-
     this.workflowService.convertJobObject(job);
     if (this.job.actual && !isEqual(this.job.actual, JSON.stringify(job))) {
       if (!flag) {

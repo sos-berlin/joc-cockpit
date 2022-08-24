@@ -344,6 +344,7 @@ export class DeployComponent implements OnInit {
   expandAll(): void {
     this.buildTree(this.path, null, () => {
       const self = this;
+
       function recursive(node): void {
         for (const i in node) {
           if (!node[i].isLeaf) {
@@ -471,7 +472,7 @@ export class DeployComponent implements OnInit {
           this.inventoryService.updateTree(tree[0]);
         }
         if (tree.length > 0) {
-          if(tree[0].children.length === 0 && !tree[0].deployables && !tree[0].releasables){
+          if (tree[0].children.length === 0 && !tree[0].deployables && !tree[0].releasables) {
             tree = [];
           }
         }
@@ -644,6 +645,7 @@ export class DeployComponent implements OnInit {
     this.object.delete = [];
     this.object.releasables = [];
     const self = this;
+
     function recursive(nodes) {
       for (let i = 0; i < nodes.length; i++) {
         if ((!nodes[i].object) && nodes[i].checked) {
@@ -668,6 +670,7 @@ export class DeployComponent implements OnInit {
         }
       }
     }
+
     recursive(this.nodes);
   }
 
@@ -709,7 +712,7 @@ export class DeployComponent implements OnInit {
       } else {
         if (this.object.releasables.length > 0) {
           obj.releasables = this.object.releasables;
-        } else{
+        } else {
           this.ref.detectChanges();
           return;
         }
@@ -1026,7 +1029,7 @@ export class ExportComponent implements OnInit {
     this.exportObj.controllerId = this.schedulerIds.selected;
     this.securityLevel = sessionStorage.securityLevel;
     if (this.origin) {
-      if(this.origin.object){
+      if (this.origin.object) {
         this.exportObj.exportType = '';
       }
       this.path = this.origin.path;
@@ -1112,12 +1115,12 @@ export class ExportComponent implements OnInit {
     if (this.filter.controller && this.filter.dailyPlan) {
       obj.withoutReleased = !this.filter.release;
       if (deployObjectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/deployables', { ...obj, ...{ objectTypes: deployObjectTypes } }).pipe(
+        APIs.push(this.coreService.post('inventory/deployables', {...obj, ...{objectTypes: deployObjectTypes}}).pipe(
           catchError(error => of(error))
         ));
       }
       if (releaseObjectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/releasables', { ...obj, ...{ objectTypes: releaseObjectTypes } }).pipe(
+        APIs.push(this.coreService.post('inventory/releasables', {...obj, ...{objectTypes: releaseObjectTypes}}).pipe(
           catchError(error => of(error))
         ));
       }
@@ -1359,7 +1362,7 @@ export class ExportComponent implements OnInit {
     let selectFolder = true;
     if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH') {
       selectFolder = false;
-    } else if(this.exportObj.exportType !== 'folders'){
+    } else if (this.exportObj.exportType !== 'folders') {
       selectFolder = false;
     }
 
@@ -1426,7 +1429,7 @@ export class ExportComponent implements OnInit {
           } else if (!self.exportObj.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
               if (!nodes[i].children[j].object && !nodes[i].children[j].type) {
-                if(nodes[i].children[j].checked && selectFolder) {
+                if (nodes[i].children[j].checked && selectFolder) {
                   self.object.folders.push(nodes[i].children[j].path);
                 }
                 recursive(nodes[i].children[j].children);

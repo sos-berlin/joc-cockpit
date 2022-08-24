@@ -609,7 +609,7 @@
                       <label class="w-full">
                         <input [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off" type="text"
                                class="form-control" name="timeout"
-                               [(ngModel)]="job.configuration.timeout" #timeout="ngModel"
+                               [(ngModel)]="job.configuration.timeout1" #timeout="ngModel"
                                placeholder="{{'workflow.placeholder.duration' | translate}}" (blur)="saveJSON()"
                                validateDurtionReqex>
                       </label>
@@ -625,7 +625,7 @@
                       <label class="w-full">
                         <input [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off" type="text"
                                class="form-control" name="graceTimeout"
-                               [(ngModel)]="job.configuration.graceTimeout" #graceTimeout="ngModel"
+                               [(ngModel)]="job.configuration.graceTimeout1" #graceTimeout="ngModel"
                                placeholder="{{'workflow.placeholder.duration' | translate}}" (blur)="saveJSON()"
                                validateDurtionReqex>
                       </label>

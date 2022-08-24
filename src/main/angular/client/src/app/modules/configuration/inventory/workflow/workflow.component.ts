@@ -32,7 +32,6 @@ import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {InventoryService} from '../inventory.service';
 import {CreateObjectModalComponent} from "../inventory.component";
-import {ConfirmModalComponent} from "../../../../components/comfirm-modal/confirm.component";
 import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
 
 // Mx-Graph Objects
