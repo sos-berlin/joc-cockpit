@@ -101,7 +101,7 @@
   "CHANGED": "changed",
   "PERMISSION_DENIED": "permission denied",
   "DELETED": "deleted",
-  "TEMPLATE_REFERENCE_DELETED": "template reference deleted",
+  "TEMPLATE_REFERENCE_DELETED": "Job Template reference deleted",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "true",
   "False": "false",
