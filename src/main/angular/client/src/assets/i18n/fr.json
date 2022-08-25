@@ -1428,7 +1428,7 @@
           "weekDays": "Les jours de la semaine indiquent les jours qui peuvent être sélectionnés individuellement.",
           "monthDays": "Les jours du mois sont comptés du premier au dernier jour du mois ou vice versa.",
           "dayNumber": "Les jours de la semaine spécifiques permettent de déterminer la récurrence du jour de la semaine dans un mois, par exemple la première, la deuxième, la dernière, etc. occurrence.",
-          "startTime": "La période de début spécifie le moment où un cycle devient actif. Le cycle restera actif pendant la durée spécifiée par sa période. Les valeurs sont spécifiées dans le format hh:mm:ss, par exemple 00:00:00 indique minuit.",
+          "startTime": "La période de début spécifie le moment où un cycle devient actif pour la première fois. Les valeurs sont spécifiées dans le format hh:mm:ss, par exemple 00:00:00 indique minuit.",
           "duration": "Spécifie la durée pendant laquelle le cycle est actif. Les valeurs sont spécifiées en heures, minutes ou secondes, par exemple 1h, 3600s, 60m, ou au format hh:mm:ss, par exemple 01:00:00.",
           "cycleType": "Le type de cycle peut être périodique (heures de départ individuelles par période), continu (pause fixe entre les heures de départ) ou à tic-tac (intervalle de départ fixe).",
           "periodical": "Le type de cycle périodique permet de spécifier des heures de début individuelles par période en secondes ou en minutes, par exemple : 0, 15m, 25m, 47m. Dans cet exemple, le cycle commencera au début de chaque heure et à la 15ème, 25ème et 47ème minute, à condition qu'une période horaire soit spécifiée.",
