@@ -1231,6 +1231,9 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedNode.job.documentationName = result.documentationName;
     if (result.jobTemplateName) {
       this.selectedNode.job.jobTemplate = {name: result.jobTemplateName, hash: result.hash};
+      this.getJobTemplate();
+    } else {
+      delete this.selectedNode.job.jobTemplate;
     }
     if (result.admissionTimeScheme) {
       this.selectedNode.job.admissionTimeScheme = result.admissionTimeScheme;
