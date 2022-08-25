@@ -8931,7 +8931,10 @@ div.floating-action-menu > .action-menu > .floating-action {
   }
 }
 
-.action-button{
+.action-button {
   margin-right: 7px;
 }
 
+cdk-virtual-scroll-viewport {
+  max-height: 290px !important;
+}
