@@ -2714,6 +2714,7 @@ export class CreateObjectModalComponent implements OnInit {
         next: () => {
           this.activeModal.close({
             name: this.object.name,
+            path: PATH,
             comments: this.comments
           });
         }, error: () => {
@@ -4397,7 +4398,23 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
+    }).afterClose.subscribe(result => {
+      if (result && this.selectedData && this.selectedData.type === 'WORKFLOW') {
+        if ((this.selectedData.name === workflow.name && this.selectedData.path === workflow.path)) {
+          this.selectedData.reload = true;
+        } else if (isArray(result)) {
+          if (result.length > 0) {
+            const PATH = this.selectedData.path + (this.selectedData.path === '/' ? '' : '/') + this.selectedData.name;
+            for (let i in result) {
+              if (PATH === result[i].path) {
+                this.selectedData.reload = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+    })
   }
 
   editJson(data: any, isEdit: boolean): void {

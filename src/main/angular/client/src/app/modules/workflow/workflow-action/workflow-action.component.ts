@@ -413,6 +413,9 @@ export class AddOrderModalComponent implements OnInit {
 
   selectOrder(name): void {
     this.order.reload = false;
+    if (name && name !== '-') {
+      this.order.orderId = name;
+    }
     for (let i in this.selectedSchedule.orderParameterisations) {
       if (this.selectedSchedule.orderParameterisations[i].orderName == name ||
         (this.selectedSchedule.orderParameterisations[i].orderName == '' && name == '-') || this.selectedSchedule.orderParameterisations.length == 1) {

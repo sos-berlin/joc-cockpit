@@ -999,13 +999,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   presentObj: any = {};
   returnCodes: any = {on: 'success'};
   state: any = {};
-  cmOption: any = {
-    lineNumbers: true,
-    autoRefresh: true,
-    scrollbarStyle: 'simple',
-    mode: 'shell',
-    extraKeys: {'Ctrl-Space': 'autocomplete'}
-  };
 
   object = {
     checked1: false,
@@ -1198,7 +1191,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-         this.updateJobFromWizardJob(result);
+        this.updateJobFromWizardJob(result);
       }
     });
   }
@@ -1332,7 +1325,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       nzComponentParams: {
         script: this.selectedNode.job.executable.script,
         scriptTree: this.scriptTree,
-        list: this.scriptList
+        list: this.scriptList,
+        disabled: (this.selectedNode.job && this.selectedNode.job.jobTemplate && this.selectedNode.job.jobTemplate.name)
       },
       nzFooter: null,
       nzClosable: false,
@@ -2193,10 +2187,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script-editor.html'
 })
-export class ScriptEditorComponent implements AfterViewInit {
+export class ScriptEditorComponent implements AfterViewInit, OnInit {
   @Input() script: any;
   @Input() list: any = [];
   @Input() scriptTree: any = [];
+  @Input() disabled: boolean;
   dragEle: any;
   scriptList: Array<string> = [];
   scriptObj = {
@@ -2215,6 +2210,12 @@ export class ScriptEditorComponent implements AfterViewInit {
   @ViewChild('codeMirror', {static: false}) cm: any;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
+  }
+
+  ngOnInit(): void {
+    if(this.disabled) {
+      this.cmOption.reladOnly = true;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -3092,7 +3093,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe((result: any) => {
       if (result) {
-
+        if(result.state && result.state._text !== 'UPTODATE'){
+          this.init();
+        }
       }
     });
   }
@@ -3117,7 +3120,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (result) {
         const request: any = {
           objectType: InventoryObject.JOBTEMPLATE,
-          path: this.data.path + (this.data.path === '/' ? '' : this.data.path) + result.name,
+          path: result.path,
           configuration: {}
         };
         if (result.comments.comment) {

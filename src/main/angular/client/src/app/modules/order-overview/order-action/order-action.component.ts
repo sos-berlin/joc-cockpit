@@ -69,7 +69,7 @@ export class OrderActionComponent {
 
   showLog(order): void {
     if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
-      this.coreService.showOrderLogWindow(order.orderId, this.schedulerId);
+      this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, order.workflowId.path);
     }
   }
 
