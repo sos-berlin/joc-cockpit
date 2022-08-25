@@ -60,7 +60,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService, private inventoryService: InventoryService) {
+  constructor(private activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   static createTempArray(arr): any {
@@ -318,13 +318,16 @@ export class UpdateJobTemplatesComponent implements OnInit {
         if (res.workflows && res.workflows.length > 0) {
           this.updatedList = res.workflows;
           this.isUpdated = true;
-          this.updatedList.forEach((workflow) => {
+          this.updatedList.forEach((workflow, index) => {
+            if(index === 0){
+              workflow.show = true;
+            }
             workflow.jobs = Object.entries(workflow.jobs).map(([k, v]) => {
               return {name: k, value: v};
             });
           })
         } else {
-          this.activeModal.close('DONE');
+          this.activeModal.close(res);
         }
         this.submitted = false;
       }, error: () => {
@@ -335,6 +338,10 @@ export class UpdateJobTemplatesComponent implements OnInit {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  close(): void {
+    this.activeModal.close(this.updatedList);
   }
 }
 
@@ -763,22 +770,27 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
         this.job.configuration.executable.className = result.javaClass;
         this.job.configuration.title = result.title;
         this.job.configuration.documentationName = result.docName;
-
-        let arr = [];
-        for (let i in result.params) {
-          if (result.params[i]) {
-            arr.push({
-              name: result.params[i].name,
-              value: {
-                type: 'String',
-                description: result.params[i].description,
-                required: result.params[i].required,
-                default: result.params[i].defaultValue
-              }
-            })
+        result.arguments = Object.entries(result.arguments).map(([k, v]) => {
+          const val: any = v;
+          if (val.default) {
+            if (val.type === 'String') {
+              this.coreService.removeSlashToString(val, 'default');
+            } else if (val.type === 'Boolean') {
+              val.default = (val.default === true || val.default === 'true');
+            }
           }
-        }
-        this.job.configuration.arguments = arr;
+          if (val.list) {
+            let list = [];
+            val.list.forEach((val) => {
+              let obj = {name: val};
+              this.coreService.removeSlashToString(obj, 'name');
+              list.push(obj);
+            });
+            val.list = list;
+          }
+          return {name: k, value: val};
+        });
+        this.job.configuration.arguments = result.arguments;
         this.ref.detectChanges();
         this.saveJSON();
       }
@@ -787,6 +799,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
 
   closeRuntime(): void {
     this.isRuntimeVisible = false;
+    this.saveJSON();
   }
 
   drop(event: CdkDragDrop<string[]>, list: Array<any>): void {

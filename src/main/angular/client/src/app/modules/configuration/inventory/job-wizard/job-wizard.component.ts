@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from "../../../../models/enums";
-import {sortBy} from "underscore";
+import {isArray, sortBy} from "underscore";
 
 @Component({
   selector: 'app-job-wizard',
@@ -261,10 +261,16 @@ export class JobWizardComponent implements OnInit {
     this.job.params.forEach(item => {
       if (this.wizard.setOfCheckedValue.has(item.name)) {
         if (obj.executable.TYPE === 'InternalExecutable') {
+          if (!obj.executable.arguments) {
+            obj.executable.arguments = [];
+          }
           obj.executable.arguments.push({name: item.name, value: item.newValue});
         } else if (this.node) {
-          if(!this.checkAlreadyExistArgu(item)) {
-            this.node.defaultArguments.push({name: item.name, value: item.newValue+ ''});
+          if (!this.node.defaultArguments) {
+            this.node.defaultArguments = []
+          }
+          if (!this.checkAlreadyExistArgu(item)) {
+            this.node.defaultArguments.push({name: item.name, value: item.newValue + ''});
           }
         }
       }
@@ -275,10 +281,10 @@ export class JobWizardComponent implements OnInit {
           if (obj.executable.TYPE === 'InternalExecutable') {
             obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
           } else if (this.node) {
-            if(!this.checkAlreadyExistArgu(this.job.paramList[i])) {
+            if (!this.checkAlreadyExistArgu(this.job.paramList[i])) {
               this.node.defaultArguments.push({
                 name: this.job.paramList[i].name,
-                value: this.job.paramList[i].newValue +''
+                value: this.job.paramList[i].newValue + ''
               });
             }
           }
@@ -353,6 +359,30 @@ export class JobWizardComponent implements OnInit {
         this.job.params = this.coreService.clone(this.job.arguments);
       }
     } else {
+      if (this.job.arguments) {
+        if (!isArray(this.job.arguments)) {
+          this.job.params = Object.entries(this.job.arguments).map(([k, v]) => {
+            const val: any = v;
+            if (val.default) {
+              if (val.type === 'String') {
+                this.coreService.removeSlashToString(val, 'default');
+              } else if (val.type === 'Boolean') {
+                val.default = (val.default === true || val.default === 'true');
+              }
+            }
+            if (val.list) {
+              let list = [];
+              val.list.forEach((val) => {
+                let obj = {name: val};
+                this.coreService.removeSlashToString(obj, 'name');
+                list.push(obj);
+              });
+              val.list = list;
+            }
+            return {name: k, value: val};
+          });
+        }
+      }
       if (this.existingJob.executable.arguments && this.existingJob.executable.arguments.length > 0) {
         existingArguments = this.coreService.clone(this.existingJob.executable.arguments);
       }

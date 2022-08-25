@@ -737,7 +737,7 @@ export class CoreService {
     }
   }
 
-  showOrderLogWindow(orderId: string, controllerId: string): void {
+  showOrderLogWindow(orderId: string, controllerId: string, workflow: string): void {
     const preferenceObj = JSON.parse(sessionStorage.preferences);
     const self = this;
     let url;
@@ -764,13 +764,10 @@ export class CoreService {
       controllerId
     }).subscribe({
       next: (res) => {
-        if (res.history && res.history.length > 0) {
+        if (res.historyId) {
           this.refreshParent();
-          let url2 = '';
-          const order = res.history[0];
-          if (order && order.historyId && order.orderId) {
-            url2 = '?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&workflow=' + encodeURIComponent(order.workflow) + '&controllerId=' + controllerId;
-          }
+          let url2 = '?historyId=' + encodeURIComponent(res.historyId) + '&orderId=' + encodeURIComponent(orderId) + '&workflow=' + encodeURIComponent(workflow) + '&controllerId=' + controllerId;
+
           if (preferenceObj.isNewWindow === 'newWindow') {
             url = '#/log2' + url2;
             setTimeout(() => {
@@ -780,7 +777,7 @@ export class CoreService {
             url = '#/log' + url2;
           } else {
             url = '';
-            this.downloadLog(order, controllerId);
+            this.downloadLog(res, controllerId);
           }
         } else {
           url = '';

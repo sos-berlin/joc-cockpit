@@ -12,7 +12,7 @@
       {{data.name}}
     </span>
   </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
@@ -96,16 +96,22 @@
     </div>
     <div *ngIf="isUpdated">
       <ul>
-        <li><span class="_600 text" translate>inventory.label.workflows</span>:</li>
-        <li *ngFor="let workflow of updatedList" class="p-b-sm p-l-sm">
+        <li class="m-b-xs"><span class="_600 text" translate>inventory.label.workflows</span>:</li>
+        <li *ngFor="let workflow of updatedList" class="p-l-sm">
+          <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+             *ngIf="!workflow.show"
+             (click)="workflow.show = true;"></i>
+          <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+             *ngIf="workflow.show"
+             (click)="workflow.show = false"></i>
           <i nz-icon nzType="apartment" class="icon-color p-l-sm p-r-sm"
              nzTheme="outline"></i>
           <span>{{workflow.path}}</span>
           <span class="label m-l" [ngClass]="coreService.getColor(workflow.state.severity,'bg')"
                 [innerHtml]="workflow.state._text | translate"></span>
-          <ul *ngIf="workflow.jobs" class="m-b-sm p-t-xxs">
-            <li><span class="_600 text" translate>dashboard.label.jobs</span>:</li>
-            <li class="m-l-sm" *ngFor="let job of workflow.jobs">
+          <ul *ngIf="workflow.jobs && workflow.show" class="m-b-sm p-t-xxs">
+            <li class="m-b-xs"><span class="_600 text" translate>dashboard.label.jobs</span>:</li>
+            <li class="m-l-sm p-l-xs" *ngFor="let job of workflow.jobs">
               <i class="icon-jobs-icon icon-color tree-icon"></i>
               {{job.name}}
               <span *ngIf="job.value" class="label m-l" [ngClass]="coreService.getColor(job.value.state.severity,'bg')"
@@ -123,10 +129,10 @@
       <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
       <span translate>common.button.submit</span>
     </button>
-    <button type="button" *ngIf="!isUpdated" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button type="button" *ngIf="!isUpdated" class="btn btn-grey btn-sm" (click)="cancel()" translate>
       common.button.cancel
     </button>
-    <button type="button" *ngIf="isUpdated" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button type="button" *ngIf="isUpdated" class="btn btn-grey btn-sm" (click)="close()" translate>
       common.button.close
     </button>
   </div>
