@@ -2651,6 +2651,8 @@ export class CreateObjectModalComponent implements OnInit {
   @Input() obj: any;
   @Input() copy: any;
   @Input() restore: boolean;
+  @Input() allowPath: boolean;
+  isValid = true;
   submitted = false;
   settings: any = {};
   display: any;
@@ -2706,7 +2708,7 @@ export class CreateObjectModalComponent implements OnInit {
         this.paste(this.obj, data);
       }
     } else {
-      const PATH = this.obj.path + (this.obj.path === '/' ? '' : '/') + this.object.name;
+      const PATH = this.object.name.match(/\//gm) ? this.object.name : this.obj.path + (this.obj.path === '/' ? '' : '/') + this.object.name;
       this.coreService.post('inventory/validate/path', {
         objectType: this.obj.type,
         path: PATH
@@ -2779,6 +2781,20 @@ export class CreateObjectModalComponent implements OnInit {
         this.ref.detectChanges();
       }
     });
+  }
+
+  isValidObject(str: string): void {
+    this.isValid = true;
+    if (!str.match(/[!?~'"}\[\]{@:;#\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(str) && /^(?!-)(?!.*--)/.test(str)
+      && !str.substring(0, 1).match(/[-]/) && !str.substring(str.length - 1).match(/[-]/) && !/\s/.test(str)
+      && !str.endsWith('/') && !/\/{2,}/g.test(str)) {
+      if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(str)) {
+        this.isValid = false;
+      }
+    } else {
+      this.isValid = false;
+    }
+    this.ref.detectChanges();
   }
 }
 

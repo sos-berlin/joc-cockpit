@@ -174,7 +174,7 @@
         <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
           <app-job-content [selectedNode]="selectedNode" [scriptList]="scriptList" [preferences]="preferences" [isTooltipVisible]="!preferences.showTooltipInfo" [orderPreparation]="orderPreparation" [jobs]="jobs" [agents]="inventoryService.agentList"
                           [jobResourcesTree]="jobResourcesTree" [documentationTree]="documentationTree" [scriptTree]="scriptTree" [schedulerId]="schedulerId"
-                           (makeJobTemplateFn)="makeJobTemplate($event)" (updateFromJobTemplateFn)="updateFromJobTemplate($event)"></app-job-content>
+                          (updateFromJobTemplateFn)="updateFromJobTemplate($event)"></app-job-content>
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'If'">
           <app-expression-content [selectedNode]="selectedNode" [isTooltipVisible]="!preferences.showTooltipInfo" [error]="error"></app-expression-content>

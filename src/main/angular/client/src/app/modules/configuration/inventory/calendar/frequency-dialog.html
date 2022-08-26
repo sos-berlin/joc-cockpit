@@ -293,6 +293,7 @@
                        <label nz-checkbox [nzChecked]="frequency.nationalHoliday.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
                          {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
                          {{holiday.name}}
+                         <i class="text-muted text-sm p-l-sm" *ngIf="holiday.type">{{holiday.type}}</i>
                        </label>
                     </div>
                   </div>
@@ -302,6 +303,7 @@
                       <label nz-checkbox [nzChecked]="frequency.nationalHoliday.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
                          {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
                          {{holiday.name}}
+                        <i class="text-muted text-sm p-l-sm" *ngIf="holiday.type">{{holiday.type}}</i>
                        </label>
                     </div>
                   </div>
