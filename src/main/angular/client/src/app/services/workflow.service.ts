@@ -2494,18 +2494,6 @@ export class WorkflowService {
       }
     }
 
-    if (job.parameters) {
-      job.arguments = {};
-      for (let i in job.parameters) {
-        job.arguments[i] = {
-          type: (job.parameters[i] == 'true' || job.parameters[i] == 'false') ? 'Boolean' :
-            (/^\d+$/.test(job.parameters[i])) ? 'Number' : 'String',
-          default: job.parameters[i]
-        }
-      }
-    }
-    delete job.parameters;
-
     if (!job.parallelism) {
       job.parallelism = 0;
     }
@@ -2514,7 +2502,7 @@ export class WorkflowService {
     } else {
       delete job.timeout;
     }
-    
+
     if (job.graceTimeout1) {
       job.graceTimeout = this.convertStringToDuration(job.graceTimeout1);
     } else {

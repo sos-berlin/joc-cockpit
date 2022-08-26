@@ -3157,7 +3157,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } else {
           job.parameters = job.executable.arguments;
         }
-        this.workflowService.convertJobObject(job);
+        if (job.parameters) {
+          job.arguments = {};
+          for (let i in job.parameters) {
+            job.arguments[i] = {
+              type: (job.parameters[i] == 'true' || job.parameters[i] == 'false') ? 'Boolean' :
+                (/^\d+$/.test(job.parameters[i])) ? 'Number' : 'String',
+              default: job.parameters[i]
+            }
+          }
+        }
+        delete job.parameters;
         delete job.jobName;
         request.configuration = job;
         this.coreService.post('inventory/store', request).subscribe();
