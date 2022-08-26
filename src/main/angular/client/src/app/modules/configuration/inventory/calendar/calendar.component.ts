@@ -482,7 +482,8 @@ export class FrequencyModalComponent implements OnInit {
       this.hd.init(this.frequency.country);
       holidays = this.hd.getHolidays(this.frequency.year);
       for (let m = 0; m < holidays.length; m++) {
-        if (holidays[m].type === 'public' && holidays[m].date && holidays[m].name && holidays[m].date != 'null') {
+ 
+        if ((holidays[m].type === 'public' || holidays[m].type === 'bank') && holidays[m].date && holidays[m].name && holidays[m].date != 'null') {
           if (holidays[m].date.length > 19) {
             holidays[m].date = holidays[m].date.substring(0, 19);
           }

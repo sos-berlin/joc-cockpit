@@ -1039,7 +1039,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild('codeMirror', {static: false}) cm: any;
 
-  @Output() makeJobTemplateFn: EventEmitter<any> = new EventEmitter();
   @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
@@ -2186,11 +2185,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       this.updateFromJobTemplateFn.emit(this.selectedNode)
     }
   }
-
-  makeJobTemplate(): void {
-    //   $('div.floating-action-menu').removeClass('active');
-    //   this.makeJobTemplateFn.emit(this.selectedNode)
-  }
 }
 
 @Component({
@@ -3105,7 +3099,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }).afterClose.subscribe((result: any) => {
       if (result) {
         if(result.value.state && result.value.state._text !== 'UPTODATE'){
-          this.init();
+          // this.init();
+          this.selectedNode = null;
+          this.getWorkflowObject();
         }
       }
     });
@@ -3118,6 +3114,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         preferences: this.preferences,
+        allowPath: true,
         obj: {
           type: InventoryObject.JOBTEMPLATE,
           path: this.data.path
