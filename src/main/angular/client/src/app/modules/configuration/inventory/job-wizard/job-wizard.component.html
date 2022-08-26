@@ -159,8 +159,10 @@
                        (nzCheckedChange)="onItemChecked(param, $event)"></label>
               </div>
               <div class="col-sm-5 m-b-sm p-l-0">
-                <label class="form-control-label p-l-0" [ngClass]="{'highlight-yellow-bg': param.required}"
-                       style="white-space: normal;word-wrap: break-word;">{{param.name}}</label>
+                <label class="form-control-label p-l-0"
+                       style="white-space: normal;word-wrap: break-word;">{{param.name}}
+                  <sup *ngIf="param.required" class="text-danger text-sm">*</sup>
+                </label>
               </div>
               <ng-container [ngSwitch]="param.type">
                 <ng-container *ngSwitchCase="'Number'">
@@ -271,7 +273,7 @@
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-primary btn-sm"
-            [disabled]="(!job.javaClass && !job.name) || !myForm.form.valid" translate>common.button.submit
+            [disabled]="(!job.javaClass && !job.name) || (job && job.hasRequiredArguments && wizard.step === 1)" translate>common.button.submit
     </button>
     <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 1 && node" [disabled]="!job.javaClass && !job.name"
             (click)="next()" translate>workflow.wizard.button.next

@@ -1438,7 +1438,9 @@
           "pause": "The pause for the continous cycle type specifies the interval between completion of the last cycle and start of the next cycle. Values can be specified in hours, minutes, seconds, for example 1h, 60m, 3600s. In addition the hh:mm:ss format can be used as in 01:00:00 for a one hour's pause between cycle runs.",
           "limit": "For the continuous cycle type a limit for the max. number of cycle runs can be specified.",
           "offsets": "The offsets for a periodical cycle type specify the points in time within the given period when the cycle starts. Values can be specified in seconds or minutes, for example: 0, 15m, 25m, 47m. In this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
-          "period": "The period specifies the duration for which a cycle is active. The cycle will start from the period begin and will be repeated according to its cycle type for the specified duration."
+          "period": "The period specifies the duration for which a cycle is active. The cycle will start from the period begin and will be repeated according to its cycle type for the specified duration.",
+          "periodBeginOfAdmissionTime": "Period Begin",
+          "durationOfAdmissionTime": "Duration"
         },
         "addOrder": {
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
@@ -2112,7 +2114,8 @@
       "audit_log_age": "Specifies the retention period for the Audit Log. Any audit log entries older than the value specified will be purged.",
       "file_transfer_history_age": "Specifies the retention period of the File Transfer History. Any history entries older than the value specified will be purged.",
       "monitoring_history_age": "Specifies the retention period of the Monitoring History. Any history entries older than the value specified will be purged.",
-      "notification_history_age": "Specifies the retention period of the Notification History. Any history entries older than the value specified will be purged."
+      "notification_history_age": "Specifies the retention period of the Notification History. Any history entries older than the value specified will be purged.",
+      "max_pool_size": "Maximum pool size"
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.",
@@ -2569,6 +2572,9 @@
     "label.orderFilter": "Order Filter",
     "label.outstandingAgents": "Outstanding with Agents",
     "label.jobTemplateReference": "Job Template Reference",
+    "label.changedProperties": "Changed Properties",
+    "label.addRequiredArguments": "Added Required Arguments",
+    "label.deleteArguments": "Deleted Arguments",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
