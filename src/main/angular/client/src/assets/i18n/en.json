@@ -2573,7 +2573,7 @@
     "label.outstandingAgents": "Outstanding with Agents",
     "label.jobTemplateReference": "Job Template Reference",
     "label.changedProperties": "Changed Properties",
-    "label.addRequiredArguments": "Added Required Arguments",
+    "label.addRequiredArguments": "Added required Arguments",
     "label.deleteArguments": "Deleted Arguments",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
