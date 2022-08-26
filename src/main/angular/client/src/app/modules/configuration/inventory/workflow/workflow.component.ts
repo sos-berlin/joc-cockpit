@@ -218,6 +218,7 @@ export class FacetEditorComponent implements OnInit {
 })
 export class RepeatEditorComponent implements OnInit {
   @Input() data;
+  @Input() isTooltipVisible;
   isNew: boolean;
   object: any = {};
 
@@ -252,6 +253,8 @@ export class RepeatEditorComponent implements OnInit {
 export class TimeEditorComponent implements OnInit {
   @Input() data;
   @Input() period;
+  @Input() isTooltipVisible;
+  @Input() isCycle;
   isNew: boolean;
   isExist: boolean;
 
@@ -420,7 +423,8 @@ export class CycleInstructionComponent implements OnChanges {
       nzContent: RepeatEditorComponent,
       nzAutofocus: null,
       nzComponentParams: {
-        data: data.repeat
+        data: data.repeat,
+        isTooltipVisible: this.isTooltipVisible
       },
       nzFooter: null,
       nzClosable: false,
@@ -451,7 +455,9 @@ export class CycleInstructionComponent implements OnChanges {
       nzAutofocus: null,
       nzComponentParams: {
         data,
-        period
+        period,
+        isTooltipVisible: this.isTooltipVisible,
+        isCycle: true
       },
       nzFooter: null,
       nzClosable: false,
@@ -865,7 +871,9 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       nzAutofocus: null,
       nzComponentParams: {
         data,
-        period
+        period,
+        isTooltipVisible: this.isTooltipVisible,
+        isCycle: false
       },
       nzFooter: null,
       nzClosable: false,
@@ -3096,7 +3104,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       nzMaskClosable: false
     }).afterClose.subscribe((result: any) => {
       if (result) {
-        if(result.state && result.state._text !== 'UPTODATE'){
+        if(result.value.state && result.value.state._text !== 'UPTODATE'){
           this.init();
         }
       }

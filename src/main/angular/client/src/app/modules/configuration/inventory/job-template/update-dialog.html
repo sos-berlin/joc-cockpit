@@ -1,3 +1,40 @@
+<ng-template #jobTemplate let-item>
+  <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
+     *ngIf="!item.show && item.value.actions" (click)="item.show = true;"></i>
+  <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
+     *ngIf="item.show && item.value.actions" (click)="item.show = false"></i>
+  <i class="icon-jobs-icon icon-color tree-icon p-l-xs p-r-xs"></i>
+  {{item.name}}
+  <span *ngIf="item.value" class="label m-l" [ngClass]="coreService.getColor(item.value.state.severity,'bg')"
+        [innerHtml]="item.value.state._text | translate"></span>
+  <i *ngIf="item.value.state.message" class="fa fa-info-circle p-l-sm" [nz-tooltip]="item.value.state.message"></i>
+  <div class="m-l m-t-xs" *ngIf="item.show">
+    <div *ngIf="item.value.actions?.changes">
+      <ul class="m-b-sm p-t-xxs">
+        <li class="m-b-xs"><span class="_600 text" translate>workflow.label.changedProperties</span>:</li>
+        <li class="m-l-sm p-l-xs" *ngFor="let item of item.value.actions.changes">
+          {{item}}
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="item.value.actions?.addRequiredArguments">
+      <ul class="m-b-sm p-t-xxs">
+        <li class="m-b-xs"><span class="_600 text" translate>workflow.label.addRequiredArguments</span>:</li>
+        <li class="m-l-sm p-l-xs">
+          {{item.value.actions.addRequiredArguments | json}}
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="item.value.actions?.deleteArguments">
+      <ul class="m-b-sm p-t-xxs">
+        <li class="m-b-xs"><span class="_600 text" translate>workflow.label.deleteArguments</span>:</li>
+        <li class="m-l-sm p-l-xs">
+          {{item.value.actions.deleteArguments | json}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
 <div class="modal-header">
   <h4 class="modal-title">
     <span *ngIf="treeObj">
@@ -6,6 +43,7 @@
     </span>
     <span *ngIf="job">
       <span translate>inventory.button.updateFromJobTemplate</span>:
+      {{job.jobName}}
     </span>
     <span *ngIf="data">
       <span translate>inventory.label.updateJobs</span>:
@@ -95,7 +133,7 @@
       </div>
     </div>
     <div *ngIf="isUpdated">
-      <ul>
+      <ul *ngIf="updatedList.length > 0">
         <li class="m-b-xs"><span class="_600 text" translate>inventory.label.workflows</span>:</li>
         <li *ngFor="let workflow of updatedList" class="p-l-sm">
           <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
@@ -110,22 +148,20 @@
           <ul *ngIf="workflow.jobs && workflow.show" class="m-b-sm p-t-xxs">
             <li class="m-b-xs"><span class="_600 text" translate>dashboard.label.jobs</span>:</li>
             <li class="m-l-sm p-l-xs" *ngFor="let job of workflow.jobs">
-              <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
-                 *ngIf="!job.show && job.value.actions" (click)="job.show = true;"></i>
-              <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
-                 *ngIf="job.show && job.value.actions" (click)="job.show = false"></i>
-              <i class="icon-jobs-icon icon-color tree-icon p-l-xs p-r-xs"></i>
-              {{job.name}}
-              <span *ngIf="job.value" class="label m-l" [ngClass]="coreService.getColor(job.value.state.severity,'bg')"
-                    [innerHtml]="job.value.state._text | translate"></span>
-              <i *ngIf="job.value.state.message" class="fa fa-info-circle p-l-sm" [nz-tooltip]="job.value.state.message"></i>
-              <div class="m-l m-t-xs" *ngIf="job.show">
-                <pre class="p-a-xs">{{job.value.actions | json}}</pre>
-              </div>
+              <ng-container [ngTemplateOutlet]="jobTemplate"
+                            [ngTemplateOutletContext]="{ $implicit: job}"></ng-container>
             </li>
           </ul>
         </li>
       </ul>
+      <div *ngIf="jobStatus">
+        <ul>
+          <li>
+            <ng-container [ngTemplateOutlet]="jobTemplate"
+                          [ngTemplateOutletContext]="{ $implicit: jobStatus}"></ng-container>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="modal-footer">

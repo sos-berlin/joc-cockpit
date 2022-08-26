@@ -282,15 +282,16 @@
                           </div>
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-3 m-b-sm p-r-0">
-                          <nz-select [nzDisabled]="isTrash" name="type{{i}}" [(ngModel)]="parameter.value.type">
+                          <nz-select [nzDisabled]="isTrash" name="type{{i}}" [(ngModel)]="parameter.value.type" (ngModelChange)="saveJSON()">
                             <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType | translate" [nzValue]="dataType"></nz-option>
                           </nz-select>
                         </div>
                         <div class="col-md-4 col-lg-4 col-xl-3 m-b-sm" [ngSwitch]="parameter.value.type">
-                          <nz-input-number [nzDisabled]="isTrash" *ngSwitchCase="'Number'" [nzMin]="0" [nzStep]="1"
+                          <nz-input-number *ngSwitchCase="'Number'" [nzDisabled]="isTrash" [nzMin]="0" [nzStep]="1"
                                            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
-                                           name="value{{i}}" [(ngModel)]="parameter.value.default"></nz-input-number>
-                          <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [nzDisabled]="isTrash" *ngSwitchCase="'Boolean'" name="value{{i}}" [(ngModel)]="parameter.value.default">
+                                           name="value{{i}}" [(ngModel)]="parameter.value.default" (nzBlur)="saveJSON()"></nz-input-number>
+                          <nz-select *ngSwitchCase="'Boolean'" nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [nzDisabled]="isTrash"
+                                     name="value{{i}}" [(ngModel)]="parameter.value.default" (ngModelChange)="saveJSON()">
                             <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                             <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                           </nz-select>
@@ -299,7 +300,7 @@
                           <ng-container *ngSwitchDefault>
                             <input #value="ngModel" [facetValidation]="parameter.value.facet" autocomplete="off" type="text" class="form-control" name="value{{i}}"
                                    (keydown)="onKeyPress($event, 'parameters')"
-                                   [(ngModel)]="parameter.value.default" placeholder="{{'common.placeholder.value' | translate}}">
+                                   [(ngModel)]="parameter.value.default" placeholder="{{'common.placeholder.value' | translate}}" (blur)="saveJSON()">
                             <i [nz-tooltip]="'workflow.tooltip.facetEntryMode' | translate" class="pos-abt cursor text-primary-hover" [ngClass]="{'text-primary': parameter.value.facet}" style="right: 49px;top:1px;" *ngIf="parameter.value.type === 'String'" (click)="addFacet(parameter)" nz-icon nzType="snippets" nzTheme="outline"></i>
                             <i [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover" [ngClass]="{'text-primary': parameter.value.list && parameter.value.list.length > 0}"
                                style="right: 31px;top:1px;" *ngIf="parameter.value.type === 'String'" (click)="addList(parameter)" nz-icon nzType="unordered-list" nzTheme="outline"></i>
@@ -323,7 +324,7 @@
                                     placeholder="{{'workflow.placeholder.description' | translate}}" (blur)="saveJSON()"></textarea>
                         </div>
                         <div class="col-lg-12 col-xl-9 m-b-12">
-                          <label class="m-t-xs" nz-checkbox [(ngModel)]="parameter.value.required">
+                          <label class="m-t-xs" nz-checkbox [(ngModel)]="parameter.value.required" (ngModelChange)="saveJSON()">
                             {{'workflow.label.required' | translate}}
                           </label>
                         </div>

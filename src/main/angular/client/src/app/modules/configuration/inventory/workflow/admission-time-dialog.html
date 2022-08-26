@@ -246,7 +246,7 @@
     <div class="col-sm-12">
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" title="{{'workflow.admissionTime.label.startTime' | translate}}"
-               [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.startTime' | translate) : ''"
+               [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''"
                [nzTooltipMouseEnterDelay]="0.5" translate>workflow.admissionTime.label.startTime</label>
         <div class="col-sm-9">
           <div class="time-picker m-l-0">
@@ -258,7 +258,7 @@
       </div>
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" title="{{'common.label.duration' | translate}}"
-               [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.duration' | translate) : ''"
+               [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''"
                [nzTooltipMouseEnterDelay]="0.5" translate>common.label.duration
          <sup *ngIf="!!object.startTime" class="text-danger text-sm">*</sup>
         </label>

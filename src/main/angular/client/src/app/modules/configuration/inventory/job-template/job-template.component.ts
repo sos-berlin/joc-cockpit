@@ -57,6 +57,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
 
   isUpdated = false;
   updatedList = [];
+  jobStatus: any;
 
   @ViewChild('treeCtrl', {static: false}) treeCtrl;
 
@@ -319,7 +320,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
           this.updatedList = res.workflows;
           this.isUpdated = true;
           this.updatedList.forEach((workflow, index) => {
-            if(index === 0){
+            if (index === 0) {
               workflow.show = true;
             }
             workflow.jobs = Object.entries(workflow.jobs).map(([k, v]) => {
@@ -327,7 +328,15 @@ export class UpdateJobTemplatesComponent implements OnInit {
             });
           })
         } else {
-          this.activeModal.close(res);
+          if (res.state) {
+            this.isUpdated = true;
+            this.jobStatus = {
+              name: this.job.jobName,
+              value: res
+            };
+          } else {
+            this.activeModal.close(res);
+          }
         }
         this.submitted = false;
       }, error: () => {
@@ -341,7 +350,7 @@ export class UpdateJobTemplatesComponent implements OnInit {
   }
 
   close(): void {
-    this.activeModal.close(this.updatedList);
+    this.activeModal.close(this.jobStatus || this.updatedList);
   }
 }
 

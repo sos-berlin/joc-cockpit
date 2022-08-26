@@ -100,8 +100,8 @@
   "CONFLICT": "in Konflict",
   "CHANGED": "geändert",
   "PERMISSION_DENIED": "keine Berechtigung",
-  "DELETED": "deleted",
-  "TEMPLATE_REFERENCE_DELETED": "template reference deleted",
+  "DELETED": "gelöscht",
+  "TEMPLATE_REFERENCE_DELETED": "Referenz auf Job-Vorlage gelöscht",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "wahr",
   "False": "falsch",
@@ -1405,8 +1405,8 @@
           "jobClass": "Die Job-Klasse legt fest, ob ein Job in der Shell des Betriebssystems (Windows, Unix, MacOs etc.) oder als JITL Java Job oder als Skript Job in einer der von Java unterstützten Skript-Sprachen ausgeführt wird.",
           "timeout": "Nach Zeitablauf wird ein Job unter Windows abgebrochen. Unter Unix wird der Job mit SIGTERM versucht zu beenden und ggf. nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen.",
           "graceTimeout": "Die Toleranzfrist gilt für Jobs unter Unix, die zunächst mit SIGTERM versucht werden zu beenden und nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen werden.",
-          "warnIfShorter": "Bei kürzerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann auch das Format hh:mm:ss verwendet werden, z.B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus den Durchschnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
-          "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann auch das Format hh:mm:ss verwendet werden, z.B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus dem Durchscnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
+          "warnIfShorter": "Bei kürzerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann das Format hh:mm:ss verwendet werden, z.B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus den Durchschnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
+          "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann das Format hh:mm:ss verwendet werden, z.B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus dem Durchscnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
           "agent": "Dem Job ist ein Agent zugewiesen, der das Job Skript bzw. die Java Klasse ausführt.",
           "fileWatcher": "Eine Dateiauftragsquelle überwacht ein Verzeichnis auf eintreffende Dateien und erzeugt für jede Datei einen Auftrag für einen Arbeitsablauf.",
           "className": "Der Name einer Java Klasse, die einen Job implementiert. JS7 enthält eine Reihe von JITL Java Klassen, z.B. für Datenbankzugriffe, E-Mail Versand etc.",
@@ -1428,7 +1428,7 @@
           "weekDays": "Wochentage geben Tage an, die individuell ausgewählt werden können.",
           "monthDays": "Monatstage werden vom ersten bis zum letzten Tag des Monats gezählt oder umgekehrt.",
           "dayNumber": "Spezifische Wochentage ermöglichen es, die Wiederholung des Wochentages in einem Monat zu bestimmen, z.B. das erste, zweite, letzte usw. Auftreten.",
-          "startTime": "Der Periodenbeginn gibt an, wann ein Zyklus aktiv wird. Der Zyklus bleibt für die durch den Zeitraum angegebene Dauer aktiv. Die Werte werden im Format hh:mm:ss angegeben, zum Beispiel steht 00:00:00 für Mitternacht.",
+          "startTime": "Der Periodenbeginn gibt an, wann ein Zyklus erstmalig aktiv wird. Die Werte werden im Format hh:mm:ss angegeben, zum Beispiel steht 00:00:00 für Mitternacht.",
           "duration": "Gibt die Dauer an, für die der Zyklus aktiv ist. Die Werte werden in Stunden, Minuten oder Sekunden angegeben, zum Beispiel 1h, 3600s, 60m, oder im Format hh:mm:ss, zum Beispiel 01:00:00.",
           "cycleType": "Die Art des Zyklus kann periodisch (einzelne Startzeiten pro Periode), kontinuierlich (feste Pause zwischen den Startzeiten) oder tickend (festes Startzeitintervall) sein.",
           "periodical": "Der periodische Zyklustyp ermöglicht die Angabe versetzter Startzeiten pro Periode in Sekunden oder Minuten, zum Beispiel: 0, 15m, 25m, 47m. In diesem Beispiel beginnt der Zyklus zu Beginn jeder Stunde und zur 15., 25. und 47. Minute, sofern eine stündliche Periode angegeben ist.",
@@ -1438,7 +1438,9 @@
           "pause": "Die Pause für den kontinuierlichen Zyklustyp gibt das Intervall zwischen dem Abschluss des letzten Zyklus und dem Beginn des nächsten Zyklus an. Die Werte können in Stunden, Minuten und Sekunden angegeben werden, z.B. 1h, 60m, 3600s. Außerdem kann das Format hh:mm:ss verwendet werden, z.B. 01:00:00 für eine einstündige Pause zwischen den Zyklusläufen.",
           "limit": "Für den kontinuierlichen Zyklustyp kann eine Grenze für die maximale Anzahl von Zyklusdurchläufen festgelegt werden.",
           "offsets": "Die versetzten Zeitpunkte für einen periodischen Zyklustyp geben die Zeitpunkte innerhalb des angegebenen Zeitraums an, an denen der Zyklus beginnt. Die Werte können in Sekunden oder Minuten angegeben werden, zum Beispiel: 0, 15m, 25m, 47m. In diesem Beispiel beginnt der Zyklus zu Beginn jeder Stunde und zur 15., 25. und 47. Minute, sofern ein stündlicher Zeitraum angegeben ist.",
-          "period": "Die Periode gibt die Dauer an, für die ein Zyklus aktiv ist. Der Zyklus beginnt mit dem Beginn der Periode und wird entsprechend seines Zyklustyps für die angegebene Dauer wiederholt."
+          "period": "Die Periode gibt die Dauer an, für die ein Zyklus aktiv ist. Der Zyklus beginnt mit dem Beginn der Periode und wird entsprechend seines Zyklustyps für die angegebene Dauer wiederholt.",
+          "periodBeginOfAdmissionTime": "Period Begin",
+          "durationOfAdmissionTime": "Duration"
         },
         "addOrder": {
           "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
@@ -2112,7 +2114,8 @@
       "audit_log_age": "Benennt die Aufbewahrungsdauer des Prüfprotokolls. Ältere Einträge im Prüfprotokoll werden entfernt.",
       "file_transfer_history_age": "Benennt die Aufbewahrungsdauer der Historie der Dateiübertragungen. Ältere Einträge werden aus der Historie entfernt.",
       "monitoring_history_age": "Benennt die Aufbewahrungsdauer der Historie der Überwachungen. Ältere Einträge werden aus der Historie entfernt.",
-      "notification_history_age": "Benennt die Aufbewahrungsdauer der Historie der Benachrichtigungen. Ältere Einträge werden aus der Historie entfernt."
+      "notification_history_age": "Benennt die Aufbewahrungsdauer der Historie der Benachrichtigungen. Ältere Einträge werden aus der Historie entfernt.",
+      "max_pool_size": "Maximum pool size"
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des Tagesplandienstes und der Periode des Tagesplans.",
@@ -2569,6 +2572,9 @@
     "label.orderFilter": "Auftragsfilter",
     "label.outstandingAgents": "Ausstehend bei Agenten",
     "label.jobTemplateReference": "Verweis auf Job-Vorlage",
+    "label.changedProperties": "Changed Properties",
+    "label.addRequiredArguments": "Added Required Arguments",
+    "label.deleteArguments": "Deleted Arguments",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

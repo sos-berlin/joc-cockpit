@@ -528,7 +528,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     } else if (this.schedule.configuration.orderParameterisations && this.schedule.configuration.orderParameterisations.length > 0) {
       for (const prop in this.schedule.configuration.orderParameterisations) {
         delete this.schedule.configuration.orderParameterisations[prop].forkListVariables;
-        this.schedule.configuration.orderParameterisations[prop].variables = {};
+        this.schedule.configuration.orderParameterisations[prop].variables = [];
       }
     }
     this.updateSelectItems(true);

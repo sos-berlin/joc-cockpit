@@ -363,23 +363,7 @@ export class JobWizardComponent implements OnInit {
         if (!isArray(this.job.arguments)) {
           this.job.params = Object.entries(this.job.arguments).map(([k, v]) => {
             const val: any = v;
-            if (val.default) {
-              if (val.type === 'String') {
-                this.coreService.removeSlashToString(val, 'default');
-              } else if (val.type === 'Boolean') {
-                val.default = (val.default === true || val.default === 'true');
-              }
-            }
-            if (val.list) {
-              let list = [];
-              val.list.forEach((val) => {
-                let obj = {name: val};
-                this.coreService.removeSlashToString(obj, 'name');
-                list.push(obj);
-              });
-              val.list = list;
-            }
-            return {name: k, value: val};
+            return {name: k, required: val.required, description: val.description, type: val.type, defaultValue: val.default};
           });
         }
       }

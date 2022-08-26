@@ -1438,7 +1438,9 @@
           "pause": "休止時間",
           "limit": "最大繰り返し回数",
           "offsets": "オフセット",
-          "period": "ピリオド"
+          "period": "ピリオド",
+          "periodBeginOfAdmissionTime": "Period Begin",
+          "durationOfAdmissionTime": "Duration"
         },
         "addOrder": {
           "workflowName": "ワークフロー名",
@@ -2112,7 +2114,8 @@
       "audit_log_age": "操作ログの保存期間を指定します。指定した値よりも古い操作ログはすべて消去されます。",
       "file_transfer_history_age": "ファイル転送実行履歴の保存期間を指定します。",
       "monitoring_history_age": "モニター履歴の保存期間を指定します。",
-      "notification_history_age": "通知履歴の保存期間を指定します。"
+      "notification_history_age": "通知履歴の保存期間を指定します。",
+      "max_pool_size": "Maximum pool size"
     },
     "dailyplan": {
       "time_zone": "デイリープランサービスの開始時刻とデイリープランの期間に適用されるタイムゾーンを指定します。",
@@ -2569,6 +2572,9 @@
     "label.orderFilter": "オーダー検索",
     "label.outstandingAgents": "保留中エージェント",
     "label.jobTemplateReference": "参照ジョブテンプレート",
+    "label.changedProperties": "Changed Properties",
+    "label.addRequiredArguments": "Added Required Arguments",
+    "label.deleteArguments": "Deleted Arguments",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

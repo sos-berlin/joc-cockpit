@@ -100,8 +100,8 @@
   "CONFLICT": "en conflit",
   "CHANGED": "modifié",
   "PERMISSION_DENIED": "permission refusée",
-  "DELETED": "deleted",
-  "TEMPLATE_REFERENCE_DELETED": "template reference deleted",
+  "DELETED": "supprimé",
+  "TEMPLATE_REFERENCE_DELETED": "référence au Modèle de Tâche supprimée",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "vrai",
   "False": "faux",
@@ -1428,7 +1428,7 @@
           "weekDays": "Les jours de la semaine indiquent les jours qui peuvent être sélectionnés individuellement.",
           "monthDays": "Les jours du mois sont comptés du premier au dernier jour du mois ou vice versa.",
           "dayNumber": "Les jours de la semaine spécifiques permettent de déterminer la récurrence du jour de la semaine dans un mois, par exemple la première, la deuxième, la dernière, etc. occurrence.",
-          "startTime": "La période de début spécifie le moment où un cycle devient actif. Le cycle restera actif pendant la durée spécifiée par sa période. Les valeurs sont spécifiées dans le format hh:mm:ss, par exemple 00:00:00 indique minuit.",
+          "startTime": "La période de début spécifie le moment où un cycle devient actif pour la première fois. Les valeurs sont spécifiées dans le format hh:mm:ss, par exemple 00:00:00 indique minuit.",
           "duration": "Spécifie la durée pendant laquelle le cycle est actif. Les valeurs sont spécifiées en heures, minutes ou secondes, par exemple 1h, 3600s, 60m, ou au format hh:mm:ss, par exemple 01:00:00.",
           "cycleType": "Le type de cycle peut être périodique (heures de départ individuelles par période), continu (pause fixe entre les heures de départ) ou à tic-tac (intervalle de départ fixe).",
           "periodical": "Le type de cycle périodique permet de spécifier des heures de début individuelles par période en secondes ou en minutes, par exemple : 0, 15m, 25m, 47m. Dans cet exemple, le cycle commencera au début de chaque heure et à la 15ème, 25ème et 47ème minute, à condition qu'une période horaire soit spécifiée.",
@@ -1438,7 +1438,9 @@
           "pause": "La pause pour le type de cycle continu spécifie l'intervalle entre la fin du dernier cycle et le début du cycle suivant. Les valeurs peuvent être spécifiées en heures, minutes, secondes, par exemple 1h, 60m, 3600s. En outre, le format hh:mm:ss peut être utilisé comme dans 01:00:00 pour une pause d'une heure entre les cycles.",
           "limit": "Pour le type de cycle continu, une limite pour le nombre maximum de cycles peut être spécifiée.",
           "offsets": "Les décalages pour un type de cycle périodique spécifient les points dans le temps dans la période donnée quand le cycle commence. Les valeurs peuvent être spécifiées en secondes ou en minutes, par exemple : 0, 15m, 25m, 47m. Dans cet exemple, le cycle commencera au début de chaque heure et aux 15e, 25e et 47e minutes, à condition qu'une période horaire soit spécifiée.",
-          "period": "La période spécifie la durée pendant laquelle un cycle est actif. Le cycle commencera à partir du début de la période et sera répété selon son type de cycle pour la durée spécifiée."
+          "period": "La période spécifie la durée pendant laquelle un cycle est actif. Le cycle commencera à partir du début de la période et sera répété selon son type de cycle pour la durée spécifiée.",
+          "periodBeginOfAdmissionTime": "Period Begin",
+          "durationOfAdmissionTime": "Duration"
         },
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
@@ -2112,7 +2114,8 @@
       "audit_log_age": "Spécifie la période de rétention du Journal d'Audit. Toutes les entrées du Journal d'Audit plus anciennes que la valeur spécifiée seront purgées.",
       "file_transfer_history_age": "Spécifie la période de rétention de l'historique des transferts de fichier. Toutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
       "monitoring_history_age": "Spécifie la période de rétention du Suivi de l'Activité. Toutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
-      "notification_history_age": "Spécifie la période de rétention des Notifications. Toutes les entrées plus anciennes que la valeur spécifiée seront purgées."
+      "notification_history_age": "Spécifie la période de rétention des Notifications. Toutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
+      "max_pool_size": "Maximum pool size"
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",
@@ -2569,6 +2572,9 @@
     "label.orderFilter": "Filtre d'Ordre",
     "label.outstandingAgents": "En attendant les Agents",
     "label.jobTemplateReference": "Référence au Modèle de Tâche",
+    "label.changedProperties": "Changed Properties",
+    "label.addRequiredArguments": "Added Required Arguments",
+    "label.deleteArguments": "Deleted Arguments",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
