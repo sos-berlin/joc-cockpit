@@ -102,6 +102,9 @@
   "PERMISSION_DENIED": "keine Berechtigung",
   "DELETED": "gelöscht",
   "TEMPLATE_REFERENCE_DELETED": "Referenz auf Job-Vorlage gelöscht",
+  "COMPATIBLE": "compatible",
+  "PARTIALLY_COMPATIBLE": "partially compatible",
+  "NOT_COMPATIBLE": "not compatible",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "wahr",
   "False": "falsch",
@@ -1439,8 +1442,8 @@
           "limit": "Für den kontinuierlichen Zyklustyp kann eine Grenze für die maximale Anzahl von Zyklusdurchläufen festgelegt werden.",
           "offsets": "Die versetzten Zeitpunkte für einen periodischen Zyklustyp geben die Zeitpunkte innerhalb des angegebenen Zeitraums an, an denen der Zyklus beginnt. Die Werte können in Sekunden oder Minuten angegeben werden, zum Beispiel: 0, 15m, 25m, 47m. In diesem Beispiel beginnt der Zyklus zu Beginn jeder Stunde und zur 15., 25. und 47. Minute, sofern ein stündlicher Zeitraum angegeben ist.",
           "period": "Die Periode gibt die Dauer an, für die ein Zyklus aktiv ist. Der Zyklus beginnt mit dem Beginn der Periode und wird entsprechend seines Zyklustyps für die angegebene Dauer wiederholt.",
-          "periodBeginOfAdmissionTime": "Period Begin",
-          "durationOfAdmissionTime": "Duration"
+          "periodBeginOfAdmissionTime": "Gibt den Beginn der Zutrittszeiten eines Jobs an. Die Werte werden im Format hh:mm:ss angegeben, zum Beispiel steht 00:00:00 für Mitternacht.",
+          "durationOfAdmissionTime": "Gibt die Dauer der Zutrittszeiten eines Jobs an. Die Werte werden in Stunden, Minuten oder Sekunden angegeben, zum Beispiel 1h, 3600s, 60m, oder im Format hh:mm:ss, zum Beispiel 01:00:00."
         },
         "addOrder": {
           "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
@@ -2115,7 +2118,9 @@
       "file_transfer_history_age": "Benennt die Aufbewahrungsdauer der Historie der Dateiübertragungen. Ältere Einträge werden aus der Historie entfernt.",
       "monitoring_history_age": "Benennt die Aufbewahrungsdauer der Historie der Überwachungen. Ältere Einträge werden aus der Historie entfernt.",
       "notification_history_age": "Benennt die Aufbewahrungsdauer der Historie der Benachrichtigungen. Ältere Einträge werden aus der Historie entfernt.",
-      "max_pool_size": "Maximum pool size"
+      "max_pool_size": "Die maximale Größe des Verbindungspools gibt die Anzahl der verwendeten Datenbankverbindungen an. Für Umgebungen, in denen eine größere Anzahl von Einträgen aus den täglichen Job-Pprotokollen zu bereinigen ist, kann es von Vorteil sein, diesen Wert auf beispielsweise 10 zu erhöhen. Benutzer müssen prüfen, ob ihr DBMS die Verwendung einer höheren Anzahl von Verbindungen zulässt.",
+      "profile_age":  "Profile age",
+      "failed_login_history_age": "Failed login history age"
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des Tagesplandienstes und der Periode des Tagesplans.",
@@ -2572,9 +2577,9 @@
     "label.orderFilter": "Auftragsfilter",
     "label.outstandingAgents": "Ausstehend bei Agenten",
     "label.jobTemplateReference": "Verweis auf Job-Vorlage",
-    "label.changedProperties": "Changed Properties",
-    "label.addRequiredArguments": "Added Required Arguments",
-    "label.deleteArguments": "Deleted Arguments",
+    "label.changedProperties": "Geänderte Eigenschaften",
+    "label.addRequiredArguments": "Hinzugefügte erforderliche Argumente",
+    "label.deleteArguments": "Gelöschte Argumente",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",

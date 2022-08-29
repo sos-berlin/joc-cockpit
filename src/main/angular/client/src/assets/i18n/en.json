@@ -102,6 +102,9 @@
   "PERMISSION_DENIED": "permission denied",
   "DELETED": "deleted",
   "TEMPLATE_REFERENCE_DELETED": "Job Template reference deleted",
+  "COMPATIBLE": "compatible",
+  "PARTIALLY_COMPATIBLE": "partially compatible",
+  "NOT_COMPATIBLE": "not compatible",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "true",
   "False": "false",
@@ -1439,8 +1442,8 @@
           "limit": "For the continuous cycle type a limit for the max. number of cycle runs can be specified.",
           "offsets": "The offsets for a periodical cycle type specify the points in time within the given period when the cycle starts. Values can be specified in seconds or minutes, for example: 0, 15m, 25m, 47m. In this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
           "period": "The period specifies the duration for which a cycle is active. The cycle will start from the period begin and will be repeated according to its cycle type for the specified duration.",
-          "periodBeginOfAdmissionTime": "Period Begin",
-          "durationOfAdmissionTime": "Duration"
+          "periodBeginOfAdmissionTime": "Specifies the begin of the job's admission times. Values are specified from the hh:mm:ss format, for example 00:00:00 indicates midnight.",
+          "durationOfAdmissionTime": "Specifies the duration of the job's admission times. Values are specified in hours, minutes or seconds, for example 1h, 3600s, 60m, or from the hh:mm:ss format, for example 01:00:00."
         },
         "addOrder": {
           "workflowName": "The AddOrder Instruction allows to add an independent order to the specified workflow.",
@@ -2115,7 +2118,9 @@
       "file_transfer_history_age": "Specifies the retention period of the File Transfer History. Any history entries older than the value specified will be purged.",
       "monitoring_history_age": "Specifies the retention period of the Monitoring History. Any history entries older than the value specified will be purged.",
       "notification_history_age": "Specifies the retention period of the Notification History. Any history entries older than the value specified will be purged.",
-      "max_pool_size": "Maximum pool size"
+      "max_pool_size": "The max. connection pool size specifies the number of database connection used. For environmentns with larger numbers of daily task history entries to purge it can be benefitial to increase this value for example to 10. Users have to check that their DBMS allows an increased number of connections to be used.",
+      "profile_age":  "Profile age",
+      "failed_login_history_age": "Failed login history age"
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.",
@@ -2573,7 +2578,7 @@
     "label.outstandingAgents": "Outstanding with Agents",
     "label.jobTemplateReference": "Job Template Reference",
     "label.changedProperties": "Changed Properties",
-    "label.addRequiredArguments": "Added Required Arguments",
+    "label.addRequiredArguments": "Added required Arguments",
     "label.deleteArguments": "Deleted Arguments",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",

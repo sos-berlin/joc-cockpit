@@ -102,6 +102,9 @@
   "PERMISSION_DENIED": "permission refusée",
   "DELETED": "supprimé",
   "TEMPLATE_REFERENCE_DELETED": "référence au Modèle de Tâche supprimée",
+  "COMPATIBLE": "compatible",
+  "PARTIALLY_COMPATIBLE": "partially compatible",
+  "NOT_COMPATIBLE": "not compatible",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "vrai",
   "False": "faux",
@@ -1439,8 +1442,8 @@
           "limit": "Pour le type de cycle continu, une limite pour le nombre maximum de cycles peut être spécifiée.",
           "offsets": "Les décalages pour un type de cycle périodique spécifient les points dans le temps dans la période donnée quand le cycle commence. Les valeurs peuvent être spécifiées en secondes ou en minutes, par exemple : 0, 15m, 25m, 47m. Dans cet exemple, le cycle commencera au début de chaque heure et aux 15e, 25e et 47e minutes, à condition qu'une période horaire soit spécifiée.",
           "period": "La période spécifie la durée pendant laquelle un cycle est actif. Le cycle commencera à partir du début de la période et sera répété selon son type de cycle pour la durée spécifiée.",
-          "periodBeginOfAdmissionTime": "Period Begin",
-          "durationOfAdmissionTime": "Duration"
+          "periodBeginOfAdmissionTime": "Spécifie le debut des heures d'admission de la tâche. Les valeurs sont spécifiées dans le format hh:mm:ss, par exemple 00:00:00 indique minuit.",
+          "durationOfAdmissionTime": "Spécifie la durée des heures d'admission de la tâche. Les valeurs sont spécifiées en heures, minutes ou secondes, par exemple 1h, 3600s, 60m, ou au format hh:mm:ss, par exemple 01:00:00."
         },
         "addOrder": {
           "workflowName": "L'instruction Ajouter un Ordre permet d'ajouter un ordre indépendant au workflow spécifié.",
@@ -2115,7 +2118,9 @@
       "file_transfer_history_age": "Spécifie la période de rétention de l'historique des transferts de fichier. Toutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
       "monitoring_history_age": "Spécifie la période de rétention du Suivi de l'Activité. Toutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
       "notification_history_age": "Spécifie la période de rétention des Notifications. Toutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
-      "max_pool_size": "Maximum pool size"
+      "max_pool_size": "La taille maximale du pool de connexions spécifie le nombre de connexions à la base de données utilisées. Pour les environnements ayant un grand nombre d'entrées de l'historique des tâches quotidiennes à purger, il peut être avantageux d'augmenter cette valeur, par exemple à 10. Les utilisateurs doivent vérifier que leur SGBD permet l'utilisation d'un plus grand nombre de connexions.",
+      "profile_age":  "Profile age",
+      "failed_login_history_age": "Failed login history age"
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",
@@ -2572,9 +2577,9 @@
     "label.orderFilter": "Filtre d'Ordre",
     "label.outstandingAgents": "En attendant les Agents",
     "label.jobTemplateReference": "Référence au Modèle de Tâche",
-    "label.changedProperties": "Changed Properties",
-    "label.addRequiredArguments": "Added Required Arguments",
-    "label.deleteArguments": "Deleted Arguments",
+    "label.changedProperties": "Propriétés modifiées",
+    "label.addRequiredArguments": "Arguments nécessaires ajoutés",
+    "label.deleteArguments": "Arguments supprimés",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
