@@ -1660,7 +1660,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.calendar.configuration.from = new Date();
       }
       this.calendar.actual = JSON.stringify(this.calendar.configuration);
-      this.history.push(this.calendar.actual);
+      this.history.push(JSON.stringify(this.calendar.configuration));
       if (!res.valid) {
         this.invalidMsg = 'inventory.message.includesIsMissing';
       } else {

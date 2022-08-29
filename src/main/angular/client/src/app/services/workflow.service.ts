@@ -1867,7 +1867,10 @@ export class WorkflowService {
     return (h > 9 ? h : '0' + h) + ':' + (m > 9 ? m : '0' + m) + (s > 0 ? (':' + (s > 9 ? s : '0' + s)) : ':00');
   }
 
-  convertDurationToHour(seconds: number): string {
+  convertDurationToHour(seconds: any): string {
+    if (seconds === '0s') {
+      return '0s';
+    }
     if (seconds === 0) {
       return '0';
     }

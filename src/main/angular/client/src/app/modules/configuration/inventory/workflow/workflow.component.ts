@@ -7705,7 +7705,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               obj.retryDelays.push({value: self.workflowService.convertDurationToHour(item) || '0s'});
             });
           } else {
-            obj.retryDelays = [];
+            obj.retryDelays = [{ value: '0s' }];
           }
         } else if (cell.value.tagName === 'Cycle') {
           obj.schedule = cell.getAttribute('schedule');

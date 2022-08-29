@@ -1124,7 +1124,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
           }
         });
       }
-      this.history.push(this.schedule.actual);
+      this.history.push(JSON.stringify(this.schedule.configuration));
       if (!res.valid) {
         if (this.schedule.configuration.workflowNames && this.schedule.configuration.workflowNames.length > 0 && this.schedule.configuration.calendars.length > 0) {
           this.validateJSON(res.configuration);

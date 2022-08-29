@@ -159,7 +159,6 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       this.fileOrder.path1 = this.data.path;
       this.fileOrder.name = this.data.name;
       this.fileOrder.actual = JSON.stringify(res.configuration);
-      this.history.push(this.fileOrder.actual);
       if (!this.fileOrder.configuration.timeZone) {
         this.fileOrder.configuration.timeZone = this.preferences.zone;
       }
@@ -179,6 +178,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       } else {
         this.invalidMsg = '';
       }
+      this.history.push(JSON.stringify(this.fileOrder.configuration));
       this.ref.detectChanges();
     });
   }

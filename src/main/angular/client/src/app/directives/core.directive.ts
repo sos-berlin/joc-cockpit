@@ -208,7 +208,7 @@ export class NumberArrayRegexValidator implements Validator {
       if (v == '') {
         return null;
       }
-      if (/^(\d{1,3})(,\d{1,3})*(\d)?$/g.test(v)) {
+      if (/^(\d{1,4})(,\d{1,4})*(\d)?$/g.test(v)) {
         return null;
       }
     } else {
