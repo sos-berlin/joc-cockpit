@@ -102,6 +102,9 @@
   "PERMISSION_DENIED": "許可されていません",
   "DELETED": "deleted",
   "TEMPLATE_REFERENCE_DELETED": "template reference deleted",
+  "COMPATIBLE": "compatible",
+  "PARTIALLY_COMPATIBLE": "partially compatible",
+  "NOT_COMPATIBLE": "not compatible",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "true",
   "False": "false",
@@ -2115,7 +2118,9 @@
       "file_transfer_history_age": "ファイル転送実行履歴の保存期間を指定します。",
       "monitoring_history_age": "モニター履歴の保存期間を指定します。",
       "notification_history_age": "通知履歴の保存期間を指定します。",
-      "max_pool_size": "Maximum pool size"
+      "max_pool_size": "Maximum pool size",
+      "profile_age":  "Profile age",
+      "failed_login_history_age": "Failed login history age"
     },
     "dailyplan": {
       "time_zone": "デイリープランサービスの開始時刻とデイリープランの期間に適用されるタイムゾーンを指定します。",

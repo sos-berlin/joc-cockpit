@@ -102,6 +102,9 @@
   "PERMISSION_DENIED": "permission denied",
   "DELETED": "deleted",
   "TEMPLATE_REFERENCE_DELETED": "Job Template reference deleted",
+  "COMPATIBLE": "compatible",
+  "PARTIALLY_COMPATIBLE": "partially compatible",
+  "NOT_COMPATIBLE": "not compatible",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "true",
   "False": "false",
@@ -2115,7 +2118,9 @@
       "file_transfer_history_age": "Specifies the retention period of the File Transfer History. Any history entries older than the value specified will be purged.",
       "monitoring_history_age": "Specifies the retention period of the Monitoring History. Any history entries older than the value specified will be purged.",
       "notification_history_age": "Specifies the retention period of the Notification History. Any history entries older than the value specified will be purged.",
-      "max_pool_size": "The max. connection pool size specifies the number of database connection used. For environmentns with larger numbers of daily task history entries to purge it can be benefitial to increase this value for example to 10. Users have to check that their DBMS allows an increased number of connections to be used."
+      "max_pool_size": "The max. connection pool size specifies the number of database connection used. For environmentns with larger numbers of daily task history entries to purge it can be benefitial to increase this value for example to 10. Users have to check that their DBMS allows an increased number of connections to be used.",
+      "profile_age":  "Profile age",
+      "failed_login_history_age": "Failed login history age"
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.",

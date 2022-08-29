@@ -1237,6 +1237,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {
         data[type] = data[type].substring(1, data[type].length - 1);
       }
+      this.saveJSON();
     }
   }
 
@@ -1245,6 +1246,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       // env.name = env.name.toUpperCase();
       if (!env.value) {
         env.value = '$' + env.name.toLowerCase();
+        this.saveJSON();
       }
     }
   }

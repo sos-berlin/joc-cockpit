@@ -102,6 +102,9 @@
   "PERMISSION_DENIED": "keine Berechtigung",
   "DELETED": "gelöscht",
   "TEMPLATE_REFERENCE_DELETED": "Referenz auf Job-Vorlage gelöscht",
+  "COMPATIBLE": "compatible",
+  "PARTIALLY_COMPATIBLE": "partially compatible",
+  "NOT_COMPATIBLE": "not compatible",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "wahr",
   "False": "falsch",
@@ -2115,7 +2118,9 @@
       "file_transfer_history_age": "Benennt die Aufbewahrungsdauer der Historie der Dateiübertragungen. Ältere Einträge werden aus der Historie entfernt.",
       "monitoring_history_age": "Benennt die Aufbewahrungsdauer der Historie der Überwachungen. Ältere Einträge werden aus der Historie entfernt.",
       "notification_history_age": "Benennt die Aufbewahrungsdauer der Historie der Benachrichtigungen. Ältere Einträge werden aus der Historie entfernt.",
-      "max_pool_size": "Die maximale Größe des Verbindungspools gibt die Anzahl der verwendeten Datenbankverbindungen an. Für Umgebungen, in denen eine größere Anzahl von Einträgen aus den täglichen Job-Pprotokollen zu bereinigen ist, kann es von Vorteil sein, diesen Wert auf beispielsweise 10 zu erhöhen. Benutzer müssen prüfen, ob ihr DBMS die Verwendung einer höheren Anzahl von Verbindungen zulässt."
+      "max_pool_size": "Die maximale Größe des Verbindungspools gibt die Anzahl der verwendeten Datenbankverbindungen an. Für Umgebungen, in denen eine größere Anzahl von Einträgen aus den täglichen Job-Pprotokollen zu bereinigen ist, kann es von Vorteil sein, diesen Wert auf beispielsweise 10 zu erhöhen. Benutzer müssen prüfen, ob ihr DBMS die Verwendung einer höheren Anzahl von Verbindungen zulässt.",
+      "profile_age":  "Profile age",
+      "failed_login_history_age": "Failed login history age"
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des Tagesplandienstes und der Periode des Tagesplans.",
