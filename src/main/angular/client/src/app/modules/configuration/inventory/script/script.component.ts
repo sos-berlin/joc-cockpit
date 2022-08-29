@@ -351,7 +351,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
       this.script.path1 = this.data.path;
       this.script.name = this.data.name;
 
-      this.history.push(this.script.actual);
+      this.history.push(JSON.stringify(this.script.configuration));
       if (!res.valid) {
         if (!this.script.configuration.script) {
           this.invalidMsg = 'inventory.message.scriptIsMissing';

@@ -273,7 +273,7 @@
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-primary btn-sm"
-            [disabled]="(!job.javaClass && !job.name) || (job && job.hasRequiredArguments && wizard.step === 1)" translate>common.button.submit
+            [disabled]="(!job.javaClass && !job.name) || (job && job.hasRequiredArguments && wizard.step === 1 && node)" translate>common.button.submit
     </button>
     <button type="button" class="btn btn-secondary btn-sm" *ngIf="wizard.step === 1 && node" [disabled]="!job.javaClass && !job.name"
             (click)="next()" translate>workflow.wizard.button.next

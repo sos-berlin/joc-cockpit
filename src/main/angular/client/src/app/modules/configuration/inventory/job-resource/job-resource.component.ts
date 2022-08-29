@@ -574,7 +574,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.addArgu(true);
       }
       this.jobResource.actual = JSON.stringify(res.configuration);
-      this.history.push(this.jobResource.actual);
+      this.history.push(JSON.stringify(this.jobResource.configuration));
       this.ref.detectChanges();
     });
   }

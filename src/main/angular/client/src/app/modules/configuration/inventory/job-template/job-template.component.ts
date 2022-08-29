@@ -388,10 +388,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     setOfCheckedJobArgu: new Set<string>(),
     checked3: false,
     indeterminate3: false,
-    setOfCheckedEnv: new Set<string>(),
-    checked4: false,
-    indeterminate4: false,
-    setOfCheckedParam: new Set<string>(),
+    setOfCheckedEnv: new Set<string>()
   };
   cmOption: any = {
     lineNumbers: true,
@@ -507,7 +504,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
         });
       }
 
-      this.history.push(this.job.actual);
+      this.history.push(JSON.stringify(this.job.configuration));
       if (!res.valid) {
         this.validateJSON(res.configuration);
       } else {
@@ -549,16 +546,6 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       }
     }
     this.returnCodes.on = this.job.configuration.executable.returnCodeMeaning.failure ? 'failure' : 'success';
-    if (!this.job.configuration.executable.arguments || isEmpty(this.job.configuration.executable.arguments)) {
-      this.job.configuration.executable.arguments = [];
-    } else {
-      if (!isArray(this.job.configuration.executable.arguments)) {
-        this.job.configuration.executable.arguments = this.coreService.convertObjectToArray(this.job.configuration.executable, 'arguments');
-        this.job.configuration.executable.arguments.filter((env) => {
-          this.coreService.removeSlashToString(env, 'value');
-        });
-      }
-    }
 
     if (!this.job.configuration.executable.jobArguments || isEmpty(this.job.configuration.executable.jobArguments)) {
       this.job.configuration.executable.jobArguments = [];
@@ -622,9 +609,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     if (this.job.configuration.graceTimeout) {
       this.job.configuration.graceTimeout1 = this.workflowService.convertDurationToString(this.job.configuration.graceTimeout);
     }
-    if (this.job.configuration.executable.arguments && this.job.configuration.executable.arguments.length === 0) {
-      this.addArgu();
-    }
+
     if (this.job.configuration.executable.jobArguments && this.job.configuration.executable.jobArguments.length === 0) {
       this.addJobArgument();
     }
@@ -863,18 +848,6 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
         return this.object.setOfCheckedEnv.has(item.name);
       });
       this.object.indeterminate3 = this.object.setOfCheckedEnv.size > 0 && !this.object.checked3;
-    } else {
-      if (name) {
-        if (checked) {
-          this.object.setOfCheckedParam.add(name);
-        } else {
-          this.object.setOfCheckedParam.delete(name);
-        }
-      }
-      this.object.checked4 = list.every(item => {
-        return this.object.setOfCheckedParam.has(item.name);
-      });
-      this.object.indeterminate4 = this.object.setOfCheckedParam.size > 0 && !this.object.checked4;
     }
   }
 
@@ -897,18 +870,14 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
             return !this.object.setOfCheckedJobArgu.has(item.name);
           } else if (this.copiedParamObjects.type === 'env') {
             return !this.object.setOfCheckedEnv.has(item.name);
-          } else {
-            return !this.object.setOfCheckedParam.has(item.name);
           }
         });
         if (this.copiedParamObjects.type === 'arguments') {
-          this.job.configuration.executable.arguments = list;
+          this.job.configuration.arguments = list;
         } else if (this.copiedParamObjects.type === 'jobArguments') {
           this.job.configuration.executable.jobArguments = list;
         } else if (this.copiedParamObjects.type === 'env') {
           this.job.configuration.executable.env = list;
-        } else {
-          this.job.configuration.arguments = list;
         }
       }
     }
@@ -924,10 +893,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       setOfCheckedJobArgu: new Set<string>(),
       checked3: false,
       indeterminate3: false,
-      setOfCheckedEnv: new Set<string>(),
-      checked4: false,
-      indeterminate4: false,
-      setOfCheckedParam: new Set<string>()
+      setOfCheckedEnv: new Set<string>()
     };
   }
 
@@ -937,42 +903,23 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       this.object.indeterminate2 = false;
       this.object.checked3 = false;
       this.object.indeterminate3 = false;
-      this.object.checked4 = false;
-      this.object.indeterminate4 = false;
       this.object.setOfCheckedJobArgu.clear();
       this.object.setOfCheckedEnv.clear();
-      this.object.setOfCheckedParam.clear();
     } else if (type === 'jobArguments') {
       this.object.checked1 = false;
       this.object.indeterminate1 = false;
       this.object.checked3 = false;
       this.object.indeterminate3 = false;
-      this.object.checked4 = false;
-      this.object.indeterminate4 = false;
       this.object.setOfCheckedArgu.clear();
       this.object.setOfCheckedEnv.clear();
-      this.object.setOfCheckedParam.clear();
     } else if (type === 'env') {
       this.object.checked1 = false;
       this.object.indeterminate1 = false;
       this.object.checked2 = false;
       this.object.indeterminate2 = false;
-      this.object.checked4 = false;
-      this.object.indeterminate4 = false;
       this.object.setOfCheckedArgu.clear();
       this.object.setOfCheckedJobArgu.clear();
-      this.object.setOfCheckedParam.clear();
-    } else {
-      this.object.checked1 = false;
-      this.object.indeterminate1 = false;
-      this.object.checked2 = false;
-      this.object.indeterminate2 = false;
-      this.object.checked3 = false;
-      this.object.indeterminate3 = false;
-      this.object.setOfCheckedArgu.clear();
-      this.object.setOfCheckedEnv.clear();
-      this.object.setOfCheckedJobArgu.clear();
-    }
+    } 
     let list = this.getList(type);
     const arr = list.filter(item => {
       if (type === 'arguments') {
@@ -981,8 +928,6 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
         return this.object.setOfCheckedJobArgu.has(item.name);
       } else if (type === 'env') {
         return this.object.setOfCheckedEnv.has(item.name);
-      } else {
-        return this.object.setOfCheckedParam.has(item.name);
       }
     });
     this.copiedParamObjects = {operation, type, data: arr, name: this.job.name};
@@ -994,13 +939,11 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
 
   private getList(type): Array<any> {
     if (type === 'arguments') {
-      return this.job.configuration.executable.arguments;
+      return this.job.configuration.arguments;
     } else if (type === 'jobArguments') {
       return this.job.configuration.executable.jobArguments;
     } else if (type === 'env') {
       return this.job.configuration.executable.env;
-    } else {
-      return this.job.configuration.arguments;
     }
   }
 
@@ -1030,13 +973,10 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
         this.object.setOfCheckedEnv = new Set<string>();
         this.object.checked3 = false;
         this.object.indeterminate3 = false;
-      } else {
-        this.object.setOfCheckedParam = new Set<string>();
-        this.object.checked4 = false;
-        this.object.indeterminate4 = false;
       }
       this.copiedParamObjects = {};
       this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
+      this.saveJSON();
       this.ref.detectChanges();
     }
   }
@@ -1067,7 +1007,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        data: data.value
+        data: data.default
       },
       nzFooter: null,
       nzClosable: false,
@@ -1075,7 +1015,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        data.value = result;
+        data.default = result;
         this.ref.detectChanges();
       }
     });
@@ -1125,23 +1065,6 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     this.saveJSON();
   }
 
-
-  addArgu(): void {
-    const param = {
-      name: '',
-      value: ''
-    };
-    if (this.job.configuration.executable.arguments) {
-      if (!this.coreService.isLastEntryEmpty(this.job.configuration.executable.arguments, 'name', '')) {
-        this.job.configuration.executable.arguments.push(param);
-      }
-    }
-  }
-
-  removeArgu(index): void {
-    this.job.configuration.executable.arguments.splice(index, 1);
-    this.saveJSON();
-  }
 
   addParameter(): void {
     const param = {
@@ -1221,7 +1144,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
           if (count > 1) {
             form.control.setErrors({incorrect: true});
             break;
-          }
+          } 
         }
       }
       if (count < 2) {
@@ -1274,7 +1197,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
       }
     }
     if ($event.which === '13' || $event.which === 13) {
-      type === 'parameters' ? this.addParameter() : type === 'jobArgument' ? this.addJobArgument() : this.addArgu();
+      type === 'arguments' ? this.addParameter() : this.addJobArgument();
       this.saveJSON();
     }
   }
