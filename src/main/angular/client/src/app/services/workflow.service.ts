@@ -353,6 +353,7 @@ export class WorkflowService {
     };
     if (typeof instruction.retryDelays === 'string') {
       instruction.retryDelays = instruction.retryDelays.split(',').map(Number);
+      instruction.retryDelays = instruction.retryDelays.filter(num => !isNaN(num));
     }
     const catchObj = clone(instruction.catch);
     const retryDelays = clone(instruction.retryDelays);
@@ -519,9 +520,11 @@ export class WorkflowService {
         if (typeof obj.executable.returnCodeMeaning.success == 'string') {
           delete obj.executable.returnCodeMeaning.failure;
           obj.executable.returnCodeMeaning.success = obj.executable.returnCodeMeaning.success.split(',').map(Number);
+          obj.executable.returnCodeMeaning.success = obj.executable.returnCodeMeaning.success.filter(num => !isNaN(num));
         } else if (typeof obj.executable.returnCodeMeaning.failure == 'string') {
           delete obj.executable.returnCodeMeaning.success;
           obj.executable.returnCodeMeaning.failure = obj.executable.returnCodeMeaning.failure.split(',').map(Number);
+          obj.executable.returnCodeMeaning.failure = obj.executable.returnCodeMeaning.failure.filter(num => !isNaN(num));
         }
       } else {
         delete obj.executable.returnCodeMeaning.success;
@@ -535,6 +538,7 @@ export class WorkflowService {
       }
       if (typeof obj.executable.returnCodeMeaning.warning == 'string') {
         obj.executable.returnCodeMeaning.warning = obj.executable.returnCodeMeaning.warning.split(',').map(Number);
+        obj.executable.returnCodeMeaning.warning = obj.executable.returnCodeMeaning.warning.filter(num => !isNaN(num));
       }
 
       if (obj.executable.returnCodeMeaning.success && obj.executable.returnCodeMeaning.success.length === 1

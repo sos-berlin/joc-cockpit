@@ -1300,8 +1300,9 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   rename(inValid): void {
-    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.calendar.path && this.data.name !== this.calendar.name) {
+    if (this.data.id === this.calendar.id) {
       if (!inValid) {
+        this.calendar.path = (this.calendar.path1 + (this.calendar.path1 === '/' ? '' : '/') + this.calendar.name);
         if (this.preferences.auditLog) {
           let comments = {
             radio: 'predefined',
@@ -1325,6 +1326,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
               this.renameCalendar(result);
             } else {
               this.calendar.name = this.data.name;
+              this.calendar.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
               this.ref.detectChanges();
             }
           });
@@ -1333,6 +1335,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         }
       } else {
         this.calendar.name = this.data.name;
+        this.calendar.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     }
@@ -1358,6 +1361,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
         this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.calendar.name = this.data.name;
+        this.calendar.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     });

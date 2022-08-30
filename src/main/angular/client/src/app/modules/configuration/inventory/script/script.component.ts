@@ -173,8 +173,9 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   }
 
   rename(inValid): void {
-    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.script.path && this.data.name !== this.script.name) {
+    if (this.data.id === this.script.id) {
       if (!inValid) {
+        this.script.path = (this.script.path1 + (this.script.path1 === '/' ? '' : '/') + this.script.name);
         if (this.preferences.auditLog) {
           let comments = {
             radio: 'predefined',
@@ -198,6 +199,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
               this.renameScript(result);
             } else {
               this.script.name = this.data.name;
+              this.script.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
               this.ref.detectChanges();
             }
           });
@@ -206,6 +208,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         }
       } else {
         this.script.name = this.data.name;
+        this.script.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     }
@@ -230,6 +233,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
         this.dataService.reloadTree.next({ rename: data });
       }, error: () => {
         this.script.name = this.data.name;
+        this.script.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     });

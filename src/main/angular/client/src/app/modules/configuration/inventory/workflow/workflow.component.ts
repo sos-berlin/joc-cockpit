@@ -3714,8 +3714,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
             this.initObjects(res);
             this.workflow = res;
-            this.workflow.actual = JSON.stringify(res.configuration);
+            this.workflow.path1 = this.data.path;
             this.workflow.name = this.data.name;
+            this.workflow.actual = JSON.stringify(res.configuration);
             if (this.workflow.configuration.jobs) {
               if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
                 this.jobs = Object.entries(this.workflow.configuration.jobs).map(([k, v]) => {
@@ -4262,8 +4263,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.workflow.path && this.data.name !== this.workflow.name) {
+    if (this.data.id === this.workflow.id) {  
       if (!inValid) {
+        this.workflow.path = (this.workflow.path1 + (this.workflow.path1 === '/' ? '' : '/') + this.workflow.name);
         if (this.preferences.auditLog) {
           let comments = {
             radio: 'predefined',
@@ -4287,6 +4289,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               this.renameWorkflow(result);
             } else {
               this.workflow.name = this.data.name;
+              this.workflow.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
               this.ref.detectChanges();
             }
           });
@@ -4295,6 +4298,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
       } else {
         this.workflow.name = this.data.name;
+        this.workflow.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     }
@@ -4316,9 +4320,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           this.data.name = name;
         }
         data.name1 = name;
-        this.dataService.reloadTree.next({rename: data});
+        this.dataService.reloadTree.next({ rename: data });
       }, error: () => {
         this.workflow.name = this.data.name;
+        this.workflow.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     });

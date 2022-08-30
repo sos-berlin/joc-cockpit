@@ -111,8 +111,9 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.jobResource.path && this.data.name !== this.jobResource.name) {
+    if (this.data.id === this.jobResource.id) {
       if (!inValid) {
+        this.jobResource.path = (this.jobResource.path1 + (this.jobResource.path1 === '/' ? '' : '/') + this.jobResource.name);
         if (this.preferences.auditLog) {
           let comments = {
             radio: 'predefined',
@@ -136,6 +137,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
               this.renameJobResource(result);
             } else {
               this.jobResource.name = this.data.name;
+              this.jobResource.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
               this.ref.detectChanges();
             }
           });
@@ -144,6 +146,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         }
       } else {
         this.jobResource.name = this.data.name;
+        this.jobResource.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     }
@@ -168,6 +171,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
         this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.jobResource.name = this.data.name;
+        this.jobResource.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     });
