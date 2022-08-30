@@ -122,8 +122,9 @@ export class LockComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.lock.path && this.data.name !== this.lock.name) {
+    if (this.data.id === this.lock.id) {
       if (!inValid) {
+        this.lock.path = (this.lock.path1 + (this.lock.path1 === '/' ? '' : '/') + this.lock.name);
         if (this.preferences.auditLog) {
           let comments = {
             radio: 'predefined',
@@ -147,6 +148,7 @@ export class LockComponent implements OnChanges, OnDestroy {
               this.renameLock(result);
             } else {
               this.lock.name = this.data.name;
+              this.lock.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
               this.ref.detectChanges();
             }
           });
@@ -155,6 +157,7 @@ export class LockComponent implements OnChanges, OnDestroy {
         }
       } else {
         this.lock.name = this.data.name;
+        this.lock.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     }
@@ -179,6 +182,7 @@ export class LockComponent implements OnChanges, OnDestroy {
         this.dataService.reloadTree.next({ rename: data });
       }, error: () => {
         this.lock.name = this.data.name;
+        this.lock.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     });

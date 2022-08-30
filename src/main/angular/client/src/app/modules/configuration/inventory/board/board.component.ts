@@ -212,8 +212,9 @@ export class BoardComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.board.path && this.data.name !== this.board.name) {
+    if (this.data.id === this.board.id) {
       if (!inValid) {
+        this.board.path = (this.board.path1 + (this.board.path1 === '/' ? '' : '/') + this.board.name);
         if (this.preferences.auditLog) {
           let comments = {
             radio: 'predefined',
@@ -237,6 +238,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
               this.renameBoard(result);
             } else {
               this.board.name = this.data.name;
+              this.board.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
               this.ref.detectChanges();
             }
           });
@@ -245,6 +247,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
         }
       } else {
         this.board.name = this.data.name;
+        this.board.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     }
@@ -270,6 +273,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
         this.dataService.reloadTree.next({ rename: data });
       }, error: () => {
         this.board.name = this.data.name;
+        this.board.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     });

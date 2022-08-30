@@ -103,7 +103,7 @@
   "DELETED": "supprimé",
   "TEMPLATE_REFERENCE_DELETED": "référence au Modèle de Tâche supprimée",
   "COMPATIBLE": "compatible",
-  "PARTIALLY_COMPATIBLE": "partially compatible",
+  "PARTIALLY_COMPATIBLE": "compatible en amont",
   "NOT_COMPATIBLE": "not compatible",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "vrai",
@@ -2119,8 +2119,8 @@
       "monitoring_history_age": "Spécifie la période de rétention du Suivi de l'Activité. Toutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
       "notification_history_age": "Spécifie la période de rétention des Notifications. Toutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
       "max_pool_size": "La taille maximale du pool de connexions spécifie le nombre de connexions à la base de données utilisées. Pour les environnements ayant un grand nombre d'entrées de l'historique des tâches quotidiennes à purger, il peut être avantageux d'augmenter cette valeur, par exemple à 10. Les utilisateurs doivent vérifier que leur SGBD permet l'utilisation d'un plus grand nombre de connexions.",
-      "profile_age":  "Profile age",
-      "failed_login_history_age": "Failed login history age"
+      "profile_age":  "Spécifie le nombre maximum de jours pendant lesquels un profil n'a pas été utilisé depuis la connexion par un compte utilisateur avant qu'il ne soit purgé.",
+      "failed_login_history_age": "Spécifie le nombre maximum de jours pendant lesquels les entrées de l'historique des connexions échouées sont conservées avant d'être purgées."
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",

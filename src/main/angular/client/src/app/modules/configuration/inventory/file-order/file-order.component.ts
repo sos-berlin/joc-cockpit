@@ -225,8 +225,9 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   rename(inValid): void {
-    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.fileOrder.path && this.data.name !== this.fileOrder.name) {
+    if (this.data.id === this.fileOrder.id) {
       if (!inValid) {
+        this.fileOrder.path = (this.fileOrder.path1 + (this.fileOrder.path1 === '/' ? '' : '/') + this.fileOrder.name);
         if (this.preferences.auditLog) {
           let comments = {
             radio: 'predefined',
@@ -250,6 +251,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
               this.renameFileOrder(result);
             } else {
               this.fileOrder.name = this.data.name;
+              this.fileOrder.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
               this.ref.detectChanges();
             }
           });
@@ -258,6 +260,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         }
       } else {
         this.fileOrder.name = this.data.name;
+        this.fileOrder.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     }
@@ -283,6 +286,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.fileOrder.name = this.data.name;
+        this.fileOrder.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     });

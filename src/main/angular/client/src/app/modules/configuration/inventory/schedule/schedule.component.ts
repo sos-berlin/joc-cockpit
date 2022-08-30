@@ -606,8 +606,9 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   rename(inValid): void {
-    if ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name) === this.schedule.path && this.data.name !== this.schedule.name) {
+    if (this.data.id === this.schedule.id) {
       if (!inValid) {
+        this.schedule.path = (this.schedule.path1 + (this.schedule.path1 === '/' ? '' : '/') + this.schedule.name);
         if (this.preferences.auditLog) {
           let comments = {
             radio: 'predefined',
@@ -631,6 +632,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               this.renameSchedule(result);
             } else {
               this.schedule.name = this.data.name;
+              this.schedule.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
               this.ref.detectChanges();
             }
           });
@@ -639,6 +641,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         }
       } else {
         this.schedule.name = this.data.name;
+        this.schedule.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     }
@@ -663,6 +666,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.dataService.reloadTree.next({rename: data});
       }, error: () => {
         this.schedule.name = this.data.name;
+        this.schedule.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
         this.ref.detectChanges();
       }
     });
