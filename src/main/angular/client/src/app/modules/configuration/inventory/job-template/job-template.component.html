@@ -305,7 +305,7 @@
                             <i [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover" [ngClass]="{'text-primary': parameter.value.list && parameter.value.list.length > 0}"
                                style="right: 31px;top:1px;" *ngIf="parameter.value.type === 'String'" (click)="addList(parameter)" nz-icon nzType="unordered-list" nzTheme="outline"></i>
                             <i [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
-                               (click)="openEditor(parameter.value)" style="right: 13px;top:1px;" *ngIf="parameter.value.type === 'String'"></i>
+                               (click)="openEditor(parameter.value, 'default')" style="right: 13px;top:1px;" *ngIf="parameter.value.type === 'String'"></i>
                             <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                  class="text-danger help-block">
                               <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
@@ -396,7 +396,7 @@
                                  name="value{{i}}" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                  (ngModelChange)="checkValue(env)" (blur)="saveJSON()"/>
                           <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"
-                             (click)="openEditor(env)"></i>
+                             (click)="openEditor(env,  'value')"></i>
                           <div class="pos-abt r-t-n-6">
                             <i *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)"
                               class="fa fa-scissors"></i>
@@ -479,7 +479,7 @@
                                  [(ngModel)]="argument.value"
                                  placeholder="{{'common.placeholder.value' | translate}} {{i+1}}">
                           <i class="pos-abt cursor r-t-13" nz-icon nzType="form" nzTheme="outline"
-                             (click)="openEditor(argument)"></i>
+                             (click)="openEditor(argument, 'value')"></i>
                           <div class="pos-abt r-t-n-6">
                             <i
                               *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name)"
@@ -660,7 +660,7 @@
                            translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
                       <label nz-checkbox [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                             [(ngModel)]="job.skipIfNoAdmissionForOrderDay"
+                             [(ngModel)]="job.configuration.skipIfNoAdmissionForOrderDay"
                              name="skipIfNoAdmissionForOrderDay" (ngModelChange)="saveJSON()"></label>
                     </div>
                   </div>

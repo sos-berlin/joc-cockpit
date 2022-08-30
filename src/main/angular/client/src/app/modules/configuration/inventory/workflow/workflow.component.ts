@@ -1233,11 +1233,13 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.selectedNode.job.executable.login = result.executable.login || {};
     this.selectedNode.job.executable.returnCodeMeaning = result.executable.returnCodeMeaning || {};
-    this.selectedNode.job.notification = result.notification || {mail: {}};
+    if (result.notification) {
+      this.selectedNode.job.notification = result.notification || { mail: {} };
+    }
     this.selectedNode.job.title = result.title;
     this.selectedNode.job.documentationName = result.documentationName;
     if (result.jobTemplateName) {
-      this.selectedNode.job.jobTemplate = {name: result.jobTemplateName, hash: result.hash};
+      this.selectedNode.job.jobTemplate = { name: result.jobTemplateName, hash: result.hash };
       this.getJobTemplate();
     } else {
       delete this.selectedNode.job.jobTemplate;
@@ -1245,18 +1247,20 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (result.admissionTimeScheme) {
       this.selectedNode.job.admissionTimeScheme = result.admissionTimeScheme;
     }
-    this.selectedNode.job.criticality = result.criticality;
-    this.selectedNode.job.warnIfShorter = result.warnIfShorter;
-    this.selectedNode.job.warnIfLonger = result.warnIfLonger;
-    this.selectedNode.job.timeout = result.timeout;
-    this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
-    this.selectedNode.job.graceTimeout = result.graceTimeout;
-    this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
-    this.selectedNode.job.failOnErrWritten = result.failOnErrWritten;
-    this.selectedNode.job.warnOnErrWritten = result.warnOnErrWritten;
-    this.selectedNode.job.skipIfNoAdmissionForOrderDay = result.skipIfNoAdmissionForOrderDay;
-    this.selectedNode.job.parallelism = result.parallelism;
-    this.selectedNode.job.jobResourceNames = result.jobResourceNames || [];
+    if (result.jobTemplateName) {
+      this.selectedNode.job.criticality = result.criticality;
+      this.selectedNode.job.warnIfShorter = result.warnIfShorter;
+      this.selectedNode.job.warnIfLonger = result.warnIfLonger;
+      this.selectedNode.job.timeout = result.timeout;
+      this.selectedNode.job.timeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.timeout);
+      this.selectedNode.job.graceTimeout = result.graceTimeout;
+      this.selectedNode.job.graceTimeout1 = this.workflowService.convertDurationToString(this.selectedNode.job.graceTimeout);
+      this.selectedNode.job.failOnErrWritten = result.failOnErrWritten;
+      this.selectedNode.job.warnOnErrWritten = result.warnOnErrWritten;
+      this.selectedNode.job.skipIfNoAdmissionForOrderDay = result.skipIfNoAdmissionForOrderDay;
+      this.selectedNode.job.parallelism = result.parallelism;
+      this.selectedNode.job.jobResourceNames = result.jobResourceNames || [];
+    }
     this.ref.detectChanges();
   }
 
