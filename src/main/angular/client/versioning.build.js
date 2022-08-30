@@ -30,7 +30,6 @@ fs.readdir(__dirname + buildPath, (err, files) => {
 		files.forEach(file => {
 			//   if (file.match(/^(es2015-polyfills|main|polyfills|runtime|scripts|styles|.js)+([a-z0-9.\-])*(js|css)$/                                                              g)) {
 			if (file.match(/\.[0-9a-z\-]*(js|css)$/g)) {
-				console.log('Current Filename:', file);
 				const currentPath = file;
 				const changePath = file + appendUrl;
 				changeIndex(currentPath, changePath);

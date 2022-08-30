@@ -244,7 +244,7 @@
             <ng-container *ngIf="node">
               <div class="form-group row m-b-0" *ngFor="let param of job.paramList; let i = index">
                 <div class="col-sm-1 m-b-sm text-center">
-                  <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="true" [nzChecked]=true></label>
+                  <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="true" [nzChecked]="param.name"></label>
                 </div>
                 <div class="col-sm-5 m-b-sm p-l-0">
                   <input type="text" autocomplete="off" class="form-control" name="name{{i}}" [(ngModel)]="param.name"

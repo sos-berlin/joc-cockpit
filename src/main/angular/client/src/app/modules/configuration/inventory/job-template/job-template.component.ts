@@ -797,7 +797,9 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
 
   closeRuntime(): void {
     this.isRuntimeVisible = false;
-    this.saveJSON();
+    setTimeout(() => {
+      this.saveJSON();
+    }, 10);
   }
 
   drop(event: CdkDragDrop<string[]>, list: Array<any>): void {
@@ -1005,13 +1007,13 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     return temp;
   }
 
-  openEditor(data: any): void {
+  openEditor(data: any, type: string): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ValueEditorComponent,
       nzClassName: 'lg',
       nzComponentParams: {
-        data: data.default
+        data: data[type]
       },
       nzFooter: null,
       nzClosable: false,
@@ -1019,7 +1021,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        data.default = result;
+        data[type] = result;
         this.ref.detectChanges();
       }
     });
