@@ -684,6 +684,7 @@
     "button.withSwitchover": "切替",
     "button.withFailover": "フェイルオーバーする",
     "button.withOutSwitchover": "切替さない",
+    "button.withApplicableFailover": "With applicable fail-over",
     "button.downloadLog": "ログダウンロード",
     "button.restartCluster": "クラスター再起動",
     "button.restartService": "サービス再起動",

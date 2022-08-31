@@ -317,6 +317,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   isLoaded = false;
   hasLicense = false;
   isActionMenuVisible = false;
+  agentVersions: any = [];
   object = {
     mapOfCheckedId2: new Map(),
     mapOfCheckedId: new Map()
@@ -326,7 +327,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
-              private authService: AuthService, private dataService: DataService, private router: Router) {
+    private authService: AuthService, private dataService: DataService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -445,6 +446,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
           controller.loading = false;
           controller.agents = data.agents;
           controller.agents.forEach((agent) => {
+            this.mergeAgentVersions(agent);
             this.mergeTokenData(null, agent.agentId, agent);
           });
           if (cb) {
@@ -474,6 +476,12 @@ export class ControllersComponent implements OnInit, OnDestroy {
         controller.isLoading = false;
         controller.agentClusters.forEach((agent) => {
           this.mergeTokenData(null, agent.agentId, agent);
+          this.mergeAgentVersions(agent);
+          if(agent.subagents){
+            agent.subagents.forEach(sub => {
+              this.mergeAgentVersions(sub);
+            })
+          }
           if (temp.length > 0) {
             for (const i in temp) {
               if (temp[i].agentId === agent.agentId) {
@@ -1399,10 +1407,40 @@ export class ControllersComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getVesrions(controllerIds): void {
+    this.coreService.post('joc/versions', { controllerIds }).subscribe({
+      next: (res) => {
+        this.agentVersions = res.agentVersions;
+        this.controllers.forEach(controller => {
+          for (let i = 0; i < res.controllerVersions.length; i++) {
+            if (controller.controllerId === res.controllerVersions[i].controllerId) {
+              controller.compatibility = res.controllerVersions[i].compatibility;
+              res.controllerVersions.splice(i, 1);
+              break;
+            }
+          }
+        })
+      }
+    });
+  }
+
+  private mergeAgentVersions(agent): void {
+    console.log(agent)
+    for (let i in this.agentVersions) {
+      console.log(this.agentVersions[i]);
+      if (this.agentVersions[i].agentId == agent.agentId) {
+        agent.version = this.agentVersions[i].version;
+        agent.compatibility = this.agentVersions[i].compatibility;
+        break;
+      }
+    }
+  }
+
   private mergeData(securityData): void {
     this.controllers = [];
     this.currentSecurityLevel = securityData ? securityData.currentSecurityLevel : '';
     if (this.data.length > 0) {
+      this.getVesrions(this.data.controllerIds);
       for (let i = 0; i < this.data.length; i++) {
         const obj: any = {
           controllerId: this.data[i]

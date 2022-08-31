@@ -4462,6 +4462,12 @@ export class InventoryComponent implements OnInit, OnDestroy {
     if (obj.objectType === 'CALENDAR') {
       type = obj.type;
     }
+    if (type === 'CALENDAR') {
+      if (this.selectedData && this.selectedData.objectType && this.selectedData.objectType.match('CALENDAR')) {
+        type = this.selectedData.objectType;
+      }
+    }
+    
     if (obj.path && obj.name) {
       this.coreService.post('inventory/read/configuration', {
         path: (obj.path + (obj.path === '/' ? '' : '/') + obj.name),

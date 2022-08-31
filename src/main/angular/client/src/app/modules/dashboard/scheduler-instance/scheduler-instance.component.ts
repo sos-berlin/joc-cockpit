@@ -57,8 +57,27 @@ export class SchedulerInstanceComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (res: any) => {
         this.controllersList = res.controllers;
+        let controllerIds = this.controllersList.map(item => item.controllerId);
+        this.getVesrions(controllerIds);
         this.isLoaded = true;
       }, error: () => this.isLoaded = true
+    });
+  }
+
+  private getVesrions(controllerIds): void {
+    this.coreService.post('joc/versions', { controllerIds }).subscribe({
+      next: res => {
+        this.controllersList.forEach(controller => {
+          for (let i = 0; i < res.controllerVersions.length; i++) {
+            if (controller.controllerId === res.controllerVersions[i].controllerId) {
+              controller.compatibility = res.controllerVersions[i].compatibility;
+              res.controllerVersions.splice(i, 1);
+              break;
+            }
+          }
+        })
+
+      }
     });
   }
 

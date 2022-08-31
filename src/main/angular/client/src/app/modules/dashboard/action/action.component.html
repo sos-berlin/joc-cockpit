@@ -39,7 +39,7 @@
           <ul>
             <li nz-menu-item
                 (click)="clusterAction('abortAndRestart', controller,true)">
-              <a tabindex="-1" [ngClass]="{'disable-link':!controller.isCoupled}">{{'dashboard.button.withFailover' | translate}}</a>
+              <a tabindex="-1" [ngClass]="{'disable-link':!controller.isCoupled}">{{'dashboard.button.withApplicableFailover' | translate}}</a>
             </li>
           </ul>
         </li>

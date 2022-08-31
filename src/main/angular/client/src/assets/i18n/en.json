@@ -683,6 +683,7 @@
     "button.switchOver": "Switch-over",
     "button.withSwitchover": "With switch-over",
     "button.withFailover": "With fail-over",
+    "button.withApplicableFailover": "With applicable fail-over",
     "button.withOutSwitchover": "Without switch-over",
     "button.downloadLog": "Download Log",
     "button.restartCluster": "Restart Cluster",
