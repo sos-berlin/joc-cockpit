@@ -100,11 +100,11 @@
   "CONFLICT": "コンフリクト",
   "CHANGED": "更新",
   "PERMISSION_DENIED": "許可されていません",
-  "DELETED": "deleted",
-  "TEMPLATE_REFERENCE_DELETED": "template reference deleted",
-  "COMPATIBLE": "compatible",
-  "PARTIALLY_COMPATIBLE": "partially compatible",
-  "NOT_COMPATIBLE": "not compatible",
+  "DELETED": "削除されました",
+  "TEMPLATE_REFERENCE_DELETED": "テンプレート参照は削除されました",
+  "COMPATIBLE": "適合",
+  "PARTIALLY_COMPATIBLE": "部分適合",
+  "NOT_COMPATIBLE": "不適合",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "true",
   "False": "false",
@@ -1442,8 +1442,8 @@
           "limit": "最大繰り返し回数",
           "offsets": "オフセット",
           "period": "ピリオド",
-          "periodBeginOfAdmissionTime": "Period Begin",
-          "durationOfAdmissionTime": "Duration"
+          "periodBeginOfAdmissionTime": "許可時間開始時間",
+          "durationOfAdmissionTime": "許可時間継続時間"
         },
         "addOrder": {
           "workflowName": "ワークフロー名",
@@ -2118,9 +2118,9 @@
       "file_transfer_history_age": "ファイル転送実行履歴の保存期間を指定します。",
       "monitoring_history_age": "モニター履歴の保存期間を指定します。",
       "notification_history_age": "通知履歴の保存期間を指定します。",
-      "max_pool_size": "Maximum pool size",
-      "profile_age":  "Profile age",
-      "failed_login_history_age": "Failed login history age"
+      "max_pool_size": "最大プールサイズを指定します。",
+      "profile_age":  "プロファイル保存期間を指定します。",
+      "failed_login_history_age": "ログイン失敗履歴保存期間を指定します。"
     },
     "dailyplan": {
       "time_zone": "デイリープランサービスの開始時刻とデイリープランの期間に適用されるタイムゾーンを指定します。",
@@ -2577,9 +2577,9 @@
     "label.orderFilter": "オーダー検索",
     "label.outstandingAgents": "保留中エージェント",
     "label.jobTemplateReference": "参照ジョブテンプレート",
-    "label.changedProperties": "Changed Properties",
-    "label.addRequiredArguments": "Added Required Arguments",
-    "label.deleteArguments": "Deleted Arguments",
+    "label.changedProperties": "変更プロパティ",
+    "label.addRequiredArguments": "必要な引数を追加",
+    "label.deleteArguments": "引数削除",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
