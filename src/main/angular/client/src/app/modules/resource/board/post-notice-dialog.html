@@ -65,8 +65,8 @@
               common.message.requiredError
             </div>
           </div>
-          <div class="time-picker">
-            <input timevalidator [disabled]="!postObj.fromDate" type="text" #time="ngModel" class="form-control"
+          <div class="time-picker" [ngClass]="{'has-error': (time.dirty || time.touched) && time.invalid}">
+            <input timevalidator validTimeReqex [disabled]="!postObj.fromDate" type="text" #time="ngModel" class="form-control"
                 name="fromTime" [(ngModel)]="postObj.fromTime" (ngModelChange)="selectTime(postObj.fromTime, true)" placeholder="HH:MM:SS">
             <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="postObj.fromTime1" name="fromTimeIcon"></nz-time-picker>
           </div>

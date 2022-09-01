@@ -72,8 +72,8 @@
                   <div translate>common.message.requiredError</div>
                 </div>
               </div>
-              <div class="time-picker">
-                <input timevalidator [disabled]="!order.fromDate" type="text" #time="ngModel" class="form-control"
+              <div class="time-picker" [ngClass]="{ 'has-error' : (((fromTime.dirty || fromTime.touched) && fromTime.invalid))}">
+                <input timevalidator validTimeReqex [disabled]="!order.fromDate" type="text" #fromTime="ngModel" class="form-control"
                     name="fromTime" [(ngModel)]="order.fromTime" (ngModelChange)="selectTime(order.fromTime, true)" placeholder="HH:MM:SS">
                 <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="order.fromTime1" name="fromTimeIcon"></nz-time-picker>
               </div>
@@ -86,7 +86,7 @@
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-2" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
-              <input timevalidator required maxlength="8" class="form-control" name="repeat" #repeat="ngModel"
+              <input timevalidator validTimeReqex required maxlength="8" class="form-control" name="repeat" #repeat="ngModel"
                      [(ngModel)]="period.repeat"
                      placeholder="HH:MM:SS" type="text">
             </div>
@@ -96,7 +96,7 @@
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-2" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
-              <input timevalidator required maxlength="8" class="form-control" name="begin" #begin="ngModel"
+              <input timevalidator validTimeReqex required maxlength="8" class="form-control" name="begin" #begin="ngModel"
                      [(ngModel)]="period.begin"
                      placeholder="HH:MM:SS" type="text">
             </div>
@@ -104,7 +104,7 @@
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-2" [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}">
-              <input timevalidator required maxlength="8" class="form-control" name="end" #end="ngModel"
+              <input timevalidator validTimeReqex required maxlength="8" class="form-control" name="end" #end="ngModel"
                      [(ngModel)]="period.end"
                      placeholder="HH:MM:SS" type="text">
             </div>
