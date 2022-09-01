@@ -1259,7 +1259,6 @@ export class ExportComponent implements OnInit {
       return;
     } else {
       this.loading = true;
-      const expandedList = this.treeCtrl.getExpandedNodeList();
       this.buildTree(this.path, null, () => {
         this.loading = false;
         if (this.nodes.length > 0) {

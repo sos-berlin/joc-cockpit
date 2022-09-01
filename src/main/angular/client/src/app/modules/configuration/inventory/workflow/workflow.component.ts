@@ -5730,7 +5730,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                       const incomingEdge = graph.getIncomingEdges(self.droppedCell.cells[i]);
                       let flag = true;
                       for (let i in incomingEdge) {
-                        if (self.droppedCell.target === incomingEdge[i].source.id) {
+                        if (incomingEdge[i].source && self.droppedCell.target === incomingEdge[i].source.id) {
                           flag = false;
                           break;
                         }
@@ -6970,10 +6970,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
-              if (cell.edges[i].target.id === cell.id) {
+              if (cell.edges[i].target && cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id) {
+              if (cell.edges[i].source && cell.edges[i].source.id === cell.id) {
                 _tar = cell.edges[i];
               }
             }
@@ -6999,7 +6999,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             _middle = _tar.source;
           } else {
             for (let i = 0; i < cells.lastCell.edges.length; i++) {
-              if (cells.lastCell.edges[i].source.id === cells.lastCell.id) {
+              if (cells.lastCell.edges[i].source && cells.lastCell.edges[i].source.id === cells.lastCell.id) {
                 _tar = cells.lastCell.edges[i];
 
                 break;
@@ -7074,7 +7074,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             for (let i = 0; i < attrs.length; i++) {
               if (attrs[i].nodeName === 'targetId' && attrs[i].nodeValue === cell.id) {
                 for (let x = 0; x < edges.length; x++) {
-                  if (edges[x].target.id !== target.id) {
+                  if (edges[x].target && edges[x].target.id !== target.id) {
                     targetNode = edges[x];
                     break;
                   }
@@ -7237,7 +7237,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (self.workflowService.checkClosingCell(cell.edges[i].target.value.tagName)) {
                 if (cell.edges[i].target.edges) {
                   for (let j = 0; j < cell.edges[i].target.edges.length; j++) {
-                    if (cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id !== cell.edges[i].target.id) {
+                    if (cell.edges[i].target.edges[j].target && cell.edges[i].target.edges[j].target.id !== cell.edges[i].target.id) {
                       changeLabelOfConnection(cell.edges[i].target.edges[j], _label1);
                       break;
                     }

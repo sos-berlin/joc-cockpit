@@ -128,7 +128,7 @@
                       <ng-container *ngSwitchCase="'TIME'">
                         <div class="col-sm-4 col-lg-3"
                              [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
-                          <input autocomplete="off" type="text" timevalidator class="form-control w-xxxl"
+                          <input autocomplete="off" type="text" timevalidator validTimeReqex class="form-control w-xxxl"
                                  #startTime="ngModel" required name="{{val.name}}{{i}}" [maxLength]="8"
                                  (blur)="changeConfiguration(startTime, val, setting.name === 'joc')"
                                  [(ngModel)]="val.value.value" placeholder="HH:MM:SS">

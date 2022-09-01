@@ -261,7 +261,7 @@
             <label class="col-md-4 col-lg-3 form-control-label" translate>inventory.label.endOfLife</label>
             <div class="col-md-8 col-lg-9">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate2">
-                <input timevalidator maxlength="8" [hidden]="object.units !== 'HH:MM:SS'" nz-input autocomplete="off" type="text" name="endOfLife"
+                <input timevalidator validTimeReqex maxlength="8" [hidden]="object.units !== 'HH:MM:SS'" nz-input autocomplete="off" type="text" name="endOfLife"
                        placeholder="{{'inventory.placeholder.endOfLife' | translate}}"
                        [(ngModel)]="object.endOfLife">
                 <nz-input-number [hidden]="object.units === 'HH:MM:SS'" [nzMin]="1" nzPlaceHolder="{{'inventory.placeholder.endOfLife' | translate}}" name="endOfLife1" [(ngModel)]="object.endOfLife"

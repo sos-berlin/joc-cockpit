@@ -33,8 +33,8 @@
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat"
          [(ngModel)]="filter.fromDate" name="from"></nz-date-picker>
-	      <div class="time-picker">
-          <input timevalidator [disabled]="!filter.fromDate" type="text" #time="ngModel" class="form-control"
+	      <div class="time-picker" [ngClass]="{'has-error': (fromTime.dirty || fromTime.touched) && fromTime.invalid}">
+          <input timevalidator validTimeReqex [disabled]="!filter.fromDate" type="text" #fromTime="ngModel" class="form-control"
               name="fromTime" [(ngModel)]="filter.fromTime" (ngModelChange)="selectTime(filter.fromTime, true)" placeholder="HH:MM:SS">
           <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="filter.fromTime1" name="fromTimeIcon"></nz-time-picker>
         </div>
@@ -44,8 +44,8 @@
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.startTo</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [(ngModel)]="filter.toDate" [nzFormat]="dateFormat" name="to"></nz-date-picker>
-		    <div class="time-picker">
-          <input timevalidator [disabled]="!filter.toDate" type="text" #time="ngModel" class="form-control"
+		    <div class="time-picker" [ngClass]="{'has-error': (toTime.dirty || toTime.touched) && toTime.invalid}">
+          <input timevalidator validTimeReqex [disabled]="!filter.toDate" type="text" #toTime="ngModel" class="form-control"
               name="toTime" [(ngModel)]="filter.toTime" (ngModelChange)="selectTime(filter.toTime, true, 'to')" placeholder="HH:MM:SS">
           <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event, false, 'to')" [(ngModel)]="filter.toTime1" name="toTimeIcon"></nz-time-picker>
         </div>
@@ -76,8 +76,8 @@
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [nzFormat]="dateFormat"
                         [(ngModel)]="filter.endFromDate" name="endFrom"></nz-date-picker>
-        <div class="time-picker">
-          <input timevalidator [disabled]="!filter.endFromDate" type="text" class="form-control"
+        <div class="time-picker" [ngClass]="{'has-error': (endFromTime.dirty || endFromTime.touched) && endFromTime.invalid}">
+          <input timevalidator validTimeReqex [disabled]="!filter.endFromDate" type="text" class="form-control" #endFromTime="ngModel"
                  name="endFromTime" [(ngModel)]="filter.endFromTime" (ngModelChange)="selectTime(filter.endFromTime, true, 'endFromTime1')" placeholder="HH:MM:SS">
           <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event, false, 'endFromTime')" [(ngModel)]="filter.endFromTime1" name="endFromTimeIcon"></nz-time-picker>
         </div>
@@ -87,8 +87,8 @@
       <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endTo</label>
       <div class="col-sm-6">
         <nz-date-picker [nzPlaceHolder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'" [(ngModel)]="filter.endToDate" [nzFormat]="dateFormat" name="to"></nz-date-picker>
-        <div class="time-picker">
-          <input timevalidator [disabled]="!filter.endToDate" type="text" class="form-control"
+        <div class="time-picker" [ngClass]="{'has-error': (endToTime.dirty || endToTime.touched) && endToTime.invalid}">
+          <input timevalidator validTimeReqex [disabled]="!filter.endToDate" type="text" class="form-control" #endToTime="ngModel"
                  name="endToTime1" [(ngModel)]="filter.endToTime" (ngModelChange)="selectTime(filter.endToTime, true, 'endToTime1')" placeholder="HH:MM:SS">
           <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event, false, 'endToTime')" [(ngModel)]="filter.endToTime1" name="endToTimeIcon"></nz-time-picker>
         </div>

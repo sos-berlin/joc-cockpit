@@ -25,31 +25,42 @@
           <div class="form-group row" *ngIf="period.frequency=='singleStart'">
             <label class="col-sm-4 form-control-label" translate>runtime.label.startTime</label>
             <div class="col-sm-3" [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}">
-              <input timevalidator [appAutofocus]="true" maxlength="8" autocomplete="off" class="form-control" name="startTime" #startTime="ngModel"
+              <input timevalidator validTimeReqex [appAutofocus]="true" maxlength="8" autocomplete="off" class="form-control" name="startTime" #startTime="ngModel"
                      [(ngModel)]="period.period.singleStart"
                      placeholder="HH:MM:SS" type="text">
+              <div *ngIf="startTime.errors && (startTime.dirty || startTime.touched)" class="help-block text-danger">
+                <div translate *ngIf="!startTime.valid">common.message.invalid</div>
+              </div>
             </div>
           </div>
           <div class="form-group row" *ngIf="period.frequency=='repeat'">
             <label class="col-sm-4 form-control-label" translate>runtime.label.repeatTime</label>
             <div class="col-sm-3" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
-              <input timevalidator maxlength="8" class="form-control" name="repeat" #repeat="ngModel"
-                     [(ngModel)]="period.period.repeat"
-                     placeholder="HH:MM:SS" type="text">
+              <input timevalidator validTimeReqex maxlength="8" class="form-control" name="repeat" #repeat="ngModel"
+                     [(ngModel)]="period.period.repeat" placeholder="HH:MM:SS" type="text">
+              <div *ngIf="repeat.errors && (repeat.dirty || repeat.touched)" class="help-block text-danger">
+                <div translate *ngIf="!repeat.valid">common.message.invalid</div>
+              </div>
             </div>
           </div>
           <div class="form-group row" [hidden]="period.frequency=='singleStart'">
             <label class="col-sm-4 form-control-label" translate>runtime.label.begin</label>
             <div class="col-sm-3" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
-              <input timevalidator maxlength="8" class="form-control" name="begin" #begin="ngModel"
+              <input timevalidator validTimeReqex maxlength="8" class="form-control" name="begin" #begin="ngModel"
                      [(ngModel)]="period.period.begin"
                      placeholder="HH:MM:SS" type="text">
+              <div *ngIf="begin.errors && (begin.dirty || begin.touched)" class="help-block text-danger">
+                <div translate *ngIf="!begin.valid">common.message.invalid</div>
+              </div>
             </div>
             <label class="col-sm-2 form-control-label text-right" translate>runtime.label.end</label>
             <div class="col-sm-3" [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}">
-              <input timevalidator maxlength="8" class="form-control" name="end" #end="ngModel"
+              <input timevalidator validTimeReqex maxlength="8" class="form-control" name="end" #end="ngModel"
                      [(ngModel)]="period.period.end"
                      placeholder="HH:MM:SS" type="text">
+              <div *ngIf="end.errors && (end.dirty || end.touched)" class="help-block text-danger">
+                <div translate *ngIf="!end.valid">common.message.invalid</div>
+              </div>
             </div>
           </div>
           <div class="form-group row">

@@ -58,8 +58,8 @@
             <div translate>common.message.requiredError</div>
           </div>
         </div>
-        <div class="time-picker">
-          <input timevalidator [disabled]="!order.fromDate" type="text" #time="ngModel" class="form-control"
+        <div class="time-picker" [ngClass]="{'has-error': (time.dirty || time.touched) && time.invalid}">
+          <input timevalidator validTimeReqex [disabled]="!order.fromDate" type="text" #time="ngModel" class="form-control"
                  name="fromTime" [(ngModel)]="order.fromTime" (ngModelChange)="selectTime(order.fromTime, true)"
                  placeholder="HH:MM:SS">
           <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="order.fromTime1"
