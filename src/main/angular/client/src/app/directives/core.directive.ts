@@ -133,6 +133,8 @@ export class TimeRegexValidator implements Validator {
       if (/^\s*$/i.test(v) ||
         /^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\s*$/.test(v)
         || /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s*$/i.test(v)
+        || v === '24:00'
+        || v === '24:00:00'
         || /^\s*\d+\s*$/i.test(v)
       ) {
         return null;

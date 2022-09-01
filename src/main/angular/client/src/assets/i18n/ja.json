@@ -26,6 +26,8 @@
   "INITIALISED": "初期化されました",
   "COUPLED": "接続",
   "SHUTDOWN": "シャットダウン",
+  "FRESH": "fresh",
+  "RESTARTED": "restarted",
   "RESET": "リセット",
   "RESETTING": "リセット中",
   "COUPLINGFAILED": "接続失敗",

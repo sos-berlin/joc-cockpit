@@ -40,7 +40,7 @@
                   <span>{{controller.os.distribution}}</span>
                 </td>
                 <td>
-                  <i class="fa fa-check" [nz-tooltip]="controller.compatibility | translate"
+                  <i *ngIf="controller.compatibility" class="fa fa-check" [nz-tooltip]="controller.compatibility | translate"
                    [ngClass]="controller.compatibility === 'COMPATIBLE' ? 'text-success' : controller.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'" ></i>&nbsp;
                   <span>{{controller.version}}</span>
                 </td>

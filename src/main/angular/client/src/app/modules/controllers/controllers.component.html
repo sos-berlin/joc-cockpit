@@ -65,7 +65,7 @@
                     </div>
                     <h5 class="text-dark">
                       <a *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel" (click)="editController(controller.controllerId)">
-                        <i class="fa fa-check" [nz-tooltip]="controller.compatibility | translate"
+                        <i *ngIf="controller.compatibility" class="fa fa-check" [nz-tooltip]="controller.compatibility | translate"
                         [ngClass]="controller.compatibility === 'COMPATIBLE' ? 'text-success' : controller.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'" ></i>
                         &nbsp;{{controller.controllerId}}
                       </a>
@@ -261,7 +261,7 @@
                             <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.agentNameAliases || '-'"></span></td>
                             <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url"></span></td>
                             <td (click)="editAgent(agent, controller)">
-                              <i class="fa fa-check" [nz-tooltip]="agent.compatibility | translate"
+                              <i *ngIf="agent.compatibility" class="fa fa-check" [nz-tooltip]="agent.compatibility | translate"
                               [ngClass]="agent.compatibility === 'COMPATIBLE' ? 'text-success' : agent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'" ></i>&nbsp;
                               <span [innerHtml]="agent.version"></span>
                             </td>
@@ -431,7 +431,7 @@
                                        [innerHtml]="clusterAgent.syncState._text | translate"></label>
                                 </td>
                                 <td (click)="editAgent(clusterAgent, controller, true)">
-                                  <i class="fa fa-check" [nz-tooltip]="clusterAgent.compatibility | translate"
+                                  <i *ngIf="clusterAgent.compatibility" class="fa fa-check" [nz-tooltip]="clusterAgent.compatibility | translate"
                                   [ngClass]="clusterAgent.compatibility === 'COMPATIBLE' ? 'text-success' : clusterAgent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'" ></i>&nbsp;
                                   <span [innerHtml]="clusterAgent.version"></span>
                                 </td>
@@ -513,7 +513,7 @@
                                       <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.isDirector | translate}}</td>
                                       <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.url}}</td>
                                       <td (click)="editSubagent(sub, clusterAgent, controller)">
-                                        <i class="fa fa-check" [nz-tooltip]="sub.compatibility | translate"
+                                        <i *ngIf="sub.compatibility" class="fa fa-check" [nz-tooltip]="sub.compatibility | translate"
                                         [ngClass]="sub.compatibility === 'COMPATIBLE' ? 'text-success' : sub.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'" ></i>&nbsp;
                                         <span [innerHtml]="sub.version"></span>
                                       </td>

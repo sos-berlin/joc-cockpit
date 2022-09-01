@@ -26,6 +26,8 @@
   "INITIALISED": "initialisé",
   "COUPLED": "couplé",
   "SHUTDOWN": "arrêté",
+  "FRESH": "fresh",
+  "RESTARTED": "restarted",
   "RESET": "réinitialiser",
   "RESETTING": "réinitialisation",
   "COUPLINGFAILED": "couplage échoué",

@@ -69,6 +69,7 @@ export class AgentComponent implements OnInit, OnDestroy {
   private getAgentClassList(obj): void {
     this.coreService.post('agents', obj).subscribe({
       next: (result: any) => {
+        this.getVesrions(result.agents);
         if (this.agentsFilters.expandedObjects && this.agentsFilters.expandedObjects.length > 0) {
           result.agents.forEach((value) => {
             const index = this.agentsFilters.expandedObjects.indexOf(value.agentId);
@@ -112,6 +113,34 @@ export class AgentComponent implements OnInit, OnDestroy {
       this.loading = true;
     }
     this.getAgentClassList(obj);
+  }
+
+  private getVesrions(agents: any): void {
+    this.coreService.post('joc/versions', { controllerIds: [this.schedulerIds.selected] }).subscribe({
+      next: res => {
+
+        agents.forEach((agent: any) => {
+
+          for (let i = 0; i < res.agentVersions.length; i++) {
+            if (agent.agentId === res.agentVersions[i].agentId && !res.agentVersions[i].subagentId) {
+              agent.compatibility = res.agentVersions[i].compatibility;
+              res.agentVersions.splice(i, 1);
+              if (!agent.subagents) {
+                break;
+              }
+            } if (agent.subagents) {
+              for (let j = 0; j < agent.subagents.length; j++) {
+                if (agent.subagents[j].subagentId === res.agentVersions[i].subagentId) {
+                  agent.subagents[j].compatibility = res.agentVersions[i].compatibility;
+                  break;
+                }
+              }
+            }
+          }
+        })
+
+      }
+    });
   }
 
   /* ---------------------------- Broadcast messages ----------------------------------*/

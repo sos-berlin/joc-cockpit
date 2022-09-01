@@ -27,6 +27,8 @@
   "COUPLED": "coupled",
   "SHUTDOWN": "shutdown",
   "RESET": "reset",
+  "FRESH": "fresh",
+  "RESTARTED": "restarted",
   "RESETTING": "resetting",
   "COUPLINGFAILED": "coupling failed",
   "UNKNOWN": "unknown",
