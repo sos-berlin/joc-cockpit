@@ -1181,7 +1181,7 @@ export class ExportComponent implements OnInit {
         if (merge) {
           if (tree.length > 0) {
             merge.children = tree[0].children;
-            this.inventoryService.checkAndUpdateVersionList(tree[0]);
+            this.inventoryService.checkAndUpdateVersionList(tree[0], this.exportObj.exportType === 'folders');
           }
           delete merge.loading;
           if (!flag) {
@@ -1195,8 +1195,7 @@ export class ExportComponent implements OnInit {
               if (this.nodes.length > 0) {
                 this.nodes[0].expanded = true;
                 this.inventoryService.preselected(this.nodes[0]);
-                this.disabledCheckbox(this.nodes[0]);
-                this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+                this.inventoryService.checkAndUpdateVersionList(this.nodes[0], this.exportObj.exportType === 'folders');
               }
               this.nodes = [...this.nodes];
             }, 0);
@@ -1206,19 +1205,6 @@ export class ExportComponent implements OnInit {
         }
       }
     })
-  }
-
-  private disabledCheckbox(node: any): void {
-    if (this.exportObj.exportType === 'folders') {
-      for (let i = 0; i < node.children.length; i++) {
-        if (node.children[i].type) {
-          node.children[i].disableCheckbox = true;
-        }
-        if (!node.children[i].type && !node.children[i].object) {
-          break;
-        }
-      }
-    }
   }
 
   private mergeDeep(deployables, releasables): any {
@@ -1263,7 +1249,7 @@ export class ExportComponent implements OnInit {
         this.loading = false;
         if (this.nodes.length > 0) {
           this.nodes[0].expanded = true;
-          this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+          this.inventoryService.checkAndUpdateVersionList(this.nodes[0], this.exportObj.exportType === 'folders');
         }
         this.nodes = [...this.nodes];
       });
@@ -1281,7 +1267,7 @@ export class ExportComponent implements OnInit {
           }
           if (node[i].children && node[i].children.length > 0) {
             if (!node[i].isCall) {
-              self.inventoryService.checkAndUpdateVersionList(node[i]);
+              self.inventoryService.checkAndUpdateVersionList(node[i], this.exportObj.exportType === 'folders');
             }
             recursive(node[i].children);
           }
@@ -1316,7 +1302,7 @@ export class ExportComponent implements OnInit {
         node.origin.loading = true;
         this.buildTree(node.origin.path, node.origin);
       }
-      this.inventoryService.checkAndUpdateVersionList(node.origin);
+      this.inventoryService.checkAndUpdateVersionList(node.origin, this.exportObj.exportType === 'folders');
     }
   }
 
@@ -1334,17 +1320,6 @@ export class ExportComponent implements OnInit {
           node.parentNode.isChecked = flag;
         }
         node.parentNode.isHalfChecked = !flag;
-      }
-      if (!node.origin.type) {
-        for (let i = 0; i < node.children.length; i++) {
-          if (node.children[i].origin.type) {
-            node.children[i].isChecked = node.isChecked;
-            node.children[i].isDisableCheckbox = (node.children[i].isChecked && this.exportObj.exportType === 'folders');
-          }
-          if (!node.children[i].origin.object && !node.children[i].origin.type) {
-            break;
-          }
-        }
       }
     }
   }

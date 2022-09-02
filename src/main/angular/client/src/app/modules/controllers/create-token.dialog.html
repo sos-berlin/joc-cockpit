@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="time-picker">
-          <input timevalidator [disabled]="!token.fromDate" type="text" #time="ngModel" class="form-control"
+          <input timevalidator validTimeReqex [disabled]="!token.fromDate" type="text" #time="ngModel" class="form-control"
               name="fromTime" [(ngModel)]="token.fromTime" (ngModelChange)="selectTime(token.fromTime, true)" placeholder="HH:MM:SS">
           <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="token.fromTime1" name="fromTimeIcon"></nz-time-picker>
         </div>

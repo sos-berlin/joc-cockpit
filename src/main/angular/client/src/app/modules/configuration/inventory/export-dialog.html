@@ -107,11 +107,11 @@
             {{'inventory.export.label.draft'| translate}}
           </label>
           <label class="m-l-md" nz-checkbox name="deploy" [(ngModel)]="filter.deploy" [disabled]="!filter.controller" (ngModelChange)="filterList()"
-            *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR'))">
+            *ngIf="!(exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR'))">
             {{'inventory.export.label.deployed'| translate}}
           </label>
           <label class="m-l-md" nz-checkbox name="release" [disabled]="exportObj.forSigning || !filter.dailyPlan" [(ngModel)]="filter.release" (ngModelChange)="filterList()"
-                 *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR')">
+                 *ngIf="exportType === 'BOTH' || exportType === 'DAILYPLAN' || exportType === 'SCHEDULE' || exportType === 'JOBTEMPLATE' || exportType === 'INCLUDESCRIPT' || exportType.match('CALENDAR')">
             {{'inventory.export.label.released'| translate}}
           </label>
         </div>
@@ -153,12 +153,12 @@
                 <i *ngIf="!node.origin.object && !node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                 <i *ngIf="node.origin.object == 'WORKFLOW'" nz-icon nzType="apartment" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
-               <!-- <i *ngIf="node.origin.object == 'JOBCLASS'" nz-icon nzType="profile" class="icon-color" nzTheme="outline"></i>-->
                 <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
                 <i *ngIf="node.origin.object == 'NOTICEBOARD'" nz-icon nzType="pushpin" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'LOCK'" nz-icon nzType="lock" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'SCHEDULE'" nz-icon nzType="schedule" class="icon-color" nzTheme="outline"></i>
                 <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
+                <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
                 <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" nz-icon nzType="calendar" class="icon-color" nzTheme="outline"></i>
                 <span *ngIf="node.origin.type" class="fa fa-check-circle-o orange text-xs" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId}" style="margin-top: 4px"></span>
                 <span class="p-l-sm text-capitalize" *ngIf="node.origin.object">{{node.origin.name | translate}}</span>

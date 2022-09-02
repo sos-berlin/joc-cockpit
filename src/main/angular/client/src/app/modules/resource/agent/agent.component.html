@@ -128,7 +128,7 @@
                     <span translate>common.label.status</span>:
                     <span *ngIf="cluster.state" [innerHtml]="cluster.state._text | highlight : agentsFilters.searchText"></span>
                     <span *ngIf="!cluster.state && cluster.healthState" [innerHtml]="cluster.healthState._text | highlight : agentsFilters.searchText"></span>
-                    <i *ngIf="cluster.state && cluster.state._text == 'INITIALISED'" class="fa fa-info-circle p-l-sm" [nz-tooltip]="cluster.state._reason"></i>
+                    <i *ngIf="cluster.state && cluster.state._text == 'INITIALISED'" class="fa fa-info-circle p-l-sm" [nz-tooltip]="cluster.state._reason | translate"></i>
                   </div>
                   <div class="text-sm text-left text-muted p-t-sm">
                     <span translate>agent.label.url</span>:
@@ -224,7 +224,7 @@
                       <span *ngIf="!cluster.state && cluster.healthState" [nz-tooltip]="cluster.errorMessage" class="label" [ngClass]="coreService.getColor(cluster.healthState.severity,'bg')">
                         <span [innerHtml]="cluster.healthState._text | translate | highlight : agentsFilters.searchText"></span>
                       </span>
-                      <i *ngIf="cluster.state && cluster.state._text == 'INITIALISED'" class="fa fa-info-circle p-l-sm" [nz-tooltip]="cluster.state._reason"></i>
+                      <i *ngIf="cluster.state && cluster.state._text == 'INITIALISED'" class="fa fa-info-circle p-l-sm" [nz-tooltip]="cluster.state._reason | translate"></i>
                     </td>
                     <td>
                       <a class="text-hover-primary" [href]="cluster.url+'/agent/api'" target="_blank"
