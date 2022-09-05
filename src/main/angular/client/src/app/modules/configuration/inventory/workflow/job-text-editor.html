@@ -51,7 +51,7 @@
           </label>
           <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
             <label class="w-full">
-              <input type="text" identifierValidation [appAutofocus]="true" autocomplete="off" required
+              <input type="text" identifierValidation [appAutofocus]="!error" autocomplete="off" required
                      class="form-control"
                      placeholder="{{'common.placeholder.name' | translate}}" name="name" #name="ngModel"
                      (blur)="checkJobInfo()"

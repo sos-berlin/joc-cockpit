@@ -2004,26 +2004,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       if (element1.length > 0) {
         let cPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
         let cElement = select(cPath, this.doc);
-        let dPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
-        let dElement = select(dPath, this.doc);
-        if (dElement.length > 0) {
-          for (let i = 0; i < dElement.length; i++) {
-            nodes = {};
-            for (let j = 0; j < dElement[i].attributes.length; j++) {
-              let a = dElement[i].attributes[j].nodeName;
-              let b = dElement[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
-            }
-            nodes.parent = node;
-            nodes.choice = node;
-            childArr.push(nodes);
-            if (data) {
-              data.children = childArr;
-            } else {
-              this.childNode = childArr;
-            }
-          }
-        }
+
         if (cElement.length > 0) {
           for (let i = 0; i < cElement.length; i++) {
             nodes = {};
@@ -2041,6 +2022,29 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
             }
           }
         }
+
+        let dPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
+        let dElement = select(dPath, this.doc);
+        if (dElement.length > 0) {
+          for (let i = 0; i < dElement.length; i++) {
+            nodes = {};
+            for (let j = 0; j < dElement[i].attributes.length; j++) {
+              let a = dElement[i].attributes[j].nodeName;
+              let b = dElement[i].attributes[j].nodeValue;
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
+            }
+
+            nodes.parent = node;
+            nodes.choice = node;
+            childArr.push(nodes);
+            if (data) {
+              data.children = childArr;
+            } else {
+              this.childNode = childArr;
+            }
+          }
+        }
+
         let ePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
         let eElement = select(ePath, this.doc);
         if (eElement.length > 0) {
