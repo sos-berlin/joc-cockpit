@@ -445,7 +445,7 @@
                              [(ngModel)]="node.data"
                              (focus)="hideError()" (blur)="validateAttr(node.data, node)"
                              (change)="submitData(node.data, node)"
-                             *ngIf="node.values && node.values.length==0 && node.type=='password'"
+                             *ngIf="node.values && node.values.length==0 && (node.type=='password' || node.name=='password')"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'" class="form-control"
                              placeholder="{{!node.text ? 'Example input' : ''}}"
@@ -453,7 +453,7 @@
                              xmlAutofocus>
                       <i class="fa password-hide-icon" [ngClass]="!node.pShow ? 'fa-eye' : 'fa-eye-slash'"
                          (click)="showPassword(node)"
-                         *ngIf="node.values && node.values.length==0 && node.type=='password'"
+                         *ngIf="node.values && node.values.length==0 && (node.type=='password' || node.name=='password')"
                          aria-hidden="true"></i>
                       <input id="{{node.name}}" type="text" class="form-control w-full"
                              [(ngModel)]="node.data"
