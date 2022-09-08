@@ -5,7 +5,7 @@
     </li>
   </ul>
 </div>
-<div class="w-full">
+<div class="w-full" style="overflow: auto;">
   <img src="./assets/images/diamond_img.png" alt="" class="pos-abt top-50">
   <div class="smooth pos-rlt login-box">
     <div id="logo-top"></div>
@@ -27,11 +27,13 @@
         </div>
         <form #myForm="ngForm" (ngSubmit)="onSubmit(user)" class="p-t-sm p-b-sm p-l-xs p-r-xs">
           <div class="md-form-group">
-            <input type="text" [(ngModel)]="user.userName" id="account" class="md-input" #userName="ngModel" name="userName">
+            <input type="text" [(ngModel)]="user.userName" id="account" class="md-input" #userName="ngModel"
+              name="userName">
             <label class="font14" for="account"> {{ 'login.label.account' | translate}}</label>
           </div>
           <div class="md-form-group">
-            <input type="password" [(ngModel)]="user.password" id="password" class="md-input" name="password" autocomplete="off">
+            <input type="password" [(ngModel)]="user.password" id="password" class="md-input" name="password"
+              autocomplete="off">
             <label class="font14" for="password"> {{'login.label.password' | translate}}</label>
           </div>
           <div class="m-b-md">
@@ -44,7 +46,22 @@
             <i *ngIf="!submitted" class="fa fa-sign-in p-r-xs"></i>
             {{'login.button.logIn' | translate}}
           </button>
+
         </form>
+
+        <div *ngIf="identityServiceItems.length > 0" class="horz_line_text">OR</div>
+
+        <div class="row" *ngIf="identityServiceItems.length > 0">
+          <div class="col-md-12" *ngFor="let item of identityServiceItems">
+            <button class="btn btn-default btn-block btn-sm" *ngIf="item.authority && item.authority?.match('google')" (click)="loginWithPopup(item.clientId)"
+              style="padding-top: 6px;padding-bottom: 6px;">
+              <img width="16px" class="m-r-xs" alt="Google sign-in" 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+              Login with Google
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
     <div id="logo-bottom"></div>

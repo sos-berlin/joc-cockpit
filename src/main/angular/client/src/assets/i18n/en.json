@@ -2260,6 +2260,10 @@
     "label.iamLdapTrustStoreType": "LDAP Truststore Type",
     "label.iamLdapSystemUser": "LDAP System User",
     "label.iamLdapSystemPassword": "LDAP System Password",
+    "label.iamOidcName": "Oidc Name",
+    "label.iamOidcdUrl": "Oidc URL",
+    "label.iamOidcClientId": "Oidc Client ID",
+    "label.iamOidcClientSecret": "Oidc Client Secret",
     "label.group": "Group",
     "label.general": "General",
     "label.on": "On",
@@ -2352,6 +2356,10 @@
     "placeholder.iamLdapTrustStoreType": "Enter LDAP Truststore Type",
     "placeholder.iamLdapSystemUser": "Enter LDAP System User",
     "placeholder.iamLdapSystemPassword": "Enter LDAP System Password",
+    "placeholder.iamOidcName": "Enter Oidc Name",
+    "placeholder.iamOidcdUrl": "Enter Oidc URL",
+    "placeholder.iamOidcClientId": "Enter Oidc Client ID",
+    "placeholder.iamOidcClientSecret": "Enter Oidc Client Secret",
     "placeholder.group": "Enter Group",
     "placeholder.initialPassword": "Enter initial password",
     "placeholder.minPasswordLength": "Enter minimum password length",
@@ -2432,6 +2440,12 @@
         "iamKeycloakTrustStoreType": "The Keycloak Truststore Type can be PKCS12 or JKS (deprecated).",
         "iamKeycloakClientSecret": "Keycloak Client Secret",
         "iamKeycloakRealm": "Keycloak Realm"
+      },
+      "oidc":{
+        "iamOidcName": "Oidc Name",
+        "iamOidcdUrl": "Oidc URL",
+        "iamOidcClientId": "Oidc Client ID",
+        "iamOidcClientSecret": "Oidc Client Secret"
       },
       "general": {
         "sessionTimeout": "A user session will be terminated by JOC Cockpit and the user has to login after the given number of seconds if no action is performed in JOC Cockpit.",

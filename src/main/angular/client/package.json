@@ -27,6 +27,7 @@
     "@types/underscore": "^1.11.4",
     "@xmldom/xmldom": "^0.8.0",
     "ang-jsoneditor": "^1.10.5",
+    "angular-auth-oidc-client": "^13.1.0",
     "angular-gauge": "^4.0.0",
     "angular-gridster2": "^13.1.1",
     "chart.js": "^3.7.0",

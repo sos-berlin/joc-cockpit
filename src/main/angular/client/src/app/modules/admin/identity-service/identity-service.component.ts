@@ -138,7 +138,7 @@ export class SettingModalComponent implements OnInit {
         const data = JSON.parse(res.configuration.configurationItem);
         if (this.data) {
           if (data) {
-            this.currentObj = data.vault || data.keycloak || {};
+            this.currentObj = data.vault || data.keycloak || data.oidc || {};
             if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
               if (data.ldap && data.ldap.simple) {
                 this.userObj = data.ldap.simple;
@@ -393,6 +393,8 @@ export class SettingModalComponent implements OnInit {
         obj.keycloak = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
         obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
+      } else if (this.data.identityServiceType.match('OPENID')) {
+        obj.oidc = this.currentObj;
       }
     } else {
       obj = this.coreService.clone(this.currentObj);
@@ -534,7 +536,7 @@ export class IdentityServiceModalComponent implements OnInit {
       if (res.configuration.configurationItem) {
         const data = JSON.parse(res.configuration.configurationItem);
         if (data) {
-          if (data.vault || data.ldap || data.keycloak) {
+          if (data.vault || data.ldap || data.keycloak || data.oidc) {
             this.removeSettingId = res.configuration.id;
             this.settingObj = res.configuration.configurationItem;
           }

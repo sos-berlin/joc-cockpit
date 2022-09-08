@@ -185,12 +185,12 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6"
-             [ngClass]="{'has-error' : ((methodPath.dirty || methodPath.touched) && methodPath.invalid)}">
-          <input type="text" class="form-control" required #methodPath="ngModel" name="iamKeycloakAdminAccount"
+             [ngClass]="{'has-error' : ((iamKeycloakAdminAccount.dirty || iamKeycloakAdminAccount.touched) && iamKeycloakAdminAccount.invalid)}">
+          <input type="text" class="form-control" required #iamKeycloakAdminAccount="ngModel" name="iamKeycloakAdminAccount"
                  [placeholder]="'user.placeholder.iamKeycloakAdminAccount' | translate"
                  [(ngModel)]="currentObj.iamKeycloakAdminAccount">
-          <div *ngIf="methodPath.invalid && (methodPath.dirty || methodPath.touched)" class="text-danger help-block">
-            <div *ngIf="methodPath.errors.required">
+          <div *ngIf="iamKeycloakAdminAccount.invalid && (iamKeycloakAdminAccount.dirty || iamKeycloakAdminAccount.touched)" class="text-danger help-block">
+            <div *ngIf="iamKeycloakAdminAccount.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -597,6 +597,80 @@
           </div>
         </nz-tab>
       </nz-tabset>
+    </div>
+    <div *ngIf="data && data.identityServiceType.match('OPENID-CONNECT')">
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.oidc.iamOidcName' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcName
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6"
+             [ngClass]="{'has-error' : ((iamOidcName.dirty || iamOidcName.touched) && iamOidcName.invalid)}">
+          <input type="text" class="form-control" required #iamOidcName="ngModel" name="iamOidcName"
+                 [placeholder]="'user.placeholder.iamOidcName' | translate"
+                 [(ngModel)]="currentObj.iamOidcName">
+          <div *ngIf="iamOidcName.invalid && (iamOidcName.dirty || iamOidcName.touched)" class="text-danger help-block">
+            <div *ngIf="iamOidcName.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.oidc.iamOidcdUrl' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcdUrl
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6"
+             [ngClass]="{'has-error' : ((iamOidcdUrl.dirty || iamOidcdUrl.touched) && iamOidcdUrl.invalid)}">
+          <input type="text" class="form-control" required #iamOidcdUrl="ngModel" name="iamOidcdUrl"
+                 [placeholder]="'user.placeholder.iamOidcdUrl' | translate"
+                 [(ngModel)]="currentObj.iamOidcdUrl">
+          <div *ngIf="iamOidcdUrl.invalid && (iamOidcdUrl.dirty || iamOidcdUrl.touched)" class="text-danger help-block">
+            <div *ngIf="iamOidcdUrl.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.oidc.iamOidcClientId' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcClientId
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6"
+             [ngClass]="{'has-error' : ((iamOidcClientId.dirty || iamOidcClientId.touched) && iamOidcClientId.invalid)}">
+          <input type="text" class="form-control" required #iamOidcClientId="ngModel" name="iamOidcClientId"
+                 [placeholder]="'user.placeholder.iamOidcClientId' | translate"
+                 [(ngModel)]="currentObj.iamOidcClientId">
+          <div *ngIf="iamOidcClientId.invalid && (iamOidcClientId.dirty || iamOidcClientId.touched)" class="text-danger help-block">
+            <div *ngIf="iamOidcClientId.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+            <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcClientSecret
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6"
+             [ngClass]="{'has-error' : ((iamOidcClientSecret.dirty || iamOidcClientSecret.touched) && iamOidcClientSecret.invalid)}">
+          <input type="text" class="form-control" required #iamOidcClientSecret="ngModel" name="iamOidcClientSecret"
+                 [placeholder]="'user.placeholder.iamOidcClientSecret' | translate"
+                 [(ngModel)]="currentObj.iamOidcClientSecret">
+          <div *ngIf="iamOidcClientSecret.invalid && (iamOidcClientSecret.dirty || iamOidcClientSecret.touched)" class="text-danger help-block">
+            <div *ngIf="iamOidcClientSecret.errors.required">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="modal-footer">

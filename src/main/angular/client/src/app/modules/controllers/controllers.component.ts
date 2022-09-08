@@ -1425,9 +1425,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   private mergeAgentVersions(agent): void {
-    console.log(agent)
     for (let i in this.agentVersions) {
-      console.log(this.agentVersions[i]);
       if (this.agentVersions[i].agentId == agent.agentId) {
         agent.version = this.agentVersions[i].version;
         agent.compatibility = this.agentVersions[i].compatibility;

@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {NzModalService} from 'ng-zorro-antd/modal';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
-import {CoreService} from '../../services/core.service';
-import {AuthService} from '../../components/guard';
+import { CoreService } from '../../services/core.service';
+import { AuthService } from '../../components/guard';
+
 
 @Component({
   selector: 'app-login',
@@ -19,12 +20,14 @@ export class LoginComponent implements OnInit {
   rememberMe = false;
   errorMsg = false;
   returnUrl = '';
+  identityServiceItems = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, private modal: NzModalService,
-              public coreService: CoreService, private authService: AuthService) {
+  constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
+    private authService: AuthService, private oidcSecurityService: OidcSecurityService) {
   }
 
   ngOnInit(): void {
+    this.loadProviders();
     if (localStorage.$SOS$REMEMBER === 'true' || localStorage.$SOS$REMEMBER === true) {
       if (localStorage.$SOS$FOO) {
         const urs = AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJS7');
@@ -44,6 +47,11 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/dashboard']).then();
     }
   }
+
+  private loadProviders(): void {
+      this.identityServiceItems = this.oidcSecurityService.getConfigurations();
+  }
+
 
   onSubmit(values: any): void {
     this.submitted = true;
@@ -81,4 +89,16 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+
+  loginWithPopup(clientId) {
+    console.log(clientId);
+    this.oidcSecurityService.authorize();
+    // this.oidcSecurityService.authorizeWithPopUp().subscribe(({ isAuthenticated, userData, accessToken, errorMessage }) => {
+    //   console.log(isAuthenticated);
+    //   console.log(userData);
+    //   console.log(accessToken);
+    //   console.log(errorMessage);
+    // });
+  }
+
 }
