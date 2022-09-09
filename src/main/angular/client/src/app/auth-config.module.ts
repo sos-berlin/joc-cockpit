@@ -22,7 +22,7 @@ export const configLoaderFactory = (httpClient: HttpClient) => {
                     postLoginRoute: '/',
                     logLevel: LogLevel.Debug,
                     historyCleanupOff: true,
-                    responseType: 'code',
+                    responseType: 'id_token token',
                     silentRenew: true,
                     silentRenewUrl: window.location.origin,
                     useRefreshToken: true,

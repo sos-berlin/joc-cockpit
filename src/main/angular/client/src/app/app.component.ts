@@ -35,20 +35,15 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.oidcSecurityService.isAuthenticated$.subscribe((res) => {
-      console.log('res', res);
+    let configure = this.oidcSecurityService.getConfigurations();
+   // console.log(configure);
+    this.oidcSecurityService.checkAuthMultiple().subscribe(([{ isAuthenticated, userData, accessToken, idToken }]) => {
+      console.log(idToken);
+      if (idToken) {
+        this.login(idToken);
+      }
     });
-    // this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken, idToken, errorMessage }) => {
-    //   console.log('isAuthenticated', isAuthenticated);
-    //   console.log('userData', userData);
-    //   console.log('accessToken', accessToken);
-    //   console.log('errorMessage', errorMessage);
-    // });
-    // this.oidcSecurityService.checkAuthMultiple().subscribe(([{ isAuthenticated, userData, accessToken, errorMessage }]) => {
-    //   console.log('Authenticated', isAuthenticated);
-    //   console.log('Received Userdata', userData);
-    //   console.log(`Current access token is '${accessToken}'`);
-    // });
+
     this.coreService.get('assets/i18n/locales.json?v=1659421544261').subscribe((data) => {
       const locales = [];
       for (const prop in data) {
@@ -60,8 +55,8 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private login(values: any): void {
-    this.coreService.post('authentication/login', values).subscribe({
+  private login(token: string): void {
+    this.coreService.post('authentication/login', { token, identityServiceName: 'Google' }).subscribe({
       next: (data) => {
         this.authService.setUser(data);
         this.authService.save();

@@ -1,19 +1,19 @@
-import {Injectable} from '@angular/core';
-import {HttpEvent, HttpInterceptor, HttpHandler} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {tap} from 'rxjs/operators';
-import {Router} from '@angular/router';
-import {ActivatedRoute} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
-import {ToastrService} from 'ngx-toastr';
-import {AuthService} from './auth.service';
-import {LoggingService} from '../../services/logging.service';
+import { Injectable } from '@angular/core';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { AuthService } from './auth.service';
+import { LoggingService } from '../../services/logging.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService,
-              private logService: LoggingService, private translate: TranslateService, private toasterService: ToastrService) {
+    private logService: LoggingService, private translate: TranslateService, private toasterService: ToastrService) {
   }
 
   intercept(req: any, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -24,11 +24,20 @@ export class AuthInterceptor implements HttpInterceptor {
       });
       if (req.url.match('authentication/login')) {
         const user = req.body;
-        req = req.clone({
-          headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),
-          body: {}
-        });
-      } else if(this.authService.accessTokenId) {
+        if (user.token) {
+          const headers = new HttpHeaders({
+            'X-ACCESS-TOKEN': user.token,
+            'X-IDENTIY-SERVICE': user.identityServiceName,
+          });
+
+          req = req.clone({ headers });
+        } else {
+          req = req.clone({
+            headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),
+            body: {}
+          });
+        }
+      } else if (this.authService.accessTokenId) {
         req = req.clone({
           headers: req.headers.set('X-Access-Token', this.authService.accessTokenId)
         });
