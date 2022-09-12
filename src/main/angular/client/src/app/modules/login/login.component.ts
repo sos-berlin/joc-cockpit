@@ -90,15 +90,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  loginWithPopup(clientId) {
-    console.log(clientId);
+  loginWithPopup(config) {
     this.oidcSecurityService.authorize();
-    // this.oidcSecurityService.authorizeWithPopUp().subscribe(({ isAuthenticated, userData, accessToken, errorMessage }) => {
-    //   console.log(isAuthenticated);
-    //   console.log(userData);
-    //   console.log(accessToken);
-    //   console.log(errorMessage);
-    // });
+
   }
 
 }

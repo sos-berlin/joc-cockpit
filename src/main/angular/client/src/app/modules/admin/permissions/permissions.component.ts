@@ -273,7 +273,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   controllerName;
   roleName;
   roles: any = [];
-  permissionsObj: any;
   userPermission: any = {};
   preferences: any = {};
   permissions;
@@ -307,7 +306,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute,
-              private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
+    private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
 
     this.subscription1 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'ADD_FOLDER') {
@@ -372,10 +371,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   getPermissions(): void {
     this.coreService.post('authentication/permissions', {}).subscribe(res => {
-      this.permissionsObj = res;
-      this.permissions = this.coreService.clone(this.permissionsObj.SOSPermissions);
+      this.permissions = this.coreService.clone(res.sosPermissions);
       if (this.controllerName) {
-        this.permissions.SOSPermission = this.permissions.SOSPermission.filter((val) => {
+        this.permissions = this.permissions.filter((val) => {
           return !val.match(':joc:');
         });
       }
@@ -631,7 +629,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   preparePermissionJSON(): void {
     this.count = 0;
-    this.permissionArr = this.permissions.SOSPermission;
+    this.permissionArr = this.permissions;
     for (let i = 0; i < this.permissionArr.length; i++) {
       let nodes = this.permissionArr[i].split(':');
       let arr = [];
@@ -674,7 +672,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   preparePermissionOptions(): void {
-    let temp = this.permissions.SOSPermission;
+    let temp = this.permissions;
     temp.forEach((option, index) => {
       if (index > 0 && (option.split(':')[2] != temp[index - 1].split(':')[2] || option.split(':')[3] != temp[index - 1].split(':')[3])) {
         this.permissionOptions.push('---------------------------------------------------------------------------------');

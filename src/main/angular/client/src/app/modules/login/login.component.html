@@ -52,13 +52,14 @@
         <div *ngIf="identityServiceItems.length > 0" class="horz_line_text">OR</div>
 
         <div class="row" *ngIf="identityServiceItems.length > 0">
-          <div class="col-md-12" *ngFor="let item of identityServiceItems">
-            <button class="btn btn-default btn-block btn-sm" *ngIf="item.authority && item.authority?.match('google')" (click)="loginWithPopup(item.clientId)"
-              style="padding-top: 6px;padding-bottom: 6px;">
-              <img width="16px" class="m-r-xs" alt="Google sign-in" 
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
-              Login with Google
-            </button>
+          <div class="col-md-12 m-b-12" *ngFor="let item of identityServiceItems">
+            <ng-container *ngIf="item.iamOidcName">
+              <button class="btn btn-default btn-block btn-sm" (click)="loginWithPopup(item)"
+                style="padding-top: 6px;padding-bottom: 6px;">
+                <i class="fa fa-{{item.iamOidcName.toLowerCase()}}"></i>
+                Login with {{item.iamOidcName}}
+              </button>
+            </ng-container>
           </div>
         </div>
 
