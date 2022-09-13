@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NzI18nService } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from "@angular/common";
-import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { CoreService } from './services/core.service';
 import { Router } from '@angular/router';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { CoreService } from './services/core.service';
 import { AuthService } from './components/guard';
 
 declare const $: any;
@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
   locales: any = [];
 
   constructor(public translate: TranslateService, private i18n: NzI18nService, private router: Router, public coreService: CoreService,
-    private authService: AuthService, private oidcSecurityService: OidcSecurityService) {
+    private authService: AuthService, private readonly oAuthService: OAuthService) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
           return typeof console[property] === 'function';
@@ -26,6 +26,19 @@ export class AppComponent implements OnInit {
             return 'Sorry, for security reasons, the script console is deactivated';
           };
         });*/
+    if (sessionStorage.authConfig) {
+      delete sessionStorage.flow;
+      this.oAuthService.configure(JSON.parse(sessionStorage.authConfig));
+      this.oAuthService.loadDiscoveryDocumentAndTryLogin().then((_) => {
+        delete sessionStorage.authConfig;
+        if (_) {
+          this.login(this.oAuthService.getAccessToken());
+        }
+      });
+    } else if (this.oAuthService.getAccessToken()) {
+      this.login(this.oAuthService.getAccessToken());
+    }
+
   }
 
   static themeInit(): void {
@@ -35,15 +48,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let configure = this.oidcSecurityService.getConfigurations();
-   // console.log(configure);
-    this.oidcSecurityService.checkAuthMultiple().subscribe(([{ isAuthenticated, userData, accessToken, idToken }]) => {
-      console.log(idToken);
-      if (idToken) {
-        this.login(idToken);
-      }
-    });
-
     this.coreService.get('assets/i18n/locales.json?v=1659421544261').subscribe((data) => {
       const locales = [];
       for (const prop in data) {
@@ -52,21 +56,6 @@ export class AppComponent implements OnInit {
       }
       this.coreService.setLocales(locales);
       this.getTranslate();
-    });
-  }
-
-  private login(token: string): void {
-    this.coreService.post('authentication/login', { token, identityServiceName: 'Google' }).subscribe({
-      next: (data) => {
-        this.authService.setUser(data);
-        this.authService.save();
-        this.router.navigate(['/']).then();
-        // if (this.returnUrl.indexOf('?') > -1) {
-        //   this.router.navigateByUrl(this.returnUrl);
-        // } else {
-        //   this.router.navigate([this.returnUrl]).then();
-        // }
-      }
     });
   }
 
@@ -99,6 +88,25 @@ export class AppComponent implements OnInit {
         }
       }
       this.i18n.setLocale(data);
+    });
+  }
+
+  private login(token: string): void {
+    this.coreService.post('authentication/login', { token, identityServiceName: 'Google' }).subscribe({
+      next: (data) => {
+        this.authService.setUser(data);
+        this.authService.save();
+
+        if (sessionStorage.returnUrl) {
+          if (sessionStorage.returnUrl.indexOf('?') > -1) {
+            this.router.navigateByUrl(sessionStorage.returnUrl);
+          } else {
+            this.router.navigate([sessionStorage.returnUrl]).then();
+          }
+        } else {
+          this.router.navigate(['/']).then();
+        }
+      }
     });
   }
 

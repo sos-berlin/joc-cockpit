@@ -13,7 +13,7 @@ import { LoginModule } from './modules/login/login.module';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './components/guard';
 import { LoggingService } from './services/logging.service';
- import { AuthConfigModule } from './auth-config.module';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -47,7 +47,7 @@ export class MyErrorHandler implements ErrorHandler {
     HttpClientModule,
     BrowserAnimationsModule,
     LoginModule,
-    AuthConfigModule,
+    OAuthModule.forRoot(),
     ToastrModule.forRoot({
       maxOpened: 1,
       positionClass: 'toast-top-center',

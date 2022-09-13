@@ -52,9 +52,9 @@
         <div *ngIf="identityServiceItems.length > 0" class="horz_line_text">OR</div>
 
         <div class="row" *ngIf="identityServiceItems.length > 0">
-          <div class="col-md-12 m-b-12" *ngFor="let item of identityServiceItems">
+          <div class="col-md-12" *ngFor="let item of identityServiceItems">
             <ng-container *ngIf="item.iamOidcName">
-              <button class="btn btn-default btn-block btn-sm" (click)="loginWithPopup(item)"
+              <button class="btn btn-default btn-block btn-sm m-b-12" (click)="loginWithPopup(item)"
                 style="padding-top: 6px;padding-bottom: 6px;">
                 <i class="fa fa-{{item.iamOidcName.toLowerCase()}}"></i>
                 Login with {{item.iamOidcName}}

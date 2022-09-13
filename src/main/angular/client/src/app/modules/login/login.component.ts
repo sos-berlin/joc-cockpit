@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { OAuthService, AuthConfig } from 'angular-oauth2-oidc';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import { CoreService } from '../../services/core.service';
@@ -13,7 +13,6 @@ import { AuthService } from '../../components/guard';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
   user: any = {};
   schedulerIds: any = {};
   submitted = false;
@@ -23,7 +22,7 @@ export class LoginComponent implements OnInit {
   identityServiceItems = [];
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
-    private authService: AuthService, private oidcSecurityService: OidcSecurityService) {
+    private authService: AuthService, private oAuthService: OAuthService) {
   }
 
   ngOnInit(): void {
@@ -49,9 +48,14 @@ export class LoginComponent implements OnInit {
   }
 
   private loadProviders(): void {
-      this.identityServiceItems = this.oidcSecurityService.getConfigurations();
+    this.coreService.post('iam/identityproviders', {}).subscribe({
+      next: (res) => {
+        this.identityServiceItems = res.identityServiceItems;
+      }, error(err) {
+        console.log(err)
+      },
+    })
   }
-
 
   onSubmit(values: any): void {
     this.submitted = true;
@@ -91,7 +95,42 @@ export class LoginComponent implements OnInit {
   }
 
   loginWithPopup(config) {
-    this.oidcSecurityService.authorize();
+    const authCodeFlowConfig: AuthConfig = {
+      // Url of the Identity Provider
+      issuer: config.iamOidcdUrl,
+
+      // strict discovery document disallows urls which not start with issuers url
+      strictDiscoveryDocumentValidation: false,
+
+      // URL of the SPA to redirect the user to after login
+      redirectUri: window.location.origin,
+
+      // The SPA's id. The SPA is registerd with this id at the auth-server
+      // clientId: 'server.code',
+      clientId: config.iamOidcClientId,
+
+      // set the scope for the permissions the client should request
+      scope: 'openid profile email',
+
+      showDebugInformation: true,
+    };
+    this.loginCodeInPopup(authCodeFlowConfig, config.iamOidcdName);
+
+  }
+
+  loginCodeInPopup(authConfig, providerName) {
+    sessionStorage.authConfig = JSON.stringify(authConfig);
+    // Tweak config for code flow
+
+    this.oAuthService.configure(authConfig);
+    this.oAuthService.loadDiscoveryDocument();
+    sessionStorage.setItem('authConfig', JSON.stringify(authConfig));
+    sessionStorage.setItem('providerName', providerName);
+    if (this.returnUrl) {
+      sessionStorage.setItem('returnUrl', this.returnUrl);
+    }
+
+    this.oAuthService.initLoginFlow('/some-state;p1=1;p2=2?p3=3&p4=4');
 
   }
 
