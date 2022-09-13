@@ -627,7 +627,7 @@
              [ngClass]="{'has-error' : ((iamOidcdUrl.dirty || iamOidcdUrl.touched) && iamOidcdUrl.invalid)}">
           <input type="text" class="form-control" required #iamOidcdUrl="ngModel" name="iamOidcdUrl"
                  [placeholder]="'user.placeholder.iamOidcdUrl' | translate"
-                 [(ngModel)]="currentObj.iamOidcdUrl">
+                 [(ngModel)]="currentObj.iamOidcAuthenticationUrl">
           <div *ngIf="iamOidcdUrl.invalid && (iamOidcdUrl.dirty || iamOidcdUrl.touched)" class="text-danger help-block">
             <div *ngIf="iamOidcdUrl.errors.required">
               <div translate>common.message.requiredError</div>

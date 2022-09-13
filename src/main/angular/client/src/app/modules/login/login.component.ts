@@ -97,13 +97,13 @@ export class LoginComponent implements OnInit {
   loginWithPopup(config) {
     const authCodeFlowConfig: AuthConfig = {
       // Url of the Identity Provider
-      issuer: config.iamOidcdUrl,
+      issuer: config.iamOidcAuthenticationUrl, 
 
       // strict discovery document disallows urls which not start with issuers url
       strictDiscoveryDocumentValidation: false,
 
       // URL of the SPA to redirect the user to after login
-      redirectUri: window.location.origin,
+      redirectUri: window.location.origin + '/joc',
 
       // The SPA's id. The SPA is registerd with this id at the auth-server
       // clientId: 'server.code',
@@ -114,7 +114,7 @@ export class LoginComponent implements OnInit {
 
       showDebugInformation: true,
     };
-    this.loginCodeInPopup(authCodeFlowConfig, config.iamOidcdName);
+    this.loginCodeInPopup(authCodeFlowConfig, config.identityServiceName);
 
   }
 
@@ -130,7 +130,7 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem('returnUrl', this.returnUrl);
     }
 
-    this.oAuthService.initLoginFlow('/some-state;p1=1;p2=2?p3=3&p4=4');
+    this.oAuthService.initLoginFlow();
 
   }
 

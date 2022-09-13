@@ -26,17 +26,18 @@ export class AppComponent implements OnInit {
             return 'Sorry, for security reasons, the script console is deactivated';
           };
         });*/
-    if (sessionStorage.authConfig) {
-      delete sessionStorage.flow;
-      this.oAuthService.configure(JSON.parse(sessionStorage.authConfig));
-      this.oAuthService.loadDiscoveryDocumentAndTryLogin().then((_) => {
-        delete sessionStorage.authConfig;
-        if (_) {
-          this.login(this.oAuthService.getAccessToken());
-        }
-      });
-    } else if (this.oAuthService.getAccessToken()) {
-      this.login(this.oAuthService.getAccessToken());
+    if (!this.authService.accessTokenId) {
+      if (sessionStorage.authConfig) {
+        this.oAuthService.configure(JSON.parse(sessionStorage.authConfig));
+        this.oAuthService.loadDiscoveryDocumentAndTryLogin().then((_) => {
+          delete sessionStorage.authConfig;
+          if (_) {
+            this.login(this.oAuthService.getAccessToken());
+          }
+        });
+      } else if (this.oAuthService.getAccessToken()) {
+        this.login(this.oAuthService.getAccessToken());
+      }
     }
 
   }
@@ -92,20 +93,26 @@ export class AppComponent implements OnInit {
   }
 
   private login(token: string): void {
-    this.coreService.post('authentication/login', { token, identityServiceName: 'Google' }).subscribe({
-      next: (data) => {
-        this.authService.setUser(data);
-        this.authService.save();
+    this.oAuthService.loadUserProfile().then((user: any) => {
+      
+      if (user && user.info) {
+        this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, email: user.info.email }).subscribe({
+          next: (data) => {
+            this.authService.setUser(data);
+            this.authService.save();
 
-        if (sessionStorage.returnUrl) {
-          if (sessionStorage.returnUrl.indexOf('?') > -1) {
-            this.router.navigateByUrl(sessionStorage.returnUrl);
-          } else {
-            this.router.navigate([sessionStorage.returnUrl]).then();
+            if (sessionStorage.returnUrl) {
+              if (sessionStorage.returnUrl.indexOf('?') > -1) {
+                this.router.navigateByUrl(sessionStorage.returnUrl);
+              } else {
+                this.router.navigate([sessionStorage.returnUrl]).then();
+              }
+            } else {
+              this.router.navigate(['/']).then();
+            }
+            delete sessionStorage.returnUrl;
           }
-        } else {
-          this.router.navigate(['/']).then();
-        }
+        });
       }
     });
   }
