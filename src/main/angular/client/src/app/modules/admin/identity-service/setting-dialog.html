@@ -619,17 +619,17 @@
       </div>
       <div class="form-group row">
         <label class="col-sm-4 form-control-label"
-               [nz-tooltip]="'user.tooltips.oidc.iamOidcdUrl' | translate"
-               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcdUrl
+               [nz-tooltip]="'user.tooltips.oidc.iamOidcAuthenticationUrl' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcAuthenticationUrl
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6"
-             [ngClass]="{'has-error' : ((iamOidcdUrl.dirty || iamOidcdUrl.touched) && iamOidcdUrl.invalid)}">
-          <input type="text" class="form-control" required #iamOidcdUrl="ngModel" name="iamOidcdUrl"
-                 [placeholder]="'user.placeholder.iamOidcdUrl' | translate"
+             [ngClass]="{'has-error' : ((iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched) && iamOidcAuthenticationUrl.invalid)}">
+          <input type="text" class="form-control" required #iamOidcAuthenticationUrl="ngModel" name="iamOidcAuthenticationUrl"
+                 [placeholder]="'user.placeholder.iamOidcAuthenticationUrl' | translate"
                  [(ngModel)]="currentObj.iamOidcAuthenticationUrl">
-          <div *ngIf="iamOidcdUrl.invalid && (iamOidcdUrl.dirty || iamOidcdUrl.touched)" class="text-danger help-block">
-            <div *ngIf="iamOidcdUrl.errors.required">
+          <div *ngIf="iamOidcAuthenticationUrl.invalid && (iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched)" class="text-danger help-block">
+            <div *ngIf="iamOidcAuthenticationUrl.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
           </div>
@@ -653,7 +653,7 @@
           </div>
         </div>
       </div>
-            <div class="form-group row">
+      <div class="form-group row">
         <label class="col-sm-4 form-control-label"
                [nz-tooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcClientSecret
@@ -671,6 +671,176 @@
           </div>
         </div>
       </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.oidc.iamOidcLogoutUrl' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcLogoutUrl
+        </label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="iamOidcLogoutUrl"
+                 [placeholder]="'user.placeholder.iamOidcLogoutUrl' | translate"
+                 [(ngModel)]="currentObj.iamOidcLogoutUrl">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.oidc.iamOidcProfileInformationUrl' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcProfileInformationUrl
+        </label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="iamOidcProfileInformationUrl"
+                 [placeholder]="'user.placeholder.iamOidcProfileInformationUrl' | translate"
+                 [(ngModel)]="currentObj.iamOidcProfileInformationUrl">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label"
+               [nz-tooltip]="'user.tooltips.oidc.iamOidcSessionRenewalUrl' | translate"
+               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcSessionRenewalUrl
+        </label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="iamOidcSessionRenewalUrl"
+                 [placeholder]="'user.placeholder.iamOidcSessionRenewalUrl' | translate"
+                 [(ngModel)]="currentObj.iamOidcSessionRenewalUrl">
+        </div>
+      </div>
+      <div class="form-group row m-t">
+        <div class="col-md-12" translate>user.label.tokenVerification</div>
+      </div>
+      <div class="p-a b-a">
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcTokenVerificationUrl' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcTokenVerificationUrl
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcTokenVerificationUrl"
+                   [placeholder]="'user.placeholder.iamOidcTokenVerificationUrl' | translate"
+                   [(ngModel)]="currentObj.iamOidcTokenVerificationUrl">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcCertificateUrl' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcCertificateUrl
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcCertificateUrl"
+                   [placeholder]="'user.placeholder.iamOidcCertificateUrl' | translate"
+                   [(ngModel)]="currentObj.iamOidcCertificateUrl">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcPublicKeyField' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcPublicKeyField
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcPublicKeyField"
+                   [placeholder]="'user.placeholder.iamOidcPublicKeyField' | translate"
+                   [(ngModel)]="currentObj.iamOidcPublicKeyField">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcCertificateIssuer' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcCertificateIssuer
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcCertificateIssuer"
+                   [placeholder]="'user.placeholder.iamOidcCertificateIssuer' | translate"
+                   [(ngModel)]="currentObj.iamOidcCertificateIssuer">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcCertificateExpirationDate' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcCertificateExpirationDate
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcCertificateExpirationDate"
+                   [placeholder]="'user.placeholder.iamOidcCertificateExpirationDate' | translate"
+                   [(ngModel)]="currentObj.iamOidcCertificateExpirationDate">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcIsJwtToken' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcIsJwtToken
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcIsJwtToken"
+                   [placeholder]="'user.placeholder.iamOidcIsJwtToken' | translate"
+                   [(ngModel)]="currentObj.iamOidcIsJwtToken">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtEmailField' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtEmailField
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcJwtEmailField"
+                   [placeholder]="'user.placeholder.iamOidcJwtEmailField' | translate"
+                   [(ngModel)]="currentObj.iamOidcJwtEmailField">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtClientIdField' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtClientIdField
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcJwtClientIdField"
+                   [placeholder]="'user.placeholder.iamOidcJwtClientIdField' | translate"
+                   [(ngModel)]="currentObj.iamOidcJwtClientIdField">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtUrlField' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtUrlField
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcJwtUrlField"
+                   [placeholder]="'user.placeholder.iamOidcJwtUrlField' | translate"
+                   [(ngModel)]="currentObj.iamOidcJwtUrlField">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtAlgorithmField' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtAlgorithmField
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcJwtAlgorithmField"
+                   [placeholder]="'user.placeholder.iamOidcJwtAlgorithmField' | translate"
+                   [(ngModel)]="currentObj.iamOidcJwtAlgorithmField">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtPublicKeyField' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtPublicKeyField
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcJwtPublicKeyField"
+                   [placeholder]="'user.placeholder.iamOidcJwtPublicKeyField' | translate"
+                   [(ngModel)]="currentObj.iamOidcJwtPublicKeyField">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtExpiredField' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtExpiredField
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcJwtExpiredField"
+                   [placeholder]="'user.placeholder.iamOidcJwtExpiredField' | translate"
+                   [(ngModel)]="currentObj.iamOidcJwtExpiredField">
+          </div>
+        </div>
+      </div>  
     </div>
   </div>
   <div class="modal-footer">

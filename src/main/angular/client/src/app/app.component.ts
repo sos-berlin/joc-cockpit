@@ -93,28 +93,30 @@ export class AppComponent implements OnInit {
   }
 
   private login(token: string): void {
-    this.oAuthService.loadUserProfile().then((user: any) => {
-      
-      if (user && user.info) {
-        this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, email: user.info.email }).subscribe({
-          next: (data) => {
-            this.authService.setUser(data);
-            this.authService.save();
+    if (token) {
 
-            if (sessionStorage.returnUrl) {
-              if (sessionStorage.returnUrl.indexOf('?') > -1) {
-                this.router.navigateByUrl(sessionStorage.returnUrl);
+      this.oAuthService.loadUserProfile().then((user: any) => {
+        if (user && user.info) {
+          this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, email: user.info.email, idToken: this.oAuthService.getIdToken() }).subscribe({
+            next: (data) => {
+              this.authService.setUser(data);
+              this.authService.save();
+
+              if (sessionStorage.returnUrl) {
+                if (sessionStorage.returnUrl.indexOf('?') > -1) {
+                  this.router.navigateByUrl(sessionStorage.returnUrl);
+                } else {
+                  this.router.navigate([sessionStorage.returnUrl]).then();
+                }
               } else {
-                this.router.navigate([sessionStorage.returnUrl]).then();
+                this.router.navigate(['/']).then();
               }
-            } else {
-              this.router.navigate(['/']).then();
+              delete sessionStorage.returnUrl;
             }
-            delete sessionStorage.returnUrl;
-          }
-        });
-      }
-    });
+          });
+        }
+      });
+    }
   }
 
 }

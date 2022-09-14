@@ -27,6 +27,8 @@ export class AuthInterceptor implements HttpInterceptor {
         if (user.token) {
           const headers = new HttpHeaders({
             'X-ACCESS-TOKEN': user.token,
+            'X-ID-TOKEN': user.idToken,
+            'X-REFRESH-TOKEN': user.refreshToken,
             'X-IDENTIY-SERVICE': user.identityServiceName,
             'Authorization': 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(user.email + ':' + '')))
           });
