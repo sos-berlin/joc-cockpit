@@ -730,17 +730,7 @@
                    [(ngModel)]="currentObj.iamOidcCertificateUrl">
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.oidc.iamOidcPublicKeyField' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcPublicKeyField
-          </label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcPublicKeyField"
-                   [placeholder]="'user.placeholder.iamOidcPublicKeyField' | translate"
-                   [(ngModel)]="currentObj.iamOidcPublicKeyField">
-          </div>
-        </div>
+
         <div class="form-group row">
           <label class="col-sm-4 form-control-label"
                  [nz-tooltip]="'user.tooltips.oidc.iamOidcCertificateIssuer' | translate"
@@ -764,14 +754,12 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
+          <label class="col-sm-4"
                  [nz-tooltip]="'user.tooltips.oidc.iamOidcIsJwtToken' | translate"
                  [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcIsJwtToken
           </label>
           <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcIsJwtToken"
-                   [placeholder]="'user.placeholder.iamOidcIsJwtToken' | translate"
-                   [(ngModel)]="currentObj.iamOidcIsJwtToken">
+            <label nz-checkbox [(ngModel)]="currentObj.iamOidcIsJwtToken" name="iamOidcIsJwtToken"></label>
           </div>
         </div>
         <div class="form-group row">

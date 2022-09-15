@@ -95,27 +95,24 @@ export class AppComponent implements OnInit {
   private login(token: string): void {
     if (token) {
 
-      this.oAuthService.loadUserProfile().then((user: any) => {
-        if (user && user.info) {
-          this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, email: user.info.email, idToken: this.oAuthService.getIdToken() }).subscribe({
-            next: (data) => {
-              this.authService.setUser(data);
-              this.authService.save();
+      this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, idToken: this.oAuthService.getIdToken() }).subscribe({
+        next: (data) => {
+          this.authService.setUser(data);
+          this.authService.save();
 
-              if (sessionStorage.returnUrl) {
-                if (sessionStorage.returnUrl.indexOf('?') > -1) {
-                  this.router.navigateByUrl(sessionStorage.returnUrl);
-                } else {
-                  this.router.navigate([sessionStorage.returnUrl]).then();
-                }
-              } else {
-                this.router.navigate(['/']).then();
-              }
-              delete sessionStorage.returnUrl;
+          if (sessionStorage.returnUrl) {
+            if (sessionStorage.returnUrl.indexOf('?') > -1) {
+              this.router.navigateByUrl(sessionStorage.returnUrl);
+            } else {
+              this.router.navigate([sessionStorage.returnUrl]).then();
             }
-          });
+          } else {
+            this.router.navigate(['/']).then();
+          }
+          delete sessionStorage.returnUrl;
         }
       });
+
     }
   }
 
