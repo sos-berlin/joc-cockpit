@@ -31,12 +31,13 @@ export class AppComponent implements OnInit {
         this.oAuthService.configure(JSON.parse(sessionStorage.authConfig));
         this.oAuthService.loadDiscoveryDocumentAndTryLogin().then((_) => {
           delete sessionStorage.authConfig;
+
           if (_) {
-            this.login(this.oAuthService.getAccessToken());
+            this.getRefreshToken(this.oAuthService.getAccessToken());
           }
         });
       } else if (this.oAuthService.getAccessToken()) {
-        this.login(this.oAuthService.getAccessToken());
+        this.getRefreshToken(this.oAuthService.getAccessToken());
       }
     }
 
@@ -92,10 +93,18 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private login(token: string): void {
+  private getRefreshToken(token) {
+    try {
+      this.oAuthService.getIdToken();
+      this.login(token, this.oAuthService.getIdToken())
+    } catch (e) {
+      this.login(token)
+    }
+  }
+
+  private login(token: string, refreshToken?): void {
     if (token) {
-   
-      this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, refreshToken: this.oAuthService.getRefreshToken(), idToken: this.oAuthService.getIdToken() }).subscribe({
+      this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, refreshToken, idToken: this.oAuthService.getIdToken() }).subscribe({
         next: (data) => {
           this.authService.setUser(data);
           this.authService.save();
@@ -114,7 +123,6 @@ export class AppComponent implements OnInit {
           sessionStorage.clear();
         }
       });
-
     }
   }
 

@@ -2277,7 +2277,8 @@
     "label.iamOidcJwtUrlField": "Oidc Jwt Url Field",
     "label.iamOidcJwtAlgorithmField": "Oidc Jwt Algorithm Field",
     "label.iamOidcJwtPublicKeyField": "Oidc Jwt Public Key Field",
-    "label.iamOidcJwtExpiredField": "Oidc Jwt Expired Field",
+    "label.iamOidcJwtExpiredField": "Oidc Jwt Expiration Field",
+    "label.iamOidcExpiresInField": "Oidc ExpiresIn Field",
     "label.group": "グループ",
     "label.general": "共通",
     "label.on": "On",
@@ -2387,7 +2388,8 @@
     "placeholder.iamOidcJwtUrlField": "Enter Oidc Jwt Url Field",
     "placeholder.iamOidcJwtAlgorithmField": "Enter Oidc Jwt Algorithm Field",
     "placeholder.iamOidcJwtPublicKeyField": "Enter Oidc Jwt Public Key Field",
-    "placeholder.iamOidcJwtExpiredField": "Enter Oidc Jwt Expired Field",
+    "placeholder.iamOidcJwtExpiredField": "Enter Oidc Jwt Expiration Field",
+    "placeholder.iamOidcExpiresInField": "Oidc ExpiresIn Field",
     "placeholder.group": "グループを入力",
     "placeholder.initialPassword": "初期パスワードを入力",
     "placeholder.minPasswordLength": "最少パスワード文字数を入力",
@@ -2487,7 +2489,8 @@
         "iamOidcJwtUrlField": "Oidc Jwt Url Field",
         "iamOidcJwtAlgorithmField": "Oidc Jwt Algorithm Field",
         "iamOidcJwtPublicKeyField": "Oidc Jwt Public Key Field",
-        "iamOidcJwtExpiredField": "Oidc Jwt Expired Field"
+        "iamOidcJwtExpiredField": "Oidc Jwt Expiration Field",
+        "iamOidcExpiresInField": "Oidc ExpiresIn Field"
       },
       "general": {
         "sessionTimeout": "JOCコックピットで何もアクションが行われなかった場合、指定された秒数後にユーザーセッションが終了し、ユーザーは再ログインする必要があります。",
