@@ -458,6 +458,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }, error: (err) => {
         if (err.error && (err.message === 'Access denied' || err.error.message === 'Access denied')) {
           this.getComments(true);
+          LayoutComponent.calculateHeight();
         } else {
           this.getComments();
           this.router.navigate(['/start-up']).then();

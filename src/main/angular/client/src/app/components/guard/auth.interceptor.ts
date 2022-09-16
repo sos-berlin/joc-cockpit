@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from './auth.service';
 import { LoggingService } from '../../services/logging.service';
+import { isEmpty } from 'underscore';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -17,37 +18,47 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(req: any, next: HttpHandler): Observable<HttpEvent<any>> {
+    const re = new RegExp("^(http|https)://", "i");
+
     if (req.method === 'POST') {
-      req = req.clone({
-        url: 'api/' + req.url,
-        headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
-      });
-      if (req.url.match('authentication/login')) {
-        const user = req.body;
-        if (user.token) {
-          const headers = new HttpHeaders({
-            'X-ACCESS-TOKEN': user.token,
-            'X-ID-TOKEN': user.idToken,
+      if (!re.test(req.url)) {
+        req = req.clone({
+          url: 'api/' + req.url,
+          headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
+        });
+        if (req.url.match('authentication/login')) {
+          const user = req.body;
+          if (user.token) {
+            const headerOptions: any = {
+              'X-ACCESS-TOKEN': user.token,
+              'X-ID-TOKEN': user.idToken,
+              'X-IDENTIY-SERVICE': user.identityServiceName
+            };
 
-            'X-IDENTIY-SERVICE': user.identityServiceName
-          });
+            if (user.refreshToken) {
+              headerOptions['X-REFRESH-TOKEN'] = user.refreshToken;
+            }
 
-          req = req.clone({ headers });
-        } else {
+            const headers = new HttpHeaders(headerOptions);
+
+            req = req.clone({ headers });
+          } else {
+            req = req.clone({
+              headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),
+              body: {}
+            });
+          }
+        } else if (this.authService.accessTokenId) {
           req = req.clone({
-            headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),
-            body: {}
+            headers: req.headers.set('X-Access-Token', this.authService.accessTokenId)
           });
         }
-      } else if (this.authService.accessTokenId) {
-        req = req.clone({
-          headers: req.headers.set('X-Access-Token', this.authService.accessTokenId)
-        });
+        if (!req.url.match('touch')) {
+          req.requestTimeStamp = new Date().getTime();
+          this.logService.debug('START LOADING ' + req.url);
+        }
       }
-      if (!req.url.match('touch')) {
-        req.requestTimeStamp = new Date().getTime();
-        this.logService.debug('START LOADING ' + req.url);
-      }
+
       return next.handle(req).pipe(
         tap({
           next: (event: any) => {
@@ -56,6 +67,10 @@ export class AuthInterceptor implements HttpInterceptor {
               this.logService.debug(message);
             }
           }, error: (err: any) => {
+
+            if (re.test(req.url) && err.error && !isEmpty(err.error)) {
+              this.toasterService.error(err.error.error, err.error.error_description);
+            }
             if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && (err.error.error.message.match(/UnknownSessionException/)
               || err.error.error.message.match(/user is null/))))) {
               if (!this.router.url.match('/login') && !req.url.match('authentication/login')) {
@@ -74,7 +89,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 if (url && url.match(/returnUrl/)) {
                   url = url.substring(0, url.indexOf('returnUrl'));
                 }
-                this.router.navigate(['login'], {queryParams: {returnUrl: url}}).then();
+                this.router.navigate(['login'], { queryParams: { returnUrl: url } }).then();
                 return;
               }
             } else if (err.status && err.status !== 434 && err.status !== 502) {
@@ -89,7 +104,9 @@ export class AuthInterceptor implements HttpInterceptor {
               if (typeof err.error === 'string') {
                 try {
                   let _err = JSON.parse(err.error);
-                  this.toasterService.error(_err.error.code, _err.error.message);
+                  if (!isEmpty(_err.error)) {
+                    this.toasterService.error(_err.error.code, _err.error.message);
+                  }
                   flag = true;
                 } catch (e) {
                 }
@@ -98,7 +115,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 if (err.error.error) {
                   if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
                     this.toasterService.error('', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
-                  } else {
+                  } else if (err.error.error.message) {
                     this.toasterService.error('', err.error.error.message);
                   }
                 } else if (err.error.message) {
@@ -123,7 +140,7 @@ export class AuthInterceptor implements HttpInterceptor {
               if (err.error && err.error.error) {
                 errorMessage = JSON.stringify(err.error.error);
               } else {
-                errorMessage = typeof err.error === 'string' ? err.error :  JSON.stringify(err.error);
+                errorMessage = typeof err.error === 'string' ? err.error : JSON.stringify(err.error);
               }
             }
             this.logService.error(errorMessage);

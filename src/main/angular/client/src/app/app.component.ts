@@ -94,8 +94,8 @@ export class AppComponent implements OnInit {
 
   private login(token: string): void {
     if (token) {
-
-      this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, idToken: this.oAuthService.getIdToken() }).subscribe({
+   
+      this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, refreshToken: this.oAuthService.getRefreshToken(), idToken: this.oAuthService.getIdToken() }).subscribe({
         next: (data) => {
           this.authService.setUser(data);
           this.authService.save();
@@ -110,6 +110,8 @@ export class AppComponent implements OnInit {
             this.router.navigate(['/']).then();
           }
           delete sessionStorage.returnUrl;
+        }, error: () => {
+          sessionStorage.clear();
         }
       });
 

@@ -108,10 +108,11 @@ export class LoginComponent implements OnInit {
       // The SPA's id. The SPA is registerd with this id at the auth-server
       // clientId: 'server.code',
       clientId: config.iamOidcClientId,
-
+      dummyClientSecret: config.iamOidcClientSecret,
       // set the scope for the permissions the client should request
       scope: 'openid profile email',
 
+      responseType: 'code',
       showDebugInformation: true,
     };
     this.loginCodeInPopup(authCodeFlowConfig, config.identityServiceName);
