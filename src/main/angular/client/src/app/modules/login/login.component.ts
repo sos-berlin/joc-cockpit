@@ -111,7 +111,7 @@ export class LoginComponent implements OnInit {
       dummyClientSecret: config.iamOidcClientSecret,
       // set the scope for the permissions the client should request
       scope: 'openid profile email',
-
+      useSilentRefresh: true,
       responseType: 'code',
       showDebugInformation: true,
     };

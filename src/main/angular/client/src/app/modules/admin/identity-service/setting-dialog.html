@@ -598,7 +598,7 @@
         </nz-tab>
       </nz-tabset>
     </div>
-    <div *ngIf="data && data.identityServiceType.match('OPENID-CONNECT')">
+    <div *ngIf="data && data.identityServiceType.match('OIDC')">
       <div class="form-group row">
         <label class="col-sm-4 form-control-label"
                [nz-tooltip]="'user.tooltips.oidc.iamOidcName' | translate"
