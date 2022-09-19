@@ -26,9 +26,11 @@ export class AppComponent implements OnInit {
             return 'Sorry, for security reasons, the script console is deactivated';
           };
         });*/
+    if (sessionStorage.authConfig) {
+      this.oAuthService.configure(JSON.parse(sessionStorage.authConfig));
+    }
     if (!this.authService.accessTokenId) {
       if (sessionStorage.authConfig) {
-        this.oAuthService.configure(JSON.parse(sessionStorage.authConfig));
         this.oAuthService.loadDiscoveryDocumentAndTryLogin().then((_) => {
           delete sessionStorage.authConfig;
 
@@ -96,7 +98,7 @@ export class AppComponent implements OnInit {
   private getRefreshToken(token) {
     try {
       this.oAuthService.getIdToken();
-      this.login(token, this.oAuthService.getIdToken())
+      this.login(token, this.oAuthService.getRefreshToken())
     } catch (e) {
       this.login(token)
     }
@@ -125,5 +127,4 @@ export class AppComponent implements OnInit {
       });
     }
   }
-
 }

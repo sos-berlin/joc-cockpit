@@ -1,18 +1,20 @@
-import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
-import {ToastrService} from 'ngx-toastr';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
-import {isEmpty} from 'underscore';
-import {NzConfigService} from 'ng-zorro-antd/core/config';
-import {CoreService} from '../../services/core.service';
-import {DataService} from '../../services/data.service';
-import {AuthService} from '../../components/guard';
-import {HeaderComponent} from '../../components/header/header.component';
-import {StepGuideComponent} from '../../components/info-menu/info-menu.component';
-import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
+import { Component, HostListener, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { isEmpty } from 'underscore';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { NzConfigService } from 'ng-zorro-antd/core/config';
+import { CoreService } from '../../services/core.service';
+import { DataService } from '../../services/data.service';
+import { AuthService } from '../../components/guard';
+import { HeaderComponent } from '../../components/header/header.component';
+import { StepGuideComponent } from '../../components/info-menu/info-menu.component';
+import { ChangePasswordComponent } from "../../components/change-password/change-password.component";
+
 
 declare const $: any;
 
@@ -49,12 +51,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   warningMessage: string;
   warningMessage2: string;
 
-  @ViewChild(HeaderComponent, {static: false}) child: any;
-  @ViewChild('customTpl', {static: true}) customTpl: any;
+  @ViewChild(HeaderComponent, { static: false }) child: any;
+  @ViewChild('customTpl', { static: true }) customTpl: any;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
-              private dataService: DataService, public translate: TranslateService, private toasterService: ToastrService,
-              private nzConfigService: NzConfigService, private modal: NzModalService) {
+    private dataService: DataService, public translate: TranslateService, private toasterService: ToastrService,
+    private nzConfigService: NzConfigService, private modal: NzModalService, private oauthService: OAuthService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -80,6 +82,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.isChangePasswordPopupOpen = true;
           this.changePassword();
         }
+
         if (this.loading) {
           LayoutComponent.calculateHeight();
         }
@@ -576,6 +579,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private _logout(timeout: any): void {
+  
+    if (sessionStorage.$SOS$currentUserIdentityService && sessionStorage.$SOS$currentUserIdentityService.match('OPENID-CONNECT')) {
+      try {
+        this.oauthService.revokeTokenAndLogout();
+      } catch (e) { }
+    }
     this.authService.clearUser();
     this.authService.clearStorage();
     if (timeout) {

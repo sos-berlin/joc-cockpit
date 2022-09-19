@@ -671,7 +671,7 @@
           </div>
         </div>
       </div>
-      <div class="form-group row">
+      <!-- <div class="form-group row">
         <label class="col-sm-4 form-control-label"
                [nz-tooltip]="'user.tooltips.oidc.iamOidcLogoutUrl' | translate"
                [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcLogoutUrl
@@ -681,7 +681,7 @@
                  [placeholder]="'user.placeholder.iamOidcLogoutUrl' | translate"
                  [(ngModel)]="currentObj.iamOidcLogoutUrl">
         </div>
-      </div>
+      </div> -->
       <div class="form-group row">
         <label class="col-sm-4 form-control-label"
                [nz-tooltip]="'user.tooltips.oidc.iamOidcProfileInformationUrl' | translate"
@@ -825,7 +825,18 @@
           <div class="col-sm-6">
             <input type="text" class="form-control" name="iamOidcJwtExpiredField"
                    [placeholder]="'user.placeholder.iamOidcJwtExpiredField' | translate"
-                   [(ngModel)]="currentObj.iamOidcJwtExpiredField">
+                   [(ngModel)]="currentObj.iamOidcJwtExpirationField">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label"
+                 [nz-tooltip]="'user.tooltips.oidc.iamOidcExpiresInField' | translate"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcExpiresInField
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="iamOidcExpiresInField"
+                   [placeholder]="'user.placeholder.iamOidcExpiresInField' | translate"
+                   [(ngModel)]="currentObj.iamOidcExpiresInField">
           </div>
         </div>
       </div>  
