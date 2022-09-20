@@ -393,7 +393,7 @@ export class SettingModalComponent implements OnInit {
         obj.keycloak = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
         obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
-      } else if (this.data.identityServiceType.match('OPENID')) {
+      } else if (this.data.identityServiceType.match('OIDC')) {
         obj.oidc = this.currentObj;
       }
     } else {
