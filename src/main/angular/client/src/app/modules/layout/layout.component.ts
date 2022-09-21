@@ -6,15 +6,13 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { isEmpty } from 'underscore';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { NzConfigService } from 'ng-zorro-antd/core/config';
 import { CoreService } from '../../services/core.service';
 import { DataService } from '../../services/data.service';
-import { AuthService } from '../../components/guard';
+import { AuthService, OIDCAuthService } from '../../components/guard';
 import { HeaderComponent } from '../../components/header/header.component';
 import { StepGuideComponent } from '../../components/info-menu/info-menu.component';
 import { ChangePasswordComponent } from "../../components/change-password/change-password.component";
-
 
 declare const $: any;
 
@@ -56,7 +54,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
     private dataService: DataService, public translate: TranslateService, private toasterService: ToastrService,
-    private nzConfigService: NzConfigService, private modal: NzModalService, private oauthService: OAuthService) {
+    private nzConfigService: NzConfigService, private modal: NzModalService, private oauthService: OIDCAuthService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -582,7 +580,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   
     if (sessionStorage.$SOS$currentUserIdentityService && sessionStorage.$SOS$currentUserIdentityService.match('OPENID-CONNECT')) {
       try {
-        this.oauthService.revokeTokenAndLogout();
+       // this.oauthService.revokeTokenAndLogout();
       } catch (e) { }
     }
     this.authService.clearUser();

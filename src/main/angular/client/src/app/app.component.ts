@@ -2,10 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NzI18nService } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from "@angular/common";
-import { Router } from '@angular/router';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { CoreService } from './services/core.service';
-import { AuthService } from './components/guard';
+import { AuthService, OIDCAuthService } from './components/guard';
 
 declare const $: any;
 
@@ -16,8 +14,8 @@ declare const $: any;
 export class AppComponent implements OnInit {
   locales: any = [];
 
-  constructor(public translate: TranslateService, private i18n: NzI18nService, private router: Router, public coreService: CoreService,
-    private authService: AuthService, private readonly oAuthService: OAuthService) {
+  constructor(public translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService,
+    private authService: AuthService, private readonly oAuthService: OIDCAuthService) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
           return typeof console[property] === 'function';
@@ -31,15 +29,9 @@ export class AppComponent implements OnInit {
     }
     if (!this.authService.accessTokenId) {
       if (sessionStorage.authConfig) {
-        this.oAuthService.loadDiscoveryDocumentAndTryLogin().then((_) => {
-          delete sessionStorage.authConfig;
-
-          if (_) {
-            this.getRefreshToken(this.oAuthService.getAccessToken());
-          }
+        this.oAuthService.loadDiscoveryDocument().then((_) => {
+          this.oAuthService.tryLoginCodeFlow();
         });
-      } else if (this.oAuthService.getAccessToken()) {
-        this.getRefreshToken(this.oAuthService.getAccessToken());
       }
     }
 
@@ -95,36 +87,4 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private getRefreshToken(token) {
-    try {
-      this.oAuthService.getIdToken();
-      this.login(token, this.oAuthService.getRefreshToken())
-    } catch (e) {
-      this.login(token)
-    }
-  }
-
-  private login(token: string, refreshToken?): void {
-    if (token) {
-      this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, refreshToken, idToken: this.oAuthService.getIdToken() }).subscribe({
-        next: (data) => {
-          this.authService.setUser(data);
-          this.authService.save();
-
-          if (sessionStorage.returnUrl) {
-            if (sessionStorage.returnUrl.indexOf('?') > -1) {
-              this.router.navigateByUrl(sessionStorage.returnUrl);
-            } else {
-              this.router.navigate([sessionStorage.returnUrl]).then();
-            }
-          } else {
-            this.router.navigate(['/']).then();
-          }
-          delete sessionStorage.returnUrl;
-        }, error: () => {
-          sessionStorage.clear();
-        }
-      });
-    }
-  }
 }

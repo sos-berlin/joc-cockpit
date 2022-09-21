@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OAuthService, AuthConfig } from 'angular-oauth2-oidc';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard';
-
+import { AuthService, OIDCAuthService } from '../../components/guard';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +20,7 @@ export class LoginComponent implements OnInit {
   identityServiceItems = [];
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
-    private authService: AuthService, private oAuthService: OAuthService) {
+    private authService: AuthService, private oAuthService: OIDCAuthService) {
   }
 
   ngOnInit(): void {
@@ -95,28 +93,7 @@ export class LoginComponent implements OnInit {
   }
 
   loginWithPopup(config) {
-    const authCodeFlowConfig: AuthConfig = {
-      // Url of the Identity Provider
-      issuer: config.iamOidcAuthenticationUrl, 
-
-      // strict discovery document disallows urls which not start with issuers url
-      strictDiscoveryDocumentValidation: false,
-
-      // URL of the SPA to redirect the user to after login
-      redirectUri: window.location.origin + '/joc',
-
-      // The SPA's id. The SPA is registerd with this id at the auth-server
-      // clientId: 'server.code',
-      clientId: config.iamOidcClientId,
-      dummyClientSecret: config.iamOidcClientSecret,
-      // set the scope for the permissions the client should request
-      scope: 'openid profile email',
-      useSilentRefresh: true,
-      responseType: 'code',
-      showDebugInformation: true,
-    };
-    this.loginCodeInPopup(authCodeFlowConfig, config.identityServiceName);
-
+    this.loginCodeInPopup(config, config.identityServiceName);
   }
 
   loginCodeInPopup(authConfig, providerName) {
@@ -124,15 +101,15 @@ export class LoginComponent implements OnInit {
     // Tweak config for code flow
 
     this.oAuthService.configure(authConfig);
-    this.oAuthService.loadDiscoveryDocument();
-    sessionStorage.setItem('authConfig', JSON.stringify(authConfig));
-    sessionStorage.setItem('providerName', providerName);
-    if (this.returnUrl) {
-      sessionStorage.setItem('returnUrl', this.returnUrl);
-    }
-
-    this.oAuthService.initLoginFlow();
-
+    this.oAuthService.loadDiscoveryDocument().then((_) => {
+     
+      sessionStorage.setItem('authConfig', JSON.stringify(authConfig));
+      sessionStorage.setItem('providerName', providerName);
+      if (this.returnUrl) {
+        sessionStorage.setItem('returnUrl', this.returnUrl);
+      }
+      this.oAuthService.initLoginFlow();
+    });
   }
 
 }
