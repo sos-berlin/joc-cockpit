@@ -84,7 +84,7 @@ export class OIDCAuthService {
 
     configure(config) {
         this.issuer = config.iamOidcAuthenticationUrl,
-            this.redirectUri = window.location.origin;
+            this.redirectUri = window.location.origin + '/joc';
         this.clientId = config.iamOidcClientId;
         this.clientSecret = config.iamOidcClientSecret;
         this.scope = 'openid profile email';
