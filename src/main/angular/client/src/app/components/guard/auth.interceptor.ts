@@ -32,7 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
             const headerOptions: any = {
               'X-ACCESS-TOKEN': user.token,
               'X-ID-TOKEN': user.idToken,
-              'X-IDENTIY-SERVICE': user.identityServiceName
+              'X-IDENTITY-SERVICE': user.identityServiceName
             };
 
             if (user.refreshToken) {
@@ -57,8 +57,7 @@ export class AuthInterceptor implements HttpInterceptor {
           req.requestTimeStamp = new Date().getTime();
           this.logService.debug('START LOADING ' + req.url);
         }
-      }
-
+      } 
       return next.handle(req).pipe(
         tap({
           next: (event: any) => {

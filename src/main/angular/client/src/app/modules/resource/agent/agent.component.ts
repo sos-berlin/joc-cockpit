@@ -102,7 +102,7 @@ export class AgentComponent implements OnInit, OnDestroy {
       this.agentsFilters.filter.state = status;
     }
     const obj = {
-      states: this.agentsFilters.filter.state !== 'ALL' ? [this.agentsFilters.filter.state] : undefined,
+      states: this.agentsFilters.filter.state !== 'ALL' && this.agentsFilters.filter.state ? [this.agentsFilters.filter.state] : undefined,
       controllerId: this.schedulerIds.selected,
       compact: this.agentsFilters.expandedObjects.length === 0,
       onlyVisibleAgents: true

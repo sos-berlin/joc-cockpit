@@ -169,7 +169,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           let flag = false;
           if (res.configurations[0] && res.configurations[0].configurationItem) {
             const configuration = JSON.parse(res.configurations[0].configurationItem);
-            if(configuration) {
+            if (configuration && configuration.joc) {
               flag = configuration.joc.disable_warning_on_license_expiration;
             }
           }
@@ -338,7 +338,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.child.isLogout = true;
     }
     this.coreService.post('authentication/logout', {}).subscribe({
-      next: () => this._logout(timeout),
+      next: (res) => {
+        
+        if (res.accessToken) {
+          this.oauthService.logOut(res.accessToken, res.refreshToken);
+        }
+        this._logout(timeout);
+      },
       error: () => this._logout(timeout)
     });
   }
@@ -485,6 +491,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private authenticate(): any {
+    if (typeof sessionStorage.logoutUrl == 'string') {
+      return;
+    }
     this.coreService.post('authentication/login', {}).subscribe({
       next: (data) => {
         this.authService.setUser(data);
@@ -577,18 +586,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private _logout(timeout: any): void {
-  
-    if (sessionStorage.$SOS$currentUserIdentityService && sessionStorage.$SOS$currentUserIdentityService.match('OPENID-CONNECT')) {
-      try {
-       // this.oauthService.revokeTokenAndLogout();
-      } catch (e) { }
-    }
     this.authService.clearUser();
     this.authService.clearStorage();
     if (timeout) {
       sessionStorage.removeItem('$SOS$CONTROLLER');
       const returnUrl = this.router.url;
-      let queryParams = {queryParams: {returnUrl}};
+      let queryParams = { queryParams: { returnUrl } };
       if (!returnUrl || returnUrl.match(/login/)) {
         queryParams = undefined;
       } else {
