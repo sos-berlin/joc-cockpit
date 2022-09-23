@@ -90,6 +90,8 @@ export class OIDCAuthService {
         this.scope = 'openid profile email';
         this.responseType = 'code';
         this.showDebugInformation = true;
+        sessionStorage.setItem('clientId', this.clientId);
+        sessionStorage.setItem('clientSecret', this.clientSecret);
     }
 
     loadDiscoveryDocument(fullUrl = null) {
@@ -461,8 +463,10 @@ export class OIDCAuthService {
         options = options || {};
         this.assertUrlNotNullAndCorrectProtocol(this.tokenEndpoint, 'tokenEndpoint');
         let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-        params = params.set('client_id', this.clientId);
-        params = params.set('client_secret', this.clientSecret);
+        const clientId = sessionStorage.getItem('clientId');
+        const clientSecret = sessionStorage.getItem('clientSecret');
+        params = params.set('client_id', this.clientId || clientId);
+        params = params.set('client_secret', this.clientSecret || clientSecret);
         return new Promise((resolve, reject) => {
             this.coreService
                 .log(this.tokenEndpoint, params, { headers })
@@ -576,6 +580,8 @@ export class OIDCAuthService {
                 next: (data) => {
                     let returnUrl = sessionStorage.getItem('returnUrl');
                     let logoutUrl = sessionStorage.getItem('logoutUrl');
+                    let clientId = sessionStorage.getItem('clientId');
+                    let clientSecret = sessionStorage.getItem('clientSecret');
                     sessionStorage.clear();
                     this.authService.setUser(data);
                     this.authService.save();
@@ -589,6 +595,8 @@ export class OIDCAuthService {
                         this.router.navigate(['/']).then();
                     }
                     sessionStorage.setItem('logoutUrl', logoutUrl);
+                    sessionStorage.setItem('clientId', clientId);
+                    sessionStorage.setItem('clientSecret', clientSecret);
                 }, error: () => {
                     sessionStorage.clear();
                 }

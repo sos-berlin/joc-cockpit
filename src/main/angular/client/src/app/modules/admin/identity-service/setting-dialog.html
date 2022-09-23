@@ -671,39 +671,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="form-group row">
-        <label class="col-sm-4 form-control-label"
-               [nz-tooltip]="'user.tooltips.oidc.iamOidcLogoutUrl' | translate"
-               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcLogoutUrl
-        </label>
-        <div class="col-sm-6">
-          <input type="text" class="form-control" name="iamOidcLogoutUrl"
-                 [placeholder]="'user.placeholder.iamOidcLogoutUrl' | translate"
-                 [(ngModel)]="currentObj.iamOidcLogoutUrl">
-        </div>
-      </div> -->
-      <div class="form-group row">
-        <label class="col-sm-4 form-control-label"
-               [nz-tooltip]="'user.tooltips.oidc.iamOidcProfileInformationUrl' | translate"
-               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcProfileInformationUrl
-        </label>
-        <div class="col-sm-6">
-          <input type="text" class="form-control" name="iamOidcProfileInformationUrl"
-                 [placeholder]="'user.placeholder.iamOidcProfileInformationUrl' | translate"
-                 [(ngModel)]="currentObj.iamOidcProfileInformationUrl">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-4 form-control-label"
-               [nz-tooltip]="'user.tooltips.oidc.iamOidcSessionRenewalUrl' | translate"
-               [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcSessionRenewalUrl
-        </label>
-        <div class="col-sm-6">
-          <input type="text" class="form-control" name="iamOidcSessionRenewalUrl"
-                 [placeholder]="'user.placeholder.iamOidcSessionRenewalUrl' | translate"
-                 [(ngModel)]="currentObj.iamOidcSessionRenewalUrl">
-        </div>
-      </div>
       <div class="form-group row m-t">
         <div class="col-md-12" translate>user.label.tokenVerification</div>
       </div>
@@ -753,92 +720,8 @@
                    [(ngModel)]="currentObj.iamOidcCertificateExpirationDate">
           </div>
         </div>
-        <!-- <div class="form-group row">
-          <label class="col-sm-4"
-                 [nz-tooltip]="'user.tooltips.oidc.iamOidcIsJwtToken' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcIsJwtToken
-          </label>
-          <div class="col-sm-6">
-            <label nz-checkbox [(ngModel)]="currentObj.iamOidcIsJwtToken" name="iamOidcIsJwtToken"></label>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtEmailField' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtEmailField
-          </label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcJwtEmailField"
-                   [placeholder]="'user.placeholder.iamOidcJwtEmailField' | translate"
-                   [(ngModel)]="currentObj.iamOidcJwtEmailField">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtClientIdField' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtClientIdField
-          </label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcJwtClientIdField"
-                   [placeholder]="'user.placeholder.iamOidcJwtClientIdField' | translate"
-                   [(ngModel)]="currentObj.iamOidcJwtClientIdField">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtUrlField' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtUrlField
-          </label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcJwtUrlField"
-                   [placeholder]="'user.placeholder.iamOidcJwtUrlField' | translate"
-                   [(ngModel)]="currentObj.iamOidcJwtUrlField">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtAlgorithmField' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtAlgorithmField
-          </label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcJwtAlgorithmField"
-                   [placeholder]="'user.placeholder.iamOidcJwtAlgorithmField' | translate"
-                   [(ngModel)]="currentObj.iamOidcJwtAlgorithmField">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtPublicKeyField' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtPublicKeyField
-          </label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcJwtPublicKeyField"
-                   [placeholder]="'user.placeholder.iamOidcJwtPublicKeyField' | translate"
-                   [(ngModel)]="currentObj.iamOidcJwtPublicKeyField">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.oidc.iamOidcJwtExpiredField' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcJwtExpiredField
-          </label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcJwtExpiredField"
-                   [placeholder]="'user.placeholder.iamOidcJwtExpiredField' | translate"
-                   [(ngModel)]="currentObj.iamOidcJwtExpirationField">
-          </div>
-        </div> -->
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
-                 [nz-tooltip]="'user.tooltips.oidc.iamOidcExpiresInField' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcExpiresInField
-          </label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcExpiresInField"
-                   [placeholder]="'user.placeholder.iamOidcExpiresInField' | translate"
-                   [(ngModel)]="currentObj.iamOidcExpiresInField">
-          </div>
-        </div>
+      
+        
       </div>  
     </div>
   </div>
