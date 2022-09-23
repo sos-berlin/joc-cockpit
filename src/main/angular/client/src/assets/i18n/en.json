@@ -2266,8 +2266,6 @@
     "label.iamOidcClientSecret": "OIDC Client Secret",
     "label.iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
     "label.iamOidcCertificateUrl": "OIDC Certificate Url",
-    "label.iamOidcCertificateIssuer": "OIDC Certificate Issuer",
-    "label.iamOidcCertificateExpirationDate": "OIDC Certificate Expiration Date",
     "label.group": "Group",
     "label.general": "General",
     "label.on": "On",
@@ -2367,8 +2365,6 @@
     "placeholder.iamOidcClientSecret": "Enter OIDC Client Secret",
     "placeholder.iamOidcTokenVerificationUrl": "Enter OIDC Token Verification Url",
     "placeholder.iamOidcCertificateUrl": "Enter OIDC Certificate Url",
-    "placeholder.iamOidcCertificateIssuer": "Enter OIDC Certificate Issuer",
-    "placeholder.iamOidcCertificateExpirationDate": "Enter OIDC Certificate Expiration Date",
     "placeholder.group": "Enter Group",
     "placeholder.initialPassword": "Enter initial password",
     "placeholder.minPasswordLength": "Enter minimum password length",
@@ -2456,9 +2452,7 @@
         "iamOidcClientId": "OIDC Client ID",
         "iamOidcClientSecret": "OIDC Client Secret",
         "iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
-        "iamOidcCertificateUrl": "OIDC Certificate Url",
-        "iamOidcCertificateIssuer": "OIDC Certificate Issuer",
-        "iamOidcCertificateExpirationDate": "OIDC Certificate Expiration Date"
+        "iamOidcCertificateUrl": "OIDC Certificate Url"
       },
       "general": {
         "sessionTimeout": "A user session will be terminated by JOC Cockpit and the user has to login after the given number of seconds if no action is performed in JOC Cockpit.",
