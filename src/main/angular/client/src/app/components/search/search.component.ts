@@ -47,6 +47,12 @@ export class SearchComponent implements OnInit, OnDestroy {
   };
   type: string;
   url: string;
+  checkOptions = [
+    {label: 'synchronized', value: 'IN_SYNC', checked: false},
+    {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false},
+    {label: 'suspended', value: 'SUSPENDED', checked: false},
+    {label: 'outstanding',value: 'OUTSTANDING', checked: false}
+  ];
 
   constructor(public coreService: CoreService, public modal: NzModalService, private authService: AuthService) {
   }
@@ -79,6 +85,9 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchObj.returnType = this.type;
       }
     }
+    if(this.searchObj.advanced && this.isWorkflow){
+      this.searchObj.advanced.states = this.searchObj.advanced.states ? this.searchObj.advanced.states : [];
+    }
   }
 
   ngOnDestroy(): void {
@@ -98,6 +107,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }
+
+  
+  stateChange(value: string[]): void {
+    this.searchObj.advanced.states = value;
   }
 
   displayWith(data): string {
