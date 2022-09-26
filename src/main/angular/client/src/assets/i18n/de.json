@@ -901,8 +901,8 @@
     "button.notSynchronized": "Nicht Synchron",
     "button.suspended": "Ausgesetzt",
     "button.outstanding": "Ausstehend",
-    "button.skipped": "Skipped",
-    "button.stopped": "Stopped"
+    "button.skipped": "Übersprungen",
+    "button.stopped": "Gestoppt"
   },
   "header": {
     "label.dashboard": "ÜBERSICHT",
@@ -2264,10 +2264,10 @@
     "label.iamLdapSystemUser": "LDAP System User",
     "label.iamLdapSystemPassword": "LDAP System Password",
     "label.iamOidcName": "OIDC Name",
-    "label.iamOidcAuthenticationUrl": "OIDC Authentication Url",
+    "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
     "label.iamOidcClientId": "OIDC Client ID",
     "label.iamOidcClientSecret": "OIDC Client Secret",
-    "label.iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
+    "label.iamOidcTokenVerificationUrl": "OIDC Token Verification URL",
     "label.group": "Gruppe",
     "label.general": "Generelles",
     "label.on": "On",
@@ -2359,13 +2359,13 @@
     "placeholder.iamLdapTrustStorePath": "LDAP Truststore Path angeben",
     "placeholder.iamLdapTrustStorePassword": "LDAP Truststore Password angeben",
     "placeholder.iamLdapTrustStoreType": "LDAP Truststore Type angeben",
-    "placeholder.iamLdapSystemUser": "Enter LDAP System User",
-    "placeholder.iamLdapSystemPassword": "Enter LDAP System Password",
-    "placeholder.iamOidcName": "Enter OIDC Name",
-    "placeholder.iamOidcAuthenticationUrl": "Enter OIDC Authentication Url",
-    "placeholder.iamOidcClientId": "Enter OIDC Client ID",
-    "placeholder.iamOidcClientSecret": "Enter OIDC Client Secret",
-    "placeholder.iamOidcTokenVerificationUrl": "Enter OIDC Token Verification Url",
+    "placeholder.iamLdapSystemUser": "LDAP System User angeben",
+    "placeholder.iamLdapSystemPassword": "LDAP System Password angeben",
+    "placeholder.iamOidcName": "OIDC Name angeben",
+    "placeholder.iamOidcAuthenticationUrl": "OIDC Authentication URL angeben",
+    "placeholder.iamOidcClientId": "OIDC Client ID angeben",
+    "placeholder.iamOidcClientSecret": "OIDC Client Secret angeben",
+    "placeholder.iamOidcTokenVerificationUrl": "OIDC Token Verification URL angeben",
     "placeholder.group": "Gruppe angeben",
     "placeholder.initialPassword": "Initialkennwort angeben",
     "placeholder.minPasswordLength": "Minimallänge des Kennworts angeben",
@@ -2425,8 +2425,8 @@
         "iamLdapTrustStorePath": "Der Pfad zum LDAP Truststore, der das Server Zertifikat oder das entsprechende Root CA Zertifikat enthält, mit dem das LDAP Server Zertifikat signiert ist.",
         "iamLdapTrustStorePassword": "Sofern ein LDAP Truststore verwendet wird, der durch ein Kennwort geschützt ist, wird das Kennwort hier angegeben.",
         "iamLdapTrustStoreType": "Der Typ des LDAP Truststore kann PKCS12 oder JKS (deprecated) sein.",
-        "iamLdapSystemUser": "LDAP System User",
-        "iamLdapSystemPassword": "LDAP System Password"
+        "iamLdapSystemUser": "Wird ein LDAP System User Account angegeben, so erfolgt die 'bind' Operation mit diesem Konto. Bleibt die Einstellung leer, dann erfolgt die 'bind' Operation mit Benutzerkonto der Anmeldung.",
+        "iamLdapSystemPassword": "Ein LDAP System User Password wird meist verlangt, wenn ein LDAP System User Account angegeben ist."
       },
       "vault": {
         "iamVaultUrl": "Die URL, unter der das Vault Server REST API verfügbar ist.",
@@ -2441,18 +2441,18 @@
         "iamKeycloakTrustStorePath": "Der Pfad zum Keycloak Truststore, der das Keycloak Server Zertifikat oder das Root CA Zertifikat enthält, mit dem das Keycloak Server Zertifikat signiert ist.",
         "iamKeycloakAdminAccount": "Keycloak Administrator Konto",
         "iamKeycloakAdminPassword": "Keycloak Administrator Kennwort",
-        "iamKeycloakClientId": "Keycloak Client ID",
+        "iamKeycloakClientId": "Die Keycloak Client ID wird in Keycloak registriert und muss dem angegebenen Wert der Einstellung des Identitätsdienstes entsprechen.",
         "iamKeycloakTrustStorePassword": "Ist der Keycloak Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
         "iamKeycloakTrustStoreType": "Der Typ des Keycloak Truststore kann PKCS12 sein oder JKS (deprecated).",
-        "iamKeycloakClientSecret": "Keycloak Client Secret",
-        "iamKeycloakRealm": "Keycloak Realm"
+        "iamKeycloakClientSecret": "Das Keycloak Client Secret wird in Keycloak registriert und muss dem angegebenen Wert der Einstellung des Identitätsdienstes entsprechen.",
+        "iamKeycloakRealm": "Der Keycloak Realm wird in Keycloak registriert und muss dem angebenen Wert der Einstellung des Identitätsdienstes entsprechen."
       },
       "oidc":{
         "iamOidcName": "OIDC Name",
-        "iamOidcAuthenticationUrl": "OIDC Authentication Url",
+        "iamOidcAuthenticationUrl": "OIDC Authentication URL",
         "iamOidcClientId": "OIDC Client ID",
         "iamOidcClientSecret": "OIDC Client Secret",
-        "iamOidcTokenVerificationUrl": "OIDC Token Verification Url"
+        "iamOidcTokenVerificationUrl": "OIDC Token Verification URL"
       },
       "general": {
         "sessionTimeout": "Eine Benutzersitzung wird von JOC Cockpit geschlossen und der Benutzer zur Anmeldung aufgeforder, wenn für die in Sekunden angegebene Dauer keine Aktivitäten in JOC Cockpit durch den Benutzer erfolgt sind.",
