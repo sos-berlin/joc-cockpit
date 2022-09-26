@@ -176,6 +176,17 @@
                 </nz-checkbox-wrapper>
               </div>
             </div>
+            <div class="form-group row" *ngIf="isWorkflow">
+              <label class="col-md-4 col-lg-3" translate>inventory.search.label.instructionStates</label>
+              <div class="col-md-8 col-lg-9">
+                <nz-checkbox-wrapper (nzOnChange)="instructionStateChange($event)">
+                  <ng-container *ngFor="let option of instructionCheckOptions">
+                    <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
+                  </ng-container>
+                </nz-checkbox-wrapper>
+              </div>
+            </div>
+            
             <div class="form-group row">
               <label class="col-md-4 col-lg-3 form-control-label"
                 [nz-tooltip]="'inventory.search.tooltips.countJobs' | translate"

@@ -4,8 +4,6 @@ import crypto from 'crypto-js';
 import sha256 from 'crypto-js/sha256';
 import { ToastrService } from "ngx-toastr";
 import { CoreService } from "../../services/core.service";
-import { AuthService } from "./auth.service";
-import { Router } from "@angular/router";
 import { combineLatest, Observable, of } from "rxjs";
 
 // GENERATING CODE CHALLENGE FROM VERIFIER
@@ -79,7 +77,7 @@ export class OIDCAuthService {
     grantTypesSupported = [];
     discoveryDocumentLoaded = false;
 
-    constructor(private coreService: CoreService, private toasterService: ToastrService, private authService: AuthService, private router: Router) {
+    constructor(private coreService: CoreService, private toasterService: ToastrService) {
     }
 
     configure(config) {
@@ -116,7 +114,6 @@ export class OIDCAuthService {
                     this.loginUrl = doc.authorization_endpoint;
                     this.logoutUrl = doc.revocation_endpoint || doc.end_session_endpoint || '';
                     sessionStorage.logoutUrl = this.logoutUrl;
-                    console.log(sessionStorage.logoutUrl, 'sessionStorage.logoutUrl')
                     this.grantTypesSupported = doc.grant_types_supported;
                     this.issuer = doc.issuer;
                     this.tokenEndpoint = doc.token_endpoint;
@@ -312,7 +309,7 @@ export class OIDCAuthService {
                 revokeAccessToken = of(null);
             }
 
-            if (refreshToken) {
+            if (refreshToken && refreshToken != 'undefined' && refreshToken != 'null') {
                 let revokationParams = params
                     .set('token', refreshToken)
                     .set('token_type_hint', 'refresh_token');
@@ -424,6 +421,7 @@ export class OIDCAuthService {
             sessionStorage.setItem('session_state', sessionState);
             if (code) {
                 await this.getTokenFromCode(code, options);
+
                 this.restoreRequestedRoute();
                 return Promise.resolve();
             }
@@ -472,7 +470,9 @@ export class OIDCAuthService {
                 .log(this.tokenEndpoint, params, { headers })
                 .subscribe({
                     next: (tokenResponse) => {
-                        this.login(tokenResponse.access_token, tokenResponse.id_token, tokenResponse.refresh_token);
+                        sessionStorage.setItem('access_token', tokenResponse.access_token);
+                        sessionStorage.setItem('id_token', tokenResponse.id_token);
+                        sessionStorage.setItem('refresh_token', tokenResponse.refresh_token);
                         resolve(tokenResponse);
                     }, error: (err) => {
                         this.toasterService.error('Error getting token', err);
@@ -573,36 +573,5 @@ export class OIDCAuthService {
                 console.error(error);
             });
     }
-
-    private login(token: string, idToken: string, refreshToken?: string): void {
-        if (token) {
-            this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, refreshToken, idToken }).subscribe({
-                next: (data) => {
-                    let returnUrl = sessionStorage.getItem('returnUrl');
-                    let logoutUrl = sessionStorage.getItem('logoutUrl');
-                    let clientId = sessionStorage.getItem('clientId');
-                    let clientSecret = sessionStorage.getItem('clientSecret');
-                    sessionStorage.clear();
-                    this.authService.setUser(data);
-                    this.authService.save();
-                    if (returnUrl) {
-                        if (returnUrl.indexOf('?') > -1) {
-                            this.router.navigateByUrl(returnUrl);
-                        } else {
-                            this.router.navigate([returnUrl]).then();
-                        }
-                    } else {
-                        this.router.navigate(['/']).then();
-                    }
-                    sessionStorage.setItem('logoutUrl', logoutUrl);
-                    sessionStorage.setItem('clientId', clientId);
-                    sessionStorage.setItem('clientSecret', clientSecret);
-                }, error: () => {
-                    sessionStorage.clear();
-                }
-            });
-        }
-    }
-
 
 }

@@ -900,7 +900,9 @@
     "button.synchronized": "同期済",
     "button.notSynchronized": "未同期",
     "button.suspended": "一時停止",
-    "button.outstanding": "保留"
+    "button.outstanding": "保留",
+    "button.skipped": "Skipped",
+    "button.stopped": "Stopped"
   },
   "header": {
     "label.dashboard": "ダッシュボード",
@@ -1496,6 +1498,7 @@
         "jobScript": "ジョブスクリプト",
         "includeScript": "スクリプトインクルード",
         "calendar": "カレンダー",
+        "instructionStates": "Instruction States",
         "argumentName": "引数名",
         "argumentValue": "引数値",
         "environmentName": "環境名",
@@ -2265,7 +2268,6 @@
     "label.iamOidcClientId": "OIDC Client ID",
     "label.iamOidcClientSecret": "OIDC Client Secret",
     "label.iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
-    "label.iamOidcCertificateUrl": "OIDC Certificate Url",
     "label.group": "グループ",
     "label.general": "共通",
     "label.on": "On",
@@ -2364,7 +2366,6 @@
     "placeholder.iamOidcClientId": "Enter OIDC Client ID",
     "placeholder.iamOidcClientSecret": "Enter OIDC Client Secret",
     "placeholder.iamOidcTokenVerificationUrl": "Enter OIDC Token Verification Url",
-    "placeholder.iamOidcCertificateUrl": "Enter OIDC Certificate Url",
     "placeholder.group": "グループを入力",
     "placeholder.initialPassword": "初期パスワードを入力",
     "placeholder.minPasswordLength": "最少パスワード文字数を入力",
@@ -2451,8 +2452,7 @@
         "iamOidcAuthenticationUrl": "OIDC Authentication Url",
         "iamOidcClientId": "OIDC Client ID",
         "iamOidcClientSecret": "OIDC Client Secret",
-        "iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
-        "iamOidcCertificateUrl": "OIDC Certificate Url"
+        "iamOidcTokenVerificationUrl": "OIDC Token Verification Url"
       },
       "general": {
         "sessionTimeout": "JOCコックピットで何もアクションが行われなかった場合、指定された秒数後にユーザーセッションが終了し、ユーザーは再ログインする必要があります。",

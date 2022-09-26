@@ -492,6 +492,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private authenticate(): any {
     if (typeof sessionStorage.logoutUrl == 'string') {
+      let returnUrl = this.router.url.match(/login/) ? '/' : this.router.url;
+      if (returnUrl === '/error' || returnUrl === 'error') {
+        returnUrl = '/';
+      }
+      this.router.navigate(['login'], { queryParams: { returnUrl } }).then();
       return;
     }
     this.coreService.post('authentication/login', {}).subscribe({

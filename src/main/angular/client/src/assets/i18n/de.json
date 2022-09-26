@@ -900,7 +900,9 @@
     "button.synchronized": "Synchron",
     "button.notSynchronized": "Nicht Synchron",
     "button.suspended": "Ausgesetzt",
-    "button.outstanding": "Ausstehend"
+    "button.outstanding": "Ausstehend",
+    "button.skipped": "Skipped",
+    "button.stopped": "Stopped"
   },
   "header": {
     "label.dashboard": "ÜBERSICHT",
@@ -1496,6 +1498,7 @@
         "jobScript": "Job-Skript",
         "includeScript": "Skript Bausteine",
         "calendar": "Kalender",
+        "instructionStates": "Instruction States",
         "argumentName": "Name des Arguments",
         "argumentValue": "Wert des Arguments",
         "environmentName": "Name der Umgebungsvariable",
@@ -2265,7 +2268,6 @@
     "label.iamOidcClientId": "OIDC Client ID",
     "label.iamOidcClientSecret": "OIDC Client Secret",
     "label.iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
-    "label.iamOidcCertificateUrl": "OIDC Certificate Url",
     "label.group": "Gruppe",
     "label.general": "Generelles",
     "label.on": "On",
@@ -2364,7 +2366,6 @@
     "placeholder.iamOidcClientId": "Enter OIDC Client ID",
     "placeholder.iamOidcClientSecret": "Enter OIDC Client Secret",
     "placeholder.iamOidcTokenVerificationUrl": "Enter OIDC Token Verification Url",
-    "placeholder.iamOidcCertificateUrl": "Enter OIDC Certificate Url",
     "placeholder.group": "Gruppe angeben",
     "placeholder.initialPassword": "Initialkennwort angeben",
     "placeholder.minPasswordLength": "Minimallänge des Kennworts angeben",
@@ -2451,8 +2452,7 @@
         "iamOidcAuthenticationUrl": "OIDC Authentication Url",
         "iamOidcClientId": "OIDC Client ID",
         "iamOidcClientSecret": "OIDC Client Secret",
-        "iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
-        "iamOidcCertificateUrl": "OIDC Certificate Url"
+        "iamOidcTokenVerificationUrl": "OIDC Token Verification Url"
       },
       "general": {
         "sessionTimeout": "Eine Benutzersitzung wird von JOC Cockpit geschlossen und der Benutzer zur Anmeldung aufgeforder, wenn für die in Sekunden angegebene Dauer keine Aktivitäten in JOC Cockpit durch den Benutzer erfolgt sind.",

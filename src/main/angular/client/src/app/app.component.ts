@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NzI18nService } from 'ng-zorro-antd/i18n';
+import { Router } from '@angular/router';
 import { registerLocaleData } from "@angular/common";
 import { CoreService } from './services/core.service';
 import { AuthService, OIDCAuthService } from './components/guard';
+
 
 declare const $: any;
 
@@ -15,7 +17,7 @@ export class AppComponent implements OnInit {
   locales: any = [];
 
   constructor(public translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService,
-    private authService: AuthService, private readonly oAuthService: OIDCAuthService) {
+    private authService: AuthService, private readonly oAuthService: OIDCAuthService, private router: Router) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
           return typeof console[property] === 'function';
@@ -30,7 +32,14 @@ export class AppComponent implements OnInit {
     if (!this.authService.accessTokenId) {
       if (sessionStorage.authConfig) {
         this.oAuthService.loadDiscoveryDocument().then((_) => {
-          this.oAuthService.tryLoginCodeFlow();
+          this.oAuthService.tryLoginCodeFlow().then(() => {
+            const access_token = sessionStorage.getItem('access_token');
+            const id_token = sessionStorage.getItem('id_token');
+            const refresh_token = sessionStorage.getItem('refresh_token') || '';
+            if (access_token) {
+              this.login(access_token, id_token, refresh_token);
+            }
+          });
         });
       }
     }
@@ -85,6 +94,35 @@ export class AppComponent implements OnInit {
       }
       this.i18n.setLocale(data);
     });
+  }
+  private login(token: string, idToken: string, refreshToken?: string): void {
+    if (token) {
+      this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, refreshToken, idToken }).subscribe({
+        next: (data) => {
+          let returnUrl = sessionStorage.getItem('returnUrl');
+          let logoutUrl = sessionStorage.getItem('logoutUrl');
+          let clientId = sessionStorage.getItem('clientId');
+          let clientSecret = sessionStorage.getItem('clientSecret');
+          sessionStorage.clear();
+          this.authService.setUser(data);
+          this.authService.save();
+          if (returnUrl) {
+            if (returnUrl.indexOf('?') > -1) {
+              this.router.navigateByUrl(returnUrl);
+            } else {
+              this.router.navigate([returnUrl]).then();
+            }
+          } else {
+            this.router.navigate(['/']).then();
+          }
+          sessionStorage.setItem('logoutUrl', logoutUrl);
+          sessionStorage.setItem('clientId', clientId);
+          sessionStorage.setItem('clientSecret', clientSecret);
+        }, error: () => {
+          sessionStorage.clear();
+        }
+      });
+    }
   }
 
 }

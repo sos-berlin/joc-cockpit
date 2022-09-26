@@ -900,7 +900,9 @@
     "button.synchronized": "Synchronisé",
     "button.notSynchronized": "Non Synchronisé",
     "button.suspended": "Suspendu",
-    "button.outstanding": "Pendant"
+    "button.outstanding": "Pendant",
+    "button.skipped": "Skipped",
+    "button.stopped": "Stopped"
   },
   "header": {
     "label.dashboard": "TABLEAU DE BORD",
@@ -1496,6 +1498,7 @@
         "jobScript": "Script de la Tâche",
         "includeScript": "Blocs Script",
         "calendar": "Calendrier",
+        "instructionStates": "Instruction States",
         "argumentName": "Nom de l'Argument",
         "argumentValue": "Valeur de l'Argument",
         "environmentName": "Nom de la Variable d'Environnement",
@@ -2265,7 +2268,6 @@
     "label.iamOidcClientId": "OIDC Client ID",
     "label.iamOidcClientSecret": "OIDC Client Secret",
     "label.iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
-    "label.iamOidcCertificateUrl": "OIDC Certificate Url",
     "label.group": "Groupe",
     "label.general": "Généralités",
     "label.on": "On",
@@ -2364,7 +2366,6 @@
     "placeholder.iamOidcClientId": "Enter OIDC Client ID",
     "placeholder.iamOidcClientSecret": "Enter OIDC Client Secret",
     "placeholder.iamOidcTokenVerificationUrl": "Enter OIDC Token Verification Url",
-    "placeholder.iamOidcCertificateUrl": "Enter OIDC Certificate Url",
     "placeholder.group": "Entrer le Groupe",
     "placeholder.initialPassword": "Entrez le mot de passe initial",
     "placeholder.minPasswordLength": "Entrez la longueur minimale du mot de passe",
@@ -2451,8 +2452,7 @@
         "iamOidcAuthenticationUrl": "OIDC Authentication Url",
         "iamOidcClientId": "OIDC Client ID",
         "iamOidcClientSecret": "OIDC Client Secret",
-        "iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
-        "iamOidcCertificateUrl": "OIDC Certificate Url"
+        "iamOidcTokenVerificationUrl": "OIDC Token Verification Url"
       },
       "general": {
         "sessionTimeout": "Une session utilisateur sera terminée par JOC Cockpit et l'utilisateur devra se connecter après le nombre de secondes indiqué si aucune action n'est effectuée dans JOC Cockpit.",
