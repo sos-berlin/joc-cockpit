@@ -2,38 +2,36 @@
   <form #myForm="ngForm" (ngSubmit)="search()">
     <div class="p-a">
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.search' | translate"
-               translate>inventory.search.label.search</label>
+        <label class="col-md-4 col-lg-3 form-control-label"
+          [nz-tooltip]="'inventory.search.tooltips.search' | translate" translate>inventory.search.label.search</label>
         <div class="col-md-8 col-lg-9">
           <label class="w-full">
             <input type="text" [appAutofocus]="true" autocomplete="off" class="form-control"
-                   placeholder="{{'inventory.search.placeholder.search' | translate}}" name="search"
-                   [(ngModel)]="searchObj.search">
+              placeholder="{{'inventory.search.placeholder.search' | translate}}" name="search"
+              [(ngModel)]="searchObj.search">
           </label>
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.folders' | translate"
-               translate>inventory.search.label.folders</label>
+        <label class="col-md-4 col-lg-3 form-control-label"
+          [nz-tooltip]="'inventory.search.tooltips.folders' | translate"
+          translate>inventory.search.label.folders</label>
         <div class="col-md-8 col-lg-9">
-          <nz-tree-select
-            name="folder"
-            [nzNodes]="folders"
-            [nzHideUnMatched]="true"
-            [nzDropdownStyle]="{ 'max-height': '300px' }"
-            nzShowSearch
-            [nzMultiple]="true"
-            [nzDisplayWith]="displayWith"
-            [nzPlaceHolder]="'inventory.search.placeholder.selectFromTree' | translate"
-            [(ngModel)]="searchObj.folders"
-          >
+          <nz-tree-select name="folder" [nzNodes]="folders" [nzHideUnMatched]="true"
+            [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch [nzMultiple]="true" [nzDisplayWith]="displayWith"
+            [nzPlaceHolder]="'inventory.search.placeholder.selectFromTree' | translate" [(ngModel)]="searchObj.folders">
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper w-93" (click)="selectFolder(node, $event);">
-                <div class="node-content-wrapper" [class.node-content-wrapper-active]="searchObj.folders && searchObj.folders.indexOf(node.origin.path) > -1">
+                <div class="node-content-wrapper"
+                  [class.node-content-wrapper-active]="searchObj.folders && searchObj.folders.indexOf(node.origin.path) > -1">
                   <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
                   {{node.origin.name}}
-                  <i *ngIf="searchObj.folders && searchObj.folders.indexOf(node.origin.path) === -1" (click)="addFolder(node.origin.path);$event.stopPropagation()" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
-                  <i *ngIf="searchObj.folders && searchObj.folders.indexOf(node.origin.path) > -1" (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'" class="p-l-sm"></i>
+                  <i *ngIf="searchObj.folders && searchObj.folders.indexOf(node.origin.path) === -1"
+                    (click)="addFolder(node.origin.path);$event.stopPropagation()"
+                    [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
+                  <i *ngIf="searchObj.folders && searchObj.folders.indexOf(node.origin.path) > -1"
+                    (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'"
+                    class="p-l-sm"></i>
                 </div>
               </div>
             </ng-template>
@@ -41,20 +39,21 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar">
-        <label class="col-md-4 col-lg-3 block-ellipsis-job" [nz-tooltip]="'inventory.search.tooltips.deployedOrReleased' | translate"
-               translate>inventory.search.label.deployedOrReleased</label>
+        <label class="col-md-4 col-lg-3 block-ellipsis-job"
+          [nz-tooltip]="'inventory.search.tooltips.deployedOrReleased' | translate"
+          translate>inventory.search.label.deployedOrReleased</label>
         <div class="col-md-2 col-lg-2">
           <label nz-checkbox [(ngModel)]="searchObj.deployedOrReleased" name="deployedOrReleased"></label>
         </div>
         <label class="col-md-3 col-lg-3 block-ellipsis-job" *ngIf="searchObj.deployedOrReleased"
-               translate>inventory.search.label.currentController</label>
+          translate>inventory.search.label.currentController</label>
         <div class="col-md-1 col-lg-1" *ngIf="searchObj.deployedOrReleased">
           <label nz-checkbox [(ngModel)]="searchObj.currentController" name="currentController"></label>
         </div>
       </div>
       <div class="form-group row" *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar">
-        <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.return' | translate"
-               translate>inventory.search.label.return</label>
+        <label class="col-md-4 col-lg-3 form-control-label"
+          [nz-tooltip]="'inventory.search.tooltips.return' | translate" translate>inventory.search.label.return</label>
         <div class="col-md-8 col-lg-9">
           <nz-select [(ngModel)]="searchObj.returnType" name="returnType">
             <nz-option *ngFor="let type of deployTypes" nzLabel="{{type | translate}}" [nzValue]="type"></nz-option>
@@ -62,189 +61,220 @@
         </div>
       </div>
       <nz-collapse [nzBordered]="false" *ngIf="searchObj.returnType !== 'JOBTEMPLATE'">
-        <nz-collapse-panel
-          [nzHeader]="'inventory.search.label.advanced' | translate"
-          [nzActive]="panel.active"
-          (nzActiveChange)="onChange($event)"
-        >
-            <div class="p-a b-a m-t">
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.agent' | translate"
-                       translate>inventory.search.label.agent</label>
-                <div class="col-md-8 col-lg-9">
-                  <app-agent-selection [skipSubagents]="true" [required]="false" [preferences]="preferences" [agents]="agentList"
-                                       [data]="searchObj.advanced"></app-agent-selection>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.WORKFLOW">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.workflow' | translate"
-                       translate>inventory.search.label.workflow</label>
-                <div class="col-md-8 col-lg-9">
-                  <label class="w-full">
-                    <input type="text" autocomplete="off" class="form-control"
-                           name="workflow" [(ngModel)]="searchObj.advanced.workflow">
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.FILEORDERSOURCE">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.fileOrderSource' | translate"
-                       translate>inventory.search.label.fileOrderSource</label>
-                <div class="col-md-8 col-lg-9">
-                  <label class="w-full">
-                    <input type="text" autocomplete="off" class="form-control"
-                           name="fileOrderSource" [(ngModel)]="searchObj.advanced.fileOrderSource">
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOBRESOURCE">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobResources' | translate"
-                       translate>inventory.search.label.jobResources</label>
-                <div class="col-md-8 col-lg-9">
-                  <label class="w-full">
-                    <input type="text" autocomplete="off" class="form-control"
-                           name="jobResources" [(ngModel)]="searchObj.advanced.jobResources">
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.NOTICEBOARD">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.boards' | translate"
-                       translate>inventory.search.label.boards</label>
-                <div class="col-md-8 col-lg-9">
-                  <label class="w-full">
-                    <input type="text" autocomplete="off" class="form-control"
-                           name="boards" [(ngModel)]="searchObj.advanced.noticeBoards">
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.LOCK">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.lock' | translate"
-                       translate>inventory.search.label.lock</label>
-                <div class="col-md-8 col-lg-9">
-                  <label class="w-full">
-                    <input type="text" autocomplete="off" class="form-control"
-                           name="lock" [(ngModel)]="searchObj.advanced.lock">
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.INCLUDESCRIPT">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.includeScript' | translate"
-                       translate>inventory.search.label.includeScript</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="includeScript"
-                         [(ngModel)]="searchObj.advanced.includeScripts">
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.SCHEDULE">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.schedule' | translate"
-                       translate>inventory.search.label.schedule</label>
-                <div class="col-md-8 col-lg-9">
-                  <label class="w-full">
-                    <input type="text" autocomplete="off" class="form-control"
-                           name="schedule" [(ngModel)]="searchObj.advanced.schedule">
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.CALENDAR">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.calendar' | translate"
-                       translate>inventory.search.label.calendar</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="calendar"
-                         [(ngModel)]="searchObj.advanced.calendar">
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOBTEMPLATE">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobTemplate' | translate"
-                       translate>inventory.search.label.jobTemplate</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="jobTemplate"
-                         [(ngModel)]="searchObj.advanced.jobTemplate">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.countJobs' | translate"
-                       translate>inventory.search.label.countJobs</label>
-                <label class="col-md-2 col-lg-2 form-control-label" [nz-tooltip]="'inventory.search.tooltips.from' | translate"
-                       translate>inventory.search.label.from
-                </label>
-                <div class="col-md-2 col-lg-2">
-                  <nz-input-number [nzMin]="0" name="from" [(ngModel)]="searchObj.advanced.jobCountFrom"></nz-input-number>
-                </div>
-                <label class="col-md-2 col-lg-2 text-center form-control-label" [nz-tooltip]="'inventory.search.tooltips.to' | translate"
-                       translate>inventory.search.label.to
-                </label>
-                <div class="col-md-2 col-lg-2">
-                  <nz-input-number [nzMin]="0" name="to" [(ngModel)]="searchObj.advanced.jobCountTo"></nz-input-number>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobName' | translate"
-                       translate>inventory.search.label.jobName</label>
-                <div class="col-md-8 col-lg-9">
-                  <label class="w-full">
-                    <input type="text" autocomplete="off" (change)="isJobSearch = false;object.mapOfCheckedId.clear()" class="form-control"
-                           name="jobName" [(ngModel)]="searchObj.advanced.jobName">
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 block-ellipsis w-full" [nz-tooltip]="'inventory.search.tooltips.jobNameExactMatch' | translate"
-                       translate>inventory.search.label.jobNameExactMatch</label>
-                <div class="col-md-8 col-lg-9">
-                  <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch" (nzCheckedChange)="isJobSearch = false;object.mapOfCheckedId.clear()" name="jobNameExactMatch"></label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobCriticality' | translate"
-                       translate>inventory.search.label.jobCriticality</label>
-                <div class="col-md-8 col-lg-9">
-                  <nz-select name="criticality" nzAllowClear class="w-full" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
-                             [(ngModel)]="searchObj.advanced.jobCriticality">
-                    <nz-option [nzValue]="'NORMAL'" [nzLabel]="'common.label.normal' | translate"></nz-option>
-                    <nz-option [nzValue]="'CRITICAL'" [nzLabel]="'common.label.critical' | translate"></nz-option>
-                  </nz-select>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="searchObj.returnType === ENUM.WORKFLOW">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.jobScript' | translate"
-                       translate>inventory.search.label.jobScript</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="jobScript"
-                         [(ngModel)]="searchObj.advanced.jobScript">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.argumentName' | translate"
-                       translate>inventory.search.label.argumentName</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="name"
-                         [(ngModel)]="searchObj.advanced.argumentName" placeholder="{{'common.placeholder.name' | translate}}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.argumentValue' | translate"
-                       translate>inventory.search.label.argumentValue</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="value"
-                         [(ngModel)]="searchObj.advanced.argumentValue" placeholder="{{'common.placeholder.value' | translate}}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.environmentName' | translate"
-                       translate>inventory.search.label.environmentName</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="envName"
-                         [(ngModel)]="searchObj.advanced.envName" placeholder="{{'common.placeholder.name' | translate}}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label" [nz-tooltip]="'inventory.search.tooltips.environmentValue' | translate"
-                       translate>inventory.search.label.environmentValue</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="envValue"
-                         [(ngModel)]="searchObj.advanced.envValue" placeholder="{{'common.placeholder.value' | translate}}">
-                </div>
+        <nz-collapse-panel [nzHeader]="'inventory.search.label.advanced' | translate" [nzActive]="panel.active"
+          (nzActiveChange)="onChange($event)">
+          <div class="p-a b-a m-t">
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.agent' | translate"
+                translate>inventory.search.label.agent</label>
+              <div class="col-md-8 col-lg-9">
+                <app-agent-selection [skipSubagents]="true" [required]="false" [preferences]="preferences"
+                  [agents]="agentList" [data]="searchObj.advanced"></app-agent-selection>
               </div>
             </div>
+            <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.WORKFLOW">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.workflow' | translate"
+                translate>inventory.search.label.workflow</label>
+              <div class="col-md-8 col-lg-9">
+                <label class="w-full">
+                  <input type="text" autocomplete="off" class="form-control" name="workflow"
+                    [(ngModel)]="searchObj.advanced.workflow">
+                </label>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.FILEORDERSOURCE">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.fileOrderSource' | translate"
+                translate>inventory.search.label.fileOrderSource</label>
+              <div class="col-md-8 col-lg-9">
+                <label class="w-full">
+                  <input type="text" autocomplete="off" class="form-control" name="fileOrderSource"
+                    [(ngModel)]="searchObj.advanced.fileOrderSource">
+                </label>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOBRESOURCE">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.jobResources' | translate"
+                translate>inventory.search.label.jobResources</label>
+              <div class="col-md-8 col-lg-9">
+                <label class="w-full">
+                  <input type="text" autocomplete="off" class="form-control" name="jobResources"
+                    [(ngModel)]="searchObj.advanced.jobResources">
+                </label>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.NOTICEBOARD">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.boards' | translate"
+                translate>inventory.search.label.boards</label>
+              <div class="col-md-8 col-lg-9">
+                <label class="w-full">
+                  <input type="text" autocomplete="off" class="form-control" name="boards"
+                    [(ngModel)]="searchObj.advanced.noticeBoards">
+                </label>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.LOCK">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.lock' | translate"
+                translate>inventory.search.label.lock</label>
+              <div class="col-md-8 col-lg-9">
+                <label class="w-full">
+                  <input type="text" autocomplete="off" class="form-control" name="lock"
+                    [(ngModel)]="searchObj.advanced.lock">
+                </label>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.INCLUDESCRIPT">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.includeScript' | translate"
+                translate>inventory.search.label.includeScript</label>
+              <div class="col-md-8 col-lg-9">
+                <input autocomplete="off" type="text" class="form-control" name="includeScript"
+                  [(ngModel)]="searchObj.advanced.includeScripts">
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.SCHEDULE">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.schedule' | translate"
+                translate>inventory.search.label.schedule</label>
+              <div class="col-md-8 col-lg-9">
+                <label class="w-full">
+                  <input type="text" autocomplete="off" class="form-control" name="schedule"
+                    [(ngModel)]="searchObj.advanced.schedule">
+                </label>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.CALENDAR">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.calendar' | translate"
+                translate>inventory.search.label.calendar</label>
+              <div class="col-md-8 col-lg-9">
+                <input autocomplete="off" type="text" class="form-control" name="calendar"
+                  [(ngModel)]="searchObj.advanced.calendar">
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="searchObj.returnType !== ENUM.JOBTEMPLATE">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.jobTemplate' | translate"
+                translate>inventory.search.label.jobTemplate</label>
+              <div class="col-md-8 col-lg-9">
+                <input autocomplete="off" type="text" class="form-control" name="jobTemplate"
+                  [(ngModel)]="searchObj.advanced.jobTemplate">
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="isWorkflow">
+              <label class="col-md-4 col-lg-3" translate>common.label.status</label>
+              <div class="col-md-8 col-lg-9">
+                <nz-checkbox-wrapper (nzOnChange)="stateChange($event)">
+                  <ng-container *ngFor="let option of checkOptions">
+                    <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
+                  </ng-container>
+                </nz-checkbox-wrapper>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.countJobs' | translate"
+                translate>inventory.search.label.countJobs</label>
+              <label class="col-md-2 col-lg-2 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.from' | translate" translate>inventory.search.label.from
+              </label>
+              <div class="col-md-2 col-lg-2">
+                <nz-input-number [nzMin]="0" name="from" [(ngModel)]="searchObj.advanced.jobCountFrom">
+                </nz-input-number>
+              </div>
+              <label class="col-md-2 col-lg-2 text-center form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.to' | translate" translate>inventory.search.label.to
+              </label>
+              <div class="col-md-2 col-lg-2">
+                <nz-input-number [nzMin]="0" name="to" [(ngModel)]="searchObj.advanced.jobCountTo"></nz-input-number>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.jobName' | translate"
+                translate>inventory.search.label.jobName</label>
+              <div class="col-md-8 col-lg-9">
+                <label class="w-full">
+                  <input type="text" autocomplete="off" (change)="isJobSearch = false;object.mapOfCheckedId.clear()"
+                    class="form-control" name="jobName" [(ngModel)]="searchObj.advanced.jobName">
+                </label>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 block-ellipsis w-full"
+                [nz-tooltip]="'inventory.search.tooltips.jobNameExactMatch' | translate"
+                translate>inventory.search.label.jobNameExactMatch</label>
+              <div class="col-md-8 col-lg-9">
+                <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch"
+                  (nzCheckedChange)="isJobSearch = false;object.mapOfCheckedId.clear()"
+                  name="jobNameExactMatch"></label>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.jobCriticality' | translate"
+                translate>inventory.search.label.jobCriticality</label>
+              <div class="col-md-8 col-lg-9">
+                <nz-select name="criticality" nzAllowClear class="w-full"
+                  [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
+                  [(ngModel)]="searchObj.advanced.jobCriticality">
+                  <nz-option [nzValue]="'NORMAL'" [nzLabel]="'common.label.normal' | translate"></nz-option>
+                  <nz-option [nzValue]="'CRITICAL'" [nzLabel]="'common.label.critical' | translate"></nz-option>
+                </nz-select>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="searchObj.returnType === ENUM.WORKFLOW">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.jobScript' | translate"
+                translate>inventory.search.label.jobScript</label>
+              <div class="col-md-8 col-lg-9">
+                <input autocomplete="off" type="text" class="form-control" name="jobScript"
+                  [(ngModel)]="searchObj.advanced.jobScript">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.argumentName' | translate"
+                translate>inventory.search.label.argumentName</label>
+              <div class="col-md-8 col-lg-9">
+                <input autocomplete="off" type="text" class="form-control" name="name"
+                  [(ngModel)]="searchObj.advanced.argumentName" placeholder="{{'common.placeholder.name' | translate}}">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.argumentValue' | translate"
+                translate>inventory.search.label.argumentValue</label>
+              <div class="col-md-8 col-lg-9">
+                <input autocomplete="off" type="text" class="form-control" name="value"
+                  [(ngModel)]="searchObj.advanced.argumentValue"
+                  placeholder="{{'common.placeholder.value' | translate}}">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.environmentName' | translate"
+                translate>inventory.search.label.environmentName</label>
+              <div class="col-md-8 col-lg-9">
+                <input autocomplete="off" type="text" class="form-control" name="envName"
+                  [(ngModel)]="searchObj.advanced.envName" placeholder="{{'common.placeholder.name' | translate}}">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-4 col-lg-3 form-control-label"
+                [nz-tooltip]="'inventory.search.tooltips.environmentValue' | translate"
+                translate>inventory.search.label.environmentValue</label>
+              <div class="col-md-8 col-lg-9">
+                <input autocomplete="off" type="text" class="form-control" name="envValue"
+                  [(ngModel)]="searchObj.advanced.envValue" placeholder="{{'common.placeholder.value' | translate}}">
+              </div>
+            </div>
+          </div>
         </nz-collapse-panel>
       </nz-collapse>
     </div>
@@ -260,13 +290,18 @@
   <div class="p-a p-t-0" *ngIf="results">
     <div class="form-group row">
       <div class="col-sm-12 m-b-sm" *ngIf="object.mapOfCheckedId.size > 0">
-        <button class="btn btn-grey btn-sm" translate type="button" (click)="updateObject()">inventory.search.button.updateObject</button>
-        <span class="p-l-sm" translate [translateParams]="{objectCount: object.mapOfCheckedId.size}">inventory.search.message.updateSelectedObjects</span>
+        <button class="btn btn-grey btn-sm" translate type="button"
+          (click)="updateObject()">inventory.search.button.updateObject</button>
+        <span class="p-l-sm" translate
+          [translateParams]="{objectCount: object.mapOfCheckedId.size}">inventory.search.message.updateSelectedObjects</span>
       </div>
       <div class="col-sm-12 m-b-sm" *ngIf="object.mapOfCheckedId.size > 0 && isJobSearch">
-        <button class="btn btn-grey btn-sm" *ngIf="searchObj.advanced.jobNameExactMatch" translate type="button" (click)="propagateJob()">inventory.search.button.propagateJob</button>
-        <button class="btn btn-grey btn-sm" [ngClass]="{'m-l-12' : searchObj.advanced.jobNameExactMatch}" translate type="button" (click)="updateJob()">inventory.search.button.updateJob</button>
-        <span class="p-l-sm" translate [translateParams]="{jobName: searchObj.advanced.jobName,workflowsCount: object.mapOfCheckedId.size}">inventory.search.message.updateJobForSelectedWorkflows</span>
+        <button class="btn btn-grey btn-sm" *ngIf="searchObj.advanced.jobNameExactMatch" translate type="button"
+          (click)="propagateJob()">inventory.search.button.propagateJob</button>
+        <button class="btn btn-grey btn-sm" [ngClass]="{'m-l-12' : searchObj.advanced.jobNameExactMatch}" translate
+          type="button" (click)="updateJob()">inventory.search.button.updateJob</button>
+        <span class="p-l-sm" translate
+          [translateParams]="{jobName: searchObj.advanced.jobName,workflowsCount: object.mapOfCheckedId.size}">inventory.search.message.updateJobForSelectedWorkflows</span>
       </div>
       <div class="col-sm-12">
         <span class="text-muted" translate>inventory.search.label.searchResult</span>:
@@ -277,51 +312,46 @@
       </div>
       <div class="col-sm-12">
         <div class="table-responsive text-overflow" [ngStyle]="{'max-height': 'calc(100vh - 360px)'}">
-          <nz-table
-            #ajaxTable
-            [nzSize]="'small'"
-            [nzNoResult]="'inventory.search.label.noDataMatched' | translate"
-            [nzPageSize]="results.length"
-            [nzBordered]="true"
-            [nzShowPagination]="false"
-            [nzData]="results"
+          <nz-table #ajaxTable [nzSize]="'small'" [nzNoResult]="'inventory.search.label.noDataMatched' | translate"
+            [nzPageSize]="results.length" [nzBordered]="true" [nzShowPagination]="false" [nzData]="results"
             [nzShowSizeChanger]="false">
             <thead>
-            <tr>
-              <th *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" class="chk"
-                  [nzShowCheckbox]="true"
-                  [(nzChecked)]="object.checked"
-                  [nzIndeterminate]="object.indeterminate"
-                  (nzCheckedChange)="checkAll($event)"
-              ></th>
-              <th nowrap *ngIf="isControllerId"><span translate>common.label.controllerId</span></th>
-              <th><span translate>common.label.name</span></th>
-              <th><span translate>common.label.path</span></th>
-              <th *ngIf="searchObj.returnType === 'CALENDAR'"><span translate>common.label.type</span></th>
-            </tr>
+              <tr>
+                <th *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" class="chk" [nzShowCheckbox]="true"
+                  [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+                  (nzCheckedChange)="checkAll($event)"></th>
+                <th nowrap *ngIf="isControllerId"><span translate>common.label.controllerId</span></th>
+                <th><span translate>common.label.name</span></th>
+                <th><span translate>common.label.path</span></th>
+                <th *ngIf="searchObj.returnType === 'CALENDAR'"><span translate>common.label.type</span></th>
+              </tr>
             </thead>
             <tbody>
-            <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
-              <tr class="cursor" [ngClass]="{'disabled-row' : !data.permitted}">
-                <td *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)"></td>
-                <td (click)="navToObject(data)" *ngIf="isControllerId">{{data.controllerId}}</td>
-                <td (click)="navToObject(data)">
-                  <span *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
-                        [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"></span>
-                  <span class="p-l-xs" [innerHTML]="data.name"></span>
-                  <i *ngIf="data.title"> - </i>
-                  <span class="text-muted">{{data.title}}</span>
-                </td>
-                <td>
-                  <span class="show-in-single-line">
-                    <i *ngIf="(isWorkflow || isLock || isBoard || isCalendar) && data.permitted" (click)="coreService.navToInventoryTab(data.path, this.type);$event.stopPropagation();"
-                       class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                    <span> {{data.path.substring(0, data.path.lastIndexOf('/')) || '/'}}</span>
-                  </span>
-                </td>
-                <td *ngIf="searchObj.returnType === 'CALENDAR'">{{data.objectType | translate}}</td>
-              </tr>
-            </ng-template>
+              <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
+                <tr class="cursor" [ngClass]="{'disabled-row' : !data.permitted}">
+                  <td *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar" [nzShowCheckbox]="true"
+                    [nzChecked]="object.mapOfCheckedId.has(data.name)" (nzCheckedChange)="onItemChecked(data, $event)">
+                  </td>
+                  <td (click)="navToObject(data)" *ngIf="isControllerId">{{data.controllerId}}</td>
+                  <td (click)="navToObject(data)">
+                    <span *ngIf="!isWorkflow && !isLock && !isBoard && !isCalendar"
+                      class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"
+                      [ngClass]="{'fa-circle-o': !data.valid , 'fa-circle dark-blue' : data.deployed || data.released}"></span>
+                    <span class="p-l-xs" [innerHTML]="data.name"></span>
+                    <i *ngIf="data.title"> - </i>
+                    <span class="text-muted">{{data.title}}</span>
+                  </td>
+                  <td>
+                    <span class="show-in-single-line">
+                      <i *ngIf="(isWorkflow || isLock || isBoard || isCalendar) && data.permitted"
+                        (click)="coreService.navToInventoryTab(data.path, this.type);$event.stopPropagation();"
+                        class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                      <span> {{data.path.substring(0, data.path.lastIndexOf('/')) || '/'}}</span>
+                    </span>
+                  </td>
+                  <td *ngIf="searchObj.returnType === 'CALENDAR'">{{data.objectType | translate}}</td>
+                </tr>
+              </ng-template>
             </tbody>
           </nz-table>
         </div>
