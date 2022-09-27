@@ -1498,11 +1498,13 @@
         "jobScript": "ジョブスクリプト",
         "includeScript": "スクリプトインクルード",
         "calendar": "カレンダー",
-        "instructionStates": "Instruction States",
         "argumentName": "引数名",
         "argumentValue": "引数値",
         "environmentName": "環境名",
-        "environmentValue": "環境値"
+        "environmentValue": "環境値",
+        "workflowSynchronizationStatus": "Workflow Synchronization Status",
+        "workflowAvailabilityStatus": "Workflow Availability Status",
+        "jobAvailabilityStatus": "Job Availability Status"
       },
       "button": {
         "search": "検索",
@@ -1545,7 +1547,10 @@
         "argumentName": "引数名",
         "argumentValue": "引数値",
         "environmentName": "環境変数名",
-        "environmentValue": "環境変数値"
+        "environmentValue": "環境変数値",
+        "workflowSynchronizationStatus": "Workflow Synchronization Status",
+        "workflowAvailabilityStatus": "Workflow Availability Status",
+        "jobAvailabilityStatus": "Job Availability Status"
       }
     },
     "updateJob": {
@@ -1603,6 +1608,7 @@
     "label.password": "パスワード",
     "label.rememberMe": "保存",
     "button.logIn": "ログイン",
+    "button.loginWith" : "Login with {{identityServiceName}}",
     "message.loginError": "アカウントかパスワードが間違っています"
   },
   "monitor": {
@@ -2268,6 +2274,9 @@
     "label.iamOidcClientId": "OIDC Client ID",
     "label.iamOidcClientSecret": "OIDC Client Secret",
     "label.iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
+    "label.iamOidcTruststorePath": "OIDC Truststore Path",
+    "label.iamOidcTruststoreType": "OIDC TruststoreType",
+    "label.iamOidcTruststorePassword": "OIDC TruststorePassword",
     "label.group": "グループ",
     "label.general": "共通",
     "label.on": "On",
@@ -2366,6 +2375,9 @@
     "placeholder.iamOidcClientId": "Enter OIDC Client ID",
     "placeholder.iamOidcClientSecret": "Enter OIDC Client Secret",
     "placeholder.iamOidcTokenVerificationUrl": "Enter OIDC Token Verification Url",
+    "placeholder.iamOidcTruststorePath": "Enter OIDC Truststore Path",
+    "placeholder.iamOidcTruststoreType": "Enter OIDC TruststoreType",
+    "placeholder.iamOidcTruststorePassword": "Enter OIDC TruststorePassword",
     "placeholder.group": "グループを入力",
     "placeholder.initialPassword": "初期パスワードを入力",
     "placeholder.minPasswordLength": "最少パスワード文字数を入力",
@@ -2452,7 +2464,10 @@
         "iamOidcAuthenticationUrl": "OIDC Authentication Url",
         "iamOidcClientId": "OIDC Client ID",
         "iamOidcClientSecret": "OIDC Client Secret",
-        "iamOidcTokenVerificationUrl": "OIDC Token Verification Url"
+        "iamOidcTokenVerificationUrl": "OIDC Token Verification Url",
+        "label.iamOidcTruststorePath": "OIDC Truststore Path",
+        "label.iamOidcTruststoreType": "OIDC TruststoreType",
+        "label.iamOidcTruststorePassword": "OIDC TruststorePassword"
       },
       "general": {
         "sessionTimeout": "JOCコックピットで何もアクションが行われなかった場合、指定された秒数後にユーザーセッションが終了し、ユーザーは再ログインする必要があります。",

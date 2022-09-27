@@ -167,20 +167,30 @@
               </div>
             </div>
             <div class="form-group row" *ngIf="isWorkflow">
-              <label class="col-md-4 col-lg-3" translate>common.label.status</label>
+              <label class="col-md-4 col-lg-3 block-ellipsis" translate  [nz-tooltip]="'inventory.search.tooltips.workflowSynchronizationStatus' | translate">inventory.search.label.workflowSynchronizationStatus</label>
               <div class="col-md-8 col-lg-9">
-                <nz-checkbox-wrapper (nzOnChange)="stateChange($event)">
-                  <ng-container *ngFor="let option of checkOptions">
+                <nz-checkbox-wrapper (nzOnChange)="synchronizationStatusChange($event)">
+                  <ng-container *ngFor="let option of synchronizationStatusOptions">
                     <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
                   </ng-container>
                 </nz-checkbox-wrapper>
               </div>
             </div>
             <div class="form-group row" *ngIf="isWorkflow">
-              <label class="col-md-4 col-lg-3" translate>inventory.search.label.instructionStates</label>
+              <label class="col-md-4 col-lg-3 block-ellipsis" translate  [nz-tooltip]="'inventory.search.tooltips.workflowAvailabilityStatus' | translate">inventory.search.label.workflowAvailabilityStatus</label>
               <div class="col-md-8 col-lg-9">
-                <nz-checkbox-wrapper (nzOnChange)="instructionStateChange($event)">
-                  <ng-container *ngFor="let option of instructionCheckOptions">
+                <nz-checkbox-wrapper (nzOnChange)="availabilityStatusChange($event)">
+                  <ng-container *ngFor="let option of availabilityStatusOptions">
+                    <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
+                  </ng-container>
+                </nz-checkbox-wrapper>
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="isWorkflow">
+              <label class="col-md-4 col-lg-3 block-ellipsis" translate [nz-tooltip]="'inventory.search.tooltips.jobAvailabilityStatus' | translate">inventory.search.label.jobAvailabilityStatus</label>
+              <div class="col-md-8 col-lg-9">
+                <nz-checkbox-wrapper (nzOnChange)="jobAvailabilityStatusChange($event)">
+                  <ng-container *ngFor="let option of jobAvailabilityStatusOptions">
                     <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
                   </ng-container>
                 </nz-checkbox-wrapper>

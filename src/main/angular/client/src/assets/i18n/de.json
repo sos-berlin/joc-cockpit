@@ -1498,11 +1498,13 @@
         "jobScript": "Job-Skript",
         "includeScript": "Skript Bausteine",
         "calendar": "Kalender",
-        "instructionStates": "Instruction States",
         "argumentName": "Name des Arguments",
         "argumentValue": "Wert des Arguments",
         "environmentName": "Name der Umgebungsvariable",
-        "environmentValue": "Wert der Umgebungsvariable"
+        "environmentValue": "Wert der Umgebungsvariable",
+        "workflowSynchronizationStatus": "Workflow Synchronization Status",
+        "workflowAvailabilityStatus": "Workflow Availability Status",
+        "jobAvailabilityStatus": "Job Availability Status"
       },
       "button": {
         "search": "Suche",
@@ -1545,7 +1547,10 @@
         "argumentName": "Name des Arguments",
         "argumentValue": "Wert des Arguments",
         "environmentName": "Name der Umgebungsvariable",
-        "environmentValue": "Wert der Umgebungsvariable"
+        "environmentValue": "Wert der Umgebungsvariable",
+        "workflowSynchronizationStatus": "Workflow Synchronization Status",
+        "workflowAvailabilityStatus": "Workflow Availability Status",
+        "jobAvailabilityStatus": "Job Availability Status"
       }
     },
     "updateJob": {
@@ -1603,6 +1608,7 @@
     "label.password": "Kennwort",
     "label.rememberMe": "Eingaben merken",
     "button.logIn": "Anmelden",
+    "button.loginWith" : "Login with {{identityServiceName}}",
     "message.loginError": "Konto oder Kennwort falsch"
   },
   "monitor": {
@@ -2268,6 +2274,9 @@
     "label.iamOidcClientId": "OIDC Client ID",
     "label.iamOidcClientSecret": "OIDC Client Secret",
     "label.iamOidcTokenVerificationUrl": "OIDC Token Verification URL",
+    "label.iamOidcTruststorePath": "OIDC Truststore Path",
+    "label.iamOidcTruststoreType": "OIDC TruststoreType",
+    "label.iamOidcTruststorePassword": "OIDC TruststorePassword",
     "label.group": "Gruppe",
     "label.general": "Generelles",
     "label.on": "On",
@@ -2366,6 +2375,9 @@
     "placeholder.iamOidcClientId": "OIDC Client ID angeben",
     "placeholder.iamOidcClientSecret": "OIDC Client Secret angeben",
     "placeholder.iamOidcTokenVerificationUrl": "OIDC Token Verification URL angeben",
+    "placeholder.iamOidcTruststorePath": "Enter OIDC Truststore Path",
+    "placeholder.iamOidcTruststoreType": "Enter OIDC TruststoreType",
+    "placeholder.iamOidcTruststorePassword": "Enter OIDC TruststorePassword",
     "placeholder.group": "Gruppe angeben",
     "placeholder.initialPassword": "Initialkennwort angeben",
     "placeholder.minPasswordLength": "Minimallänge des Kennworts angeben",
@@ -2452,7 +2464,10 @@
         "iamOidcAuthenticationUrl": "OIDC Authentication URL",
         "iamOidcClientId": "OIDC Client ID",
         "iamOidcClientSecret": "OIDC Client Secret",
-        "iamOidcTokenVerificationUrl": "OIDC Token Verification URL"
+        "iamOidcTokenVerificationUrl": "OIDC Token Verification URL",
+        "iamOidcTruststorePath": "OIDC Truststore Path",
+        "iamOidcTruststoreType": "OIDC TruststoreType",
+        "iamOidcTruststorePassword": "OIDC TruststorePassword"
       },
       "general": {
         "sessionTimeout": "Eine Benutzersitzung wird von JOC Cockpit geschlossen und der Benutzer zur Anmeldung aufgeforder, wenn für die in Sekunden angegebene Dauer keine Aktivitäten in JOC Cockpit durch den Benutzer erfolgt sind.",

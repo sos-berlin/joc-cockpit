@@ -326,6 +326,13 @@ export class SettingModalComponent implements OnInit {
               break;
             }
           }
+        } else if (self.data.identityServiceType.match('OIDC')) {
+          for (const prop in data) {
+            if (prop && prop.match('iamOidc')) {
+              self.currentObj = data;
+              break;
+            }
+          }
         } else if (self.data.identityServiceType.match('LDAP')) {
           if (data.simple) {
             self.userObj = data.simple;

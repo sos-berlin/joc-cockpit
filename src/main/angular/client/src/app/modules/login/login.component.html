@@ -46,7 +46,6 @@
             <i *ngIf="!submitted" class="fa fa-sign-in p-r-xs"></i>
             {{'login.button.logIn' | translate}}
           </button>
-
         </form>
 
         <div *ngIf="identityServiceItems.length > 0" class="horz_line_text">OR</div>
@@ -56,8 +55,9 @@
             <ng-container *ngIf="item.iamOidcName">
               <button class="btn btn-default btn-block btn-sm m-b-12" (click)="loginWithPopup(item)"
                 style="padding-top: 6px;padding-bottom: 6px;">
-                <i class="fa fa-{{item.iamOidcName.toLowerCase()}}"></i>
-                Login with {{item.iamOidcName}}
+                <!-- <i class="fa fa-{{item.iamOidcName.toLowerCase()}}"></i> -->
+          
+                <span translate [translateParams]="{identityServiceName: item.iamOidcName}">login.button.loginWith</span>
               </button>
             </ng-container>
           </div>

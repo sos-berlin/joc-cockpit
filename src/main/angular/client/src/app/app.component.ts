@@ -53,7 +53,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.coreService.get('assets/i18n/locales.json?v=1659421544261').subscribe((data) => {
+    const version = new Date().getTime();
+    this.coreService.get('assets/i18n/locales.json?v=' + version).subscribe((data) => {
       const locales = [];
       for (const prop in data) {
         locales.push(data[prop]);

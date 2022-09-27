@@ -1,11 +1,11 @@
-import {Component, EventEmitter, OnInit, Input, Output, OnDestroy} from '@angular/core';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {isEmpty} from 'underscore';
-import {AuthService} from "../guard";
-import {InventorySearch} from '../../models/enums';
-import {CoreService} from '../../services/core.service';
-import {UpdateJobComponent} from '../../modules/configuration/inventory/update-job/update-job.component';
-import {UpdateObjectComponent} from '../../modules/configuration/inventory/update-object/update-object.component';
+import { Component, EventEmitter, OnInit, Input, Output, OnDestroy } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { isEmpty } from 'underscore';
+import { AuthService } from "../guard";
+import { InventorySearch } from '../../models/enums';
+import { CoreService } from '../../services/core.service';
+import { UpdateJobComponent } from '../../modules/configuration/inventory/update-job/update-job.component';
+import { UpdateObjectComponent } from '../../modules/configuration/inventory/update-object/update-object.component';
 
 @Component({
   selector: 'app-inventory-search',
@@ -47,11 +47,23 @@ export class SearchComponent implements OnInit, OnDestroy {
   };
   type: string;
   url: string;
-  checkOptions = [
-    {label: 'synchronized', value: 'IN_SYNC', checked: false},
-    {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false},
-    {label: 'suspended', value: 'SUSPENDED', checked: false},
-    {label: 'outstanding',value: 'OUTSTANDING', checked: false}
+  statusObj = {
+    syncStatus: [],
+    availabilityStatus: []
+  };
+  synchronizationStatusOptions = [
+    { label: 'synchronized', value: 'IN_SYNC', checked: false },
+    { label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false }
+  ];
+
+  availabilityStatusOptions = [
+    { label: 'suspended', value: 'SUSPENDED', checked: false },
+    { label: 'outstanding', value: 'OUTSTANDING', checked: false }
+  ];
+
+  jobAvailabilityStatusOptions = [
+    { label: 'skipped', value: 'SKIPPED', checked: false },
+    { label: 'stopped', value: 'STOPPED', checked: false }
   ];
 
   constructor(public coreService: CoreService, public modal: NzModalService, private authService: AuthService) {
@@ -85,15 +97,39 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchObj.returnType = this.type;
       }
     }
-    if(this.searchObj.advanced && this.isWorkflow){
+    if (this.searchObj.advanced && this.isWorkflow) {
+      this.searchObj.advanced.instructionStates = this.searchObj.advanced.instructionStates ? this.searchObj.advanced.instructionStates : [];
       this.searchObj.advanced.states = this.searchObj.advanced.states ? this.searchObj.advanced.states : [];
+
+      this.searchObj.advanced.instructionStates.forEach((item) => {
+        for (let i in this.jobAvailabilityStatusOptions) {
+          if (this.jobAvailabilityStatusOptions[i].value == item) {
+            this.jobAvailabilityStatusOptions[i].checked = true;
+            break;
+          }
+        }
+      });
+      this.searchObj.advanced.states.forEach((item) => {
+        for (let i in this.synchronizationStatusOptions) {
+          if (this.synchronizationStatusOptions[i].value == item) {
+            this.synchronizationStatusOptions[i].checked = true;
+            break;
+          }
+        }
+        for (let i in this.availabilityStatusOptions) {
+          if (this.availabilityStatusOptions[i].value == item) {
+            this.availabilityStatusOptions[i].checked = true;
+            break;
+          }
+        }
+      });
     }
   }
 
   ngOnDestroy(): void {
     const savedObj: any = this.coreService.getSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory');
     this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
-      {...savedObj, panel: this.panel.active, request: this.searchObj});
+      { ...savedObj, panel: this.panel.active, request: this.searchObj });
   }
 
   private getAgents(): void {
@@ -109,9 +145,16 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  
-  stateChange(value: string[]): void {
-    this.searchObj.advanced.states = value;
+  synchronizationStatusChange(value: string[]): void {
+    this.statusObj.syncStatus = value;
+  }
+
+  availabilityStatusChange(value: string[]): void {
+    this.statusObj.availabilityStatus = value;
+  }
+
+  jobAvailabilityStatusChange(value: string[]): void {
+    this.searchObj.advanced.instructionStates = value;
   }
 
   displayWith(data): string {
@@ -124,7 +167,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.isWorkflow || this.isBoard || this.isLock || this.isCalendar) {
       obj.types = this.isWorkflow ? [this.ENUM.WORKFLOW] : this.isBoard ? [this.ENUM.NOTICEBOARD] : this.isLock ? [this.ENUM.LOCK] : ['WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
       obj.controllerId = this.controllerId;
-    } else{
+    } else {
       obj.forInventory = true;
     }
     this.coreService.post('tree', obj).subscribe(res => {
@@ -228,7 +271,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       obj.returnType = this.searchObj.returnType;
     } else {
       obj.controllerId = this.controllerId;
+
       if (this.isWorkflow) {
+
+        if (!obj.advanced) {
+          obj.advanced = {};
+        }
+        obj.advanced.states = this.statusObj.syncStatus.concat(this.statusObj.availabilityStatus);
         this.url = 'workflows/search';
       } else if (this.isBoard) {
         this.url = 'notice/boards/search';
@@ -238,7 +287,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.url = 'calendars/search';
       }
     }
-  
+
     this.coreService.post(this.url, obj).subscribe({
       next: (res) => {
         this.object.type = obj.returnType;
@@ -251,7 +300,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.isJobSearch = !!(obj.returnType === this.ENUM.WORKFLOW && obj.advanced && obj.advanced.jobName);
         }
         this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
-          {panel: this.panel.active, request: this.searchObj, result: this.results});
+          { panel: this.panel.active, request: this.searchObj, result: this.results });
         this.submitted = false;
       }, error: () => {
         this.submitted = false;
@@ -261,13 +310,13 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   clear(): void {
     const type = this.searchObj.returnType;
-    this.searchObj = {advanced: {}, returnType: type};
+    this.searchObj = { advanced: {}, returnType: type };
     this.results = [];
     this.object.mapOfCheckedId = new Set();
     this.object.checked = false;
     this.object.indeterminate = false;
     this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isCalendar ? 'calendar' : 'inventory',
-      {panel: false, request: {}, result: []});
+      { panel: false, request: {}, result: [] });
   }
 
   propagateJob(): void {
