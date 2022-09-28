@@ -13,7 +13,8 @@ import {ProfilesComponent} from './profiles/profiles.component';
 import {
   IdentityServiceComponent,
   IdentityServiceModalComponent,
-  SettingModalComponent
+  SettingModalComponent,
+  ThumbnailDirective
 } from './identity-service/identity-service.component';
 import {SessionTimeRegexValidator} from '../../directives/core.directive';
 import {ShowPermissionComponent} from './show-permission/show-permission.component';
@@ -49,7 +50,8 @@ import {SessionManagementComponent} from './session-management/session-managemen
     ShowPermissionComponent,
     BlocklistComponent,
     AddBlocklistModalComponent,
-    SessionManagementComponent
+    SessionManagementComponent,
+    ThumbnailDirective
   ],
   providers: [
     DataService

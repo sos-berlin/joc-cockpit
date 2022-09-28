@@ -48,23 +48,34 @@
           </button>
         </form>
 
-        <div *ngIf="identityServiceItems.length > 0" class="horz_line_text">OR</div>
+        <div *ngIf="identityServiceItems.length > 0" class="horz_line_text text-u-c" translate>common.label.or</div>
 
         <div class="row" *ngIf="identityServiceItems.length > 0">
+
           <div class="col-md-12" *ngFor="let item of identityServiceItems">
-            <ng-container *ngIf="item.iamOidcName">
-              <button class="btn btn-default btn-block btn-sm m-b-12" (click)="loginWithPopup(item)"
-                style="padding-top: 6px;padding-bottom: 6px;">
-                <!-- <i class="fa fa-{{item.iamOidcName.toLowerCase()}}"></i> -->
-          
-                <span translate [translateParams]="{identityServiceName: item.iamOidcName}">login.button.loginWith</span>
+            <ng-container *ngIf="item.iamOidcName && !item.iamIconUrl">
+              <button *ngIf="!item.iamIconUrl" class="btn btn-default btn-block btn-sm m-b-12"
+                (click)="loginWithPopup(item)" style="padding-top: 6px;padding-bottom: 6px;">
+                <span translate
+                  [translateParams]="{identityServiceName: item.iamOidcName}">login.button.loginWith</span>
               </button>
             </ng-container>
           </div>
-        </div>
+          <div class="col-md-12 text-center">
+            <span *ngFor="let item of identityServiceItems">
+            <ng-container *ngIf="item.iamOidcName && item.iamIconUrl">
 
+              <a class="btn btn-sm m-r-12" (click)="loginWithPopup(item)" role="button" style="text-transform:none">
+                <img height="20px"
+                  src=".{{item.iamIconUrl}}" />
+              </a>
+            </ng-container>
+          </span>
+        </div>
       </div>
+
     </div>
-    <div id="logo-bottom"></div>
   </div>
+  <div id="logo-bottom"></div>
+</div>
 </div>
