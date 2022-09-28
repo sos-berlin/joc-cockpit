@@ -463,6 +463,7 @@
     "label.writeComment": "Saisir une Justification",
     "label.yes": "oui",
     "label.no": "non",
+    "label.or": "or",
     "label.all": "Tous",
     "label.redeploy": "Redéployer",
     "label.synchronize": "Synchroniser",
@@ -812,7 +813,8 @@
     "message.noControllerFound": "Aucun Contrôleur trouvé",
     "message.errorInLoadingScheduleIds": "Erreur lors de la récupération des ID du contrôleur",
     "message.pasteInSubFolderNotAllowed": "Le dossier de destination est un sous-dossier du dossier source.",
-    "message.invalidJSON": "Fichier JSON non valide"
+    "message.invalidJSON": "Fichier JSON non valide",
+    "message.fileSizeExceed": "Allowed File size is less than 1 MB"
   },
   "favorite": {
     "button.addFavorite": "Ajouter Favorite",
@@ -2273,10 +2275,10 @@
     "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
     "label.iamOidcClientId": "OIDC Client ID",
     "label.iamOidcClientSecret": "OIDC Client Secret",
-    "label.iamOidcTokenVerificationUrl": "OIDC Token Verification URL",
     "label.iamOidcTruststorePath": "OIDC Truststore Path",
     "label.iamOidcTruststoreType": "OIDC Truststore Type",
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
+    "label.iamOidcImage": "OIDC Image",
     "label.group": "Groupe",
     "label.general": "Généralités",
     "label.on": "On",
@@ -2298,7 +2300,6 @@
     "label.sessions": "Sessions Actives",
     "label.sessionsFound": "Sessions trouvées",
     "label.sessionFound": "Session trouvé",
-    "label.tokenVerification": "Verification Token",
     "button.addGroupRole": "Ajouter Groupes/Rôles",
     "button.addIdentityService": "Ajouter un Service d'Identité",
     "button.addPermission": "Ajouter une Permission",
@@ -2331,6 +2332,7 @@
     "button.cancelSessionByAccount": "Annuler toutes les Sessions du Compte",
     "button.cancelSessions": "Annuler Sessions",
     "button.sessionManagement": "Sessions Actives",
+    "button.uploadImage": "Upload Image",
     "placeholder.role": "Entrer le nom du Rôle",
     "placeholder.selectRoles": "Sélectionner les Rôles",
     "placeholder.user": "Entrer l'utilisateur",
@@ -2374,7 +2376,6 @@
     "placeholder.iamOidcAuthenticationUrl": "Entrer le OIDC Authentication URL",
     "placeholder.iamOidcClientId": "Entrer le OIDC Client ID",
     "placeholder.iamOidcClientSecret": "Entrer le OIDC Client Secret",
-    "placeholder.iamOidcTokenVerificationUrl": "Entrer le OIDC Token Verification URL",
     "placeholder.group": "Entrer le Groupe",
     "placeholder.iamOidcTruststorePath": "Entrer le OIDC Truststore Path",
     "placeholder.iamOidcTruststoreType": "Entrer le OIDC Truststore Type",
@@ -2464,10 +2465,10 @@
         "iamOidcAuthenticationUrl": "Le OIDC Authentication URL est le point d'accès auquel l'interface graphique du JOC Cockpit (client) effectue l'authentification.",
         "iamOidcClientId": "La OIDC Client ID est enregistré auprès du OIDC Service Provider et doit correspondre à la valeur spécifiée dans les paramètres du service d'identité.",
         "iamOidcClientSecret": "Le OIDC Client Secret est enregistré auprès du OIDC Service Provider et doit correspondre à la valeur spécifiée dans les paramètres du service d'identité.",
-        "iamOidcTokenVerificationUrl": "Le OIDC Token Verification URL est le point de terminaison utilisé par le JS7 REST Web Service API (application) pour vérifier les jetons reçus par l'interface graphique du JOC Cockpit.",
         "iamOidcTruststorePath": "Le chemin d'accès à un Truststore qui contient le certificat du OIDC Identity Provider ou le certificat de l'autorité de certification racine Root CA utilisé pour signer le certificat du OIDC Identity Provider.",
         "iamOidcTruststoreType": "Le type de OIDC Truststore peut être PKCS12 ou JKS (déprécié).",
-        "iamOidcTruststorePassword": "Si le OIDC Truststore est protégé par un mot de passe, alors le mot de passe doit être spécifié."
+        "iamOidcTruststorePassword": "Si le OIDC Truststore est protégé par un mot de passe, alors le mot de passe doit être spécifié.",
+        "iamOidcImage": "OIDC Image"
       },
       "general": {
         "sessionTimeout": "Une session utilisateur sera terminée par JOC Cockpit et l'utilisateur devra se connecter après le nombre de secondes indiqué si aucune action n'est effectuée dans JOC Cockpit.",

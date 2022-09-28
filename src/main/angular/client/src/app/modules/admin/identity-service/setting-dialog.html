@@ -245,7 +245,12 @@
           <input name="iamKeycloakTruststoreType" #storePath="ngModel"
             [required]="(currentObj.iamKeycloakTruststorePath && currentObj.iamKeycloakTruststorePath.length > 0) ? true : false"
             [placeholder]="'user.placeholder.iamKeycloakTrustStoreType' | translate" class="form-control"
-            [(ngModel)]="currentObj.iamKeycloakTruststoreType" />
+            [(ngModel)]="currentObj.iamKeycloakTruststoreType" [nzAutocomplete]="auto" />
+          <nz-autocomplete #auto>
+            <nz-auto-option *ngFor="let option of keyStoreTypes" [nzValue]="option" [nzLabel]="option">
+              <span>{{option}}</span>
+            </nz-auto-option>
+          </nz-autocomplete>
         </div>
       </div>
       <div class="form-group row">
@@ -263,9 +268,11 @@
           [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientSecret' | translate" [nzTooltipMouseEnterDelay]="0.5"
           translate>user.label.iamKeycloakClientSecret</label>
         <div class="col-sm-6">
-          <input type="text" class="form-control" name="iamKeycloakClientSecret"
-            [(ngModel)]="currentObj.iamKeycloakClientSecret"
+          <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control"
+            name="iamKeycloakClientSecret" [(ngModel)]="currentObj.iamKeycloakClientSecret"
             [placeholder]="'user.placeholder.iamKeycloakClientSecret' | translate">
+          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+            (click)="passwordFields.third = !passwordFields.third"></i>
         </div>
       </div>
       <div class="form-group row">
@@ -670,9 +677,13 @@
         </label>
         <div class="col-sm-6"
           [ngClass]="{'has-error' : ((iamOidcClientSecret.dirty || iamOidcClientSecret.touched) && iamOidcClientSecret.invalid)}">
-          <input type="text" class="form-control" required #iamOidcClientSecret="ngModel" name="iamOidcClientSecret"
+
+          <input type="{{!passwordFields.fourth ? 'password' : 'text'}}" class="form-control" required
+            #iamOidcClientSecret="ngModel" name="iamOidcClientSecret"
             [placeholder]="'user.placeholder.iamOidcClientSecret' | translate"
-            [(ngModel)]="currentObj.iamOidcClientSecret">
+            [(ngModel)]="currentObj.iamOidcClientSecret" autocomplete="off">
+          <i class=" fa pswd-hide-icon2" [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
+            (click)="passwordFields.fourth = !passwordFields.fourth"></i>
           <div *ngIf="iamOidcClientSecret.invalid && (iamOidcClientSecret.dirty || iamOidcClientSecret.touched)"
             class="text-danger help-block">
             <div *ngIf="iamOidcClientSecret.errors.required">
@@ -681,21 +692,30 @@
           </div>
         </div>
       </div>
-      <div class="form-group row m-t">
-        <div class="col-md-12" translate>user.label.tokenVerification</div>
-      </div>
-      <div class="p-a b-a">
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label"
-            [nz-tooltip]="'user.tooltips.oidc.iamOidcTokenVerificationUrl' | translate" [nzTooltipMouseEnterDelay]="0.5"
-            translate>user.label.iamOidcTokenVerificationUrl
-          </label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcTokenVerificationUrl"
-              [placeholder]="'user.placeholder.iamOidcTokenVerificationUrl' | translate"
-              [(ngModel)]="currentObj.iamOidcTokenVerificationUrl">
+      <div class="form-group row">
+        <label class="col-sm-4" [ngClass]="{'form-control-label': imageUploader.queue.length > 0}" [nz-tooltip]="'user.tooltips.oidc.iamOidcImage' | translate"
+          [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcImage
+        
+        </label>
+        <div class="col-sm-6">
+          <div class="upload-btn-wrapper1" *ngIf="imageUploader.queue.length == 0">
+            <button type="button" class="btn btn-default btn-sm ">
+              <i nz-icon nzType="upload" nzTheme="outline"></i>&nbsp;
+              {{'user.button.uploadImage' | translate}}
+            </button>
+            <input type="file" accept=".png, .PNG" ng2FileSelect (onFileSelected)="onImageSelected($event)" [uploader]="imageUploader">
+          </div>
+          <div *ngFor="let item of imageUploader.queue; let first = first;">
+            <img src="" thumbnail [image]="item?._file"/>
+            {{ item?.file?.name }}   
           </div>
         </div>
+        <div class="col-sm-2" *ngIf="imageUploader.queue.length > 0">
+          <a class="text-hover-color pos-rel t-xs" (click)="imageUploader.clearQueue()"><i class="fa fa-trash"></i></a>
+        </div>
+      </div>
+  
+      <div class="p-a b-a">
         <div class="form-group row">
           <label class="col-sm-4 form-control-label"
             [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststorePath' | translate" [nzTooltipMouseEnterDelay]="0.5"
@@ -715,7 +735,12 @@
           <div class="col-sm-6">
             <input type="text" class="form-control" name="iamOidcTruststoreType"
               [placeholder]="'user.placeholder.iamOidcTruststoreType' | translate"
-              [(ngModel)]="currentObj.iamOidcTruststoreType">
+              [(ngModel)]="currentObj.iamOidcTruststoreType" [nzAutocomplete]="auto" />
+            <nz-autocomplete #auto>
+              <nz-auto-option *ngFor="let option of keyStoreTypes" [nzValue]="option" [nzLabel]="option">
+                <span>{{option}}</span>
+              </nz-auto-option>
+            </nz-autocomplete>
           </div>
         </div>
         <div class="form-group row">
@@ -724,9 +749,12 @@
             translate>user.label.iamOidcTruststorePassword
           </label>
           <div class="col-sm-6">
-            <input type="text" class="form-control" name="iamOidcTruststorePassword"
-              [placeholder]="'user.placeholder.iamOidcTruststorePassword' | translate"
-              [(ngModel)]="currentObj.iamOidcTruststorePassword">
+
+            <input type="{{!passwordFields.third ? 'password' : 'text'}}" class="form-control"
+              name="iamOidcTruststorePassword" autocomplete="off" [(ngModel)]="currentObj.iamOidcTruststorePassword"
+              [placeholder]="'user.placeholder.iamOidcTruststorePassword' | translate">
+            <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+              (click)="passwordFields.third = !passwordFields.third"></i>
           </div>
         </div>
       </div>

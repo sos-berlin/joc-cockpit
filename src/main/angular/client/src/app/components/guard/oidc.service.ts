@@ -60,7 +60,6 @@ export class OIDCAuthService {
     clientId?: string;
     redirectUri?: string;
     loginUrl?: string;
-    jwksUri?: string;
     scope?: string;
     requestAccessToken?: boolean;
     issuer?: string;
@@ -72,7 +71,6 @@ export class OIDCAuthService {
     requireHttps?: boolean | 'remoteOnly';
     skipIssuerCheck?: boolean;
     nonceStateSeparator: string = ';';
-    jwks = null;
     state = '';
     grantTypesSupported = [];
     discoveryDocumentLoaded = false;
@@ -117,48 +115,19 @@ export class OIDCAuthService {
                     this.grantTypesSupported = doc.grant_types_supported;
                     this.issuer = doc.issuer;
                     this.tokenEndpoint = doc.token_endpoint;
-                    this.jwksUri = doc.jwks_uri;
                     this.discoveryDocumentLoaded = true;
-
-                    this.loadJwks()
-                        .then((jwks) => {
-                            const result = {
-                                discoveryDocument: doc,
-                                jwks: jwks,
-                            };
-                            resolve(result);
-                            return;
-                        })
-                        .catch((err) => {
-                            reject(err);
-                            return;
-                        });
+                    const result = {
+                        discoveryDocument: doc,
+                       
+                    };
+                    resolve(result);
+                   
                 }, error: (err) => {
                     reject(err);
                 }
             });
         });
     }
-
-    loadJwks() {
-        return new Promise((resolve, reject) => {
-            if (this.jwksUri) {
-                this.coreService.get(this.jwksUri).subscribe({
-                    next: (jwks) => {
-                        this.jwks = jwks;
-                        resolve(jwks);
-                    }, error: (err) => {
-                        this.toasterService.error('error loading jwks', err);
-                        reject(err);
-                    }
-                });
-            }
-            else {
-                resolve(null);
-            }
-        });
-    }
-
 
     private validateDiscoveryDocument(doc) {
         let errors;
@@ -187,11 +156,6 @@ export class OIDCAuthService {
         errors = this.validateUrlFromDiscoveryDocument(doc.userinfo_endpoint);
         if (errors.length > 0) {
             this.toasterService.error('error validating userinfo_endpoint in discovery document', errors);
-            return false;
-        }
-        errors = this.validateUrlFromDiscoveryDocument(doc.jwks_uri);
-        if (errors.length > 0) {
-            this.toasterService.error('error validating jwks_uri in discovery document', errors);
             return false;
         }
 
@@ -272,6 +236,8 @@ export class OIDCAuthService {
             url += '&prompt=none';
         }
 
+        url += '&accessType=offline&approvalPrompt=force';
+
         return url;
     }
 
@@ -290,8 +256,10 @@ export class OIDCAuthService {
             'application/x-www-form-urlencoded'
         );
 
-        params = params.set('client_id', this.clientId);
-        params = params.set('client_secret', this.clientSecret);
+        const clientId = sessionStorage.getItem('clientId');
+        const clientSecret = sessionStorage.getItem('clientSecret');
+        params = params.set('client_id', this.clientId || clientId);
+        params = params.set('client_secret', this.clientSecret || clientSecret);
 
         return new Promise((resolve, reject) => {
             let revokeAccessToken: Observable<void>;

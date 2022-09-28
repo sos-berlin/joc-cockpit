@@ -463,6 +463,7 @@
     "label.writeComment": "Enter a Reason",
     "label.yes": "yes",
     "label.no": "no",
+    "label.or": "or",
     "label.all": "All",
     "label.redeploy": "Redeploy",
     "label.synchronize": "Synchronize",
@@ -812,7 +813,8 @@
     "message.noControllerFound": "No Controller Found",
     "message.errorInLoadingScheduleIds": "Error in fetching Controller IDs",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
-    "message.invalidJSON": "Invalid JSON file"
+    "message.invalidJSON": "Invalid JSON file",
+    "message.fileSizeExceed": "Allowed File size is less than 1 MB"
   },
   "favorite": {
     "button.addFavorite": "Add Favorite",
@@ -2273,10 +2275,10 @@
     "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
     "label.iamOidcClientId": "OIDC Client ID",
     "label.iamOidcClientSecret": "OIDC Client Secret",
-    "label.iamOidcTokenVerificationUrl": "OIDC Token Verification URL",
     "label.iamOidcTruststorePath": "OIDC Truststore Path",
     "label.iamOidcTruststoreType": "OIDC Truststore Type",
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
+    "label.iamOidcImage": "OIDC Image",
     "label.group": "Group",
     "label.general": "General",
     "label.on": "On",
@@ -2298,7 +2300,6 @@
     "label.sessions": "Active Sessions",
     "label.sessionsFound": "Sessions found",
     "label.sessionFound": "Session found",
-    "label.tokenVerification": "Verification Token",
     "button.addGroupRole": "Add Group/Roles",
     "button.addIdentityService": "Add Identity Service",
     "button.addPermission": "Add Permission",
@@ -2331,6 +2332,7 @@
     "button.cancelSessionByAccount": "Cancel all Sessions for Account",
     "button.cancelSessions": "Cancel Sessions",
     "button.sessionManagement": "Active Sessions",
+    "button.uploadImage": "Upload Image",
     "placeholder.role": "Enter role name",
     "placeholder.selectRoles": "Select Roles",
     "placeholder.user": "Enter account",
@@ -2374,7 +2376,6 @@
     "placeholder.iamOidcAuthenticationUrl": "Enter OIDC Authentication URL",
     "placeholder.iamOidcClientId": "Enter OIDC Client ID",
     "placeholder.iamOidcClientSecret": "Enter OIDC Client Secret",
-    "placeholder.iamOidcTokenVerificationUrl": "Enter OIDC Token Verification URL",
     "placeholder.iamOidcTruststorePath": "Enter OIDC Truststore Path",
     "placeholder.iamOidcTruststoreType": "Enter OIDC Truststore Type",
     "placeholder.iamOidcTruststorePassword": "Enter OIDC Truststore Password",
@@ -2464,10 +2465,10 @@
         "iamOidcAuthenticationUrl": "The OIDC Authentication URL is the endpoint to which the JOC Cockpit GUI (Client) performs authentication.",
         "iamOidcClientId": "The OIDC Client ID is registered with the OIDC Identity Provider and has to match the value specified with the Identiy Service settings.",
         "iamOidcClientSecret": "The OIDC Client Secret is registered with the OIDC Identity Provider and has to match the value specified with the Identiy Service settings.",
-        "iamOidcTokenVerificationUrl": "The OIDC Token Verification URL is the endpoint that is used by the JS7 REST Web Service API (application) to verify the tokens received by the JOC Cockpit GUI.",
         "iamOidcTruststorePath": "The path to a Truststore that holds the OIDC Identity Provider certificate or Root CA certificate used to sign the OIDC Identity Provider certificate.",
         "iamOidcTruststoreType": "The OIDC Truststore Type can be PKCS12 or JKS (deprecated).",
-        "iamOidcTruststorePassword": "If the OIDC Truststore is protected by a password, then the password has to be specified."
+        "iamOidcTruststorePassword": "If the OIDC Truststore is protected by a password, then the password has to be specified.",
+        "iamOidcImage": "OIDC Image"
       },
       "general": {
         "sessionTimeout": "A user session will be terminated by JOC Cockpit and the user has to login after the given number of seconds if no action is performed in JOC Cockpit.",

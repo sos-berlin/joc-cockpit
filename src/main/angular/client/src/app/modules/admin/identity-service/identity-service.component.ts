@@ -1,21 +1,69 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {clone, isEmpty} from 'underscore';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {FileUploader} from 'ng2-file-upload';
-import {ToastrService} from 'ngx-toastr';
-import {TranslateService} from '@ngx-translate/core';
-import {saveAs} from 'file-saver';
-import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard';
-import {DataService} from '../data.service';
-import {SaveService} from '../../../services/save.service';
-import {OrderPipe} from '../../../pipes/core.pipe';
-import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
-import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import { Component, Input, OnDestroy, OnInit, Directive, ElementRef, SimpleChanges } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { clone, isEmpty } from 'underscore';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { FileUploader } from 'ng2-file-upload';
+import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
+import { saveAs } from 'file-saver';
+import { CoreService } from '../../../services/core.service';
+import { AuthService } from '../../../components/guard';
+import { DataService } from '../data.service';
+import { SaveService } from '../../../services/save.service';
+import { OrderPipe } from '../../../pipes/core.pipe';
+import { ConfirmModalComponent } from '../../../components/comfirm-modal/confirm.component';
+import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
+
+
+@Directive({
+  selector: 'img[thumbnail]'
+})
+export class ThumbnailDirective {
+
+  @Input() public image: any;
+
+  constructor(private el: ElementRef) { }
+
+  public ngOnChanges(changes: SimpleChanges) {
+
+    let reader = new FileReader();
+    let el = this.el;
+
+    reader.onloadend = (readerEvent) => {
+      let image = new Image();
+      image.onload = (imageEvent) => {
+        // Resize the image
+        let canvas = document.createElement('canvas');
+        let maxSize = 32;
+        let width = image.width;
+        let height = image.height;
+        if (width > height) {
+          if (width > maxSize) {
+            height *= maxSize / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width *= maxSize / height;
+            height = maxSize;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+        el.nativeElement.src = canvas.toDataURL('image/jpeg');
+      };
+      image.src = reader.result as string;
+    };
+
+    if (this.image) {
+      return reader.readAsDataURL(this.image);
+    }
+  }
+}
 
 @Component({
   selector: 'app-setting-modal-content',
@@ -53,12 +101,21 @@ export class SettingModalComponent implements OnInit {
   comments: any = {};
 
   uploader: FileUploader;
+  imageUploader: FileUploader;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService,
-              private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
+    private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
     this.uploader = new FileUploader({
       url: '',
       queueLimit: 1
+    });
+    this.imageUploader = new FileUploader({
+      url: './api/iam/import',
+      queueLimit: 1,
+      headers: [{
+        name: 'X-Access-Token',
+        value: this.authService.accessTokenId
+      }]
     });
   }
 
@@ -100,6 +157,20 @@ export class SettingModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.imageUploader.onBeforeUploadItem = (item: any) => {
+      const obj: any = {
+        identityServiceName: this.data.identityServiceName
+      };
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+      item.file.name = encodeURIComponent(item.file.name);
+      this.imageUploader.options.additionalParameter = obj;
+    };
+    this.imageUploader.onErrorItem = (fileItem, response: any) => {
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.error(res.error.message, res.error.code);
+      }
+    };
     const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
@@ -282,11 +353,34 @@ export class SettingModalComponent implements OnInit {
       roles: []
     };
     if (!this.currentObj.iamLdapGroupRolesMap) {
-      this.currentObj.iamLdapGroupRolesMap = {items: []};
+      this.currentObj.iamLdapGroupRolesMap = { items: [] };
     }
     if (!this.coreService.isLastEntryEmpty(this.currentObj.iamLdapGroupRolesMap.items, 'ldapGroupDn', '')) {
       this.currentObj.iamLdapGroupRolesMap.items.push(param);
     }
+  }
+
+  onImageSelected(event: any): void {
+    const self = this;
+    let item = event['0'];
+
+    let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
+    if (!fileExt || fileExt.toUpperCase() != 'PNG') {
+      let msg = '';
+      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.error(fileExt + ' ' + msg);
+      this.imageUploader.clearQueue();
+    } else if (item.size > (1000 * 1000)) {
+      let msg = '';
+      this.translate.get('error.message.fileSizeExceed').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.error(msg);
+      this.imageUploader.clearQueue();
+    }
+
   }
 
   // CALLBACKS
@@ -372,10 +466,10 @@ export class SettingModalComponent implements OnInit {
     const fileType = 'application/octet-stream';
     let obj = this.currentObj;
     if (this.data.identityServiceType.match('LDAP')) {
-      obj = {simple: this.userObj, expert: this.currentObj};
+      obj = { simple: this.userObj, expert: this.currentObj };
     }
     const data = JSON.stringify(obj, undefined, 2);
-    const blob = new Blob([data], {type: fileType});
+    const blob = new Blob([data], { type: fileType });
     saveAs(blob, name);
   }
 
@@ -392,6 +486,7 @@ export class SettingModalComponent implements OnInit {
       }
     }
     this.submitted = true;
+    this.imageUploader.uploadAll();
     let obj: any = {};
     if (this.data && this.data.identityServiceType) {
       if (this.data.identityServiceType.match('VAULT')) {
@@ -399,7 +494,7 @@ export class SettingModalComponent implements OnInit {
       } else if (this.data.identityServiceType.match('KEYCLOAK')) {
         obj.keycloak = this.currentObj;
       } else if (this.data.identityServiceType.match('LDAP')) {
-        obj.ldap = {expert: this.coreService.clone(this.currentObj), simple: this.userObj};
+        obj.ldap = { expert: this.coreService.clone(this.currentObj), simple: this.userObj };
       } else if (this.data.identityServiceType.match('OIDC')) {
         obj.oidc = this.currentObj;
       }

@@ -120,6 +120,7 @@ export class AppComponent implements OnInit {
           sessionStorage.setItem('clientId', clientId);
           sessionStorage.setItem('clientSecret', clientSecret);
         }, error: () => {
+          this.oAuthService.logOut(token, refreshToken);
           sessionStorage.clear();
         }
       });
