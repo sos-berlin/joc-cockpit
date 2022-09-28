@@ -814,7 +814,7 @@
     "message.errorInLoadingScheduleIds": "Error in fetching Controller IDs",
     "message.pasteInSubFolderNotAllowed": "The destination folder is a sub-folder of the source folder.",
     "message.invalidJSON": "Invalid JSON file",
-    "message.fileSizeExceed": "Allowed File size is less than 1 MB"
+    "message.fileSizeExceed": "Allowed file size is less than 1 MB"
   },
   "favorite": {
     "button.addFavorite": "Add Favorite",
@@ -2468,7 +2468,7 @@
         "iamOidcTruststorePath": "The path to a Truststore that holds the OIDC Identity Provider certificate or Root CA certificate used to sign the OIDC Identity Provider certificate.",
         "iamOidcTruststoreType": "The OIDC Truststore Type can be PKCS12 or JKS (deprecated).",
         "iamOidcTruststorePassword": "If the OIDC Truststore is protected by a password, then the password has to be specified.",
-        "iamOidcImage": "OIDC Image"
+        "iamOidcImage": "If an OIDC Image is specified then it is displayed with the login screen."
       },
       "general": {
         "sessionTimeout": "A user session will be terminated by JOC Cockpit and the user has to login after the given number of seconds if no action is performed in JOC Cockpit.",

@@ -463,7 +463,7 @@
     "label.writeComment": "Saisir une Justification",
     "label.yes": "oui",
     "label.no": "non",
-    "label.or": "or",
+    "label.or": "ou",
     "label.all": "Tous",
     "label.redeploy": "Redéployer",
     "label.synchronize": "Synchroniser",
@@ -814,7 +814,7 @@
     "message.errorInLoadingScheduleIds": "Erreur lors de la récupération des ID du contrôleur",
     "message.pasteInSubFolderNotAllowed": "Le dossier de destination est un sous-dossier du dossier source.",
     "message.invalidJSON": "Fichier JSON non valide",
-    "message.fileSizeExceed": "Allowed File size is less than 1 MB"
+    "message.fileSizeExceed": "La taille de fichier autorisée est inférieure à 1 Mo"
   },
   "favorite": {
     "button.addFavorite": "Ajouter Favorite",
@@ -2332,7 +2332,7 @@
     "button.cancelSessionByAccount": "Annuler toutes les Sessions du Compte",
     "button.cancelSessions": "Annuler Sessions",
     "button.sessionManagement": "Sessions Actives",
-    "button.uploadImage": "Upload Image",
+    "button.uploadImage": "Télécharger l'Image",
     "placeholder.role": "Entrer le nom du Rôle",
     "placeholder.selectRoles": "Sélectionner les Rôles",
     "placeholder.user": "Entrer l'utilisateur",
@@ -2468,7 +2468,7 @@
         "iamOidcTruststorePath": "Le chemin d'accès à un Truststore qui contient le certificat du OIDC Identity Provider ou le certificat de l'autorité de certification racine Root CA utilisé pour signer le certificat du OIDC Identity Provider.",
         "iamOidcTruststoreType": "Le type de OIDC Truststore peut être PKCS12 ou JKS (déprécié).",
         "iamOidcTruststorePassword": "Si le OIDC Truststore est protégé par un mot de passe, alors le mot de passe doit être spécifié.",
-        "iamOidcImage": "OIDC Image"
+        "iamOidcImage": "Si une Image OIDC est spécifiée, elle s'affiche sur l'écran de connexion."
       },
       "general": {
         "sessionTimeout": "Une session utilisateur sera terminée par JOC Cockpit et l'utilisateur devra se connecter après le nombre de secondes indiqué si aucune action n'est effectuée dans JOC Cockpit.",

@@ -463,7 +463,7 @@
     "label.writeComment": "Begründung angeben",
     "label.yes": "ja",
     "label.no": "nein",
-    "label.or": "or",
+    "label.or": "oder",
     "label.all": "Alle",
     "label.redeploy": "Ausrollen wiederholen",
     "label.synchronize": "Synchronisieren",
@@ -814,7 +814,7 @@
     "message.errorInLoadingScheduleIds": "Fehler beim Lesen der Controller-Kennungen",
     "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners.",
     "message.invalidJSON": "Ungültige JSON Datei",
-    "message.fileSizeExceed": "Allowed File size is less than 1 MB"
+    "message.fileSizeExceed": "Die zugelassene Dateigröße beträgt weniger als 1 MB"
   },
   "favorite": {
     "button.addFavorite": "Favorit hinzufügen",
@@ -2278,7 +2278,7 @@
     "label.iamOidcTruststorePath": "OIDC Truststore Path",
     "label.iamOidcTruststoreType": "OIDC Truststore Type",
     "label.iamOidcTruststorePassword": "OIDC Truststore Password",
-    "label.iamOidcImage": "OIDC Image",
+    "label.iamOidcImage": "OIDC Bild",
     "label.group": "Gruppe",
     "label.general": "Generelles",
     "label.on": "On",
@@ -2332,7 +2332,7 @@
     "button.cancelSessionByAccount": "Alle Sitzungen des Kontos abbrechen",
     "button.cancelSessions": "Sitzungen abbrechen",
     "button.sessionManagement": "Aktive Sitzungen",
-    "button.uploadImage": "Upload Image",
+    "button.uploadImage": "Bild hochladen",
     "placeholder.role": "Name der Rolle angeben",
     "placeholder.selectRoles": "Rollen auswählen",
     "placeholder.user": "Konto angeben",
@@ -2468,7 +2468,7 @@
         "iamOidcTruststorePath": "Der Pfad zum OIDC Truststore, der das OIDC Identity Provider Zertifikat oder das Root CA Zertifikat enthält, mit dem das OIDC Identity Provider Zertifikat signiert ist.",
         "iamOidcTruststoreType": "Der Typ des OIDC Truststore kann PKCS12 sein oder JKS (deprecated).",
         "iamOidcTruststorePassword": "Ist der OIDC Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
-        "iamOidcImage": "OIDC Image"
+        "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt."
       },
       "general": {
         "sessionTimeout": "Eine Benutzersitzung wird von JOC Cockpit geschlossen und der Benutzer zur Anmeldung aufgeforder, wenn für die in Sekunden angegebene Dauer keine Aktivitäten in JOC Cockpit durch den Benutzer erfolgt sind.",
