@@ -102,6 +102,7 @@ export class SettingModalComponent implements OnInit {
 
   uploader: FileUploader;
   imageUploader: FileUploader;
+  imageUrl: string;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
     private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
@@ -194,6 +195,9 @@ export class SettingModalComponent implements OnInit {
       (this.saveService.copiedSetting.type.indexOf(this.data.identityServiceType) > -1 ||
         this.data.identityServiceType.indexOf(this.saveService.copiedSetting.type) > -1)) {
       this.isEnable = true;
+    }
+    if (this.data.identityServiceType === 'OIDC') {
+      this.getImage();
     }
 
     this.coreService.post('configuration', {
@@ -477,6 +481,26 @@ export class SettingModalComponent implements OnInit {
     this.currentObj.iamLdapGroupRolesMap.items.splice(index, 1);
   }
 
+  deleteImage(): void {
+    this.coreService.post('documentations/delete', {
+      documentations: ['/sos/.images/' + this.data.identityServiceName]
+    }).subscribe(res => {
+      this.imageUrl = '';
+    });
+  }
+
+  private getImage(): void {
+    this.coreService.post('documentations', {
+      documentations: ['/sos/.images/' + this.data.identityServiceName]
+    }).subscribe({
+      next: (res: any) => {
+        if (res.documentations && res.documentations.length > 0) {
+          this.imageUrl = './api/iam/icon/' + this.data.identityServiceName;
+        }
+      }
+    });
+  }
+
   onSubmit(): void {
     if (!this.data) {
       this.isLengthMatch = true;
@@ -756,7 +780,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private translate: TranslateService,) {
+    private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private translate: TranslateService,) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
     });
@@ -772,7 +796,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    this.adminFilter  = this.coreService.getAdminTab();
+    this.adminFilter = this.coreService.getAdminTab();
     this.filter = this.adminFilter.identityService;
     this.getIAMList();
   }
@@ -938,7 +962,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
     let comments = {};
     if (sessionStorage.$SOS$FORCELOGING === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-        comments = {comment: translatedValue};
+        comments = { comment: translatedValue };
       });
     }
     this.coreService.post('iam/identityservices/reorder', {
@@ -977,7 +1001,7 @@ export class IdentityServiceComponent implements OnInit, OnDestroy {
         nzClassName: 'lg',
         nzComponentParams: {
           comments,
-          obj: {identityServiceName: identityService.identityServiceName},
+          obj: { identityServiceName: identityService.identityServiceName },
           url: 'iam/identityservice/delete'
         },
         nzFooter: null,

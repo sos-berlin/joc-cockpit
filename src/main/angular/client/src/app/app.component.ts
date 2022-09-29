@@ -33,11 +33,8 @@ export class AppComponent implements OnInit {
       if (sessionStorage.authConfig) {
         this.oAuthService.loadDiscoveryDocument().then((_) => {
           this.oAuthService.tryLoginCodeFlow().then(() => {
-            const access_token = sessionStorage.getItem('access_token');
-            const id_token = sessionStorage.getItem('id_token');
-            const refresh_token = sessionStorage.getItem('refresh_token') || '';
-            if (access_token) {
-              this.login(access_token, id_token, refresh_token);
+            if (this.oAuthService.access_token) {
+              this.login(this.oAuthService.access_token, this.oAuthService.id_token, this.oAuthService.refresh_token);
             }
           });
         });

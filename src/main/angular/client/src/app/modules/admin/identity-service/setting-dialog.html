@@ -698,7 +698,7 @@
         
         </label>
         <div class="col-sm-6">
-          <div class="upload-btn-wrapper1" *ngIf="imageUploader.queue.length == 0">
+          <div class="upload-btn-wrapper1" *ngIf="imageUploader.queue.length == 0 && !imageUrl">
             <button type="button" class="btn btn-default btn-sm ">
               <i nz-icon nzType="upload" nzTheme="outline"></i>&nbsp;
               {{'user.button.uploadImage' | translate}}
@@ -709,9 +709,13 @@
             <img src="" thumbnail [image]="item?._file"/>
             {{ item?.file?.name }}   
           </div>
+          <div *ngIf="imageUrl">
+            <img src="{{imageUrl}}" height="28px"/>
+          </div>
         </div>
-        <div class="col-sm-2" *ngIf="imageUploader.queue.length > 0">
-          <a class="text-hover-color pos-rel t-xs" (click)="imageUploader.clearQueue()"><i class="fa fa-trash"></i></a>
+        <div class="col-sm-2" *ngIf="imageUploader.queue.length > 0 || imageUrl">
+          <a *ngIf="imageUploader.queue.length > 0" class="text-hover-color pos-rel t-xs" (click)="imageUploader.clearQueue()"><i class="fa fa-trash"></i></a>
+          <a *ngIf="imageUrl" class="text-hover-color pos-rel t-xs" (click)="deleteImage()"><i class="fa fa-trash"></i></a>
         </div>
       </div>
   

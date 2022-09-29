@@ -74,6 +74,9 @@ export class OIDCAuthService {
     state = '';
     grantTypesSupported = [];
     discoveryDocumentLoaded = false;
+    access_token: string;
+    id_token: string;
+    refresh_token: string;
 
     constructor(private coreService: CoreService, private toasterService: ToastrService) {
     }
@@ -236,8 +239,7 @@ export class OIDCAuthService {
             url += '&prompt=none';
         }
 
-        url += '&accessType=offline&approvalPrompt=force';
-
+        //   url += '&accessType=offline&approvalPrompt=force';
         return url;
     }
 
@@ -438,9 +440,9 @@ export class OIDCAuthService {
                 .log(this.tokenEndpoint, params, { headers })
                 .subscribe({
                     next: (tokenResponse) => {
-                        sessionStorage.setItem('access_token', tokenResponse.access_token);
-                        sessionStorage.setItem('id_token', tokenResponse.id_token);
-                        sessionStorage.setItem('refresh_token', tokenResponse.refresh_token);
+                        this.access_token = tokenResponse.access_token;
+                        this.id_token = tokenResponse.id_token;
+                        this.refresh_token = tokenResponse.refresh_token;
                         resolve(tokenResponse);
                     }, error: (err) => {
                         this.toasterService.error('Error getting token', err);
