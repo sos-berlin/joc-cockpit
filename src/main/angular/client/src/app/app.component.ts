@@ -99,8 +99,8 @@ export class AppComponent implements OnInit {
         next: (data) => {
           let returnUrl = sessionStorage.getItem('returnUrl');
           let logoutUrl = sessionStorage.getItem('logoutUrl');
-          let clientId = sessionStorage.getItem('clientId');
-          let clientSecret = sessionStorage.getItem('clientSecret');
+          let providerName = sessionStorage.getItem('providerName');
+
           sessionStorage.clear();
           this.authService.setUser(data);
           this.authService.save();
@@ -114,8 +114,7 @@ export class AppComponent implements OnInit {
             this.router.navigate(['/']).then();
           }
           sessionStorage.setItem('logoutUrl', logoutUrl);
-          sessionStorage.setItem('clientId', clientId);
-          sessionStorage.setItem('clientSecret', clientSecret);
+          sessionStorage.setItem('providerName', providerName);
         }, error: () => {
           this.oAuthService.logOut(token, refreshToken);
           sessionStorage.clear();

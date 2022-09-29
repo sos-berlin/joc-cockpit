@@ -84,13 +84,9 @@ export class OIDCAuthService {
     configure(config) {
         this.issuer = config.iamOidcAuthenticationUrl,
             this.redirectUri = window.location.origin + '/joc';
-        this.clientId = config.iamOidcClientId;
-        this.clientSecret = config.iamOidcClientSecret;
         this.scope = 'openid profile email';
         this.responseType = 'code';
         this.showDebugInformation = true;
-        sessionStorage.setItem('clientId', this.clientId);
-        sessionStorage.setItem('clientSecret', this.clientSecret);
     }
 
     loadDiscoveryDocument(fullUrl = null) {
@@ -121,10 +117,10 @@ export class OIDCAuthService {
                     this.discoveryDocumentLoaded = true;
                     const result = {
                         discoveryDocument: doc,
-                       
+
                     };
                     resolve(result);
-                   
+
                 }, error: (err) => {
                     reject(err);
                 }
@@ -243,7 +239,23 @@ export class OIDCAuthService {
         return url;
     }
 
+    private getIdAndSecret(identityServiceName): void {
+        this.coreService.post('iam/identityclient', { identityServiceName }).subscribe({
+            next: (data) => {
+                this.clientId = data.iamOidcClientId;
+                this.clientSecret = data.iamOidcClientSecret;
+                this.logOut(this.access_token, this.refresh_token);
+            }
+        });
+    }
+
     logOut(accessToken, refreshToken) {
+        if (!this.clientId) {
+            this.access_token = accessToken;
+            this.refresh_token = refreshToken;
+            this.getIdAndSecret(sessionStorage.getItem('providerName'));
+            return;
+        }
         let logoutUrl = sessionStorage.getItem('logoutUrl');
         if (!this.validateUrlForHttps(this.logoutUrl)) {
             this.toasterService.error(
@@ -258,10 +270,8 @@ export class OIDCAuthService {
             'application/x-www-form-urlencoded'
         );
 
-        const clientId = sessionStorage.getItem('clientId');
-        const clientSecret = sessionStorage.getItem('clientSecret');
-        params = params.set('client_id', this.clientId || clientId);
-        params = params.set('client_secret', this.clientSecret || clientSecret);
+        params = params.set('client_id', this.clientId);
+        params = params.set('client_secret', this.clientSecret);
 
         return new Promise((resolve, reject) => {
             let revokeAccessToken: Observable<void>;

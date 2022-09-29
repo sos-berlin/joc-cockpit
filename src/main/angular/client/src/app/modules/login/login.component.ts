@@ -93,22 +93,30 @@ export class LoginComponent implements OnInit {
   }
 
   loginWithPopup(config) {
-    this.loginCodeInPopup(config, config.identityServiceName);
-  }
-
-  loginCodeInPopup(authConfig, providerName) {
-    sessionStorage.authConfig = JSON.stringify(authConfig);
+    sessionStorage.authConfig = JSON.stringify(config);
     // Tweak config for code flow
-
-    this.oAuthService.configure(authConfig);
+    this.oAuthService.configure(config);
     this.oAuthService.loadDiscoveryDocument().then((_) => {
      
-      sessionStorage.setItem('authConfig', JSON.stringify(authConfig));
-      sessionStorage.setItem('providerName', providerName);
+      sessionStorage.setItem('authConfig', JSON.stringify(config));
+      sessionStorage.setItem('providerName', config.identityServiceName);
       if (this.returnUrl) {
         sessionStorage.setItem('returnUrl', this.returnUrl);
       }
-      this.oAuthService.initLoginFlow();
+      this.getIdAndSecret(config.identityServiceName);
+    });
+  }
+
+  private getIdAndSecret(identityServiceName): void {
+
+    this.coreService.post('iam/identityclient', { identityServiceName }).subscribe({
+      next: (data) => {
+        this.oAuthService.clientId = data.iamOidcClientId;
+        this.oAuthService.clientSecret = data.iamOidcClientSecret;
+        sessionStorage.setItem('clientId', data.iamOidcClientId);
+        sessionStorage.setItem('clientSecret', data.iamOidcClientSecret);
+        this.oAuthService.initLoginFlow();
+      }
     });
   }
 
