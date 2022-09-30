@@ -1058,11 +1058,9 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Lock') {
             _node.setAttribute('label', 'lock');
-            if (json.instructions[x].lockName !== undefined) {
-              _node.setAttribute('lockName', json.instructions[x].lockName);
-            }
-            if (json.instructions[x].count !== undefined) {
-              _node.setAttribute('count', json.instructions[x].count);
+
+            if (json.instructions[x].demands !== undefined) {
+              _node.setAttribute('demands', isArray(json.instructions[x].demands) ? JSON.stringify(json.instructions[x].demands) : '[]');
             }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('lock', colorCode, self.theme) : 'lock');
@@ -1675,15 +1673,16 @@ export class WorkflowService {
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('children') || '-');
       } else if (cell.value.tagName === 'Lock') {
-        let msg = '', limit = '';
-        this.translate.get('workflow.label.name').subscribe(translatedValue => {
-          msg = translatedValue;
-        });
-        this.translate.get('workflow.label.count').subscribe(translatedValue => {
-          limit = translatedValue;
-        });
-        return '<b>' + msg + '</b> : ' + (cell.getAttribute('lockName') || '-') + '</br>' +
-          '<b>' + limit + '</b> : ' + (cell.getAttribute('count') || '-');
+        let demands = cell.getAttribute('demands');
+        if (demands && typeof demands == 'string') {
+          demands = JSON.parse(demands);
+          if (isArray(demands)) {
+            demands.forEach((lock, index) => {
+              str = str + lock.lockName + (index == demands.length - 1 ? '' : ', ')
+            })
+          }
+        }
+        return str;
       } else if (cell.value.tagName === 'Fail') {
         let msg = '';
         let returnCode = '';

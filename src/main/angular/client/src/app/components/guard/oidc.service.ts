@@ -250,13 +250,18 @@ export class OIDCAuthService {
     }
 
     logOut(accessToken, refreshToken) {
+        let logoutUrl = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
+
         if (!this.clientId) {
+            if (!this.logoutUrl) {
+                this.logoutUrl = sessionStorage.getItem('logoutUrl');
+            }
             this.access_token = accessToken;
             this.refresh_token = refreshToken;
             this.getIdAndSecret(sessionStorage.getItem('providerName'));
             return;
         }
-        let logoutUrl = sessionStorage.getItem('logoutUrl');
+        sessionStorage.clear();
         if (!this.validateUrlForHttps(this.logoutUrl)) {
             this.toasterService.error(
                 "logoutUrl  must use HTTPS (with TLS), or config value for property 'requireHttps' must be set to 'false' and allow HTTP (without TLS)."

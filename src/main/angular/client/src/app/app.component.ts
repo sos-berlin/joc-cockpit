@@ -117,7 +117,6 @@ export class AppComponent implements OnInit {
           sessionStorage.setItem('providerName', providerName);
         }, error: () => {
           this.oAuthService.logOut(token, refreshToken);
-          sessionStorage.clear();
         }
       });
     }
