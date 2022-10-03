@@ -333,16 +333,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   logout(timeout: any): void {
+    if (sessionStorage.key) {
+      this.oauthService.logOut(sessionStorage.key);
+    }
     this.isLogout = true;
     if (this.child) {
       this.child.isLogout = true;
     }
     this.coreService.post('authentication/logout', {}).subscribe({
       next: (res) => {
-        
-        if (res.accessToken) {
-          this.oauthService.logOut(res.accessToken, res.refreshToken);
-        }
         this._logout(timeout);
       },
       error: () => this._logout(timeout)
