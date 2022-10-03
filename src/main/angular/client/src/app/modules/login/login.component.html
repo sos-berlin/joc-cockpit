@@ -55,7 +55,7 @@
             <ng-container *ngIf="item.iamOidcName">
               <button class="btn btn-default btn-block btn-sm m-b-12"
                 (click)="loginWithPopup(item)" >
-                <img *ngIf=" item.iamIconUrl" height="18px" class="m-r-sm"
+                <img *ngIf=" item.iamIconUrl" height="20px" class="m-r-sm"
                 src="./api/iam/icon/{{item.identityServiceName}}" />
                 <span translate
                   [translateParams]="{identityServiceName: item.iamOidcName}">login.button.loginWith</span>

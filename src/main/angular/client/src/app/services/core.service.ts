@@ -1690,4 +1690,27 @@ export class CoreService {
     })
     return str;
   }
+
+  //Locker store and retrive
+
+  saveValueInLocker(body, cb): void {
+    this.post('iam/locker/put', body).subscribe({
+      next: (res) => {
+        sessionStorage.key = res.key;
+        cb();
+      }, error: () => {
+        cb();
+      }
+    })
+  }
+
+  getValueFromLocker(key, cb) {
+    this.post('iam/locker/get', { key }).subscribe({
+      next: (res) => {
+        cb(res.content);
+      }, error: () => {
+        cb([]);
+      }
+    })
+  }
 }

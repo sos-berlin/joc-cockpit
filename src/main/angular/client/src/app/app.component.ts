@@ -95,30 +95,37 @@ export class AppComponent implements OnInit {
   }
   private login(token: string, idToken: string, refreshToken?: string): void {
     if (token) {
-      this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, refreshToken, idToken }).subscribe({
-        next: (data) => {
-          let returnUrl = sessionStorage.getItem('returnUrl');
-          let logoutUrl = sessionStorage.getItem('logoutUrl');
-          let providerName = sessionStorage.getItem('providerName');
-
-          sessionStorage.clear();
-          this.authService.setUser(data);
-          this.authService.save();
-          if (returnUrl) {
-            if (returnUrl.indexOf('?') > -1) {
-              this.router.navigateByUrl(returnUrl);
-            } else {
-              this.router.navigate([returnUrl]).then();
-            }
-          } else {
-            this.router.navigate(['/']).then();
-          }
-          sessionStorage.setItem('logoutUrl', logoutUrl);
-          sessionStorage.setItem('providerName', providerName);
-        }, error: () => {
-          this.oAuthService.logOut(token, refreshToken);
+      this.coreService.saveValueInLocker({
+        content: {
+          token, idToken, refreshToken
         }
+      }, ()=> {
+        this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, refreshToken, idToken }).subscribe({
+          next: (data) => {
+            let returnUrl = sessionStorage.getItem('returnUrl');
+            let logoutUrl = sessionStorage.getItem('logoutUrl');
+            let providerName = sessionStorage.getItem('providerName');
+  
+            sessionStorage.clear();
+            this.authService.setUser(data);
+            this.authService.save();
+            if (returnUrl) {
+              if (returnUrl.indexOf('?') > -1) {
+                this.router.navigateByUrl(returnUrl);
+              } else {
+                this.router.navigate([returnUrl]).then();
+              }
+            } else {
+              this.router.navigate(['/']).then();
+            }
+            sessionStorage.setItem('logoutUrl', logoutUrl);
+            sessionStorage.setItem('providerName', providerName);
+          }, error: () => {
+            this.oAuthService.logOut(sessionStorage.key);
+          }
+        });
       });
+
     }
   }
 

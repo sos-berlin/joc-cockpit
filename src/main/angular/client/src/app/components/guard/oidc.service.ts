@@ -244,78 +244,85 @@ export class OIDCAuthService {
             next: (data) => {
                 this.clientId = data.iamOidcClientId;
                 this.clientSecret = data.iamOidcClientSecret;
-                this.logOut(this.access_token, this.refresh_token);
+
+                this.logOut(sessionStorage.key);
+
             }
         });
     }
 
-    logOut(accessToken, refreshToken) {
+    logOut(key) {
+        if (!key) {
+            return;
+        }
         let logoutUrl = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
 
         if (!this.clientId) {
             if (!this.logoutUrl) {
                 this.logoutUrl = sessionStorage.getItem('logoutUrl');
             }
-            this.access_token = accessToken;
-            this.refresh_token = refreshToken;
             this.getIdAndSecret(sessionStorage.getItem('providerName'));
             return;
         }
+
         sessionStorage.clear();
-        if (!this.validateUrlForHttps(this.logoutUrl)) {
-            this.toasterService.error(
-                "logoutUrl  must use HTTPS (with TLS), or config value for property 'requireHttps' must be set to 'false' and allow HTTP (without TLS)."
+
+        this.coreService.getValueFromLocker(key, (content) => {
+            if (!this.validateUrlForHttps(this.logoutUrl)) {
+                this.toasterService.error(
+                    "logoutUrl  must use HTTPS (with TLS), or config value for property 'requireHttps' must be set to 'false' and allow HTTP (without TLS)."
+                );
+                return;
+            }
+
+            let params = new HttpParams({ encoder: new WebHttpUrlEncodingCodec() });
+            let headers = new HttpHeaders().set(
+                'Content-Type',
+                'application/x-www-form-urlencoded'
             );
-            return;
-        }
 
-        let params = new HttpParams({ encoder: new WebHttpUrlEncodingCodec() });
-        let headers = new HttpHeaders().set(
-            'Content-Type',
-            'application/x-www-form-urlencoded'
-        );
-
-        params = params.set('client_id', this.clientId);
-        params = params.set('client_secret', this.clientSecret);
-
-        return new Promise((resolve, reject) => {
-            let revokeAccessToken: Observable<void>;
-            let revokeRefreshToken: Observable<void>;
-            if (accessToken) {
-                let revokationParams = params
-                    .set('token', accessToken)
-                    .set('token_type_hint', 'access_token');
-                revokeAccessToken = this.coreService.log(
-                    logoutUrl,
-                    revokationParams,
-                    { headers }
-                );
-            } else {
-                revokeAccessToken = of(null);
-            }
-
-            if (refreshToken && refreshToken != 'undefined' && refreshToken != 'null') {
-                let revokationParams = params
-                    .set('token', refreshToken)
-                    .set('token_type_hint', 'refresh_token');
-                revokeRefreshToken = this.coreService.log(
-                    logoutUrl,
-                    revokationParams,
-                    { headers }
-                );
-            } else {
-                revokeRefreshToken = of(null);
-            }
-
-            combineLatest([revokeAccessToken, revokeRefreshToken]).subscribe(
-                (res) => {
-                    resolve(res);
-                },
-                (err) => {
-                    reject(err);
+            params = params.set('client_id', this.clientId);
+            params = params.set('client_secret', this.clientSecret);
+            return new Promise((resolve, reject) => {
+                let revokeAccessToken: Observable<void>;
+                let revokeRefreshToken: Observable<void>;
+                if (content.token && content.token != 'undefined' && content.token != 'null') {
+                    let revokationParams = params
+                        .set('token', content.token)
+                        .set('token_type_hint', 'access_token');
+                    revokeAccessToken = this.coreService.log(
+                        logoutUrl,
+                        revokationParams,
+                        { headers }
+                    );
+                } else {
+                    revokeAccessToken = of(null);
                 }
-            );
+
+                if (content.refreshToken && content.refreshToken != 'undefined' && content.refreshToken != 'null') {
+                    let revokationParams = params
+                        .set('token', content.refreshToken)
+                        .set('token_type_hint', 'refresh_token');
+                    revokeRefreshToken = this.coreService.log(
+                        logoutUrl,
+                        revokationParams,
+                        { headers }
+                    );
+                } else {
+                    revokeRefreshToken = of(null);
+                }
+
+                combineLatest([revokeAccessToken, revokeRefreshToken]).subscribe(
+                    (res) => {
+                        resolve(res);
+                    },
+                    (err) => {
+                        reject(err);
+                    }
+                );
+            });
         });
+
     }
 
     createAndSaveNonce() {
@@ -435,7 +442,7 @@ export class OIDCAuthService {
         let PKCEVerifier = sessionStorage.getItem('PKCE_verifier');
 
         if (!PKCEVerifier) {
-            console.warn('No PKCE verifier found in oauth storage!');
+            this.toasterService.warning('No PKCE verifier found in oauth storage!');
         } else {
             params = params.set('code_verifier', PKCEVerifier);
         }
