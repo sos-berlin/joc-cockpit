@@ -1610,7 +1610,7 @@
     "label.password": "Mot de passe",
     "label.rememberMe": "Se Souvenir",
     "button.logIn": "Connexion",
-    "button.loginWith" : "Se connecter avec {{identityServiceName}}",
+    "button.loginWith" : "Continuer avec {{identityServiceName}}",
     "message.loginError": "Compte ou Mot de Passe est incorrect"
   },
   "monitor": {
@@ -2468,7 +2468,7 @@
         "iamOidcTruststorePath": "Le chemin d'accès à un Truststore qui contient le certificat du OIDC Identity Provider ou le certificat de l'autorité de certification racine Root CA utilisé pour signer le certificat du OIDC Identity Provider.",
         "iamOidcTruststoreType": "Le type de OIDC Truststore peut être PKCS12 ou JKS (déprécié).",
         "iamOidcTruststorePassword": "Si le OIDC Truststore est protégé par un mot de passe, alors le mot de passe doit être spécifié.",
-        "iamOidcImage": "Si une Image OIDC est spécifiée, elle s'affiche sur l'écran de connexion."
+        "iamOidcImage": "Si une Image OIDC est spécifiée, elle s'affiche sur l'écran de connexion. Les fichiers image de type .png sont autorisés avec une taille maximale de 1 Mo. Les images sont affichées de manière optimale avec une largeur et une hauteur de 96 pixels."
       },
       "general": {
         "sessionTimeout": "Une session utilisateur sera terminée par JOC Cockpit et l'utilisateur devra se connecter après le nombre de secondes indiqué si aucune action n'est effectuée dans JOC Cockpit.",

@@ -1610,7 +1610,7 @@
     "label.password": "Kennwort",
     "label.rememberMe": "Eingaben merken",
     "button.logIn": "Anmelden",
-    "button.loginWith" : "Anmelden mit {{identityServiceName}}",
+    "button.loginWith" : "Fortsetzen mit {{identityServiceName}}",
     "message.loginError": "Konto oder Kennwort falsch"
   },
   "monitor": {
@@ -2468,7 +2468,7 @@
         "iamOidcTruststorePath": "Der Pfad zum OIDC Truststore, der das OIDC Identity Provider Zertifikat oder das Root CA Zertifikat enthält, mit dem das OIDC Identity Provider Zertifikat signiert ist.",
         "iamOidcTruststoreType": "Der Typ des OIDC Truststore kann PKCS12 sein oder JKS (deprecated).",
         "iamOidcTruststorePassword": "Ist der OIDC Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
-        "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt."
+        "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt. Bilddateien des Typs .png mit einer maximalen Größe von 1 MB können verwendet werden. Bilder werden am besten mit einer Breite und Höhe von 64 Pixel dargestellt."
       },
       "general": {
         "sessionTimeout": "Eine Benutzersitzung wird von JOC Cockpit geschlossen und der Benutzer zur Anmeldung aufgeforder, wenn für die in Sekunden angegebene Dauer keine Aktivitäten in JOC Cockpit durch den Benutzer erfolgt sind.",
