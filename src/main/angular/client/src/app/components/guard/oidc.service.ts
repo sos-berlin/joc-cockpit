@@ -240,15 +240,17 @@ export class OIDCAuthService {
     }
 
     private getIdAndSecret(identityServiceName): void {
-        this.coreService.post('iam/identityclient', { identityServiceName }).subscribe({
-            next: (data) => {
-                this.clientId = data.iamOidcClientId;
-                this.clientSecret = data.iamOidcClientSecret;
+        if (identityServiceName) {
+            this.coreService.post('iam/identityclient', { identityServiceName }).subscribe({
+                next: (data) => {
+                    this.clientId = data.iamOidcClientId;
+                    this.clientSecret = data.iamOidcClientSecret;
 
-                this.logOut(sessionStorage.key);
+                    this.logOut(sessionStorage.key);
 
-            }
-        });
+                }
+            });
+        }
     }
 
     logOut(key) {
