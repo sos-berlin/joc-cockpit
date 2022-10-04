@@ -239,14 +239,14 @@ export class OIDCAuthService {
         return url;
     }
 
-    private getIdAndSecret(identityServiceName): void {
+    private getIdAndSecret(identityServiceName, key): void {
         if (identityServiceName) {
             this.coreService.post('iam/identityclient', { identityServiceName }).subscribe({
                 next: (data) => {
                     this.clientId = data.iamOidcClientId;
                     this.clientSecret = data.iamOidcClientSecret;
 
-                    this.logOut(sessionStorage.key);
+                    this.logOut(key);
 
                 }
             });
@@ -263,7 +263,7 @@ export class OIDCAuthService {
             if (!this.logoutUrl) {
                 this.logoutUrl = sessionStorage.getItem('logoutUrl');
             }
-            this.getIdAndSecret(sessionStorage.getItem('providerName'));
+            this.getIdAndSecret(sessionStorage.getItem('providerName'), key);
             return;
         }
 

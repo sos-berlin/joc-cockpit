@@ -53,20 +53,18 @@
         <div class="row" *ngIf="identityServiceItems.length > 0">
           <div class="col-md-12" *ngFor="let item of identityServiceItems">
             <ng-container *ngIf="item.iamOidcName">
-              <button class="btn btn-default btn-block btn-sm m-b-12" style="padding-top: 5px;padding-bottom: 5px;"
-                (click)="loginWithPopup(item)" >
-                <img *ngIf=" item.iamIconUrl" height="20px" class="m-r-sm"
-                src="./api/iam/icon/{{item.identityServiceName}}" />
+              <button class="btn btn-default btn-block btn-sm m-b-12" (click)="loginWithPopup(item)"
+                [ngStyle]="{'padding-bottom': (item.iamIconUrl ? '4px' : '7px'), 'padding-top': (item.iamIconUrl ? '4px' : '7px')}">
+                <img *ngIf=" item.iamIconUrl" height="24px" width="24px" class="m-r-sm"
+                  src="./api/iam/icon/{{item.identityServiceName}}" />
                 <span translate
                   [translateParams]="{identityServiceName: item.iamOidcName}">login.button.loginWith</span>
               </button>
             </ng-container>
           </div>
-
+        </div>
       </div>
-
     </div>
+    <div id="logo-bottom"></div>
   </div>
-  <div id="logo-bottom"></div>
-</div>
 </div>

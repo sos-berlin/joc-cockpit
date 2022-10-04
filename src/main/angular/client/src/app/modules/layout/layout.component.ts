@@ -334,6 +334,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logout(timeout: any): void {
     if (sessionStorage.key) {
+      delete sessionStorage.key;
       this.oauthService.logOut(sessionStorage.key);
     }
     this.isLogout = true;

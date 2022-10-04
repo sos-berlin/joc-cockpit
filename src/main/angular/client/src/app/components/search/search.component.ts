@@ -97,11 +97,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchObj.returnType = this.type;
       }
     }
-    if (this.searchObj.advanced && this.isWorkflow) {
-      this.searchObj.advanced.instructionStates = this.searchObj.advanced.instructionStates ? this.searchObj.advanced.instructionStates : [];
-      this.searchObj.advanced.states = this.searchObj.advanced.states ? this.searchObj.advanced.states : [];
+    if (this.isWorkflow) {
+      this.searchObj.instructionStates = this.searchObj.instructionStates ? this.searchObj.instructionStates : [];
+      this.searchObj.states = this.searchObj.states ? this.searchObj.states : [];
 
-      this.searchObj.advanced.instructionStates.forEach((item) => {
+      this.searchObj.instructionStates.forEach((item) => {
         for (let i in this.jobAvailabilityStatusOptions) {
           if (this.jobAvailabilityStatusOptions[i].value == item) {
             this.jobAvailabilityStatusOptions[i].checked = true;
@@ -109,7 +109,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
         }
       });
-      this.searchObj.advanced.states.forEach((item) => {
+      this.searchObj.states.forEach((item) => {
         for (let i in this.synchronizationStatusOptions) {
           if (this.synchronizationStatusOptions[i].value == item) {
             this.synchronizationStatusOptions[i].checked = true;
@@ -154,7 +154,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   jobAvailabilityStatusChange(value: string[]): void {
-    this.searchObj.advanced.instructionStates = value;
+    this.searchObj.instructionStates = value;
   }
 
   displayWith(data): string {

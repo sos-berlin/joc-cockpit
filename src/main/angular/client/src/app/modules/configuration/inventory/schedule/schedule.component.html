@@ -107,6 +107,9 @@
               </div>
             </div>
           </div>
+          <div *ngIf="schedule.configuration.workflowNames && schedule.configuration.workflowNames.length > 0" class="pos-abt r-n-8 m-t-n-25">
+            <i (click)="navToWorkflow(schedule.configuration.workflowNames[0])" class="fa fa-pencil cursor"></i>
+          </div>
         </div>
         <div class="form-group row">
           <label class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job" title="{{'inventory.label.planOrderAutomatically' | translate}}" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.planOrderAutomatically' | translate) : ''"

@@ -97,10 +97,10 @@ export class AppComponent implements OnInit {
     if (token) {
       this.coreService.saveValueInLocker({
         content: {
-          token, idToken, refreshToken
+          token, refreshToken
         }
       }, ()=> {
-        this.coreService.post('authentication/login', { token, identityServiceName: sessionStorage.providerName, refreshToken, idToken }).subscribe({
+        this.coreService.post('authentication/login', { identityServiceName: sessionStorage.providerName, refreshToken, idToken }).subscribe({
           next: (data) => {
             let returnUrl = sessionStorage.getItem('returnUrl');
             let logoutUrl = sessionStorage.getItem('logoutUrl');

@@ -30,7 +30,7 @@ export class AuthInterceptor implements HttpInterceptor {
           const user = req.body;
           if (user.token) {
             const headerOptions: any = {
-              'X-ACCESS-TOKEN': user.token,
+         
               'X-ID-TOKEN': user.idToken,
               'X-IDENTITY-SERVICE': user.identityServiceName
             };

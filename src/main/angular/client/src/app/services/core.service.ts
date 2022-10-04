@@ -1705,12 +1705,15 @@ export class CoreService {
   }
 
   getValueFromLocker(key, cb) {
-    this.post('iam/locker/get', { key }).subscribe({
-      next: (res) => {
-        cb(res.content);
-      }, error: () => {
-        cb([]);
-      }
-    })
+    if (key) {
+      console.log('getValueFromLocker', key)
+      this.post('iam/locker/get', { key }).subscribe({
+        next: (res) => {
+          cb(res.content);
+        }, error: () => {
+          cb({});
+        }
+      })
+    }
   }
 }

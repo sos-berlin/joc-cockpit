@@ -7514,17 +7514,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               graph.getModel().execute(edit4);
             }
           } else if (self.selectedNode.type === 'Lock') {
-            let count = '';
+           
             let demands = [];
-            if (self.selectedNode.newObj.countProperty === 'shared') {
-              count = self.selectedNode.newObj.count;
-            }
+         
             if (isArray(self.selectedNode.newObj.lockNames)) {
               self.selectedNode.newObj.lockNames.forEach((name) => {
                 if (name) {
                   demands.push({
                     lockName: name,
-                    count
+                    count: (self.selectedNode.newObj.countProperty === 'shared') ? self.selectedNode.newObj[name] : undefined
                   })
                 }
               })
@@ -7785,19 +7783,20 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } else if (cell.value.tagName === 'Lock') {
           obj.lockNames = [];
           let demands = cell.getAttribute('demands');
+          let isCountExist = false;
           if (demands) {
             demands = JSON.parse(demands);
             if (isArray(demands)) {
               demands.forEach((lock) => {
                 obj.lockNames.push(lock.lockName);
-                obj.count = lock.count;
-              })
+                if (lock.count) {
+                  isCountExist = true;
+                }
+                obj[lock.lockName] = lock.count;
+              });
             }
           }
-          if (obj.count) {
-            obj.count = parseInt(obj.count, 10);
-          }
-          obj.countProperty = obj.count ? 'shared' : 'exclusive';
+          obj.countProperty = isCountExist ? 'shared' : 'exclusive';
         } else if (cell.value.tagName === 'Fail') {
           let outcome = cell.getAttribute('outcome');
           if (!outcome) {
@@ -9824,10 +9823,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions
             };
-            const countObj = clone(json.instructions[x].count);
+
+            const demands = clone(json.instructions[x].demands);
             delete json.instructions[x].instructions;
-            delete json.instructions[x].count;
-            json.instructions[x].count = countObj;
+            delete json.instructions[x].demands;
+            json.instructions[x].demands = demands;
           } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions

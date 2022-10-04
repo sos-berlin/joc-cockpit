@@ -310,6 +310,15 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  navToWorkflow(workflowName): void {
+    this.dataService.reloadTree.next({
+      navigate: {
+        name: workflowName,
+        type: InventoryObject.WORKFLOW
+      }
+    });
+  }
+
   updateList(node, type): void {
     let obj: any = {
       path: node.key,
