@@ -78,7 +78,17 @@ export class OIDCAuthService {
     id_token: string;
     refresh_token: string;
 
+    /**
+     * Timeout for silent refresh.
+     */
+    silentRefreshTimeout?: number = 1000 * 20;
+    expiresInTimeout?: number;
+
     constructor(private coreService: CoreService, private toasterService: ToastrService) {
+        if (sessionStorage.$SOS$KEY) {
+            console.log(sessionStorage.$SOS$KEY);
+            this.coreService.renewLocker(sessionStorage.$SOS$KEY);
+        }
     }
 
     configure(config) {
@@ -225,7 +235,9 @@ export class OIDCAuthService {
             encodeURIComponent(scope);
         if (this.responseType.includes('code')) {
             const [challenge, verifier] = await this.createChallangeVerifierPairForPKCE();
-            sessionStorage.setItem('PKCE_verifier', verifier.toString());
+            if (verifier) {
+                sessionStorage.setItem('PKCE_verifier', verifier.toString());
+            }
             url += '&code_challenge=' + challenge;
             url += '&code_challenge_method=S256';
         }
@@ -239,33 +251,11 @@ export class OIDCAuthService {
         return url;
     }
 
-    private getIdAndSecret(identityServiceName, key): void {
-        if (identityServiceName) {
-            this.coreService.post('iam/identityclient', { identityServiceName }).subscribe({
-                next: (data) => {
-                    this.clientId = data.iamOidcClientId;
-                    this.clientSecret = data.iamOidcClientSecret;
-
-                    this.logOut(key);
-
-                }
-            });
-        }
-    }
-
     logOut(key) {
         if (!key) {
             return;
         }
         let logoutUrl = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
-
-        if (!this.clientId) {
-            if (!this.logoutUrl) {
-                this.logoutUrl = sessionStorage.getItem('logoutUrl');
-            }
-            this.getIdAndSecret(sessionStorage.getItem('providerName'), key);
-            return;
-        }
 
         sessionStorage.clear();
 
@@ -283,8 +273,8 @@ export class OIDCAuthService {
                 'application/x-www-form-urlencoded'
             );
 
-            params = params.set('client_id', this.clientId);
-            params = params.set('client_secret', this.clientSecret);
+            params = params.set('client_id', content.clientId);
+            params = params.set('client_secret', content.clientSecret);
             return new Promise((resolve, reject) => {
                 let revokeAccessToken: Observable<void>;
                 let revokeRefreshToken: Observable<void>;
@@ -467,6 +457,7 @@ export class OIDCAuthService {
                         this.access_token = tokenResponse.access_token;
                         this.id_token = tokenResponse.id_token;
                         this.refresh_token = tokenResponse.refresh_token;
+                        this.expiresInTimeout = tokenResponse.expires_in;
                         resolve(tokenResponse);
                     }, error: (err) => {
                         this.toasterService.error('Error getting token', err);
@@ -566,6 +557,54 @@ export class OIDCAuthService {
                 this.toasterService.error('Error in initAuthorizationCodeFlow');
                 console.error(error);
             });
+    }
+
+
+    /**
+   * Refreshes the token using a refresh_token.
+   * This does not work for implicit flow, b/c
+   * there is no refresh_token in this flow.
+   * A solution for this is provided by the
+   * method silentRefresh.
+   */
+    public refreshToken(refreshToken): Promise<any> {
+        this.assertUrlNotNullAndCorrectProtocol(
+            this.tokenEndpoint,
+            'tokenEndpoint'
+        );
+        return new Promise((resolve, reject) => {
+            let params = new HttpParams({ encoder: new WebHttpUrlEncodingCodec() })
+                .set('grant_type', 'refresh_token')
+                .set('scope', this.scope)
+                .set('refresh_token', refreshToken)
+                .set('client_id', this.clientId)
+                .set('client_secret', this.clientSecret);
+
+            let headers = new HttpHeaders().set(
+                'Content-Type',
+                'application/x-www-form-urlencoded'
+            );
+
+            this.coreService
+                .log(this.tokenEndpoint, params, { headers })
+                .subscribe({
+                    next:
+                        (tokenResponse) => {
+                            console.debug('refresh tokenResponse', tokenResponse);
+                            console.log(
+                                tokenResponse.access_token,
+                                tokenResponse.refresh_token,
+                                tokenResponse.expires_in
+                            );
+                            this.expiresInTimeout = tokenResponse.expires_in;
+                            resolve(tokenResponse);
+                        },
+                    error: (err) => {
+                        console.error('Error refreshing token', err);
+                        reject(err);
+                    }
+                });
+        });
     }
 
 }

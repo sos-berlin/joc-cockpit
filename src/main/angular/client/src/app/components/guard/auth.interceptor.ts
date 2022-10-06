@@ -28,16 +28,11 @@ export class AuthInterceptor implements HttpInterceptor {
         });
         if (req.url.match('authentication/login')) {
           const user = req.body;
-          if (user.token) {
+          if (user.idToken) {
             const headerOptions: any = {
-         
               'X-ID-TOKEN': user.idToken,
               'X-IDENTITY-SERVICE': user.identityServiceName
             };
-
-            if (user.refreshToken) {
-              headerOptions['X-REFRESH-TOKEN'] = user.refreshToken;
-            }
 
             const headers = new HttpHeaders(headerOptions);
 

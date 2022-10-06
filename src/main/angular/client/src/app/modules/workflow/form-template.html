@@ -54,11 +54,32 @@
         </nz-tree-select>
       </div>
     </div>
+
     <div class="form-group row">
-      <label class="col-sm-4 " [ngClass]="{'col-md-2': isSearch}" translate>common.label.status</label>
+      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}" translate>inventory.search.label.workflowSynchronizationStatus</label>
       <div class="col-sm-8">
-        <nz-checkbox-wrapper (nzOnChange)="stateChange($event)">
-          <ng-container *ngFor="let option of checkOptions">
+        <nz-checkbox-wrapper (nzOnChange)="synchronizationStatusChange($event)">
+          <ng-container *ngFor="let option of synchronizationStatusOptions">
+            <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
+          </ng-container>
+        </nz-checkbox-wrapper>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}" translate>inventory.search.label.workflowAvailabilityStatus</label>
+      <div class="col-sm-8">
+        <nz-checkbox-wrapper (nzOnChange)="availabilityStatusChange($event)">
+          <ng-container *ngFor="let option of availabilityStatusOptions">
+            <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
+          </ng-container>
+        </nz-checkbox-wrapper>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}" translate>inventory.search.label.jobAvailabilityStatus</label>
+      <div class="col-sm-8">
+        <nz-checkbox-wrapper (nzOnChange)="jobAvailabilityStatusChange($event)">
+          <ng-container *ngFor="let option of jobAvailabilityStatusOptions">
             <label nz-checkbox [nzValue]="option.value" [ngModel]="option.checked" [name]="option.label"><span translate>filters.button.{{option.label}}</span></label>
           </ng-container>
         </nz-checkbox-wrapper>

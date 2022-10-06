@@ -1696,7 +1696,7 @@ export class CoreService {
   saveValueInLocker(body, cb): void {
     this.post('iam/locker/put', body).subscribe({
       next: (res) => {
-        sessionStorage.key = res.key;
+        sessionStorage.$SOS$KEY = res.key;
         cb();
       }, error: () => {
         cb();
@@ -1715,5 +1715,18 @@ export class CoreService {
         }
       })
     }
+  }
+
+  renewLocker(key) {
+    setTimeout(() => {
+      if (key && sessionStorage.$SOS$KEY && (sessionStorage.$SOS$KEY == key)) {
+        this.post('iam/locker/renew', { key }).subscribe({
+          next: (res) => {
+            sessionStorage.$SOS$RENEW = (new Date().getTime() + 1800000) - 30000;
+            this.renewLocker(res.key);
+          }
+        })
+      }
+    }, (new Date().getTime() - parseInt(sessionStorage.$SOS$RENEW)));
   }
 }

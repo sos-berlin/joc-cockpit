@@ -271,13 +271,15 @@ export class SearchComponent implements OnInit, OnDestroy {
       obj.returnType = this.searchObj.returnType;
     } else {
       obj.controllerId = this.controllerId;
-
       if (this.isWorkflow) {
-
-        if (!obj.advanced) {
-          obj.advanced = {};
+        const states = this.statusObj.syncStatus.concat(this.statusObj.availabilityStatus);
+        if (states && states.length > 0) {
+          obj.states = states;
         }
-        obj.advanced.states = this.statusObj.syncStatus.concat(this.statusObj.availabilityStatus);
+
+        if (this.searchObj.instructionStates && this.searchObj.instructionStates.length > 0) {
+          obj.instructionStates = this.searchObj.instructionStates;
+        }
         this.url = 'workflows/search';
       } else if (this.isBoard) {
         this.url = 'notice/boards/search';

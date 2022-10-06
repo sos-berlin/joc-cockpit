@@ -81,13 +81,26 @@ export class SearchComponent implements OnInit {
   submitted = false;
   isUnique = true;
   objectType = 'WORKFLOW';
+  statusObj = {
+    syncStatus: [],
+    availabilityStatus: []
+  };
 
-  checkOptions = [
-    {label: 'synchronized', value: 'IN_SYNC', checked: false},
-    {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false},
-    {label: 'suspended', value: 'SUSPENDED', checked: false},
-    {label: 'outstanding',value: 'OUTSTANDING', checked: false}
+  synchronizationStatusOptions = [
+    { label: 'synchronized', value: 'IN_SYNC', checked: false },
+    { label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false }
   ];
+
+  availabilityStatusOptions = [
+    { label: 'suspended', value: 'SUSPENDED', checked: false },
+    { label: 'outstanding', value: 'OUTSTANDING', checked: false }
+  ];
+
+  jobAvailabilityStatusOptions = [
+    { label: 'skipped', value: 'SKIPPED', checked: false },
+    { label: 'stopped', value: 'STOPPED', checked: false }
+  ];
+
 
   constructor(private authService: AuthService, public coreService: CoreService) {
   }
@@ -95,6 +108,31 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.getFolderTree();
+    this.filter.instructionStates = this.filter.instructionStates ? this.filter.instructionStates : [];
+    this.filter.states = this.filter.states ? this.filter.states : [];
+
+    this.filter.instructionStates.forEach((item) => {
+      for (let i in this.jobAvailabilityStatusOptions) {
+        if (this.jobAvailabilityStatusOptions[i].value == item) {
+          this.jobAvailabilityStatusOptions[i].checked = true;
+          break;
+        }
+      }
+    });
+    this.filter.states.forEach((item) => {
+      for (let i in this.synchronizationStatusOptions) {
+        if (this.synchronizationStatusOptions[i].value == item) {
+          this.synchronizationStatusOptions[i].checked = true;
+          break;
+        }
+      }
+      for (let i in this.availabilityStatusOptions) {
+        if (this.availabilityStatusOptions[i].value == item) {
+          this.availabilityStatusOptions[i].checked = true;
+          break;
+        }
+      }
+    });
   }
 
   private getFolderTree(): void {
@@ -117,8 +155,16 @@ export class SearchComponent implements OnInit {
     return data.key;
   }
 
-  stateChange(value: string[]): void {
-    this.filter.states = value;
+  synchronizationStatusChange(value: string[]): void {
+    this.statusObj.syncStatus = value;
+  }
+
+  availabilityStatusChange(value: string[]): void {
+    this.statusObj.availabilityStatus = value;
+  }
+
+  jobAvailabilityStatusChange(value: string[]): void {
+    this.filter.instructionStates = value;
   }
 
   selectFolder(node, $event): void {
@@ -154,8 +200,14 @@ export class SearchComponent implements OnInit {
     const obj: any = {
       regex: result.regex,
       paths: result.paths,
-      name: result.name
+      name: result.name,
+      instructionStates: result.instructionStates,
+
     };
+    const states = this.statusObj.syncStatus.concat(this.statusObj.availabilityStatus);
+    if (states && states.length > 0) {
+      obj.states = states;
+    }
     const configObj = {
       controllerId: this.schedulerIds.selected,
       account: this.authService.currentUserData,
@@ -181,6 +233,10 @@ export class SearchComponent implements OnInit {
   }
 
   search(): void {
+    const states = this.statusObj.syncStatus.concat(this.statusObj.availabilityStatus);
+    if (states && states.length > 0) {
+      this.filter.states = states;
+    }
     this.onSearch.emit();
   }
 

@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
       if (sessionStorage.authConfig) {
         this.oAuthService.loadDiscoveryDocument().then((_) => {
           this.oAuthService.tryLoginCodeFlow().then(() => {
-            if (this.oAuthService.access_token) {
+            if (this.oAuthService.id_token) {
               this.login(this.oAuthService.access_token, this.oAuthService.id_token, this.oAuthService.refresh_token);
             }
           });
@@ -97,15 +97,19 @@ export class AppComponent implements OnInit {
     if (token) {
       this.coreService.saveValueInLocker({
         content: {
-          token, refreshToken
+          token,
+          refreshToken,
+          clientId: sessionStorage.clientId,
+          clientSecret: sessionStorage.clientSecret
         }
-      }, ()=> {
-        this.coreService.post('authentication/login', { identityServiceName: sessionStorage.providerName, refreshToken, idToken }).subscribe({
+      }, () => {
+
+        this.coreService.post('authentication/login', { identityServiceName: sessionStorage.providerName, idToken }).subscribe({
           next: (data) => {
             let returnUrl = sessionStorage.getItem('returnUrl');
             let logoutUrl = sessionStorage.getItem('logoutUrl');
             let providerName = sessionStorage.getItem('providerName');
-  
+            let key = sessionStorage.getItem('$SOS$KEY');
             sessionStorage.clear();
             this.authService.setUser(data);
             this.authService.save();
@@ -120,8 +124,12 @@ export class AppComponent implements OnInit {
             }
             sessionStorage.setItem('logoutUrl', logoutUrl);
             sessionStorage.setItem('providerName', providerName);
+            sessionStorage.setItem('$SOS$KEY', key);
+            sessionStorage.$SOS$RENEW = (new Date().getTime() + 1800000) - 30000;
+            this.coreService.renewLocker(key);
           }, error: () => {
-            this.oAuthService.logOut(sessionStorage.key);
+            this.oAuthService.logOut(sessionStorage.$SOS$KEY);
+            delete sessionStorage.$SOS$KEY;
           }
         });
       });
