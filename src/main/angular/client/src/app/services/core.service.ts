@@ -1718,6 +1718,7 @@ export class CoreService {
   }
 
   renewLocker(key) {
+    let miliseconds = (new Date().getTime() < parseInt(sessionStorage.$SOS$RENEW)) ? (parseInt(sessionStorage.$SOS$RENEW) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage.$SOS$RENEW));
     setTimeout(() => {
       if (key && sessionStorage.$SOS$KEY && (sessionStorage.$SOS$KEY == key)) {
         this.post('iam/locker/renew', { key }).subscribe({
@@ -1727,6 +1728,7 @@ export class CoreService {
           }
         })
       }
-    }, (new Date().getTime() - parseInt(sessionStorage.$SOS$RENEW)));
+  
+    }, miliseconds);
   }
 }
