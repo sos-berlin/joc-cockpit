@@ -131,21 +131,24 @@
           <span *ngIf="instruction.TYPE !== 'If' && instruction.TYPE !== 'Cycle'">{{instruction.TYPE}}</span>
           <a class="cursor" (click)="showConfiguration(instruction);" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">{{instruction.TYPE}}</a><span *ngIf="instruction.TYPE === 'Lock'">:</span>
           <span class="text-muted" *ngIf="instruction.TYPE === 'Lock'">
-              <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(instruction.lockName, 'LOCK');$event.stopPropagation();"
+            <span class="text-muted" *ngFor="let item of instruction.demands">
+              <i *ngIf="permission.joc && permission.joc.inventory.view" (click)="coreService.navToInventoryTab(item.lockName, 'LOCK');$event.stopPropagation();"
                  class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
-              <a class="text-hover-primary" [nz-tooltip]="lockItemTemplate" (click)="coreService.showLock(instruction.lockName);$event.stopPropagation();" >{{instruction.lockName}}</a>
+              <a class="text-hover-primary" [nz-tooltip]="lockItemTemplate" (click)="coreService.showLock(item.lockName);$event.stopPropagation();" >{{item.lockName}}</a>
+              <ng-template #lockItemTemplate>
+                <div>
+                  <div class="p-l-sm">
+                    <span translate> workflow.label.count </span>:
+                    <span class="_600" >{{item.count}}</span>
+                  </div>
+                </div>
+              </ng-template>
             </span>
+          </span>
         </span>
         <i class="p-l-xxs p-r-xs" *ngIf="instruction.state && instruction.state._text">-</i>
         <span *ngIf="instruction.state && instruction.state._text" class="label" [ngClass]="coreService.getColor(instruction.state.severity, 'bg')">{{instruction.state._text | translate}}</span>
-        <ng-template #lockItemTemplate>
-          <div>
-            <div class="p-l-sm">
-              <span translate> workflow.label.count </span>:
-              <span class="_600" >{{instruction.count}}</span>
-            </div>
-          </div>
-        </ng-template>
+
         <span class="expand-collapse-btn">
           <i class="fa fa-lg fa-angle-double-down" (click)="expandNode(instruction)"></i>
           <i class="fa fa-lg fa-angle-double-up p-l-xs" (click)="collapseNode(instruction)"></i>

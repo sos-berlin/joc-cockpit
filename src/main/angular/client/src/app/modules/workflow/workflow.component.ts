@@ -1133,9 +1133,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         obj.folders.push({folder: this.searchFilter.paths[i], recursive: false});
       }
     }
+    if (this.searchFilter.instructionStates && this.searchFilter.instructionStates.length > 0) {
+      obj.instructionStates = this.searchFilter.instructionStates;
+    }
     if (this.searchFilter.states && this.searchFilter.states.length > 0) {
       obj.states = this.searchFilter.states;
     }
+
     this.getWorkflowList(obj);
   }
 
@@ -1379,9 +1383,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     workflows.forEach((workflow) => {
       workflow.show = true;
       workflow.configuration = this.coreService.clone(workflow);
-      this.workflowService.convertTryToRetry(workflow.configuration, null, {}, {count: 0});
+      this.workflowService.convertTryToRetry(workflow.configuration, null, {}, { count: 0 });
       if (workflow.numOfOrders > 0) {
-        workflowIds.push({path: workflow.path, versionId: workflow.versionId});
+        workflowIds.push({ path: workflow.path, versionId: workflow.versionId });
       }
     });
     this.updatePanelHeight();
@@ -1440,7 +1444,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.getOrders({
         compact: true,
         controllerId: this.schedulerIds.selected,
-        workflowIds: [{path: workflow.path, versionId: workflow.versionId}]
+        workflowIds: [{ path: workflow.path, versionId: workflow.versionId }]
       }, () => {
         this.sideBar.loading = false;
       });
@@ -1503,14 +1507,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             } else if (args.eventSnapshots[j].eventType === 'WorkflowUpdated' && (args.eventSnapshots[j].path && this.workflows[i].path === args.eventSnapshots[j].path)) {
               this.coreService.post('workflow', {
                 controllerId: this.schedulerIds.selected,
-                workflowId: {path: this.workflows[i].path, versionId: this.workflows[i].versionId}
+                workflowId: { path: this.workflows[i].path, versionId: this.workflows[i].versionId }
               }).subscribe({
                 next: (res: any) => {
                   this.workflows[i].suspended = res.workflow.suspended;
                   this.workflows[i].state = res.workflow.state;
                   this.workflows[i].jobs = res.workflow.jobs;
                   if (this.workflows[i].show) {
-                    this.workflowService.convertTryToRetry(res.workflow, null, {}, {count: 0});
+                    this.workflowService.convertTryToRetry(res.workflow, null, {}, { count: 0 });
                     this.workflowService.compareAndMergeInstructions(this.workflows[i].configuration.instructions, res.workflow.instructions);
                   }
                 }
