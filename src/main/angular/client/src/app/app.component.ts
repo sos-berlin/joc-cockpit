@@ -110,6 +110,8 @@ export class AppComponent implements OnInit {
             let logoutUrl = sessionStorage.getItem('logoutUrl');
             let providerName = sessionStorage.getItem('providerName');
             let key = sessionStorage.getItem('$SOS$KEY');
+            let expireTime = sessionStorage.getItem('$SOS$TOKENEXPIRETIME');
+
             sessionStorage.clear();
             this.authService.setUser(data);
             this.authService.save();
@@ -125,8 +127,11 @@ export class AppComponent implements OnInit {
             sessionStorage.setItem('logoutUrl', logoutUrl);
             sessionStorage.setItem('providerName', providerName);
             sessionStorage.setItem('$SOS$KEY', key);
-            sessionStorage.$SOS$RENEW = (new Date().getTime() + 1800000) - 30000;
-            this.coreService.renewLocker(key);
+            sessionStorage.setItem('$SOS$TOKENEXPIRETIME', expireTime)
+            if (key) {
+              sessionStorage.$SOS$RENEW = (new Date().getTime() + 1800000) - 30000;
+              this.coreService.renewLocker(key);
+            }
           }, error: () => {
             this.oAuthService.logOut(sessionStorage.$SOS$KEY);
             delete sessionStorage.$SOS$KEY;

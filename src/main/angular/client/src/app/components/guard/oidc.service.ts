@@ -1,36 +1,17 @@
 import { Injectable } from "@angular/core";
 import { HttpHeaders, HttpParams } from "@angular/common/http";
-import crypto from 'crypto-js';
-import sha256 from 'crypto-js/sha256';
+import CryptoJS from 'crypto-js';
 import { ToastrService } from "ngx-toastr";
 import { CoreService } from "../../services/core.service";
 import { combineLatest, Observable, of } from "rxjs";
 
 // GENERATING CODE CHALLENGE FROM VERIFIER
-function sha256(plain) {
-    // returns promise ArrayBuffer
-    const encoder = new TextEncoder();
-    const data = encoder.encode(plain);
-    return window.crypto.subtle.digest("SHA-256", data);
+ function generateCodeChallengeFromVerifier(v) {
+    return base64URL(CryptoJS.SHA256(v));
 }
 
-async function generateCodeChallengeFromVerifier(v) {
-    let hashed = await sha256(v);
-    let base64encoded = base64urlencode(hashed);
-    return base64encoded;
-}
-
-function base64urlencode(a) {
-    let str = "";
-    let bytes = new Uint8Array(a);
-    const len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        str += String.fromCharCode(bytes[i]);
-    }
-    return btoa(str)
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
+function base64URL(string) {
+    return string.toString(CryptoJS.enc.Base64).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
 }
 
 function base64UrlEncode(str) {
@@ -60,7 +41,7 @@ export class OIDCAuthService {
     clientId?: string;
     redirectUri?: string;
     loginUrl?: string;
-    scope?: string;
+    scope = 'openid profile email';
     requestAccessToken?: boolean;
     issuer?: string;
     logoutUrl?: string;
@@ -78,23 +59,18 @@ export class OIDCAuthService {
     id_token: string;
     refresh_token: string;
 
-    /**
-     * Timeout for silent refresh.
-     */
-    silentRefreshTimeout?: number = 1000 * 20;
-    expiresInTimeout?: number;
-
     constructor(private coreService: CoreService, private toasterService: ToastrService) {
         if (sessionStorage.$SOS$KEY) {
-            console.log(sessionStorage.$SOS$KEY);
             this.coreService.renewLocker(sessionStorage.$SOS$KEY);
+            if (sessionStorage.$SOS$TOKENEXPIRETIME) {
+                this.renewToken();
+            }
         }
     }
 
     configure(config) {
         this.issuer = config.iamOidcAuthenticationUrl,
             this.redirectUri = window.location.origin + '/joc';
-        this.scope = 'openid profile email';
         this.responseType = 'code';
         this.showDebugInformation = true;
     }
@@ -457,7 +433,9 @@ export class OIDCAuthService {
                         this.access_token = tokenResponse.access_token;
                         this.id_token = tokenResponse.id_token;
                         this.refresh_token = tokenResponse.refresh_token;
-                        this.expiresInTimeout = tokenResponse.expires_in;
+
+                        sessionStorage.$SOS$TOKENEXPIRETIME = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 20000;
+                        this.renewToken();
                         resolve(tokenResponse);
                     }, error: (err) => {
                         this.toasterService.error('Error getting token', err);
@@ -559,6 +537,33 @@ export class OIDCAuthService {
             });
     }
 
+    private renewToken(): void {
+        let miliseconds = (new Date().getTime() < parseInt(sessionStorage.$SOS$TOKENEXPIRETIME)) ? (parseInt(sessionStorage.$SOS$TOKENEXPIRETIME) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage.$SOS$TOKENEXPIRETIME));
+        console.log('renewToken...........')
+        setTimeout(() => {
+            const key = sessionStorage.$SOS$KEY;
+            if (key) {
+                this.coreService.getValueFromLocker(key, (content) => {
+                    this.refreshToken(content).then((res) => {
+                        this.coreService.saveValueInLocker({
+                            content: {
+                                token: res.access_token,
+                                refreshToken: res.refresh_token,
+                                clientId: content.clientId,
+                                clientSecret: content.clientSecret
+                            }
+                        }, () => {
+                            this.renewToken();
+                        });
+                    }).catch((err) => {
+                        console.error(err);
+                    })
+
+                });
+            }
+        }, miliseconds);
+
+    }
 
     /**
    * Refreshes the token using a refresh_token.
@@ -567,7 +572,7 @@ export class OIDCAuthService {
    * A solution for this is provided by the
    * method silentRefresh.
    */
-    public refreshToken(refreshToken): Promise<any> {
+    public refreshToken(data): Promise<any> {
         this.assertUrlNotNullAndCorrectProtocol(
             this.tokenEndpoint,
             'tokenEndpoint'
@@ -576,9 +581,9 @@ export class OIDCAuthService {
             let params = new HttpParams({ encoder: new WebHttpUrlEncodingCodec() })
                 .set('grant_type', 'refresh_token')
                 .set('scope', this.scope)
-                .set('refresh_token', refreshToken)
-                .set('client_id', this.clientId)
-                .set('client_secret', this.clientSecret);
+                .set('refresh_token', data.refreshToken)
+                .set('client_id', data.clientId)
+                .set('client_secret', data.clientSecret);
 
             let headers = new HttpHeaders().set(
                 'Content-Type',
@@ -590,13 +595,7 @@ export class OIDCAuthService {
                 .subscribe({
                     next:
                         (tokenResponse) => {
-                            console.debug('refresh tokenResponse', tokenResponse);
-                            console.log(
-                                tokenResponse.access_token,
-                                tokenResponse.refresh_token,
-                                tokenResponse.expires_in
-                            );
-                            this.expiresInTimeout = tokenResponse.expires_in;
+                            sessionStorage.$SOS$TOKENEXPIRETIME = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 30000;
                             resolve(tokenResponse);
                         },
                     error: (err) => {

@@ -19,13 +19,13 @@
       <label class="col-md-3 form-control-label" translate>inventory.label.gitUri
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div class="col-md-8" [ngClass]="{'has-error' : ((remoteUri.dirty || remoteUri.touched) && remoteUri.invalid)}">
-        <input type="text" required class="form-control" name="remoteUri"
+      <div class="col-md-8" [ngClass]="{'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}">
+        <input type="text" required class="form-control" name="remoteUrl"
                placeholder="{{'inventory.placeholder.enterRemoteUri' | translate}}"
-               #remoteUri="ngModel" [(ngModel)]="object.remoteUri" [appAutofocus]="true" autocomplete="off">
-        <div *ngIf="remoteUri.invalid && (remoteUri.dirty || remoteUri.touched)"
+               #remoteUrl="ngModel" [(ngModel)]="object.remoteUrl" [appAutofocus]="true" autocomplete="off">
+        <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)"
              class="text-danger help-block">
-          <div *ngIf="(remoteUri.errors && remoteUri.errors.required)">
+          <div *ngIf="(remoteUrl.errors && remoteUrl.errors.required)">
             <div translate>common.message.requiredError</div>
           </div>
         </div>

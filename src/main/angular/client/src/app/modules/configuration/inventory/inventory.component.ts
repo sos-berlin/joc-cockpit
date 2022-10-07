@@ -2190,7 +2190,7 @@ export class GitComponent implements OnInit {
       this.coreService.post('inventory/repository/git/clone', {
         auditLog: this.object.auditLog,
         folder,
-        remoteUri: this.object.remoteUri,
+        remoteUrl: this.object.remoteUrl,
         category: this.object.category
       }).subscribe({
         next: (res) => {
