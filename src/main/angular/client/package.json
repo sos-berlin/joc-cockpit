@@ -25,7 +25,7 @@
     "@ngx-translate/http-loader": "^7.0.0",
     "@swimlane/ngx-charts": "^20.0.1",
     "@types/underscore": "^1.11.4",
-    "@xmldom/xmldom": "^0.8.0",
+    "@xmldom/xmldom": "^0.8.3",
     "ang-jsoneditor": "^1.10.5",
     "angular-gauge": "^4.0.0",
     "angular-gridster2": "^14.1.1",
