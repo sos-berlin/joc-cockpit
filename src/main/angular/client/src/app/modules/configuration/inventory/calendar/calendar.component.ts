@@ -1300,7 +1300,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.calendar.id) {
+    if (this.data.id === this.calendar.id && this.data.name !== this.calendar.name) {
       if (!inValid) {
         this.calendar.path = (this.calendar.path1 + (this.calendar.path1 === '/' ? '' : '/') + this.calendar.name);
         if (this.preferences.auditLog) {

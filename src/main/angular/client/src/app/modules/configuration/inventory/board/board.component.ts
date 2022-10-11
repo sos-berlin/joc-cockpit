@@ -212,7 +212,7 @@ export class BoardComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.board.id) {
+    if (this.data.id === this.board.id && this.data.name !== this.board.name) {
       if (!inValid) {
         this.board.path = (this.board.path1 + (this.board.path1 === '/' ? '' : '/') + this.board.name);
         if (this.preferences.auditLog) {

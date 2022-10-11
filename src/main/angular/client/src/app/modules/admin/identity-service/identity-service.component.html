@@ -1,9 +1,32 @@
-<div class="row m-b-12" *ngIf="!adminFilter.isBlocklist && !adminFilter.isSession">
+<div class="row m-b-12" >
   <div class="col-md-12">
     <div class="pull-left">
-      <h5 class="pos-rel t-3" translate>user.label.identityService</h5>
+     
+      <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': !adminFilter.isBlocklist && !adminFilter.isSession}" (click)="adminFilter.isSession = false;adminFilter.isBlocklist = false;">
+            <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.identityService</span></span>
+          </a>
+        </li>
+        <li class="nav-item dropdown-separator">
+          <span class="separator"></span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': adminFilter.isBlocklist && !adminFilter.isSession}" (click)="adminFilter.isBlocklist = true;adminFilter.isSession = false;">
+            <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.blocklist</span></span>
+          </a>
+        </li>
+        <li class="nav-item dropdown-separator">
+          <span class="separator"></span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': adminFilter.isSession && !adminFilter.isBlocklist}" (click)="adminFilter.isSession = true;adminFilter.isBlocklist = false;">
+            <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.sessions</span></span>
+          </a>
+        </li>
+      </ul>
     </div>
-    <div class="search-box-field pull-right">
+    <div *ngIf="!adminFilter.isBlocklist && !adminFilter.isSession" class="search-box-field pull-right">
       <label>
         <input type="search"
                placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="filter.searchKey">
@@ -12,7 +35,7 @@
     </div>
   </div>
 </div>
-<div *ngIf="!adminFilter.isBlocklist && !adminFilter.isSession" class="box p-a">
+<div *ngIf="!adminFilter.isBlocklist && !adminFilter.isSession" class="box p-a" style="padding-top: 24px">
   <div class="table-responsive">
     <nz-table
       #ajaxTable

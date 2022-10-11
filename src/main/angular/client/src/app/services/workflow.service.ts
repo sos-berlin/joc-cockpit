@@ -2082,6 +2082,10 @@ export class WorkflowService {
           obj.periods.push(p);
           periodList.push(obj);
         }
+      } else if (period.TYPE === 'SpecificDatePeriod') {
+        console.log(period);
+        //secondsSinceLocalEpoch
+        // duration
       }
     });
   }
@@ -2290,6 +2294,8 @@ export class WorkflowService {
             obj.secondOfWeek = ((item.secondOfWeek || item.secondOfDay || 0) + period.startTime);
           } else if (obj.TYPE === 'DailyPeriod') {
             obj.secondOfDay = ((item.secondOfDay || 0) + period.startTime);
+          } else if (obj.TYPE === 'SpecificDatePeriod') {
+            console.log(obj);
           }
           obj.duration = period.duration;
           arr.push(obj);

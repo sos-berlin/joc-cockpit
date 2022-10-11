@@ -103,12 +103,13 @@
         <nz-select nzShowSearch name="frequencyTab" [(ngModel)]="frequency.tab" (ngModelChange)="changeFrequency()">
           <nz-option nzValue="weekDays" [nzLabel]="'runtime.label.weekDays' | translate"></nz-option>
           <nz-option nzValue="specificWeekDays" [nzLabel]="'runtime.label.specificWeekDays' | translate"></nz-option>
+          <nz-option nzValue="specificDays" [nzLabel]="'runtime.label.specificDays' | translate"></nz-option>
           <nz-option nzValue="monthDays" [nzLabel]="'runtime.label.monthDays' | translate"></nz-option>
         </nz-select>
       </div>
     </div>
   </div>
-  <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b">
+  <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b" [ngClass]="{'p-a':frequency.tab !== 'specificDays' }">
     <div class="tab-pane animated fadeIn" id="tab1" [ngClass]="{'active':frequency.tab == 'weekDays'}">
       <div class="form-group row">
         <label class="col-sm-3" title="{{'workflow.admissionTime.label.weekDays' | translate}}"
@@ -239,6 +240,11 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+    <div class="tab-pane animated fadeIn" id="tab4" [ngClass]="{'active':frequency.tab == 'specificDays'}">
+      <div [ngClass]="{'specific-day-ht':frequency.tab == 'specificDays' }">
+        <div id="calendar"></div>
       </div>
     </div>
   </div>

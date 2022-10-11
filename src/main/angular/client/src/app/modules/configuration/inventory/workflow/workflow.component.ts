@@ -17,7 +17,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { Subscription } from 'rxjs';
 import { NzMessageService } from "ng-zorro-antd/message";
-import { isEmpty, isArray, isEqual, clone, extend } from 'underscore';
+import { isEmpty, isArray, isEqual, clone, extend, sortBy, groupBy } from 'underscore';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
@@ -569,6 +569,8 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     { label: 'sunday', value: '7', checked: false }
   ];
 
+  tempItems = [];
+
   @Output() close: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('timePicker', { static: true }) tp;
@@ -629,7 +631,38 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       }
     } else if (this.frequency.tab == 'weekDays') {
       this.editor.isEnable = this.frequency.days && this.frequency.days.length > 0;
+    } else if (this.frequency.tab === 'specificDays') {
+      $('#calendar').calendar({
+        language: this.coreService.getLocale(),
+        clickDay: (e) => {
+          this.selectDate(e);
+        }
+      });
     }
+  }
+
+  private selectDate(e): void {
+    const obj = {
+      startDate: e.date,
+      endDate: e.date,
+      color: 'blue'
+    };
+    let flag = false;
+    let index = 0;
+    for (let i = 0; i < this.tempItems.length; i++) {
+      if ((new Date(this.tempItems[i].startDate).setHours(0, 0, 0, 0) == new Date(obj.startDate).setHours(0, 0, 0, 0))) {
+        flag = true;
+        index = i;
+        break;
+      }
+    }
+    if (!flag) {
+      this.tempItems.push(obj);
+    } else {
+      this.tempItems.splice(index, 1);
+    }
+    this.editor.isEnable = this.tempItems.length > 0;
+    $('#calendar').data('calendar').setDataSource(this.tempItems);
   }
 
   onFrequencyChange(): void {
@@ -3598,13 +3631,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         this.getJobResources();
       }
       if (this.lockTree.length === 0) {
-        this.coreService.post('tree', {
-          controllerId: this.schedulerId,
-          forInventory: true,
-          types: [InventoryObject.LOCK]
-        }).subscribe((res) => {
-          this.lockTree = this.coreService.prepareTree(res, false);
-        });
+        this.getLocks();
       }
       if (this.workflowTree.length === 0) {
         this.coreService.post('tree', {
@@ -3651,6 +3678,39 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (this.extraConfiguration.jobResourceNames && this.extraConfiguration.jobResourceNames.length > 0) {
         this.extraConfiguration.jobResourceNames = [...this.extraConfiguration.jobResourceNames];
         this.ref.detectChanges();
+      }
+    });
+  }
+
+  private getLocks(): void {
+    this.coreService.post('inventory/read/folder', {
+      path: '/',
+      recursive: true,
+      objectTypes: ['LOCK']
+    }).subscribe({
+      next: (res: any) => {
+        res.locks = sortBy(res.locks, (i: any) => {
+          return i.name.toLowerCase();
+        });
+
+        let entries = [];
+        res.locks.forEach((item) => {
+          const obj = {
+            name: item.name,
+            path: item.path.substring(0, item.path.lastIndexOf('/')) || '/'
+          };
+          entries.push(obj);
+        });
+        entries = sortBy(entries, (i: any) => {
+          return i.path.toLowerCase();
+        });
+        const arr = [];
+        for (const [key, value] of Object.entries(groupBy(entries, 'path'))) {
+          arr.push({ name: key, list: value });
+        }
+        this.lockTree = arr;
+      }, error: () => {
+        this.lockTree = [];
       }
     });
   }
@@ -4531,40 +4591,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
     }
   }
-
-  private checkAndLoadLocks(list): void {
-    list.forEach((name, index) => {
-      this.getLockPath(name, (path) => {
-        if (path) {
-          this.loadLockList(path);
-          if (list.length - 1 === index) {
-            this.lockTree = [...this.lockTree];
-          }
-        }
-      });
-    });
-  }
-
-  private getLockPath(name, cb): void {
-    this.coreService.post('inventory/read/configuration', {
-      path: name,
-      objectType: InventoryObject.LOCK
-    }).subscribe((conf: any) => {
-      if (cb) {
-        cb(conf.path);
-      }
-    })
-  }
-
-  private loadLockList(path): void {
-    if (this.treeCtrl) {
-      const node = this.treeCtrl.getTreeNodeByKey(path.substring(0, path.lastIndexOf('/')) || '/');
-      if (node && node.origin) {
-        this.loadData(node, InventoryObject.LOCK, null, true);
-      }
-    }
-  }
-
+  
   private getListOfVariables(obj): void {
     this.forkListVariables = [];
     if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
@@ -7514,9 +7541,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               graph.getModel().execute(edit4);
             }
           } else if (self.selectedNode.type === 'Lock') {
-           
             let demands = [];
-         
             if (isArray(self.selectedNode.newObj.lockNames)) {
               self.selectedNode.newObj.lockNames.forEach((name) => {
                 if (name) {
@@ -7867,12 +7892,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   obj.lockNames.push(item.lockName);
                 }
               })
-
             }
           }
-          if (obj.lockNames.length > 0) {
-            self.checkAndLoadLocks(obj.lockNames);
-          }
+ 
         } else if (cell.value.tagName === 'AddOrder') {
           self.getWorkflow();
         } else if (cell.value.tagName === 'ForkList') {

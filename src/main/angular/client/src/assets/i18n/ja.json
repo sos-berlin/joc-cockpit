@@ -2700,7 +2700,7 @@
     "message.resumeAllWarning": "本当に全てのワークフローを回復しますか?",
     "placeholder.selectAgentName": "参照エージェント入力",
     "placeholder.enterJobClass": "参照ジョブクラス入力",
-    "placeholder.selectLock": "ロックID選択",
+    "placeholder.selectLocks": "Select Resource Locks",
     "placeholder.selectBoards": "S通知ボード選択",
     "placeholder.selectExpectBoard": "Expect Notice選択",
     "placeholder.offset": "コンマ区切りでh/m/sを入力してください",

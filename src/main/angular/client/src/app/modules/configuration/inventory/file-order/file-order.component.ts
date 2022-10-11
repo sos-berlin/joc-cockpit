@@ -225,7 +225,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.fileOrder.id) {
+    if (this.data.id === this.fileOrder.id && this.data.name !== this.fileOrder.name) {
       if (!inValid) {
         this.fileOrder.path = (this.fileOrder.path1 + (this.fileOrder.path1 === '/' ? '' : '/') + this.fileOrder.name);
         if (this.preferences.auditLog) {

@@ -2700,7 +2700,7 @@
     "message.resumeAllWarning": "Do you really want to resume all the workflows?",
     "placeholder.selectAgentName": "Select Agent Name",
     "placeholder.enterJobClass": "Enter Job Class reference",
-    "placeholder.selectLock": "Select Resource Lock ID",
+    "placeholder.selectLocks": "Select Resource Locks",
     "placeholder.selectBoards": "Select Notice Boards",
     "placeholder.selectExpectBoard": "Select Notice Boards expected to hold Notices",
     "placeholder.offset": "Enter values as h/m/s separated by comma",

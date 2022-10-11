@@ -122,7 +122,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.lock.id) {
+    if (this.data.id === this.lock.id && this.data.name !== this.lock.name) {
       if (!inValid) {
         this.lock.path = (this.lock.path1 + (this.lock.path1 === '/' ? '' : '/') + this.lock.name);
         if (this.preferences.auditLog) {

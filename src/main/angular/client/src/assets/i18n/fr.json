@@ -2700,7 +2700,7 @@
     "message.resumeAllWarning": "Souhaitez-vous reprendre tous les Workflows?",
     "placeholder.selectAgentName": "Sélectionnez le nom de l'Agent",
     "placeholder.enterJobClass": "Entrer la référence de la Classe du Tâche",
-    "placeholder.selectLock": "Sélectionner l'ID du Verrou de Ressource",
+    "placeholder.selectLocks": "Select Resource Locks",
     "placeholder.selectBoards": "Sélectionner les Conditions",
     "placeholder.selectExpectBoard": "Sélectionner les Conditions prévus pour les annonces",
     "placeholder.offset": "Entrer les valeurs en format h/m/s séparés par virgule",

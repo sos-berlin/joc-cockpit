@@ -111,7 +111,7 @@ export class JobResourceComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.jobResource.id) {
+    if (this.data.id === this.jobResource.id && this.data.name !== this.jobResource.name) {
       if (!inValid) {
         this.jobResource.path = (this.jobResource.path1 + (this.jobResource.path1 === '/' ? '' : '/') + this.jobResource.name);
         if (this.preferences.auditLog) {

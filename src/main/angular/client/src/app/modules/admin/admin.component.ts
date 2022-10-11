@@ -116,18 +116,6 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.dataService.announceFunction('MANAGE_SETTING');
   }
 
-  manageBlocklist(): void {
-    this.adminFilter.isSession = false;
-    this.isSessionButtonShow = false;
-    this.adminFilter.isBlocklist = !this.adminFilter.isBlocklist;
-
-  }
-
-  manageSession(): void {
-    this.adminFilter.isBlocklist = false;
-    this.isBlockButtonShow = false;
-    this.adminFilter.isSession = !this.adminFilter.isSession;
-  }
 
   addToBlocklist(): void {
     this.dataService.announceFunction('ADD_TO_BLOCKLIST');

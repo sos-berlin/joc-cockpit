@@ -173,7 +173,7 @@ export class ScriptComponent implements OnDestroy, OnChanges {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.script.id) {
+    if (this.data.id === this.script.id  && this.data.name !== this.script.name) {
       if (!inValid) {
         this.script.path = (this.script.path1 + (this.script.path1 === '/' ? '' : '/') + this.script.name);
         if (this.preferences.auditLog) {

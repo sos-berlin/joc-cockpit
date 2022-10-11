@@ -1,88 +1,83 @@
-<div class="row m-b-12">
-  <div class="col-md-12">
-    <div class="pull-left">
-      <h5 class="pos-rel t-3" translate>user.label.blocklist</h5>
-    </div>
-    <div class="search-box-field pull-right">
-      <label>
-        <input type="search" (keyup)="searchInResult()"
-               placeholder="{{'common.placeholder.search' | translate}}" [(ngModel)]="blocklistFilter.filter.searchText">
-        <i *ngIf="blocklistFilter.filter.searchKey" class="fa fa-times search-close"
-           (click)="blocklistFilter.filter.searchKey = '';"></i>
-      </label>
-    </div>
-  </div>
+<div class="search-box-field pull-right pos-rel" style="top:-39px">
+  <label>
+    <input type="search" (keyup)="searchInResult()" placeholder="{{'common.placeholder.search' | translate}}"
+      [(ngModel)]="blocklistFilter.filter.searchText">
+    <i *ngIf="blocklistFilter.filter.searchKey" class="fa fa-times search-close"
+      (click)="blocklistFilter.filter.searchKey = '';"></i>
+  </label>
 </div>
-<div class="box p-a">
+
+<div class="box p-a" style="margin-top: 20px">
   <div class="table-responsive">
     <nz-table #ajaxTable [nzSize]="'small'" [nzPageSize]="blocklistFilter.entryPerPage"
-              [nzPageIndex]="blocklistFilter.currentPage"
-              [nzBordered]="true" [nzShowPagination]="data.length > 0" [nzData]="data" [nzLoading]="!isLoaded"
-              [nzShowSizeChanger]="true" (nzPageIndexChange)="pageIndexChange($event)"
-              (nzPageSizeChange)="pageSizeChange($event)"
-              [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
+      [nzPageIndex]="blocklistFilter.currentPage" [nzBordered]="true" [nzShowPagination]="data.length > 0"
+      [nzData]="data" [nzLoading]="!isLoaded" [nzShowSizeChanger]="true" (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)" [nzPageSizeOptions]="[10, 25, 50, 100 , preferences.maxEntryPerPage]">
       <thead>
-      <tr>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="chk" [nzShowCheckbox]="true" [(nzChecked)]="object.checked"
-            [nzIndeterminate]="object.indeterminate" (nzCheckedChange)="checkAll($event)">
-        </th>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span></th>
-        <th (click)="sort('accountName')"><a>
-          <span class="p-r-xs" translate>user.label.account</span>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'accountName' && !blocklistFilter.filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'accountName' && blocklistFilter.filter.reverse"
-             class="fa fa-caret-down "></i>
-        </a>
-        </th>
-        <th (click)="sort('since')"><a>
-          <span class="p-r-xs" translate>user.label.date</span>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'since' && !blocklistFilter.filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'since' && blocklistFilter.filter.reverse"
-             class="fa fa-caret-down "></i>
-        </a>
-        </th>
-        <th (click)="sort('comment')"><a>
-          <span class="p-r-xs" translate>common.label.comment</span>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'comment' && blocklistFilter.filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'comment' && !blocklistFilter.filter.reverse"
-             class="fa fa-caret-down "></i>
-        </a>
-        </th>
-      </tr>
+        <tr>
+          <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="chk"
+            [nzShowCheckbox]="true" [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+            (nzCheckedChange)="checkAll($event)">
+          </th>
+          <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span
+              translate>common.label.action</span></th>
+          <th (click)="sort('accountName')"><a>
+              <span class="p-r-xs" translate>user.label.account</span>
+              <i *ngIf="blocklistFilter.filter.sortBy == 'accountName' && !blocklistFilter.filter.reverse"
+                class="fa fa-caret-up "></i>
+              <i *ngIf="blocklistFilter.filter.sortBy == 'accountName' && blocklistFilter.filter.reverse"
+                class="fa fa-caret-down "></i>
+            </a>
+          </th>
+          <th (click)="sort('since')"><a>
+              <span class="p-r-xs" translate>user.label.date</span>
+              <i *ngIf="blocklistFilter.filter.sortBy == 'since' && !blocklistFilter.filter.reverse"
+                class="fa fa-caret-up "></i>
+              <i *ngIf="blocklistFilter.filter.sortBy == 'since' && blocklistFilter.filter.reverse"
+                class="fa fa-caret-down "></i>
+            </a>
+          </th>
+          <th (click)="sort('comment')"><a>
+              <span class="p-r-xs" translate>common.label.comment</span>
+              <i *ngIf="blocklistFilter.filter.sortBy == 'comment' && blocklistFilter.filter.reverse"
+                class="fa fa-caret-up "></i>
+              <i *ngIf="blocklistFilter.filter.sortBy == 'comment' && !blocklistFilter.filter.reverse"
+                class="fa fa-caret-down "></i>
+            </a>
+          </th>
+        </tr>
       </thead>
       <tbody>
-      <ng-template ngFor let-account [ngForOf]="ajaxTable.data">
-        <tr>
-          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" [nzShowCheckbox]="true" [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
+        <ng-template ngFor let-account [ngForOf]="ajaxTable.data">
+          <tr>
+            <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" [nzShowCheckbox]="true"
+              [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
               (nzCheckedChange)="onItemChecked(account, $event)">
-          </td>
-          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
-            <div class="btn-group dropdown pull-left m-r-sm">
-              <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                      [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
-              <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                <ul nz-menu>
-                  <li nz-menu-item (click)="removeBlocks(account)">
-                    <a translate>user.button.removeFromBlocklist</a>
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
-          </td>
-          <td>
-            <span [innerHtml]="account.accountName | highlight : blocklistFilter.filter.searchText"></span>
-          </td>
-          <td>
-            <span [innerHtml]="account.since | stringToDate | highlight : blocklistFilter.filter.searchText"></span>
-          </td>
-          <td>
-            <span [innerHtml]="account.comment | highlight : blocklistFilter.filter.searchText"></span>
-          </td>
-        </tr>
-      </ng-template>
+            </td>
+            <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
+              <div class="btn-group dropdown pull-left m-r-sm">
+                <button type="button" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                  [nzDropdownMenu]="option"><i class="fa fa-ellipsis-h"></i></button>
+                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="removeBlocks(account)">
+                      <a translate>user.button.removeFromBlocklist</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+            <td>
+              <span [innerHtml]="account.accountName | highlight : blocklistFilter.filter.searchText"></span>
+            </td>
+            <td>
+              <span [innerHtml]="account.since | stringToDate | highlight : blocklistFilter.filter.searchText"></span>
+            </td>
+            <td>
+              <span [innerHtml]="account.comment | highlight : blocklistFilter.filter.searchText"></span>
+            </td>
+          </tr>
+        </ng-template>
       </tbody>
     </nz-table>
   </div>

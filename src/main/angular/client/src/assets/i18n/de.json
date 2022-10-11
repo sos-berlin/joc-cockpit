@@ -2700,7 +2700,7 @@
     "message.resumeAllWarning": "Wollen Sie wirklich alle Arbeitsabläufe wiederaufnehmen?",
     "placeholder.selectAgentName": "Agentennamen auswählen",
     "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
-    "placeholder.selectLock": "Kennung der Ressourcen-Sperre auswählen",
+    "placeholder.selectLocks": "Select Resource Locks",
     "placeholder.selectBoards": "Notizbretter auswählen",
     "placeholder.selectExpectBoard": "Notizbretter auswählen, von denen Notizen erwartet werden",
     "placeholder.offset": "Werte als Stunden/Minuten/Sekunden kommasepariert angeben",

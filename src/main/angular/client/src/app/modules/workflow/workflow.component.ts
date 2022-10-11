@@ -236,6 +236,8 @@ export class SearchComponent implements OnInit {
     const states = this.statusObj.syncStatus.concat(this.statusObj.availabilityStatus);
     if (states && states.length > 0) {
       this.filter.states = states;
+    } else{
+      delete this.filter.states;
     }
     this.onSearch.emit();
   }

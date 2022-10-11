@@ -615,7 +615,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.schedule.id) {
+    if (this.data.id === this.schedule.id && this.data.name !== this.schedule.name) {
       if (!inValid) {
         this.schedule.path = (this.schedule.path1 + (this.schedule.path1 === '/' ? '' : '/') + this.schedule.name);
         if (this.preferences.auditLog) {

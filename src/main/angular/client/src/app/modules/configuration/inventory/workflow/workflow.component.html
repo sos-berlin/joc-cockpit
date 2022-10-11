@@ -616,24 +616,33 @@
             </label>
             <div class="col-md-8 col-lg-9"
               [ngClass]="{'has-error' : (error && !lockName.touched) || ((lockName.dirty || lockName.touched) && lockName.invalid)}">
-
-              <nz-tree-select #treeSelectCtrl name="lockNameSelect" nzMultiple required nzNoAnimation #lockName="ngModel"
-                nzPlaceHolder="{{'workflow.placeholder.selectLock' | translate}}" [nzNodes]="lockTree"
-                [nzHideUnMatched]="true" [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch
-                [nzAllowClear]="false" [(ngModel)]="selectedNode.obj.lockNames"
-                (nzExpandChange)="onExpand($event, 'LOCK')">
-                <ng-template #nzTreeTemplate let-node>
-                  <div class="node-wrapper w-93" (click)="loadData(node, 'LOCK', $event);">
-                    <div class="node-content-wrapper"
-                      [class.node-content-wrapper-active]="node.origin.name == selectedNode.obj.lockName">
-                      <i *ngIf="!node.origin.type" nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                        class="w-14"></i>
-                      <i *ngIf="node.origin.type" class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
-                      {{node.origin.name}}
+              <nz-select
+                required
+                #lockName="ngModel"
+                name="lockNameSelect"
+                [(ngModel)]="selectedNode.obj.lockNames"
+                nzShowSearch
+                [nzAllowClear]="false"
+                [nzDropdownClassName]="'group-list'"
+                [nzPlaceHolder]="'workflow.placeholder.selectLocks' | translate"
+                nzMode="multiple"
+              >
+                <nz-option-group [nzLabel]="nzTreeTemplate" *ngFor="let item of lockTree">
+                  <ng-template #nzTreeTemplate>
+                    <div>
+                      <i nz-icon [nzType]="'folder-open'" class="w-14 p-r-xs"></i>
+                      {{item.name}}
                     </div>
-                  </div>
-                </ng-template>
-              </nz-tree-select>
+                  </ng-template>
+                  <nz-option nzCustomContent *ngFor="let option of item.list" [nzValue]="option.name"
+                            [nzLabel]="option.name">
+                    <div>
+                      <i class="fa fa-circle-o text-xs w-11 m-t-xs"></i>
+                      {{option.name}}<span *ngIf="option.notFound" class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
+                    </div>
+                  </nz-option>
+                </nz-option-group>
+              </nz-select>
               <div *ngIf="(error && !lockName.touched) || lockName.invalid && (lockName.dirty || lockName.touched)"
                 class="text-danger help-block">
                 <div *ngIf="error || (lockName.errors && lockName.errors.required)">
@@ -662,7 +671,7 @@
                 [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.lock.count' | translate) : ''"
                 [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.count</label>
               <div class="col-md-8 col-lg-9">
-                <nz-input-number [nzMin]="1" [nzMax]="selectedNode.obj.limit" [nzStep]="1" name="count{{i}}"
+                <nz-input-number [nzMin]="1" [nzStep]="1" name="count{{i}}"
                   [(ngModel)]="selectedNode.obj[item]"></nz-input-number>
               </div>
             </div>
