@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="isWorkflow">
-        <label class="col-md-4 col-lg-3 block-ellipsis" translate  [nz-tooltip]="'inventory.search.tooltips.workflowSynchronizationStatus' | translate">inventory.search.label.workflowSynchronizationStatus</label>
+        <label class="col-md-4 col-lg-3 block-ellipsis" translate  [nz-tooltip]="'inventory.search.tooltips.workflowAvailabilityStatus' | translate">inventory.search.label.workflowAvailabilityStatus</label>
         <div class="col-md-8 col-lg-9">
           <nz-checkbox-wrapper (nzOnChange)="synchronizationStatusChange($event)">
             <ng-container *ngFor="let option of synchronizationStatusOptions">
@@ -49,7 +49,7 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="isWorkflow">
-        <label class="col-md-4 col-lg-3 block-ellipsis" translate  [nz-tooltip]="'inventory.search.tooltips.workflowAvailabilityStatus' | translate">inventory.search.label.workflowAvailabilityStatus</label>
+        <label class="col-md-4 col-lg-3"></label>
         <div class="col-md-8 col-lg-9">
           <nz-checkbox-wrapper (nzOnChange)="availabilityStatusChange($event)">
             <ng-container *ngFor="let option of availabilityStatusOptions">

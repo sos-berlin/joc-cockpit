@@ -505,6 +505,22 @@ export class Log2Component implements OnInit {
           col += ')';
         }
       }
+      if (dt[i].logEvent === 'OrderCaught' && dt[i].caught) {
+        col += ', Caught(cause=' + dt[i].caught.cause + ')';
+      } else if (dt[i].logEvent === 'OrderRetrying' && dt[i].retrying) {
+        const delayedUntil = (this.preferences.logTimezone && dt[i].retrying.delayedUntil) ? this.coreService.getLogDateFormat(dt[i].retrying.delayedUntil, this.preferences.zone) : dt[i].retrying.delayedUntil;
+        col += ', Retrying(delayedUntil=' + delayedUntil + ')';
+      } else if (dt[i].logEvent === 'OrderNoticesExpected' && dt[i].expectNotices) {
+        col += ', Waiting for';
+        for (let x in dt[i].expectNotices.waitingFor) {
+          col += ' ExpectNotice(board=' + dt[i].expectNotices.waitingFor[x].boardName + ', id=' + dt[i].expectNotices.waitingFor[x].id + '),';
+        }
+
+      } else if (dt[i].logEvent === 'OrderNoticesRead' && dt[i].expectNotices) {
+        col += ', ExpectNotices(' + dt[i].expectNotices.consumed + ')';
+      } else if (dt[i].logEvent === 'OrderNoticePosted' && dt[i].postNotice) {
+        col += ', PostNotice(board=' + dt[i].postNotice.boardName + ', id=' + dt[i].postNotice.id + ', endOfLife=' + dt[i].postNotice.endOfLife + ')';
+      }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {
         const cls = !this.object.checkBoxs.main ? ' hide-block' : '';
