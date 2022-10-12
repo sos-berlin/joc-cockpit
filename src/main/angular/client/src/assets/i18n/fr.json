@@ -1515,7 +1515,7 @@
         "propagateJob": "Propager la Tâche"
       },
       "placeholder": {
-        "search": "nom ou titre come '%search%'",
+        "search": "Rechercher par nom ou titre come '%search%'",
         "selectFromTree": "Sélectionner dans l'arborescence"
       },
       "message": {
@@ -1523,7 +1523,7 @@
         "updateSelectedObjects": "Mise à jour de {{objectCount}} objets sélectionnés"
       },
       "tooltips": {
-        "search": "Chercher",
+        "search": "La recherche s'effectue sur le nom ou le titre des objets. Si d'autres critères de recherche sont spécifiés sur les lignes suivantes de ce formulaire, ils sont combinés par 'et'. Si des critères de recherche sont spécifiés sur la même ligne, par exemple si des cases à cocher alternatives sont proposées, ils sont combinés par 'ou'.",
         "folders": "Sélectionnez un ou plusieurs Dossiers pour filtrer les résultats.",
         "currentController": "Limiter les résultats aux objets disponibles avec le Contrôleur actuel.",
         "deployedOrReleased": "Limiter les résultats aux objets qui sont Déployé/Publié.",
@@ -2700,9 +2700,9 @@
     "message.resumeAllWarning": "Souhaitez-vous reprendre tous les Workflows?",
     "placeholder.selectAgentName": "Sélectionnez le nom de l'Agent",
     "placeholder.enterJobClass": "Entrer la référence de la Classe du Tâche",
-    "placeholder.selectLocks": "Select Resource Locks",
-    "placeholder.selectBoards": "Sélectionner les Conditions",
-    "placeholder.selectExpectBoard": "Sélectionner les Conditions prévus pour les annonces",
+    "placeholder.selectLocks": "Sélectionnez les Verrous de Ressource",
+    "placeholder.selectBoards": "Sélectionnez les Conditions",
+    "placeholder.selectExpectBoard": "Sélectionnez les Conditions prévus pour les annonces",
     "placeholder.offset": "Entrer les valeurs en format h/m/s séparés par virgule",
     "placeholder.duration": "Entrer une valeur comme d/w/m/y/h our hh:mm:ss ou sécondes",
     "placeholder.durationPeriod": "Entrer une valeur comme w/d/h/m ou hh:mm:ss ou hh:mm:ss-hh:mm:ss ou sécondes",

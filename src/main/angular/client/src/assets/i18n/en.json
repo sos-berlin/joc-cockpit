@@ -1515,7 +1515,7 @@
         "propagateJob": "Propagate Job"
       },
       "placeholder": {
-        "search": "name or title like '%search%'",
+        "search": "Search in Name or Title using for example '%search%'",
         "selectFromTree": "Select from tree"
       },
       "message": {
@@ -1523,7 +1523,7 @@
         "updateSelectedObjects": "Update {{objectCount}} selected objects"
       },
       "tooltips": {
-        "search": "Search",
+        "search": "Search is performed for the name or title of objects. If further search criteria are specified from next lines in this form, then they are combined by 'and'. If search criteria are specified from the same line, for example if alternative checkboxes are offered then they are combined by 'or'.",
         "folders": "Select one or more Folders to filter results.",
         "currentController": "Limit results to objects available with the Current Controller.",
         "deployedOrReleased": "Limit results to objects that are Deployed/Released.",

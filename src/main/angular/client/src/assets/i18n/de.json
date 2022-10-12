@@ -1515,7 +1515,7 @@
         "propagateJob": "Job propagieren"
       },
       "placeholder": {
-        "search": "Name oder Titel, z.B. '%suchtext%'",
+        "search": "Such in Name oder Titel, z.B. '%suchtext%'",
         "selectFromTree": "Auswahl aus Ordner"
       },
       "message": {
@@ -1523,7 +1523,7 @@
         "updateSelectedObjects": "{{objectCount}} ausgewählte Objekte aktualisieren"
       },
       "tooltips": {
-        "search": "Suche",
+        "search": "Es wird nach dem Namen oder Titel von Objekten gesucht. Wenn in den nächsten Zeilen dieses Formulars weitere Suchkriterien angegeben sind, werden sie mit 'und' kombiniert. Wenn Suchkriterien in derselben Zeile angegeben sind, z.B. wenn alternative Kontrollkästchen angeboten sind, werden sie mit 'oder' kombiniert.",
         "folders": "Einen oder mehrere Ordner zum Filtern der Ergebnisse auswählen.",
         "currentController": "Ergebnisse auf Objekte des Aktuellen Controllers begrenzen.",
         "deployedOrReleased": "Ergebnisse auf Ausgerollte/Freigegebene Objekte begrenzen",
@@ -2699,8 +2699,8 @@
     "message.suspendAllWarning": "Wollen Sie wirklich alle Arbeitsabläufe aussetzen?",
     "message.resumeAllWarning": "Wollen Sie wirklich alle Arbeitsabläufe wiederaufnehmen?",
     "placeholder.selectAgentName": "Agentennamen auswählen",
-    "placeholder.enterJobClass": "Referenz für Job-Klasse angeben",
-    "placeholder.selectLocks": "Select Resource Locks",
+    "placeholder.enterJobClass": "Job-Klasse auswählen",
+    "placeholder.selectLocks": "Ressourcen-Sperren auswählen",
     "placeholder.selectBoards": "Notizbretter auswählen",
     "placeholder.selectExpectBoard": "Notizbretter auswählen, von denen Notizen erwartet werden",
     "placeholder.offset": "Werte als Stunden/Minuten/Sekunden kommasepariert angeben",
