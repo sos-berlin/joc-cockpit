@@ -2083,9 +2083,31 @@ export class WorkflowService {
           periodList.push(obj);
         }
       } else if (period.TYPE === 'SpecificDatePeriod') {
-        console.log(period);
-        //secondsSinceLocalEpoch
-        // duration
+        obj = {
+          date: 0,
+          frequency: this.coreService.getStringDate(period.secondsSinceLocalEpoch),
+          periods: []
+        };
+        if(obj.frequency){
+          obj.date = new Date(obj.frequency).setHours(0,0,0,0)
+        }
+
+        p.startTime = (period.secondsSinceLocalEpoch -  obj.date) / 1000;
+        p.text = this.getText(p.startTime, p.duration);
+        let flag = true;
+        if (periodList.length > 0) {
+          for (const i in periodList) {
+            if (periodList[i].frequency == obj.frequency) {
+              flag = false;
+              periodList[i].periods.push(p);
+              break;
+            }
+          }
+        }
+        if (flag) {
+          obj.periods.push(p);
+          periodList.push(obj);
+        }
       }
     });
   }
@@ -2270,6 +2292,7 @@ export class WorkflowService {
   }
 
   convertListToAdmissionTime(list): Array<any> {
+
     const arr = [];
     list.forEach((item) => {
       if (item.periods) {
@@ -2289,13 +2312,15 @@ export class WorkflowService {
           } else if (item.secondOfWeeks != undefined) {
             obj.TYPE = item.secondOfWeeks < 0 ? 'MonthlyLastWeekdayPeriod' : 'MonthlyWeekdayPeriod';
             obj.secondOfWeeks = item.secondOfWeeks + period.startTime;
+          } else if (item.date != undefined) {
+            obj.TYPE = 'SpecificDatePeriod';
+            obj.secondsSinceLocalEpoch = ((item.date || 0) + (period.startTime * 1000));
           }
+
           if (obj.TYPE === 'WeekdayPeriod') {
             obj.secondOfWeek = ((item.secondOfWeek || item.secondOfDay || 0) + period.startTime);
           } else if (obj.TYPE === 'DailyPeriod') {
             obj.secondOfDay = ((item.secondOfDay || 0) + period.startTime);
-          } else if (obj.TYPE === 'SpecificDatePeriod') {
-            console.log(obj);
           }
           obj.duration = period.duration;
           arr.push(obj);

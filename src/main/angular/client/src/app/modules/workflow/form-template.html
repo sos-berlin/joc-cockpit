@@ -56,7 +56,7 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}" translate>inventory.search.label.workflowSynchronizationStatus</label>
+      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}" translate>inventory.search.label.workflowAvailabilityStatus</label>
       <div class="col-sm-8">
         <nz-checkbox-wrapper (nzOnChange)="synchronizationStatusChange($event)">
           <ng-container *ngFor="let option of synchronizationStatusOptions">
@@ -66,7 +66,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}" translate>inventory.search.label.workflowAvailabilityStatus</label>
+      <label class="col-sm-4 block-ellipsis" [ngClass]="{'col-md-2': isSearch}"></label>
       <div class="col-sm-8">
         <nz-checkbox-wrapper (nzOnChange)="availabilityStatusChange($event)">
           <ng-container *ngFor="let option of availabilityStatusOptions">

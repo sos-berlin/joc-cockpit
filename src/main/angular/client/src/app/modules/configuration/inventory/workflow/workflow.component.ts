@@ -569,7 +569,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     { label: 'sunday', value: '7', checked: false }
   ];
 
-  tempItems = [];
+  tempDates = [];
 
   @Output() close: EventEmitter<any> = new EventEmitter();
 
@@ -649,20 +649,20 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     };
     let flag = false;
     let index = 0;
-    for (let i = 0; i < this.tempItems.length; i++) {
-      if ((new Date(this.tempItems[i].startDate).setHours(0, 0, 0, 0) == new Date(obj.startDate).setHours(0, 0, 0, 0))) {
+    for (let i = 0; i < this.tempDates.length; i++) {
+      if ((new Date(this.tempDates[i].startDate).setHours(0, 0, 0, 0) == new Date(obj.startDate).setHours(0, 0, 0, 0))) {
         flag = true;
         index = i;
         break;
       }
     }
     if (!flag) {
-      this.tempItems.push(obj);
+      this.tempDates.push(obj);
     } else {
-      this.tempItems.splice(index, 1);
+      this.tempDates.splice(index, 1);
     }
-    this.editor.isEnable = this.tempItems.length > 0;
-    $('#calendar').data('calendar').setDataSource(this.tempItems);
+    this.editor.isEnable = this.tempDates.length > 0;
+    $('#calendar').data('calendar').setDataSource(this.tempDates);
   }
 
   onFrequencyChange(): void {
@@ -783,6 +783,20 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
           this.data.periodList.push(this.addMonthdayFrequency(day, temp, p, true));
         });
       }
+    } else if (this.frequency.tab === 'specificDays') {
+      this.tempDates.forEach(date => {
+        const obj: any = {
+          date: new Date(date.startDate).setHours(0, 0, 0, 0),
+          frequency: this.coreService.getStringDate(date.startDate),
+          periods: []
+        };
+   
+        this.workflowService.updatePeriod(temp, obj, p);
+        if (obj.periods.length === 0) {
+          this.isValid = false;
+        }
+        this.data.periodList.push(obj);
+      });
     }
     for (let i in temp) {
       for (let j = 0; j < this.data.periodList.length; j++) {
@@ -796,6 +810,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this._temp = {};
     this.selectedMonths = [];
     this.selectedMonthsU = [];
+    this.tempDates = [];
   }
 
   private addWeekdayFrequency(day, temp, p, isDaily): any {
@@ -881,6 +896,20 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       this.frequency.tab = 'specificWeekDays';
       this.frequency.specificWeekDay = data.specificWeekDay.toString();
       this.frequency.specificWeek = data.specificWeek.toString();
+    } else if (data.date) {
+      this.frequency.tab = 'specificDays';
+      this.tempDates = [{
+        startDate: data.date,
+        endDate: data.date,
+        color: 'blue'
+      }];
+
+      $('#calendar').calendar({
+        language: this.coreService.getLocale(),
+        clickDay: (e) => {
+          this.selectDate(e);
+        }
+      }).setDataSource(this.tempDates);
     } else {
       this.frequency.tab = 'weekDays';
     }
@@ -4591,7 +4620,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
     }
   }
-  
+
   private getListOfVariables(obj): void {
     this.forkListVariables = [];
     if (this.variableDeclarations.parameters && this.variableDeclarations.parameters.length > 0) {
@@ -7894,7 +7923,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               })
             }
           }
- 
+
         } else if (cell.value.tagName === 'AddOrder') {
           self.getWorkflow();
         } else if (cell.value.tagName === 'ForkList') {
@@ -10218,6 +10247,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         request.auditLog = { comment: translatedValue };
       });
     }
+
     this.coreService.post('inventory/store', request).subscribe({
       next: (res: any) => {
         this.isStore = false;
