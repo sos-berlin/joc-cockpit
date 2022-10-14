@@ -458,7 +458,7 @@
             </div>
           </div>
         </div>
-        <div class="box-body" *ngIf="selectedNode.type === 'ExpectNotices'">
+        <div class="box-body" *ngIf="selectedNode.type === 'ExpectNotices' || selectedNode.type === 'ConsumeNotices'">
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.expectBoardName' | translate}}"
               [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.expectBoardName' | translate) : ''"

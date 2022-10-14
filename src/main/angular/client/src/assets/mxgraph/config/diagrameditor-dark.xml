@@ -102,6 +102,13 @@
         </mxCell>
       </PostNotices>
     </add>
+    <add as="ConsumeNotices">
+      <ConsumeNotices label="consumeNotices">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </ConsumeNotices>
+    </add>
     <add as="Prompt">
       <Prompt label="prompt">
         <mxCell vertex="1">
@@ -175,8 +182,6 @@
   </mxGraph>
   <mxDefaultToolbar as="toolbar">
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
-<!--    <add as="show" action="show" icon="./assets/mxgraph/images/white-preview.png"/>
-    <hr/>-->
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/white-job.png"/>
     <hr/>
     <add as="Fork" template="Fork" style="fork"
@@ -200,6 +205,8 @@
     <add as="Prompt" template="Prompt" style="prompt" icon="./assets/mxgraph/images/white-prompt.png"/>
     <hr/>
     <add as="PostNotices" template="PostNotices" style="postNotices" icon="./assets/mxgraph/images/white-publish.png"/>
+    <hr/>
+    <add as="ConsumeNotices" template="ConsumeNotices" style="consumeNotices" icon="./assets/mxgraph/images/white-consume.png"/>
     <hr/>
     <add as="ExpectNotices" template="ExpectNotices" style="expectNotices" icon="./assets/mxgraph/images/white-await.png"/>
     <hr/>
