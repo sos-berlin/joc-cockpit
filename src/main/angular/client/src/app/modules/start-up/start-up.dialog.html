@@ -246,11 +246,11 @@
             translate>agent.label.asStandaloneAgent
           </label>
           <div class="col-sm-8">
-            <label nz-checkbox [(ngModel)]="agent.standaloneClusterAgent" name="asStandaloneAgent">
+            <label nz-checkbox [(ngModel)]="agent.asStandaloneAgent" name="asStandaloneAgent">
             </label>
           </div>
         </div>
-        <div class="row" *ngIf="!agent.standaloneClusterAgent && new">
+        <div class="row" *ngIf="!agent.asStandaloneAgent && new">
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'agent.tooltip.primaryDirectorId' | translate"
             translate>agent.label.primaryDirectorId</label>
           <div class=" col-sm-8" [ngClass]="{'has-error' : ((primaryDirectorId.dirty || primaryDirectorId.touched) && primaryDirectorId.invalid)}">

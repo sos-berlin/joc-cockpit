@@ -2125,14 +2125,14 @@ export class WorkflowService {
       } else if (period.TYPE === 'SpecificDatePeriod') {
         obj = {
           date: 0,
-          frequency: this.coreService.getStringDate(period.secondsSinceLocalEpoch),
+          frequency: this.coreService.getStringDate(period.secondsSinceLocalEpoch * 1000),
           periods: []
         };
         if (obj.frequency) {
           obj.date = new Date(obj.frequency).setHours(0, 0, 0, 0)
         }
 
-        p.startTime = (period.secondsSinceLocalEpoch - obj.date) / 1000;
+        p.startTime = ((period.secondsSinceLocalEpoch * 1000) - obj.date) / 1000;
         p.text = this.getText(p.startTime, p.duration);
         let flag = true;
         if (periodList.length > 0) {
@@ -2353,7 +2353,7 @@ export class WorkflowService {
             obj.secondOfWeeks = item.secondOfWeeks + period.startTime;
           } else if (item.date != undefined) {
             obj.TYPE = 'SpecificDatePeriod';
-            obj.secondsSinceLocalEpoch = ((item.date || 0) + (period.startTime * 1000));
+            obj.secondsSinceLocalEpoch = ((item.date/1000) + (period.startTime));
           }
 
           if (obj.TYPE === 'WeekdayPeriod') {
