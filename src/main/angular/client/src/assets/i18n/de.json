@@ -2169,7 +2169,8 @@
       "disable_warning_on_license_expiration": "Warnungen vor Ablauf der Lizenz abschalten.",
       "log_maximum_display_size": "JOC Cockpit bietet zur Anzeige von Protokollausgaben ein Log View Fenster sofern die Größe der unkomprimierten Ausgaben diesen Wert nicht überschreitet. Andernfalls werden die Protokollausgaben nur zum Herunterlalden angeboten. Die Größe wird in MB angenommen.",
       "log_applicable_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten und letzten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
-      "log_maximum_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen."
+      "log_maximum_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der History Service die Ausgaben trunkieren und die ersten 100 KB verwenden. Die originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
+      "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail-Benachrichtigungen."
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
@@ -2555,8 +2556,8 @@
     "label.exclusive": "Exklusiv",
     "label.shared": "Geteilt",
     "label.postNotices": "PostNotices",
-    "label.consumeNotices": "consumeNotices",
-    "label.consumeNoticesEnd": "consumeNotices-End",
+    "label.consumeNotices": "ConsumeNotices",
+    "label.consumeNoticesEnd": "ConsumeNotices-End",
     "label.prompt": "Prompt",
     "label.question": "Mitteilung",
     "label.if": "If",
@@ -2690,7 +2691,7 @@
     "message.invalidLockInstruction": "Resource-Lock-Instruktion darf nicht leer sein",
     "message.invalidPostNoticeInstruction": "PostNotices-Instruktion ist nicht gültig",
     "message.invalidExpectNoticeInstruction": "ExpectNotices-Instruktion ist nicht gültig",
-    "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruction cannot be empty",
+    "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruktion darf nicht leer sein",
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.orderNameIsMissing": "Auftragsname darf nicht leer sein",
     "message.workflowNameIsNotValid": "Name des Arbeitsablaufs darf nicht leer sein",
