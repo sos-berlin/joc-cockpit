@@ -2169,7 +2169,8 @@
       "disable_warning_on_license_expiration": "ライセンス期限警告を無効化",
       "log_maximum_display_size": "JOCコックピットは、非圧縮ログ出力のサイズがこの値を超えない場合、ログビューウィンドウで表示するためにログ出力を提供します。それ以外の場合は、ログをダウンロードするためにのみ提供されます。",
       "log_applicable_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、最初と最後の100KBをタスクログに使用します。元のログファイルは削除されます。",
-      "log_maximum_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、タスクログ用に最初の100KBを使用します。オリジナルのログファイルは削除されます。"
+      "log_maximum_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、タスクログ用に最初の100KBを使用します。オリジナルのログファイルは削除されます。",
+      "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only then this value specifies the URL to be used, for example with e-mail notifications."
     },
     "user": {
       "welcome_got_it": "了解",

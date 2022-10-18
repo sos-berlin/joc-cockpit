@@ -196,7 +196,7 @@ export class SettingModalComponent implements OnInit {
         this.data.identityServiceType.indexOf(this.saveService.copiedSetting.type) > -1)) {
       this.isEnable = true;
     }
-    if (this.data.identityServiceType === 'OIDC') {
+    if (this.data && this.data.identityServiceType === 'OIDC') {
       this.getImage();
     }
 

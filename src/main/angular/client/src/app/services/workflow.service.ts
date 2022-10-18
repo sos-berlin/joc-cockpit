@@ -2014,7 +2014,9 @@ export class WorkflowService {
     });
   }
 
-  convertSecondIntoWeek(data, periodList, days, frequency): void {
+
+
+  convertSecondIntoWeek(data, periodList, days, frequency, timeZone): void {
     const hour = 3600;
     data.periods.forEach((period) => {
       const p: any = {
@@ -2123,16 +2125,17 @@ export class WorkflowService {
           periodList.push(obj);
         }
       } else if (period.TYPE === 'SpecificDatePeriod') {
+        const date = this.coreService.convertTimeToLocalTZ({zone: timeZone}, (period.secondsSinceLocalEpoch * 1000));
+        let d = new Date(date);
+        const utcDate = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
         obj = {
           date: 0,
-          frequency: this.coreService.getStringDate(period.secondsSinceLocalEpoch * 1000),
+          frequency: this.coreService.getStringDate(date),
           periods: []
         };
-        if (obj.frequency) {
-          obj.date = new Date(obj.frequency).setHours(0, 0, 0, 0)
-        }
+        obj.date = this.coreService.getUnixTime(this.coreService.convertTimeToLocalTZ({ zone: timeZone }, utcDate));
+        p.startTime = (period.secondsSinceLocalEpoch - obj.date);
 
-        p.startTime = ((period.secondsSinceLocalEpoch * 1000) - obj.date) / 1000;
         p.text = this.getText(p.startTime, p.duration);
         let flag = true;
         if (periodList.length > 0) {
@@ -2353,7 +2356,7 @@ export class WorkflowService {
             obj.secondOfWeeks = item.secondOfWeeks + period.startTime;
           } else if (item.date != undefined) {
             obj.TYPE = 'SpecificDatePeriod';
-            obj.secondsSinceLocalEpoch = ((item.date/1000) + (period.startTime));
+            obj.secondsSinceLocalEpoch = (item.date + period.startTime);
           }
 
           if (obj.TYPE === 'WeekdayPeriod') {

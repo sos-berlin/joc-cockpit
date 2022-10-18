@@ -79,5 +79,5 @@
     </div>
   </div>
 </div>
-<app-admission-time *ngIf="selectedNode.obj.show" [repeatObject]="selectedNode.repeatObject" [isTooltipVisible]="isTooltipVisible" [job]="selectedNode.data.schedule" [data]="selectedNode.data"
+<app-admission-time *ngIf="selectedNode.obj.show" [timeZone]="timeZone" [repeatObject]="selectedNode.repeatObject" [isTooltipVisible]="isTooltipVisible" [job]="selectedNode.data.schedule" [data]="selectedNode.data"
                     (close)="closeScheme(selectedNode.obj)"></app-admission-time>

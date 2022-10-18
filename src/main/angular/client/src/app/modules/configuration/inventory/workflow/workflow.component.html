@@ -163,7 +163,7 @@
       </div>
       <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
         <div class="box-body p-t-0" *ngIf="selectedNode.type === 'Job'">
-          <app-job-content [selectedNode]="selectedNode" [scriptList]="scriptList" [preferences]="preferences"
+          <app-job-content [selectedNode]="selectedNode" [timeZone]="extraConfiguration.timeZone" [scriptList]="scriptList" [preferences]="preferences"
             [isTooltipVisible]="!preferences.showTooltipInfo" [orderPreparation]="orderPreparation" [jobs]="jobs"
             [agents]="inventoryService.agentList" [jobResourcesTree]="jobResourcesTree"
             [documentationTree]="documentationTree" [scriptTree]="scriptTree" [schedulerId]="schedulerId"
@@ -678,7 +678,7 @@
           </div>
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'Cycle'">
-          <app-cycle-instruction [isTooltipVisible]="!preferences.showTooltipInfo" [selectedNode]="selectedNode">
+          <app-cycle-instruction [isTooltipVisible]="!preferences.showTooltipInfo" [timeZone]="extraConfiguration.timeZone" [selectedNode]="selectedNode">
           </app-cycle-instruction>
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'AddOrder'">

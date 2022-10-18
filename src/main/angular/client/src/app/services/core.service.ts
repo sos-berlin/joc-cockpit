@@ -1659,6 +1659,10 @@ export class CoreService {
     }
   }
 
+  getUnixTime(date) {
+    return moment(date).unix();
+  }
+
   getAuditLogObj(comments, auditLog): void {
     if (comments.comment) {
       auditLog.comment = comments.comment;
@@ -1728,7 +1732,7 @@ export class CoreService {
           }
         })
       }
-  
+
     }, miliseconds);
   }
 }

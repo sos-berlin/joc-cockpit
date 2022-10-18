@@ -319,6 +319,7 @@ export class TimeEditorComponent implements OnInit {
 export class CycleInstructionComponent implements OnChanges {
   @Input() selectedNode: any;
   @Input() isTooltipVisible: boolean;
+  @Input() timeZone;
   schemeList = [];
   days = [];
 
@@ -380,7 +381,7 @@ export class CycleInstructionComponent implements OnChanges {
         repeat: this.workflowService.getTextOfRepeatObject(item.repeat)
       };
       if (item.admissionTimeScheme && item.admissionTimeScheme.periods) {
-        this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {});
+        this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {}, this.timeZone);
       }
       this.schemeList.push(obj);
     });
@@ -543,6 +544,7 @@ export class CycleInstructionComponent implements OnChanges {
 export class AdmissionTimeComponent implements OnInit, OnDestroy {
   @Input() job: any;
   @Input() data: any;
+  @Input() timeZone: any;
   @Input() repeatObject: any;
   @Input() isTooltipVisible: boolean;
   frequency: any = {
@@ -589,7 +591,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.days = this.coreService.getLocale().days;
     this.days.push(this.days[0]);
     if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
-      this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
+      this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency, this.timeZone);
       if (this.data.periodList.length > 0) {
         if (!this.data.periodList[0].frequency) {
           this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
@@ -784,13 +786,17 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
         });
       }
     } else if (this.frequency.tab === 'specificDays') {
+      this.tempDates = sortBy(this.tempDates, (i: any) => {
+        return i.startDate;
+      });
       this.tempDates.forEach(date => {
+        const utcDate = Date.UTC(date.startDate.getFullYear(), date.startDate.getMonth(), date.startDate.getDate());
         const obj: any = {
-          date: new Date(date.startDate).setHours(0, 0, 0, 0),
-          frequency: this.coreService.getStringDate(date.startDate),
+          date: 0,
+          frequency: this.coreService.getDateByFormat(utcDate, this.timeZone, 'YYYY-MM-DD'),
           periods: []
         };
-
+        obj.date = this.coreService.getUnixTime(this.coreService.convertTimeToLocalTZ({ zone: this.timeZone }, utcDate));
         this.workflowService.updatePeriod(temp, obj, p);
         if (obj.periods.length === 0) {
           this.isValid = false;
@@ -904,11 +910,10 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     } else if (data.date) {
       this.frequency.tab = 'specificDays';
       this.tempDates = [{
-        startDate: data.date,
-        endDate: data.date,
+        startDate: new Date(data.date * 1000),
+        endDate: new Date(data.date * 1000),
         color: 'blue'
       }];
-
       $('#calendar').calendar({
         language: this.coreService.getLocale(),
         clickDay: (e) => {
@@ -1058,6 +1063,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTooltipVisible: boolean;
   @Input() isModal: boolean;
   @Input() exactMatch: boolean;
+  @Input() timeZone;
 
   history = [];
   list: Array<string> = [];

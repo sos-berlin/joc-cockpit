@@ -1051,6 +1051,6 @@
 </div>
 
 <div *ngIf="isRuntimeVisible">
-  <app-admission-time [job]="selectedNode.job" [isTooltipVisible]="isTooltipVisible" [data]="selectedNode"
+  <app-admission-time [job]="selectedNode.job" [timeZone]="timeZone" [isTooltipVisible]="isTooltipVisible" [data]="selectedNode"
                       (close)="closeRuntime()"></app-admission-time>
 </div>

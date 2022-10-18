@@ -77,7 +77,7 @@
       <div class="hover"
         [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
         id="{{instruction.positionString}}"
-        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock'">
+        *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock'">
         <div class="btn-group dropdown m-l-n-10" *ngIf="instruction.TYPE === 'If' || instruction.TYPE === 'Cycle'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
             <i class="fa fa-ellipsis-h"></i>
@@ -129,7 +129,7 @@
         </span>
       </div>
       <div id="{{instruction.positionString}}" *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
-       || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotices'"
+       || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'ConsumeNotices'"
         [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd', 'drop-area': instruction.enabled}">
         <div class="btn-group dropdown m-l-n-10" *ngIf="instruction.TYPE === 'Job'">
           <button class="btn-drop more-option-h" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" type="button">
@@ -148,9 +148,9 @@
         <span class="inst-text" *ngIf="instruction.TYPE !== 'Job'"
           [nz-tooltip]="instruction.question || instruction.message">
           {{instruction.TYPE | translate}}
-          <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices')">: </span>
+          <span *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices'  || instruction.TYPE === 'ConsumeNotices')">: </span>
           <span class="text-muted"
-            *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices') && instruction.noticeBoardNames">
+            *ngIf="(instruction.TYPE === 'PostNotices' || instruction.TYPE === 'ExpectNotices' || instruction.TYPE === 'ConsumeNotices') && instruction.noticeBoardNames">
             {{instruction.noticeBoardNames}}
           </span>
         </span>
@@ -277,7 +277,7 @@
       </div>
       <div [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
         id="{{instruction.positionString}}"
-        *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'ForkList') && (instruction.show)">
+        *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'ForkList' ||  instruction.TYPE === 'ConsumeNotices') && (instruction.show)">
         <div>
           <app-workflow-tree-structure [timezone]="timezone" [disabledDrag]="disabledDrag" [configuration]="instruction"
             [jobs]="jobs" [orders]="orders" [expandAll]="expandAll" *ngIf="instruction.instructions">
