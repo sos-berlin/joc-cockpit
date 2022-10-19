@@ -503,8 +503,9 @@ export class Log2Component implements OnInit {
             }
           }
           col += ')';
-        } else if (dt[i].msg) {
-          col += dt[i].msg;
+        } 
+        if (dt[i].msg) {
+          col += ': '+ dt[i].msg;
         }
       }
       if (dt[i].logEvent === 'OrderCaught' && dt[i].caught) {
