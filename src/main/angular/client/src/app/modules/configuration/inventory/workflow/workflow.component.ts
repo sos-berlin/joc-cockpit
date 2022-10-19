@@ -809,6 +809,9 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       if (dom.data('calendar')) {
         dom.data('calendar').setDataSource(this.tempDates);
       }
+      this.data.periodList = sortBy(this.data.periodList, (i: any) => {
+        return i.date;
+      });
     }
     for (let i in temp) {
       for (let j = 0; j < this.data.periodList.length; j++) {
@@ -818,10 +821,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
         }
       }
     }
-    // sort
-    this.data.periodList = sortBy(this.data.periodList, (i: any) => {
-      return i.date;
-    });
+
     this.object = {};
     this._temp = {};
     this.selectedMonths = [];
@@ -9958,10 +9958,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               instructions: json.instructions[x].instructions
             };
 
-            const noticeBoardNames = clone(json.instructions[x].noticeBoardNames);
+          //  const noticeBoardNames = clone(json.instructions[x].noticeBoardNames);
             delete json.instructions[x].instructions;
-            delete json.instructions[x].noticeBoardNames;
-            json.instructions[x].noticeBoardNames = noticeBoardNames;
+           // delete json.instructions[x].noticeBoardNames;
+            //json.instructions[x].noticeBoardNames = noticeBoardNames;
           } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
