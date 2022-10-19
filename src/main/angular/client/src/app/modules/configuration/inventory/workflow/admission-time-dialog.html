@@ -1,4 +1,14 @@
 <form #myForm="ngForm" novalidate>
+  <div class="form-group row">
+    <div class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.timeZone' | translate}}"
+      [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.timeZone' | translate) : ''"
+      [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.timeZone</div>
+    <div class="col-md-8 col-lg-9">
+      <input readonly class="form-control" name="timeZone"
+               [(ngModel)]="timeZone" type="text">
+   
+    </div>
+  </div>
   <div *ngIf="repeatObject">
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.cycleType' | translate}}"

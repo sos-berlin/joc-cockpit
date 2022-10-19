@@ -1663,6 +1663,10 @@ export class CoreService {
     return moment(date).unix();
   }
 
+  getUTCTime(time) {
+    return moment.utc(time);
+  }
+
   getAuditLogObj(comments, auditLog): void {
     if (comments.comment) {
       auditLog.comment = comments.comment;

@@ -21,7 +21,7 @@
       <li nz-menu-item *ngIf="workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion" (click)="resume(workflow);" >
         <a>{{'order.button.resume' | translate}}</a>
       </li>
-      <li nz-menu-item *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies" (click)="showDependency(workflow);" >
+      <li nz-menu-item *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies" (click)="showDependency(workflow);" >
         <a>{{'workflow.button.showDependency' | translate}} ..</a>
       </li>
       <li nz-menu-item (click)="coreService.copyLink('workflow',workflow.name)" >

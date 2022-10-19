@@ -410,7 +410,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           this.workFlowJson = res.workflow;
           this.workflowService.convertTryToRetry(res.workflow, null, res.workflow.jobs, this.countObj);
           this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
-          if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
+          if (res.workflow.hasExpectedNoticeBoards || res.workflow.hasConsumeNoticeBoards || res.workflow.hasPostNoticeBoards || res.workflow.hasAddOrderDependencies) {
             this.showDependency(res.workflow, flag);
           } else {
             this.getOrders(res.workflow, flag);

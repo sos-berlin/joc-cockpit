@@ -792,11 +792,10 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       this.tempDates.forEach(date => {
         const utcDate = Date.UTC(date.startDate.getFullYear(), date.startDate.getMonth(), date.startDate.getDate());
         const obj: any = {
-          date: 0,
-          frequency: this.coreService.getDateByFormat(utcDate, this.timeZone, 'YYYY-MM-DD'),
+          date: this.coreService.getUnixTime(utcDate),
+          frequency: this.coreService.getStringDate(utcDate),
           periods: []
         };
-        obj.date = this.coreService.getUnixTime(this.coreService.convertTimeToLocalTZ({ zone: this.timeZone }, utcDate));
         this.workflowService.updatePeriod(temp, obj, p);
         if (obj.periods.length === 0) {
           this.isValid = false;

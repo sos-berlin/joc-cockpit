@@ -2018,7 +2018,22 @@ export class WorkflowService {
 
   convertSecondIntoWeek(data, periodList, days, frequency, timeZone): void {
     const hour = 3600;
+    let specificDates = [];
+    let weekdayPeriods = [];
+    let monthPeriods = [];
+    let specificDaysPeriods = [];
     data.periods.forEach((period) => {
+      if (period.TYPE === 'SpecificDatePeriod') {
+        specificDates.push(period);
+      } else if (period.TYPE === 'MonthlyDatePeriod' || period.TYPE === 'MonthlyLastDatePeriod') {
+        monthPeriods.push(period);
+      } else if (period.TYPE === 'MonthlyWeekdayPeriod' || period.TYPE === 'MonthlyLastWeekdayPeriod') {
+        specificDaysPeriods.push(period);
+      } else {
+        weekdayPeriods.push(period);
+      }
+    });
+    weekdayPeriods.concat(specificDaysPeriods).concat(specificDates).concat(monthPeriods).forEach((period) => {
       const p: any = {
         startTime: 0,
         duration: period.duration
@@ -2125,16 +2140,19 @@ export class WorkflowService {
           periodList.push(obj);
         }
       } else if (period.TYPE === 'SpecificDatePeriod') {
-        const date = this.coreService.convertTimeToLocalTZ({zone: timeZone}, (period.secondsSinceLocalEpoch * 1000));
-        let d = new Date(date);
-        const utcDate = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
         obj = {
           date: 0,
-          frequency: this.coreService.getStringDate(date),
+          frequency: this.coreService.getStringDate(period.secondsSinceLocalEpoch * 1000),
           periods: []
         };
-        obj.date = this.coreService.getUnixTime(this.coreService.convertTimeToLocalTZ({ zone: timeZone }, utcDate));
+
+        obj.date = this.coreService.getUnixTime(this.coreService.getUTCTime(new Date(obj.frequency)));
         p.startTime = (period.secondsSinceLocalEpoch - obj.date);
+        if (p.startTime > 86400) {
+          p.startTime = p.startTime - 86400;
+          obj.date = obj.date + 86400;
+          obj.frequency = this.coreService.getStringDate(obj.date * 1000);
+        }
 
         p.text = this.getText(p.startTime, p.duration);
         let flag = true;

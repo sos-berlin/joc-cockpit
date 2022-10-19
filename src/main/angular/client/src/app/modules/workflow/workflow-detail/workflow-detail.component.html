@@ -58,7 +58,7 @@
             </div>
           </div>
           <div class="inline">
-            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="openModal()" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies">
+            <button class="btn btn-grey btn-sm m-l-12 button-group-ellipsis" (click)="openModal()" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies">
               <i class="fa fa-codepen"></i>
               &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDependency</span>
             </button>
@@ -74,7 +74,7 @@
                                                            translate>order.button.resume</span>
             </button>
             <div class="btn-group m-l-12">
-              <button class="btn btn-grey btn-sm" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
+              <button class="btn btn-grey btn-sm" *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
                       [ngClass]="{'btn-primary': pageView=='graph'}" (click)="setView('graph')"><i class="fa fa-codepen"></i>
               </button>
               <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
