@@ -558,6 +558,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   _temp: any;
   selectedMonths = [];
   selectedMonthsU = [];
+
   countArr = [0, 1, 2, 3, 4];
   countUArr = [1, 2, 3, 4];
   editor: any = { isEnable: false };
@@ -796,6 +797,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
           frequency: this.coreService.getStringDate(utcDate),
           periods: []
         };
+
         this.workflowService.updatePeriod(temp, obj, p);
         if (obj.periods.length === 0) {
           this.isValid = false;
@@ -816,11 +818,14 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
         }
       }
     }
+    // sort
+    this.data.periodList = sortBy(this.data.periodList, (i: any) => {
+      return i.date;
+    });
     this.object = {};
     this._temp = {};
     this.selectedMonths = [];
     this.selectedMonthsU = [];
-
   }
 
   private addWeekdayFrequency(day, temp, p, isDaily): any {

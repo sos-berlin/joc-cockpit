@@ -520,11 +520,19 @@ export class LogComponent implements OnInit {
         for (let x in dt[i].expectNotices.waitingFor) {
           col += ' ExpectNotice(board=' + dt[i].expectNotices.waitingFor[x].boardName + ', id=' + dt[i].expectNotices.waitingFor[x].id + '),';
         }
-
       } else if (dt[i].logEvent === 'OrderNoticesRead' && dt[i].expectNotices) {
         col += ', ExpectNotices(' + dt[i].expectNotices.consumed + ')';
       } else if (dt[i].logEvent === 'OrderNoticePosted' && dt[i].postNotice) {
         col += ', PostNotice(board=' + dt[i].postNotice.boardName + ', id=' + dt[i].postNotice.id + ', endOfLife=' + dt[i].postNotice.endOfLife + ')';
+      } else if (dt[i].logEvent === 'OrderNoticesConsumptionStarted' && dt[i].consumeNotices) {
+        col += ', Consuming';
+        for (let x in dt[i].consumeNotices.consuming) {
+          col += ' ExpectNotice(board=' + dt[i].consumeNotices.consuming[x].boardName + ', id=' + dt[i].consumeNotices.consuming[x].id + ')';
+          if (parseInt(x) < dt[i].consumeNotices.consuming.length - 1)
+            col += ',';
+        }
+      } else if (dt[i].logEvent === 'OrderNoticesConsumed' && dt[i].consumeNotices && dt[i].consumeNotices.consumed == false) {
+        col += ' (<span class="log_error">Failed</span>)';
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {

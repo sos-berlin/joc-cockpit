@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {isEmpty, isArray, clone, isNaN} from 'underscore';
-import {TranslateService} from '@ngx-translate/core';
-import {CoreService} from './core.service';
-import {StringDatePipe} from '../pipes/core.pipe';
+import { Injectable } from '@angular/core';
+import { isEmpty, isArray, clone, isNaN, sortBy } from 'underscore';
+import { TranslateService } from '@ngx-translate/core';
+import { CoreService } from './core.service';
+import { StringDatePipe } from '../pipes/core.pipe';
 
 declare const mxHierarchicalLayout: any;
 declare const mxTooltipHandler: any;
@@ -20,7 +20,7 @@ export class WorkflowService {
   private jobPath = '';
 
   constructor(public translate: TranslateService, public coreService: CoreService,
-              private stringDatePipe: StringDatePipe) {
+    private stringDatePipe: StringDatePipe) {
     mxHierarchicalLayout.prototype.interRankCellSpacing = 45;
     mxTooltipHandler.prototype.delay = 0;
     if (sessionStorage.preferences) {
@@ -665,7 +665,7 @@ export class WorkflowService {
                   json.instructions[x].catch.instructions = [];
                 }
               } else {
-                json.instructions[x].catch = {instructions: []};
+                json.instructions[x].catch = { instructions: [] };
               }
             }
           }
@@ -897,7 +897,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Fail') {
             _node.setAttribute('label', 'fail');
-            const outcome = json.instructions[x].outcome || {returnCode: 0};
+            const outcome = json.instructions[x].outcome || { returnCode: 0 };
             _node.setAttribute('outcome', JSON.stringify(outcome));
             if (json.instructions[x].message !== undefined) {
               _node.setAttribute('message', json.instructions[x].message);
@@ -1710,7 +1710,7 @@ export class WorkflowService {
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('children') || '-');
       } else if (cell.value.tagName === 'ConsumeNotices') {
-  
+
         return (cell.getAttribute('noticeBoardNames') || '-');
       } else if (cell.value.tagName === 'Lock') {
         let demands = cell.getAttribute('demands');
@@ -2014,15 +2014,12 @@ export class WorkflowService {
     });
   }
 
-
-
-  convertSecondIntoWeek(data, periodList, days, frequency, timeZone): void {
-    const hour = 3600;
+  sortPeriodList(periods): any {
     let specificDates = [];
     let weekdayPeriods = [];
     let monthPeriods = [];
     let specificDaysPeriods = [];
-    data.periods.forEach((period) => {
+    periods.forEach((period) => {
       if (period.TYPE === 'SpecificDatePeriod') {
         specificDates.push(period);
       } else if (period.TYPE === 'MonthlyDatePeriod' || period.TYPE === 'MonthlyLastDatePeriod') {
@@ -2033,7 +2030,22 @@ export class WorkflowService {
         weekdayPeriods.push(period);
       }
     });
-    weekdayPeriods.concat(specificDaysPeriods).concat(specificDates).concat(monthPeriods).forEach((period) => {
+    return sortBy(weekdayPeriods, (i: any) => {
+      return i.secondOfWeek;
+    }).concat(sortBy(specificDaysPeriods, (i: any) => {
+      return i.secondOfWeeks;
+    })).concat(sortBy(specificDates, (i: any) => {
+      return i.secondsSinceLocalEpoch;
+    })).concat(
+      sortBy(monthPeriods, (i: any) => {
+        return i.secondOfMonth;
+      })
+    );
+  }
+
+  convertSecondIntoWeek(data, periodList, days, frequency, timeZone): void {
+    const hour = 3600;
+    this.sortPeriodList(data.periods).forEach((period) => {
       const p: any = {
         startTime: 0,
         duration: period.duration
