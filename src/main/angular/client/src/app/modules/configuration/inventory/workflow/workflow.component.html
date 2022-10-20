@@ -493,11 +493,12 @@
             </label>
             <div class="col-md-8 col-lg-9"
               [ngClass]="{'has-error' : ((expectBoardExpression.dirty || expectBoardExpression.touched) && expectBoardExpression.invalid)}">
-              <input [readonly]="isTrash" #expectBoardExpression="ngModel" required type="text" class="form-control"
+              <textarea [readonly]="isTrash" #expectBoardExpression="ngModel" required row="3" class="form-control"
                 (keydown)="onKeyPress($event)" name="expectBoardExpression"
                 placeholder="{{'workflow.placeholder.expectBoardExpression' | translate}}"
                 [(ngModel)]="selectedNode.obj.noticeBoardNames"
-                placeholder="{{'workflow.placeholder.expression' | translate}}">
+                placeholder="{{'workflow.placeholder.expression' | translate}}"></textarea>
+      
               <i class="pos-abt cursor" nz-icon nzType="form" nzTheme="outline"
                 (click)="openEditor(selectedNode.obj, 'noticeBoardNames')" style="right: 13px;top:1px;"></i>
               <div

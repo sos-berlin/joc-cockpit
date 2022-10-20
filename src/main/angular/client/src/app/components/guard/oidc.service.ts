@@ -1,12 +1,15 @@
 import { Injectable } from "@angular/core";
 import { HttpHeaders, HttpParams } from "@angular/common/http";
+import { combineLatest, Observable, of } from "rxjs";
 import CryptoJS from 'crypto-js';
 import { ToastrService } from "ngx-toastr";
+import { Router } from "@angular/router";
 import { CoreService } from "../../services/core.service";
-import { combineLatest, Observable, of } from "rxjs";
+import { AuthService } from "./auth.service";
+
 
 // GENERATING CODE CHALLENGE FROM VERIFIER
- function generateCodeChallengeFromVerifier(v) {
+function generateCodeChallengeFromVerifier(v) {
     return base64URL(CryptoJS.SHA256(v));
 }
 
@@ -59,7 +62,7 @@ export class OIDCAuthService {
     id_token: string;
     refresh_token: string;
 
-    constructor(private coreService: CoreService, private toasterService: ToastrService) {
+    constructor(private coreService: CoreService, private toasterService: ToastrService, private authService: AuthService, private router: Router) {
         if (sessionStorage.$SOS$KEY) {
             this.coreService.renewLocker(sessionStorage.$SOS$KEY);
             if (sessionStorage.$SOS$TOKENEXPIRETIME) {
@@ -171,6 +174,17 @@ export class OIDCAuthService {
         }
         return lcUrl.startsWith('https://');
     }
+
+    private _logout(): void {
+        this.coreService.post('authentication/logout', {});
+        this.authService.clearUser();
+        this.authService.clearStorage();
+        localStorage.removeItem('logging');
+        this.coreService.setDefaultTab();
+        sessionStorage.clear();
+        this.router.navigate(['login']).then();
+    }
+
 
     assertUrlNotNullAndCorrectProtocol(url, description) {
         if (!url) {
@@ -539,7 +553,6 @@ export class OIDCAuthService {
 
     private renewToken(): void {
         let miliseconds = (new Date().getTime() < parseInt(sessionStorage.$SOS$TOKENEXPIRETIME)) ? (parseInt(sessionStorage.$SOS$TOKENEXPIRETIME) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage.$SOS$TOKENEXPIRETIME));
-        console.log('renewToken...........')
         setTimeout(() => {
             const key = sessionStorage.$SOS$KEY;
             if (key) {
@@ -556,7 +569,7 @@ export class OIDCAuthService {
                             this.renewToken();
                         });
                     }).catch((err) => {
-                        console.error(err);
+                        this._logout();
                     })
 
                 });
@@ -599,7 +612,7 @@ export class OIDCAuthService {
                             resolve(tokenResponse);
                         },
                     error: (err) => {
-                        console.error('Error refreshing token', err);
+                        this._logout();
                         reject(err);
                     }
                 });
