@@ -694,9 +694,9 @@ export class WorkflowService {
               delete json.instructions[x].workflow;
             }
           }
-          if (mainJson.compressData && (json.instructions[x].TYPE === 'PostNotices' || json.instructions[x].TYPE === 'ExpectNotices')) {
+          if (mainJson.compressData && (json.instructions[x].TYPE === 'PostNotices' || json.instructions[x].TYPE === 'ExpectNotices' || json.instructions[x].TYPE === 'ConsumeNotices')) {
             let arr = [];
-            if (json.instructions[x].TYPE === 'ExpectNotices') {
+            if (json.instructions[x].TYPE === 'ExpectNotices' || json.instructions[x].TYPE === 'ConsumeNotices') {
               arr = self.convertExpToArray(json.instructions[x].noticeBoardNames);
             } else {
               arr = json.instructions[x].noticeBoardNames;
@@ -2154,7 +2154,7 @@ export class WorkflowService {
       } else if (period.TYPE === 'SpecificDatePeriod') {
         obj = {
           date: 0,
-          frequency: this.coreService.getStringDate(period.secondsSinceLocalEpoch * 1000),
+          frequency: this.coreService.getDateByFormat(period.secondsSinceLocalEpoch * 1000, 'UTC', 'YYYY-MM-DD'),
           periods: []
         };
 

@@ -128,6 +128,7 @@ export class DependentWorkflowComponent implements OnInit, OnDestroy {
       this.workflowService.convertTryToRetry(this.workFlowJson, null, this.workflow.jobs, {count: 0});
       this.workFlowJson.name = this.workflow.path.substring(this.workflow.path.lastIndexOf('/') + 1);
       this.workFlowJson.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
+      this.workFlowJson.consumeNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'consumeNoticeBoards');
       this.workFlowJson.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
       this.workFlowJson.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
       this.workFlowJson.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
@@ -689,7 +690,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               self.showLog(JSON.parse(order));
             }
           }
-        } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'PostNotices') {
+        } else if (cell.value.tagName === 'ExpectNotices' || cell.value.tagName === 'ConsumeNotices' || cell.value.tagName === 'PostNotices') {
           let noticeNames = cell.value.getAttribute('noticeBoardNames');
           if(noticeNames && cell.value.tagName === 'PostNotices') {
             if(typeof noticeNames == 'string'){
@@ -952,6 +953,31 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                     }
                     mainJson.expectedNoticeBoards[prop].value.forEach((workflow) => {
                       createWorkflowNode(workflow, cell, 'expect');
+                    });
+                  }
+                }
+              }
+            }
+          }
+
+          if (json.instructions[x].TYPE === 'ConsumeNotices') {
+            const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
+            if (cell) {
+              if (mainJson.consumeNoticeBoards) {
+                let arr = self.workflowService.convertExpToArray(json.instructions[x].noticeBoardNames);
+                for (const prop in mainJson.consumeNoticeBoards) {
+                  if (arr.length > 0 && arr.indexOf(mainJson.consumeNoticeBoards[prop].name) > -1) {
+                    const incomingEdges = graph.getIncomingEdges(cell);
+                    if (incomingEdges && incomingEdges.length > 0) {
+                      for (const edge in incomingEdges) {
+                        if (incomingEdges[edge].source && incomingEdges[edge].source.value && incomingEdges[edge].source.value.tagName === 'Process') {
+                          graph.removeCells([incomingEdges[edge].source], true);
+                          break;
+                        }
+                      }
+                    }
+                    mainJson.consumeNoticeBoards[prop].value.forEach((workflow) => {
+                      createWorkflowNode(workflow, cell, 'consume');
                     });
                   }
                 }
