@@ -863,7 +863,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               return;
             }
           }
-          if (type === 'expect') {
+          if (type === 'expect' || type == 'consume') {
             graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
           } else {
             graph.insertEdge(cell.parent, null, doc.createElement('Connection'), cell, w1);

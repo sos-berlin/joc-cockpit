@@ -1495,6 +1495,7 @@ export class CoreService {
     } else if (data[type] === '') {
       data[type] = '"' + data[type].trim() + '"';
     }
+    data[type] = data[type].replaceAll("\\\\\\", '');
   }
 
   updateReplaceText(): void {
