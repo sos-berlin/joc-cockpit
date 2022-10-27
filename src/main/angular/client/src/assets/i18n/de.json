@@ -2623,7 +2623,7 @@
     "label.changedProperties": "Geänderte Eigenschaften",
     "label.addRequiredArguments": "Hinzugefügte erforderliche Argumente",
     "label.deleteArguments": "Gelöschte Argumente",
-    "label.workflowTimeZone": "Workflow Time Zone",
+    "label.workflowTimeZone": "Zeitzone des Arbeitsablaufs",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
