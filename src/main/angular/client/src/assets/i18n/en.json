@@ -2623,6 +2623,7 @@
     "label.changedProperties": "Changed Properties",
     "label.addRequiredArguments": "Added required Arguments",
     "label.deleteArguments": "Deleted Arguments",
+    "label.workflowTimeZone": "Workflow Time Zone",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

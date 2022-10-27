@@ -194,6 +194,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               this.workflowService.convertTryToRetry(item.workflow, null, item.workflow.jobs, this.countObj);
               item.workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'expectedNoticeBoards');
               item.workflow.postNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'postNoticeBoards');
+              item.workflow.consumeNoticeBoards = this.coreService.convertObjectToArray(item.workflow, 'consumeNoticeBoards');
               this.workflowObjects.set(item.workflow.path, JSON.stringify(item.workflow));
               this.isAllLoaded = true;
               this.recursivelyUpdateWorkflow(item.workflow);
@@ -243,6 +244,11 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         addWorkflowInArrays(board.value);
       });
     }
+    if (workflow.consumeNoticeBoards.length > 0) {
+      workflow.consumeNoticeBoards.forEach((board) => {
+        addWorkflowInArrays(board.value);
+      });
+    }
     if (workflow.addOrderToWorkflows.length > 0) {
       addWorkflowInArrays(workflow.addOrderToWorkflows);
     }
@@ -281,6 +287,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       }
       workflow.expectedNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'expectedNoticeBoards');
       workflow.postNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'postNoticeBoards');
+      workflow.consumeNoticeBoards = this.coreService.convertObjectToArray(res.workflow, 'consumeNoticeBoards');
       workflow.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
       workflow.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
       this.workflowObjects.set(workflow.path, JSON.stringify(workflow));

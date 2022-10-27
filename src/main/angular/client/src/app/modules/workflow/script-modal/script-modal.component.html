@@ -65,7 +65,7 @@
       <div class="col-sm-3 m-t" [ngClass]="{'m-b-sm' : periodList.length > 0}" *ngIf="periodList.length > 0 || schemeList.length > 0">
         {{dailyPlan.period_begin}}
       </div>
-      <div class="col-sm-3" *ngIf="periodList.length > 0" translate>workflow.label.timeZone</div>
+      <div class="col-sm-3" *ngIf="periodList.length > 0" translate>workflow.label.workflowTimeZone</div>
       <div class="col-sm-8" *ngIf="periodList.length > 0">
         {{timezone}}
       </div>

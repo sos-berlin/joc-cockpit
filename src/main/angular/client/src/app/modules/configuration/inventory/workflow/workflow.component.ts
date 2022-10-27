@@ -9906,11 +9906,33 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
             if (json.instructions[x].branches) {
               const ids = [];
+              let maxNum = 0;
+
+              json.instructions[x].branches.forEach((branch) => {
+                if(branch.id) {
+                  const arr = branch.id.match(/[0-9]+$/);
+                  if (arr && arr.length > 0) {
+                    const num = parseInt(arr[0], 10);
+                    if (typeof num == 'number' && !isNaN(num)) {
+                      if (num > maxNum) {
+                        maxNum = num;
+                      }
+                    }
+                  }
+                }
+              });
+
               json.instructions[x].branches = json.instructions[x].branches.filter((branch) => {
                 if (ids.indexOf(branch.id) == -1) {
                   ids.push(branch.id);
                 } else {
-                  branch.id = branch.id + '_copy';
+                  const arr = branch.id.match(/[0-9]+$/);
+                  const num = parseInt(arr[0], 10);
+                  if (typeof num == 'number' && !isNaN(num)) {
+                    branch.id = branch.id.substring(0, branch.id.indexOf(num)) + (maxNum + 1);
+                  } else {
+                    branch.id = branch.id + (maxNum + 1);
+                  }
                   ids.push(branch.id);
                 }
                 branch.workflow = {

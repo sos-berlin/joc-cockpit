@@ -2623,6 +2623,7 @@
     "label.changedProperties": "変更プロパティ",
     "label.addRequiredArguments": "必要な引数を追加",
     "label.deleteArguments": "引数削除",
+    "label.workflowTimeZone": "Workflow Time Zone",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

@@ -1469,8 +1469,8 @@ export class CoreService {
               if (data[type].match('.toNumber')) {
 
               } else {
-                data[type] = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
-                if (data[type].match(/\\/)) {
+                let x = data[type].replace(/\\([\s\S])|(")/g, '\\$1$2').trim();
+                if (x.match(/\\/)) {
                   data[type] = JSON.stringify(data[type]);
                 } else {
                   data[type] = endChar === "$" ? data[type] : '"' + data[type] + '"';
@@ -1492,10 +1492,11 @@ export class CoreService {
         }
 
       }
+
     } else if (data[type] === '') {
-      data[type] = '"' + data[type].trim() + '"';
+      data[type] = '"' +
+      data[type].trim() + '"';
     }
-    data[type] = data[type].replaceAll("\\\\\\", '');
   }
 
   updateReplaceText(): void {
@@ -1715,7 +1716,6 @@ export class CoreService {
 
   getValueFromLocker(key, cb) {
     if (key) {
-      console.log('getValueFromLocker', key)
       this.post('iam/locker/get', { key }).subscribe({
         next: (res) => {
           cb(res.content);
