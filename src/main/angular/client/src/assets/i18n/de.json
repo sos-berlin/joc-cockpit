@@ -1382,6 +1382,10 @@
           "boardNames": "Mehrere Notizbretter können ausgewählt werden, für die Notizen erzeugt werden.",
           "expectBoardExpression": "Der ExpectNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer Booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden."
         },
+        "finish": {
+          "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
+          "unsuccessful": "Unsuccessful"
+        },
         "fail": {
           "message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
           "uncatchable": "Ein nicht abfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
@@ -2512,6 +2516,7 @@
     "label.jitl": "JITL",
     "label.branch1.x": "Version 1.x",
     "label.uncatchable": "Uneinfangbar",
+    "label.unsuccessful": "Unsuccessful",
     "label.checkSteadyState": "Unveränderlichkeit der Datei prüfen",
     "label.jobClass": "Job-Klasse",
     "label.jobTemplate": "Job-Vorlage",

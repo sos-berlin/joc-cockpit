@@ -1387,6 +1387,10 @@
           "uncatchable": "An uncatchable error cannot be handled with a Try/Catch Instruction.",
           "returnCode": "The Fail Instruction can be assigned a positive, non-zero Return Code that becomes visible with the order history. Non-zero Return Codes indicate failed execution."
         },
+        "finish": {
+          "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
+          "unsuccessful": "Unsuccessful"
+        },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
           "regex": "A regular expression specifies the Pattern for the paths of incoming files that a directory is watched for. For example .* means any files, .*\\.txt$ means any files with a .txt extension."
@@ -2512,6 +2516,7 @@
     "label.jitl": "JITL",
     "label.branch1.x": "Branch 1.x",
     "label.uncatchable": "Uncatchable",
+    "label.unsuccessful": "Unsuccessful",
     "label.checkSteadyState": "Check steady state",
     "label.jobClass": "Job Class",
     "label.jobTemplate": "Job Template",

@@ -1382,6 +1382,10 @@
           "boardNames": "通知ボード登録",
           "expectBoardExpression": "ExpectNotice条件式"
         },
+        "finish": {
+          "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
+          "unsuccessful": "Unsuccessful"
+        },
         "fail": {
           "message": "オーダーに添付され、オーダー履歴で表示されるメッセージを指定することができます。",
           "uncatchable": "アンキャッチャブルエラーはTry/Catch命令では処理できません。",
@@ -2512,6 +2516,7 @@
     "label.jitl": "JITL",
     "label.branch1.x": "V.1.x系",
     "label.uncatchable": "Uncatchable",
+    "label.unsuccessful": "Unsuccessful",
     "label.checkSteadyState": "定常状態確認",
     "label.jobClass": "ジョブクラス",
     "label.jobTemplate": "ジョブテンプレート",
