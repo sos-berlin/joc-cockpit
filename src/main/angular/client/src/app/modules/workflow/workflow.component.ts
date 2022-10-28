@@ -4,7 +4,7 @@ import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
-import {isEmpty, clone, isArray} from 'underscore';
+import {isEmpty, clone} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';

@@ -765,11 +765,19 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   deployAll(): void {
+    this.revokeAndDeploy('deploy');
+  }
+
+  revokeAll() {
+    this.revokeAndDeploy('revoke');
+  }
+
+  private revokeAndDeploy(type) {
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
         type: 'Agent',
-        operation: 'Deploy',
+        operation: type === 'revoke' ? 'Revoke' : 'Deploy',
         name: ''
       };
       this.modal.create({
@@ -784,30 +792,42 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
         if (result) {
-          this._deployAll(result);
+          this._revokeAndDeploy(type, result);
         }
       });
     } else {
-      this._deployAll();
+      this._revokeAndDeploy(type);
     }
   }
 
-  private _deployAll(auditLog = {}): void {
+  private _revokeAndDeploy(type, auditLog = {}): void {
     this.object.mapOfCheckedId.forEach((k, v) => {
-      this.coreService.post('agents/inventory/deploy', {
+      this.coreService.post('agents/inventory/' + type, {
         controllerId: k,
         agentIds: [v],
         auditLog
       }).subscribe();
     })
     this.object.mapOfCheckedId2.forEach((k, v) => {
-      this.coreService.post('agents/inventory/cluster/deploy', {
+      this.coreService.post('agents/inventory/cluster/' + type, {
         controllerId: k,
         clusterAgentIds: [v],
         auditLog
       }).subscribe();
     });
     this.resetCheckbox();
+  }
+
+  hideAll() {
+    this.revokeAndDeploy('hide');
+  }
+
+  resetAll() {
+    this.revokeAndDeploy('reset');
+  }
+
+  resetForceAll() {
+    this.revokeAndDeploy('reset');
   }
 
   addAgent(controller): void {

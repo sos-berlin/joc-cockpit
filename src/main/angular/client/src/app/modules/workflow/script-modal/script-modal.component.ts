@@ -142,14 +142,14 @@ export class ScriptModalComponent implements OnInit, AfterViewInit {
         repeat: this.workflowService.getTextOfRepeatObject(item.repeat)
       };
       if (item.admissionTimeScheme && item.admissionTimeScheme.periods) {
-        this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {}, this.timezone);
+        this.workflowService.convertSecondIntoWeek(item.admissionTimeScheme, obj.periodList, this.days, {});
       }
       this.schemeList.push(obj);
     });
   }
 
   convertSecondIntoWeek(): void {
-    this.workflowService.convertSecondIntoWeek(this.admissionTime, this.periodList, this.days, {}, this.timezone);
+    this.workflowService.convertSecondIntoWeek(this.admissionTime, this.periodList, this.days, {});
   }
 
   showConvertTime(): void {

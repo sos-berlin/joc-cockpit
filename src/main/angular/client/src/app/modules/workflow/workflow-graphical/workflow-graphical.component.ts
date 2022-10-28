@@ -863,7 +863,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
               return;
             }
           }
-          if (type === 'expect' || type == 'consume') {
+          if (type === 'expect') {
             graph.insertEdge(cell.parent, null, doc.createElement('Connection'), w1, cell);
           } else {
             graph.insertEdge(cell.parent, null, doc.createElement('Connection'), cell, w1);
@@ -938,10 +938,10 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           if (json.instructions[x].TYPE === 'ExpectNotices') {
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
-              if (mainJson.expectedNoticeBoards) {
+              if (mainJson.postNoticeBoards) {
                 let arr = self.workflowService.convertExpToArray(json.instructions[x].noticeBoardNames);
-                for (const prop in mainJson.expectedNoticeBoards) {
-                  if (arr.length > 0 && arr.indexOf(mainJson.expectedNoticeBoards[prop].name) > -1) {
+                for (const prop in mainJson.postNoticeBoards) {
+                  if (arr.length > 0 && arr.indexOf(mainJson.postNoticeBoards[prop].name) > -1) {
                     const incomingEdges = graph.getIncomingEdges(cell);
                     if (incomingEdges && incomingEdges.length > 0) {
                       for (const edge in incomingEdges) {
@@ -951,7 +951,7 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                         }
                       }
                     }
-                    mainJson.expectedNoticeBoards[prop].value.forEach((workflow) => {
+                    mainJson.postNoticeBoards[prop].value.forEach((workflow) => {
                       createWorkflowNode(workflow, cell, 'expect');
                     });
                   }
@@ -963,10 +963,10 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           if (json.instructions[x].TYPE === 'ConsumeNotices') {
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
-              if (mainJson.consumeNoticeBoards) {
+              if (mainJson.postNoticeBoards) {
                 let arr = self.workflowService.convertExpToArray(json.instructions[x].noticeBoardNames);
-                for (const prop in mainJson.consumeNoticeBoards) {
-                  if (arr.length > 0 && arr.indexOf(mainJson.consumeNoticeBoards[prop].name) > -1) {
+                for (const prop in mainJson.postNoticeBoards) {
+                  if (arr.length > 0 && arr.indexOf(mainJson.postNoticeBoards[prop].name) > -1) {
                     const incomingEdges = graph.getIncomingEdges(cell);
                     if (incomingEdges && incomingEdges.length > 0) {
                       for (const edge in incomingEdges) {
@@ -976,8 +976,8 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                         }
                       }
                     }
-                    mainJson.consumeNoticeBoards[prop].value.forEach((workflow) => {
-                      createWorkflowNode(workflow, cell, 'consume');
+                    mainJson.postNoticeBoards[prop].value.forEach((workflow) => {
+                      createWorkflowNode(workflow, cell, 'expect');
                     });
                   }
                 }
@@ -988,9 +988,9 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
           if (json.instructions[x].TYPE === 'PostNotices') {
             const cell = vertixMap.get(JSON.stringify(json.instructions[x].position));
             if (cell) {
-              if (mainJson.postNoticeBoards) {
-                for (const prop in mainJson.postNoticeBoards) {
-                  if (isArray(json.instructions[x].noticeBoardNames) && json.instructions[x].noticeBoardNames.indexOf(mainJson.postNoticeBoards[prop].name) > -1) {
+              if (mainJson.expectedNoticeBoards) {
+                for (const prop in mainJson.expectedNoticeBoards) {
+                  if (isArray(json.instructions[x].noticeBoardNames) && json.instructions[x].noticeBoardNames.indexOf(mainJson.expectedNoticeBoards[prop].name) > -1) {
                     const outgoingEdges = graph.getOutgoingEdges(cell);
                     if (outgoingEdges && outgoingEdges.length > 0) {
                       for (const edge in outgoingEdges) {
@@ -1000,7 +1000,25 @@ export class WorkflowGraphicalComponent implements AfterViewInit, OnChanges, OnD
                         }
                       }
                     }
-                    mainJson.postNoticeBoards[prop].value.forEach((workflow) => {
+                    mainJson.expectedNoticeBoards[prop].value.forEach((workflow) => {
+                      createWorkflowNode(workflow, cell, 'post');
+                    });
+                  }
+                }
+              }
+              if (mainJson.consumeNoticeBoards) {
+                for (const prop in mainJson.consumeNoticeBoards) {
+                  if (isArray(json.instructions[x].noticeBoardNames) && json.instructions[x].noticeBoardNames.indexOf(mainJson.consumeNoticeBoards[prop].name) > -1) {
+                    const outgoingEdges = graph.getOutgoingEdges(cell);
+                    if (outgoingEdges && outgoingEdges.length > 0) {
+                      for (const edge in outgoingEdges) {
+                        if (outgoingEdges[edge].target && outgoingEdges[edge].target.value && outgoingEdges[edge].target.value.tagName === 'ImplicitEnd') {
+                          graph.removeCells([outgoingEdges[edge].target], true);
+                          break;
+                        }
+                      }
+                    }
+                    mainJson.consumeNoticeBoards[prop].value.forEach((workflow) => {
                       createWorkflowNode(workflow, cell, 'post');
                     });
                   }

@@ -450,6 +450,14 @@ export class WorkflowService {
         }
       }
 
+      if (type === 'Finish') {
+        if (value.unsuccessful && value.unsuccessful != 'null' && value.unsuccessful != 'undefined' && typeof value.unsuccessful === 'string') {
+          value.unsuccessful = value.unsuccessful == 'true';
+        } else {
+          delete value.unsuccessful;
+        }
+      }
+
       if (type === 'ForkList') {
         if (!value.children) {
           return false;
@@ -890,6 +898,12 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Finish') {
             _node.setAttribute('label', 'finish');
+            if (json.instructions[x].message !== undefined) {
+              _node.setAttribute('message', json.instructions[x].message);
+            }
+            if (json.instructions[x].unsuccessful !== undefined) {
+              _node.setAttribute('unsuccessful', json.instructions[x].unsuccessful);
+            }
             _node.setAttribute('uuid', json.instructions[x].uuid);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('finish', colorCode, self.theme) : 'finish');
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -897,7 +911,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Fail') {
             _node.setAttribute('label', 'fail');
-            const outcome = json.instructions[x].outcome || { returnCode: 0 };
+            const outcome = json.instructions[x].outcome || {returnCode: 0};
             _node.setAttribute('outcome', JSON.stringify(outcome));
             if (json.instructions[x].message !== undefined) {
               _node.setAttribute('message', json.instructions[x].message);
@@ -1742,9 +1756,6 @@ export class WorkflowService {
           msg = translatedValue;
         });
         return '<b>' + msg + '</b> : ' + (cell.getAttribute('children') || '-');
-      } else if (cell.value.tagName === 'ConsumeNotices') {
-
-        return (cell.getAttribute('noticeBoardNames') || '-');
       } else if (cell.value.tagName === 'Lock') {
         let demands = cell.getAttribute('demands');
         if (demands && typeof demands == 'string') {
@@ -1904,12 +1915,13 @@ export class WorkflowService {
             str = translatedValue;
           });
         }
-        if (((cell.value.tagName === 'PostNotices' || cell.value.tagName === 'ExpectNotices'))) {
+        if (((cell.value.tagName === 'PostNotices' || cell.value.tagName === 'ConsumeNotices' || cell.value.tagName === 'ExpectNotices'))) {
           let boards = cell.getAttribute('noticeBoardNames');
           if (boards && typeof boards == 'string') {
             str = str + ': ' + boards;
           }
         }
+
         return str;
       }
     }
@@ -1960,7 +1972,7 @@ export class WorkflowService {
 
   convertStringToDuration(str: string, isDuration = false): number {
     function durationSeconds(timeExpr) {
-      const units = { h: 3600, m: 60, s: 1 };
+      const units = {h: 3600, m: 60, s: 1};
       const regex = /(\d+)([hms])/g;
       let seconds = 0;
       let match;
@@ -2076,7 +2088,7 @@ export class WorkflowService {
     );
   }
 
-  convertSecondIntoWeek(data, periodList, days, frequency, timeZone): void {
+  convertSecondIntoWeek(data, periodList, days, frequency): void {
     const hour = 3600;
     this.sortPeriodList(data.periods).forEach((period) => {
       const p: any = {
