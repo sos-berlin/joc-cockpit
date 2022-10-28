@@ -1383,8 +1383,8 @@
           "expectBoardExpression": "L'expression ExpectNotices peut être utilisée pour spécifier un seul tableau de condition et pour spécifier une logique Booléenne : ('A-BOARD' || 'B-BOARD') && 'C-BOARD'. Les noms des tableaux de condition sont cités et les opérateurs && (et) et || (ou) peuvent être utilisés de manière optionnelle, y compris entre crochets."
         },
         "finish": {
-          "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
-          "unsuccessful": "Unsuccessful"
+          "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",
+          "unsuccessful": "Par défaut, l'instruction permet aux orderes de quitter le workflow avec un résultat historique réussi. Cette case à cocher peut être utilisée pour qu'un ordre quitte le workflow avec un résultat historique non réussi."
         },
         "fail": {
           "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",
@@ -2516,7 +2516,7 @@
     "label.jitl": "JITL",
     "label.branch1.x": "Branche 1.x",
     "label.uncatchable": "Intraitable",
-    "label.unsuccessful": "Unsuccessful",
+    "label.unsuccessful": "échoué",
     "label.checkSteadyState": "Vérifier l'État",
     "label.jobClass": "Catégorie de Tâche",
     "label.jobTemplate": "Modèle de Tâche",

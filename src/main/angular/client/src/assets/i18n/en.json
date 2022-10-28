@@ -1389,7 +1389,7 @@
         },
         "finish": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
-          "unsuccessful": "Unsuccessful"
+          "unsuccessful": "By default the Finish Instruction makes orders leave the workflow with a successfuly history outcome. This checkbox can be used to make an order leave the workflow with an unsuccessful historic outcome."
         },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
