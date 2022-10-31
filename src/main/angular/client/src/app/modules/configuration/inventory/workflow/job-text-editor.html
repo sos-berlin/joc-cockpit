@@ -116,6 +116,18 @@
                                  (funcCall)="saveToHistory()"></app-select-document>
           </div>
         </div>
+        <div class="form-group row" *ngIf="hasLicense"
+             [hidden]="fullScreen">
+          <div class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment</div>
+          <div class="col-md-8 col-lg-9">
+            <nz-radio-group [(ngModel)]="selectedNode.radio">
+              <label nz-radio nzValue="agent"><span
+                translate>workflow.label.agentSelectFromList</span></label>
+              <label nz-radio nzValue="expression"><span
+                translate>workflow.label.agentAsExpression</span></label>
+            </nz-radio-group>
+          </div>
+        </div>
         <div class="form-group row" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
@@ -123,10 +135,28 @@
                  translate>workflow.label.agent
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-8 col-lg-9">
+          <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'agent'">
             <app-agent-selection [obj]="obj" [preferences]="preferences" [agents]="agents"
                                  (selectSubagentCluster)="selectSubagentCluster($event)"
                                  [data]="selectedNode.job"></app-agent-selection>
+          </div>
+          <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'expression'">
+            <app-agent-selection [obj]="obj" [preferences]="preferences" [agents]="agents"
+                                 [skipSubagents]="true"
+                                 [data]="selectedNode.job"></app-agent-selection>
+          </div>
+        </div>
+        <div class="form-group row" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression'">
+          <label class="col-md-4 col-lg-3 form-control-label"
+                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5"
+                 translate>workflow.label.subagentClusterIdExpr
+            <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-md-8 col-lg-9">
+              <textarea class="form-control" name="subagentClusterIdExpr"
+                        [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
+                        [(ngModel)]="selectedNode.job.subagentClusterIdExpr"></textarea>
           </div>
         </div>
         <div class="form-group row" [hidden]="fullScreen">

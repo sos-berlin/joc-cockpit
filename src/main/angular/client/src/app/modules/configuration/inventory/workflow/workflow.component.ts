@@ -1123,6 +1123,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   filteredOptions = [];
   mentionValueList = [];
   copiedParamObjects: any = {};
+  hasLicense: boolean;
+
   subscription: Subscription;
 
   @ViewChild('codeMirror', {static: false}) cm: any;
@@ -1156,6 +1158,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.hasLicense = sessionStorage.hasLicense == 'true';
     this.index = 0;
     if (this.scriptList.length > 0) {
       this.list = this.scriptList.map((item) => item.name);
@@ -2110,6 +2113,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       arr: this.jobResourcesTree,
       jobResources: this.selectedNode.job.jobResourceNames
     });
+    if(this.selectedNode.job.subagentClusterIdExpr){
+      this.selectedNode.radio = 'expression';
+    } else {
+      this.selectedNode.radio = 'agent';
+    }
     this.onBlur();
     const dom = $('#agentId');
     let flag = false;
@@ -2681,6 +2689,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   isSearchVisible = false;
   keyHandler: any;
   lastModified: any = '';
+  hasLicense: boolean;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -2690,6 +2699,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   constructor(public coreService: CoreService, private translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
               private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
+    this.hasLicense = sessionStorage.hasLicense == 'true';
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.workflow.actual) {
@@ -3090,6 +3100,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   fitToScreen(): void {
     this.fullScreen = !this.fullScreen;
+  }
+
+  selectSubagentCluster(cluster): void {
+    if (cluster) {
+      this.selectedNode.obj.agentName1 = cluster.title;
+    } else {
+      delete this.selectedNode.obj.agentName1;
+    }
   }
 
   /**
@@ -7616,6 +7634,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 obj.cell, 'result', null);
               graph.getModel().execute(edit4);
             }
+            const edit5 = new mxCellAttributeChange(
+              obj.cell, 'agentName', self.selectedNode.newObj.agentName);
+            graph.getModel().execute(edit5);
+            const edit6 = new mxCellAttributeChange(
+              obj.cell, 'subagentClusterId', self.selectedNode.newObj.subagentClusterId);
+            graph.getModel().execute(edit6);
+            const edit7 = new mxCellAttributeChange(
+              obj.cell, 'subagentClusterIdExpr', self.selectedNode.newObj.subagentClusterIdExpr);
+            graph.getModel().execute(edit7);
+            const edit8 = new mxCellAttributeChange(
+              obj.cell, 'subagentIdVariable', self.selectedNode.newObj.subagentIdVariable);
+            graph.getModel().execute(edit8);
           } else if (self.selectedNode.type === 'Lock') {
             let demands = [];
             if (isArray(self.selectedNode.newObj.lockNames)) {
@@ -7725,6 +7755,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         self.cutOperation();
         self.error = false;
+        if(self.selectedNode.job) {
+          if (self.selectedNode.radio === 'agent') {
+            delete self.selectedNode.job.subagentClusterIdExpr;
+          } else {
+            delete self.selectedNode.job.agentName1;
+          }
+          delete self.selectedNode.radio;
+        }
         self.dataService.reloadWorkflowError.next({error: self.error});
         self.selectedNode.newObj = self.coreService.clone(self.selectedNode.obj);
         if (self.selectedNode && self.selectedNode.type === 'Job') {
@@ -7881,6 +7919,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           obj.children = cell.getAttribute('children');
           obj.childToId = cell.getAttribute('childToId');
           obj.joinIfFailed = cell.getAttribute('joinIfFailed');
+          obj.agentName = cell.getAttribute('agentName');
+          obj.subagentClusterId = cell.getAttribute('subagentClusterId');
+          obj.subagentClusterIdExpr = cell.getAttribute('subagentClusterIdExpr');
+          obj.subagentIdVariable = cell.getAttribute('subagentIdVariable');
           obj.joinIfFailed = obj.joinIfFailed == 'true';
           let resultObj = cell.getAttribute('result');
           if (resultObj) {
@@ -7972,6 +8014,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           job,
           actualValue: self.coreService.clone(obj)
         };
+
+        if (cell.value.tagName === 'ForkList') {
+          if(obj.subagentClusterIdExpr){
+            self.selectedNode.radio = 'expression';
+          } else {
+            self.selectedNode.radio = 'agent';
+          }
+        }
+
         if (cell.value.tagName === 'Lock') {
           obj.lockNames = [];
           //self.getLimit();
@@ -10023,6 +10074,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           } else if (json.instructions[x].TYPE === 'ForkList') {
             const childrenObj = clone(json.instructions[x].children);
             const childToIdObj = clone(json.instructions[x].childToId);
+            const agentNameObj = clone(json.instructions[x].agentName);
+            const subagentClusterIdObj = clone(json.instructions[x].subagentClusterId);
+            const subagentClusterIdExprObj = clone(json.instructions[x].subagentClusterIdExpr);
+            const subagentIdVariableObj = clone(json.instructions[x].subagentIdVariable);
             let joinIfFailed = clone(json.instructions[x].joinIfFailed);
             let result = clone(json.instructions[x].result);
             joinIfFailed = joinIfFailed == 'true' || joinIfFailed === true;
@@ -10030,8 +10085,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             delete json.instructions[x].childToId;
             delete json.instructions[x].joinIfFailed;
             delete json.instructions[x].result;
+            delete json.instructions[x].agentName;
+            delete json.instructions[x].subagentClusterId;
+            delete json.instructions[x].subagentClusterIdExpr;
+            delete json.instructions[x].subagentIdVariable;
             json.instructions[x].children = childrenObj;
             json.instructions[x].childToId = childToIdObj;
+            json.instructions[x].agentName = agentNameObj;
+            json.instructions[x].subagentClusterId = subagentClusterIdObj;
+            json.instructions[x].subagentClusterIdExpr = subagentClusterIdExprObj;
+            json.instructions[x].subagentIdVariable = subagentIdVariableObj;
             json.instructions[x].workflow = {
               instructions: json.instructions[x].instructions,
               result
