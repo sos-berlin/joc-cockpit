@@ -1059,6 +1059,18 @@ export class WorkflowService {
             if (json.instructions[x].joinIfFailed !== undefined) {
               _node.setAttribute('joinIfFailed', json.instructions[x].joinIfFailed);
             }
+            if (json.instructions[x].agentName !== undefined) {
+              _node.setAttribute('agentName', json.instructions[x].agentName);
+            }
+            if (json.instructions[x].subagentClusterId !== undefined) {
+              _node.setAttribute('subagentClusterId', json.instructions[x].subagentClusterId);
+            }
+            if (json.instructions[x].subagentClusterIdExpr !== undefined) {
+              _node.setAttribute('subagentClusterIdExpr', json.instructions[x].subagentClusterIdExpr);
+            }
+            if (json.instructions[x].subagentIdVariable !== undefined) {
+              _node.setAttribute('subagentIdVariable', json.instructions[x].subagentIdVariable);
+            }
             if (json.instructions[x].children !== undefined) {
               _node.setAttribute('children', json.instructions[x].children);
             }

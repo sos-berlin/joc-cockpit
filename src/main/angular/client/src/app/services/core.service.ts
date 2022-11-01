@@ -1686,14 +1686,26 @@ export class CoreService {
     let str = '';
     arr.forEach(item => {
       item = item.trim();
+      let firstStr = '';
+      let lastStr = '';
       if (item !== '&&' && item != '||') {
+        if (item.substring(0, 1) == ')' || item.substring(0, 1) == '(') {
+          firstStr = item.substring(0, 1);
+          item = item.substring(1, item.length - 1);
+        }
         if (item.substring(0, 1) == '"' || item.substring(0, 1) == "'") {
-          item = item.substring(1, item.length - 1)
+          if (item.substring(item.length - 1) == ')' || item.substring(item.length - 1) == '(') {
+            lastStr = item.substring(item.length - 1);
+            item = item.substring(0, item.length - 1);
+          }
+          let lastIndex = (item.substring(item.length - 1) == '"' || item.substring(item.length - 1) == "'") ? 1 : 0;
+          item = item.substring(1, item.length - lastIndex);
         }
         if (permission.joc && permission.joc.inventory.view) {
           str += '<i data-id-x="' + item + '" class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>';
         }
-        str += '<a class="text-hover-primary" data-id-y="' + item + '" >' + item + '</a>'
+        str += firstStr + '<a class="text-hover-primary" data-id-y="' + item + '" >' + item + '</a>'
+        str += lastStr;
       } else {
         str += ' ' + item;
       }
@@ -1716,7 +1728,7 @@ export class CoreService {
 
   getValueFromLocker(key, cb) {
     if (key) {
-      this.post('iam/locker/get', { key }).subscribe({
+      this.post('iam/locker/get', {key}).subscribe({
         next: (res) => {
           cb(res.content);
         }, error: () => {
@@ -1730,7 +1742,7 @@ export class CoreService {
     let miliseconds = (new Date().getTime() < parseInt(sessionStorage.$SOS$RENEW)) ? (parseInt(sessionStorage.$SOS$RENEW) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage.$SOS$RENEW));
     setTimeout(() => {
       if (key && sessionStorage.$SOS$KEY && (sessionStorage.$SOS$KEY == key)) {
-        this.post('iam/locker/renew', { key }).subscribe({
+        this.post('iam/locker/renew', {key}).subscribe({
           next: (res) => {
             sessionStorage.$SOS$RENEW = (new Date().getTime() + 1800000) - 30000;
             this.renewLocker(res.key);

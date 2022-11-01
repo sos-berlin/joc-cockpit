@@ -2115,6 +2115,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     });
     if(this.selectedNode.job.subagentClusterIdExpr){
       this.selectedNode.radio = 'expression';
+      this.coreService.removeSlashToString(this.selectedNode.job, 'subagentClusterIdExpr');
     } else {
       this.selectedNode.radio = 'agent';
     }
@@ -2731,6 +2732,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         }
         result.jobs[x] = {
           agentName: v.agentName || v.agentId,
+          subagentClusterId: v.subagentClusterId,
+          subagentClusterIdExpr: v.subagentClusterIdExpr,
           executable: v.executable,
           defaultArguments: v.defaultArguments,
           jobResourceNames: v.jobResourceNames,
@@ -7640,6 +7643,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             const edit6 = new mxCellAttributeChange(
               obj.cell, 'subagentClusterId', self.selectedNode.newObj.subagentClusterId);
             graph.getModel().execute(edit6);
+            self.coreService.addSlashToString(self.selectedNode.newObj, 'subagentClusterIdExpr');
             const edit7 = new mxCellAttributeChange(
               obj.cell, 'subagentClusterIdExpr', self.selectedNode.newObj.subagentClusterIdExpr);
             graph.getModel().execute(edit7);
@@ -7755,11 +7759,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         self.cutOperation();
         self.error = false;
-        if(self.selectedNode.job) {
+        if (self.selectedNode.job) {
           if (self.selectedNode.radio === 'agent') {
             delete self.selectedNode.job.subagentClusterIdExpr;
           } else {
             delete self.selectedNode.job.agentName1;
+            if (self.selectedNode.job.subagentClusterIdExpr) {
+              self.coreService.addSlashToString(self.selectedNode.job, 'subagentClusterIdExpr');
+            }
           }
           delete self.selectedNode.radio;
         }
@@ -7922,6 +7929,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           obj.agentName = cell.getAttribute('agentName');
           obj.subagentClusterId = cell.getAttribute('subagentClusterId');
           obj.subagentClusterIdExpr = cell.getAttribute('subagentClusterIdExpr');
+          if (obj.subagentClusterIdExpr) {
+            self.coreService.removeSlashToString(obj, 'subagentClusterIdExpr');
+          }
           obj.subagentIdVariable = cell.getAttribute('subagentIdVariable');
           obj.joinIfFailed = obj.joinIfFailed == 'true';
           let resultObj = cell.getAttribute('result');
@@ -8016,7 +8026,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         };
 
         if (cell.value.tagName === 'ForkList') {
-          if(obj.subagentClusterIdExpr){
+          if (obj.subagentClusterIdExpr) {
             self.selectedNode.radio = 'expression';
           } else {
             self.selectedNode.radio = 'agent';
