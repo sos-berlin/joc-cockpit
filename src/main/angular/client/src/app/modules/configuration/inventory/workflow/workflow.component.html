@@ -263,8 +263,19 @@
           </div>
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'ForkList'">
+          <div class="form-group row">
+            <div class="col-md-4 col-lg-3"></div>
+            <div class="col-md-8 col-lg-9">
+              <nz-radio-group [(ngModel)]="selectedNode.radio1">
+                <label nz-radio nzValue="byListVariable"><span
+                  translate>workflow.label.byListVariable</span></label>
+                <label nz-radio nzValue="bySubagentCluster"><span
+                  translate>workflow.label.bySubagentCluster</span></label>
+              </nz-radio-group>
+            </div>
+          </div>
           <div class="form-group row"
-               *ngIf="hasLicense">
+               *ngIf="hasLicense && selectedNode.radio1 !== 'byListVariable'">
             <div class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment</div>
             <div class="col-md-8 col-lg-9">
               <nz-radio-group [(ngModel)]="selectedNode.radio">
@@ -275,36 +286,36 @@
               </nz-radio-group>
             </div>
           </div>
-          <div class="form-group row" [hidden]="fullScreen">
+          <div class="form-group row" *ngIf="selectedNode.radio1 !== 'byListVariable'" [hidden]="fullScreen">
             <label class="col-md-4 col-lg-3 form-control-label"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5"
                    translate>workflow.label.agent
             </label>
-            <div class="col-md-8 col-lg-9" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'agent'">
+            <div class="col-md-8 col-lg-9" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'agent' && selectedNode.radio1 !== 'byListVariable'">
               <app-agent-selection [preferences]="preferences" [agents]="inventoryService.agentList"
-                                   (selectSubagentCluster)="selectSubagentCluster($event)" [required]="false"
+                                   (selectSubagentCluster)="selectSubagentCluster($event)"
                                    [data]="selectedNode.obj"></app-agent-selection>
             </div>
-            <div class="col-md-8 col-lg-9" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression'">
+            <div class="col-md-8 col-lg-9" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression' && selectedNode.radio1 !== 'byListVariable'">
               <app-agent-selection [preferences]="preferences" [agents]="inventoryService.agentList"
-                                   [skipSubagents]="true" [required]="false"
+                                   [skipSubagents]="true"
                                    [data]="selectedNode.obj"></app-agent-selection>
             </div>
           </div>
-          <div class="form-group row" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression'">
+          <div class="form-group row" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression' && selectedNode.radio1 !== 'byListVariable'">
             <label class="col-md-4 col-lg-3 form-control-label"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5"
                    translate>workflow.label.subagentClusterIdExpr
             </label>
-            <div class="col-md-8 col-lg-9" [hidden]="fullScreen">
+            <div class="col-md-8 col-lg-9" [hidden]="fullScreen" *ngIf="selectedNode.radio1 !== 'byListVariable'">
               <textarea class="form-control" name="subagentClusterIdExpr"
                         [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
                         [(ngModel)]="selectedNode.obj.subagentClusterIdExpr"></textarea>
             </div>
           </div>
-          <div class="form-group row" [ngClass]="{'hide': fullScreen}">
+          <div class="form-group row" *ngIf="selectedNode.radio1 !== 'byListVariable'" [ngClass]="{'hide': fullScreen}">
             <label class="col-md-4 col-lg-3 form-control-label"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('workflow.tooltip.subagentIdVariable' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.subagentIdVariable</label>
@@ -315,7 +326,7 @@
               />
             </div>
           </div>
-          <div class="form-group row"
+          <div class="form-group row" *ngIf="selectedNode.radio1 == 'byListVariable'"
                [ngClass]="{'has-error' : ((children.dirty || children.touched) && children.invalid)}">
             <label class="col-md-4 col-lg-3 form-control-label"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.children' | translate) : ''"
@@ -341,7 +352,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row" *ngIf="selectedNode.radio1 == 'byListVariable'">
             <label class="col-md-4 col-lg-3 form-control-label"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.childToId' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5" translate
@@ -398,13 +409,13 @@
               </div>
             </div>
           </div>
-          <div class="form-group row" [hidden]="forkListVariableObj && forkListVariableObj.value">
+          <div class="form-group row" [hidden]="forkListVariableObj && forkListVariableObj.value" *ngIf="selectedNode.radio1 == 'byListVariable'">
             <div class="col-md-12">
               <a class="text-hover-primary" (click)="createForkListVariables();"><i
                 class="fa fa-plus p-r-sm"></i>{{'workflow.button.createForkListVariables' | translate}}</a>
             </div>
           </div>
-          <div class="b-a p-a" *ngIf="forkListVariableObj && forkListVariableObj.value">
+          <div class="b-a p-a" *ngIf="forkListVariableObj && forkListVariableObj.value && selectedNode.radio1 == 'byListVariable'">
             <div class="form-group row">
               <div class="col-md-12 _600" *ngIf="forkListVariableObj.create" translate>
                 workflow.label.createForkListVariable

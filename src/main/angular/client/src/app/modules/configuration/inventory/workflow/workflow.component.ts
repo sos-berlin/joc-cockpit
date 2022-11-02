@@ -11,28 +11,28 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { FileUploader } from 'ng2-file-upload';
-import { TranslateService } from '@ngx-translate/core';
-import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
-import { Subscription } from 'rxjs';
-import { NzMessageService } from "ng-zorro-antd/message";
-import { isEmpty, isArray, isEqual, clone, extend, sortBy, groupBy } from 'underscore';
-import { saveAs } from 'file-saver';
-import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
-import { AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
-import { CdkDragDrop, moveItemInArray, DragDrop } from '@angular/cdk/drag-drop';
-import { WorkflowService } from '../../../../services/workflow.service';
-import { DataService } from '../../../../services/data.service';
-import { CoreService } from '../../../../services/core.service';
-import { ValueEditorComponent } from '../../../../components/value-editor/value.component';
-import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
-import { InventoryObject } from '../../../../models/enums';
-import { JobWizardComponent } from '../job-wizard/job-wizard.component';
-import { InventoryService } from '../inventory.service';
-import { CreateObjectModalComponent } from "../inventory.component";
-import { UpdateJobTemplatesComponent } from "../job-template/job-template.component";
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {FileUploader} from 'ng2-file-upload';
+import {TranslateService} from '@ngx-translate/core';
+import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
+import {Subscription} from 'rxjs';
+import {NzMessageService} from "ng-zorro-antd/message";
+import {isEmpty, isArray, isEqual, clone, extend, sortBy, groupBy} from 'underscore';
+import {saveAs} from 'file-saver';
+import {ToastrService} from 'ngx-toastr';
+import {Router} from '@angular/router';
+import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
+import {CdkDragDrop, moveItemInArray, DragDrop} from '@angular/cdk/drag-drop';
+import {WorkflowService} from '../../../../services/workflow.service';
+import {DataService} from '../../../../services/data.service';
+import {CoreService} from '../../../../services/core.service';
+import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
+import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {InventoryObject} from '../../../../models/enums';
+import {JobWizardComponent} from '../job-wizard/job-wizard.component';
+import {InventoryService} from '../inventory.service';
+import {CreateObjectModalComponent} from "../inventory.component";
+import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
 
 // Mx-Graph Objects
 declare const mxEditor;
@@ -3553,7 +3553,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             this.workflowTree = [...this.workflowTree];
           } else if (type === InventoryObject.NOTICEBOARD) {
             this.boardTree = [...this.boardTree];
-            if (this.selectedNode.obj && this.selectedNode.obj.noticeBoardNames && typeof this.selectedNode.obj.noticeBoardNames != 'string') {
+            if (this.selectedNode && this.selectedNode.obj && this.selectedNode.obj.noticeBoardNames && typeof this.selectedNode.obj.noticeBoardNames != 'string') {
               this.selectedNode.obj.noticeBoardNames = [...this.selectedNode.obj.noticeBoardNames];
             }
           }
@@ -5020,6 +5020,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function traversForkList(list, obj, edge, branchObj, parent, endNode): void {
       let callAgain = false;
       for (const i in list) {
+
         if (list[i].value && ((list[i].getParent().id == parent.id) || (list[i].getAttribute('parentId') == parent.id) || (edge.target && list[i].id == edge.target.id) || (list[i].id == parent.getParent().id) || (self.workflowService.checkClosingCell(list[i].value.tagName)
           && parent.id == list[i].getAttribute('targetId')))) {
           if ((self.workflowService.checkClosingCell(list[i].value.tagName) && parent.id == list[i].getAttribute('targetId'))) {
@@ -5048,6 +5049,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (edges[j].source && branchObj.instructions[branchObj.instructions.length - 1] && branchObj.instructions[branchObj.instructions.length - 1].id == edges[j].source.id) {
                 flag = true;
                 break;
+              } else {
+                if (obj.lastId && (list[i].value.tagName === 'Job' || list[i].value.tagName === 'AddOrder' || list[i].value.tagName === 'Finish' || list[i].value.tagName === 'Fail' ||
+                  list[i].value.tagName === 'ExpectNotices' || list[i].value.tagName === 'PostNotices' || list[i].value.tagName === 'Prompt' || self.workflowService.isInstructionCollapsible(list[i].value.tagName))) {
+                  if (edges[j].source && self.workflowService.checkClosingCell(edges[j].source.value.tagName)) {
+                    if (branchObj.instructions[branchObj.instructions.length - 1].id === edges[j].source.getAttribute('targetId')) {
+                      flag = true;
+                      break;
+                    }
+                  }
+                }
               }
             }
           }
@@ -7612,12 +7623,34 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               graph.getModel().execute(edit);
             }
           } else if (self.selectedNode.type === 'ForkList') {
-            const edit = new mxCellAttributeChange(
-              obj.cell, 'children', self.selectedNode.newObj.children);
-            graph.getModel().execute(edit);
-            const edit2 = new mxCellAttributeChange(
-              obj.cell, 'childToId', self.selectedNode.newObj.childToId);
-            graph.getModel().execute(edit2);
+            if (self.selectedNode.radio1 === 'byListVariable') {
+              const edit = new mxCellAttributeChange(
+                obj.cell, 'children', self.selectedNode.newObj.children);
+              graph.getModel().execute(edit);
+              const edit2 = new mxCellAttributeChange(
+                obj.cell, 'childToId', self.selectedNode.newObj.childToId);
+              graph.getModel().execute(edit2);
+            } else {
+              if (self.selectedNode.newObj.agentName1) {
+                self.selectedNode.newObj.subagentClusterId = self.selectedNode.newObj.agentName;
+                self.selectedNode.newObj.agentName = self.selectedNode.newObj.agentName1;
+                delete self.selectedNode.newObj.agentName1;
+              }
+              const edit5 = new mxCellAttributeChange(
+                obj.cell, 'agentName', self.selectedNode.newObj.agentName);
+              graph.getModel().execute(edit5);
+              const edit6 = new mxCellAttributeChange(
+                obj.cell, 'subagentClusterId', self.selectedNode.newObj.subagentClusterId);
+              graph.getModel().execute(edit6);
+              self.coreService.addSlashToString(self.selectedNode.newObj, 'subagentClusterIdExpr');
+              const edit7 = new mxCellAttributeChange(
+                obj.cell, 'subagentClusterIdExpr', self.selectedNode.newObj.subagentClusterIdExpr);
+              graph.getModel().execute(edit7);
+              const edit8 = new mxCellAttributeChange(
+                obj.cell, 'subagentIdVariable', self.selectedNode.newObj.subagentIdVariable || 'js7ForkListSubagentId');
+              graph.getModel().execute(edit8);
+            }
+
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'joinIfFailed', self.selectedNode.newObj.joinIfFailed);
             graph.getModel().execute(edit3);
@@ -7637,19 +7670,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 obj.cell, 'result', null);
               graph.getModel().execute(edit4);
             }
-            const edit5 = new mxCellAttributeChange(
-              obj.cell, 'agentName', self.selectedNode.newObj.agentName);
-            graph.getModel().execute(edit5);
-            const edit6 = new mxCellAttributeChange(
-              obj.cell, 'subagentClusterId', self.selectedNode.newObj.subagentClusterId);
-            graph.getModel().execute(edit6);
-            self.coreService.addSlashToString(self.selectedNode.newObj, 'subagentClusterIdExpr');
-            const edit7 = new mxCellAttributeChange(
-              obj.cell, 'subagentClusterIdExpr', self.selectedNode.newObj.subagentClusterIdExpr);
-            graph.getModel().execute(edit7);
-            const edit8 = new mxCellAttributeChange(
-              obj.cell, 'subagentIdVariable', self.selectedNode.newObj.subagentIdVariable);
-            graph.getModel().execute(edit8);
+
           } else if (self.selectedNode.type === 'Lock') {
             let demands = [];
             if (isArray(self.selectedNode.newObj.lockNames)) {
@@ -7923,16 +7944,26 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
           }
         } else if (cell.value.tagName === 'ForkList') {
-          obj.children = cell.getAttribute('children');
-          obj.childToId = cell.getAttribute('childToId');
-          obj.joinIfFailed = cell.getAttribute('joinIfFailed');
-          obj.agentName = cell.getAttribute('agentName');
-          obj.subagentClusterId = cell.getAttribute('subagentClusterId');
-          obj.subagentClusterIdExpr = cell.getAttribute('subagentClusterIdExpr');
-          if (obj.subagentClusterIdExpr) {
-            self.coreService.removeSlashToString(obj, 'subagentClusterIdExpr');
+          let children = cell.getAttribute('children');
+          if (children) {
+            obj.children = children;
+            obj.childToId = cell.getAttribute('childToId');
+          } else {
+            let subagentClusterId = cell.getAttribute('subagentClusterId');
+            if (subagentClusterId) {
+              obj.agentName = subagentClusterId;
+              obj.subagentClusterId = cell.getAttribute('agentName1');
+            } else {
+              obj.agentName = cell.getAttribute('agentName');
+            }
+            obj.subagentClusterIdExpr = cell.getAttribute('subagentClusterIdExpr');
+            if (obj.subagentClusterIdExpr) {
+              self.coreService.removeSlashToString(obj, 'subagentClusterIdExpr');
+            }
+            obj.subagentIdVariable = cell.getAttribute('subagentIdVariable') || 'js7ForkListSubagentId';
           }
-          obj.subagentIdVariable = cell.getAttribute('subagentIdVariable');
+          obj.joinIfFailed = cell.getAttribute('joinIfFailed');
+
           obj.joinIfFailed = obj.joinIfFailed == 'true';
           let resultObj = cell.getAttribute('result');
           if (resultObj) {
@@ -8026,6 +8057,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         };
 
         if (cell.value.tagName === 'ForkList') {
+          self.selectedNode.radio1 = 'bySubagentCluster';
+          if (obj.children) {
+            self.selectedNode.radio1 = 'byListVariable';
+          }
           if (obj.subagentClusterIdExpr) {
             self.selectedNode.radio = 'expression';
           } else {
@@ -10099,12 +10134,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             delete json.instructions[x].subagentClusterId;
             delete json.instructions[x].subagentClusterIdExpr;
             delete json.instructions[x].subagentIdVariable;
-            json.instructions[x].children = childrenObj;
-            json.instructions[x].childToId = childToIdObj;
-            json.instructions[x].agentName = agentNameObj;
-            json.instructions[x].subagentClusterId = subagentClusterIdObj;
-            json.instructions[x].subagentClusterIdExpr = subagentClusterIdExprObj;
-            json.instructions[x].subagentIdVariable = subagentIdVariableObj;
+            if (childrenObj) {
+              json.instructions[x].children = childrenObj;
+              json.instructions[x].childToId = childToIdObj;
+            } else {
+              json.instructions[x].agentName = agentNameObj;
+              json.instructions[x].subagentClusterId = subagentClusterIdObj;
+              json.instructions[x].subagentClusterIdExpr = subagentClusterIdExprObj;
+              json.instructions[x].subagentIdVariable = subagentIdVariableObj;
+            }
+
             json.instructions[x].workflow = {
               instructions: json.instructions[x].instructions,
               result
@@ -10193,6 +10232,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
     if (this.error || checkErr) {
       flag = false;
+    }
+    if (isEmpty(mainJson.jobs)) {
+      delete mainJson.jobs;
     }
     return flag;
   }

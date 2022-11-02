@@ -2635,6 +2635,8 @@
     "label.agentSelectFromList": "Select Agent or Subagent",
     "label.agentAsExpression": "Subagent Expression",
     "label.subagentIdVariable": "SubagentId Variable",
+    "label.byListVariable": "By List Variable",
+    "label.bySubagentCluster": "By Subagent Cluster",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
