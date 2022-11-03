@@ -263,107 +263,99 @@
           </div>
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'ForkList'">
-          <div class="form-group row">
-            <div class="col-md-4 col-lg-3"></div>
-            <div class="col-md-8 col-lg-9">
-              <nz-radio-group [(ngModel)]="selectedNode.radio1">
-                <label nz-radio nzValue="byListVariable"><span
-                  translate>workflow.label.byListVariable</span></label>
-                <label nz-radio nzValue="bySubagentCluster"><span
-                  translate>workflow.label.bySubagentCluster</span></label>
-              </nz-radio-group>
-            </div>
-          </div>
-          <div class="form-group row"
-               *ngIf="hasLicense && selectedNode.radio1 !== 'byListVariable'">
-            <div class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment</div>
-            <div class="col-md-8 col-lg-9">
-              <nz-radio-group [(ngModel)]="selectedNode.radio">
-                <label nz-radio nzValue="agent"><span
-                  translate>workflow.label.agentSelectFromList</span></label>
-                <label nz-radio nzValue="expression"><span
-                  translate>workflow.label.agentAsExpression</span></label>
-              </nz-radio-group>
-            </div>
-          </div>
-          <div class="form-group row" *ngIf="selectedNode.radio1 !== 'byListVariable'" [hidden]="fullScreen">
-            <label class="col-md-4 col-lg-3 form-control-label"
-                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
-                   [nzTooltipMouseEnterDelay]="0.5"
-                   translate>workflow.label.agent
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-md-8 col-lg-9" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'agent' && selectedNode.radio1 !== 'byListVariable'">
-              <app-agent-selection [preferences]="preferences" [agents]="inventoryService.agentList"
-                                   (selectSubagentCluster)="selectSubagentCluster($event)"
-                                   [data]="selectedNode.obj"></app-agent-selection>
-            </div>
-            <div class="col-md-8 col-lg-9" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression' && selectedNode.radio1 !== 'byListVariable'">
-              <app-agent-selection [preferences]="preferences" [agents]="inventoryService.agentList"
-                                   [skipSubagents]="true"
-                                   [data]="selectedNode.obj"></app-agent-selection>
-            </div>
-          </div>
-          <div class="form-group row" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression' && selectedNode.radio1 !== 'byListVariable'">
-            <label class="col-md-4 col-lg-3 form-control-label"
-                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
-                   [nzTooltipMouseEnterDelay]="0.5"
-                   translate>workflow.label.subagentClusterIdExpr
-            </label>
-            <div class="col-md-8 col-lg-9" [hidden]="fullScreen" *ngIf="selectedNode.radio1 !== 'byListVariable'">
+          <nz-collapse [nzBordered]="false" [hidden]="fullScreen">
+            <nz-collapse-panel class="m-b" [nzHeader]="'workflow.label.byListVariable' | translate" (click)="selectedNode.radio1 = 'byListVariable'" [nzActive]="selectedNode.radio1 == 'byListVariable'">
+              <div class="p-a b-a m-t">
+              <div class="form-group row"
+                   [ngClass]="{'has-error' : ((children.dirty || children.touched) && children.invalid)}">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.children' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.children
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-md-8 col-lg-9">
+                  <nz-select nzShowSearch name="children" required #children="ngModel"
+                             [(ngModel)]="selectedNode.obj.children" (ngModelChange)="selectListForForkList($event)">
+                    <ng-container *ngFor="let item of forkListVariables">
+                      <nz-option nzCustomContent [nzValue]="item.name" [nzLabel]="item.name">
+                        {{item.name}}<i (click)="editForkListVariables(item);$event.stopPropagation()"
+                                        class="fa fa-pencil text-hover-primary p-l-sm"></i>
+                        <i (click)="deleteForkListVariables(item);$event.stopPropagation()"
+                           class="fa fa-times text-danger-hover pull-right" style="margin-top: 5px"></i>
+                      </nz-option>
+                    </ng-container>
+                  </nz-select>
+                  <div *ngIf="children.invalid && (children.dirty || children.touched)" class="text-danger help-block">
+                    <div *ngIf="children.errors.required">
+                      <div translate>common.message.requiredError</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.childToId' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5" translate
+                       title="{{'workflow.label.childToId' | translate}}">workflow.label.childToId</label>
+                <div class="col-md-8 col-lg-9">
+                  <nz-select nzAllowClear name="childToId" [(ngModel)]="selectedNode.obj.childToId">
+                    <nz-option *ngFor="let item of listOfParams" [nzLabel]="item.name" [nzValue]="item.name"></nz-option>
+                  </nz-select>
+                </div>
+              </div>
+              </div>
+            </nz-collapse-panel>
+          </nz-collapse>
+          <nz-collapse [nzBordered]="false" *ngIf="hasLicense" [hidden]="fullScreen">
+            <nz-collapse-panel class="m-b" [nzHeader]="'workflow.label.bySubagentCluster' | translate" (click)="selectedNode.radio1 = 'bySubagentCluster'" [nzActive]="selectedNode.radio1 == 'bySubagentCluster'">
+              <div class="p-a b-a m-t">
+              <div class="form-group row">
+                <div [nz-tooltip]="!preferences.showTooltipInfo ? ('workflow.tooltip.agentAssignment' | translate) : ''"
+                     [nzTooltipMouseEnterDelay]="0.5" class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment</div>
+                <div class="col-md-8 col-lg-9">
+                  <nz-radio-group [(ngModel)]="selectedNode.radio">
+                    <label nz-radio nzValue="agent"><span
+                      translate>workflow.label.agentSelectFromList</span></label>
+                    <label nz-radio nzValue="expression"><span
+                      translate>workflow.label.agentAsExpression</span></label>
+                  </nz-radio-group>
+                </div>
+              </div>
+              <div class="form-group row" >
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       translate>workflow.label.agent
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'agent'">
+                  <app-agent-selection [preferences]="preferences" [agents]="inventoryService.agentList"
+                                       (selectSubagentCluster)="selectSubagentCluster($event)"
+                                       [data]="selectedNode.obj"></app-agent-selection>
+                </div>
+                <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'expression'">
+                  <app-agent-selection [preferences]="preferences" [agents]="inventoryService.agentList"
+                                       [skipSubagents]="true"
+                                       [data]="selectedNode.obj"></app-agent-selection>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="selectedNode.radio == 'expression'">
+                <label class="col-md-4 col-lg-3 form-control-label"
+                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       translate>workflow.label.subagentClusterIdExpr
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-md-8 col-lg-9">
               <textarea class="form-control" name="subagentClusterIdExpr"
                         [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
                         [(ngModel)]="selectedNode.obj.subagentClusterIdExpr"></textarea>
-            </div>
-          </div>
-          <div class="form-group row" *ngIf="selectedNode.radio1 !== 'byListVariable'" [ngClass]="{'hide': fullScreen}">
-            <label class="col-md-4 col-lg-3 form-control-label"
-                   [nz-tooltip]="!preferences.showTooltipInfo ? ('workflow.tooltip.subagentIdVariable' | translate) : ''"
-                   [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.subagentIdVariable</label>
-            <div class="col-md-8 col-lg-9">
-              <input type="text" class="form-control" name="subagentIdVariable"
-                     placeholder="{{'workflow.placeholder.enterSubagentIdVariable' | translate}}"
-                     [(ngModel)]="selectedNode.obj.subagentIdVariable"
-              />
-            </div>
-          </div>
-          <div class="form-group row" *ngIf="selectedNode.radio1 == 'byListVariable'"
-               [ngClass]="{'has-error' : ((children.dirty || children.touched) && children.invalid)}">
-            <label class="col-md-4 col-lg-3 form-control-label"
-                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.children' | translate) : ''"
-                   [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.children
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-md-8 col-lg-9">
-              <nz-select nzShowSearch name="children" required #children="ngModel"
-                         [(ngModel)]="selectedNode.obj.children" (ngModelChange)="selectListForForkList($event)">
-                <ng-container *ngFor="let item of forkListVariables">
-                  <nz-option nzCustomContent [nzValue]="item.name" [nzLabel]="item.name">
-                    {{item.name}}<i (click)="editForkListVariables(item);$event.stopPropagation()"
-                                    class="fa fa-pencil text-hover-primary p-l-sm"></i>
-                    <i (click)="deleteForkListVariables(item);$event.stopPropagation()"
-                       class="fa fa-times text-danger-hover pull-right" style="margin-top: 5px"></i>
-                  </nz-option>
-                </ng-container>
-              </nz-select>
-              <div *ngIf="children.invalid && (children.dirty || children.touched)" class="text-danger help-block">
-                <div *ngIf="children.errors.required">
-                  <div translate>common.message.requiredError</div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="form-group row" *ngIf="selectedNode.radio1 == 'byListVariable'">
-            <label class="col-md-4 col-lg-3 form-control-label"
-                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.childToId' | translate) : ''"
-                   [nzTooltipMouseEnterDelay]="0.5" translate
-                   title="{{'workflow.label.childToId' | translate}}">workflow.label.childToId</label>
-            <div class="col-md-8 col-lg-9">
-              <nz-select nzAllowClear name="childToId" [(ngModel)]="selectedNode.obj.childToId">
-                <nz-option *ngFor="let item of listOfParams" [nzLabel]="item.name" [nzValue]="item.name"></nz-option>
-              </nz-select>
-            </div>
-          </div>
+              </div>
+            </nz-collapse-panel>
+          </nz-collapse>
+
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.joinIfFailed' | translate}}"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.joinIfFailed' | translate) : ''"
