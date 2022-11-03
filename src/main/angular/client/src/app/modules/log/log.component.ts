@@ -535,6 +535,9 @@ export class LogComponent implements OnInit {
       } else if (dt[i].logEvent === 'OrderNoticesConsumed' && dt[i].consumeNotices && dt[i].consumeNotices.consumed == false) {
         col += ' (<span class="log_error">Failed</span>)';
       }
+      if (dt[i].logEvent === 'OrderMoved' && dt[i].moved) {
+        col += ' Skipped(job=' + dt[i].moved.jobName + ', reason='+ dt[i].moved.reason + '). Moved To(pos=' + dt[i].to.position + ')';
+      }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {
         const cls = !this.object.checkBoxs.main ? ' hide-block' : '';

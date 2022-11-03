@@ -291,6 +291,7 @@
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5"
                    translate>workflow.label.agent
+              <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-8 col-lg-9" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'agent' && selectedNode.radio1 !== 'byListVariable'">
               <app-agent-selection [preferences]="preferences" [agents]="inventoryService.agentList"
@@ -852,8 +853,8 @@
                        *ngFor="let actualListArr of listVariables.actualList; let i = index"
                        [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}">
                     <div *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)"
-                         (click)="addArgumentToList(listVariables)" class="pos-abt"
-                         style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
+                         (click)="addArgumentToList(listVariables)" class="pos-abt cursor"
+                         style="margin-left: -13px;font-size: 16px;margin-top: 3px;z-index: 999">
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </div>
                     <div class="col-md-12" *ngFor="let argument of actualListArr; let k = index">
@@ -1230,8 +1231,8 @@
                      *ngFor="let param of variable.value.listParameters; let j = index">
                   <div class="col-md-12">
                     <div *ngIf="j === variable.value.listParameters.length - 1" class="pos-abt cursor"
-                         style="margin-top: 5px;left:6px;font-size:16px">
-                      <a (click)="addVariableToList(variable.value)" class="text-primary-hover cursor"><i
+                         style="margin-top: 5px;left:6px;font-size:16px;z-index: 999" (click)="addVariableToList(variable.value)">
+                      <a  class="text-primary-hover cursor"><i
                         class="fa fa-plus"></i></a>
                     </div>
                     <div class="col-md-4 col-lg-4 m-b-sm p-r-0"

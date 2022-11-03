@@ -7630,7 +7630,22 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               const edit2 = new mxCellAttributeChange(
                 obj.cell, 'childToId', self.selectedNode.newObj.childToId);
               graph.getModel().execute(edit2);
+              const edit5 = new mxCellAttributeChange(
+                obj.cell, 'agentName', '');
+              graph.getModel().execute(edit5);
+              const edit6 = new mxCellAttributeChange(
+                obj.cell, 'subagentClusterId', '');
+              graph.getModel().execute(edit6);
+              const edit7 = new mxCellAttributeChange(
+                obj.cell, 'subagentClusterIdExpr', '');
+              graph.getModel().execute(edit7);
             } else {
+              const edit = new mxCellAttributeChange(
+                obj.cell, 'children', '');
+              graph.getModel().execute(edit);
+              const edit2 = new mxCellAttributeChange(
+                obj.cell, 'childToId', '');
+              graph.getModel().execute(edit2);
               if (self.selectedNode.newObj.agentName1) {
                 self.selectedNode.newObj.subagentClusterId = self.selectedNode.newObj.agentName;
                 self.selectedNode.newObj.agentName = self.selectedNode.newObj.agentName1;
@@ -7646,11 +7661,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               const edit7 = new mxCellAttributeChange(
                 obj.cell, 'subagentClusterIdExpr', self.selectedNode.newObj.subagentClusterIdExpr);
               graph.getModel().execute(edit7);
-              const edit8 = new mxCellAttributeChange(
-                obj.cell, 'subagentIdVariable', self.selectedNode.newObj.subagentIdVariable || 'js7ForkListSubagentId');
-              graph.getModel().execute(edit8);
             }
-
+            const edit8 = new mxCellAttributeChange(
+              obj.cell, 'subagentIdVariable', self.selectedNode.newObj.subagentIdVariable);
+            graph.getModel().execute(edit8);
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'joinIfFailed', self.selectedNode.newObj.joinIfFailed);
             graph.getModel().execute(edit3);
@@ -7960,10 +7974,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (obj.subagentClusterIdExpr) {
               self.coreService.removeSlashToString(obj, 'subagentClusterIdExpr');
             }
-            obj.subagentIdVariable = cell.getAttribute('subagentIdVariable') || 'js7ForkListSubagentId';
           }
+          obj.subagentIdVariable = cell.getAttribute('subagentIdVariable');
           obj.joinIfFailed = cell.getAttribute('joinIfFailed');
-
           obj.joinIfFailed = obj.joinIfFailed == 'true';
           let resultObj = cell.getAttribute('result');
           if (resultObj) {
@@ -10141,9 +10154,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               json.instructions[x].agentName = agentNameObj;
               json.instructions[x].subagentClusterId = subagentClusterIdObj;
               json.instructions[x].subagentClusterIdExpr = subagentClusterIdExprObj;
-              json.instructions[x].subagentIdVariable = subagentIdVariableObj;
             }
-
+            json.instructions[x].subagentIdVariable = subagentIdVariableObj;
             json.instructions[x].workflow = {
               instructions: json.instructions[x].instructions,
               result

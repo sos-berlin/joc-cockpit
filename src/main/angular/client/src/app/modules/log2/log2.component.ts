@@ -503,7 +503,7 @@ export class Log2Component implements OnInit {
             }
           }
           col += ')';
-        } 
+        }
         if (dt[i].msg) {
           col += ': '+ dt[i].msg;
         }
@@ -534,6 +534,9 @@ export class Log2Component implements OnInit {
         }
       } else if (dt[i].logEvent === 'OrderNoticesConsumed' && dt[i].consumeNotices && dt[i].consumeNotices.consumed == false) {
         col += ' (<span class="log_error">Failed</span>)';
+      }
+      if (dt[i].logEvent === 'OrderMoved' && dt[i].moved) {
+        col += ' Skipped(job=' + dt[i].moved.jobName + ', reason='+ dt[i].moved.reason + '). Moved To(pos=' + dt[i].to.position + ')';
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {
