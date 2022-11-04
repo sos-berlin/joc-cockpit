@@ -1085,6 +1085,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   indexOfNextAdd = 0;
   error: boolean;
   errorMsg: string;
+  invalidName: string;
   obj: any = {};
   isDisplay = true;
   isRuntimeVisible = false;
@@ -1138,6 +1139,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         this.error = res.error;
         if (res.msg && res.msg.match('duplicateLabel')) {
           this.errorMsg = res.msg;
+        } if (res.msg && res.msg.match('Invalid name')) {
+          this.invalidName = 'inventory.message.nameIsNotValid';
         } else {
           this.errorMsg = '';
         }
@@ -1884,6 +1887,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.selectedNode.obj.jobName) {
       this.selectedNode.obj.jobName = 'job';
     }
+    this.selectedNode.obj.jobName = this.selectedNode.obj.jobName.trim();
     if (this.selectedNode.job.jobName !== this.selectedNode.obj.jobName) {
       this.selectedNode.job.jobName = this.selectedNode.obj.jobName;
       for (const i in this.jobs) {
@@ -2113,7 +2117,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       arr: this.jobResourcesTree,
       jobResources: this.selectedNode.job.jobResourceNames
     });
-    if(this.selectedNode.job.subagentClusterIdExpr){
+    if (this.selectedNode.job.subagentClusterIdExpr) {
       this.selectedNode.radio = 'expression';
       this.coreService.removeSlashToString(this.selectedNode.job, 'subagentClusterIdExpr');
     } else {
@@ -2888,6 +2892,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
+  changeAgentSelection($event) {
+    if ($event == 'expression') {
+      if (this.selectedNode.obj && this.selectedNode.obj.agentName1) {
+        this.selectedNode.obj.agentName = this.selectedNode.obj.agentName1;
+        delete this.selectedNode.obj.agentName1;
+      }
+    } else {
+      delete this.selectedNode.obj.agentName;
+    }
+  }
+
   recursiveUpdate(): void {
     $('#searchTree input').focus();
     $('#workflowHeader').addClass('hide-on-focus');
@@ -2995,6 +3010,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   private saveCopyInstruction(): void {
     this.cutCell = [];
+    this.inventoryConf.copiedInstuctionObject = [];
     if (this.copyId.length > 0) {
       this.copyId.forEach(id => {
         let obj = this.getObject(this.workflow.configuration, id);
@@ -4518,20 +4534,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  // private getLimit(): void {
-  //   this.error = false;
-  //   if (this.selectedNode.obj.lockName) {
-  //     this.coreService.post('inventory/read/configuration', {
-  //       path: this.selectedNode.obj.lockName,
-  //       objectType: InventoryObject.LOCK
-  //     }).subscribe((conf: any) => {
-  //       if (this.selectedNode && this.selectedNode.obj) {
-  //         this.selectedNode.obj.limit = conf.configuration.limit || 1;
-  //       }
-  //     });
-  //   }
-  // }
-
   private getWorkflow(flag = false): void {
     if (this.selectedNode.obj.workflowName) {
       this.coreService.post('inventory/read/configuration', {
@@ -5227,7 +5229,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
 
     findFirstNode(jsonObject);
-
     if (jsonObject.instructions.length > 0) {
       this.workflow.configuration = this.coreService.clone(jsonObject);
     } else {
@@ -7631,25 +7632,33 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 obj.cell, 'childToId', self.selectedNode.newObj.childToId);
               graph.getModel().execute(edit2);
               const edit5 = new mxCellAttributeChange(
-                obj.cell, 'agentName', '');
+                obj.cell, 'agentName', undefined);
               graph.getModel().execute(edit5);
               const edit6 = new mxCellAttributeChange(
-                obj.cell, 'subagentClusterId', '');
+                obj.cell, 'subagentClusterId', undefined);
               graph.getModel().execute(edit6);
               const edit7 = new mxCellAttributeChange(
-                obj.cell, 'subagentClusterIdExpr', '');
+                obj.cell, 'subagentClusterIdExpr', undefined);
               graph.getModel().execute(edit7);
             } else {
               const edit = new mxCellAttributeChange(
-                obj.cell, 'children', '');
+                obj.cell, 'children', undefined);
               graph.getModel().execute(edit);
               const edit2 = new mxCellAttributeChange(
-                obj.cell, 'childToId', '');
+                obj.cell, 'childToId', undefined);
               graph.getModel().execute(edit2);
               if (self.selectedNode.newObj.agentName1) {
                 self.selectedNode.newObj.subagentClusterId = self.selectedNode.newObj.agentName;
                 self.selectedNode.newObj.agentName = self.selectedNode.newObj.agentName1;
                 delete self.selectedNode.newObj.agentName1;
+              }
+              if (self.selectedNode.radio === 'agent') {
+                delete self.selectedNode.newObj.subagentClusterIdExpr;
+              } else {
+                delete self.selectedNode.newObj.agentName1;
+                if (self.selectedNode.newObj.subagentClusterIdExpr) {
+                  self.coreService.addSlashToString(self.selectedNode.newObj, 'subagentClusterIdExpr');
+                }
               }
               const edit5 = new mxCellAttributeChange(
                 obj.cell, 'agentName', self.selectedNode.newObj.agentName);
@@ -7657,7 +7666,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               const edit6 = new mxCellAttributeChange(
                 obj.cell, 'subagentClusterId', self.selectedNode.newObj.subagentClusterId);
               graph.getModel().execute(edit6);
-              self.coreService.addSlashToString(self.selectedNode.newObj, 'subagentClusterIdExpr');
+              if (self.selectedNode.newObj.subagentClusterIdExpr) {
+                self.coreService.addSlashToString(self.selectedNode.newObj, 'subagentClusterIdExpr');
+              }
               const edit7 = new mxCellAttributeChange(
                 obj.cell, 'subagentClusterIdExpr', self.selectedNode.newObj.subagentClusterIdExpr);
               graph.getModel().execute(edit7);
@@ -7966,7 +7977,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             let subagentClusterId = cell.getAttribute('subagentClusterId');
             if (subagentClusterId) {
               obj.agentName = subagentClusterId;
-              obj.subagentClusterId = cell.getAttribute('agentName1');
+              obj.agentName1 = cell.getAttribute('agentName');
             } else {
               obj.agentName = cell.getAttribute('agentName');
             }
@@ -8126,6 +8137,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           delete cObject.jobObject;
         })
       }
+
       if (target.value.tagName === 'Process') {
         if (self.workflow.configuration && !self.workflow.configuration.instructions) {
           self.workflow.configuration.instructions = [];
@@ -8246,6 +8258,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             isFound = false;
             getObject(self.workflow.configuration, id);
           });
+        } else {
+          getObject(self.workflow.configuration, source);
         }
       }
 
@@ -9780,8 +9794,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             json.instructions[x].TYPE = 'Execute.Named';
             flag = self.workflowService.validateFields(json.instructions[x], 'Node');
             if (!flag) {
-              self.invalidMsg = !json.instructions[x].label ? 'workflow.message.labelIsMissing' : 'workflow.message.nameIsNotValid';
+              let msg = !json.instructions[x].label ? 'workflow.message.labelIsMissing' : 'inventory.message.nameIsNotValid';
               checkErr = true;
+              self.translate.get(msg).subscribe(translatedValue => {
+                self.invalidMsg = 'Job: '+ json.instructions[x].jobName + ' ' +  translatedValue;
+              });
             }
             if (flag) {
               if (labels.has(json.instructions[x].label)) {
@@ -10017,7 +10034,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             flag = self.workflowService.validateFields(json.instructions[x], 'Fork');
             if (!flag) {
               checkErr = true;
-              self.invalidMsg = (!json.instructions[x].branches || json.instructions[x].branches.length < 2) ? 'workflow.message.invalidForkInstruction' : 'workflow.message.nameIsNotValid';
+              self.invalidMsg = (!json.instructions[x].branches || json.instructions[x].branches.length < 2) ? 'workflow.message.invalidForkInstruction' : 'inventory.message.nameIsNotValid';
             }
             if (!flag && isValidate) {
               if (isOpen) {
@@ -10056,13 +10073,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   ids.push(branch.id);
                 } else {
                   const arr = branch.id.match(/[0-9]+$/);
-                  const num = parseInt(arr[0], 10);
-                  if (typeof num == 'number' && !isNaN(num)) {
-                    branch.id = branch.id.substring(0, branch.id.indexOf(num)) + (maxNum + 1);
-                  } else {
-                    branch.id = branch.id + (maxNum + 1);
+                  if(arr && arr.length) {
+                    const num = parseInt(arr[0], 10);
+                    if (typeof num == 'number' && !isNaN(num)) {
+                      branch.id = branch.id.substring(0, branch.id.indexOf(num)) + (maxNum + 1);
+                    } else {
+                      branch.id = branch.id + (maxNum + 1);
+                    }
+                    ids.push(branch.id);
                   }
-                  ids.push(branch.id);
                 }
                 branch.workflow = {
                   instructions: branch.instructions,
@@ -10108,11 +10127,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             json.instructions[x].subworkflow = {
               instructions: json.instructions[x].instructions
             };
-
-            //  const noticeBoardNames = clone(json.instructions[x].noticeBoardNames);
             delete json.instructions[x].instructions;
-            // delete json.instructions[x].noticeBoardNames;
-            //json.instructions[x].noticeBoardNames = noticeBoardNames;
           } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
@@ -10214,16 +10229,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             flag = self.workflowService.validateFields(this.jobs[n].value, 'Job');
             if (!flag) {
               checkErr = true;
-              if (this.jobs[n].value.executable) {
-                if (this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' && !this.jobs[n].value.executable.script) {
-                  this.invalidMsg = 'workflow.message.scriptIsMissing';
-                } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.className) {
-                  this.invalidMsg = 'workflow.message.classNameIsMissing';
-                } else if (!this.jobs[n].value.agentName) {
-                  this.invalidMsg = 'workflow.message.agentIsMissing';
-                } else if (this.jobs[n].value.executable && this.jobs[n].value.executable.login &&
-                  this.jobs[n].value.executable.login.withUserProfile && !this.jobs[n].value.executable.login.credentialKey) {
-                  this.invalidMsg = 'inventory.message.credentialKeyIsMissing';
+              if (!this.invalidMsg) {
+                if (this.jobs[n].value.executable) {
+                  if (this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' && !this.jobs[n].value.executable.script) {
+                    this.invalidMsg = 'workflow.message.scriptIsMissing';
+                  } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && !this.jobs[n].value.executable.className) {
+                    this.invalidMsg = 'workflow.message.classNameIsMissing';
+                  } else if (!this.jobs[n].value.agentName) {
+                    this.invalidMsg = 'workflow.message.agentIsMissing';
+                  } else if (this.jobs[n].value.executable && this.jobs[n].value.executable.login &&
+                    this.jobs[n].value.executable.login.withUserProfile && !this.jobs[n].value.executable.login.credentialKey) {
+                    this.invalidMsg = 'inventory.message.credentialKeyIsMissing';
+                  }
                 }
               }
             }

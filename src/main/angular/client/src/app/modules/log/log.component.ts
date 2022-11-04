@@ -1,10 +1,10 @@
-import {Component, HostListener, OnInit, ViewChild, ElementRef} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {isEmpty} from 'underscore';
-import {ClipboardService} from 'ngx-clipboard';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {AuthService} from '../../components/guard';
-import {CoreService} from '../../services/core.service';
+import { Component, HostListener, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import {isArray, isEmpty} from 'underscore';
+import { ClipboardService } from 'ngx-clipboard';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { AuthService } from '../../components/guard';
+import { CoreService } from '../../services/core.service';
 
 declare const $;
 
@@ -47,10 +47,10 @@ export class LogComponent implements OnInit {
   delta = 20;
   taskMap = new Map();
 
-  @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
+  @ViewChild('dataBody', { static: false }) dataBody: ElementRef;
 
   constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService,
-              private clipboardService: ClipboardService, private message: NzMessageService) {
+    private clipboardService: ClipboardService, private message: NzMessageService) {
 
   }
 
@@ -89,12 +89,13 @@ export class LogComponent implements OnInit {
           controllerId: this.controllerId,
           accountName: this.authService.currentUserData
         };
-        this.coreService.post('profile/prefs', configObj).subscribe({next:(res: any) => {
-          if (res.profileItem) {
-            this.preferences = JSON.parse(res.profileItem);
-          }
-          this.init();
-        }, error:() => this.init()
+        this.coreService.post('profile/prefs', configObj).subscribe({
+          next: (res: any) => {
+            if (res.profileItem) {
+              this.preferences = JSON.parse(res.profileItem);
+            }
+            this.init();
+          }, error: () => this.init()
         });
       } else {
         this.init();
@@ -156,7 +157,7 @@ export class LogComponent implements OnInit {
           this.jsonToString(res);
           this.showHideTask(res.logEvents);
           if (!res.complete && !this.isCancel) {
-            this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
+            this.runningOrderLog({ historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId });
           } else {
             this.finished = true;
           }
@@ -208,7 +209,7 @@ export class LogComponent implements OnInit {
     }
   }
 
-  private expandTask(i, expand): void{
+  private expandTask(i, expand): void {
     const domId = 'tx_log_' + (i + 1);
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
@@ -304,7 +305,7 @@ export class LogComponent implements OnInit {
               obj.taskId = res.taskId;
             }
             this.runningTaskLog(obj, orderTaskFlag);
-          } else{
+          } else {
             this.finished = true;
           }
           this.scrollBottom();
@@ -506,7 +507,7 @@ export class LogComponent implements OnInit {
             }
           }
           col += ')';
-        } 
+        }
         if (dt[i].msg) {
           col += ': '+ dt[i].msg;
         }
@@ -535,10 +536,60 @@ export class LogComponent implements OnInit {
       } else if (dt[i].logEvent === 'OrderNoticesConsumed' && dt[i].consumeNotices && dt[i].consumeNotices.consumed == false) {
         col += ' (<span class="log_error">Failed</span>)';
       }
-      if (dt[i].logEvent === 'OrderMoved' && dt[i].moved) {
-        col += ' Skipped(job=' + dt[i].moved.jobName + ', reason='+ dt[i].moved.reason + '). Moved To(pos=' + dt[i].to.position + ')';
-      }
 
+      if (dt[i].logEvent === 'OrderMoved' && dt[i].moved && dt[i].moved.skipped && dt[i].moved.to) {
+        col += ' Skipped(job=' + dt[i].moved.skipped.jobName + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
+      } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
+        col += ', arguments(';
+        let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {
+          if (typeof v1 == 'object') {
+            v1 = Object.entries(v1).map(([k1, v1]) => {
+              return {name: k1, value: v1};
+            });
+          }
+          return {name: k1, value: v1};
+        });
+        for (let i = 0; i < arr.length; i++) {
+          if(isArray(arr[i].value)) {
+            col += arr[i].name +'={';
+            for (let j = 0; j < arr[i].value.length; j++) {
+              col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+            }
+            col += '}';
+          } else{
+            col += arr[i].name + '=' + arr[i].value;
+          }
+          if (arr.length - 1 != i) {
+            col += ', ';
+          }
+        }
+        col += ')';
+      } else if (dt[i].logEvent === 'OrderProcessed' && dt[i].returnValues) {
+        col += ', returnValues(';
+        let arr: any = Object.entries(dt[i].returnValues).map(([k1, v1]) => {
+          if (typeof v1 == 'object') {
+            v1 = Object.entries(v1).map(([k1, v1]) => {
+              return {name: k1, value: v1};
+            });
+          }
+          return {name: k1, value: v1};
+        });
+        for (let i = 0; i < arr.length; i++) {
+          if(isArray(arr[i].value)) {
+            col += arr[i].name +'={';
+            for (let j = 0; j < arr[i].value.length; j++) {
+              col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+            }
+            col += '}';
+          } else{
+            col += arr[i].name + '=' + arr[i].value;
+          }
+          if (arr.length - 1 != i) {
+            col += ', ';
+          }
+        }
+        col += ')';
+      }
       if (dt[i].logEvent === 'OrderProcessingStarted') {
         const cls = !this.object.checkBoxs.main ? ' hide-block' : '';
         const x = `<div class="main log_main${cls}"><span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i></span>` + col + `</div><div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;

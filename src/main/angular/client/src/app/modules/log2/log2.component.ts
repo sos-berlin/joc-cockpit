@@ -1,6 +1,6 @@
 import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {isEmpty} from 'underscore';
+import {isEmpty, isArray} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
@@ -205,7 +205,7 @@ export class Log2Component implements OnInit {
     }
   }
 
-  private expandTask(i, expand): void{
+  private expandTask(i, expand): void {
     const domId = 'tx_log_' + (i + 1);
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
@@ -301,7 +301,7 @@ export class Log2Component implements OnInit {
               obj.taskId = res.taskId;
             }
             this.runningTaskLog(obj, orderTaskFlag);
-          } else{
+          } else {
             this.finished = true;
           }
           this.scrollBottom();
@@ -324,7 +324,7 @@ export class Log2Component implements OnInit {
               obj.eventId = res.eventId;
               this.runningOrderLog(obj);
             }
-          } else{
+          } else {
             this.finished = true;
           }
         }
@@ -505,7 +505,7 @@ export class Log2Component implements OnInit {
           col += ')';
         }
         if (dt[i].msg) {
-          col += ': '+ dt[i].msg;
+          col += ': ' + dt[i].msg;
         }
       }
       if (dt[i].logEvent === 'OrderCaught' && dt[i].caught) {
@@ -517,10 +517,9 @@ export class Log2Component implements OnInit {
         col += ', Waiting for';
         for (let x in dt[i].expectNotices.waitingFor) {
           col += ' ExpectNotice(board=' + dt[i].expectNotices.waitingFor[x].boardName + ', id=' + dt[i].expectNotices.waitingFor[x].id + ')';
-          if(parseInt(x) < dt[i].expectNotices.waitingFor.length - 1)
-          col += ',';
+          if (parseInt(x) < dt[i].expectNotices.waitingFor.length - 1)
+            col += ',';
         }
-
       } else if (dt[i].logEvent === 'OrderNoticesRead' && dt[i].expectNotices) {
         col += ', ExpectNotices(' + dt[i].expectNotices.consumed + ')';
       } else if (dt[i].logEvent === 'OrderNoticePosted' && dt[i].postNotice) {
@@ -529,14 +528,64 @@ export class Log2Component implements OnInit {
         col += ', Consuming';
         for (let x in dt[i].consumeNotices.consuming) {
           col += ' ExpectNotice(board=' + dt[i].consumeNotices.consuming[x].boardName + ', id=' + dt[i].consumeNotices.consuming[x].id + ')';
-          if(parseInt(x) < dt[i].consumeNotices.consuming.length - 1)
-          col += ',';
+          if (parseInt(x) < dt[i].consumeNotices.consuming.length - 1)
+            col += ',';
         }
       } else if (dt[i].logEvent === 'OrderNoticesConsumed' && dt[i].consumeNotices && dt[i].consumeNotices.consumed == false) {
         col += ' (<span class="log_error">Failed</span>)';
       }
-      if (dt[i].logEvent === 'OrderMoved' && dt[i].moved) {
-        col += ' Skipped(job=' + dt[i].moved.jobName + ', reason='+ dt[i].moved.reason + '). Moved To(pos=' + dt[i].to.position + ')';
+      if (dt[i].logEvent === 'OrderMoved' && dt[i].moved && dt[i].moved.skipped && dt[i].moved.to) {
+        col += ' Skipped(job=' + dt[i].moved.skipped.jobName + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
+      } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
+        col += ', arguments(';
+        let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {
+          if (typeof v1 == 'object') {
+            v1 = Object.entries(v1).map(([k1, v1]) => {
+              return {name: k1, value: v1};
+            });
+          }
+          return {name: k1, value: v1};
+        });
+        for (let i = 0; i < arr.length; i++) {
+          if(isArray(arr[i].value)) {
+            col += arr[i].name +'={';
+            for (let j = 0; j < arr[i].value.length; j++) {
+              col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+            }
+            col += '}';
+          } else{
+            col += arr[i].name + '=' + arr[i].value;
+          }
+          if (arr.length - 1 != i) {
+            col += ', ';
+          }
+        }
+        col += ')';
+      } else if (dt[i].logEvent === 'OrderProcessed' && dt[i].returnValues) {
+        col += ', returnValues(';
+        let arr: any = Object.entries(dt[i].returnValues).map(([k1, v1]) => {
+          if (typeof v1 == 'object') {
+            v1 = Object.entries(v1).map(([k1, v1]) => {
+              return {name: k1, value: v1};
+            });
+          }
+          return {name: k1, value: v1};
+        });
+        for (let i = 0; i < arr.length; i++) {
+          if(isArray(arr[i].value)) {
+            col += arr[i].name +'={';
+            for (let j = 0; j < arr[i].value.length; j++) {
+              col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+            }
+            col += '}';
+          } else{
+            col += arr[i].name + '=' + arr[i].value;
+          }
+          if (arr.length - 1 != i) {
+            col += ', ';
+          }
+        }
+        col += ')';
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {

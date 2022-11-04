@@ -49,12 +49,12 @@
                  translate>workflow.label.name
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
-          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+          <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : (invalidName || ((name.dirty || name.touched) && name.invalid))}">
             <label class="w-full">
-              <input type="text" identifierValidation [appAutofocus]="!error" autocomplete="off" required
+              <input type="text" identifierValidation [appAutofocus]="(!error || invalidName)" autocomplete="off" required
                      class="form-control"
                      placeholder="{{'common.placeholder.name' | translate}}" name="name" #name="ngModel"
-                     (blur)="checkJobInfo()"
+                     (blur)="checkJobInfo();invalidName = ''"
                      [(ngModel)]="selectedNode.obj.jobName">
             </label>
             <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)"
@@ -63,6 +63,7 @@
                 <div translate>common.message.requiredError</div>
               </div>
               <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+              <div *ngIf="!name.errors.invalidIdentifier && invalidName">{{invalidName | translate}}</div>
             </div>
           </div>
         </div>
@@ -314,10 +315,12 @@
                        nzType="folder" nzTheme="outline" (click)="showTree()"></i>
                     <div class="b-a" (click)="closeScriptTree()"
                          [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}">
-                      <ngx-codemirror #codeMirror title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}" required
+                      <ngx-codemirror #codeMirror
+                                      title="{{'inventory.tooltips.script.autocompleteShortCut' | translate}}" required
                                       #script="ngModel" [(ngModel)]="selectedNode.job.executable.script"
                                       [options]="{lineNumbers: true, autoRefresh: true, scrollbarStyle: 'simple', readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
-                                      mode: 'shell',extraKeys: {'Ctrl-Space': 'autocomplete'}}" (focusChange)="focusChange()" (focusout)="saveToHistory()"
+                                      mode: 'shell',extraKeys: {'Ctrl-Space': 'autocomplete'}}"
+                                      (focusChange)="focusChange()" (focusout)="saveToHistory()"
                       ></ngx-codemirror>
                     </div>
                     <div *ngIf="obj.script || (script.invalid && (script.dirty && script.touched))"
@@ -1082,6 +1085,7 @@
 </div>
 
 <div *ngIf="isRuntimeVisible">
-  <app-admission-time [job]="selectedNode.job" [timeZone]="timeZone" [isTooltipVisible]="isTooltipVisible" [data]="selectedNode"
+  <app-admission-time [job]="selectedNode.job" [timeZone]="timeZone" [isTooltipVisible]="isTooltipVisible"
+                      [data]="selectedNode"
                       (close)="closeRuntime()"></app-admission-time>
 </div>

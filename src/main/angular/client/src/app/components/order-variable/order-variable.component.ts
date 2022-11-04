@@ -13,6 +13,7 @@ import {CoreService} from '../../services/core.service';
 export class OrderVariableComponent implements OnInit {
   @Input() order;
   @Input() type;
+  @Input() history: boolean;
   @Input() permission: any;
   @Input() schedulerId: any;
 
@@ -32,6 +33,13 @@ export class OrderVariableComponent implements OnInit {
                 });
               }
             });
+          } else  if (this.history) {
+            if(typeof v == 'object'){
+              v = Object.entries(v).map(([k1, v1]) => {
+                return {name: k1, value: v1};
+              });
+              v = [v];
+            }
           }
           return {name: k, value: v};
         });
