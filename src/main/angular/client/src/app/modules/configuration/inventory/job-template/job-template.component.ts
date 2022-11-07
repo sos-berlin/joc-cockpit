@@ -625,7 +625,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
   }
 
   rename(inValid): void {
-    if (this.data.id === this.job.id) {
+    if (this.data.id === this.job.id && this.data.name !== this.job.name) {
       if (!inValid) {
         this.job.path = (this.job.path1 + (this.job.path1 === '/' ? '' : '/') + this.job.name);
         if (this.preferences.auditLog) {

@@ -8,6 +8,7 @@ export class InventoryService {
     isChecked: false
   };
   agentList: any = [];
+  expertMode = false;
 
   sortList(arr: any[]): any {
     for (const i in arr) {

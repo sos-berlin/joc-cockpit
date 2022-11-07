@@ -5468,7 +5468,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.selectedTabIndex = this.tabsArray.length - 1;
     }, 0);
     if (this.objectType === 'OTHER') {
-      this.readOthersXSD(_tab.id);
+      if(_tab.id > 0) {
+        this.readOthersXSD(_tab.id);
+      }
     } else {
       this.submitXsd = true;
       this.showSelectSchema = false;
@@ -5687,7 +5689,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
           objectType: this.objectType,
           configuration: this.mainXml,
           configurationJson: JSON.stringify({nodesCount: this.counting, node: tempNode || this.nodes}),
-          id: this.activeTab.id,
+          id: this.activeTab.id > 0 ? this.activeTab.id : 0,
           name: this.activeTab.name,
           schemaIdentifier: this.schemaIdentifier || ((tab && tab.schemaIdentifier) ? tab.schemaIdentifier : this.path),
           schema: this.path

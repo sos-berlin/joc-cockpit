@@ -7,7 +7,13 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" *ngIf="permission.joc">
-            <div class="inline valign">
+            <div class="inline valign ">
+              <span class="p-r-sm">{{'inventory.label.switchUserMode' | translate}}</span>
+              <nz-switch [(ngModel)]="inventoryService.expertMode"></nz-switch>
+              <span class="p-l-sm">{{'inventory.label.switchExpertMode' | translate}}</span>
+            </div>
+
+            <div class="inline valign m-l-12">
               <label nz-checkbox [(ngModel)]="inventoryService.checkDeploymentStatus.isChecked"
                      (ngModelChange)="reloadFolders($event)">
                 {{'inventory.button.checkDeploymentStatus' | translate}}

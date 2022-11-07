@@ -1132,7 +1132,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
 
-  constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
+  constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef, public inventoryService: InventoryService,
               private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       if (res.error) {
@@ -3010,8 +3010,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   private saveCopyInstruction(): void {
     this.cutCell = [];
-    this.inventoryConf.copiedInstuctionObject = [];
     if (this.copyId.length > 0) {
+      this.inventoryConf.copiedInstuctionObject = [];
       this.copyId.forEach(id => {
         let obj = this.getObject(this.workflow.configuration, id);
         if (obj.TYPE) {
@@ -5989,6 +5989,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           const evt = me.getEvent();
           let cell = me.getCell();
           const mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
+          if(evt.target) {
+            const str = evt.target.getAttribute('xlink:href');
+            if (str && typeof str == 'string' && (str.match('expanded') || str.match('collapsed'))) {
+              if (me.isConsumed()) {
+                mxe.consume();
+              }
+              return;
+            }
+          }
           if (cell && !dragStart) {
             const dom = $('#toolbar');
             if (dom.find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
