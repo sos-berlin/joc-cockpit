@@ -26,7 +26,7 @@
         </nz-auto-optgroup>
       </ng-container>
     </ng-container>
-    <ng-container *ngIf="agentList[0] && agentList[0].title == 'agents' && !favorite.show">
+    <ng-container *ngIf="agentList[0] && agentList[0].title == 'agents' && !favorite.show && !skipStandaloneAgent">
       <nz-auto-optgroup *ngFor="let group of [agentList[0]]" [nzLabel]="groupTitle">
         <ng-template #groupTitle>
           <span class="_600">

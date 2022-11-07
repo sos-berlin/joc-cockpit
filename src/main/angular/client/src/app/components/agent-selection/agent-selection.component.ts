@@ -14,6 +14,7 @@ export class AgentSelectionComponent implements OnChanges {
   @Input() obj: any = {};
   @Input() data: any = {};
   @Input() skipSubagents: boolean;
+  @Input() skipStandaloneAgent: boolean;
   @Input() required = true;
   @Input() type = 'agentName';
 
@@ -92,6 +93,19 @@ export class AgentSelectionComponent implements OnChanges {
       }
       if (!isFound) {
         this.nonExistAgents.push(this.data[this.type]);
+      }
+    } else {
+      if (this.skipStandaloneAgent && !this.skipSubagents) {
+        for (const prop in this.agentList) {
+          if (this.agentList[prop].title !== 'agents') {
+            if(this.agentList[prop].children) {
+              for (let i = 0; i < this.agentList[prop].children.length; i++) {
+                this.agentList[prop].children[i].hide = false;
+              }
+            }
+            break;
+          }
+        }
       }
     }
   }

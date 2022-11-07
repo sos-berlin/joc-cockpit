@@ -529,16 +529,18 @@ export class LogComponent implements OnInit {
       } else if (dt[i].logEvent === 'OrderNoticesConsumptionStarted' && dt[i].consumeNotices) {
         col += ', Consuming';
         for (let x in dt[i].consumeNotices.consuming) {
-          col += ' ExpectNotice(board=' + dt[i].consumeNotices.consuming[x].boardName + ', id=' + dt[i].consumeNotices.consuming[x].id + ')';
+          col += ', ExpectNotice(board=' + dt[i].consumeNotices.consuming[x].boardName + ', id=' + dt[i].consumeNotices.consuming[x].id + ')';
           if (parseInt(x) < dt[i].consumeNotices.consuming.length - 1)
             col += ',';
         }
       } else if (dt[i].logEvent === 'OrderNoticesConsumed' && dt[i].consumeNotices && dt[i].consumeNotices.consumed == false) {
         col += ' (<span class="log_error">Failed</span>)';
       }
-
+      if (dt[i].logEvent === 'OrderFinished' && dt[i].returnMessage) {
+        col += ', returnMessage=' + dt[i].returnMessage;
+      }
       if (dt[i].logEvent === 'OrderMoved' && dt[i].moved && dt[i].moved.skipped && dt[i].moved.to) {
-        col += ' Skipped(job=' + dt[i].moved.skipped.jobName + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
+        col += ', Skipped(job=' + dt[i].moved.skipped.jobName + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
       } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
         col += ', arguments(';
         let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {
