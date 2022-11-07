@@ -536,9 +536,11 @@ export class Log2Component implements OnInit {
       }
       if (dt[i].logEvent === 'OrderFinished' && dt[i].returnMessage) {
         col += ', returnMessage=' + dt[i].returnMessage;
+      } else if (dt[i].logEvent === 'OrderSuspended' && dt[i].stopped && dt[i].stopped.job) {
+        col += ', Stopped(job=' + dt[i].stopped.job + ')';
       }
       if (dt[i].logEvent === 'OrderMoved' && dt[i].moved && dt[i].moved.skipped && dt[i].moved.to) {
-        col += ', Skipped(job=' + dt[i].moved.skipped.jobName + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
+        col += ', Skipped(job=' + dt[i].moved.skipped.job + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
       } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
         col += ', arguments(';
         let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {
@@ -550,13 +552,35 @@ export class Log2Component implements OnInit {
           return {name: k1, value: v1};
         });
         for (let i = 0; i < arr.length; i++) {
-          if(isArray(arr[i].value)) {
-            col += arr[i].name +'={';
+          if (isArray(arr[i].value)) {
+            col += arr[i].name + '={';
             for (let j = 0; j < arr[i].value.length; j++) {
-              col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+              if (isArray(arr[i].value[j].value)) {
+                col += arr[i].value[j].name + '={';
+                for (let k = 0; k < arr[i].value[j].value.length; k++) {
+                  if (arr[i].value[j].value[k].name) {
+                    col += arr[i].value[j].value[k].name + '=' + arr[i].value[j].value[k].value;
+                  } else if (arr[i].value[j].value[k].key) {
+                    if (arr[i].value[j].value[k].value.value) {
+                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value.value;
+                    } else {
+                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value;
+                    }
+                  }
+                  if (arr[i].value[j].value.length - 1 != k) {
+                    col += ', ';
+                  }
+                }
+                col += '}';
+              } else {
+                col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+              }
+              if (arr[i].value.length - 1 != j) {
+                col += ', ';
+              }
             }
             col += '}';
-          } else{
+          } else {
             col += arr[i].name + '=' + arr[i].value;
           }
           if (arr.length - 1 != i) {
@@ -575,13 +599,13 @@ export class Log2Component implements OnInit {
           return {name: k1, value: v1};
         });
         for (let i = 0; i < arr.length; i++) {
-          if(isArray(arr[i].value)) {
-            col += arr[i].name +'={';
+          if (isArray(arr[i].value)) {
+            col += arr[i].name + '={';
             for (let j = 0; j < arr[i].value.length; j++) {
               col += arr[i].value[j].name + '=' + arr[i].value[j].value;
             }
             col += '}';
-          } else{
+          } else {
             col += arr[i].name + '=' + arr[i].value;
           }
           if (arr.length - 1 != i) {

@@ -65,7 +65,7 @@ declare const $;
 @Directive({
   selector: '[appValidateDuration]',
   providers: [
-    { provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationValidator), multi: true }
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationValidator), multi: true}
   ]
 })
 export class DurationValidator implements Validator {
@@ -99,7 +99,7 @@ export class DurationValidator implements Validator {
 @Directive({
   selector: '[appValidateOffset]',
   providers: [
-    { provide: NG_VALIDATORS, useExisting: forwardRef(() => OffsetValidator), multi: true }
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => OffsetValidator), multi: true}
   ]
 })
 export class OffsetValidator implements Validator {
@@ -260,7 +260,7 @@ export class TimeEditorComponent implements OnInit {
 
   object: any = {};
 
-  @ViewChild('timePicker', { static: true }) tp;
+  @ViewChild('timePicker', {static: true}) tp;
 
   constructor(public activeModal: NzModalRef, private workflowService: WorkflowService, private coreService: CoreService) {
   }
@@ -324,7 +324,7 @@ export class CycleInstructionComponent implements OnChanges {
   days = [];
 
   constructor(private coreService: CoreService, private modal: NzModalService,
-    private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
+              private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -561,25 +561,25 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
 
   countArr = [0, 1, 2, 3, 4];
   countUArr = [1, 2, 3, 4];
-  editor: any = { isEnable: false };
+  editor: any = {isEnable: false};
   daysOptions = [
-    { label: 'monday', value: '1', checked: false },
-    { label: 'tuesday', value: '2', checked: false },
-    { label: 'wednesday', value: '3', checked: false },
-    { label: 'thursday', value: '4', checked: false },
-    { label: 'friday', value: '5', checked: false },
-    { label: 'saturday', value: '6', checked: false },
-    { label: 'sunday', value: '7', checked: false }
+    {label: 'monday', value: '1', checked: false},
+    {label: 'tuesday', value: '2', checked: false},
+    {label: 'wednesday', value: '3', checked: false},
+    {label: 'thursday', value: '4', checked: false},
+    {label: 'friday', value: '5', checked: false},
+    {label: 'saturday', value: '6', checked: false},
+    {label: 'sunday', value: '7', checked: false}
   ];
 
   tempDates = [];
 
   @Output() close: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('timePicker', { static: true }) tp;
+  @ViewChild('timePicker', {static: true}) tp;
 
   constructor(private coreService: CoreService, private modal: NzModalService,
-    private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
+              private workflowService: WorkflowService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -1139,7 +1139,8 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
         this.error = res.error;
         if (res.msg && res.msg.match('duplicateLabel')) {
           this.errorMsg = res.msg;
-        } if (res.msg && res.msg.match('Invalid name')) {
+        }
+        if (res.msg && res.msg.match('Invalid name')) {
           this.invalidName = 'inventory.message.nameIsNotValid';
         } else {
           this.errorMsg = '';
@@ -1223,6 +1224,29 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   checkLength(): void {
     const len = JSON.stringify(this.selectedNode.job.notification).length;
     this.isLengthExceed = len > 1000;
+  }
+
+  changeAgentSelection($event) {
+    if ($event == 'expression') {
+      this.selectedNode.job.agentName2 = this.selectedNode.job.agentName;
+      if (this.selectedNode.job && this.selectedNode.job.agentName1) {
+        this.selectedNode.job.agentName = this.selectedNode.job.agentName1;
+        delete this.selectedNode.job.agentName1;
+      } else if(this.selectedNode.job.agentName3){
+        this.selectedNode.job.agentName = this.selectedNode.job.agentName3;
+        delete this.selectedNode.job.agentName3;
+      }
+    } else {
+      if (this.selectedNode.job.agentName2) {
+        this.selectedNode.job.agentName1 = this.selectedNode.job.agentName;
+        this.selectedNode.job.agentName = this.selectedNode.job.agentName2;
+      }
+      if (!this.selectedNode.job.agentName1 && this.selectedNode.job.agentName) {
+        this.selectedNode.job.agentName3 = this.selectedNode.job.agentName;
+        delete this.selectedNode.job.agentName;
+      }
+      delete this.selectedNode.job.agentName2;
+    }
   }
 
   updateSelectItems(): void {
@@ -2894,12 +2918,24 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   changeAgentSelection($event) {
     if ($event == 'expression') {
+      this.selectedNode.obj.agentName2 = this.selectedNode.obj.agentName;
       if (this.selectedNode.obj && this.selectedNode.obj.agentName1) {
         this.selectedNode.obj.agentName = this.selectedNode.obj.agentName1;
         delete this.selectedNode.obj.agentName1;
+      } else if(this.selectedNode.obj.agentName3){
+        this.selectedNode.obj.agentName = this.selectedNode.obj.agentName3;
+        delete this.selectedNode.obj.agentName3;
       }
     } else {
-      delete this.selectedNode.obj.agentName;
+      if (this.selectedNode.obj.agentName2) {
+        this.selectedNode.obj.agentName1 = this.selectedNode.obj.agentName;
+        this.selectedNode.obj.agentName = this.selectedNode.obj.agentName2;
+      }
+      if (!this.selectedNode.obj.agentName1 && this.selectedNode.obj.agentName) {
+        this.selectedNode.obj.agentName3 = this.selectedNode.obj.agentName;
+        delete this.selectedNode.obj.agentName;
+      }
+      delete this.selectedNode.obj.agentName2;
     }
   }
 
@@ -5989,7 +6025,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           const evt = me.getEvent();
           let cell = me.getCell();
           const mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
-          if(evt.target) {
+          if (evt.target) {
             const str = evt.target.getAttribute('xlink:href');
             if (str && typeof str == 'string' && (str.match('expanded') || str.match('collapsed'))) {
               if (me.isConsumed()) {
@@ -7633,7 +7669,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               graph.getModel().execute(edit);
             }
           } else if (self.selectedNode.type === 'ForkList') {
-            if (self.selectedNode.radio1 === 'byListVariable') {
+            if (self.selectedNode.radio1 === 'byListVariable' || !self.hasLicense) {
               const edit = new mxCellAttributeChange(
                 obj.cell, 'children', self.selectedNode.newObj.children);
               graph.getModel().execute(edit);
@@ -8091,10 +8127,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
         if (cell.value.tagName === 'ForkList') {
           self.selectedNode.radio1 = 'bySubagentCluster';
-          if (obj.children) {
+          if (obj.children || !self.hasLicense) {
             self.selectedNode.radio1 = 'byListVariable';
           }
-          if (obj.subagentClusterIdExpr) {
+          if (obj.subagentClusterIdExpr || (!obj.agentName1 && obj.agentName)) {
             self.selectedNode.radio = 'expression';
           } else {
             self.selectedNode.radio = 'agent';
@@ -9806,7 +9842,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               let msg = !json.instructions[x].label ? 'workflow.message.labelIsMissing' : 'inventory.message.nameIsNotValid';
               checkErr = true;
               self.translate.get(msg).subscribe(translatedValue => {
-                self.invalidMsg = 'Job: '+ json.instructions[x].jobName + ' ' +  translatedValue;
+                self.invalidMsg = 'Job: ' + json.instructions[x].jobName + ' ' + translatedValue;
               });
             }
             if (flag) {
@@ -10082,7 +10118,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   ids.push(branch.id);
                 } else {
                   const arr = branch.id.match(/[0-9]+$/);
-                  if(arr && arr.length) {
+                  if (arr && arr.length) {
                     const num = parseInt(arr[0], 10);
                     if (typeof num == 'number' && !isNaN(num)) {
                       branch.id = branch.id.substring(0, branch.id.indexOf(num)) + (maxNum + 1);

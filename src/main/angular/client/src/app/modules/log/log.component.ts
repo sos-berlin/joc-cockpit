@@ -509,7 +509,7 @@ export class LogComponent implements OnInit {
           col += ')';
         }
         if (dt[i].msg) {
-          col += ': '+ dt[i].msg;
+          col += ': ' + dt[i].msg;
         }
       }
       if (dt[i].logEvent === 'OrderCaught' && dt[i].caught) {
@@ -520,7 +520,9 @@ export class LogComponent implements OnInit {
       } else if (dt[i].logEvent === 'OrderNoticesExpected' && dt[i].expectNotices) {
         col += ', Waiting for';
         for (let x in dt[i].expectNotices.waitingFor) {
-          col += ' ExpectNotice(board=' + dt[i].expectNotices.waitingFor[x].boardName + ', id=' + dt[i].expectNotices.waitingFor[x].id + '),';
+          col += ' ExpectNotice(board=' + dt[i].expectNotices.waitingFor[x].boardName + ', id=' + dt[i].expectNotices.waitingFor[x].id + ')';
+          if (parseInt(x) < dt[i].expectNotices.waitingFor.length - 1)
+            col += ',';
         }
       } else if (dt[i].logEvent === 'OrderNoticesRead' && dt[i].expectNotices) {
         col += ', ExpectNotices(' + dt[i].expectNotices.consumed + ')';
@@ -538,9 +540,11 @@ export class LogComponent implements OnInit {
       }
       if (dt[i].logEvent === 'OrderFinished' && dt[i].returnMessage) {
         col += ', returnMessage=' + dt[i].returnMessage;
+      } else if (dt[i].logEvent === 'OrderSuspended' && dt[i].stopped && dt[i].stopped.job) {
+        col += ', Stopped(job=' + dt[i].stopped.job + ')';
       }
       if (dt[i].logEvent === 'OrderMoved' && dt[i].moved && dt[i].moved.skipped && dt[i].moved.to) {
-        col += ', Skipped(job=' + dt[i].moved.skipped.jobName + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
+        col += ', Skipped(job=' + dt[i].moved.skipped.job + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
       } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
         col += ', arguments(';
         let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {
@@ -552,13 +556,35 @@ export class LogComponent implements OnInit {
           return {name: k1, value: v1};
         });
         for (let i = 0; i < arr.length; i++) {
-          if(isArray(arr[i].value)) {
-            col += arr[i].name +'={';
+          if (isArray(arr[i].value)) {
+            col += arr[i].name + '={';
             for (let j = 0; j < arr[i].value.length; j++) {
-              col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+              if (isArray(arr[i].value[j].value)) {
+                col += arr[i].value[j].name + '={';
+                for (let k = 0; k < arr[i].value[j].value.length; k++) {
+                  if (arr[i].value[j].value[k].name) {
+                    col += arr[i].value[j].value[k].name + '=' + arr[i].value[j].value[k].value;
+                  } else if (arr[i].value[j].value[k].key) {
+                    if (arr[i].value[j].value[k].value.value) {
+                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value.value;
+                    } else {
+                      col += arr[i].value[j].value[k].key + '=' + arr[i].value[j].value[k].value;
+                    }
+                  }
+                  if (arr[i].value[j].value.length - 1 != k) {
+                    col += ', ';
+                  }
+                }
+                col += '}';
+              } else {
+                col += arr[i].value[j].name + '=' + arr[i].value[j].value;
+              }
+              if (arr[i].value.length - 1 != j) {
+                col += ', ';
+              }
             }
             col += '}';
-          } else{
+          } else {
             col += arr[i].name + '=' + arr[i].value;
           }
           if (arr.length - 1 != i) {
@@ -577,13 +603,13 @@ export class LogComponent implements OnInit {
           return {name: k1, value: v1};
         });
         for (let i = 0; i < arr.length; i++) {
-          if(isArray(arr[i].value)) {
-            col += arr[i].name +'={';
+          if (isArray(arr[i].value)) {
+            col += arr[i].name + '={';
             for (let j = 0; j < arr[i].value.length; j++) {
               col += arr[i].value[j].name + '=' + arr[i].value[j].value;
             }
             col += '}';
-          } else{
+          } else {
             col += arr[i].name + '=' + arr[i].value;
           }
           if (arr.length - 1 != i) {
@@ -592,6 +618,7 @@ export class LogComponent implements OnInit {
         }
         col += ')';
       }
+
       if (dt[i].logEvent === 'OrderProcessingStarted') {
         const cls = !this.object.checkBoxs.main ? ' hide-block' : '';
         const x = `<div class="main log_main${cls}"><span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i></span>` + col + `</div><div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;

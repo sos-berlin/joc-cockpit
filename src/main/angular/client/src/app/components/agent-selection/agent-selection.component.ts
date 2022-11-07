@@ -94,19 +94,6 @@ export class AgentSelectionComponent implements OnChanges {
       if (!isFound) {
         this.nonExistAgents.push(this.data[this.type]);
       }
-    } else {
-      if (this.skipStandaloneAgent && !this.skipSubagents) {
-        for (const prop in this.agentList) {
-          if (this.agentList[prop].title !== 'agents') {
-            if(this.agentList[prop].children) {
-              for (let i = 0; i < this.agentList[prop].children.length; i++) {
-                this.agentList[prop].children[i].hide = false;
-              }
-            }
-            break;
-          }
-        }
-      }
     }
   }
 
@@ -263,6 +250,10 @@ export class AgentSelectionComponent implements OnChanges {
 
   selectAgent(data): void {
     this.selectSubagentCluster.emit(data)
+    $('#agentId').blur();
+  }
+
+  checkClick(){
     $('#agentId').blur();
   }
 

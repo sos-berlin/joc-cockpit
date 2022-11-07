@@ -263,7 +263,7 @@
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'ForkList'">
           <nz-collapse [nzBordered]="false" [hidden]="fullScreen">
-            <nz-collapse-panel class="m-b" [nzHeader]="'workflow.label.byListVariable' | translate" (click)="selectedNode.radio1 = 'byListVariable'" [nzActive]="selectedNode.radio1 == 'byListVariable'">
+            <nz-collapse-panel class="m-b" [nzHeader]="'workflow.label.byListVariable' | translate" [nzDisabled]="selectedNode.radio1 == 'byListVariable'" (click)="selectedNode.radio1 = 'byListVariable'" [nzActive]="selectedNode.radio1 == 'byListVariable'">
               <div class="p-a b-a m-t">
               <div class="form-group row"
                    [ngClass]="{'has-error' : ((children.dirty || children.touched) && children.invalid)}">
@@ -306,7 +306,7 @@
             </nz-collapse-panel>
           </nz-collapse>
           <nz-collapse [nzBordered]="false" *ngIf="hasLicense" [hidden]="fullScreen">
-            <nz-collapse-panel class="m-b" [nzHeader]="'workflow.label.bySubagentCluster' | translate" (click)="selectedNode.radio1 = 'bySubagentCluster'" [nzActive]="selectedNode.radio1 == 'bySubagentCluster'">
+            <nz-collapse-panel class="m-b" [nzDisabled]="selectedNode.radio1 == 'bySubagentCluster'" [nzHeader]="'workflow.label.bySubagentCluster' | translate" (click)="selectedNode.radio1 = 'bySubagentCluster'" [nzActive]="selectedNode.radio1 == 'bySubagentCluster'">
               <div class="p-a b-a m-t">
               <div class="form-group row">
                 <div [nz-tooltip]="!preferences.showTooltipInfo ? ('workflow.tooltip.agentAssignment' | translate) : ''"
@@ -345,10 +345,11 @@
                        translate>workflow.label.subagentClusterIdExpr
                   <sup class="text-danger text-sm">*</sup>
                 </label>
-                <div class="col-md-8 col-lg-9">
-              <textarea class="form-control" name="subagentClusterIdExpr"
-                        [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
-                        [(ngModel)]="selectedNode.obj.subagentClusterIdExpr"></textarea>
+                <div class="col-md-8 col-lg-9"
+                     [ngClass]="{'has-error' : ((subagentClusterIdExpr.dirty || subagentClusterIdExpr.touched) && subagentClusterIdExpr.invalid)}">
+                  <textarea #subagentClusterIdExpr="ngModel" required class="form-control" name="subagentClusterIdExpr"
+                            [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
+                            [(ngModel)]="selectedNode.obj.subagentClusterIdExpr"></textarea>
                 </div>
               </div>
               </div>
