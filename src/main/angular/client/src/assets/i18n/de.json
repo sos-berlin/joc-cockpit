@@ -1159,7 +1159,7 @@
     "label.updateFromRollout": "Aktualisieren aus Depot für ausrollbare Objekte",
     "label.deleteFromRollout": "Löschen aus Depot für ausrollbare Objekte",
     "label.lastModified": "Letzte Änderung",
-    "label.uniqueJobs": "Unique Jobs",
+    "label.uniqueJobs": "Einzelne Jobs",
     "label.cloneToLocal": "Depot für lokale Objekte klonen",
     "label.pushToLocal": "Lokale Objekte ins Depot hochladen",
     "label.cloneToRollout": "Depot für ausrollbare Objekte klonen",
