@@ -1159,6 +1159,7 @@
     "label.updateFromRollout": "Aktualisieren aus Depot für ausrollbare Objekte",
     "label.deleteFromRollout": "Löschen aus Depot für ausrollbare Objekte",
     "label.lastModified": "Letzte Änderung",
+    "label.uniqueJobs": "Unique Jobs",
     "label.cloneToLocal": "Depot für lokale Objekte klonen",
     "label.pushToLocal": "Lokale Objekte ins Depot hochladen",
     "label.cloneToRollout": "Depot für ausrollbare Objekte klonen",
@@ -1404,7 +1405,8 @@
         "forkList": {
           "children": "Listenvariable für dynamische Verzweigung: Wird eine ForkList Instruktion im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ForkList Instruktion erzeugt und durchlaufen wird: pro Listenelement werden die Instruktionen und Jobs der ForkList Instruktion in einem jeweils eigenen Zwei parallel durchlaufen.",
           "childToId": "Listenelement für Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable. Der Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird.",
-          "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags."
+          "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags.",
+          "agent": "Agent"
         },
         "if": {
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."

@@ -1159,6 +1159,7 @@
     "label.updateFromRollout": "Update from repository for rollout objects",
     "label.deleteFromRollout": "Delete from repository for rollout objects",
     "label.lastModified": "Last modified",
+    "label.uniqueJobs": "Unique Jobs",
     "label.cloneToLocal": "Clone repository for local objects",
     "label.pushToLocal": "Push local objects to repository",
     "label.cloneToRollout": "Clone repository for rollout objects",
@@ -1404,7 +1405,8 @@
         "forkList": {
           "children": "List variable for dynamic forking: expects the name of the order variable that holds a list of elements. For each element of the list variable a branch is created dynamically from the assigned ForkList instruction. The number of list variable elements determines the number of parallel branches of the ForkList instruction that are executed in parallel by child orders.",
           "childToId": "List element for branch mapping: expects the name of an element within the selected list variable that holds a unique identifier for the branch that should be created dynamically.",
-          "joinIfFailed": "A child order is terminated in case of failure. The parent order will be put to the FAILED state."
+          "joinIfFailed": "A child order is terminated in case of failure. The parent order will be put to the FAILED state.",
+          "agent": "Agent"
         },
         "if": {
           "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"

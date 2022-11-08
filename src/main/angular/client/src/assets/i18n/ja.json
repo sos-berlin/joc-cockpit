@@ -1159,6 +1159,7 @@
     "label.updateFromRollout": "ロールアウトオブジェクトから更新",
     "label.deleteFromRollout": "ロールアウトオブジェクトから削除",
     "label.lastModified": "最終更新",
+    "label.uniqueJobs": "Unique Jobs",
     "label.cloneToLocal": "ローカルオブジェクトにリポジトリをクローン",
     "label.pushToLocal": "ローカルオブジェクトをリポジトリにプッシュ",
     "label.cloneToRollout": "ロールアウトオブジェクトにリポジトリをクローン",
@@ -1404,7 +1405,8 @@
         "forkList": {
           "children": "オーダー変数",
           "childToId": "オーダーID",
-          "joinIfFailed": "失敗時Join"
+          "joinIfFailed": "失敗時Join",
+          "agent": "Agent"
         },
         "if": {
           "predicate": "If命令の述部は、「true」または「false」と評価される条件式です。"

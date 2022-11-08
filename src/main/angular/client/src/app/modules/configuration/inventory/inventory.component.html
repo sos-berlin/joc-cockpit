@@ -8,16 +8,15 @@
           </div>
           <div class="inline" *ngIf="permission.joc">
             <div class="inline valign ">
-              <span class="p-r-sm">{{'inventory.label.switchUserMode' | translate}}</span>
               <nz-switch [(ngModel)]="inventoryService.expertMode"></nz-switch>
-              <span class="p-l-sm">{{'inventory.label.switchExpertMode' | translate}}</span>
+              <span class="p-l-sm">{{'inventory.label.switchUserMode' | translate}}</span>
+              /
+              <span>{{'inventory.label.switchExpertMode' | translate}}</span>
             </div>
 
             <div class="inline valign m-l-12">
-              <label nz-checkbox [(ngModel)]="inventoryService.checkDeploymentStatus.isChecked"
-                     (ngModelChange)="reloadFolders($event)">
-                {{'inventory.button.checkDeploymentStatus' | translate}}
-              </label>
+              <nz-switch [(ngModel)]="inventoryService.checkDeploymentStatus.isChecked" (ngModelChange)="reloadFolders($event)"></nz-switch>
+              <span class="p-l-sm">{{'inventory.button.checkDeploymentStatus' | translate}}</span>
             </div>
             <button class="btn btn-sm btn-grey m-l-12"
                     (click)="search()">

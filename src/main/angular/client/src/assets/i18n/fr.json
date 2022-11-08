@@ -1159,6 +1159,7 @@
     "label.updateFromRollout": "Mettre à jour à partir du dépôt des objets déployables",
     "label.deleteFromRollout": "Supprimer du dépôt des objets déployables",
     "label.lastModified": "Dernière mise à jour",
+    "label.uniqueJobs": "Unique Jobs",
     "label.cloneToLocal": "Cloner le dépôt pour les objets locaux",
     "label.pushToLocal": "Pousser les objets locaux vers le dépôt",
     "label.cloneToRollout": "Cloner le dépôt pour les objets du rollout",
@@ -1404,7 +1405,8 @@
         "forkList": {
           "children": "Variable de Tableau pour la bifurcation dynamique : attend le nom de la variable d'ordre qui contient une liste d'éléments. Pour chaque élément de la variable du tableau, une branche est créée dynamiquement à partir de l'instruction ForkList assignée. Le nombre d'éléments de la variable de tableau détermine le nombre de branches parallèles de l'instruction ForkList qui sont exécutées en parallèle par les ordres enfants.",
           "childToId": "Élément de tableau pour le mappage des branches : attend le nom d'un élément dans la variable de tableau sélectionnée qui contient un identifiant unique pour la branche qui doit être créée dynamiquement.",
-          "joinIfFailed": "Join en Échec"
+          "joinIfFailed": "Join en Échec",
+          "agent": "Agent"
         },
         "if": {
           "predicate": "Un Prédicat dans une instruction If est une expression ou une comparaison qui donne la valeur 'vrai' ou 'faux'."

@@ -8126,6 +8126,9 @@ tr.tr-border td:first-child {
 :root .ant-tree li span.ant-tree-switcher.ant-tree-switcher_close .ant-tree-switcher-icon, :root .ant-tree li span.ant-tree-switcher.ant-tree-switcher_close .ant-select-switcher-icon {
   font-size: 16px;
 }
+.ant-collapse .ant-collapse-item-disabled > .ant-collapse-header, .ant-collapse .ant-collapse-item-disabled > .ant-collapse-header > .arrow {
+  cursor: default;
+}
 
 .ant-collapse-content > .ant-collapse-content-box {
   padding: 0 !important;

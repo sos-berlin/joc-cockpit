@@ -27,6 +27,10 @@
                   <b translate>inventory.label.lastModified</b>
                   <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
                 </span>
+                <span class="text-dark text-sm _400" *ngIf="jobs.length"> |
+                  <b translate>inventory.label.uniqueJobs</b>
+                  <span class="text-primary _600 m-l-xs ">{{jobs.length}}</span>
+                </span>
               </div>
             </div>
             <div class="inline pull-right" *ngIf="!isTrash">
@@ -310,7 +314,9 @@
               <div class="p-a b-a m-t">
               <div class="form-group row">
                 <div [nz-tooltip]="!preferences.showTooltipInfo ? ('workflow.tooltip.agentAssignment' | translate) : ''"
-                     [nzTooltipMouseEnterDelay]="0.5" class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment</div>
+                     [nzTooltipMouseEnterDelay]="0.5" class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.agentAssignment
+                  <sup class="text-danger text-sm">*</sup>
+                </div>
                 <div class="col-md-8 col-lg-9">
                   <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)">
                     <label nz-radio nzValue="agent"><span
@@ -322,7 +328,7 @@
               </div>
               <div class="form-group row" >
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
+                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.agent' | translate) : ''"
                        [nzTooltipMouseEnterDelay]="0.5"
                        translate>workflow.label.agent
                   <sup class="text-danger text-sm">*</sup>
