@@ -2748,7 +2748,7 @@
     "tooltip.facetEntryMode": "Mode contrôle des entrées",
     "tooltip.editorEntryMode": "Mode d'entrée directe",
     "tooltip.removeJobTemplateReference": "Supprimer la référence au Modèle de Tâche",
-    "tooltip.agentAssignment": "Agent Assignment",
+    "tooltip.agentAssignment": "L'instruction ForkList se voit attribuer un Cluster de Sous-agents qui spécifie un certain nombre de Sous-agents sur lesquels les tâches sont exécutées en parallèle. Deux options d'affectation sont proposées :\n* sélection d'un Cluster de Sous-agents qui permet de choisir dans une liste.\n* entrée d'une expression qui spécifie le Cluster de Sous-agents. Il s'agit notamment de spécifier le nom d'une variable de workflow, éventuellement portée par un ordre qui spécifie le Cluster de Sous-agents.",
     "findAndReplace": {
       "label.find": "Trouver",
       "label.replace": "Remplacer",

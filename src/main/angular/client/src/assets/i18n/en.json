@@ -2748,7 +2748,7 @@
     "tooltip.facetEntryMode": "Facet entry mode",
     "tooltip.editorEntryMode": "Editor entry mode",
     "tooltip.removeJobTemplateReference": "Remove Job Template Reference",
-    "tooltip.agentAssignment": "Agent Assignment",
+    "tooltip.agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster.",
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",

@@ -2748,7 +2748,7 @@
     "tooltip.facetEntryMode": "Eingabemodus für Prüfungen",
     "tooltip.editorEntryMode": "Direkter Eingabemodus",
     "tooltip.removeJobTemplateReference": "Verweis auf Job-Vorlage entfernen",
-    "tooltip.agentAssignment": "Agent Assignment",
+    "tooltip.agentAssignment": "Der ForkList Anweisung wird ein Subagenten Cluster zugewiesen, der eine Anzahl von Subagenten angibt, auf denen Aufträge parallel ausgeführt werden. Für die Zuweisung werden zwei Optionen angeboten:\n*Auswahl eines Subagenten Cluster, was die Auswahl aus einer Liste ermöglicht.\n* Eingabe eines Ausdrucks, der den Subagenten Cluster spezifiziert. Dies beinhaltet die Angabe des Namens einer Variablen des Arbeitsablaufs, optional einer Variablen des Auftrags, die den Subagenten Cluster benennt.",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",
