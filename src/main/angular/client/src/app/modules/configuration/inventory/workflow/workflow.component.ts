@@ -7829,6 +7829,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
         } finally {
           graph.getModel().endUpdate();
+          if (self.selectedNode.type === 'ForkList' && !self.inventoryService.expertMode) {
+            self.updateForkListJobs(self.selectedNode);
+          }
           if (flag) {
             self.updateJobs(graph, false);
           }
@@ -8545,7 +8548,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function createClickInstruction(title, targetCell) {
       mxToolbar.prototype.selectedMode = undefined;
       if (title.match('paste')) {
-        if (self.copyId.length > 0) {
+        if (self.copyId.length > 0 || (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0)) {
           pasteInstruction(targetCell);
         } else if (self.cutCell.length > 0) {
           const tagName = targetCell.value.tagName;
@@ -9587,6 +9590,104 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
     if (isNavigate) {
       customizedChangeEvent();
+    }
+  }
+
+  private updateForkListJobs(forkList) {
+    const actualVal = forkList.actualValue;
+    const newVal = forkList.obj;
+    const self = this;
+    if ((actualVal.agentName == newVal.agentName && actualVal.agentName1 == newVal.agentName1 && actualVal.subagentClusterIdExpr == newVal.subagentClusterIdExpr)) {
+
+    } else {
+      const uuid = forkList.cell.getAttribute('uuid');
+      let forkListObj = {};
+
+      function recursion(json): void {
+        if (json.instructions) {
+          for (let x = 0; x < json.instructions.length; x++) {
+            if (json.instructions[x].uuid == uuid) {
+              forkListObj = json.instructions[x];
+            }
+            if (json.instructions[x].instructions) {
+              recursion(json.instructions[x]);
+            }
+            if (json.instructions[x].catch) {
+              if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                recursion(json.instructions[x].catch);
+              }
+            }
+            if (json.instructions[x].then) {
+              recursion(json.instructions[x].then);
+            }
+            if (json.instructions[x].else) {
+              recursion(json.instructions[x].else);
+            }
+            if (json.instructions[x].branches) {
+              for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                recursion(json.instructions[x].branches[i]);
+              }
+            }
+          }
+        }
+      }
+
+      recursion(this.workflow.configuration);
+      let jobs = new Set();
+      if (!isEmpty(forkListObj)) {
+        traverseInstructions(forkListObj);
+
+        function traverseInstructions(json) {
+          if (json.instructions) {
+            for (let x = 0; x < json.instructions.length; x++) {
+              if (json.instructions[x].TYPE == 'Job') {
+                jobs.add(json.instructions[x].jobName);
+              }
+
+              if (json.instructions[x].instructions) {
+                traverseInstructions(json.instructions[x]);
+              }
+              if (json.instructions[x].catch) {
+                if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+                  traverseInstructions(json.instructions[x].catch);
+                }
+              }
+              if (json.instructions[x].then) {
+                traverseInstructions(json.instructions[x].then);
+              }
+              if (json.instructions[x].else) {
+                traverseInstructions(json.instructions[x].else);
+              }
+              if (json.instructions[x].branches) {
+                for (let i = 0; i < json.instructions[x].branches.length; i++) {
+                  traverseInstructions(json.instructions[x].branches[i]);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if(jobs.size > 0){
+        self._updateForkListJobs(jobs, newVal);
+      }
+    }
+  }
+
+  private _updateForkListJobs(jobs, data): void {
+    for (let i in this.jobs) {
+      if (this.jobs[i].name && jobs.has(this.jobs[i].name)) {
+        if(data.subagentClusterIdExpr){
+          this.jobs[i].value.subagentClusterIdExpr = data.subagentClusterIdExpr;
+          if(data.agentName1) {
+            this.jobs[i].value.agentName = data.agentName1;
+            this.jobs[i].value.subagentClusterId = data.agentName;
+          } else {
+            this.jobs[i].value.agentName = data.agentName;
+            delete this.jobs[i].value.subagentClusterId;
+          }
+        }
+      }
     }
   }
 

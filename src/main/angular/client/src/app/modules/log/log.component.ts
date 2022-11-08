@@ -550,7 +550,7 @@ export class LogComponent implements OnInit {
         }
       }
       if (dt[i].logEvent === 'OrderMoved' && dt[i].moved && dt[i].moved.skipped && dt[i].moved.to) {
-        col += ', Skipped(' + (dt[i].moved.skipped.job ? ('job=' + dt[i].moved.skipped.job) : ('instruction=' + dt[i].moved.skipped.instruction)) + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
+        col += ', Skipped(' + (dt[i].moved.skipped.instruction.job ? ('job=' + dt[i].moved.skipped.instruction.job) : ('instruction=' + dt[i].moved.skipped.instruction.instruction)) + ', reason=' + dt[i].moved.skipped.reason + '). Moved To(pos=' + dt[i].moved.to.position + ')';
       } else if (dt[i].logEvent === 'OrderStarted' && dt[i].arguments) {
         col += ', arguments(';
         let arr: any = Object.entries(dt[i].arguments).map(([k1, v1]) => {

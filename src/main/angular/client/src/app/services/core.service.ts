@@ -1600,10 +1600,15 @@ export class CoreService {
         }
       }
       if (flag) {
+        obj.notFound = true;
         obj.list = [{name: data.jobResources[i], path: '/', notFound: true}].concat(obj.list);
       }
     }
+
     if (obj.notFound && obj.list.length > 0) {
+      if (data.arr[0].name === '/' && obj.name === '/') {
+        data.arr.splice(0, 1);
+      }
       data.arr = [obj].concat(data.arr);
     } else if (data.arr[0]) {
       if (data.arr[0].name === '/' && data.arr[0].notFound && data.arr[0].list.length === 0) {
