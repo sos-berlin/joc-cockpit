@@ -1218,7 +1218,7 @@
     "button.backToList": "Retour à la liste",
     "button.convert": "Convertir",
     "button.cron": "Cron",
-    "button.checkDeploymentStatus": "Vérifier le déploiement",
+    "button.checkDeploymentStatus": "Vérifier la Synchronisation",
     "button.synchronize": "Synchroniser",
     "button.revoke": "Révoquer",
     "button.repository": "Dépôt",
