@@ -49,7 +49,7 @@
                   <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
                   <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
                 </span>
-                <span *ngIf="data.syncState && inventoryService.checkDeploymentStatus.isChecked"
+                <span *ngIf="data.syncState && inventoryService.checkDeploymentStatus.isChecked" [hidden]="(data.syncState._text == 'NOT_DEPLOYED' && !data.deployed)"
                       class="badge badge-sync m-l-12" [ngClass]="coreService.getColor(data.syncState.severity, 'bg')">
                   {{data.syncState._text | translate}}
                 </span>
@@ -313,7 +313,7 @@
             <nz-collapse-panel class="m-b" [nzDisabled]="selectedNode.radio1 == 'bySubagentCluster'" [nzHeader]="'workflow.label.bySubagentCluster' | translate" (click)="selectedNode.radio1 = 'bySubagentCluster'" [nzActive]="selectedNode.radio1 == 'bySubagentCluster'">
               <div class="p-a b-a m-t">
               <div class="form-group row">
-                <div [nz-tooltip]="!preferences.showTooltipInfo ? ('workflow.tooltip.agentAssignment' | translate) : ''"
+                <div [nz-tooltip]="!preferences.showTooltipInfo ? ('workflow.tooltips.workflow.forkList.agentAssignment' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.agentAssignment
                   <sup class="text-danger text-sm">*</sup>
                 </div>
@@ -330,7 +330,9 @@
                 <label class="col-md-4 col-lg-3 form-control-label"
                        [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.agent' | translate) : ''"
                        [nzTooltipMouseEnterDelay]="0.5"
-                       translate>workflow.label.agent
+                       >
+                  <span *ngIf="selectedNode.radio == 'agent'" translate>workflow.label.subagentCluster</span>
+                  <span *ngIf="selectedNode.radio == 'expression'" translate>workflow.label.agentCluster</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'agent'">

@@ -1174,8 +1174,7 @@
     "label.overwriteNotification": "Update Notification",
     "label.overwriteAdmissionTime": "Update Admission Times",
     "label.updateWorkflowsFromJobTemplates": "Update Workflows from Job Templates",
-    "label.switchUserMode": "User Mode",
-    "label.switchExpertMode": "Expert Mode",
+    "label.switchUserExpertMode": "User/Expert Mode",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
@@ -1406,7 +1405,8 @@
           "children": "List variable for dynamic forking: expects the name of the order variable that holds a list of elements. For each element of the list variable a branch is created dynamically from the assigned ForkList instruction. The number of list variable elements determines the number of parallel branches of the ForkList instruction that are executed in parallel by child orders.",
           "childToId": "List element for branch mapping: expects the name of an element within the selected list variable that holds a unique identifier for the branch that should be created dynamically.",
           "joinIfFailed": "A child order is terminated in case of failure. The parent order will be put to the FAILED state.",
-          "agent": "Agent"
+          "agent": "Agent",
+          "agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster."
         },
         "if": {
           "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
@@ -1440,7 +1440,8 @@
           "mailBcc": "Send e-mail blind copy to the indicated recipient. A number of e-mail addresses can be specified separated by a comma.",
           "mailOn": "Send e-mail in case of the indicated events of errors, warnings or success.",
           "description": "The Description is displayed when this job is selected from the list of Job Templates.",
-          "onWarning": "A number of Return Codes can be specified that signal successful execution with warnings. A notification is created in case of such return codes. A number of return codes can be specified by a comma separated list."
+          "onWarning": "A number of Return Codes can be specified that signal successful execution with warnings. A notification is created in case of such return codes. A number of return codes can be specified by a comma separated list.",
+          "agentAssignment": "Agent Assignment"
         },
         "admissionTime": {
           "admissionType": "The type of admission times includes to specify Weekdays, Specific Weekdays and Month Days.",
@@ -2501,6 +2502,8 @@
     "label.title": "Title",
     "label.label": "Label",
     "label.agent": "Agent",
+    "label.subagentCluster": "Subagent Cluster",
+    "label.agentCluster": "Agent Cluster",
     "label.arguments": "Arguments",
     "label.jobArguments": "Job Arguments",
     "label.variables": "Variables",
@@ -2750,7 +2753,6 @@
     "tooltip.facetEntryMode": "Facet entry mode",
     "tooltip.editorEntryMode": "Editor entry mode",
     "tooltip.removeJobTemplateReference": "Remove Job Template Reference",
-    "tooltip.agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expression that specifies the Subagent Cluster. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster.",
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",

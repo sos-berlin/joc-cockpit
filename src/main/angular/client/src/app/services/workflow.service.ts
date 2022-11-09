@@ -2602,7 +2602,7 @@ export class WorkflowService {
         if (job.executable.env && isArray(job.executable.env)) {
           job.executable.env = job.executable.env.filter((env) => {
             if (env.value) {
-              if (!(/[$_+]/.test(env.value))) {
+              if (!(/[$+]/.test(env.value))) {
                 const startChar = env.value.substring(0, 1);
                 const endChar = env.value.substring(env.value.length - 1);
                 if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {

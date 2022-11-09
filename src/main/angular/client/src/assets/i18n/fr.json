@@ -1174,8 +1174,7 @@
     "label.overwriteNotification": "Mettre à jour la Notification",
     "label.overwriteAdmissionTime": "Mettre à jour les Heures d'Admission",
     "label.updateWorkflowsFromJobTemplates": "Mise à jour des Workflows à partir de Modèles de Tâches",
-    "label.switchUserMode": "Mode Utilisateur",
-    "label.switchExpertMode": "Mode Expert",
+    "label.switchUserExpertMode": "User/Expert Mode",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -1405,8 +1404,9 @@
         "forkList": {
           "children": "Variable de Tableau pour la bifurcation dynamique : attend le nom de la variable d'ordre qui contient une liste d'éléments. Pour chaque élément de la variable du tableau, une branche est créée dynamiquement à partir de l'instruction ForkList assignée. Le nombre d'éléments de la variable de tableau détermine le nombre de branches parallèles de l'instruction ForkList qui sont exécutées en parallèle par les ordres enfants.",
           "childToId": "Élément de tableau pour le mappage des branches : attend le nom d'un élément dans la variable de tableau sélectionnée qui contient un identifiant unique pour la branche qui doit être créée dynamiquement.",
-          "joinIfFailed": "Un ordre enfant est terminé en cas d'échec. L'ordre parent sera mis à l'état ECHOUÉ.",
-          "agent": "Agent"
+         "joinIfFailed": "Un ordre enfant est terminé en cas d'échec. L'ordre parent sera mis à l'état ECHOUÉ.",
+          "agent": "Agent",
+          "agentAssignment": "L'instruction ForkList se voit attribuer un Cluster de Sous-agents qui spécifie un certain nombre de Sous-agents sur lesquels les tâches sont exécutées en parallèle. Deux options d'affectation sont proposées :\n* sélection d'un Cluster de Sous-agents qui permet de choisir dans une liste.\n* entrée d'une expression qui spécifie le Cluster de Sous-agents. Il s'agit notamment de spécifier le nom d'une variable de workflow, éventuellement portée par un ordre qui spécifie le Cluster de Sous-agents."
         },
         "if": {
           "predicate": "Un Prédicat dans une instruction If est une expression ou une comparaison qui donne la valeur 'vrai' ou 'faux'."
@@ -1440,7 +1440,8 @@
           "mailBcc": "Envoyer la copie cachée d'un e-mail au destinataire indiqué. Il est possible de spécifier un certain nombre d'adresses e-mail séparées par une virgule.",
           "mailOn": "Envoyer un e-mail en cas d'événements indiqués d'erreurs, d'avertissements ou de succès.",
           "description": "La description s'affiche lorsque ce job est sélectionné dans la liste des Modèles des Tâches.",
-          "onWarning": "Il est possible de spécifier un certain nombre de Codes de Retour qui signalent une exécution réussie avec des avertissements. Une notification est créée dans le cas de tels Codes de Retour. Un certain nombre de Codes de Retour peuvent être spécifiés par une liste séparée par des virgules."
+          "onWarning": "Il est possible de spécifier un certain nombre de Codes de Retour qui signalent une exécution réussie avec des avertissements. Une notification est créée dans le cas de tels Codes de Retour. Un certain nombre de Codes de Retour peuvent être spécifiés par une liste séparée par des virgules.",
+          "agentAssignment": "Agent Assignment"
         },
         "admissionTime": {
           "admissionType": "Le type d'heures d'admission permet de spécifier les jours de la semaine, les jours de la semaine spécifiques et les jours du mois.",
@@ -2501,6 +2502,8 @@
     "label.title": "Titre",
     "label.label": "Label",
     "label.agent": "Agent",
+    "label.subagentCluster": "Subagent Cluster",
+    "label.agentCluster": "Agent Cluster",
     "label.arguments": "Arguments",
     "label.jobArguments": "Arguments du Tâches",
     "label.variables": "Variables",
@@ -2750,7 +2753,6 @@
     "tooltip.facetEntryMode": "Mode contrôle des entrées",
     "tooltip.editorEntryMode": "Mode d'entrée directe",
     "tooltip.removeJobTemplateReference": "Supprimer la référence au Modèle de Tâche",
-    "tooltip.agentAssignment": "L'instruction ForkList se voit attribuer un Cluster de Sous-agents qui spécifie un certain nombre de Sous-agents sur lesquels les tâches sont exécutées en parallèle. Deux options d'affectation sont proposées :\n* sélection d'un Cluster de Sous-agents qui permet de choisir dans une liste.\n* entrée d'une expression qui spécifie le Cluster de Sous-agents. Il s'agit notamment de spécifier le nom d'une variable de workflow, éventuellement portée par un ordre qui spécifie le Cluster de Sous-agents.",
     "findAndReplace": {
       "label.find": "Trouver",
       "label.replace": "Remplacer",

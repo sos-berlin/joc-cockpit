@@ -119,7 +119,7 @@
         </div>
         <div class="form-group row" *ngIf="hasLicense && inventoryService.expertMode"
              [hidden]="fullScreen">
-          <div class="col-md-4 col-lg-3" [nz-tooltip]="isTooltipVisible ? ('workflow.tooltip.agentAssignment' | translate) : ''"
+          <div class="col-md-4 col-lg-3" [nz-tooltip]="isTooltipVisible ? ('workflow.tooltips.workflow.job.agentAssignment' | translate) : ''"
                [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.agentAssignment</div>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)">
@@ -133,8 +133,9 @@
         <div class="form-group row" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
-                 translate>workflow.label.agent
+                 [nzTooltipMouseEnterDelay]="0.5">
+            <span *ngIf="selectedNode.radio == 'agent'" translate>workflow.label.agent</span>
+            <span *ngIf="selectedNode.radio == 'expression'" translate>workflow.label.agentCluster</span>
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
           <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'agent'">
@@ -144,7 +145,7 @@
           </div>
           <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'expression'">
             <app-agent-selection [obj]="obj" [preferences]="preferences" [agents]="agents"
-                                 [skipSubagents]="true"
+                                 [skipSubagents]="true" [skipStandaloneAgent]="true"
                                  [data]="selectedNode.job"></app-agent-selection>
           </div>
         </div>

@@ -9,14 +9,12 @@
           <div class="inline" *ngIf="permission.joc">
             <div class="inline valign ">
               <nz-switch [(ngModel)]="inventoryService.expertMode"></nz-switch>
-              <span class="p-l-sm">{{'inventory.label.switchUserMode' | translate}}</span>
-              /
-              <span>{{'inventory.label.switchExpertMode' | translate}}</span>
+              <span style="padding-left: 6px">{{'inventory.label.switchUserExpertMode' | translate}}</span>
             </div>
 
-            <div class="inline valign m-l-12">
+            <div class="inline valign m-l">
               <nz-switch [(ngModel)]="inventoryService.checkDeploymentStatus.isChecked" (ngModelChange)="reloadFolders($event)"></nz-switch>
-              <span class="p-l-sm">{{'inventory.button.checkDeploymentStatus' | translate}}</span>
+              <span style="padding-left: 6px">{{'inventory.button.checkDeploymentStatus' | translate}}</span>
             </div>
             <button class="btn btn-sm btn-grey m-l-12"
                     (click)="search()">

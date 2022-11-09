@@ -416,6 +416,7 @@ export class AddOrderModalComponent implements OnInit {
     if (name && name !== '-') {
       this.order.orderId = name;
     }
+
     for (let i in this.selectedSchedule.orderParameterisations) {
       if (this.selectedSchedule.orderParameterisations[i].orderName == name ||
         (this.selectedSchedule.orderParameterisations[i].orderName == '' && name == '-') || this.selectedSchedule.orderParameterisations.length == 1) {
@@ -478,26 +479,39 @@ export class AddOrderModalComponent implements OnInit {
                 return {name: k1, value: val1};
               });
             }
-            val.listParameters.forEach((item) => {
-              for (let x in orderParameterisations.variables) {
-                if (k === x) {
-                  if (isArray(orderParameterisations.variables[x])) {
-                    orderParameterisations.variables[x].forEach((key) => {
-                      if (key[item.name]) {
-                        actualList.push({name: item.name, type: item.value.type, value: key[item.name]});
+
+            for (let x in orderParameterisations.variables) {
+              if (k === x) {
+                let flag = false;
+                if (isArray(orderParameterisations.variables[x])) {
+                  orderParameterisations.variables[x].forEach((key) => {
+                    let arr = [];
+                    for (let y in val.listParameters) {
+                      if (key[val.listParameters[y].name]) {
+                        arr.push({
+                          name: val.listParameters[y].name,
+                          type: val.listParameters[y].value.type,
+                          value: key[val.listParameters[y].name]
+                        });
                       }
-                    })
-                    break;
-                  }
+                    }
+                    if (arr.length > 0) {
+                      actualList.push(arr);
+                    }
+                  });
                 }
               }
-            });
-            if(actualList.length === 0){
-              val.listParameters.forEach((item) => {
-                actualList.push({name: item.name, type: item.value.type});
-              });
             }
-            this.forkListVariables.push({name: k, list: val.listParameters, actualList: [actualList]});
+            if (actualList.length === 0) {
+              let arr = [];
+              val.listParameters.forEach((item) => {
+                arr.push({name: item.name, type: item.value.type});
+              });
+              if (arr.length > 0) {
+                actualList.push(arr);
+              }
+            }
+            this.forkListVariables.push({name: k, list: val.listParameters, actualList: actualList});
           }
         }
         return {name: k, value: val};

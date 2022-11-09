@@ -1232,9 +1232,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       if (this.selectedNode.job && this.selectedNode.job.agentName1) {
         this.selectedNode.job.agentName = this.selectedNode.job.agentName1;
         delete this.selectedNode.job.agentName1;
-      } else if(this.selectedNode.job.agentName3){
+      } else if (this.selectedNode.job.agentName3) {
         this.selectedNode.job.agentName = this.selectedNode.job.agentName3;
         delete this.selectedNode.job.agentName3;
+      } else {
+        delete this.selectedNode.job.agentName;
       }
     } else {
       if (this.selectedNode.job.agentName2) {
@@ -2922,7 +2924,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (this.selectedNode.obj && this.selectedNode.obj.agentName1) {
         this.selectedNode.obj.agentName = this.selectedNode.obj.agentName1;
         delete this.selectedNode.obj.agentName1;
-      } else if(this.selectedNode.obj.agentName3){
+      } else if (this.selectedNode.obj.agentName3) {
         this.selectedNode.obj.agentName = this.selectedNode.obj.agentName3;
         delete this.selectedNode.obj.agentName3;
       }
@@ -7828,6 +7830,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
           }
         } finally {
+
           graph.getModel().endUpdate();
           if (self.selectedNode.type === 'ForkList' && !self.inventoryService.expertMode) {
             self.updateForkListJobs(self.selectedNode);
@@ -9600,6 +9603,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     if ((actualVal.agentName == newVal.agentName && actualVal.agentName1 == newVal.agentName1 && actualVal.subagentClusterIdExpr == newVal.subagentClusterIdExpr)) {
 
     } else {
+      if(newVal.agentName3){
+        return;
+      }
       const uuid = forkList.cell.getAttribute('uuid');
       let forkListObj = {};
 
@@ -9677,14 +9683,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private _updateForkListJobs(jobs, data): void {
     for (let i in this.jobs) {
       if (this.jobs[i].name && jobs.has(this.jobs[i].name)) {
-        if(data.subagentClusterIdExpr){
-          this.jobs[i].value.subagentClusterIdExpr = data.subagentClusterIdExpr;
+        if(data.subagentClusterIdExpr && (!this.jobs[i].value.agentName || this.jobs[i].value.subagentClusterId)){
           if(data.agentName1) {
+            this.jobs[i].value.subagentClusterIdExpr = '$js7ForkListSubagentId';
             this.jobs[i].value.agentName = data.agentName1;
             this.jobs[i].value.subagentClusterId = data.agentName;
-          } else {
-            this.jobs[i].value.agentName = data.agentName;
-            delete this.jobs[i].value.subagentClusterId;
           }
         }
       }
@@ -10456,7 +10459,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (data.jobs[prop].executable.env && isArray(data.jobs[prop].executable.env)) {
           data.jobs[prop].executable.env = data.jobs[prop].executable.env.filter((env) => {
             if (env.value) {
-              if (!(/[$_+]/.test(env.value))) {
+              if (!(/[$+]/.test(env.value))) {
                 const startChar = env.value.substring(0, 1);
                 const endChar = env.value.substring(env.value.length - 1);
                 if ((startChar === '\'' && endChar === '\'') || (startChar === '"' && endChar === '"')) {

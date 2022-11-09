@@ -25,6 +25,7 @@ export class StartUpModalComponent implements OnInit {
   isPrimaryConnectionChecked = false;
   isBackupConnectionChecked = false;
   isConnectionChecked = false;
+  required = false;
   display: any;
   comments: any = {};
   agent: any = {};
@@ -38,6 +39,10 @@ export class StartUpModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.required = true;
+      this.display = true;
+    }
     this.agent.asStandaloneAgent =  false;
     this.hasLicense = sessionStorage.hasLicense == 'true';
     this.controller = {
@@ -167,7 +172,9 @@ export class StartUpModalComponent implements OnInit {
         if (res && res.controller) {
           let title = '', msg = '';
           if (res.controller.connectionState && res.controller.connectionState._text === 'unreachable') {
-            this.error = true;
+            if (this.new) {
+              this.error = true;
+            }
             this.translate.get('error.message.oops').subscribe(translatedValue => {
               title = translatedValue;
             });
@@ -183,7 +190,9 @@ export class StartUpModalComponent implements OnInit {
           }
         }
       }, error: () => {
-        this.error = true;
+        if (this.new) {
+          this.error = true;
+        }
         this.setFlag(type, false);
       }
     });
