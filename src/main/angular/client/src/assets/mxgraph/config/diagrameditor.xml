@@ -109,6 +109,13 @@
         </mxCell>
       </ConsumeNotices>
     </add>
+    <add as="StickySubagent">
+      <StickySubagent label="stickySubagent">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </StickySubagent>
+    </add>
     <add as="Prompt">
       <Prompt label="prompt">
         <mxCell vertex="1">
@@ -222,6 +229,8 @@
     <add as="ExpectNotices" template="ExpectNotices" style="expectNotices" icon="./assets/mxgraph/images/await.png"/>
     <hr/>
     <add as="Lock" template="Lock" style="lock" icon="./assets/mxgraph/images/lock.png"/>
+    <hr/>
+    <add as="StickySubagent" template="StickySubagent" style="stickySubagent" icon="./assets/mxgraph/images/sticky-subagent.png"/>
     <hr/>
     <add as="AddOrder" template="AddOrder" style="addOrder" icon="./assets/mxgraph/images/addOrder.png"/>
     <hr/>
