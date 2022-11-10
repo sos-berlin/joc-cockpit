@@ -2410,8 +2410,8 @@
     "message.deleteSelectedBlocklist": "Sind Sie sicher, dass Sie die ausgewählten Konten aus der Sperrliste entfernen wollen?",
     "message.cancelActiveSession": "Sind Sie sicher, dass Sie alle aktiven Sitzungen dieses Kontos abbrechen wollen?",
     "message.cancelSelectedActiveSession": "Sind Sie sicher, dass Sie alle aktiven Sitzungen der ausgewählten Konten abbrechen wollen?",
-    "tab.simpleMode": "Einfacher Modus",
-    "tab.expertMode": "Experten-Modus",
+    "tab.simpleMode": "Weniger Optionen",
+    "tab.expertMode": "Mehr Optionen",
     "tooltip.toAddNonExistFolders": "Ordner können ausgewählt werden. Zur Eingabe eines Ordnerpfads per Tastatur den Pfad eingeben und Leertaste oder Eingabetaste drücken.",
     "usermode": {
       "label.iamLdapHost": "LDAP Server Host",
