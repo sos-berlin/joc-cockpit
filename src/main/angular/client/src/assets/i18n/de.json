@@ -1377,7 +1377,7 @@
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen. Die Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
         "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs kann nach Belieben angegeben werden. Der Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
-        "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der Cycle Instruktion zu bestimmen. Per Voreinstellung wird die Zeitzone des Benutzerprofils eingesetzt.",
+        "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der Cycle-Instruktion zu bestimmen. Per Voreinstellung wird die Zeitzone des Benutzerprofils eingesetzt.",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
           "expectBoardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -1402,7 +1402,7 @@
           "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags."
         },
         "forkList": {
-          "children": "Listenvariable für dynamische Verzweigung: Wird eine ForkList Instruktion im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ForkList Instruktion erzeugt und durchlaufen wird: pro Listenelement werden die Instruktionen und Jobs der ForkList Instruktion in einem jeweils eigenen Zwei parallel durchlaufen.",
+          "children": "Listenvariable für dynamische Verzweigung: Wird eine ForkList Instruktion im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ForkList-Instruktion erzeugt und durchlaufen wird: pro Listenelement werden die Instruktionen und Jobs der ForkList-Instruktion in einem jeweils eigenen Zwei parallel durchlaufen.",
           "childToId": "Listenelement für Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable. Der Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird.",
           "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags.",
           "agent": "Ermöglicht die Auswahl des Subagenten Cluster, aus dem alle verfügbaren Agenten zur parallelen Ausführung von Aufträgen innerhalb der ForkList Anweisung verwendet werden.",
@@ -1800,7 +1800,7 @@
     "label.gitManagement": "Verwaltung Git",
     "label.favoriteManagement": "Verwaltung Favoriten",
     "label.licenseWarningGotIt": "Lizenzwarnung akzeptiert",
-    "label.showMoreOptions": "Show more options",
+    "label.showMoreOptions": "Mehr Optionen anzeigen",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -2723,7 +2723,7 @@
     "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",
     "message.invalidForkListInstruction": "ForkList-Instruktion darf nicht leer sein",
     "message.mailLengthExceed": "Maximale Größe von 1000 Zeichen für E-Mail Adressen überschritten",
-    "message.invalidStickySubagentInstruction": "StickySubagent Instruction cannot be empty",
+    "message.invalidStickySubagentInstruction": "StickySubagent-Instruktion darf nicht leer sein",
     "message.invalidRegularExpression": "Ungültiger Regulärer Ausdruck",
     "message.suspendAllWarning": "Wollen Sie wirklich alle Arbeitsabläufe aussetzen?",
     "message.resumeAllWarning": "Wollen Sie wirklich alle Arbeitsabläufe wiederaufnehmen?",
