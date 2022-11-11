@@ -1405,18 +1405,18 @@
           "children": "List variable for dynamic forking: expects the name of the order variable that holds a list of elements. For each element of the list variable a branch is created dynamically from the assigned ForkList instruction. The number of list variable elements determines the number of parallel branches of the ForkList instruction that are executed in parallel by child orders.",
           "childToId": "List element for branch mapping: expects the name of an element within the selected list variable that holds a unique identifier for the branch that should be created dynamically.",
           "joinIfFailed": "A child order is terminated in case of failure. The parent order will be put to the FAILED state.",
-          "agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster.",
+          "agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster ID. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster.",
           "subagent": "Allows to select the Subagent Cluster from which all available Agents are used to execute in parallel jobs within the ForkList Instruction.",
-          "agentCluster": "Agent Cluster",
-          "infoOfListVariable": "List variable \n to break line and for link %paste link%",
-          "infoOfSubagentCluster": "Subagent Cluster \n to break line and for link %paste link%"
+          "agentCluster": "The Agent Cluster is selected from which the Subagent Cluster is specified by an expression in a separate input field.",
+          "infoOfListVariable": "For use with list variables see the documentation at %https://kb.sos-berlin.com/x/ZLrAAw%",
+          "infoOfSubagentCluster": "For use with Agent Clusters visit the documentation at %https://kb.sos-berlin.com/x/KQiwBQ%"
         },
         "stickySubagent": {
-          "agentAssignment": "Agent Assignment",
-          "subagent": "SubAgent",
-          "agentCluster": "Agent Cluster",
-          "subagentClusterIdExpr": "Subagent ClusterId Expr",
-          "infoMessage": "Sticky subagent \n to break line and for link %paste link%"
+          "agentAssignment": "The StickySubagent Instruction is assigned a Subagent Cluster that specifies a number of Subagents from which one Subagent willl be selected. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster ID. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster.",
+          "subagent": "Allows to select the Subagent Cluster from which one Subgent will be used to execute jobs within the StickySubagent Instruction.",
+          "agentCluster": "The Agent Cluster is selected from which the Subagent Cluster is specified by an expression in a separate input field.",
+          "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable. If no expression is specified then an arbitrary Subagent of the given Agent Cluster will be used. If a variable is specified then it should hold the Subagent Cluster ID.",
+          "infoMessage": "Visit the documentation at %https://kb.sos-berlin.com/x/GQ6wBQ%"
         },
         "if": {
           "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
