@@ -2143,9 +2143,11 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       arr: this.jobResourcesTree,
       jobResources: this.selectedNode.job.jobResourceNames
     });
-    if (this.hasLicense && this.selectedNode.job.subagentClusterIdExpr) {
+    if (this.hasLicense && (this.selectedNode.job.subagentClusterIdExpr || this.selectedNode.job.withSubagentClusterIdExpr)) {
       this.selectedNode.radio = 'expression';
-      this.coreService.removeSlashToString(this.selectedNode.job, 'subagentClusterIdExpr');
+      if (this.selectedNode.job.subagentClusterIdExpr) {
+        this.coreService.removeSlashToString(this.selectedNode.job, 'subagentClusterIdExpr');
+      }
     } else {
       this.selectedNode.radio = 'agent';
     }
@@ -2781,6 +2783,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           agentName: v.agentName || v.agentId,
           subagentClusterId: v.subagentClusterId,
           subagentClusterIdExpr: v.subagentClusterIdExpr,
+          withSubagentClusterIdExpr: v.withSubagentClusterIdExpr,
           executable: v.executable,
           defaultArguments: v.defaultArguments,
           jobResourceNames: v.jobResourceNames,
@@ -7927,6 +7930,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               self.coreService.addSlashToString(self.selectedNode.job, 'subagentClusterIdExpr');
             }
           }
+
+          self.selectedNode.job.withSubagentClusterIdExpr = self.selectedNode.radio == 'expression';
           delete self.selectedNode.radio;
         }
         self.dataService.reloadWorkflowError.next({error: self.error});
