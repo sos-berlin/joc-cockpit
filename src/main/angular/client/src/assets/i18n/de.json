@@ -1343,8 +1343,8 @@
         "title": "Der Titel der Job-Ressource kann nach Belieben angegeben werden."
       },
       "board": {
-        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "expectBoardName": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Instruktionen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Anweisungen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "expectBoardName": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen. Die PostNotices- und ExpectNotices-Anweisungen von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Notizbrett angezeigt wird. Die Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Notizbretts kann nach Belieben angegeben werden.",
         "toNotice": "Die Notizkennung des ausstellenden Auftrags wird aus dessen Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem die zu notifizierenden Aufträge identifiziert wereden.",
@@ -1377,7 +1377,7 @@
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen. Die Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
         "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs kann nach Belieben angegeben werden. Der Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
-        "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der Cycle-Instruktion zu bestimmen. Per Voreinstellung wird die Zeitzone des Benutzerprofils eingesetzt.",
+        "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der Cycle-Anweisung zu bestimmen. Per Voreinstellung wird die Zeitzone des Benutzerprofils eingesetzt.",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "board": {
           "expectBoardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -1391,35 +1391,35 @@
         "fail": {
           "message": "Mit dieser Instruktion kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
           "uncatchable": "Ein nicht abfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
-          "returnCode": "Der Fail-Instruktion kann eine positive Zahl als Rückgabewert zugeordnet werden, die in der Auftragshistorie sichtbar wird. Rückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
+          "returnCode": "Der Fail-Anweisung kann eine positive Zahl als Rückgabewert zugeordnet werden, die in der Auftragshistorie sichtbar wird. Rückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
         },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
           "regex": "Ein regulärer Ausdruck beschreibt das Muster der Namen von Dateien, die im Verzeichnis überwacht werden."
         },
         "fork": {
-          "joinVariables": "Auftragsvariablen aus Zweigen einer Fork-Instruktion werden in der entsprechenden Join-Instruktion dem Elternauftrag übergeben.",
+          "joinVariables": "Auftragsvariablen aus Zweigen einer Fork-Anweisung werden in der entsprechenden Join-Anweisung dem Elternauftrag übergeben.",
           "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags."
         },
         "forkList": {
-          "children": "Listenvariable für dynamische Verzweigung: Wird eine ForkList Instruktion im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ForkList-Instruktion erzeugt und durchlaufen wird: pro Listenelement werden die Instruktionen und Jobs der ForkList-Instruktion in einem jeweils eigenen Zwei parallel durchlaufen.",
+          "children": "Listenvariable für dynamische Verzweigung: Wird eine ForkList Instruktion im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ForkList-Anweisung erzeugt und durchlaufen wird: pro Listenelement werden die Instruktionen und Jobs der ForkList-Anweisung in einem jeweils eigenen Zwei parallel durchlaufen.",
           "childToId": "Listenelement für Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable. Der Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird.",
           "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags.",
+          "agentAssignment": "Der ForkList-Anweisung wird ein Subagenten Cluster zugewiesen, der eine Anzahl von Subagenten angibt, auf denen Aufträge parallel ausgeführt werden. Für die Zuweisung werden zwei Optionen angeboten: \n * Auswahl eines Subagenten Cluster, was die Auswahl aus einer Liste ermöglicht. \n * Eingabe eines Ausdrucks, der den Subagenten Cluster spezifiziert. Dies beinhaltet die Angabe des Namens einer Variablen des Arbeitsablaufs, optional einer Variablen des Auftrags, die den Subagenten Cluster benennt.",
           "subagent": "Ermöglicht die Auswahl des Subagenten Cluster, aus dem alle verfügbaren Agenten zur parallelen Ausführung von Aufträgen innerhalb der ForkList Anweisung verwendet werden.",
-          "agentAssignment": "Der ForkList Anweisung wird ein Subagenten Cluster zugewiesen, der eine Anzahl von Subagenten angibt, auf denen Aufträge parallel ausgeführt werden. Für die Zuweisung werden zwei Optionen angeboten:\n*Auswahl eines Subagenten Cluster, was die Auswahl aus einer Liste ermöglicht.\n* Eingabe eines Ausdrucks, der den Subagenten Cluster spezifiziert. Dies beinhaltet die Angabe des Namens einer Variablen des Arbeitsablaufs, optional einer Variablen des Auftrags, die den Subagenten Cluster benennt.",
-          "agentCluster": "Agent Cluster",
-          "infoOfListVariable": "List variable \n to break line and for link %paste link%",
-          "infoOfSubagentCluster": "Subagent Cluster \n to break line and for link %paste link%"
+          "agentCluster": "Es wird ein Agenten Cluster ausgewählt, von dem die Subagenten Cluster ID durch einen Ausdruck in einem separaten Eingabefeld angegeben wird.",
+          "infoOfListVariable": "Für die Verwendung der ForkList-Anweisung mit einer Listenvariablen siehe die Dokumentation unter %https://kb.sos-berlin.com/x/ZLrAAw%",
+          "infoOfSubagentCluster": "Zur Verwendung der ForkList-Anweisung mit einem Agenten Cluster siehe die Dokumentation unter %https://kb.sos-berlin.com/x/KQiwBQ%"
         },
         "stickySubagent": {
-          "agentAssignment": "Agent Assignment",
-          "subagent": "SubAgent",
-          "agentCluster": "Agent Cluster",
-          "subagentClusterIdExpr": "Subagent ClusterId Expr",
-          "infoMessage": "Sticky subagent \n to break line and for link %paste link%"
+          "agentAssignment": "Der StickySubagent-Anweisung wird ein Subagenten Cluster zugewiesen, das eine Anzahl von Subagenten angibt, aus denen ein Subagent ausgewählt wird. Für die Zuweisung werden zwei Optionen angeboten: \n * Auswahl eines Subagenten Cluster, der die Auswahl aus einer Liste ermöglicht. \n * Eingabe eines Ausdrucks, der die ID des Subagenten Cluster angibt. Dies beinhaltet die Angabe des Namens einer Workflow-Variablen, optional aus einem Auftrag, die den Subagenten Cluster spezifiziert.",
+          "subagent": "Ermöglicht die Auswahl des Subagenten Cluster, aus dem ein Subagent zur Ausführung von Jobs innerhalb der StickySubagent-Anweisung verwendet wird.",
+          "agentCluster": "Es wird der Agenten Cluster ausgewählt, aus dem der Subagenten Cluster durch einen Ausdruck in einem separaten Eingabefeld spezifiziert wird.",
+          "subagentClusterIdExpr": "Der Ausdruck gibt die ID des Subagenten Cluster aus einer Variablen an. Wenn kein Ausdruck angegeben wird, wird ein beliebiger Subagent des angegebenen Agenten Cluster verwendet. Wenn eine Variable angegeben wird, muss sie die Subagenten Cluster ID enthalten.",
+          "infoMessage": "Verwenden Sie diee Dokumentation unter %https://kb.sos-berlin.com/x/GQ6wBQ%"
         },
         "if": {
-          "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
+          "predicate": "Das Prädikat einer If-Anweisung stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
         },
         "job": {
           "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Instruktion im Arbeitsablauf vorkommen sofern er durch seine Kennzeichnung unterschieden ist. Für Job-Namen können Unicode Zeichen verwendet werden, Punkte und Bindestriche, jedoch nicht am Beginn oder Ende des Job-Namens sowie keine Leerzeichen.",
@@ -1435,8 +1435,6 @@
           "graceTimeout": "Die Toleranzfrist gilt für Jobs unter Unix, die zunächst mit SIGTERM versucht werden zu beenden und nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen werden.",
           "warnIfShorter": "Bei kürzerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann das Format hh:mm:ss verwendet werden, z.B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus den Durchschnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
           "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine Benachrichtigung, z.B. per E-Mail, gesendet. Die Anzahl Sekunden kann im Format 1s angegeben werden. Alternativ kann das Format hh:mm:ss verwendet werden, z.B. 01:30:00 für eineinhalb Stunden. Es kann ein Prozentsatz angegeben werden, der aus dem Durchscnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. 30%.",
-          "agent": "Dem Job ist ein Agent zugewiesen, der das Job Skript bzw. die Java Klasse ausführt.",
-          "subagentClusterIdExpr": "Der Ausdruck gibt die Subagenten Cluster ID über eine Variable an. Die eingebaute Variable js7ForkListSubagentId wird verwendet, wenn keine Variable angegeben wird. Benutzer können eine individuelle Variable angeben, z.B. wenn Vorgänger-Jobs verwendet werden, um zu bestimmen, welcher Subagenten Cluster verwendet werden soll.",
           "fileWatcher": "Eine Dateiauftragsquelle überwacht ein Verzeichnis auf eintreffende Dateien und erzeugt für jede Datei einen Auftrag für einen Arbeitsablauf.",
           "className": "Der Name einer Java Klasse, die einen Job implementiert. JS7 enthält eine Reihe von JITL Java Klassen, z.B. für Datenbankzugriffe, E-Mail Versand etc.",
           "parallelism": "Die max. Parallelität eines Jobs bestimmt wie viele Aufträge gleichzeitig in einem Arbeitsablauf diesen Job ausführen können. Wird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
@@ -1451,8 +1449,10 @@
           "mailOn": "E-Mail bei Ereignisse wie Fehler, Warnung oder Erfolg versenden.",
           "description": "Die Beschreibung wird angezeigt, wenn dieser Job aus der Liste der Job-Vorlagen ausgewählt wird.",
           "onWarning": "Es können eine Reihe von Rückgabewerten angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren. Im Fall solcher Rückgabewerte wird eine Benachrichtigung erzeugt. Eine Reihe von Rückgabewerten kann durch eine kommaseparierte Liste angegeben werden.",
-          "agentAssignment": "Dem Job wird ein Agent oder Subagenten Cluster zur Ausführung zugewiesen. Alternativ kann ein Ausdruck angegeben werden, der die Subagenten Cluster ID über eine Variable liefert. Die eingebaute Variable js7ForkListSubagentId wird verwendet, wenn keine Variable angegeben wird. Benutzer können eine individuelle Variable angeben, z.B. wenn Vorgänger-Jobs verwendet werden, um zu bestimmen, welcher Subagenten Cluster verwendet werden soll.",
-          "agentCluster": "Agent Cluster"
+          "agentAssignment": "Dem Job wird ein Agent oder Subagenten Cluster zur Ausführung zugewiesen. Alternativ kann ein Ausdruck angegeben werden, der die Subagenten Cluster ID über eine Variable liefert.",
+          "agent": "Dem Job ist ein Agent zugewiesen, der das Job Skript bzw. die Java Klasse ausführt.",
+          "agentCluster": "Wählt den Agent Cluster aus, für den eine Subagenten Cluster ID aus einem Ausdruck in einem späteren Eingabefeld angegeben wird.",
+          "subagentClusterIdExpr": "Der Ausdruck gibt die Subagenten Cluster ID über eine Variable an. Wird keine Variable angegeben, so wird ein eingebauter Standardwert aktiv, wenn der Job in einer ForkList- oder StickySubagent-Anweisung enthalten ist. Benutzer können eine individuelle Variable angeben, wenn z.B. Vorgänger-Jobs verwendet werden, um den Subagenten Cluster zu bestimmen, auf dem Folge-Jobs ausgeführt werden sollen."
         },
         "admissionTime": {
           "admissionType": "Bei der Art der Zutrittszeiten können Sie Wochentage, bestimmte Wochentage und Monatstage angeben.",
@@ -1474,7 +1474,7 @@
           "durationOfAdmissionTime": "Gibt die Dauer der Zutrittszeiten eines Jobs an. Die Werte werden in Stunden, Minuten oder Sekunden angegeben, zum Beispiel 1h, 3600s, 60m, oder im Format hh:mm:ss, zum Beispiel 01:00:00."
         },
         "addOrder": {
-          "workflowName": "Die AddOrder-Instruktion erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
+          "workflowName": "Die AddOrder-Anweisung erlaubt es einem anderen Arbeitsablauf einen unabhängigen Auftrag hinzuzufügen.",
           "arguments": "Argumente müssen dem Auftrag hinzugefügt werden sofern diese vom Arbeisablauf verlangt werden. Optionale Argumente können entfallen.",
           "remainWhenTerminated": "Nach Terminierung soll der Auftrag im Arbeitsablauf verbleiben. Dies erfordert die manuelle Ausführung der Funktion 'Arbeitsablauf verlassen', die z.B. in der Sicht ARBEITSABLAUF verfügbar ist."
         },
@@ -1483,10 +1483,10 @@
           "count": "Das Gewicht für die Nutzung einer Ressourcen-Sperre wird auf deren Kapazität angerechnet. Wird die Kapazität überschritten, dann wartet der Auftrag bis die Kapazität für das angegebene Gewicht verfügbar ist."
         },
         "prompt": {
-          "question": "Die Prompt-Instruktion hält einen Arbeitsablauf temporär an. Der Auftrag wird in den Zustand ANFRAGEND versetzt. Anwender können die Mitteilung der Prompt-Instruktion sehen und die Fortsetzung des Arbeitsablaufs bestätigen."
+          "question": "Die Prompt-Anweisung hält einen Arbeitsablauf temporär an. Der Auftrag wird in den Zustand ANFRAGEND versetzt. Anwender können die Mitteilung der Prompt-Anweisung sehen und die Fortsetzung des Arbeitsablaufs bestätigen."
         },
         "retry": {
-          "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die Retry-Instruktion beendeet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
+          "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die Retry-Anweisung beendeet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird. Werden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
         }
       }
@@ -2708,7 +2708,7 @@
     "message.otherInstructionValidationError": "Mehr als eine ausgehende Kante kann nicht verwendet werden.",
     "message.ifInstructionValidationError": "Nur eine Bedingungen kann verwendet werden",
     "message.invalidInstructionsSelected": "Auswahl der Instruktionen ungültig",
-    "message.catchInstructionValidationError": "Nur Try-Instruktion kann Catch-Instruktion verwenden",
+    "message.catchInstructionValidationError": "Nur Try-Anweisung kann Catch-Anweisung verwenden",
     "message.inValidWorkflow": "Ungültiger, ggf. unvollständiger, Arbeitsablauf",
     "message.dropHereToRemoveInstruction": "Hierher ziehen, um Instruktion zu entfernen",
     "message.labelIsMissing": "Kennzeichnung ist erforderlich",
@@ -2718,24 +2718,24 @@
     "message.predicateIsMissing": "Prädikat ist erforderlich",
     "message.scheduleIsMissing": "Schedule is missing, but is required",
     "message.lockNameIsMissing": "Name der Ressourcen-Sperre erforderlich",
-    "message.childrenIsMissing": "ForkList-Instruktion darf nicht leer sein",
-    "message.invalidIfInstruction": "If-Instruktion darf nicht leer sein",
-    "message.invalidTryInstruction": "Try-Instruktion darf nicht leer sein",
-    "message.invalidRetryInstruction": "Retry-Instruktion darf nicht leer sein",
-    "message.invalidCycleInstruction": "Cycle-Instruktion darf nicht leer sein",
-    "message.invalidLockInstruction": "Resource-Lock-Instruktion darf nicht leer sein",
-    "message.invalidPostNoticeInstruction": "PostNotices-Instruktion ist nicht gültig",
-    "message.invalidExpectNoticeInstruction": "ExpectNotices-Instruktion ist nicht gültig",
+    "message.childrenIsMissing": "ForkList-Anweisung darf nicht leer sein",
+    "message.invalidIfInstruction": "If-Anweisung darf nicht leer sein",
+    "message.invalidTryInstruction": "Try-Anweisung darf nicht leer sein",
+    "message.invalidRetryInstruction": "Retry-Anweisung darf nicht leer sein",
+    "message.invalidCycleInstruction": "Cycle-Anweisung darf nicht leer sein",
+    "message.invalidLockInstruction": "Resource-Lock-Anweisung darf nicht leer sein",
+    "message.invalidPostNoticeInstruction": "PostNotices-Anweisung ist nicht gültig",
+    "message.invalidExpectNoticeInstruction": "ExpectNotices-Anweisung ist nicht gültig",
     "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruktion darf nicht leer sein",
     "message.agentIsMissing": "Agent ist erforderlich",
     "message.orderNameIsMissing": "Auftragsname darf nicht leer sein",
     "message.workflowNameIsNotValid": "Name des Arbeitsablaufs darf nicht leer sein",
     "message.emptyWorkflow": "Arbeitsablauf ist leer, mindestens eine Instruktion ist erforderlich",
-    "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",
-    "message.invalidForkListInstruction": "ForkList-Instruktion darf nicht leer sein",
-    "message.nestedForkListInstruction": "ForkList Instruction cannot be nested",
+    "message.invalidForkInstruction": "Fork-Anweisung muss mindestens zwei Zweige besitzen",
+    "message.invalidForkListInstruction": "ForkList-Anweisung darf nicht leer sein",
+    "message.nestedForkListInstruction": "ForkList-Anweisung kann nicht verschachtelt werden",
     "message.mailLengthExceed": "Maximale Größe von 1000 Zeichen für E-Mail Adressen überschritten",
-    "message.invalidStickySubagentInstruction": "StickySubagent-Instruktion darf nicht leer sein",
+    "message.invalidStickySubagentInstruction": "StickySubagent-Anweisung darf nicht leer sein",
     "message.invalidRegularExpression": "Ungültiger Regulärer Ausdruck",
     "message.suspendAllWarning": "Wollen Sie wirklich alle Arbeitsabläufe aussetzen?",
     "message.resumeAllWarning": "Wollen Sie wirklich alle Arbeitsabläufe wiederaufnehmen?",

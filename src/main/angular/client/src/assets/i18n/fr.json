@@ -1405,18 +1405,18 @@
           "children": "Variable de Tableau pour la bifurcation dynamique : attend le nom de la variable d'ordre qui contient une liste d'éléments. Pour chaque élément de la variable du tableau, une branche est créée dynamiquement à partir de l'instruction ForkList assignée. Le nombre d'éléments de la variable de tableau détermine le nombre de branches parallèles de l'instruction ForkList qui sont exécutées en parallèle par les ordres enfants.",
           "childToId": "Élément de tableau pour le mappage des branches : attend le nom d'un élément dans la variable de tableau sélectionnée qui contient un identifiant unique pour la branche qui doit être créée dynamiquement.",
           "joinIfFailed": "Un ordre enfant est terminé en cas d'échec. L'ordre parent sera mis à l'état ECHOUÉ.",
-          "subagent": "Permet de sélectionner le Cluster de Sous-agents à partir duquel tous les Agents disponibles sont utilisés pour exécuter en parallèle des tâches dans l'Instruction ForkList.",
           "agentAssignment": "L'instruction ForkList se voit attribuer un Cluster de Sous-agents qui spécifie un certain nombre de Sous-agents sur lesquels les tâches sont exécutées en parallèle. Deux options d'affectation sont proposées :\n* sélection d'un Cluster de Sous-agents qui permet de choisir dans une liste.\n* entrée d'une expression qui spécifie le Cluster de Sous-agents. Il s'agit notamment de spécifier le nom d'une variable de workflow, éventuellement portée par un ordre qui spécifie le Cluster de Sous-agents.",
+          "subagent": "Permet de sélectionner le Cluster de Sous-agents à partir duquel tous les Agents disponibles sont utilisés pour exécuter en parallèle des tâches dans l'Instruction ForkList.",
           "agentCluster": "Agent Cluster",
-          "infoOfListVariable": "List variable \n to break line and for link %paste link%",
-          "infoOfSubagentCluster": "Subagent Cluster \n to break line and for link %paste link%"
+          "infoOfListVariable": "Pour l'utilisation de l'Instruction ForkList avec une variable de type liste, voir la documentation à l'adresse %https://kb.sos-berlin.com/x/ZLrAAw%.",
+          "infoOfSubagentCluster": "Pour l'utilisation de l'Instruction ForkList avec un Cluster d'Agent consultez la documentation à l'adresse %https://kb.sos-berlin.com/x/KQiwBQ%"
         },
         "stickySubagent": {
-          "agentAssignment": "Agent Assignment",
-          "subagent": "SubAgent",
-          "agentCluster": "Agent Cluster",
-          "subagentClusterIdExpr": "Subagent ClusterId Expr",
-          "infoMessage": "Sticky subagent \n to break line and for link %paste link%"
+          "agentAssignment": "L'Instruction StickySubagent se voit attribuer un Cluster de Sous-agents qui spécifie un certain nombre de Sous-agents parmi lesquels un Sous-agent sera sélectionné. Deux options d'affectation sont proposées : \n * sélection d'un Cluster de Sous-agents qui permet de choisir dans une liste. \n * entrée d'une expression qui spécifie l'ID du Cluster de Sous-agents. Il s'agit notamment de spécifier le nom d'une variable de workflow, éventuellement portée par un ordre qui spécifie le Cluster de Sous-agents.",
+          "subagent": "Permet de sélectionner le Cluster de Sous-agents à partir duquel un Sous-agent sera utilisé pour exécuter les jobs dans l'Instruction StickySubagent.",
+          "agentCluster": "Le Cluster d'Agents est sélectionné et le Cluster de Sous-agents est spécifié par une expression dans un champ de saisie séparé.",
+          "subagentClusterIdExpr": "L'expression spécifie l'ID du Cluster de Sous-agents à partir d'une variable. Si aucune expression n'est spécifiée, un Sous-agent arbitraire du Cluster d'Agents donné sera utilisé. Si une variable est spécifiée, elle doit contenir l'ID de Cluster de Sous-agents.",
+          "infoMessage": "Visitez la documentation disponible à %https://kb.sos-berlin.com/x/GQ6wBQ%"
         },
         "if": {
           "predicate": "Un Prédicat dans une instruction If est une expression ou une comparaison qui donne la valeur 'vrai' ou 'faux'."
@@ -1435,8 +1435,6 @@
           "graceTimeout": "Un Délai de Grâce est appliqué aux tâches sous Unix qui reçoivent un signal SIGTERM lorsqu'ils dépassent leur délai. Si la tâche ne se termine pas après le délai de grâce, un signal SIGKILL interrompra la tâche.",
           "warnIfShorter": "Si la période d'exécution d'un travail est plus courte que celle spécifiée, une notification, par exemple par e-mail, sera envoyée. Le nombre de secondes peut être spécifié comme en 1s. On peut aussi utiliser le format hh:mm:ss, par exemple 01:30:00 pour une heure et demie. Il est possible de spécifier un pourcentage calculé à partir de la moyenne des exécutions réussies de Tâches antérieurs, par exemple 30%.",
           "warnIfLonger": "Si la période d'exécution d'un travail est plus longue que celle spécifiée, une notification, par exemple par e-mail, sera envoyée. Le nombre de secondes peut être spécifié comme en 1s. On peut aussi utiliser le format hh:mm:ss, par exemple 01:30:00 pour une heure et demie. Il est possible de spécifier un pourcentage calculé à partir de la moyenne des exécutions réussies de Tâches antérieurs, par exemple 30%.",
-          "agent": "Un Agent est assigné à la Tâche qui exécutera le script/la classe de la Tâche. Faites votre choix dans la liste des Agents disponibles.",
-          "subagentClusterIdExpr": "L'Expression spécifie l'ID du Cluster de Sous-agents à partir d'une variable. Il est également possible de spécifier une Expression qui fournit l'identification unique du Cluster de Sous-agents à partir d'une variable. La variable intégrée js7ForkListSubagentId sera utilisée si aucune variable n'est spécifiée. Les utilisateurs peuvent spécifier une variable individuelle, par exemple si des tâches prédécesseurs sont utilisés pour déterminer le Cluster de Sous-agents à exécuter.",
           "fileWatcher": "Les Sources d'Ordre de Fichier sont utilisées pour surveiller un répertoire pour les fichiers entrants et pour créer un ordre avec le workflow respectif pour chaque fichier.",
           "className": "Le nom d'une Classe Java implémentant une tâche. JS7 est livré avec un certain nombre de classes Java JITL prédéfinies, par exemple pour l'accès aux bases de données, pour l'envoi d'e-mails, etc.",
           "parallelism": "La valeur max. Parallélisme spécifie le nombre d'ordres dans un workflow qui peuvent exécuter de tâche en parallèle. Si le maximum est dépassé, les ordres doivent attendre que la valeur soit redescendue en dessous du max. Parallelisme",
@@ -1451,8 +1449,10 @@
           "mailOn": "Envoyer un e-mail en cas d'événements indiqués d'erreurs, d'avertissements ou de succès.",
           "description": "La description s'affiche lorsque ce job est sélectionné dans la liste des Modèles des Tâches.",
           "onWarning": "Il est possible de spécifier un certain nombre de Codes de Retour qui signalent une exécution réussie avec des avertissements. Une notification est créée dans le cas de tels Codes de Retour. Un certain nombre de Codes de Retour peuvent être spécifiés par une liste séparée par des virgules.",
-          "agentAssignment": "La tâche se voit attribuer un Cluster d'Agents ou de Sous-agents pour son exécution. Il est également possible de spécifier une Expression qui fournit l'identification unique du Cluster de Sous-agents à partir d'une variable. La variable intégrée js7ForkListSubagentId sera utilisée si aucune variable n'est spécifiée. Les utilisateurs peuvent spécifier une variable individuelle, par exemple si des tâches prédécesseurs sont utilisés pour déterminer le Cluster de Sous-agents à exécuter.",
-          "agentCluster": "Agent Cluster"
+          "agentAssignment": "La tâche se voit attribuer un Cluster d'Agents ou de Sous-agents pour son exécution. Il est également possible de spécifier une Expression qui fournit l'identification unique du Cluster de Sous-agents à partir d'une variable.",
+          "agent": "Un Agent est assigné à la Tâche qui exécutera le script/la classe de la Tâche. Faites votre choix dans la liste des Agents disponibles.",
+          "agentCluster": "Sélectionne le Cluster d'Agents pour lequel la ID de Cluster de Sous-agents est spécifié à partir d'une expression dans un champ de saisie ultérieur.",
+          "subagentClusterIdExpr": "L'Expression spécifie l'ID du Cluster de Sous-agents à partir d'une variable. Il est également possible de spécifier une Expression qui fournit l'identification unique du Cluster de Sous-agents à partir d'une variable. La variable intégrée js7ForkListSubagentId sera utilisée si aucune variable n'est spécifiée. Les utilisateurs peuvent spécifier une variable individuelle, par exemple si des tâches prédécesseurs sont utilisés pour déterminer le Cluster de Sous-agents à exécuter."
         },
         "admissionTime": {
           "admissionType": "Le type d'heures d'admission permet de spécifier les jours de la semaine, les jours de la semaine spécifiques et les jours du mois.",
@@ -2733,7 +2733,7 @@
     "message.workflowNameIsNotValid": "Le nom du Workflow est manquant, mais est requis",
     "message.emptyWorkflow": "Workflow est vide, une instruction au minimum est requise.",
     "message.invalidForkInstruction": "L'instruction Fork doit avoir un minimum de deux branches",
-    "message.nestedForkListInstruction": "ForkList Instruction cannot be nested",
+    "message.nestedForkListInstruction": "L'instruction ForkList ne peut pas être imbriquée",
     "message.invalidStickySubagentInstruction": "L'instruction StickySubagent ne peut pas être vide",
     "message.mailLengthExceed": "La longueur maximale des adresses de courrier dépasse 1000 caractères",
     "message.invalidRegularExpression": "Expression régulière non valide",
