@@ -5184,7 +5184,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         flag = false;
       }
     }
-    if (flag && this.selectedObj.type) {
+
+    if (flag && this.selectedObj.id) {
       if (this.objectHistory.length === 20) {
         this.objectHistory.shift();
       }

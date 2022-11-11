@@ -2143,7 +2143,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       arr: this.jobResourcesTree,
       jobResources: this.selectedNode.job.jobResourceNames
     });
-    if (this.selectedNode.job.subagentClusterIdExpr) {
+    if (this.hasLicense && this.selectedNode.job.subagentClusterIdExpr) {
       this.selectedNode.radio = 'expression';
       this.coreService.removeSlashToString(this.selectedNode.job, 'subagentClusterIdExpr');
     } else {
@@ -2721,6 +2721,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   keyHandler: any;
   lastModified: any = '';
   hasLicense: boolean;
+  info1 = '';
+  info2 = '';
+  info3 = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -2751,6 +2754,20 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.refresh(res);
     });
     this.zones = coreService.getTimeZoneList();
+    this.translate.get('inventory.tooltips.workflow.forkList.infoOfListVariable').subscribe(translatedValue => {
+      translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
+      this.info1 = this.coreService.convertTextToLink(translatedValue, '');
+    });
+    if (this.hasLicense) {
+      this.translate.get('inventory.tooltips.workflow.forkList.infoOfSubagentCluster').subscribe(translatedValue => {
+        translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
+        this.info2 = this.coreService.convertTextToLink(translatedValue, '');
+      });
+      this.translate.get('inventory.tooltips.workflow.stickySubagent.infoMessage').subscribe(translatedValue => {
+        translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
+        this.info3 = this.coreService.convertTextToLink(translatedValue, '');
+      });
+    }
   }
 
   private static parseWorkflowJSON(result): void {
@@ -5306,6 +5323,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     const doc = mxUtils.createXmlDocument();
     if (!callFun && !isNavigate) {
       $('#toolbar').find('img').each(function (index) {
+        if (index === 15 && !self.hasLicense) {
+          $('#toolbar').find('hr').each(function (index) {
+            if (index === 14) {
+              $(this).hide();
+            }
+          });
+          $(this).hide();
+        }
         if (index === 17) {
           $(this).addClass('disable-link');
         }

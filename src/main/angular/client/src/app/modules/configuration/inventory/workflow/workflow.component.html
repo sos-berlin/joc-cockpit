@@ -22,15 +22,14 @@
                       (click)="navToWorkflowTab()">{{data.path}}<span
                   *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
                 <span class="text-muted _400" *ngIf="title"> - {{title}}</span>
-
-                <span class="text-dark text-sm _400" *ngIf="lastModified"> -
-                  <b translate>inventory.label.lastModified</b>
-                  <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
-                </span>
-                <span class="text-dark text-sm _400" *ngIf="jobs.length">
-                  <span class="p-l-sm p-r-sm">|</span>
+                <span class="text-dark text-sm _400" *ngIf="jobs.length"> -
                   <b translate>inventory.label.uniqueJobs</b>
                   <span class="text-primary _600 m-l-xs ">{{jobs.length}}</span>
+                </span>
+                <span class="text-dark text-sm _400" *ngIf="lastModified">
+                   <span class="p-l-sm p-r-sm">|</span>
+                  <b translate>inventory.label.lastModified</b>
+                  <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
                 </span>
               </div>
             </div>
@@ -165,6 +164,11 @@
           <span translate>workflow.label.properties</span>
           <span *ngIf="selectedNode" class="font14 text-primary p-l-xs">({{selectedNode.type | translate}})</span>
           <span *ngIf="!selectedNode" class="font14 text-primary p-l-xs">({{'WORKFLOW' | translate}})</span>
+          <a *ngIf="selectedNode && selectedNode.type === 'StickySubagent'" class="p-l-sm" nz-tooltip [nzTooltipTitle]="titleTemplate">
+            <i class="fa fa-info-circle"></i></a>
+          <ng-template #titleTemplate >
+            <span [innerHTML]="info3"></span>
+          </ng-template>
         </h5>
       </div>
       <div class="m-l-xs m-r-xs text-left" *ngIf="selectedNode">
@@ -268,7 +272,15 @@
         </div>
         <div class="box-body" *ngIf="selectedNode.type === 'ForkList'">
           <nz-collapse [nzBordered]="false" [hidden]="fullScreen">
-            <nz-collapse-panel class="m-b" [nzHeader]="'workflow.label.byListVariable' | translate" [nzDisabled]="selectedNode.radio1 == 'byListVariable'" (click)="selectedNode.radio1 = 'byListVariable'" [nzActive]="selectedNode.radio1 == 'byListVariable'">
+            <nz-collapse-panel class="m-b" [nzHeader]="headerTemplate" [nzDisabled]="selectedNode.radio1 == 'byListVariable'" (click)="selectedNode.radio1 = 'byListVariable'" [nzActive]="selectedNode.radio1 == 'byListVariable'">
+              <ng-template #headerTemplate >
+                <span translate>workflow.label.byListVariable</span>
+                <a class="p-l-sm" nz-tooltip [nzTooltipTitle]="titleTemplate">
+                  <i class="fa fa-info-circle"></i></a>
+                <ng-template #titleTemplate >
+                  <span [innerHTML]="info1"></span>
+                </ng-template>
+              </ng-template>
               <div class="p-a b-a m-t">
               <div class="form-group row"
                    [ngClass]="{'has-error' : ((children.dirty || children.touched) && children.invalid)}">
@@ -311,10 +323,18 @@
             </nz-collapse-panel>
           </nz-collapse>
           <nz-collapse [nzBordered]="false" *ngIf="hasLicense" [hidden]="fullScreen">
-            <nz-collapse-panel class="m-b" [nzDisabled]="selectedNode.radio1 == 'bySubagentCluster'" [nzHeader]="'workflow.label.bySubagentCluster' | translate" (click)="selectedNode.radio1 = 'bySubagentCluster'" [nzActive]="selectedNode.radio1 == 'bySubagentCluster'">
+            <nz-collapse-panel class="m-b" [nzDisabled]="selectedNode.radio1 == 'bySubagentCluster'" [nzHeader]="headerTemplate2" (click)="selectedNode.radio1 = 'bySubagentCluster'" [nzActive]="selectedNode.radio1 == 'bySubagentCluster'">
+              <ng-template #headerTemplate2>
+                <span translate>workflow.label.bySubagentCluster</span>
+                <a class="p-l-sm" nz-tooltip [nzTooltipTitle]="titleTemplate">
+                  <i class="fa fa-info-circle"></i></a>
+                <ng-template #titleTemplate >
+                  <span [innerHTML]="info1"></span>
+                </ng-template>
+              </ng-template>
               <div class="p-a b-a m-t">
               <div class="form-group row">
-                <div [nz-tooltip]="!preferences.showTooltipInfo ? ('workflow.tooltips.workflow.forkList.agentAssignment' | translate) : ''"
+                <div [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.agentAssignment' | translate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.agentAssignment
                   <sup class="text-danger text-sm">*</sup>
                 </div>
@@ -329,11 +349,15 @@
               </div>
               <div class="form-group row" >
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.agent' | translate) : ''"
-                       [nzTooltipMouseEnterDelay]="0.5"
-                       >
-                  <span *ngIf="selectedNode.radio == 'agent'" translate>workflow.label.subagentCluster</span>
-                  <span *ngIf="selectedNode.radio == 'expression'" translate>workflow.label.agentCluster</span>
+                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.subagent' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5" *ngIf="selectedNode.radio == 'agent'">
+                  <span translate>workflow.label.subagentCluster</span>
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <label class="col-md-4 col-lg-3 form-control-label" *ngIf="selectedNode.radio == 'expression'"
+                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.agentCluster' | translate) : ''"
+                       [nzTooltipMouseEnterDelay]="0.5">
+                  <span translate>workflow.label.agentCluster</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'agent'">
@@ -703,9 +727,8 @@
           </div>
         </div>
         <div class="box-body job-property-editor" *ngIf="selectedNode.type === 'StickySubagent'">
-          <div class="form-group row" *ngIf="hasLicense"
-               [hidden]="fullScreen">
-            <div class="col-md-4 col-lg-3" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.agentAssignment' | translate) : ''"
+          <div class="form-group row" *ngIf="hasLicense">
+            <div class="col-md-4 col-lg-3" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.agentAssignment' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.agentAssignment</div>
             <div class="col-md-8 col-lg-9">
               <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)">
@@ -716,17 +739,22 @@
               </nz-radio-group>
             </div>
           </div>
-          <div class="form-group row" [hidden]="fullScreen">
+          <div class="form-group row" >
             <label class="col-md-4 col-lg-3 form-control-label"
-                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
+                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.subagent' | translate) : ''"
+                   [nzTooltipMouseEnterDelay]="0.5" *ngIf="selectedNode.radio == 'agent'">
+              <span translate>workflow.label.subagentCluster</span>
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <label class="col-md-4 col-lg-3 form-control-label" *ngIf="selectedNode.radio == 'expression'"
+                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.agentCluster' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5">
-              <span *ngIf="selectedNode.radio == 'agent'" translate>workflow.label.agent</span>
-              <span *ngIf="selectedNode.radio == 'expression'" translate>workflow.label.agentCluster</span>
+              <span translate>workflow.label.agentCluster</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'agent'">
               <app-agent-selection [preferences]="preferences" [agents]="inventoryService.agentList"
-                                   (selectSubagentCluster)="selectSubagentCluster($event)"
+                                   (selectSubagentCluster)="selectSubagentCluster($event)" [skipStandaloneAgent]="true"
                                    [data]="selectedNode.obj"></app-agent-selection>
             </div>
             <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'expression'">
@@ -735,12 +763,11 @@
                                    [data]="selectedNode.obj"></app-agent-selection>
             </div>
           </div>
-          <div class="form-group row" [hidden]="fullScreen" *ngIf="selectedNode.radio == 'expression'">
+          <div class="form-group row" *ngIf="selectedNode.radio == 'expression'">
             <label class="col-md-4 col-lg-3 form-control-label"
-                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
+                   [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.subagentClusterIdExpr' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5"
                    translate>workflow.label.subagentClusterIdExpr
-              <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-8 col-lg-9">
               <textarea class="form-control" name="subagentClusterIdExpr"

@@ -478,5 +478,15 @@ export class TableComponent implements OnChanges, OnDestroy {
       this.dataService.reloadTree.next({add: true});
       this.ref.detectChanges();
     });
+
+  }
+
+  navToWorkflow(workflowName): void {
+    this.dataService.reloadTree.next({
+      navigate: {
+        name: workflowName,
+        type: InventoryObject.WORKFLOW
+      }
+    });
   }
 }

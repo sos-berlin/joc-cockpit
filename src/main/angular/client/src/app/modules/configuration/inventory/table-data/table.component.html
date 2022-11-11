@@ -81,6 +81,11 @@
                class="fa fa-caret-up "></i>
             <i *ngIf="filter.sortBy == 'name' && filter.reverse"
                class="fa fa-caret-down "></i></a></th>
+          <th *ngIf="objectType === 'SCHEDULE'" (click)="sort('workflowNames')"><a><span class="p-r-xs" translate>inventory.label.workflows</span>
+            <i *ngIf="filter.sortBy == 'workflowNames' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'workflowNames' && filter.reverse"
+               class="fa fa-caret-down "></i></a></th>
           <th (click)="sort('valid')"><a><span class="p-r-xs" translate>inventory.label.validHeader</span>
             <i *ngIf="filter.sortBy == 'valid' && !filter.reverse"
                class="fa fa-caret-up "></i>
@@ -191,6 +196,13 @@
               <span [innerHTML]="data.name | highlight : searchKey"></span>
               <i *ngIf="data.title"> - </i>
               <span class="text-muted">{{data.title}}</span>
+            </td>
+            <td *ngIf="objectType === 'SCHEDULE'">
+              <div *ngIf="data.workflowNames && data.workflowNames.length > 0">
+                <div class="text-hover-primary" *ngFor="let workflow of data.workflowNames" (click)="navToWorkflow(workflow)">
+                  {{workflow}}
+                </div>
+              </div>
             </td>
             <td class="cursor" (click)="editObject(data)">
               <span class="label bg-dark-blue" *ngIf="data.valid"

@@ -1405,8 +1405,18 @@
           "children": "オーダー変数",
           "childToId": "オーダーID",
           "joinIfFailed": "失敗時Join",
-          "agent": "Agent",
-          "agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster."
+          "subagent": "Subagent",
+          "agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster.",
+          "agentCluster": "Agent Cluster",
+          "infoOfListVariable": "List variable \n to break line and for link %paste link%",
+          "infoOfSubagentCluster": "Subagent Cluster \n to break line and for link %paste link%"
+        },
+        "stickySubagent": {
+          "agentAssignment": "Agent Assignment",
+          "subagent": "SubAgent",
+          "agentCluster": "Agent Cluster",
+          "subagentClusterIdExpr": "Subagent ClusterId Expr",
+          "infoMessage": "Sticky subagent \n to break line and for link %paste link%"
         },
         "if": {
           "predicate": "If命令の述部は、「true」または「false」と評価される条件式です。"
@@ -1441,7 +1451,8 @@
           "mailOn": "送信タイミング",
           "description": "説明",
           "onWarning": "リターンコードで警告",
-          "agentAssignment": "Agent Assignment"
+          "agentAssignment": "Agent Assignment",
+          "agentCluster": "Agent Cluster"
         },
         "admissionTime": {
           "admissionType": "許可時間タイプ",
@@ -2722,6 +2733,7 @@
     "message.workflowNameIsNotValid": "ワークフロー名が必要です",
     "message.emptyWorkflow": "ワークフローには最低一つの命令が必要です",
     "message.invalidForkInstruction": "Fork命令には最低２つの分岐が必要です",
+    "message.nestedForkListInstruction": "ForkList Instruction cannot be nested",
     "message.invalidStickySubagentInstruction": "StickySubagent Instruction cannot be empty",
     "message.mailLengthExceed": "メールの最大文字数が1000文字を超えています",
     "message.invalidRegularExpression": "不正な正規表現",

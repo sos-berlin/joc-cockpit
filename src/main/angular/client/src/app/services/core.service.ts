@@ -1523,7 +1523,7 @@ export class CoreService {
 
   convertTextToLink(value: string, link: any): string {
     return value.replace(new RegExp(/%(.*)%/, 'gi'),
-      '<a target="_blank" href="' + link + '" class="text-primary text-u-l">$1</a>');
+      '<a target="_blank" href="' + (link || '$1') + '" class="text-primary text-u-l">$1</a>');
   }
 
   getJobResource(cb, obj = null): void {

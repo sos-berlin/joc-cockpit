@@ -1405,8 +1405,18 @@
           "children": "Listenvariable für dynamische Verzweigung: Wird eine ForkList Instruktion im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ForkList-Instruktion erzeugt und durchlaufen wird: pro Listenelement werden die Instruktionen und Jobs der ForkList-Instruktion in einem jeweils eigenen Zwei parallel durchlaufen.",
           "childToId": "Listenelement für Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable. Der Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird.",
           "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags.",
-          "agent": "Ermöglicht die Auswahl des Subagenten Cluster, aus dem alle verfügbaren Agenten zur parallelen Ausführung von Aufträgen innerhalb der ForkList Anweisung verwendet werden.",
-          "agentAssignment": "Der ForkList Anweisung wird ein Subagenten Cluster zugewiesen, der eine Anzahl von Subagenten angibt, auf denen Aufträge parallel ausgeführt werden. Für die Zuweisung werden zwei Optionen angeboten:\n*Auswahl eines Subagenten Cluster, was die Auswahl aus einer Liste ermöglicht.\n* Eingabe eines Ausdrucks, der den Subagenten Cluster spezifiziert. Dies beinhaltet die Angabe des Namens einer Variablen des Arbeitsablaufs, optional einer Variablen des Auftrags, die den Subagenten Cluster benennt."
+          "subagent": "Ermöglicht die Auswahl des Subagenten Cluster, aus dem alle verfügbaren Agenten zur parallelen Ausführung von Aufträgen innerhalb der ForkList Anweisung verwendet werden.",
+          "agentAssignment": "Der ForkList Anweisung wird ein Subagenten Cluster zugewiesen, der eine Anzahl von Subagenten angibt, auf denen Aufträge parallel ausgeführt werden. Für die Zuweisung werden zwei Optionen angeboten:\n*Auswahl eines Subagenten Cluster, was die Auswahl aus einer Liste ermöglicht.\n* Eingabe eines Ausdrucks, der den Subagenten Cluster spezifiziert. Dies beinhaltet die Angabe des Namens einer Variablen des Arbeitsablaufs, optional einer Variablen des Auftrags, die den Subagenten Cluster benennt.",
+          "agentCluster": "Agent Cluster",
+          "infoOfListVariable": "List variable \n to break line and for link %paste link%",
+          "infoOfSubagentCluster": "Subagent Cluster \n to break line and for link %paste link%"
+        },
+        "stickySubagent": {
+          "agentAssignment": "Agent Assignment",
+          "subagent": "SubAgent",
+          "agentCluster": "Agent Cluster",
+          "subagentClusterIdExpr": "Subagent ClusterId Expr",
+          "infoMessage": "Sticky subagent \n to break line and for link %paste link%"
         },
         "if": {
           "predicate": "Das Prädikat einer If-Instruktion stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
@@ -1441,7 +1451,8 @@
           "mailOn": "E-Mail bei Ereignisse wie Fehler, Warnung oder Erfolg versenden.",
           "description": "Die Beschreibung wird angezeigt, wenn dieser Job aus der Liste der Job-Vorlagen ausgewählt wird.",
           "onWarning": "Es können eine Reihe von Rückgabewerten angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren. Im Fall solcher Rückgabewerte wird eine Benachrichtigung erzeugt. Eine Reihe von Rückgabewerten kann durch eine kommaseparierte Liste angegeben werden.",
-          "agentAssignment": "Dem Job wird ein Agent oder Subagenten Cluster zur Ausführung zugewiesen. Alternativ kann ein Ausdruck angegeben werden, der die Subagenten Cluster ID über eine Variable liefert. Die eingebaute Variable js7ForkListSubagentId wird verwendet, wenn keine Variable angegeben wird. Benutzer können eine individuelle Variable angeben, z.B. wenn Vorgänger-Jobs verwendet werden, um zu bestimmen, welcher Subagenten Cluster verwendet werden soll."
+          "agentAssignment": "Dem Job wird ein Agent oder Subagenten Cluster zur Ausführung zugewiesen. Alternativ kann ein Ausdruck angegeben werden, der die Subagenten Cluster ID über eine Variable liefert. Die eingebaute Variable js7ForkListSubagentId wird verwendet, wenn keine Variable angegeben wird. Benutzer können eine individuelle Variable angeben, z.B. wenn Vorgänger-Jobs verwendet werden, um zu bestimmen, welcher Subagenten Cluster verwendet werden soll.",
+          "agentCluster": "Agent Cluster"
         },
         "admissionTime": {
           "admissionType": "Bei der Art der Zutrittszeiten können Sie Wochentage, bestimmte Wochentage und Monatstage angeben.",
@@ -2722,6 +2733,7 @@
     "message.emptyWorkflow": "Arbeitsablauf ist leer, mindestens eine Instruktion ist erforderlich",
     "message.invalidForkInstruction": "Fork-Instruktion muss mindestens zwei Zweige besitzen",
     "message.invalidForkListInstruction": "ForkList-Instruktion darf nicht leer sein",
+    "message.nestedForkListInstruction": "ForkList Instruction cannot be nested",
     "message.mailLengthExceed": "Maximale Größe von 1000 Zeichen für E-Mail Adressen überschritten",
     "message.invalidStickySubagentInstruction": "StickySubagent-Instruktion darf nicht leer sein",
     "message.invalidRegularExpression": "Ungültiger Regulärer Ausdruck",

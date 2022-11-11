@@ -133,9 +133,14 @@
         <div class="form-group row" [hidden]="fullScreen">
           <label class="col-md-4 col-lg-3 form-control-label"
                  [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5" *ngIf="selectedNode.radio == 'agent'">
+            <span translate>workflow.label.agent</span>
+            <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
+          </label>
+          <label class="col-md-4 col-lg-3 form-control-label" *ngIf="selectedNode.radio == 'expression'"
+                 [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentCluster' | translate) : ''"
                  [nzTooltipMouseEnterDelay]="0.5">
-            <span *ngIf="selectedNode.radio == 'agent'" translate>workflow.label.agent</span>
-            <span *ngIf="selectedNode.radio == 'expression'" translate>workflow.label.agentCluster</span>
+            <span translate>workflow.label.agentCluster</span>
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
           <div class="col-md-8 col-lg-9" *ngIf="selectedNode.radio == 'agent'">

@@ -1405,8 +1405,18 @@
           "children": "List variable for dynamic forking: expects the name of the order variable that holds a list of elements. For each element of the list variable a branch is created dynamically from the assigned ForkList instruction. The number of list variable elements determines the number of parallel branches of the ForkList instruction that are executed in parallel by child orders.",
           "childToId": "List element for branch mapping: expects the name of an element within the selected list variable that holds a unique identifier for the branch that should be created dynamically.",
           "joinIfFailed": "A child order is terminated in case of failure. The parent order will be put to the FAILED state.",
-          "agent": "Allows to select the Subagent Cluster from which all available Agents are used to execute in parallel jobs within the ForkList Instruction.",
-          "agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster."
+          "agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster.",
+          "subagent": "Allows to select the Subagent Cluster from which all available Agents are used to execute in parallel jobs within the ForkList Instruction.",
+          "agentCluster": "Agent Cluster",
+          "infoOfListVariable": "List variable \n to break line and for link %paste link%",
+          "infoOfSubagentCluster": "Subagent Cluster \n to break line and for link %paste link%"
+        },
+        "stickySubagent": {
+          "agentAssignment": "Agent Assignment",
+          "subagent": "SubAgent",
+          "agentCluster": "Agent Cluster",
+          "subagentClusterIdExpr": "Subagent ClusterId Expr",
+          "infoMessage": "Sticky subagent \n to break line and for link %paste link%"
         },
         "if": {
           "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
@@ -1425,8 +1435,6 @@
           "graceTimeout": "A Grace Timeout is applied to jobs with Unix that receive a SIGTERM signal when exceeding their Timeout. If the job does not terminate then after the Grace Timeout a SIGKILL signal will abort the job.",
           "warnIfShorter": "If the execution period of a job is shorter than specified then a notification, e.g. by e-mail, is sent. The number of seconds can be specified as in 1s. Alternatively the hh:mm:ss format can be used, for example 01:30:00 for one and a half hours. A percentage can be specified that is calculated from the average of successful past job executions, for example 30%.",
           "warnIfLonger": "If the execution period of a job is longer than specified then a notification, e.g. by e-mail, is sent. The number of seconds can be specified as in 1s. Alternatively the hh:mm:ss format can be used, for example 01:30:00 for one and a half hours. A percentage can be specified that is calculated from the average of successful past job executions, for example 30%.",
-          "agent": "The job is assigned an Agent that will execute the job script/class. Select from the list of available Agents.",
-          "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable. The built-in js7ForkListSubagentId variable will be used if no variable is specified. Users can specify an individual variable for example if predecessor jobs are used to determine on Subagent Cluster to execute the job.",
           "fileWatcher": "File Order Sources are used to watch a Directory for incoming files and to create an order with the respective workflow for each file.",
           "className": "The name of a Java class implementing a job. JS7 ships with a number of predefined JITL Java classes, e.g. for database access, to send e-mail etc.",
           "parallelism": "The max. Parallelism specifies the number of orders in a workflow that can execute the job in parallel. If the max. Parallelism is exceeded then orders have to wait until the value has fallen below the job's max. Parallelism.",
@@ -1441,7 +1449,10 @@
           "mailOn": "Send e-mail in case of the indicated events of errors, warnings or success.",
           "description": "The Description is displayed when this job is selected from the list of Job Templates.",
           "onWarning": "A number of Return Codes can be specified that signal successful execution with warnings. A notification is created in case of such return codes. A number of return codes can be specified by a comma separated list.",
-          "agentAssignment": "The Job is assigned an Agent or Subagent Cluster for execution. As an alternative an Expression can be specified that provides the unique Subagent Cluster ID from a variable. The built-in js7ForkListSubagentId variable will be used if no variable is specified. Users can specify an individual variable for example if predecessor jobs are used to determine on Subagent Cluster to execute the job."
+          "agentAssignment": "The Job is assigned an Agent or Subagent Cluster for execution. As an alternative an Expression can be specified that provides the unique Subagent Cluster ID from a variable. The built-in js7ForkListSubagentId variable will be used if no variable is specified. Users can specify an individual variable for example if predecessor jobs are used to determine on Subagent Cluster to execute the job.",
+          "agent": "The job is assigned an Agent that will execute the job script/class. Select from the list of available Agents.",
+          "agentCluster": "Agent Cluster",
+          "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable. The built-in js7ForkListSubagentId variable will be used if no variable is specified. Users can specify an individual variable for example if predecessor jobs are used to determine on Subagent Cluster to execute the job."
         },
         "admissionTime": {
           "admissionType": "The type of admission times includes to specify Weekdays, Specific Weekdays and Month Days.",
@@ -2714,6 +2725,7 @@
     "message.invalidCycleInstruction": "Cycle Instruction cannot be empty",
     "message.invalidLockInstruction": "Resource Lock Instruction cannot be empty",
     "message.invalidForkListInstruction": "ForkList Instruction cannot be empty",
+    "message.nestedForkListInstruction": "ForkList Instruction cannot be nested",
     "message.invalidPostNoticeInstruction": "PostNotices Instruction is not valid",
     "message.invalidExpectNoticeInstruction": "ExpectNotices Instruction is not valid",
     "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruction cannot be empty",
