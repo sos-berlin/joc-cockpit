@@ -1408,7 +1408,7 @@
           "agentAssignment": "L'instruction ForkList se voit attribuer un Cluster de Sous-agents qui spécifie un certain nombre de Sous-agents sur lesquels les tâches sont exécutées en parallèle. Deux options d'affectation sont proposées :\n * sélection d'un Cluster de Sous-agents qui permet de choisir dans une liste.\n * entrée d'une expression qui spécifie le Cluster de Sous-agents. Il s'agit notamment de spécifier une variable, éventuellement portée par un ordre qui spécifie le Cluster de Sous-agents.",
           "subagent": "Permet de sélectionner le Cluster de Sous-agents à partir duquel tous les Agents disponibles sont utilisés pour exécuter en parallèle des tâches dans l'Instruction ForkList.",
           "agentCluster": "Agent Cluster",
-          "subagentClusterIdExpr": "Subagent ClusterId Expression",
+          "subagentClusterIdExpr": "L'expression spécifie l'ID du Cluster de Sous-agents à partir d'une variable. Si aucune expression n'est spécifiée, la variable js7ForkListSubagentClusterId sera utilisée. Si une variable est spécifiée, elle doit contenir l'ID du Cluster de Sous-agents.",
           "infoOfListVariable": "Pour l'utilisation de l'Instruction ForkList avec une variable de type liste, voir la documentation à l'adresse %https://kb.sos-berlin.com/x/ZLrAAw%.",
           "infoOfSubagentCluster": "Pour l'utilisation de l'Instruction ForkList avec un Cluster d'Agent consultez la documentation à l'adresse %https://kb.sos-berlin.com/x/KQiwBQ%"
         },
