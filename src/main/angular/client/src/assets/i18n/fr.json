@@ -1410,7 +1410,7 @@
           "agentCluster": "Agent Cluster",
           "subagentClusterIdExpr": "L'expression spécifie l'ID du Cluster de Sous-agents à partir d'une variable. Si aucune expression n'est spécifiée, la variable js7ForkListSubagentClusterId sera utilisée. Si une variable est spécifiée, elle doit contenir l'ID du Cluster de Sous-agents.",
           "infoOfListVariable": "Pour l'utilisation de l'Instruction ForkList avec une variable de type liste, voir la documentation à l'adresse %https://kb.sos-berlin.com/x/ZLrAAw%.",
-          "infoOfSubagentCluster": "Pour l'utilisation de l'Instruction ForkList avec un Cluster d'Agent consultez la documentation à l'adresse %https://kb.sos-berlin.com/x/KQiwBQ%"
+          "infoOfSubagentCluster": "Pour l'utilisation de l'Instruction ForkList avec un Cluster de Sous-agents consultez la documentation à l'adresse %https://kb.sos-berlin.com/x/KQiwBQ%"
         },
         "stickySubagent": {
           "agentAssignment": "L'Instruction StickySubagent se voit attribuer un Cluster de Sous-agents qui spécifie un certain nombre de Sous-agents parmi lesquels un Sous-agent sera sélectionné. Deux options d'affectation sont proposées : \n * sélection d'un Cluster de Sous-agents qui permet de choisir dans une liste. \n * entrée d'une expression qui spécifie l'ID du Cluster de Sous-agents. Il s'agit notamment de spécifier une variable, éventuellement portée par un ordre qui spécifie le Cluster de Sous-agents.",
@@ -1450,7 +1450,7 @@
           "mailOn": "Envoyer un e-mail en cas d'événements indiqués d'erreurs, d'avertissements ou de succès.",
           "description": "La description s'affiche lorsque ce job est sélectionné dans la liste des Modèles des Tâches.",
           "onWarning": "Il est possible de spécifier un certain nombre de Codes de Retour qui signalent une exécution réussie avec des avertissements. Une notification est créée dans le cas de tels Codes de Retour. Un certain nombre de Codes de Retour peuvent être spécifiés par une liste séparée par des virgules.",
-          "agentAssignment": "La tâche se voit attribuer un Agent Autonome ou un Cluster de Sous-agents pour son exécution. Dans un bloc des instructions ForkList ou StickySubagent un Cluster d'Agent est attribué. Il est également possible de spécifier une Expression qui fournit l'identification du Cluster de Sous-agents à partir d'une variable.",
+          "agentAssignment": "La tâche se voit attribuer un Agent Autonome ou un Cluster de Sous-agents pour son exécution. Dans un bloc des instructions ForkList ou StickySubagent un Cluster d'Agents est attribué. Il est également possible de spécifier une Expression qui fournit l'identification du Cluster de Sous-agents à partir d'une variable.",
           "agent": "Un Agent est assigné à la Tâche qui exécutera le script/la classe de la Tâche. Faites votre choix dans la liste des Agents disponibles.",
           "agentCluster": "Sélectionne le Cluster d'Agents pour lequel la ID du Cluster de Sous-agents est spécifié à partir d'une expression dans un champ de saisie ultérieur.",
           "subagentClusterIdExpr": "L'Expression spécifie l'ID du Cluster de Sous-agents à partir d'une variable. Si aucune variable n'est spécifiée, un défaut intégré devient actif si le job est inclus dans une instruction ForkList ou StickySubagent. Les utilisateurs peuvent spécifier une variable individuelle, par exemple si les jobs prédécesseurs sont utilisés pour déterminer le Cluster de Sous-agents sur lequel exécuter un job successeur."

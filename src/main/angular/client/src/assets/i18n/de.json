@@ -1410,7 +1410,7 @@
           "agentCluster": "Es wird ein Agenten Cluster ausgewählt, von dem die Subagenten Cluster ID durch einen Ausdruck in einem separaten Eingabefeld angegeben wird.",
           "subagentClusterIdExpr": "Der Ausdruck gibt die ID des Subagenten Cluster aus einer Variablen an. Wenn kein Ausdruck angegeben wird, wird die Variable js7ForkListSubagentClusterId verwendet. Wenn eine Variable angegeben wird, muss sie die Subagenten Cluster ID enthalten.",
           "infoOfListVariable": "Für die Verwendung der ForkList-Anweisung mit einer Listenvariablen siehe die Dokumentation unter %https://kb.sos-berlin.com/x/ZLrAAw%",
-          "infoOfSubagentCluster": "Zur Verwendung der ForkList-Anweisung mit einem Agenten Cluster siehe die Dokumentation unter %https://kb.sos-berlin.com/x/KQiwBQ%"
+          "infoOfSubagentCluster": "Zur Verwendung der ForkList-Anweisung mit einem Subagenten Cluster siehe die Dokumentation unter %https://kb.sos-berlin.com/x/KQiwBQ%"
         },
         "stickySubagent": {
           "agentAssignment": "Der StickySubagent-Anweisung wird ein Subagenten Cluster zugewiesen, das eine Anzahl von Subagenten enthält, aus denen ein Subagent ausgewählt wird. Für die Zuweisung werden zwei Optionen angeboten: \n * Auswahl eines Subagenten Cluster, der die Auswahl aus einer Liste ermöglicht. \n * Eingabe eines Ausdrucks, der die Subagenten Cluster ID angibt. Dies ermöglicht die Angabe einer Variablen des Arbeitsablaufs, optional aus einem Auftrag, die den Subagenten Cluster spezifiziert.",
