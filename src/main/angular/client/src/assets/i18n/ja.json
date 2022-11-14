@@ -26,8 +26,8 @@
   "INITIALISED": "初期化されました",
   "COUPLED": "接続",
   "SHUTDOWN": "シャットダウン",
-  "FRESH": "fresh",
-  "RESTARTED": "restarted",
+  "FRESH": "滞留",
+  "RESTARTED": "リスタート",
   "RESET": "リセット",
   "RESETTING": "リセット中",
   "COUPLINGFAILED": "接続失敗",
@@ -463,7 +463,7 @@
     "label.writeComment": "コメント入力",
     "label.yes": "はい",
     "label.no": "いいえ",
-    "label.or": "or",
+    "label.or": "または",
     "label.all": "全て",
     "label.redeploy": "再配置",
     "label.synchronize": "同期",
@@ -814,7 +814,7 @@
     "message.errorInLoadingScheduleIds": "コントローラーID取得エラー",
     "message.pasteInSubFolderNotAllowed": "宛先フォルダーはソースフォルダーの下にあります",
     "message.invalidJSON": "無効なJSONファイルです",
-    "message.fileSizeExceed": "Allowed File size is less than 1 MB"
+    "message.fileSizeExceed": "有効なファイルサイズは1MB以下です"
   },
   "favorite": {
     "button.addFavorite": "お気に入りを追加",
@@ -903,8 +903,8 @@
     "button.notSynchronized": "未同期",
     "button.suspended": "一時停止",
     "button.outstanding": "保留",
-    "button.skipped": "Skipped",
-    "button.stopped": "Stopped"
+    "button.skipped": "スキップ",
+    "button.stopped": "停止"
   },
   "header": {
     "label.dashboard": "ダッシュボード",
@@ -1159,7 +1159,7 @@
     "label.updateFromRollout": "ロールアウトオブジェクトから更新",
     "label.deleteFromRollout": "ロールアウトオブジェクトから削除",
     "label.lastModified": "最終更新",
-    "label.uniqueJobs": "Unique Jobs",
+    "label.uniqueJobs": "ユニークジョブ",
     "label.cloneToLocal": "ローカルオブジェクトにリポジトリをクローン",
     "label.pushToLocal": "ローカルオブジェクトをリポジトリにプッシュ",
     "label.cloneToRollout": "ロールアウトオブジェクトにリポジトリをクローン",
@@ -1174,7 +1174,7 @@
     "label.overwriteNotification": "通知を上書き",
     "label.overwriteAdmissionTime": "許可時間を上書き",
     "label.updateWorkflowsFromJobTemplates": "ジョブテンプレートからワークフローを更新",
-    "label.switchUserExpertMode": "More Options",
+    "label.switchUserExpertMode": "オプション",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -1385,8 +1385,8 @@
           "expectBoardExpression": "ExpectNotice条件式"
         },
         "finish": {
-          "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
-          "unsuccessful": "Unsuccessful"
+          "message": "オーダーに添付され、オーダー履歴に表示される「メッセージ」を指定することができます",
+          "unsuccessful": "失敗"
         },
         "fail": {
           "message": "オーダーに添付され、オーダー履歴で表示されるメッセージを指定することができます。",
@@ -1405,18 +1405,18 @@
           "children": "オーダー変数",
           "childToId": "オーダーID",
           "joinIfFailed": "失敗時Join",
-          "subagent": "Subagent",
-          "agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered:\n*selection of a Subagent Cluster that allows to select from a list.\n* input of an expresion that specifies the Subagent Cluster. This includes to specify the name of a workflow variable, optionally carried by an order that specifies the Subagent Cluster.",
-          "agentCluster": "Agent Cluster",
-          "infoOfListVariable": "List variable \n to break line and for link %paste link%",
-          "infoOfSubagentCluster": "Subagent Cluster \n to break line and for link %paste link%"
+          "subagent": "サブエージェント",
+          "agentAssignment": "ForkList命令には、サブエージェントクラスターが割り当てられます。サブエージェント・クラスターの全てのサブエージェント上でジョブが並列実行されます。リストから実行するサブエージェントを選択指定する方法と、サブエージェントを指定する式を入力する方法があります。サブエージェントクラスターを指定する式の入力はワークフロー変数の名前を指定し、オプションでサブエージェントクラスターを指定する順序を持たせることができます。",
+          "agentCluster": "エージェントクラスター",
+          "infoOfListVariable": "リスト変数 改行 \n リンク %paste link%",
+          "infoOfSubagentCluster": "サブエージェント変数 改行 \n リンク %paste link%"
         },
         "stickySubagent": {
-          "agentAssignment": "Agent Assignment",
-          "subagent": "SubAgent",
-          "agentCluster": "Agent Cluster",
-          "subagentClusterIdExpr": "Subagent ClusterId Expr",
-          "infoMessage": "Sticky subagent \n to break line and for link %paste link%"
+          "agentAssignment": "エージェント指定",
+          "subagent": "サブエージェント",
+          "agentCluster": "エージェントクラスター",
+          "subagentClusterIdExpr": "サブエージェントクラスターID 式",
+          "infoMessage": "スティッキーサブエージェント 改行 \n リンク %paste link%"
         },
         "if": {
           "predicate": "If命令の述部は、「true」または「false」と評価される条件式です。"
@@ -1436,7 +1436,7 @@
           "warnIfShorter": "ジョブの実行が指定された期間よりも短い場合は、メールなどで通知が送られます。",
           "warnIfLonger": "ジョブの実行が指定された期間より長くなった場合は、メールなどで通知が送られます。",
           "agent": "エージェント",
-          "subagentClusterIdExpr": "Subagent Cluster Id Expression",
+          "subagentClusterIdExpr": "サブエージェントクラスターID 式",
           "fileWatcher": "ファイルオーダーソースは、受信ファイルのディレクトリを監視し、各ファイルのそれぞれのワークフローでオーダーを作成するために使用されます。",
           "className": "ジョブを実装するJavaクラス名です。JS7には、データベース・アクセス用やメール送信用など、多数の定義済みのJITL Javaクラスが同梱されています。",
           "parallelism": "ジョブを並列に実行できるワークフロー内の最大オーダー数を指定します。最大値を超えた場合は、ジョブの最大タスク実行数以下に下がるまで、オーダーは待機しなければなりません。",
@@ -1451,8 +1451,8 @@
           "mailOn": "送信タイミング",
           "description": "説明",
           "onWarning": "リターンコードで警告",
-          "agentAssignment": "Agent Assignment",
-          "agentCluster": "Agent Cluster"
+          "agentAssignment": "エージェント指定",
+          "agentCluster": "エージェントクラスター"
         },
         "admissionTime": {
           "admissionType": "許可時間タイプ",
@@ -1525,9 +1525,9 @@
         "argumentValue": "引数値",
         "environmentName": "環境名",
         "environmentValue": "環境値",
-        "workflowSynchronizationStatus": "Workflow Synchronization Status",
-        "workflowAvailabilityStatus": "Workflow Availability Status",
-        "jobAvailabilityStatus": "Job Availability Status"
+        "workflowSynchronizationStatus": "ワークフロー同期状態",
+        "workflowAvailabilityStatus": "ワークフロー状態",
+        "jobAvailabilityStatus": "ジョブ状態"
       },
       "button": {
         "search": "検索",
@@ -1571,9 +1571,9 @@
         "argumentValue": "引数値",
         "environmentName": "環境変数名",
         "environmentValue": "環境変数値",
-        "workflowSynchronizationStatus": "Workflow Synchronization Status",
-        "workflowAvailabilityStatus": "Workflow Availability Status",
-        "jobAvailabilityStatus": "Job Availability Status"
+        "workflowSynchronizationStatus": "ワークフロー同期状態",
+        "workflowAvailabilityStatus": "ワークフロー状態",
+        "jobAvailabilityStatus": "ジョブ状態"
       }
     },
     "updateJob": {
@@ -1631,7 +1631,7 @@
     "label.password": "パスワード",
     "label.rememberMe": "保存",
     "button.logIn": "ログイン",
-    "button.loginWith" : "Login with {{identityServiceName}}",
+    "button.loginWith" : "{{identityServiceName}}IDサービスでログイン",
     "message.loginError": "アカウントかパスワードが間違っています"
   },
   "monitor": {
@@ -1811,7 +1811,7 @@
     "label.gitManagement": "Git管理",
     "label.favoriteManagement": "お気に入り管理",
     "label.licenseWarningGotIt": "ライセンス警告を確認",
-    "label.showMoreOptions": "Show more options",
+    "label.showMoreOptions": "オプション表示",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -2192,7 +2192,7 @@
       "log_maximum_display_size": "JOCコックピットは、非圧縮ログ出力のサイズがこの値を超えない場合、ログビューウィンドウで表示するためにログ出力を提供します。それ以外の場合は、ログをダウンロードするためにのみ提供されます。",
       "log_applicable_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、最初と最後の100KBをタスクログに使用します。元のログファイルは削除されます。",
       "log_maximum_size": "ジョブのログ出力のサイズがこの値を超えた場合、ヒストリーサービスはログ出力を切り捨て、タスクログ用に最初の100KBを使用します。オリジナルのログファイルは削除されます。",
-      "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only then this value specifies the URL to be used, for example with e-mail notifications."
+      "joc_reverse_proxy_url": "JOCコックピットが本来のURLからではなく、リバースプロキシサービスからしかアクセスできない場合、この値は、例えばメール通知で使用されるURLを指定します。"
     },
     "user": {
       "welcome_got_it": "了解",
@@ -2294,14 +2294,14 @@
     "label.iamLdapTrustStoreType": "LDAPトラストストアタイプ",
     "label.iamLdapSystemUser": "LDAPシステムユーザー",
     "label.iamLdapSystemPassword": "LDAPシステムパスワード",
-    "label.iamOidcName": "OIDC Name",
-    "label.iamOidcAuthenticationUrl": "OIDC Authentication Url",
-    "label.iamOidcClientId": "OIDC Client ID",
-    "label.iamOidcClientSecret": "OIDC Client Secret",
-    "label.iamOidcTruststorePath": "OIDC Truststore Path",
-    "label.iamOidcTruststoreType": "OIDC Truststore Type",
-    "label.iamOidcTruststorePassword": "OIDC Truststore Password",
-    "label.iamOidcImage": "OIDC Image",
+    "label.iamOidcName": "OIDC名",
+    "label.iamOidcAuthenticationUrl": "OIDC認証URL",
+    "label.iamOidcClientId": "OIDC クライアントID",
+    "label.iamOidcClientSecret": "OIDC クライアントシークレット",
+    "label.iamOidcTruststorePath": "OIDC トラストストアパス",
+    "label.iamOidcTruststoreType": "OIDC トラストストアタイプ",
+    "label.iamOidcTruststorePassword": "OIDC Tトラストストアパスワード",
+    "label.iamOidcImage": "OIDC イメージ",
     "label.group": "グループ",
     "label.general": "共通",
     "label.on": "On",
@@ -2355,7 +2355,7 @@
     "button.cancelSessionByAccount": "アカウントの全セッションをキャンセル",
     "button.cancelSessions": "セッションキャンセル",
     "button.sessionManagement": "セッション管理",
-    "button.uploadImage": "Upload Image",
+    "button.uploadImage": "イメージアップロード",
     "placeholder.role": "ロール名を入力",
     "placeholder.selectRoles": "ロールを選択",
     "placeholder.user": "アカウントを入力",
@@ -2395,13 +2395,13 @@
     "placeholder.iamLdapTrustStoreType": "LDAP トラストストアタイプを入力",
     "placeholder.iamLdapSystemUser": "LDAP システムユーザーを入力",
     "placeholder.iamLdapSystemPassword": "LDAP システムパスワードを入力",
-    "placeholder.iamOidcName": "Enter OIDC Name",
-    "placeholder.iamOidcAuthenticationUrl": "Enter OIDC Authentication Url",
-    "placeholder.iamOidcClientId": "Enter OIDC Client ID",
-    "placeholder.iamOidcClientSecret": "Enter OIDC Client Secret",
-    "placeholder.iamOidcTruststorePath": "Enter OIDC Truststore Path",
-    "placeholder.iamOidcTruststoreType": "Enter OIDC TruststoreType",
-    "placeholder.iamOidcTruststorePassword": "Enter OIDC TruststorePassword",
+    "placeholder.iamOidcName": "OIDC名入力",
+    "placeholder.iamOidcAuthenticationUrl": "OIDC 認証URL入力",
+    "placeholder.iamOidcClientId": "OIDC クライアントID入力",
+    "placeholder.iamOidcClientSecret": "OIDC クライアントシークレット入力",
+    "placeholder.iamOidcTruststorePath": "OIDC トラストストアパス入力",
+    "placeholder.iamOidcTruststoreType": "OIDC トラストストアタイプ入力",
+    "placeholder.iamOidcTruststorePassword": "OIDC トラストストアパスワード入力",
     "placeholder.group": "グループを入力",
     "placeholder.initialPassword": "初期パスワードを入力",
     "placeholder.minPasswordLength": "最少パスワード文字数を入力",
@@ -2484,14 +2484,14 @@
         "iamKeycloakRealm": "Keycloak Realm"
       },
       "oidc":{
-        "iamOidcName": "OIDC Name",
-        "iamOidcAuthenticationUrl": "OIDC Authentication Url",
-        "iamOidcClientId": "OIDC Client ID",
-        "iamOidcClientSecret": "OIDC Client Secret",
-        "iamOidcTruststorePath": "OIDC Truststore Path",
-        "iamOidcTruststoreType": "OIDC Truststore Type",
-        "iamOidcTruststorePassword": "OIDC Truststore Password",
-        "iamOidcImage": "OIDC Image"
+        "iamOidcName": "OIDC名",
+        "iamOidcAuthenticationUrl": "OIDC 認証URL",
+        "iamOidcClientId": "OIDC クライアントID",
+        "iamOidcClientSecret": "OIDC クライアントシークレット",
+        "iamOidcTruststorePath": "OIDC トラストストアパス",
+        "iamOidcTruststoreType": "OIDC トラストストアタイプ",
+        "iamOidcTruststorePassword": "OIDC トラストストアパスワード",
+        "iamOidcImage": "OIDC イメージ"
       },
       "general": {
         "sessionTimeout": "JOCコックピットで何もアクションが行われなかった場合、指定された秒数後にユーザーセッションが終了し、ユーザーは再ログインする必要があります。",
@@ -2514,8 +2514,8 @@
     "label.title": "タイトル",
     "label.label": "ラベル",
     "label.agent": "エージェント",
-    "label.subagentCluster": "Subagent Cluster",
-    "label.agentCluster": "Agent Cluster",
+    "label.subagentCluster": "サブエージェントクラスター",
+    "label.agentCluster": "エージェントクラスター",
     "label.arguments": "引数",
     "label.jobArguments": "ジョブ引数",
     "label.variables": "オーダー変数",
@@ -2536,7 +2536,7 @@
     "label.jitl": "JITL",
     "label.branch1.x": "V.1.x系",
     "label.uncatchable": "Uncatchable",
-    "label.unsuccessful": "Unsuccessful",
+    "label.unsuccessful": "失敗",
     "label.checkSteadyState": "定常状態確認",
     "label.jobClass": "ジョブクラス",
     "label.jobTemplate": "ジョブテンプレート",
@@ -2650,14 +2650,14 @@
     "label.changedProperties": "変更プロパティ",
     "label.addRequiredArguments": "必要な引数を追加",
     "label.deleteArguments": "引数削除",
-    "label.workflowTimeZone": "Workflow Time Zone",
-    "label.subagentClusterIdExpr": "Subagent Cluster Id Expr",
-    "label.agentAssignment": "Agent Assignment",
-    "label.agentSelectFromList": "Select Subagent Cluster",
-    "label.agentOrSubagentSelectFromList": "Select Agent or Subagent",
-    "label.agentAsExpression": "Subagent Expression",
-    "label.byListVariable": "By List Variable",
-    "label.bySubagentCluster": "By Subagent Cluster",
+    "label.workflowTimeZone": "ワークフロータイムゾーン",
+    "label.subagentClusterIdExpr": "サブエージェントクラスターID 式",
+    "label.agentAssignment": "エージェント指定",
+    "label.agentSelectFromList": "サブエージェントクラスター指定",
+    "label.agentOrSubagentSelectFromList": "エージェントまたはサブエージェントクラスター指定",
+    "label.agentAsExpression": "サブエージェント式",
+    "label.byListVariable": "変数リスト",
+    "label.bySubagentCluster": "サブエージェントクラスター",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
@@ -2727,22 +2727,22 @@
     "message.invalidForkListInstruction": "ForkList命令が必要です",
     "message.invalidPostNoticeInstruction": "PostNotice命令が無効です",
     "message.invalidExpectNoticeInstruction": "ExpectNoticeが無効です",
-    "message.invalidConsumeNoticeInstruction": "ConsumeNotices Instruction cannot be empty",
+    "message.invalidConsumeNoticeInstruction": "ConsumeNotices命令は空にできません",
     "message.agentIsMissing": "エージェント名が必要です",
     "message.orderNameIsMissing": "オーダー名が必要です",
     "message.workflowNameIsNotValid": "ワークフロー名が必要です",
     "message.emptyWorkflow": "ワークフローには最低一つの命令が必要です",
     "message.invalidForkInstruction": "Fork命令には最低２つの分岐が必要です",
-    "message.nestedForkListInstruction": "ForkList Instruction cannot be nested",
-    "message.invalidStickySubagentInstruction": "StickySubagent Instruction cannot be empty",
+    "message.nestedForkListInstruction": "ForkList命令は入れ子にできません",
+    "message.invalidStickySubagentInstruction": "StickySubagent命令は空にできません",
     "message.mailLengthExceed": "メールの最大文字数が1000文字を超えています",
     "message.invalidRegularExpression": "不正な正規表現",
     "message.suspendAllWarning": "本当に全てのワークフローを一時停止しますか?",
     "message.resumeAllWarning": "本当に全てのワークフローを回復しますか?",
     "placeholder.selectAgentName": "参照エージェント入力",
-    "placeholder.enterSubagentClusterIdExpr": "Enter Subagent Cluster Id Expr",
+    "placeholder.enterSubagentClusterIdExpr": "サブエージェントクラスター式入力",
     "placeholder.enterJobClass": "参照ジョブクラス入力",
-    "placeholder.selectLocks": "Select Resource Locks",
+    "placeholder.selectLocks": "リソースロック選択",
     "placeholder.selectBoards": "S通知ボード選択",
     "placeholder.selectExpectBoard": "Expect Notice選択",
     "placeholder.offset": "コンマ区切りでh/m/sを入力してください",
@@ -2776,7 +2776,7 @@
       "button.findAndReplace": "検索・置換",
       "placeholder.selectFind": "エージェント選択",
       "placeholder.selectReplace": "置換するエージェント選択",
-      "tooltip": "Select not exist agent by hitting enter key"
+      "tooltip": "存在しないエージェントをエンターキーで選択"
     },
     "wizard": {
       "label.new": "新規",
