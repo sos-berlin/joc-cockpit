@@ -327,7 +327,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
-    private authService: AuthService, private dataService: DataService, private router: Router) {
+              private authService: AuthService, private dataService: DataService, private router: Router) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -381,7 +381,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
 
   private refreshView(obj?): void {
     if ((!this.isActionMenuVisible && (this.object.mapOfCheckedId.size === 0 || this.object.mapOfCheckedId2.size === 0))) {
-      if(obj){
+      if (obj) {
         this.getAgents(obj, null);
       } else {
         this.getSchedulerIds();
@@ -477,7 +477,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         controller.agentClusters.forEach((agent) => {
           this.mergeTokenData(null, agent.agentId, agent);
           this.mergeAgentVersions(agent);
-          if(agent.subagents){
+          if (agent.subagents) {
             agent.subagents.forEach(sub => {
               this.mergeAgentVersions(sub);
             })
@@ -819,15 +819,169 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   hideAll() {
-    this.revokeAndDeploy('hide');
+    let reqArr = [];
+    this.controllers.forEach((controller) => {
+      let obj = {
+        controllerId: controller.controllerId,
+        agents: [],
+        auditLog: {}
+      }
+      if (controller.agents) {
+        controller.agents.forEach((agent) => {
+          if (this.object.mapOfCheckedId.has(agent.agentId)) {
+            agent.hidden = true;
+            obj.agents.push(agent);
+          }
+        });
+        if (obj.agents.length > 0) {
+          reqArr.push(obj);
+        }
+      }
+    });
+
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Agent',
+        operation: 'Hide',
+        name: ''
+      };
+
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          reqArr.forEach((req) => {
+            req.auditLog = result;
+            this.coreService.post('agents/inventory/store', req).subscribe();
+          })
+        }
+      });
+    } else {
+      reqArr.forEach((req) => {
+        this.coreService.post('agents/inventory/store', req).subscribe();
+      })
+    }
+    this.resetCheckbox();
   }
 
-  resetAll() {
-    this.revokeAndDeploy('reset');
+  disableAll(): void {
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Agent',
+        operation: 'Disable',
+        name: ''
+      };
+
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.object.mapOfCheckedId.forEach((k, v) => {
+            this.coreService.post('agents/inventory/disable', {
+              controllerId: k,
+              agentIds: [v],
+              auditLog: result || {}
+            }).subscribe();
+          })
+        }
+      });
+    } else {
+      this.object.mapOfCheckedId.forEach((k, v) => {
+        this.coreService.post('agents/inventory/disable', {
+          controllerId: k,
+          agentIds: [v]
+        }).subscribe();
+      })
+    }
+    this.resetCheckbox();
   }
 
-  resetForceAll() {
-    this.revokeAndDeploy('reset');
+  resetAll(force = false) {
+
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Agent',
+        operation: 'Reset',
+        name: ''
+      };
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzComponentParams: {
+          comments,
+          url: 'agent/reset'
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.object.mapOfCheckedId.forEach((k, v) => {
+            this.coreService.post('agent/reset', {
+              controllerId: k,
+              agentId: v,
+              force
+            }).subscribe();
+          })
+        }
+      });
+    } else if (force) {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzComponentParams: {
+          title: 'resetForced',
+          message: 'resetAgentConfirmation',
+          type: 'Reset',
+          objectName: '',
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.object.mapOfCheckedId.forEach((k, v) => {
+            this.coreService.post('agent/reset', {
+              controllerId: k,
+              agentId: v,
+              force: true
+            }).subscribe();
+          })
+        }
+      });
+
+    } else {
+      this.object.mapOfCheckedId.forEach((k, v) => {
+        this.coreService.post('agent/reset', {
+          controllerId: k,
+          agentId: v
+        }).subscribe();
+      })
+    }
+    this.resetCheckbox();
   }
 
   addAgent(controller): void {
@@ -1428,7 +1582,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   private getVesrions(controllerIds): void {
-    this.coreService.post('joc/versions', { controllerIds }).subscribe({
+    this.coreService.post('joc/versions', {controllerIds}).subscribe({
       next: (res) => {
         this.agentVersions = res.agentVersions;
         this.controllers.forEach(controller => {

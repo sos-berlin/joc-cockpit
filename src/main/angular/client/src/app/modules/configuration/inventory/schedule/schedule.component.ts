@@ -218,6 +218,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         this.checkVariableType(param)
       }
     });
+    this.saveJSON();
   }
 
   removeVariableSet(index): void {
@@ -303,7 +304,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (node.key && !node.key.match('/')) {
         if (this.schedule.configuration.workflowNames.indexOf(node.key) === -1) {
           this.schedule.configuration.workflowNames.push(node.key);
-          if(this.schedule.configuration.workflowNames.length === 1) {
+          if (this.schedule.configuration.workflowNames.length === 1) {
             this.getWorkflowInfo(node.key, true, null);
           }
         }
@@ -485,6 +486,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                   type: val.type,
                   isRequired: true,
                   facet: val.facet,
+                  isExist: true,
                   message: val.message
                 };
                 if (val.list) {
@@ -495,7 +497,6 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                     obj.list.push(obj1);
                   });
                 }
-
                 this.schedule.configuration.orderParameterisations[prop].variables.push(obj);
               }
             }
@@ -551,6 +552,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       argument.facet = obj.facet;
       argument.message = obj.message;
       if (!obj.default && obj.default !== false && obj.default !== 0) {
+        delete argument.value;
         argument.isRequired = true;
       } else {
         if (obj.type === 'String') {

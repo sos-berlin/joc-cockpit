@@ -2971,6 +2971,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
+  propagateJobs(): void {
+    if (this.selectedNode.type === 'ForkList') {
+      this.updateForkListOrStickySubagentJobs(this.selectedNode, false);
+    } else if (this.selectedNode.type === 'StickySubagent') {
+      this.updateForkListOrStickySubagentJobs(this.selectedNode, true);
+    }
+  }
+
   recursiveUpdate(): void {
     $('#searchTree input').focus();
     $('#workflowHeader').addClass('hide-on-focus');
@@ -7761,9 +7769,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               const edit6 = new mxCellAttributeChange(
                 obj.cell, 'subagentClusterId', self.selectedNode.newObj.subagentClusterId);
               graph.getModel().execute(edit6);
-              if (self.selectedNode.newObj.subagentClusterIdExpr) {
-                self.coreService.addSlashToString(self.selectedNode.newObj, 'subagentClusterIdExpr');
-              }
               const edit7 = new mxCellAttributeChange(
                 obj.cell, 'subagentClusterIdExpr', self.selectedNode.newObj.subagentClusterIdExpr);
               graph.getModel().execute(edit7);
@@ -7907,8 +7912,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } finally {
 
           graph.getModel().endUpdate();
-          if (self.selectedNode.type === 'ForkList' && !self.inventoryService.expertMode) {
-            self.updateForkListJobs(self.selectedNode);
+          if (!self.inventoryService.expertMode && self.hasLicense) {
+            if (self.selectedNode.type === 'ForkList') {
+              self.updateForkListOrStickySubagentJobs(self.selectedNode, false);
+            } else if (self.selectedNode.type === 'StickySubagent') {
+              self.updateForkListOrStickySubagentJobs(self.selectedNode, true);
+            }
           }
           if (flag) {
             self.updateJobs(graph, false);
@@ -8039,11 +8048,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         if (cell.value.tagName === 'Job') {
           if (self.selectedNode && cell.getAttribute('defaultArguments') && self.hasLicense && !self.inventoryConf.expertMode) {
             let obj: any = {
-              forkListObj: {}
+              data: {}
             };
             self.getObjectbyUuid(obj, cell.getAttribute('uuid'), true);
             if (obj.list) {
-              checkEachForkList(obj.list, obj.forkListObj);
+              checkEachIntructions(obj.list, obj.data);
             }
           }
           obj.jobName = cell.getAttribute('jobName');
@@ -8271,7 +8280,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       self.ref.detectChanges();
     }
 
-    function checkEachForkList(list, job) {
+    function checkEachIntructions(list, job) {
       for (let i in list) {
         let flag = false;
         traverseFork(list[i], job.id, () => {
@@ -8280,7 +8289,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (self.jobs[k].name == 'job') {
               self.jobs[k].value.agentName = list[i].agentName;
               self.jobs[k].value.agentName1 = list[i].subagentClusterId;
-              self.jobs[k].value.subagentClusterIdExpr = '$js7ForkListSubagentId';
+              if (list[i].TYPE == 'ForkList') {
+                self.jobs[k].value.subagentClusterIdExpr = '$js7ForkListSubagentId';
+              }
               break;
             }
           }
@@ -8296,11 +8307,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           if (json.instructions[x].id == id) {
-
             cb();
             break;
           }
-          if (json.instructions[x].instructions) {
+          if (json.instructions[x].instructions && json.instructions[x].TYPE !== 'ForkList' && json.instructions[x].TYPE !== 'StickySubagent') {
             traverseFork(json.instructions[x], id, cb);
           }
           if (json.instructions[x].catch) {
@@ -9770,9 +9780,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  private updateForkListJobs(forkList) {
-    const actualVal = forkList.actualValue;
-    const newVal = forkList.obj;
+  private updateForkListOrStickySubagentJobs(data, isSticky) {
+    const actualVal = data.actualValue;
+    const newVal = data.obj;
     const self = this;
     if ((actualVal.agentName == newVal.agentName && actualVal.agentName1 == newVal.agentName1 && actualVal.subagentClusterIdExpr == newVal.subagentClusterIdExpr)) {
 
@@ -9780,15 +9790,15 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       if (newVal.agentName3) {
         return;
       }
-      const uuid = forkList.cell.getAttribute('uuid');
+      const uuid = data.cell.getAttribute('uuid');
       let obj = {
-        forkListObj: {}
+        data: {}
       };
 
       this.getObjectbyUuid(obj, uuid);
       let jobs = new Set();
-      if (!isEmpty(obj.forkListObj)) {
-        traverseInstructions(obj.forkListObj);
+      if (!isEmpty(obj.data)) {
+        traverseInstructions(obj.data);
 
         function traverseInstructions(json) {
           if (json.instructions) {
@@ -9822,7 +9832,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
 
       if (jobs.size > 0) {
-        self._updateForkListJobs(jobs, newVal);
+       
+        self._updateForkListOrStickySubagentJobs(jobs, newVal, isSticky);
       }
     }
   }
@@ -9831,7 +9842,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     function recursion(json): void {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
-          if (isJob && json.instructions[x].TYPE == 'ForkList') {
+          if (isJob && (json.instructions[x].TYPE == 'ForkList' || json.instructions[x].TYPE == 'StickySubagent')) {
             if (!obj.list) {
               obj.list = [];
             }
@@ -9841,7 +9852,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           }
 
           if (json.instructions[x].uuid == uuid) {
-            obj.forkListObj = json.instructions[x];
+            obj.data = json.instructions[x];
             break;
           }
           if (json.instructions[x].instructions) {
@@ -9870,12 +9881,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     recursion(this.workflow.configuration);
   }
 
-  private _updateForkListJobs(jobs, data): void {
+  private _updateForkListOrStickySubagentJobs(jobs, data, isSticky): void {
     for (let i in this.jobs) {
       if (this.jobs[i].name && jobs.has(this.jobs[i].name)) {
         if (data.subagentClusterIdExpr && (!this.jobs[i].value.agentName || this.jobs[i].value.subagentClusterId)) {
           if (data.agentName1) {
-            this.jobs[i].value.subagentClusterIdExpr = '$js7ForkListSubagentId';
+            if (!isSticky) {
+              this.jobs[i].value.subagentClusterIdExpr = '$js7ForkListSubagentId';
+            }
             this.jobs[i].value.agentName = data.agentName1;
             this.jobs[i].value.subagentClusterId = data.agentName;
           }
