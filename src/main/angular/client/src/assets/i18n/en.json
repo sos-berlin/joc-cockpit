@@ -1408,6 +1408,7 @@
           "agentAssignment": "The ForkList Instruction is assigned a Subagent Cluster that specifies a number of Subagents on which jobs are executed in parallel. Two options for assignment are offered: \n *selection of a Subagent Cluster that allows to select from a list. \n * input of an expression that specifies the Subagent Cluster ID. This includes to specify a workflow variable, optionally carried by an order that specifies the Subagent Cluster.",
           "subagent": "Allows to select the Subagent Cluster from which all available Agents are used to execute in parallel jobs within the ForkList Instruction.",
           "agentCluster": "The Agent Cluster is selected from which the Subagent Cluster ID is specified by an expression in a separate input field.",
+          "subagentClusterIdExpr": "Subagent ClusterId Expression",
           "infoOfListVariable": "For use of the ForkList Instruction with a list variable see the documentation at %https://kb.sos-berlin.com/x/ZLrAAw%",
           "infoOfSubagentCluster": "For use of the ForkList Instruction with an Agent Cluster visit the documentation at %https://kb.sos-berlin.com/x/KQiwBQ%"
         },

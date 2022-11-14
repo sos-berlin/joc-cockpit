@@ -1408,6 +1408,7 @@
           "agentAssignment": "Der ForkList-Anweisung wird ein Subagenten Cluster zugewiesen, der eine Anzahl von Subagenten enthält, auf denen Aufträge parallel ausgeführt werden. Für die Zuweisung werden zwei Optionen angeboten: \n * Auswahl eines Subagenten Cluster, was die Auswahl aus einer Liste ermöglicht. \n * Eingabe eines Ausdrucks, der den Subagenten Cluster spezifiziert. Dies ermöglicht die Angabe einer Variablen des Arbeitsablaufs, optional einer Variablen des Auftrags, die den Subagenten Cluster benennt.",
           "subagent": "Ermöglicht die Auswahl des Subagenten Cluster, aus dem alle verfügbaren Agenten zur parallelen Ausführung von Aufträgen innerhalb der ForkList Anweisung verwendet werden.",
           "agentCluster": "Es wird ein Agenten Cluster ausgewählt, von dem die Subagenten Cluster ID durch einen Ausdruck in einem separaten Eingabefeld angegeben wird.",
+          "subagentClusterIdExpr": "Subagent ClusterId Expression",
           "infoOfListVariable": "Für die Verwendung der ForkList-Anweisung mit einer Listenvariablen siehe die Dokumentation unter %https://kb.sos-berlin.com/x/ZLrAAw%",
           "infoOfSubagentCluster": "Zur Verwendung der ForkList-Anweisung mit einem Agenten Cluster siehe die Dokumentation unter %https://kb.sos-berlin.com/x/KQiwBQ%"
         },
