@@ -74,7 +74,7 @@
                    [(ngModel)]="job.configuration.title" (blur)="saveJSON()">
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row" *ngIf="inventoryService.expertMode">
           <label class="col-md-4 col-lg-3 form-control-label"
                  title="{{'inventory.label.documentation' | translate}}"
                  [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''"

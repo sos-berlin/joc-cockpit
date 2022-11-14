@@ -1162,7 +1162,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.hasLicense = sessionStorage.hasLicense == 'true';
     this.index = 0;
     if (this.scriptList.length > 0) {
       this.list = this.scriptList.map((item) => item.name);
@@ -2129,6 +2128,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private init(): void {
+    this.hasLicense = sessionStorage.hasLicense == 'true';
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
     this.getJobInfo();
     this.getJobTemplate();
@@ -2143,14 +2143,6 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
       arr: this.jobResourcesTree,
       jobResources: this.selectedNode.job.jobResourceNames
     });
-    if (this.hasLicense && (this.selectedNode.job.subagentClusterIdExpr || this.selectedNode.job.withSubagentClusterIdExpr)) {
-      this.selectedNode.radio = 'expression';
-      if (this.selectedNode.job.subagentClusterIdExpr) {
-        this.coreService.removeSlashToString(this.selectedNode.job, 'subagentClusterIdExpr');
-      }
-    } else {
-      this.selectedNode.radio = 'agent';
-    }
     this.onBlur();
     const dom = $('#agentId');
     let flag = false;
@@ -2186,6 +2178,14 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.selectedNode.job.executable.TYPE === 'ScriptExecutable') {
       this.selectedNode.job.executable.TYPE = 'ShellScriptExecutable';
+    }
+    if (this.hasLicense && (this.selectedNode.job.subagentClusterIdExpr || this.selectedNode.job.withSubagentClusterIdExpr)) {
+      this.selectedNode.radio = 'expression';
+      if (this.selectedNode.job.subagentClusterIdExpr) {
+        this.coreService.removeSlashToString(this.selectedNode.job, 'subagentClusterIdExpr');
+      }
+    } else {
+      this.selectedNode.radio = 'agent';
     }
 
     if (!this.selectedNode.job.executable.returnCodeMeaning) {
@@ -2726,6 +2726,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   info1 = '';
   info2 = '';
   info3 = '';
+  forkListAgentAssignment = '';
+  stickySubagentAgentAssignment = '';
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -2768,6 +2770,14 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       this.translate.get('inventory.tooltips.workflow.stickySubagent.infoMessage').subscribe(translatedValue => {
         translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
         this.info3 = this.coreService.convertTextToLink(translatedValue, '');
+      });
+      this.translate.get('inventory.tooltips.workflow.forkList.agentAssignment').subscribe(translatedValue => {
+        translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
+        this.forkListAgentAssignment = translatedValue;
+      });
+      this.translate.get('inventory.tooltips.workflow.stickySubagent.agentAssignment').subscribe(translatedValue => {
+        translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
+        this.stickySubagentAgentAssignment = translatedValue;
       });
     }
   }

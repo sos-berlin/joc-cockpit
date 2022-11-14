@@ -18,6 +18,7 @@ import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {InventoryService} from "../inventory.service";
 
 @Component({
   selector: 'app-schedule',
@@ -54,7 +55,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('treeSelectCtrl', {static: false}) treeCtrl;
 
   constructor(private coreService: CoreService, private translate: TranslateService, private toasterService: ToastrService,
-              private calendarService: CalendarService, private dataService: DataService,
+              private calendarService: CalendarService, private dataService: DataService, public inventoryService: InventoryService,
               private ref: ChangeDetectorRef, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {

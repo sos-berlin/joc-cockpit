@@ -329,15 +329,18 @@
                 <a class="p-l-sm" nz-tooltip [nzTooltipTitle]="titleTemplate">
                   <i class="fa fa-info-circle"></i></a>
                 <ng-template #titleTemplate >
-                  <span [innerHTML]="info1"></span>
+                  <span [innerHTML]="info2"></span>
                 </ng-template>
               </ng-template>
               <div class="p-a b-a m-t">
               <div class="form-group row">
-                <div [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.agentAssignment' | translate) : ''"
+                <div [nz-tooltip]="!preferences.showTooltipInfo ? (titleTemplate) : ''"
                      [nzTooltipMouseEnterDelay]="0.5" class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.agentAssignment
                   <sup class="text-danger text-sm">*</sup>
                 </div>
+                <ng-template #titleTemplate >
+                  <span [innerHTML]="forkListAgentAssignment"></span>
+                </ng-template>
                 <div class="col-md-8 col-lg-9">
                   <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)">
                     <label nz-radio nzValue="agent"><span
@@ -373,7 +376,7 @@
               </div>
               <div class="form-group row" *ngIf="selectedNode.radio == 'expression'">
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
+                       [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.subagentClusterIdExpr' | translate) : ''"
                        [nzTooltipMouseEnterDelay]="0.5"
                        translate>workflow.label.subagentClusterIdExpr
                   <sup class="text-danger text-sm">*</sup>
@@ -728,8 +731,13 @@
         </div>
         <div class="box-body job-property-editor" *ngIf="selectedNode.type === 'StickySubagent'">
           <div class="form-group row" *ngIf="hasLicense">
-            <div class="col-md-4 col-lg-3" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.agentAssignment' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.agentAssignment</div>
+            <div class="col-md-4 col-lg-3" [nz-tooltip]="!preferences.showTooltipInfo ? (titleTemplate) : ''"
+                 [nzTooltipMouseEnterDelay]="0.5" translate>workflow.label.agentAssignment
+              <sup class="text-danger text-sm">*</sup>
+            </div>
+            <ng-template #titleTemplate >
+              <span [innerHTML]="stickySubagentAgentAssignment"></span>
+            </ng-template>
             <div class="col-md-8 col-lg-9">
               <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)">
                 <label nz-radio nzValue="agent"><span
@@ -1145,7 +1153,7 @@
                      autocomplete="off" (blur)="updateOtherProperties('title')"/>
             </div>
           </div>
-          <div class="form-group row" [ngClass]="{'hide': fullScreen}">
+          <div class="form-group row" [ngClass]="{'hide': fullScreen}" *ngIf="inventoryService.expertMode">
             <label class="col-md-4 col-lg-3 form-control-label" title="{{'inventory.label.documentation' | translate}}"
                    [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
                    [nzTooltipMouseEnterDelay]="0.5" translate>inventory.label.documentation</label>
