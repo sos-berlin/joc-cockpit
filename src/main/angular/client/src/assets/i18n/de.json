@@ -2078,7 +2078,7 @@
       "label.postOrderToNoticeId": "Notizkennung für sendenden Auftrag",
       "label.expectOrderToNoticeId": "Notizkennung für wartenden Auftrag",
       "label.endOfLifeOfNotices": "Verfallsfrist der Notiz",
-      "label.deploymentDate": "Ausrollldatum",
+      "label.deploymentDate": "Ausrolldatum",
       "label.boardsFound": "Notizbrett gefunden",
       "label.boardFound": "Notizbrett gefunden",
       "label.numOfNotices": "Anzahl Notizen",
