@@ -1534,7 +1534,7 @@
         "search": "Chercher",
         "updateJob": "Mise à jour de la Tâche",
         "updateObject": "Mettre à jour l'Objet",
-        "propagateJob": "Propager la Tâche"
+        "propagateJob": "Propager aux Tâches"
       },
       "placeholder": {
         "search": "Rechercher par nom ou titre come '%search%'",

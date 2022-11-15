@@ -1534,7 +1534,7 @@
         "search": "Search",
         "updateJob": "Update Job",
         "updateObject": "Update Object",
-        "propagateJob": "Propagate Job"
+        "propagateJob": "Propagate to Jobs"
       },
       "placeholder": {
         "search": "Search in Name or Title using for example '%search%'",

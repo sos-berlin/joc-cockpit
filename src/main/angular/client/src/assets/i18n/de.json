@@ -1534,7 +1534,7 @@
         "search": "Suche",
         "updateJob": "Job aktualisieren",
         "updateObject": "Objekt aktualisieren",
-        "propagateJob": "Job propagieren"
+        "propagateJob": "An Jobs propagieren"
       },
       "placeholder": {
         "search": "Such in Name oder Titel, z.B. '%suchtext%'",
