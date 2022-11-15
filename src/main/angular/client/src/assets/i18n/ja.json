@@ -1408,7 +1408,7 @@
           "subagent": "サブエージェント",
           "agentAssignment": "ForkList命令には、サブエージェントクラスターが割り当てられます。サブエージェント・クラスターの全てのサブエージェント上でジョブが並列実行されます。リストから実行するサブエージェントを選択指定する方法と、サブエージェントを指定する式を入力する方法があります。サブエージェントクラスターを指定する式の入力はワークフロー変数の名前を指定し、オプションでサブエージェントクラスターを指定する順序を持たせることができます。",
           "agentCluster": "エージェントクラスター",
-          "subagentClusterIdExpr": "Subagent ClusterId Expression",
+          "subagentClusterIdExpr": "サブエージェントクラスターID 式",
           "infoOfListVariable": "リスト変数 改行 \n リンク %paste link%",
           "infoOfSubagentCluster": "サブエージェント変数 改行 \n リンク %paste link%"
         },
