@@ -18,7 +18,7 @@ declare const $;
     '    </span><br></ng-container>\n' +
     '  </span>\n' +
     '</div>',
-  styles: ['.log-state {font-family:\'Courier New\';color: #009933;white-space:nowrap;} .log-msg {display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;} .log-level {width: 47px;display: inline-block}']
+  styles: ['::ng-deep body { overflow: auto !important;}.log-state {font-family:\'Courier New\';color: #009933;white-space:nowrap;} .log-msg {display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;} .log-level {width: 47px;display: inline-block}']
 })
 export class Logging2Component implements OnInit, OnDestroy {
   clientLogs = [];
@@ -32,7 +32,7 @@ export class Logging2Component implements OnInit, OnDestroy {
     this.clientLogFilter = JSON.parse(sessionStorage.clientLogFilter);
     this.clientLogs = JSON.parse(localStorage.logging);
     // Create an Observable that will publish a value on an interval
-    this.subscription = interval(2500).subscribe(x => {
+    this.subscription = interval(3000).subscribe(x => {
       this.clientLogs = JSON.parse(localStorage.logging);
     });
   }

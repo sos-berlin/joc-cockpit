@@ -68,7 +68,7 @@ export class LoggingService {
         values = localStorage.getItem(this.location) ? JSON.parse(localStorage.getItem(this.location)) || [] : [];
         // Add new log entry to array
         values.push(entry);
-        if (values.length > 20 && ((1024 * 200) - decodeURIComponent(encodeURIComponent(JSON.stringify(values))).length < 0)) {
+        if (values.length > 20 && (((1000 * 150) - decodeURIComponent(encodeURIComponent(JSON.stringify(values))).length) < 0)) {
           values.splice(1, 100);
         }
         localStorage.setItem(this.location, JSON.stringify(values));

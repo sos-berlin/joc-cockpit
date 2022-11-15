@@ -2973,9 +2973,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
 
   propagateJobs(): void {
     if (this.selectedNode.type === 'ForkList') {
-      this.updateForkListOrStickySubagentJobs(this.selectedNode, false);
+      this.updateForkListOrStickySubagentJobs(this.selectedNode, false, true);
     } else if (this.selectedNode.type === 'StickySubagent') {
-      this.updateForkListOrStickySubagentJobs(this.selectedNode, true);
+      this.updateForkListOrStickySubagentJobs(this.selectedNode, true, true);
     }
   }
 
@@ -5933,6 +5933,10 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
               self.movedCells = [];
               if (self.droppedCell && me.getCell()) {
+                let flag = checkNestedForkList(self.droppedCell);
+                if (!flag) {
+                  return;
+                }
                 let _result = 'valid';
                 if (self.droppedCell.target && !self.droppedCell.target.target) {
                   const targetCell = graph.getModel().getCell(self.droppedCell.target);
@@ -6338,6 +6342,21 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
             if (this.dragElement && this.dragElement.getAttribute('src')) {
               dragElement = this.dragElement.getAttribute('src');
+              if (dragElement.match('fork-list') && drpTargt.value.tagName === 'Connection') {
+                let flag = checkNestedForkList(drpTargt);
+                if (!flag) {
+                  return;
+                }
+              } else if ((drpTargt.value.tagName === 'ForkList' || drpTargt.value.tagName === 'StickySubagent') && dragElement.match('fork.')) {
+                self.toasterService.error(msg, title + '!!');
+                return;
+              }
+              if (drpTargt.value.tagName === 'Connection') {
+                if ((drpTargt.source.value.tagName === 'ForkList' || drpTargt.source.value.tagName === 'StickySubagent') && dragElement.match('fork.')) {
+                  self.toasterService.error(msg, title + '!!');
+                  return;
+                }
+              }
               if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('try') || dragElement.match('if')) {
                 const selectedCell = graph.getSelectionCell();
                 if (selectedCell) {
@@ -6407,12 +6426,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.toasterService.error(msg, title + '!!');
                     return;
                   }
-                } else if (drpTargt.value.tagName === 'Lock' || drpTargt.value.tagName === 'StickySubagent') {
+                } else if (drpTargt.value.tagName === 'Lock') {
                   let flag1 = false;
                   if (drpTargt.edges && drpTargt.edges.length) {
                     for (let i = 0; i < drpTargt.edges.length; i++) {
-                      if ((drpTargt.edges[i].source.value.tagName === 'Lock' && drpTargt.edges[i].target.value.tagName === 'EndLock') ||
-                        (drpTargt.edges[i].source.value.tagName === 'StickySubagent' && drpTargt.edges[i].target.value.tagName === 'EndStickySubagent')) {
+                      if ((drpTargt.edges[i].source.value.tagName === 'Lock' && drpTargt.edges[i].target.value.tagName === 'EndLock')) {
                         flag1 = true;
                       }
                     }
@@ -6456,11 +6474,12 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                     self.toasterService.error(msg, title + '!!');
                     return;
                   }
-                } else if (drpTargt.value.tagName === 'ForkList') {
+                } else if (drpTargt.value.tagName === 'ForkList' || drpTargt.value.tagName === 'StickySubagent') {
                   let flag1 = false;
                   if (drpTargt.edges && drpTargt.edges.length) {
                     for (let i = 0; i < drpTargt.edges.length; i++) {
-                      if (drpTargt.edges[i].source.value.tagName === 'ForkList' && drpTargt.edges[i].target.value.tagName === 'EndForkList') {
+                      if ((drpTargt.edges[i].source.value.tagName === 'ForkList' && drpTargt.edges[i].target.value.tagName === 'EndForkList') ||
+                        (drpTargt.edges[i].source.value.tagName === 'StickySubagent' && drpTargt.edges[i].target.value.tagName === 'EndStickySubagent')) {
                         flag1 = true;
                       }
                     }
@@ -6933,6 +6952,103 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       } else {
         this.updateXMLJSON(false);
       }
+    }
+
+    /*
+     * Function:
+     */
+    function checkNestedForkList(cell): boolean {
+      let flag = true;
+      if (cell.value && cell.value.tagName) {
+        const tagName = cell.value.tagName;
+        if (tagName === 'ForkList') {
+          flag = false;
+        } else if (self.workflowService.isInstructionCollapsible(tagName) || tagName === 'Connection') {
+          let obj = {
+            flag: true
+          };
+          checkParentRecursively(cell.getParent(), obj);
+          flag = obj.flag;
+        }
+      } else {
+        if (cell.target) {
+          let id = cell.target;
+          if (cell.target.source) {
+            id = cell.target.source;
+          }
+          let obj = {
+            flag: true
+          };
+
+          let dropCell = graph.getModel().getCell(id);
+          if (dropCell.value.tagName == 'ForkList' || dropCell.value.tagName == 'StickySubagent') {
+            for (let x in cell.cells) {
+              if (cell.cells[x].value && cell.cells[x].value.tagName === 'Fork') {
+                flag = false;
+                break;
+              }
+            }
+          }
+          if (flag) {
+            checkParentRecursively(dropCell, obj);
+            if (!obj.flag) {
+              for (let x in cell.cells) {
+                if (cell.cells[x].value) {
+                  if (cell.cells[x].value.tagName === 'ForkList') {
+                    flag = false;
+                    break;
+                  } else if (self.workflowService.isInstructionCollapsible(cell.cells[x].value.tagName)) {
+                    if (flag) {
+                      checkChildRecursively(cell.cells[x]);
+                    } else {
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      function checkParentRecursively(parentCell, obj): void {
+        if (parentCell) {
+          if (parentCell.value) {
+            if (parentCell.value.tagName === 'ForkList') {
+              obj.flag = false;
+            } else {
+              checkParentRecursively(parentCell.getParent(), obj);
+            }
+          }
+        }
+      }
+
+      function checkChildRecursively(cell): void {
+        for (let y in cell.children) {
+          if (cell.children[y].value) {
+            if (cell.children[y].value.tagName === 'ForkList') {
+              flag = false;
+              break;
+            } else if (self.workflowService.isInstructionCollapsible(cell.children[y].value.tagName)) {
+              checkChildRecursively(cell.children[y]);
+            }
+          }
+        }
+      }
+
+      if (!flag) {
+        let title = '';
+        let msg = '';
+        self.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
+          title = translatedValue;
+        });
+        self.translate.get('workflow.message.nestedForkListInstruction').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        self.toasterService.error(msg, title + '!!');
+      }
+
+      return flag;
     }
 
     /**
@@ -8716,7 +8832,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      * Function: Check and create clicked instructions
      */
     function createClickInstruction(title, targetCell) {
-      console.log('createClickInstruction...')
+      if (title.match('fork-list')) {
+        let flag = checkNestedForkList(targetCell);
+        if (!flag) {
+          return;
+        }
+      }
+
+      if ((targetCell.value.tagName === 'ForkList' || targetCell.value.tagName === 'StickySubagent') && title.match('fork.')) {
+        return;
+      }
       mxToolbar.prototype.selectedMode = undefined;
       if (title.match('paste')) {
         if (self.copyId.length > 0 || (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0)) {
@@ -8988,6 +9113,9 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       let flg = false;
       if (title) {
         title = title.toLowerCase();
+        if ((tagName === 'ForkList' || tagName === 'StickySubagent') && title.match('fork.')) {
+          return 'inValid';
+        }
         if (title.match('fork') || title.match('retry') || title.match('cycle') || title.match('consumeNotices') || title.match('lock') || title.match('try') || title.match('if')) {
           const selectedCell = graph.getSelectionCell();
           if (selectedCell) {
@@ -9780,11 +9908,11 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
     }
   }
 
-  private updateForkListOrStickySubagentJobs(data, isSticky) {
+  private updateForkListOrStickySubagentJobs(data, isSticky, skip = false) {
     const actualVal = data.actualValue;
     const newVal = data.obj;
     const self = this;
-    if ((actualVal.agentName == newVal.agentName && actualVal.agentName1 == newVal.agentName1 && actualVal.subagentClusterIdExpr == newVal.subagentClusterIdExpr)) {
+    if ((actualVal.agentName == newVal.agentName && actualVal.agentName1 == newVal.agentName1 && actualVal.subagentClusterIdExpr == newVal.subagentClusterIdExpr) && !skip) {
 
     } else {
       if (newVal.agentName3) {
@@ -9832,7 +9960,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
 
       if (jobs.size > 0) {
-       
         self._updateForkListOrStickySubagentJobs(jobs, newVal, isSticky);
       }
     }
@@ -9884,7 +10011,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
   private _updateForkListOrStickySubagentJobs(jobs, data, isSticky): void {
     for (let i in this.jobs) {
       if (this.jobs[i].name && jobs.has(this.jobs[i].name)) {
-        if (data.subagentClusterIdExpr && (!this.jobs[i].value.agentName || this.jobs[i].value.subagentClusterId)) {
+        if (this.jobs[i].value.withSubagentClusterIdExpr) {
           if (data.agentName1) {
             if (!isSticky) {
               this.jobs[i].value.subagentClusterIdExpr = '$js7ForkListSubagentId';

@@ -271,7 +271,7 @@
                 <ng-container *ngSwitchCase="'Boolean'">
                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                     <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                               #value="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" (nzBlur)="saveJSON()" name="value{{i}}{{j}}" [(ngModel)]="variable.value">
+                               #value="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" (ngModelChange)="checkVal($event)" name="value{{i}}{{j}}" [(ngModel)]="variable.value">
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                       <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                     </nz-select>

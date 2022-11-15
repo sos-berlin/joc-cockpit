@@ -6,9 +6,9 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <button class="btn btn-sm btn-grey m-l-sm" (click)="copy()" [disabled]="!clientLogFilter.isEnable" translate>
+          <button class="btn btn-sm btn-grey" (click)="copy()" [disabled]="clientLogs.length == 0" translate>
             log.button.copyToClipboard</button>
-          <button class="btn btn-sm btn-grey m-l-sm" (click)="redirectToNewTab()" [disabled]="!clientLogFilter.isEnable" translate>
+          <button class="btn btn-sm btn-grey m-l-12" (click)="redirectToNewTab()" [disabled]="!clientLogFilter.isEnable" translate>
             log.button.openInNewTab</button>
         </div>
       </div>

@@ -370,6 +370,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (target[x].name === sour.name) {
         if (sour.value) {
           if (sour.value.length > 0) {
+            let notExistArr = [];
             for (const i in sour.value) {
               sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
                 let type;
@@ -381,6 +382,25 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
                 }
                 return {name: k1, value: v1, type};
               });
+
+              for (const prop in target[x].list) {
+
+                let flag = false;
+                for (const j in sour.value[i]) {
+                  if(target[x].list[prop].name === sour.value[i][j].name ){
+                    flag = true;
+                    break;
+                  }
+                }
+                if(!flag){
+                  notExistArr.push(target[x].list[prop]);
+                }
+              }
+              if(notExistArr.length > 0){
+                notExistArr.forEach(item => {
+                  sour.value[i].push({name: item.name, type: item.value.type})
+                })
+              }
             }
           } else {
             const tempArr = [];
@@ -728,6 +748,12 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
   updateEndNode(positions): void {
     positions.endPositions = [...positions.endPositions];
     this.saveJSON();
+  }
+
+  checkVal(isChecked) {
+    setTimeout(() => {
+      this.saveJSON();
+    }, 0);
   }
 
   saveJSON(flag = false, skip = false, form?, data?): void {
