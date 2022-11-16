@@ -788,7 +788,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
             for (const i in item.actualList) {
               const listObj = {};
               item.actualList[i].forEach((data) => {
-                if (!data.value) {
+                if (!data.value && data.value != 0 && data.value != false) {
                   isValid = false;
                 } else {
                   listObj[data.name] = data.value;

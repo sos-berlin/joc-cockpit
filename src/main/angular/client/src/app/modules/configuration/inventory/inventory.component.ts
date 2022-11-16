@@ -1267,7 +1267,7 @@ export class ExportComponent implements OnInit {
           }
           if (node[i].children && node[i].children.length > 0) {
             if (!node[i].isCall) {
-              self.inventoryService.checkAndUpdateVersionList(node[i], this.exportObj.exportType === 'folders');
+              self.inventoryService.checkAndUpdateVersionList(node[i], self.exportObj.exportType === 'folders');
             }
             recursive(node[i].children);
           }
@@ -4879,6 +4879,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }, 50);
       return;
     }
+    this.inventoryService.expertMode = this.preferences.showMoreOptions;
     this.getAgents();
     this.securityLevel = sessionStorage.securityLevel;
     if (isReload) {

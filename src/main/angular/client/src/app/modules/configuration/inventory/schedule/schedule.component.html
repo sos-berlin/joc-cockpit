@@ -197,7 +197,7 @@
                         <ng-container *ngSwitchCase="'Boolean'">
                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm"
                                [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                            <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" (ngModelChange)="saveJSON()" class="m-l-n-23 w-103"
+                            <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" (ngModelChange)="checkVal($event)" class="m-l-n-23 w-103"
                                        #value="ngModel" [required]="true" name="_value{{i}}{{j}}{{k}}{{x}}" [(ngModel)]="argument.value">
                               <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                               <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>

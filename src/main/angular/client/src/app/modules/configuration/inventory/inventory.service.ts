@@ -1,30 +1,17 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {sortBy, groupBy} from 'underscore';
-import {Subscription} from "rxjs";
 import {InventoryObject} from '../../../models/enums';
-import {DataService} from "../../../services/data.service";
+
 
 @Injectable()
-export class InventoryService implements OnDestroy {
+export class InventoryService {
   checkDeploymentStatus = {
     isChecked: false
   };
   agentList: any = [];
-  sub: Subscription
   expertMode = false;
 
-  constructor(private dataService: DataService) {
-    let expertMode = JSON.parse(sessionStorage.preferences);
-    this.expertMode = expertMode.showMoreOptions;
-    this.sub = dataService.resetProfileSetting.subscribe(res => {
-      if (res) {
-        this.expertMode = JSON.parse(sessionStorage.preferences).showMoreOptions;
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.sub.unsubscribe();
+  constructor() {
   }
 
   sortList(arr: any[]): any {
