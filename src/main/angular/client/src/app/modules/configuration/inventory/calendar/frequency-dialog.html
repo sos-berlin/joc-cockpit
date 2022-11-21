@@ -312,31 +312,6 @@
             </div>
           </div>
         </div>
-        <div>
-          <div class="form-group row"
-               [hidden]="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='every'">
-            <label class="col-sm-3">{{'runtime.label.monthRange' | translate}}
-              <a class="cursor">
-                <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"
-                   (click)="showMonthRange=true"></i>
-                <i class="cursor fa fa-caret-down m-l-xs" [hidden]="!showMonthRange"
-                   (click)="showMonthRange=false"></i>
-              </a>
-            </label>
-            <div class="col-sm-9" [hidden]="!showMonthRange">
-              <label class="w" nz-checkbox [(ngModel)]="frequency.allMonth" name="month"
-                     (ngModelChange)="selectAllMonth()">
-                <span translate>runtime.label.everyMonth</span>
-              </label><br>
-              <nz-checkbox-wrapper (nzOnChange)="monthChange($event)">
-                <ng-container *ngFor="let option of monthsOptions">
-                  <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked" name="{{option.label}}"><span
-                    translate>runtime.label.{{option.label}} </span></label>
-                </ng-container>
-              </nz-checkbox-wrapper>
-            </div>
-          </div>
-        </div>
       </div>
       <div class="row m-b-27">
         <div class="col-sm-12 max-ht-260">
@@ -353,7 +328,7 @@
               </thead>
               <tbody>
               <tr *ngFor="let data of frequencyList; let i = index" class="cursor"
-                  [ngClass]="{'light-bg' : (_temp.tab ==data.tab && _temp.day ==data.day && _temp.months ==data.months && _temp.isUltimos ==data.isUltimos && _temp.dateEntity ==data.dateEntity && _temp.str ==data.str)}">
+                  [ngClass]="{'light-bg' : (_temp.tab ==data.tab && _temp.day ==data.day && _temp.isUltimos ==data.isUltimos && _temp.dateEntity ==data.dateEntity && _temp.str ==data.str)}">
                 <td (click)="editFrequency(data)">{{i + 1}}</td>
                 <td (click)="editFrequency(data)">
                   <i *ngIf="data.exclude" class="fa fa-minus"> </i>

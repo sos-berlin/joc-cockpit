@@ -387,16 +387,26 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
 
                 let flag = false;
                 for (const j in sour.value[i]) {
-                  if(target[x].list[prop].name === sour.value[i][j].name ){
+                  if (target[x].list[prop].name === sour.value[i][j].name) {
                     flag = true;
                     break;
                   }
                 }
-                if(!flag){
-                  notExistArr.push(target[x].list[prop]);
+                if (!flag) {
+                  let isDuplicate = false;
+                  for (let x in notExistArr) {
+                    if (notExistArr[x].name == target[x].list[prop].name) {
+                      isDuplicate = true;
+                      break;
+                    }
+                  }
+                  if (!isDuplicate) {
+                    notExistArr.push(target[x].list[prop]);
+                  }
                 }
               }
-              if(notExistArr.length > 0){
+
+              if (notExistArr.length > 0) {
                 notExistArr.forEach(item => {
                   sour.value[i].push({name: item.name, type: item.value.type})
                 })
@@ -408,6 +418,23 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
               tempArr.push({name: target[x].list[prop].name, value: '', type: target[x].list[prop].value.type});
             }
             sour.value.push(tempArr);
+          }
+
+        }
+        for (let x in this.forkListVariables) {
+          if (this.forkListVariables[x].name == sour.name) {
+            for (let i in sour.value) {
+              sour.value[i] = sour.value[i].filter((item) => {
+                let flag = false;
+                for (let k in this.forkListVariables[x].list) {
+                  if (this.forkListVariables[x].list[k].name == item.name) {
+                    flag = true;
+                    break;
+                  }
+                }
+                return flag;
+              });
+            }
           }
         }
         target[x].actualList = sour.value;
@@ -1107,6 +1134,7 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
+      this.workflow = {};
       this.getDocumentations();
       if (res.configuration) {
         delete res.configuration.TYPE;
@@ -1151,11 +1179,14 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
       if (this.schedule.configuration.workflowNames.length > 0) {
         this.schedule.configuration.workflowNames.forEach((workflow) => {
           this.getWorkflowInfo(workflow, false, (path) => {
+            this.checkValidation(res)
             if (path) {
               this.loadWorkflowList(path);
             }
           });
         });
+      } else{
+        this.checkValidation(res);
       }
 
       if (this.schedule.configuration.orderParameterisations) {
@@ -1167,14 +1198,18 @@ export class ScheduleComponent implements OnInit, OnDestroy, OnChanges {
         });
       }
       this.history.push(JSON.stringify(this.schedule.configuration));
-      if (!res.valid) {
-        if (this.schedule.configuration.workflowNames && this.schedule.configuration.workflowNames.length > 0 && this.schedule.configuration.calendars.length > 0) {
-          this.validateJSON(res.configuration);
-        } else {
-          this.setErrorMessage(res);
-        }
-      }
+
     });
+  }
+
+  private checkValidation(res){
+    if (!res.valid) {
+      if (this.schedule.configuration.workflowNames && this.schedule.configuration.workflowNames.length > 0 && this.schedule.configuration.calendars.length > 0) {
+        this.validateJSON(res.configuration);
+      } else {
+        this.setErrorMessage(res);
+      }
+    }
   }
 
   private validateJSON(json): void {
