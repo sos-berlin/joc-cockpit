@@ -11,7 +11,6 @@
               <nz-switch [(ngModel)]="inventoryService.expertMode"></nz-switch>
               <span style="padding-left: 6px">{{'inventory.label.switchUserExpertMode' | translate}}</span>
             </div>
-
             <div class="inline valign m-l">
               <nz-switch [(ngModel)]="inventoryService.checkDeploymentStatus.isChecked" (ngModelChange)="reloadFolders($event)"></nz-switch>
               <span style="padding-left: 6px">{{'inventory.button.checkDeploymentStatus' | translate}}</span>
@@ -167,7 +166,7 @@
                 [nzTreeTemplate]="nzTreeTemplate"
               ></nz-tree>
               <ng-template #nzTreeTemplate let-node>
-                <div class="node-wrapper">
+                <div class="node-wrapper" [ngClass]="{'disable-link': node.origin.deleted && !isTrash}">
                    <span
                      *ngIf="node.origin.loading || node.origin.isArrow || (!node.origin.controller && !node.origin.dailyPlan && node.origin.children && node.origin.children.length > 0 && (((node.origin.children.length > 2 || !node.origin.children[0].controller)) || node.origin.object ))"
                      [class.toggle-children-wrapper-expanded]="node.isExpanded"

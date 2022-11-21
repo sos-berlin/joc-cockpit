@@ -128,214 +128,216 @@
         <div class="form-group row" *ngIf="(schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) || schedule.configuration.orderParameterisations.length">
           <label class="col-md-12 _600" translate>inventory.label.orderParameterisations</label>
         </div>
-        <div *ngFor="let variableSet of schedule.configuration.orderParameterisations; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
-          <div class="form-group row">
-            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6" [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}">
-              <input type="text" identifierValidation maxlength="30" [readOnly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
-                     name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keydown)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.orderParameterisations)">
-              <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
-                <div *ngIf="orderName.errors.invalidIdentifier" translate>common.message.invalid</div>
-              </div>
-              <div class="pos-abt r-t-n-28" [hidden]="schedule.configuration.orderParameterisations.length == 1 && variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
-                <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariableSet(j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
-              </div>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <app-node-position [obj]="variableSet.positions" [type]="'START'" (onBlur)="saveJSON()"
-                               [workflow]="workflow" [positions]="positions"></app-node-position>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <app-node-position [obj]="variableSet.positions" [type]="'END'" (onBlur)="updateEndNode(variableSet.positions)"
-                                 [position]="variableSet.positions.startPosition" [workflow]="workflow" [positions]="positions"></app-node-position>
-            </div>
-          </div>
-          <div *ngIf="variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
-            <div *ngFor="let listVariables of variableSet.forkListVariables; let x = index;">
-              <div class="m-b-sm">{{'order.label.variableList' | translate}}:
-                <b>{{listVariables.name}}</b>
-              </div>
-              <div *ngIf="listVariables.list" class="p-a-sm b-a m-b">
-                <div class="form-group row m-b-0 m-l-12">
-                  <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-                  <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm m-l-n-23" translate>common.label.value</div>
+        <div *ngIf="workflow.orderPreparation">
+          <div *ngFor="let variableSet of schedule.configuration.orderParameterisations; let j = index" [ngClass]="{'b-t p-t' : j != 0}">
+            <div class="form-group row">
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6" [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}">
+                <input type="text" identifierValidation maxlength="30" [readOnly]="isTrash || !permission.joc.inventory.manage" class="form-control" autocomplete="off" placeholder="{{'inventory.placeholder.orderName' | translate}}"
+                       name="orderName{{j}}" #orderName="ngModel" [(ngModel)]="variableSet.orderName" (keydown)="onKeyPress($event, null)" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.orderParameterisations)">
+                <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
+                  <div *ngIf="orderName.errors.invalidIdentifier" translate>common.message.invalid</div>
                 </div>
-                <div class="form-group row m-b-0 m-l-12" *ngFor="let actualListArr of listVariables.actualList; let i = index" [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}">
-                  <div *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)" (click)="addVariableToList(listVariables)"
-                       class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                  </div>
-                  <div class="col-md-12" *ngFor="let argument of actualListArr; let k = index">
-                    <div class="form-group row m-b-0" >
-                      <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" style="padding-right: 34px">
-                        <input readonly type="text" class="form-control" name="_name{{i}}{{j}}{{k}}{{x}}" [(ngModel)]="argument.name">
-                      </div>
-                      <ng-container [ngSwitch]="argument.type">
-                        <ng-container *ngSwitchCase="'Number'">
-                          <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm"
-                               [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                            <nz-input-number [required]="true" #value="ngModel" (nzBlur)="saveJSON()" class="m-l-n-23 w-103"
-                                             nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
-                                             [nzMin]="0" [nzStep]="1" name="_value{{i}}{{j}}{{k}}{{x}}" [(ngModel)]="argument.value"></nz-input-number>
-                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                                 class="text-danger help-block m-l-n-23">
-                              <div *ngIf="value.errors.required">
-                                <div translate>common.message.requiredError</div>
-                              </div>
-                            </div>
-                            <div class="pos-abt r-t-n-28" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
-                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
-                            </div>
-                          </div>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="'Boolean'">
-                          <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm"
-                               [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                            <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" (ngModelChange)="checkVal($event)" class="m-l-n-23 w-103"
-                                       #value="ngModel" [required]="true" name="_value{{i}}{{j}}{{k}}{{x}}" [(ngModel)]="argument.value">
-                              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                            </nz-select>
-                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                                 class="text-danger help-block m-l-n-23">
-                              <div *ngIf="value.errors.required">
-                                <div translate>common.message.requiredError</div>
-                              </div>
-                            </div>
-                            <div class="pos-abt r-t-n-28" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
-                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
-                            </div>
-                          </div>
-                        </ng-container>
-                        <ng-container *ngSwitchDefault>
-                          <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm"
-                               [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                            <input #value="ngModel" [required]="true" autocomplete="off" type="text" class="form-control m-l-n-23 w-103"
-                                   name="_value{{i}}{{j}}{{k}}{{x}}" (blur)="saveJSON()"
-                                   [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
-                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                                 class="text-danger help-block m-l-n-23">
-                              <div *ngIf="value.errors.required">
-                                <div translate>common.message.requiredError</div>
-                              </div>
-                            </div>
-                            <div class="pos-abt r-t-n-28" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
-                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
-                            </div>
-                          </div>
-                        </ng-container>
-                      </ng-container>
-                    </div>
-                  </div>
+                <div class="pos-abt r-t-n-28" [hidden]="schedule.configuration.orderParameterisations.length == 1 && variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
+                  <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariableSet(j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="form-group row m-b-0" *ngFor="let variable of variableSet.variables; let i = index">
-            <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
-            <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
-            <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" *ngIf="variable.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-              <input #name="ngModel" required autocomplete="off" type="text" class="form-control"
-                     name="name_{{i}}{{j}}" [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}}">
+            <div class="form-group row">
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <app-node-position [obj]="variableSet.positions" [type]="'START'" (onBlur)="saveJSON()"
+                                 [workflow]="workflow" [positions]="positions"></app-node-position>
+              </div>
             </div>
-            <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" *ngIf="!variable.isTextField">
-              <nz-select nzShowSearch name="name{{i}}{{j}}" [nzDisabled]="isTrash || !permission.joc.inventory.manage || variable.isRequired" nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}"
-                         [(ngModel)]="variable.name" (ngModelChange)="checkVariableType(variable);saveJSON()">
-                <nz-option *ngFor="let list of variableSet.variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
-                           [nzValue]="list.name"></nz-option>
-              </nz-select>
+            <div class="form-group row">
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <app-node-position [obj]="variableSet.positions" [type]="'END'" (onBlur)="updateEndNode(variableSet.positions)"
+                                   [position]="variableSet.positions.startPosition" [workflow]="workflow" [positions]="positions"></app-node-position>
+              </div>
             </div>
-            <ng-container *ngIf="!variable.list">
-              <ng-container [ngSwitch]="variable.type">
-                <ng-container *ngSwitchCase="'Number'">
-                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1"
-                                     name="value{{i}}{{j}}" [(ngModel)]="variable.value" (nzBlur)="saveJSON()" (keydown)="onKeyPress($event, variableSet)"></nz-input-number>
-                    <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                         class="text-danger help-block">
-                      <div *ngIf="value.errors.required">
-                        <div translate>common.message.requiredError</div>
+            <div *ngIf="variableSet.forkListVariables && variableSet.forkListVariables.length > 0">
+              <div *ngFor="let listVariables of variableSet.forkListVariables; let x = index;">
+                <div class="m-b-sm">{{'order.label.variableList' | translate}}:
+                  <b>{{listVariables.name}}</b>
+                </div>
+                <div *ngIf="listVariables.list" class="p-a-sm b-a m-b">
+                  <div class="form-group row m-b-0 m-l-12">
+                    <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
+                    <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm m-l-n-23" translate>common.label.value</div>
+                  </div>
+                  <div class="form-group row m-b-0 m-l-12" *ngFor="let actualListArr of listVariables.actualList; let i = index" [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}">
+                    <div *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)" (click)="addVariableToList(listVariables)"
+                         class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-md-12" *ngFor="let argument of actualListArr; let k = index">
+                      <div class="form-group row m-b-0" >
+                        <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" style="padding-right: 34px">
+                          <input readonly type="text" class="form-control" name="_name{{i}}{{j}}{{k}}{{x}}" [(ngModel)]="argument.name">
+                        </div>
+                        <ng-container [ngSwitch]="argument.type">
+                          <ng-container *ngSwitchCase="'Number'">
+                            <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm"
+                                 [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                              <nz-input-number [required]="true" #value="ngModel" (nzBlur)="saveJSON()" class="m-l-n-23 w-103"
+                                               nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
+                                               [nzMin]="0" [nzStep]="1" name="_value{{i}}{{j}}{{k}}{{x}}" [(ngModel)]="argument.value"></nz-input-number>
+                              <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                                   class="text-danger help-block m-l-n-23">
+                                <div *ngIf="value.errors.required">
+                                  <div translate>common.message.requiredError</div>
+                                </div>
+                              </div>
+                              <div class="pos-abt r-t-n-28" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
+                                <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                              </div>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'Boolean'">
+                            <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm"
+                                 [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                              <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" (ngModelChange)="checkVal($event)" class="m-l-n-23 w-103"
+                                         #value="ngModel" [required]="true" name="_value{{i}}{{j}}{{k}}{{x}}" [(ngModel)]="argument.value">
+                                <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                                <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                              </nz-select>
+                              <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                                   class="text-danger help-block m-l-n-23">
+                                <div *ngIf="value.errors.required">
+                                  <div translate>common.message.requiredError</div>
+                                </div>
+                              </div>
+                              <div class="pos-abt r-t-n-28" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
+                                <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                              </div>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchDefault>
+                            <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm"
+                                 [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                              <input #value="ngModel" [required]="true" autocomplete="off" type="text" class="form-control m-l-n-23 w-103"
+                                     name="_value{{i}}{{j}}{{k}}{{x}}" (blur)="saveJSON()"
+                                     [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
+                              <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                                   class="text-danger help-block m-l-n-23">
+                                <div *ngIf="value.errors.required">
+                                  <div translate>common.message.requiredError</div>
+                                </div>
+                              </div>
+                              <div class="pos-abt r-t-n-28" *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1">
+                                <a><i (click)="removeVariableFromList(i, listVariables.actualList)" class="fa fa-times m-t-sm text-muted"></i></a>
+                              </div>
+                            </div>
+                          </ng-container>
+                        </ng-container>
                       </div>
                     </div>
-                    <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
-                      <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
-                    </div>
                   </div>
-                </ng-container>
-                <ng-container *ngSwitchCase="'Boolean'">
-                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                               #value="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" (ngModelChange)="checkVal($event)" name="value{{i}}{{j}}" [(ngModel)]="variable.value">
-                      <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                      <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                    </nz-select>
-                    <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                         class="text-danger help-block">
-                      <div *ngIf="value.errors.required">
-                        <div translate>common.message.requiredError</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row m-b-0" *ngFor="let variable of variableSet.variables; let i = index">
+              <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" *ngIf="i==0" translate>common.label.name</div>
+              <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm" *ngIf="i==0" translate>common.label.value</div>
+              <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" *ngIf="variable.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                <input #name="ngModel" required autocomplete="off" type="text" class="form-control"
+                       name="name_{{i}}{{j}}" [(ngModel)]="variable.name" placeholder="{{'common.placeholder.name' | translate}}">
+              </div>
+              <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" *ngIf="!variable.isTextField">
+                <nz-select nzShowSearch name="name{{i}}{{j}}" [nzDisabled]="isTrash || !permission.joc.inventory.manage || variable.isRequired" nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}"
+                           [(ngModel)]="variable.name" (ngModelChange)="checkVariableType(variable);saveJSON()">
+                  <nz-option *ngFor="let list of variableSet.variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
+                             [nzValue]="list.name"></nz-option>
+                </nz-select>
+              </div>
+              <ng-container *ngIf="!variable.list">
+                <ng-container [ngSwitch]="variable.type">
+                  <ng-container *ngSwitchCase="'Number'">
+                    <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                      <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1"
+                                       name="value{{i}}{{j}}" [(ngModel)]="variable.value" (nzBlur)="saveJSON()" (keydown)="onKeyPress($event, variableSet)"></nz-input-number>
+                      <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                           class="text-danger help-block">
+                        <div *ngIf="value.errors.required">
+                          <div translate>common.message.requiredError</div>
+                        </div>
+                      </div>
+                      <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
+                        <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                       </div>
                     </div>
-                    <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
-                      <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'Boolean'">
+                    <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                      <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                                 #value="ngModel" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired" (ngModelChange)="checkVal($event)" name="value{{i}}{{j}}" [(ngModel)]="variable.value">
+                        <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                        <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                      </nz-select>
+                      <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                           class="text-danger help-block">
+                        <div *ngIf="value.errors.required">
+                          <div translate>common.message.requiredError</div>
+                        </div>
+                      </div>
+                      <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
+                        <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                      </div>
                     </div>
-                  </div>
-                </ng-container>
-                <ng-container *ngSwitchDefault>
-                  <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <input [facetValidation]="variable.facet" #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired || variable.facet" autocomplete="off" type="text" class="form-control" (keydown)="onKeyPress($event, variableSet)"
-                           name="value{{i}}{{j}}" [(ngModel)]="variable.value" (blur)="saveJSON(false, false, value, variable)" placeholder="{{'common.placeholder.value' | translate}}">
-                    <i class="pos-abt cursor fa fa-info-circle" *ngIf="variable.message" [nz-tooltip]="variable.message" style="right: 18px;top:9px;"></i>
-                    <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                         class="text-danger help-block">
-                      <div *ngIf="value.errors.required" translate>common.message.requiredError</div>
-                      <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+                      <input [facetValidation]="variable.facet" #value="ngModel" [readOnly]="isTrash || !permission.joc.inventory.manage" [required]="variable.isRequired || variable.facet" autocomplete="off" type="text" class="form-control" (keydown)="onKeyPress($event, variableSet)"
+                             name="value{{i}}{{j}}" [(ngModel)]="variable.value" (blur)="saveJSON(false, false, value, variable)" placeholder="{{'common.placeholder.value' | translate}}">
+                      <i class="pos-abt cursor fa fa-info-circle" *ngIf="variable.message" [nz-tooltip]="variable.message" style="right: 18px;top:9px;"></i>
+                      <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
+                           class="text-danger help-block">
+                        <div *ngIf="value.errors.required" translate>common.message.requiredError</div>
+                        <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
+                      </div>
+                      <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
+                        <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>
+                      </div>
                     </div>
-                    <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
-                      <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>
-                    </div>
-                  </div>
+                  </ng-container>
                 </ng-container>
               </ng-container>
-            </ng-container>
-            <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" *ngIf="variable.list" [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}">
-              <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                         #list="ngModel" [required]="variable.isRequired" name="list{{i}}{{j}}" [(ngModel)]="variable.value">
-                <ng-container *ngFor="let option of variable.list">
-                  <nz-option nzCustomContent [nzValue]="option.name" [nzLabel]="option.name">
-                    <div>
-                      {{option.name}} <i *ngIf="option.default">- </i> <span class="label label-default" *ngIf="option.default" translate>default</span>
-                    </div>
-                  </nz-option>
-                </ng-container>
-              </nz-select>
-              <div *ngIf="list.invalid && list.errors && (list.dirty || list.touched)"
-                   class="text-danger help-block">
-                <div *ngIf="list.errors.required">
-                  <div translate>common.message.requiredError</div>
+              <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm" *ngIf="variable.list" [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}">
+                <nz-select nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                           #list="ngModel" [required]="variable.isRequired" name="list{{i}}{{j}}" [(ngModel)]="variable.value">
+                  <ng-container *ngFor="let option of variable.list">
+                    <nz-option nzCustomContent [nzValue]="option.name" [nzLabel]="option.name">
+                      <div>
+                        {{option.name}} <i *ngIf="option.default">- </i> <span class="label label-default" *ngIf="option.default" translate>default</span>
+                      </div>
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+                <div *ngIf="list.invalid && list.errors && (list.dirty || list.touched)"
+                     class="text-danger help-block">
+                  <div *ngIf="list.errors.required">
+                    <div translate>common.message.requiredError</div>
+                  </div>
+                </div>
+                <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
+                  <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>
                 </div>
               </div>
-              <div class="pos-abt r-t-n-28" *ngIf="!variable.isRequired">
-                <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>
+            </div>
+            <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
+              <div class="col-sm-12" *ngIf="variableList.length > variableSet.variables.length">
+                <a class="text-u-l" (click)="addVariable(false, variableSet)" translate>order.button.modifyVariable</a>
+                <a class="text-u-l m-l-12" (click)="addVariables(false, variableSet)" translate>order.button.modifyVariables</a>
               </div>
+
             </div>
           </div>
           <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
-            <div class="col-sm-12" *ngIf="variableList.length > variableSet.variables.length">
-              <a class="text-u-l" (click)="addVariable(false, variableSet)" translate>order.button.modifyVariable</a>
-              <a class="text-u-l m-l-12" (click)="addVariables(false, variableSet)" translate>order.button.modifyVariables</a>
+            <div class="col-sm-12" *ngIf="variableList.length > 0 || forkListVariables.length > 0 || (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1)">
+              <a class="text-u-l" (click)="addVariableSet()" translate>inventory.button.addOrderParameter</a>
             </div>
-
-          </div>
-        </div>
-        <div class="form-group row" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
-          <div class="col-sm-12" *ngIf="variableList.length > 0 || forkListVariables.length > 0 || (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1)">
-            <a class="text-u-l" (click)="addVariableSet()" translate>inventory.button.addOrderParameter</a>
           </div>
         </div>
       </form>
