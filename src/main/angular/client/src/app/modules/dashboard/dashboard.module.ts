@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {GridsterModule} from 'angular-gridster2';
-import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {NgChartsModule} from 'ng2-charts';
 import {DashboardRoutingModule} from './dashboard-routing.module';
 import {SharedModule} from '../shared/shared.module';
@@ -19,7 +18,6 @@ import {AgentClusterStatusComponent} from "./agent-cluster-status/agent-cluster-
 
 @NgModule({
   imports: [
-    NgxChartsModule,
     NgChartsModule,
     GridsterModule,
     SharedModule,

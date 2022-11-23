@@ -71,7 +71,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
     const w = target.innerWidth / 12;
     this.view[0] = w * this.layout.cols - 90;
     this.view1[0] = this.view[0];
-    this.view[1] = ((this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50)) - 6) + (this.data.length > 5 ? ((this.data.length - this.layout.rows) * 5) : 1) - 10;
+    this.view[1] = (((this.layout.rows * 50 + ((this.layout.rows - 1) * 20 - 50)) - 6) + (this.data.length > 5 ? ((this.data.length - this.layout.rows) * 5) : 1)) + 6;
     if (this.view[1] < 90 && this.data.length > 5) {
       this.view[1] = 90 + (this.data.length * 8)
     }

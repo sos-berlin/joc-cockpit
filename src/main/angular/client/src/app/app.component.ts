@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { NzI18nService } from 'ng-zorro-antd/i18n';
-import { Router } from '@angular/router';
-import { registerLocaleData } from "@angular/common";
-import { CoreService } from './services/core.service';
-import { AuthService, OIDCAuthService } from './components/guard';
-
+import {Component, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {NzI18nService} from 'ng-zorro-antd/i18n';
+import {Router} from '@angular/router';
+import {registerLocaleData} from "@angular/common";
+import {AuthService, OIDCAuthService} from './components/guard';
+import {CoreService} from './services/core.service';
 
 declare const $: any;
 
@@ -17,7 +16,7 @@ export class AppComponent implements OnInit {
   locales: any = [];
 
   constructor(public translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService,
-    private authService: AuthService, private readonly oAuthService: OIDCAuthService, private router: Router) {
+              private authService: AuthService, private readonly oAuthService: OIDCAuthService, private router: Router) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
           return typeof console[property] === 'function';
@@ -62,7 +61,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-
   private getTranslate(): void {
     let lang = localStorage.$SOS$LANG || navigator.language;
     if (this.locales.indexOf(lang) <= -1) {
@@ -93,6 +91,7 @@ export class AppComponent implements OnInit {
       this.i18n.setLocale(data);
     });
   }
+
   private login(token: string, idToken: string, refreshToken?: string): void {
     if (token) {
       this.coreService.saveValueInLocker({
@@ -104,7 +103,10 @@ export class AppComponent implements OnInit {
         }
       }, () => {
 
-        this.coreService.post('authentication/login', { identityServiceName: sessionStorage.providerName, idToken }).subscribe({
+        this.coreService.post('authentication/login', {
+          identityServiceName: sessionStorage.providerName,
+          idToken
+        }).subscribe({
           next: (data) => {
             let returnUrl = sessionStorage.getItem('returnUrl');
             let logoutUrl = sessionStorage.getItem('logoutUrl');

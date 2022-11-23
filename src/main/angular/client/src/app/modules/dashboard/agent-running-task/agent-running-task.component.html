@@ -3,22 +3,9 @@
         <h3 translate>dashboard.label.agentRunningJobs</h3>
     </div>
     <div class="row overflow-y" [hidden]="!isLoaded"
-    [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px'}">
+    [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) * 20 -50)) + 4 +'px'}">
       <div class="col-md-12">
-        <div class="p-a-sm chartAreaWrapper" *ngIf="data.length>0">
-          <div class="chartWrapper">
-            <ngx-charts-bar-horizontal
-              [view]="view1"
-              [results]="data"
-              [gradient]="true"
-              [xAxis]="true"
-              [yAxis]="true"
-              [showGridLines]="false"
-              [roundDomains]="false"
-              [barPadding]="5"
-              [roundEdges]="false">
-            </ngx-charts-bar-horizontal>
-          </div>
+        <div class="p-a-sm" *ngIf="data.length>0">
           <ngx-charts-bar-horizontal
             (window:resize)="onResize($event)"
             [view]="view"
