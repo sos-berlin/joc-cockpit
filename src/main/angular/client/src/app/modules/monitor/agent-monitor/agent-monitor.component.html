@@ -48,7 +48,7 @@
           <div class="col-sm-12 col-md-6 text-center" [ngClass]="{'col-md-12' : runningTime.length === 1}" *ngFor="let item of runningTime">
             <div class="text-dark _600 m-t">{{item.agentId}}</div>
             <div class="flex-center">
-              <mwl-gauge
+              <app-gauge
                 [dialStartAngle]="-90"
                 [dialEndAngle]="-90.001"
                 [value]="item.value"
@@ -57,7 +57,7 @@
                 [animated]="true"
                 [animationDuration]="1"
               >
-              </mwl-gauge>
+              </app-gauge>
             </div>
             <i class="text-muted pos-rel t-n-12">{{'common.label.total' | translate}} <i translate [translateParams]="{count: item.hours}">monitor.label.totalDays</i></i>
           </div>

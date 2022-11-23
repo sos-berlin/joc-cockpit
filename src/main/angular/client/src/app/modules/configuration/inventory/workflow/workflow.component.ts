@@ -5933,12 +5933,16 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               }
               self.movedCells = [];
               if (self.droppedCell && me.getCell()) {
+                let _result = 'valid';
                 let flag = checkNestedForkList(self.droppedCell);
                 if (!flag) {
-                  return;
+                  _result = 'inValid';
                 }
-                let _result = 'valid';
-                if (self.droppedCell.target && !self.droppedCell.target.target) {
+
+                if(self.droppedCell.target && self.droppedCell.target.target){
+                  self.updateXMLJSON(true);
+                }
+                if (_result === 'valid' && self.droppedCell.target && !self.droppedCell.target.target) {
                   const targetCell = graph.getModel().getCell(self.droppedCell.target);
                   if (self.droppedCell.cells && self.droppedCell.cells.length > 0) {
                     self.droppedCell.cells = self.droppedCell.cells.filter((cell) => {

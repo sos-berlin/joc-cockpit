@@ -2778,7 +2778,6 @@ pre.log {
   width: 64px;
 }
 
-
 .w-xxs {
   width: 60px;
 }
@@ -5109,19 +5108,19 @@ svg text {
   font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
 }
 
-mwl-gauge {
+app-gauge {
   width: 210px;
   height: 200px;
   display: block;
   padding: 2px;
 }
 
-mwl-gauge > .gauge > .value-text {
+app-gauge > .gauge > .value-text {
   fill: var(--primary);
   font-size: 8px !important;
 }
 
-mwl-gauge > .gauge > .value {
+app-gauge > .gauge > .value {
   stroke-width: 4;
 }
 
@@ -5132,13 +5131,13 @@ mwl-gauge > .gauge > .value {
 }
 
 @media(min-width: 1600px) {
-  mwl-gauge {
+  app-gauge {
     width: 200px;
   }
 }
 
 @media(max-width: 991px) {
-  mwl-gauge {
+  app-gauge {
     width: 200px;
   }
 
@@ -8201,6 +8200,7 @@ tr.tr-border td:first-child {
 
 div.jsoneditor-tree {
   min-height: 300px;
+  background: transparent !important;
 }
 
 .jsoneditor-sort,
