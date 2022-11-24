@@ -360,14 +360,14 @@
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "tooltip.type": "Ein Autonomer Controller mit einer Instanz kann konfiguriert werden. Unter Verwendung der kommerziellen Lizenz kann ein Controller Cluster mit zwei Instanzen konfiguriert werden.",
-    "tooltip.standaloneTitle": "Titel des Autonomen Controllers",
+    "tooltip.standaloneTitle": "Kopfzeile des Autonomen Controllers",
     "tooltip.standaloneUrlForJOC": "Verbindung von JOC Cockpit zum autonomen Controller",
     "tooltip.primaryUrlForJOC": "Verbindung von JOC Cockpit zum Primären Controller",
     "tooltip.backupUrlForJOC": "Verbindung von JOC Cockpit zum Sekundären Controller",
     "tooltip.urlForBackup": "Verbindung des Sekundären Controllers zum Primären Controller",
     "tooltip.urlForPrimary": "Verbindung des Primären Controllers zum Sekundären Controller",
-    "tooltip.primaryTitle": "Titel der Primären Controller Instanz",
-    "tooltip.backupTitle": "Titel der Sekundären Controller Instanz"
+    "tooltip.primaryTitle": "Kopfzeile der Primären Controller Instanz",
+    "tooltip.backupTitle": "Kopfzeile der Sekundären Controller Instanz"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {

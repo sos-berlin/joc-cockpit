@@ -360,14 +360,14 @@
     "button.testConnection": "Test de Connexion",
     "button.newController": "Nouveau Contrôleur",
     "tooltip.type": "Un Contrôleur Autonome peut être configuré à l'aide d'une seule instance. Un Cluster de Contrôleurs peut être configuré à l'aide de deux instances si une licence commerciale est en place.",
-    "tooltip.standaloneTitle": "Titre du Contrôleur Autonome",
+    "tooltip.standaloneTitle": "Légende du Contrôleur Autonome",
     "tooltip.standaloneUrlForJOC": "Connexion de JOC Cockpit au Contrôleur Autonome",
     "tooltip.primaryUrlForJOC": "Connexion de JOC Cockpit au Contrôleur Primaire",
     "tooltip.backupUrlForJOC": "Connexion de JOC Cockpit au Contrôleur Secondaire",
     "tooltip.urlForBackup": "Connexion du Contrôleur Secondaire au Contrôleur Primaire",
     "tooltip.urlForPrimary": "Connexion du Contrôleur Primaire au Contrôleur Secondaire",
-    "tooltip.primaryTitle": "Titre du Contrôleur Primaire",
-    "tooltip.backupTitle": "Titre du Contrôleur Secondaire"
+    "tooltip.primaryTitle": "Légende du Contrôleur Primaire",
+    "tooltip.backupTitle": "Légende du Contrôleur Secondaire"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
