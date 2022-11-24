@@ -29,7 +29,7 @@
         </label>
         <div class="col-sm-8"
              [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}">
-          <input type="text" class="form-control" required name="title" [(ngModel)]="controller.title"
+          <input type="text" class="form-control" [maxlength]="30" required name="title" [(ngModel)]="controller.title"
                  #title="ngModel">
           <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger help-block">
             <div *ngIf="title.errors.required">
@@ -74,7 +74,7 @@
           </label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((primaryTitle.dirty || primaryTitle.touched) && primaryTitle.invalid)}">
-            <input type="text" class="form-control" required name="primaryTitle" [(ngModel)]="controller.primaryTitle"
+            <input type="text" class="form-control" [maxlength]="30" required name="primaryTitle" [(ngModel)]="controller.primaryTitle"
                    #primaryTitle="ngModel">
             <div *ngIf="primaryTitle.invalid && (primaryTitle.dirty || primaryTitle.touched)" class="text-danger help-block">
               <div *ngIf="primaryTitle.errors.required">
@@ -124,7 +124,7 @@
           </label>
           <div class="col-sm-8"
                [ngClass]="{ 'has-error' : ((backupTitle.dirty || backupTitle.touched) && backupTitle.invalid)}">
-            <input type="text" class="form-control" required name="backupTitle" [(ngModel)]="controller.backupTitle"
+            <input type="text" class="form-control" [maxlength]="30" required name="backupTitle" [(ngModel)]="controller.backupTitle"
                    #backupTitle="ngModel">
             <div *ngIf="backupTitle.invalid && (backupTitle.dirty || backupTitle.touched)" class="text-danger help-block">
               <div *ngIf="backupTitle.errors.required">
