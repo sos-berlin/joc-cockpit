@@ -3,13 +3,14 @@
     <div class="inline w-full">
       <label class="_600 m-l-sm m-r-sm">{{'log.label.modifyLogCriteria' | translate}} -</label>
       <span class="m-r" *ngIf="isExpandCollapse">
-        <a class="text"  [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="expandAll();">
-          <i class="fa fa-angle-double-down fa-lg"></i>
+        <a class="text" title="{{'common.tooltip.expandAll' | translate}}" (click)="expandAll();">
+          <i class="icon" nz-icon nzType="down" nzTheme="outline"></i>
         </a>
-        <a class="text m-l-sm"  [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll();">
-          <i class="fa fa-angle-double-up fa-lg"></i>
+        <a class="text m-l-sm" title="{{'common.tooltip.collapseAll' | translate}}" (click)="collapseAll();">
+          <i class="icon" nz-icon nzType="up" nzTheme="outline"></i>
         </a>
       </span>
+
       <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.main" (ngModelChange)="checkLogLevel('MAIN')"><span translate>log.label.main</span></label>
       <label *ngIf="isStdSuccessLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.success" (ngModelChange)="checkLogLevel('SUCCESS')"><span translate>log.label.success</span></label>
       <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.stdout" (ngModelChange)="checkLogLevel('STDOUT')"><span translate>log.label.stdout</span></label>
@@ -23,19 +24,19 @@
       <label *ngIf="isDetailLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.detail" (ngModelChange)="checkLogLevel('DETAIL')"><span translate>log.label.detail</span></label>
 
       <a class="m-r m-l pull-right" *ngIf="!isCancel && !finished" (click)="cancel()">
-        <i class="fa fa-times"></i>&nbsp;
+        <i class="icon" nz-icon nzType="close" nzTheme="outline"></i>
         <span translate>common.button.cancel</span>
       </a>
       <a class="m-r m-l pull-right" *ngIf="finished || isCancel" (click)="reloadLog()">
-        <i class="fa fa-refresh"></i>&nbsp;
+        <i class="icon" nz-icon nzType="reload" nzTheme="outline"></i>
         <span translate>workflow.button.reload</span>
       </a>
       <a class="m-l pull-right" (click)="downloadLog()">
-        <i class="fa fa-download"></i>&nbsp;
+        <i class="icon" nz-icon nzType="download" nzTheme="outline"></i>
         <span translate>common.button.download</span>
       </a>
       <a class="m-l pull-right" (click)="copy()">
-        <i class="fa fa-copy"></i>&nbsp;
+        <i class="icon" nz-icon nzType="copy" nzTheme="outline"></i>
         <span translate>log.button.copyToClipboard</span>
       </a>
     </div>

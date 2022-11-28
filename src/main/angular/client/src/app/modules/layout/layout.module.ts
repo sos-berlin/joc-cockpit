@@ -12,7 +12,7 @@ import {ExcelService} from '../../services/excel.service';
 import {WorkflowService} from "../../services/workflow.service";
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
-
+import {LogViewComponent} from "../../components/log-view/log-view.component";
 
 @NgModule({
   imports: [
@@ -26,6 +26,7 @@ import {ChangePasswordComponent} from "../../components/change-password/change-p
   declarations: [
     LayoutComponent,
     ChangePasswordComponent,
+    LogViewComponent,
     HeaderComponent
   ],
   providers: [

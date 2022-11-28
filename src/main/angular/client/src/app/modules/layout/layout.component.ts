@@ -1,18 +1,19 @@
-import { Component, HostListener, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { isEmpty } from 'underscore';
-import { NzConfigService } from 'ng-zorro-antd/core/config';
-import { CoreService } from '../../services/core.service';
-import { DataService } from '../../services/data.service';
-import { AuthService, OIDCAuthService } from '../../components/guard';
-import { HeaderComponent } from '../../components/header/header.component';
-import { StepGuideComponent } from '../../components/info-menu/info-menu.component';
-import { ChangePasswordComponent } from "../../components/change-password/change-password.component";
+import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router, RouterEvent} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {ToastrService} from 'ngx-toastr';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {Subscription} from 'rxjs';
+import {filter} from 'rxjs/operators';
+import {isEmpty} from 'underscore';
+import {NzConfigService} from 'ng-zorro-antd/core/config';
+import {CoreService} from '../../services/core.service';
+import {DataService} from '../../services/data.service';
+import {PopupService} from "../../services/popup.service";
+import {AuthService, OIDCAuthService} from '../../components/guard';
+import {HeaderComponent} from '../../components/header/header.component';
+import {StepGuideComponent} from '../../components/info-menu/info-menu.component';
+import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 
 declare const $: any;
 
@@ -49,12 +50,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   warningMessage: string;
   warningMessage2: string;
 
-  @ViewChild(HeaderComponent, { static: false }) child: any;
-  @ViewChild('customTpl', { static: true }) customTpl: any;
+  @ViewChild(HeaderComponent, {static: false}) child: any;
+  @ViewChild('customTpl', {static: true}) customTpl: any;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
-    private dataService: DataService, public translate: TranslateService, private toasterService: ToastrService,
-    private nzConfigService: NzConfigService, private modal: NzModalService, private oauthService: OIDCAuthService) {
+              private dataService: DataService, public translate: TranslateService, private toasterService: ToastrService, private popoutService: PopupService,
+              private nzConfigService: NzConfigService, private modal: NzModalService, private oauthService: OIDCAuthService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -98,9 +99,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
       navBar.removeClass('in');
     }
     const headerHt = $('.fixed-top').height() || 70;
-    $('.app-body').css({ 'margin-top': headerHt + 'px' });
-    $('.max-ht').css({ 'max-height': 'calc(100vh - ' + (headerHt + 56) + 'px)' });
-    $('.max-ht2').css({ 'max-height': 'calc(100vh - ' + (headerHt + 102) + 'px)' });
+    $('.app-body').css({'margin-top': headerHt + 'px'});
+    $('.max-ht').css({'max-height': 'calc(100vh - ' + (headerHt + 56) + 'px)'});
+    $('.max-ht2').css({'max-height': 'calc(100vh - ' + (headerHt + 102) + 'px)'});
   }
 
   static checkNavHeader(): void {
@@ -164,7 +165,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   checkLicenseExpireDate() {
     if (sessionStorage.getItem('licenseValidUntil')) {
-      this.coreService.post('configurations', { configurationType: 'GLOBALS' }).subscribe({
+      this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
         next: (res) => {
           let flag = false;
           if (res.configurations[0] && res.configurations[0].configurationItem) {
@@ -214,14 +215,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
     if (remainingDays < 61) {
       if (differenceInTime < 0) {
-        this.translate.get('license.secondWarning', { date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat) }).subscribe(translatedValue => {
+        this.translate.get('license.secondWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
           this.warningMessage2 = translatedValue;
         });
       } else {
         if (remainingDays == 0) {
           this.warningMessage2 = 'Hide';
         }
-        this.translate.get('license.firstWarning', { date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat) }).subscribe(translatedValue => {
+        this.translate.get('license.firstWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
           this.warningMessage = this.coreService.convertTextToLink(translatedValue, 'mailto:sales@sos-berlin.com');
         });
       }
@@ -285,10 +286,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  @HostListener('window:beforeunload')
-  onUnload(): boolean {
-    this.coreService.refreshParent();
-    return true;
+  @HostListener('window:beforeunload', ['$event'])
+  onWindowClose(event: Event) {
+    this.popoutService.closePopoutModal();
   }
 
   changeScheduler(controller: string): void {
@@ -300,7 +300,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     const key = this.schedulerIds.selected;
     this.tabsMap.set(key, JSON.stringify(this.coreService.getTabs()));
     localStorage.setItem('$SOS$SELECTEDID', controller);
-    this.coreService.post('controller/switch', { controllerId: this.schedulerIds.selected }).subscribe(() => {
+    this.coreService.post('controller/switch', {controllerId: this.schedulerIds.selected}).subscribe(() => {
       this.coreService.post('controller/ids', {}).subscribe((res) => {
         if (res) {
           document.title = 'JS7:' + this.schedulerIds.selected;
@@ -447,7 +447,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           if (ID && ID !== 'null' && ID !== res.selected) {
             if (res.controllerIds.length > 0 && res.controllerIds.indexOf(ID) > -1) {
               res.selected = ID;
-              this.coreService.post('controller/switch', { controllerId: ID }).subscribe();
+              this.coreService.post('controller/switch', {controllerId: ID}).subscribe();
             } else {
               localStorage.removeItem('$SOS$SELECTEDID');
             }
@@ -455,7 +455,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.authService.setIds(res);
           this.authService.save();
           this.schedulerIds = res;
-          this.getComments(false, () => { });
+          this.getComments(false, () => {
+          });
         } else {
           const preferences: any = {};
           this.getDefaultPreferences(preferences);
@@ -468,7 +469,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
         }
       }, error: (err) => {
         if (err.error && (err.message === 'Access denied' || err.error.message === 'Access denied')) {
-          this.getComments(true, () => { });
+          this.getComments(true, () => {
+          });
           LayoutComponent.calculateHeight();
         } else {
           this.getComments(false, () => {
@@ -502,7 +504,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (returnUrl === '/error' || returnUrl === 'error') {
         returnUrl = '/';
       }
-      this.router.navigate(['login'], { queryParams: { returnUrl } }).then();
+      this.router.navigate(['login'], {queryParams: {returnUrl}}).then();
       return;
     }
     this.coreService.post('authentication/login', {}).subscribe({
@@ -519,7 +521,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (returnUrl === '/error' || returnUrl === 'error') {
           returnUrl = '/';
         }
-        this.router.navigate(['login'], { queryParams: { returnUrl } }).then();
+        this.router.navigate(['login'], {queryParams: {returnUrl}}).then();
       }
     });
   }
@@ -562,7 +564,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (this.schedulerIds && this.schedulerIds.selected) {
       document.title = 'JS7:' + this.schedulerIds.selected;
     }
-    this.nzConfigService.set('empty', { nzDefaultEmptyContent: this.customTpl });
+    this.nzConfigService.set('empty', {nzDefaultEmptyContent: this.customTpl});
     setTimeout(() => {
       LayoutComponent.calculateHeight();
     }, 10);
@@ -602,7 +604,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (timeout) {
       sessionStorage.removeItem('$SOS$CONTROLLER');
       const returnUrl = this.router.url;
-      let queryParams = { queryParams: { returnUrl } };
+      let queryParams = {queryParams: {returnUrl}};
       if (!returnUrl || returnUrl.match(/login/)) {
         queryParams = undefined;
       } else {
@@ -887,7 +889,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private storeGlobalConfig(): void {
-    this.coreService.post('configurations', { configurationType: 'GLOBALS' }).subscribe((res) => {
+    this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe((res) => {
       let configuration: any = {};
       if (res.configurations[0]) {
         configuration = res.configurations[0];
@@ -899,8 +901,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
         configuration.configurationItem.user = {};
       }
       if (!configuration.configurationItem.user.welcome_got_it) {
-        configuration.configurationItem.user.welcome_got_it = { type: 'BOOLEAN' };
-        configuration.configurationItem.user.welcome_do_not_remind_me = { type: 'BOOLEAN' };
+        configuration.configurationItem.user.welcome_got_it = {type: 'BOOLEAN'};
+        configuration.configurationItem.user.welcome_do_not_remind_me = {type: 'BOOLEAN'};
       }
       configuration.configurationItem.user.welcome_got_it.value = true;
       configuration.configurationItem.user.welcome_do_not_remind_me.value = true;
@@ -911,7 +913,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       };
       if (sessionStorage.$SOS$FORCELOGING === 'true') {
         this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
-          request.auditLog = { comment: translatedValue };
+          request.auditLog = {comment: translatedValue};
         });
       }
       this.coreService.post('configuration/save', request).subscribe(() => {

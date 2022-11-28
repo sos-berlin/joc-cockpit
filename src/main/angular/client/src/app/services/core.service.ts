@@ -9,6 +9,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {isEmpty, sortBy, isNumber, object, isArray, groupBy} from 'underscore';
 import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
+import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 
 declare const diff_match_patch: any;
 declare const $: any;
@@ -37,11 +38,10 @@ export class CoreService {
 
   searchResults = {};
 
-  newWindow: any;
   windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
-              private clipboardService: ClipboardService, private translate: TranslateService) {
+              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService) {
     this.init();
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
@@ -745,9 +745,17 @@ export class CoreService {
     function openWindow() {
       if (url) {
         if (preferenceObj.isNewWindow === 'newWindow') {
-          self.newWindow = window.open(url, '', 'top=' + window.localStorage.log_window_y + ',' +
-            'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
-            'innerheight=' + window.localStorage.log_window_ht + self.windowProperties);
+          const modalData: PopoutData = {
+            modalName: 'Order Log',
+            controllerId,
+            orderId: orderId,
+            historyId: url,
+            workflow: workflow,
+            instance: null
+          };
+          self.openPopout(modalData, 'top=' + window.localStorage.log_window_y + ',' +
+               'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
+               'innerheight=' + window.localStorage.log_window_ht + self.windowProperties);
         } else if (preferenceObj.isNewWindow === 'newTab') {
           window.open(url, '_blank');
         }
@@ -765,14 +773,10 @@ export class CoreService {
     }).subscribe({
       next: (res) => {
         if (res.historyId) {
-          this.refreshParent();
           let url2 = '?historyId=' + encodeURIComponent(res.historyId) + '&orderId=' + encodeURIComponent(orderId) + '&workflow=' + encodeURIComponent(workflow) + '&controllerId=' + controllerId;
-
           if (preferenceObj.isNewWindow === 'newWindow') {
-            url = '#/log2' + url2;
-            setTimeout(() => {
-              this.calWindowSize();
-            }, 500);
+            this.popupService.closePopoutModal();
+            url = res.historyId;
           } else if (preferenceObj.isNewWindow === 'newTab') {
             url = '#/log' + url2;
           } else {
@@ -795,7 +799,6 @@ export class CoreService {
     if (!order && !task) {
       return;
     }
-    this.refreshParent();
 
     const preferenceObj = JSON.parse(sessionStorage.preferences);
     const controllerId = id || JSON.parse(this.authService.scheduleIds).selected;
@@ -826,17 +829,36 @@ export class CoreService {
     }
 
     if (preferenceObj.isNewWindow === 'newWindow') {
-      this.newWindow = window.open('#/log2' + url, '', 'top=' + window.localStorage.log_window_y + ',' +
-        'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
-        'innerheight=' + window.localStorage.log_window_ht + this.windowProperties);
-      setTimeout(() => {
-        this.calWindowSize();
-      }, 500);
+      // this.newWindow = window.open('assets/modal/popout.html' + url, '');
+      const modalData: PopoutData = {
+        modalName: (order && order.orderId) ? 'Order Log' : 'Task Log',
+        controllerId,
+        workflow: order?.workflow,
+        orderId: (order && order.orderId) ? order.orderId : undefined,
+        taskId: task ? task.taskId : undefined,
+        historyId: (order && order.historyId) ? order.historyId : undefined,
+        job: (task && task.taskId) ? (task.job ? task.job : job) : undefined,
+        instance: null
+      };
+      this.openPopout(modalData, 'top=' + window.localStorage.log_window_y + ',' +
+           'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
+           'innerheight=' + window.localStorage.log_window_ht + this.windowProperties);
     } else if (preferenceObj.isNewWindow === 'newTab') {
       window.open('#/log' + url, '_blank');
     } else {
       const data = order || task || job || transfer;
       this.downloadLog(data, controllerId);
+    }
+  }
+
+  private openPopout(modalData: PopoutData, properties) {
+    if (!this.popupService.isPopoutWindowOpen()) {
+      this.popupService.openPopoutModal(modalData, properties);
+    } else {
+      POPOUT_MODALS['outlet'].detach();
+      const injector = this.popupService.createInjector(modalData);
+      POPOUT_MODALS['componentInstance'] = this.popupService.attachLogContainer(POPOUT_MODALS['outlet'], injector);
+      this.popupService.focusPopoutWindow();
     }
   }
 
@@ -1107,23 +1129,6 @@ export class CoreService {
     return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB'];
   }
 
-  refreshParent(): any {
-    try {
-      if (typeof this.newWindow != 'undefined' && this.newWindow != null && this.newWindow.closed == false) {
-        if (this.newWindow.sessionStorage.changedPreferences) {
-          if (this.newWindow.sessionStorage.controllerId === JSON.parse(this.authService.scheduleIds).selected) {
-            const preferences = JSON.parse(sessionStorage.preferences);
-            preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
-            window.sessionStorage.preferences = JSON.stringify(preferences);
-          }
-        }
-        this.newWindow.close();
-      }
-    } catch (x) {
-      console.error(x);
-    }
-  }
-
   xsdAnyURIValidation(value: string): boolean {
     return /^((ht|f)tp(s?)\:\/\/)?(www.|[a-zA-Z].)[a-zA-Z0-9\-\.]+\.(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk)(\:[0-9]+)*(\/($|[a-zA-Z0-9\.\,\;\?\'\\\+&amp;%\$#\=~_\-]+))*$/.test(value)
       || /^(?:(<protocol>http(?:s?)|ftp)(?:\:\/\/))(?:(<usrpwd>\w+\:\w+)(?:\@))?(<domain>[^/\r\n\:]+)?(<port>\:\d+)?(<path>(?:\/.*)*\/)?(<filename>.*?\.(<ext>\w{2,4}))?(<qrystr>\??(?:\w+\=[^\#]+)(?:\&?\w+\=\w+)*)*(<bkmrk>\#.{})?$/.test(value)
@@ -1163,33 +1168,6 @@ export class CoreService {
     if (obj) {
       this.download(url, obj, name, () => {
       });
-    }
-  }
-
-  private calWindowSize(): void {
-    if (this.newWindow) {
-      try {
-        this.newWindow.addEventListener('beforeunload', () => {
-          if (this.newWindow.screenX != window.localStorage.log_window_x) {
-            window.localStorage.log_window_x = this.newWindow.screenX;
-            window.localStorage.log_window_y = this.newWindow.screenY;
-          }
-          if (this.newWindow.sessionStorage.changedPreferences) {
-            const preferences = JSON.parse(sessionStorage.preferences);
-            preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
-            window.sessionStorage.preferences = JSON.stringify(preferences);
-          }
-          return null;
-        });
-        this.newWindow.addEventListener('resize', () => {
-          window.localStorage.log_window_wt = this.newWindow.innerWidth;
-          window.localStorage.log_window_ht = this.newWindow.innerHeight;
-          window.localStorage.log_window_x = this.newWindow.screenX;
-          window.localStorage.log_window_y = this.newWindow.screenY;
-        }, false);
-      } catch (e) {
-        console.error(e);
-      }
     }
   }
 
@@ -1490,12 +1468,10 @@ export class CoreService {
             }
           }
         }
-
       }
-
     } else if (data[type] === '') {
       data[type] = '"' +
-      data[type].trim() + '"';
+        data[type].trim() + '"';
     }
   }
 

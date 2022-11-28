@@ -1,18 +1,25 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  ViewChild
+} from '@angular/core';
 import {isEmpty, isArray} from 'underscore';
-import {ClipboardService} from 'ngx-clipboard';
-import {AuthService} from '../../components/guard';
+import {AuthService} from "../guard";
 import {CoreService} from '../../services/core.service';
+import {POPOUT_MODAL_DATA, POPOUT_MODALS, PopoutData} from "../../services/popup.service";
 
 declare const $;
+export let that;
 
 @Component({
-  selector: 'app-log2',
-  templateUrl: './log2.component.html',
-  styleUrls: ['./log2.component.css']
+  selector: 'app-log-view',
+  templateUrl: './log-view.component.html'
 })
-export class Log2Component implements OnInit {
+export class LogViewComponent implements OnInit, OnDestroy {
   preferences: any = {};
   loading = false;
   isLoading = false;
@@ -38,7 +45,9 @@ export class Log2Component implements OnInit {
   historyId: any;
   workflow: any;
   job: any;
-  canceller: any;
+  orderCanceller: any;
+  taskCanceller: any;
+  runningCanceller: any;
   scrolled = false;
   isExpandCollapse = false;
   taskCount = 1;
@@ -46,37 +55,21 @@ export class Log2Component implements OnInit {
   lastScrollTop = 0;
   delta = 20;
   taskMap = new Map();
+  dataObject: PopoutData;
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
-  constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService,
-              private clipboardService: ClipboardService) {
-  }
-
-  static calculateHeight(): void {
-    const $header = $('.upper-header').height() || 30;
-    $('.log').css('margin-top', $header + ' px');
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(): void {
-    Log2Component.calculateHeight();
-  }
-
-  @HostListener('window:scroll', ['$event'])
-  onScroll(): void {
-    const nowScrollTop = $(window).scrollTop();
-    if (Math.abs(this.lastScrollTop - nowScrollTop) >= this.delta) {
-      this.scrolled = nowScrollTop <= this.lastScrollTop;
-      this.lastScrollTop = nowScrollTop;
-    }
+  constructor(private authService: AuthService, public coreService: CoreService,
+              @Inject(POPOUT_MODAL_DATA) public data: PopoutData, private renderer: Renderer2) {
+    this.dataObject = data;
   }
 
   ngOnInit(): void {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    this.controllerId = this.route.snapshot.queryParams.controllerId;
+    this.dataObject.instance.document.title = this.dataObject.modalName + ' - ' +( this.dataObject.orderId || this.dataObject.job) ;
+    this.controllerId = this.dataObject.controllerId;
     if (this.authService.scheduleIds) {
       const ids = JSON.parse(this.authService.scheduleIds);
       if (ids && ids.selected != this.controllerId) {
@@ -100,13 +93,83 @@ export class Log2Component implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this.cancelApiCalls();
+    if (POPOUT_MODALS['windowInstance']) {
+      try {
+        POPOUT_MODALS['windowInstance'].removeEventListener('beforeunload', this.onUnload);
+        POPOUT_MODALS['windowInstance'].removeEventListener('resize', this.onResize, false);
+        POPOUT_MODALS['windowInstance'].removeEventListener('scroll', this.onScroll);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  private calculateHeight(): void {
+    const $header = this.dataObject.instance?.document.getElementById('upper-header')?.clientHeight || 30;
+    this.dataBody.nativeElement.setAttribute('style', 'margin-top:'+ $header + 'px');
+  }
+
+  private cancelApiCalls() : void{
+    if (this.orderCanceller) {
+      this.orderCanceller.unsubscribe();
+    }
+    if (this.taskCanceller) {
+      this.taskCanceller.unsubscribe();
+    }
+    if (this.runningCanceller) {
+      this.runningCanceller.unsubscribe();
+    }
+  }
+
+  private calWindowSize(): void {
+    if (POPOUT_MODALS['windowInstance']) {
+      try {
+        that =this;
+        POPOUT_MODALS['windowInstance'].addEventListener('beforeunload', this.onUnload);
+        POPOUT_MODALS['windowInstance'].addEventListener('resize', this.onResize, false);
+        POPOUT_MODALS['windowInstance'].addEventListener('scroll', this.onScroll);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  private onUnload() {
+    that.cancelApiCalls();
+    if (POPOUT_MODALS['windowInstance'].screenX != window.localStorage.log_window_x) {
+      window.localStorage.log_window_x = POPOUT_MODALS['windowInstance'].screenX;
+      window.localStorage.log_window_y = POPOUT_MODALS['windowInstance'].screenY;
+    }
+
+    return null;
+  }
+
+  private onResize(): void {
+    that.calculateHeight();
+    window.localStorage.log_window_wt = POPOUT_MODALS['windowInstance'].innerWidth;
+    window.localStorage.log_window_ht = POPOUT_MODALS['windowInstance'].innerHeight;
+    window.localStorage.log_window_x = POPOUT_MODALS['windowInstance'].screenX;
+    window.localStorage.log_window_y = POPOUT_MODALS['windowInstance'].screenY;
+  }
+
+  private onScroll(): void {
+    const nowScrollTop = $(this).scrollTop();
+    if (Math.abs(this.lastScrollTop - nowScrollTop) >= this.delta) {
+      this.scrolled = nowScrollTop <= this.lastScrollTop;
+      this.lastScrollTop = nowScrollTop;
+    }
+  }
+
   scrollBottom(): void {
     if (!this.scrolled) {
-      $(window).scrollTop(this.dataBody.nativeElement.scrollHeight);
+      $(this.dataObject.instance).scrollTop(this.dataBody.nativeElement.scrollHeight);
     }
   }
 
   init(): void {
+    this.calWindowSize();
     if (!this.preferences.logFilter || this.preferences.logFilter.length === 0) {
       this.preferences.logFilter = {
         scheduler: true,
@@ -130,24 +193,24 @@ export class Log2Component implements OnInit {
     }
     this.loading = true;
     this.object.checkBoxs = this.preferences.logFilter;
-    if (this.route.snapshot.queryParams.historyId) {
-      this.historyId = parseInt(this.route.snapshot.queryParams.historyId, 10);
-      this.orderId = this.route.snapshot.queryParams.orderId;
+    if (this.dataObject.historyId) {
+      this.historyId = this.dataObject.historyId;
+      this.orderId = this.dataObject.orderId;
       this.loadOrderLog();
-    } else if (this.route.snapshot.queryParams.taskId) {
-      this.taskId = parseInt(this.route.snapshot.queryParams.taskId, 10);
+    } else if (this.dataObject.taskId) {
+      this.taskId = this.dataObject.taskId;
       this.loadJobLog();
     }
   }
 
   loadOrderLog(): void {
-    this.workflow = this.route.snapshot.queryParams.workflow;
+    this.workflow = this.dataObject.workflow;
     this.taskMap = new Map();
     const order: any = {
       controllerId: this.controllerId,
       historyId: this.historyId
     };
-    this.canceller = this.coreService.post('order/log', order).subscribe({
+    this.orderCanceller = this.coreService.post('order/log', order).subscribe({
       next: (res: any) => {
         if (res) {
           this.jsonToString(res);
@@ -163,7 +226,9 @@ export class Log2Component implements OnInit {
         }
         this.isLoading = false;
       }, error: (err) => {
-        window.document.getElementById('logs').innerHTML = '';
+        if (this.dataObject.instance) {
+          this.dataObject.instance.document.getElementById('logs').innerHTML = ''
+        };
         if (err.data && err.data.error) {
           this.error = err.data.error.message;
         } else {
@@ -188,7 +253,8 @@ export class Log2Component implements OnInit {
     if (!flag) {
       return;
     }
-    const x: any = document.getElementsByClassName('tx_order');
+
+    const x: any = this.dataBody.nativeElement.querySelectorAll('.tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
       this.taskMap.set('ex_' + (i + 1), '');
@@ -209,18 +275,18 @@ export class Log2Component implements OnInit {
     const domId = 'tx_log_' + (i + 1);
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
-    jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
-    const a = document.getElementById(domId);
+    jobs.taskId = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1)).innerText;
+    const a = this.dataBody.nativeElement.querySelector('#' + domId);
     if (a.classList.contains('hide')) {
       this.taskMap.set('ex_' + (i + 1), 'true');
-      this.coreService.log('task/log', jobs, {
+      this.taskCanceller = this.coreService.log('task/log', jobs, {
         responseType: 'text' as 'json',
         observe: 'response' as 'response'
       }).subscribe((res: any) => {
         if (res) {
           this.renderData(res.body, domId);
-          document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
-          document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');
+          this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.remove('down');
+          this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.add('up');
           a.classList.remove('hide');
           a.classList.add('show');
           if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
@@ -236,36 +302,36 @@ export class Log2Component implements OnInit {
     } else {
       if (!expand) {
         this.taskMap.set('ex_' + (i + 1), 'false');
-        document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
-        document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
+        this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.remove('up');
+        this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.add('down');
         a.classList.remove('show');
         a.classList.add('hide');
-        const z = document.getElementById('tx_id_' + (i + 1)).innerText;
-        document.getElementById(domId).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + z + `</div>`;
+        const z = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1)).innerText;
+        this.dataBody.nativeElement.querySelector('#' + domId).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + z + `</div>`;
       }
     }
   }
 
   loadJobLog(): void {
-    this.job = this.route.snapshot.queryParams.job;
+    this.job = this.dataObject.job;
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
     jobs.taskId = this.taskId;
 
-    this.canceller = this.coreService.log('task/log', jobs, {
+    this.orderCanceller = this.coreService.log('task/log', jobs, {
       responseType: 'text' as 'json',
       observe: 'response' as 'response'
     }).subscribe({
       next: (res: any) => {
         if (res && res.body) {
-          this.renderData(res.body, false);
+          this.renderData(res.body, null);
           if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
             const obj = {
               controllerId: this.controllerId,
               taskId: res.headers.get('x-log-task-id') || jobs.taskId,
               eventId: res.headers.get('x-log-event-id')
             };
-            this.runningTaskLog(obj, false);
+            this.runningTaskLog(obj, '');
           } else {
             this.finished = true;
           }
@@ -274,7 +340,7 @@ export class Log2Component implements OnInit {
         }
         this.isLoading = false;
       }, error: (err) => {
-        window.document.getElementById('logs').innerHTML = '';
+        this.dataBody.nativeElement.innerHTML = '';
         if (err.data && err.data.error) {
           this.error = err.data.error.message;
         } else {
@@ -288,19 +354,19 @@ export class Log2Component implements OnInit {
     });
   }
 
-  runningTaskLog(obj, orderTaskFlag): void {
+  runningTaskLog(obj, domId: string): void {
     if (obj.eventId) {
-      this.coreService.post('task/log/running', obj).subscribe((res: any) => {
+      this.runningCanceller = this.coreService.post('task/log/running', obj).subscribe((res: any) => {
         if (res) {
           if (res.log) {
-            this.renderData(res.log, orderTaskFlag);
+            this.renderData(res.log, domId);
           }
           if (!res.complete && !this.isCancel) {
             if (res.eventId) {
               obj.eventId = res.eventId;
               obj.taskId = res.taskId;
             }
-            this.runningTaskLog(obj, orderTaskFlag);
+            this.runningTaskLog(obj, domId);
           } else {
             this.finished = true;
           }
@@ -312,7 +378,7 @@ export class Log2Component implements OnInit {
 
   runningOrderLog(obj): void {
     if (obj.eventId) {
-      this.coreService.post('order/log/running', obj).subscribe((res: any) => {
+      this.runningCanceller = this.coreService.post('order/log/running', obj).subscribe((res: any) => {
         if (res) {
           if (res.logEvents) {
             this.jsonToString(res);
@@ -369,7 +435,10 @@ export class Log2Component implements OnInit {
     const dt = json.logEvents;
     let col = '';
     for (let i = 0; i < dt.length; i++) {
-      const div = window.document.createElement('div');
+      const div = this.dataObject.instance?.document.createElement('div');
+      if (!div){
+        return;
+      }
       if (dt[i].logLevel === 'INFO') {
         div.className = 'log_info';
         if (!this.object.checkBoxs.info) {
@@ -537,9 +606,9 @@ export class Log2Component implements OnInit {
       if (dt[i].logEvent === 'OrderFinished' && dt[i].returnMessage) {
         col += ', returnMessage=' + dt[i].returnMessage;
       } else if (dt[i].logEvent === 'OrderSuspended' && dt[i].stopped && (dt[i].stopped.job || dt[i].stopped.instruction)) {
-        col += ', Stopped(' + (dt[i].stopped.job ? ('job=' + dt[i].stopped.job) : ('instruction=' + dt[i].stopped.instruction))  + ')';
+        col += ', Stopped(' + (dt[i].stopped.job ? ('job=' + dt[i].stopped.job) : ('instruction=' + dt[i].stopped.instruction)) + ')';
       } else if (dt[i].logEvent === 'OrderResumed' && dt[i].resumed && (dt[i].resumed.job || dt[i].resumed.instruction)) {
-        if(dt[i].resumed.job){
+        if (dt[i].resumed.job) {
           col += ', Job=' + dt[i].resumed.job;
         } else {
           col += ', Instruction=' + dt[i].resumed.instruction;
@@ -645,13 +714,13 @@ export class Log2Component implements OnInit {
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {
         const cls = !this.object.checkBoxs.main ? ' hide-block' : '';
-        const x = `<div class="main log_main${cls}"><span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor fa fa-caret-down fa-lg p-r-xs"></i></span>` + col + `</div><div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;
+        const x = `<div class="main log_main${cls}"><span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor caret down"></i></span>` + col + `</div><div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;
         this.taskCount++;
         div.innerHTML = x;
       } else {
         div.innerHTML = `<span class="m-l-13">` + col;
       }
-      window.document.getElementById('logs').appendChild(div);
+      this.dataObject.instance?.document.getElementById('logs').appendChild(div);
     }
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
@@ -659,14 +728,14 @@ export class Log2Component implements OnInit {
     this.loading = false;
   }
 
-  renderData(res, orderTaskFlag): void {
+  renderData(res, domId: string): void {
     this.loading = false;
-    Log2Component.calculateHeight();
+    this.calculateHeight();
     let lastLevel = '';
     let lastClass = '';
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
-      const div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
+      const div = this.dataObject.instance.document.createElement('div'); // Now create a div element and append it to a non-appended span.
       if (timestampRegex.test(match)) {
         const arr = match.split(/\s+\[/);
         let date;
@@ -808,23 +877,21 @@ export class Log2Component implements OnInit {
         lastClass = '';
       }
 
-      if (!orderTaskFlag) {
-        window.document.getElementById('logs').appendChild(div);
+      if (!domId) {
+        this.dataObject.instance?.document.getElementById('logs').appendChild(div);
       } else {
-        window.document.getElementById(orderTaskFlag).appendChild(div);
+        try {
+          this.dataObject.instance?.document.getElementById(domId).appendChild(div);
+        } catch (e) {
+          
+        }
       }
       return '';
     });
-
-    if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter') {
-      setTimeout(() => {
-        $('.log_info').css('color', 'white');
-      }, 100);
-    }
   }
 
   expandAll(): void {
-    const x: any = document.getElementsByClassName('tx_order');
+    const x: any = this.dataObject.instance.document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       this.taskMap.set('ex_' + (i + 1), 'true');
       this.expandTask(i, true);
@@ -832,28 +899,32 @@ export class Log2Component implements OnInit {
   }
 
   collapseAll(): void {
-    const x: any = document.getElementsByClassName('tx_order');
+    const x: any = this.dataObject.instance.document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       this.taskMap.set('ex_' + (i + 1), 'false');
-      const a = document.getElementById('tx_log_' + (i + 1));
-      document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
-      document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
+      const a = this.dataObject.instance.document.getElementById('tx_log_' + (i + 1));
+      this.dataObject.instance.document.getElementById('ex_' + (i + 1)).classList.remove('up');
+      this.dataObject.instance.document.getElementById('ex_' + (i + 1)).classList.add('down');
       a.classList.remove('show');
       a.classList.add('hide');
-      const y = document.getElementById('tx_id_' + (i + 1)).innerText;
-      document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + y + `</div>`;
+      const y = this.dataObject.instance.document.getElementById('tx_id_' + (i + 1)).innerText;
+      this.dataObject.instance.document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + y + `</div>`;
     }
   }
 
   cancel(): void {
     this.isCancel = true;
-    if (this.canceller) {
-      this.canceller.unsubscribe();
-    }
+    this.cancelApiCalls();
   }
 
   copy(): void {
-    this.clipboardService.copyFromContent(this.dataBody.nativeElement.innerText);
+    try {
+      // Copy the text inside the text field
+      this.dataObject.instance.navigator.clipboard.writeText(this.dataBody.nativeElement.innerText);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      /* Rejected - text failed to copy to the clipboard */
+    }
   }
 
   reloadLog(): void {
@@ -861,13 +932,13 @@ export class Log2Component implements OnInit {
     this.isCancel = false;
     this.finished = false;
     this.taskCount = 1;
-    document.getElementById('logs').innerHTML = '';
-    if (this.route.snapshot.queryParams.historyId) {
-      this.historyId = parseInt(this.route.snapshot.queryParams.historyId, 10);
-      this.orderId = this.route.snapshot.queryParams.orderId;
+    this.dataObject.instance.document.getElementById('logs').innerHTML = '';
+    if (this.dataObject.historyId) {
+      this.historyId = this.dataObject.historyId;
+      this.orderId = this.dataObject.orderId;
       this.loadOrderLog();
-    } else if (this.route.snapshot.queryParams.taskId) {
-      this.taskId = parseInt(this.route.snapshot.queryParams.taskId, 10);
+    } else if (this.dataObject.taskId) {
+      this.taskId = this.dataObject.taskId;
       this.loadJobLog();
     }
   }
@@ -969,16 +1040,15 @@ export class Log2Component implements OnInit {
       }
     }
     if (this.sheetContent !== '') {
-      const sheet = document.createElement('style');
+      const sheet = this.dataObject.instance.document.createElement('style');
       sheet.innerHTML = this.sheetContent;
-      document.body.appendChild(sheet);
+      this.dataObject.instance.document.body.appendChild(sheet);
     }
     this.saveUserPreference();
   }
 
   /**
    * Save the user preference of log filter
-   *
    */
   saveUserPreference(): void {
     this.preferences.logFilter = this.object.checkBoxs;
@@ -987,10 +1057,9 @@ export class Log2Component implements OnInit {
       accountName: this.authService.currentUserData,
       profileItem: JSON.stringify(this.preferences)
     };
-    sessionStorage.setItem('changedPreferences', configObj.profileItem);
-    sessionStorage.setItem('controllerId', this.controllerId);
-    this.coreService.post('profile/prefs/store', configObj).subscribe(() => {
 
+    this.coreService.post('profile/prefs/store', configObj).subscribe(() => {
+      this.dataObject.instance.sessionStorage.preferences = JSON.stringify(this.preferences);
     });
   }
 }

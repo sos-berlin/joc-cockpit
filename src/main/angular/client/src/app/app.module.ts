@@ -7,13 +7,13 @@ import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule } from 'ngx-toastr';
+import { PortalModule } from '@angular/cdk/portal';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { AppRoutingModule } from './app-routing.module';
 import { LoginModule } from './modules/login/login.module';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './components/guard';
 import { LoggingService } from './services/logging.service';
-
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   const lang = localStorage['$SOS$LANG'] || 'en';
@@ -46,6 +46,7 @@ export class MyErrorHandler implements ErrorHandler {
     HttpClientModule,
     BrowserAnimationsModule,
     LoginModule,
+    PortalModule,
     ToastrModule.forRoot({
       maxOpened: 1,
       positionClass: 'toast-top-center',

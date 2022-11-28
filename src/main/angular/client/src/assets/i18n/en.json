@@ -346,6 +346,7 @@
     "tab.others": "Others"
   },
   "controller": {
+    "label.caption": "Caption",
     "label.standalone": "Standalone",
     "label.cluster": "Cluster",
     "label.registerController": "Register Controller",
@@ -360,14 +361,14 @@
     "button.testConnection": "Test Connection",
     "button.newController": "New Controller",
     "tooltip.type": "A Standalone Controller can be configured using a single instance. A Controller Cluster can be configured using two instances if a Commercial License is in place.",
-    "tooltip.standaloneTitle": "Title of the Standalone Controller instance",
+    "tooltip.standaloneTitle": "Caption of the Standalone Controller instance",
     "tooltip.standaloneUrlForJOC": "JOC Cockpit connection to Standalone Controller",
     "tooltip.primaryUrlForJOC": "JOC Cockpit connection to Primary Controller",
     "tooltip.backupUrlForJOC": "JOC Cockpit connection to Secondary Controller",
     "tooltip.urlForBackup": "Connection of the Secondary Controller to the Primary Controller",
     "tooltip.urlForPrimary": "Connection of the Primary Controller to the Secondary Controller",
-    "tooltip.primaryTitle": "Title of the Primary Controller instance",
-    "tooltip.backupTitle": "Title of the Secondary Controller instance"
+    "tooltip.primaryTitle": "Caption of the Primary Controller instance",
+    "tooltip.backupTitle": "Caption of the Secondary Controller instance"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {

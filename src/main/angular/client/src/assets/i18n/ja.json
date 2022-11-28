@@ -346,6 +346,7 @@
     "tab.others": "その他"
   },
   "controller": {
+    "label.caption": "Caption",
     "label.standalone": "スタンドアロン",
     "label.cluster": "クラスター",
     "label.registerController": "コントローラー登録",
