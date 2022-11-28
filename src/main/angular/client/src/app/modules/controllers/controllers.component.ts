@@ -282,7 +282,8 @@ export class CreateTokenModalComponent implements OnInit {
       obj.auditLog = {};
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
-    if (this.token.validUntil && this.token.at === 'date') {
+ 
+    if (this.token.fromDate && this.token.at === 'date') {
       this.coreService.getDateAndTime(this.token);
       obj.validUntil = this.coreService.getDateByFormat(this.token.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
     } else {
@@ -579,7 +580,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   importAgents(controller): void {
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: undefined,
       nzContent: ImportModalComponent,
       nzClassName: 'lg',
@@ -591,11 +592,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        console.log(result)
-      }
     });
   }
 
@@ -825,7 +821,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
         controllerId: controller.controllerId,
         agents: [],
         auditLog: {}
-      }
+      };
       if (controller.agents) {
         controller.agents.forEach((agent) => {
           if (this.object.mapOfCheckedId.has(agent.agentId)) {
@@ -917,7 +913,6 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   resetAll(force = false) {
-
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',
@@ -930,21 +925,32 @@ export class ControllersComponent implements OnInit, OnDestroy {
         nzContent: CommentModalComponent,
         nzClassName: 'lg',
         nzComponentParams: {
-          comments,
-          url: 'agent/reset'
+          comments
         },
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
         if (result) {
-          this.object.mapOfCheckedId.forEach((k, v) => {
-            this.coreService.post('agent/reset', {
-              controllerId: k,
-              agentId: v,
-              force
-            }).subscribe();
-          })
+          this.controllers.forEach((controller) => {
+            let obj = {
+              controllerId: controller.controllerId,
+              agents: [],
+              force,
+              auditLog: result
+            };
+            if (controller.agents) {
+              controller.agents.forEach((agent) => {
+                if (this.object.mapOfCheckedId.has(agent.agentId)) {
+                  obj.agents.push(agent.agentId);
+                }
+              });
+              if (obj.agents.length > 0) {
+                this.coreService.post('agents/reset', obj).subscribe();
+              }
+            }
+          });
+          this.resetCheckbox();
         }
       });
     } else if (force) {
@@ -963,25 +969,51 @@ export class ControllersComponent implements OnInit, OnDestroy {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.object.mapOfCheckedId.forEach((k, v) => {
-            this.coreService.post('agent/reset', {
-              controllerId: k,
-              agentId: v,
-              force: true
-            }).subscribe();
-          })
+          this.controllers.forEach((controller) => {
+            
+            let obj = {
+              controllerId: controller.controllerId,
+              agentIds: [],
+              force: true,
+              auditLog: {}
+            };
+            if (controller.agents) {
+              controller.agents.forEach((agent) => {
+                if (this.object.mapOfCheckedId.has(agent.agentId)) {
+                  obj.agentIds.push(agent.agentId);
+                }
+              });
+              if (obj.agentIds.length > 0) {
+                this.coreService.post('agents/reset', obj).subscribe();
+              }
+            }
+          });
+          this.resetCheckbox();
         }
       });
 
     } else {
-      this.object.mapOfCheckedId.forEach((k, v) => {
-        this.coreService.post('agent/reset', {
-          controllerId: k,
-          agentId: v
-        }).subscribe();
-      })
+      this.controllers.forEach((controller) => {
+        let obj = {
+          controllerId: controller.controllerId,
+          agents: [],
+          force: true,
+          auditLog: {}
+        };
+        if (controller.agents) {
+          controller.agents.forEach((agent) => {
+            if (this.object.mapOfCheckedId.has(agent.agentId)) {
+              obj.agents.push(agent.agentId);
+            }
+          });
+          if (obj.agents.length > 0) {
+            this.coreService.post('agents/reset', obj).subscribe();
+          }
+        }
+      });
+      this.resetCheckbox();
     }
-    this.resetCheckbox();
+   
   }
 
   addAgent(controller): void {

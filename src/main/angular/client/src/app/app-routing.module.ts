@@ -14,11 +14,6 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'log2',
-    loadChildren: () => import('./modules/log2/log2.module').then(m => m.Log2Module),
-    canActivate: [AuthGuard]
-  },
-  {
     path: '404',
     loadChildren: () => import('./modules/page-not-found/page-not-found.module').then(m => m.PageNotFoundModule)
   },

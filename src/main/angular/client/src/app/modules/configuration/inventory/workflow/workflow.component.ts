@@ -935,7 +935,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
       }).setDataSource(this.tempDates);
     } else {
       this.frequency.tab = 'weekDays';
-      this.frequency.days = [data.day.toString()];
+      this.frequency.days = (!data.frequency && data.day == '1') ? ['1', '2', '3', '4', '5', '6', '7'] : [data.day.toString()];
       this.checkDays();
     }
     this.editor.isEnable = true;

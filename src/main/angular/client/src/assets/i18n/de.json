@@ -346,6 +346,7 @@
     "tab.others": "Andere"
   },
   "controller": {
+    "label.caption": "Caption",
     "label.standalone": "Autonom",
     "label.cluster": "Cluster",
     "label.registerController": "Controller registrieren",
