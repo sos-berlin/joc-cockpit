@@ -4879,7 +4879,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }, 50);
       return;
     }
-    this.inventoryService.expertMode = this.preferences.showMoreOptions;
+    if (this.coreService.expertMode == undefined || this.coreService.expertMode == null){
+      this.coreService.expertMode = this.preferences.showMoreOptions;
+    }
     this.getAgents();
     this.securityLevel = sessionStorage.securityLevel;
     if (isReload) {

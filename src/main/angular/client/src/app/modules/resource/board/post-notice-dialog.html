@@ -45,7 +45,7 @@
           <input relativeDateValidatorRegex type="text" #time="ngModel" class="form-control" required
                  name="atTime" [(ngModel)]="postObj.atTime" placeholder="+1(s|m|h|d|w|M|y)">
           <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-            <div translate *ngIf="!time.valid">common.message.invalid</div>
+            <div translate *ngIf="!time.valid && !time.errors.required">common.message.invalid</div>
             <div *ngIf="time.errors.required" translate>
               common.message.requiredError
             </div>

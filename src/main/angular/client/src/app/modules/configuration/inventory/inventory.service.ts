@@ -9,7 +9,6 @@ export class InventoryService {
     isChecked: false
   };
   agentList: any = [];
-  expertMode = false;
 
   constructor() {
   }

@@ -346,7 +346,7 @@
     "tab.others": "Andere"
   },
   "controller": {
-    "label.caption": "Caption",
+    "label.caption": "Beschriftung",
     "label.standalone": "Autonom",
     "label.cluster": "Cluster",
     "label.registerController": "Controller registrieren",
@@ -361,14 +361,14 @@
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "tooltip.type": "Ein Autonomer Controller mit einer Instanz kann konfiguriert werden. Unter Verwendung der kommerziellen Lizenz kann ein Controller Cluster mit zwei Instanzen konfiguriert werden.",
-    "tooltip.standaloneTitle": "Kopfzeile des Autonomen Controllers",
+    "tooltip.standaloneTitle": "Beschriftung der Kopfzeile des Autonomen Controllers in der ÜBERSICHT Ansicht",
     "tooltip.standaloneUrlForJOC": "Verbindung von JOC Cockpit zum autonomen Controller",
     "tooltip.primaryUrlForJOC": "Verbindung von JOC Cockpit zum Primären Controller",
     "tooltip.backupUrlForJOC": "Verbindung von JOC Cockpit zum Sekundären Controller",
     "tooltip.urlForBackup": "Verbindung des Sekundären Controllers zum Primären Controller",
     "tooltip.urlForPrimary": "Verbindung des Primären Controllers zum Sekundären Controller",
-    "tooltip.primaryTitle": "Kopfzeile der Primären Controller Instanz",
-    "tooltip.backupTitle": "Kopfzeile der Sekundären Controller Instanz"
+    "tooltip.primaryTitle": "Beschriftung der Kopfzeile der Primären Controller Instanz in der ÜBERSICHT Ansicht",
+    "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller Instanz in der ÜBERSICHT Ansicht"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {

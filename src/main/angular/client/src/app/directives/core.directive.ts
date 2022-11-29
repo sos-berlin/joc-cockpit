@@ -158,7 +158,7 @@ export class RelativeDateValidator implements Validator {
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
     if (v != null) {
-      if ((!v || /^\s*$/i.test(v) || /^\s*[+](\d+)(h|d|w|M|y)\s*$/.test(v)
+      if ((!v || /^\s*$/i.test(v) || /^\s*[+]*(\d+)(h|d|w|M|y)\s*$/.test(v)
       )) {
         return null;
       }
