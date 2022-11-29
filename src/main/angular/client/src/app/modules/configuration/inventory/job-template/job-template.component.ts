@@ -17,7 +17,6 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {CoreService} from '../../../../services/core.service';
 import {DataService} from '../../../../services/data.service';
 import {WorkflowService} from "../../../../services/workflow.service";
-import {InventoryService} from '../inventory.service';
 import {InventoryObject} from '../../../../models/enums';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
@@ -406,7 +405,7 @@ export class JobTemplateComponent implements OnChanges, OnDestroy {
 
   constructor(public coreService: CoreService, private dataService: DataService, private router: Router, private translate: TranslateService,
               private modal: NzModalService, private ref: ChangeDetectorRef, private message: NzMessageService,
-              public inventoryService: InventoryService, private workflowService: WorkflowService) {
+              private workflowService: WorkflowService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.job.actual) {

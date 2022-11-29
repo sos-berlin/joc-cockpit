@@ -10,7 +10,6 @@ import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-import {InventoryService} from "../inventory.service";
 
 declare const Holidays;
 declare const $;
@@ -1106,7 +1105,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  constructor(public coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService, public inventoryService: InventoryService,
+  constructor(public coreService: CoreService, public modal: NzModalService, private calendarService: CalendarService,
               private dataService: DataService, private ref: ChangeDetectorRef, private router: Router, private translate: TranslateService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {

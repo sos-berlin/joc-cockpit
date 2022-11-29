@@ -21,6 +21,7 @@ export class CoreService {
   tabs: any = {};
   dashboard: any = {};
   locales: any = [];
+  expertMode;
 
   preferences: any = {};
   xmlEditorPreferences: any = {};
@@ -83,7 +84,8 @@ export class CoreService {
     this.xmlEditorPreferences = {
       fileTransferActiveTab: '',
       otherActiveTab: ''
-    }
+    };
+    this.expertMode = undefined;
     this.searchResults = {};
     this.searchResults = {
       inventory: {

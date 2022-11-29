@@ -15,7 +15,6 @@ import { CoreService } from '../../../../services/core.service';
 import { DataService } from '../../../../services/data.service';
 import { CommentModalComponent } from '../../../../components/comment-modal/comment.component';
 import { InventoryObject } from '../../../../models/enums';
-import {InventoryService} from "../inventory.service";
 
 @Component({
   selector: 'app-script',
@@ -52,8 +51,8 @@ export class ScriptComponent implements OnDestroy, OnChanges {
 
   @ViewChild('codeMirror', { static: false }) cm: any;
 
-  constructor(private coreService: CoreService, private translate: TranslateService, public inventoryService: InventoryService,
-    private dataService: DataService, private ref: ChangeDetectorRef, private modal: NzModalService) {
+  constructor(private coreService: CoreService, private translate: TranslateService, private dataService: DataService,
+     private ref: ChangeDetectorRef, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.script.actual) {

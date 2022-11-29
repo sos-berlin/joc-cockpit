@@ -245,7 +245,7 @@
                     <div *ngIf="value.errors.required">
                       <div translate>common.message.requiredError</div>
                     </div>
-                    <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
+                    <div *ngIf="value.errors.invalidFacet && !value.errors.required" translate>common.message.invalid</div>
                   </div>
                 </div>
               </ng-container>

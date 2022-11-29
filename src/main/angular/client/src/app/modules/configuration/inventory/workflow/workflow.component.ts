@@ -1132,7 +1132,7 @@ export class JobComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
 
-  constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef, public inventoryService: InventoryService,
+  constructor(public coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,
               private workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService) {
     this.subscription = dataService.reloadWorkflowError.subscribe(res => {
       if (res.error) {
@@ -8032,7 +8032,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } finally {
 
           graph.getModel().endUpdate();
-          if (!self.inventoryService.expertMode && self.hasLicense) {
+          if (!self.coreService.expertMode && self.hasLicense) {
             if (self.selectedNode.type === 'ForkList') {
               self.updateForkListOrStickySubagentJobs(self.selectedNode, false);
             } else if (self.selectedNode.type === 'StickySubagent') {

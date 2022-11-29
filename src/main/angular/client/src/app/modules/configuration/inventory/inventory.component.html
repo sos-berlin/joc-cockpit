@@ -8,7 +8,7 @@
           </div>
           <div class="inline" *ngIf="permission.joc">
             <div class="inline valign ">
-              <nz-switch [(ngModel)]="inventoryService.expertMode"></nz-switch>
+              <nz-switch [(ngModel)]="coreService.expertMode"></nz-switch>
               <span style="padding-left: 6px">{{'inventory.label.switchUserExpertMode' | translate}}</span>
             </div>
             <div class="inline valign m-l">
