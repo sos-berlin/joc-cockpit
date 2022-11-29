@@ -718,7 +718,8 @@ export class LogViewComponent implements OnInit, OnDestroy {
         this.taskCount++;
         div.innerHTML = x;
       } else {
-        div.innerHTML = `<span class="m-l-13">` + col;
+        div.className += ' m-l-13';
+        div.innerHTML = `<span class="">` + col;
       }
       this.dataObject.instance?.document.getElementById('logs').appendChild(div);
     }

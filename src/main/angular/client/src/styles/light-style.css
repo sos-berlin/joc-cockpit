@@ -2,6 +2,10 @@
   --border-color: #e3e3e3;
   --light-yellow: #fdee00;
   --bg-light-yellow: #fdee00;
+  --background-color: #f9f8f6;
+  --text-color: #3d464d;
+  --text-muted: #7D90A8;
+  --primary: rgb(14, 138, 139);
 }
 
 .backup {
