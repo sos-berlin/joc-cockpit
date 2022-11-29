@@ -54,7 +54,6 @@ export class PopupService implements OnDestroy {
     // Wait for window instance to be created
     setTimeout(() => {
       this.createCDKPortal(data, windowInstance);
-      console.log('createCDKPortal')
     }, 500);
   }
 
@@ -107,14 +106,12 @@ export class PopupService implements OnDestroy {
   }
 
   closePopoutModal() {
-    console.log('closePopoutModal');
     if (POPOUT_MODALS['windowInstance']) {
       POPOUT_MODALS['windowInstance'].close();
     }
   }
 
   attachLogContainer(outlet, injector) {
-    console.log('><><><><>attachLogContainer')
     const containerPortal = new ComponentPortal(
       LogViewComponent,
       null,
