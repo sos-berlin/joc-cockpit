@@ -39,7 +39,7 @@ export class CoreService {
 
   searchResults = {};
 
-  windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
+  windowProperties: any = ',scrollbars=1,resizable=1,status=0,toolbar=0,menubar=0,location=0toolbar=0';
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
               private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService) {
@@ -756,8 +756,8 @@ export class CoreService {
             instance: null
           };
           self.openPopout(modalData, 'top=' + window.localStorage.log_window_y + ',' +
-               'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
-               'innerheight=' + window.localStorage.log_window_ht + self.windowProperties);
+            'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
+            'innerheight=' + window.localStorage.log_window_ht + self.windowProperties);
         } else if (preferenceObj.isNewWindow === 'newTab') {
           window.open(url, '_blank');
         }
@@ -843,8 +843,8 @@ export class CoreService {
         instance: null
       };
       this.openPopout(modalData, 'top=' + window.localStorage.log_window_y + ',' +
-           'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
-           'innerheight=' + window.localStorage.log_window_ht + this.windowProperties);
+        'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
+        'innerheight=' + window.localStorage.log_window_ht + this.windowProperties);
     } else if (preferenceObj.isNewWindow === 'newTab') {
       window.open('#/log' + url, '_blank');
     } else {
@@ -1734,5 +1734,245 @@ export class CoreService {
       }
 
     }, miliseconds);
+  }
+
+  /** -------- Log View --------- */
+
+  createTreeStructure(obj): any {
+    let nodes = [];
+    obj.treeStructure.forEach(item => {
+     // console.log('Log Event -> ' + item.logEvent, 'Position -> ' + item.position, 'Job -> '+item.job);
+      let data: any = {
+        title: '',
+        key: item.orderId + item.logEvent,
+        name: '',
+        logLevel: item.logLevel,
+        position: item.position,
+        isLeaf: false,
+        logEvent: item.logEvent,
+        children: []
+      };
+      let parentNode: any;
+      let lastPos;
+      if (item.logEvent === 'OrderForked') {
+        data.title = 'Fork';
+      } else if (item.logEvent === 'OrderJoined') {
+        data.title = 'Join';
+      } else {
+        let _tempArr = item.position.split('/');
+        lastPos = _tempArr[_tempArr.length - 1];
+        if (lastPos) {
+          if (lastPos.match(/branch/)) {
+            data.name = lastPos.substring(lastPos.indexOf('+') + 1, lastPos.indexOf(':'));
+            data.title = data.name;
+          } else {
+            if (lastPos == 'try+0:0') {
+              parentNode = {
+                title: 'Try',
+                key: 'try' + item.orderId + item.logEvent,
+                name: '',
+                logLevel: item.logLevel,
+                position: item.position.substring(0, item.position.lastIndexOf(':')),
+                isLeaf: false,
+                logEvent: item.logEvent,
+                children: []
+              };
+           //   console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', item.position)
+            } else if (lastPos == 'catch+0:0' && item.logEvent == 'OrderCaught') {
+              data = {
+                title: 'Catch',
+                key: 'catch' + item.orderId + item.logEvent,
+                name: '',
+                logLevel: item.logLevel,
+                position: item.position.substring(0, item.position.lastIndexOf(':')),
+                isLeaf: false,
+                logEvent: item.logEvent,
+                children: []
+              };
+            }
+          }
+        }
+      }
+      if (item.job) {
+        data.title = 'Job';
+        data.name = item.job;
+        data.isLeaf = true;
+        delete data.children;
+      }
+      // console.log(item.position, arr)
+      if (nodes.length == 0) {
+        if (parentNode) {
+          parentNode.children.push(data);
+          nodes.push(parentNode);
+        } else {
+          nodes.push(data);
+        }
+      } else {
+        let obj = {
+          flag: false
+        };
+        for (let i in nodes) {
+
+          let _tempArr = item.position.split('/');
+          _tempArr.splice(_tempArr.length - 1, 1);
+          if ((lastPos && lastPos.match('branch') && item.job)) {
+            if (nodes[i].position == item.position) {
+              checkAndUpdate(nodes[i], data);
+              obj.flag = true;
+              break;
+            } else {
+              recursion(nodes[i], item, obj, data, parentNode, lastPos);
+              if (obj.flag) {
+                break;
+              }
+            }
+          } else {
+
+            if (nodes[i].position == item.position) {
+              //console.log(nodes[i].position, '............1', data)
+              if (parentNode) {
+                parentNode.children.push(data);
+                nodes.push(parentNode);
+              } else {
+                if (nodes[i].title == item.title) {
+                  nodes[i].title = data.title;
+                  nodes[i].name = data.name;
+                  nodes[i].logEvent = data.logEvent;
+                  nodes[i].logLevel = data.logLevel;
+                  nodes[i].children = data.children;
+                } else {
+                  nodes.push(data);
+                }
+              }
+              obj.flag = true;
+              break;
+            } else if ((nodes[i].position == _tempArr.join('/'))) {
+              if (parentNode) {
+                parentNode.children.push(data);
+                checkAndUpdate(nodes[i], parentNode);
+              } else {
+                checkAndUpdate(nodes[i], data);
+              }
+
+              obj.flag = true;
+              break;
+            } else if (nodes[i].children && nodes[i].children.length > 0) {
+              if (!parentNode && ((item.position.match('try') && data.title != 'Try') || (item.position.match('catch') || data.title == 'Catch'))) {
+              //  console.log(item.job, '>>>>>>>>>>>>>>>', item.position, nodes[i].position);
+                tryCatchRecursion(nodes, item, data);
+                obj.flag = true;
+                break;
+              } else {
+                recursion(nodes[i], item, obj, data, parentNode, lastPos)
+              }
+              if (obj.flag) {
+                break;
+              }
+            }
+          }
+        }
+        if (!obj.flag) {
+          if (parentNode) {
+            parentNode.children.push(data);
+            nodes.push(parentNode);
+          } else {
+            nodes.push(data);
+          }
+        }
+      }
+    });
+
+    function recursion(node, item, obj, data, parentNode, lastPos) {
+      for (let i in node.children) {
+        let arr = item.position.split('/');
+        let _lastPos = arr[arr.length - 1];
+        arr.splice(arr.length - 1, 1);
+        if ((item.position.match('try') || item.position.match('catch')) && item.job && !node.children[i].isLeaf) {
+          if (arr.join('/') == node.children[i].position) {
+            for (let x in node.children[i].children) {
+              if (node.children[i].children[x].position == item.position.substring(0, item.position.lastIndexOf(':'))) {
+                node.children[i].children[x].children.push(data);
+                obj.flag = true;
+                break;
+              }
+            }
+          }
+        }
+        if ((lastPos && lastPos.match('branch') && item.job)) {
+          if (node.children[i].position == item.position) {
+            node.children[i].children.push(data);
+            obj.flag = true;
+            break;
+          } else {
+            recursion(node.children[i], item, obj, data, parentNode, lastPos);
+            if (obj.flag) {
+              break;
+            }
+          }
+        } else {
+          if ((node.children[i].position == item.position)) {
+            if (parentNode) {
+              parentNode.children.push(data);
+              checkAndUpdate(node, parentNode);
+            } else {
+              checkAndUpdate(node, data);
+            }
+            obj.flag = true;
+            break;
+          } else if ((node.children[i].position == arr.join('/'))) {
+            //  console.log(parentNode, 'parentNode5')
+            if (parentNode) {
+              // console.log(data);
+              parentNode.children.push(data);
+              checkAndUpdate(node.children[i], parentNode);
+            } else {
+              checkAndUpdate(node.children[i], data);
+            }
+            obj.flag = true;
+            break;
+          } else if (node.children[i].children && node.children[i].children.length > 0) {
+            recursion(node.children[i], item, obj, data, parentNode, lastPos);
+          }
+        }
+      }
+    }
+
+    function tryCatchRecursion(nodes, item, data) {
+      for (let i in nodes) {
+        if (data.title == 'Catch' && nodes[i].title == 'Try') {
+         // console.log(nodes[i].position, '>>>>>>', item.position, item.position.substring(0, item.position.lastIndexOf('/')));
+          if (nodes[i].position == (item.position.substring(0, item.position.lastIndexOf('/')) + '/try+0')) {
+            checkAndUpdate(nodes[i], data);
+            break;
+          }
+        }
+        let pos = item.position.substring(0, item.position.lastIndexOf(':'));
+        if ((pos == nodes[i].position)) {
+          checkAndUpdate(nodes[i], data);
+          break;
+        } else if (nodes[i].children && nodes[i].children.length > 0) {
+          tryCatchRecursion(nodes[i].children, item, data);
+        }
+      }
+    }
+
+    function checkAndUpdate(node, data){
+      let flag = false;
+      for (let i in node.children) {
+        if(node.children[i].position == data.position && node.children[i].title == data.title){
+          node.children[i].name = data.name;
+          node.children[i].logEvent = data.logEvent;
+          node.children[i].logLevel = data.logLevel;
+          node.children[i].children = data.children;
+          flag = true;
+          break;
+        }
+      }
+      if(!flag){
+        node.children.push(data);
+      }
+    }
+
+    return nodes;
   }
 }

@@ -104,13 +104,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     $('.max-ht2').css({'max-height': 'calc(100vh - ' + (headerHt + 102) + 'px)'});
   }
 
-  static checkNavHeader(): void {
-    const dom = $('#navbarId');
-    if (dom && dom.hasClass('in')) {
-      dom.removeClass('in');
-    }
-  }
-
   static setControllerPermission(permissions: any, controllerIds: any): any {
     if (permissions.controllers && controllerIds.selected && permissions.controllers[controllerIds.selected]) {
       return permissions.controllers[controllerIds.selected];
@@ -276,7 +269,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     LayoutComponent.calculateHeight();
-    LayoutComponent.checkNavHeader();
   }
 
   @HostListener('window:click', ['$event'])

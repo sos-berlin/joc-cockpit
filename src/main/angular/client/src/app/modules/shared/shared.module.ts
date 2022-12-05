@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzSelectModule} from 'ng-zorro-antd/select';
-import {NzTreeModule} from 'ng-zorro-antd/tree';
 import {NzSpinModule} from 'ng-zorro-antd/spin';
 import {NzInputModule} from 'ng-zorro-antd/input';
 import {NzCollapseModule} from 'ng-zorro-antd/collapse';
@@ -57,7 +56,7 @@ import {GraphicalViewModalComponent} from '../../components/graphical-view-modal
 import {ChartsModule} from "../charts/charts.module";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
-  NzInputNumberModule, NzTreeModule, NzSpinModule, NzAutocompleteModule,
+  NzInputNumberModule, NzSpinModule, NzAutocompleteModule,
   NzSelectModule, NzInputModule, NzMessageModule, NzRadioModule, ChartsModule,
   NzTreeSelectModule, NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,

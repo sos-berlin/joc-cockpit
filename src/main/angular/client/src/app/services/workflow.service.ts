@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { isEmpty, isArray, clone, isNaN, sortBy } from 'underscore';
-import { TranslateService } from '@ngx-translate/core';
-import { CoreService } from './core.service';
-import { StringDatePipe } from '../pipes/core.pipe';
+import {Injectable} from '@angular/core';
+import {isEmpty, isArray, clone, isNaN, sortBy} from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
+import {CoreService} from './core.service';
+import {StringDatePipe} from '../pipes/core.pipe';
 
 declare const mxHierarchicalLayout: any;
 declare const mxTooltipHandler: any;
@@ -20,7 +20,7 @@ export class WorkflowService {
   private jobPath = '';
 
   constructor(public translate: TranslateService, public coreService: CoreService,
-    private stringDatePipe: StringDatePipe) {
+              private stringDatePipe: StringDatePipe) {
     mxHierarchicalLayout.prototype.interRankCellSpacing = 45;
     mxTooltipHandler.prototype.delay = 0;
     if (sessionStorage.preferences) {

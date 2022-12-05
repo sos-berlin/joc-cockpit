@@ -11,6 +11,7 @@ import {isEmpty, isArray} from 'underscore';
 import {AuthService} from "../guard";
 import {CoreService} from '../../services/core.service';
 import {POPOUT_MODAL_DATA, POPOUT_MODALS, PopoutData} from "../../services/popup.service";
+import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 
 declare const $;
 export let that;
@@ -56,6 +57,8 @@ export class LogViewComponent implements OnInit, OnDestroy {
   delta = 20;
   taskMap = new Map();
   dataObject: PopoutData;
+  treeStructure = [];
+  nodes = [];
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
@@ -68,7 +71,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    this.dataObject.instance.document.title = this.dataObject.modalName + ' - ' +( this.dataObject.orderId || this.dataObject.job) ;
+    this.dataObject.instance.document.title = this.dataObject.modalName + ' - ' + (this.dataObject.orderId || this.dataObject.job);
     this.controllerId = this.dataObject.controllerId;
     if (this.authService.scheduleIds) {
       const ids = JSON.parse(this.authService.scheduleIds);
@@ -91,6 +94,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     } else {
       this.init();
     }
+
   }
 
   ngOnDestroy() {
@@ -107,11 +111,11 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   private calculateHeight(): void {
-    const $header = this.dataObject.instance?.document.getElementById('upper-header')?.clientHeight || 30;
-    this.dataBody.nativeElement.setAttribute('style', 'margin-top:'+ $header + 'px');
+    const $header = POPOUT_MODALS['windowInstance'].document.getElementById('upper-header')?.clientHeight || 30;
+    this.dataBody.nativeElement.setAttribute('style', 'margin-top:' + $header + 'px');
   }
 
-  private cancelApiCalls() : void{
+  private cancelApiCalls(): void {
     if (this.orderCanceller) {
       this.orderCanceller.unsubscribe();
     }
@@ -126,7 +130,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   private calWindowSize(): void {
     if (POPOUT_MODALS['windowInstance']) {
       try {
-        that =this;
+        that = this;
         POPOUT_MODALS['windowInstance'].addEventListener('beforeunload', this.onUnload);
         POPOUT_MODALS['windowInstance'].addEventListener('resize', this.onResize, false);
         POPOUT_MODALS['windowInstance'].addEventListener('scroll', this.onScroll);
@@ -136,7 +140,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  private onUnload() {
+  private onUnload(event) {
     that.cancelApiCalls();
     if (POPOUT_MODALS['windowInstance'].screenX != window.localStorage.log_window_x) {
       window.localStorage.log_window_x = POPOUT_MODALS['windowInstance'].screenX;
@@ -201,11 +205,39 @@ export class LogViewComponent implements OnInit, OnDestroy {
       this.taskId = this.dataObject.taskId;
       this.loadJobLog();
     }
+
+    // slight update to account for browsers not supporting e.which
+    function disableF5(e) {
+      if ((e.which || e.keyCode) == 116) {
+        that.reloadLog();
+        e.preventDefault();
+      }
+    }
+
+    $(POPOUT_MODALS['windowInstance'].document).on("keydown", disableF5);
+
+    const panel = $('.property-panel');
+    const dom = POPOUT_MODALS['windowInstance'].document.getElementById('property-panel');
+    const close = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close');
+    const open = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open');
+    $(open, panel).click(() => {
+      close[0].style.right = '300px';
+      dom.style.width = '300px';
+      dom.style.opacity = '1';
+      open[0].style.right = '-20px';
+    });
+
+    $(close, panel).click(() => {
+      open[0].style.right = '0';
+      dom.style.opacity = '0';
+      close[0].style.right = '-20px';
+    });
   }
 
   loadOrderLog(): void {
     this.workflow = this.dataObject.workflow;
     this.taskMap = new Map();
+    this.treeStructure = [];
     const order: any = {
       controllerId: this.controllerId,
       historyId: this.historyId
@@ -226,9 +258,9 @@ export class LogViewComponent implements OnInit, OnDestroy {
         }
         this.isLoading = false;
       }, error: (err) => {
-        if (this.dataObject.instance) {
-          this.dataObject.instance.document.getElementById('logs').innerHTML = ''
-        };
+        if (POPOUT_MODALS['windowInstance']) {
+          POPOUT_MODALS['windowInstance'].document.getElementById('logs').innerHTML = '';
+        }
         if (err.data && err.data.error) {
           this.error = err.data.error.message;
         } else {
@@ -435,8 +467,14 @@ export class LogViewComponent implements OnInit, OnDestroy {
     const dt = json.logEvents;
     let col = '';
     for (let i = 0; i < dt.length; i++) {
-      const div = this.dataObject.instance?.document.createElement('div');
-      if (!div){
+      if (dt[i].position.match(/\/branch/)) {
+        dt[i].position = dt[i].position.replace(/(\/branch)/, '/fork+branch');
+      }
+      if (!dt[i].logEvent.match('OrderProcessingStarted')) {
+        this.treeStructure.push(dt[i]);
+      }
+      const div = POPOUT_MODALS['windowInstance']?.document.createElement('div');
+      if (!div) {
         return;
       }
       if (dt[i].logLevel === 'INFO') {
@@ -721,11 +759,18 @@ export class LogViewComponent implements OnInit, OnDestroy {
         div.className += ' m-l-13';
         div.innerHTML = `<span class="">` + col;
       }
-      this.dataObject.instance?.document.getElementById('logs').appendChild(div);
+      if (POPOUT_MODALS['windowInstance']?.document.getElementById('logs')) {
+        POPOUT_MODALS['windowInstance']?.document.getElementById('logs').appendChild(div);
+      }
+
     }
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
     }
+
+    this.nodes = this.coreService.createTreeStructure({treeStructure: this.treeStructure});
+    console.log('Converted data ===>');
+    console.log(this.nodes);
     this.loading = false;
   }
 
@@ -736,7 +781,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     let lastClass = '';
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
-      const div = this.dataObject.instance.document.createElement('div'); // Now create a div element and append it to a non-appended span.
+      const div = POPOUT_MODALS['windowInstance'].document.createElement('div'); // Now create a div element and append it to a non-appended span.
       if (timestampRegex.test(match)) {
         const arr = match.split(/\s+\[/);
         let date;
@@ -879,12 +924,12 @@ export class LogViewComponent implements OnInit, OnDestroy {
       }
 
       if (!domId) {
-        this.dataObject.instance?.document.getElementById('logs').appendChild(div);
+        POPOUT_MODALS['windowInstance']?.document.getElementById('logs').appendChild(div);
       } else {
         try {
-          this.dataObject.instance?.document.getElementById(domId).appendChild(div);
+          POPOUT_MODALS['windowInstance']?.document.getElementById(domId).appendChild(div);
         } catch (e) {
-          
+
         }
       }
       return '';
@@ -892,7 +937,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   expandAll(): void {
-    const x: any = this.dataObject.instance.document.getElementsByClassName('tx_order');
+    const x: any = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       this.taskMap.set('ex_' + (i + 1), 'true');
       this.expandTask(i, true);
@@ -900,17 +945,33 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   collapseAll(): void {
-    const x: any = this.dataObject.instance.document.getElementsByClassName('tx_order');
+    const x: any = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       this.taskMap.set('ex_' + (i + 1), 'false');
-      const a = this.dataObject.instance.document.getElementById('tx_log_' + (i + 1));
-      this.dataObject.instance.document.getElementById('ex_' + (i + 1)).classList.remove('up');
-      this.dataObject.instance.document.getElementById('ex_' + (i + 1)).classList.add('down');
+      const a = POPOUT_MODALS['windowInstance'].document.getElementById('tx_log_' + (i + 1));
+      POPOUT_MODALS['windowInstance'].document.getElementById('ex_' + (i + 1)).classList.remove('up');
+      POPOUT_MODALS['windowInstance'].document.getElementById('ex_' + (i + 1)).classList.add('down');
       a.classList.remove('show');
       a.classList.add('hide');
-      const y = this.dataObject.instance.document.getElementById('tx_id_' + (i + 1)).innerText;
-      this.dataObject.instance.document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + y + `</div>`;
+      const y = POPOUT_MODALS['windowInstance'].document.getElementById('tx_id_' + (i + 1)).innerText;
+      POPOUT_MODALS['windowInstance'].document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + y + `</div>`;
     }
+  }
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    // do something if u want
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
+      }
+    }
+  }
+
+  selectNode(node): void{
+    console.log(node, '>>>>>')
   }
 
   cancel(): void {
@@ -921,7 +982,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   copy(): void {
     try {
       // Copy the text inside the text field
-      this.dataObject.instance.navigator.clipboard.writeText(this.dataBody.nativeElement.innerText);
+      POPOUT_MODALS['windowInstance'].navigator.clipboard.writeText(this.dataBody.nativeElement.innerText);
     } catch (err) {
       console.error('Failed to copy: ', err);
       /* Rejected - text failed to copy to the clipboard */
@@ -933,7 +994,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     this.isCancel = false;
     this.finished = false;
     this.taskCount = 1;
-    this.dataObject.instance.document.getElementById('logs').innerHTML = '';
+    POPOUT_MODALS['windowInstance'].document.getElementById('logs').innerHTML = '';
     if (this.dataObject.historyId) {
       this.historyId = this.dataObject.historyId;
       this.orderId = this.dataObject.orderId;
@@ -1041,9 +1102,9 @@ export class LogViewComponent implements OnInit, OnDestroy {
       }
     }
     if (this.sheetContent !== '') {
-      const sheet = this.dataObject.instance.document.createElement('style');
+      const sheet = POPOUT_MODALS['windowInstance'].document.createElement('style');
       sheet.innerHTML = this.sheetContent;
-      this.dataObject.instance.document.body.appendChild(sheet);
+      POPOUT_MODALS['windowInstance'].document.body.appendChild(sheet);
     }
     this.saveUserPreference();
   }
@@ -1060,7 +1121,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('profile/prefs/store', configObj).subscribe(() => {
-      this.dataObject.instance.sessionStorage.preferences = JSON.stringify(this.preferences);
+      POPOUT_MODALS['windowInstance'].sessionStorage.preferences = JSON.stringify(this.preferences);
     });
   }
 }

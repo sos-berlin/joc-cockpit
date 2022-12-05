@@ -5,6 +5,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AuthService } from '../../components/guard';
 import { CoreService } from '../../services/core.service';
+import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 
 declare const $;
 
@@ -46,6 +47,8 @@ export class LogComponent implements OnInit {
   lastScrollTop = 0;
   delta = 20;
   taskMap = new Map();
+  treeStructure = [];
+  nodes = [];
 
   @ViewChild('dataBody', { static: false }) dataBody: ElementRef;
 
@@ -143,6 +146,40 @@ export class LogComponent implements OnInit {
       this.taskId = parseInt(this.route.snapshot.queryParams.taskId, 10);
       this.loadJobLog();
     }
+
+    const panel = $('.property-panel');
+    const dom = document.getElementById('property-panel');
+    const close: any = document.getElementsByClassName('sidebar-close');
+    const open: any = document.getElementsByClassName('sidebar-open');
+    $(open, panel).click(() => {
+      close[0].style.right = '300px';
+      dom.style.width = '300px';
+      dom.style.opacity = '1';
+      open[0].style.right = '-20px';
+    });
+
+    $(close, panel).click(() => {
+      open[0].style.right = '0';
+      dom.style.opacity = '0';
+      close[0].style.right = '-20px';
+    });
+  }
+
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    // do something if u want
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
+      }
+    }
+  }
+
+  selectNode(node): void{
+    console.log(node, '>>>>>')
   }
 
   loadOrderLog(): void {
@@ -373,6 +410,12 @@ export class LogComponent implements OnInit {
     const dt = json.logEvents;
     let col = '';
     for (let i = 0; i < dt.length; i++) {
+      if (dt[i].position.match(/\/branch/)) {
+        dt[i].position = dt[i].position.replace(/(\/branch)/, '/fork+branch');
+      }
+    //  if (!dt[i].logEvent.match('OrderOutcomeAdded')) {
+        this.treeStructure.push(dt[i]);
+    //  }
       const div = window.document.createElement('div');
       if (dt[i].logLevel === 'INFO') {
         div.className = 'log_info';
@@ -660,6 +703,7 @@ export class LogComponent implements OnInit {
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
     }
+    this.nodes = this.coreService.createTreeStructure({treeStructure: this.treeStructure});
     this.loading = false;
   }
 

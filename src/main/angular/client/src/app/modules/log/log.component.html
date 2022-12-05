@@ -76,6 +76,51 @@
         </div>
     </div>
 </div>
+<!-- BEGIN SLIDER -->
+<div class="property-panel hidden-sm">
+  <div class="sidebar-open">
+    <i class="fa fa-caret-left" ></i>
+  </div>
+  <div class="sidebar-close">
+    <i class="fa fa-caret-right" ></i>
+  </div>
+  <div class="sidebar sidebar-property-panel bg-white" id="property-panel">
+    <div class="m-l-xs m-r-xs">
+      <div style="padding: 20px">
+        <div class="fade-in">
+          <nz-tree
+            [nzShowExpand]="false"
+            [nzData]="nodes"
+            [nzTreeTemplate]="nzTreeTemplate"
+          ></nz-tree>
+          <ng-template #nzTreeTemplate let-node>
+            <div class="node-wrapper">
+              <span (click)="openFolder(node)" *ngIf="(node.origin.children && node.origin.children.length > 0)"
+                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                      [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                      class="cursor w-14 m-l-xxs m-t-n-1">
+                  <i *ngIf="!node.isExpanded && !node.origin.loading" class="fa fa-caret-right"></i>
+                  <i *ngIf="node.isExpanded && !node.origin.loading" class="fa fa-caret-down"></i>
+              </span>
+              <span *ngIf="node.origin.isLeaf || (!node.origin.children || node.origin.children.length === 0)" class="w-16">
+                  <span class="fa fa-lg p-r-sm"></span>
+              </span>
+              <div class="node-content-wrapper" (click)="selectNode(node)">
+                <span *ngIf="node.origin.name">{{node.origin.name}}</span>
+                <span class="_600" *ngIf="!node.origin.name">{{node.origin.title | translate}}</span>
+                <span class="text-primary" *ngIf="!node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
+                <span *ngIf="node.origin.logLevel == 'ERROR'">
+                  - (<i class="text-sm log_error">Failed</i>)
+                </span>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
 <div class="spinner" *ngIf="loading || isLoading">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>
