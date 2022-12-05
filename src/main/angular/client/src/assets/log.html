@@ -44,7 +44,7 @@
       cursor: pointer;
     }
 
-    input[type=checkbox]{
+    input[type=checkbox] {
       box-sizing: border-box;
       padding: 0;
     }
@@ -61,6 +61,217 @@
       top: 1px;
       margin-right: 4px;
       position: relative;
+    }
+
+    .property-panel {
+      top: 0;
+      right: 0;
+      z-index: 9;
+    }
+
+    .fullScreen {
+      position: fixed;
+      top: 200px;
+      margin-right: 12px;
+      height: 100%;
+      background-color: var(--bg-box) !important;
+    }
+
+    .property-panel .sidebar-open, .property-panel .sidebar-close {
+      z-index: 999;
+      top: 46%;
+      right: 0;
+      padding: 26px 6px;
+      cursor: pointer;
+      position: absolute;
+      background: url(../assets/images/left-tips.svg) center no-repeat;
+    }
+
+    .property-panel .sidebar-close i {
+      color: var(--text-color);
+    }
+
+    .property-panel .sidebar-open i, .property-panel .sidebar-close i {
+      position: relative;
+      left: 2px;
+      top: 2px;
+    }
+
+    .property-panel .sidebar-close i {
+      left: 4px;
+    }
+
+    .property-panel .sidebar-close {
+      right: -20px;
+    }
+
+    #property-panel {
+      padding-right: 6px;
+      opacity: 0;
+    }
+
+    .sidebar {
+      height: calc(100vh);
+      width: 0;
+      position: fixed;
+      z-index: 99;
+      top: 0;
+      right: 0;
+      left: auto !important;
+      overflow-x: hidden;
+      transition: 0.3s;
+      box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .animated {
+      -webkit-animation-duration: .5s;
+      animation-duration: 0.5s;
+    }
+
+    .fade-in {
+      opacity: 0;
+      -webkit-animation: fadeIn ease-in 1;
+      -moz-animation: fadeIn ease-in 1;
+      animation: fadeIn ease-in 1;
+      -webkit-animation-fill-mode: forwards;
+      -moz-animation-fill-mode: forwards;
+      animation-fill-mode: forwards;
+      -webkit-animation-duration: .5s;
+      -moz-animation-duration: .5s;
+      animation-duration: 0.5s;
+    }
+
+    @-webkit-keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @-moz-keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .ant-tree {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-size: 13px;
+      font-variant: tabular-nums;
+      line-height: 1.5;
+      list-style: none;
+      font-feature-settings: 'tnum', "tnum";
+      border-radius: 0;
+      transition: background-color 0.3s;
+      background: transparent;
+      color: var(--text-color);
+    }
+
+    .ant-tree .ant-tree-treenode {
+      display: flex;
+      align-items: flex-start;
+      outline: none;
+      padding: 0;
+    }
+
+    .ant-tree-list-holder-inner {
+      align-items: flex-start;
+    }
+
+    .ant-tree-switcher {
+      position: relative;
+      flex: none;
+      align-self: stretch;
+      width: 24px;
+      margin: 0;
+      line-height: 24px;
+      text-align: center;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .ant-tree-switcher .ant-tree-switcher-icon, .ant-tree-switcher .ant-select-tree-switcher-icon {
+      font-size: 13px;
+      display: inline-block;
+      vertical-align: baseline;
+    }
+
+    .anticon {
+      display: inline-block;
+      color: inherit;
+      font-style: normal;
+      line-height: 0;
+      text-align: center;
+      text-transform: none;
+      vertical-align: -0.125em;
+      text-rendering: optimizelegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .ant-tree-indent {
+      align-self: stretch;
+      white-space: nowrap;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .node-wrapper:hover .expand-collapse {
+      opacity: 1;
+    }
+
+    .node-wrapper {
+      display: inline-flex;
+      align-items: flex-start;
+    }
+
+
+    .node-content-wrapper {
+      display: inline-block;
+      font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
+      font-size: 13px;
+      padding: 1px 2px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .node-content-wrapper:after {
+      display: block;
+      content: '';
+      border-bottom: solid 2px var(--primary);
+      transform: scaleX(0);
+      transition: transform 250ms ease-in-out;
+    }
+    .node-content-wrapper:hover:after {
+      transform: scaleX(1);
+    }
+    .node-content-wrapper:after {
+      transform-origin: 0 50%;
+    }
+
+
+    .bg-white {
+      background-color: var(--bg-box) !important;
     }
 
     .ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
@@ -206,11 +417,11 @@
       margin: 6px 13px
     }
 
-    .rotate svg{
+    .rotate svg {
       transform: translateX(0px) rotate(90deg);
     }
 
-    .icon{
+    .icon {
       top: 2px;
       position: relative;
       margin-right: 3px;

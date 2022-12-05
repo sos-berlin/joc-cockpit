@@ -3,6 +3,7 @@ import {RouterModule} from '@angular/router';
 import {NzEmptyModule} from 'ng-zorro-antd/empty';
 import {NzIconModule} from "ng-zorro-antd/icon";
 import {NzCheckboxModule} from 'ng-zorro-antd/checkbox';
+import {NzTreeModule} from 'ng-zorro-antd/tree';
 import {BreadcrumbsComponent} from '../../components/breadcrumbs/breadcrumbs.component';
 import {OrderActionComponent} from '../order-overview/order-action/order-action.component';
 import {EmptyDataComponent} from '../../components/empty-data/empty-data.component';
@@ -19,7 +20,7 @@ import {
 } from '../../pipes/core.pipe';
 import {Shared3Module} from './shared3.module';
 
-const MODULES = [Shared3Module, PerfectScrollbarModule, NzEmptyModule, NzCheckboxModule, NzIconModule];
+const MODULES = [Shared3Module, PerfectScrollbarModule, NzEmptyModule, NzCheckboxModule, NzTreeModule, NzIconModule];
 const PIPES = [StringDatePipe, TimeInStringFormatPipe, StringTimePipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, OrderPipe, HighlightSearch];
 const EXPORTS = [...PIPES, EmptyDataComponent, BreadcrumbsComponent, OrderActionComponent];
 

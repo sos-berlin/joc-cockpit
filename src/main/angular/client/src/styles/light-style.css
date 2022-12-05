@@ -6,6 +6,7 @@
   --text-color: #3d464d;
   --text-muted: #7D90A8;
   --primary: rgb(14, 138, 139);
+  --bg-box: #fff;
 }
 
 .backup {

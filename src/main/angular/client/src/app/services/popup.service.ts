@@ -80,10 +80,12 @@ export class PopupService implements OnDestroy {
 
       // Copy stylesheet link from parent window
       this.styleSheetElement = this.getStyleSheetElement();
-      windowInstance.document.head.appendChild(this.styleSheetElement);
+      windowInstance.document.head?.appendChild(this.styleSheetElement);
 
       // Clear popout modal content
-      windowInstance.document.body.innerText = '';
+      if (windowInstance.document.body) {
+        windowInstance.document.body.innerText = '';
+      }
       POPOUT_MODALS['windowInstance'] = windowInstance;
       // Create an injector with modal data
       const injector = this.createInjector(data);
