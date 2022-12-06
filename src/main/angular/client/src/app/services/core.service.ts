@@ -1741,7 +1741,7 @@ export class CoreService {
   createTreeStructure(obj): any {
     let nodes = [];
     obj.treeStructure.forEach(item => {
-     // console.log('Log Event -> ' + item.logEvent, 'Position -> ' + item.position, 'Job -> '+item.job);
+     console.log('Log Event -> ' + item.logEvent, 'Position -> ' + item.position, 'Job -> '+item.job);
       let data: any = {
         title: '',
         key: item.orderId + item.logEvent,
@@ -1758,6 +1758,12 @@ export class CoreService {
         data.title = 'Fork';
       } else if (item.logEvent === 'OrderJoined') {
         data.title = 'Join';
+        let _tempArr = item.position.split('/');
+        let secondLastPos = _tempArr[_tempArr.length - 2];
+        if(secondLastPos) {
+          data.position = secondLastPos;
+          item.position = secondLastPos;
+        }
       } else {
         let _tempArr = item.position.split('/');
         lastPos = _tempArr[_tempArr.length - 1];
@@ -1777,8 +1783,8 @@ export class CoreService {
                 logEvent: item.logEvent,
                 children: []
               };
-           //   console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', item.position)
             } else if (lastPos == 'catch+0:0' && item.logEvent == 'OrderCaught') {
+              console.log(item, '>>>>item')
               data = {
                 title: 'Catch',
                 key: 'catch' + item.orderId + item.logEvent,
@@ -1812,10 +1818,13 @@ export class CoreService {
           flag: false
         };
         for (let i in nodes) {
-
           let _tempArr = item.position.split('/');
           _tempArr.splice(_tempArr.length - 1, 1);
-          if ((lastPos && lastPos.match('branch') && item.job)) {
+          if ((lastPos && (lastPos.match('then') || lastPos.match('else')) && item.job)) {
+            ifInstructionRecursion(nodes, item, data);
+            obj.flag = true;
+            break;
+          } else if ((lastPos && lastPos.match('branch') && item.job)) {
             if (nodes[i].position == item.position) {
               checkAndUpdate(nodes[i], data);
               obj.flag = true;
@@ -1827,21 +1836,36 @@ export class CoreService {
               }
             }
           } else {
-
             if (nodes[i].position == item.position) {
-              //console.log(nodes[i].position, '............1', data)
               if (parentNode) {
                 parentNode.children.push(data);
                 nodes.push(parentNode);
               } else {
-                if (nodes[i].title == item.title) {
-                  nodes[i].title = data.title;
-                  nodes[i].name = data.name;
+                if (nodes[i].title == data.title || (nodes[i].title == '' && data.title == 'Job') || (nodes[i].title == 'Job' && data.title == '')) {
+                  if (data.title) {
+                    nodes[i].title = data.title;
+                  }
+                  if (data.name) {
+                    nodes[i].name = data.name;
+                  }
                   nodes[i].logEvent = data.logEvent;
                   nodes[i].logLevel = data.logLevel;
                   nodes[i].children = data.children;
                 } else {
-                  nodes.push(data);
+                  let flag = false;
+                  for (let prop in nodes) {
+                    if (nodes[prop].position == data.position && nodes[prop].title == data.title) {
+                      nodes[prop].name = data.name;
+                      nodes[prop].logEvent = data.logEvent;
+                      nodes[prop].logLevel = data.logLevel;
+                      nodes[prop].children = data.children;
+                      flag = true;
+                      break;
+                    }
+                  }
+                  if (!flag) {
+                    nodes.push(data);
+                  }
                 }
               }
               obj.flag = true;
@@ -1891,7 +1915,7 @@ export class CoreService {
           if (arr.join('/') == node.children[i].position) {
             for (let x in node.children[i].children) {
               if (node.children[i].children[x].position == item.position.substring(0, item.position.lastIndexOf(':'))) {
-                node.children[i].children[x].children.push(data);
+                checkAndUpdate(node.children[i].children[x], data);
                 obj.flag = true;
                 break;
               }
@@ -1900,7 +1924,7 @@ export class CoreService {
         }
         if ((lastPos && lastPos.match('branch') && item.job)) {
           if (node.children[i].position == item.position) {
-            node.children[i].children.push(data);
+            checkAndUpdate(node.children[i], data);
             obj.flag = true;
             break;
           } else {
@@ -1940,7 +1964,6 @@ export class CoreService {
     function tryCatchRecursion(nodes, item, data) {
       for (let i in nodes) {
         if (data.title == 'Catch' && nodes[i].title == 'Try') {
-         // console.log(nodes[i].position, '>>>>>>', item.position, item.position.substring(0, item.position.lastIndexOf('/')));
           if (nodes[i].position == (item.position.substring(0, item.position.lastIndexOf('/')) + '/try+0')) {
             checkAndUpdate(nodes[i], data);
             break;
@@ -1956,10 +1979,54 @@ export class CoreService {
       }
     }
 
-    function checkAndUpdate(node, data){
+    function ifInstructionRecursion(nodes, item, data) {
+      let _tempArr = data.position.split('/');
+      _tempArr.splice(_tempArr.length - 1, 1);
+      let flag = false;
+      recursion(nodes, item, data);
+      if (!flag) {
+        let obj = {
+          title: 'If',
+          key: 'if' + item.orderId + item.logEvent,
+          name: '',
+          logLevel: item.logLevel,
+          position: item.position.substring(0, item.position.lastIndexOf(':')),
+          isLeaf: false,
+          logEvent: item.logEvent,
+          children: [data]
+        };
+
+        for (let i in nodes) {
+          if (obj.position == nodes[i].position && obj.title == nodes[i].title) {
+            checkAndUpdate(nodes[i], data);
+            flag = true;
+            break;
+          }
+        }
+
+        if (!flag) {
+          nodes.push(obj);
+        }
+      }
+
+      function recursion(list, item, data) {
+        for (let i in list) {
+          if (_tempArr.join('/') == list[i].position) {
+            checkAndUpdate(list[i], data);
+            flag = true;
+            break;
+          } else if (list[i].children && list[i].children.length > 0) {
+            recursion(list[i].children, item, data);
+          }
+        }
+      }
+    }
+
+    function checkAndUpdate(node, data) {
       let flag = false;
       for (let i in node.children) {
-        if(node.children[i].position == data.position && node.children[i].title == data.title){
+        //  console.log(node.children[i].position , data.position + ' && ' + node.children[i].title , data.title)
+        if (node.children[i].position == data.position && node.children[i].title == data.title) {
           node.children[i].name = data.name;
           node.children[i].logEvent = data.logEvent;
           node.children[i].logLevel = data.logLevel;
@@ -1968,7 +2035,7 @@ export class CoreService {
           break;
         }
       }
-      if(!flag){
+      if (!flag) {
         node.children.push(data);
       }
     }

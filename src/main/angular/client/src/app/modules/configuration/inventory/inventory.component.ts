@@ -2383,8 +2383,13 @@ export class ImportWorkflowModalComponent implements OnInit {
   onFileSelected(event: any): void {
     const item = event['0'];
     const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
-    if (!(fileExt && ((fileExt === 'zip' && this.requestObj.format === 'ZIP') ||
-      (this.requestObj.format !== 'ZIP' && (fileExt.match(/tar/) || fileExt.match(/gz/)))))) {
+    if (fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/)){
+      if(fileExt === 'zip'){
+        this.requestObj.format = 'ZIP';
+      } else {
+        this.requestObj.format = 'TAR_GZ';
+      }
+    } else {
       let msg = '';
       this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
         msg = translatedValue;
@@ -4441,7 +4446,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
         type = this.selectedData.objectType;
       }
     }
-    
+
     if (obj.path && obj.name) {
       this.coreService.post('inventory/read/configuration', {
         path: (obj.path + (obj.path === '/' ? '' : '/') + obj.name),
