@@ -470,13 +470,12 @@ export class LogViewComponent implements OnInit, OnDestroy {
       if (dt[i].position.match(/\/branch/)) {
         dt[i].position = dt[i].position.replace(/(\/branch)/, '/fork+branch');
       }
-      if (!dt[i].logEvent.match('OrderProcessingStarted')) {
-        this.treeStructure.push(dt[i]);
-      }
+      this.treeStructure.push(dt[i]);
       const div = POPOUT_MODALS['windowInstance']?.document.createElement('div');
       if (!div) {
         return;
       }
+      div.id = dt[i].orderId + dt[i].logEvent;
       if (dt[i].logLevel === 'INFO') {
         div.className = 'log_info';
         if (!this.object.checkBoxs.info) {
@@ -769,8 +768,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
 
     this.nodes = this.coreService.createTreeStructure({treeStructure: this.treeStructure});
-    console.log('Converted data ===>');
-    console.log(this.nodes);
     this.loading = false;
   }
 
@@ -970,8 +967,13 @@ export class LogViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectNode(node): void{
-    console.log(node, '>>>>>')
+  selectNode(node): void {
+    if (node.origin.key) {
+      const dom = POPOUT_MODALS['windowInstance'].document.getElementById(node.origin.key);
+      if(dom) {
+        dom.scrollIntoView();
+      }
+    }
   }
 
   cancel(): void {
@@ -990,6 +992,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
   }
 
   reloadLog(): void {
+    this.cancelApiCalls();
     this.isLoading = true;
     this.isCancel = false;
     this.finished = false;

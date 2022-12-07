@@ -170,16 +170,23 @@ export class LogComponent implements OnInit {
     // do something if u want
     if (data instanceof NzTreeNode) {
       data.isExpanded = !data.isExpanded;
+      data.origin.isExpanded = !data.origin.isExpanded;
     } else {
       const node = data.node;
       if (node) {
         node.isExpanded = !node.isExpanded;
+        node.origin.isExpanded = !node.origin.isExpanded;
       }
     }
   }
 
-  selectNode(node): void{
-    console.log(node, '>>>>>')
+  selectNode(node): void {
+    if (node.origin.key) {
+      const dom = document.getElementById(node.origin.key);
+      if(dom) {
+        dom.scrollIntoView();
+      }
+    }
   }
 
   loadOrderLog(): void {
@@ -413,10 +420,11 @@ export class LogComponent implements OnInit {
       if (dt[i].position.match(/\/branch/)) {
         dt[i].position = dt[i].position.replace(/(\/branch)/, '/fork+branch');
       }
-    //  if (!dt[i].logEvent.match('OrderOutcomeAdded')) {
-        this.treeStructure.push(dt[i]);
-    //  }
+      this.treeStructure.push(dt[i]);
+
       const div = window.document.createElement('div');
+
+      div.id = dt[i].orderId + dt[i].logEvent;
       if (dt[i].logLevel === 'INFO') {
         div.className = 'log_info';
         if (!this.object.checkBoxs.info) {

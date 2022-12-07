@@ -86,7 +86,7 @@
   </div>
   <div class="sidebar sidebar-property-panel bg-white" id="property-panel">
     <div class="m-l-xs m-r-xs">
-      <div style="padding: 20px">
+      <div style="padding: 12px">
         <div class="fade-in">
           <nz-tree
             [nzShowExpand]="false"
@@ -109,6 +109,8 @@
                 <span *ngIf="node.origin.name">{{node.origin.name}}</span>
                 <span class="_600" *ngIf="!node.origin.name">{{node.origin.title | translate}}</span>
                 <span class="text-primary" *ngIf="!node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
+                <i class="text-primary" *ngIf="node.origin.retryCount">({{node.origin.retryCount}})</i>
+
                 <span *ngIf="node.origin.logLevel == 'ERROR'">
                   - (<i class="text-sm log_error">Failed</i>)
                 </span>

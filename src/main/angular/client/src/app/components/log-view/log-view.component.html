@@ -60,23 +60,23 @@
             ></nz-tree>
             <ng-template #nzTreeTemplate let-node>
               <div class="node-wrapper">
-                <span (click)="openFolder(node)" *ngIf="!node.origin.isLeaf"
+                <span (click)="openFolder(node)" *ngIf="(node.origin.children && node.origin.children.length > 0)"
                       [class.toggle-children-wrapper-expanded]="node.isExpanded"
                       [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                     class="cursor w-14 m-l-xxs m-t-n-1">
-                  <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right"
-                     nzTheme="outline"></i>
-                  <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down"
-                     nzTheme="outline"></i>
+                      class="cursor w-14 m-l-xxs m-t-n-1">
+                  <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right" nzTheme="outline"></i>
+                  <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down" nzTheme="outline"></i>
                 </span>
-                <span *ngIf="node.origin.isLeaf" class="w-16">
+                <span *ngIf="node.origin.isLeaf || (!node.origin.children || node.origin.children.length === 0)" class="w-16">
                   <span class="fa fa-lg p-r-sm"></span>
                 </span>
-                <span *ngIf="(!node.children || node.children.length === 0) && node.origin.type">
-                  <span class="p-r-xs"></span>
-                </span>
                 <div class="node-content-wrapper" (click)="selectNode(node)">
-                  <span>{{node.origin.title}}</span>
+                  <span *ngIf="node.origin.name">{{node.origin.name}}</span>
+                  <span class="_600" *ngIf="!node.origin.name">{{node.origin.title | translate}}</span>
+                  <span class="text-primary" *ngIf="!node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
+                  <span *ngIf="node.origin.logLevel == 'ERROR'">
+                  - (<i class="text-sm log_error">Failed</i>)
+                </span>
                 </div>
               </div>
             </ng-template>

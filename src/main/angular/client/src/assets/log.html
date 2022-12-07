@@ -67,6 +67,7 @@
       top: 0;
       right: 0;
       z-index: 9;
+      position: fixed;
     }
 
     .fullScreen {
@@ -79,12 +80,12 @@
 
     .property-panel .sidebar-open, .property-panel .sidebar-close {
       z-index: 999;
-      top: 46%;
+      margin-top: 26px;
       right: 0;
       padding: 26px 6px;
       cursor: pointer;
       position: absolute;
-      background: url(../assets/images/left-tips.svg) center no-repeat;
+      background: url(assets/images/left-tips.svg) center no-repeat;
     }
 
     .property-panel .sidebar-close i {
@@ -193,6 +194,26 @@
       padding: 0;
     }
 
+    .ant-tree-node-content-wrapper {
+      line-height: 24px;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .ant-tree .ant-tree-node-content-wrapper {
+      position: relative;
+      z-index: auto;
+      margin: 0;
+      color: inherit;
+      background: transparent;
+      border-radius: 0;
+      cursor: pointer;
+      transition: all 0.3s, border 0s, line-height 0s, box-shadow 0s;
+      padding: 0;
+      min-height: auto;
+      line-height: 20px;
+    }
+
     .ant-tree-list-holder-inner {
       align-items: flex-start;
     }
@@ -210,10 +231,19 @@
       user-select: none;
     }
 
+    .ant-tree-switcher-noop {
+      cursor: default;
+    }
+
     .ant-tree-switcher .ant-tree-switcher-icon, .ant-tree-switcher .ant-select-tree-switcher-icon {
       font-size: 13px;
       display: inline-block;
       vertical-align: baseline;
+    }
+
+    .ant-tree-indent-unit {
+      display: inline-block;
+      width: 20px;
     }
 
     .anticon {
@@ -276,6 +306,10 @@
 
     .ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
       border: 1px solid transparent !important;
+    }
+
+    .w-16 {
+      width: 16px !important;
     }
 
     .w-64 {
@@ -344,6 +378,10 @@
 
     .pull-left {
       float: left;
+    }
+
+    .text-primary, .text-primary-hover a:hover {
+      color: var(--primary) !important;
     }
 
     .text-center {
