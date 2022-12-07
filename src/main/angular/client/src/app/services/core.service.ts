@@ -1741,7 +1741,7 @@ export class CoreService {
   createTreeStructure(obj): any {
     let nodes = [];
     obj.treeStructure.forEach(item => {
-     console.log('Log Event -> ' + item.logEvent, 'Position -> ' + item.position, 'Job -> '+item.job);
+   //  console.log('Log Event -> ' + item.logEvent, 'Position -> ' + item.position, 'Job -> '+item.job);
       let data: any = {
         title: '',
         key: item.orderId + item.logEvent,
@@ -1841,7 +1841,7 @@ export class CoreService {
                 parentNode.children.push(data);
                 nodes.push(parentNode);
               } else {
-                if (nodes[i].title == data.title || (nodes[i].title == '' && data.title == 'Job') || (nodes[i].title == 'Job' && data.title == '')) {
+                if (nodes[i].title == data.title || (nodes[i].title == '' && data.title == 'Job') || (nodes[i].title == 'Job' && data.title == '') || (nodes[i].title == 'Try' && data.title == 'Retry') || (nodes[i].title == 'Retry' && data.title == 'Try')) {
                   if (data.title) {
                     nodes[i].title = data.title;
                   }
@@ -1854,7 +1854,7 @@ export class CoreService {
                 } else {
                   let flag = false;
                   for (let prop in nodes) {
-                    if (nodes[prop].position == data.position && nodes[prop].title == data.title) {
+                    if (nodes[prop].position == data.position && (nodes[prop].title == data.title || (nodes[prop].title == 'Try' && data.title == 'Retry') || (nodes[prop].title == 'Retry' && data.title == 'Try'))) {
                       nodes[prop].name = data.name;
                       nodes[prop].logEvent = data.logEvent;
                       nodes[prop].logLevel = data.logLevel;
@@ -1881,8 +1881,20 @@ export class CoreService {
               obj.flag = true;
               break;
             } else if (nodes[i].children && nodes[i].children.length > 0) {
-              if (!parentNode && ((item.position.match('try') && data.title != 'Try') || (item.position.match('catch') || data.title == 'Catch'))) {
-              //  console.log(item.job, '>>>>>>>>>>>>>>>', item.position, nodes[i].position);
+              if (!parentNode && ((item.position.match('try') && (data.title != 'Try' && data.title != 'Retry')) || (item.position.match('catch') || data.title == 'Catch'))) {
+
+                if (/(try\+)(\d)/gm.test(item.position)) {
+                  let arr = /(try\+)(\d)/gm.exec(item.position);
+                  if(arr.length > 1){
+
+                    data.retryCount = arr[2];
+                    let regex = arr[1] + arr[2];
+
+                    item.position = item.position.replace(regex, (arr[1] + 0));
+                    data.position = item.position;
+                    console.log('item.position', data)
+                  }
+                }
                 tryCatchRecursion(nodes, item, data);
                 obj.flag = true;
                 break;
@@ -1963,9 +1975,16 @@ export class CoreService {
 
     function tryCatchRecursion(nodes, item, data) {
       for (let i in nodes) {
-        if (data.title == 'Catch' && nodes[i].title == 'Try') {
+        if (data.title == 'Catch' && (nodes[i].title == 'Try' || nodes[i].title == 'Retry')) {
           if (nodes[i].position == (item.position.substring(0, item.position.lastIndexOf('/')) + '/try+0')) {
-            checkAndUpdate(nodes[i], data);
+
+            if(item.caught && item.caught.cause == 'Retry'){
+              if(nodes[i].title == 'Try'){
+                nodes[i].title = 'Retry';
+              }
+            } else {
+              checkAndUpdate(nodes[i], data);
+            }
             break;
           }
         }
@@ -1997,7 +2016,7 @@ export class CoreService {
         };
 
         for (let i in nodes) {
-          if (obj.position == nodes[i].position && obj.title == nodes[i].title) {
+          if (obj.position == nodes[i].position && (obj.title == nodes[i].title  || (nodes[i].title == 'Try' && obj.title == 'Retry') || (nodes[i].title == 'Retry' && obj.title == 'Try'))) {
             checkAndUpdate(nodes[i], data);
             flag = true;
             break;
@@ -2026,7 +2045,7 @@ export class CoreService {
       let flag = false;
       for (let i in node.children) {
         //  console.log(node.children[i].position , data.position + ' && ' + node.children[i].title , data.title)
-        if (node.children[i].position == data.position && node.children[i].title == data.title) {
+        if (node.children[i].position == data.position && (node.children[i].title == data.title  || (node.children[i].title == 'Try' && data.title == 'Retry') || (node.children[i].title == 'Retry' && data.title == 'Try'))) {
           node.children[i].name = data.name;
           node.children[i].logEvent = data.logEvent;
           node.children[i].logLevel = data.logLevel;
