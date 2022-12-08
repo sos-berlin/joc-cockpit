@@ -149,20 +149,32 @@ export class LogComponent implements OnInit {
 
     const panel = $('.property-panel');
     const dom = document.getElementById('property-panel');
+    const logDom = document.getElementById('log-body');
     const close: any = document.getElementsByClassName('sidebar-close');
     const open: any = document.getElementsByClassName('sidebar-open');
+
     $(open, panel).click(() => {
-      close[0].style.right = '300px';
+      close[0].style.left = '300px';
       dom.style.width = '300px';
+      logDom.style['margin-left'] = '280px';
       dom.style.opacity = '1';
-      open[0].style.right = '-20px';
+      open[0].style.left = '-20px';
+      sessionStorage['isLogTreeOpen'] = true;
     });
 
     $(close, panel).click(() => {
-      open[0].style.right = '0';
+      open[0].style.left = '0';
       dom.style.opacity = '0';
-      close[0].style.right = '-20px';
+      close[0].style.left = '-20px';
+      logDom.style['margin-left'] = 'auto';
+      sessionStorage['isLogTreeOpen'] = false;
     });
+    setTimeout(() => {
+      if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
+        $(open, panel).click();
+      }
+    }, 0)
+
   }
 
 
@@ -183,8 +195,17 @@ export class LogComponent implements OnInit {
   selectNode(node): void {
     if (node.origin.key) {
       const dom = document.getElementById(node.origin.key);
-      if(dom) {
-        dom.scrollIntoView();
+      if (dom) {
+        let elems: any = document.getElementsByClassName('log_line');
+        for(let i in elems){
+          if(elems[i].style) {
+            elems[i].style.background = 'transparent';
+          }
+        }
+        dom.style.background = '#e6f7ff';
+        dom.scrollIntoView({
+          behavior: "smooth"
+        });
       }
     }
   }
@@ -201,7 +222,7 @@ export class LogComponent implements OnInit {
           this.jsonToString(res);
           this.showHideTask(res.logEvents);
           if (!res.complete && !this.isCancel) {
-            this.runningOrderLog({ historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId });
+            this.runningOrderLog({historyId: order.historyId, controllerId: this.controllerId, eventId: res.eventId});
           } else {
             this.finished = true;
           }
@@ -420,13 +441,19 @@ export class LogComponent implements OnInit {
       if (dt[i].position.match(/\/branch/)) {
         dt[i].position = dt[i].position.replace(/(\/branch)/, '/fork+branch');
       }
-      this.treeStructure.push(dt[i]);
+
+      let flag = false;
+
+      if (!flag) {
+        this.treeStructure.push(dt[i]);
+      }
 
       const div = window.document.createElement('div');
 
-      div.id = dt[i].orderId + dt[i].logEvent;
+      div.id = dt[i].orderId + dt[i].logEvent + dt[i].position;
+      div.className += 'log_line';
       if (dt[i].logLevel === 'INFO') {
-        div.className = 'log_info';
+        div.className += 'log_info';
         if (!this.object.checkBoxs.info) {
           div.className += ' hide-block';
         }
@@ -592,9 +619,9 @@ export class LogComponent implements OnInit {
       if (dt[i].logEvent === 'OrderFinished' && dt[i].returnMessage) {
         col += ', returnMessage=' + dt[i].returnMessage;
       } else if (dt[i].logEvent === 'OrderSuspended' && dt[i].stopped && (dt[i].stopped.job || dt[i].stopped.instruction)) {
-        col += ', Stopped(' + (dt[i].stopped.job ? ('job=' + dt[i].stopped.job) : ('instruction=' + dt[i].stopped.instruction))  + ')';
+        col += ', Stopped(' + (dt[i].stopped.job ? ('job=' + dt[i].stopped.job) : ('instruction=' + dt[i].stopped.instruction)) + ')';
       } else if (dt[i].logEvent === 'OrderResumed' && dt[i].resumed && (dt[i].resumed.job || dt[i].resumed.instruction)) {
-        if(dt[i].resumed.job){
+        if (dt[i].resumed.job) {
           col += ', Job=' + dt[i].resumed.job;
         } else {
           col += ', Instruction=' + dt[i].resumed.instruction;
@@ -711,6 +738,7 @@ export class LogComponent implements OnInit {
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
     }
+    console.log(this.treeStructure, '?')
     this.nodes = this.coreService.createTreeStructure({treeStructure: this.treeStructure});
     this.loading = false;
   }
@@ -761,7 +789,7 @@ export class LogComponent implements OnInit {
 
       level = (level) ? level.trim().toLowerCase() : 'info';
       if (level !== 'info') {
-        div.className = 'log_' + level;
+        div.className += 'log_' + level;
       }
       if (level === 'main') {
         div.className += ' main';

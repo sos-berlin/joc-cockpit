@@ -221,17 +221,27 @@ export class LogViewComponent implements OnInit, OnDestroy {
     const close = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close');
     const open = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open');
     $(open, panel).click(() => {
-      close[0].style.right = '300px';
+      close[0].style.left = '300px';
       dom.style.width = '300px';
+      this.dataBody.nativeElement.setAttribute('style', 'margin-left: 320px');
       dom.style.opacity = '1';
-      open[0].style.right = '-20px';
+      open[0].style.left = '-20px';
+      sessionStorage['isLogTreeOpen'] = true;
     });
 
     $(close, panel).click(() => {
-      open[0].style.right = '0';
+      open[0].style.left = '0';
       dom.style.opacity = '0';
-      close[0].style.right = '-20px';
+      close[0].style.left = '-20px';
+      this.dataBody.nativeElement.setAttribute('style', 'margin-left: 10px');
+      sessionStorage['isLogTreeOpen'] = false;
     });
+    setTimeout(() => {
+      if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
+         $(open, panel).click();
+      }
+    }, 500)
+
   }
 
   loadOrderLog(): void {
@@ -475,9 +485,10 @@ export class LogViewComponent implements OnInit, OnDestroy {
       if (!div) {
         return;
       }
-      div.id = dt[i].orderId + dt[i].logEvent;
+      div.id = dt[i].orderId + dt[i].logEvent + dt[i].position;
+      div.className += 'log_line';
       if (dt[i].logLevel === 'INFO') {
-        div.className = 'log_info';
+        div.className += 'log_info';
         if (!this.object.checkBoxs.info) {
           div.className += ' hide-block';
         }
@@ -817,7 +828,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
       level = (level) ? level.trim().toLowerCase() : 'info';
       if (level !== 'info') {
-        div.className = 'log_' + level;
+        div.className += 'log_' + level;
       }
       if (level === 'main') {
         div.className += ' main';
@@ -970,8 +981,17 @@ export class LogViewComponent implements OnInit, OnDestroy {
   selectNode(node): void {
     if (node.origin.key) {
       const dom = POPOUT_MODALS['windowInstance'].document.getElementById(node.origin.key);
-      if(dom) {
-        dom.scrollIntoView();
+      if (dom) {
+        let elems = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('log_line');
+        for(let i in elems){
+          if(elems[i].style) {
+            elems[i].style.background = 'transparent';
+          }
+        }
+        dom.style.background = '#e6f7ff';
+        dom.scrollIntoView({
+          behavior: "smooth"
+        });
       }
     }
   }

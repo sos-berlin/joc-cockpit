@@ -109,13 +109,15 @@ export class ExportComponent implements OnInit {
       }
     }
 
-    this.coreService.download('agents/export', obj, this.exportObj.filename, (res) => {
-      if (res) {
-        this.activeModal.close('ok');
-      } else {
-        this.submitted = false;
-      }
-    });
+    if (obj.agentIds.length > 0) {
+      this.coreService.download('agents/export', obj, this.exportObj.filename, (res) => {
+        if (res) {
+          this.activeModal.close('ok');
+        } else {
+          this.submitted = false;
+        }
+      });
+    }
   }
 
   cancel(): void {
@@ -935,17 +937,17 @@ export class ControllersComponent implements OnInit, OnDestroy {
           this.controllers.forEach((controller) => {
             let obj = {
               controllerId: controller.controllerId,
-              agents: [],
+              agentIds: [],
               force,
               auditLog: result
             };
             if (controller.agents) {
               controller.agents.forEach((agent) => {
                 if (this.object.mapOfCheckedId.has(agent.agentId)) {
-                  obj.agents.push(agent.agentId);
+                  obj.agentIds.push(agent.agentId);
                 }
               });
-              if (obj.agents.length > 0) {
+              if (obj.agentIds.length > 0) {
                 this.coreService.post('agents/reset', obj).subscribe();
               }
             }
@@ -970,7 +972,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.controllers.forEach((controller) => {
-            
+
             let obj = {
               controllerId: controller.controllerId,
               agentIds: [],
@@ -996,24 +998,24 @@ export class ControllersComponent implements OnInit, OnDestroy {
       this.controllers.forEach((controller) => {
         let obj = {
           controllerId: controller.controllerId,
-          agents: [],
-          force: true,
+          agentIds: [],
+          force: false,
           auditLog: {}
         };
         if (controller.agents) {
           controller.agents.forEach((agent) => {
             if (this.object.mapOfCheckedId.has(agent.agentId)) {
-              obj.agents.push(agent.agentId);
+              obj.agentIds.push(agent.agentId);
             }
           });
-          if (obj.agents.length > 0) {
+          if (obj.agentIds.length > 0) {
             this.coreService.post('agents/reset', obj).subscribe();
           }
         }
       });
       this.resetCheckbox();
     }
-   
+
   }
 
   addAgent(controller): void {

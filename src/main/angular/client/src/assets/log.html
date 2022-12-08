@@ -31,6 +31,7 @@
       font-size: 12px;
       background: 0 0;
       margin-bottom: 8px;
+      margin-left: 12px;
       margin-top: 28px
     }
 
@@ -65,7 +66,7 @@
 
     .property-panel {
       top: 0;
-      right: 0;
+      left: 0;
       z-index: 9;
       position: fixed;
     }
@@ -80,12 +81,18 @@
 
     .property-panel .sidebar-open, .property-panel .sidebar-close {
       z-index: 999;
-      margin-top: 26px;
-      right: 0;
-      padding: 26px 6px;
+      margin-top: 32px;
+      left: 0;
+      padding: 28px 8px;
       cursor: pointer;
       position: absolute;
       background: url(assets/images/left-tips.svg) center no-repeat;
+      transform: rotate(180deg);
+    }
+
+    .property-panel .sidebar-open{
+      left: 0;
+     padding-left: -6px;
     }
 
     .property-panel .sidebar-close i {
@@ -103,7 +110,7 @@
     }
 
     .property-panel .sidebar-close {
-      right: -20px;
+      left: -20px;
     }
 
     #property-panel {
@@ -117,8 +124,8 @@
       position: fixed;
       z-index: 99;
       top: 0;
-      right: 0;
-      left: auto !important;
+      left: 0;
+      right: auto !important;
       overflow-x: hidden;
       transition: 0.3s;
       box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
@@ -235,10 +242,19 @@
       cursor: default;
     }
 
+    .ant-tree-switcher_close .ant-tree-switcher-icon svg {
+      transform: rotate(-90deg);
+    }
+
     .ant-tree-switcher .ant-tree-switcher-icon, .ant-tree-switcher .ant-select-tree-switcher-icon {
       font-size: 13px;
       display: inline-block;
       vertical-align: baseline;
+    }
+
+    .ant-tree-switcher .ant-tree-switcher-icon svg,
+    .ant-tree-switcher .ant-select-tree-switcher-icon svg {
+      transition: transform 0.3s;
     }
 
     .ant-tree-indent-unit {
@@ -306,6 +322,11 @@
 
     .ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
       border: 1px solid transparent !important;
+    }
+
+    .w-14 {
+      width: 14px !important;
+      font-size: 14px;
     }
 
     .w-16 {
