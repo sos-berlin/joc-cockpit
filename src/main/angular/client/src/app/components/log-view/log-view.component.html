@@ -50,8 +50,8 @@
       <i nz-icon nzType="caret-right" nzTheme="outline"></i>
     </div>
     <div class="sidebar sidebar-property-panel bg-white" id="property-panel">
-      <div class="m-l-xs m-r-xs">
-        <div style="padding: 20px">
+      <div style="margin-top: 26px">
+        <div  style="padding: 12px">
           <div class="fade-in">
             <nz-tree
               [nzShowExpand]="false"
@@ -67,9 +67,7 @@
                   <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzType="caret-right" nzTheme="outline"></i>
                   <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzType="caret-down" nzTheme="outline"></i>
                 </span>
-                <span *ngIf="node.origin.isLeaf || (!node.origin.children || node.origin.children.length === 0)" class="w-16">
-                  <span class="fa fa-lg p-r-sm"></span>
-                </span>
+                <span *ngIf="node.origin.isLeaf || !node.origin.children || node.origin.children.length === 0" class="w-16" style="visibility: hidden">.</span>
                 <div class="node-content-wrapper" (click)="selectNode(node)">
                   <span *ngIf="node.origin.name">{{node.origin.name}}</span>
                   <span class="_600" *ngIf="!node.origin.name">{{node.origin.title | translate}}</span>

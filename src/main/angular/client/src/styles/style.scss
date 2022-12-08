@@ -2526,10 +2526,6 @@ button.close {
   }
 }
 
-pre.log {
-  overflow-y: hidden;
-}
-
 .overflow-y {
   overflow-y: auto;
 }
@@ -3799,7 +3795,7 @@ pre.log {
   font-family: Lucida Console, monospace !important;
   font-size: 12px;
   background: 0 0;
-
+  overflow: auto;
   .success {
     background-color: transparent;
   }
@@ -5711,10 +5707,6 @@ tr.disabled-row td:not(.menu) {
   padding-top: 17px;
 }
 
-.chart-margin {
-  //margin-top: -12px !important;
-}
-
 /**
 General CSS
  */
@@ -6286,6 +6278,12 @@ body tr.mxPopupMenuItemHover {
   background: var(--bg-box) !important;
 }
 
+.log-panel {
+  position: fixed;
+  top: 128px;
+  left: 0;
+  z-index: 9;
+}
 .property-panel {
   position: fixed;
   top: 128px;
@@ -6321,6 +6319,7 @@ body tr.mxPopupMenuItemHover {
   min-height: 70px !important;
 }
 
+.log-panel .sidebar-open, .log-panel .sidebar-close,
 .property-panel .sidebar-open, .property-panel .sidebar-close {
   z-index: 999;
   top: 0;
@@ -6331,21 +6330,35 @@ body tr.mxPopupMenuItemHover {
   background: url(../assets/images/left-tips.svg) center no-repeat;
 }
 
-.property-panel .sidebar-close i {
+.log-panel .sidebar-open, .log-panel .sidebar-close {
+  left: 0;
+  right: auto;
+  transform: rotate(180deg);
+}
+
+.property-panel .sidebar-close i,
+.log-panel .sidebar-close i {
   color: var(--text-color);
 }
 
+.log-panel .sidebar-open i, .log-panel .sidebar-close i,
 .property-panel .sidebar-open i, .property-panel .sidebar-close i {
   position: relative;
   left: 1px;
 }
 
+.log-panel .sidebar-close i,
 .property-panel .sidebar-close i {
   left: 4px;
 }
 
 .property-panel .sidebar-close {
   right: -20px;
+}
+
+.log-panel .sidebar-close{
+  left: -20px;
+  right: auto;
 }
 
 #property-panel {
@@ -6363,6 +6376,13 @@ body tr.mxPopupMenuItemHover {
   overflow-x: hidden;
   transition: 0.3s;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+}
+
+.log-panel {
+  .sidebar {
+    left: 0;
+    right: auto;
+  }
 }
 
 .circle {
