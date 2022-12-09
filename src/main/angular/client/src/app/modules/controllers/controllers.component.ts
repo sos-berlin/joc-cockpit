@@ -96,17 +96,16 @@ export class ExportComponent implements OnInit {
       obj.auditLog = {};
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
+
+    if (this.controller.agents) {
+      this.controller.agents.forEach((agent) => {
+        obj.agentIds.push(agent.agentId);
+      })
+    }
     if (this.controller.agentClusters) {
-      if (this.controller.agents) {
-        this.controller.agents.forEach((agent) => {
-          obj.agentIds.push(agent.agentId);
-        })
-      }
-      if (this.controller.agentClusters) {
-        this.controller.agentClusters.forEach((agent) => {
-          obj.agentIds.push(agent.agentId);
-        })
-      }
+      this.controller.agentClusters.forEach((agent) => {
+        obj.agentIds.push(agent.agentId);
+      })
     }
 
     if (obj.agentIds.length > 0) {
@@ -284,7 +283,7 @@ export class CreateTokenModalComponent implements OnInit {
       obj.auditLog = {};
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
- 
+
     if (this.token.fromDate && this.token.at === 'date') {
       this.coreService.getDateAndTime(this.token);
       obj.validUntil = this.coreService.getDateByFormat(this.token.fromDate, null, 'YYYY-MM-DD HH:mm:ss');

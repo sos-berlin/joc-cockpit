@@ -31,7 +31,6 @@
       font-size: 12px;
       background: 0 0;
       margin-bottom: 8px;
-      margin-left: 12px;
       margin-top: 28px
     }
 
@@ -66,7 +65,7 @@
 
     .property-panel {
       top: 0;
-      left: 0;
+      right: 0;
       z-index: 9;
       position: fixed;
     }
@@ -82,17 +81,11 @@
     .property-panel .sidebar-open, .property-panel .sidebar-close {
       z-index: 999;
       margin-top: 32px;
-      left: 0;
+      right: 0;
       padding: 28px 8px;
+      padding-right: 0;
       cursor: pointer;
       position: absolute;
-      background: url(assets/images/left-tips.svg) center no-repeat;
-      transform: rotate(180deg);
-    }
-
-    .property-panel .sidebar-open{
-      left: 0;
-     padding-left: -6px;
     }
 
     .property-panel .sidebar-close i {
@@ -101,21 +94,21 @@
 
     .property-panel .sidebar-open i, .property-panel .sidebar-close i {
       position: relative;
-      left: 2px;
+      left: -1px;
       top: 2px;
+      font-size: 15px;
+    }
+
+    .property-panel .sidebar-open {
+      padding-left: 5px;
     }
 
     .property-panel .sidebar-close i {
-      left: 4px;
+      left: 0;
     }
 
     .property-panel .sidebar-close {
-      left: -20px;
-    }
-
-    #property-panel {
-      padding-right: 6px;
-      opacity: 0;
+      right: -20px;
     }
 
     .sidebar {
@@ -124,8 +117,8 @@
       position: fixed;
       z-index: 99;
       top: 0;
-      left: 0;
-      right: auto !important;
+      right: 0;
+      left: auto !important;
       overflow-x: hidden;
       transition: 0.3s;
       box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
@@ -481,7 +474,7 @@
     }
 
     .icon {
-      top: 2px;
+      top: 1px;
       position: relative;
       margin-right: 3px;
     }

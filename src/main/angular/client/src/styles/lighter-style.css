@@ -195,3 +195,6 @@ img.mxToolbarModeSelected {
 .btn-search {
   background-color: #ddd;
 }
+.property-panel .sidebar-open, .property-panel .sidebar-close {
+  background: url(../assets/images/left-tips.svg) center no-repeat;
+}
