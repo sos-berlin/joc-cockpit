@@ -739,7 +739,7 @@ export class LogComponent implements OnInit {
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
     }
-    console.log(this.treeStructure, '?')
+
     this.nodes = this.coreService.createTreeStructure({treeStructure: this.treeStructure});
     this.loading = false;
   }

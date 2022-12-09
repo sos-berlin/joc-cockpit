@@ -396,11 +396,12 @@ export class CycleInstructionComponent implements OnChanges {
     this.selectedNode.data.periodList = [];
   }
 
-  editFrequency(data, index): void {
+  editFrequency(data, index, listIndex): void {
     this.selectedNode.isEdit = true;
     this.selectedNode.obj.show = true;
     this.selectedNode.repeatObject = data.repeat;
     this.selectedNode.repeatObject.index = index;
+    this.selectedNode.obj.listIndex = listIndex;
     this.selectedNode.data.schedule = this.selectedNode.obj.schedule.schemes[index];
     this.selectedNode.data.periodList = [];
   }
@@ -547,6 +548,9 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
   @Input() timeZone: any;
   @Input() repeatObject: any;
   @Input() isTooltipVisible: boolean;
+  @Input() isEdit: boolean;
+  @Input() index: number;
+
   frequency: any = {
     days: [],
     tab: 'weekDays',
@@ -589,10 +593,14 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     if (this.repeatObject && !this.repeatObject.TYPE) {
       this.repeatObject.TYPE = 'Periodic';
     }
+
     this.days = this.coreService.getLocale().days;
     this.days.push(this.days[0]);
     if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
       this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
+      if(this.isEdit && this.data.periodList && this.data.periodList.length > 0){
+        this.editFrequency(this.data.periodList[this.index > -1 ? this.index : 0]);
+      }
       if (this.data.periodList.length > 0) {
         if (this.repeatObject && !this.data.periodList[0].frequency) {
           this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
@@ -746,6 +754,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.isValid = true;
     let p: any;
     let periods = [];
+
     if (this._temp) {
       for (let i = 0; i < this.data.periodList.length; i++) {
         if (this.data.periodList[i].frequency === this._temp.frequency) {
@@ -755,6 +764,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
         }
       }
     }
+
     if (this.object.startTime || this.object.duration) {
       p = {};
       if (this.object.startTime) {
@@ -828,7 +838,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     }
 
     this.object = {};
-    this._temp = {};
+    this._temp = null;
     this.selectedMonths = [];
     this.selectedMonthsU = [];
     this.frequency.days = [];

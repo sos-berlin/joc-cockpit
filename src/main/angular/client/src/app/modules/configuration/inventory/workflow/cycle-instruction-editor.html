@@ -23,7 +23,7 @@
               </button>
               <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                 <ul nz-menu>
-                  <li nz-menu-item (click)="editFrequency(list, i);"><a translate>common.button.edit</a></li>
+<!--                  <li nz-menu-item (click)="editFrequency(list, i);"><a translate>common.button.edit</a></li>-->
                   <li nz-menu-item (click)="removeRepeat(i)"><a translate>inventory.button.delete</a></li>
                 </ul>
               </nz-dropdown-menu>
@@ -33,8 +33,8 @@
             <div *ngFor="let item of list.periodList; let j = index">
               <div class="row">
                 <div class="col-sm-5">
-                  <span *ngIf="item.frequency"><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
-                  <span *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
+                  <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="item.frequency"><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
+                  <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
                   <a class="text-xs text-hover-color m-l-sm"
                      (click)="removeFrequency(j , list, i)"><i class="fa fa-times"></i></a>
                 </div>
@@ -79,5 +79,5 @@
     </div>
   </div>
 </div>
-<app-admission-time *ngIf="selectedNode.obj.show" [timeZone]="timeZone" [repeatObject]="selectedNode.repeatObject" [isTooltipVisible]="isTooltipVisible" [job]="selectedNode.data.schedule" [data]="selectedNode.data"
+<app-admission-time *ngIf="selectedNode.obj.show" [index]="selectedNode.obj.listIndex" [isEdit]="selectedNode.isEdit" [timeZone]="timeZone" [repeatObject]="selectedNode.repeatObject" [isTooltipVisible]="isTooltipVisible" [job]="selectedNode.data.schedule" [data]="selectedNode.data"
                     (close)="closeScheme(selectedNode.obj)"></app-admission-time>
