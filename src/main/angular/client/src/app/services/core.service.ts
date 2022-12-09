@@ -1741,7 +1741,6 @@ export class CoreService {
   createTreeStructure(obj): any {
     let nodes = [];
     obj.treeStructure.forEach(item => {
-      //  console.log('Log Event -> ' + item.logEvent, 'Position -> ' + item.position, 'Job -> '+item.job);
       let data: any = {
         title: '',
         key: item.orderId + item.logEvent + item.position,
@@ -1774,7 +1773,6 @@ export class CoreService {
             data.title = data.name;
           } else {
             if (lastPos == 'try+0:0') {
-              // console.log(item, 'inside try', item.position, item.position.substring(0, item.position.lastIndexOf(':')));
               parentNode = {
                 title: 'Try',
                 key: 'try' + item.orderId + item.logEvent + item.position,
@@ -1897,7 +1895,6 @@ export class CoreService {
                     let regex = arr[1] + arr[2];
                     item.position = item.position.replace(regex, (arr[1] + 0));
                     data.position = item.position;
-                  //  console.log('item.position', data.title)
                   }
                 }
                 tryCatchRecursion(nodes, item, data);
@@ -1914,7 +1911,6 @@ export class CoreService {
         }
         if (!obj.flag) {
           if (parentNode) {
-           // console.log('>>>>3', parentNode, data)
             parentNode.children.push(data);
             nodes.push(parentNode);
           } else {
@@ -1954,7 +1950,6 @@ export class CoreService {
         } else {
           if ((node.children[i].position == item.position)) {
             if (parentNode) {
-             // console.log('>>>>4', parentNode, data)
               parentNode.children.push(data);
               checkAndUpdate(node, parentNode);
             } else {
@@ -1963,9 +1958,7 @@ export class CoreService {
             obj.flag = true;
             break;
           } else if ((node.children[i].position == arr.join('/'))) {
-            //  console.log(parentNode, 'parentNode5')
             if (parentNode) {
-            //  console.log('>>>>5', data)
               parentNode.children.push(data);
               checkAndUpdate(node.children[i], parentNode);
             } else {
@@ -1989,7 +1982,6 @@ export class CoreService {
                 nodes[i].title = 'Retry';
               }
             } else {
-              console.log(data, '>>>> tryCatchRecursion')
               checkAndUpdate(nodes[i], data);
             }
             break;
@@ -2052,15 +2044,11 @@ export class CoreService {
     function checkAndUpdate(node, data) {
       let flag = false;
       for (let i in node.children) {
-        // console.log(node.children[i].position , data.position + ' && ' + node.children[i].title , data.title)
         if (node.children[i].position == data.position && (node.children[i].title == data.title || (node.children[i].title == 'Try' && data.title == 'Retry') || (node.children[i].title == 'Retry' && data.title == 'Try'))) {
           node.children[i].name = data.name;
           node.children[i].logEvent = data.logEvent;
           node.children[i].logLevel = data.logLevel;
           node.children[i].children = data.children;
-          if (node.children[i].title == 'Try') {
-            console.log(node.children[i].title, '>>>')
-          }
           if (node.children[i].title === 'Retry') {
             let arr = /(try\+)(\d)/gm.exec(node.children[i].position);
             if (arr.length > 1) {
