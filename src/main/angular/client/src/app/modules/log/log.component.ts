@@ -61,7 +61,7 @@ export class LogComponent implements OnInit {
     const $header = $('app-header').height() || 60;
     const $topHeader = $('.top-header-bar').height() || 16;
     const $subHeaderHt = $('.sub-header').height() || 59;
-    const height = window.innerHeight - ($header + $topHeader + $subHeaderHt + 140);
+    const height = window.innerHeight - ($header + $topHeader + $subHeaderHt + 130);
     $('.log').height(height);
   }
 
@@ -154,19 +154,19 @@ export class LogComponent implements OnInit {
     const open: any = document.getElementsByClassName('sidebar-open');
 
     $(open, panel).click(() => {
-      close[0].style.left = '300px';
+      close[0].style.right = '300px';
       dom.style.width = '300px';
-      logDom.style['margin-left'] = '280px';
+      logDom.style['margin-right'] = '292px';
       dom.style.opacity = '1';
-      open[0].style.left = '-20px';
+      open[0].style.right = '-20px';
       sessionStorage['isLogTreeOpen'] = true;
     });
 
     $(close, panel).click(() => {
-      open[0].style.left = '0';
+      open[0].style.right = '0';
       dom.style.opacity = '0';
-      close[0].style.left = '-20px';
-      logDom.style['margin-left'] = 'auto';
+      close[0].style.right = '-20px';
+      logDom.style['margin-right'] = 'auto';
       sessionStorage['isLogTreeOpen'] = false;
     });
     setTimeout(() => {
@@ -197,8 +197,8 @@ export class LogComponent implements OnInit {
       const dom = document.getElementById(node.origin.key);
       if (dom) {
         let elems: any = document.getElementsByClassName('log_line');
-        for(let i in elems){
-          if(elems[i].style) {
+        for (let i in elems) {
+          if (elems[i].style) {
             elems[i].style.background = 'transparent';
           }
         }
@@ -731,7 +731,8 @@ export class LogComponent implements OnInit {
         this.taskCount++;
         div.innerHTML = x;
       } else {
-        div.innerHTML = `<span class="m-l-13">` + col;
+        div.className += ' m-l-13';
+        div.innerHTML = `<span >` + col;
       }
       window.document.getElementById('logs').appendChild(div);
     }

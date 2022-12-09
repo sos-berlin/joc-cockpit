@@ -221,19 +221,18 @@ export class LogViewComponent implements OnInit, OnDestroy {
     const close = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close');
     const open = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open');
     $(open, panel).click(() => {
-      close[0].style.left = '300px';
-      dom.style.width = '300px';
-      this.dataBody.nativeElement.setAttribute('style', 'margin-left: 320px');
-      dom.style.opacity = '1';
-      open[0].style.left = '-20px';
+      close[0].style.right = '300px';
+      dom.style.width = '302px';
+      this.dataBody.nativeElement.setAttribute('style', 'margin-right: 320px');
+      open[0].style.right = '-20px';
       sessionStorage['isLogTreeOpen'] = true;
     });
 
     $(close, panel).click(() => {
-      open[0].style.left = '0';
-      dom.style.opacity = '0';
-      close[0].style.left = '-20px';
-      this.dataBody.nativeElement.setAttribute('style', 'margin-left: 10px');
+      open[0].style.right = '0';
+      dom.style.width = '0';
+      close[0].style.right = '-20px';
+      this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
       sessionStorage['isLogTreeOpen'] = false;
     });
     setTimeout(() => {
