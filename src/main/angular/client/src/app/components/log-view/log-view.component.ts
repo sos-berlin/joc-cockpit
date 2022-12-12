@@ -223,7 +223,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     $(open, panel).click(() => {
       close[0].style.right = '300px';
       dom.style.width = '302px';
-      this.dataBody.nativeElement.setAttribute('style', 'margin-right: 320px');
+      this.dataBody.nativeElement.setAttribute('style', 'margin-right: 308px');
       open[0].style.right = '-20px';
       sessionStorage['isLogTreeOpen'] = true;
     });
@@ -235,6 +235,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
       this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
       sessionStorage['isLogTreeOpen'] = false;
     });
+
     setTimeout(() => {
       if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
          $(open, panel).click();
@@ -484,10 +485,10 @@ export class LogViewComponent implements OnInit, OnDestroy {
       if (!div) {
         return;
       }
-      div.id = dt[i].orderId + dt[i].logEvent + dt[i].position;
-      div.className += 'log_line';
+
+      div.className += dt[i].position +' log_line';
       if (dt[i].logLevel === 'INFO') {
-        div.className += 'log_info';
+        div.className += ' log_info';
         if (!this.object.checkBoxs.info) {
           div.className += ' hide-block';
         }
@@ -827,7 +828,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
       level = (level) ? level.trim().toLowerCase() : 'info';
       if (level !== 'info') {
-        div.className += 'log_' + level;
+        div.className += ' log_' + level;
       }
       if (level === 'main') {
         div.className += ' main';
@@ -979,18 +980,38 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
   selectNode(node): void {
     if (node.origin.key) {
-      const dom = POPOUT_MODALS['windowInstance'].document.getElementById(node.origin.key);
-      if (dom) {
-        let elems = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('log_line');
-        for(let i in elems){
-          if(elems[i].style) {
-            elems[i].style.background = 'transparent';
+      const dom = POPOUT_MODALS['windowInstance'].document.getElementsByClassName(node.origin.position);
+      if (dom && dom.length > 0) {
+        let classes = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('log_line');
+        for (let i in classes) {
+          if (classes[i].style) {
+            classes[i].style.background = 'transparent';
           }
         }
-        dom.style.background = '#e6f7ff';
-        dom.scrollIntoView({
-          behavior: "smooth"
-        });
+        let nodeClasses = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('node-wrapper');
+        for (let i in nodeClasses) {
+          if (nodeClasses[i].style) {
+            nodeClasses[i].style.background = 'transparent';
+          }
+        }
+
+        const treeElemById = POPOUT_MODALS['windowInstance'].document.getElementById(node.origin.key);
+        if (this.preferences.theme != 'light' && this.preferences.theme != 'lighter') {
+          dom[dom.length - 1].style.background = 'rgba(230,247,255,0.5)';
+          if (treeElemById)
+            treeElemById.style.background = 'rgba(230,247,255,0.5)';
+        } else {
+          dom[dom.length - 1].style.background = '#e6f7ff';
+          if (treeElemById)
+            treeElemById.style.background = '#e6f7ff';
+        }
+        $(this.dataObject.instance).scrollTop($(dom[dom.length - 1]).position().top - 54);
+        if (dom.length > 0) {
+          let arrow = $(dom[dom.length - 1]).find('.tx_order');
+          if (arrow && arrow.length > 0) {
+            arrow.find('i')?.click();
+          }
+        }
       }
     }
   }
