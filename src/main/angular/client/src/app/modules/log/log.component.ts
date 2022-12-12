@@ -1,10 +1,10 @@
-import { Component, HostListener, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {Component, HostListener, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {isArray, isEmpty} from 'underscore';
-import { ClipboardService } from 'ngx-clipboard';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { AuthService } from '../../components/guard';
-import { CoreService } from '../../services/core.service';
+import {ClipboardService} from 'ngx-clipboard';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {AuthService} from '../../components/guard';
+import {CoreService} from '../../services/core.service';
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 
 declare const $;
@@ -50,10 +50,10 @@ export class LogComponent implements OnInit {
   treeStructure = [];
   nodes = [];
 
-  @ViewChild('dataBody', { static: false }) dataBody: ElementRef;
+  @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
   constructor(private route: ActivatedRoute, private authService: AuthService, public coreService: CoreService,
-    private clipboardService: ClipboardService, private message: NzMessageService) {
+              private clipboardService: ClipboardService, private message: NzMessageService) {
 
   }
 
@@ -70,15 +70,13 @@ export class LogComponent implements OnInit {
     LogComponent.calculateHeight();
   }
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll(): void {
-    const nowScrollTop = $(window).scrollTop();
+  onScroll(e): void {
+    const nowScrollTop = $('#logs').scrollTop();
     if (Math.abs(this.lastScrollTop - nowScrollTop) >= this.delta) {
       this.scrolled = nowScrollTop <= this.lastScrollTop;
       this.lastScrollTop = nowScrollTop;
     }
   }
-
 
   ngOnInit(): void {
     if (sessionStorage.preferences) {
@@ -192,20 +190,42 @@ export class LogComponent implements OnInit {
     }
   }
 
+
   selectNode(node): void {
     if (node.origin.key) {
-      const dom = document.getElementById(node.origin.key);
-      if (dom) {
-        let elems: any = document.getElementsByClassName('log_line');
-        for (let i in elems) {
-          if (elems[i].style) {
-            elems[i].style.background = 'transparent';
+      const dom: any = document.getElementsByClassName(node.origin.position);
+      if (dom && dom.length > 0) {
+        let classes: any = document.getElementsByClassName('log_line');
+        for (let i in classes) {
+          if (classes[i].style) {
+            classes[i].style.background = 'transparent';
           }
         }
-        dom.style.background = '#e6f7ff';
-        dom.scrollIntoView({
-          behavior: "smooth"
-        });
+        let nodeClasses: any = document.getElementsByClassName('node-wrapper');
+        for (let i in nodeClasses) {
+          if (nodeClasses[i].style) {
+            nodeClasses[i].style.background = 'transparent';
+          }
+        }
+
+        const treeElemById: any = document.getElementById(node.origin.key);
+        if (this.preferences.theme != 'light' && this.preferences.theme != 'lighter') {
+          dom[dom.length - 1].style.background = 'rgba(230,247,255,0.5)';
+          if (treeElemById)
+            treeElemById.style.background = 'rgba(230,247,255,0.5)';
+        } else {
+          dom[dom.length - 1].style.background = '#e6f7ff';
+          if (treeElemById)
+            treeElemById.style.background = '#e6f7ff';
+        }
+
+        $('#logs').scrollTop($(dom[dom.length - 1]).position().top - 54);
+        if (dom.length > 0) {
+          let arrow = $(dom[dom.length - 1]).find('.tx_order');
+          if (arrow && arrow.length > 0) {
+            arrow.find('i')?.click();
+          }
+        }
       }
     }
   }
@@ -450,10 +470,9 @@ export class LogComponent implements OnInit {
 
       const div = window.document.createElement('div');
 
-      div.id = dt[i].orderId + dt[i].logEvent + dt[i].position;
-      div.className += 'log_line';
+      div.className += dt[i].position + ' log_line';
       if (dt[i].logLevel === 'INFO') {
-        div.className += 'log_info';
+        div.className += ' log_info';
         if (!this.object.checkBoxs.info) {
           div.className += ' hide-block';
         }
@@ -790,7 +809,7 @@ export class LogComponent implements OnInit {
 
       level = (level) ? level.trim().toLowerCase() : 'info';
       if (level !== 'info') {
-        div.className += 'log_' + level;
+        div.className += ' log_' + level;
       }
       if (level === 'main') {
         div.className += ' main';

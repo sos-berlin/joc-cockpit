@@ -1745,7 +1745,7 @@ export class CoreService {
         title: '',
         key: item.orderId + item.logEvent + item.position,
         name: '',
-        count: item.count,
+        count: 1,
         logLevel: item.logLevel,
         position: item.position,
         isLeaf: false,
@@ -1780,7 +1780,7 @@ export class CoreService {
                 logLevel: item.logLevel,
                 position: item.position.substring(0, item.position.lastIndexOf(':')),
                 isLeaf: false,
-                count: item.count,
+                count: 1,
                 logEvent: item.logEvent,
                 children: []
               };
@@ -1795,7 +1795,7 @@ export class CoreService {
                 logLevel: item.logLevel,
                 position: item.position.substring(0, item.position.lastIndexOf(':')),
                 isLeaf: false,
-                count: item.count,
+                count: 1,
                 logEvent: item.logEvent,
                 children: []
               };
@@ -1855,6 +1855,7 @@ export class CoreService {
                   nodes[i].logEvent = data.logEvent;
                   nodes[i].logLevel = data.logLevel;
                   nodes[i].children = data.children;
+                  ++nodes[i].count;
                 } else {
                   let flag = false;
                   for (let prop in nodes) {
@@ -1863,6 +1864,7 @@ export class CoreService {
                       nodes[prop].logEvent = data.logEvent;
                       nodes[prop].logLevel = data.logLevel;
                       nodes[prop].children = data.children;
+                      ++nodes[prop].count;
                       flag = true;
                       break;
                     }
@@ -1980,6 +1982,10 @@ export class CoreService {
             if (item.caught && item.caught.cause == 'Retry') {
               if (nodes[i].title == 'Try') {
                 nodes[i].title = 'Retry';
+                let arr = /(try\+)(\d)/gm.exec(nodes[i].position);
+                if (arr.length > 1) {
+                  nodes[i].retryCount = arr[2];
+                }
               }
             } else {
               checkAndUpdate(nodes[i], data);
@@ -2010,7 +2016,7 @@ export class CoreService {
           logLevel: item.logLevel,
           position: item.position.substring(0, item.position.lastIndexOf(':')),
           isLeaf: false,
-          count: item.count,
+          count: 1,
           logEvent: item.logEvent,
           children: [data]
         };
@@ -2049,6 +2055,7 @@ export class CoreService {
           node.children[i].logEvent = data.logEvent;
           node.children[i].logLevel = data.logLevel;
           node.children[i].children = data.children;
+          ++node.children[i].count;
           if (node.children[i].title === 'Retry') {
             let arr = /(try\+)(\d)/gm.exec(node.children[i].position);
             if (arr.length > 1) {
