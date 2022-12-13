@@ -1745,7 +1745,7 @@ export class CoreService {
         title: '',
         key: item.orderId + item.logEvent + item.position,
         name: '',
-        count: 1,
+        count: item.count,
         logLevel: item.logLevel,
         position: item.position,
         isLeaf: false,
@@ -1780,7 +1780,7 @@ export class CoreService {
                 logLevel: item.logLevel,
                 position: item.position.substring(0, item.position.lastIndexOf(':')),
                 isLeaf: false,
-                count: 1,
+                count: item.count,
                 logEvent: item.logEvent,
                 children: []
               };
@@ -1795,7 +1795,7 @@ export class CoreService {
                 logLevel: item.logLevel,
                 position: item.position.substring(0, item.position.lastIndexOf(':')),
                 isLeaf: false,
-                count: 1,
+                count: item.count,
                 logEvent: item.logEvent,
                 children: []
               };
@@ -1891,9 +1891,6 @@ export class CoreService {
                 if (/(try\+)(\d)/gm.test(item.position)) {
                   let arr = /(try\+)(\d)/gm.exec(item.position);
                   if (arr.length > 1) {
-                    if (data.title === 'Retry') {
-                      data.retryCount = arr[2];
-                    }
                     let regex = arr[1] + arr[2];
                     item.position = item.position.replace(regex, (arr[1] + 0));
                     data.position = item.position;
@@ -1982,10 +1979,6 @@ export class CoreService {
             if (item.caught && item.caught.cause == 'Retry') {
               if (nodes[i].title == 'Try') {
                 nodes[i].title = 'Retry';
-                let arr = /(try\+)(\d)/gm.exec(nodes[i].position);
-                if (arr.length > 1) {
-                  nodes[i].retryCount = arr[2];
-                }
               }
             } else {
               checkAndUpdate(nodes[i], data);
@@ -2016,7 +2009,7 @@ export class CoreService {
           logLevel: item.logLevel,
           position: item.position.substring(0, item.position.lastIndexOf(':')),
           isLeaf: false,
-          count: 1,
+          count: item.count,
           logEvent: item.logEvent,
           children: [data]
         };
@@ -2056,12 +2049,6 @@ export class CoreService {
           node.children[i].logLevel = data.logLevel;
           node.children[i].children = data.children;
           ++node.children[i].count;
-          if (node.children[i].title === 'Retry') {
-            let arr = /(try\+)(\d)/gm.exec(node.children[i].position);
-            if (arr.length > 1) {
-              node.children[i].retryCount = arr[2];
-            }
-          }
           flag = true;
           break;
         }

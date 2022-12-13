@@ -480,7 +480,21 @@ export class LogViewComponent implements OnInit, OnDestroy {
       if (dt[i].position.match(/\/branch/)) {
         dt[i].position = dt[i].position.replace(/(\/branch)/, '/fork+branch');
       }
-      this.treeStructure.push(dt[i]);
+      let flag = false;
+      if(dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
+        for (let x in this.treeStructure) {
+          if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].orderId == dt[i].orderId && this.treeStructure[x].job == dt[i].job) {
+            this.treeStructure[x].count = this.treeStructure[x].count + 1;
+            flag = true;
+            break;
+          }
+        }
+      }
+      if(!flag) {
+        dt[i].count = 1;
+        this.treeStructure.push(dt[i]);
+      }
+
       const div = POPOUT_MODALS['windowInstance']?.document.createElement('div');
       if (!div) {
         return;

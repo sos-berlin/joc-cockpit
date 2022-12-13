@@ -598,7 +598,7 @@ export class AdmissionTimeComponent implements OnInit, OnDestroy {
     this.days.push(this.days[0]);
     if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
       this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
-      if(this.isEdit && this.data.periodList && this.data.periodList.length > 0){
+      if (this.isEdit && this.data.periodList && this.data.periodList.length > 0) {
         this.editFrequency(this.data.periodList[this.index > -1 ? this.index : 0]);
       }
       if (this.data.periodList.length > 0) {
@@ -3588,6 +3588,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         } else {
           this.validateByURL(res.configuration);
         }
+
         this.updateXMLJSON(false);
         this.jobResourcesTree = this.coreService.getNotExistJobResource({
           arr: this.jobResourcesTree,
@@ -5949,7 +5950,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                   _result = 'inValid';
                 }
 
-                if(self.droppedCell.target && self.droppedCell.target.target){
+                if (self.droppedCell.target && self.droppedCell.target.target && _result == 'inValid') {
                   self.updateXMLJSON(true);
                 }
                 if (_result === 'valid' && self.droppedCell.target && !self.droppedCell.target.target) {
@@ -6995,7 +6996,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
           };
 
           let dropCell = graph.getModel().getCell(id);
-          if (dropCell.value.tagName == 'ForkList' || dropCell.value.tagName == 'StickySubagent') {
+          if (dropCell && dropCell.value && (dropCell.value.tagName == 'ForkList' || dropCell.value.tagName == 'StickySubagent')) {
             for (let x in cell.cells) {
               if (cell.cells[x].value && cell.cells[x].value.tagName === 'Fork') {
                 flag = false;
@@ -9166,60 +9167,18 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
                 }
               }
             }
-          } else if (tagName === 'Retry') {
+          } else if (tagName === 'Retry' || tagName === 'Cycle' || tagName === 'Lock' || tagName === 'StickySubagent' || tagName === 'ConsumeNotices' || tagName === 'ForkList') {
             let flag1 = false;
             if (targetCell.edges && targetCell.edges.length) {
               for (let i = 0; i < targetCell.edges.length; i++) {
-                if (targetCell.edges[i].source.value.tagName === 'Retry' && targetCell.edges[i].target.value.tagName === 'EndRetry') {
-                  flag1 = true;
-                }
-              }
-            }
-            if (!flag1) {
-              return 'inValid';
-            }
-          } else if (tagName === 'Cycle') {
-            let flag1 = false;
-            if (targetCell.edges && targetCell.edges.length) {
-              for (let i = 0; i < targetCell.edges.length; i++) {
-                if (targetCell.edges[i].source.value.tagName === 'Cycle' && targetCell.edges[i].target.value.tagName === 'EndCycle') {
-                  flag1 = true;
-                }
-              }
-            }
-            if (!flag1) {
-              return 'inValid';
-            }
-          } else if (tagName === 'Lock' || tagName === 'StickySubagent') {
-            let flag1 = false;
-            if (targetCell.edges && targetCell.edges.length) {
-              for (let i = 0; i < targetCell.edges.length; i++) {
-                if ((targetCell.edges[i].source.value.tagName === 'Lock' && targetCell.edges[i].target.value.tagName === 'EndLock') ||
-                  targetCell.edges[i].source.value.tagName === 'StickySubagent' && targetCell.edges[i].target.value.tagName === 'EndStickySubagent') {
-                  flag1 = true;
-                }
-              }
-            }
-            if (!flag1) {
-              return 'inValid';
-            }
-          } else if (tagName === 'ConsumeNotices') {
-            let flag1 = false;
-            if (targetCell.edges && targetCell.edges.length) {
-              for (let i = 0; i < targetCell.edges.length; i++) {
-                if (targetCell.edges[i].source.value.tagName === 'ConsumeNotices' && targetCell.edges[i].target.value.tagName === 'EndConsumeNotices') {
-                  flag1 = true;
-                }
-              }
-            }
-            if (!flag1) {
-              return 'inValid';
-            }
-          } else if (tagName === 'ForkList') {
-            let flag1 = false;
-            if (targetCell.edges && targetCell.edges.length) {
-              for (let i = 0; i < targetCell.edges.length; i++) {
-                if (targetCell.edges[i].source.value.tagName === 'ForkList' && targetCell.edges[i].target.value.tagName === 'EndForkList') {
+                if (targetCell.edges[i].source && targetCell.edges[i].target &&
+                  (targetCell.edges[i].source.value.tagName === 'Retry' && targetCell.edges[i].target.value.tagName === 'EndRetry') ||
+                  (targetCell.edges[i].source.value.tagName === 'Cycle' && targetCell.edges[i].target.value.tagName === 'EndCycle') ||
+                  (targetCell.edges[i].source.value.tagName === 'Lock' && targetCell.edges[i].target.value.tagName === 'EndLock') ||
+                  (targetCell.edges[i].source.value.tagName === 'StickySubagent' && targetCell.edges[i].target.value.tagName === 'EndStickySubagent') ||
+                  (targetCell.edges[i].source.value.tagName === 'ConsumeNotices' && targetCell.edges[i].target.value.tagName === 'EndConsumeNotices') ||
+                  (targetCell.edges[i].source.value.tagName === 'ForkList' && targetCell.edges[i].target.value.tagName === 'EndForkList')
+                ) {
                   flag1 = true;
                 }
               }
@@ -9734,6 +9693,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
      * Function: Rearrange a cell to a different position in the workflow
      */
     function rearrangeCell(obj): void {
+
       const connection = obj.target;
       const droppedCells = obj.cells;
       for (let i in droppedCells) {
@@ -9798,7 +9758,6 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             if (targetObject.instructions) {
               const sourceObj = dropObject.instructions[index];
               const targetObj = targetObject.instructions[targetIndex];
-
               if (!checkParent(sourceObj, targetObj)) {
                 proceed = false;
               }
