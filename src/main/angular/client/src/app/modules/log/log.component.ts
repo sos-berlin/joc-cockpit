@@ -463,8 +463,17 @@ export class LogComponent implements OnInit {
       }
 
       let flag = false;
-
-      if (!flag) {
+      if(dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
+        for (let x in this.treeStructure) {
+          if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].orderId == dt[i].orderId && this.treeStructure[x].job == dt[i].job) {
+            this.treeStructure[x].count = this.treeStructure[x].count + 1;
+            flag = true;
+            break;
+          }
+        }
+      }
+      if(!flag) {
+        dt[i].count = 1;
         this.treeStructure.push(dt[i]);
       }
 

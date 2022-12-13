@@ -397,6 +397,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.init();
           }
           this.isPropertiesLoaded = false;
+          if (this.preferences && (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true)) {
+            this.preferences.auditLog = true;
+          }
           cb();
         }, error: () => {
           this.ngOnInit();

@@ -128,7 +128,6 @@
                 <span class="_600" *ngIf="!node.origin.name">{{node.origin.title | translate}}</span>
                 <span class="text-primary"
                       *ngIf="!node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
-                <i class="text-primary" *ngIf="node.origin.retryCount">&nbsp;({{node.origin.retryCount}})</i>
                 <i class="text-primary" *ngIf="node.origin.count > 1">&nbsp;({{node.origin.count}})</i>
 
                 <span *ngIf="node.origin.logLevel == 'ERROR'">
