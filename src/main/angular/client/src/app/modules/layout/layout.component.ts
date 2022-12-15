@@ -325,6 +325,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   logout(timeout: any): void {
+    this.popoutService.closePopoutModal();
     if (sessionStorage.$SOS$KEY) {
       this.oauthService.logOut(sessionStorage.$SOS$KEY);
       delete sessionStorage.$SOS$KEY;

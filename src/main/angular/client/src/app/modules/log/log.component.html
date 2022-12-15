@@ -126,10 +126,9 @@
               <div class="node-content-wrapper" (click)="selectNode(node)">
                 <span *ngIf="node.origin.name">{{node.origin.name}}</span>
                 <span class="_600" *ngIf="!node.origin.name">{{node.origin.title | translate}}</span>
-                <span class="text-primary"
+                <span class="text-muted"
                       *ngIf="!node.origin.name && !node.origin.title">{{node.origin.logEvent}}</span>
-                <i class="text-primary" *ngIf="node.origin.count > 1">&nbsp;({{node.origin.count}})</i>
-
+                <i class="text-primary" *ngIf="node.origin.retryCount > 1">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
                 <span *ngIf="node.origin.logLevel == 'ERROR'">
                   - (<i class="text-sm log_error">Failed</i>)
                 </span>
