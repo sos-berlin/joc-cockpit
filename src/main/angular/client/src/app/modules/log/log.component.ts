@@ -207,23 +207,31 @@ export class LogComponent implements OnInit {
             nodeClasses[i].style.background = 'transparent';
           }
         }
-
+        const color = (this.preferences.theme != 'light' && this.preferences.theme != 'lighter') ? 'rgba(230,247,255,0.5)' : '#e6f7ff';
         const treeElemById: any = document.getElementById(node.origin.key);
-        if (this.preferences.theme != 'light' && this.preferences.theme != 'lighter') {
-          dom[dom.length - 1].style.background = 'rgba(230,247,255,0.5)';
-          if (treeElemById)
-            treeElemById.style.background = 'rgba(230,247,255,0.5)';
-        } else {
-          dom[dom.length - 1].style.background = '#e6f7ff';
-          if (treeElemById)
-            treeElemById.style.background = '#e6f7ff';
+        if (treeElemById) {
+          treeElemById.style.background = color;
         }
-
+        for (let x in dom) {
+          if (dom.length > 2 && x == '0') {
+            continue;
+          }
+          if (dom[x] && dom[x].style) {
+            dom[x].style.background = color;
+          }
+        }
         $('#logs').scrollTop($(dom[dom.length - 1]).position().top - 54);
         if (dom.length > 0) {
-          let arrow = $(dom[dom.length - 1]).find('.tx_order');
-          if (arrow && arrow.length > 0) {
-            arrow.find('i')?.click();
+          for (let x in dom) {
+            if (dom[x] && dom[x].style) {
+              try {
+                let arrow = $(dom[x]).find('.tx_order');
+                if (arrow && arrow.length > 0) {
+                  arrow.find('i')?.click();
+                }
+              } catch (e) {
+              }
+            }
           }
         }
       }
@@ -466,20 +474,17 @@ export class LogComponent implements OnInit {
       if(dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
         for (let x in this.treeStructure) {
           if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].orderId == dt[i].orderId && this.treeStructure[x].job == dt[i].job) {
-            this.treeStructure[x].count = this.treeStructure[x].count + 1;
             flag = true;
             break;
           }
         }
       }
       if(!flag) {
-        dt[i].count = 1;
         this.treeStructure.push(dt[i]);
       }
 
       const div = window.document.createElement('div');
-
-      div.className += dt[i].position + ' log_line';
+      div.className = dt[i].position + ' log_line';
       if (dt[i].logLevel === 'INFO') {
         div.className += ' log_info';
         if (!this.object.checkBoxs.info) {

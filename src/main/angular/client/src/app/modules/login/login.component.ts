@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
       next: (res) => {
         this.identityServiceItems = res.identityServiceItems;
       }, error(err) {
-        console.log(err)
+        console.error(err)
       },
     })
   }
@@ -97,7 +97,7 @@ export class LoginComponent implements OnInit {
     // Tweak config for code flow
     this.oAuthService.configure(config);
     this.oAuthService.loadDiscoveryDocument().then((_) => {
-     
+
       sessionStorage.setItem('authConfig', JSON.stringify(config));
       sessionStorage.setItem('providerName', config.identityServiceName);
       if (this.returnUrl) {

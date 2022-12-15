@@ -238,7 +238,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
-         $(open, panel).click();
+        $(open, panel).click();
       }
     }, 500)
 
@@ -481,17 +481,15 @@ export class LogViewComponent implements OnInit, OnDestroy {
         dt[i].position = dt[i].position.replace(/(\/branch)/, '/fork+branch');
       }
       let flag = false;
-      if(dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
+      if (dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
         for (let x in this.treeStructure) {
           if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].orderId == dt[i].orderId && this.treeStructure[x].job == dt[i].job) {
-            this.treeStructure[x].count = this.treeStructure[x].count + 1;
             flag = true;
             break;
           }
         }
       }
-      if(!flag) {
-        dt[i].count = 1;
+      if (!flag) {
         this.treeStructure.push(dt[i]);
       }
 
@@ -500,7 +498,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
         return;
       }
 
-      div.className += dt[i].position +' log_line';
+      div.className = dt[i].position + ' log_line';
       if (dt[i].logLevel === 'INFO') {
         div.className += ' log_info';
         if (!this.object.checkBoxs.info) {
@@ -791,7 +789,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
     }
-
     this.nodes = this.coreService.createTreeStructure({treeStructure: this.treeStructure});
     this.loading = false;
   }
@@ -1008,22 +1005,32 @@ export class LogViewComponent implements OnInit, OnDestroy {
             nodeClasses[i].style.background = 'transparent';
           }
         }
-
+        const color = (this.preferences.theme != 'light' && this.preferences.theme != 'lighter') ? 'rgba(230,247,255,0.5)' : '#e6f7ff';
         const treeElemById = POPOUT_MODALS['windowInstance'].document.getElementById(node.origin.key);
-        if (this.preferences.theme != 'light' && this.preferences.theme != 'lighter') {
-          dom[dom.length - 1].style.background = 'rgba(230,247,255,0.5)';
-          if (treeElemById)
-            treeElemById.style.background = 'rgba(230,247,255,0.5)';
-        } else {
-          dom[dom.length - 1].style.background = '#e6f7ff';
-          if (treeElemById)
-            treeElemById.style.background = '#e6f7ff';
+        if (treeElemById) {
+          treeElemById.style.background = color;
+        }
+
+        for (let x in dom) {
+          if (dom.length > 2 && x == '0') {
+            continue;
+          }
+          if (dom[x] && dom[x].style) {
+            dom[x].style.background = color;
+          }
         }
         $(this.dataObject.instance).scrollTop($(dom[dom.length - 1]).position().top - 54);
         if (dom.length > 0) {
-          let arrow = $(dom[dom.length - 1]).find('.tx_order');
-          if (arrow && arrow.length > 0) {
-            arrow.find('i')?.click();
+          for (let x in dom) {
+            if (dom[x] && dom[x].style) {
+              try {
+                let arrow = $(dom[x]).find('.tx_order');
+                if (arrow && arrow.length > 0) {
+                  arrow.find('i')?.click();
+                }
+              } catch (e) {
+              }
+            }
           }
         }
       }
@@ -1178,7 +1185,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('profile/prefs/store', configObj).subscribe(() => {
-      POPOUT_MODALS['windowInstance'].sessionStorage.preferences = JSON.stringify(this.preferences);
+      sessionStorage.preferences = JSON.stringify(this.preferences);
     });
   }
 }
