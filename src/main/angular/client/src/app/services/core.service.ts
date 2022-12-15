@@ -1548,22 +1548,24 @@ export class CoreService {
       list: []
     };
     data.arr.forEach(items => {
-      if (items.name === '/') {
-        if (!items.notFound) {
-          obj.list = items.list;
-          delete obj.notFound;
-        } else if (items.list.length > 0) {
-          let x = [];
-          for (let i in items.list) {
-            if (!items.list[i].notFound) {
-              x.push(items.list[i])
+      if(items) {
+        if (items.name === '/') {
+          if (!items.notFound) {
+            obj.list = items.list;
+            delete obj.notFound;
+          } else if (items.list.length > 0) {
+            let x = [];
+            for (let i in items.list) {
+              if (!items.list[i].notFound) {
+                x.push(items.list[i])
+              }
             }
+            items.list = x;
+            obj.list = items.list;
           }
-          items.list = x;
-          obj.list = items.list;
         }
+        tempARr = tempARr.concat(items.list);
       }
-      tempARr = tempARr.concat(items.list);
     });
     if (typeof data.jobResources === 'string') {
       let x = data.jobResources;
@@ -1572,9 +1574,11 @@ export class CoreService {
     for (let i in data.jobResources) {
       let flag = true;
       for (let j in tempARr) {
-        if (data.jobResources[i] === tempARr[j].name) {
-          flag = false;
-          break;
+        if(tempARr[j]) {
+          if (data.jobResources[i] === tempARr[j].name) {
+            flag = false;
+            break;
+          }
         }
       }
       if (flag) {
@@ -1584,7 +1588,7 @@ export class CoreService {
     }
 
     if (obj.notFound && obj.list.length > 0) {
-      if (data.arr[0].name === '/' && obj.name === '/') {
+      if (data.arr[0] && data.arr[0].name === '/' && obj.name === '/') {
         data.arr.splice(0, 1);
       }
       data.arr = [obj].concat(data.arr);
@@ -1769,6 +1773,7 @@ export class CoreService {
       } else {
         let _tempArr = item.position.split('/');
         lastPos = _tempArr[_tempArr.length - 1];
+
         if (lastPos) {
           if (lastPos.match(/branch/)) {
             data.name = lastPos.substring(lastPos.indexOf('+') + 1, lastPos.indexOf(':'));
@@ -1833,6 +1838,7 @@ export class CoreService {
             obj.flag = true;
             break;
           } else if ((lastPos && lastPos.match('branch') && item.job)) {
+
             if (nodes[i].position == item.position) {
               checkAndUpdate(nodes[i], data);
               obj.flag = true;
@@ -1952,7 +1958,7 @@ export class CoreService {
           }
         }
         if ((lastPos && lastPos.match('branch') && item.job)) {
-          if (node.children[i].position == item.position) {
+          if (node.children[i].position == item.position || (node.children[i].position.substring(0, node.children[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
             checkAndUpdate(node.children[i], data);
             obj.flag = true;
             break;
@@ -2080,7 +2086,6 @@ export class CoreService {
         node.children.push(data);
       }
     }
-
     return nodes;
   }
 }

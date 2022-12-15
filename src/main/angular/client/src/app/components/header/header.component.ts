@@ -24,6 +24,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isLogout = false;
   isBackUp = '';
   timeout: any;
+  jocMonitor = [];
+  systemMonitor = [];
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -208,6 +210,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 break;
               }
             }
+
+            for (let j = 0; j < res.eventsFromMonitoring.length; j++) {
+              if (res.eventsFromMonitoring[j].category && res.eventsFromMonitoring[j].category.toLowerCase() === 'joc') {
+                this.jocMonitor.push(res.eventsFromMonitoring[j]);
+                if(this.jocMonitor.length > 10){
+                  this.jocMonitor.slice(this.jocMonitor.length - 10);
+                }
+              } else {
+                this.systemMonitor.push(res.eventsFromMonitoring[j]);
+                if(this.systemMonitor.length > 10){
+                  this.systemMonitor.slice(this.systemMonitor.length - 10);
+                }
+              }
+            }
+
           }
           if (!this.isLogout) {
             this.timeout = setTimeout(() => {
