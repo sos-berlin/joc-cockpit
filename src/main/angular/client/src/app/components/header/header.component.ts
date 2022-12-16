@@ -46,6 +46,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if( sessionStorage['$SOS$JOCMONITOR']){
+      this.jocMonitor = JSON.parse(sessionStorage['$SOS$JOCMONITOR']);
+    }
+    if( sessionStorage['$SOS$SYSTEMMONITOR']){
+      this.systemMonitor = JSON.parse(sessionStorage['$SOS$SYSTEMMONITOR']);
+    }
     this.init();
   }
 
@@ -224,7 +230,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 }
               }
             }
-
+            if(this.jocMonitor.length > 0){
+              sessionStorage['$SOS$JOCMONITOR'] = JSON.stringify(this.jocMonitor);
+            }
+            if(this.systemMonitor.length > 0){
+              sessionStorage['$SOS$SYSTEMMONITOR'] = JSON.stringify(this.systemMonitor);
+            }
           }
           if (!this.isLogout) {
             this.timeout = setTimeout(() => {

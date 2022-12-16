@@ -18,6 +18,50 @@
     <!-- / brand -->
     <!-- navbar right -->
     <ul class="nav navbar-nav pull-right ">
+      <ng-template #jocMonitorEvent>
+        <div class="notification">
+          <div *ngFor="let log of jocMonitor">
+            <span>{{log.timestamp}}
+              <span class="inline w-64">[{{log.level}}]</span>
+              {{log.request || log.subCategory}} {{log.message}}
+             </span>
+          </div>
+          <div *ngIf="jocMonitor.length === 0">
+            <app-empty-data></app-empty-data>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template #systemMonitorEvent>
+        <div class="notification">
+          <div *ngFor="let log of systemMonitor">
+            <span>{{log.timestamp}}
+              <span class="inline w-64">[{{log.level}}]</span>
+              {{log.subCategory}} {{log.message}}
+            </span>
+          </div>
+          <div *ngIf="systemMonitor.length === 0">
+            <app-empty-data></app-empty-data>
+          </div>
+        </div>
+      </ng-template>
+      <li class="nav-item">
+        <a class="nav-link text-white pointer" style="top: 3px">
+          <span class="p-l-xs cursor" nz-popover
+                nzPopoverTitle="{{'info.label.jocMonitorEvent' | translate}}" nzPopoverTrigger="click" [nzPopoverContent]="jocMonitorEvent"
+                nzPopoverPlacement="bottomRight">
+            <i class="fa fa-flag text-18" style="line-height: 0"></i>
+          </span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white pointer" style="top: 3px" >
+          <span class="p-l-xs cursor" nz-popover
+                nzPopoverTitle="{{'info.label.systemMonitorEvent' | translate}}" nzPopoverTrigger="click" [nzPopoverContent]="systemMonitorEvent"
+                nzPopoverPlacement="bottomRight">
+            <i class="fa fa-flag-o text-18"  style="line-height: 0"></i>
+          </span>
+        </a>
+      </li>
       <li class="nav-item dropdown">
         <app-info-menu [isHeader]="true"></app-info-menu>
       </li>

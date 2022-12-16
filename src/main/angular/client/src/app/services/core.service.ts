@@ -1764,11 +1764,16 @@ export class CoreService {
         data.title = 'Fork';
       } else if (item.logEvent === 'OrderJoined') {
         data.title = 'Join';
+        data.isLeaf = true;
+        delete data.children;
+
         let _tempArr = item.position.split('/');
-        let secondLastPos = _tempArr[_tempArr.length - 2];
-        if (secondLastPos) {
-          data.position = secondLastPos;
-          item.position = secondLastPos;
+        _tempArr.splice(_tempArr.length - 1, 1)
+       let pos = _tempArr.join('/');
+      
+        if (pos) {
+          data.position = pos;
+          item.position = pos;
         }
       } else {
         let _tempArr = item.position.split('/');
@@ -1820,7 +1825,7 @@ export class CoreService {
       }
 
       if (nodes.length == 0) {
-        if (parentNode) {
+        if (parentNode && parentNode.children) {
           parentNode.children.push(data);
           nodes.push(parentNode);
         } else {
@@ -1839,7 +1844,7 @@ export class CoreService {
             break;
           } else if ((lastPos && lastPos.match('branch') && item.job)) {
 
-            if (nodes[i].position == item.position) {
+            if (nodes[i].position == item.position || (nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
               checkAndUpdate(nodes[i], data);
               obj.flag = true;
               break;
@@ -1850,8 +1855,8 @@ export class CoreService {
               }
             }
           } else {
-            if (nodes[i].position == item.position) {
-              if (parentNode) {
+            if (nodes[i].position == item.position || (nodes[i].position.indexOf(':') > -1 && nodes[i].position.substring(0, nodes[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
+              if (parentNode && parentNode.children) {
                 parentNode.children.push(data);
                 nodes.push(parentNode);
               } else {
@@ -1879,7 +1884,6 @@ export class CoreService {
                       } else {
                         nodes[prop].title = data.title;
                       }
-
                       flag = true;
                       break;
                     }
@@ -1892,11 +1896,31 @@ export class CoreService {
               obj.flag = true;
               break;
             } else if ((nodes[i].position == _tempArr.join('/'))) {
-              if (parentNode) {
-                parentNode.children.push(data);
-                checkAndUpdate(nodes[i], parentNode);
-              } else {
-                checkAndUpdate(nodes[i], data);
+              let isFound = false;
+              if(!item.job) {
+                for (let x in nodes[i].children) {
+                  if (nodes[i].children[x].position == item.position || (nodes[i].children[x].position.indexOf(':') > -1 &&
+                    nodes[i].children[x].position.substring(0, nodes[i].children[x].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
+                    if(nodes[i].children[x].title != 'Job'){
+                      if (parentNode) {
+                        parentNode.children.push(data);
+                        checkAndUpdate(nodes[i].children[x], parentNode);
+                      } else {
+                        checkAndUpdate(nodes[i].children[x], data);
+                      }
+                      isFound = true;
+                    }
+                    break;
+                  }
+                }
+              }
+              if(!isFound) {
+                if (parentNode && parentNode.children) {
+                  parentNode.children.push(data);
+                  checkAndUpdate(nodes[i], parentNode);
+                } else {
+                  checkAndUpdate(nodes[i], data);
+                }
               }
 
               obj.flag = true;
@@ -1931,7 +1955,7 @@ export class CoreService {
           }
         }
         if (!obj.flag) {
-          if (parentNode) {
+          if (parentNode && parentNode.children) {
             parentNode.children.push(data);
             nodes.push(parentNode);
           } else {
@@ -1944,7 +1968,6 @@ export class CoreService {
     function recursion(node, item, obj, data, parentNode, lastPos) {
       for (let i in node.children) {
         let arr = item.position.split('/');
-        // let _lastPos = arr[arr.length - 1];
         arr.splice(arr.length - 1, 1);
         if ((item.position.match('try') || item.position.match('catch')) && item.job) {
           if (arr.join('/') == node.children[i].position) {
@@ -1958,7 +1981,7 @@ export class CoreService {
           }
         }
         if ((lastPos && lastPos.match('branch') && item.job)) {
-          if (node.children[i].position == item.position || (node.children[i].position.substring(0, node.children[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
+          if (node.children[i].position == item.position || (node.children[i].position.indexOf(':') > -1 && node.children[i].position.substring(0, node.children[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
             checkAndUpdate(node.children[i], data);
             obj.flag = true;
             break;
@@ -1969,21 +1992,41 @@ export class CoreService {
             }
           }
         } else {
-          if ((node.children[i].position == item.position)) {
-            if (parentNode) {
-              parentNode.children.push(data);
-              checkAndUpdate(node, parentNode);
-            } else {
-              checkAndUpdate(node, data);
-            }
-            obj.flag = true;
-            break;
-          } else if ((node.children[i].position == arr.join('/'))) {
-            if (parentNode) {
+          if ((node.children[i].position == item.position) || (node.children[i].position.indexOf(':') > -1 && node.children[i].position.substring(0, node.children[i].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
+            if (parentNode && parentNode.children) {
               parentNode.children.push(data);
               checkAndUpdate(node.children[i], parentNode);
             } else {
               checkAndUpdate(node.children[i], data);
+            }
+            obj.flag = true;
+            break;
+          } else if ((node.children[i].position == arr.join('/'))) {
+            let isFound = false;
+            if(!item.job) {
+              for (let x in node.children[i].children) {
+                if (node.children[i].children[x].position == item.position || (node.children[i].children[x].position.indexOf(':') > -1 &&
+                  node.children[i].children[x].position.substring(0, node.children[i].children[x].position.lastIndexOf(':')) == item.position.substring(0, item.position.lastIndexOf(':')))) {
+                  if(node.children[i].children[x].title != 'Job'){
+                    if (parentNode && parentNode.children) {
+                      parentNode.children.push(data);
+                      checkAndUpdate(node.children[i].children[x], parentNode);
+                    } else {
+                      checkAndUpdate(node.children[i].children[x], data);
+                    }
+                    isFound = true;
+                  }
+                  break;
+                }
+              }
+            }
+            if(!isFound) {
+              if (parentNode && parentNode.children) {
+                parentNode.children.push(data);
+                checkAndUpdate(node.children[i], parentNode);
+              } else {
+                checkAndUpdate(node.children[i], data);
+              }
             }
             obj.flag = true;
             break;
@@ -2083,7 +2126,9 @@ export class CoreService {
             node.title = 'ForkList'
           }
         }
-        node.children.push(data);
+        if(node.children) {
+          node.children.push(data);
+        }
       }
     }
     return nodes;
