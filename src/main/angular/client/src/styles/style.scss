@@ -8796,6 +8796,22 @@ td .ver-top {
   width: 280px;
 }
 
+.ant-popover-placement-bottomRight{
+  width: 800px;
+  max-width: 100%;
+}
+
+.notification {
+  color: var(--text-color);
+  font-family: Lucida Console, monospace !important;
+  font-size: 12px;
+  max-height: 500px;
+  overflow: auto;
+  div{
+    margin-bottom: 8px;
+  }
+}
+
 .custom-tree-select {
   .ant-select-tree .ant-select-tree-treenode-disabled .ant-select-tree-node-content-wrapper {
     color: var(--text-color);

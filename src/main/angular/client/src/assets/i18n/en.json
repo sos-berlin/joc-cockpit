@@ -1002,6 +1002,8 @@
     "label.licenseValidity": "License Validity",
     "label.commercialLicense": "Commercial License",
     "label.openSourceLicense": "Open Source License",
+    "label.jocMonitorEvent": "JOC Monitor Event",
+    "label.systemMonitorEvent": "System Monitor Event",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "About JS7",
     "button.js7Download": "JS7 Download",
