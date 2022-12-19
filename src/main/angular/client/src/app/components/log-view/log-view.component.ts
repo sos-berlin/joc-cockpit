@@ -55,9 +55,9 @@ export class LogViewComponent implements OnInit, OnDestroy {
   controllerId: string;
   lastScrollTop = 0;
   delta = 20;
-  taskMap = new Map();
   dataObject: PopoutData;
   treeStructure = [];
+  isChildren: boolean;
   nodes = [];
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
@@ -246,7 +246,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
   loadOrderLog(): void {
     this.workflow = this.dataObject.workflow;
-    this.taskMap = new Map();
     this.treeStructure = [];
     const order: any = {
       controllerId: this.controllerId,
@@ -299,7 +298,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
     const x: any = this.dataBody.nativeElement.querySelectorAll('.tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
-      this.taskMap.set('ex_' + (i + 1), '');
       element.childNodes[0].addEventListener('click', () => {
         this.expandTask(i, false);
       });
@@ -307,7 +305,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
 
     if (x && x.length > 0) {
       const dom = x[x.length - 1].childNodes[0];
-      if (this.taskMap.has(dom.getAttribute('id')) && this.taskMap.get(dom.getAttribute('id')) !== 'false') {
+      if (dom) {
         dom.click();
       }
     }
@@ -320,7 +318,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
     jobs.taskId = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1)).innerText;
     const a = this.dataBody.nativeElement.querySelector('#' + domId);
     if (a.classList.contains('hide')) {
-      this.taskMap.set('ex_' + (i + 1), 'true');
       this.taskCanceller = this.coreService.log('task/log', jobs, {
         responseType: 'text' as 'json',
         observe: 'response' as 'response'
@@ -343,7 +340,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
       });
     } else {
       if (!expand) {
-        this.taskMap.set('ex_' + (i + 1), 'false');
         this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.remove('up');
         this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.add('down');
         a.classList.remove('show');
@@ -789,7 +785,13 @@ export class LogViewComponent implements OnInit, OnDestroy {
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
     }
-    this.nodes = this.coreService.createTreeStructure({treeStructure: this.treeStructure});
+
+    let obj = {
+      treeStructure: this.treeStructure,
+      isChildren: this.isChildren
+    };
+    this.nodes = this.coreService.createTreeStructure(obj);
+    this.isChildren = obj.isChildren;
     this.loading = false;
   }
 
@@ -958,7 +960,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
   expandAll(): void {
     const x: any = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
-      this.taskMap.set('ex_' + (i + 1), 'true');
       this.expandTask(i, true);
     }
   }
@@ -966,7 +967,6 @@ export class LogViewComponent implements OnInit, OnDestroy {
   collapseAll(): void {
     const x: any = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
-      this.taskMap.set('ex_' + (i + 1), 'false');
       const a = POPOUT_MODALS['windowInstance'].document.getElementById('tx_log_' + (i + 1));
       POPOUT_MODALS['windowInstance'].document.getElementById('ex_' + (i + 1)).classList.remove('up');
       POPOUT_MODALS['windowInstance'].document.getElementById('ex_' + (i + 1)).classList.add('down');
@@ -974,6 +974,25 @@ export class LogViewComponent implements OnInit, OnDestroy {
       a.classList.add('hide');
       const y = POPOUT_MODALS['windowInstance'].document.getElementById('tx_id_' + (i + 1)).innerText;
       POPOUT_MODALS['windowInstance'].document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + y + `</div>`;
+    }
+  }
+
+  expandAllTree(): void {
+    this.traverseTree(this.nodes, true);
+    this.nodes = [...this.nodes];
+  }
+
+  collapseAllTree(): void {
+    this.traverseTree(this.nodes, false);
+    this.nodes = [...this.nodes];
+  }
+
+  private traverseTree(data, isExpand): void {
+    for(let i in data) {
+      if (data[i] && data[i].children && data[i].children.length > 0) {
+        data[i].expanded = isExpand;
+        this.traverseTree(data[i].children, isExpand);
+      }
     }
   }
 
@@ -1019,14 +1038,34 @@ export class LogViewComponent implements OnInit, OnDestroy {
             dom[x].style.background = color;
           }
         }
-        $(this.dataObject.instance).scrollTop($(dom[dom.length - 1]).position().top - 54);
+        let top = $(dom[dom.length > 2 ? 1 : dom.length - 1]).position().top;
+        if(top > 0){
+          top = (top + $(this.dataObject.instance).scrollTop()) - 54
+        } else {
+          top = ($(this.dataObject.instance).scrollTop() + top) - 32;
+        }
+        top = Math.abs(top);
+        $(this.dataObject.instance).scrollTop(top);
+
         if (dom.length > 0) {
           for (let x in dom) {
             if (dom[x] && dom[x].style) {
               try {
                 let arrow = $(dom[x]).find('.tx_order');
                 if (arrow && arrow.length > 0) {
-                  arrow.find('i')?.click();
+                  const elem = arrow.find('i');
+                  if(elem) {
+                    let classes = elem[0].classList;
+                    if(classes) {
+                      classes.forEach((item) => {
+                        if(item == 'down'){
+                          elem.click();
+                          return;
+                        }
+                      })
+                    }
+
+                  }
                 }
               } catch (e) {
               }

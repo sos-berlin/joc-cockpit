@@ -1037,6 +1037,8 @@
     "tooltip.workflowExampleForUnix": "Unixエージェント上のワークフローサンプル",
     "tooltip.workflowExampleForWindows": "Windowsエージェント上のワークフローサンプル",
     "tooltip.invalidLicense": "ライセンスが無効です",
+    "tooltip.jocMonitorEvent": "JOC Monitor Event",
+    "tooltip.systemMonitorEvent": "System Monitor Event",
     "message.line1": "簡単に始められるように、いくつかのプリセットをダウンロードして、JOCコックピットのジョブ定義画面からインポートすることをお勧めします。Defaults.zipをインポートすると、シェルジョブで利用できるグローバルなジョブ環境変数を作成するためのジョブリソースが含まれる同じ名前のフォルダが作成されます。",
     "message.line2": "Examples.tar.gzおよびExamples.zipアーカイブには、UnixおよびWindows上でエージェント上で実行するためのワークフローおよびジョブの例が含まれています。これらの例は、独自のワークフローやジョブの依存関係を作成するのに役立ちます。これらの例は、%JS7 - Online Demo% の説明に記載されている内容に対応しています。",
     "link": {

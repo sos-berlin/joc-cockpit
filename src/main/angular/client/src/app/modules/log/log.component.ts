@@ -46,9 +46,9 @@ export class LogComponent implements OnInit {
   controllerId: string;
   lastScrollTop = 0;
   delta = 20;
-  taskMap = new Map();
   treeStructure = [];
   nodes = [];
+  isChildren: boolean;
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
@@ -220,14 +220,33 @@ export class LogComponent implements OnInit {
             dom[x].style.background = color;
           }
         }
-        $('#logs').scrollTop($(dom[dom.length - 1]).position().top - 54);
+        let top = $(dom[dom.length > 2 ? 1 : dom.length - 1]).position().top;
+        if(top > 0){
+          top = (top + $('#logs').scrollTop()) - 54
+        } else {
+          top = ($('#logs').scrollTop() + top) - 32;
+        }
+        top = Math.abs(top);
+        $('#logs').scrollTop(top);
         if (dom.length > 0) {
           for (let x in dom) {
             if (dom[x] && dom[x].style) {
               try {
                 let arrow = $(dom[x]).find('.tx_order');
                 if (arrow && arrow.length > 0) {
-                  arrow.find('i')?.click();
+                  const elem = arrow.find('i');
+                  if(elem) {
+                    let classes = elem[0].classList;
+                    if(classes) {
+                      classes.forEach((item) => {
+                        if(item == 'fa-caret-down'){
+                          elem.click();
+                          return;
+                        }
+                      })
+                    }
+
+                  }
                 }
               } catch (e) {
               }
@@ -239,7 +258,6 @@ export class LogComponent implements OnInit {
   }
 
   loadOrderLog(): void {
-    this.taskMap = new Map();
     this.workflow = this.route.snapshot.queryParams.workflow;
     const order: any = {};
     order.controllerId = this.controllerId;
@@ -288,7 +306,6 @@ export class LogComponent implements OnInit {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
-      this.taskMap.set('ex_' + (i + 1), '');
       element.childNodes[0].addEventListener('click', () => {
         this.expandTask(i, false);
       });
@@ -296,7 +313,7 @@ export class LogComponent implements OnInit {
 
     if (x && x.length > 0) {
       const dom = x[x.length - 1].childNodes[0];
-      if (this.taskMap.has(dom.getAttribute('id')) && this.taskMap.get(dom.getAttribute('id')) !== 'false') {
+      if(dom) {
         dom.click();
       }
     }
@@ -309,7 +326,6 @@ export class LogComponent implements OnInit {
     jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
     const a = document.getElementById(domId);
     if (a.classList.contains('hide')) {
-      this.taskMap.set('ex_' + (i + 1), 'true');
       this.coreService.log('task/log', jobs, {
         responseType: 'text' as 'json',
         observe: 'response' as 'response'
@@ -332,7 +348,6 @@ export class LogComponent implements OnInit {
       });
     } else {
       if (!expand) {
-        this.taskMap.set('ex_' + (i + 1), 'false');
         document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
         document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
         a.classList.remove('show');
@@ -772,8 +787,12 @@ export class LogComponent implements OnInit {
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
     }
-
-    this.nodes = this.coreService.createTreeStructure({treeStructure: this.treeStructure});
+    let obj = {
+      treeStructure: this.treeStructure,
+      isChildren: this.isChildren
+    };
+    this.nodes = this.coreService.createTreeStructure(obj);
+    this.isChildren = obj.isChildren;
     this.loading = false;
   }
 
@@ -938,7 +957,6 @@ export class LogComponent implements OnInit {
   expandAll(): void {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
-      this.taskMap.set('ex_' + (i + 1), 'true');
       this.expandTask(i, true);
     }
   }
@@ -946,7 +964,6 @@ export class LogComponent implements OnInit {
   collapseAll(): void {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
-      this.taskMap.set('ex_' + (i + 1), 'false');
       const a = document.getElementById('tx_log_' + (i + 1));
       document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
       document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
@@ -955,6 +972,25 @@ export class LogComponent implements OnInit {
       const y = document.getElementById('tx_id_' + (i + 1)).innerText;
       document.getElementById('tx_log_' + (i + 1)).innerHTML = '';
       document.getElementById('tx_log_' + (i + 1)).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + y + `</div>`;
+    }
+  }
+
+  expandAllTree(): void {
+    this.traverseTree(this.nodes, true);
+    this.nodes = [...this.nodes];
+  }
+
+  collapseAllTree(): void {
+    this.traverseTree(this.nodes, false);
+    this.nodes = [...this.nodes];
+  }
+
+  private traverseTree(data, isExpand): void {
+    for(let i in data) {
+      if (data[i] && data[i].children && data[i].children.length > 0) {
+        data[i].expanded = isExpand;
+        this.traverseTree(data[i].children, isExpand);
+      }
     }
   }
 

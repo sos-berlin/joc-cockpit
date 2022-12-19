@@ -52,6 +52,15 @@
     <div class="sidebar sidebar-property-panel bg-white" id="property-panel">
       <div style="margin-top: 26px">
         <div  style="padding: 12px">
+          <div *ngIf="isChildren" class="m-l m-b-sm">
+            <a>
+              <i class="icon rotate" (click)="expandAllTree();" nz-icon nzType="double-right" nzTheme="outline"></i>
+            </a>
+            <a>
+              <i class="icon rotate m-l-sm" (click)="collapseAllTree();" nz-icon nzType="double-left" nzTheme="outline"></i>
+            </a>
+          </div>
+
           <div class="fade-in">
             <nz-tree
               [nzShowExpand]="false"

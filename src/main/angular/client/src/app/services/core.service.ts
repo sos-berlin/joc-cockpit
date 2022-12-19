@@ -1742,9 +1742,9 @@ export class CoreService {
 
   /** -------- Log View --------- */
 
-  createTreeStructure(obj): any {
+  createTreeStructure(mainObj): any {
     let nodes = [];
-    obj.treeStructure.forEach(item => {
+    mainObj.treeStructure.forEach(item => {
       let data: any = {
         title: '',
         key: item.orderId + item.logEvent + item.position,
@@ -1770,7 +1770,6 @@ export class CoreService {
         let _tempArr = item.position.split('/');
         _tempArr.splice(_tempArr.length - 1, 1)
        let pos = _tempArr.join('/');
-      
         if (pos) {
           data.position = pos;
           item.position = pos;
@@ -1778,7 +1777,6 @@ export class CoreService {
       } else {
         let _tempArr = item.position.split('/');
         lastPos = _tempArr[_tempArr.length - 1];
-
         if (lastPos) {
           if (lastPos.match(/branch/)) {
             data.name = lastPos.substring(lastPos.indexOf('+') + 1, lastPos.indexOf(':'));
@@ -1926,6 +1924,7 @@ export class CoreService {
               obj.flag = true;
               break;
             } else if (nodes[i].children && nodes[i].children.length > 0) {
+              mainObj.isChildren = true;
               if (!parentNode && ((item.position.match('try') && (data.title != 'Try' && data.title != 'Retry')) || (item.position.match('catch') || data.title == 'Catch'))) {
                 let isCheck = false;
                 if (/(try\+)(\d)/gm.test(item.position)) {
