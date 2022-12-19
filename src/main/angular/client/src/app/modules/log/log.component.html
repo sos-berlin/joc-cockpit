@@ -104,6 +104,14 @@
   <div class="sidebar sidebar-property-panel bg-white" id="property-panel">
     <div class="m-l-xs m-r-xs">
       <div style="padding: 12px">
+        <div *ngIf="isChildren" class="m-l m-b-xs">
+          <a class="text-primary-hover" (click)="expandAllTree();">
+            <i class="fa fa-angle-double-down fa-lg"></i>
+          </a>
+          <a class="m-l-sm text-primary-hover" (click)="collapseAllTree();">
+            <i class="fa fa-angle-double-up fa-lg"></i>
+          </a>
+        </div>
         <div class="fade-in">
           <nz-tree
             [nzShowExpand]="false"

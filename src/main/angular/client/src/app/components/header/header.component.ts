@@ -22,6 +22,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   eventLoading = false;
   switchScheduler = false;
   isLogout = false;
+  colorOfJOCEvent = 0;
+  colorOfSystemEvent = 0;
   isBackUp = '';
   timeout: any;
   jocMonitor = [];
@@ -46,10 +48,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if( sessionStorage['$SOS$JOCMONITOR']){
+    if (sessionStorage['$SOS$JOCMONITOR']) {
       this.jocMonitor = JSON.parse(sessionStorage['$SOS$JOCMONITOR']);
     }
-    if( sessionStorage['$SOS$SYSTEMMONITOR']){
+    if (sessionStorage['$SOS$SYSTEMMONITOR']) {
       this.systemMonitor = JSON.parse(sessionStorage['$SOS$SYSTEMMONITOR']);
     }
     this.init();
@@ -99,6 +101,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
       nzClosable: false,
       nzMaskClosable: false
     });
+  }
+
+  clearJocEvent(): void{
+    this.jocMonitor = [];
+    sessionStorage.removeItem('$SOS$JOCMONITOR')
+  }
+
+  clearSystemEvent(): void{
+    this.systemMonitor = [];
+    sessionStorage.removeItem('$SOS$SYSTEMMONITOR')
+  }
+
+  resetJOCEvent(): void {
+    this.colorOfJOCEvent = 0;
+  }
+
+  resetSystemEvent(): void {
+    this.colorOfSystemEvent = 0;
   }
 
   logout(): void {
@@ -219,21 +239,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
             for (let j = 0; j < res.eventsFromMonitoring.length; j++) {
               if (res.eventsFromMonitoring[j].category && res.eventsFromMonitoring[j].category.toLowerCase() === 'joc') {
+                this.colorOfJOCEvent = res.eventsFromMonitoring[j].level === 'ERROR' ? 2 : this.colorOfJOCEvent == 2 ? 2 : 1;
                 this.jocMonitor.push(res.eventsFromMonitoring[j]);
-                if(this.jocMonitor.length > 10){
-                  this.jocMonitor.slice(this.jocMonitor.length - 10);
+                if (this.jocMonitor.length > 10) {
+                  this.jocMonitor.shift();
                 }
               } else {
+                this.colorOfSystemEvent = res.eventsFromMonitoring[j].level === 'ERROR' ? 2 : this.colorOfSystemEvent == 2 ? 2 : 1;
                 this.systemMonitor.push(res.eventsFromMonitoring[j]);
-                if(this.systemMonitor.length > 10){
-                  this.systemMonitor.slice(this.systemMonitor.length - 10);
+                if (this.systemMonitor.length > 10) {
+                  this.systemMonitor.shift();
                 }
               }
             }
-            if(this.jocMonitor.length > 0){
+            if (this.jocMonitor.length > 0) {
               sessionStorage['$SOS$JOCMONITOR'] = JSON.stringify(this.jocMonitor);
             }
-            if(this.systemMonitor.length > 0){
+            if (this.systemMonitor.length > 0) {
               sessionStorage['$SOS$SYSTEMMONITOR'] = JSON.stringify(this.systemMonitor);
             }
           }

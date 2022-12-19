@@ -19,6 +19,9 @@
     <!-- navbar right -->
     <ul class="nav navbar-nav pull-right ">
       <ng-template #jocMonitorEvent>
+        <div *ngIf="jocMonitor.length > 0" class="pos-abt" style="top:16px;right: 16px">
+          <a class="primary-text-hover-color cursor" (click)="clearJocEvent()" translate>common.button.clear</a>
+        </div>
         <div class="notification">
           <div *ngFor="let log of jocMonitor">
             <span>{{log.timestamp}}
@@ -32,6 +35,9 @@
         </div>
       </ng-template>
       <ng-template #systemMonitorEvent>
+        <div *ngIf="systemMonitor.length > 0" class="pos-abt" style="top:16px;right: 16px">
+          <a class="primary-text-hover-color cursor" (click)="clearSystemEvent()" translate>common.button.clear</a>
+        </div>
         <div class="notification">
           <div *ngFor="let log of systemMonitor">
             <span>{{log.timestamp}}
@@ -45,8 +51,8 @@
         </div>
       </ng-template>
       <li class="nav-item">
-        <a class="nav-link text-white pointer" style="top: 3px">
-          <span class="p-l-xs cursor" nz-popover
+        <a class="nav-link pointer" style="top: 3px" [ngClass]="{'text-white': colorOfJOCEvent == 0, 'text-warning': colorOfJOCEvent == 1, 'text-danger': colorOfJOCEvent == 2}">
+          <span (click)="resetJOCEvent()" class="p-l-xs cursor" nz-popover [nz-tooltip]="'info.tooltip.jocMonitorEvent' | translate" nzTooltipPlacement="bottom"
                 nzPopoverTitle="{{'info.label.jocMonitorEvent' | translate}}" nzPopoverTrigger="click" [nzPopoverContent]="jocMonitorEvent"
                 nzPopoverPlacement="bottomRight">
             <i class="fa fa-flag text-18" style="line-height: 0"></i>
@@ -54,11 +60,12 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white pointer" style="top: 3px" >
-          <span class="p-l-xs cursor" nz-popover
+        <a class="nav-link pointer" [ngClass]="{'text-white': colorOfSystemEvent == 0, 'text-warning': colorOfSystemEvent == 1, 'text-danger': colorOfSystemEvent == 2}" style="top: 3px" >
+          <span (click)="resetSystemEvent()" class="p-l-xs cursor" nz-popover [nz-tooltip]="'info.tooltip.systemMonitorEvent' | translate" nzTooltipPlacement="bottom"
                 nzPopoverTitle="{{'info.label.systemMonitorEvent' | translate}}" nzPopoverTrigger="click" [nzPopoverContent]="systemMonitorEvent"
                 nzPopoverPlacement="bottomRight">
-            <i class="fa fa-flag-o text-18"  style="line-height: 0"></i>
+            <i class="fa fa-flag text-16 t-1 pos-rel" style="line-height: 0"></i>
+            <i class="fa fa-cog text-xs pos-abt" style="top:14px;right: -1px"></i>
           </span>
         </a>
       </li>

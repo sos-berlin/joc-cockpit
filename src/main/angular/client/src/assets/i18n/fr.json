@@ -1037,6 +1037,8 @@
     "tooltip.workflowExampleForUnix": "Exemples de workflow à utiliser avec les Agents s'exécutant sur Unix",
     "tooltip.workflowExampleForWindows": "Exemples de workflow à utiliser avec les Agents s'exécutant sur Windows",
     "tooltip.invalidLicense": "La licence n'est pas valide. Les raisons peuvent être que la date de début de la période de validité n'a pas été atteinte ou que la date d'expiration a été dépassée.",
+    "tooltip.jocMonitorEvent": "JOC Monitor Event",
+    "tooltip.systemMonitorEvent": "System Monitor Event",
     "message.line1": "Pour vous permettre de démarrer facilement, nous vous suggérons de télécharger quelques préréglages que vous pourrez importer dans JOC Cockpit à partir de la vue Configuration. Après l'importation, l'archive Defaults.zip créera un dossier du même nom qui comprendra des ressources de jobs pour créer des %variables d'environnement globales% disponibles pour vos jobs shell.",
     "message.line2": "Les archives Examples.tar.gz et Examples.zip contiennent des exemples de workflows et de tâches pour des exécutions avec des Agents sous Unix et Windows . Ces exemples peuvent être utiles pour créer vos propres workflows et dépendances de tâches, pour plus de détails voir %instructions%.",
     "link": {
