@@ -2247,7 +2247,7 @@ export class GitComponent implements OnInit {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    }).afterClose.subscribe((res) => {
+    }).afterClose.subscribe(() => {
       this.results = [];
     });
   }
@@ -3994,7 +3994,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   import(): void {
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: undefined,
       nzContent: ImportWorkflowModalComponent,
       nzClassName: 'lg',
@@ -4006,19 +4006,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzClosable: false,
       nzMaskClosable: false
     });
-    modal.afterClose.subscribe(path => {
-      if (path) {
-        setTimeout(() => {
-          if (this.tree && this.tree.length > 0) {
-            this.initTree(path, null, true);
-          }
-        }, 700);
-      }
-    });
   }
 
   importDeploy(): void {
-    const modal = this.modal.create({
+    this.modal.create({
       nzTitle: undefined,
       nzContent: ImportWorkflowModalComponent,
       nzClassName: 'lg',
@@ -4032,18 +4023,9 @@ export class InventoryComponent implements OnInit, OnDestroy {
       nzClosable: false,
       nzMaskClosable: false
     });
-    modal.afterClose.subscribe(path => {
-      if (path) {
-        setTimeout(() => {
-          if (this.tree && this.tree.length > 0) {
-            this.initTree(path, null, true);
-          }
-        }, 700);
-      }
-    });
   }
 
-  convertJob(type: string): void {
+  convertJob(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: CronImportModalComponent,
@@ -5149,19 +5131,25 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       obj.forInventory = true;
     }
-    this.coreService.post('tree', obj).subscribe((res: any) => {
-      const tree = this.coreService.prepareTree(res, false);
-      if (isTrash) {
-        this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree, true);
-      } else {
-        this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
+    this.coreService.post('tree', obj).subscribe({
+      next: (res: any) => {
+        const tree = this.coreService.prepareTree(res, false);
+        if (isTrash) {
+          this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree, true);
+        } else {
+          this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
+        }
       }
     });
   }
 
   private refresh(args): void {
+    let loadTree = false;
+    let _isTrash = false;
+    let paths = [];
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
+
         if (args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' && args.eventSnapshots[j].objectType === 'AGENT') {
           this.getAgents();
         }
@@ -5171,8 +5159,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
             if (!this.isTrash && isTrash) {
             } else {
               if (args.eventSnapshots[j].eventType.match(/InventoryTreeUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTrashTreeUpdated/)) {
-                this.reloadTree(isTrash);
+                paths.push(args.eventSnapshots[j].path);
+                loadTree = true;
+                if (!_isTrash && this.isTrash) {
+                  _isTrash = isTrash;
+                }
               } else if (args.eventSnapshots[j].eventType.match(/InventoryUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTrashUpdated/)) {
+                paths = paths.filter((path) => {
+                  return path !== args.eventSnapshots[j].path;
+                });
                 this.updateFolders(args.eventSnapshots[j].path, isTrash, () => {
                   this.updateTree(isTrash);
                 });
@@ -5180,6 +5175,18 @@ export class InventoryComponent implements OnInit, OnDestroy {
             }
           }
         }
+      }
+    }
+    if (loadTree) {
+      this.reloadTree(_isTrash);
+      if (paths.length > 0) {
+        paths.forEach((path, index) => {
+          this.updateFolders(path, _isTrash, () => {
+            if(index == paths.length -1) {
+              this.updateTree(_isTrash);
+            }
+          });
+        });
       }
     }
   }
