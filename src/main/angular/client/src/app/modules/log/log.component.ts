@@ -495,11 +495,17 @@ export class LogComponent implements OnInit {
         }
       }
       if(!flag) {
+        if(/\d+[.]\w/gm.test(dt[i].orderId) && !/\d+[.]\w/gm.test(dt[i].position)){
+          const pos = dt[i].orderId.substring(dt[i].orderId.lastIndexOf('.') + 1);
+          if(pos) {
+            dt[i].name1 = pos;
+          }
+        }
         this.treeStructure.push(dt[i]);
       }
 
       const div = window.document.createElement('div');
-      div.className = dt[i].position + ' log_line';
+      div.className = (dt[i].name1 ? (dt[i].position +'.'+dt[i].name1) : dt[i].position ) + ' log_line';
       if (dt[i].logLevel === 'INFO') {
         div.className += ' log_info';
         if (!this.object.checkBoxs.info) {
@@ -782,7 +788,7 @@ export class LogComponent implements OnInit {
         div.className += ' m-l-13';
         div.innerHTML = `<span >` + col;
       }
-      window.document.getElementById('logs').appendChild(div);
+      window.document.getElementById('logs')?.appendChild(div);
     }
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;
@@ -946,9 +952,9 @@ export class LogComponent implements OnInit {
       }
 
       if (!orderTaskFlag) {
-        window.document.getElementById('logs').appendChild(div);
+        window.document.getElementById('logs')?.appendChild(div);
       } else {
-        window.document.getElementById(orderTaskFlag).appendChild(div);
+        window.document.getElementById(orderTaskFlag)?.appendChild(div);
       }
       return '';
     });

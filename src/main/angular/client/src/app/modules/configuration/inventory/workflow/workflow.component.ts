@@ -7126,7 +7126,7 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
       }
 
       function iterateJson(json, cell, type) {
-        if (json.instructions) {
+        if (json && json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == cell.id) {
               if (self.node && self.node.isCloseable && !self.node.deleteAll) {

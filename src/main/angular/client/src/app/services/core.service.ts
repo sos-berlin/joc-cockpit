@@ -1745,6 +1745,10 @@ export class CoreService {
   createTreeStructure(mainObj): any {
     let nodes = [];
     mainObj.treeStructure.forEach(item => {
+      if(item.name1){
+        item.position += '.'+item.name1
+      }
+     
       let data: any = {
         title: '',
         key: item.orderId + item.logEvent + item.position,
@@ -1755,6 +1759,7 @@ export class CoreService {
         position: item.position,
         isLeaf: false,
         logEvent: item.logEvent,
+        name1: item.name1,
         children: []
       };
 
@@ -1877,7 +1882,7 @@ export class CoreService {
                       nodes[prop].logEvent = data.logEvent;
                       nodes[prop].logLevel = data.logLevel;
                       nodes[prop].children = data.children;
-                      if((nodes[prop].title == data.title || (nodes[prop].title == 'Try' && data.title == 'Retry') || (nodes[prop].title == 'Retry' && data.title == 'Try'))){
+                      if ((nodes[prop].title == data.title || (nodes[prop].title == 'Try' && data.title == 'Retry') || (nodes[prop].title == 'Retry' && data.title == 'Try'))) {
 
                       } else {
                         nodes[prop].title = data.title;
@@ -1887,6 +1892,9 @@ export class CoreService {
                     }
                   }
                   if (!flag) {
+                    if (data.title == 'Join' && nodes[nodes.length - 1].title == 'ForkList') {
+                      data.end = 'ForkList-End';
+                    }
                     nodes.push(data);
                   }
                 }
@@ -1958,6 +1966,9 @@ export class CoreService {
             parentNode.children.push(data);
             nodes.push(parentNode);
           } else {
+            if (data.title == 'Join' && nodes[nodes.length - 1].title == 'ForkList') {
+              data.end = 'ForkList-End';
+            }
             nodes.push(data);
           }
         }
@@ -2126,6 +2137,9 @@ export class CoreService {
           }
         }
         if(node.children) {
+          if (data.title == 'Join' && node.children[node.children.length - 1].title == 'ForkList') {
+            data.end = 'ForkList-End';
+          }
           node.children.push(data);
         }
       }

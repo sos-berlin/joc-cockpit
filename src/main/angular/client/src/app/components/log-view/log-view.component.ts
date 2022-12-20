@@ -479,13 +479,21 @@ export class LogViewComponent implements OnInit, OnDestroy {
       let flag = false;
       if (dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
         for (let x in this.treeStructure) {
-          if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].orderId == dt[i].orderId && this.treeStructure[x].job == dt[i].job) {
-            flag = true;
-            break;
+          if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].job == dt[i].job) {
+            if (this.treeStructure[x].orderId == dt[i].orderId) {
+              flag = true;
+              break;
+            }
           }
         }
       }
       if (!flag) {
+        if(/\d+[.]\w/gm.test(dt[i].orderId) && !/\d+[.]\w/gm.test(dt[i].position)){
+          const pos = dt[i].orderId.substring(dt[i].orderId.lastIndexOf('.') + 1);
+          if(pos) {
+            dt[i].name1 = pos;
+          }
+        }
         this.treeStructure.push(dt[i]);
       }
 
@@ -494,7 +502,7 @@ export class LogViewComponent implements OnInit, OnDestroy {
         return;
       }
 
-      div.className = dt[i].position + ' log_line';
+      div.className = (dt[i].name1 ? (dt[i].position +'.'+dt[i].name1) : dt[i].position ) + ' log_line';
       if (dt[i].logLevel === 'INFO') {
         div.className += ' log_info';
         if (!this.object.checkBoxs.info) {
