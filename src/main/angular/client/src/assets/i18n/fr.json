@@ -1033,6 +1033,7 @@
     "button.remindMeLater": "rappelez-moi plus tard",
     "button.doNotRemindMe": "ne me rappelez pas",
     "button.checkLicense": "Vérifier Licence",
+    "button.js7Sbom": "JS7 Sbom",
     "tooltip.globalVariablesAndEmailSettings": "Valeurs par défaut des Ressources de tâches pour les variables globales et paramètres d'e-mail",
     "tooltip.workflowExampleForUnix": "Exemples de workflow à utiliser avec les Agents s'exécutant sur Unix",
     "tooltip.workflowExampleForWindows": "Exemples de workflow à utiliser avec les Agents s'exécutant sur Windows",

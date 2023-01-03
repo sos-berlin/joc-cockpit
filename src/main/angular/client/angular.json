@@ -33,6 +33,8 @@
               "src/assets",
               "src/styles",
               "src/version.json",
+              "src/sbom.json",
+              "src/log.html",
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
