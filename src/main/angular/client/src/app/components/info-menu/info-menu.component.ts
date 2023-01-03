@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {saveAs} from 'file-saver';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../services/core.service';
-import {StringDatePipe} from "../../pipes/core.pipe";
 import {DataService} from "../../services/data.service";
-import * as moment from "moment-timezone";
+
 
 @Component({
   selector: 'app-about',
@@ -100,17 +100,18 @@ export class AboutModalComponent implements OnInit {
               private ref: ChangeDetectorRef) {
   }
 
-  static stringToDate(date): any{
+  private stringToDate(date): any{
     if (sessionStorage.preferences) {
       const n = JSON.parse(sessionStorage.preferences);
       if (!n.zone) {
         return '';
       }
-      return moment(date).tz(n.zone).format(n.dateFormat);
+      return this.coreService.getDateByFormat(date, n.zone, n.dateFormat);
     } else {
-      return moment(date).format('DD.MM.YYYY HH:mm:ss');
+      return this.coreService.getDateByFormat(date, null, 'DD.MM.YYYY HH:mm:ss');
     }
   }
+
 
   ngOnInit(): void {
     this.hasLicense = sessionStorage.hasLicense == 'true';
@@ -158,10 +159,10 @@ export class AboutModalComponent implements OnInit {
   private formatDate(validFrom, validUntil): void {
     this.isLoaded = true;
     if (validFrom) {
-      this.validFrom = AboutModalComponent.stringToDate(validFrom);
+      this.validFrom = this.stringToDate(validFrom);
     }
     if (validUntil) {
-      this.validUntil = AboutModalComponent.stringToDate(validUntil);
+      this.validUntil = this.stringToDate(validUntil);
       const differenceInTime = new Date(validUntil).getTime() - new Date().getTime();
       this.remainingDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
     } else {
@@ -207,7 +208,7 @@ export class StepGuideComponent implements OnInit {
 export class InfoMenuComponent {
   @Input() isHeader: boolean = false;
 
-  constructor(private modal: NzModalService) {
+  constructor(private modal: NzModalService, private coreService: CoreService) {
   }
 
   about(): any {
@@ -217,6 +218,16 @@ export class InfoMenuComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+  }
+
+  downloadSbom(): void{
+    
+    this.coreService.get('sbom.json').subscribe((res) => {
+      const fileType = 'application/octet-stream';
+      const data = JSON.stringify(res, undefined, 2);
+      const blob = new Blob([data], {type: fileType});
+      saveAs(blob, 'sbom.json');
     });
   }
 

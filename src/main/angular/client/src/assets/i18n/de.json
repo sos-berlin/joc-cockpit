@@ -1033,6 +1033,7 @@
     "button.remindMeLater": "Mich später erinnern",
     "button.doNotRemindMe": "Mich nicht erinnern",
     "button.checkLicense": "Lizenz Prüfen",
+    "button.js7Sbom": "JS7 Sbom",
     "tooltip.globalVariablesAndEmailSettings": "Job-Ressourcen Voreinstellungen für globale Variablen und E-Mail",
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
     "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows",
