@@ -329,6 +329,7 @@
     "label.auditLog": "Audit Log",
     "label.configuration": "Configuration",
     "label.manageControllersAndAgents": "Manage Controllers and Agents",
+    "label.manageDeployment": "Manage Deployment",
     "label.manageRoles": "Roles",
     "label.profiles": "Profiles",
     "label.manageUser": "Accounts",
@@ -922,6 +923,7 @@
     "button.logging": "Logging",
     "button.manageAccount": "Manage Identity Services",
     "button.manageControllersAndAgents": "Manage Controllers/Agents",
+    "button.manageDeployment": "Manage Deployment",
     "button.logOut": "Log Out"
   },
   "history": {

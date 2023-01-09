@@ -329,6 +329,7 @@
     "label.auditLog": "操作ログ",
     "label.configuration": "ジョブ定義",
     "label.manageControllersAndAgents": "コントローラー・エージェント管理",
+    "label.manageDeployment": "Manage Deployment",    
     "label.manageRoles": "ロール管理",
     "label.profiles": "プロファイル",
     "label.manageUser": "アカウント管理",
@@ -922,6 +923,7 @@
     "button.logging": "ログ設定",
     "button.manageAccount": "アカウント管理",
     "button.manageControllersAndAgents": "コントローラー/エージェント管理",
+    "button.manageDeployment": "Manage Deployment",
     "button.logOut": "ログアウト"
   },
   "history": {
