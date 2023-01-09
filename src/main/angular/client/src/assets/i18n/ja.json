@@ -1035,7 +1035,7 @@
     "button.remindMeLater": "後で通知",
     "button.doNotRemindMe": "後で通知しない",
     "button.checkLicense": "ライセンス確認",
-    "button.js7Sbom": "JS7 Sbom",
+    "button.js7Sbom": "JS7 Software Bill of Materials",
     "tooltip.globalVariablesAndEmailSettings": "グローバル変数とメール設定のデフォルトジョブリソース",
     "tooltip.workflowExampleForUnix": "Unixエージェント上のワークフローサンプル",
     "tooltip.workflowExampleForWindows": "Windowsエージェント上のワークフローサンプル",

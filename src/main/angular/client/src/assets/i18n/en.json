@@ -1035,7 +1035,7 @@
     "button.remindMeLater": "Remind me later",
     "button.doNotRemindMe": "Do not remind me",
     "button.checkLicense": "Check License",
-    "button.js7Sbom": "JS7 Sbom",
+    "button.js7Sbom": "JS7 Software Bill of Materials",
     "tooltip.globalVariablesAndEmailSettings": "Default Job Resources for global variables and e-mail settings",
     "tooltip.workflowExampleForUnix": "Workflow examples for use with Agents running for Unix",
     "tooltip.workflowExampleForWindows": " Workflow examples for use with Agents running for Windows",
