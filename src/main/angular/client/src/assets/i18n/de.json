@@ -329,6 +329,7 @@
     "label.auditLog": "Prüfprotokoll",
     "label.configuration": "Konfiguration",
     "label.manageControllersAndAgents": "Controller und Agenten verwalten",
+    "label.manageDeployment": "Manage Deployment",
     "label.manageRoles": "Rollen",
     "label.profiles": "Profile",
     "label.manageUser": "Konten",
@@ -922,6 +923,7 @@
     "button.logging": "Protokollierung",
     "button.manageAccount": "Identitätsdienste verwalten",
     "button.manageControllersAndAgents": "Controller/Agenten verwalten",
+    "button.manageDeployment": "Manage Deployment",
     "button.logOut": "Abmelden"
   },
   "history": {

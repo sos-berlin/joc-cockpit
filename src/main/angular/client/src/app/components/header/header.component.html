@@ -83,21 +83,28 @@
               <li nz-menu-item routerLink="/controllers" [routerLinkActive]="['active']"
                   *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
                 <a>
-                  <i class="fa fa-id-card-o"></i>
+                  <i class="wd-14 fa fa-id-card-o"></i>
                   {{'header.button.manageControllersAndAgents' | translate}}
+                </a>
+              </li>
+              <li nz-menu-item routerLink="/deployment_service" [routerLinkActive]="['active']"
+                  *ngIf="permission && permission.joc && permission.joc.administration.controllers.view">
+                <a>
+                  <i class="wd-14 fa fa-rocket"></i>
+                  {{'header.button.manageDeployment' | translate}}
                 </a>
               </li>
               <li nz-menu-item routerLink="/users/identity_service" [routerLinkActive]="['active']"
                   *ngIf="permission && permission.joc && permission.joc.administration.accounts.view">
                 <a>
-                  <i class="fa fa-users"></i>
+                  <i class="wd-14 fa fa-users"></i>
                   {{'header.button.manageAccount' | translate}}
                 </a>
               </li>
               <li nz-menu-item routerLink="/settings" [routerLinkActive]="['active']"
                   *ngIf="permission && permission.joc && permission.joc.administration.settings.view">
                 <a>
-                  <i class="fa fa-cog"></i>
+                  <i class="wd-14 fa fa-cog font14"></i>
                   {{'header.button.settings' | translate}}
                 </a>
               </li>
@@ -116,19 +123,19 @@
           <ul nz-menu>
             <li nz-menu-item routerLink="/user">
               <a>
-                <i class="w-14 fa fa-user"></i>
+                <i class="wd-14 fa fa-user"></i>
                 {{'header.button.profile' | translate}}
               </a>
             </li>
             <li nz-menu-item  routerLink="/logging">
               <a>
-                <i class="w-14 fa fa-file"></i>
+                <i class="wd-14 fa fa-file"></i>
                 {{'header.button.logging' | translate}}
               </a>
             </li>
             <li nz-menu-item (click)="logout()">
               <a>
-                <i class="fa fa-sign-out w-14"></i>
+                <i class="fa fa-sign-out wd-14"></i>
                 {{'header.button.logOut' | translate}}
               </a>
             </li>

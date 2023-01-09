@@ -8704,6 +8704,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
               if (self.inventoryConf.copiedInstuctionObject[x].jobs && self.inventoryConf.copiedInstuctionObject[x].jobName === name) {
                 updateMissingJobs(self.inventoryConf.copiedInstuctionObject[x].jobs, job, name);
                 break;
+              } else if (self.inventoryConf.copiedInstuctionObject[x].jobs && self.inventoryConf.copiedInstuctionObject[x].jobs.length > 0 && !self.inventoryConf.copiedInstuctionObject[x].jobName) {
+                updateMissingJobs(self.inventoryConf.copiedInstuctionObject[x].jobs, job, name);
               }
             }
           }
