@@ -142,10 +142,14 @@ export class SingleDeployComponent implements OnInit {
   submitted = false;
   required = false;
   comments: any = {radio: 'predefined'};
+  dateFormat: any = {};
   object: any = {
+    addOrdersDateFrom: '',
     store: {draftConfigurations: [], deployConfigurations: []},
     delete: {deployConfigurations: []}
   };
+
+  dateObj: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -156,6 +160,8 @@ export class SingleDeployComponent implements OnInit {
       this.display = true;
     }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
+    const preferences = sessionStorage.preferences ? JSON.parse(sessionStorage.preferences) : {};
+    this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
   }
 
@@ -231,6 +237,14 @@ export class SingleDeployComponent implements OnInit {
       controllerIds: this.selectedSchedulerIds,
       auditLog: {}
     };
+    if(!this.isRevoke) {
+      if (this.object.addOrdersDateFrom == 'startingFrom') {
+        this.coreService.getDateAndTime(this.dateObj);
+        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+      } else if (this.object.addOrdersDateFrom == 'now') {
+        obj.addOrdersDateFrom = 'now';
+      }
+    }
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {
         delete this.object.store.draftConfigurations;
@@ -282,6 +296,10 @@ export class SingleDeployComponent implements OnInit {
       }, error: () => this.loading = false
     });
   }
+
+  selectTime(time, isEditor = false): void {
+    this.coreService.selectTime(time, isEditor, this.dateObj);
+  }
 }
 
 @Component({
@@ -304,8 +322,11 @@ export class DeployComponent implements OnInit {
   selectedSchedulerIds = [];
   loading = true;
   nodes: any = [];
+  dateFormat: any = '';
+  dateObj: any = {};
   object: any = {
     isRecursive: false,
+    addOrdersDateFrom: '',
     delete: [],
     update: [],
     releasables: [],
@@ -776,6 +797,14 @@ export class DeployComponent implements OnInit {
           }
         }
       }
+
+      if (this.object.addOrdersDateFrom == 'startingFrom') {
+        this.coreService.getDateAndTime(this.dateObj);
+        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+      } else if (this.object.addOrdersDateFrom == 'now') {
+        obj.addOrdersDateFrom = 'now';
+      }
+
       const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
       this.coreService.post(URL, obj).subscribe({
         next: () => {
@@ -792,6 +821,9 @@ export class DeployComponent implements OnInit {
     this.activeModal.destroy();
   }
 
+  selectTime(time, isEditor = false): void {
+    this.coreService.selectTime(time, isEditor, this.dateObj);
+  }
 }
 
 @Component({

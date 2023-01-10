@@ -1608,6 +1608,12 @@
       "message": {
         "updateSuccessfully": "{{count}} objects updated successfully."
       }
+    },
+    "addOrdersDateFrom": {
+      "addOrders": "Add Orders",
+      "no": "No",
+      "now": "Now",
+      "startingFrom": "Starting from"
     }
   },
   "license": {
