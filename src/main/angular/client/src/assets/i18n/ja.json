@@ -1608,6 +1608,12 @@
       "message": {
         "updateSuccessfully": "{{count}}オブジェクトが更新されました"
       }
+    },
+    "addOrdersDateFrom": {
+      "addOrders": "Add Orders",
+      "no": "No",
+      "now": "Now",
+      "startingFrom": "Starting from"
     }
   },
   "license": {
