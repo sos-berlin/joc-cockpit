@@ -3167,6 +3167,34 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             }
           }
         }
+      } else {
+        if (json.catch) {
+          if (json.catch.instructions && json.catch.instructions.length > 0) {
+            recursive(json.catch);
+          }
+        }
+        if (json.then) {
+          if (json.then.instructions) {
+            recursive(json.then);
+          }
+        }
+        if (json.else) {
+          if (json.else.instructions) {
+            recursive(json.else);
+          }
+        }
+        if (json.branches) {
+          json.branches = json.branches.filter((branch: any) => {
+            return (branch.instructions && branch.instructions.length > 0);
+          });
+          if (json.branches.length > 0) {
+            for (let i = 0; i < json.branches.length; i++) {
+              if (json.branches[i]) {
+                recursive(json.branches[i]);
+              }
+            }
+          }
+        }
       }
     }
 

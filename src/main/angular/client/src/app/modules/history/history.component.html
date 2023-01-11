@@ -850,7 +850,7 @@
             <tr *ngIf="history.show && history.arguments">
               <td></td>
               <td colspan="10">
-                <app-order-variable [order]="history" [type]="'arguments'" [schedulerId]="schedulerIds.selected"></app-order-variable>
+                <app-order-variable [order]="history" [type]="'arguments'" [history]="true" [schedulerId]="schedulerIds.selected"></app-order-variable>
               </td>
             </tr>
             <tr *ngIf="history.show">
@@ -1031,7 +1031,7 @@
             <tr *ngIf="jobHistory.show">
               <td></td>
               <td colspan="10">
-                <app-order-variable [order]="jobHistory" [type]="'arguments'" [schedulerId]="schedulerIds.selected"></app-order-variable>
+                <app-order-variable [order]="jobHistory" [type]="'arguments'" [history]="true" [schedulerId]="schedulerIds.selected"></app-order-variable>
               </td>
             </tr>
           </ng-template>

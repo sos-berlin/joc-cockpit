@@ -100,6 +100,12 @@ const routes: Routes = [
         data: {breadcrumb: 'breadcrumb.label.setting'}
       },
       {
+        path: 'deployment_service',
+        loadChildren: () => import('./../deployment/deployment.module').then(m => m.DeploymentModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.manageDeployment'}
+      },
+      {
         path: 'log',
         loadChildren: () => import('./../log/log.module').then(m => m.LogModule),
         canActivate: [AuthGuard],
