@@ -53,10 +53,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     let d = new Date();
     d.setDate(new Date().getDate() + 1);
     const obj = {
-      controllerId: this.schedulerIds.selected,
-      filter: {
-        dailyPlanDate: this.coreService.getStringDate(this.filters.date === '0d' ? null : d)
-      }
+      controllerIds: [this.schedulerIds.selected],
+      dailyPlanDateFrom: this.coreService.getStringDate(this.filters.date === '0d' ? null : d)
     };
 
     this.coreService.post('daily_plan/orders/summary', obj).subscribe({

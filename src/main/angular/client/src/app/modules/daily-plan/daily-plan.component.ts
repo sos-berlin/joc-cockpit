@@ -498,24 +498,22 @@ export class RemovePlanModalComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     const obj: any = {
-      controllerId: this.schedulerId,
-      filter: {}
+      controllerIds: [this.schedulerId],
     };
-
 
     if (this.order) {
       if (this.order.key) {
-        obj.filter.orderIds = [];
+        obj.orderIds = [];
         this.order.value.forEach((order) => {
-          obj.filter.orderIds.push(order.orderId);
+          obj.orderIds.push(order.orderId);
         });
       } else {
-        obj.filter.orderIds = [this.order.orderId];
+        obj.orderIds = [this.order.orderId];
       }
     } else if (this.orders) {
-      obj.filter.orderIds = [];
+      obj.orderIds = [];
       this.orders.forEach((order) => {
-        obj.filter.orderIds.push(order.orderId);
+        obj.orderIds.push(order.orderId);
       });
     }
 
@@ -529,36 +527,39 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   onRemove(): void {
-    const obj: any = {
-      controllerId: this.schedulerId,
-      filter: {}
-    };
-
+    const obj: any = {};
     if (this.workflow) {
-      obj.filter.workflowPaths = [this.order.key];
+      obj.workflowPaths = [this.order.key];
     } else {
       if (this.order) {
         if (this.order.key) {
-          obj.filter.schedulePaths = [this.order.schedulePath || this.order.key];
+          obj.schedulePaths = [this.order.schedulePath || this.order.key];
         } else {
-          obj.filter.orderIds = [this.order.orderId];
+          obj.orderIds = [this.order.orderId];
         }
       }
     }
 
     if (this.orders) {
-      obj.filter.orderIds = [];
+      obj.orderIds = [];
       this.orders.forEach((order) => {
-        obj.filter.orderIds.push(order.orderId);
+        obj.orderIds.push(order.orderId);
       });
     }
-    if (!obj.filter.dailyPlanDate && this.selectedDate && !this.submissionsDelete) {
-      obj.filter.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
+    if (this.selectedDate && !this.submissionsDelete) {
+      obj.dailyPlanDateFrom = this.coreService.getStringDate(this.selectedDate);
+      obj.dailyPlanDateTo = this.coreService.getStringDate(this.selectedDate);
     } else if (this.dateRange && this.dateRange.length > 0) {
-      obj.filter.dateFrom = this.coreService.getStringDate(this.dateRange[0]);
-      obj.filter.dateTo = this.coreService.getStringDate(this.dateRange[1]);
+      obj.controllerId = this.schedulerId;
+      obj.filter = {
+        dateFrom: this.coreService.getStringDate(this.dateRange[0]),
+        dateTo: this.coreService.getStringDate(this.dateRange[1])
+      }
     } else if (this.submissionsDelete) {
-      obj.filter.dateFor = this.coreService.getStringDate(this.selectedDate);
+      obj.controllerId = this.schedulerId;
+      obj.filter = {
+        dateFor: this.coreService.getStringDate(this.selectedDate)
+      }
     }
     this.remove(obj);
   }
@@ -585,13 +586,9 @@ export class RemovePlanModalComponent implements OnInit {
   }
 
   private removeRecursively(obj): void {
-    let apiArr = [];
-    const dates = this.coreService.getDates(this.dateRange[0], this.dateRange[1]);
-    dates.forEach((date) => {
-      obj.filter.dailyPlanDate = this.coreService.getStringDate(date);
-      apiArr.push(this.coreService.post('daily_plan/orders/delete', this.coreService.clone(obj)));
-    });
-    forkJoin(apiArr).subscribe({
+    obj.dailyPlanDateFrom = this.coreService.getStringDate(this.dateRange[0]);
+    obj.dailyPlanDateTo = this.coreService.getStringDate(this.dateRange[1]);
+    this.coreService.post('daily_plan/orders/delete', this.coreService.clone(obj)).subscribe({
       next: () => {
         this.activeModal.close('Done');
       }, error: () => this.submitted = false
@@ -1164,8 +1161,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       return;
     }
     const obj: any = {
-      controllerId: this.schedulerIds.selected,
-      filter: {}
+      controllerIds: [this.schedulerIds.selected]
     };
     if (this.selectedFiltered && this.selectedFiltered.name) {
       this.selectedDate = new Date();
@@ -1173,22 +1169,23 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       if (dom && dom.data('calendar')) {
         dom.data('calendar').setSelectedDate(this.selectedDate);
       }
-      this.applySearchFilter(obj.filter, this.selectedFiltered);
+      this.applySearchFilter(obj, this.selectedFiltered);
       if (this.selectedFiltered.from && this.selectedFiltered.to) {
         this.getDatesByUrl([this.selectedFiltered.from, this.selectedFiltered.to], (dates) => {
           this.callApi(new Date(dates[0]), new Date(dates[1]), obj);
         });
       }
     } else {
-      obj.filter.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
+      obj.dailyPlanDateFrom = this.coreService.getStringDate(this.selectedDate);
+      obj.dailyPlanDateTo = this.coreService.getStringDate(this.selectedDate);
       if (this.selectedSubmissionId) {
-        obj.filter.submissionHistoryIds = [this.selectedSubmissionId];
+        obj.submissionHistoryIds = [this.selectedSubmissionId];
       }
       if (this.dailyPlanFilters.filter.status && this.dailyPlanFilters.filter.status !== 'ALL') {
-        obj.filter.states = [this.dailyPlanFilters.filter.status];
+        obj.states = [this.dailyPlanFilters.filter.status];
       }
       if (this.dailyPlanFilters.filter.late) {
-        obj.filter.late = true;
+        obj.late = true;
       }
       obj.limit = this.preferences.maxDailyPlanRecords;
       this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
@@ -1564,7 +1561,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         dailyPlanDate: this.coreService.getStringDate(date),
         auditLog
       };
-      apiArr.push(this.coreService.post('orders/daily_plan/cancel', this.coreService.clone(obj)));
+      apiArr.push(this.coreService.post('daily_plan/orders/cancel', this.coreService.clone(obj)));
     });
     this.resetCheckBox();
     forkJoin(apiArr).subscribe({
@@ -1608,7 +1605,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         nzComponentParams: {
           comments,
           obj,
-          url: 'orders/daily_plan/cancel'
+          url: 'daily_plan/orders/cancel'
         },
         nzFooter: null,
         nzClosable: false,
@@ -1625,7 +1622,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       });
     } else {
       this.isProcessing = true;
-      this.coreService.post('orders/daily_plan/cancel', obj).subscribe({
+      this.coreService.post('daily_plan/orders/cancel', obj).subscribe({
         next: () => {
           this.resetAction(5000);
           if (isMultiple) {
@@ -1880,14 +1877,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   search(): void {
     this.isSearchHit = true;
     const obj: any = {
-      controllerId: this.schedulerIds.selected,
-      filter: {},
+      controllerIds: [this.schedulerIds.selected],
       limit: this.preferences.maxDailyPlanRecords
     };
     if (this.dailyPlanFilters.filter.status) {
       this.dailyPlanFilters.filter.status = '';
     }
-    this.applySearchFilter(obj.filter, this.searchFilter);
+    this.applySearchFilter(obj, this.searchFilter);
     this.resetCheckBox();
     if (this.searchFilter.radio === 'current') {
       this.callApi(this.searchFilter.from, this.searchFilter.to, obj);
@@ -2224,13 +2220,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private callApi(from, to, obj): void {
-    let apiArr = [];
-    let dates = this.coreService.getDates(from, to);
-    dates.forEach((date) => {
-      obj.filter.dailyPlanDate = this.coreService.getStringDate(date);
-      apiArr.push(this.coreService.post('daily_plan/orders', this.coreService.clone(obj)));
-    });
-    forkJoin(apiArr).subscribe({
+    obj.dailyPlanDateFrom = this.coreService.getStringDate(from);
+    obj.dailyPlanDateTo = this.coreService.getStringDate(to);
+    this.coreService.post('daily_plan/orders', this.coreService.clone(obj)).subscribe({
       next: (result: any) => {
         let plannedOrderItems = [];
         for (let i = 0; i < result.length; i++) {
