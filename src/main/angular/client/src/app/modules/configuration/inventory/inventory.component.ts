@@ -239,8 +239,7 @@ export class SingleDeployComponent implements OnInit {
     };
     if(!this.isRevoke) {
       if (this.object.addOrdersDateFrom == 'startingFrom') {
-        this.coreService.getDateAndTime(this.dateObj);
-        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.object.addOrdersDateFrom == 'now') {
         obj.addOrdersDateFrom = 'now';
       }
@@ -297,9 +296,6 @@ export class SingleDeployComponent implements OnInit {
     });
   }
 
-  selectTime(time, isEditor = false): void {
-    this.coreService.selectTime(time, isEditor, this.dateObj);
-  }
 }
 
 @Component({
@@ -799,8 +795,7 @@ export class DeployComponent implements OnInit {
       }
 
       if (this.object.addOrdersDateFrom == 'startingFrom') {
-        this.coreService.getDateAndTime(this.dateObj);
-        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.object.addOrdersDateFrom == 'now') {
         obj.addOrdersDateFrom = 'now';
       }
@@ -821,9 +816,6 @@ export class DeployComponent implements OnInit {
     this.activeModal.destroy();
   }
 
-  selectTime(time, isEditor = false): void {
-    this.coreService.selectTime(time, isEditor, this.dateObj);
-  }
 }
 
 @Component({

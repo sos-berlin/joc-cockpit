@@ -36,11 +36,7 @@
               <i class="fa fa-plus"></i>
               {{'deploymentService.controller.button.addPrimaryController' | translate}}
             </button>
-            <button *ngIf="data.joc.length == 0" type="button" class="btn btn-sm btn-grey m-l-12"
-                    (click)="addJOC();">
-              <i class="fa fa-plus"></i>
-              {{'deploymentService.joc.button.addPrimaryJOC' | translate}}
-            </button>
+
           </div>
         </div>
       </div>
@@ -609,7 +605,7 @@
                         </div>
                         <div class="col-sm-6 col-lg-4 "
                              [ngClass]="{'has-error' : ((data.dirty || data.touched) && data.invalid)}">
-                          <input autocomplete="off" type="text" class="form-control w-xxxl" #setupDir="ngModel" required
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #data="ngModel" required
                                  name="data{{i}}" placeholder="{{'deploymentService.joc.placeholder.data' | translate}}"
                                  [(ngModel)]="item.installation.data" (blur)="convertJSON()">
                           <div *ngIf="data.invalid && (data.dirty || data.touched)" class="text-danger help-block">
@@ -667,13 +663,13 @@
                       <div class="row m-t-sm">
                         <div class="col-sm-4 col-lg-3 form-control-label">
                           <label translate>deploymentService.joc.label.httpPort
-                            <sup class="text-danger text-sm">*</sup>
+                            <sup *ngIf="!item.installation.httpsPort" class="text-danger text-sm">*</sup>
                           </label> <i class="p-l-sm fa fa-info-circle"
                                       [nz-tooltip]="'deploymentService.joc.tooltip.httpPort' | translate"></i>
                         </div>
                         <div class="col-sm-6 col-lg-4 "
                              [ngClass]="{'has-error' : ((httpPort.dirty || httpPort.touched) && httpPort.invalid)}">
-                          <input autocomplete="off" type="text" class="form-control w-xxxl" #httpPort="ngModel" required
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #httpPort="ngModel" [required]="!item.installation.httpsPort"
                                  name="httpPort{{i}}" (blur)="convertJSON()"
                                  placeholder="{{'deploymentService.joc.placeholder.httpPort' | translate}}"
                                  [(ngModel)]="item.installation.httpPort">
@@ -689,14 +685,14 @@
                       <div class="row m-t-sm">
                         <div class="col-sm-4 col-lg-3 form-control-label">
                           <label translate>deploymentService.joc.label.httpsPort
-                            <sup class="text-danger text-sm">*</sup>
+                            <sup *ngIf="!item.installation.httpPort" class="text-danger text-sm">*</sup>
                           </label> <i class="p-l-sm fa fa-info-circle"
                                       [nz-tooltip]="'deploymentService.joc.tooltip.httpsPort' | translate"></i>
                         </div>
                         <div class="col-sm-6 col-lg-4 "
                              [ngClass]="{'has-error' : ((httpsPort.dirty || httpsPort.touched) && httpsPort.invalid)}">
                           <input autocomplete="off" type="text" class="form-control w-xxxl" #httpsPort="ngModel"
-                                 required name="httpsPort{{i}}" (blur)="convertJSON()"
+                                 [required]="!item.installation.httpPort" name="httpsPort{{i}}" (blur)="convertJSON()"
                                  placeholder="{{'deploymentService.joc.placeholder.httpsPort' | translate}}"
                                  [(ngModel)]="item.installation.httpsPort">
                           <div *ngIf="httpsPort.invalid && (httpsPort.dirty || httpsPort.touched)"
@@ -995,7 +991,15 @@
                    (click)="removeAgent()"></i>
               </h5>
               <div class="m-l-md hide" [ngClass]="{'fade-in show': obj.isAgentExpanded}">
-                <div *ngFor="let item of data.agents; let i = index">
+                <div *ngFor="let item of data.agents; let i = index" [ngClass]="{'b-t m-t': i != 0}">
+                  <h6 class="m-t-12">
+                    <span>{{item.agentId || 'Agent name '+ (i +1)}}</span>
+                    <i class="fa fa-caret-down p-l-xs text-hover-primary"
+                       (click)="item.isAgentPropertiesExpanded = !item.isAgentPropertiesExpanded"
+                       [ngClass]="{'fa-caret-up': !item.isAgentPropertiesExpanded}"></i>
+                    <i *ngIf="i != 0" class="fa fa-trash pull-right text-hover-color p-r-sm font14 cursor"
+                       (click)="removeSecondaryController()"></i>
+                  </h6>
                   <div class="row m-b-sm">
                     <div class="col-sm-4 col-lg-3 form-control-label">
                       <label translate>deploymentService.agent.label.agentId
@@ -1016,13 +1020,549 @@
                       </div>
                     </div>
                   </div>
+                  <div class="p-a b-a hide" [ngClass]="{'fade-in show': !item.isAgentPropertiesExpanded}">
+                    <h6 translate>deploymentService.label.target </h6>
+                    <div class="p-a b-a">
+                      <h6 translate>deploymentService.label.connection </h6>
+                      <div class="p-a b-a">
+                        <div class="row">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.agent.label.host
+                              <sup class="text-danger text-sm">*</sup>
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.agent.tooltip.host' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3"
+                               [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl" #host="ngModel" required
+                                   name="ahost{{i}}" (blur)="convertJSON()"
+                                   placeholder="{{'deploymentService.agent.placeholder.host' | translate}}"
+                                   [(ngModel)]="item.target.connection.host">
+                            <div *ngIf="host.invalid && (host.dirty || host.touched)" class="text-danger help-block">
+                              <div *ngIf="host.errors.required" translate>
+                                common.message.requiredError
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
-                  <div class="m-t">
-                    <a class="text-primary text-hover-primary" (click)="addAnotherAgent()"
-                       translate>deploymentService.agent.button.addAnotherAgent</a>
+                        <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.agent.label.port
+
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.agent.tooltip.port' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3">
+                            <nz-input-number class="w-xxxl" nzPlaceHolder="{{'deploymentService.agent.placeholder.port' | translate}}"
+                                             [nzMin]="1" [nzStep]="1" name="aport{{i}}" [(ngModel)]="item.target.connection.port"></nz-input-number>
+                          </div>
+                        </div>
+                      </div>
+                      <h6 class="m-t-12" translate>deploymentService.label.authentication </h6>
+                      <div class="p-a b-a">
+                        <div class="row">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.agent.label.method
+                              <sup class="text-danger text-sm">*</sup>
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.agent.tooltip.method' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3"
+                               [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl" #method="ngModel" required
+                                   name="amethod{{i}}" (blur)="convertJSON()"
+                                   placeholder="{{'deploymentService.agent.placeholder.method' | translate}}"
+                                   [(ngModel)]="item.target.authentication.method">
+                            <div *ngIf="method.invalid && (method.dirty || method.touched)"
+                                 class="text-danger help-block">
+                              <div *ngIf="method.errors.required" translate>
+                                common.message.requiredError
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row m-t-sm">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.agent.label.user
+                              <sup class="text-danger text-sm">*</sup>
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.agent.tooltip.user' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3"
+                               [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid)}">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl" #user="ngModel" required
+                                   name="auser{{i}}" (blur)="convertJSON()"
+                                   placeholder="{{'deploymentService.agent.placeholder.user' | translate}}"
+                                   [(ngModel)]="item.target.authentication.user">
+                            <div *ngIf="user.invalid && (user.dirty || user.touched)" class="text-danger help-block">
+                              <div *ngIf="user.errors.required" translate>
+                                common.message.requiredError
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.agent.label.keyFile
+
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.agent.tooltip.keyFile' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl" name="akeyFile{{i}}"
+                                   placeholder="{{'deploymentService.agent.placeholder.keyFile' | translate}}"
+                                   [(ngModel)]="item.target.authentication.keyFile">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.packageLocation
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.packageLocation' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4"
+                             [ngClass]="{'has-error' : ((packageLocation.dirty || packageLocation.touched) && packageLocation.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #packageLocation="ngModel"
+                                 required name="apackageLocation{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.agent.placeholder.packageLocation' | translate}}"
+                                 [(ngModel)]="item.target.packageLocation">
+                          <div *ngIf="packageLocation.invalid && (packageLocation.dirty || packageLocation.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="packageLocation.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.execPre
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.execPre' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" name="aexecPre{{i}}"
+                                 placeholder="{{'deploymentService.agent.placeholder.execPre' | translate}}"
+                                 [(ngModel)]="item.target.execPre">
+
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.execPost
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.execPost' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" name="aexecPost{{i}}"
+                                 placeholder="{{'deploymentService.agent.placeholder.execPost' | translate}}"
+                                 [(ngModel)]="item.target.execPost">
+
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3">
+                          <label translate>deploymentService.agent.label.makeService
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.makeService' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <label nz-checkbox [(ngModel)]="item.target.makeService" name="amakeService{{i}}"></label>
+                        </div>
+                      </div>
+                    </div>
+                    <h6 class="m-t-12" translate>deploymentService.label.media </h6>
+                    <div class="p-a b-a">
+                      <div class="row">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.release
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.release' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((release.dirty || release.touched) && release.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #release="ngModel" required
+                                 name="arelease{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.agent.placeholder.release' | translate}}"
+                                 [(ngModel)]="item.media.release">
+                          <div *ngIf="release.invalid && (release.dirty || release.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="release.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.tarball
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.tarball' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4"
+                             [ngClass]="{'has-error' : ((tarball.dirty || tarball.touched) && tarball.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #tarball="ngModel" required
+                                 name="atarball{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.agent.placeholder.tarball' | translate}}"
+                                 [(ngModel)]="item.media.tarball">
+                          <div *ngIf="tarball.invalid && (tarball.dirty || tarball.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="tarball.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <h6 class="m-t-12" translate>deploymentService.label.installation </h6>
+                    <div class="p-a b-a">
+
+                      <div class="row">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.home
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.home' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((home.dirty || home.touched) && home.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #home="ngModel" required
+                                 name="ahome{{i}}" placeholder="{{'deploymentService.agent.placeholder.home' | translate}}"
+                                 [(ngModel)]="item.installation.home" (blur)="convertJSON()">
+                          <div *ngIf="home.invalid && (home.dirty || home.touched)" class="text-danger help-block">
+                            <div *ngIf="home.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.data
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.data' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((data.dirty || data.touched) && data.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #data="ngModel" required
+                                 name="adata{{i}}" placeholder="{{'deploymentService.agent.placeholder.data' | translate}}"
+                                 [(ngModel)]="item.installation.data" (blur)="convertJSON()">
+                          <div *ngIf="data.invalid && (data.dirty || data.touched)" class="text-danger help-block">
+                            <div *ngIf="data.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.homeOwner
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.homeOwner' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 ">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="ahomeOwner{{i}}"
+                                 placeholder="{{'deploymentService.agent.placeholder.homeOwner' | translate}}"
+                                 [(ngModel)]="item.installation.homeOwner">
+                        </div>
+                      </div>
+
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.dataOwner
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.dataOwner' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 ">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="adataOwner{{i}}"
+                                 placeholder="{{'deploymentService.agent.placeholder.dataOwner' | translate}}"
+                                 [(ngModel)]="item.installation.dataOwner">
+                        </div>
+                      </div>
+
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.runUser
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.runUser' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 ">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="arunUser{{i}}"
+                                 placeholder="{{'deploymentService.agent.placeholder.runUser' | translate}}"
+                                 [(ngModel)]="item.installation.runUser">
+                        </div>
+                      </div>
+
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.httpPort
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.httpPort' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((httpPort.dirty || httpPort.touched) && httpPort.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #httpPort="ngModel" required
+                                 name="ahttpPort{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.agent.placeholder.httpPort' | translate}}"
+                                 [(ngModel)]="item.installation.httpPort">
+                          <div *ngIf="httpPort.invalid && (httpPort.dirty || httpPort.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="httpPort.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.agent.label.httpsPort
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.httpsPort' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((httpsPort.dirty || httpsPort.touched) && httpsPort.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #httpsPort="ngModel"
+                                 required name="ahttpsPort{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.agent.placeholder.httpsPort' | translate}}"
+                                 [(ngModel)]="item.installation.httpsPort">
+                          <div *ngIf="httpsPort.invalid && (httpsPort.dirty || httpsPort.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="httpsPort.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3">
+                          <label translate>deploymentService.agent.label.javaHome
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.javaHome' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="ajavaHome{{i}}" placeholder="{{'deploymentService.agent.placeholder.javaHome' | translate}}"
+                                 [(ngModel)]="item.installation.javaHome">
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3">
+                          <label translate>deploymentService.agent.label.javaOptions
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.agent.tooltip.javaOptions' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="ajavaOptions{{i}}"
+                                 placeholder="{{'deploymentService.agent.placeholder.javaOptions' | translate}}"
+                                 [(ngModel)]="item.installation.javaOptions">
+                        </div>
+                      </div>
+                    </div>
+                    <ng-container *ngIf="item.isMoreKeyFileDetail">
+                      <h6 class="m-t-12" translate>deploymentService.label.configuration </h6>
+                      <div class="p-a b-a">
+                        <div class="row">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.agent.label.controllerId
+                              <sup class="text-danger text-sm">*</sup>
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.controller.tooltip.controllerId' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4"
+                               [ngClass]="{'has-error' : ((controllerId.dirty || controllerId.touched) && controllerId.invalid)}">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl" #controllerId="ngModel" required
+                                   name="acontrollerId" placeholder="{{'deploymentService.controller.placeholder.controllerId' | translate}}"
+                                   [(ngModel)]="item.configuration.controllerId" (blur)="convertJSON()">
+                            <div *ngIf="controllerId.invalid && (controllerId.dirty || controllerId.touched)" class="text-danger help-block">
+                              <div *ngIf="controllerId.errors.required" translate>
+                                common.message.requiredError
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <h6 class="m-t-12" translate>deploymentService.label.certificates </h6>
+                        <div class="p-a b-a">
+                          <div class="row">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.agent.label.keyStore
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.agent.tooltip.keyStore' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((keyStore.dirty || keyStore.touched) && keyStore.invalid)}">
+                              <input autocomplete="off" type="text" #keyStore="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="akeyStore{{i}}"
+                                     placeholder="{{'deploymentService.agent.placeholder.keyStore' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.keyStore">
+                              <div *ngIf="keyStore.invalid && (keyStore.dirty || keyStore.touched)"
+                                   class="text-danger help-block">
+                                <div *ngIf="keyStore.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row m-t-sm">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.agent.label.keyStorePassword
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.agent.tooltip.keyStorePassword' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((keyStorePassword.dirty || keyStorePassword.touched) && keyStorePassword.invalid)}">
+                              <input autocomplete="off" type="text" #keyStorePassword="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="akeyStorePassword{{i}}"
+                                     placeholder="{{'deploymentService.agent.placeholder.keyStorePassword' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.keyStorePassword">
+                              <div
+                                *ngIf="keyStorePassword.invalid && (keyStorePassword.dirty || keyStorePassword.touched)"
+                                class="text-danger help-block">
+                                <div *ngIf="keyStorePassword.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row m-t-sm">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.agent.label.keyPassword
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.agent.tooltip.keyPassword' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((keyPassword.dirty || keyPassword.touched) && keyPassword.invalid)}">
+                              <input autocomplete="off" type="text" #keyPassword="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="akeyPassword{{i}}"
+                                     placeholder="{{'deploymentService.agent.placeholder.keyPassword' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.keyPassword">
+                              <div *ngIf="keyPassword.invalid && (keyPassword.dirty || keyPassword.touched)"
+                                   class="text-danger help-block">
+                                <div *ngIf="keyPassword.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.agent.label.keyAlias
+
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.agent.tooltip.keyAlias' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3">
+                              <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                     name="akeyAlias{{i}}"
+                                     placeholder="{{'deploymentService.agent.placeholder.keyAlias' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.keyAlias">
+                            </div>
+                          </div>
+                          <div class="row m-t-sm">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.agent.label.trustStore
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.agent.tooltip.trustStore' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((trustStore.dirty || trustStore.touched) && trustStore.invalid)}">
+                              <input autocomplete="off" type="text" #trustStore="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="atrustStore{{i}}"
+                                     placeholder="{{'deploymentService.agent.placeholder.trustStore' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.trustStore">
+                              <div *ngIf="trustStore.invalid && (trustStore.dirty || trustStore.touched)"
+                                   class="text-danger help-block">
+                                <div *ngIf="trustStore.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row m-t-sm">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.agent.label.trustStorePassword
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.agent.tooltip.trustStorePassword' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((trustStorePassword.dirty || trustStorePassword.touched) && trustStorePassword.invalid)}">
+                              <input autocomplete="off" type="text" #trustStorePassword="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="atrustStorePassword{{i}}"
+                                     placeholder="{{'deploymentService.agent.placeholder.trustStorePassword' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.trustStorePassword">
+                              <div
+                                *ngIf="trustStorePassword.invalid && (trustStorePassword.dirty || trustStorePassword.touched)"
+                                class="text-danger help-block">
+                                <div *ngIf="trustStorePassword.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row m-t-12" *ngFor="let temp of item.configuration.templates; let j = index">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label *ngIf="j == 0" translate>deploymentService.agent.label.templates
+
+                            </label> <i *ngIf="j == 0" class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.agent.tooltip.templates' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 ">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                   name="atemplates{{i}}{{j}}"
+                                   placeholder="{{'deploymentService.agent.placeholder.templates' | translate}}"
+                                   [(ngModel)]="temp.name">
+                            <i (click)="addTemplates(item.configuration.templates)"
+                               class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: 0;"></i>
+                            <i *ngIf="j != 0" (click)="removeTemplates(item.configuration.templates, j)"
+                               class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -18px;"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+
+                    <div class="m-t-sm" style="margin-bottom: -8px;">
+                      <a *ngIf="item.isMoreKeyFileDetail" class="text-primary text-hover-primary"
+                         (click)="item.isMoreKeyFileDetail = false"
+                         translate>deploymentService.button.hideMoreOption</a>
+                      <a *ngIf="!item.isMoreKeyFileDetail" class="text-primary text-hover-primary"
+                         (click)="item.isMoreKeyFileDetail = true"
+                         translate>deploymentService.button.showMoreOption</a>
+                    </div>
                   </div>
                 </div>
-
+                <div class="m-t">
+                  <a class="text-primary text-hover-primary" (click)="addAnotherAgent()"
+                     translate>deploymentService.agent.button.addAnotherAgent</a>
+                </div>
               </div>
               <hr>
             </div>
@@ -1037,6 +1577,25 @@
                    (click)="removeController()"></i>
               </h5>
               <div class="m-l-md hide" [ngClass]="{'fade-in show': obj.isControllerExpanded}">
+                <div class="row m-t-sm">
+                  <div class="col-sm-4 col-lg-3 form-control-label">
+                    <label translate>deploymentService.controller.label.controllerId
+                      <sup class="text-danger text-sm">*</sup>
+                    </label> <i class="p-l-sm fa fa-info-circle"
+                                [nz-tooltip]="'deploymentService.controller.tooltip.controllerId' | translate"></i>
+                  </div>
+                  <div class="col-sm-6 col-lg-4"
+                       [ngClass]="{'has-error' : ((controllerId.dirty || controllerId.touched) && controllerId.invalid)}">
+                    <input autocomplete="off" type="text" class="form-control w-xxxl" #controllerId="ngModel" required
+                           name="controllerId" placeholder="{{'deploymentService.controller.placeholder.controllerId' | translate}}"
+                           [(ngModel)]="data.controllerId" (blur)="convertJSON()">
+                    <div *ngIf="controllerId.invalid && (controllerId.dirty || controllerId.touched)" class="text-danger help-block">
+                      <div *ngIf="controllerId.errors.required" translate>
+                        common.message.requiredError
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div *ngFor="let item of data.controllers; let i = index">
 
                   <h6 class="m-t-12">
@@ -1046,14 +1605,530 @@
                        (click)="item.isControllerPropertiesExpanded = !item.isControllerPropertiesExpanded"
                        [ngClass]="{'fa-caret-up': !item.isControllerPropertiesExpanded}"></i>
                     <i *ngIf="i != 0" class="fa fa-trash pull-right text-hover-color p-r-sm font14 cursor"
-                       (click)="removeSecondaryJOC()"></i>
+                       (click)="removeSecondaryController()"></i>
                   </h6>
                   <div class="p-a b-a hide" [ngClass]="{'fade-in show': !item.isControllerPropertiesExpanded}">
+                    <h6 translate>deploymentService.label.target </h6>
+                    <div class="p-a b-a">
+                      <h6 translate>deploymentService.label.connection </h6>
+                      <div class="p-a b-a">
+                        <div class="row">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.controller.label.host
+                              <sup class="text-danger text-sm">*</sup>
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.controller.tooltip.host' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3"
+                               [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl" #host="ngModel" required
+                                   name="chost{{i}}" (blur)="convertJSON()"
+                                   placeholder="{{'deploymentService.controller.placeholder.host' | translate}}"
+                                   [(ngModel)]="item.target.connection.host">
+                            <div *ngIf="host.invalid && (host.dirty || host.touched)" class="text-danger help-block">
+                              <div *ngIf="host.errors.required" translate>
+                                common.message.requiredError
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
+                        <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.controller.label.port
+
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.controller.tooltip.port' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3">
+                            <nz-input-number class="w-xxxl" nzPlaceHolder="{{'deploymentService.controller.placeholder.port' | translate}}"
+                                             [nzMin]="1" [nzStep]="1" name="cport{{i}}" [(ngModel)]="item.target.connection.port"></nz-input-number>
+                          </div>
+                        </div>
+                      </div>
+                      <h6 class="m-t-12" translate>deploymentService.label.authentication </h6>
+                      <div class="p-a b-a">
+                        <div class="row">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.controller.label.method
+                              <sup class="text-danger text-sm">*</sup>
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.controller.tooltip.method' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3"
+                               [ngClass]="{'has-error' : ((method.dirty || method.touched) && method.invalid)}">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl" #method="ngModel" required
+                                   name="cmethod{{i}}" (blur)="convertJSON()"
+                                   placeholder="{{'deploymentService.controller.placeholder.method' | translate}}"
+                                   [(ngModel)]="item.target.authentication.method">
+                            <div *ngIf="method.invalid && (method.dirty || method.touched)"
+                                 class="text-danger help-block">
+                              <div *ngIf="method.errors.required" translate>
+                                common.message.requiredError
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row m-t-sm">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.controller.label.user
+                              <sup class="text-danger text-sm">*</sup>
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.controller.tooltip.user' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3"
+                               [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid)}">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl" #user="ngModel" required
+                                   name="cuser{{i}}" (blur)="convertJSON()"
+                                   placeholder="{{'deploymentService.controller.placeholder.user' | translate}}"
+                                   [(ngModel)]="item.target.authentication.user">
+                            <div *ngIf="user.invalid && (user.dirty || user.touched)" class="text-danger help-block">
+                              <div *ngIf="user.errors.required" translate>
+                                common.message.requiredError
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label translate>deploymentService.controller.label.keyFile
+
+                            </label> <i class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.controller.tooltip.keyFile' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 p-l-3">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl" name="ckeyFile{{i}}"
+                                   placeholder="{{'deploymentService.controller.placeholder.keyFile' | translate}}"
+                                   [(ngModel)]="item.target.authentication.keyFile">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.packageLocation
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.packageLocation' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4"
+                             [ngClass]="{'has-error' : ((packageLocation.dirty || packageLocation.touched) && packageLocation.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #packageLocation="ngModel"
+                                 required name="cpackageLocation{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.controller.placeholder.packageLocation' | translate}}"
+                                 [(ngModel)]="item.target.packageLocation">
+                          <div *ngIf="packageLocation.invalid && (packageLocation.dirty || packageLocation.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="packageLocation.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.execPre
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.execPre' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" name="cexecPre{{i}}"
+                                 placeholder="{{'deploymentService.controller.placeholder.execPre' | translate}}"
+                                 [(ngModel)]="item.target.execPre">
+
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.execPost
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.execPost' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" name="cexecPost{{i}}"
+                                 placeholder="{{'deploymentService.controller.placeholder.execPost' | translate}}"
+                                 [(ngModel)]="item.target.execPost">
+
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3">
+                          <label translate>deploymentService.controller.label.makeService
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.makeService' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <label nz-checkbox [(ngModel)]="item.target.makeService" name="cmakeService{{i}}"></label>
+                        </div>
+                      </div>
+                    </div>
+                    <h6 class="m-t-12" translate>deploymentService.label.media </h6>
+                    <div class="p-a b-a">
+                      <div class="row">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.release
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.release' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((release.dirty || release.touched) && release.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #release="ngModel" required
+                                 name="crelease{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.controller.placeholder.release' | translate}}"
+                                 [(ngModel)]="item.media.release">
+                          <div *ngIf="release.invalid && (release.dirty || release.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="release.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.tarball
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.tarball' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4"
+                             [ngClass]="{'has-error' : ((tarball.dirty || tarball.touched) && tarball.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #tarball="ngModel" required
+                                 name="ctarball{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.controller.placeholder.tarball' | translate}}"
+                                 [(ngModel)]="item.media.tarball">
+                          <div *ngIf="tarball.invalid && (tarball.dirty || tarball.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="tarball.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <h6 class="m-t-12" translate>deploymentService.label.installation </h6>
+                    <div class="p-a b-a">
+
+                      <div class="row">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.home
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.home' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((home.dirty || home.touched) && home.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #home="ngModel" required
+                                 name="chome{{i}}" placeholder="{{'deploymentService.controller.placeholder.home' | translate}}"
+                                 [(ngModel)]="item.installation.home" (blur)="convertJSON()">
+                          <div *ngIf="home.invalid && (home.dirty || home.touched)" class="text-danger help-block">
+                            <div *ngIf="home.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.data
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.data' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((data.dirty || data.touched) && data.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #data="ngModel" required
+                                 name="cdata{{i}}" placeholder="{{'deploymentService.controller.placeholder.data' | translate}}"
+                                 [(ngModel)]="item.installation.data" (blur)="convertJSON()">
+                          <div *ngIf="data.invalid && (data.dirty || data.touched)" class="text-danger help-block">
+                            <div *ngIf="data.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.homeOwner
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.homeOwner' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 ">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="chomeOwner{{i}}"
+                                 placeholder="{{'deploymentService.controller.placeholder.homeOwner' | translate}}"
+                                 [(ngModel)]="item.installation.homeOwner">
+                        </div>
+                      </div>
+
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.dataOwner
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.dataOwner' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 ">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="cdataOwner{{i}}"
+                                 placeholder="{{'deploymentService.controller.placeholder.dataOwner' | translate}}"
+                                 [(ngModel)]="item.installation.dataOwner">
+                        </div>
+                      </div>
+
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.runUser
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.runUser' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 ">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="crunUser{{i}}"
+                                 placeholder="{{'deploymentService.controller.placeholder.runUser' | translate}}"
+                                 [(ngModel)]="item.installation.runUser">
+                        </div>
+                      </div>
+
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.httpPort
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.httpPort' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((httpPort.dirty || httpPort.touched) && httpPort.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #httpPort="ngModel" required
+                                 name="chttpPort{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.controller.placeholder.httpPort' | translate}}"
+                                 [(ngModel)]="item.installation.httpPort">
+                          <div *ngIf="httpPort.invalid && (httpPort.dirty || httpPort.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="httpPort.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row m-t-sm">
+                        <div class="col-sm-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.controller.label.httpsPort
+                            <sup class="text-danger text-sm">*</sup>
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.httpsPort' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 "
+                             [ngClass]="{'has-error' : ((httpsPort.dirty || httpsPort.touched) && httpsPort.invalid)}">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl" #httpsPort="ngModel"
+                                 required name="chttpsPort{{i}}" (blur)="convertJSON()"
+                                 placeholder="{{'deploymentService.controller.placeholder.httpsPort' | translate}}"
+                                 [(ngModel)]="item.installation.httpsPort">
+                          <div *ngIf="httpsPort.invalid && (httpsPort.dirty || httpsPort.touched)"
+                               class="text-danger help-block">
+                            <div *ngIf="httpsPort.errors.required" translate>
+                              common.message.requiredError
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3">
+                          <label translate>deploymentService.controller.label.javaHome
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.javaHome' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="cjavaHome{{i}}" placeholder="{{'deploymentService.controller.placeholder.javaHome' | translate}}"
+                                 [(ngModel)]="item.installation.javaHome">
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-sm-4 col-lg-3">
+                          <label translate>deploymentService.controller.label.javaOptions
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.controller.tooltip.javaOptions' | translate"></i>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                          <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                 name="cjavaOptions{{i}}"
+                                 placeholder="{{'deploymentService.controller.placeholder.javaOptions' | translate}}"
+                                 [(ngModel)]="item.installation.javaOptions">
+                        </div>
+                      </div>
+                    </div>
+                    <ng-container *ngIf="item.isMoreKeyFileDetail">
+                      <h6 class="m-t-12" translate>deploymentService.label.configuration </h6>
+                      <div class="p-a b-a">
+                        <h6 translate>deploymentService.label.certificates </h6>
+                        <div class="p-a b-a">
+                          <div class="row">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.controller.label.keyStore
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.controller.tooltip.keyStore' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((keyStore.dirty || keyStore.touched) && keyStore.invalid)}">
+                              <input autocomplete="off" type="text" #keyStore="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="ckeyStore{{i}}"
+                                     placeholder="{{'deploymentService.controller.placeholder.keyStore' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.keyStore">
+                              <div *ngIf="keyStore.invalid && (keyStore.dirty || keyStore.touched)"
+                                   class="text-danger help-block">
+                                <div *ngIf="keyStore.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row m-t-sm">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.controller.label.keyStorePassword
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.controller.tooltip.keyStorePassword' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((keyStorePassword.dirty || keyStorePassword.touched) && keyStorePassword.invalid)}">
+                              <input autocomplete="off" type="text" #keyStorePassword="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="ckeyStorePassword{{i}}"
+                                     placeholder="{{'deploymentService.controller.placeholder.keyStorePassword' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.keyStorePassword">
+                              <div
+                                *ngIf="keyStorePassword.invalid && (keyStorePassword.dirty || keyStorePassword.touched)"
+                                class="text-danger help-block">
+                                <div *ngIf="keyStorePassword.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row m-t-sm">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.controller.label.keyPassword
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.controller.tooltip.keyPassword' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((keyPassword.dirty || keyPassword.touched) && keyPassword.invalid)}">
+                              <input autocomplete="off" type="text" #keyPassword="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="ckeyPassword{{i}}"
+                                     placeholder="{{'deploymentService.controller.placeholder.keyPassword' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.keyPassword">
+                              <div *ngIf="keyPassword.invalid && (keyPassword.dirty || keyPassword.touched)"
+                                   class="text-danger help-block">
+                                <div *ngIf="keyPassword.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.controller.label.keyAlias
+
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.controller.tooltip.keyAlias' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3">
+                              <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                     name="ckeyAlias{{i}}"
+                                     placeholder="{{'deploymentService.controller.placeholder.keyAlias' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.keyAlias">
+                            </div>
+                          </div>
+                          <div class="row m-t-sm">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.controller.label.trustStore
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.controller.tooltip.trustStore' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((trustStore.dirty || trustStore.touched) && trustStore.invalid)}">
+                              <input autocomplete="off" type="text" #trustStore="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="ctrustStore{{i}}"
+                                     placeholder="{{'deploymentService.controller.placeholder.trustStore' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.trustStore">
+                              <div *ngIf="trustStore.invalid && (trustStore.dirty || trustStore.touched)"
+                                   class="text-danger help-block">
+                                <div *ngIf="trustStore.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row m-t-sm">
+                            <div class="col-sm-4 col-lg-3 form-control-label">
+                              <label translate>deploymentService.controller.label.trustStorePassword
+                                <sup class="text-danger text-sm">*</sup>
+                              </label> <i class="p-l-sm fa fa-info-circle"
+                                          [nz-tooltip]="'deploymentService.controller.tooltip.trustStorePassword' | translate"></i>
+                            </div>
+                            <div class="col-sm-6 col-lg-4 p-l-3"
+                                 [ngClass]="{'has-error' : ((trustStorePassword.dirty || trustStorePassword.touched) && trustStorePassword.invalid)}">
+                              <input autocomplete="off" type="text" #trustStorePassword="ngModel" required
+                                     class="form-control w-xxxl" (blur)="convertJSON()"
+                                     name="ctrustStorePassword{{i}}"
+                                     placeholder="{{'deploymentService.controller.placeholder.trustStorePassword' | translate}}"
+                                     [(ngModel)]="item.configuration.certificates.trustStorePassword">
+                              <div
+                                *ngIf="trustStorePassword.invalid && (trustStorePassword.dirty || trustStorePassword.touched)"
+                                class="text-danger help-block">
+                                <div *ngIf="trustStorePassword.errors.required" translate>
+                                  common.message.requiredError
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row m-t-12" *ngFor="let temp of item.configuration.templates; let j = index">
+                          <div class="col-sm-4 col-lg-3 form-control-label">
+                            <label *ngIf="j == 0" translate>deploymentService.controller.label.templates
+
+                            </label> <i *ngIf="j == 0" class="p-l-sm fa fa-info-circle"
+                                        [nz-tooltip]="'deploymentService.controller.tooltip.templates' | translate"></i>
+                          </div>
+                          <div class="col-sm-6 col-lg-4 ">
+                            <input autocomplete="off" type="text" class="form-control w-xxxl"
+                                   name="ctemplates{{i}}{{j}}"
+                                   placeholder="{{'deploymentService.controller.placeholder.templates' | translate}}"
+                                   [(ngModel)]="temp.name">
+                            <i (click)="addTemplates(item.configuration.templates)"
+                               class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: 0;"></i>
+                            <i *ngIf="j != 0" (click)="removeTemplates(item.configuration.templates, j)"
+                               class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -18px;"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+
+                    <div class="m-t-sm" style="margin-bottom: -8px;">
+                      <a *ngIf="item.isMoreKeyFileDetail" class="text-primary text-hover-primary"
+                         (click)="item.isMoreKeyFileDetail = false"
+                         translate>deploymentService.button.hideMoreOption</a>
+                      <a *ngIf="!item.isMoreKeyFileDetail" class="text-primary text-hover-primary"
+                         (click)="item.isMoreKeyFileDetail = true"
+                         translate>deploymentService.button.showMoreOption</a>
+                    </div>
                   </div>
                   <div class="m-t" *ngIf="data.controllers.length != 2">
                     <a class="text-primary text-hover-primary" (click)="addSecondaryController()"
-                       translate>deploymentService.constroller.button.addSecondaryController</a>
+                       translate>deploymentService.controller.button.addSecondaryController</a>
                   </div>
                 </div>
               </div>
