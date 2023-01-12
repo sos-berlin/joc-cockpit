@@ -10622,7 +10622,17 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
             json.instructions[x].TYPE = 'Try';
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
           }
-          if (json.instructions[x].TYPE === 'Lock') {
+          if (json.instructions[x].TYPE === 'AddOrder') {
+            const workflowName = clone(json.instructions[x].workflowName);
+            const argu = clone(json.instructions[x].arguments);
+            const remainWhenTerminated = clone(json.instructions[x].remainWhenTerminated);
+            delete json.instructions[x].workflowName;
+            delete json.instructions[x].arguments;
+            delete json.instructions[x].remainWhenTerminated;
+            json.instructions[x].workflowName = workflowName;
+            json.instructions[x].arguments = argu;
+            json.instructions[x].remainWhenTerminated = remainWhenTerminated;
+          } else if (json.instructions[x].TYPE === 'Lock') {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions
             };
