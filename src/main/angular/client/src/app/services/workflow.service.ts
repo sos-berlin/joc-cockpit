@@ -1765,7 +1765,7 @@ export class WorkflowService {
               str = x;
             }
             if (((cell.source.value.tagName === 'AddOrder'))) {
-              str = x;
+              str = cell.source.getAttribute('workflowName');
             }
           } else {
             this.translate.get('workflow.label.' + x).subscribe(translatedValue => {

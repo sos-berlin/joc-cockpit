@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="form-group row" *ngIf="object.addOrdersDateFrom == 'startingFrom'">
-        <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime
+        <label class="col-md-3 form-control-label" translate>common.label.specificDate
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-md-6" [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}">
@@ -56,13 +56,6 @@
             <div *ngIf="date.errors.required">
               <div translate>common.message.requiredError</div>
             </div>
-          </div>
-          <div class="time-picker" [ngClass]="{'has-error': (time.dirty || time.touched) && time.invalid}">
-            <input timevalidator validTimeReqex [disabled]="!dateObj.fromDate" type="text" #time="ngModel" class="form-control"
-                   name="fromTime" [(ngModel)]="dateObj.fromTime" (ngModelChange)="selectTime(dateObj.fromTime, true)"
-                   placeholder="HH:MM:SS">
-            <nz-time-picker [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)" [(ngModel)]="dateObj.fromTime1"
-                            name="fromTimeIcon"></nz-time-picker>
           </div>
         </div>
       </div>
