@@ -329,7 +329,7 @@
     "label.auditLog": "Journal d'Audit",
     "label.configuration": "Configuration",
     "label.manageControllersAndAgents": "Gérer les Contrôleurs et les Agents",
-    "label.manageDeployment": "Manage Deployment",
+    "label.manageDeployment": "Gérer le Deploiement",
     "label.manageRoles": "Rôles",
     "label.profiles": "Profils",
     "label.manageUser": "Comptes",
@@ -1317,7 +1317,7 @@
     "button.logging": "Enregistrement",
     "button.manageAccount": "Gérer les Services d'Identité",
     "button.manageControllersAndAgents": "Gérer Contrôleurs/Agents",
-    "button.manageDeployment": "Manage Deployment",
+    "button.manageDeployment": "Gérer le Deploiement",
     "button.logOut": "Se Déconnecter"
   },
   "history": {
@@ -2004,10 +2004,10 @@
       }
     },
     "addOrdersDateFrom": {
-      "addOrders": "Add Orders",
-      "no": "No",
-      "now": "Now",
-      "startingFrom": "Starting from"
+      "addOrders": "Mettre à jour le Plan Quotidien",
+      "no": "Non",
+      "now": "Maintenant",
+      "startingFrom": "À partir de"
     }
   },
   "license": {

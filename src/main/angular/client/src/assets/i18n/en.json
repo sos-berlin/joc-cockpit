@@ -2004,10 +2004,10 @@
       }
     },
     "addOrdersDateFrom": {
-      "addOrders": "Add Orders",
+      "addOrders": "Update Daily Plan",
       "no": "No",
       "now": "Now",
-      "startingFrom": "Starting from"
+      "startingFrom": "Start Date"
     }
   },
   "license": {
