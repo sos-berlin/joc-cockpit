@@ -804,6 +804,7 @@
       "license": "License",
       "joc": "JOC",
       "agents": "Agents",
+      "controller": "Controller",
       "controllers": "Controllers",
       "target": "Target",
       "connection": "Connection",
@@ -816,7 +817,9 @@
     },
     "button": {
       "showMoreOption": "Show More Option",
-      "hideMoreOption": "Hide More Option"
+      "hideMoreOption": "Hide More Option",
+      "validate": "Validate",
+      "showJSON": "Show JSON"
     },
     "descriptor": {
       "label" : {

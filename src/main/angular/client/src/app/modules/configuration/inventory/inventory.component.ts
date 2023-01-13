@@ -134,6 +134,7 @@ export class SingleDeployComponent implements OnInit {
   @Input() data;
   @Input() type;
   @Input() display: any;
+  @Input() releasable: boolean;
   @Input() isRevoke: boolean;
   @Input() isChecked: boolean;
   selectedSchedulerIds = [];
@@ -232,12 +233,16 @@ export class SingleDeployComponent implements OnInit {
 
   deploy(): void {
     this.submitted = true;
+    if (this.releasable) {
+      this.release();
+      return;
+    }
     this.getJSObject();
     const obj: any = {
       controllerIds: this.selectedSchedulerIds,
       auditLog: {}
     };
-    if(!this.isRevoke) {
+    if (!this.isRevoke) {
       if (this.object.addOrdersDateFrom == 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.object.addOrdersDateFrom == 'now') {
@@ -272,14 +277,38 @@ export class SingleDeployComponent implements OnInit {
     });
   }
 
+  release(): void {
+    const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
+    let obj: any = {
+      auditLog: {}
+    };
+    if (this.object.addOrdersDateFrom == 'startingFrom') {
+      obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+    } else if (this.object.addOrdersDateFrom == 'now') {
+      obj.addOrdersDateFrom = 'now';
+    }
+    if (this.data.deleted) {
+      obj.delete = [{objectType: this.data.objectType, path: PATH}];
+    } else {
+      obj.update = [{objectType: this.data.objectType, path: PATH}];
+    }
+
+    this.coreService.post('inventory/release', obj).subscribe({
+      next: () => {
+        this.activeModal.close('ok');
+      }, error: () => this.submitted = false
+    });
+  }
+
   cancel(): void {
     this.activeModal.destroy();
   }
 
   private getSingleObject(obj): void {
-    this.coreService.post('inventory/deployable', obj).subscribe({
+    this.coreService.post((this.releasable ? 'inventory/releasable' : 'inventory/deployable'), obj).subscribe({
       next: (res: any) => {
-        const result = res.deployable;
+        console.log(res)
+        const result = res.deployable || res.releasable;
         if (result.deployablesVersions && result.deployablesVersions.length > 0 && !result.deleted) {
           result.deployId = '';
           if (result.deployablesVersions[0].versions && result.deployablesVersions[0].versions.length > 0) {
@@ -756,7 +785,13 @@ export class DeployComponent implements OnInit {
         }
       }
     }
-
+    if (this.operation !== 'recall' && !this.isRevoke) {
+      if (this.object.addOrdersDateFrom == 'startingFrom') {
+        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+      } else if (this.object.addOrdersDateFrom == 'now') {
+        obj.addOrdersDateFrom = 'now';
+      }
+    }
     const URL = this.releasable ? this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release' : this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe({
       next: () => {
@@ -2407,8 +2442,8 @@ export class ImportWorkflowModalComponent implements OnInit {
   onFileSelected(event: any): void {
     const item = event['0'];
     const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1);
-    if (fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/)){
-      if(fileExt === 'zip'){
+    if (fileExt === 'zip' || fileExt.match(/tar/) || fileExt.match(/gz/)) {
+      if (fileExt === 'zip') {
         this.requestObj.format = 'ZIP';
       } else {
         this.requestObj.format = 'TAR_GZ';
@@ -4119,12 +4154,17 @@ export class InventoryComponent implements OnInit, OnDestroy {
       this.selectedObj.type === InventoryObject.WORKFLOW) {
       this.dataService.reloadTree.next({saveObject: origin});
     }
+    let flag = false;
     if (releasable && origin.objectType) {
-      this.releaseSingleObject(origin, operation);
-      return;
+      if (!origin.objectType.match(/CALENDAR/) && origin.objectType !== InventoryObject.SCHEDULE) {
+        this.releaseSingleObject(origin, operation);
+        return;
+      } else {
+        flag = true;
+      }
     }
 
-    if (origin.type || this.inventoryService.isControllerObject(origin.objectType)) {
+    if (origin.type || flag || this.inventoryService.isControllerObject(origin.objectType)) {
       if (!node.origin) {
         if (origin.configuration) {
           origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
@@ -4137,6 +4177,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           schedulerIds: this.getAllowedControllerOnly(),
           display: this.preferences.auditLog,
           data: origin,
+          releasable: releasable,
           isChecked: this.inventoryService.checkDeploymentStatus.isChecked
         },
         nzFooter: null,
@@ -4890,7 +4931,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       }, 50);
       return;
     }
-    if (this.coreService.expertMode == undefined || this.coreService.expertMode == null){
+    if (this.coreService.expertMode == undefined || this.coreService.expertMode == null) {
       this.coreService.expertMode = this.preferences.showMoreOptions;
     }
     this.getAgents();
@@ -5206,7 +5247,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
       if (paths.length > 0) {
         paths.forEach((path, index) => {
           this.updateFolders(path, _isTrash, () => {
-            if(index == paths.length -1) {
+            if (index == paths.length - 1) {
               this.updateTree(_isTrash);
             }
           });

@@ -804,6 +804,7 @@
       "license": "License",
       "joc": "JOC",
       "agents": "Agents",
+      "controller": "Controller",
       "controllers": "Controllers",
       "target": "Target",
       "connection": "Connection",
@@ -816,7 +817,9 @@
     },
     "button": {
       "showMoreOption": "Show More Option",
-      "hideMoreOption": "Hide More Option"
+      "hideMoreOption": "Hide More Option",
+      "validate": "Validate",
+      "showJSON": "Show JSON"
     },
     "descriptor": {
       "label" : {
@@ -1013,7 +1016,8 @@
       },
       "button": {
         "addPrimaryController": "Add Primary Controller",
-        "addSecondaryController": "Add Secondary Controller"
+        "addSecondaryController": "Add Secondary Controller",
+        "addAnotherController": "Add Another Controller"
       },
       "placeholder" :{
         "host": "Enter Host",
@@ -1117,7 +1121,8 @@
       },
       "button": {
         "addPrimaryJOC": "Add Primary JOC",
-        "addSecondaryJOC": "Add Secondary JOC"
+        "addSecondaryJOC": "Add Secondary JOC",
+        "addAnotherJOC": "Add Another JOC"
       },
       "placeholder" :{
         "jocId": "Enter JOC ID",
