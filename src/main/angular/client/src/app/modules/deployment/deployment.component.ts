@@ -1,6 +1,69 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {isEmpty} from 'underscore';
+import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
+import {ClipboardService} from "ngx-clipboard";
+import {NzMessageService} from "ng-zorro-antd/message";
+
+@Component({
+  selector: 'app-show-json',
+  templateUrl: './show-json-dialog.html'
+})
+export class ShowJsonModalComponent implements OnInit {
+  @Input() object: any;
+  @Input() edit: boolean;
+  @Input() schedulerId: any;
+  @Input() preferences: any = {};
+  submitted = false;
+  isError = false;
+  data: any;
+  errorMsg: string;
+  options = new JsonEditorOptions();
+
+  @ViewChild('editor', {static: false}) editor: JsonEditorComponent;
+
+  constructor(public coreService: CoreService, private clipboardService: ClipboardService, public activeModal: NzModalRef,
+              private message: NzMessageService) {
+    this.options.mode = 'code';
+    this.options.onEditable = () => {
+      return this.edit;
+    };
+    this.options.onChange = () => {
+      try {
+        this.isError = false;
+        this.editor.get();
+      } catch (err) {
+        this.isError = true;
+        this.errorMsg = '';
+      }
+    };
+  }
+
+  ngOnInit(): void {
+    this.coreService.get('assets/i18n/json-editor-text_' + this.preferences.locale + '.json').subscribe((data) => {
+      this.options.languages = {};
+      this.options.languages[this.preferences.locale] = data;
+      this.options.language = this.preferences.locale;
+      this.editor.setOptions(this.options);
+    });
+    this.options.modes = ['code', 'tree'];
+    this.data = this.object;
+    console.log(this.data)
+  }
+
+  copyToClipboard(): void {
+    this.coreService.showCopyMessage(this.message);
+    this.clipboardService.copyFromContent(this.editor.getText());
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    this.activeModal.close(this.editor.get());
+    this.submitted = false;
+  }
+
+}
 
 @Component({
   selector: 'app-deployment',
@@ -29,7 +92,7 @@ export class DeploymentComponent implements OnInit {
   isValid = false;
   errorMessages: Array<string> = [];
 
-  constructor(private coreService: CoreService) {
+  constructor(private coreService: CoreService, private modal: NzModalService) {
 
   }
 
@@ -43,6 +106,7 @@ export class DeploymentComponent implements OnInit {
   }
 
   addAgent(): void {
+    this.obj.isAgentExpanded = true;
     this.data.agents.push({
       target: {
         connection: {},
@@ -64,6 +128,7 @@ export class DeploymentComponent implements OnInit {
   }
 
   addController(): void {
+    this.obj.isControllerExpanded = true;
     this.data.controllers.push({
       target: {
         connection: {},
@@ -144,6 +209,105 @@ export class DeploymentComponent implements OnInit {
   }
 
   convertJSON(): void {
+
+  }
+
+  private checkAndUpdateObj(obj, type, source): void {
+    if (!isEmpty(source.target.connection) || !isEmpty(source.target.authentication)
+      || source.target.packageLocation || source.target.execPre || source.target.execPost || source.target.makeService) {
+      obj.target = {
+        packageLocation: source.target.packageLocation,
+        execPre: source.target.execPre,
+        execPost: source.target.execPost,
+        makeService: source.target.makeService
+      };
+    }
+    if (source.target.connection && !isEmpty(source.target.connection)) {
+      if (!obj.target.connection) {
+        obj.target.connection = {};
+      }
+      if (!source.target.connection.host) {
+        this.isValid = false;
+        this.errorMessages.push('Connection host is required');
+      }
+      obj.target.connection = source.target.connection;
+    }
+    if (source.target.authentication && !isEmpty(source.target.authentication)) {
+      if (!obj.target.authentication) {
+        obj.target.authentication = {};
+      }
+      if (!source.target.authentication.method || !source.target.authentication.user) {
+        this.isValid = false;
+        this.errorMessages.push(!source.target.authentication.method ? 'Authentication method is required' : 'Authentication user is required');
+      }
+      obj.target.authentication = source.target.authentication;
+    }
+
+    if (source.media && !isEmpty(source.media)) {
+      if (!source.media.release || !source.media.tarball) {
+        this.isValid = false;
+        this.errorMessages.push(!source.media.release ? 'Media release is required' : 'Media tarball is required');
+      }
+      obj.media = source.media;
+    } else {
+      this.isValid = false;
+      this.errorMessages.push('Media is required');
+    }
+
+    if (source.installation && !isEmpty(source.installation)) {
+      if ((type == 'joc' && !source.installation.setupDir) || !source.installation.home || !source.installation.data) {
+        this.isValid = false;
+        this.errorMessages.push((type == 'joc' && !source.installation.setupDir) ? 'Installation setupDir is required' : !source.installation.home ? 'Installation home is required' : 'Installation data is required');
+      }
+      if(!source.installation.httpPort && !source.installation.httpsPort){
+        this.isValid = false;
+        this.errorMessages.push('Installation http or https port is required');
+      }
+      obj.installation = source.installation;
+    } else {
+      this.isValid = false;
+      this.errorMessages.push('Installation is required');
+    }
+
+    if (source.configuration && !isEmpty((source.configuration))) {
+      if (source.configuration.responseDir || !isEmpty(source.configuration.certificates) || !isEmpty(source.configuration.startFiles) || source.configuration.templates.length > 0) {
+        obj.configuration = {};
+        if (source.configuration.responseDir) {
+          obj.configuration.responseDir = source.configuration.responseDir;
+        }
+        if (source.configuration.templates.length > 0) {
+          source.configuration.templates.forEach((temp) => {
+            if (temp.name) {
+              if (!obj.configuration.templates) {
+                obj.configuration.templates = [];
+              }
+              obj.configuration.templates.push(temp.name)
+            }
+          });
+        }
+
+        if (source.configuration.startFiles && !isEmpty(source.configuration.startFiles)) {
+          obj.configuration.startFiles = source.configuration.startFiles;
+        }
+
+        if (!isEmpty(source.configuration.certificates)) {
+          obj.configuration.certificates = source.configuration.certificates;
+          if (!source.configuration.certificates.keyStore || !source.configuration.certificates.keyStorePassword || !source.configuration.certificates.keyPassword
+            || !source.configuration.certificates.trustStore || !source.configuration.certificates.trustStorePassword) {
+            this.isValid = false;
+            this.errorMessages.push(!source.configuration.certificates.keyStore ? 'Key store certificate is required' : !source.configuration.certificates.keyStorePassword ? 'Key store password certificate is required' :
+              !source.configuration.certificates.keyPassword ? 'Key password certificate is required' : !source.configuration.certificates.trustStore ? 'Trust store certificate is required' : 'Trust store password certificate is required');
+          }
+        }
+
+        if(isEmpty(obj.configuration)){
+          delete obj.configuration;
+        }
+      }
+    }
+  }
+
+  validate(): void{
     this.isValid = true;
     this.errorMessages = [];
     this.mainObj = {
@@ -237,95 +401,22 @@ export class DeploymentComponent implements OnInit {
     }
   }
 
-  private checkAndUpdateObj(obj, type, source): void {
-    if (!isEmpty(source.target.connection) || !isEmpty(source.target.authentication)
-      || source.target.packageLocation || source.target.execPre || source.target.execPost || source.target.makeService) {
-      obj.target = {
-        packageLocation: source.target.packageLocation,
-        execPre: source.target.execPre,
-        execPost: source.target.execPost,
-        makeService: source.target.makeService
-      };
-    }
-    if (source.target.connection && !isEmpty(source.target.connection)) {
-      if (!obj.target.connection) {
-        obj.target.connection = {};
-      }
-      if (!source.target.connection.host) {
-        this.isValid = false;
-        this.errorMessages.push('Connection host is required');
-      }
-      obj.target.connection = source.target.connection;
-    }
-    if (source.target.authentication && !isEmpty(source.target.authentication)) {
-      if (!obj.target.authentication) {
-        obj.target.authentication = {};
-      }
-      if (!source.target.authentication.method || !source.target.authentication.user) {
-        this.isValid = false;
-        this.errorMessages.push(!source.target.authentication.method ? 'Authentication method is required' : 'Authentication user is required');
-      }
-      obj.target.authentication = source.target.authentication;
-    }
-
-    if (source.media && !isEmpty(source.media)) {
-      if (!source.media.release || !source.media.tarball) {
-        this.isValid = false;
-        this.errorMessages.push(!source.media.release ? 'Media release is required' : 'Media tarball is required');
-      }
-      obj.media = source.media;
-    } else {
-      this.isValid = false;
-      this.errorMessages.push('Media is required');
-    }
-
-    if (source.installation && !isEmpty(source.installation)) {
-      if ((type == 'joc' && !source.installation.setupDir) || !source.installation.home || !source.installation.data) {
-        this.isValid = false;
-        this.errorMessages.push((type == 'joc' && !source.installation.setupDir) ? 'Installation setupDir is required' : !source.installation.home ? 'Installation home is required' : 'Installation data is required');
-      }
-      if(!source.installation.httpPort && !source.installation.httpsPort){
-        this.isValid = false;
-        this.errorMessages.push('Installation http or https port is required');
-      }
-      obj.installation = source.installation;
-    } else {
-      this.isValid = false;
-      this.errorMessages.push('Installation is required');
-    }
-
-    if (source.configuration && !isEmpty((source.configuration))) {
-      if (source.configuration.responseDir || !isEmpty(source.configuration.certificates) || !isEmpty(source.configuration.startFiles) || source.configuration.templates.length > 0) {
-        obj.configuration = {};
-        if (source.configuration.responseDir) {
-          obj.configuration.responseDir = source.configuration.responseDir;
-        }
-        if (source.configuration.templates.length > 0) {
-          source.configuration.templates.forEach((temp) => {
-            if (temp.name) {
-              if (!obj.configuration.templates) {
-                obj.configuration.templates = [];
-              }
-              obj.configuration.templates.push(temp.name)
-            }
-          });
-        }
-
-        if (source.configuration.startFiles && !isEmpty(source.configuration.startFiles)) {
-          obj.configuration.startFiles = source.configuration.startFiles;
-        }
-
-        if (!isEmpty(source.configuration.certificates)) {
-          obj.configuration.certificates = source.configuration.certificates;
-          if (!source.configuration.certificates.keyStore || !source.configuration.certificates.keyStorePassword || !source.configuration.certificates.keyPassword
-            || !source.configuration.certificates.trustStore || !source.configuration.certificates.trustStorePassword) {
-            this.isValid = false;
-            this.errorMessages.push(!source.configuration.certificates.keyStore ? 'Key store certificate is required' : !source.configuration.certificates.keyStorePassword ? 'Key store password certificate is required' :
-              !source.configuration.certificates.keyPassword ? 'Key password certificate is required' : !source.configuration.certificates.trustStore ? 'Trust store certificate is required' : 'Trust store password certificate is required');
-          }
-        }
-      }
-    }
+  showJSON(): void{
+    this.validate();
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowJsonModalComponent,
+      nzAutofocus: null,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        object: this.mainObj,
+        edit: false
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
+
 
 }

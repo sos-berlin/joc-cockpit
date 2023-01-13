@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title" >
-    <span *ngIf="!isRevoke" translate>inventory.label.deploy</span>
+    <span *ngIf="!isRevoke && !releasable" translate>inventory.label.deploy</span>
+    <span *ngIf="!isRevoke && releasable" translate>inventory.label.release</span>
     <span *ngIf="isRevoke" translate>inventory.label.revoke</span>
   </h4>
   <button type="button" class="close" (click)="cancel()" aria-label="Close">
@@ -13,7 +14,7 @@
       <div class="hide" [ngClass]="{'show': display}">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" *ngIf="!releasable">
         <label class="col-md-3 form-control-label">
           <label translate>inventory.label.controllers</label>
         </label>
@@ -29,7 +30,7 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row" *ngIf="data.objectType == 'WORKFLOW'">
+      <div class="form-group row" *ngIf="data.objectType == 'WORKFLOW' || releasable">
         <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
         <div class="col-md-9">
           <nz-radio-group name="addOrdersDateFrom" [(ngModel)]="object.addOrdersDateFrom">

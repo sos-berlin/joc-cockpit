@@ -162,7 +162,7 @@ export class CoreService {
     this.tabs._daliyPlan = {};
     this.tabs._daliyPlan.filter = {};
     this.tabs._daliyPlan.filter.status = 'ALL';
-    this.tabs._daliyPlan.filter.groupBy = 'ORDER';
+    this.tabs._daliyPlan.filter.groupBy = '';
     this.tabs._daliyPlan.filter.late = false;
     this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
     this.tabs._daliyPlan.reverse = true;

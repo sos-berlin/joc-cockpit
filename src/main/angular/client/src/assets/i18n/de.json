@@ -329,7 +329,7 @@
     "label.auditLog": "Prüfprotokoll",
     "label.configuration": "Konfiguration",
     "label.manageControllersAndAgents": "Controller und Agenten verwalten",
-    "label.manageDeployment": "Manage Deployment",
+    "label.manageDeployment": "Ausrollen verwalten",
     "label.manageRoles": "Rollen",
     "label.profiles": "Profile",
     "label.manageUser": "Konten",
@@ -804,6 +804,7 @@
       "license": "License",
       "joc": "JOC",
       "agents": "Agents",
+      "controller": "Controller",
       "controllers": "Controllers",
       "target": "Target",
       "connection": "Connection",
@@ -816,7 +817,9 @@
     },
     "button": {
       "showMoreOption": "Show More Option",
-      "hideMoreOption": "Hide More Option"
+      "hideMoreOption": "Hide More Option",
+      "validate": "Validate",
+      "showJSON": "Show JSON"
     },
     "descriptor": {
       "label" : {
@@ -1317,7 +1320,7 @@
     "button.logging": "Protokollierung",
     "button.manageAccount": "Identitätsdienste verwalten",
     "button.manageControllersAndAgents": "Controller/Agenten verwalten",
-    "button.manageDeployment": "Manage Deployment",
+    "button.manageDeployment": "Ausrollen verwalten",
     "button.logOut": "Abmelden"
   },
   "history": {
@@ -2004,10 +2007,10 @@
       }
     },
     "addOrdersDateFrom": {
-      "addOrders": "Add Orders",
-      "no": "No",
-      "now": "Now",
-      "startingFrom": "Starting from"
+      "addOrders": "Tagesplan aktualisieren",
+      "no": "Nein",
+      "now": "Jetzt",
+      "startingFrom": "Startdatum"
     }
   },
   "license": {

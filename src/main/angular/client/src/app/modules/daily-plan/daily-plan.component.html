@@ -501,6 +501,12 @@
                   <i class="fa fa-compress text"></i>
                 </button>
                 <button class="btn btn-grey btn-sm hidden-btn-text"
+                        [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy===''}"
+                        (click)="groupByWorkflow('')">
+                  <i class="icon icon-orders-icon"></i>
+                  <span translate>dailyPlan.button.groupByOrder</span>
+                </button>
+                <button class="btn btn-grey btn-sm hidden-btn-text"
                         [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='ORDER'}"
                         (click)="groupByWorkflow('ORDER')">
                   <i class="icon icon-calendar-icon"></i>
@@ -511,12 +517,6 @@
                         (click)="groupByWorkflow('WORKFLOW')">
                   <i class="icon icon-workflows-icon"></i>
                   <span translate>dailyPlan.button.groupByWorkflow</span>
-                </button>
-                <button class="btn btn-grey btn-sm hidden-btn-text"
-                        [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy===''}"
-                        (click)="groupByWorkflow('')">
-                  <i class="icon icon-orders-icon"></i>
-                  <span translate>dailyPlan.button.groupByOrder</span>
                 </button>
                 <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()"
                         [hidden]="showSearchPanel">
