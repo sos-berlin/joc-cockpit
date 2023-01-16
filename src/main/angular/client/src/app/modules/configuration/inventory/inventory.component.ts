@@ -145,7 +145,7 @@ export class SingleDeployComponent implements OnInit {
   comments: any = {radio: 'predefined'};
   dateFormat: any = {};
   object: any = {
-    addOrdersDateFrom: '',
+    addOrdersDateFrom: 'now',
     store: {draftConfigurations: [], deployConfigurations: []},
     delete: {deployConfigurations: []}
   };
@@ -307,7 +307,6 @@ export class SingleDeployComponent implements OnInit {
   private getSingleObject(obj): void {
     this.coreService.post((this.releasable ? 'inventory/releasable' : 'inventory/deployable'), obj).subscribe({
       next: (res: any) => {
-        console.log(res)
         const result = res.deployable || res.releasable;
         if (result.deployablesVersions && result.deployablesVersions.length > 0 && !result.deleted) {
           result.deployId = '';
@@ -351,7 +350,7 @@ export class DeployComponent implements OnInit {
   dateObj: any = {};
   object: any = {
     isRecursive: false,
-    addOrdersDateFrom: '',
+    addOrdersDateFrom: 'now',
     delete: [],
     update: [],
     releasables: [],

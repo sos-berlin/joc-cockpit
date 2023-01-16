@@ -8,12 +8,17 @@
           </div>
           <div class="show-inline">
             <div class="inline">
+              <ng-template #titleTemplate>
+                <div *ngFor="let err of errorMessages">
+                  {{err}}
+                </div>
+              </ng-template>
               <span class="badge badge-success m-r-12 pos-rel t-1"
                     [ngClass]="!isValid ? 'badge-danger':'badge-success'">
                   <span *ngIf="isValid" translate>inventory.label.valid</span>
                   <span *ngIf="!isValid">
                     <span translate>inventory.label.notValid</span>
-                    <i nz-tooltip="{{errorMessages.join(',') | translate}}" class="fa fa-info-circle p-l-xs"></i>
+                    <i nz-tooltip [nzTooltipTitle]="titleTemplate" class="fa fa-info-circle p-l-xs"></i>
                   </span>
               </span>
             </div>
@@ -34,15 +39,20 @@
               <i class="fa fa-plus"></i>
               {{'deploymentService.certificate.button.addCertificates' | translate}}
             </button>
-            <button *ngIf="data.agents.length == 0" type="button" class="btn btn-sm btn-grey m-l-12"
+            <button *ngIf="!data.joc || data.joc.length == 0" type="button" class="btn btn-sm btn-grey m-l-12"
+                    (click)="addJOC();">
+              <i class="fa fa-plus"></i>
+              {{'deploymentService.joc.button.addJOC' | translate}}
+            </button>
+            <button *ngIf="!data.agents || data.agents.length == 0" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="addAgent();">
               <i class="fa fa-plus"></i>
               {{'deploymentService.agent.button.addAgent' | translate}}
             </button>
-            <button *ngIf="data.controllers.length == 0" type="button" class="btn btn-sm btn-grey m-l-12"
+            <button *ngIf="!data.controllers || data.controllers.length == 0" type="button" class="btn btn-sm btn-grey m-l-12"
                     (click)="addController();">
               <i class="fa fa-plus"></i>
-              {{'deploymentService.controller.button.addPrimaryController' | translate}}
+              {{'deploymentService.controller.button.addController' | translate}}
             </button>
 
           </div>
@@ -57,6 +67,36 @@
       <div class="col-md-12">
         <div class="box p-a">
           <form #myForm="ngForm">
+            <div class="pos-abt r-15 t-10">
+              <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+                <li class="nav-item" [nz-tooltip]="'workflow.button.undo' | translate">
+                  <a class="nav-link"
+                     (click)="undo()">
+                    <span class="nav-text"> <i nz-icon nzType="undo" nzTheme="outline"></i></span>
+                  </a>
+                </li>
+                <li class="nav-item" [nz-tooltip]="'workflow.button.redo' | translate">
+                  <a class="nav-link"
+                     (click)="redo()">
+                    <span class="nav-text"> <i nz-icon nzType="redo" nzTheme="outline"></i></span>
+                  </a>
+                </li>
+                <li class="nav-item dropdown-separator">
+                  <span class="separator"></span>
+                </li>
+                <li class="nav-item" [nz-tooltip]="'inventory.button.download' | translate">
+                  <a class="nav-link"
+                     (click)="download()">
+                    <span class="nav-text">  <i nz-icon nzType="download" nzTheme="outline"></i></span>
+                  </a>
+                </li>
+                <li class="nav-item" [nz-tooltip]="'inventory.button.upload' | translate">
+                  <a class="nav-link" (click)="upload()">
+                    <span class="nav-text">  <i nz-icon nzType="upload" nzTheme="outline"></i></span>
+                  </a>
+                </li>
+              </ul>
+            </div>
             <div class="p-l-sm">
               <h5 class="p-l-sm" translate>deploymentService.label.descriptor
                 <i class="fa fa-caret-down p-l-xs text-hover-primary"
@@ -333,18 +373,18 @@
               <div class="m-l-md hide" [ngClass]="{'fade-in show': obj.isJOCExpanded}">
                 <div class="row m-t-sm">
                   <div class="col-md-4 col-lg-3 form-control-label">
-                    <label translate>deploymentService.joc.label.jocId
+                    <label translate>deploymentService.joc.label.jocClusterId
                       <sup class="text-danger text-sm">*</sup>
                     </label> <i class="p-l-sm fa fa-info-circle"
-                                [nz-tooltip]="'deploymentService.joc.tooltip.jocId' | translate"></i>
+                                [nz-tooltip]="'deploymentService.joc.tooltip.jocClusterId' | translate"></i>
                   </div>
                   <div class="col-md-6 col-lg-4"
-                       [ngClass]="{'has-error' : ((jocId.dirty || jocId.touched) && jocId.invalid)}">
-                    <input autocomplete="off" type="text" class="form-control" #jocId="ngModel" required
-                           name="jocId" placeholder="{{'deploymentService.joc.placeholder.jocId' | translate}}"
-                           [(ngModel)]="data.jocId" (blur)="convertJSON()">
-                    <div *ngIf="jocId.invalid && (jocId.dirty || jocId.touched)" class="text-danger help-block">
-                      <div *ngIf="jocId.errors.required" translate>
+                       [ngClass]="{'has-error' : ((jocClusterId.dirty || jocClusterId.touched) && jocClusterId.invalid)}">
+                    <input autocomplete="off" type="text" class="form-control" #jocClusterId="ngModel" required
+                           name="jocClusterId" placeholder="{{'deploymentService.joc.placeholder.jocClusterId' | translate}}"
+                           [(ngModel)]="data.jocClusterId" (blur)="convertJSON()">
+                    <div *ngIf="jocClusterId.invalid && (jocClusterId.dirty || jocClusterId.touched)" class="text-danger help-block">
+                      <div *ngIf="jocClusterId.errors.required" translate>
                         common.message.requiredError
                       </div>
                     </div>
@@ -363,7 +403,19 @@
                        (click)="removeSecondaryJOC()"></i>
                   </h6>
                   <div class="p-a b-a hide" [ngClass]="{'fade-in show': !item.isJOCPropertiesExpanded}">
-                    <h6 translate>deploymentService.label.target </h6>
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 form-control-label">
+                        <label translate>deploymentService.joc.label.ordering
+
+                        </label> <i class="p-l-sm fa fa-info-circle"
+                                    [nz-tooltip]="'deploymentService.joc.tooltip.ordering' | translate"></i>
+                      </div>
+                      <div class="col-md-6 col-lg-4 p-l-3">
+                        <nz-input-number nzPlaceHolder="{{i+1}}"
+                                         [nzMin]="1" [nzMax]="99" [nzStep]="1" name="ordering{{i}}" [(ngModel)]="item.target.connection.ordering"></nz-input-number>
+                      </div>
+                    </div>
+                    <h6 class="m-t-12" translate>deploymentService.label.target </h6>
                     <div class="p-a b-a">
                       <h6 translate>deploymentService.label.connection </h6>
                       <div class="p-a b-a">
@@ -665,6 +717,76 @@
                                  name="runUser{{i}}"
                                  placeholder="{{'deploymentService.joc.placeholder.runUser' | translate}}"
                                  [(ngModel)]="item.installation.runUser">
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-md-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.joc.label.title
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.joc.tooltip.title' | translate"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-4 ">
+                          <input autocomplete="off" type="text" class="form-control"
+                                 name="title{{i}}"
+                                 placeholder="{{'deploymentService.joc.placeholder.title' | translate}}"
+                                 [(ngModel)]="item.installation.title">
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-md-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.joc.label.securityLevel
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.joc.tooltip.securityLevel' | translate"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-4 ">
+                          <nz-select name="securityLevel" [(ngModel)]="item.installation.securityLevel" >
+                            <nz-option *ngFor="let option of securityLevel" [nzLabel]="option"
+                                       [nzValue]="option"></nz-option>
+                          </nz-select>
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-md-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.joc.label.dbmsConfig
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.joc.tooltip.dbmsConfig' | translate"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-4 ">
+                          <input autocomplete="off" type="text" class="form-control"
+                                 name="dbmsConfig{{i}}"
+                                 placeholder="{{'deploymentService.joc.placeholder.dbmsConfig' | translate}}"
+                                 [(ngModel)]="item.installation.dbmsConfig">
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-md-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.joc.label.dbmsDriver
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.joc.tooltip.dbmsDriver' | translate"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-4 ">
+                          <input autocomplete="off" type="text" class="form-control"
+                                 name="dbmsDriver{{i}}"
+                                 placeholder="{{'deploymentService.joc.placeholder.dbmsDriver' | translate}}"
+                                 [(ngModel)]="item.installation.dbmsDriver">
+                        </div>
+                      </div>
+                      <div class="row m-t-sm" *ngIf="item.isMoreKeyFileDetail">
+                        <div class="col-md-4 col-lg-3 form-control-label">
+                          <label translate>deploymentService.joc.label.dbmsInit
+
+                          </label> <i class="p-l-sm fa fa-info-circle"
+                                      [nz-tooltip]="'deploymentService.joc.tooltip.dbmsInit' | translate"></i>
+                        </div>
+                        <div class="col-md-6 col-lg-4 ">
+                          <nz-select name="dbmsInit" [(ngModel)]="item.installation.dbmsInit" >
+                            <nz-option *ngFor="let option of dbmsInit" [nzLabel]="option"
+                                       [nzValue]="option"></nz-option>
+                          </nz-select>
                         </div>
                       </div>
 

@@ -816,45 +816,48 @@
       "startFiles": "Start Files"
     },
     "button": {
-      "showMoreOption": "Show More Option",
-      "hideMoreOption": "Hide More Option",
+      "showMoreOption": "Show Options",
+      "hideMoreOption": "Hide Options",
       "validate": "Validate",
       "showJSON": "Show JSON"
     },
+    "message": {
+      "invalidFile": "Not a valid descriptor file"
+    },
     "descriptor": {
-      "label" : {
-        "descriptorId" : "Descriptor Id",
-        "title" : "Title",
-        "account" : "Account",
-        "scheduled" : "Scheduled",
-        "created" : "Created"
+      "label": {
+        "descriptorId": "Descriptor Id",
+        "title": "Title",
+        "account": "Account",
+        "scheduled": "Scheduled",
+        "created": "Created"
       },
-      "placeholder" :{
-        "descriptorId" : "Enter descriptor Id",
-        "title" : "Enter title",
-        "account" : "Enter account",
-        "scheduled" : "Enter scheduled",
-        "created" : "Enter created"
+      "placeholder": {
+        "descriptorId": "Enter descriptor Id",
+        "title": "Enter title",
+        "account": "Enter account",
+        "scheduled": "Enter scheduled",
+        "created": "Enter created"
       },
       "tooltip": {
-        "descriptorId" : "Descriptor Id",
-        "title" : "Title",
-        "account" : "Account",
-        "scheduled" : "Scheduled",
-        "created" : "Created"
+        "descriptorId": "Descriptor Id",
+        "title": "Title",
+        "account": "Account",
+        "scheduled": "Scheduled",
+        "created": "Created"
       }
     },
     "license": {
-      "label" : {
+      "label": {
         "licenseKeyFile": "License Key File",
         "licenseBinFile": "License Bin File"
       },
       "button": {
         "addLicense": "Add License"
       },
-      "placeholder" :{
-        "licenseKeyFile" : "Enter license key file",
-        "licenseBinFile" : "Enter license bin file"
+      "placeholder": {
+        "licenseKeyFile": "Enter license key file",
+        "licenseBinFile": "Enter license bin file"
       },
       "tooltip": {
         "licenseKeyFile": "License Key File",
@@ -862,7 +865,7 @@
       }
     },
     "certificate": {
-      "label" : {
+      "label": {
         "primaryControllerCert": "Primary Controller Cert",
         "secondaryControllerCert": "Secondary Controller Cert",
         "primaryJocCert": "Primary Joc Cert",
@@ -871,11 +874,11 @@
       "button": {
         "addCertificates": "Add Certificates"
       },
-      "placeholder" :{
-        "primaryControllerCert" : "Enter primary Controller cert",
-        "secondaryControllerCert" : "Enter secondary Controller Cert",
-        "primaryJocCert" : "Enter primary Joc cert",
-        "secondaryJocCert" : "Enter secondary Joc cert"
+      "placeholder": {
+        "primaryControllerCert": "Enter primary Controller cert",
+        "secondaryControllerCert": "Enter secondary Controller Cert",
+        "primaryJocCert": "Enter primary Joc cert",
+        "secondaryJocCert": "Enter secondary Joc cert"
       },
       "tooltip": {
         "primaryControllerCert": "Primary Controller Cert",
@@ -885,7 +888,7 @@
       }
     },
     "agent": {
-      "label" : {
+      "label": {
         "agentId": "Agent Id",
         "host": "Host",
         "port": "Port",
@@ -920,7 +923,7 @@
         "addAgent": "Add Agent",
         "addAnotherAgent": "Add Another Agent"
       },
-      "placeholder" :{
+      "placeholder": {
         "agentId": "Enter Agent Id",
         "host": "Enter Host",
         "port": "Enter Port Number",
@@ -932,7 +935,6 @@
         "execPost": "Enter Exec Post",
         "release": "Enter Release",
         "tarball": "Enter Tarball",
-        "setupDir": "Enter Setup Dir",
         "home": "Enter Home",
         "data": "Enter Data",
         "homeOwner": "Enter Home Owner",
@@ -963,7 +965,6 @@
         "makeService": "Make Service",
         "release": "Release",
         "tarball": "Tarball",
-        "setupDir": "Setup Dir",
         "home": "Home",
         "data": "Data",
         "homeOwner": "Home Owner",
@@ -984,7 +985,7 @@
       }
     },
     "controller": {
-      "label" : {
+      "label": {
         "host": "Host",
         "port": "Port",
         "method": "Method",
@@ -1015,11 +1016,11 @@
         "templates": "Templates"
       },
       "button": {
-        "addPrimaryController": "Add Primary Controller",
+        "addController": "Add Controller",
         "addSecondaryController": "Add Secondary Controller",
         "addAnotherController": "Add Another Controller"
       },
-      "placeholder" :{
+      "placeholder": {
         "host": "Enter Host",
         "port": "Enter Port Number",
         "method": "Enter Method",
@@ -1030,7 +1031,6 @@
         "execPost": "Enter Exec Post",
         "release": "Enter Release",
         "tarball": "Enter Tarball",
-        "setupDir": "Enter Setup Dir",
         "home": "Enter Home",
         "data": "Enter Data",
         "homeOwner": "Enter Home Owner",
@@ -1061,7 +1061,6 @@
         "makeService": "Make Service",
         "release": "Release",
         "tarball": "Tarball",
-        "setupDir": "Setup Dir",
         "home": "Home",
         "data": "Data",
         "homeOwner": "Home Owner",
@@ -1082,8 +1081,10 @@
       }
     },
     "joc": {
-      "label" : {
+      "label": {
         "jocId": "JOC ID",
+        "jocClusterId": "JOC Cluster Id",
+        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Method",
@@ -1101,6 +1102,11 @@
         "homeOwner": "Home Owner",
         "dataOwner": "Data Owner",
         "runUser": "Run User",
+        "title": "Title",
+        "securityLevel": "Security Level",
+        "dbmsConfig": "Dbms Config",
+        "dbmsDriver": "Dbms Driver",
+        "dbmsInit": "Dbms Init",
         "httpPort": "Http Port",
         "httpsPort": "Https Port",
         "isUser": "Is User",
@@ -1120,12 +1126,13 @@
         "sslIni": "SSL Ini"
       },
       "button": {
-        "addPrimaryJOC": "Add Primary JOC",
+        "addJOC": "Add JOC",
         "addSecondaryJOC": "Add Secondary JOC",
         "addAnotherJOC": "Add Another JOC"
       },
-      "placeholder" :{
+      "placeholder": {
         "jocId": "Enter JOC ID",
+        "jocClusterId": "Enter JOC Cluster Id",
         "host": "Enter Host",
         "port": "Enter Port Number",
         "method": "Enter Method",
@@ -1142,6 +1149,9 @@
         "homeOwner": "Enter Home Owner",
         "dataOwner": "Enter Data Owner",
         "runUser": "Enter Run User",
+        "title": "Enter title",
+        "dbmsConfig": "Dbms Config",
+        "dbmsDriver": "Dbms Driver",
         "httpPort": "Enter Http Port",
         "httpsPort": "Enter Https Port",
         "javaHome": "Enter Java Home",
@@ -1160,6 +1170,8 @@
       },
       "tooltip": {
         "jocId": "JOC ID",
+        "jocClusterId": "JOC Cluster Id",
+        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Method",
@@ -1177,6 +1189,11 @@
         "homeOwner": "Home Owner",
         "dataOwner": "Data Owner",
         "runUser": "Run User",
+        "title": "Title",
+        "securityLevel": "Security Level",
+        "dbmsConfig": "Dbms Config",
+        "dbmsDriver": "Dbms Driver",
+        "dbmsInit": "Dbms Init",
         "httpPort": "Http Port",
         "httpsPort": "Https Port",
         "isUser": "Is User",
@@ -2045,7 +2062,7 @@
     "label.password": "Password",
     "label.rememberMe": "Remember Me",
     "button.logIn": "Log In",
-    "button.loginWith" : "Continue with {{identityServiceName}}",
+    "button.loginWith": "Continue with {{identityServiceName}}",
     "message.loginError": "Account or password is wrong"
   },
   "monitor": {
@@ -2569,7 +2586,7 @@
       "monitoring_history_age": "Specifies the retention period of the Monitoring History. Any history entries older than the value specified will be purged.",
       "notification_history_age": "Specifies the retention period of the Notification History. Any history entries older than the value specified will be purged.",
       "max_pool_size": "The max. connection pool size specifies the number of database connection used. For environmentns with larger numbers of daily task history entries to purge it can be benefitial to increase this value for example to 10. Users have to check that their DBMS allows an increased number of connections to be used.",
-      "profile_age":  "Specifies the max. number of days that a Profile has not been used from login by a user account before it is purged.",
+      "profile_age": "Specifies the max. number of days that a Profile has not been used from login by a user account before it is purged.",
       "failed_login_history_age": "Specifies the max. number of days for which entries in the history of failed logins are retained before they are purged."
     },
     "dailyplan": {
@@ -2897,7 +2914,7 @@
         "iamKeycloakClientSecret": "The Keycloak Client Secret is registered with Keycloak and has to match the value specified with the Identity Service settings.",
         "iamKeycloakRealm": "The Keycloak Realm is registered with Keycloak and has to match the value specified with the Identity Service settings."
       },
-      "oidc":{
+      "oidc": {
         "iamOidcName": "The name of the Identity Service using OIDC.",
         "iamOidcAuthenticationUrl": "The OIDC Authentication URL is the endpoint to which the JOC Cockpit GUI (Client) performs authentication.",
         "iamOidcClientId": "The OIDC Client ID is registered with the OIDC Identity Provider and has to match the value specified with the Identiy Service settings.",
