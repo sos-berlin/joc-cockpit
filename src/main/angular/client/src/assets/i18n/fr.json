@@ -396,10 +396,10 @@
     "label.dateRange": "Plage de dates",
     "label.to": "au",
     "label.from": "du",
-    "label.startDateRange": "Démarré dans la plage de dates",
+    "label.startDateRange": "Démarrage plage de dates",
     "label.startTo": "Démarré avant",
     "label.startFrom": "Démarré depuis",
-    "label.endDateRange": "Terminé dans la plage de dates",
+    "label.endDateRange": "Terminaison plage de dates",
     "label.endTo": "Terminé avant",
     "label.endFrom": "Terminé depuis",
     "label.processStarted": "Processus démarré",
@@ -816,10 +816,13 @@
       "startFiles": "Start Files"
     },
     "button": {
-      "showMoreOption": "Show More Option",
-      "hideMoreOption": "Hide More Option",
+      "showMoreOption": "Show Options",
+      "hideMoreOption": "Hide Options",
       "validate": "Validate",
       "showJSON": "Show JSON"
+    },
+    "message": {
+      "invalidFile": "Not a valid descriptor file"
     },
     "descriptor": {
       "label" : {
@@ -932,7 +935,6 @@
         "execPost": "Enter Exec Post",
         "release": "Enter Release",
         "tarball": "Enter Tarball",
-        "setupDir": "Enter Setup Dir",
         "home": "Enter Home",
         "data": "Enter Data",
         "homeOwner": "Enter Home Owner",
@@ -963,7 +965,6 @@
         "makeService": "Make Service",
         "release": "Release",
         "tarball": "Tarball",
-        "setupDir": "Setup Dir",
         "home": "Home",
         "data": "Data",
         "homeOwner": "Home Owner",
@@ -1015,7 +1016,7 @@
         "templates": "Templates"
       },
       "button": {
-        "addPrimaryController": "Add Primary Controller",
+        "addController": "Add Controller",
         "addSecondaryController": "Add Secondary Controller"
       },
       "placeholder" :{
@@ -1029,7 +1030,6 @@
         "execPost": "Enter Exec Post",
         "release": "Enter Release",
         "tarball": "Enter Tarball",
-        "setupDir": "Enter Setup Dir",
         "home": "Enter Home",
         "data": "Enter Data",
         "homeOwner": "Enter Home Owner",
@@ -1060,7 +1060,6 @@
         "makeService": "Make Service",
         "release": "Release",
         "tarball": "Tarball",
-        "setupDir": "Setup Dir",
         "home": "Home",
         "data": "Data",
         "homeOwner": "Home Owner",
@@ -1083,6 +1082,8 @@
     "joc": {
       "label" : {
         "jocId": "JOC ID",
+        "jocClusterId": "JOC Cluster Id",
+        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Method",
@@ -1100,6 +1101,11 @@
         "homeOwner": "Home Owner",
         "dataOwner": "Data Owner",
         "runUser": "Run User",
+        "title": "Title",
+        "securityLevel": "Security Level",
+        "dbmsConfig": "Dbms Config",
+        "dbmsDriver": "Dbms Driver",
+        "dbmsInit": "Dbms Init",
         "httpPort": "Http Port",
         "httpsPort": "Https Port",
         "isUser": "Is User",
@@ -1119,11 +1125,12 @@
         "sslIni": "SSL Ini"
       },
       "button": {
-        "addPrimaryJOC": "Add Primary JOC",
+        "addJOC": "Add JOC",
         "addSecondaryJOC": "Add Secondary JOC"
       },
       "placeholder" :{
         "jocId": "Enter JOC ID",
+        "jocClusterId": "Enter JOC Cluster Id",
         "host": "Enter Host",
         "port": "Enter Port Number",
         "method": "Enter Method",
@@ -1140,6 +1147,9 @@
         "homeOwner": "Enter Home Owner",
         "dataOwner": "Enter Data Owner",
         "runUser": "Enter Run User",
+        "title": "Enter title",
+        "dbmsConfig": "Dbms Config",
+        "dbmsDriver": "Dbms Driver",
         "httpPort": "Enter Http Port",
         "httpsPort": "Enter Https Port",
         "javaHome": "Enter Java Home",
@@ -1158,6 +1168,8 @@
       },
       "tooltip": {
         "jocId": "JOC ID",
+        "jocClusterId": "JOC Cluster Id",
+        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Method",
@@ -1177,6 +1189,11 @@
         "runUser": "Run User",
         "httpPort": "Http Port",
         "httpsPort": "Https Port",
+        "title": "Title",
+        "securityLevel": "Security Level",
+        "dbmsConfig": "Dbms Config",
+        "dbmsDriver": "Dbms Driver",
+        "dbmsInit": "Dbms Init",
         "isUser": "Is User",
         "isPreserveEnv": "Is Preserve Env",
         "javaHome": "Java Home",

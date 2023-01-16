@@ -1,10 +1,100 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {CoreService} from '../../services/core.service';
 import {isEmpty} from 'underscore';
+import {saveAs} from 'file-saver';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 import {ClipboardService} from "ngx-clipboard";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {CoreService} from '../../services/core.service';
+import {FileUploader} from "ng2-file-upload";
+import {TranslateService} from "@ngx-translate/core";
+import {ToastrService} from "ngx-toastr";
+
+@Component({
+  selector: 'app-upload-json',
+  templateUrl: './upload-json-dialog.html'
+})
+export class UploadModalComponent implements OnInit {
+
+  submitted = false;
+  uploader: FileUploader;
+  data: any;
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, public translate: TranslateService, public toasterService: ToastrService) {
+    this.uploader = new FileUploader({
+      url: '',
+      queueLimit: 1
+    });
+  }
+
+  ngOnInit(): void {
+    this.uploader.onCompleteItem = (fileItem: any, response, status) => {
+      if (status === 200) {
+        this.activeModal.close('success');
+      }
+    };
+
+    this.uploader.onErrorItem = (fileItem, response: any) => {
+      const res = typeof response === 'string' ? JSON.parse(response) : response;
+      if (res.error) {
+        this.toasterService.error(res.error.message, res.error.code);
+      }
+    };
+  }
+
+  // CALLBACKS
+  onFileSelected(event: any): void {
+    const self = this;
+    const item = event['0'];
+    const fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
+    if (fileExt != 'JSON') {
+      let msg = '';
+      this.translate.get('error.message.invalidFileExtension').subscribe(translatedValue => {
+        msg = translatedValue;
+      });
+      this.toasterService.error(fileExt + ' ' + msg);
+      this.uploader.clearQueue();
+    } else {
+      const reader = new FileReader();
+      reader.readAsText(item, 'UTF-8');
+      reader.onload = onLoadFile;
+    }
+
+    function onLoadFile(_event): void {
+      let data;
+      try {
+        data = JSON.parse(_event.target.result);
+      } catch (e) {
+
+      }
+      if (data) {
+        if (!data.descriptor) {
+          self.showErrorMsg();
+        } else {
+          self.data = data;
+        }
+      } else {
+        self.showErrorMsg();
+      }
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    setTimeout(() => {
+      this.activeModal.close(this.data);
+    }, 100);
+  }
+
+  private showErrorMsg(): void {
+    let msg = '';
+    this.translate.get('deploymentService.message.invalidFile').subscribe(translatedValue => {
+      msg = translatedValue;
+    });
+    this.toasterService.error(msg);
+    this.uploader.queue[0].remove();
+  }
+}
 
 @Component({
   selector: 'app-show-json',
@@ -88,6 +178,9 @@ export class DeploymentComponent implements OnInit {
   };
 
   mainObj: any = {};
+  securityLevel: Array<string> = ['low', 'medium', 'high'];
+  dbmsInit: Array<string> = ['byInstaller', 'byJoc', 'off'];
+  method: Array<string> = ['publickey'];
 
   isValid = false;
   errorMessages: Array<string> = [];
@@ -97,7 +190,7 @@ export class DeploymentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.addJOC();
+
   }
 
   addLicense(): void {
@@ -313,6 +406,14 @@ export class DeploymentComponent implements OnInit {
     this.mainObj = {
       descriptor: this.data.descriptor
     };
+    if (!this.data.descriptor.descriptorId) {
+      this.isValid = false;
+      this.errorMessages.push('Descriptor Id is required');
+    }
+    if (this.data.joc.length == 0 && this.data.agents.length == 0 && this.data.controllers.length == 0) {
+      this.isValid = false;
+      this.errorMessages.push('Minimum one of JOC, Controllers or Agents is required');
+    }
     if (this.data.license && !isEmpty(this.data.license)) {
       this.mainObj['license'] = this.data.license;
       if (!this.data.license.licenseKeyFile || !this.data.license.licenseBinFile) {
@@ -340,21 +441,21 @@ export class DeploymentComponent implements OnInit {
     }
     if (this.data.joc && this.data.joc.length > 0) {
 
-      if (!this.data.jocId) {
+      if (!this.data.jocClusterId) {
         this.isValid = false;
-        this.errorMessages.push('Joc Id is required');
+        this.errorMessages.push('Joc cluster Id is required');
       } else {
         this.mainObj['joc'] = {};
         this.data.joc.forEach((element, index) => {
-          if (!this.mainObj.joc[this.data.jocId]) {
-            this.mainObj.joc[this.data.jocId] = {};
+          if (!this.mainObj.joc[this.data.jocClusterId]) {
+            this.mainObj.joc[this.data.jocClusterId] = {};
           }
           if (index == 0) {
-            this.mainObj.joc[this.data.jocId].primary = {};
-            this.checkAndUpdateObj(this.mainObj.joc[this.data.jocId].primary, 'joc', element);
+            this.mainObj.joc[this.data.jocClusterId].primary = {};
+            this.checkAndUpdateObj(this.mainObj.joc[this.data.jocClusterId].primary, 'joc', element);
           } else {
-            this.mainObj.joc[this.data.jocId].secondary = {};
-            this.checkAndUpdateObj(this.mainObj.joc[this.data.jocId].secondary, 'joc', element);
+            this.mainObj.joc[this.data.jocClusterId].secondary = {};
+            this.checkAndUpdateObj(this.mainObj.joc[this.data.jocClusterId].secondary, 'joc', element);
           }
         });
       }
@@ -401,7 +502,7 @@ export class DeploymentComponent implements OnInit {
     }
   }
 
-  showJSON(): void{
+  showJSON(): void {
     this.validate();
     this.modal.create({
       nzTitle: undefined,
@@ -418,5 +519,56 @@ export class DeploymentComponent implements OnInit {
     });
   }
 
+  undo(): void {
 
+  }
+
+  redo(): void {
+
+  }
+
+  download(): void {
+    this.validate();
+    const name = this.data.descriptor.descriptorId + '-descriptor' + '.json';
+    const fileType = 'application/octet-stream';
+    const data = JSON.stringify(this.mainObj, undefined, 2);
+    const blob = new Blob([data], {type: fileType});
+    saveAs(blob, name);
+  }
+
+  upload(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: UploadModalComponent,
+      nzClassName: 'lg',
+      nzComponentParams: {},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.mainObj = result;
+        this.updateJSONObject();
+      }
+    });
+  }
+
+  private updateJSONObject(): void {
+    this.data.descriptor = this.mainObj.descriptor;
+    this.data.license = this.mainObj.license;
+    this.data.certificates = this.mainObj.certificates;
+    if(!isEmpty(this.mainObj.joc)){
+      this.data.joc = [];
+      this.mainObj.joc.forEach((config) => {
+
+      });
+    }
+    if(!isEmpty(this.mainObj.agents)){
+      this.data.agents = [];
+    }
+    if(!isEmpty(this.mainObj.controllers)){
+      this.data.controllers = [];
+    }
+  }
 }
