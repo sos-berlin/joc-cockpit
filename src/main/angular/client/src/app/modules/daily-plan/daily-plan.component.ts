@@ -516,7 +516,8 @@ export class RemovePlanModalComponent implements OnInit {
         obj.orderIds.push(order.orderId);
       });
     }
-
+    obj.dailyPlanDateFrom = this.coreService.getStringDate(this.selectedDate);
+    obj.dailyPlanDateTo = this.coreService.getStringDate(this.selectedDate);
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.coreService.post('daily_plan/orders/submit', obj).subscribe({
@@ -1476,6 +1477,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
         orders: this.object.mapOfCheckedId,
+        selectedDate: this.selectedDate,
         isSubmit: true
       },
       nzFooter: null,
@@ -1498,6 +1500,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       nzClassName: 'lg',
       nzComponentParams: {
         schedulerId: this.schedulerIds.selected,
+        selectedDate: this.selectedDate,
         order,
         workflow,
         isSubmit: true
@@ -1552,23 +1555,19 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private cancelByDateRange(auditLog): void {
-    let apiArr = [];
-    const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
     this.isProcessing = true;
-    dates.forEach((date) => {
-      let obj = {
-        controllerId: this.schedulerIds.selected,
-        dailyPlanDate: this.coreService.getStringDate(date),
-        auditLog
-      };
-      apiArr.push(this.coreService.post('daily_plan/orders/cancel', this.coreService.clone(obj)));
-    });
-    this.resetCheckBox();
-    forkJoin(apiArr).subscribe({
+    let obj = {
+      controllerId: this.schedulerIds.selected,
+      dailyPlanDateFrom: this.coreService.getStringDate(this.dateRanges[0]),
+      dailyPlanDateTo: this.coreService.getStringDate(this.dateRanges[1]),
+      auditLog
+    };
+    this.coreService.post('daily_plan/orders/cancel', obj).subscribe({
       next: () => {
         this.resetAction(5000);
       }, error: () => this.resetAction()
     });
+    this.resetCheckBox();
   }
 
   cancelOrder(order, plan): void {
@@ -1582,7 +1581,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   cancelCyclicOrder(orders, isMultiple): void {
     let orderIds = isMultiple ? orders : orders.orderId ? [orders.orderId] : orders.map((order) => order.orderId);
     const obj: any = {
-      controllerId: this.schedulerIds.selected, orderIds
+      controllerId: this.schedulerIds.selected,
+      orderIds,
+      dailyPlanDateFrom: this.coreService.getStringDate(this.selectedDate),
+      dailyPlanDateTo: this.coreService.getStringDate(this.selectedDate)
     };
     if (this.preferences.auditLog) {
       const comments = {

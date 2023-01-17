@@ -329,7 +329,7 @@
     "label.auditLog": "Audit Log",
     "label.configuration": "Configuration",
     "label.manageControllersAndAgents": "Manage Controllers and Agents",
-    "label.manageDeployment": "Manage Deployment",
+    "label.manageDeployment": "Manage Deployments",
     "label.manageRoles": "Roles",
     "label.profiles": "Profiles",
     "label.manageUser": "Accounts",
@@ -819,7 +819,7 @@
       "showMoreOption": "Show Options",
       "hideMoreOption": "Hide Options",
       "validate": "Validate",
-      "showJSON": "Show JSON"
+      "editJSON": "Edit JSON"
     },
     "message": {
       "invalidFile": "Not a valid descriptor file"
@@ -921,6 +921,7 @@
       },
       "button": {
         "addAgent": "Add Agent",
+        "removeAgent": "Remove Agent",
         "addAnotherAgent": "Add another Agent"
       },
       "placeholder": {
@@ -954,6 +955,7 @@
         "templates": "Enter Templates"
       },
       "tooltip": {
+        "agentId": "Agent ID",
         "host": "Host",
         "port": "Port",
         "method": "Authentication Method",
@@ -1017,6 +1019,7 @@
       },
       "button": {
         "addController": "Add Controller Instance",
+        "removeController": "Remove Controller Instance",
         "addSecondaryController": "Add Secondary Controller Instance",
         "addAnotherController": "Add another Controller"
       },
@@ -1084,7 +1087,7 @@
       "label": {
         "jocId": "JOC Cockpit ID",
         "jocClusterId": "JOC Cockpit Cluster ID",
-        "ordering": "JOC Cockpit Instance ID",
+        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Authentication Method",
@@ -1127,12 +1130,14 @@
       },
       "button": {
         "addJOC": "Add JOC Cockpit",
+        "removeJOC": "Remove JOC Cockpit",
         "addSecondaryJOC": "Add Secondary JOC Cockpit Instance",
         "addAnotherJOC": "Add another JOC Cockpit Instance"
       },
       "placeholder": {
         "jocId": "Enter JOC Cockpit ID",
         "jocClusterId": "Enter JOC Cockpit Cluster ID",
+        "ordering": "Enter Ordering",
         "host": "Enter Host",
         "port": "Enter Port Number",
         "method": "Enter Authentication Method",
@@ -1171,7 +1176,7 @@
       "tooltip": {
         "jocId": "JOC Cockpit ID",
         "jocClusterId": "JOC Cockpit Cluster ID",
-        "ordering": "JOC Cockpit Intance ID",
+        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Authentication Method",
@@ -1339,7 +1344,7 @@
     "button.logging": "Logging",
     "button.manageAccount": "Manage Identity Services",
     "button.manageControllersAndAgents": "Manage Controllers/Agents",
-    "button.manageDeployment": "Manage Deployment",
+    "button.manageDeployment": "Manage Deployments",
     "button.logOut": "Log Out"
   },
   "history": {

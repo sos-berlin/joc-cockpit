@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import { DeploymentComponent } from './deployment.component';
-
+import {DeploymentComponent} from './deployment.component';
 
 const routes: Routes = [
   {
