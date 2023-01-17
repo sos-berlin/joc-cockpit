@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {isEmpty} from 'underscore';
+import {isEmpty, isArray} from 'underscore';
 import {saveAs} from 'file-saver';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
@@ -102,9 +102,7 @@ export class UploadModalComponent implements OnInit {
 })
 export class ShowJsonModalComponent implements OnInit {
   @Input() object: any;
-  @Input() edit: boolean;
   @Input() schedulerId: any;
-  @Input() preferences: any = {};
   submitted = false;
   isError = false;
   data: any;
@@ -116,9 +114,6 @@ export class ShowJsonModalComponent implements OnInit {
   constructor(public coreService: CoreService, private clipboardService: ClipboardService, public activeModal: NzModalRef,
               private message: NzMessageService) {
     this.options.mode = 'code';
-    this.options.onEditable = () => {
-      return this.edit;
-    };
     this.options.onChange = () => {
       try {
         this.isError = false;
@@ -131,14 +126,15 @@ export class ShowJsonModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.coreService.get('assets/i18n/json-editor-text_' + this.preferences.locale + '.json').subscribe((data) => {
+    const preferenceObj = JSON.parse(sessionStorage.preferences);
+    this.coreService.get('assets/i18n/json-editor-text_' + preferenceObj.locale + '.json').subscribe((data) => {
       this.options.languages = {};
-      this.options.languages[this.preferences.locale] = data;
-      this.options.language = this.preferences.locale;
+      this.options.languages[preferenceObj.locale] = data;
+      this.options.language = preferenceObj.locale;
       this.editor.setOptions(this.options);
     });
     this.options.modes = ['code', 'tree'];
-    this.data = this.object;
+    this.data = this.coreService.clone(this.object);
     console.log(this.data)
   }
 
@@ -148,9 +144,7 @@ export class ShowJsonModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.submitted = true;
     this.activeModal.close(this.editor.get());
-    this.submitted = false;
   }
 
 }
@@ -164,7 +158,7 @@ export class DeploymentComponent implements OnInit {
     descriptor: {},
     joc: [],
     agents: [],
-    controllers: []
+    controllers: [],
   };
 
   obj: any = {
@@ -180,7 +174,7 @@ export class DeploymentComponent implements OnInit {
   mainObj: any = {};
   securityLevel: Array<string> = ['low', 'medium', 'high'];
   dbmsInit: Array<string> = ['byInstaller', 'byJoc', 'off'];
-  method: Array<string> = ['publickey'];
+  methods: Array<string> = ['publickey'];
 
   isValid = false;
   errorMessages: Array<string> = [];
@@ -199,6 +193,9 @@ export class DeploymentComponent implements OnInit {
   }
 
   addAgent(): void {
+    if (!this.data.agents) {
+      this.data.agents = [];
+    }
     this.obj.isAgentExpanded = true;
     this.data.agents.push({
       target: {
@@ -216,33 +213,64 @@ export class DeploymentComponent implements OnInit {
     });
   }
 
-  removeAgent(): void {
-    this.data.agents = [];
-  }
+  removeAgent(index = -1): void {
 
-  addController(): void {
-    this.obj.isControllerExpanded = true;
-    this.data.controllers.push({
-      target: {
-        connection: {},
-        authentication: {},
-        makeService: false
-      },
-      media: {},
-      installation: {},
-      configuration: {
-        certificates: {},
-        templates: [{name: ''}]
-      }
-    });
-  }
-
-  removeController(): void {
-    this.data.controllers = [];
+    if (index > -1) {
+      this.data.agents.splice(index, 1);
+    } else {
+      this.data.agents = [];
+    }
   }
 
   addJOC(): void {
+    if (!this.data.joc) {
+      this.data.joc = [];
+    }
+    this.obj.isJOCExpanded = true;
     this.data.joc.push({
+      isJOCExpanded: true,
+      jocClusterId: '',
+      cluster: [{
+        target: {
+          connection: {},
+          authentication: {},
+          makeService: false
+        },
+        media: {},
+        installation: {
+          isUser: true,
+          isPreserveEnv: true
+        },
+        configuration: {
+          certificates: {},
+          templates: [{name: ''}],
+          startFiles: {}
+        }
+      }]
+    });
+  }
+
+  removeJOC(index = -1): void {
+    if (index > -1) {
+      this.data.joc.splice(index, 1);
+    } else {
+      this.data.joc = [];
+    }
+  }
+
+  addCertificates(): void {
+    this.data.certificates = {
+      controller: {},
+      joc: {}
+    };
+    this.obj.isCertificateExpanded = true;
+  }
+
+  addSecondaryJOC(cluster): void {
+    if (!this.data.license) {
+      this.data.license = {};
+    }
+    cluster.push({
       target: {
         connection: {},
         authentication: {},
@@ -261,32 +289,52 @@ export class DeploymentComponent implements OnInit {
     });
   }
 
-  removeJOC(): void {
-    this.data.joc = [];
-  }
-
-  addCertificates(): void {
-    this.data.certificates = {
-      controller: {},
-      joc: {}
-    };
-    this.obj.isCertificateExpanded = true;
-  }
-
-  addSecondaryJOC(): void {
+  addAnotherJOC(): void {
     this.addJOC();
   }
 
-  removeSecondaryJOC(): void {
-    this.data.joc.splice(1, 1);
+  removeSecondaryObj(data): void {
+    data.cluster.splice(1, 1);
   }
 
-  removeSecondaryController(): void {
-    this.data.controllers.splice(1, 1);
+  addController(): void {
+    if (!this.data.controllers) {
+      this.data.controllers = [];
+    }
+    this.obj.isControllerExpanded = true;
+    this.data.controllers.push(
+      {
+        isControllerExpanded: true,
+        controllerId: '',
+        cluster: [{
+          target: {
+            connection: {},
+            authentication: {},
+            makeService: false
+          },
+          media: {},
+          installation: {},
+          configuration: {
+            certificates: {},
+            templates: [{name: ''}]
+          }
+        }]
+      });
   }
 
-  addSecondaryController(): void {
-    this.addController()
+  removeController(index = -1): void {
+    if (index > -1) {
+      this.data.controllers.splice(index, 1);
+    } else {
+      this.data.controllers = [];
+    }
+  }
+
+  addSecondaryController(cluster): void {
+    if (!this.data.license) {
+      this.data.license = {};
+    }
+    cluster.push({});
   }
 
   addAnotherAgent(): void {
@@ -306,6 +354,14 @@ export class DeploymentComponent implements OnInit {
   }
 
   private checkAndUpdateObj(obj, type, source): void {
+    if (type === 'joc' && !source.ordering) {
+      this.isValid = false;
+      this.errorMessages.push('JOC ordering value is required');
+    } else {
+      obj.ordering = source.ordering;
+    }
+    console.log(obj);
+    console.log(source);
     if (!isEmpty(source.target.connection) || !isEmpty(source.target.authentication)
       || source.target.packageLocation || source.target.execPre || source.target.execPost || source.target.makeService) {
       obj.target = {
@@ -352,7 +408,7 @@ export class DeploymentComponent implements OnInit {
         this.isValid = false;
         this.errorMessages.push((type == 'joc' && !source.installation.setupDir) ? 'Installation setupDir is required' : !source.installation.home ? 'Installation home is required' : 'Installation data is required');
       }
-      if(!source.installation.httpPort && !source.installation.httpsPort){
+      if (!source.installation.httpPort && !source.installation.httpsPort) {
         this.isValid = false;
         this.errorMessages.push('Installation http or https port is required');
       }
@@ -393,14 +449,14 @@ export class DeploymentComponent implements OnInit {
           }
         }
 
-        if(isEmpty(obj.configuration)){
+        if (isEmpty(obj.configuration)) {
           delete obj.configuration;
         }
       }
     }
   }
 
-  validate(): void{
+  validate(): void {
     this.isValid = true;
     this.errorMessages = [];
     this.mainObj = {
@@ -414,11 +470,16 @@ export class DeploymentComponent implements OnInit {
       this.isValid = false;
       this.errorMessages.push('Minimum one of JOC, Controllers or Agents is required');
     }
-    if (this.data.license && !isEmpty(this.data.license)) {
-      this.mainObj['license'] = this.data.license;
-      if (!this.data.license.licenseKeyFile || !this.data.license.licenseBinFile) {
+    if (this.data.license) {
+      if (!isEmpty(this.data.license)) {
+        this.mainObj['license'] = this.data.license;
+        if (!this.data.license.licenseKeyFile || !this.data.license.licenseBinFile) {
+          this.isValid = false;
+          this.errorMessages.push(this.data.license.licenseKeyFile ? 'License bin file is required' : 'License key file is required');
+        }
+      } else {
         this.isValid = false;
-        this.errorMessages.push(this.data.license.licenseKeyFile ? 'License bin file is required' : 'License key file is required');
+        this.errorMessages.push('License is required for cluster');
       }
     }
     if (this.data.certificates && !isEmpty(this.data.certificates)) {
@@ -440,69 +501,71 @@ export class DeploymentComponent implements OnInit {
       }
     }
     if (this.data.joc && this.data.joc.length > 0) {
-
-      if (!this.data.jocClusterId) {
-        this.isValid = false;
-        this.errorMessages.push('Joc cluster Id is required');
-      } else {
-        this.mainObj['joc'] = {};
-        this.data.joc.forEach((element, index) => {
-          if (!this.mainObj.joc[this.data.jocClusterId]) {
-            this.mainObj.joc[this.data.jocClusterId] = {};
+      this.data.joc.forEach((joc) => {
+        if (!joc.jocClusterId) {
+          this.isValid = false;
+          this.errorMessages.push('Joc cluster Id is required');
+        } else {
+          if (!this.mainObj['joc']) {
+            this.mainObj['joc'] = {};
           }
-          if (index == 0) {
-            this.mainObj.joc[this.data.jocClusterId].primary = {};
-            this.checkAndUpdateObj(this.mainObj.joc[this.data.jocClusterId].primary, 'joc', element);
-          } else {
-            this.mainObj.joc[this.data.jocClusterId].secondary = {};
-            this.checkAndUpdateObj(this.mainObj.joc[this.data.jocClusterId].secondary, 'joc', element);
-          }
-        });
-      }
+          joc.cluster.forEach((element, index) => {
+            if (!this.mainObj.joc[joc.jocClusterId]) {
+              this.mainObj.joc[joc.jocClusterId] = {};
+            }
+            if (index == 0) {
+              this.mainObj.joc[joc.jocClusterId].primary = {};
+              this.checkAndUpdateObj(this.mainObj.joc[joc.jocClusterId].primary, 'joc', element);
+            } else {
+              this.mainObj.joc[joc.jocClusterId].secondary = {};
+              this.checkAndUpdateObj(this.mainObj.joc[joc.jocClusterId].secondary, 'joc', element);
+            }
+          });
+        }
+      });
     }
     if (this.data.agents && !isEmpty(this.data.agents)) {
-      if (!this.data.agentId) {
-        this.isValid = false;
-        this.errorMessages.push('Agent Id is required');
-      } else {
-        this.mainObj['agents'] = {};
-        this.data.controllers.forEach((element, index) => {
-          if (!this.mainObj.controllers[this.data.controllersId]) {
-            this.mainObj.controllers[this.data.controllersId] = {};
+      this.data.agents.forEach((agent) => {
+        if (!agent.agentId) {
+          this.isValid = false;
+          this.errorMessages.push('Agent Id is required');
+        } else {
+          if (!this.mainObj['agents']) {
+            this.mainObj['agents'] = {};
           }
-          if (index == 0) {
-            this.mainObj.controllers[this.data.controllersId].primary = {};
-            this.checkAndUpdateObj(this.mainObj.controllers[this.data.controllersId].primary, 'controllers', element);
-          } else {
-            this.mainObj.controllers[this.data.controllersId].secondary = {};
-            this.checkAndUpdateObj(this.mainObj.controllers[this.data.controllersId].secondary, 'controllers', element);
+          if (!this.mainObj.agents[agent.agentId]) {
+            this.mainObj.agents[agent.agentId] = {};
           }
-        });
-      }
+
+          this.checkAndUpdateObj(this.mainObj.agents[agent.agentId], 'agent', agent);
+        }
+      });
     }
     if (this.data.controllers && this.data.controllers.length > 0) {
-      if (!this.data.controllerId) {
-        this.isValid = false;
-        this.errorMessages.push('Controller Id is required');
-      } else {
-        this.mainObj['controllers'] = {};
-        this.data.controllers.forEach((element, index) => {
-          if (!this.mainObj.controllers[this.data.controllersId]) {
-            this.mainObj.controllers[this.data.controllersId] = {};
-          }
-          if (index == 0) {
-            this.mainObj.controllers[this.data.controllersId].primary = {};
-            this.checkAndUpdateObj(this.mainObj.controllers[this.data.controllersId].primary, 'controllers', element);
-          } else {
-            this.mainObj.controllers[this.data.controllersId].secondary = {};
-            this.checkAndUpdateObj(this.mainObj.controllers[this.data.controllersId].secondary, 'controllers', element);
-          }
-        });
-      }
+      this.data.controllers.forEach((controller) => {
+        if (!controller.controllerId) {
+          this.isValid = false;
+          this.errorMessages.push('Controller Id is required');
+        } else {
+          this.mainObj['controllers'] = {};
+          controller.cluster.forEach((element, index) => {
+            if (!this.mainObj.controllers[controller.controllerId]) {
+              this.mainObj.controllers[controller.controllerId] = {};
+            }
+            if (index == 0) {
+              this.mainObj.controllers[controller.controllerId].primary = {};
+              this.checkAndUpdateObj(this.mainObj.controllers[controller.controllerId].primary, 'controllers', element);
+            } else {
+              this.mainObj.controllers[controller.controllerId].secondary = {};
+              this.checkAndUpdateObj(this.mainObj.controllers[controller.controllerId].secondary, 'controllers', element);
+            }
+          });
+        }
+      });
     }
   }
 
-  showJSON(): void {
+  editJSON(): void {
     this.validate();
     this.modal.create({
       nzTitle: undefined,
@@ -510,12 +573,16 @@ export class DeploymentComponent implements OnInit {
       nzAutofocus: null,
       nzClassName: 'lg',
       nzComponentParams: {
-        object: this.mainObj,
-        edit: false
+        object: this.mainObj
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.mainObj = result;
+        this.updateJSONObject();
+      }
     });
   }
 
@@ -558,17 +625,99 @@ export class DeploymentComponent implements OnInit {
     this.data.descriptor = this.mainObj.descriptor;
     this.data.license = this.mainObj.license;
     this.data.certificates = this.mainObj.certificates;
-    if(!isEmpty(this.mainObj.joc)){
+    if (!isEmpty(this.mainObj.joc)) {
       this.data.joc = [];
       this.mainObj.joc.forEach((config) => {
-
+        const obj: any = {
+          isJOCExpanded: true,
+          jocClusterId: '',
+          cluster: []
+        };
+        for (let i in config) {
+          console.log(i, config[i]);
+          obj.jocClusterId = i;
+          if (config[i].primary) {
+            this.updateMissingObjects(config[i].primary, true);
+            obj.cluster.push(config[i].primary)
+          }
+          if (config[i].secondary) {
+            this.updateMissingObjects(config[i].secondary, true);
+            obj.cluster.push(config[i].secondary)
+          }
+        }
+        this.data.joc.push(obj);
       });
     }
-    if(!isEmpty(this.mainObj.agents)){
+    if (!isEmpty(this.mainObj.agents)) {
       this.data.agents = [];
+      this.mainObj.agents.forEach((config) => {
+        let obj: any = {};
+        for (let i in config) {
+          obj = config[i];
+          obj.agentId = i;
+        }
+        this.updateMissingObjects(obj);
+        this.data.agents.push(obj);
+      });
     }
-    if(!isEmpty(this.mainObj.controllers)){
+    if (!isEmpty(this.mainObj.controllers)) {
       this.data.controllers = [];
+      this.mainObj.controllers.forEach((config) => {
+        const obj: any = {
+          isControllerExpanded: true,
+          controllerId: '',
+          cluster: []
+        };
+        for (let i in config) {
+          obj.controllerId = i;
+          if (config[i].primary) {
+            this.updateMissingObjects(config[i].primary);
+            obj.cluster.push(config[i].primary)
+          }
+          if (config[i].secondary) {
+            this.updateMissingObjects(config[i].secondary);
+            obj.cluster.push(config[i].secondary)
+          }
+        }
+
+        this.data.controllers.push(obj);
+      });
+    }
+  }
+
+  private updateMissingObjects(obj, isJoc = false): void {
+    if (!obj.target || isEmpty(obj.target)) {
+      obj.target = {
+        connection: {},
+        authentication: {},
+        makeService: false
+      };
+    }
+    if (!obj.media) {
+      obj.media = {};
+    }
+    if (!obj.installation) {
+      obj.installation = {};
+    }
+    if (!obj.configuration || isEmpty(obj.configuration)) {
+      obj.configuration = {
+        certificates: {},
+        templates: [{name: ''}]
+      };
+      if (isJoc) {
+        obj.configuration.startFiles = {};
+      }
+    } else {
+      if (!obj.configuration.certificates) {
+        obj.configuration.certificates = {};
+      }
+      if (!obj.configuration.templates || !isArray(obj.configuration.templates) || obj.configuration.templates.length == 0) {
+        obj.configuration.templates = [{name: ''}];
+      } else {
+        obj.configuration.templates = obj.configuration.templates.map(item => {
+          return {name: item};
+        })
+      }
     }
   }
 }
