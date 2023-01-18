@@ -1,0 +1,495 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>deploymentService.button.bulkUpdate</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a min-ht-300">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-4 form-control-label">
+            <label translate>deploymentService.label.operationType</label>
+          </div>
+          <div class="col-md-6 ">
+            <nz-select name="operationType" [(ngModel)]="selectObject.operationType">
+              <nz-option [nzLabel]="'JOC'" [nzValue]="'JOC'"></nz-option>
+              <nz-option [nzLabel]="'AGENT'" [nzValue]="'AGENT'"></nz-option>
+              <nz-option [nzLabel]="'CONTROLLER'" [nzValue]="'CONTROLLER'"></nz-option>
+            </nz-select>
+          </div>
+        </div>
+        <div class="row  m-t-sm" *ngIf="selectObject.operationType == 'JOC'">
+          <div class="col-md-4 form-control-label">
+            <label translate>deploymentService.joc.label.ordering</label>
+          </div>
+          <div class="col-md-6">
+            <nz-input-number nzPlaceHolder="{{'deploymentService.joc.placeholder.ordering' | translate}}"
+                             [nzMin]="1" [nzMax]="99" [nzStep]="1" name="ordering"
+                             [(ngModel)]="data.ordering"></nz-input-number>
+          </div>
+        </div>
+        <h6 class="m-t-12" translate>deploymentService.label.target
+          <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="data.isTargetExpanded = !data.isTargetExpanded"
+             [ngClass]="{'fa-caret-up': !data.isTargetExpanded}"></i>
+        </h6>
+        <div class="p-a b-a hide" [ngClass]="{'fade-in show': !data.isTargetExpanded}">
+          <h6 translate>deploymentService.label.connection </h6>
+          <div class="p-a b-a">
+            <div class="row">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.host</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control"
+                       name="host" placeholder="{{'deploymentService.joc.placeholder.host' | translate}}"
+                       [(ngModel)]="data.target.connection.host">
+              </div>
+            </div>
+
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.port</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <nz-input-number nzPlaceHolder="{{'deploymentService.joc.placeholder.port' | translate}}"
+                                 [nzMin]="1" [nzStep]="1" name="port"
+                                 [(ngModel)]="data.target.connection.port"></nz-input-number>
+              </div>
+            </div>
+          </div>
+          <h6 class="m-t-12" translate>deploymentService.label.authentication </h6>
+          <div class="p-a b-a">
+            <div class="row">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.method</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control"
+                       name="method" placeholder="{{'deploymentService.joc.placeholder.method' | translate}}"
+                       [(ngModel)]="data.target.authentication.method">
+              </div>
+            </div>
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.user</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control"
+                       name="user" placeholder="{{'deploymentService.joc.placeholder.user' | translate}}"
+                       [(ngModel)]="data.target.authentication.user">
+              </div>
+            </div>
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.keyFile</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control" name="keyFile"
+                       placeholder="{{'deploymentService.joc.placeholder.keyFile' | translate}}"
+                       [(ngModel)]="data.target.authentication.keyFile">
+              </div>
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.packageLocation</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control"
+                     name="packageLocation"
+                     placeholder="{{'deploymentService.joc.placeholder.packageLocation' | translate}}"
+                     [(ngModel)]="data.target.packageLocation">
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.execPre</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control" name="execPre"
+                     placeholder="{{'deploymentService.joc.placeholder.execPre' | translate}}"
+                     [(ngModel)]="data.target.execPre">
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.execPost</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control" name="execPost"
+                     placeholder="{{'deploymentService.joc.placeholder.execPost' | translate}}"
+                     [(ngModel)]="data.target.execPost">
+
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4">
+              <label translate>deploymentService.joc.label.makeService</label>
+            </div>
+            <div class="col-md-6">
+              <label nz-checkbox [(ngModel)]="data.target.makeService" name="makeService"></label>
+            </div>
+          </div>
+        </div>
+        <h6 class="m-t-12" translate>deploymentService.label.media
+          <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="data.isMediaExpanded = !data.isMediaExpanded"
+             [ngClass]="{'fa-caret-up': data.isMediaExpanded}"></i>
+        </h6>
+        <div class="p-a b-a hide" [ngClass]="{'fade-in show': data.isMediaExpanded}">
+          <div class="row">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.release</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="release"
+                     placeholder="{{'deploymentService.joc.placeholder.release' | translate}}"
+                     [(ngModel)]="data.media.release">
+
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.tarball</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control" name="tarball"
+                     placeholder="{{'deploymentService.joc.placeholder.tarball' | translate}}"
+                     [(ngModel)]="data.media.tarball">
+
+            </div>
+          </div>
+
+        </div>
+        <h6 class="m-t-12" translate>deploymentService.label.installation
+          <i class="fa fa-caret-down p-l-xs text-hover-primary"
+             (click)="data.isInstallationExpanded = !data.isInstallationExpanded"
+             [ngClass]="{'fa-caret-up': data.isInstallationExpanded}"></i>
+        </h6>
+        <div class="p-a b-a hide" [ngClass]="{'fade-in show': data.isInstallationExpanded}">
+          <div class="row" *ngIf="selectObject.operationType == 'JOC'">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.setupDir</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control" name="setupDir"
+                     placeholder="{{'deploymentService.joc.placeholder.setupDir' | translate}}"
+                     [(ngModel)]="data.installation.setupDir">
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.home</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="home"
+                     placeholder="{{'deploymentService.joc.placeholder.home' | translate}}"
+                     [(ngModel)]="data.installation.home">
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.data</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="data"
+                     placeholder="{{'deploymentService.joc.placeholder.data' | translate}}"
+                     [(ngModel)]="data.installation.data">
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.homeOwner</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="homeOwner"
+                     placeholder="{{'deploymentService.joc.placeholder.homeOwner' | translate}}"
+                     [(ngModel)]="data.installation.homeOwner">
+            </div>
+          </div>
+
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.dataOwner</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="dataOwner"
+                     placeholder="{{'deploymentService.joc.placeholder.dataOwner' | translate}}"
+                     [(ngModel)]="data.installation.dataOwner">
+            </div>
+          </div>
+
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.runUser</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="runUser"
+                     placeholder="{{'deploymentService.joc.placeholder.runUser' | translate}}"
+                     [(ngModel)]="data.installation.runUser">
+            </div>
+          </div>
+          <div class="row m-t-sm" *ngIf="selectObject.operationType == 'JOC'">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.title</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="title" [maxlength]="30"
+                     placeholder="{{'deploymentService.joc.placeholder.title' | translate}}"
+                     [(ngModel)]="data.installation.title">
+            </div>
+          </div>
+          <div class="row m-t-sm" *ngIf="selectObject.operationType == 'JOC'">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.securityLevel</label>
+            </div>
+            <div class="col-md-6 ">
+              <nz-select name="securityLevel" [(ngModel)]="data.installation.securityLevel">
+                <nz-option *ngFor="let option of securityLevel" [nzLabel]="option"
+                           [nzValue]="option"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <div class="row m-t-sm" *ngIf="selectObject.operationType == 'JOC'">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.dbmsConfig</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="dbmsConfig"
+                     placeholder="{{'deploymentService.joc.placeholder.dbmsConfig' | translate}}"
+                     [(ngModel)]="data.installation.dbmsConfig">
+            </div>
+          </div>
+          <div class="row m-t-sm" *ngIf="selectObject.operationType == 'JOC'">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.dbmsDriver</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="dbmsDriver"
+                     placeholder="{{'deploymentService.joc.placeholder.dbmsDriver' | translate}}"
+                     [(ngModel)]="data.installation.dbmsDriver">
+            </div>
+          </div>
+          <div class="row m-t-sm" *ngIf="selectObject.operationType == 'JOC'">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.dbmsInit</label>
+            </div>
+            <div class="col-md-6 ">
+              <nz-select name="dbmsInit" [(ngModel)]="data.installation.dbmsInit">
+                <nz-option *ngFor="let option of dbmsInit" [nzLabel]="option"
+                           [nzValue]="option"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.httpPort</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="httpPort"
+                     placeholder="{{'deploymentService.joc.placeholder.httpPort' | translate}}"
+                     [(ngModel)]="data.installation.httpPort">
+            </div>
+          </div>
+
+          <div class="row m-t-sm">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.httpsPort</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control" name="httpsPort"
+                     placeholder="{{'deploymentService.joc.placeholder.httpsPort' | translate}}"
+                     [(ngModel)]="data.installation.httpsPort">
+
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4">
+              <label translate>deploymentService.joc.label.javaHome</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control"
+                     name="javaHome"
+                     placeholder="{{'deploymentService.joc.placeholder.javaHome' | translate}}"
+                     [(ngModel)]="data.installation.javaHome">
+            </div>
+          </div>
+          <div class="row m-t-sm">
+            <div class="col-md-4">
+              <label translate>deploymentService.joc.label.javaOptions</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control"
+                     name="javaOptions"
+                     placeholder="{{'deploymentService.joc.placeholder.javaOptions' | translate}}"
+                     [(ngModel)]="data.installation.javaOptions">
+            </div>
+          </div>
+          <div class="row m-t-sm" *ngIf="selectObject.operationType == 'JOC'">
+            <div class="col-md-4">
+              <label translate>deploymentService.joc.label.isUser</label>
+            </div>
+            <div class="col-md-6">
+              <label nz-checkbox [(ngModel)]="data.installation.isUser" name="isUser"></label>
+            </div>
+          </div>
+          <div class="row m-t-sm" *ngIf="selectObject.operationType == 'JOC'">
+            <div class="col-md-4">
+              <label translate>deploymentService.joc.label.isPreserveEnv</label>
+            </div>
+            <div class="col-md-6">
+              <label nz-checkbox [(ngModel)]="data.installation.isPreserveEnv"
+                     name="isPreserveEnv"></label>
+            </div>
+          </div>
+        </div>
+        <h6 class="m-t-12" translate>deploymentService.label.configuration
+          <i class="fa fa-caret-down p-l-xs text-hover-primary"
+             (click)="data.isConfigurationExpanded = !data.isConfigurationExpanded"
+             [ngClass]="{'fa-caret-up': data.isConfigurationExpanded}"></i>
+        </h6>
+        <div class="p-a b-a hide" [ngClass]="{'fade-in show': data.isConfigurationExpanded}">
+          <div class="row" *ngIf="selectObject.operationType == 'JOC'">
+            <div class="col-md-4 form-control-label">
+              <label translate>deploymentService.joc.label.responseDir</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" class="form-control" name="responseDir"
+                     placeholder="{{'deploymentService.joc.placeholder.responseDir' | translate}}"
+                     [(ngModel)]="data.configuration.responseDir">
+            </div>
+          </div>
+          <h6 class="m-t-12" translate>deploymentService.label.certificates </h6>
+          <div class="p-a b-a">
+            <div class="row">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.keyStore</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control" name="keyStore"
+                       placeholder="{{'deploymentService.joc.placeholder.keyStore' | translate}}"
+                       [(ngModel)]="data.configuration.certificates.keyStore">
+              </div>
+            </div>
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.keyStorePassword</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control" name="keyStorePassword"
+                       placeholder="{{'deploymentService.joc.placeholder.keyStorePassword' | translate}}"
+                       [(ngModel)]="data.configuration.certificates.keyStorePassword">
+
+              </div>
+            </div>
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.keyPassword</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control" name="keyPassword"
+                       placeholder="{{'deploymentService.joc.placeholder.keyPassword' | translate}}"
+                       [(ngModel)]="data.configuration.certificates.keyPassword">
+              </div>
+            </div>
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.keyAlias</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control" name="keyAlias"
+                       placeholder="{{'deploymentService.joc.placeholder.keyAlias' | translate}}"
+                       [(ngModel)]="data.configuration.certificates.keyAlias">
+              </div>
+            </div>
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.trustStore</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control"
+                       name="trustStore"
+                       placeholder="{{'deploymentService.joc.placeholder.trustStore' | translate}}"
+                       [(ngModel)]="data.configuration.certificates.trustStore">
+              </div>
+            </div>
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.trustStorePassword</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control" name="trustStorePassword"
+                       placeholder="{{'deploymentService.joc.placeholder.trustStorePassword' | translate}}"
+                       [(ngModel)]="data.configuration.certificates.trustStorePassword">
+              </div>
+            </div>
+          </div>
+          <h6 *ngIf="selectObject.operationType == 'JOC'" class="m-t-12" translate>deploymentService.label.startFiles </h6>
+          <div *ngIf="selectObject.operationType == 'JOC'" class="p-a b-a">
+            <div class="row">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.httpIni</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control"
+                       name="httpIni"
+                       placeholder="{{'deploymentService.joc.placeholder.httpIni' | translate}}"
+                       [(ngModel)]="data.configuration.httpIni">
+              </div>
+            </div>
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.httpsIni</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control"
+                       name="httpsIni"
+                       placeholder="{{'deploymentService.joc.placeholder.httpsIni' | translate}}"
+                       [(ngModel)]="data.configuration.httpsIni">
+              </div>
+            </div>
+            <div class="row m-t-sm">
+              <div class="col-md-4 form-control-label">
+                <label translate>deploymentService.joc.label.sslIni</label>
+              </div>
+              <div class="col-md-6 p-l-3">
+                <input type="text" class="form-control"
+                       name="sslIni"
+                       placeholder="{{'deploymentService.joc.placeholder.sslIni' | translate}}"
+                       [(ngModel)]="data.configuration.sslIni">
+              </div>
+            </div>
+          </div>
+          <div class="row m-t-12" *ngFor="let temp of data.configuration.templates; let k = index">
+            <div class="col-md-4 form-control-label">
+              <label *ngIf="k == 0" translate>deploymentService.joc.label.templates</label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" class="form-control"
+                     name="templates{{k}}"
+                     placeholder="{{'deploymentService.joc.placeholder.templates' | translate}}"
+                     [(ngModel)]="temp.name">
+              <i (click)="addTemplates(data.configuration.templates)"
+                 class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: -10px;"></i>
+              <i *ngIf="k != 0" (click)="removeTemplates(data.configuration.templates, k)"
+                 class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -28px;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitted">
+      <i class="fa fa-spin fa-spinner p-r-xs" *ngIf="submitted"></i>
+      <span translate>common.button.submit</span>
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+      common.button.cancel
+    </button>
+  </div>
+</form>

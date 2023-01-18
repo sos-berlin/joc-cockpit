@@ -5,10 +5,10 @@ import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 import {ClipboardService} from "ngx-clipboard";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {CoreService} from '../../services/core.service';
 import {FileUploader} from "ng2-file-upload";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
+import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-upload-json',
@@ -97,6 +97,101 @@ export class UploadModalComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-bulk-update',
+  templateUrl: './bulk-update-dialog.html'
+})
+export class BulkUpdateModalComponent implements OnInit {
+  @Input() securityLevel: Array<string>;
+  @Input() dbmsInit: Array<string>;
+  @Input() methods: Array<string>;
+  selectObject = {
+    operationType: 'JOC'
+  };
+  submitted = false;
+  data: any;
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+
+  }
+
+  ngOnInit(): void {
+    this.data = {
+      target: {
+        connection: {},
+        authentication: {},
+        makeService: false
+      },
+      media: {},
+      installation: {
+        isUser: true,
+        isPreserveEnv: true
+      },
+      configuration: {
+        certificates: {},
+        templates: [{name: ''}],
+        startFiles: {}
+      }
+    };
+  }
+
+  addTemplates(list): void {
+    list.push({name: ''});
+  }
+
+  removeTemplates(list, index): void {
+    list.splice(index, 1);
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    setTimeout(() => {
+      const obj = this.coreService.clone(this.data);
+      if (isEmpty(obj.target.connection)) {
+        delete obj.target['connection'];
+      }
+      if (isEmpty(obj.target.authentication)) {
+        delete obj.target['authentication'];
+      }
+      if (!obj.target.makeService) {
+        delete obj.target['makeService'];
+      }
+      if (isEmpty(obj.target)) {
+        delete obj['target'];
+      }
+      if (isEmpty(obj.media)) {
+        delete obj['media'];
+      }
+      if (obj.installation.isUser) {
+        delete obj.installation['isUser'];
+      }
+      if (obj.installation.isPreserveEnv) {
+        delete obj.installation['isPreserveEnv'];
+      }
+      if (isEmpty(obj.installation)) {
+        delete obj['installation'];
+      }
+      if (isEmpty(obj.configuration.certificates)) {
+        delete obj.configuration['certificates'];
+      }
+      if (isEmpty(obj.configuration.startFiles)) {
+        delete obj.configuration['startFiles'];
+      }
+      obj.configuration.templates = obj.configuration.templates.filter(item => {
+        return !!item.name;
+      });
+      if (obj.configuration.templates.length == 0) {
+        delete obj.configuration['templates'];
+      }
+      if (isEmpty(obj.configuration)) {
+        delete obj['configuration'];
+      }
+      this.activeModal.close({data: obj, operationType: this.selectObject.operationType});
+    }, 100);
+  }
+
+}
+
+@Component({
   selector: 'app-show-json',
   templateUrl: './show-json-dialog.html'
 })
@@ -135,7 +230,6 @@ export class ShowJsonModalComponent implements OnInit {
     });
     this.options.modes = ['code', 'tree'];
     this.data = this.coreService.clone(this.object);
-    console.log(this.data)
   }
 
   copyToClipboard(): void {
@@ -144,7 +238,10 @@ export class ShowJsonModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.activeModal.close(this.editor.get());
+    this.submitted = true;
+    setTimeout(() => {
+      this.activeModal.close(this.editor.get());
+    }, 100);
   }
 
 }
@@ -178,6 +275,8 @@ export class DeploymentComponent implements OnInit {
 
   isValid = false;
   errorMessages: Array<string> = [];
+  history = [];
+  indexOfNextAdd = 0;
 
   constructor(private coreService: CoreService, private modal: NzModalService) {
 
@@ -258,6 +357,10 @@ export class DeploymentComponent implements OnInit {
     }
   }
 
+  copyJOC(index): void {
+    console.log(this.data.joc[index]);
+  }
+
   addCertificates(): void {
     this.data.certificates = {
       controller: {},
@@ -334,7 +437,19 @@ export class DeploymentComponent implements OnInit {
     if (!this.data.license) {
       this.data.license = {};
     }
-    cluster.push({});
+    cluster.push({
+      target: {
+        connection: {},
+        authentication: {},
+        makeService: false
+      },
+      media: {},
+      installation: {},
+      configuration: {
+        certificates: {},
+        templates: [{name: ''}]
+      }
+    });
   }
 
   addAnotherAgent(): void {
@@ -350,7 +465,11 @@ export class DeploymentComponent implements OnInit {
   }
 
   convertJSON(): void {
-
+    if (this.history.length === 20) {
+      this.history.shift();
+    }
+    this.history.push(JSON.stringify(this.data));
+    this.indexOfNextAdd = this.history.length - 1;
   }
 
   private checkAndUpdateObj(obj, type, source): void {
@@ -586,12 +705,45 @@ export class DeploymentComponent implements OnInit {
     });
   }
 
-  undo(): void {
+  bulkUpdate(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: BulkUpdateModalComponent,
+      nzAutofocus: null,
+      nzClassName: 'lg',
+      nzComponentParams: {
+        securityLevel: this.securityLevel,
+        dbmsInit: this.dbmsInit,
+        methods: this.methods
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        console.log(result)
+        // this.mainObj = result;
+        //  this.updateJSONObject();
+      }
+    });
+  }
 
+  undo(): void {
+    if (this.indexOfNextAdd > 0) {
+      const obj = this.history[--this.indexOfNextAdd];
+      if (obj) {
+        this.data = JSON.parse(obj);
+      }
+    }
   }
 
   redo(): void {
-
+    if (this.indexOfNextAdd < this.history.length) {
+      const obj = this.history[this.indexOfNextAdd++];
+      if (obj) {
+        this.data = JSON.parse(obj);
+      }
+    }
   }
 
   download(): void {
