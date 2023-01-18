@@ -800,6 +800,7 @@
   },
   "deploymentService": {
     "label": {
+      "operationType": "Operation Type",
       "descriptor": "Descriptor",
       "license": "License",
       "joc": "JOC",
@@ -819,7 +820,8 @@
       "showMoreOption": "Show Options",
       "hideMoreOption": "Hide Options",
       "validate": "Validate",
-      "editJSON": "Edit JSON"
+      "editJSON": "Edit JSON",
+      "bulkUpdate": "Bulk Update"
     },
     "message": {
       "invalidFile": "Not a valid descriptor file"
@@ -1019,9 +1021,10 @@
       },
       "button": {
         "addController": "Add Controller Instance",
-        "removeController": "Remove Controller Instance",
         "addSecondaryController": "Add Secondary Controller Instance",
-        "addAnotherController": "Add another Controller"
+        "addAnotherController": "Add another Controller",
+        "removeController": "Remove Controller Instance",
+        "removeSecondaryController": "Remove Secondary Controller Instance"
       },
       "placeholder": {
         "host": "Enter Host",
@@ -1130,9 +1133,10 @@
       },
       "button": {
         "addJOC": "Add JOC Cockpit",
-        "removeJOC": "Remove JOC Cockpit",
         "addSecondaryJOC": "Add Secondary JOC Cockpit Instance",
-        "addAnotherJOC": "Add another JOC Cockpit Instance"
+        "addAnotherJOC": "Add another JOC Cockpit Instance",
+        "removeJOC": "Remove JOC Cockpit Instance",
+        "removeSecondaryJOC": "Remove Secondary JOC Cockpit Instance"
       },
       "placeholder": {
         "jocId": "Enter JOC Cockpit ID",
