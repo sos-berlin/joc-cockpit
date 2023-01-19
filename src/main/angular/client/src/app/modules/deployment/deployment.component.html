@@ -377,6 +377,7 @@
               <div class="m-l-md hide" [ngClass]="{'fade-in show': obj.isAgentExpanded}">
                 <div *ngFor="let item of data.agents; let i = index" [ngClass]="{'b-t m-t': i != 0}">
                   <h6 class="m-t-12">
+                    <label class="m-r-sm" *ngIf="item.agentId" nz-checkbox [(ngModel)]="item.isChecked" name="checkbox{{i}}"></label>
                     <span>{{item.agentId || 'Agent_ID_' + (i + 1)}}</span>
                     <i class="fa fa-caret-down p-l-xs text-hover-primary"
                        (click)="item.isAgentPropertiesExpanded = !item.isAgentPropertiesExpanded"
@@ -966,7 +967,9 @@
               </h5>
               <div class="m-l-md hide" [ngClass]="{'fade-in show': obj.isControllerExpanded}">
                 <div *ngFor="let controller of data.controllers; let i = index" [ngClass]="{'b-t m-t': i != 0}">
-                  <h6 class="m-t-12">{{controller.controllerId || 'Controller_ID_' + (i+1)}}
+                  <h6 class="m-t-12">
+                    <label class="m-r-sm" *ngIf="controller.controllerId" nz-checkbox [(ngModel)]="controller.isChecked" name="ccheckbox{{i}}"></label>
+                    {{controller.controllerId || 'Controller_ID_' + (i+1)}}
                     <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="controller.isControllerExpanded = !controller.isControllerExpanded"
                        [ngClass]="{'fa-caret-up': controller.isControllerExpanded}"></i>
                     <i *ngIf="i > 0"
@@ -1553,7 +1556,9 @@
               </h5>
               <div class="m-l-md hide" [ngClass]="{'fade-in show': obj.isJOCExpanded}">
                 <div *ngFor="let jobC of data.joc; let i = index" [ngClass]="{'b-t m-t': i != 0}">
-                  <h6 class="m-t-12">{{jobC.jocClusterId || 'JOC_ID_' + (i+1)}}
+                  <h6 class="m-t-12">
+                    <label class="m-r-sm" *ngIf="jobC.jocClusterId" nz-checkbox [(ngModel)]="jobC.isChecked" name="jcheckbox{{i}}"></label>
+                    {{jobC.jocClusterId || 'Cluster_ID_' + (i+1)}}
                     <i class="fa fa-caret-down p-l-xs text-hover-primary" (click)="jobC.isJOCExpanded = !jobC.isJOCExpanded"
                        [ngClass]="{'fa-caret-up': jobC.isJOCExpanded}"></i>
                     <i *ngIf="i > 0" class="fa fa-trash pull-right text-hover-color p-r-sm font14 cursor"
@@ -1585,8 +1590,7 @@
                     </div>
                     <div *ngFor="let item of jobC.cluster; let j = index">
                       <h6 class="m-t-12">
-                        <span *ngIf="j == 0">PRIMARY</span>
-                        <span *ngIf="j == 1">SECONDARY</span>
+                        <span>{{item.ordering || (i+1)}}</span>
                         <i class="fa fa-caret-down p-l-xs text-hover-primary"
                            (click)="item.isJOCPropertiesExpanded = !item.isJOCPropertiesExpanded"
                            [ngClass]="{'fa-caret-up': !item.isJOCPropertiesExpanded}"></i>
@@ -1596,13 +1600,13 @@
                       <div class="p-a b-a hide" [ngClass]="{'fade-in show': !item.isJOCPropertiesExpanded}">
                         <div class="row">
                           <div class="col-md-4 col-lg-3 form-control-label">
-                            <label translate>deploymentService.joc.label.ordering
+                            <label translate>deploymentService.joc.label.jocInstanceId
                               <sup class="text-danger text-sm">*</sup>
                             </label> <i class="p-l-sm fa fa-info-circle"
-                                        [nz-tooltip]="'deploymentService.joc.tooltip.ordering' | translate"></i>
+                                        [nz-tooltip]="'deploymentService.joc.tooltip.jocInstanceId' | translate"></i>
                           </div>
                           <div class="col-md-6 col-lg-4 p-l-3" [ngClass]="{'has-error' : ((ordering.dirty || ordering.touched) && ordering.invalid)}">
-                            <nz-input-number nzPlaceHolder="{{'deploymentService.joc.placeholder.ordering' | translate}}" #ordering="ngModel" required
+                            <nz-input-number nzPlaceHolder="{{'deploymentService.joc.placeholder.jocInstanceId' | translate}}" #ordering="ngModel" required
                                              [nzMin]="1" [nzMax]="99" [nzStep]="1" name="ordering{{i}}{{j}}"
                                              [(ngModel)]="item.ordering" (nzBlur)="convertJSON()"></nz-input-number>
                             <div *ngIf="ordering.invalid && (ordering.dirty || ordering.touched)"
@@ -2306,15 +2310,15 @@
                         </div>
                       </div>
                     </div>
-                    <div class="m-t-12"  *ngIf="jobC.cluster.length == 1">
-                      <a class="text-primary text-hover-primary" (click)="addSecondaryJOC(jobC.cluster)"
-                         translate>deploymentService.joc.button.addSecondaryJOC</a>
+                    <div class="m-t-12">
+                      <a class="text-primary text-hover-primary" (click)="addAnotherJOCInstance(jobC.cluster)"
+                         translate>deploymentService.joc.button.addAnotherJOC</a>
                     </div>
                   </div>
                 </div>
                 <div class="m-t-12">
-                  <a class="text-primary text-hover-primary" (click)="addAnotherJOC()"
-                     translate>deploymentService.joc.button.addAnotherJOC</a>
+                  <a class="text-primary text-hover-primary" (click)="addAnotherJOCCluster()"
+                     translate>deploymentService.joc.button.addAnotherJOCCluster</a>
                 </div>
               </div>
               <hr>

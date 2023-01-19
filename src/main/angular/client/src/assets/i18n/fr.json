@@ -1088,9 +1088,8 @@
     },
     "joc": {
       "label": {
-        "jocId": "JOC Cockpit ID",
+        "jocInstanceId": "JOC Cockpit Instance ID",
         "jocClusterId": "JOC Cockpit Cluster ID",
-        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Authentication Method",
@@ -1133,15 +1132,14 @@
       },
       "button": {
         "addJOC": "Add JOC Cockpit",
-        "addSecondaryJOC": "Add Secondary JOC Cockpit Instance",
         "addAnotherJOC": "Add another JOC Cockpit Instance",
+        "addAnotherJOCCluster": "Add another JOC Cockpit Cluster",
         "removeJOC": "Remove JOC Cockpit Instance",
         "removeSecondaryJOC": "Remove Secondary JOC Cockpit Instance"
       },
       "placeholder": {
-        "jocId": "Enter JOC Cockpit ID",
+        "jocInstanceId": "Enter JOC Cockpit Instance ID",
         "jocClusterId": "Enter JOC Cockpit Cluster ID",
-        "ordering": "Enter Ordering",
         "host": "Enter Host",
         "port": "Enter Port Number",
         "method": "Enter Authentication Method",
@@ -1178,9 +1176,8 @@
         "sslIni": "Enter Jetty HTTP Configuration File (ssl.ini)"
       },
       "tooltip": {
-        "jocId": "JOC Cockpit ID",
+        "jocInstanceId": "JOC Cockpit Instance ID",
         "jocClusterId": "JOC Cockpit Cluster ID",
-        "ordering": "Ordering",
         "host": "Host",
         "port": "Port",
         "method": "Authentication Method",
