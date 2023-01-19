@@ -65,7 +65,7 @@
             <div class="m-l-md node-wrapper" style="width: 90%" *ngFor="let child of deployablesObject">
               <div>
                 <span  class="fa fa-check-circle-o orange text-xs"
-                       [ngClass]="{'fa-circle-o': !child.valid, 'fa-circle dark-blue' :child.deployed, 'opacity7': child.syncState && (child.syncState._text === 'SUSPENDED' || child.syncState._text === 'SUSPENDING')}" style="margin-top: 4px"></span>
+                       [ngClass]="{'fa-circle-o': !child.valid, 'fa-circle dark-blue' :child.deployed || child.released, 'opacity7': child.syncState && (child.syncState._text === 'SUSPENDED' || child.syncState._text === 'SUSPENDING')}" style="margin-top: 4px"></span>
                 <span *ngIf="child.syncState" class="p-l-xxs">
                   <i *ngIf="child.syncState._text === 'IN_SYNC' || child.syncState._text === 'SUSPENDED' || child.syncState._text === 'SUSPENDING'" class="fa fa-refresh font11 p-l-xxs"></i>
                   <i *ngIf="child.syncState._text === 'UNKNOWN'" class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
@@ -79,13 +79,6 @@
                   name="'version-' + {{child.id}}"
                   [nzSize]="'small'"
                   [(ngModel)]="child.deployId">
-                  <!-- <ng-container *ngIf="!child.valid" >
-                    <nz-option nzCustomContent nzValue="" [nzLabel]="'workflow.label.draft' | translate">
-                      <div>
-                        <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}} - <span class="label bg-gold" translate>inventory.label.notValid</span>
-                      </div>
-                    </nz-option>
-                  </ng-container> -->
                   <ng-container *ngFor="let version of child.deployablesVersions">
                     <nz-option nzCustomContent [nzValue]="version.deploymentId" [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)">
                       <div *ngIf="version.versions && version.versions.length>0">
@@ -102,7 +95,7 @@
                 </nz-select>
               </div>
               <div class="m-l"
-                   *ngIf="(!child.deployablesVersions || child.deployablesVersions.length ===0)">
+                   *ngIf="(!child.deployablesVersions || child.deployablesVersions.length ===0) && !child.releasableVersions">
                 <i class="text-muted" *ngIf="!child.deleted" translate>workflow.label.draft</i>
                 <i class="text-danger" *ngIf="child.deleted && child.deploymentId" translate>inventory.label.deployMarkDelete</i>
                 <i class="text-danger" *ngIf="child.deleted && !child.deploymentId" translate>inventory.label.markForDelete</i>

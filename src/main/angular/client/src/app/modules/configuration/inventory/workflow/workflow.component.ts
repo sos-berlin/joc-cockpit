@@ -8511,7 +8511,8 @@ export class WorkflowComponent implements OnChanges, OnDestroy {
         copyObject = self.coreService.clone(self.inventoryConf.copiedInstuctionObject);
         copyObject.forEach(cObject => {
           delete cObject.jobObject;
-        })
+        });
+
       }
 
       if (target.value.tagName === 'Process') {

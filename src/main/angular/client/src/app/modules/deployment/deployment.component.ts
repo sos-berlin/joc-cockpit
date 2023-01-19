@@ -330,6 +330,7 @@ export class DeploymentComponent implements OnInit {
       isJOCExpanded: true,
       jocClusterId: '',
       cluster: [{
+        ordering: 1,
         target: {
           connection: {},
           authentication: {},
@@ -369,11 +370,12 @@ export class DeploymentComponent implements OnInit {
     this.obj.isCertificateExpanded = true;
   }
 
-  addSecondaryJOC(cluster): void {
+  addAnotherJOCInstance(cluster): void {
     if (!this.data.license) {
       this.data.license = {};
     }
     cluster.push({
+      ordering: cluster.length + 1,
       target: {
         connection: {},
         authentication: {},
@@ -392,7 +394,7 @@ export class DeploymentComponent implements OnInit {
     });
   }
 
-  addAnotherJOC(): void {
+  addAnotherJOCCluster(): void {
     this.addJOC();
   }
 
@@ -475,12 +477,11 @@ export class DeploymentComponent implements OnInit {
   private checkAndUpdateObj(obj, type, source): void {
     if (type === 'joc' && !source.ordering) {
       this.isValid = false;
-      this.errorMessages.push('JOC ordering value is required');
+      this.errorMessages.push('JOC instance ID is required');
     } else {
       obj.ordering = source.ordering;
     }
-    console.log(obj);
-    console.log(source);
+
     if (!isEmpty(source.target.connection) || !isEmpty(source.target.authentication)
       || source.target.packageLocation || source.target.execPre || source.target.execPost || source.target.makeService) {
       obj.target = {
@@ -557,7 +558,9 @@ export class DeploymentComponent implements OnInit {
         if (source.configuration.startFiles && !isEmpty(source.configuration.startFiles)) {
           obj.configuration.startFiles = source.configuration.startFiles;
         }
-
+        if (source.configuration.controller && !isEmpty(source.configuration.controller)) {
+          obj.configuration.controller = source.configuration.controller;
+        }
         if (!isEmpty(source.configuration.certificates)) {
           obj.configuration.certificates = source.configuration.certificates;
           if (!source.configuration.certificates.keyStore || !source.configuration.certificates.keyStorePassword || !source.configuration.certificates.keyPassword
@@ -626,59 +629,55 @@ export class DeploymentComponent implements OnInit {
           this.errorMessages.push('Joc cluster Id is required');
         } else {
           if (!this.mainObj['joc']) {
-            this.mainObj['joc'] = {};
+            this.mainObj['joc'] = [];
           }
-          joc.cluster.forEach((element, index) => {
-            if (!this.mainObj.joc[joc.jocClusterId]) {
-              this.mainObj.joc[joc.jocClusterId] = {};
-            }
-            if (index == 0) {
-              this.mainObj.joc[joc.jocClusterId].primary = {};
-              this.checkAndUpdateObj(this.mainObj.joc[joc.jocClusterId].primary, 'joc', element);
-            } else {
-              this.mainObj.joc[joc.jocClusterId].secondary = {};
-              this.checkAndUpdateObj(this.mainObj.joc[joc.jocClusterId].secondary, 'joc', element);
-            }
+          let obj = {};
+          obj[joc.jocClusterId] = {};
+          joc.cluster.forEach((element) => {
+            obj[joc.jocClusterId][element.ordering] = {};
+            this.checkAndUpdateObj(obj[joc.jocClusterId][element.ordering], 'joc', element);
           });
+          this.mainObj.joc.push(obj);
         }
       });
     }
-    if (this.data.agents && !isEmpty(this.data.agents)) {
+    if (this.data.agents && this.data.agents.length > 0) {
+      this.mainObj['agents'] = [];
       this.data.agents.forEach((agent) => {
         if (!agent.agentId) {
           this.isValid = false;
           this.errorMessages.push('Agent Id is required');
         } else {
-          if (!this.mainObj['agents']) {
-            this.mainObj['agents'] = {};
+          let obj = {};
+          if (!obj[agent.agentId]) {
+            obj[agent.agentId] = {};
           }
-          if (!this.mainObj.agents[agent.agentId]) {
-            this.mainObj.agents[agent.agentId] = {};
-          }
-
-          this.checkAndUpdateObj(this.mainObj.agents[agent.agentId], 'agent', agent);
+          this.checkAndUpdateObj(obj[agent.agentId], 'agent', agent);
+          this.mainObj.agents.push(obj);
         }
       });
     }
     if (this.data.controllers && this.data.controllers.length > 0) {
+      this.mainObj['controllers'] = [];
       this.data.controllers.forEach((controller) => {
         if (!controller.controllerId) {
           this.isValid = false;
           this.errorMessages.push('Controller Id is required');
         } else {
-          this.mainObj['controllers'] = {};
+          let obj = {};
           controller.cluster.forEach((element, index) => {
-            if (!this.mainObj.controllers[controller.controllerId]) {
-              this.mainObj.controllers[controller.controllerId] = {};
+            if (!obj[controller.controllerId]) {
+              obj[controller.controllerId] = {};
             }
             if (index == 0) {
-              this.mainObj.controllers[controller.controllerId].primary = {};
-              this.checkAndUpdateObj(this.mainObj.controllers[controller.controllerId].primary, 'controllers', element);
+              obj[controller.controllerId].primary = {};
+              this.checkAndUpdateObj(obj[controller.controllerId].primary, 'controllers', element);
             } else {
-              this.mainObj.controllers[controller.controllerId].secondary = {};
-              this.checkAndUpdateObj(this.mainObj.controllers[controller.controllerId].secondary, 'controllers', element);
+              obj[controller.controllerId].secondary = {};
+              this.checkAndUpdateObj(obj[controller.controllerId].secondary, 'controllers', element);
             }
           });
+          this.mainObj.controllers.push(obj);
         }
       });
     }
@@ -721,11 +720,167 @@ export class DeploymentComponent implements OnInit {
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
       if (result) {
-        console.log(result)
-        // this.mainObj = result;
-        //  this.updateJSONObject();
+        if (result.operationType == 'JOC') {
+          this._bulkUpdate(result.data, this.data.joc);
+        } else if (result.operationType == 'CONTROLLER') {
+          this._bulkUpdate(result.data, this.data.controllers);
+        } else if (result.operationType == 'AGENT') {
+          this._bulkUpdate(result.data, this.data.agents);
+        }
       }
     });
+  }
+
+  private _bulkUpdate(obj, list): void {
+    list.forEach((item) => {
+      if (item.cluster) {
+        item.cluster.forEach((cluster) => {
+          this.updateIndividualData(obj, cluster);
+        });
+      } else {
+        this.updateIndividualData(obj, item);
+      }
+    });
+
+  }
+
+  private updateIndividualData(obj, data): void {
+
+    if (obj.target) {
+      if (!isEmpty(obj.target.connection)) {
+        if (obj.target.connection.host) {
+          data.target.connection.host = obj.target.connection.host;
+        }
+        if (obj.target.connection.port) {
+          data.target.connection.port = obj.target.connection.port;
+        }
+      }
+      if (!isEmpty(obj.target.authentication)) {
+        if (obj.target.authentication.method) {
+          data.target.authentication.method = obj.target.authentication.method;
+        }
+        if (obj.target.authentication.user) {
+          data.target.authentication.user = obj.target.authentication.user;
+        }
+        if (obj.target.authentication.keyFile) {
+          data.target.authentication.keyFile = obj.target.authentication.keyFile;
+        }
+      }
+      if (obj.target.packageLocation) {
+        data.target.packageLocation = obj.target.packageLocation;
+      }
+      if (obj.target.execPre) {
+        data.target.execPre = obj.target.execPre;
+      }
+      if (obj.target.execPost) {
+        data.target.execPost = obj.target.execPost;
+      }
+      if (obj.target.makeService) {
+        data.target.makeService = obj.target.makeService;
+      }
+    }
+    if (obj.media) {
+      if (obj.media.release) {
+        data.media.release = obj.media.release;
+      }
+      if (obj.media.tarball) {
+        data.media.tarball = obj.media.tarball;
+      }
+    }
+    if (obj.installation) {
+      if (obj.installation.setupDir) {
+        data.installation.setupDir = obj.installation.setupDir;
+      }
+      if (obj.installation.home) {
+        data.installation.home = obj.installation.home;
+      }
+      if (obj.installation.data) {
+        data.installation.data = obj.installation.data;
+      }
+      if (obj.installation.homeOwner) {
+        data.installation.homeOwner = obj.installation.homeOwner;
+      }
+      if (obj.installation.dataOwner) {
+        data.installation.dataOwner = obj.installation.dataOwner;
+      }
+      if (obj.installation.title) {
+        data.installation.title = obj.installation.title;
+      }
+      if (obj.installation.securityLevel) {
+        data.installation.securityLevel = obj.installation.securityLevel;
+      }
+      if (obj.installation.dbmsConfig) {
+        data.installation.dbmsConfig = obj.installation.dbmsConfig;
+      }
+      if (obj.installation.dbmsDriver) {
+        data.installation.dbmsDriver = obj.installation.dbmsDriver;
+      }
+      if (obj.installation.dbmsInit) {
+        data.installation.dbmsInit = obj.installation.dbmsInit;
+      }
+      if (obj.installation.httpPort) {
+        data.installation.httpPort = obj.installation.httpPort;
+      }
+      if (obj.installation.httpsPort) {
+        data.installation.httpsPort = obj.installation.httpsPort;
+      }
+      if (obj.installation.javaHome) {
+        data.installation.javaHome = obj.installation.javaHome;
+      }
+      if (obj.installation.javaOptions) {
+        data.installation.javaOptions = obj.installation.javaOptions;
+      }
+      if (obj.installation.isUser == false) {
+        data.installation.isUser = obj.installation.isUser;
+      }
+      if (obj.installation.isPreserveEnv == false) {
+        data.installation.isPreserveEnv = obj.installation.isPreserveEnv;
+      }
+    }
+    if (obj.configuration) {
+      if (obj.configuration.responseDir) {
+        data.configuration.responseDir = obj.configuration.responseDir;
+      }
+      if (!isEmpty(obj.configuration.certificates)) {
+        if (obj.configuration.certificates.keyStore) {
+          data.configuration.certificates.keyStore = obj.configuration.certificates.keyStore;
+        }
+        if (obj.configuration.certificates.keyStorePassword) {
+          data.configuration.certificates.keyStorePassword = obj.configuration.certificates.keyStorePassword;
+        }
+        if (obj.configuration.certificates.keyPassword) {
+          data.configuration.certificates.keyPassword = obj.configuration.certificates.keyPassword;
+        }
+        if (obj.configuration.certificates.keyAlias) {
+          data.configuration.certificates.keyAlias = obj.configuration.certificates.keyAlias;
+        }
+        if (obj.configuration.certificates.trustStore) {
+          data.configuration.certificates.trustStore = obj.configuration.certificates.trustStore;
+        }
+        if (obj.configuration.certificates.trustStorePassword) {
+          data.configuration.certificates.trustStorePassword = obj.configuration.certificates.trustStorePassword;
+        }
+      }
+      if (!isEmpty(obj.configuration.startFiles)) {
+        if (obj.configuration.startFiles.httpIni) {
+          data.configuration.startFiles.httpIni = obj.configuration.startFiles.httpIni;
+        }
+        if (obj.configuration.startFiles.httpsIni) {
+          data.configuration.startFiles.httpsIni = obj.configuration.startFiles.httpsIni;
+        }
+        if (obj.configuration.startFiles.sslIni) {
+          data.configuration.startFiles.sslIni = obj.configuration.startFiles.sslIni;
+        }
+      }
+      if (!isEmpty(obj.configuration.controller)) {
+        if (obj.configuration.controller.controllerId) {
+          data.configuration.controller.controllerId = obj.configuration.controller.controllerId;
+        }
+      }
+      if (obj.configuration.templates && obj.configuration.templates.length > 0) {
+        data.configuration.templates = obj.configuration.templates;
+      }
+    }
   }
 
   undo(): void {
@@ -777,7 +932,7 @@ export class DeploymentComponent implements OnInit {
     this.data.descriptor = this.mainObj.descriptor;
     this.data.license = this.mainObj.license;
     this.data.certificates = this.mainObj.certificates;
-    if (!isEmpty(this.mainObj.joc)) {
+    if (this.mainObj.joc && this.mainObj.joc.length > 0) {
       this.data.joc = [];
       this.mainObj.joc.forEach((config) => {
         const obj: any = {
@@ -786,21 +941,16 @@ export class DeploymentComponent implements OnInit {
           cluster: []
         };
         for (let i in config) {
-          console.log(i, config[i]);
           obj.jocClusterId = i;
-          if (config[i].primary) {
-            this.updateMissingObjects(config[i].primary, true);
-            obj.cluster.push(config[i].primary)
-          }
-          if (config[i].secondary) {
-            this.updateMissingObjects(config[i].secondary, true);
-            obj.cluster.push(config[i].secondary)
+          for (let j in config[i]) {
+            this.updateMissingObjects(config[i][j], 'JOC');
+            obj.cluster.push(config[i][j])
           }
         }
         this.data.joc.push(obj);
       });
     }
-    if (!isEmpty(this.mainObj.agents)) {
+    if (this.mainObj.agents && this.mainObj.agents.length > 0) {
       this.data.agents = [];
       this.mainObj.agents.forEach((config) => {
         let obj: any = {};
@@ -808,11 +958,12 @@ export class DeploymentComponent implements OnInit {
           obj = config[i];
           obj.agentId = i;
         }
-        this.updateMissingObjects(obj);
+        console.log(obj)
+        this.updateMissingObjects(obj, 'AGENT');
         this.data.agents.push(obj);
       });
     }
-    if (!isEmpty(this.mainObj.controllers)) {
+    if (this.mainObj.controllers && this.mainObj.controllers.length > 0) {
       this.data.controllers = [];
       this.mainObj.controllers.forEach((config) => {
         const obj: any = {
@@ -823,11 +974,11 @@ export class DeploymentComponent implements OnInit {
         for (let i in config) {
           obj.controllerId = i;
           if (config[i].primary) {
-            this.updateMissingObjects(config[i].primary);
+            this.updateMissingObjects(config[i].primary, 'CONTROLLER');
             obj.cluster.push(config[i].primary)
           }
           if (config[i].secondary) {
-            this.updateMissingObjects(config[i].secondary);
+            this.updateMissingObjects(config[i].secondary, 'CONTROLLER');
             obj.cluster.push(config[i].secondary)
           }
         }
@@ -835,9 +986,10 @@ export class DeploymentComponent implements OnInit {
         this.data.controllers.push(obj);
       });
     }
+    this.convertJSON();
   }
 
-  private updateMissingObjects(obj, isJoc = false): void {
+  private updateMissingObjects(obj, type): void {
     if (!obj.target || isEmpty(obj.target)) {
       obj.target = {
         connection: {},
@@ -856,8 +1008,10 @@ export class DeploymentComponent implements OnInit {
         certificates: {},
         templates: [{name: ''}]
       };
-      if (isJoc) {
+      if (type == 'JOC') {
         obj.configuration.startFiles = {};
+      } else if (type == 'AGENT') {
+        obj.configuration.controller = {};
       }
     } else {
       if (!obj.configuration.certificates) {
