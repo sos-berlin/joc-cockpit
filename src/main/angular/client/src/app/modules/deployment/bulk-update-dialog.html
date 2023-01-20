@@ -38,6 +38,9 @@
                        name="host" placeholder="{{'deploymentService.joc.placeholder.host' | translate}}"
                        [(ngModel)]="data.target.connection.host">
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.host" name="chost"></label>
+              </div>
             </div>
 
             <div class="row m-t-sm">
@@ -48,6 +51,9 @@
                 <nz-input-number nzPlaceHolder="{{'deploymentService.joc.placeholder.port' | translate}}"
                                  [nzMin]="1" [nzStep]="1" name="port"
                                  [(ngModel)]="data.target.connection.port"></nz-input-number>
+              </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.port" name="cport"></label>
               </div>
             </div>
           </div>
@@ -62,6 +68,9 @@
                        name="method" placeholder="{{'deploymentService.joc.placeholder.method' | translate}}"
                        [(ngModel)]="data.target.authentication.method">
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.method" name="cmethod"></label>
+              </div>
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
@@ -72,6 +81,9 @@
                        name="user" placeholder="{{'deploymentService.joc.placeholder.user' | translate}}"
                        [(ngModel)]="data.target.authentication.user">
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.user" name="cuser"></label>
+              </div>
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
@@ -81,6 +93,9 @@
                 <input type="text" class="form-control" name="keyFile"
                        placeholder="{{'deploymentService.joc.placeholder.keyFile' | translate}}"
                        [(ngModel)]="data.target.authentication.keyFile">
+              </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.keyFile" name="ckeyFile"></label>
               </div>
             </div>
           </div>
@@ -94,6 +109,9 @@
                      placeholder="{{'deploymentService.joc.placeholder.packageLocation' | translate}}"
                      [(ngModel)]="data.target.packageLocation">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.packageLocation" name="cpackageLocation"></label>
+            </div>
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
@@ -103,6 +121,9 @@
               <input type="text" class="form-control" name="execPre"
                      placeholder="{{'deploymentService.joc.placeholder.execPre' | translate}}"
                      [(ngModel)]="data.target.execPre">
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.execPre" name="cexecPre"></label>
             </div>
           </div>
           <div class="row m-t-sm">
@@ -115,6 +136,9 @@
                      [(ngModel)]="data.target.execPost">
 
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.execPost" name="cexecPost"></label>
+            </div>
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
@@ -122,6 +146,9 @@
             </div>
             <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="data.target.makeService" name="makeService"></label>
+            </div>
+            <div class="col-md-1">
+              <label nz-checkbox [(ngModel)]="object.makeService" name="cmakeService"></label>
             </div>
           </div>
         </div>
@@ -140,6 +167,9 @@
                      [(ngModel)]="data.media.release">
 
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.release" name="crelease"></label>
+            </div>
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
@@ -150,6 +180,9 @@
                      placeholder="{{'deploymentService.joc.placeholder.tarball' | translate}}"
                      [(ngModel)]="data.media.tarball">
 
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.tarball" name="ctarball"></label>
             </div>
           </div>
 
@@ -169,6 +202,9 @@
                      placeholder="{{'deploymentService.joc.placeholder.setupDir' | translate}}"
                      [(ngModel)]="data.installation.setupDir">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.setupDir" name="csetupDir"></label>
+            </div>
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
@@ -178,6 +214,9 @@
               <input type="text" class="form-control" name="home"
                      placeholder="{{'deploymentService.joc.placeholder.home' | translate}}"
                      [(ngModel)]="data.installation.home">
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.home" name="chome"></label>
             </div>
           </div>
           <div class="row m-t-sm">
@@ -189,6 +228,9 @@
                      placeholder="{{'deploymentService.joc.placeholder.data' | translate}}"
                      [(ngModel)]="data.installation.data">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.data" name="cdata"></label>
+            </div>
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
@@ -198,6 +240,9 @@
               <input type="text" class="form-control" name="homeOwner"
                      placeholder="{{'deploymentService.joc.placeholder.homeOwner' | translate}}"
                      [(ngModel)]="data.installation.homeOwner">
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.homeOwner" name="chomeOwner"></label>
             </div>
           </div>
 
@@ -210,6 +255,9 @@
                      placeholder="{{'deploymentService.joc.placeholder.dataOwner' | translate}}"
                      [(ngModel)]="data.installation.dataOwner">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.dataOwner" name="cdataOwner"></label>
+            </div>
           </div>
 
           <div class="row m-t-sm">
@@ -221,6 +269,9 @@
                      placeholder="{{'deploymentService.joc.placeholder.runUser' | translate}}"
                      [(ngModel)]="data.installation.runUser">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.tarball" name="crunUser"></label>
+            </div>
           </div>
           <div class="row m-t-sm" *ngIf="selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC'">
             <div class="col-md-4 form-control-label">
@@ -230,6 +281,9 @@
               <input type="text" class="form-control" name="title" [maxlength]="30"
                      placeholder="{{'deploymentService.joc.placeholder.title' | translate}}"
                      [(ngModel)]="data.installation.title">
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.title" name="ctitle"></label>
             </div>
           </div>
           <div class="row m-t-sm" *ngIf="selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC'">
@@ -242,6 +296,9 @@
                            [nzValue]="option"></nz-option>
               </nz-select>
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.securityLevel" name="csecurityLevel"></label>
+            </div>
           </div>
           <div class="row m-t-sm" *ngIf="selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC'">
             <div class="col-md-4 form-control-label">
@@ -252,6 +309,9 @@
                      placeholder="{{'deploymentService.joc.placeholder.dbmsConfig' | translate}}"
                      [(ngModel)]="data.installation.dbmsConfig">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.dbmsConfig" name="cdbmsConfig"></label>
+            </div>
           </div>
           <div class="row m-t-sm" *ngIf="selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC'">
             <div class="col-md-4 form-control-label">
@@ -261,6 +321,9 @@
               <input type="text" class="form-control" name="dbmsDriver"
                      placeholder="{{'deploymentService.joc.placeholder.dbmsDriver' | translate}}"
                      [(ngModel)]="data.installation.dbmsDriver">
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.dbmsDriver" name="cdbmsDriver"></label>
             </div>
           </div>
           <div class="row m-t-sm" *ngIf="selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC'">
@@ -273,6 +336,9 @@
                            [nzValue]="option"></nz-option>
               </nz-select>
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.dbmsInit" name="cdbmsInit"></label>
+            </div>
           </div>
 
           <div class="row m-t-sm">
@@ -283,6 +349,9 @@
               <input type="text" class="form-control" name="httpPort"
                      placeholder="{{'deploymentService.joc.placeholder.httpPort' | translate}}"
                      [(ngModel)]="data.installation.httpPort">
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.httpPort" name="chttpPort"></label>
             </div>
           </div>
 
@@ -296,6 +365,9 @@
                      [(ngModel)]="data.installation.httpsPort">
 
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.httpsPort" name="chttpsPort"></label>
+            </div>
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
@@ -306,6 +378,9 @@
                      name="javaHome"
                      placeholder="{{'deploymentService.joc.placeholder.javaHome' | translate}}"
                      [(ngModel)]="data.installation.javaHome">
+            </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.javaHome" name="cjavaHome"></label>
             </div>
           </div>
           <div class="row m-t-sm">
@@ -318,6 +393,9 @@
                      placeholder="{{'deploymentService.joc.placeholder.javaOptions' | translate}}"
                      [(ngModel)]="data.installation.javaOptions">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.javaOptions" name="cjavaOptions"></label>
+            </div>
           </div>
           <div class="row m-t-sm" *ngIf="selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC'">
             <div class="col-md-4">
@@ -325,6 +403,9 @@
             </div>
             <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="data.installation.isUser" name="isUser"></label>
+            </div>
+            <div class="col-md-1">
+              <label nz-checkbox [(ngModel)]="object.isUser" name="cisUser"></label>
             </div>
           </div>
           <div class="row m-t-sm" *ngIf="selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC'">
@@ -334,6 +415,9 @@
             <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="data.installation.isPreserveEnv"
                      name="isPreserveEnv"></label>
+            </div>
+            <div class="col-md-1">
+              <label nz-checkbox [(ngModel)]="object.isPreserveEnv" name="cisPreserveEnv"></label>
             </div>
           </div>
         </div>
@@ -352,6 +436,9 @@
                      placeholder="{{'deploymentService.joc.placeholder.responseDir' | translate}}"
                      [(ngModel)]="data.configuration.responseDir">
             </div>
+            <div class="col-md-1">
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.responseDir" name="cresponseDir"></label>
+            </div>
           </div>
           <h6 class="m-t-12" translate>deploymentService.label.certificates </h6>
           <div class="p-a b-a">
@@ -364,6 +451,9 @@
                        placeholder="{{'deploymentService.joc.placeholder.keyStore' | translate}}"
                        [(ngModel)]="data.configuration.certificates.keyStore">
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.keystore" name="ckeystore"></label>
+              </div>
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
@@ -375,6 +465,9 @@
                        [(ngModel)]="data.configuration.certificates.keyStorePassword">
 
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.keyStorePassword" name="ckeyStorePassword"></label>
+              </div>
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
@@ -385,6 +478,9 @@
                        placeholder="{{'deploymentService.joc.placeholder.keyPassword' | translate}}"
                        [(ngModel)]="data.configuration.certificates.keyPassword">
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.keyPassword" name="ckeyPassword"></label>
+              </div>
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
@@ -394,6 +490,9 @@
                 <input type="text" class="form-control" name="keyAlias"
                        placeholder="{{'deploymentService.joc.placeholder.keyAlias' | translate}}"
                        [(ngModel)]="data.configuration.certificates.keyAlias">
+              </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.keyAlias" name="ckeyAlias"></label>
               </div>
             </div>
             <div class="row m-t-sm">
@@ -406,6 +505,9 @@
                        placeholder="{{'deploymentService.joc.placeholder.trustStore' | translate}}"
                        [(ngModel)]="data.configuration.certificates.trustStore">
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.trustStore" name="ctrustStore"></label>
+              </div>
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
@@ -415,6 +517,9 @@
                 <input type="text" class="form-control" name="trustStorePassword"
                        placeholder="{{'deploymentService.joc.placeholder.trustStorePassword' | translate}}"
                        [(ngModel)]="data.configuration.certificates.trustStorePassword">
+              </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.trustStorePassword" name="ctrustStorePassword"></label>
               </div>
             </div>
           </div>
@@ -430,6 +535,9 @@
                        placeholder="{{'deploymentService.joc.placeholder.httpIni' | translate}}"
                        [(ngModel)]="data.configuration.httpIni">
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.httpIni" name="chttpIni"></label>
+              </div>
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
@@ -441,6 +549,9 @@
                        placeholder="{{'deploymentService.joc.placeholder.httpsIni' | translate}}"
                        [(ngModel)]="data.configuration.httpsIni">
               </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.httpsIni" name="chttpsIni"></label>
+              </div>
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
@@ -451,6 +562,9 @@
                        name="sslIni"
                        placeholder="{{'deploymentService.joc.placeholder.sslIni' | translate}}"
                        [(ngModel)]="data.configuration.sslIni">
+              </div>
+              <div class="col-md-1">
+                <label class="m-t-xs m-l-12" nz-checkbox [(ngModel)]="object.sslIni" name="csslIni"></label>
               </div>
             </div>
           </div>

@@ -121,21 +121,23 @@ export class InventoryService {
   }
 
   checkAndUpdateVersionList(data: any, flag = false): void {
-    data.isCall = true;
-    for (let i = 0; i < data.children.length; i++) {
-      if (flag && data.children[i].type) {
-        data.children[i].disableCheckbox = true;
-      }
-      if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
-        data.children[i].deployId = '';
-        if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
-          data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
-        } else if (!data.children[i].deployablesVersions[0].deploymentId) {
-          data.children[i].deployablesVersions[0].deploymentId = '';
+    if(data.children) {
+      data.isCall = true;
+      for (let i = 0; i < data.children.length; i++) {
+        if (flag && data.children[i].type) {
+          data.children[i].disableCheckbox = true;
         }
-      }
-      if (data.children[i].releasableVersions && data.children[i].releasableVersions.length > 0) {
-        data.children[i].releaseId = data.children[i].releasableVersions[0].releaseId || '';
+        if (data.children[i].deployablesVersions && data.children[i].deployablesVersions.length > 0) {
+          data.children[i].deployId = '';
+          if (data.children[i].deployablesVersions[0].versions && data.children[i].deployablesVersions[0].versions.length > 0) {
+            data.children[i].deployId = data.children[i].deployablesVersions[0].deploymentId;
+          } else if (!data.children[i].deployablesVersions[0].deploymentId) {
+            data.children[i].deployablesVersions[0].deploymentId = '';
+          }
+        }
+        if (data.children[i].releasableVersions && data.children[i].releasableVersions.length > 0) {
+          data.children[i].releaseId = data.children[i].releasableVersions[0].releaseId || '';
+        }
       }
     }
   }

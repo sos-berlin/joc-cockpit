@@ -108,6 +108,7 @@ export class BulkUpdateModalComponent implements OnInit {
     operationType: 'JOC'
   };
   submitted = false;
+  object: any = {};
   data: any;
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
@@ -146,46 +147,14 @@ export class BulkUpdateModalComponent implements OnInit {
     this.submitted = true;
     setTimeout(() => {
       const obj = this.coreService.clone(this.data);
-      if (isEmpty(obj.target.connection)) {
-        delete obj.target['connection'];
-      }
-      if (isEmpty(obj.target.authentication)) {
-        delete obj.target['authentication'];
-      }
-      if (!obj.target.makeService) {
-        delete obj.target['makeService'];
-      }
-      if (isEmpty(obj.target)) {
-        delete obj['target'];
-      }
-      if (isEmpty(obj.media)) {
-        delete obj['media'];
-      }
-      if (obj.installation.isUser) {
-        delete obj.installation['isUser'];
-      }
-      if (obj.installation.isPreserveEnv) {
-        delete obj.installation['isPreserveEnv'];
-      }
-      if (isEmpty(obj.installation)) {
-        delete obj['installation'];
-      }
-      if (isEmpty(obj.configuration.certificates)) {
-        delete obj.configuration['certificates'];
-      }
-      if (isEmpty(obj.configuration.startFiles)) {
-        delete obj.configuration['startFiles'];
-      }
       obj.configuration.templates = obj.configuration.templates.filter(item => {
         return !!item.name;
       });
       if (obj.configuration.templates.length == 0) {
         delete obj.configuration['templates'];
       }
-      if (isEmpty(obj.configuration)) {
-        delete obj['configuration'];
-      }
-      this.activeModal.close({data: obj, operationType: this.selectObject.operationType});
+
+      this.activeModal.close({data: obj, checkValues: this.object, operationType: this.selectObject.operationType});
     }, 100);
   }
 
@@ -721,158 +690,158 @@ export class DeploymentComponent implements OnInit {
     }).afterClose.subscribe(result => {
       if (result) {
         if (result.operationType == 'JOC') {
-          this._bulkUpdate(result.data, this.data.joc);
+          this._bulkUpdate(result.data, this.data.joc, result.checkValues);
         } else if (result.operationType == 'CONTROLLER') {
-          this._bulkUpdate(result.data, this.data.controllers);
+          this._bulkUpdate(result.data, this.data.controllers, result.checkValues);
         } else if (result.operationType == 'AGENT') {
-          this._bulkUpdate(result.data, this.data.agents);
+          this._bulkUpdate(result.data, this.data.agents, result.checkValues);
         }
       }
     });
   }
 
-  private _bulkUpdate(obj, list): void {
+  private _bulkUpdate(obj, list, checkValues): void {
     list.forEach((item) => {
       if (item.cluster) {
         item.cluster.forEach((cluster) => {
-          this.updateIndividualData(obj, cluster);
+          this.updateIndividualData(obj, cluster, checkValues);
         });
       } else {
-        this.updateIndividualData(obj, item);
+        this.updateIndividualData(obj, item, checkValues);
       }
     });
 
   }
 
-  private updateIndividualData(obj, data): void {
+  private updateIndividualData(obj, data, checkValues): void {
 
     if (obj.target) {
-      if (!isEmpty(obj.target.connection)) {
-        if (obj.target.connection.host) {
+      if (obj.target.connection) {
+        if (checkValues.host) {
           data.target.connection.host = obj.target.connection.host;
         }
-        if (obj.target.connection.port) {
+        if (checkValues.port) {
           data.target.connection.port = obj.target.connection.port;
         }
       }
-      if (!isEmpty(obj.target.authentication)) {
-        if (obj.target.authentication.method) {
+      if ((obj.target.authentication)) {
+        if (checkValues.method) {
           data.target.authentication.method = obj.target.authentication.method;
         }
-        if (obj.target.authentication.user) {
+        if (checkValues.user) {
           data.target.authentication.user = obj.target.authentication.user;
         }
-        if (obj.target.authentication.keyFile) {
+        if (checkValues.keyFile) {
           data.target.authentication.keyFile = obj.target.authentication.keyFile;
         }
       }
-      if (obj.target.packageLocation) {
+      if (checkValues.packageLocation) {
         data.target.packageLocation = obj.target.packageLocation;
       }
-      if (obj.target.execPre) {
+      if (checkValues.execPre) {
         data.target.execPre = obj.target.execPre;
       }
-      if (obj.target.execPost) {
+      if (checkValues.execPost) {
         data.target.execPost = obj.target.execPost;
       }
-      if (obj.target.makeService) {
+      if (checkValues.makeService) {
         data.target.makeService = obj.target.makeService;
       }
     }
     if (obj.media) {
-      if (obj.media.release) {
+      if (checkValues.release) {
         data.media.release = obj.media.release;
       }
-      if (obj.media.tarball) {
+      if (checkValues.tarball) {
         data.media.tarball = obj.media.tarball;
       }
     }
     if (obj.installation) {
-      if (obj.installation.setupDir) {
+      if (checkValues.setupDir) {
         data.installation.setupDir = obj.installation.setupDir;
       }
-      if (obj.installation.home) {
+      if (checkValues.home) {
         data.installation.home = obj.installation.home;
       }
-      if (obj.installation.data) {
+      if (checkValues.data) {
         data.installation.data = obj.installation.data;
       }
-      if (obj.installation.homeOwner) {
+      if (checkValues.homeOwner) {
         data.installation.homeOwner = obj.installation.homeOwner;
       }
-      if (obj.installation.dataOwner) {
+      if (checkValues.dataOwner) {
         data.installation.dataOwner = obj.installation.dataOwner;
       }
-      if (obj.installation.title) {
+      if (checkValues.title) {
         data.installation.title = obj.installation.title;
       }
-      if (obj.installation.securityLevel) {
+      if (checkValues.securityLevel) {
         data.installation.securityLevel = obj.installation.securityLevel;
       }
-      if (obj.installation.dbmsConfig) {
+      if (checkValues.dbmsConfig) {
         data.installation.dbmsConfig = obj.installation.dbmsConfig;
       }
-      if (obj.installation.dbmsDriver) {
+      if (checkValues.dbmsDriver) {
         data.installation.dbmsDriver = obj.installation.dbmsDriver;
       }
-      if (obj.installation.dbmsInit) {
+      if (checkValues.dbmsInit) {
         data.installation.dbmsInit = obj.installation.dbmsInit;
       }
-      if (obj.installation.httpPort) {
+      if (checkValues.httpPort) {
         data.installation.httpPort = obj.installation.httpPort;
       }
-      if (obj.installation.httpsPort) {
+      if (checkValues.httpsPort) {
         data.installation.httpsPort = obj.installation.httpsPort;
       }
-      if (obj.installation.javaHome) {
+      if (checkValues.javaHome) {
         data.installation.javaHome = obj.installation.javaHome;
       }
-      if (obj.installation.javaOptions) {
+      if (checkValues.javaOptions) {
         data.installation.javaOptions = obj.installation.javaOptions;
       }
-      if (obj.installation.isUser == false) {
+      if (checkValues.isUser == false) {
         data.installation.isUser = obj.installation.isUser;
       }
-      if (obj.installation.isPreserveEnv == false) {
+      if (checkValues.isPreserveEnv == false) {
         data.installation.isPreserveEnv = obj.installation.isPreserveEnv;
       }
     }
     if (obj.configuration) {
-      if (obj.configuration.responseDir) {
+      if (checkValues.responseDir) {
         data.configuration.responseDir = obj.configuration.responseDir;
       }
-      if (!isEmpty(obj.configuration.certificates)) {
-        if (obj.configuration.certificates.keyStore) {
+      if ((obj.configuration.certificates)) {
+        if (checkValues.certificates.keyStore) {
           data.configuration.certificates.keyStore = obj.configuration.certificates.keyStore;
         }
-        if (obj.configuration.certificates.keyStorePassword) {
+        if (checkValues.certificates.keyStorePassword) {
           data.configuration.certificates.keyStorePassword = obj.configuration.certificates.keyStorePassword;
         }
-        if (obj.configuration.certificates.keyPassword) {
+        if (checkValues.certificates.keyPassword) {
           data.configuration.certificates.keyPassword = obj.configuration.certificates.keyPassword;
         }
-        if (obj.configuration.certificates.keyAlias) {
+        if (checkValues.certificates.keyAlias) {
           data.configuration.certificates.keyAlias = obj.configuration.certificates.keyAlias;
         }
-        if (obj.configuration.certificates.trustStore) {
+        if (checkValues.certificates.trustStore) {
           data.configuration.certificates.trustStore = obj.configuration.certificates.trustStore;
         }
-        if (obj.configuration.certificates.trustStorePassword) {
+        if (checkValues.certificates.trustStorePassword) {
           data.configuration.certificates.trustStorePassword = obj.configuration.certificates.trustStorePassword;
         }
       }
-      if (!isEmpty(obj.configuration.startFiles)) {
-        if (obj.configuration.startFiles.httpIni) {
+      if ((obj.configuration.startFiles)) {
+        if (checkValues.startFiles.httpIni) {
           data.configuration.startFiles.httpIni = obj.configuration.startFiles.httpIni;
         }
-        if (obj.configuration.startFiles.httpsIni) {
+        if (checkValues.startFiles.httpsIni) {
           data.configuration.startFiles.httpsIni = obj.configuration.startFiles.httpsIni;
         }
-        if (obj.configuration.startFiles.sslIni) {
+        if (checkValues.startFiles.sslIni) {
           data.configuration.startFiles.sslIni = obj.configuration.startFiles.sslIni;
         }
       }
-      if (!isEmpty(obj.configuration.controller)) {
+      if ((obj.configuration.controller)) {
         if (obj.configuration.controller.controllerId) {
           data.configuration.controller.controllerId = obj.configuration.controller.controllerId;
         }
