@@ -137,6 +137,7 @@ export class SingleDeployComponent implements OnInit {
   @Input() releasable: boolean;
   @Input() isRevoke: boolean;
   @Input() isChecked: boolean;
+  @Input() isRemoved: boolean;
   selectedSchedulerIds = [];
   deployablesObject = [];
   loading = true;
@@ -237,6 +238,10 @@ export class SingleDeployComponent implements OnInit {
       this.release();
       return;
     }
+    if (this.isRemoved) {
+      this.remove();
+      return;
+    }
     this.getJSObject();
     const obj: any = {
       controllerIds: this.selectedSchedulerIds,
@@ -272,7 +277,7 @@ export class SingleDeployComponent implements OnInit {
     }
     this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
       next: () => {
-        this.activeModal.close('ok');
+        this.activeModal.close();
       }, error: () => this.submitted = false
     });
   }
@@ -292,16 +297,29 @@ export class SingleDeployComponent implements OnInit {
     } else {
       obj.update = [{objectType: this.data.objectType, path: PATH}];
     }
-
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.coreService.post('inventory/release', obj).subscribe({
       next: () => {
-        this.activeModal.close('ok');
+        this.activeModal.close();
       }, error: () => this.submitted = false
     });
   }
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  private remove(): void {
+    const obj: any = {
+      auditLog: {}
+    };
+    if (this.object.addOrdersDateFrom == 'startingFrom') {
+      obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+    } else if (this.object.addOrdersDateFrom == 'now') {
+      obj.cancelOrdersDateFrom = 'now';
+    }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    this.activeModal.close(obj);
   }
 
   private getSingleObject(obj): void {
@@ -379,7 +397,17 @@ export class DeployComponent implements OnInit {
       this.isDeleted = true;
     }
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
-    this.buildTree(this.path);
+    if (this.isRemove && (!this.data.type || !this.data.object)) {
+      console.log('folders');
+      this.loading = false;
+      this.nodes.push({
+        name: this.data.name,
+        path: this.path
+      })
+      this.ref.detectChanges();
+    } else {
+      this.buildTree(this.path);
+    }
   }
 
   handleRecursive(): void {
@@ -794,7 +822,7 @@ export class DeployComponent implements OnInit {
     const URL = this.releasable ? this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release' : this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe({
       next: () => {
-        this.activeModal.close('ok');
+        this.activeModal.close();
       }, error: () => {
         this.submitted = false;
         this.ref.detectChanges();
@@ -803,47 +831,17 @@ export class DeployComponent implements OnInit {
   }
 
   remove(): void {
-    if (this.nodes.length > 0) {
-      this.submitted = true;
-      const obj: any = {delete: {deployConfigurations: []}};
-      if (!this.releasable) {
-        obj.controllerIds = this.selectedSchedulerIds;
-      }
-      for (let i = 0; i < this.nodes[0].children.length; i++) {
-        if (this.nodes[0].children[i].type && this.nodes[0].children[i].checked) {
-          if (this.releasable) {
-            if (!isArray(obj.delete)) {
-              obj.delete = [];
-            }
-            obj.delete.push({id: this.nodes[0].children[i].key});
-          } else {
-            const objDep = {
-              configuration: {
-                path: this.nodes[0].children[i].path + (this.nodes[0].children[i].path === '/' ? '' : '/') + this.nodes[0].children[i].name,
-                objectType: this.nodes[0].children[i].type
-              }
-            };
-            obj.delete.deployConfigurations.push(objDep);
-          }
-        }
-      }
-
-      if (this.object.addOrdersDateFrom == 'startingFrom') {
-        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-      } else if (this.object.addOrdersDateFrom == 'now') {
-        obj.addOrdersDateFrom = 'now';
-      }
-
-      const URL = this.releasable ? 'inventory/release' : 'inventory/deployment/deploy';
-      this.coreService.post(URL, obj).subscribe({
-        next: () => {
-          this.activeModal.close('ok');
-        }, error: () => {
-          this.submitted = false;
-          this.ref.detectChanges();
-        }
-      });
+    this.submitted = true;
+    const obj: any = {
+      auditLog: {}
+    };
+    if (this.object.addOrdersDateFrom == 'startingFrom') {
+      obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+    } else if (this.object.addOrdersDateFrom == 'now') {
+      obj.cancelOrdersDateFrom = 'now';
     }
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    this.activeModal.close(obj);
   }
 
   cancel(): void {
@@ -4147,7 +4145,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  deployObject(node, releasable, operation?): void {
+  deployObject(node, releasable, operation?, isRemoved = false): void {
     const origin = this.coreService.clone(node.origin ? node.origin : node);
     if (this.selectedObj && this.selectedObj.id &&
       this.selectedObj.type === InventoryObject.WORKFLOW) {
@@ -4176,12 +4174,25 @@ export class InventoryComponent implements OnInit, OnDestroy {
           schedulerIds: this.getAllowedControllerOnly(),
           display: this.preferences.auditLog,
           data: origin,
-          releasable: releasable,
+          releasable,
+          isRemoved,
           isChecked: this.inventoryService.checkDeploymentStatus.isChecked
         },
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          const object = node.origin;
+          const obj = this.getObjectArr(object, false);
+          obj.cancelOrdersDateFrom = result.cancelOrdersDateFrom;
+          obj.auditLog = result.auditLog;
+          this.coreService.post('inventory/remove', obj).subscribe(() => {
+            if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
+              this.clearSelection();
+            }
+          });
+        }
       });
     } else {
       this.modal.create({
@@ -4195,12 +4206,36 @@ export class InventoryComponent implements OnInit, OnDestroy {
           path: origin.path,
           data: origin,
           isChecked: this.inventoryService.checkDeploymentStatus.isChecked,
+          isRemove: isRemoved,
           releasable,
           operation
         },
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          const object = node.origin;
+          const obj = this.getObjectArr(object, false);
+          let path;
+          if (object.type) {
+            path = object.path + (object.path === '/' ? '' : '/') + object.name;
+          } else {
+            path = object.path;
+          }
+          obj.cancelOrdersDateFrom = result.cancelOrdersDateFrom;
+          obj.auditLog = result.auditLog;
+          console.log(obj,'obj')
+          if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
+            this.deleteObject(path, object, node, obj.auditLog, result.cancelOrdersDateFrom);
+          } else {
+            this.coreService.post('inventory/remove', obj).subscribe(() => {
+              if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
+                this.clearSelection();
+              }
+            });
+          }
+        }
       });
     }
   }
@@ -4646,76 +4681,87 @@ export class InventoryComponent implements OnInit, OnDestroy {
     } else {
       path = object.path;
     }
-    const obj = this.getObjectArr(object, false);
-    if (this.preferences.auditLog) {
-      let comments = {
-        radio: 'predefined',
-        type: object.type || object.object || 'Folder',
-        operation: 'Remove',
-        name: object.name || object.path
-      };
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: CommentModalComponent,
-        nzClassName: 'lg',
-        nzComponentParams: {
-          comments,
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
-            this.deleteObject(path, object, node, {
-              comment: result.comment,
-              timeSpent: result.timeSpent,
-              ticketLink: result.ticketLink
-            });
-          } else {
-            obj.auditLog = {
-              comment: result.comment,
-              timeSpent: result.timeSpent,
-              ticketLink: result.ticketLink
-            };
-            this.coreService.post('inventory/remove', obj).subscribe(() => {
-              if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
-                this.clearSelection();
-              }
-            });
+
+    if ((object.object === InventoryObject.INCLUDESCRIPT || object.object === InventoryObject.FILEORDERSOURCE ||
+      object.object === InventoryObject.LOCK || object.object === InventoryObject.JOBRESOURCE || object.object === InventoryObject.JOBTEMPLATE ||
+      object.object === InventoryObject.NOTICEBOARD) || (object.type === InventoryObject.INCLUDESCRIPT || object.type === InventoryObject.FILEORDERSOURCE ||
+      object.type === InventoryObject.LOCK || object.type === InventoryObject.JOBRESOURCE || object.type === InventoryObject.JOBTEMPLATE ||
+      object.type === InventoryObject.NOTICEBOARD)) {
+
+      const obj = this.getObjectArr(object, false);
+      if (this.preferences.auditLog) {
+        let comments = {
+          radio: 'predefined',
+          type: object.type || object.object || 'Folder',
+          operation: 'Remove',
+          name: object.name || object.path
+        };
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzComponentParams: {
+            comments,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
+              this.deleteObject(path, object, node, {
+                comment: result.comment,
+                timeSpent: result.timeSpent,
+                ticketLink: result.ticketLink
+              });
+            } else {
+              obj.auditLog = {
+                comment: result.comment,
+                timeSpent: result.timeSpent,
+                ticketLink: result.ticketLink
+              };
+              this.coreService.post('inventory/remove', obj).subscribe(() => {
+                if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
+                  this.clearSelection();
+                }
+              });
+            }
           }
-        }
-      });
+        });
+      } else {
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: ConfirmModalComponent,
+          nzComponentParams: {
+            title: 'remove',
+            message: 'removeObject',
+            type: 'Remove',
+            objectName: path,
+            countMessage: (obj.objects && !object.type) ? 'removeAllObject' : undefined,
+            count: (obj.objects && !object.type) ? obj.objects.length : undefined
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
+              this.deleteObject(path, object, node, undefined);
+            } else {
+              this.coreService.post('inventory/remove', obj).subscribe(() => {
+                if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
+                  this.clearSelection();
+                }
+              });
+            }
+          }
+        });
+      }
     } else {
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: ConfirmModalComponent,
-        nzComponentParams: {
-          title: 'remove',
-          message: 'removeObject',
-          type: 'Remove',
-          objectName: path,
-          countMessage: (obj.objects && !object.type) ? 'removeAllObject' : undefined,
-          count: (obj.objects && !object.type) ? obj.objects.length : undefined
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
-            this.deleteObject(path, object, node, undefined);
-          } else {
-            this.coreService.post('inventory/remove', obj).subscribe(() => {
-              if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
-                this.clearSelection();
-              }
-            });
-          }
-        }
-      });
+      const isController = object.object === InventoryObject.WORKFLOW || object.type === InventoryObject.WORKFLOW || !!object.controller;
+      this.deployObject(node, !isController, null, true);
     }
   }
 
@@ -5428,8 +5474,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private deleteObject(path, object, node, auditLog): void {
-    this.coreService.post('inventory/remove/folder', {path, auditLog}).subscribe(() => {
+  private deleteObject(path, object, node, auditLog, cancelOrdersDateFrom = undefined): void {
+    this.coreService.post('inventory/remove/folder', {path, auditLog, cancelOrdersDateFrom}).subscribe(() => {
       object.deleted = true;
       if (node && node.parentNode && node.parentNode.origin) {
         node.parentNode.origin.children = node.parentNode.origin.children.filter((child) => {
