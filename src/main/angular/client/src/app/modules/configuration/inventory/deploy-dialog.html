@@ -35,7 +35,7 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!isRevoke">
+      <div class="form-group row" *ngIf="nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan))">
         <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
         <div class="col-md-9">
           <nz-radio-group name="addOrdersDateFrom" [(ngModel)]="object.addOrdersDateFrom">
