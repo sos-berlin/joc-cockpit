@@ -253,6 +253,12 @@ export class SingleDeployComponent implements OnInit {
       } else if (this.object.addOrdersDateFrom == 'now') {
         obj.addOrdersDateFrom = 'now';
       }
+    } else if (this.isRevoke) {
+      if (this.object.addOrdersDateFrom == 'startingFrom') {
+        obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+      } else if (this.object.addOrdersDateFrom == 'now') {
+        obj.cancelOrdersDateFrom = 'now';
+      }
     }
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {
@@ -401,7 +407,7 @@ export class DeployComponent implements OnInit {
       console.log('folders');
       this.loading = false;
       this.nodes.push({
-        name: this.data.name,
+        name: this.data.object ? this.path : this.data.name,
         path: this.path
       })
       this.ref.detectChanges();
@@ -812,13 +818,22 @@ export class DeployComponent implements OnInit {
         }
       }
     }
-    if (this.operation !== 'recall' && !this.isRevoke) {
-      if (this.object.addOrdersDateFrom == 'startingFrom') {
-        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-      } else if (this.object.addOrdersDateFrom == 'now') {
-        obj.addOrdersDateFrom = 'now';
+    if (this.operation !== 'recall') {
+      if (!this.isRevoke) {
+        if (this.object.addOrdersDateFrom == 'startingFrom') {
+          obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+        } else if (this.object.addOrdersDateFrom == 'now') {
+          obj.addOrdersDateFrom = 'now';
+        }
+      } else if (this.isRevoke) {
+        if (this.object.addOrdersDateFrom == 'startingFrom') {
+          obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+        } else if (this.object.addOrdersDateFrom == 'now') {
+          obj.cancelOrdersDateFrom = 'now';
+        }
       }
     }
+
     const URL = this.releasable ? this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release' : this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe({
       next: () => {

@@ -23,7 +23,7 @@
           <a class="primary-text-hover-color cursor" (click)="clearJocEvent()" translate>common.button.clear</a>
         </div>
         <div class="notification">
-          <div *ngFor="let log of jocMonitor">
+          <div *ngFor="let log of jocMonitor | orderBy: 'timestamp' : true">
             <span>{{log.timestamp}}
               <span class="inline w-64">[{{log.level}}]</span>
               {{log.request || log.subCategory}} {{log.message}}
@@ -39,7 +39,7 @@
           <a class="primary-text-hover-color cursor" (click)="clearSystemEvent()" translate>common.button.clear</a>
         </div>
         <div class="notification">
-          <div *ngFor="let log of systemMonitor">
+          <div *ngFor="let log of systemMonitor | orderBy: 'timestamp' : true">
             <span>{{log.timestamp}}
               <span class="inline w-64">[{{log.level}}]</span>
               {{log.subCategory}} {{log.message}}

@@ -4,6 +4,9 @@
     <span *ngIf="!isRevoke && releasable && !isRemoved" translate>inventory.label.release</span>
     <span *ngIf="isRevoke" translate>inventory.label.revoke</span>
     <span *ngIf="isRemoved" translate>inventory.label.remove</span>
+    <span *ngIf="isRemoved">
+        {{data.path}}
+      </span>
   </h4>
   <button type="button" class="close" (click)="cancel()" aria-label="Close">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -31,7 +34,7 @@
           </nz-select>
         </div>
       </div>
-      <div class="form-group row" *ngIf="data.objectType == 'WORKFLOW' || releasable || isRemoved">
+      <div class="form-group row" *ngIf="(data.objectType == 'WORKFLOW' || releasable || isRemoved) && deployablesObject.length > 0">
         <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
         <div class="col-md-9">
           <nz-radio-group name="addOrdersDateFrom" [(ngModel)]="object.addOrdersDateFrom">
@@ -55,6 +58,7 @@
           </div>
         </div>
       </div>
+
       <div class="row" *ngIf="deployablesObject.length > 0">
         <div class="col-md-12">
             <div class="m-b-sm">
