@@ -359,6 +359,8 @@
     "label.standaloneUrl": "Connexion de JOC Cockpit au Contrôleur",
     "label.backupUrl": "Connexion du Contrôleur Secondaire au Contrôleur Primaire",
     "label.primaryUrl": "Connexion du Contrôleur Primaire au Contrôleur Secondaire",
+    "label.jocAsClusterWatch": "JOC Cockpit as Cluster Watch",
+    "label.agentAsClusterWatch": "Agent as Cluster Watch",
     "button.testConnection": "Test de Connexion",
     "button.newController": "Nouveau Contrôleur",
     "tooltip.type": "Un Contrôleur Autonome peut être configuré à l'aide d'une seule instance. Un Cluster de Contrôleurs peut être configuré à l'aide de deux instances si une licence commerciale est en place.",

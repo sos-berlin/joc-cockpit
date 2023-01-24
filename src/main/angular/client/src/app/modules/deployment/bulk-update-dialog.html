@@ -10,7 +10,7 @@
   <div class="modal-body p-a min-ht-300">
     <div class="row">
       <div class="col-md-12">
-        <div class="row">
+        <div class="row" *ngIf="!listOfObjects || listOfObjects.size == 0">
           <div class="col-md-4 form-control-label">
             <label translate>deploymentService.label.operationType</label>
           </div>
@@ -20,6 +20,16 @@
               <nz-option [nzLabel]="'AGENT'" [nzValue]="'AGENT'"></nz-option>
               <nz-option [nzLabel]="'CONTROLLER'" [nzValue]="'CONTROLLER'"></nz-option>
             </nz-select>
+          </div>
+        </div>
+        <div class="row" *ngIf="listOfObjects && listOfObjects.size > 0">
+          <div class="col-md-4 form-control-label">
+            <label translate>deploymentService.label.operationType</label>
+          </div>
+          <div class="col-md-6 ">
+            <div *ngFor="let item of list">
+              {{item.name}} - {{item.value}}
+            </div>
           </div>
         </div>
         <h6 class="m-t-12" translate>deploymentService.label.target
@@ -270,7 +280,7 @@
                      [(ngModel)]="data.installation.runUser">
             </div>
             <div class="col-md-1">
-              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.tarball" name="crunUser"></label>
+              <label class="m-t-xs" nz-checkbox [(ngModel)]="object.runUser" name="crunUser"></label>
             </div>
           </div>
           <div class="row m-t-sm" *ngIf="selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC'">

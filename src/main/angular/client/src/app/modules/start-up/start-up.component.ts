@@ -48,6 +48,7 @@ export class StartUpModalComponent implements OnInit {
     this.controller = {
       url: '',
       type: 'STANDALONE',
+      clusterAs: 'AGENT',
       title: 'STANDALONE CONTROLLER',
       primaryTitle: 'PRIMARY CONTROLLER',
       backupTitle: 'SECONDARY CONTROLLER',
@@ -64,6 +65,9 @@ export class StartUpModalComponent implements OnInit {
       }
     }
     if(!isFound){
+      if(!this.new){
+        this.controller.clusterAs = 'JOC';
+      }
       if (this.clusterAgents && this.clusterAgents.length > 0) {
         for (let i = 0; i < this.clusterAgents.length; i++) {
           if (this.clusterAgents[i].isClusterWatcher) {
@@ -144,6 +148,10 @@ export class StartUpModalComponent implements OnInit {
         obj.clusterWatcher.asStandaloneAgent= this.agent.asStandaloneAgent;
       } else if (this.agent && this.agent.primaryDirectorId) {
         obj.clusterWatcher.primaryDirectorId = this.agent.primaryDirectorId;
+      }
+
+      if(obj.clusterWatcher && this.controller.clusterAs == 'JOC'){
+        obj.clusterWatcher = undefined;
       }
     }
     if (this.display) {

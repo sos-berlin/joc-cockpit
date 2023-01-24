@@ -8962,3 +8962,15 @@ div.floating-action-menu > .action-menu > .floating-action {
 cdk-virtual-scroll-viewport {
   max-height: 290px !important;
 }
+
+.hover-trash-icon {
+  i.fa-trash, i.fa-times {
+    opacity: 0;
+  }
+  &:hover{
+    i.fa-trash, i.fa-times {
+      opacity: 1;
+    }
+  }
+}
+
