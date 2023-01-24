@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {isEmpty, isArray} from 'underscore';
 import {saveAs} from 'file-saver';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -101,6 +101,7 @@ export class UploadModalComponent implements OnInit {
   templateUrl: './bulk-update-dialog.html'
 })
 export class BulkUpdateModalComponent implements OnInit {
+  @Input() listOfObjects: any;
   @Input() securityLevel: Array<string>;
   @Input() dbmsInit: Array<string>;
   @Input() methods: Array<string>;
@@ -110,12 +111,24 @@ export class BulkUpdateModalComponent implements OnInit {
   submitted = false;
   object: any = {};
   data: any;
+  list = [];
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef) {
 
   }
 
   ngOnInit(): void {
+    if (this.listOfObjects && this.listOfObjects.size > 0) {
+      let arr = Array.from(this.listOfObjects);
+      for (let i = 0; i < arr.length; i++) {
+        let obj: any = arr[i];
+        let tempArr = obj.split('__');
+        this.list.push({
+          name: tempArr[0],
+          value: tempArr[1],
+        })
+      }
+    }
     this.data = {
       target: {
         connection: {},
@@ -154,7 +167,12 @@ export class BulkUpdateModalComponent implements OnInit {
         delete obj.configuration['templates'];
       }
 
-      this.activeModal.close({data: obj, checkValues: this.object, operationType: this.selectObject.operationType});
+      this.activeModal.close({
+        data: obj,
+        checkValues: this.object,
+        operationType: this.selectObject.operationType,
+        list: this.list
+      });
     }, 100);
   }
 
@@ -219,7 +237,7 @@ export class ShowJsonModalComponent implements OnInit {
   selector: 'app-deployment',
   templateUrl: './deployment.component.html'
 })
-export class DeploymentComponent implements OnInit {
+export class DeploymentComponent implements OnInit, OnDestroy {
   data: any = {
     descriptor: {},
     joc: [],
@@ -247,12 +265,27 @@ export class DeploymentComponent implements OnInit {
   history = [];
   indexOfNextAdd = 0;
 
+  object = {
+    setOfCheckedId: new Set()
+  };
+
   constructor(private coreService: CoreService, private modal: NzModalService) {
 
   }
 
   ngOnInit(): void {
+    if (sessionStorage.descriptorObj) {
+      let obj = JSON.parse(sessionStorage.descriptorObj);
+      if (!isEmpty(obj)) {
+        this.data = obj;
+      }
+    }
+  }
 
+  ngOnDestroy(): void {
+    if (!isEmpty(this.data)) {
+      sessionStorage.descriptorObj = JSON.stringify(this.data);
+    }
   }
 
   addLicense(): void {
@@ -433,6 +466,14 @@ export class DeploymentComponent implements OnInit {
 
   removeTemplates(list, index): void {
     list.splice(index, 1);
+  }
+
+  onItemChecked(id: any, checked: boolean, type: string): void {
+    if (checked) {
+      this.object.setOfCheckedId.add(id + type);
+    } else {
+      this.object.setOfCheckedId.delete(id + type);
+    }
   }
 
   convertJSON(): void {
@@ -680,6 +721,7 @@ export class DeploymentComponent implements OnInit {
       nzAutofocus: null,
       nzClassName: 'lg',
       nzComponentParams: {
+        listOfObjects: this.object.setOfCheckedId,
         securityLevel: this.securityLevel,
         dbmsInit: this.dbmsInit,
         methods: this.methods
@@ -688,13 +730,42 @@ export class DeploymentComponent implements OnInit {
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe(result => {
-      if (result) {
-        if (result.operationType == 'JOC') {
-          this._bulkUpdate(result.data, this.data.joc, result.checkValues);
-        } else if (result.operationType == 'CONTROLLER') {
-          this._bulkUpdate(result.data, this.data.controllers, result.checkValues);
-        } else if (result.operationType == 'AGENT') {
-          this._bulkUpdate(result.data, this.data.agents, result.checkValues);
+      if (result && !isEmpty(result.checkValues)) {
+        if (result.list.length == 0) {
+          if (result.operationType == 'JOC') {
+            this._bulkUpdate(result.data, this.data.joc, result.checkValues);
+          } else if (result.operationType == 'CONTROLLER') {
+            this._bulkUpdate(result.data, this.data.controllers, result.checkValues);
+          } else if (result.operationType == 'AGENT') {
+            this._bulkUpdate(result.data, this.data.agents, result.checkValues);
+          }
+        } else {
+          console.log('do something.........', result);
+          result.list.forEach(item => {
+            if (item.value == 'JOC') {
+              this.data.joc.forEach((val) => {
+                if (val.cluster && val.jocClusterId == item.name) {
+                  val.cluster.forEach((cluster) => {
+                    this.updateIndividualData(result.data, cluster, result.checkValues);
+                  });
+                }
+              });
+            } else if (item.value == 'AGENT') {
+              this.data.agents.forEach((val) => {
+                if (val.agentId == item.name) {
+                  this.updateIndividualData(result.data, val, result.checkValues);
+                }
+              });
+            } else {
+              this.data.controllers.forEach((val) => {
+                if (val.cluster && val.controllerId == item.name) {
+                  val.cluster.forEach((cluster) => {
+                    this.updateIndividualData(result.data, cluster, result.checkValues);
+                  });
+                }
+              });
+            }
+          });
         }
       }
     });
@@ -710,11 +781,9 @@ export class DeploymentComponent implements OnInit {
         this.updateIndividualData(obj, item, checkValues);
       }
     });
-
   }
 
   private updateIndividualData(obj, data, checkValues): void {
-
     if (obj.target) {
       if (obj.target.connection) {
         if (checkValues.host) {
@@ -811,33 +880,33 @@ export class DeploymentComponent implements OnInit {
         data.configuration.responseDir = obj.configuration.responseDir;
       }
       if ((obj.configuration.certificates)) {
-        if (checkValues.certificates.keyStore) {
+        if (checkValues.keyStore) {
           data.configuration.certificates.keyStore = obj.configuration.certificates.keyStore;
         }
-        if (checkValues.certificates.keyStorePassword) {
+        if (checkValues.keyStorePassword) {
           data.configuration.certificates.keyStorePassword = obj.configuration.certificates.keyStorePassword;
         }
-        if (checkValues.certificates.keyPassword) {
+        if (checkValues.keyPassword) {
           data.configuration.certificates.keyPassword = obj.configuration.certificates.keyPassword;
         }
-        if (checkValues.certificates.keyAlias) {
+        if (checkValues.keyAlias) {
           data.configuration.certificates.keyAlias = obj.configuration.certificates.keyAlias;
         }
-        if (checkValues.certificates.trustStore) {
+        if (checkValues.trustStore) {
           data.configuration.certificates.trustStore = obj.configuration.certificates.trustStore;
         }
-        if (checkValues.certificates.trustStorePassword) {
+        if (checkValues.trustStorePassword) {
           data.configuration.certificates.trustStorePassword = obj.configuration.certificates.trustStorePassword;
         }
       }
       if ((obj.configuration.startFiles)) {
-        if (checkValues.startFiles.httpIni) {
+        if (checkValues.httpIni) {
           data.configuration.startFiles.httpIni = obj.configuration.startFiles.httpIni;
         }
-        if (checkValues.startFiles.httpsIni) {
+        if (checkValues.httpsIni) {
           data.configuration.startFiles.httpsIni = obj.configuration.startFiles.httpsIni;
         }
-        if (checkValues.startFiles.sslIni) {
+        if (checkValues.sslIni) {
           data.configuration.startFiles.sslIni = obj.configuration.startFiles.sslIni;
         }
       }

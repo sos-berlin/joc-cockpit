@@ -359,6 +359,8 @@
     "label.standaloneUrl": "Verbindung von JOC Cockpit zu Controller",
     "label.backupUrl": "Verbindung von Sekundärem Controller zu Primärem Controller",
     "label.primaryUrl": "Verbindung von Primärem Controller zu Sekundärem Controller",
+    "label.jocAsClusterWatch": "JOC Cockpit as Cluster Watch",
+    "label.agentAsClusterWatch": "Agent as Cluster Watch",
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "tooltip.type": "Ein Autonomer Controller mit einer Instanz kann konfiguriert werden. Unter Verwendung der kommerziellen Lizenz kann ein Controller Cluster mit zwei Instanzen konfiguriert werden.",

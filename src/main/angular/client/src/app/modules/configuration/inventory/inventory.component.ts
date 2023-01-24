@@ -146,9 +146,11 @@ export class SingleDeployComponent implements OnInit {
   comments: any = {radio: 'predefined'};
   dateFormat: any = {};
   object: any = {
-    addOrdersDateFrom: 'now',
     store: {draftConfigurations: [], deployConfigurations: []},
     delete: {deployConfigurations: []}
+  };
+  dailyPlanDate: any = {
+    addOrdersDateFrom: 'now',
   };
 
   dateObj: any = {};
@@ -234,29 +236,30 @@ export class SingleDeployComponent implements OnInit {
 
   deploy(): void {
     this.submitted = true;
-    if (this.releasable) {
-      this.release();
-      return;
-    }
     if (this.isRemoved) {
       this.remove();
       return;
     }
+    if (this.releasable) {
+      this.release();
+      return;
+    }
+
     this.getJSObject();
     const obj: any = {
       controllerIds: this.selectedSchedulerIds,
       auditLog: {}
     };
     if (!this.isRevoke) {
-      if (this.object.addOrdersDateFrom == 'startingFrom') {
+      if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-      } else if (this.object.addOrdersDateFrom == 'now') {
+      } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
         obj.addOrdersDateFrom = 'now';
       }
     } else if (this.isRevoke) {
-      if (this.object.addOrdersDateFrom == 'startingFrom') {
+      if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
         obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-      } else if (this.object.addOrdersDateFrom == 'now') {
+      } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
         obj.cancelOrdersDateFrom = 'now';
       }
     }
@@ -293,9 +296,9 @@ export class SingleDeployComponent implements OnInit {
     let obj: any = {
       auditLog: {}
     };
-    if (this.object.addOrdersDateFrom == 'startingFrom') {
+    if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
       obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-    } else if (this.object.addOrdersDateFrom == 'now') {
+    } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
       obj.addOrdersDateFrom = 'now';
     }
     if (this.data.deleted) {
@@ -304,6 +307,7 @@ export class SingleDeployComponent implements OnInit {
       obj.update = [{objectType: this.data.objectType, path: PATH}];
     }
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+
     this.coreService.post('inventory/release', obj).subscribe({
       next: () => {
         this.activeModal.close();
@@ -319,9 +323,9 @@ export class SingleDeployComponent implements OnInit {
     const obj: any = {
       auditLog: {}
     };
-    if (this.object.addOrdersDateFrom == 'startingFrom') {
+    if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
       obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-    } else if (this.object.addOrdersDateFrom == 'now') {
+    } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
       obj.cancelOrdersDateFrom = 'now';
     }
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
@@ -374,12 +378,14 @@ export class DeployComponent implements OnInit {
   dateObj: any = {};
   object: any = {
     isRecursive: false,
-    addOrdersDateFrom: 'now',
     delete: [],
     update: [],
     releasables: [],
     store: {draftConfigurations: [], deployConfigurations: []},
     deleteObj: {deployConfigurations: []}
+  };
+  dailyPlanDate: any = {
+    addOrdersDateFrom: 'now',
   };
   filter = {
     draft: true,
@@ -820,15 +826,15 @@ export class DeployComponent implements OnInit {
     }
     if (this.operation !== 'recall') {
       if (!this.isRevoke) {
-        if (this.object.addOrdersDateFrom == 'startingFrom') {
+        if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
           obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-        } else if (this.object.addOrdersDateFrom == 'now') {
+        } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
           obj.addOrdersDateFrom = 'now';
         }
       } else if (this.isRevoke) {
-        if (this.object.addOrdersDateFrom == 'startingFrom') {
+        if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
           obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-        } else if (this.object.addOrdersDateFrom == 'now') {
+        } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
           obj.cancelOrdersDateFrom = 'now';
         }
       }
@@ -850,9 +856,9 @@ export class DeployComponent implements OnInit {
     const obj: any = {
       auditLog: {}
     };
-    if (this.object.addOrdersDateFrom == 'startingFrom') {
+    if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
       obj.cancelOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-    } else if (this.object.addOrdersDateFrom == 'now') {
+    } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
       obj.cancelOrdersDateFrom = 'now';
     }
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);

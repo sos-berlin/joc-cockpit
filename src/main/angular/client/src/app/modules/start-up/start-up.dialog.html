@@ -164,10 +164,16 @@
           </div>
         </div>
       </div>
-      <div class="form-group row">
-        <div class="col-sm-12 m-t" translate>agent.label.clusterWatcher</div>
+      <div class="form-group row m-t-12">
+        <label class="col-sm-4" translate>agent.label.clusterWatcher</label>
+        <div class="col-sm-8">
+          <nz-radio-group name="type" [(ngModel)]="controller.clusterAs">
+            <label nz-radio nzValue="JOC"><span translate>controller.label.jocAsClusterWatch</span></label>
+            <label nz-radio nzValue="AGENT"><span translate>controller.label.agentAsClusterWatch</span></label>
+          </nz-radio-group>
+        </div>
       </div>
-      <div class="p-a b-a">
+      <div class="p-a b-a" *ngIf="controller.clusterAs == 'AGENT'">
         <div class="form-group row" *ngIf="!new && ((agents && agents.length>0) || clusterAgents && clusterAgents.length > 0)">
           <label class="col-sm-4 form-control-label" [nz-tooltip]="'agent.tooltip.agentId' | translate" translate>agent.label.agentId</label>
           <div class="col-sm-8">

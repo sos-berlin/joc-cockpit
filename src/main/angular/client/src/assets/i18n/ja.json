@@ -359,6 +359,8 @@
     "label.standaloneUrl": "スタンドアロンJOC URL",
     "label.backupUrl": "セカンダリーコントローラーがみるURL",
     "label.primaryUrl": "プライマリーコントローラーがみるURL",
+    "label.jocAsClusterWatch": "JOC Cockpit as Cluster Watch",
+    "label.agentAsClusterWatch": "Agent as Cluster Watch",
     "button.testConnection": "テスト接続",
     "button.newController": "新規コントローラー",
     "tooltip.type": "タイプ",
