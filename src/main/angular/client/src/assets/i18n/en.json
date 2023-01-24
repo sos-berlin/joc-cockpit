@@ -1134,10 +1134,10 @@
       },
       "button": {
         "addJOC": "Add JOC Cockpit",
-        "addAnotherJOC": "Add another JOC Cockpit Instance",
-        "addAnotherJOCCluster": "Add another JOC Cockpit Cluster",
+        "addAnotherJOC": "Add JOC Cockpit Instance",
+        "addAnotherJOCCluster": "Add JOC Cockpit Cluster",
         "removeJOC": "Remove JOC Cockpit Instance",
-        "removeSecondaryJOC": "Remove Secondary JOC Cockpit Instance"
+        "removeSecondaryJOC": "Remove JOC Cockpit Instance"
       },
       "placeholder": {
         "jocInstanceId": "Enter JOC Cockpit Instance ID",
