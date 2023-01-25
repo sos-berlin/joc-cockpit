@@ -16,6 +16,7 @@
           </div>
           <div class="col-md-6 ">
             <nz-select name="operationType" [(ngModel)]="selectObject.operationType">
+              <nz-option [nzLabel]="'ALL'" [nzValue]="'ALL'"></nz-option>
               <nz-option [nzLabel]="'JOC'" [nzValue]="'JOC'"></nz-option>
               <nz-option [nzLabel]="'AGENT'" [nzValue]="'AGENT'"></nz-option>
               <nz-option [nzLabel]="'CONTROLLER'" [nzValue]="'CONTROLLER'"></nz-option>

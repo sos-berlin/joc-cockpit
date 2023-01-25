@@ -329,6 +329,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
     mapOfCheckedId2: new Map(),
     mapOfCheckedId: new Map()
   };
+  isJOCActive = false;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -350,6 +351,7 @@ export class ControllersComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.isJOCActive = sessionStorage.$SOS$ISJOCACTIVE == 'YES';
     this.permission = JSON.parse(this.authService.permission) || {};
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};

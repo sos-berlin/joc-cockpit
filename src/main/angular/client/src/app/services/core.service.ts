@@ -1688,7 +1688,8 @@ export class CoreService {
           let lastIndex = (item.substring(item.length - 1) == '"' || item.substring(item.length - 1) == "'") ? 1 : 0;
           item = item.substring(1, item.length - lastIndex);
         }
-        if (permission.joc && permission.joc.inventory.view) {
+
+        if (permission && permission.joc && permission.joc.inventory && permission.joc.inventory.view) {
           str += '<i data-id-x="' + item + '" class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>';
         }
         str += firstStr + '<a class="text-hover-primary" data-id-y="' + item + '" >' + item + '</a>'

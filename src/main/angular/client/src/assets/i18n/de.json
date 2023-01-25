@@ -359,8 +359,8 @@
     "label.standaloneUrl": "Verbindung von JOC Cockpit zu Controller",
     "label.backupUrl": "Verbindung von Sekundärem Controller zu Primärem Controller",
     "label.primaryUrl": "Verbindung von Primärem Controller zu Sekundärem Controller",
-    "label.jocAsClusterWatch": "JOC Cockpit as Cluster Watch",
-    "label.agentAsClusterWatch": "Agent as Cluster Watch",
+    "label.jocAsClusterWatch": "JOC Cockpit als Cluster Wächter",
+    "label.agentAsClusterWatch": "Agent als Cluster Wächter",
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "tooltip.type": "Ein Autonomer Controller mit einer Instanz kann konfiguriert werden. Unter Verwendung der kommerziellen Lizenz kann ein Controller Cluster mit zwei Instanzen konfiguriert werden.",
@@ -802,53 +802,53 @@
   },
   "deploymentService": {
     "label": {
-      "operationType": "Operation Type",
-      "descriptor": "Descriptor",
-      "license": "License",
+      "operationType": "Art der Operation",
+      "descriptor": "Deskriptor",
+      "license": "Lizenz",
       "joc": "JOC",
-      "agents": "Agents",
+      "agents": "Agenten",
       "controller": "Controller",
-      "controllers": "Controllers",
-      "target": "Target",
-      "connection": "Connection",
-      "authentication": "Authentication",
-      "media": "Media",
+      "controllers": "Controller",
+      "target": "Ziel",
+      "connection": "Verbindung",
+      "authentication": "Authentifizierung",
+      "media": "Medien",
       "installation": "Installation",
-      "configuration": "Configuration",
-      "certificates": "Certificates",
-      "startFiles": "Start Files"
+      "configuration": "Konfiguration",
+      "certificates": "Zertifikate",
+      "startFiles": "Start-Dateien"
     },
     "button": {
-      "showMoreOption": "Show Options",
-      "hideMoreOption": "Hide Options",
-      "validate": "Validate",
-      "editJSON": "Edit JSON",
-      "bulkUpdate": "Bulk Update"
+      "showMoreOption": "Mehr Optionen",
+      "hideMoreOption": "Weniger Optionen",
+      "validate": "Validieren",
+      "editJSON": "JSON editieren",
+      "bulkUpdate": "Massenaktualisierung"
     },
     "message": {
-      "invalidFile": "Not a valid descriptor file"
+      "invalidFile": "Keine gültige Deskriptor Datei"
     },
     "descriptor": {
       "label": {
-        "descriptorId": "Descriptor ID",
-        "title": "Title",
-        "account": "Account",
-        "scheduled": "Scheduled",
-        "created": "Created"
+        "descriptorId": "Deskriptor-Kennung",
+        "title": "Titel",
+        "account": "Konto",
+        "scheduled": "Geplant",
+        "created": "Angelegt"
       },
       "placeholder": {
-        "descriptorId": "Enter Descriptor ID",
-        "title": "Enter title",
-        "account": "Enter account",
-        "scheduled": "Enter scheduled date",
-        "created": "Enter created date"
+        "descriptorId": "Deskriptor-Kennung angeben",
+        "title": "Titel angeben",
+        "account": "Konto angeben",
+        "scheduled": "Datum der Ausführung angeben",
+        "created": "Datum der Anlage angeben"
       },
       "tooltip": {
-        "descriptorId": "Descriptor ID",
-        "title": "Title",
-        "account": "Account",
-        "scheduled": "Scheduled",
-        "created": "Created"
+        "descriptorId": "Deskriptor-Kennung",
+        "title": "Titele",
+        "account": "Konto",
+        "scheduled": "Geplant",
+        "created": "Angelegt"
       }
     },
     "license": {
@@ -1022,11 +1022,11 @@
         "templates": "Templates"
       },
       "button": {
-        "addController": "Add Controller Instance",
-        "addSecondaryController": "Add Secondary Controller Instance",
-        "addAnotherController": "Add another Controller",
-        "removeController": "Remove Controller Instance",
-        "removeSecondaryController": "Remove Secondary Controller Instance"
+        "addController": "Controller Instanz hinzufügen",
+        "addSecondaryController": "Sekundäre Controller Instanz hinzufügen",
+        "addAnotherController": "Controller hinzufügen",
+        "removeController": "Controller Instanz entfernen",
+        "removeSecondaryController": "Sekundäre Controller Instanz entfernen"
       },
       "placeholder": {
         "host": "Enter Host",
@@ -1090,8 +1090,8 @@
     },
     "joc": {
       "label": {
-        "jocInstanceId": "JOC Cockpit Instance ID",
-        "jocClusterId": "JOC Cockpit Cluster ID",
+        "jocInstanceId": "JOC Cockpit Instanz-Kennung",
+        "jocClusterId": "JOC Cockpit Cluster-Kennung",
         "host": "Host",
         "port": "Port",
         "method": "Authentication Method",
