@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline" *ngIf="permission.joc && permission.joc.administration.controllers.manage">
-            <button *ngIf="object.mapOfCheckedId.size === 0 && object.mapOfCheckedId2.size === 0"
+            <button *ngIf="object.mapOfCheckedId.size === 0 && object.mapOfCheckedId2.size === 0 && isJOCActive"
                     (click)="addController()" class="btn btn-grey btn-sm">
               <i class="fa fa-plus"></i>&nbsp;
               <span translate>controller.button.newController</span>
@@ -50,7 +50,7 @@
                         <i class="fa fa-ellipsis-h"></i></button>
                       <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                         <ul nz-menu>
-                          <li (click)="editController(controller.controllerId)" nz-menu-item>
+                          <li *ngIf="isJOCActive" (click)="editController(controller.controllerId)" nz-menu-item>
                             <a translate>common.button.edit</a>
                           </li>
                           <li (click)="addAgent(controller)" nz-menu-item>

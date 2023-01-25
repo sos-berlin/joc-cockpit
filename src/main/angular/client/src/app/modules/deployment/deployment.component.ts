@@ -738,6 +738,10 @@ export class DeploymentComponent implements OnInit, OnDestroy {
             this._bulkUpdate(result.data, this.data.controllers, result.checkValues);
           } else if (result.operationType == 'AGENT') {
             this._bulkUpdate(result.data, this.data.agents, result.checkValues);
+          } else {
+            this._bulkUpdate(result.data, this.data.joc, result.checkValues);
+            this._bulkUpdate(result.data, this.data.controllers, result.checkValues);
+            this._bulkUpdate(result.data, this.data.agents, result.checkValues);
           }
         } else {
           console.log('do something.........', result);

@@ -212,6 +212,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private isJocActive(): void {
     this.coreService.post('joc/is_active', {}).subscribe((res: any) => {
       this.isBackUp = res.ok ? 'NO' : 'YES';
+      sessionStorage.$SOS$ISJOCACTIVE = res.ok ? 'YES' : 'NO';
     });
   }
 
